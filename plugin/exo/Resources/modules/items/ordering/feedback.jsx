@@ -1,6 +1,6 @@
-import React, {Component, PropTypes as T} from 'react'
+import React from 'react'
 
-export const OrderingFeedback = props =>  {
+export const OrderingFeedback = () =>  {
   return (
     <h4>FEEDBACK</h4>
   )

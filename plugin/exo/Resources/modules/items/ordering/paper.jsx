@@ -1,6 +1,6 @@
-import React, {Component, PropTypes as T} from 'react'
+import React from 'react'
 
-export const OrderingPaper = props =>  {
+export const OrderingPaper = () =>  {
   return (
     <h4>Paper</h4>
   )

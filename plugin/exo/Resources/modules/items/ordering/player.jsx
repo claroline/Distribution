@@ -1,6 +1,6 @@
-import React, {Component, PropTypes as T} from 'react'
+import React from 'react'
 
-export const OrderingPlayer = props =>  {
+export const OrderingPlayer = () =>  {
   return (
     <h4>PLAYER</h4>
   )

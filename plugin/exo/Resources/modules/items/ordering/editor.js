@@ -3,10 +3,7 @@ import merge from 'lodash/merge'
 import zipObject from 'lodash/zipObject'
 import set from 'lodash/set'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
-import {SCORE_FIXED} from './../../quiz/enums'
-import {makeActionCreator, makeId, update} from './../../utils/utils'
-import {tex} from './../../utils/translate'
-import {notBlank} from './../../utils/validate'
+import {makeActionCreator, makeId} from './../../utils/utils'
 import {Ordering as component} from './editor.jsx'
 
 const UPDATE_PROP = 'UPDATE_PROP'
@@ -187,7 +184,7 @@ function reduce(ordering = {}, action) {
   return ordering
 }
 
-function validate(item) {
+function validate() {
   const errors = {}
 
 

@@ -1,8 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {t, tex} from './../../utils/translate'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
@@ -375,6 +373,7 @@ Ordering.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     direction: T.string.isRequired,
+    penalty: T.number.isRequired,
     mode: T.string.isRequired,
     score: T.shape({
       type: T.string.isRequired,
