@@ -41,7 +41,7 @@ class OrderingQuestionSerializer implements SerializerInterface
      *
      * @return \stdClass
      */
-    public function serialize($question, array $options = array())
+    public function serialize($question, array $options = [])
     {
         $questionData = new \stdClass();
 
@@ -71,7 +71,7 @@ class OrderingQuestionSerializer implements SerializerInterface
      *
      * @return array
      */
-    private function serializeItems(OrderingQuestion $question, array $options = array())
+    private function serializeItems(OrderingQuestion $question, array $options = [])
     {
         return array_map(function (OrderingItem $item) use ($options) {
             $itemData = $this->contentSerializer->serialize($item, $options);
@@ -116,7 +116,7 @@ class OrderingQuestionSerializer implements SerializerInterface
      *
      * @return Ordering
      */
-    public function deserialize($data, $question = null, array $options = array())
+    public function deserialize($data, $question = null, array $options = [])
     {
         if (empty($question)) {
             $question = new OrderingQuestion();
@@ -142,7 +142,7 @@ class OrderingQuestionSerializer implements SerializerInterface
      * @param array            $solutions
      * @param array            $options
      */
-    private function deserializeItems(OrderingQuestion $question, array $items, array $solutions, array $options = array())
+    private function deserializeItems(OrderingQuestion $question, array $items, array $solutions, array $options = [])
     {
         $itemEntities = $question->getItems()->toArray();
 
