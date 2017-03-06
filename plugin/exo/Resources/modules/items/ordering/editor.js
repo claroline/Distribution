@@ -3,7 +3,10 @@ import merge from 'lodash/merge'
 import zipObject from 'lodash/zipObject'
 import set from 'lodash/set'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
+import {SCORE_FIXED} from './../../quiz/enums'
 import {makeActionCreator, makeId} from './../../utils/utils'
+import {tex} from './../../utils/translate'
+import {notBlank} from './../../utils/validate'
 import {Ordering as component} from './editor.jsx'
 
 const UPDATE_PROP = 'UPDATE_PROP'
@@ -57,6 +60,7 @@ function reduce(ordering = {}, action) {
       return decorate(Object.assign({}, ordering, {
         mode: MODE_INSIDE,
         direction: DIRECTION_VERTICAL,
+        penalty: 0,
         items: [
           {
             id: firstChoiceId,
@@ -100,20 +104,30 @@ function reduce(ordering = {}, action) {
         newItem.solutions = ordering.solutions.filter(solution => undefined !== solution.position)
         newItem.items = ordering.items.filter(item => undefined !== newItem.solutions.find(solution => solution.itemId === item.id))
       }
-
+      // if we change from score type SUM to score type FIXED update every score (odd / items)
+      if (action.property === 'score.type' && value === SCORE_FIXED) {
+        newItem.solutions.forEach(solution => {
+          const item = newItem.items.find(item => item.id === solution.itemId)
+          if (solution.position) {
+            solution.score = 1
+            item._score = 1
+          } else {
+            solution.score = 0
+            item._score = 0
+          }
+        })
+      }
       return newItem
     }
     case ADD_ITEM: {
       const newItem = cloneDeep(ordering)
       const isOdd = action.isOdd
+
       const newSolution = {
         itemId: makeId(),
         score: isOdd ? 0 : 1,
-        feedback: ''
-      }
-
-      if (!isOdd) {
-        newSolution.position = ordering.items.length
+        feedback: '',
+        position: isOdd ? undefined : newItem.solutions.filter(solution => undefined !== solution.position).length + 1
       }
 
       newItem.solutions.push(newSolution)
@@ -124,7 +138,7 @@ function reduce(ordering = {}, action) {
         _deletable: true,
         _score: newSolution.score,
         _feedback: newSolution.feedback,
-        _position: newSolution.position || undefined
+        _position: newSolution.position
       })
 
       newItem.items.forEach(
@@ -184,10 +198,23 @@ function reduce(ordering = {}, action) {
   return ordering
 }
 
-function validate() {
+function validate(ordering) {
   const errors = {}
 
+  if (ordering.items.find(item => notBlank(item.data, true))) {
+    errors.items = tex('ordering_item_empty_data_error')
+  }
 
+  if (ordering.score.type === SCORE_FIXED) {
+    if (ordering.score.failure >= ordering.score.success) {
+      set(errors, 'score.failure', tex('fixed_failure_above_success_error'))
+      set(errors, 'score.success', tex('fixed_success_under_failure_error'))
+    }
+  } else {
+    if (!ordering.items.find(item => item._score > 0)) {
+      errors.items = tex('ordering_no_correct_answer_error')
+    }
+  }
 
   return errors
 }

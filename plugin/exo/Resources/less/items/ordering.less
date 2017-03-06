@@ -9,68 +9,69 @@
     list-style-type:none;
     padding: 0;
 
-    .item-container {
-      display: flex;
-      background-color: #eee;
-      padding: @panel-body-padding;
-      justify-content: space-between;
-    }
-
     li {
+      vertical-align: top;
       padding: 5px;
-    }
-
-    .vertical {
-      width: 100%;
-      .item {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-      }
-
-      .right-controls {
-        margin-left: 5px;
-        display: flex;
-        align-items: flex-start;
-      }
-
-      .text-fields {
-        flex-grow: 1;
-      }
-
-    }
-
-
-
-    .item-score {
-      width: 60px;
-    }
-
-    .horizontal {
-      display:inline-block;
-      .item-container {
-        max-width: 150px;
-        .item {
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-          flex-direction: column;
-        }
-
-        .right-controls {
-          display: flex;
-          align-self: flex-end;
-          align-items: flex-start;
-        }
-
-        .drag-handle {
-          display: flex;
-          align-items: flex-end;
-          margin-bottom: 12px;
-        }
-      }
     }
   }
 
+  .text-editor {
+    word-break: break-all;
+  }
 
+  .item-container {
+    display: flex;
+    background-color: #eee;
+    padding: 5px;
+    justify-content: space-between;
+  }
+
+  .item-score {
+    width: 60px;
+  }
+
+  .vertical {
+    width: 100%;
+    .item {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .right-controls {
+      margin-left: 5px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .text-fields {
+      flex-grow: 1;
+    }
+
+  }
+
+  .horizontal {
+    display:inline-block;
+    .item-container {
+      max-width: 250px;
+      .item {
+        flex-direction: column;
+      }
+
+      .right-controls {
+        display: flex;
+        align-self: flex-end;
+        align-items: flex-start;
+      }
+
+      .feedback-container {
+        margin-top: @panel-body-padding;
+      }
+
+      .drag-handle {
+        margin-left: 5px;
+        align-items: flex-start;
+      }
+    }
+  }
 }

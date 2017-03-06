@@ -47,6 +47,7 @@ class OrderingQuestionSerializer implements SerializerInterface
 
         $questionData->mode = $question->getMode();
         $questionData->direction = $question->getDirection();
+        $questionData->penalty = $question->getPenalty();
         // Serializes items
         $items = $this->serializeItems($question, $options);
         // shuffle items only in player
@@ -91,7 +92,7 @@ class OrderingQuestionSerializer implements SerializerInterface
     {
         return array_map(function (OrderingItem $item) {
             $solutionData = new \stdClass();
-            $solutionData->id = $item->getUuid();
+            $solutionData->itemId = $item->getUuid();
             $solutionData->score = $item->getScore();
 
             if ($item->getFeedback()) {
@@ -99,7 +100,7 @@ class OrderingQuestionSerializer implements SerializerInterface
             }
 
             if ($item->getPosition()) {
-                $solutionData->order = $item->getPosition();
+                $solutionData->position = $item->getPosition();
             }
 
             return $solutionData;
@@ -124,6 +125,9 @@ class OrderingQuestionSerializer implements SerializerInterface
         if (!empty($data->penalty) || 0 === $data->penalty) {
             $question->setPenalty($data->penalty);
         }
+
+        $question->setDirection($data->direction);
+        $question->setMode($data->mode);
 
         $this->deserializeItems($question, $data->items, $data->solutions, $options);
 
@@ -170,7 +174,7 @@ class OrderingQuestionSerializer implements SerializerInterface
 
             // Set item score feedback and order
             foreach ($solutions as $solution) {
-                if ($solution->id === $itemData->id) {
+                if ($solution->itemId === $itemData->id) {
                     $item->setScore($solution->score);
                     if (isset($solution->feedback)) {
                         $item->setFeedback($solution->feedback);

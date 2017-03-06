@@ -31,11 +31,11 @@ class Item extends Component {
               actions.updateItem(this.props.id, 'data', data)
             )}
           />
-          {this.state.showFeedback &&
+        {this.props.item.direction === DIRECTION_VERTICAL && this.state.showFeedback &&
             <div className="feedback-container">
               <Textarea
                 id={`item-${this.props.id}-feedback`}
-                title={tex('feedback')}
+                title={tex('ordering_feedback')}
                 content={this.props.feedback}
                 onChange={text => this.props.onChange(
                   actions.updateItem(this.props.id, 'feedback', text)
@@ -74,12 +74,25 @@ class Item extends Component {
             )}
           />
         </div>
+        {this.props.item.direction === DIRECTION_HORIZONTAL && this.state.showFeedback &&
+          <div className="feedback-container">
+            <Textarea
+              id={`item-${this.props.id}-feedback`}
+              title={tex('ordering_feedback')}
+              content={this.props.feedback}
+              onChange={text => this.props.onChange(
+                actions.updateItem(this.props.id, 'feedback', text)
+              )}
+            />
+          </div>
+        }
       </div>
     )
   }
 }
 
 Item.propTypes = {
+  item: T.object.isRequired,
   id: T.string.isRequired,
   data: T.string.isRequired,
   score: T.number.isRequired,
@@ -155,10 +168,9 @@ let ItemList = props => {
   return  (
     <ul>
       { items.map((el, index) =>
-        <li className={classes(
-            {'vertical': props.item.direction === DIRECTION_VERTICAL},
-            {'horizontal': props.item.direction === DIRECTION_HORIZONTAL}
-          )} key={el.id}>
+        <li
+          className={props.item.direction === DIRECTION_VERTICAL ? 'vertical':'horizontal'}
+          key={el.id}>
           { props.isOdd ?
             <OrderingOdd
               id={el.id}
@@ -228,7 +240,7 @@ const OrderingItems = props => {
             onClick={() => props.onChange(actions.addItem(false))}
           >
             <span className="fa fa-plus"/>
-            {tex('add_item')}
+            {tex('ordering_add_item')}
           </button>
         </div>
       </div>
@@ -245,7 +257,7 @@ const OrderingItems = props => {
               onClick={() => props.onChange(actions.addItem(true))}
             >
               <span className="fa fa-plus"/>
-              {tex('add_odd')}
+              {tex('ordering_add_odd')}
             </button>
           </div>
         </div>

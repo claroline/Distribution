@@ -53,7 +53,7 @@ class OrderingQuestion extends AbstractItem
      *
      * @var string
      */
-    private $direction = self::DIRECTION_HORIZONTAL;
+    private $direction = self::DIRECTION_VERTICAL;
 
     /**
      * @ORM\Column(type="string")

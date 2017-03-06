@@ -57,7 +57,7 @@ class OrderingQuestionValidator extends JsonSchemaValidator
 
         $maxScore = -1;
         foreach ($question->solutions as $index => $solution) {
-            if (!in_array($solution->id, $itemIds)) {
+            if (!in_array($solution->itemId, $itemIds)) {
                 $errors[] = [
                     'path' => "/solutions[{$index}]",
                     'message' => "id {$solution->id} doesn't match any item id",
