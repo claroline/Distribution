@@ -114,7 +114,7 @@ class OrderingDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractItem $question, $answer = array())
+    public function correctAnswer(AbstractItem $question, $answer = [])
     {
         $corrected = new CorrectedAnswer();
 
@@ -146,6 +146,6 @@ class OrderingDefinition extends AbstractDefinition
 
     public function getStatistics(AbstractItem $question, array $answersData)
     {
-        return array();
+        return [];
     }
 }
