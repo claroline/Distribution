@@ -36,12 +36,12 @@ class OrderingQuestionSerializer implements SerializerInterface
     /**
      * Converts an Ordering question into a JSON-encodable structure.
      *
-     * @param Ordering       $question
-     * @param array          $options
+     * @param Ordering $question
+     * @param array    $options
      *
      * @return \stdClass
      */
-    public function serialize($question, array $options = [])
+    public function serialize($question, array $options = array())
     {
         $questionData = new \stdClass();
 
@@ -66,12 +66,12 @@ class OrderingQuestionSerializer implements SerializerInterface
     /**
      * Serializes the question items.
      *
-     * @param OrderingQuestion       $question
-     * @param array          $options
+     * @param OrderingQuestion $question
+     * @param array            $options
      *
      * @return array
      */
-    private function serializeItems(OrderingQuestion $question, array $options = [])
+    private function serializeItems(OrderingQuestion $question, array $options = array())
     {
         return array_map(function (OrderingItem $item) use ($options) {
             $itemData = $this->contentSerializer->serialize($item, $options);
@@ -110,13 +110,13 @@ class OrderingQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into an Ordering question entity.
      *
-     * @param \stdClass      $data
-     * @param Ordering       $question
-     * @param array          $options
+     * @param \stdClass $data
+     * @param Ordering  $question
+     * @param array     $options
      *
      * @return Ordering
      */
-    public function deserialize($data, $question = null, array $options = [])
+    public function deserialize($data, $question = null, array $options = array())
     {
         if (empty($question)) {
             $question = new OrderingQuestion();
@@ -138,11 +138,11 @@ class OrderingQuestionSerializer implements SerializerInterface
      * Deserializes Question items.
      *
      * @param OrderingQuestion $question
-     * @param array          $items
-     * @param array          $solutions
-     * @param array          $options
+     * @param array            $items
+     * @param array            $solutions
+     * @param array            $options
      */
-    private function deserializeItems(OrderingQuestion $question, array $items, array $solutions, array $options = [])
+    private function deserializeItems(OrderingQuestion $question, array $items, array $solutions, array $options = array())
     {
         $itemEntities = $question->getItems()->toArray();
 

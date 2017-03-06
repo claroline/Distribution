@@ -6,10 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
 use UJM\ExoBundle\Library\Model\ContentTrait;
-use UJM\ExoBundle\Library\Model\UuidTrait;
-use UJM\ExoBundle\Library\Model\OrderTrait;
-use UJM\ExoBundle\Library\Model\ScoreTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
+use UJM\ExoBundle\Library\Model\ScoreTrait;
+use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * An ordering question.

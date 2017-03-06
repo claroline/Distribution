@@ -5,8 +5,8 @@ namespace UJM\ExoBundle\Library\Item\Definition;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
+use UJM\ExoBundle\Entity\Misc\OrderingItem;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
-use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\OrderingQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OrderingAnswerValidator;
@@ -114,7 +114,7 @@ class OrderingDefinition extends AbstractDefinition
      *
      * @return CorrectedAnswer
      */
-    public function correctAnswer(AbstractItem $question, $answer = [])
+    public function correctAnswer(AbstractItem $question, $answer = array())
     {
         $corrected = new CorrectedAnswer();
 
@@ -139,13 +139,13 @@ class OrderingDefinition extends AbstractDefinition
      */
     public function expectAnswer(AbstractItem $question)
     {
-        return array_filter($question->getItems()->toArray(), function (OredringItem $item) {
+        return array_filter($question->getItems()->toArray(), function (OrderingItem $item) {
             return !empty($item->getPosition());
         });
     }
 
     public function getStatistics(AbstractItem $question, array $answersData)
     {
-        return [];
+        return array();
     }
 }
