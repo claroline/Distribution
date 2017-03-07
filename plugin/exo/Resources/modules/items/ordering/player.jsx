@@ -3,7 +3,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
 import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL} from './editor'
-import {makeSortable, makeDraggable, makeDroppable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
+import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
+import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 
 let DropBox = props => {
   return props.connectDropTarget (
