@@ -40,8 +40,8 @@ class OrderingAnswerValidator extends JsonSchemaValidator
             return $item->getUuid();
         }, $question->getItems()->toArray());
 
-        foreach ($answerData as $index => $id) {
-            if (!in_array($id, $itemIds)) {
+        foreach ($answerData as $index => $answer) {
+            if (!in_array($answer->itemId, $itemIds)) {
                 $errors[] = [
                     'path' => "/[{$index}]",
                     'message' => 'Answer array identifiers must reference question items',

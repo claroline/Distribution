@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Entity\Misc;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
+use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
@@ -16,7 +17,7 @@ use UJM\ExoBundle\Library\Model\UuidTrait;
  * @ORM\Entity
  * @ORM\Table(name="ujm_ordering_item")
  */
-class OrderingItem
+class OrderingItem implements AnswerPartInterface
 {
     use UuidTrait;
 
