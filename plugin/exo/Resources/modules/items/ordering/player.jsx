@@ -5,11 +5,12 @@ import {t, tex} from './../../utils/translate'
 import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL} from './editor'
 import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 let DropBox = props => {
   return props.connectDropTarget (
      <div className={classes(
-       'pair-item-drop-container',
+       'drop-container',
        {'on-hover': props.isOver}
      )}>
        {tex('set_drop_item')}
@@ -21,36 +22,46 @@ DropBox.propTypes = {
   connectDropTarget: T.func.isRequired,
   isOver: T.bool.isRequired,
   onDrop: T.func.isRequired,
-  canDrop: T.bool.isRequired,
-  object: T.object.isRequired
+  canDrop: T.bool.isRequired
 }
 
 DropBox = makeDroppable(DropBox, 'ITEM')
 
-let SotableItem = props => {
+let SortableItem = props => {
   return props.connectDragPreview (
-    props.connectDropTarget (
+      props.connectDropTarget (
+    props.connectDragSource(
     <div className="item">
       <div className="item-data" dangerouslySetInnerHTML={{__html: props.data}} />
-        {props.connectDragSource(
-          <span
-            title={t('move')}
-            draggable="true"
-            className={classes(
-              'tooltiped-button',
-              'btn',
-              'fa',
-              'fa-bars',
-              'drag-handle'
-            )}
+      <div className="item-actions">
+        {props.canDelete &&
+          <TooltipButton
+            id={`answer-${props.index}-delete`}
+            title={t('delete')}
+            className="fa fa-trash"
+            onClick={props.onDelete}
           />
-        )}
+        }
+        <span
+          title={t('move')}
+          draggable="true"
+          className={classes(
+            'tooltiped-button',
+            'btn',
+            'fa',
+            'fa-bars',
+            'drag-handle'
+          )}
+        />
+      </div>
     </div>
-  ))
+  )))
 }
 
-SotableItem.propTypes = {
+SortableItem.propTypes = {
   data: T.string.isRequired,
+  canDelete: T.bool.isRequired,
+  onDelete: T.func,
   connectDragSource: T.func.isRequired,
   connectDragPreview: T.func.isRequired,
   connectDropTarget: T.func.isRequired,
@@ -58,28 +69,26 @@ SotableItem.propTypes = {
   index: T.number.isRequired
 }
 
-SotableItem = makeSortable(SotableItem, 'ORDERING_PLAYER_SORTABLE_ITEM')
-
+SortableItem = makeSortable(SortableItem, 'ORDERING_PLAYER_SORTABLE_ITEM')
 
 let DraggableItem = props => {
   return props.connectDragPreview (
+    props.connectDragSource(
     <div className="item">
       <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.data}} />
-        {props.connectDragSource(
-          <span
-            title={t('move')}
-            draggable="true"
-            className={classes(
-              'tooltiped-button',
-              'btn',
-              'fa',
-              'fa-bars',
-              'drag-handle'
-            )}
-          />
+      <span
+        title={t('move')}
+        draggable="true"
+        className={classes(
+          'tooltiped-button',
+          'btn',
+          'fa',
+          'fa-bars',
+          'drag-handle'
         )}
+      />
     </div>
-  )
+  ))
 }
 
 DraggableItem.propTypes = {
@@ -88,7 +97,7 @@ DraggableItem.propTypes = {
   item: T.object.isRequired
 }
 
-DraggableItem = makeDraggable(DraggableItem, 'ORDERING_PLAYER_DRAGGABLE_ITEM')
+DraggableItem = makeDraggable(DraggableItem, 'ITEM')
 
 class OrderingPlayer extends Component {
 
@@ -102,11 +111,33 @@ class OrderingPlayer extends Component {
       this.props.item.items.forEach((item, index) => {
         answers.push({
           itemId: item.id,
-          position: index + 1
+          position: index + 1,
+          _data: item.data
         })
       })
       this.props.onChange(answers)
     }
+  }
+
+  onItemDrop(source) {
+    // add item to answers at the last position
+    if (undefined === this.props.answer.find(a => a.itemId === source.item.id)) {
+      const position = this.props.answer.length + 1
+      // add to answer
+      this.props.onChange(
+        [{itemId: source.item.id, position:position, _data: source.item.data}].concat(this.props.answer).sort((a, b) => {
+          return a.position - b.position
+        })
+      )
+    }
+  }
+
+  onDelete(id) {
+    const answers = cloneDeep(this.props.answer.filter(answer => answer.itemId !== id))
+    answers.map((answer, index) => answer.position = index + 1)
+    this.props.onChange(
+       answers
+    )
   }
 
   onSort(id, swapId) {
@@ -138,14 +169,14 @@ class OrderingPlayer extends Component {
             )}>
             {this.props.item.mode === MODE_INSIDE ?
               this.props.answer.map((a, index) =>
-                <SotableItem
+                <SortableItem
                   id={a.itemId}
                   key={a.itemId}
-                  data={this.props.item.items.find(item => item.id === a.itemId).data}
+                  data={a._data}
+                  canDelete={false}
                   index={index}
                   sortDirection={this.props.item.direction === DIRECTION_VERTICAL ? SORT_VERTICAL : SORT_HORIZONTAL}
-                  onSort={
-                  (id, swapId) => this.props.onChange(
+                  onSort={(id, swapId) => this.props.onChange(
                     this.onSort(id, swapId)
                   )}/>
               )
@@ -159,23 +190,40 @@ class OrderingPlayer extends Component {
           </div>
           {this.props.item.direction === DIRECTION_VERTICAL && this.props.item.mode === MODE_BESIDE &&
             <div className="col-md-6 answer-zone">
-              {this.props.answer.map((answer, index) => {
-                <SotableItem data={this.props.item.items.find(item => item.id = answer.itemId).data} index={index} onSort={() => {}}/>
-              })}
-              <DropBox />
+              {this.props.answer.map((a, index) =>
+                <SortableItem
+                  id={a.itemId}
+                  key={a.itemId}
+                  data={a._data}
+                  canDelete={true}
+                  onDelete={() => this.onDelete(a.itemId)}
+                  sortDirection={SORT_VERTICAL}
+                  index={index}
+                  onSort={(id, swapId) => this.props.onChange(
+                    this.onSort(id, swapId)
+                  )}/>
+              )}
+              <DropBox onDrop={(source) => this.onItemDrop(source)}/>
             </div>
           }
         </div>
         {this.props.item.direction === DIRECTION_HORIZONTAL && this.props.item.mode === MODE_BESIDE &&
           <div className="row">
-            <div className="col-md-12 answer-zone">
-              {this.props.answer.map((answer, index) => {
-                <SotableItem
-                  data={this.props.item.items.find(item => item.id = answer.itemId).data}
+            <div className="col-md-12 answer-zone horizontal">
+              {this.props.answer.map((a, index) =>
+                <SortableItem
+                  id={a.itemId}
+                  key={a.itemId}
+                  data={a._data}
+                  canDelete={true}
+                  onDelete={() => this.onDelete(a.itemId)}
+                  sortDirection={SORT_HORIZONTAL}
                   index={index}
-                  onSort={() => {}}/>
-              })}
-              <DropBox />
+                  onSort={(id, swapId) => this.props.onChange(
+                    this.onSort(id, swapId)
+                  )}/>
+              )}
+              <DropBox onDrop={(source) => this.onItemDrop(source)}/>
             </div>
           </div>
         }
