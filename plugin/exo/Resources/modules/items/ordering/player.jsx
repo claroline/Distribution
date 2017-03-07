@@ -1,11 +1,32 @@
 import React, {Component, PropTypes as T} from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import classes from 'classnames'
-import {t} from './../../utils/translate'
+import {t, tex} from './../../utils/translate'
 import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL} from './editor'
-import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
+import {makeSortable, makeDraggable, makeDroppable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
 
-let Item = props => {
+let DropBox = props => {
+  return props.connectDropTarget (
+     <div className={classes(
+       'pair-item-drop-container',
+       {'on-hover': props.isOver}
+     )}>
+       {tex('set_drop_item')}
+     </div>
+   )
+}
+
+DropBox.propTypes = {
+  connectDropTarget: T.func.isRequired,
+  isOver: T.bool.isRequired,
+  onDrop: T.func.isRequired,
+  canDrop: T.bool.isRequired,
+  object: T.object.isRequired
+}
+
+DropBox = makeDroppable(DropBox, 'ITEM')
+
+let SotableItem = props => {
   return props.connectDragPreview (
     props.connectDropTarget (
     <div className="item">
@@ -27,7 +48,7 @@ let Item = props => {
   ))
 }
 
-Item.propTypes = {
+SotableItem.propTypes = {
   data: T.string.isRequired,
   connectDragSource: T.func.isRequired,
   connectDragPreview: T.func.isRequired,
@@ -36,7 +57,37 @@ Item.propTypes = {
   index: T.number.isRequired
 }
 
-Item = makeSortable(Item, 'ORDERING_PLAYER_ITEM')
+SotableItem = makeSortable(SotableItem, 'ORDERING_PLAYER_SORTABLE_ITEM')
+
+
+let DraggableItem = props => {
+  return props.connectDragPreview (
+    <div className="item">
+      <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.data}} />
+        {props.connectDragSource(
+          <span
+            title={t('move')}
+            draggable="true"
+            className={classes(
+              'tooltiped-button',
+              'btn',
+              'fa',
+              'fa-bars',
+              'drag-handle'
+            )}
+          />
+        )}
+    </div>
+  )
+}
+
+DraggableItem.propTypes = {
+  connectDragSource: T.func.isRequired,
+  connectDragPreview: T.func.isRequired,
+  item: T.object.isRequired
+}
+
+DraggableItem = makeDraggable(DraggableItem, 'ORDERING_PLAYER_DRAGGABLE_ITEM')
 
 class OrderingPlayer extends Component {
 
@@ -45,7 +96,7 @@ class OrderingPlayer extends Component {
   }
 
   componentDidMount() {
-    if (this.props.item.mode === MODE_INSIDE && (this.props.answer.length === 0 || !this.props.answers)) {
+    if (this.props.item.mode === MODE_INSIDE && (this.props.answer.length === 0 || !this.props.answer)) {
       const answers = []
       this.props.item.items.forEach((item, index) => {
         answers.push({
@@ -86,7 +137,7 @@ class OrderingPlayer extends Component {
             )}>
             {this.props.item.mode === MODE_INSIDE ?
               this.props.answer.map((a, index) =>
-                <Item
+                <SotableItem
                   id={a.itemId}
                   key={a.itemId}
                   data={this.props.item.items.find(item => item.id === a.itemId).data}
@@ -98,19 +149,19 @@ class OrderingPlayer extends Component {
                   )}/>
               )
               :
-              this.props.item.items.filter(item => undefined === this.props.answer.find(answer => answer.itemId === item.id)).map((item, index) =>
-                <div key={item.id} dangerouslySetInnerHTML={{__html: item.data}}></div>
+              this.props.item.items.filter(item => undefined === this.props.answer.find(answer => answer.itemId === item.id)).map((item) =>
+                <DraggableItem
+                  item={item}
+                  key={item.id}/>
               )
-          }
+            }
           </div>
           {this.props.item.direction === DIRECTION_VERTICAL && this.props.item.mode === MODE_BESIDE &&
             <div className="col-md-6 answer-zone">
               {this.props.answer.map((answer, index) => {
-                <Item data={this.props.item.items.find(item => item.id = answer.itemId).data} index={index} onSort={() => {}}/>
+                <SotableItem data={this.props.item.items.find(item => item.id = answer.itemId).data} index={index} onSort={() => {}}/>
               })}
-              { this.props.answer.length === 0 &&
-                <h4>Drop item here</h4>
-              }
+              <DropBox />
             </div>
           }
         </div>
@@ -118,11 +169,12 @@ class OrderingPlayer extends Component {
           <div className="row">
             <div className="col-md-12 answer-zone">
               {this.props.answer.map((answer, index) => {
-                <Item data={this.props.item.items.find(item => item.id = answer.itemId).data} index={index} onSort={() => {}}/>
+                <SotableItem
+                  data={this.props.item.items.find(item => item.id = answer.itemId).data}
+                  index={index}
+                  onSort={() => {}}/>
               })}
-              { this.props.answer.length === 0 &&
-                <h4>Drop item here</h4>
-              }
+              <DropBox />
             </div>
           </div>
         }
