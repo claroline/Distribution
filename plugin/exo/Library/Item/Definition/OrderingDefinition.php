@@ -7,6 +7,7 @@ use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\OrderingQuestion;
 use UJM\ExoBundle\Entity\Misc\OrderingItem;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\OrderingQuestionSerializer;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OrderingAnswerValidator;
@@ -121,10 +122,11 @@ class OrderingDefinition extends AbstractDefinition
         if (is_array($answer)) {
             foreach ($answer as $givenAnswser) {
                 $item = $question->getItem($givenAnswser->itemId);
-                if (isset($item->position) && $item->position === $givenAnswser->position) {
+                if (!empty($item->getPosition()) && $item->getPosition() === $givenAnswser->position) {
                     $corrected->addExpected($item);
                 } else {
-                    $corrected->addUnexpected($item);
+                    $penalty = new GenericPenalty($question->getPenalty());
+                    $corrected->addPenalty($penalty);
                 }
             }
         }
