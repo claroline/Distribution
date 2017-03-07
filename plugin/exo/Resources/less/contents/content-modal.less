@@ -1,8 +1,10 @@
 .content-modal {
   .modal-dialog {
+    width: 100%;
     display: flex;
     justify-content: center;
     .modal-content {
+      max-width: 90%;
       background-color: transparent;
       border: none;
       box-shadow: none;
@@ -24,6 +26,21 @@
         background-color: #ffffff;
         border-radius: 4px;
         padding: 8px;
+      }
+      .image-content-modal {
+        img {
+          max-width: 100%;
+        }
+      }
+      .video-content-modal {
+        video {
+          max-width: 100%;
+        }
+      }
+      .audio-content-modal {
+        audio {
+          max-width: 100%;
+        }
       }
     }
   }

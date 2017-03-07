@@ -50,7 +50,7 @@ let ContentThumbnail = props => {
     props.connectDropTarget(
       <span className={classes('content-thumbnail', {'active': props.active})}
             style={{opacity: props.isDragging ? 0 : 1}}
-            onClick={e =>
+            onClick={() =>
               props.showModal(MODAL_CONTENT, {
                 fadeModal: () => props.fadeModal(),
                 hideModal: () => props.hideModal(),
