@@ -1,5 +1,6 @@
 import editor from './editor'
 import {VideoContentPlayer} from './player.jsx'
+import {VideoContentThumbnail} from './thumbnail.jsx'
 
 export default {
   type: 'video',
@@ -7,5 +8,7 @@ export default {
   altIcon: 'fa fa-video-camera',
   player: VideoContentPlayer,
   browseFiles: 'video',
+  thumbnail: VideoContentThumbnail,
+  editable: false,
   editor
 }

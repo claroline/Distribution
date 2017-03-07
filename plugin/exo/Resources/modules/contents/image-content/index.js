@@ -1,5 +1,6 @@
 import editor from './editor'
 import {ImageContentPlayer} from './player.jsx'
+import {ImageContentThumbnail} from './thumbnail.jsx'
 
 export default {
   type: 'image',
@@ -7,5 +8,7 @@ export default {
   altIcon: 'fa fa-picture-o',
   player: ImageContentPlayer,
   browseFiles: 'image',
+  thumbnail:ImageContentThumbnail,
+  editable: false,
   editor
 }
