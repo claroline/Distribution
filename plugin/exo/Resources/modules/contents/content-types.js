@@ -17,7 +17,8 @@ const typeProperties = [
   'icon',
   'altIcon',
   'browseFiles',
-  'thumbnail'
+  'thumbnail',
+  'modal'
 ]
 
 let registeredContentTypes = {}

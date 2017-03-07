@@ -5,7 +5,8 @@ import {t} from './../../utils/translate'
 import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
 import {getContentDefinition} from './../content-types'
 import {connect} from 'react-redux'
-import {showModal} from './../../modal/actions'
+import {showModal, fadeModal, hideModal} from './../../modal/actions'
+import {MODAL_CONTENT} from './content-modal.jsx'
 
 const Actions = props =>
   <span className="content-thumbnail-actions">
@@ -49,6 +50,14 @@ let ContentThumbnail = props => {
     props.connectDropTarget(
       <span className={classes('content-thumbnail', {'active': props.active})}
             style={{opacity: props.isDragging ? 0 : 1}}
+            onClick={e =>
+              props.showModal(MODAL_CONTENT, {
+                fadeModal: () => props.fadeModal(),
+                hideModal: () => props.hideModal(),
+                data: props.data,
+                type: props.type
+              })
+            }
       >
         <span className="content-thumbnail-topbar">
           {props.hasErrors &&
@@ -107,7 +116,9 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    showModal: (type, props) => dispatch(showModal(type, props))
+    showModal: (type, props) => dispatch(showModal(type, props)),
+    fadeModal: () => dispatch(fadeModal()),
+    hideModal: () => dispatch(hideModal())
   }
 }
 

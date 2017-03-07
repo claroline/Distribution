@@ -463,16 +463,14 @@ class ItemSerializer extends AbstractSerializer
                     break;
                 }
             }
+            $itemObject = $this->itemObjectSerializer->deserialize($objectData, $existingObject, $options);
+            $itemObject->setOrder($index);
 
             // Link object to item
             if (empty($existingObject)) {
-                $itemObject = $this->itemObjectSerializer->deserialize($objectData, $existingObject, $options);
-                if ($itemObject) {
-                    $itemObject->setOrder($index);
+//                if ($itemObject) {
                     $question->addObject($itemObject);
-                }
-            } else {
-                $existingObject->setOrder($index);
+//                }
             }
         }
 

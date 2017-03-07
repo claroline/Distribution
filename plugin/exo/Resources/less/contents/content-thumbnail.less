@@ -17,18 +17,18 @@
     position: absolute;
     .warning-text, .error-text {
       position: absolute;
-      margin-left: 8px;
-      margin-top: 8px;
+      margin: 8px;
+      z-index: 10;
     }
     .content-thumbnail-actions {
       position: absolute;
-      width: @content-thumbnail-width;
+      background-color: #ffffff;
+      width: @content-thumbnail-width - 2px;
       display: flex;
       justify-content: flex-end;
-      padding-right: 8px;
+      border-radius: 4px 4px 0px 0px;
       .action-button {
-        margin-left: 8px;
-        margin-top: 8px;
+        margin: 8px;
       }
     }
   }

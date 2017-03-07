@@ -1,6 +1,7 @@
 import editor from './editor'
 import {TextContentPlayer} from './player.jsx'
 import {TextContentThumbnail} from './thumbnail.jsx'
+import {TextContentModal} from './modal.jsx'
 
 export default {
   type: 'text',
@@ -9,6 +10,7 @@ export default {
   altIcon: 'fa fa-align-left',
   player: TextContentPlayer,
   thumbnail: TextContentThumbnail,
+  modal: TextContentModal,
   editable: true,
   editor
 }
