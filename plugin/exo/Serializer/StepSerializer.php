@@ -182,7 +182,6 @@ class StepSerializer implements SerializerInterface
     public function deserializeItems(Step $step, array $items = [], array $options = [])
     {
         $stepQuestions = $step->getStepQuestions()->toArray();
-        $contentItemsToDelete = [];
 
         foreach ($items as $index => $itemData) {
             $item = null;

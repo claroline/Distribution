@@ -1,9 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import get from 'lodash/get'
-import {trans} from './../../utils/translate'
 import {FormGroup} from './../../components/form/form-group.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
-import {actions} from './editor'
 
 export const TextObjectEditor = (props) =>
   <fieldset>
@@ -27,7 +25,6 @@ TextObjectEditor.propTypes = {
     type: T.string.isRequired,
     url: T.string,
     data: T.string,
-    title: T.string,
     _errors: T.object
   }).isRequired,
   validating: T.bool.isRequired,

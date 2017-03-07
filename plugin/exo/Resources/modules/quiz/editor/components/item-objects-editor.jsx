@@ -126,6 +126,7 @@ ObjectsEditor.propTypes = {
   }).isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
+  updateItem: T.func.isRequired,
   createItemObject: T.func.isRequired,
   updateItemObjects: T.func.isRequired,
   saveItemObjectFile: T.func.isRequired,
