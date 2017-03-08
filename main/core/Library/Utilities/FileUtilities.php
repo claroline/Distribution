@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\File\PublicFileUse;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Filesystem as SymfonyFileSystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -47,7 +47,7 @@ class FileUtilities
     public function __construct(
         ClaroUtilities $claroUtils,
         $filesDir,
-        Filesystem $fileSystem,
+        SymfonyFileSystem $fileSystem,
         ObjectManager $om,
         $publicFilesDir,
         TokenStorageInterface $tokenStorage
