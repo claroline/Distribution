@@ -5,12 +5,11 @@ import {SolutionScore} from '../components/score.jsx'
 import {WarningIcon} from './utils/warning-icon.jsx'
 import {utils} from './utils/utils'
 import {PaperTabs} from '../components/paper-tabs.jsx'
-import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
+import {SCORE_SUM} from './../../quiz/enums'
 import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL} from './editor'
 
 
 const OrderingPaper = props => {
-  const allAnswersValid = utils.checkAllAnswers(props.item.solutions, props.answer)
   return (
     <PaperTabs
       id={props.item.id}
@@ -26,7 +25,7 @@ const OrderingPaper = props => {
                 props.answer.map((a) =>
                   <div key={a.itemId} className={classes(
                       'item',
-                      ((props.item.score.type === SCORE_SUM && utils.answerIsValid(a, props.item.solutions)) || (props.item.score.type === SCORE_FIXED && allAnswersValid)) ? 'text-success positive-score' : 'text-danger negative-score'
+                      utils.getAnswerClass(a, props.answer, props.item.solutions, props.item.score.type)
                     )}>
                     <WarningIcon valid={utils.answerIsValid(a, props.item.solutions)}/>
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === a.itemId).data}}/>
@@ -65,7 +64,7 @@ const OrderingPaper = props => {
                 {props.answer.map((a) =>
                   <div key={a.itemId} className={classes(
                       'item',
-                      ((props.item.score.type === SCORE_SUM && utils.answerIsValid(a, props.item.solutions)) || (props.item.score.type === SCORE_FIXED && allAnswersValid)) ? 'text-success positive-score' : 'text-danger negative-score'
+                      utils.getAnswerClass(a, props.answer, props.item.solutions, props.item.score.type)
                     )}>
                     <WarningIcon valid={utils.answerIsValid(a, props.item.solutions)}/>
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === a.itemId).data}}/>
@@ -87,7 +86,7 @@ const OrderingPaper = props => {
                 {props.answer.map((a) =>
                   <div key={a.itemId} className={classes(
                       'item',
-                      ((props.item.score.type === SCORE_SUM && utils.answerIsValid(a, props.item.solutions)) || (props.item.score.type === SCORE_FIXED && allAnswersValid)) ? 'text-success positive-score' : 'text-danger negative-score'
+                      utils.getAnswerClass(a, props.answer, props.item.solutions, props.item.score.type)
                     )}>
                     <WarningIcon valid={utils.answerIsValid(a, props.item.solutions)}/>
                     <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.items.find(item => item.id === a.itemId).data}}/>
