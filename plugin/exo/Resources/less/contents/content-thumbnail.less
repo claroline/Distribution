@@ -14,7 +14,7 @@
     .warning-text, .error-text {
       position: absolute;
       margin: 8px;
-      z-index: 10;
+      z-index: 11;
     }
     .content-thumbnail-actions {
       visibility: hidden;
@@ -63,12 +63,18 @@
     }
   }
   &.active {
+    box-shadow: 0px 0px 5px 1px #66afe9;
+    -webkit-box-shadow: 0px 0px 5px 1px #66afe9;
+    -moz-box-shadow: 0px 0px 5px 1px #66afe9;
     border-color: #337ab7;
     .content-thumbnail-actions {
       visibility: visible;
     }
   }
   &:hover {
+    box-shadow: 0px 0px 5px 1px #66afe9;
+    -webkit-box-shadow: 0px 0px 5px 1px #66afe9;
+    -moz-box-shadow: 0px 0px 5px 1px #66afe9;
     border-color: #337ab7;
     cursor: pointer;
     .content-thumbnail-actions {
