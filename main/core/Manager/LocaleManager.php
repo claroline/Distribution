@@ -110,7 +110,6 @@ class LocaleManager
      */
     public function setUserLocale($locale)
     {
-        $locales = $this->getAvailableLocales();
         $this->userManager->setLocale($this->getCurrentUser(), $locale);
     }
 
