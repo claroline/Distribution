@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import {makeSortable} from './../../utils/sortable'
-import {t} from './../../utils/translate'
+import {t, tex} from './../../utils/translate'
 import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
 import {getContentDefinition} from './../content-types'
 import {connect} from 'react-redux'
@@ -10,6 +10,17 @@ import {MODAL_CONTENT} from './content-modal.jsx'
 
 const Actions = props =>
   <span className="content-thumbnail-actions">
+    {props.hasExpandBtn &&
+      <span
+        role="button"
+        title={tex('watch_at_the_original_size')}
+        className="action-button fa fa-external-link"
+        onClick={e => {
+          e.stopPropagation()
+          props.handleExpand(e)
+        }}
+      />
+    }
     {props.hasEditBtn &&
       <span
         role="button"
@@ -41,23 +52,26 @@ Actions.propTypes = {
   hasDeleteBtn: T.bool,
   hasEditBtn: T.bool,
   hasSortBtn: T.bool,
+  hasExpandBtn: T.bool,
   handleEdit: T.func,
-  handleDelete: T.func
+  handleDelete: T.func,
+  handleExpand: T.func
 }
 
 let ContentThumbnail = props => {
   return props.connectDragPreview(
     props.connectDropTarget(
-      <span className={classes('content-thumbnail', {'active': props.active})}
-            style={{opacity: props.isDragging ? 0 : 1}}
-            onClick={() =>
-              props.showModal(MODAL_CONTENT, {
-                fadeModal: () => props.fadeModal(),
-                hideModal: () => props.hideModal(),
-                data: props.data,
-                type: props.type
-              })
-            }
+      <span
+        className={classes('content-thumbnail', {'active': props.active})}
+        style={{opacity: props.isDragging ? 0 : 1}}
+        onClick={() => {
+          props.showModal(MODAL_CONTENT, {
+            fadeModal: () => props.fadeModal(),
+            hideModal: () => props.hideModal(),
+            data: props.data,
+            type: props.type
+          })
+        }}
       >
         <span className="content-thumbnail-topbar">
           {props.hasErrors &&
@@ -70,8 +84,17 @@ let ContentThumbnail = props => {
             hasDeleteBtn={props.canDelete}
             hasEditBtn={props.canEdit}
             hasSortBtn={props.canSort}
+            hasExpandBtn={getContentDefinition(props.type).type === 'video'}
             handleEdit={props.handleEdit}
             handleDelete={props.handleDelete}
+            handleExpand={() => {
+              props.showModal(MODAL_CONTENT, {
+                fadeModal: () => props.fadeModal(),
+                hideModal: () => props.hideModal(),
+                data: props.data,
+                type: props.type
+              })
+            }}
             {...props}
           />
         </span>

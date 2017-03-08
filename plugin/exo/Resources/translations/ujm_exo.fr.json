@@ -565,6 +565,7 @@
     "warning": "Êtes-vous sûr de vouloir supprimer cette image ?",
     "warning_change_type_q": "Attention: vous risquez de perdre vos données saisies. Continuer ?",
     "warning_one_word": "Vous avez choisi une question à un mot. Attention, il y a des espaces dans votre réponse.",
+    "watch_at_the_original_size": "Regarder à la taille d'origine",
     "weight_choice": "Attribuer les points par réponse",
     "words_add_word": "Ajouter un mot clé",
     "words_case_sensitive": "La réponse doit respecter la casse du mot clé pour être valide",

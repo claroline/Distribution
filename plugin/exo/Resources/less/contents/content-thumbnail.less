@@ -9,10 +9,6 @@
   width: @content-thumbnail-width;
   height: @content-thumbnail-height;
 
-  .content-thumbnail-actions {
-    visibility: hidden;
-  }
-
   .content-thumbnail-topbar {
     position: absolute;
     .warning-text, .error-text {
@@ -21,12 +17,14 @@
       z-index: 10;
     }
     .content-thumbnail-actions {
+      visibility: hidden;
       position: absolute;
       background-color: #ffffff;
       width: @content-thumbnail-width - 2px;
       display: flex;
       justify-content: flex-end;
       border-radius: 4px 4px 0px 0px;
+      z-index: 10;
       .action-button {
         margin: 8px;
       }
