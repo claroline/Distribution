@@ -102,6 +102,50 @@ class FileUtilities
         return $publicFile;
     }
 
+    public function createFileFromData(
+        $data,
+        $mimeType,
+        $fileName,
+        $extension,
+        $objectClass = null,
+        $objectUuid = null,
+        $objectName = null,
+        $sourceType = null
+    ) {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $directoryName = $this->getActiveDirectoryName();
+        $dataParts = explode(',', $data);
+        $dataBin = base64_decode($dataParts[1]);
+        $length = strlen($dataBin);
+        $size = ceil(4 * $length / 3);
+        $hashName = $this->claroUtils->generateGuid().'.'.$extension;
+        $prefix = 'data'.DIRECTORY_SEPARATOR.$directoryName;
+        $url = $prefix.DIRECTORY_SEPARATOR.$hashName;
+
+        $this->om->startFlushSuite();
+        $publicFile = new PublicFile();
+        $publicFile->setDirectoryName($directoryName);
+        $publicFile->setFilename($fileName);
+        $publicFile->setSize($size);
+        $publicFile->setMimeType($mimeType);
+        $publicFile->setCreationDate(new \DateTime());
+        $publicFile->setUrl($url);
+        $publicFile->setSourceType($sourceType);
+
+        if ($user !== 'anon.') {
+            $publicFile->setCreator($user);
+        }
+        $this->fileSystem->dumpFile($url, $dataBin);
+        $this->om->persist($publicFile);
+
+        if (!is_null($objectClass) && !is_null($objectUuid)) {
+            $this->createFileUse($publicFile, $objectClass, $objectUuid, $objectName);
+        }
+        $this->om->endFlushSuite();
+
+        return $publicFile;
+    }
+
     public function createFileUse(PublicFile $publicFile, $class, $uuid, $name = null)
     {
         $cleanClass = str_replace('Proxies\\__CG__\\', '', $class);
