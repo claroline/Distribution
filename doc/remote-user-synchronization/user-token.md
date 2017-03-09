@@ -67,6 +67,7 @@ The token will only be valid one time and for a defined duration (10 minutes by 
 
 * Token lifetime can be specified in platform_options.yml files with the key "remote_user_token_lifetime".
   Its value must be an integer and is evaluated in minute.
+  By default it will be 10 minutes.
 
 
 ------------
@@ -134,12 +135,12 @@ The token will only be valid one time and for a defined duration (10 minutes by 
 
     - workspaceCode :
         The code of the workspace in which the user will be redirected to once authenticated.
-        If not specified the authenticated user will be redirect to his desktop
+        If not specified the authenticated user will be redirected to his desktop
 
 * Success :
     The authenticated user is redirected to his desktop or to a specified workspace
 
-* The association (user, token) doesn't exist OR token has expired OR token has already been used once : :
+* The association (user, token) doesn't exist OR token has expired OR token has already been used once :
     - An AccessDeniedException is thrown
     - Status : 403
     - Body : "Access Denied"
