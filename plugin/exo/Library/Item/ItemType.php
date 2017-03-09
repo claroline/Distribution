@@ -73,6 +73,13 @@ final class ItemType
     const GRID = 'application/x.grid+json';
 
     /**
+     * The user has to answer to basic true / false questions.
+     *
+     * @var string
+     */
+    const BOOLEAN = 'application/x.boolean+json';
+
+    /**
      * Get the list of managed item types.
      *
      * @return array
@@ -90,6 +97,7 @@ final class ItemType
             static::OPEN,
             static::GRID,
             static::CONTENT,
+            static::BOOLEAN,
         ];
     }
 
