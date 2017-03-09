@@ -25,8 +25,6 @@ The user datas that can be modified (or simply created) by this method are :
 | Requirements |
 ----------------
 
-* "claroline/core-bundle": ">=3.2"
-
 * A security token must be created and configured in "Administration > Parameters > Security tokens management".
 
     This security token is defined by :
@@ -70,7 +68,7 @@ The user datas that can be modified (or simply created) by this method are :
             ...
         ],
         "workspacesAddOnly": [ 1 | 0 ]
-        "userId": <Id of a user>
+        "userId": <Id of an user>
     }
 
 * Fields explanation :
