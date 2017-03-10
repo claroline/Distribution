@@ -102,7 +102,6 @@ function reduce(item = {}, action) {
     case UPDATE_CHOICES: {
       const newItem = cloneDeep(item)
       const pair = action.value
-      console.log(action.value)
       newItem.choices.forEach((choice, index) => {
         choice.data = index === 0 ? pair.labelA : pair.labelB
         const solution = newItem.solutions.find(solution => solution.id === choice.id)
@@ -110,7 +109,6 @@ function reduce(item = {}, action) {
       })
       return newItem
     }
-
   }
   return item
 }
@@ -127,6 +125,12 @@ function validate(item) {
   }
 
   return errors
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    test: (onSuccess) => dispatch(actions.test(onSuccess))
+  }
 }
 
 export default {

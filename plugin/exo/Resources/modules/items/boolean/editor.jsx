@@ -6,7 +6,6 @@ import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions, pairs} from './editor'
-import {actions as mainActions} from './../../quiz/editor/actions'
 
 class Item extends Component {
   constructor(props){
@@ -72,6 +71,7 @@ Item.propTypes = {
   }).isRequired,
   onChange: T.func.isRequired
 }
+
 
 class Boolean extends Component {
   constructor(props){

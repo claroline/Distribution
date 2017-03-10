@@ -49,13 +49,6 @@ class BooleanAnswerValidator extends JsonSchemaValidator
             }
         }
 
-        if (!$question->isMultiple() && count($answerData) > 1) {
-            $errors[] = [
-                'path' => '',
-                'message' => 'This question does not allow multiple answers',
-            ];
-        }
-
         return $errors;
     }
 }

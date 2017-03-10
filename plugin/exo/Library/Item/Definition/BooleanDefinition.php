@@ -142,7 +142,7 @@ class BooleanDefinition extends AbstractDefinition
      */
     public function expectAnswer(AbstractItem $question)
     {
-        return array_filter($question->getChoices()->toArray(), function (Choice $choice) {
+        return array_filter($question->getChoices()->toArray(), function (BooleanChoice $choice) {
             return 0 < $choice->getScore();
         });
     }
