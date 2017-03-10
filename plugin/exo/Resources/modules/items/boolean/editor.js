@@ -9,9 +9,24 @@ import {notBlank} from './../../utils/validate'
 import {Boolean as component} from './editor.jsx'
 
 const UPDATE_CHOICE = 'UPDATE_CHOICE'
+const UPDATE_CHOICES = 'UPDATE_CHOICES'
+
+export const pairs = [
+  {
+    'id': '1',
+    'labelA': tex('Oui'),
+    'labelB': tex('Non'),
+  },
+  {
+    'id': '2',
+    'labelA': tex('Vrai'),
+    'labelB': tex('Faux'),
+  },
+]
 
 export const actions = {
-  updateChoice: makeActionCreator(UPDATE_CHOICE, 'id', 'property', 'value')
+  updateChoice: makeActionCreator(UPDATE_CHOICE, 'id', 'property', 'value'),
+  updateChoices: makeActionCreator(UPDATE_CHOICES, 'value')
 }
 
 function decorate(item) {
@@ -45,12 +60,12 @@ function reduce(item = {}, action) {
           {
             id: firstChoiceId,
             type: 'text/html',
-            data: 'a'
+            data: pairs[0].labelA
           },
           {
             id: secondChoiceId,
             type: 'text/html',
-            data: 'b'
+            data: pairs[0].labelB
           }
         ],
         solutions: [
@@ -82,6 +97,17 @@ function reduce(item = {}, action) {
         newItem.solutions[solutionIndex][action.property] = value
       }
 
+      return newItem
+    }
+    case UPDATE_CHOICES: {
+      const newItem = cloneDeep(item)
+      const pair = action.value
+      console.log(action.value)
+      newItem.choices.forEach((choice, index) => {
+        choice.data = index === 0 ? pair.labelA : pair.labelB
+        const solution = newItem.solutions.find(solution => solution.id === choice.id)
+        solution.score = index === 0 ? 1 : 0
+      })
       return newItem
     }
 
