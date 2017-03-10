@@ -255,7 +255,7 @@ class ItemManager
     public function calculateScore(\stdClass $questionData, Answer $answer)
     {
         // Get entities for score calculation
-        $question = $this->serializer->deserialize($questionData);
+        $question = $this->serializer->deserialize($questionData, new Item());
 
         // Let the question correct the answer
         $definition = $this->itemDefinitions->get($question->getMimeType());
