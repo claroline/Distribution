@@ -144,7 +144,7 @@ class FileUtilities
         $size = ceil(4 * $length / 3);
         $matches = [];
         $extension = '';
-        if (1 === preg_match('#^[.]+\.[^\.]+$#', $fileName, $matches)) {
+        if (1 === preg_match('#^.+\.([^\.]+)$#', $fileName, $matches)) {
             if (isset($matches[1])) {
                 $extension = $matches[1];
             }
