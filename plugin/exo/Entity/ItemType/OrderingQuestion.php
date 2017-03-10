@@ -19,24 +19,28 @@ class OrderingQuestion extends AbstractItem
 
     /**
      * Items will be displayed with an horizontal layout.
+     *
      * @var string
      */
     const DIRECTION_HORIZONTAL = 'horizontal';
 
     /**
      * Items will be displayed with a vertical layout.
+     *
      * @var string
      */
     const DIRECTION_VERTICAL = 'vertical';
 
     /**
      * The user will reorder items within container.
+     *
      * @var string
      */
     const MODE_INSIDE = 'inside';
 
     /**
      * The user will reorder items in another container.
+     *
      * @var string
      */
     const MODE_BESIDE = 'beside';
