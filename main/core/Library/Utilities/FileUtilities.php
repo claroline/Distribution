@@ -60,6 +60,19 @@ class FileUtilities
         $this->tokenStorage = $tokenStorage;
     }
 
+    /**
+     * Creates a file into public files directory.
+     * Then creates a <PublicFileUse> for created public file if $objectClass and $objectUuid are specified.
+     *
+     * @param File   $tmpFile
+     * @param string $name
+     * @param string $objectClass
+     * @param string $objectUuid
+     * @param string $objectName
+     * @param string $sourceType
+     *
+     * @return PublicFile
+     */
     public function createFile(
         File $tmpFile,
         $name = null,
@@ -102,11 +115,22 @@ class FileUtilities
         return $publicFile;
     }
 
+    /**
+     * Creates a file from given data into public files directory.
+     * Then creates a <PublicFileUse> for created public file if $objectClass and $objectUuid are specified.
+     *
+     * @param string $data
+     * @param string $fileName
+     * @param string $objectClass
+     * @param string $objectUuid
+     * @param string $objectName
+     * @param string $sourceType
+     *
+     * @return PublicFile
+     */
     public function createFileFromData(
         $data,
-        $mimeType,
         $fileName,
-        $extension,
         $objectClass = null,
         $objectUuid = null,
         $objectName = null,
@@ -118,7 +142,17 @@ class FileUtilities
         $dataBin = base64_decode($dataParts[1]);
         $length = strlen($dataBin);
         $size = ceil(4 * $length / 3);
-        $hashName = $this->claroUtils->generateGuid().'.'.$extension;
+        $matches = [];
+        $extension = '';
+        if (1 === preg_match('#^[.]+\.[^\.]+$#', $fileName, $matches)) {
+            if (isset($matches[1])) {
+                $extension = $matches[1];
+            }
+        }
+        $hashName = $this->claroUtils->generateGuid();
+        if (!empty($extension)) {
+            $hashName .= '.' . $extension;
+        }
         $prefix = 'data'.DIRECTORY_SEPARATOR.$directoryName;
         $url = $prefix.DIRECTORY_SEPARATOR.$hashName;
 
@@ -127,7 +161,6 @@ class FileUtilities
         $publicFile->setDirectoryName($directoryName);
         $publicFile->setFilename($fileName);
         $publicFile->setSize($size);
-        $publicFile->setMimeType($mimeType);
         $publicFile->setCreationDate(new \DateTime());
         $publicFile->setUrl($url);
         $publicFile->setSourceType($sourceType);
@@ -136,6 +169,8 @@ class FileUtilities
             $publicFile->setCreator($user);
         }
         $this->fileSystem->dumpFile($url, $dataBin);
+        $mimeType = mime_content_type($url);
+        $publicFile->setMimeType($mimeType);
         $this->om->persist($publicFile);
 
         if (!is_null($objectClass) && !is_null($objectUuid)) {

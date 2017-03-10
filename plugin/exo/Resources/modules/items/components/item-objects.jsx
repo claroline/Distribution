@@ -2,12 +2,12 @@ import React, {PropTypes as T} from 'react'
 import {ContentThumbnail} from './../../contents/components/content-thumbnail.jsx'
 
 export const ObjectsPlayer = props =>
-  <div className="item-objects-player">
+  <div className="item-object-thumbnail-box">
     {props.item.objects.map((object, index) =>
       <ContentThumbnail
         id={object.id}
         index={index}
-        key={`item-object-${object.id}-thumnnail`}
+        key={`item-object-${object.id}-thumbnail`}
         data={object.data || object.url}
         type={object.type}
       />

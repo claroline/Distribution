@@ -130,9 +130,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             $imageName = "{$imageData->id}.{$typeParts[1]}";
             $publicFile = $this->fileUtils->createFileFromData(
                 $imageData->data,
-                $imageData->type,
                 $imageName,
-                $typeParts[1],
                 $objectClass,
                 $objectUuid,
                 $title,
