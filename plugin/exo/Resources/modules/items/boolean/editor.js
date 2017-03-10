@@ -1,7 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
 import zipObject from 'lodash/zipObject'
-import set from 'lodash/set'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeActionCreator, makeId} from './../../utils/utils'
 import {tex} from './../../utils/translate'
@@ -125,12 +123,6 @@ function validate(item) {
   }
 
   return errors
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    test: (onSuccess) => dispatch(actions.test(onSuccess))
-  }
 }
 
 export default {

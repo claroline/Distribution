@@ -85,11 +85,11 @@ class Boolean extends Component {
     return (
       <div className="boolean-editor">
         <div className="dropdown">
-          <button className="btn btn-default dropdown-toggle" type="button" id={`choice-drop-down-${this.props.id}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <button className="btn btn-default dropdown-toggle" type="button" id={`choice-drop-down-${this.props.item.id}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             {tex('boolean_pair_select_empty')}&nbsp;
             <span className="caret"></span>
           </button>
-          <ul className="dropdown-menu" aria-labelledby={`choice-drop-down-${this.props.id}`}>
+          <ul className="dropdown-menu" aria-labelledby={`choice-drop-down-${this.props.item.id}`}>
             {pairs.map((pair, index) =>
               <li key={`pair-${index}`}
                 onClick={() => this.props.onChange(
@@ -116,6 +116,7 @@ class Boolean extends Component {
 
 Boolean.propTypes = {
   item: T.shape({
+    id: T.string.isRequired,
     choices: T.arrayOf(T.shape({
       id: T.string.isRequired,
       data: T.string.isRequired,
