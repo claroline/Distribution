@@ -151,7 +151,7 @@ class FileUtilities
         }
         $hashName = $this->claroUtils->generateGuid();
         if (!empty($extension)) {
-            $hashName .= '.' . $extension;
+            $hashName .= '.'.$extension;
         }
         $prefix = 'data'.DIRECTORY_SEPARATOR.$directoryName;
         $url = $prefix.DIRECTORY_SEPARATOR.$hashName;
