@@ -19,7 +19,7 @@ class BooleanQuestion extends AbstractItem
     * @ORM\OneToMany(
     *     targetEntity="UJM\ExoBundle\Entity\Misc\BooleanChoice",
     *     mappedBy="question",
-    *     cascade={"persist", "remove"},
+    *     cascade={"all"},
     *     orphanRemoval=true
     * )
     */
@@ -68,7 +68,7 @@ class BooleanQuestion extends AbstractItem
     {
         if (!$this->choices->contains($choice)) {
             $this->choices->add($choice);
-            $choice->setInteractionQCM($this);
+            $choice->setQuestion($this);
         }
     }
 

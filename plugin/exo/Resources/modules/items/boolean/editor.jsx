@@ -6,6 +6,7 @@ import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions, pairs} from './editor'
+import {actions as mainActions} from './../../quiz/editor/actions'
 
 class Item extends Component {
   constructor(props){
@@ -76,17 +77,13 @@ class Boolean extends Component {
   constructor(props){
     super(props)
     this.state = {
-      selected: undefined,
-      showFeedback: false
+      selected: undefined
     }
   }
 
   render() {
     return (
       <div className="boolean-editor">
-        {get(this.props, 'errors.choices') &&
-          <ErrorBlock text={this.props.errors.choices} warnOnly={!this.props.validating}/>
-        }
         <div className="dropdown">
           <button className="btn btn-default dropdown-toggle" type="button" id={`choice-drop-down-${this.props.id}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
             {tex('boolean_pair_select_empty')}&nbsp;
@@ -98,12 +95,15 @@ class Boolean extends Component {
                 onClick={() => this.props.onChange(
                 actions.updateChoices(pair)
               )}>
-                <span className="dropdown-item">{`${pair.labelA}-${pair.labelB}`}</span>
+                <span className="dropdown-item">{`${pair.labelA} / ${pair.labelB}`}</span>
               </li>
             )}
           </ul>
         </div>
         <hr/>
+        {get(this.props.item, '_errors.choices') &&
+          <ErrorBlock text={this.props.item._errors.choices} warnOnly={!this.props.validating}/>
+        }
         <div className="choices-container">
           {this.props.item.choices.map(choice =>
             <Item key={choice.id} choice={choice} onChange={this.props.onChange}/>

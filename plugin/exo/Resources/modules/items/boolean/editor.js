@@ -14,14 +14,14 @@ const UPDATE_CHOICES = 'UPDATE_CHOICES'
 export const pairs = [
   {
     'id': '1',
-    'labelA': tex('Oui'),
-    'labelB': tex('Non'),
+    'labelA': tex('boolean_pair_yes'),
+    'labelB': tex('boolean_pair_no')
   },
   {
     'id': '2',
-    'labelA': tex('Vrai'),
-    'labelB': tex('Faux'),
-  },
+    'labelA': tex('boolean_pair_true'),
+    'labelB': tex('boolean_pair_false')
+  }
 ]
 
 export const actions = {
@@ -123,12 +123,11 @@ function validate(item) {
   }
 
   if (!item.choices.find(choice => choice._score > 0)) {
-    errors.choices = tex('sum_score_choice_no_correct_answer_error')
+    errors.choices = tex('boolean_no_correct_answer_error')
   }
 
   return errors
 }
-
 
 export default {
   component,
