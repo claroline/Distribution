@@ -22,42 +22,42 @@ use UJM\ExoBundle\Validator\JsonSchema\Item\Type\OrderingQuestionValidator;
 class OrderingDefinition extends AbstractDefinition
 {
     /**
-   * @var OrderingQuestionValidator
-   */
-  private $validator;
+     * @var OrderingQuestionValidator
+     */
+    private $validator;
 
-  /**
-   * @var OrderingAnswerValidator
-   */
-  private $answerValidator;
+    /**
+     * @var OrderingAnswerValidator
+     */
+    private $answerValidator;
 
-  /**
-   * @var OrderingQuestionSerializer
-   */
-  private $serializer;
+    /**
+     * @var OrderingQuestionSerializer
+     */
+    private $serializer;
 
-  /**
-   * OrderingDefinition constructor.
-   *
-   * @param OrderingQuestionValidator  $validator
-   * @param OrderingAnswerValidator    $answerValidator
-   * @param OrderingQuestionSerializer $serializer
-   *
-   * @DI\InjectParams({
-   *     "validator"       = @DI\Inject("ujm_exo.validator.question_ordering"),
-   *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_ordering"),
-   *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_ordering")
-   * })
-   */
-  public function __construct(
-      OrderingQuestionValidator $validator,
-      OrderingAnswerValidator $answerValidator,
-      OrderingQuestionSerializer $serializer)
-  {
-      $this->validator = $validator;
-      $this->answerValidator = $answerValidator;
-      $this->serializer = $serializer;
-  }
+    /**
+     * OrderingDefinition constructor.
+     *
+     * @param OrderingQuestionValidator  $validator
+     * @param OrderingAnswerValidator    $answerValidator
+     * @param OrderingQuestionSerializer $serializer
+     *
+     * @DI\InjectParams({
+     *     "validator"       = @DI\Inject("ujm_exo.validator.question_ordering"),
+     *     "answerValidator" = @DI\Inject("ujm_exo.validator.answer_ordering"),
+     *     "serializer"      = @DI\Inject("ujm_exo.serializer.question_ordering")
+     * })
+     */
+    public function __construct(
+        OrderingQuestionValidator $validator,
+        OrderingAnswerValidator $answerValidator,
+        OrderingQuestionSerializer $serializer)
+    {
+        $this->validator = $validator;
+        $this->answerValidator = $answerValidator;
+        $this->serializer = $serializer;
+    }
 
     /**
      * Gets the choice question mime-type.
