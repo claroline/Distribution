@@ -84,7 +84,7 @@ class BooleanQuestionSerializer implements SerializerInterface
      * Serializes the Question choices.
      *
      * @param BooleanQuestion $question
-     * @param array          $options
+     * @param array           $options
      *
      * @return array
      */
@@ -102,15 +102,15 @@ class BooleanQuestionSerializer implements SerializerInterface
      * Deserializes Question choices.
      *
      * @param BooleanQuestion $question
-     * @param array          $choices
-     * @param array          $solutions
-     * @param array          $options
+     * @param array           $choices
+     * @param array           $solutions
+     * @param array           $options
      */
     private function deserializeChoices(BooleanQuestion $question, array $choices, array $solutions, array $options = [])
     {
         $choiceEntities = $question->getChoices()->toArray();
 
-        foreach ($choices as $index => $choiceData) {
+        foreach ($choices as $choiceData) {
             $choice = null;
 
             // Searches for an existing choice entity.

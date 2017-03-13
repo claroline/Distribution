@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
-use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Entity\Misc\BooleanChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
@@ -149,8 +148,8 @@ class BooleanDefinition extends AbstractDefinition
 
     public function getStatistics(AbstractItem $choiceQuestion, array $answersData)
     {
-      // TODO: Implement getStatistics() method.
+        // TODO: Implement getStatistics() method.
 
-      return [];
+        return [];
     }
 }

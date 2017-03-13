@@ -8,7 +8,6 @@ use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
 use UJM\ExoBundle\Library\Model\ContentTrait;
 use UJM\ExoBundle\Library\Model\FeedbackTrait;
-use UJM\ExoBundle\Library\Model\OrderTrait;
 use UJM\ExoBundle\Library\Model\ScoreTrait;
 use UJM\ExoBundle\Library\Model\UuidTrait;
 

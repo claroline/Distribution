@@ -14,15 +14,14 @@ use UJM\ExoBundle\Entity\Misc\BooleanChoice;
  */
 class BooleanQuestion extends AbstractItem
 {
-
-   /**
-    * @ORM\OneToMany(
-    *     targetEntity="UJM\ExoBundle\Entity\Misc\BooleanChoice",
-    *     mappedBy="question",
-    *     cascade={"all"},
-    *     orphanRemoval=true
-    * )
-    */
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="UJM\ExoBundle\Entity\Misc\BooleanChoice",
+     *     mappedBy="question",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     */
     private $choices;
 
     /**
