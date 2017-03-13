@@ -12,7 +12,7 @@ use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\BooleanAnswerValidator
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\BooleanQuestionValidator;
 
 /**
- * Choice question definition.
+ * Boolean choice question definition.
  *
  * @DI\Service("ujm_exo.definition.question_boolean")
  * @DI\Tag("ujm_exo.definition.item")
@@ -58,7 +58,7 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the choice question mime-type.
+     * Gets the question mime-type.
      *
      * @return string
      */
@@ -68,7 +68,7 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the choice question entity.
+     * Gets the question entity.
      *
      * @return string
      */
@@ -78,9 +78,9 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the choice question validator.
+     * Gets the question validator.
      *
-     * @return ChoiceQuestionValidator
+     * @return BooleanQuestionValidator
      */
     protected function getQuestionValidator()
     {
@@ -88,9 +88,9 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the choice answer validator.
+     * Gets the answer validator.
      *
-     * @return ChoiceAnswerValidator
+     * @return BooleanAnswerValidator
      */
     protected function getAnswerValidator()
     {
@@ -100,7 +100,7 @@ class BooleanDefinition extends AbstractDefinition
     /**
      * Gets the choice question serializer.
      *
-     * @return ChoiceQuestionSerializer
+     * @return BooleanQuestionSerializer
      */
     protected function getQuestionSerializer()
     {
@@ -135,7 +135,7 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * @param ChoiceQuestion $question
+     * @param BooleanQuestion $question
      *
      * @return array
      */

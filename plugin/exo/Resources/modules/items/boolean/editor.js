@@ -12,13 +12,13 @@ const UPDATE_CHOICES = 'UPDATE_CHOICES'
 export const pairs = [
   {
     'id': '1',
-    'labelA': tex('boolean_pair_yes'),
-    'labelB': tex('boolean_pair_no')
+    'labelA': tex('boolean_pair_true'),
+    'labelB': tex('boolean_pair_false')
   },
   {
     'id': '2',
-    'labelA': tex('boolean_pair_true'),
-    'labelB': tex('boolean_pair_false')
+    'labelA': tex('boolean_pair_yes'),
+    'labelB': tex('boolean_pair_no')
   }
 ]
 

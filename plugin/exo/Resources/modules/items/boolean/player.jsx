@@ -2,23 +2,17 @@ import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import cloneDeep from 'lodash/cloneDeep'
 
-class Item extends Component {
-  constructor(props){
-    super(props)
-  }
-
-  render(){
-    return(
-      <div
-        onClick={this.props.onClick}
-        className={classes(
-          'choice',
-          {'selected': this.props.selected}
-        )}>
-        <div dangerouslySetInnerHTML={{__html: this.props.choice.data}}  />
-      </div>
-    )
-  }
+const Item = props => {
+  return(
+    <div
+      onClick={props.onClick}
+      className={classes(
+        'choice',
+        {'selected': props.selected}
+      )}>
+        {props.choice.data}
+    </div>
+  )
 }
 
 Item.propTypes = {
@@ -48,17 +42,17 @@ class BooleanPlayer extends Component {
 
   render(){
     return (
-      <div className="boolean-player">
+      <div className="boolean-player row">
         {this.props.item.choices.map(choice =>
-          <Item
-            key={choice.id}
-            selected={this.state.selected && this.state.selected === choice.id ? true : false}
-            onClick={() => this.handleItemClick(choice)} choice={choice}/>
+          <div key={choice.id}  className="col-md-6">
+            <Item
+              selected={this.state.selected && this.state.selected === choice.id ? true : false}
+              onClick={() => this.handleItemClick(choice)} choice={choice}/>
+          </div>
         )}
       </div>
     )
   }
-
 }
 
 BooleanPlayer.propTypes = {

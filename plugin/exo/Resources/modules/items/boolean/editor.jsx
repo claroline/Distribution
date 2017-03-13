@@ -73,45 +73,38 @@ Item.propTypes = {
 }
 
 
-class Boolean extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      selected: undefined
-    }
-  }
-
-  render() {
-    return (
-      <div className="boolean-editor">
-        <div className="dropdown">
-          <button className="btn btn-default dropdown-toggle" type="button" id={`choice-drop-down-${this.props.item.id}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            {tex('boolean_pair_select_empty')}&nbsp;
-            <span className="caret"></span>
-          </button>
-          <ul className="dropdown-menu" aria-labelledby={`choice-drop-down-${this.props.item.id}`}>
-            {pairs.map((pair, index) =>
-              <li key={`pair-${index}`}
-                onClick={() => this.props.onChange(
-                actions.updateChoices(pair)
-              )}>
-                <span className="dropdown-item">{`${pair.labelA} / ${pair.labelB}`}</span>
-              </li>
-            )}
-          </ul>
-        </div>
-        <hr/>
-        {get(this.props.item, '_errors.choices') &&
-          <ErrorBlock text={this.props.item._errors.choices} warnOnly={!this.props.validating}/>
-        }
-        <div className="choices-container">
-          {this.props.item.choices.map(choice =>
-            <Item key={choice.id} choice={choice} onChange={this.props.onChange}/>
+const Boolean = props => {
+  return (
+    <div className="boolean-editor">
+      <div className="dropdown">
+        <button className="btn btn-default dropdown-toggle" type="button" id={`choice-drop-down-${props.item.id}`} data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          {tex('boolean_pair_select_empty')}&nbsp;
+          <span className="caret"></span>
+        </button>
+        <ul className="dropdown-menu" aria-labelledby={`choice-drop-down-${props.item.id}`}>
+          {pairs.map((pair, index) =>
+            <li key={`pair-${index}`}
+              onClick={() => props.onChange(
+              actions.updateChoices(pair)
+            )}>
+              <a role="menuitem">{`${pair.labelA} / ${pair.labelB}`}</a>
+            </li>
           )}
-        </div>
+        </ul>
       </div>
-    )
-  }
+      <hr/>
+      {get(props.item, '_errors.choices') &&
+        <ErrorBlock text={props.item._errors.choices} warnOnly={!props.validating}/>
+      }
+      <div className="row">
+        {props.item.choices.map(choice =>
+          <div key={choice.id}  className="col-md-6">
+            <Item choice={choice} onChange={props.onChange}/>
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 Boolean.propTypes = {

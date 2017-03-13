@@ -12,49 +12,46 @@ export const BooleanPaper = props => {
     <PaperTabs
       id={props.item.id}
       yours={
-        <div className="boolean-paper">
+        <div className="boolean-paper row">
           {props.item.solutions.map(solution =>
-            <div
-              key={solution.id}
-              className={classes(
-                'choice',
-                utils.getAnswerClass(solution, props.answer)
-              )}>
-              {props.answer && props.answer.id && solution.id === props.answer.id &&
-                <div className="header">
-                    <WarningIcon valid={solution.score > 0}/>
+            <div key={solution.id} className="col-md-6">
+              <div className={classes(
+                  'choice',
+                  utils.getAnswerClass(solution, props.answer)
+                )}>
+                {props.answer && props.answer.id && solution.id === props.answer.id &&
+                  <WarningIcon valid={solution.score > 0}/>
+                }
+                {props.item.choices.find(choice => choice.id === solution.id).data}
+
+                {props.answer && props.answer.id && solution.id === props.answer.id &&
+                  <span>
                     <Feedback
                       id={`${solution.id}-feedback`}
                       feedback={solution.feedback}/>
                     <SolutionScore score={solution.score}/>
-                </div>
-              }
-
-              <div className="body">
-                <div dangerouslySetInnerHTML={{__html: props.item.choices.find(choice => choice.id === solution.id).data}} />
+                  </span>
+                }
               </div>
             </div>
           )}
         </div>
       }
       expected={
-        <div className="boolean-paper">
+        <div className="boolean-paper row">
           {props.item.solutions.map(solution =>
-            <div
-              key={solution.id}
-              className={classes(
-                'choice',
-                 solution.score > 0 ? 'text-info bg-info' : 'bg-choice'
-              )}>
-              <div className="header">
-                <Feedback
-                  id={`${solution.id}-feedback`}
-                  feedback={solution.feedback}
-                />
-                <SolutionScore score={solution.score}/>
-              </div>
-              <div className="body">
-                <div dangerouslySetInnerHTML={{__html: props.item.choices.find(choice => choice.id === solution.id).data}} />
+            <div key={solution.id} className="col-md-6">
+              <div className={classes(
+                  'choice',
+                   solution.score > 0 ? 'text-info bg-info' : 'bg-choice'
+                )}>
+                {props.item.choices.find(choice => choice.id === solution.id).data}
+                <span>
+                  <Feedback
+                    id={`${solution.id}-feedback`}
+                    feedback={solution.feedback}/>
+                  <SolutionScore score={solution.score}/>
+                </span>                
               </div>
             </div>
           )}

@@ -6,24 +6,23 @@ import {utils} from './utils/utils'
 
 export const BooleanFeedback = props => {
   return (
-    <div className="boolean-paper">
+    <div className="boolean-feedback row">
       {props.item.solutions.map(solution =>
-        <div
-          key={solution.id}
-          className={classes(
-            'choice',
-            utils.getAnswerClass(solution, props.answer)
-          )}>
-          {props.answer && props.answer.id && solution.id === props.answer.id &&
-            <div className="header">
+        <div key={solution.id} className="col-md-6">
+          <div className={classes(
+              'choice',
+              utils.getAnswerClass(solution, props.answer)
+            )}>
+            {props.answer && props.answer.id && solution.id === props.answer.id &&
               <WarningIcon valid={solution.score > 0}/>
+            }
+            {props.item.choices.find(choice => choice.id === solution.id).data}
+
+            {props.answer && props.answer.id && solution.id === props.answer.id &&
               <Feedback
                 id={`${solution.id}-feedback`}
                 feedback={solution.feedback}/>
-            </div>
-          }
-          <div className="body">
-            <div dangerouslySetInnerHTML={{__html: props.item.choices.find(choice => choice.id === solution.id).data}} />
+            }
           </div>
         </div>
       )}
