@@ -1,11 +1,11 @@
 export const utils = {
   getAnswerClass(solution, answer){
-    if(!answer || !answer.id){
+    if(answer === ''){
       return 'bg-choice'
     } else if (solution.score > 0) {
-      return answer.id === solution.id ? 'text-success bg-success' : 'bg-choice'
+      return answer === solution.id ? 'text-success bg-success' : 'bg-choice'
     } else if (solution.score < 1) {
-      return answer.id === solution.id ? 'text-danger bg-danger' : 'bg-choice'
+      return answer === solution.id ? 'text-danger bg-danger' : 'bg-choice'
     }
   }
 }

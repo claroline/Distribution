@@ -34,9 +34,8 @@ class BooleanPlayer extends Component {
 
   handleItemClick(choice) {
     this.setState({selected: choice.id})
-    const answer = cloneDeep(this.props.answer)
     this.props.onChange(
-      Object.assign(answer, {id: choice.id})
+      choice.id
     )
   }
 
@@ -62,13 +61,13 @@ BooleanPlayer.propTypes = {
       data: T.string.isRequired
     })).isRequired
   }).isRequired,
-  answer: T.object.isRequired,
+  answer: T.string.isRequired,
   onChange: T.func.isRequired
 }
 
 
 BooleanPlayer.defaultProps = {
-  answer: {}
+  answer: ''
 }
 
 export {BooleanPlayer}

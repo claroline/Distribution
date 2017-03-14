@@ -19,12 +19,12 @@ export const BooleanPaper = props => {
                   'choice',
                   utils.getAnswerClass(solution, props.answer)
                 )}>
-                {props.answer && props.answer.id && solution.id === props.answer.id &&
+                {props.answer !== '' && solution.id === props.answer &&
                   <WarningIcon valid={solution.score > 0}/>
                 }
                 {props.item.choices.find(choice => choice.id === solution.id).data}
 
-                {props.answer && props.answer.id && solution.id === props.answer.id &&
+                {props.answer !== '' && solution.id === props.answer &&
                   <span>
                     <Feedback
                       id={`${solution.id}-feedback`}
@@ -51,7 +51,7 @@ export const BooleanPaper = props => {
                     id={`${solution.id}-feedback`}
                     feedback={solution.feedback}/>
                   <SolutionScore score={solution.score}/>
-                </span>                
+                </span>
               </div>
             </div>
           )}
@@ -71,9 +71,9 @@ BooleanPaper.propTypes = {
     })).isRequired,
     solutions: T.arrayOf(T.object)
   }).isRequired,
-  answer: T.object
+  answer: T.string.isRequired
 }
 
 BooleanPaper.defaultProps = {
-  answer: {}
+  answer: ''
 }

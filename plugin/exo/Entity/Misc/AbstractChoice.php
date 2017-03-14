@@ -43,5 +43,4 @@ abstract class AbstractChoice
     {
         return $this->id;
     }
-
 }

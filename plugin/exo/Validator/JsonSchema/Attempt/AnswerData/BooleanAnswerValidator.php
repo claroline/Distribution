@@ -39,14 +39,13 @@ class BooleanAnswerValidator extends JsonSchemaValidator
             return $choice->getUuid();
         }, $question->getChoices()->toArray());
 
-        foreach ($answerData as $index => $id) {
-            if (!in_array($id, $choiceIds)) {
-                $errors[] = [
-                    'path' => "/[{$index}]",
-                    'message' => 'Answer array identifiers must reference question choices',
-                ];
-            }
+        if (!in_array($answerData, $choiceIds)) {
+            $errors[] = [
+                'path' => "/[{$index}]",
+                'message' => 'Answer array identifiers must reference question choices',
+            ];
         }
+
 
         return $errors;
     }

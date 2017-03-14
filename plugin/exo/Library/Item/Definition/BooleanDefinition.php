@@ -118,7 +118,7 @@ class BooleanDefinition extends AbstractDefinition
         $corrected = new CorrectedAnswer();
 
         foreach ($question->getChoices() as $choice) {
-            if (!empty($answer) && $choice->getUuid() === $answer->id) {
+            if (!empty($answer) && $choice->getUuid() === $answer) {
                 // Choice has been selected by the user
                 if (0 < $choice->getScore()) {
                     $corrected->addExpected($choice);
