@@ -45,8 +45,6 @@ export default class BlogController {
 
   pageChanged() {
     this.loadPosts(this.currentPage)
-
-
   }
 
   loadPosts(page) {
