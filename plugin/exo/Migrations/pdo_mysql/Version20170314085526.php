@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/03/13 04:03:09
+ * Generation date: 2017/03/14 08:55:27
  */
-class Version20170313160306 extends AbstractMigration
+class Version20170314085526 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -32,8 +32,8 @@ class Version20170313160306 extends AbstractMigration
                 data LONGTEXT DEFAULT NULL,
                 resourceNode_id INT DEFAULT NULL,
                 UNIQUE INDEX UNIQ_B9216398D17F50A6 (uuid),
-                INDEX IDX_B921639850B1C2F9 (boolean_question_id),
                 INDEX IDX_B9216398B87FAB32 (resourceNode_id),
+                INDEX IDX_B921639850B1C2F9 (boolean_question_id),
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ');
@@ -45,13 +45,13 @@ class Version20170313160306 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE ujm_boolean_choice
-            ADD CONSTRAINT FK_B921639850B1C2F9 FOREIGN KEY (boolean_question_id)
-            REFERENCES ujm_boolean_question (id)
+            ADD CONSTRAINT FK_B9216398B87FAB32 FOREIGN KEY (resourceNode_id)
+            REFERENCES claro_resource_node (id)
         ');
         $this->addSql('
             ALTER TABLE ujm_boolean_choice
-            ADD CONSTRAINT FK_B9216398B87FAB32 FOREIGN KEY (resourceNode_id)
-            REFERENCES claro_resource_node (id)
+            ADD CONSTRAINT FK_B921639850B1C2F9 FOREIGN KEY (boolean_question_id)
+            REFERENCES ujm_boolean_question (id)
         ');
     }
 

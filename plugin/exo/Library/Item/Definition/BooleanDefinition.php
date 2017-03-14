@@ -78,9 +78,9 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the question validator.
+     * Gets the boolean question validator.
      *
-     * @return BooleanQuestionValidator
+     * @return ChoiceQuestionValidator
      */
     protected function getQuestionValidator()
     {
@@ -88,7 +88,7 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the answer validator.
+     * Gets the boolean answer validator.
      *
      * @return BooleanAnswerValidator
      */
@@ -98,9 +98,9 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * Gets the choice question serializer.
+     * Gets question serializer.
      *
-     * @return BooleanQuestionSerializer
+     * @return ChoiceQuestionSerializer
      */
     protected function getQuestionSerializer()
     {
@@ -108,7 +108,7 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * @param ChoiceQuestion $question
+     * @param BooleanQuestion $question
      * @param $answer
      *
      * @return CorrectedAnswer
@@ -146,7 +146,7 @@ class BooleanDefinition extends AbstractDefinition
         });
     }
 
-    public function getStatistics(AbstractItem $choiceQuestion, array $answersData)
+    public function getStatistics(AbstractItem $question, array $answersData)
     {
         // TODO: Implement getStatistics() method.
 
