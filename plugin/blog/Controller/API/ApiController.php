@@ -636,11 +636,13 @@ class ApiController extends BaseController
     {
         $this->checkAccess('EDIT', $blog);
 
+        $myPost = $this->get('icap.blog.post_repository')->findOneBy([
+            'blog' => $blog,
+            'id' => $post,
+        ]);
+
         $myComment = $this->get('icap.blog.comment_repository')->findOneBy([
-            'post' => $this->get('icap.blog.post_repository')->findOneBy([
-                'blog' => $blog,
-                'id' => $post,
-            ]),
+            'post' => $myPost,
             'id' => $comment,
         ]);
 
@@ -651,6 +653,10 @@ class ApiController extends BaseController
         $em = $this->getDoctrine()->getManager();
         $em->remove($myComment);
         $em->flush();
+
+        $this->dispatchCommentDeleteEvent($myPost, $myComment);
+
+        return $myPost;
     }
 
     /**
