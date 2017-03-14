@@ -92,7 +92,7 @@ export default class EntryEditionCtrl {
 
         if (this.template) {
           let choices = JSON.stringify(f['fieldFacet']['field_facet_choices'])
-        choices = choices.replace(/'/g, '\\\'')
+          choices = choices.replace(/'/g, '\\\'')
           choices = choices.replace(/"/g, '\'')
           const replacedField = `
             <form-field field="['${name}',
