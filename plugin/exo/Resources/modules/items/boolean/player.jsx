@@ -1,6 +1,5 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
-import cloneDeep from 'lodash/cloneDeep'
 
 const Item = props => {
   return(

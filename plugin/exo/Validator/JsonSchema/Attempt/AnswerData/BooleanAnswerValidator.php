@@ -46,7 +46,6 @@ class BooleanAnswerValidator extends JsonSchemaValidator
             ];
         }
 
-
         return $errors;
     }
 }
