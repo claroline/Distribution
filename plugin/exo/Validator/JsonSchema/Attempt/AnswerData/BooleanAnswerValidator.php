@@ -41,8 +41,8 @@ class BooleanAnswerValidator extends JsonSchemaValidator
 
         if (!in_array($answerData, $choiceIds)) {
             $errors[] = [
-                'path' => "/[{$index}]",
-                'message' => 'Answer array identifiers must reference question choices',
+                'path' => "/",
+                'message' => 'Answer identifiers must reference question choices',
             ];
         }
 
