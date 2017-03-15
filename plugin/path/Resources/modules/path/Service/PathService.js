@@ -57,7 +57,7 @@ export default class PathService {
    */
   setPath(value) {
     this.path = value
-    
+
     this.totalSteps = 0
 
     // Count the totalSteps of the Path on load

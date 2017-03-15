@@ -40,6 +40,20 @@ class StepCondition implements \JsonSerializable
     protected $step;
 
     /**
+     * Step is available from this date.
+     *
+     * @ORM\Column(name="available_from_date", type="datetime", nullable=true)
+     */
+    protected $availableFromDate;
+
+    /**
+     * Step is available until this date.
+     *
+     * @ORM\Column(name="available_until_date", type="datetime", nullable=true)
+     */
+    protected $availableUntilDate;
+
+    /**
      * Class constructor.
      */
     public function __construct()
@@ -135,7 +149,7 @@ class StepCondition implements \JsonSerializable
      *
      * @return StepCondition
      */
-    public function setStep(\Innova\PathBundle\Entity\Step $step = null)
+    public function setStep(Step $step = null)
     {
         if ($step !== $this->step) {
             $this->step = $step;
@@ -157,12 +171,41 @@ class StepCondition implements \JsonSerializable
         return $this->step;
     }
 
+    public function getAvailableFromDate()
+    {
+        return $this->availableFromDate;
+    }
+
+    public function setAvailableFromDate(\DateTime $date = null)
+    {
+        $this->availableFromDate = $date;
+
+        return $this;
+    }
+
+    public function getAvailableUntilDate()
+    {
+        return $this->availableUntilDate;
+    }
+
+    public function setAvailableUntilDate(\DateTime $date = null)
+    {
+        $this->availableUntilDate = $date;
+
+        return $this;
+    }
+
     public function jsonSerialize()
     {
+        $availableFromDate = $this->getAvailableFromDate();
+        $availableUntilDate = $this->getAvailableUntilDate();
+
         // Initialize data array
         $jsonArray = [
             'id' => $this->id,
             'scid' => $this->id,
+            'availableFromDate' => ($availableFromDate instanceof \DateTime) ? $availableFromDate->format('Y-m-d') : null,
+            'availableUntilDate' => ($availableUntilDate instanceof \DateTime) ? $availableUntilDate->format('Y-m-d') : null,
         ];
 
         $criteriagroups = [];

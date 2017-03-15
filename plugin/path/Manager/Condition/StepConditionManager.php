@@ -77,6 +77,14 @@ class StepConditionManager
         // Clean CriteriaGroups to remove
         $this->cleanCriteriaGroups($condition, $createdGroups, $existingGroups);
 
+        //set the date condition
+        $trimmedAvailableFromDate = trim($conditionStructure->availableFromDate, 'Zz');
+        $trimmedAvailableUntilDate = trim($conditionStructure->availableUntilDate, 'Zz');
+        $availableFromDate = ($trimmedAvailableFromDate !== '') ? new \DateTime($trimmedAvailableFromDate) : null;
+        $availableUntilDate = ($trimmedAvailableUntilDate !== '') ? new \DateTime($trimmedAvailableUntilDate) : null;
+        $condition->setAvailableFromDate($availableFromDate);
+        $condition->setAvailableUntilDate($availableUntilDate);
+
         // Save modifications
         $this->om->persist($condition);
 
@@ -140,7 +148,7 @@ class StepConditionManager
         $toRemove = array_filter($existingGoups, function (Criteriagroup $current) use ($neededGroups) {
             $removeGroup = true;
             foreach ($neededGroups as $group) {
-                if ($current->getId() == $group->getId()) {
+                if ($current->getId() === $group->getId()) {
                     $removeGroup = false;
                     break;
                 }
