@@ -538,15 +538,11 @@ class ApiController extends BaseController
      */
     public function postBlogPostCommentAction(Blog $blog, Post $post, ParamFetcher $paramFetcher)
     {
-        // Are comments allowed?
-        if (!$blog->isCommentsAuthorized()) {
-            throw new AccessDeniedException();
-        }
+        $this->checkAccess('OPEN', $blog);
 
-        // Are anonymous comments allowed?
-        if (!$blog->isAuthorizeAnonymousComment()) {
-            // Is the logged in user allowed to comment posts?
-            //$this->checkAccess('OPEN', $blog);
+        // Are comments allowed?
+        if (!$blog->isCommentsAuthorized() || (!$this->isLoggedIn() && !$blog->isAuthorizeAnonymousComment())) {
+            throw new AccessDeniedException();
         }
 
         $myPost = $this->get('icap.blog.post_repository')->findOneBy([
@@ -863,5 +859,17 @@ class ApiController extends BaseController
             !$this->isUserGranted('EDIT', $blog),
             $paramFetcher->get('page')
         );
+    }
+
+    /**
+     * Is the user logged in or not ?
+     *
+     * @return User
+     */
+    private function isLoggedIn()
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        return is_string($user) ? false : true;
     }
 }
