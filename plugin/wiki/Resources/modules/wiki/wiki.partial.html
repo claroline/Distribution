@@ -23,9 +23,7 @@
 
         <!-- wiki description -->
         <div class="wiki-page-header page-header">
-            <h1 class="wiki-title-header">
-                {{ vm.wiki.title }}
-            </h1>
+            <h1 class="wiki-title-header" data-ng-bind-html="vm.wiki.title | trustedHtml"></h1>
             <small data-ng-if="vm.wiki.isLoggedIn && (vm.wiki.isAdmin || vm.wiki.mode !== 2)" class="wiki-actions">
                 [
                 <button
