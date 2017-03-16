@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Installation\Updater;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Doctrine\DBAL\Connection;
 
-class Updater090100
+class Updater090200
 {
     use LoggableTrait;
 
@@ -33,8 +33,7 @@ class Updater090100
         $keywords = $sth->fetchAll();
 
         foreach ($keywords as $keyword) {
-
-          $sth = $this->connection->prepare('UPDATE ujm_word_response SET `response` = :newResponse WHERE `id` = :id');
+            $sth = $this->connection->prepare('UPDATE ujm_word_response SET `response` = :newResponse WHERE `id` = :id');
             $sth->execute([
                 ':newResponse' => strip_tags(html_entity_decode($keyword['response'])),
                 ':id' => $keyword['id'],
