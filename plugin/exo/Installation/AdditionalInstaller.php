@@ -9,6 +9,7 @@ use UJM\ExoBundle\Installation\Updater\Updater060200;
 use UJM\ExoBundle\Installation\Updater\Updater070000;
 use UJM\ExoBundle\Installation\Updater\Updater090000;
 use UJM\ExoBundle\Installation\Updater\Updater090002;
+use UJM\ExoBundle\Installation\Updater\Updater090100;
 
 class AdditionalInstaller extends BaseInstaller
 {
@@ -67,6 +68,14 @@ class AdditionalInstaller extends BaseInstaller
 
         if (version_compare($currentVersion, '9.0.2', '<')) {
             $updater = new Updater090002(
+                $this->container->get('doctrine.dbal.default_connection')
+            );
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
+        }
+
+        if (version_compare($currentVersion, '9.1.0', '<')) {
+            $updater = new Updater090100(
                 $this->container->get('doctrine.dbal.default_connection')
             );
             $updater->setLogger($this->logger);
