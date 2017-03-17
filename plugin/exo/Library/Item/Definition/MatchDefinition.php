@@ -147,11 +147,11 @@ class MatchDefinition extends AbstractDefinition
                 );
             }
         } else {
-          foreach ($question->getAssociations() as $association) {
-              if (0 < $association->getScore()) {
-                  $corrected->addMissing($association);
-              }
-          }
+            foreach ($question->getAssociations() as $association) {
+                if (0 < $association->getScore()) {
+                    $corrected->addMissing($association);
+                }
+            }
         }
 
         return $corrected;
