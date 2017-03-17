@@ -1,4 +1,4 @@
-const paths = require('./main/core/Resources/server/webpack/paths')
+const paths = require('./main/core/Resources/server/paths')
 const entries = require('./main/core/Resources/server/webpack/entries')
 const shared = require('./main/core/Resources/server/webpack/shared')
 const plugins = require('./main/core/Resources/server/webpack/plugins')
@@ -21,6 +21,7 @@ module.exports = {
     plugins.distributionShortcut(),
     plugins.clarolineConfiguration(),
     plugins.configShortcut(),
+    plugins.noCircularDependencies(),
     ...plugins.dllReferences(shared.dllManifests())
   ],
   module: {
@@ -30,7 +31,8 @@ module.exports = {
       loaders.jqueryUiNoAmd(),
       loaders.css(),
       loaders.imageUris(),
-      loaders.modernizr()
+      loaders.modernizr(),
+      loaders.json()
     ]
   },
   externals: shared.externals(),
