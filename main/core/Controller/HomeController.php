@@ -114,7 +114,6 @@ class HomeController
             return new RedirectResponse($url);
         }
 
-
         if (is_null($typeEntity)) {
             throw new NotFoundHttpException('Page not found');
         } else {
