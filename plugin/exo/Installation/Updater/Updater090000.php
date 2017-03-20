@@ -156,7 +156,8 @@ class Updater090000
 
         $sth->execute();
         $answers = $sth->fetchAll();
-        foreach ($answers as $answer) {
+        $this->log(count($answers).' answers to process.');
+        foreach ($answers as $index => $answer) {
             $newData = null;
 
             // Calculate new data string (it's the json_encode of the data structure transferred in the API)
@@ -330,6 +331,10 @@ class Updater090000
                 'id' => $answer['answerId'],
                 'data' => $insertData,
             ]);
+
+            if ($index % 200 === 0) {
+                $this->log('200 answers processed.');
+            }
         }
 
         $this->log('done !');
@@ -435,6 +440,7 @@ class Updater090000
         $this->om->startFlushSuite();
 
         /** @var Paper $paper */
+        $this->log(count($papers).' papers to process.');
         foreach ($papers as $i => $paper) {
             // Update structure
             $this->updatePaperStructure($paper, $questions, $decodedQuestions);
@@ -446,6 +452,7 @@ class Updater090000
 
             if ($i % 200 === 0) {
                 $this->om->forceFlush();
+                $this->log('200 papers processed.');
             }
         }
 
