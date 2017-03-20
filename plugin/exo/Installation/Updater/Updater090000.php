@@ -439,8 +439,9 @@ class Updater090000
 
         $this->om->startFlushSuite();
 
-        /** @var Paper $paper */
         $this->log(count($papers).' papers to process.');
+        
+        /** @var Paper $paper */
         foreach ($papers as $i => $paper) {
             // Update structure
             $this->updatePaperStructure($paper, $questions, $decodedQuestions);
