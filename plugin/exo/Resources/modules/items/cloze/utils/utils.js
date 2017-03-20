@@ -17,9 +17,10 @@ utils.makeTinyHtml = (solution) => {
   if (solution.answers.length === 1) {
   //if one solutions
     input = `
-      <span class="cloze-input input-group" data-hole-id="${solution.holeId}" style="display: inline-table; vertical-align: middle; margin: 2px 0;">
+      <span class="cloze-input" data-hole-id="${solution.holeId}">
         <input
-          class="hole-input form-control input-sm"
+          style="width: auto; margin: 10px; display: inline;"
+          class="hole-input form-control"
           data-hole-id="${solution.holeId}"
           type="text"
         >
@@ -29,9 +30,10 @@ utils.makeTinyHtml = (solution) => {
     `
   } else {
     input = `
-      <span class="cloze-input input-group" data-hole-id="${solution.holeId}" style="display: inline-table; vertical-align: middle; margin: 2px 0;">
+      <span class="cloze-input" data-hole-id="${solution.holeId}">
         <select
-          class="hole-input form-control input-sm"
+          style="width: auto; margin: 10px; display: inline;"
+          class="hole-input form-control"
           data-hole-id="${solution.holeId}"
           type="text"
         >
@@ -63,14 +65,15 @@ utils.getTextWithPlacerHoldersFromHtml = (text) =>
 
 function getEditButtons(solution) {
   return `
-    <span class="input-group-btn">
-        <button type="button" class="edit-hole-btn btn btn-default btn-sm" data-hole-id="${solution.holeId}">
-            <span class="fa fa-fw fa-pencil"></span>
-        </button>
-        <button type="button" class="delete-hole-btn btn btn-default btn-sm" data-hole-id="${solution.holeId}">
-            <span class="fa fa-fw fa-trash"></span>
-        </button>
-    </span>
+    <i style="cursor: pointer"
+      class="fa fa-fw fa-pencil edit-hole-btn"
+      data-hole-id="${solution.holeId}"
+    > &nbsp; </i>
+    <i style="cursor: pointer"
+      class="fa fa-fw fa-trash delete-hole-btn"
+      data-hole-id="${solution.holeId}"
+    > &nbsp;
+    </i>
   `
 }
 
