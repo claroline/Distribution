@@ -51,23 +51,26 @@
             {{ ticket.getDescription()|raw }}
         </div>
         <hr>
-        <h3>{{ 'comments'|trans({}, 'support') }}</h3>
-        {% set comments = ticket.getComments() %}
-        
-        {% if comments|length > 0 %}
-            <br>
-                    
+        <h3>{{ 'discussion'|trans({}, 'support') }}</h3>
+        {% set comments = ticket.getPublicComments() %}
+        <br>
+        <div id="ticket-comment-form-box">
+            {% render(controller("FormaLibreSupportBundle:Support:ticketCommentCreateForm", {'ticket': ticket.getId()})) %}
+        </div>
+        <br>
+        <br>
+        <hr>
+        <div id="comments-list">
             {% for comment in comments %}
                 {% set commentUser = comment.getUser() %}
-                <div class="media">
-
+                <div class="media comment-row">
                     {% if comment.getIsAdmin() %}
-                        <div class="media-body col-md-10 col-sm-10">
+                        <div class="comment-content col-md-10 col-sm-10 comment-content-left">
                             <div class="pull-right">
                                 {{ comment.getContent()|raw }}
                             </div>
                         </div>
-                        <div class="media-left col-md-2 col-sm-2 text-center comment-media-right">
+                        <div class="comment-contact col-md-2 col-sm-2 text-center comment-contact-right">
                             
                             {% if commentUser.getPicture() != '' %}
                                 <img src="{{ asset('uploads/pictures/') ~  commentUser.getPicture() }}"
@@ -89,7 +92,7 @@
                             {% endif %}
                         </div>
                     {% else %}
-                        <div class="media-left col-md-2 col-sm-2 text-center comment-media-left">
+                        <div class="comment-contact col-md-2 col-sm-2 text-center comment-contact-left">
                             
                             {% if commentUser.getPicture() != '' %}
                                 <img src="{{ asset('uploads/pictures/') ~  commentUser.getPicture() }}"
@@ -110,7 +113,7 @@
                                 {{ comment.getCreationDate()|intl_date_format }}
                             {% endif %}
                         </div>
-                        <div class="media-body col-md-10 col-sm-10">
+                        <div class="comment-content col-md-10 col-sm-10 comment-content-right">
                             <div>
                                 {{ comment.getContent()|raw }}
                             </div>
@@ -119,31 +122,17 @@
                 </div>
                 
                 {% if not loop.last %}
-                    <hr class="comment-separator">
+                    <hr>
                 {% endif %}
             {% endfor %}
-        {% else %}
-            <div class="alert alert-info">
-                {{ 'no_comment'|trans({}, 'support') }}
-            </div>
-        {% endif %}
-        <br>
-        <div id="ticket-comment-form-box">
-            {% render(controller("FormaLibreSupportBundle:Support:ticketCommentCreateForm", {'ticket': ticket.getId()})) %}
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript"
-            src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"
-    >
-    </script>
-    <script src='{{ asset('bundles/formalibresupport/js/ticketOpen.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-support-ticket-open.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

@@ -1,0 +1,15 @@
+{
+  "webpack": {
+    "entry": {
+      "admin-support-index": "admin/supportIndex",
+      "admin-support-tabs": "admin/supportTabs",
+      "admin-my-tickets": "admin/myTickets",
+      "admin-archives": "admin/archives",
+      "admin-ticket-display": "admin/ticketDisplay",
+      "admin-types-management": "admin/typesManagement",
+      "admin-status-management": "admin/statusManagement",
+      "support-index": "support/supportIndex",
+      "ticket-open": "support/ticketOpen"
+    }
+  }
+}

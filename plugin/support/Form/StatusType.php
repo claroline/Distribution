@@ -8,6 +8,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class StatusType extends AbstractType
 {
+    private $isLocked;
+
+    public function __construct($isLocked = false)
+    {
+        $this->isLocked = $isLocked;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -26,19 +33,17 @@ class StatusType extends AbstractType
                 'required' => true,
                 'label' => 'code',
                 'translation_domain' => 'platform',
+                'read_only' => $this->isLocked,
             )
         );
         $builder->add(
-            'type',
-            'choice',
-            array(
-                'label' => 'type',
-                'choices' => array(0, 1, 2, 3, 4),
-                'expanded' => false,
-                'multiple' => false,
+            'description',
+            'tinymce',
+            [
                 'required' => true,
+                'label' => 'description',
                 'translation_domain' => 'platform',
-            )
+            ]
         );
     }
 

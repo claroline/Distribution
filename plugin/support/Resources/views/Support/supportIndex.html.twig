@@ -178,7 +178,7 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
-                                    {% if ticket.getInterventions()|length == 0 and ticket.getLevel() == 0 %}
+                                    {% if ticket.getInterventions()|length == 0 %}
                                         <div class="btn-group">
                                             <a href="{{ path('formalibre_ticket_edit_form', {'ticket': ticketId}) }}"
                                                class="btn btn-default btn-sm"
@@ -224,8 +224,5 @@
             src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"
     >
     </script>
-    <script src='{{ asset('bundles/formalibresupport/js/supportIndex.js') }}'
-            type="text/javascript"
-    >
-    </script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-support-support-index.js') }}"></script>
 {% endblock %}

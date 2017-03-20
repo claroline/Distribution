@@ -76,11 +76,11 @@ class SupportController extends Controller
      *     defaults={"page"=1, "search"="", "max"=50, "orderedBy"="num","order"="DESC"},
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
     public function supportIndexAction(
-        User $authenticatedUser,
+        User $user,
         $search = '',
         $page = 1,
         $max = 50,
@@ -88,7 +88,7 @@ class SupportController extends Controller
         $order = 'DESC'
     ) {
         $tickets = $this->supportManager->getTicketsByUser(
-            $authenticatedUser,
+            $user,
             $search,
             $orderedBy,
             $order,
@@ -99,7 +99,7 @@ class SupportController extends Controller
         $withCredits = $this->supportManager->getConfigurationCreditOption();
 
         if ($withCredits) {
-            $datasEvent = new GenericDatasEvent($authenticatedUser);
+            $datasEvent = new GenericDatasEvent($user);
             $this->eventDispatcher->dispatch('formalibre_request_nb_remaining_credits', $datasEvent);
             $response = $datasEvent->getResponse();
 
@@ -126,15 +126,15 @@ class SupportController extends Controller
      *     name="formalibre_ticket_create_form",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template("FormaLibreSupportBundle:Support:ticketCreateForm.html.twig")
      */
-    public function ticketCreateFormAction(User $authenticatedUser)
+    public function ticketCreateFormAction(User $user)
     {
         $ticket = new Ticket();
-        $ticket->setUser($authenticatedUser);
-        $ticket->setContactMail($authenticatedUser->getMail());
-        $phone = $authenticatedUser->getPhone();
+        $ticket->setUser($user);
+        $ticket->setContactMail($user->getMail());
+        $phone = $user->getPhone();
 
         if (!is_null($phone)) {
             $ticket->setContactPhone($phone);
@@ -150,27 +150,20 @@ class SupportController extends Controller
      *     name="formalibre_ticket_create",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template("FormaLibreSupportBundle:Support:ticketCreateForm.html.twig")
      */
-    public function ticketCreateAction(User $authenticatedUser)
+    public function ticketCreateAction(User $user)
     {
         $ticket = new Ticket();
-        $ticket->setUser($authenticatedUser);
+        $ticket->setUser($user);
         $form = $this->formFactory->create(new TicketType($this->translator), $ticket);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $num = $this->supportManager->generateTicketNum($authenticatedUser);
-            $ticket->setNum($num);
-            $now = new \DateTime();
-            $ticket->setCreationDate($now);
-            $this->supportManager->persistTicket($ticket);
-            $this->supportManager->sendTicketMail($authenticatedUser, $ticket, 'new_ticket');
+            $this->supportManager->initializeTicket($ticket, $user);
 
-            return new RedirectResponse(
-                $this->router->generate('formalibre_support_index')
-            );
+            return new RedirectResponse($this->router->generate('formalibre_support_index'));
         } else {
             return ['form' => $form->createView()];
         }
@@ -182,12 +175,12 @@ class SupportController extends Controller
      *     name="formalibre_ticket_edit_form",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
-    public function ticketEditFormAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketEditFormAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketEditionAccess($authenticatedUser, $ticket);
+        $this->checkTicketEditionAccess($user, $ticket);
         $form = $this->formFactory->create(new TicketType($this->translator), $ticket);
 
         return [
@@ -205,19 +198,17 @@ class SupportController extends Controller
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      * @EXT\Template("FormaLibreSupportBundle:Support:ticketEditForm.html.twig")
      */
-    public function ticketEditAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketEditAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketEditionAccess($authenticatedUser, $ticket);
+        $this->checkTicketEditionAccess($user, $ticket);
         $form = $this->formFactory->create(new TicketType($this->translator), $ticket);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $this->supportManager->persistTicket($ticket);
-            $this->supportManager->sendTicketMail($authenticatedUser, $ticket, 'ticket_edition');
+            $this->supportManager->sendTicketMail($user, $ticket, 'ticket_edition');
 
-            return new RedirectResponse(
-                $this->router->generate('formalibre_support_index')
-            );
+            return new RedirectResponse($this->router->generate('formalibre_support_index'));
         } else {
             return [
                 'form' => $form->createView(),
@@ -232,12 +223,12 @@ class SupportController extends Controller
      *     name="formalibre_ticket_edit_modal_form",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
-    public function ticketEditModalFormAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketEditModalFormAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketEditionAccess($authenticatedUser, $ticket);
+        $this->checkTicketEditionAccess($user, $ticket);
         $form = $this->formFactory->create(new TicketType($this->translator), $ticket);
 
         return [
@@ -252,18 +243,18 @@ class SupportController extends Controller
      *     name="formalibre_ticket_edit_modal",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template("FormaLibreSupportBundle:Support:ticketEditModalForm.html.twig")
      */
-    public function ticketEditModalAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketEditModalAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketEditionAccess($authenticatedUser, $ticket);
+        $this->checkTicketEditionAccess($user, $ticket);
         $form = $this->formFactory->create(new TicketType($this->translator), $ticket);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $this->supportManager->persistTicket($ticket);
-            $this->supportManager->sendTicketMail($authenticatedUser, $ticket, 'ticket_edition');
+            $this->supportManager->sendTicketMail($user, $ticket, 'ticket_edition');
 
             return new JsonResponse('success', 200);
         } else {
@@ -280,12 +271,12 @@ class SupportController extends Controller
      *     name="formalibre_ticket_delete",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      */
-    public function ticketDeleteAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketDeleteAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketEditionAccess($authenticatedUser, $ticket);
-        $this->supportManager->sendTicketMail($authenticatedUser, $ticket, 'ticket_deletion');
+        $this->checkTicketEditionAccess($user, $ticket);
+        $this->supportManager->sendTicketMail($user, $ticket, 'ticket_deletion');
         $this->supportManager->deleteTicket($ticket);
 
         return new JsonResponse('success', 200);
@@ -297,12 +288,12 @@ class SupportController extends Controller
      *     name="formalibre_ticket_open",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
-    public function ticketOpenAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketOpenAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketAccess($authenticatedUser, $ticket);
+        $this->checkTicketAccess($user, $ticket);
         $currentStatus = null;
         $interventions = $ticket->getInterventions();
         $reverseInterventions = array_reverse($interventions);
@@ -318,7 +309,7 @@ class SupportController extends Controller
 
         return [
             'ticket' => $ticket,
-            'currentUser' => $authenticatedUser,
+            'currentUser' => $user,
             'currentStatus' => $currentStatus,
         ];
     }
@@ -329,12 +320,12 @@ class SupportController extends Controller
      *     name="formalibre_ticket_comment_create_form",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
-    public function ticketCommentCreateFormAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketCommentCreateFormAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketAccess($authenticatedUser, $ticket);
+        $this->checkTicketAccess($user, $ticket);
         $form = $this->formFactory->create(new CommentType(), new Comment());
 
         return ['form' => $form->createView(), 'ticket' => $ticket];
@@ -346,30 +337,39 @@ class SupportController extends Controller
      *     name="formalibre_ticket_comment_create",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template("FormaLibreSupportBundle:Support:ticketCommentCreateForm.html.twig")
      */
-    public function ticketCommentCreateAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketCommentCreateAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketAccess($authenticatedUser, $ticket);
+        $this->checkTicketAccess($user, $ticket);
         $comment = new Comment();
         $form = $this->formFactory->create(new CommentType(), $comment);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $comment->setTicket($ticket);
-            $comment->setUser($authenticatedUser);
+            $comment->setUser($user);
             $comment->setIsAdmin(false);
             $comment->setCreationDate(new \DateTime());
             $this->supportManager->persistComment($comment);
             $this->supportManager->sendTicketMail(
-                $authenticatedUser,
+                $user,
                 $ticket,
                 'new_comment',
                 $comment
             );
+            $data = [];
+            $data['comment'] = [];
+            $data['comment']['id'] = $comment->getId();
+            $data['comment']['content'] = $comment->getContent();
+            $data['comment']['creationDate'] = $comment->getCreationDate()->format('d/m/Y H:i');
+            $data['user']['id'] = $user->getId();
+            $data['user']['firstName'] = $user->getFirstName();
+            $data['user']['lastName'] = $user->getLastName();
+            $data['user']['picture'] = $user->getPicture();
 
-            return new JsonResponse('success', 201);
+            return new JsonResponse($data, 201);
         } else {
             return ['form' => $form->createView(), 'ticket' => $ticket];
         }
@@ -381,12 +381,12 @@ class SupportController extends Controller
      *     name="formalibre_ticket_comments_view",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template("FormaLibreSupportBundle:Support:ticketCommentsModalView.html.twig")
      */
-    public function ticketCommentsViewAction(User $authenticatedUser, Ticket $ticket)
+    public function ticketCommentsViewAction(User $user, Ticket $ticket)
     {
-        $this->checkTicketAccess($authenticatedUser, $ticket);
+        $this->checkTicketAccess($user, $ticket);
 
         return ['ticket' => $ticket];
     }

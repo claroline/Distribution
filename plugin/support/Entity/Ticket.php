@@ -48,8 +48,7 @@ class Ticket
     protected $contactMail;
 
     /**
-     * @ORM\Column(name="contact_phone")
-     * @Assert\NotBlank()
+     * @ORM\Column(name="contact_phone", nullable=true)
      */
     protected $contactPhone;
 
@@ -70,11 +69,6 @@ class Ticket
      * @ORM\JoinColumn(name="type_id", onDelete="CASCADE")
      */
     protected $type;
-
-    /**
-     * @ORM\Column(name="level", type="integer")
-     */
-    protected $level = 0;
 
     /**
      * @ORM\ManyToOne(
@@ -181,16 +175,6 @@ class Ticket
         $this->type = $type;
     }
 
-    public function getLevel()
-    {
-        return $this->level;
-    }
-
-    public function setLevel($level)
-    {
-        $this->level = $level;
-    }
-
     public function getStatus()
     {
         return $this->status;
@@ -204,6 +188,34 @@ class Ticket
     public function getComments()
     {
         return $this->comments->toArray();
+    }
+
+    public function getPublicComments()
+    {
+        $comments = $this->comments->toArray();
+        $publicComments = [];
+
+        foreach ($comments as $comment) {
+            if ($comment->getType() === Comment::PUBLIC_COMMENT) {
+                $publicComments[] = $comment;
+            }
+        }
+
+        return array_reverse($publicComments);
+    }
+
+    public function getPrivateComments()
+    {
+        $comments = $this->comments->toArray();
+        $privateComments = [];
+
+        foreach ($comments as $comment) {
+            if ($comment->getType() === Comment::PRIVATE_COMMENT) {
+                $privateComments[] = $comment;
+            }
+        }
+
+        return array_reverse($privateComments);
     }
 
     public function getInterventions()
