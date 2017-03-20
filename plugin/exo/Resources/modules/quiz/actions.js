@@ -3,6 +3,7 @@ import {makeActionCreator} from './../utils/utils'
 import {navigate} from './router'
 import select from './selectors'
 import {VIEW_OVERVIEW} from './enums'
+import {actions as playerActions} from './player/actions'
 
 export const VIEW_MODE_UPDATE = 'VIEW_MODE_UPDATE'
 export const OPEN_FIRST_STEP = 'OPEN_FIRST_STEP'
@@ -22,8 +23,22 @@ const updateViewMode = (mode, hasFragment = true) => {
       !select.editorOpened(state) &&
       select.noItems(state)
     ) {
+      // Redirects to editor for admins if the quiz is empty
       navigate('editor', false)
       dispatch(openFirstStep(select.firstStepId(state)))
+    } else if (mode === VIEW_OVERVIEW &&
+      !select.hasOverview(state)
+    ) {
+      // Redirects to player/test if overview is disabled
+      if (!select.editable(state)) {
+        // User goes to player
+        navigate('player', false)
+        dispatch(playerActions.play(null, false))
+      } else {
+        // Admin goes to test mode
+        navigate('test', false)
+        dispatch(playerActions.play(null, true))
+      }
     } else {
       dispatch({
         type: VIEW_MODE_UPDATE,

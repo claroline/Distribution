@@ -61,11 +61,27 @@ const Properties = props =>
       />
     </FormGroup>
     <CheckGroup
-      checkId="quiz-show-metadata"
-      checked={props.parameters.showMetadata}
-      label={tex('metadata_visible')}
-      help={tex('metadata_visible_help')}
-      onChange={checked => props.onChange('parameters.showMetadata', checked)}
+      checkId="quiz-show-overview"
+      checked={props.parameters.showOverview}
+      label={tex('show_overview')}
+      onChange={checked => props.onChange('parameters.showOverview', checked)}
+    />
+
+    {props.parameters.showOverview &&
+      <CheckGroup
+        checkId="quiz-show-metadata"
+        checked={props.parameters.showMetadata}
+        label={tex('metadata_visible')}
+        help={tex('metadata_visible_help')}
+        onChange={checked => props.onChange('parameters.showMetadata', checked)}
+      />
+    }
+
+    <CheckGroup
+      checkId="quiz-show-end-page"
+      checked={props.parameters.showEndPage}
+      label={tex('show_end_page')}
+      onChange={checked => props.onChange('parameters.showEndPage', checked)}
     />
   </fieldset>
 
@@ -74,7 +90,9 @@ Properties.propTypes = {
   description: T.string.isRequired,
   parameters: T.shape({
     type: T.string.isRequired,
-    showMetadata: T.bool.isRequired
+    showOverview: T.bool.isRequired,
+    showMetadata: T.bool.isRequired,
+    showEndPage: T.bool.isRequired
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired
@@ -299,7 +317,7 @@ function makePanel(Section, title, key, props, errorProps) {
   const Header =
     <div onClick={() => props.handlePanelClick(key)}>
       <span className="panel-title">
-        <span className={classes('panel-icon', 'fa', caretIcon)}/>
+        <span className={classes('fa fa-fw', caretIcon)}/>
         &nbsp;{title}
       </span>
       {hasPanelError(props, errorProps) &&
@@ -369,6 +387,7 @@ QuizEditor.propTypes = {
     description: T.string.isRequired,
     parameters: T.shape({
       type: T.string.isRequired,
+      showOverview: T.bool.isRequired,
       showMetadata: T.bool.isRequired,
       randomOrder: T.string.isRequired,
       randomPick: T.string.isRequired,

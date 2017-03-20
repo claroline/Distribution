@@ -8,12 +8,14 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Attempt\PaperGenerator;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
-use UJM\ExoBundle\Manager\Question\QuestionManager;
+use UJM\ExoBundle\Manager\Item\ItemManager;
 use UJM\ExoBundle\Repository\PaperRepository;
+use UJM\ExoBundle\Serializer\Item\ItemSerializer;
 
 /**
  * AttemptManager provides methods to manage user attempts to exercises.
@@ -48,40 +50,49 @@ class AttemptManager
     private $answerManager;
 
     /**
-     * @var QuestionManager
+     * @var ItemManager
      */
-    private $questionManager;
+    private $itemManager;
+
+    /**
+     * @var ItemSerializer
+     */
+    private $itemSerializer;
 
     /**
      * AttemptManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
-     *     "paperGenerator"  = @DI\Inject("ujm_exo.generator.paper"),
-     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
-     *     "answerManager"   = @DI\Inject("ujm_exo.manager.answer"),
-     *     "questionManager" = @DI\Inject("ujm_exo.manager.question")
+     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *     "paperGenerator" = @DI\Inject("ujm_exo.generator.paper"),
+     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper"),
+     *     "answerManager"  = @DI\Inject("ujm_exo.manager.answer"),
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
+     *     "itemSerializer" = @DI\Inject("ujm_exo.serializer.item")
      * })
      *
-     * @param ObjectManager   $om
-     * @param PaperGenerator  $paperGenerator
-     * @param PaperManager    $paperManager
-     * @param AnswerManager   $answerManager
-     * @param QuestionManager $questionManager
+     * @param ObjectManager  $om
+     * @param PaperGenerator $paperGenerator
+     * @param PaperManager   $paperManager
+     * @param AnswerManager  $answerManager
+     * @param ItemManager    $itemManager
+     * @param ItemSerializer $itemSerializer
      */
     public function __construct(
         ObjectManager $om,
         PaperGenerator $paperGenerator,
         PaperManager $paperManager,
         AnswerManager $answerManager,
-        QuestionManager $questionManager)
+        ItemManager $itemManager,
+        ItemSerializer $itemSerializer)
     {
         $this->om = $om;
         $this->paperGenerator = $paperGenerator;
         $this->paperManager = $paperManager;
         $this->paperRepository = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
         $this->answerManager = $answerManager;
-        $this->questionManager = $questionManager;
+        $this->itemManager = $itemManager;
+        $this->itemSerializer = $itemSerializer;
     }
 
     /**
@@ -197,12 +208,13 @@ class AttemptManager
             }
 
             $existingAnswer = $paper->getAnswer($answerData->questionId);
+            $decodedQuestion = $this->itemSerializer->deserialize($question, new Item());
 
             try {
                 if (empty($existingAnswer)) {
-                    $answer = $this->answerManager->create($answerData);
+                    $answer = $this->answerManager->create($decodedQuestion, $answerData);
                 } else {
-                    $answer = $this->answerManager->update($existingAnswer, $answerData);
+                    $answer = $this->answerManager->update($decodedQuestion, $existingAnswer, $answerData);
                 }
             } catch (ValidationException $e) {
                 throw new ValidationException('Submitted answers are invalid', $e->getErrors());
@@ -212,7 +224,7 @@ class AttemptManager
             $answer->setTries($answer->getTries() + 1);
 
             // Calculate new answer score
-            $score = $this->questionManager->calculateScore($question, $answer);
+            $score = $this->itemManager->calculateScore($decodedQuestion, $answer);
             $answer->setScore($score);
 
             $paper->addAnswer($answer);
@@ -292,7 +304,8 @@ class AttemptManager
         $answer->addUsedHint($hintId);
 
         // Calculate new answer score
-        $score = $this->questionManager->calculateScore($question, $answer);
+        $decodedQuestion = $this->itemSerializer->deserialize($question, new Item());
+        $score = $this->itemManager->calculateScore($decodedQuestion, $answer);
         $answer->setScore($score);
 
         $this->om->persist($answer);

@@ -70,6 +70,24 @@ class Exercise extends AbstractResource
     private $interruptible = false;
 
     /**
+     * Show overview to users or directly start the quiz.
+     *
+     * @ORM\Column(name="show_overview", type="boolean")
+     *
+     * @var bool
+     */
+    private $showOverview = true;
+
+    /**
+     * Show an end page when the user has finished the quiz.
+     *
+     * @ORM\Column(name="show_end_page", type="boolean")
+     *
+     * @var bool
+     */
+    private $showEndPage = false;
+
+    /**
      * Show the Exercise meta in the overview of the Exercise.
      *
      * @var bool
@@ -291,6 +309,46 @@ class Exercise extends AbstractResource
     public function isInterruptible()
     {
         return $this->interruptible;
+    }
+
+    /**
+     * Set show end page.
+     *
+     * @param bool $showEndPage
+     */
+    public function setShowEndPage($showEndPage)
+    {
+        $this->showEndPage = $showEndPage;
+    }
+
+    /**
+     * Is end page shown ?
+     *
+     * @return bool
+     */
+    public function getShowEndPage()
+    {
+        return $this->showEndPage;
+    }
+
+    /**
+     * Set show overview.
+     *
+     * @param bool $showOverview
+     */
+    public function setShowOverview($showOverview)
+    {
+        $this->showOverview = $showOverview;
+    }
+
+    /**
+     * Is overview shown ?
+     *
+     * @return bool
+     */
+    public function getShowOverview()
+    {
+        return $this->showOverview;
     }
 
     /**

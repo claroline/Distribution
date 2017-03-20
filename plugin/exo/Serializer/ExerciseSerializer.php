@@ -12,6 +12,7 @@ use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Options\ShowScoreAt;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
+use UJM\ExoBundle\Manager\Item\ItemManager;
 
 /**
  * Serializer for exercise data.
@@ -31,22 +32,31 @@ class ExerciseSerializer implements SerializerInterface
     private $stepSerializer;
 
     /**
+     * @var ItemManager
+     */
+    private $itemManager;
+
+    /**
      * ExerciseSerializer constructor.
      *
      * @param StepSerializer $stepSerializer
      * @param UserSerializer $userSerializer
+     * @param ItemManager    $itemManager
      *
      * @DI\InjectParams({
      *     "userSerializer" = @DI\Inject("ujm_exo.serializer.user"),
-     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step")
+     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item")
      * })
      */
     public function __construct(
         UserSerializer $userSerializer,
-        StepSerializer $stepSerializer)
+        StepSerializer $stepSerializer,
+        ItemManager $itemManager)
     {
         $this->userSerializer = $userSerializer;
         $this->stepSerializer = $stepSerializer;
+        $this->itemManager = $itemManager;
     }
 
     /**
@@ -166,6 +176,8 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->interruptible = $exercise->isInterruptible();
 
         // Visibility parameters
+        $parameters->showOverview = $exercise->getShowOverview();
+        $parameters->showEndPage = $exercise->getShowEndPage();
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
@@ -246,6 +258,14 @@ class ExerciseSerializer implements SerializerInterface
 
         if (isset($parameters->interruptible)) {
             $exercise->setInterruptible($parameters->interruptible);
+        }
+
+        if (isset($parameters->showOverview)) {
+            $exercise->setShowOverview($parameters->showOverview);
+        }
+
+        if (isset($parameters->showEndPage)) {
+            $exercise->setShowEndPage($parameters->showEndPage);
         }
 
         if (isset($parameters->showMetadata)) {
@@ -351,8 +371,14 @@ class ExerciseSerializer implements SerializerInterface
 
         // Remaining steps are no longer in the Exercise
         if (0 < count($stepEntities)) {
+            /** @var Step $stepToRemove */
             foreach ($stepEntities as $stepToRemove) {
                 $exercise->removeStep($stepToRemove);
+                $stepQuestions = $stepToRemove->getStepQuestions()->toArray();
+
+                foreach ($stepQuestions as $stepQuestionToRemove) {
+                    $stepToRemove->removeStepQuestion($stepQuestionToRemove);
+                }
             }
         }
     }
