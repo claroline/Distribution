@@ -443,13 +443,18 @@ class Updater090000
 
         /** @var Paper $paper */
         foreach ($papers as $i => $paper) {
-            // Update structure
-            $this->updatePaperStructure($paper, $questions, $decodedQuestions);
+            // Checks the format of the structure to know if it has already been transformed
+            $structure = $paper->getStructure();
+            if (substr($structure, 0, 1) !== '{') {
+                // The structure is not a JSON (this is a little bit hacky)
+                // Update structure
+                $this->updatePaperStructure($paper, $questions, $decodedQuestions);
 
-            // Update hints
-            $this->updatePaperHints($paper, $oldHints);
+                // Update hints
+                $this->updatePaperHints($paper, $oldHints);
 
-            $this->om->persist($paper);
+                $this->om->persist($paper);
+            }
 
             if ($i % 200 === 0) {
                 $this->om->forceFlush();
@@ -464,9 +469,13 @@ class Updater090000
 
     private function updatePaperStructure(Paper $paper, array $questions, array $decodedQuestions)
     {
+        $this->log('Update structure for paper: ' . $paper->getId());
+
+        $this->log('Serialize quiz definition...');
         $quizDef = $this->exerciseSerializer->serialize($paper->getExercise(), [Transfer::INCLUDE_SOLUTIONS]);
 
         // Replace steps and questions by the one from paper
+        $this->log('Rebuild paper structure');
         $stepsToKeep = [];
         $questionIds = explode(';', $paper->getStructure());
         foreach ($questionIds as $index => $questionId) {
@@ -503,6 +512,7 @@ class Updater090000
         $quizDef->steps = array_values($stepsToKeep);
 
         if (!empty($questionIds)) {
+            $this->log('Process deleted questions...');
             // There are questions that are no longer linked to the exercise
             // Create a default step and add all
             $stepForOrphans = $this->stepSerializer->serialize(new Step(), [Transfer::INCLUDE_SOLUTIONS]);
@@ -522,6 +532,7 @@ class Updater090000
             // We invalidate papers for exercise that are configured to reuse old attempts structure to generate new ones
             // The generator assumes the old data still are in the exercise
             // As we don't know if this is true for migrated data, we invalidate it to avoid possible bugs
+            $this->log('Invalidate paper...');
             $paper->setInvalidated(true);
         }
 
@@ -532,7 +543,7 @@ class Updater090000
     {
         // Get cloze questions
         $sth = $this->connection->prepare(
-            'SELECT * FROM ujm_interaction_hole'
+            'SELECT * FROM ujm_interaction_hole WHERE originalText IS NULL'
         );
 
         $sth->execute();
@@ -619,6 +630,8 @@ class Updater090000
 
     private function updatePaperHints(Paper $paper, array $oldHints = [])
     {
+        $this->log('Update hints for paper: ' . $paper->getId());
+
         $hints = $this->pullHint($paper->getId(), $oldHints);
         foreach ($hints as $hint) {
             $answer = $paper->getAnswer($hint);
