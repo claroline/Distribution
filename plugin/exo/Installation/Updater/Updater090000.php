@@ -469,7 +469,7 @@ class Updater090000
 
     private function updatePaperStructure(Paper $paper, array $questions, array $decodedQuestions)
     {
-        $this->log('Update structure for paper: ' . $paper->getId());
+        $this->log('Update structure for paper: '.$paper->getId());
 
         $this->log('Serialize quiz definition...');
         $quizDef = $this->exerciseSerializer->serialize($paper->getExercise(), [Transfer::INCLUDE_SOLUTIONS]);
@@ -630,7 +630,7 @@ class Updater090000
 
     private function updatePaperHints(Paper $paper, array $oldHints = [])
     {
-        $this->log('Update hints for paper: ' . $paper->getId());
+        $this->log('Update hints for paper: '.$paper->getId());
 
         $hints = $this->pullHint($paper->getId(), $oldHints);
         foreach ($hints as $hint) {
