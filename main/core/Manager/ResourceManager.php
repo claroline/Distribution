@@ -254,6 +254,8 @@ class ResourceManager
             [];
 
         $this->dispatcher->dispatch('log', 'Log\LogResourceCreate', [$node, $usersToNotify]);
+        $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
+
         $this->om->endFlushSuite();
 
         return $resource;
@@ -765,17 +767,17 @@ class ResourceManager
     /**
      * Copies a resource in a directory.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $parent
-     * @param \Claroline\CoreBundle\Entity\User                  $user
-     * @param bool                                               $withRights
-     *                                                                                 Defines if the rights of the copied resource have to be created
-     * @param bool                                               $withDirectoryContent
-     *                                                                                 Defines if the content of a directory has to be copied too
-     * @param array                                              $rights
-     *                                                                                 If defined, the copied resource will have exactly the given rights
+     * @param ResourceNode $node
+     * @param ResourceNode $parent
+     * @param User         $user
+     * @param null         $index
+     * @param bool         $withRights           - Defines if the rights of the copied resource have to be created
+     * @param bool         $withDirectoryContent - Defines if the content of a directory has to be copied too
+     * @param array        $rights               - If defined, the copied resource will have exactly the given rights
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     * @return AbstractResource
+     *
+     * @throws ResourceNotFoundException
      */
     public function copy(
         ResourceNode $node,
@@ -854,6 +856,12 @@ class ResourceManager
             $eventName = "publication_change_{$node->getResourceType()->getName()}";
             $resource = $this->getResourceFromNode($node);
             $this->dispatcher->dispatch($eventName, 'PublicationChange', [$resource]);
+
+            $usersToNotify = $node->getWorkspace() ?
+                $this->container->get('claroline.manager.user_manager')->getUsersByWorkspaces([$node->getWorkspace()], null, null, false) :
+                [];
+
+            $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
         }
 
         $this->om->flush();
@@ -1318,7 +1326,7 @@ class ResourceManager
     /**
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
      *
-     * @return array
+     * @return ResourceNode
      */
     public function getWorkspaceRoot(Workspace $workspace)
     {
