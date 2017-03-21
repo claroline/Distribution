@@ -82,7 +82,6 @@ class ClarolineCoreBundle extends InstallableBundle implements AutoConfigurableI
             'Claroline\MigrationBundle\ClarolineMigrationBundle',
             'Claroline\Bundle\FrontEndBundle\FrontEndBundle',
             'JMS\SerializerBundle\JMSSerializerBundle',
-            'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle', // required by ZenStruck grouped forms
         ];
         // simple container configuration, same for every environment
         $simpleConfigs = [
@@ -97,6 +96,7 @@ class ClarolineCoreBundle extends InstallableBundle implements AutoConfigurableI
             'FOS\RestBundle\FOSRestBundle' => 'fos_rest',
             'Gregwar\CaptchaBundle\GregwarCaptchaBundle' => 'gregwar_captcha',
             'Knp\Bundle\MenuBundle\KnpMenuBundle' => 'knp_menu',
+            'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle' => 'cocur_slugify', // required by ZenStruck grouped forms
         ];
         // one configuration file for every standard environment (prod, dev, test)
         $envConfigs = [
