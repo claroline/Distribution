@@ -142,13 +142,9 @@ class PairPlayer extends Component {
     super(props)
 
     this.state = {
-      items: this.randomize(utils.pairItemsWithDisplayOption(props.item.items), props.item.random),
+      items: utils.pairItemsWithDisplayOption(props.item.items),
       answerItems: utils.generateAnswerPairItems(props.item.items, props.item.rows)
     }
-  }
-
-  randomize(items, random) {
-    return random ? shuffle(items) : items
   }
 
   updateAnswer() {
