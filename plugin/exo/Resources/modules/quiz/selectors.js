@@ -16,6 +16,7 @@ const published = state => state.quiz.meta.published
 const viewMode = state => state.viewMode
 const editable = state => state.quiz.meta.editable
 const hasPapers = state => state.quiz.meta.paperCount > 0 || (state.papers.papers && state.papers.papers.length > 0)
+const hasUserPapers = state => state.quiz.meta.userPaperCount > 0
 const saveEnabled = state => !state.editor.saved && !state.editor.saving
 const modal = state => state.modal
 const editorOpened = state => state.editor.opened
@@ -32,6 +33,7 @@ export default {
   empty,
   editable,
   hasPapers,
+  hasUserPapers,
   description,
   meta,
   parameters,
