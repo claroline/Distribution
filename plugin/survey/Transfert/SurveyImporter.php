@@ -115,7 +115,7 @@ class SurveyImporter extends Importer implements ConfigurationInterface, RichTex
     {
         $rootPath = $this->getRootPath();
         $loggedUser = $this->getOwner();
-        
+
         return $this->surveyManager->importSurvey($data, $rootPath, $loggedUser, $workspace);
     }
 
@@ -144,7 +144,7 @@ class SurveyImporter extends Importer implements ConfigurationInterface, RichTex
 
         // Format question text, comment label, multiple question choice
         if (isset($data['questions'])) {
-            foreach($data['questions'] as $question) {
+            foreach ($data['questions'] as $question) {
                 $questionText = file_get_contents($this->getRootPath().DIRECTORY_SEPARATOR.$question['questionPath']);
                 $commentLabelText = file_get_contents($this->getRootPath().DIRECTORY_SEPARATOR.$question['commentLabelPath']);
                 $entity = $this->om->getRepository('Claroline\SurveyBundle\Entity\Question')->findOneByQuestion($questionText);
@@ -156,7 +156,7 @@ class SurveyImporter extends Importer implements ConfigurationInterface, RichTex
                 $this->om->persist($entity);
 
                 if ($question['type'] === 'multiple_choice_single' || $question['type'] === 'multiple_choice_multiple') {
-                    foreach($question['multiple_choices']['choices'] as $choice) {
+                    foreach ($question['multiple_choices']['choices'] as $choice) {
                         $choiceText = file_get_contents($this->getRootPath().DIRECTORY_SEPARATOR.$choice['contentPath']);
                         $entity = $this->om->getRepository('Claroline\SurveyBundle\Entity\Choice')->findOneByContent($choiceText);
                         $formattedChoiceText = $this->container->get('claroline.importer.rich_text_formatter')->format($choiceText);
@@ -166,8 +166,6 @@ class SurveyImporter extends Importer implements ConfigurationInterface, RichTex
                     }
                 }
             }
-            
         }
-
     }
 }

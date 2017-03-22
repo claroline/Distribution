@@ -821,24 +821,21 @@ class SurveyManager
     {
         $questionRelations = $survey->getQuestionRelations();
         $questions = [];
-        foreach ($questionRelations as $questionRelation)
-        {
+        foreach ($questionRelations as $questionRelation) {
             $question = $questionRelation->getQuestion();
             $question_type = $question->getType();
 
             $multiple_choices = [];
-            if ($question_type === 'multiple_choice_single' || $question_type === 'multiple_choice_multiple')
-            {
+            if ($question_type === 'multiple_choice_single' || $question_type === 'multiple_choice_multiple') {
                 $multipleChoiceQuestion = $this->getMultipleChoiceQuestionByQuestion($question);
 
                 $multiple_choices['horizontal'] = $multipleChoiceQuestion->getHorizontal();
 
                 $choices = $multipleChoiceQuestion->getChoices();
-                foreach($choices as $choice)
-                {
+                foreach ($choices as $choice) {
                     $multiple_choices['choices'][] = [
                         'contentPath' => $this->makeFile($choice->getContent(), $files),
-                        'other' => $choice->isOther()
+                        'other' => $choice->isOther(),
                     ];
                 }
             }
@@ -852,7 +849,7 @@ class SurveyManager
                 'commentLabelPath' => $this->makeFile($question->getCommentLabel(), $files),
                 'richText' => $question->isRichText(),
                 'questionOrder' => $questionRelation->getQuestionOrder(),
-                'mandatory' => $questionRelation->getMandatory()
+                'mandatory' => $questionRelation->getMandatory(),
             ];
         }
 
@@ -867,7 +864,7 @@ class SurveyManager
             'endDate' => $survey->getEndDate() ? $survey->getEndDate()->format('Y-m-d H:i:s') : null,
         ];
     }
-    
+
     public function importSurvey(array $data, $rootPath, $loggedUser, $workspace)
     {
         $survey = new Survey();
@@ -887,8 +884,7 @@ class SurveyManager
             }
 
             $questionRelations = new ArrayCollection();
-            foreach($surveyData['questions'] as $questionData)
-            {
+            foreach ($surveyData['questions'] as $questionData) {
                 $question = new Question();
                 $question->setTitle($questionData['title']);
                 $question->setQuestion($this->getFromFile($questionData['questionPath'], $rootPath));
@@ -901,14 +897,13 @@ class SurveyManager
                 $this->om->persist($question);
 
                 if ($questionData['type'] === 'multiple_choice_single' || $questionData['type'] === 'multiple_choice_multiple') {
-
                     $multipleQuestion = new MultipleChoiceQuestion();
                     $multipleQuestion->setHorizontal($questionData['multiple_choices']['horizontal']);
                     $multipleQuestion->setQuestion($question);
                     $this->om->persist($multipleQuestion);
 
                     $choices = new ArrayCollection();
-                    foreach($questionData['multiple_choices']['choices'] as $choiceData) {
+                    foreach ($questionData['multiple_choices']['choices'] as $choiceData) {
                         $choice = new Choice();
                         $choice->setContent($this->getFromFile($choiceData['contentPath'], $rootPath));
                         $choice->setOther($choiceData['other']);
@@ -930,7 +925,7 @@ class SurveyManager
             }
             $survey->setQuestionRelations($questionRelations);
         }
-        
+
         return $survey;
     }
 
@@ -944,7 +939,8 @@ class SurveyManager
         return $uid;
     }
 
-    private function getFromFile($filePath, $rootPath) {
+    private function getFromFile($filePath, $rootPath)
+    {
         return file_get_contents($rootPath.DIRECTORY_SEPARATOR.$filePath);
     }
 }
