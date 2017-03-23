@@ -17,6 +17,7 @@ use FormaLibre\SupportBundle\Form\InterventionStatusType;
 use FormaLibre\SupportBundle\Form\InterventionType;
 use FormaLibre\SupportBundle\Form\PluginConfigurationType;
 use FormaLibre\SupportBundle\Form\StatusType;
+use FormaLibre\SupportBundle\Form\TicketInterventionType;
 use FormaLibre\SupportBundle\Form\TicketTypeChangeType;
 use FormaLibre\SupportBundle\Form\TypeType;
 use FormaLibre\SupportBundle\Manager\SupportManager;
@@ -80,14 +81,14 @@ class AdminSupportController extends Controller
     /**
      * @EXT\Route(
      *     "/admin/support/index/page/{page}/max/{max}/ordered/by/{orderedBy}/order/{order}/search/{search}",
-     *     name="formalibre_admin_support_index",
+     *     name="formalibre_admin_support_ongoing_tickets",
      *     defaults={"page"=1, "search"="", "max"=50, "orderedBy"="creationDate","order"="DESC"},
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
-    public function adminSupportIndexAction($search = '', $page = 1, $max = 50, $orderedBy = 'creationDate', $order = 'DESC')
+    public function adminSupportOngoingTicketsAction($search = '', $page = 1, $max = 50, $orderedBy = 'creationDate', $order = 'DESC')
     {
         $tickets = $this->supportManager->getOngoingTickets($search, $orderedBy, $order, true, $page, $max);
 
@@ -105,7 +106,7 @@ class AdminSupportController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/admin/support/type/{type}/tabs/active/{supportName}",
+     *     "/admin/support/type/{type}/tabs/active",
      *     name="formalibre_admin_support_type_tabs",
      *     options={"expose"=true}
      * )
@@ -201,7 +202,7 @@ class AdminSupportController extends Controller
      * )
      * @EXT\Template()
      */
-    public function adminSupportForwardedTicketssAction(
+    public function adminSupportForwardedTicketsAction(
         $search = '',
         $page = 1,
         $max = 50,
@@ -325,9 +326,10 @@ class AdminSupportController extends Controller
      */
     public function adminTicketDeleteAction(Ticket $ticket)
     {
-        $this->supportManager->deleteTicket($ticket);
+        $ticketId = $ticket->getId();
+        $this->supportManager->removeTicket($ticket, 'admin');
 
-        return new JsonResponse('success', 200);
+        return new JsonResponse($ticketId, 200);
     }
 
     /**
@@ -342,7 +344,22 @@ class AdminSupportController extends Controller
     {
         $this->supportManager->closeTicket($ticket, $user);
 
-        return new JsonResponse('success', 200);
+        return new JsonResponse($ticket->getId(), 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/admin/my/ticket/{ticket}/remove",
+     *     name="formalibre_admin_my_ticket_remove",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     */
+    public function adminMyTicketRemoveAction(User $user, Ticket $ticket)
+    {
+        $this->supportManager->deleteTicketUser($ticket, $user);
+
+        return new JsonResponse($ticket->getId(), 200);
     }
 
     /**
@@ -361,434 +378,61 @@ class AdminSupportController extends Controller
         }
         $this->supportManager->deactivateTicketUser($ticketUser);
 
-        return new RedirectResponse($this->router->generate('formalibre_admin_support_index'));
+        return new RedirectResponse($this->router->generate('formalibre_admin_support_ongoing_tickets'));
     }
 
+    /**
+     * @EXT\Route(
+     *     "/admin/support/contacts/{contactIds}/add",
+     *     name="formalibre_admin_support_contacts_add",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     */
+    public function adminSupportContactsAddAction($contactIds)
+    {
+        $config = $this->supportManager->getConfiguration();
+        $details = $config->getDetails();
+        $contacts = isset($details['contacts']) ? $details['contacts'] : array();
+        $toAdd = explode(',', $contactIds);
+
+        foreach ($toAdd as $userId) {
+            $contacts[] = intval($userId);
+        }
+        $details['contacts'] = $contacts;
+        $config->setDetails($details);
+        $this->supportManager->persistConfiguration($config);
+
+        return new JsonResponse('success', 200);
+    }
 
     /**
-     * #################################################################################################################
-     * #################################################################################################################
-     * #################################################################################################################
+     * @EXT\Route(
+     *     "/admin/support/contact/{contactId}/remove",
+     *     name="formalibre_admin_support_contact_remove",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      */
+    public function adminSupportContactRemoveAction($contactId)
+    {
+        $config = $this->supportManager->getConfiguration();
+        $details = $config->getDetails();
 
+        if (isset($details['contacts'])) {
+            $contacts = $details['contacts'];
+            $key = array_search($contactId, $contacts);
 
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/support/configuration/menu",
-//     *     name="formalibre_admin_support_configuration_menu",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminSupportConfigurationMenuAction()
-//    {
-//        return array();
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/support/contacts/{contactIds}/add",
-//     *     name="formalibre_admin_support_contacts_add",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     */
-//    public function adminSupportContactsAddAction($contactIds)
-//    {
-//        $config = $this->supportManager->getConfiguration();
-//        $details = $config->getDetails();
-//        $contacts = isset($details['contacts']) ? $details['contacts'] : array();
-//        $toAdd = explode(',', $contactIds);
-//
-//        foreach ($toAdd as $userId) {
-//            $contacts[] = intval($userId);
-//        }
-//        $details['contacts'] = $contacts;
-//        $config->setDetails($details);
-//        $this->supportManager->persistConfiguration($config);
-//
-//        return new JsonResponse('success', 200);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/support/contact/{contactId}/remove",
-//     *     name="formalibre_admin_support_contact_remove",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     */
-//    public function adminSupportContactRemoveAction($contactId)
-//    {
-//        $config = $this->supportManager->getConfiguration();
-//        $details = $config->getDetails();
-//
-//        if (isset($details['contacts'])) {
-//            $contacts = $details['contacts'];
-//            $key = array_search($contactId, $contacts);
-//
-//            if ($key !== false) {
-//                unset($contacts[$key]);
-//                $details['contacts'] = $contacts;
-//                $config->setDetails($details);
-//                $this->supportManager->persistConfiguration($config);
-//            }
-//        }
-//
-//        return new JsonResponse('success', 200);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/support/type/{type}/new/page/{page}/max/{max}/ordered/by/{orderedBy}/order/{order}/search/{search}",
-//     *     name="formalibre_admin_support_new",
-//     *     defaults={"page"=1, "search"="", "max"=50, "orderedBy"="creationDate","order"="DESC"},
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminSupportNewAction(
-//        Type $type,
-//        $search = '',
-//        $page = 1,
-//        $max = 50,
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC'
-//    ) {
-//        $tickets = $this->supportManager->getTicketsWithoutInterventionByLevel(
-//            0,
-//            $type,
-//            $search,
-//            $orderedBy,
-//            $order,
-//            true,
-//            $page,
-//            $max
-//        );
-//
-//        return array(
-//            'tickets' => $tickets,
-//            'type' => $type,
-//            'supportName' => 'new',
-//            'search' => $search,
-//            'page' => $page,
-//            'max' => $max,
-//            'orderedBy' => $orderedBy,
-//            'order' => $order,
-//        );
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/support/type/{type}/level/{level}/page/{page}/max/{max}/ordered/by/{orderedBy}/order/{order}/search/{search}",
-//     *     name="formalibre_admin_support_level",
-//     *     defaults={"page"=1, "search"="", "max"=50, "orderedBy"="creationDate","order"="DESC"},
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminSupportLevelAction(
-//        Type $type,
-//        $level,
-//        $search = '',
-//        $page = 1,
-//        $max = 50,
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC'
-//    ) {
-//        $tickets = $this->supportManager->getTicketsByLevel(
-//            $type,
-//            $level,
-//            $search,
-//            $orderedBy,
-//            $order,
-//            true,
-//            $page,
-//            $max
-//        );
-//
-//        return array(
-//            'tickets' => $tickets,
-//            'type' => $type,
-//            'level' => $level,
-//            'supportName' => 'level_'.$level,
-//            'search' => $search,
-//            'page' => $page,
-//            'max' => $max,
-//            'orderedBy' => $orderedBy,
-//            'order' => $order,
-//        );
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/comments/view",
-//     *     name="formalibre_admin_ticket_comments_view",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:Support:ticketCommentsModalView.html.twig")
-//     */
-//    public function adminTicketCommentsViewAction(Ticket $ticket)
-//    {
-//        return array('ticket' => $ticket);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/interventions/view",
-//     *     name="formalibre_admin_ticket_interventions_view",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminTicketInterventionsModalView.html.twig")
-//     */
-//    public function adminTicketInterventionsViewAction(Ticket $ticket)
-//    {
-//        return array('ticket' => $ticket);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/new/open",
-//     *     name="formalibre_admin_ticket_new_open",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     */
-//    public function adminNewTicketOpenAction(User $authenticatedUser, Ticket $ticket)
-//    {
-//        if ($ticket->getLevel() === 0) {
-//            $this->supportManager->startTicket($ticket, $authenticatedUser);
-//        }
-//
-//        return new RedirectResponse(
-//            $this->router->generate('formalibre_admin_ticket_open', array('ticket' => $ticket->getId()))
-//        );
-//    }
-//
-////    /**
-////     * @EXT\Route(
-////     *     "/admin/ticket/{ticket}/open",
-////     *     name="formalibre_admin_ticket_open",
-////     *     options={"expose"=true}
-////     * )
-////     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-////     * @EXT\Template()
-////     */
-////    public function adminTicketOpenAction(Ticket $ticket)
-////    {
-////        return array('ticket' => $ticket);
-////    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/open/comments",
-//     *     name="formalibre_admin_ticket_open_comments",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminTicketOpenCommentsAction(Ticket $ticket)
-//    {
-//        return array('ticket' => $ticket);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/open/interventions",
-//     *     name="formalibre_admin_ticket_open_interventions",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminTicketOpenInterventionsAction(Ticket $ticket)
-//    {
-//        $totalTime = 0;
-//        $interventions = $ticket->getInterventions();
-//
-//        foreach ($interventions as $intervention) {
-//            $duration = $intervention->getDuration();
-//
-//            if (!is_null($duration)) {
-//                $totalTime += $duration;
-//            }
-//        }
-//
-//        return array('ticket' => $ticket, 'totalTime' => $totalTime);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/management/info",
-//     *     name="formalibre_admin_ticket_management_info",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminTicketManagementInfoAction(
-//        User $authenticatedUser,
-//        Ticket $ticket
-//    ) {
-//        $interventions = $ticket->getInterventions();
-//        $lastIntervention = null;
-//        $nbInterventions = count($interventions);
-//        $totalTime = 0;
-//
-//        if ($nbInterventions > 0) {
-//            $lastIntervention = $interventions[$nbInterventions - 1];
-//
-//            foreach ($interventions as $intervention) {
-//                $duration = $intervention->getDuration();
-//
-//                if (!is_null($duration)) {
-//                    $totalTime += $duration;
-//                }
-//            }
-//        }
-//
-////        $unfinishedInterventions = $this->supportManager->getUnfinishedInterventionByTicket($ticket);
-////        $hasOngoingIntervention = false;
-////        $ongoingIntervention = null;
-////        $otherUnfinishedInterventions = array();
-////
-////        foreach ($unfinishedInterventions as $unfinishedIntervention) {
-////            if ($unfinishedIntervention->getUser() === $authenticatedUser) {
-////                $hasOngoingIntervention = true;
-////                $ongoingIntervention = $unfinishedIntervention;
-////            } else {
-////                $otherUnfinishedInterventions[] = $unfinishedIntervention;
-////            }
-////        }
-//        $withCredits = $this->supportManager->getConfigurationCreditOption();
-//
-//        if ($withCredits) {
-//            $datasEvent = new GenericDatasEvent($ticket->getUser());
-//            $this->eventDispatcher->dispatch('formalibre_request_nb_remaining_credits', $datasEvent);
-//            $response = $datasEvent->getResponse();
-//
-//            $nbCredits = is_null($response) ? 666 : $response;
-//        } else {
-//            $nbCredits = 666;
-//        }
-//        $nbHours = (int) ($totalTime / 60);
-//        $nbMinutes = ($nbHours === 0) ? $totalTime : $totalTime % ($nbHours * 60);
-//        $totalCredits = (5 * $nbHours) + ceil($nbMinutes / 15);
-//
-//        return array(
-//            'ticket' => $ticket,
-//            'currentUser' => $authenticatedUser,
-////            'unfinishedInterventions' => $otherUnfinishedInterventions,
-////            'hasOngoingIntervention' => $hasOngoingIntervention,
-////            'ongoingIntervention' => $ongoingIntervention,
-//            'lastIntervention' => $lastIntervention,
-//            'nbCredits' => $nbCredits,
-//            'totalCredits' => $totalCredits,
-//            'availableCredits' => $nbCredits,
-//            'totalTime' => $totalTime,
-//            'withCredits' => $withCredits,
-//        );
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/intervention/start",
-//     *     name="formalibre_admin_ticket_intervention_start",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     */
-//    public function adminTicketInterventionStartAction(
-//        User $authenticatedUser,
-//        Ticket $ticket
-//    ) {
-//        $intervention = new Intervention();
-//        $intervention->setTicket($ticket);
-//        $intervention->setUser($authenticatedUser);
-//        $intervention->setStartDate(new \DateTime());
-//        $this->supportManager->persistIntervention($intervention);
-//
-//        return new JsonResponse(array('id' => $intervention->getId()), 200);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/intervention/{intervention}/stop",
-//     *     name="formalibre_admin_ticket_intervention_stop",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     */
-//    public function adminTicketInterventionStopAction(Intervention $intervention)
-//    {
-//        $endDate = new \DateTime();
-//        $startDate = $intervention->getStartDate();
-//        $startDateTimestamp = $startDate->format('U');
-//        $endDateTimestamp = $endDate->format('U');
-//        $duration = ceil(($endDateTimestamp - $startDateTimestamp) / 60);
-//        $intervention->setEndDate($endDate);
-//        $intervention->setDuration($duration);
-//        $this->supportManager->persistIntervention($intervention);
-//
-//        $status = $intervention->getStatus();
-//
-//        if (!is_null($status)) {
-//            $ticket = $intervention->getTicket();
-//            $ticket->setStatus($status);
-//
-//            if ($status->getCode() === 'FA') {
-//                $ticket->setLevel(-1);
-//            }
-//            $this->supportManager->persistTicket($ticket);
-//        }
-//
-//        return new JsonResponse(array('id' => $intervention->getId()), 200);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/type/change/form",
-//     *     name="formalibre_admin_ticket_type_change_form",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminTicketTypeChangeModalForm.html.twig")
-//     */
-//    public function adminTicketTypeChangeFormAction(Ticket $ticket)
-//    {
-//        $form = $this->formFactory->create(new TicketTypeChangeType($ticket), $ticket);
-//
-//        return array('form' => $form->createView(), 'ticket' => $ticket);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/type/change",
-//     *     name="formalibre_admin_ticket_type_change",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminTicketTypeChangeModalForm.html.twig")
-//     */
-//    public function adminTicketTypeChangeAction(Ticket $ticket)
-//    {
-//        $form = $this->formFactory->create(new TicketTypeChangeType($ticket), $ticket);
-//        $form->handleRequest($this->request);
-//
-//        if ($form->isValid()) {
-//            $this->supportManager->persistTicket($ticket);
-//
-//            return new JsonResponse($ticket->getId(), 200);
-//        } else {
-//            return array('form' => $form->createView(), 'ticket' => $ticket);
-//        }
-//    }
+            if ($key !== false) {
+                unset($contacts[$key]);
+                $details['contacts'] = $contacts;
+                $config->setDetails($details);
+                $this->supportManager->persistConfiguration($config);
+            }
+        }
+
+        return new JsonResponse('success', 200);
+    }
 
     /**
      * @EXT\Route(
@@ -832,12 +476,25 @@ class AdminSupportController extends Controller
             $comment->setType($type);
             $comment->setCreationDate(new \DateTime());
             $this->supportManager->persistComment($comment);
-            $this->supportManager->sendTicketMail(
-                $user,
-                $ticket,
-                'new_admin_comment',
-                $comment
-            );
+
+            switch ($type) {
+                case Comment::PUBLIC_COMMENT :
+                    $this->supportManager->sendTicketMail(
+                        $user,
+                        $comment->getTicket(),
+                        'new_admin_comment',
+                        $comment
+                    );
+                    break;
+                case Comment::PRIVATE_COMMENT :
+                    $this->supportManager->sendTicketMail(
+                        $user,
+                        $comment->getTicket(),
+                        'new_internal_note',
+                        $comment
+                    );
+                    break;
+            }
             $data = [];
             $data['comment'] = [];
             $data['comment']['id'] = $comment->getId();
@@ -896,12 +553,25 @@ class AdminSupportController extends Controller
         if ($form->isValid()) {
             $comment->setEditionDate(new \DateTime());
             $this->supportManager->persistComment($comment);
-            $this->supportManager->sendTicketMail(
-                $user,
-                $comment->getTicket(),
-                'new_admin_comment',
-                $comment
-            );
+
+            switch ($type) {
+                case Comment::PUBLIC_COMMENT :
+                    $this->supportManager->sendTicketMail(
+                        $user,
+                        $comment->getTicket(),
+                        'new_admin_comment',
+                        $comment
+                    );
+                    break;
+                case Comment::PRIVATE_COMMENT :
+                    $this->supportManager->sendTicketMail(
+                        $user,
+                        $comment->getTicket(),
+                        'new_internal_note',
+                        $comment
+                    );
+                    break;
+            }
 
             return new JsonResponse(
                 ['id' => $comment->getId(), 'content' => $comment->getContent(), 'type' => $comment->getType()],
@@ -930,270 +600,6 @@ class AdminSupportController extends Controller
 
         return new JsonResponse('success', 200);
     }
-
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/intervention/create/form",
-//     *     name="formalibre_admin_ticket_intervention_create_form",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminTicketInterventionCreateFormAction(
-//        User $authenticatedUser,
-//        Ticket $ticket
-//    ) {
-//        $intervention = new Intervention();
-//        $now = new \DateTime();
-//        $intervention->setStartDate($now);
-//        $intervention->setEndDate($now);
-//        $intervention->setDuration(0);
-//        $form = $this->formFactory->create(
-//            new InterventionType($authenticatedUser),
-//            $intervention
-//        );
-//
-//        return array('form' => $form->createView(), 'ticket' => $ticket);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/{ticket}/intervention/create",
-//     *     name="formalibre_admin_ticket_intervention_create",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminTicketInterventionCreateForm.html.twig")
-//     */
-//    public function adminTicketInterventionCreateAction(
-//        User $authenticatedUser,
-//        Ticket $ticket
-//    ) {
-//        $intervention = new Intervention();
-//        $intervention->setTicket($ticket);
-//        $intervention->setUser($authenticatedUser);
-//        $now = new \DateTime();
-//        $intervention->setStartDate($now);
-//        $form = $this->formFactory->create(
-//            new InterventionType($authenticatedUser),
-//            $intervention
-//        );
-//        $form->handleRequest($this->request);
-//        $timeType = $form->get('computeTimeMode')->getData();
-//        $startDate = $intervention->getStartDate();
-//
-//        if (!is_null($timeType) && !is_null($startDate)) {
-//            $startDateTimestamp = $startDate->format('U');
-//
-//            if ($timeType === 0) {
-//                $endDate = $intervention->getEndDate();
-//
-//                if (!is_null($endDate)) {
-//                    $endDateTimestamp = $endDate->format('U');
-//                    $duration = ceil(($endDateTimestamp - $startDateTimestamp) / 60);
-//                    $intervention->setDuration($duration);
-//                } else {
-//                    $form->addError(
-//                        new FormError(
-//                            $this->translator->trans('end_date_is_required', array(), 'support')
-//                        )
-//                    );
-//                }
-//            } elseif ($timeType === 1) {
-//                $duration = $intervention->getDuration();
-//
-//                if (!is_null($duration)) {
-//                    $endDateTimestamp = $startDateTimestamp + ($duration * 60);
-//                    $endDate = new \DateTime();
-//                    $endDate->setTimestamp($endDateTimestamp);
-//                    $intervention->setEndDate($endDate);
-//                } else {
-//                    $form->addError(
-//                        new FormError(
-//                            $this->translator->trans('duration_is_required', array(), 'support')
-//                        )
-//                    );
-//                }
-//            }
-//        }
-//
-//        if ($form->isValid()) {
-//            $this->supportManager->persistIntervention($intervention);
-//            $status = $intervention->getStatus();
-//            $ticket->setStatus($status);
-//
-//            if ($status->getCode() === 'FA') {
-//                $ticket->setLevel(-1);
-//            }
-//            $this->supportManager->persistTicket($ticket);
-//
-//            return new RedirectResponse(
-//                $this->router->generate(
-//                    'formalibre_admin_ticket_open_interventions',
-//                    array('ticket' => $ticket->getId())
-//                )
-//            );
-//        } else {
-//            return array('form' => $form->createView(), 'ticket' => $ticket);
-//        }
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/intervention/{intervention}/edit/form",
-//     *     name="formalibre_admin_ticket_intervention_edit_form",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template()
-//     */
-//    public function adminTicketInterventionEditFormAction(Intervention $intervention)
-//    {
-//        $form = $this->formFactory->create(
-//            new InterventionType($intervention->getUser()),
-//            $intervention
-//        );
-//
-//        return array(
-//            'form' => $form->createView(),
-//            'intervention' => $intervention,
-//            'ticket' => $intervention->getTicket(),
-//        );
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/intervention/{intervention}/edit",
-//     *     name="formalibre_admin_ticket_intervention_edit",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminTicketInterventionEditForm.html.twig")
-//     */
-//    public function adminTicketInterventionEditAction(Intervention $intervention)
-//    {
-//        $ticket = $intervention->getTicket();
-//        $form = $this->formFactory->create(
-//            new InterventionType($intervention->getUser()),
-//            $intervention
-//        );
-//        $form->handleRequest($this->request);
-//        $timeType = $form->get('computeTimeMode')->getData();
-//        $startDate = $intervention->getStartDate();
-//
-//        if (!is_null($timeType) && !is_null($startDate)) {
-//            $startDateTimestamp = $startDate->format('U');
-//
-//            if ($timeType === 0) {
-//                $endDate = $intervention->getEndDate();
-//
-//                if (!is_null($endDate)) {
-//                    $endDateTimestamp = $endDate->format('U');
-//                    $duration = ceil(($endDateTimestamp - $startDateTimestamp) / 60);
-//                    $intervention->setDuration($duration);
-//                } else {
-//                    $form->addError(
-//                        new FormError(
-//                            $this->translator->trans('end_date_is_required', array(), 'support')
-//                        )
-//                    );
-//                }
-//            } elseif ($timeType === 1) {
-//                $duration = $intervention->getDuration();
-//
-//                if (!is_null($duration)) {
-//                    $endDateTimestamp = $startDateTimestamp + ($duration * 60);
-//                    $endDate = new \DateTime();
-//                    $endDate->setTimestamp($endDateTimestamp);
-//                    $intervention->setEndDate($endDate);
-//                } else {
-//                    $form->addError(
-//                        new FormError(
-//                            $this->translator->trans('duration_is_required', array(), 'support')
-//                        )
-//                    );
-//                }
-//            }
-//        }
-//
-//        if ($form->isValid()) {
-//            $this->supportManager->persistIntervention($intervention);
-//
-//            return new RedirectResponse(
-//                $this->router->generate(
-//                    'formalibre_admin_ticket_open_interventions',
-//                    array('ticket' => $ticket->getId())
-//                )
-//            );
-//        } else {
-//            return array(
-//                'form' => $form->createView(),
-//                'intervention' => $intervention,
-//                'ticket' => $ticket,
-//            );
-//        }
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/intervention/{intervention}/delete",
-//     *     name="formalibre_admin_ticket_intervention_delete",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     */
-//    public function adminTicketInterventionDeleteAction(Intervention $intervention)
-//    {
-//        $this->supportManager->deleteIntervention($intervention);
-//
-//        return new JsonResponse('success', 200);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/intervention/{intervention}/status/edit/form",
-//     *     name="formalibre_admin_ticket_intervention_status_edit_form",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminInterventionStatusEditModalForm.html.twig")
-//     */
-//    public function adminTicketInterventionStatusEditFormAction(Intervention $intervention)
-//    {
-//        $form = $this->formFactory->create(
-//            new InterventionStatusType(),
-//            $intervention
-//        );
-//
-//        return array('form' => $form->createView(), 'intervention' => $intervention);
-//    }
-//
-//    /**
-//     * @EXT\Route(
-//     *     "/admin/ticket/intervention/{intervention}/status/edit",
-//     *     name="formalibre_admin_ticket_intervention_status_edit",
-//     *     options={"expose"=true}
-//     * )
-//     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-//     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminInterventionStatusEditModalForm.html.twig")
-//     */
-//    public function adminTicketInterventionStatusEditAction(Intervention $intervention)
-//    {
-//        $form = $this->formFactory->create(
-//            new InterventionStatusType(),
-//            $intervention
-//        );
-//        $form->handleRequest($this->request);
-//
-//        if ($form->isValid()) {
-//            $this->supportManager->persistIntervention($intervention);
-//
-//            return new JsonResponse($intervention->getId(), 200);
-//        } else {
-//            return array('form' => $form->createView(), 'intervention' => $intervention);
-//        }
-//    }
 
     /**
      * @EXT\Route(
@@ -1443,48 +849,97 @@ class AdminSupportController extends Controller
         return new JsonResponse('success', 200);
     }
 
-    /********************************
-     * Plugin configuration methods *
-     ********************************/
-
     /**
      * @EXT\Route(
-     *     "/plugin/configure/form",
-     *     name="formalibre_support_plugin_configure_form"
+     *     "/admin/support/ticket/{ticket}/intervention/create/form",
+     *     name="formalibre_admin_support_ticket_intervention_create_form",
+     *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template()
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminSupportTicketInterventionModalForm.html.twig")
      */
-    public function pluginConfigureFormAction()
+    public function adminSupportTicketInterventionCreateFormAction(Ticket $ticket)
     {
-        $config = $this->supportManager->getConfiguration();
-        $details = $config->getDetails();
+        $form = $this->formFactory->create(new TicketInterventionType(), $ticket);
 
-        $form = $this->formFactory->create(new PluginConfigurationType($details));
-
-        return array('form' => $form->createView());
+        return ['form' => $form->createView(), 'ticket' => $ticket];
     }
 
     /**
      * @EXT\Route(
-     *     "/plugin/configure",
-     *     name="formalibre_support_plugin_configure"
+     *     "/admin/support/ticket/{ticket}/intervention/create",
+     *     name="formalibre_admin_support_ticket_intervention_create",
+     *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
-     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:pluginConfigureForm.html.twig")
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     * @EXT\Template("FormaLibreSupportBundle:AdminSupport:adminSupportTicketInterventionModalForm.html.twig")
      */
-    public function pluginConfigureAction()
+    public function adminSupportTicketInterventionCreateAction(User $user, Ticket $ticket)
     {
-        $config = $this->supportManager->getConfiguration();
-        $details = $config->getDetails();
-        $parameters = $this->request->request->all();
-        $withCredits = !empty($parameters);
-        $details['with_credits'] = $withCredits;
-        $config->setDetails($details);
-        $this->supportManager->persistConfiguration($config);
+        $oldType = $ticket->getType();
+        $oldStatus = $ticket->getStatus();
+        $form = $this->formFactory->create(new TicketInterventionType(), $ticket);
+        $form->handleRequest($this->request);
 
-        return new RedirectResponse(
-            $this->router->generate('claro_admin_plugins')
-        );
+        if ($form->isValid()) {
+            $data = [];
+            $messageData = [];
+            $status = $ticket->getStatus();
+            $type = $ticket->getType();
+            $privateComment = $form->get('privateComment')->getData();
+            $publicComment = $form->get('publicComment')->getData();
+
+            if ($status !== $oldStatus || $type !== $oldType) {
+
+                if ($type !== $oldType) {
+                    $data['type'] = [];
+                    $data['type']['name'] = $ticket->getType()->getName();
+                    $messageData['oldType'] = $oldType;
+                    $messageData['type'] = $type;
+                }
+                if ($status !== $oldStatus) {
+                    $intervention = $this->supportManager->createIntervention($ticket, $user, $status);
+                    $data['status'] = [];
+                    $data['status']['name'] = $status->getName();
+                    $data['status']['date'] = $intervention->getEndDate()->format('d/m/Y H:i');
+                    $messageData['oldStatus'] = $oldStatus;
+                    $messageData['status'] = $status;
+                }
+            } else {
+                $this->supportManager->persistTicket($ticket);
+            }
+            if ($messageData || $publicComment) {
+                $comment = $this->supportManager
+                    ->createInterventionComment($user, $ticket, $messageData, Comment::PUBLIC_COMMENT, $publicComment);
+                $data['publicComment'] = [];
+                $data['publicComment']['comment'] = [];
+                $data['publicComment']['comment']['id'] = $comment->getId();
+                $data['publicComment']['comment']['content'] = $comment->getContent();
+                $data['publicComment']['comment']['type'] = $comment->getType();
+                $data['publicComment']['comment']['creationDate'] = $comment->getCreationDate()->format('d/m/Y H:i');
+                $data['publicComment']['user']['id'] = $user->getId();
+                $data['publicComment']['user']['firstName'] = $user->getFirstName();
+                $data['publicComment']['user']['lastName'] = $user->getLastName();
+                $data['publicComment']['user']['picture'] = $user->getPicture();
+            }
+            if ($messageData || $privateComment) {
+                $comment = $this->supportManager
+                    ->createInterventionComment($user, $ticket, $messageData, Comment::PRIVATE_COMMENT, $privateComment);
+                $data['privateComment'] = [];
+                $data['privateComment']['comment'] = [];
+                $data['privateComment']['comment']['id'] = $comment->getId();
+                $data['privateComment']['comment']['content'] = $comment->getContent();
+                $data['privateComment']['comment']['type'] = $comment->getType();
+                $data['privateComment']['comment']['creationDate'] = $comment->getCreationDate()->format('d/m/Y H:i');
+                $data['privateComment']['user']['id'] = $user->getId();
+                $data['privateComment']['user']['firstName'] = $user->getFirstName();
+                $data['privateComment']['user']['lastName'] = $user->getLastName();
+                $data['privateComment']['user']['picture'] = $user->getPicture();
+            }
+
+            return new JsonResponse($data, 200);
+        } else {
+            return ['form' => $form->createView(), 'ticket' => $ticket];
+        }
     }
 }

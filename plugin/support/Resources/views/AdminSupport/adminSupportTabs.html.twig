@@ -1,16 +1,16 @@
 <ul class="nav nav-tabs">
     <li role="presentation" {% if supportType == 'ongoing_tickets' %}class="active"{% endif %}>
-        <a href="{{ path('formalibre_admin_support_index') }}">
+        <a href="{{ path('formalibre_admin_support_ongoing_tickets') }}">
             {{ 'ongoing_tickets'|trans({}, 'support') }}
             <span id="ongoing-tickets-tab-badge" class="badge">{{ nbOngoingTickets }}</span>
         </a>
     </li>
-    <li role="presentation" {% if supportType == 'forwarded_tickets' %}class="active"{% endif %}>
-        <a href="{{ path('formalibre_admin_support_forwarded_tickets') }}">
-            {{ 'forwarded_tickets'|trans({}, 'support') }}
-            <span id="forwarded-tickets-tab-badge" class="badge">{{ nbForwardedTickets }}</span>
-        </a>
-    </li>
+    {#<li role="presentation" {% if supportType == 'forwarded_tickets' %}class="active"{% endif %}>#}
+        {#<a href="{{ path('formalibre_admin_support_forwarded_tickets') }}">#}
+            {#{{ 'forwarded_tickets'|trans({}, 'support') }}#}
+            {#<span id="forwarded-tickets-tab-badge" class="badge">{{ nbForwardedTickets }}</span>#}
+        {#</a>#}
+    {#</li>#}
     <li role="presentation" {% if supportType == 'my_tickets' %}class="active"{% endif %}>
         <a href="{{ path('formalibre_admin_support_my_tickets') }}">
             {{ 'my_tickets'|trans({}, 'support') }}
@@ -26,7 +26,10 @@
 
     {% for ticketUser in activeTicketUsers %}
         {% set ticket = ticketUser.getTicket() %}
-        <li role="presentation" {% if supportType == ticket.getId() %}class="active"{% endif %}>
+        <li role="presentation"
+            {% if supportType == ticket.getId() %}class="active"{% endif %}
+            id="ticket-tab-{{ ticket.getId() }}"
+        >
             <a href="{{ path('formalibre_admin_ticket_open', {'ticket': ticket.getId()}) }}">
                 {{ ticket.getTitle() }}
                 &nbsp;

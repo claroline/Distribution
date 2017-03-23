@@ -18,7 +18,6 @@ $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
     success: function(data, textStatus, jqXHR) {
       switch (jqXHR.status) {
         case 201:
-          $('#comment_form_content').html('')
           addComment(data)
           break
         default:
@@ -28,22 +27,10 @@ $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
   })
 })
 
-$('#ticket-open-head').on('click', '#ticket-edit-btn', function () {
-  const ticketId = $(this).data('ticket-id')
-
-  window.Claroline.Modal.displayForm(
-    Routing.generate('formalibre_ticket_edit_modal_form', {'ticket': ticketId}),
-    refreshPageAfterEdition,
-    function() {}
-  )
-})
-
-const refreshPageAfterEdition = function () {
-  $('#ticket_form_description').html('')
-  window.location.reload()
-}
-
 const addComment = function (data) {
+  $('#comment_form_content').html('')
+  $('#comment_edit_form_content').html('')
+
   const picture = data['user']['picture'] ?
     `
       <img src="${asset('uploads/pictures/' + data['user']['picture'])}"
@@ -58,7 +45,7 @@ const addComment = function (data) {
     `
 
   const comment = `
-    <div class="media comment-row" id="row-comment-${data['comment']['id']}">
+    <div class="media comment-row">
         <div class="comment-contact col-md-2 col-sm-2 text-center comment-contact-left">
             ${picture}
             ${data['user']['firstName']}
@@ -67,12 +54,12 @@ const addComment = function (data) {
             ${data['comment']['creationDate']}
         </div>
         <div class="comment-content col-md-10 col-sm-10 comment-content-right">
-            <div>
+            <div id="comment-content-${data['comment']['id']}">
                 ${data['comment']['content']}
             </div>
         </div>
     </div>
   `
-  $('#comments-list').prepend('<hr>')
-  $('#comments-list').prepend(comment)
+  $('#public-comments-list').prepend('<hr>')
+  $('#public-comments-list').prepend(comment)
 }

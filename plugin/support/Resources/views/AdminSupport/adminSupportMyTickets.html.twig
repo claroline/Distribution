@@ -109,13 +109,24 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-default change-ticket-type-btn btn-sm"
+                            {#<button class="btn btn-default forward-ticket-btn btn-sm"#}
+                                    {#data-ticket-id="{{ ticketId }}"#}
+                                    {#data-toggle="tooltip"#}
+                                    {#title="{{ 'to_forward'|trans({}, 'support') }}"#}
+                            {#>#}
+                                {#<i class="fa fa-share"></i>#}
+                            {#</button>#}
+                            <button class="btn btn-default archive-ticket-btn btn-sm"
                                     data-ticket-id="{{ ticketId }}"
+                                    data-toggle="tooltip"
+                                    title="{{ 'to_archive'|trans({}, 'support') }}"
                             >
-                                <i class="fa fa-share"></i>
+                                <i class="fa fa-archive"></i>
                             </button>
                             <button class="btn btn-danger delete-ticket-btn btn-sm"
                                     data-ticket-id="{{ ticketId }}"
+                                    data-toggle="tooltip"
+                                    title="{{ 'remove_from_my_tickets_list'|trans({}, 'support') }}"
                             >
                                 <i class="fa fa-trash"></i>
                             </button>

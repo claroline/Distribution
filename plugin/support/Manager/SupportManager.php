@@ -31,7 +31,6 @@ class SupportManager
     private $userManager;
 
     private $configurationRepo;
-    private $interventionRepo;
     private $statusRepo;
     private $ticketRepo;
     private $ticketUserRepo;
@@ -63,7 +62,6 @@ class SupportManager
         $this->userManager = $userManager;
 
         $this->configurationRepo = $om->getRepository('FormaLibreSupportBundle:Configuration');
-        $this->interventionRepo = $om->getRepository('FormaLibreSupportBundle:Intervention');
         $this->statusRepo = $om->getRepository('FormaLibreSupportBundle:Status');
         $this->ticketRepo = $om->getRepository('FormaLibreSupportBundle:Ticket');
         $this->ticketUserRepo = $om->getRepository('FormaLibreSupportBundle:TicketUser');
@@ -80,6 +78,27 @@ class SupportManager
     {
         $this->om->remove($ticket);
         $this->om->flush();
+    }
+
+    public function removeTicket(Ticket $ticket, $type)
+    {
+        $this->om->startFlushSuite();
+        switch ($type) {
+            case 'admin':
+                $ticket->setAdminActive(false);
+                $this->om->persist($ticket);
+                $this->deleteTicketUsersByTicket($ticket);
+                break;
+            case 'user':
+                $ticket->setUserActive(false);
+                $ticket->setOpen(false);
+                $this->om->persist($ticket);
+                break;
+        }
+        if (!$ticket->isAdminActive() && !$ticket->isUserActive()) {
+            $this->deleteTicket($ticket);
+        }
+        $this->om->endFlushSuite();
     }
 
     public function generateTicketNum(User $user)
@@ -105,8 +124,8 @@ class SupportManager
             $this->createIntervention($ticket, $user, $status);
         }
         $this->persistTicket($ticket);
-        $this->sendTicketMail($user, $ticket, 'new_ticket');
         $this->om->endFlushSuite();
+        $this->sendTicketMail($user, $ticket, 'new_ticket');
     }
 
     public function closeTicket(Ticket $ticket, User $user)
@@ -115,9 +134,12 @@ class SupportManager
 
         if (!empty($status)) {
             $this->om->startFlushSuite();
+            $messageData = [];
+            $messageData['oldStatus'] = $ticket->getStatus();
+            $messageData['status'] = $status;
             $this->createIntervention($ticket, $user, $status);
+            $this->createInterventionComment($user, $ticket, $messageData, Comment::PUBLIC_COMMENT);
             $this->persistTicket($ticket);
-            $this->sendTicketMail($user, $ticket, 'ticket_closing');
             $this->om->endFlushSuite();
         }
     }
@@ -176,38 +198,12 @@ class SupportManager
         $intervention->setDuration(0);
         $this->persistIntervention($intervention);
         $ticket->setStatus($status);
+        $ticket->setUserActive(true);
         $this->persistTicket($ticket);
         $this->om->endFlushSuite();
 
+        return $intervention;
     }
-
-    public function deleteIntervention(Intervention $intervention)
-    {
-        $this->om->remove($intervention);
-        $this->om->flush();
-    }
-
-//    public function startTicket(Ticket $ticket, User $user)
-//    {
-//        $this->om->startFlushSuite();
-//        $ticket->setLevel(1);
-//        $startStatus = $this->getStatusByType(Status::STATUS_MANDATORY_START);
-//        $now = new \DateTime();
-//
-//        foreach ($startStatus as $status) {
-//            $intervention = new Intervention();
-//            $intervention->setTicket($ticket);
-//            $intervention->setUser($user);
-//            $intervention->setStatus($status);
-//            $intervention->setStartDate($now);
-//            $intervention->setEndDate($now);
-//            $intervention->setDuration(0);
-//            $this->persistIntervention($intervention);
-//            $ticket->setStatus($status);
-//        }
-//        $this->persistTicket($ticket);
-//        $this->om->endFlushSuite();
-//    }
 
     public function reorderStatus(Status $status, $nextStatusId)
     {
@@ -250,7 +246,6 @@ class SupportManager
         } else {
             $config = new Configuration();
             $details = [
-                'with_credits' => false,
                 'contacts' => [],
             ];
             $config->setDetails($details);
@@ -266,14 +261,6 @@ class SupportManager
         $this->om->flush();
     }
 
-    public function getConfigurationCreditOption()
-    {
-        $config = $this->getConfiguration();
-        $details = $config->getDetails();
-
-        return isset($details['with_credits']) ? $details['with_credits'] : false;
-    }
-
     public function getConfigurationContactsOption()
     {
         $config = $this->getConfiguration();
@@ -284,6 +271,7 @@ class SupportManager
 
     public function sendTicketMail(User $user, Ticket $ticket, $type = '', Comment $comment = null)
     {
+        $errors = [];
         $contactMail = null;
         $receivers = [];
         $extra = [];
@@ -312,10 +300,13 @@ class SupportManager
                         $this->translator->trans('phone', [], 'platform').
                         ' : '.
                         $ticket->getContactPhone().
+                        '<br>'.
+                        $this->translator->trans('link', [], 'platform').
+                        ' : '.
+                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
                         '<br><br>';
                 }
                 break;
-
             case 'ticket_edition':
                 $contactIds = $this->getConfigurationContactsOption();
                 $contactMail = $ticket->getContactMail();
@@ -339,10 +330,13 @@ class SupportManager
                         $this->translator->trans('phone', [], 'platform').
                         ' : '.
                         $ticket->getContactPhone().
+                        '<br>'.
+                        $this->translator->trans('link', [], 'platform').
+                        ' : '.
+                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
                         '<br><br>';
                 }
                 break;
-
             case 'ticket_deletion':
                 $contactIds = $this->getConfigurationContactsOption();
 
@@ -360,41 +354,22 @@ class SupportManager
                         '<br><br>';
                 }
                 break;
-
-            case 'ticket_closing':
-                $contactIds = $this->getConfigurationContactsOption();
-
-                if (count($contactIds) > 0) {
-                    $receivers = $this->userManager->getUsersByIds($contactIds);
-                    $subject = '['.
-                        $this->translator->trans('ticket_closing', [], 'support').
-                        ']['.
-                        $user->getFirstName().
-                        ' '.
-                        $user->getLastName().
-                        '] '.
-                        $ticket->getTitle();
-                    $content = $this->translator->trans('ticket_closing', [], 'support').
-                        '<br><br>';
-                }
-                break;
-
             case 'new_admin_comment':
                 $extra['to'] = [$ticket->getContactMail()];
 
                 if (!is_null($comment)) {
                     $subject = '['.
-                        $this->translator->trans('new_comment', [], 'support').
-                        ']['.
-                        $this->translator->trans('ticket', [], 'support').
-                        ' #'.
-                        $ticket->getNum().
+                        $this->translator->trans('new_ticket_message', [], 'support').
                         '] '.
                         $ticket->getTitle();
-                    $content = $comment->getContent().'<br><br>';
+                    $content = $comment->getContent().
+                        '<br>'.
+                        $this->translator->trans('link', [], 'platform').
+                        ' : '.
+                        $this->router->generate('formalibre_ticket_open', ['ticket' => $ticket->getId()], true).
+                        '<br><br>';
                 }
                 break;
-
             case 'new_comment':
                 $contactIds = $this->getConfigurationContactsOption();
                 $contactMail = $ticket->getContactMail();
@@ -402,7 +377,7 @@ class SupportManager
                 if (count($contactIds) > 0 && !is_null($comment)) {
                     $receivers = $this->userManager->getUsersByIds($contactIds);
                     $subject = '['.
-                        $this->translator->trans('new_comment', [], 'support').
+                        $this->translator->trans('new_ticket_message', [], 'support').
                         ']['.
                         $user->getFirstName().
                         ' '.
@@ -418,17 +393,48 @@ class SupportManager
                         $this->translator->trans('phone', [], 'platform').
                         ' : '.
                         $ticket->getContactPhone().
+                        '<br>'.
+                        $this->translator->trans('link', [], 'platform').
+                        ' : '.
+                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
                         '<br><br>';
                 }
                 break;
+            case 'new_internal_note':
+                $contactIds = $this->getConfigurationContactsOption();
+                $contactMail = $ticket->getContactMail();
 
+                if (count($contactIds) > 0 && !is_null($comment)) {
+                    $receivers = $this->userManager->getUsersByIds($contactIds);
+                    $subject = '['.
+                        $this->translator->trans('new_ticket_note', [], 'support').
+                        ']['.
+                        $user->getFirstName().
+                        ' '.
+                        $user->getLastName().
+                        '] '.
+                        $ticket->getTitle();
+                    $content = $comment->getContent().
+                        '<br>'.
+                        $this->translator->trans('link', [], 'platform').
+                        ' : '.
+                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
+                        '<br><br>';
+                }
+                break;
             default:
                 break;
         }
 
-        if (count($receivers) > 0 || count($extra) > 0) {
-            $this->mailManager->send($subject, $content, $receivers, null, $extra, false, $contactMail);
+        if (count($receivers) > 0 || (isset($extra['to']) && count($extra['to']) > 0)) {
+            try {
+                $this->mailManager->send($subject, $content, $receivers, null, $extra, false, $contactMail);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
         }
+
+        return $errors;
     }
 
     public function generateTicketUser(Ticket $ticket, User $user)
@@ -467,9 +473,76 @@ class SupportManager
         $this->om->flush();
     }
 
+    public function deleteTicketUser(Ticket $ticket, User $user)
+    {
+        $ticketUser = $this->ticketUserRepo->findOneBy(['ticket' => $ticket, 'user' => $user]);
+
+        if (!empty($ticketUser)) {
+            $this->om->remove($ticketUser);
+            $this->om->flush();
+        }
+    }
+
+    public function deleteTicketUsersByTicket(Ticket $ticket)
+    {
+        $ticketUsers = $this->ticketUserRepo->findBy(['ticket' => $ticket]);
+
+        foreach ($ticketUsers as $ticketUser) {
+            $this->om->remove($ticketUser);
+        }
+        $this->om->flush();
+    }
+
+    public function createInterventionComment(User $user, Ticket $ticket, array $messageData, $type, $message = null)
+    {
+        $content = '';
+
+        if (isset($messageData['type'])) {
+            $content .= '<b>['.$this->translator->trans('type_change', [], 'support').']</b><br>';
+            $content .= '<b>'.$this->translator->trans('previous_type', [], 'support').'</b> : ';
+            $content .= $messageData['oldType'] ? $this->translator->trans($messageData['oldType']->getName(), [], 'support') : '-';
+            $content .= '<br><b>'.$this->translator->trans('new_type', [], 'support').'</b> : ';
+            $content .= $this->translator->trans($messageData['type']->getName(), [], 'support').'<br><br>';
+        }
+        if (isset($messageData['status'])) {
+            $content .= '<b>['.$this->translator->trans('status_change', [], 'support').']</b><br>';
+            $content .= '<b>'.$this->translator->trans('previous_status', [], 'support').'</b> : ';
+            $content .= $messageData['oldStatus'] ? $this->translator->trans($messageData['oldStatus']->getName(), [], 'support') : '-';
+            $content .= '<br><b>'.$this->translator->trans('new_status', [], 'support').'</b> : ';
+            $content .= $this->translator->trans($messageData['status']->getName(), [], 'support').'<br><br>';
+        }
+        if (!is_null($message)) {
+            $content .= $message;
+        }
+        $comment = new Comment();
+        $comment->setTicket($ticket);
+        $comment->setUser($user);
+        $comment->setIsAdmin(true);
+        $comment->setType($type);
+        $comment->setCreationDate(new \DateTime());
+        $comment->setContent($content);
+        $this->persistComment($comment);
+
+        switch ($type) {
+            case Comment::PUBLIC_COMMENT :
+                $this->sendTicketMail($user, $ticket, 'new_admin_comment', $comment);
+                break;
+            case Comment::PRIVATE_COMMENT :
+                $this->sendTicketMail($user, $ticket, 'new_internal_note', $comment);
+                break;
+        }
+
+        return $comment;
+    }
+
     /**************************************
      * Access to TicketRepository methods *
      **************************************/
+
+    public function getTicketsByUser(User $user)
+    {
+        return $this->ticketRepo->findBy(['user' => $user, 'userActive' => true]);
+    }
 
     public function getOngoingTickets(
         $search = '',
@@ -530,137 +603,37 @@ class SupportManager
         return $withPager ? $this->pagerFactory->createPagerFromArray($tickets, $page, $max) : $tickets;
     }
 
-    /***********************************************/
-
-
-//    public function getAllTickets(
-//        $search = '',
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC',
-//        $withPager = true,
-//        $page = 1,
-//        $max = 50
-//    ) {
-//        $tickets = empty($search) ?
-//            $this->ticketRepo->findAllTickets($orderedBy, $order) :
-//            $this->ticketRepo->findAllSearchedTickets($search, $orderedBy, $order);
-//
-//        return $withPager ?
-//            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-//            $tickets;
-//    }
-
-    public function getTicketsByUser(
+    public function getOngoingTicketsByUser(
         User $user,
         $search = '',
-        $orderedBy = 'num',
-        $order = 'ASC',
+        $orderedBy = 'creationDate',
+        $order = 'DESC',
         $withPager = true,
         $page = 1,
         $max = 50
     ) {
         $tickets = empty($search) ?
-            $this->ticketRepo->findTicketsByUser($user, $orderedBy, $order) :
-            $this->ticketRepo->findSearchedTicketByUser($user, $search, $orderedBy, $order);
+            $this->ticketRepo->findOngoingTicketsByUser($user, $orderedBy, $order) :
+            $this->ticketRepo->findSearchedOngoingTicketsByUser($user, $search, $orderedBy, $order);
 
-        return $withPager ?
-            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-            $tickets;
+        return $withPager ? $this->pagerFactory->createPagerFromArray($tickets, $page, $max) : $tickets;
     }
 
-//    public function getTicketsByInterventionUser(
-//        Type $type,
-//        User $user,
-//        $search = '',
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC',
-//        $withPager = true,
-//        $page = 1,
-//        $max = 50
-//    ) {
-//        $tickets = empty($search) ?
-//            $this->ticketRepo->findTicketsByInterventionUser($type, $user, $orderedBy, $order) :
-//            $this->ticketRepo->findSearchedTicketsByInterventionUser($type, $user, $search, $orderedBy, $order);
-//
-//        return $withPager ?
-//            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-//            $tickets;
-//    }
-//
-//    public function getActiveTicketsByInterventionUser(
-//        Type $type,
-//        User $user,
-//        $search = '',
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC',
-//        $withPager = true,
-//        $page = 1,
-//        $max = 50
-//    ) {
-//        $tickets = empty($search) ?
-//            $this->ticketRepo->findActiveTicketsByInterventionUser($type, $user, $orderedBy, $order) :
-//            $this->ticketRepo->findSearchedActiveTicketsByInterventionUser($type, $user, $search, $orderedBy, $order);
-//
-//        return $withPager ?
-//            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-//            $tickets;
-//    }
-//
-//    public function getTicketsWithoutIntervention(
-//        Type $type,
-//        $search = '',
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC',
-//        $withPager = true,
-//        $page = 1,
-//        $max = 50
-//    ) {
-//        $tickets = empty($search) ?
-//            $this->ticketRepo->findTicketsWithoutIntervention($type, $orderedBy, $order) :
-//            $this->ticketRepo->findSearchedTicketsWithoutIntervention($type, $search, $orderedBy, $order);
-//
-//        return $withPager ?
-//            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-//            $tickets;
-//    }
-//
-//    public function getTicketsWithoutInterventionByLevel(
-//        $level,
-//        Type $type,
-//        $search = '',
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC',
-//        $withPager = true,
-//        $page = 1,
-//        $max = 50
-//    ) {
-//        $tickets = empty($search) ?
-//            $this->ticketRepo->findTicketsWithoutInterventionByLevel($level, $type, $orderedBy, $order) :
-//            $this->ticketRepo->findSearchedTicketsWithoutInterventionByLevel($level, $type, $search, $orderedBy, $order);
-//
-//        return $withPager ?
-//            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-//            $tickets;
-//    }
-//
-//    public function getTicketsByInterventionStatus(
-//        Type $type,
-//        $status,
-//        $search = '',
-//        $orderedBy = 'creationDate',
-//        $order = 'DESC',
-//        $withPager = true,
-//        $page = 1,
-//        $max = 50
-//    ) {
-//        $tickets = empty($search) ?
-//            $this->ticketRepo->findTicketsByInterventionStatus($type, $status, $orderedBy, $order) :
-//            $this->ticketRepo->findSearchedTicketsByInterventionStatus($type, $status, $search, $orderedBy, $order);
-//
-//        return $withPager ?
-//            $this->pagerFactory->createPagerFromArray($tickets, $page, $max) :
-//            $tickets;
-//    }
+    public function getClosedTicketsByUser(
+        User $user,
+        $search = '',
+        $orderedBy = 'creationDate',
+        $order = 'DESC',
+        $withPager = true,
+        $page = 1,
+        $max = 50
+    ) {
+        $tickets = empty($search) ?
+            $this->ticketRepo->findClosedTicketsByUser($user, $orderedBy, $order) :
+            $this->ticketRepo->findSearchedClosedTicketsByUser($user, $search, $orderedBy, $order);
+
+        return $withPager ? $this->pagerFactory->createPagerFromArray($tickets, $page, $max) : $tickets;
+    }
 
     /************************************
      * Access to TypeRepository methods *
@@ -682,11 +655,6 @@ class SupportManager
             $this->pagerFactory->createPagerFromArray($types, $page, $max) :
             $types;
     }
-
-//    public function getOneTypeByName($name)
-//    {
-//        return $this->typeRepo->findOneByName($name);
-//    }
 
     /**************************************
      * Access to StatusRepository methods *
@@ -714,31 +682,10 @@ class SupportManager
         return $this->statusRepo->findOneBy(['code' => $code]);
     }
 
-//    public function getStatusByType($type, $orderedBy = 'order', $order = 'ASC')
-//    {
-//        return $this->statusRepo->findStatusByType($type, $orderedBy, $order);
-//    }
-
     public function getOrderOfLastStatus()
     {
         return $this->statusRepo->findOrderOfLastStatus();
     }
-
-    /********************************************
-     * Access to InterventionRepository methods *
-     ********************************************/
-
-//    public function getUnfinishedInterventionByTicket(
-//        Ticket $ticket,
-//        $orderedBy = 'startDate',
-//        $order = 'ASC'
-//    ) {
-//        return $this->interventionRepo->findUnfinishedInterventionByTicket(
-//            $ticket,
-//            $orderedBy,
-//            $order
-//        );
-//    }
 
     /******************************************
      * Access to TicketUserRepository methods *

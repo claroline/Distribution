@@ -5,7 +5,7 @@
             'twitter_bootstrap_translated',
             {
                 'proximity' : 1,
-                'routeName': 'formalibre_admin_support_index',
+                'routeName': 'formalibre_admin_support_ongoing_tickets',
                 'routeParams': {
                     'search': search,
                     'orderedBy': orderedBy,
@@ -26,7 +26,7 @@
 
     {{
         path(
-            'formalibre_admin_support_index',
+            'formalibre_admin_support_ongoing_tickets',
             {
                 'search': search,
                 'orderedBy': orderedBy,
@@ -47,7 +47,7 @@
         {% if tickets.getNbPages() > 1 %}
             {{ renderPager(tickets, search, orderedBy, order, max) }}
         {% endif %}
-        <div class="table-responsive" id="ongoing-ticket-tab">
+        <div class="table-responsive" id="ongoing-tickets-tab">
             <table class="table">
                 <tr>
                     <th>
@@ -83,7 +83,6 @@
                 {% for ticket in tickets %}
                     {% set ticketId = ticket.getId() %}
                     {% set ticketDescription = ticket.getDescription() %}
-                    {% set comments = ticket.getComments() %}
                     <tr id="row-ticket-{{ ticketId }}"
                         {% if ticket.getStatus() is not empty and ticket.getStatus().getCode() == 'NEW' %}
                             style="background-color: #c1d7e9"
@@ -113,33 +112,19 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-default display-ticket-description-btn btn-sm"
-                                    data-ticket-id="{{ ticketId }}"
-                                    data-toggle="tooltip"
-                                    title="{{ 'description'|trans({}, 'platform') }}"
-                            >
-                                <i class="fa fa-info"></i>
-                            </button>
-                            <button class="btn btn-default forward-ticket-btn btn-sm"
-                                    data-ticket-id="{{ ticketId }}"
-                                    data-toggle="tooltip"
-                                    title="{{ 'to_forward'|trans({}, 'support') }}"
-                            >
-                                <i class="fa fa-share"></i>
-                            </button>
+                            {#<button class="btn btn-default forward-ticket-btn btn-sm"#}
+                                    {#data-ticket-id="{{ ticketId }}"#}
+                                    {#data-toggle="tooltip"#}
+                                    {#title="{{ 'to_forward'|trans({}, 'support') }}"#}
+                            {#>#}
+                                {#<i class="fa fa-share"></i>#}
+                            {#</button>#}
                             <button class="btn btn-default archive-ticket-btn btn-sm"
                                     data-ticket-id="{{ ticketId }}"
                                     data-toggle="tooltip"
                                     title="{{ 'to_archive'|trans({}, 'support') }}"
                             >
                                 <i class="fa fa-archive"></i>
-                            </button>
-                            <button class="btn btn-default delete-ticket-btn btn-sm"
-                                    data-ticket-id="{{ ticketId }}"
-                                    data-toggle="tooltip"
-                                    title="{{ 'delete'|trans({}, 'platform') }}"
-                            >
-                                <i class="fa fa-trash"></i>
                             </button>
                         </td>
                     </tr>
@@ -160,5 +145,5 @@
 {% block javascripts %}
     {{ parent() }}
     <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"></script>
-    <script src="{{ hotAsset('dist/claroline-distribution-plugin-support-admin-support-index.js') }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-support-admin-ongoing-tickets.js') }}"></script>
 {% endblock %}

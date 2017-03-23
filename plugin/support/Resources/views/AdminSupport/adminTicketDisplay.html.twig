@@ -67,25 +67,23 @@
                             </tr>
                             <tr>
                                 <th class="col-md-2">{{ 'type'|trans({}, 'platform') }}</th>
-                                <td class="col-md-10">
+                                <td id="ticket-type-column" class="col-md-10">
                                     {{ ticket.getType().getName()|trans({}, 'support') }}
                                 </td>
                             </tr>
                             <tr>
                                 <th class="col-md-2">{{ 'status_list'|trans({}, 'support') }}</th>
                                 <td class="col-md-10">
-                                    {% if ticket.getInterventions()|length > 0 %}
-                                        <ul>
-                                            {% for intervention in ticket.getInterventions() %}
-                                                {% if intervention.getStatus() is not empty %}
-                                                    <li>
-                                                        {{ intervention.getStatus().getName()|trans({}, 'support') }}
-                                                        ({{ intervention.getEndDate()|intl_date_format }})
-                                                    </li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    {% endif %}
+                                    <ul id="interventions-list">
+                                        {% for intervention in ticket.getInterventions() %}
+                                            {% if intervention.getStatus() is not empty %}
+                                                <li>
+                                                    {{ intervention.getStatus().getName()|trans({}, 'support') }}
+                                                    ({{ intervention.getEndDate()|intl_date_format }})
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
                                 </td>
                             </tr>
                         </table>

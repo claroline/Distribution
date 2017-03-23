@@ -1,7 +1,7 @@
-<div id="modal-type-create-form"
-     class="modal-dialog" 
-     role="dialog" 
-     aria-labelledby="modalLabel" 
+<div id="modal-ticket-create-form"
+     class="modal-dialog"
+     role="dialog"
+     aria-labelledby="modalLabel"
      aria-hidden="true"
 >
     <div class="modal-content">
@@ -10,15 +10,15 @@
                 &times;
             </button>
             <h3 class="modal-title">
-                {{ 'support_type_creation'|trans({}, 'support') }}
+                {{ 'new_ticket'|trans({}, 'support') }}
             </h3>
         </div>
         <div class="modal-body">
-            <form id="type-create-form"
-                  action="{{ path('formalibre_admin_support_type_create') }}"
+            <form id="ticket-create-form"
+                  action="{{ path('formalibre_ticket_create') }}"
                   method="POST"
                   {{ form_enctype(form) }}
-            > 
+            >
                 {{ form_widget(form) }}
             </form>
         </div>

@@ -99,6 +99,16 @@ class Ticket
      */
     protected $details;
 
+    /**
+     * @ORM\Column(name="user_active", type="boolean", options={"default" = 1})
+     */
+    protected $userActive = true;
+
+    /**
+     * @ORM\Column(name="admin_active", type="boolean", options={"default" = 1})
+     */
+    protected $adminActive = true;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -251,5 +261,38 @@ class Ticket
     public function setDetails($details)
     {
         $this->details = $details;
+    }
+
+    public function isUserActive()
+    {
+        return $this->userActive;
+    }
+
+    public function setUserActive($userActive)
+    {
+        $this->userActive = $userActive;
+    }
+
+    public function isAdminActive()
+    {
+        return $this->adminActive;
+    }
+
+    public function setAdminActive($adminActive)
+    {
+        $this->adminActive = $adminActive;
+    }
+
+    public function isOpen()
+    {
+        return !is_null($this->details) && isset($this->details['isOpen']) ? $this->details['isOpen'] : false;
+    }
+
+    public function setOpen($open)
+    {
+        if (is_null($this->details)) {
+            $this->details = [];
+        }
+        $this->details['isOpen'] = $open;
     }
 }

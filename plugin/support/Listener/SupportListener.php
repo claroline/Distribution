@@ -50,10 +50,9 @@ class SupportListener
     public function onAdministrationToolOpen(OpenAdministrationToolEvent $event)
     {
         $params = array();
-        $params['_controller'] = 'FormaLibreSupportBundle:AdminSupport:adminSupportIndex';
+        $params['_controller'] = 'FormaLibreSupportBundle:AdminSupport:adminSupportOngoingTickets';
         $subRequest = $this->request->duplicate(array(), null, $params);
-        $response = $this->httpKernel
-            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();
     }
@@ -66,26 +65,10 @@ class SupportListener
     public function onDesktopToolOpen(DisplayToolEvent $event)
     {
         $params = array();
-        $params['_controller'] = 'FormaLibreSupportBundle:Support:supportIndex';
+        $params['_controller'] = 'FormaLibreSupportBundle:Support:ongoingTickets';
         $subRequest = $this->request->duplicate(array(), null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("plugin_options_supportbundle")
-     *
-     * @param DisplayToolEvent $event
-     */
-    public function onPluginOptionsOpen(PluginOptionsEvent $event)
-    {
-        $params = array();
-        $params['_controller'] = 'FormaLibreSupportBundle:AdminSupport:pluginConfigureForm';
-        $subRequest = $this->request->duplicate(array(), null, $params);
-        $response = $this->httpKernel
-            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setResponse($response);
         $event->stopPropagation();
     }
 

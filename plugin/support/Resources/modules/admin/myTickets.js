@@ -3,31 +3,38 @@ import $ from 'jquery'
 $('#my-tickets-tab').on('click', '.delete-ticket-btn', function () {
   const ticketId = $(this).data('ticket-id')
 
-  window.Claroline.Modal.confirmRequest(
-    Routing.generate('formalibre_admin_ticket_delete', {'ticket': ticketId}),
-    removeTicketRow,
-    ticketId,
-    Translator.trans('ticket_deletion_confirm_message', {}, 'support'),
-    Translator.trans('ticket_deletion', {}, 'support')
-  )
+  $.ajax({
+    url: Routing.generate('formalibre_admin_my_ticket_remove', {'ticket': ticketId}),
+    type: 'DELETE',
+    success: function (ticketId) {
+      removeTicket(ticketId)
+    }
+  })
 })
 
-//$('#my-tickets-tab').on('click', '.view-comments-btn', function () {
-//  const ticketId = $(this).data('ticket-id')
-//
-//  window.Claroline.Modal.fromUrl(
-//    Routing.generate('formalibre_admin_ticket_comments_view', {'ticket': ticketId})
-//  )
-//})
+$('#my-tickets-tab').on('click', '.archive-ticket-btn', function () {
+  const ticketId = $(this).data('ticket-id')
 
-//$('#my-tickets-tab').on('click', '.view-interventions-btn', function () {
-//  const ticketId = $(this).data('ticket-id')
-//
-//  window.Claroline.Modal.fromUrl(
-//    Routing.generate('formalibre_admin_ticket_interventions_view', {'ticket': ticketId})
-//  )
-//})
+  $.ajax({
+    url: Routing.generate('formalibre_ticket_closing', {'ticket': ticketId}),
+    type: 'POST',
+    success: function (ticketId) {
+      closeTicket(ticketId)
+    }
+  })
+})
 
-const removeTicketRow = function (event, ticketId) {
+const removeTicket = function (ticketId) {
+  const nbMyTickets = parseInt($('#my-tickets-tab-badge').html())
+  $('#my-tickets-tab-badge').html(nbMyTickets - 1)
+  $(`#row-ticket-${ticketId}`).remove()
+  $(`#ticket-tab-${ticketId}`).remove()
+}
+
+const closeTicket = function (ticketId) {
+  const nbMyTickets = parseInt($('#my-tickets-tab-badge').html())
+  const nbArchives = parseInt($('#archives-tab-badge').html())
+  $('#my-tickets-tab-badge').html(nbMyTickets - 1)
+  $('#archives-tab-badge').html(nbArchives + 1)
   $(`#row-ticket-${ticketId}`).remove()
 }

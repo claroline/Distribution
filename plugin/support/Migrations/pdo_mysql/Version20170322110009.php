@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2017/03/20 06:08:39
+ * Generation date: 2017/03/22 11:00:11
  */
-class Version20170320180837 extends AbstractMigration
+class Version20170322110009 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -41,6 +41,8 @@ class Version20170320180837 extends AbstractMigration
         ");
         $this->addSql("
             ALTER TABLE formalibre_support_ticket 
+            ADD user_active TINYINT(1) DEFAULT '1' NOT NULL, 
+            ADD admin_active TINYINT(1) DEFAULT '1' NOT NULL, 
             DROP level, 
             CHANGE contact_phone contact_phone VARCHAR(255) DEFAULT NULL
         ");
@@ -79,6 +81,8 @@ class Version20170320180837 extends AbstractMigration
         $this->addSql("
             ALTER TABLE formalibre_support_ticket 
             ADD level INT NOT NULL, 
+            DROP user_active, 
+            DROP admin_active, 
             CHANGE contact_phone contact_phone VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci
         ");
         $this->addSql("

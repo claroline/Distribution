@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 
 /**
- * @ORM\Entity(repositoryClass="FormaLibre\SupportBundle\Repository\TicketUserRepository")
+ * @ORM\Entity
  * @ORM\Table(
  *     name="formalibre_support_ticket_user",
  *     uniqueConstraints={

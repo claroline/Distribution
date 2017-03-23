@@ -1,25 +1,20 @@
 import $ from 'jquery'
 
-$('#support-tool').on('click', '.delete-ticket-btn', function () {
+$('#archives-tab').on('click', '.delete-ticket-btn', function () {
   const ticketId = $(this).data('ticket-id')
 
   window.Claroline.Modal.confirmRequest(
     Routing.generate('formalibre_ticket_delete', {'ticket': ticketId}),
-    removeTicketRow,
+    removeTicket,
     ticketId,
     Translator.trans('ticket_deletion_confirm_message', {}, 'support'),
     Translator.trans('ticket_deletion', {}, 'support')
   )
 })
 
-$('#support-tool').on('click', '.view-comments-btn', function () {
-  var ticketId = $(this).data('ticket-id')
-
-  window.Claroline.Modal.fromUrl(
-    Routing.generate('formalibre_ticket_comments_view', {'ticket': ticketId})
-  )
-})
-
-const removeTicketRow = function (event, ticketId) {
+const removeTicket = function (event, ticketId) {
+  const nbArchives = parseInt($('#archives-tab-badge').html())
+  $('#archives-tab-badge').html(nbArchives - 1)
   $(`#row-ticket-${ticketId}`).remove()
+  $(`#ticket-tab-${ticketId}`).remove()
 }

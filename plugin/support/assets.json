@@ -1,15 +1,17 @@
 {
   "webpack": {
     "entry": {
-      "admin-support-index": "admin/supportIndex",
+      "admin-ongoing-tickets": "admin/ongoingTickets",
       "admin-support-tabs": "admin/supportTabs",
       "admin-my-tickets": "admin/myTickets",
       "admin-archives": "admin/archives",
       "admin-ticket-display": "admin/ticketDisplay",
       "admin-types-management": "admin/typesManagement",
       "admin-status-management": "admin/statusManagement",
-      "support-index": "support/supportIndex",
-      "ticket-open": "support/ticketOpen"
+      "ongoing-tickets": "support/ongoingTickets",
+      "archives": "support/archives",
+      "support-tabs": "support/supportTabs",
+      "ticket-display": "support/ticketDisplay"
     }
   }
 }

@@ -47,7 +47,7 @@
         {% if tickets.getNbPages() > 1 %}
             {{ renderPager(tickets, search, orderedBy, order, max) }}
         {% endif %}
-        <div class="table-responsive" id="new-ticket-tab">
+        <div class="table-responsive" id="archives-tab">
             <table class="table">
                 <tr>
                     <th>
@@ -105,18 +105,13 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <div class="btn-group">
-                                <button class="btn btn-default change-ticket-type-btn btn-sm"
-                                        data-ticket-id="{{ ticketId }}"
-                                >
-                                    <i class="fa fa-share"></i>
-                                </button>
-                                <button class="btn btn-danger delete-ticket-btn btn-sm"
-                                        data-ticket-id="{{ ticketId }}"
-                                >
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </div>
+                            <button class="btn btn-danger delete-ticket-btn btn-sm"
+                                    data-ticket-id="{{ ticketId }}"
+                                    data-toggle="tooltip"
+                                    title="{{ 'delete'|trans({}, 'platform') }}"
+                            >
+                                <i class="fa fa-trash"></i>
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}

@@ -99,8 +99,11 @@ $('#ticket-private-comment-form-box').on('click', '#add-private-comment-btn', fu
 
 $('#ticket-edition-btn').on('click', function () {
   const ticketId = $(this).data('ticket-id')
-
-  console.log(ticketId)
+  window.Claroline.Modal.displayForm(
+    Routing.generate('formalibre_admin_support_ticket_intervention_create_form', {ticket: ticketId}),
+    updateTicket,
+    function() {}
+  )
 })
 
 const removeCommentRow = function (event, commentId) {
@@ -214,5 +217,26 @@ const updateComment = function (data) {
     $('#private_comment_form_content').html('');
     $('#private_comment_edit_form_content').html('');
     $(`#private-comments-list #comment-content-${data['id']}`).html(data['content'])
+  }
+}
+
+const updateTicket = function (data) {
+  if (data['type']) {
+    $('#ticket-type-column').html(Translator.trans(data['type']['name'], {}, 'support'))
+  }
+  if (data['status']) {
+    const status = `
+      <li>
+          ${Translator.trans(data['status']['name'], {}, 'support')}
+          (${data['status']['date']})
+      </li>
+    `
+    $('#interventions-list').append(status)
+  }
+  if (data['publicComment']) {
+    addComment(data['publicComment'])
+  }
+  if (data['privateComment']) {
+    addPrivateComment(data['privateComment'])
   }
 }

@@ -30,7 +30,22 @@ class TicketType extends AbstractType
                 'translation_domain' => 'platform',
             ]
         );
-
+        $builder->add(
+            'contactMail',
+            'email',
+            [
+                'required' => true,
+                'label' => 'contact_email',
+            ]
+        );
+        $builder->add(
+            'contactPhone',
+            'text',
+            [
+                'required' => true,
+                'label' => 'contact_phone',
+            ]
+        );
         if ($this->mode === 1) {
             $builder->add(
                 'description',
@@ -53,7 +68,6 @@ class TicketType extends AbstractType
                 ]
             );
         }
-
         if ($this->mode === 0) {
             $builder->add(
                 'type',
@@ -67,29 +81,13 @@ class TicketType extends AbstractType
                         return $er->createQueryBuilder('t')
                             ->orderBy('t.name', 'ASC');
                     },
-                    'property' => 'formName',
+                    'property' => 'name',
                     'expanded' => false,
                     'multiple' => false,
                     'required' => true,
                 ]
             );
         }
-        $builder->add(
-            'contactMail',
-            'email',
-            [
-                'required' => true,
-                'label' => 'contact_email',
-            ]
-        );
-        $builder->add(
-            'contactPhone',
-            'text',
-            [
-                'required' => true,
-                'label' => 'contact_phone',
-            ]
-        );
     }
 
     public function getName()
