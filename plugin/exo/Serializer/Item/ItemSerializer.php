@@ -203,6 +203,15 @@ class ItemSerializer extends AbstractSerializer
                 // Item not exist
                 $question = new Item();
             }
+        }        
+
+        // Sets the creator of the Item if not set
+        $creator = $question->getCreator();
+        if (empty($creator) || !($creator instanceof User)) {
+            $token = $this->tokenStorage->getToken();
+            if (!empty($token) && $token->getUser() instanceof User) {
+                $question->setCreator($token->getUser());
+            }
         }
 
         // Force client ID if needed
@@ -239,7 +248,7 @@ class ItemSerializer extends AbstractSerializer
             $this->mapObjectToEntity([
                 'type' => 'mimeType',
                 'title' => 'title',
-                'description' => 'description',
+                'description' => 'description'
             ], $data, $question);
         }
 
@@ -351,15 +360,6 @@ class ItemSerializer extends AbstractSerializer
     {
         if (isset($metadata->model)) {
             $question->setModel($metadata->model);
-        }
-
-        // Sets the creator of the Item if not set
-        $creator = $question->getCreator();
-        if (empty($creator) || !($creator instanceof User)) {
-            $token = $this->tokenStorage->getToken();
-            if (!empty($token) && $token->getUser() instanceof User) {
-                $question->setCreator($token->getUser());
-            }
         }
 
         if (isset($metadata->category)) {
