@@ -1,3 +1,5 @@
+/*global Routing*/
+/*global Translator*/
 import $ from 'jquery'
 
 $('#archives-tab').on('click', '.delete-ticket-btn', function () {

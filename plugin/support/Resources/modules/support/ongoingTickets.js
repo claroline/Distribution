@@ -1,10 +1,12 @@
+/*global Routing*/
+/*global Translator*/
 import $ from 'jquery'
 
 $('#ongoing-tickets-tab').on('click', '#create-ticket-btn', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_ticket_create_form'),
     addTicket,
-    function() {}
+    function () {}
   )
 })
 
@@ -14,7 +16,7 @@ $('#ongoing-tickets-tab').on('click', '.edit-ticket-btn', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_ticket_edit_form', {ticket: ticketId}),
     updateTicket,
-    function() {}
+    function () {}
   )
 })
 

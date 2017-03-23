@@ -1,3 +1,5 @@
+/*global Routing*/
+/*global Translator*/
 import $ from 'jquery'
 
 $('#types-management-body').on('click', '#create-type-btn', function () {

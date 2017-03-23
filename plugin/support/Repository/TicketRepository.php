@@ -3,7 +3,6 @@
 namespace FormaLibre\SupportBundle\Repository;
 
 use Claroline\CoreBundle\Entity\User;
-use FormaLibre\SupportBundle\Entity\Type;
 use Doctrine\ORM\EntityRepository;
 
 class TicketRepository extends EntityRepository

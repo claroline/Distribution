@@ -524,10 +524,10 @@ class SupportManager
         $this->persistComment($comment);
 
         switch ($type) {
-            case Comment::PUBLIC_COMMENT :
+            case Comment::PUBLIC_COMMENT:
                 $this->sendTicketMail($user, $ticket, 'new_admin_comment', $comment);
                 break;
-            case Comment::PRIVATE_COMMENT :
+            case Comment::PRIVATE_COMMENT:
                 $this->sendTicketMail($user, $ticket, 'new_internal_note', $comment);
                 break;
         }
@@ -693,6 +693,6 @@ class SupportManager
 
     public function getActiveTicketUserByUser(User $user)
     {
-        return $this->ticketUserRepo->findBy(['user' =>  $user, 'active' => true], ['activationDate' => 'ASC']);
+        return $this->ticketUserRepo->findBy(['user' => $user, 'active' => true], ['activationDate' => 'ASC']);
     }
 }

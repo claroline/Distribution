@@ -15,7 +15,7 @@ $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
     type: 'POST',
     processData: false,
     contentType: false,
-    success: function(data, textStatus, jqXHR) {
+    success: function (data, textStatus, jqXHR) {
       switch (jqXHR.status) {
         case 201:
           addComment(data)

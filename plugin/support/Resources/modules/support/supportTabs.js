@@ -1,3 +1,4 @@
+/*global Routing*/
 import $ from 'jquery'
 
 $('.close-ticket-tab-btn').on('click', function (e) {

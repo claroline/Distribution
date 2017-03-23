@@ -1,3 +1,4 @@
+/*global Routing*/
 import $ from 'jquery'
 
 $('#ongoing-tickets-tab').on('click', '.archive-ticket-btn', function () {

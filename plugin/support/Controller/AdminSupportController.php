@@ -3,7 +3,6 @@
 namespace FormaLibre\SupportBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\GenericDatasEvent;
 use Claroline\CoreBundle\Manager\UserManager;
 use FormaLibre\SupportBundle\Entity\Comment;
 use FormaLibre\SupportBundle\Entity\Intervention;
@@ -13,12 +12,8 @@ use FormaLibre\SupportBundle\Entity\TicketUser;
 use FormaLibre\SupportBundle\Entity\Type;
 use FormaLibre\SupportBundle\Form\CommentEditType;
 use FormaLibre\SupportBundle\Form\CommentType;
-use FormaLibre\SupportBundle\Form\InterventionStatusType;
-use FormaLibre\SupportBundle\Form\InterventionType;
-use FormaLibre\SupportBundle\Form\PluginConfigurationType;
 use FormaLibre\SupportBundle\Form\StatusType;
 use FormaLibre\SupportBundle\Form\TicketInterventionType;
-use FormaLibre\SupportBundle\Form\TicketTypeChangeType;
 use FormaLibre\SupportBundle\Form\TypeType;
 use FormaLibre\SupportBundle\Manager\SupportManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -26,7 +21,6 @@ use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -393,7 +387,7 @@ class AdminSupportController extends Controller
     {
         $config = $this->supportManager->getConfiguration();
         $details = $config->getDetails();
-        $contacts = isset($details['contacts']) ? $details['contacts'] : array();
+        $contacts = isset($details['contacts']) ? $details['contacts'] : [];
         $toAdd = explode(',', $contactIds);
 
         foreach ($toAdd as $userId) {
@@ -478,7 +472,7 @@ class AdminSupportController extends Controller
             $this->supportManager->persistComment($comment);
 
             switch ($type) {
-                case Comment::PUBLIC_COMMENT :
+                case Comment::PUBLIC_COMMENT:
                     $this->supportManager->sendTicketMail(
                         $user,
                         $comment->getTicket(),
@@ -486,7 +480,7 @@ class AdminSupportController extends Controller
                         $comment
                     );
                     break;
-                case Comment::PRIVATE_COMMENT :
+                case Comment::PRIVATE_COMMENT:
                     $this->supportManager->sendTicketMail(
                         $user,
                         $comment->getTicket(),
@@ -555,7 +549,7 @@ class AdminSupportController extends Controller
             $this->supportManager->persistComment($comment);
 
             switch ($type) {
-                case Comment::PUBLIC_COMMENT :
+                case Comment::PUBLIC_COMMENT:
                     $this->supportManager->sendTicketMail(
                         $user,
                         $comment->getTicket(),
@@ -563,7 +557,7 @@ class AdminSupportController extends Controller
                         $comment
                     );
                     break;
-                case Comment::PRIVATE_COMMENT :
+                case Comment::PRIVATE_COMMENT:
                     $this->supportManager->sendTicketMail(
                         $user,
                         $comment->getTicket(),
@@ -614,7 +608,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new TypeType(), new Type());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -640,7 +634,7 @@ class AdminSupportController extends Controller
                 200
             );
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -657,7 +651,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new TypeType($type->isLocked()), $type);
 
-        return array('form' => $form->createView(), 'type' => $type);
+        return ['form' => $form->createView(), 'type' => $type];
     }
 
     /**
@@ -687,7 +681,7 @@ class AdminSupportController extends Controller
                 200
             );
         } else {
-            return array('form' => $form->createView(), 'type' => $type);
+            return ['form' => $form->createView(), 'type' => $type];
         }
     }
 
@@ -722,7 +716,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new StatusType(), new Status());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -762,7 +756,7 @@ class AdminSupportController extends Controller
                 200
             );
         } else {
-            return array('form' => $form->createView());
+            return ['form' => $form->createView()];
         }
     }
 
@@ -779,7 +773,7 @@ class AdminSupportController extends Controller
     {
         $form = $this->formFactory->create(new StatusType($status->isLocked()), $status);
 
-        return array('form' => $form->createView(), 'status' => $status);
+        return ['form' => $form->createView(), 'status' => $status];
     }
 
     /**
@@ -811,7 +805,7 @@ class AdminSupportController extends Controller
                 200
             );
         } else {
-            return array('form' => $form->createView(), 'status' => $status);
+            return ['form' => $form->createView(), 'status' => $status];
         }
     }
 
@@ -890,7 +884,6 @@ class AdminSupportController extends Controller
             $publicComment = $form->get('publicComment')->getData();
 
             if ($status !== $oldStatus || $type !== $oldType) {
-
                 if ($type !== $oldType) {
                     $data['type'] = [];
                     $data['type']['name'] = $ticket->getType()->getName();

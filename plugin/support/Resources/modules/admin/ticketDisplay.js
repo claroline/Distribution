@@ -1,3 +1,5 @@
+/*global Routing*/
+/*global Translator*/
 import $ from 'jquery'
 import {asset} from '#/main/core/asset'
 
@@ -15,7 +17,7 @@ $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
     type: 'POST',
     processData: false,
     contentType: false,
-    success: function(data, textStatus, jqXHR) {
+    success: function (data, textStatus, jqXHR) {
       switch (jqXHR.status) {
         case 201:
           addComment(data)
@@ -27,7 +29,7 @@ $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
   })
 })
 
-$('#public-comments-box, #private-comments-box').on('click', '.edit-comment-btn', function (e) {
+$('#public-comments-box, #private-comments-box').on('click', '.edit-comment-btn', function () {
   const commentId = $(this).data('comment-id')
   const commentType = $(this).data('comment-type')
 
@@ -37,11 +39,11 @@ $('#public-comments-box, #private-comments-box').on('click', '.edit-comment-btn'
       {comment: commentId, type: commentType}
     ),
     updateComment,
-    function() {}
+    function () {}
   )
 })
 
-$('#public-comments-box').on('click', '.delete-comment-btn', function (e) {
+$('#public-comments-box').on('click', '.delete-comment-btn', function () {
   const commentId = $(this).data('comment-id')
 
   window.Claroline.Modal.confirmRequest(
@@ -56,7 +58,7 @@ $('#public-comments-box').on('click', '.delete-comment-btn', function (e) {
   )
 })
 
-$('#private-comments-box').on('click', '.delete-comment-btn', function (e) {
+$('#private-comments-box').on('click', '.delete-comment-btn', function () {
   const commentId = $(this).data('comment-id')
 
   window.Claroline.Modal.confirmRequest(
@@ -85,7 +87,7 @@ $('#ticket-private-comment-form-box').on('click', '#add-private-comment-btn', fu
     type: 'POST',
     processData: false,
     contentType: false,
-    success: function(data, textStatus, jqXHR) {
+    success: function (data, textStatus, jqXHR) {
       switch (jqXHR.status) {
         case 201:
           addPrivateComment(data)
@@ -102,7 +104,7 @@ $('#ticket-edition-btn').on('click', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_support_ticket_intervention_create_form', {ticket: ticketId}),
     updateTicket,
-    function() {}
+    function () {}
   )
 })
 
@@ -210,12 +212,12 @@ const addPrivateComment = function (data) {
 
 const updateComment = function (data) {
   if (data['type'] === 0) {
-    $('#comment_form_content').html('');
-    $('#comment_edit_form_content').html('');
+    $('#comment_form_content').html('')
+    $('#comment_edit_form_content').html('')
     $(`#public-comments-list #comment-content-${data['id']}`).html(data['content'])
   } else {
-    $('#private_comment_form_content').html('');
-    $('#private_comment_edit_form_content').html('');
+    $('#private_comment_form_content').html('')
+    $('#private_comment_edit_form_content').html('')
     $(`#private-comments-list #comment-content-${data['id']}`).html(data['content'])
   }
 }

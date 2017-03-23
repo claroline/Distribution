@@ -3,7 +3,6 @@
 namespace FormaLibre\SupportBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\GenericDatasEvent;
 use Claroline\CoreBundle\Manager\ToolManager;
 use FormaLibre\SupportBundle\Entity\Comment;
 use FormaLibre\SupportBundle\Entity\Ticket;

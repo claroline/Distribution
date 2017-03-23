@@ -4,7 +4,6 @@ namespace FormaLibre\SupportBundle\Listener;
 
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Menu\ExceptionActionEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -49,9 +48,9 @@ class SupportListener
      */
     public function onAdministrationToolOpen(OpenAdministrationToolEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'FormaLibreSupportBundle:AdminSupport:adminSupportOngoingTickets';
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();
@@ -64,9 +63,9 @@ class SupportListener
      */
     public function onDesktopToolOpen(DisplayToolEvent $event)
     {
-        $params = array();
+        $params = [];
         $params['_controller'] = 'FormaLibreSupportBundle:Support:ongoingTickets';
-        $subRequest = $this->request->duplicate(array(), null, $params);
+        $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());
         $event->stopPropagation();
@@ -98,7 +97,7 @@ class SupportListener
 
             $route = $this->router->generate(
                 'formalibre_ticket_from_issue_create_form',
-                array(
+                [
                     'user' => $user->getId(),
                     'exceptionClass' => $exceptionClass,
                     'message' => $message,
@@ -106,13 +105,13 @@ class SupportListener
                     'line' => $line,
                     'url' => $url,
                     'referer' => $referer,
-                )
+                ]
             );
 
             $menu = $event->getMenu();
             $menu->addChild(
-                $this->translator->trans('create_ticket_for_issue', array(), 'support'),
-                array('uri' => $route)
+                $this->translator->trans('create_ticket_for_issue', [], 'support'),
+                ['uri' => $route]
             )->setExtra('icon', 'fa fa-share')
             ->setExtra('display', 'modal_form');
 

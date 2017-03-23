@@ -1,10 +1,12 @@
+/*global Routing*/
+/*global Translator*/
 import $ from 'jquery'
 
 $('#status-management-body').on('click', '#create-status-btn', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_support_status_create_form'),
     addStatusRow,
-    function() {}
+    function () {}
   )
 })
 
@@ -14,7 +16,7 @@ $('#status-management-body').on('click', '.edit-status-btn', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_support_status_edit_form', {'status': statusId}),
     updateStatusRow,
-    function() {}
+    function () {}
   )
 })
 
@@ -42,11 +44,11 @@ $('#status-elements-list').on('sortupdate', function (event, ui) {
     const nextElement = $(ui.item).next()
 
     if (nextElement !== undefined && nextElement.hasClass('movable-status')) {
-        nextStatusId = nextElement.data('status-id')
+      nextStatusId = nextElement.data('status-id')
     }
     $.ajax({
-        url: Routing.generate('formalibre_admin_support_status_reorder', {'status': statusId, 'nextStatusId': nextStatusId}),
-        type: 'POST'
+      url: Routing.generate('formalibre_admin_support_status_reorder', {'status': statusId, 'nextStatusId': nextStatusId}),
+      type: 'POST'
     })
   }
 })
