@@ -203,7 +203,7 @@ class ItemSerializer extends AbstractSerializer
                 // Item not exist
                 $question = new Item();
             }
-        }        
+        }
 
         // Sets the creator of the Item if not set
         $creator = $question->getCreator();
@@ -248,7 +248,7 @@ class ItemSerializer extends AbstractSerializer
             $this->mapObjectToEntity([
                 'type' => 'mimeType',
                 'title' => 'title',
-                'description' => 'description'
+                'description' => 'description',
             ], $data, $question);
         }
 
