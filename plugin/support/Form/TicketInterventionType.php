@@ -2,6 +2,7 @@
 
 namespace FormaLibre\SupportBundle\Form;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -32,6 +33,9 @@ class TicketInterventionType extends AbstractType
                 'class' => 'FormaLibreSupportBundle:Status',
                 'translation_domain' => 'support',
                 'choice_translation_domain' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('s')->orderBy('s.order', 'ASC');
+                },
                 'property' => 'name',
                 'expanded' => false,
                 'multiple' => false,

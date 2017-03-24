@@ -69,6 +69,16 @@
                                 <th class="col-md-2">{{ 'type'|trans({}, 'platform') }}</th>
                                 <td id="ticket-type-column" class="col-md-10">
                                     {{ ticket.getType().getName()|trans({}, 'support') }}
+                                    {% if ticket.getType().getDescription() is not empty %}
+                                        <i class="fa fa-info-circle pointer-hand"
+                                           data-toggle="tooltip"
+                                           data-container="body"
+                                           data-placement="top"
+                                           data-html="true"
+                                           title="{{ ticket.getType().getDescription() }}"
+                                        >
+                                        </i>
+                                    {% endif %}
                                 </td>
                             </tr>
                             <tr>
@@ -80,6 +90,16 @@
                                                 <li>
                                                     {{ intervention.getStatus().getName()|trans({}, 'support') }}
                                                     ({{ intervention.getEndDate()|intl_date_format }})
+                                                    {% if intervention.getStatus().getDescription() is not empty %}
+                                                        <i class="fa fa-info-circle pointer-hand"
+                                                           data-toggle="tooltip"
+                                                           data-container="body"
+                                                           data-placement="top"
+                                                           data-html="true"
+                                                           title="{{ intervention.getStatus().getDescription() }}"
+                                                        >
+                                                        </i>
+                                                    {% endif %}
                                                 </li>
                                             {% endif %}
                                         {% endfor %}

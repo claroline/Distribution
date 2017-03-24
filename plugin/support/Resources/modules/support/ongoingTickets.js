@@ -46,10 +46,32 @@ const addTicket = function (data) {
             ${data['creationDate']}
         </td>
         <td class="ticket-type">
-            ${Translator.trans(data['type'], {}, 'support')}
+            ${Translator.trans(data['typeName'], {}, 'support')}
+            ${data['typeDescription'] ? `
+              <i class="fa fa-info-circle pointer-hand"
+                 data-toggle="tooltip"
+                 data-container="body"
+                 data-placement="top"
+                 data-html="true"
+                 title="${data['typeDescription']}"
+              >
+              </i>` :
+              ''
+            }
         </td>
         <td class="ticket-status">
-            ${Translator.trans(data['status'], {}, 'support')}
+            ${Translator.trans(data['statusName'], {}, 'support')}
+            ${data['statusDescription'] ? `
+              <i class="fa fa-info-circle pointer-hand"
+                 data-toggle="tooltip"
+                 data-container="body"
+                 data-placement="top"
+                 data-html="true"
+                 title="${data['statusDescription']}"
+              >
+              </i>` :
+              ''
+            }
         </td>
         <td class="text-center">
             <button class="btn btn-default btn-sm edit-ticket-btn"
@@ -78,8 +100,36 @@ const addTicket = function (data) {
 
 const updateTicket = function (data) {
   $(`#row-ticket-${data['id']} .ticket-title`).html(data['title'])
-  $(`#row-ticket-${data['id']} .ticket-type`).html(Translator.trans(data['type'], {}, 'support'))
-  $(`#row-ticket-${data['id']} .ticket-status`).html(Translator.trans(data['status'], {}, 'support'))
+  const type = `
+    ${Translator.trans(data['typeName'], {}, 'support')}
+    ${data['typeDescription'] ? `
+      <i class="fa fa-info-circle pointer-hand"
+         data-toggle="tooltip"
+         data-container="body"
+         data-placement="top"
+         data-html="true"
+         title="${data['typeDescription']}"
+      >
+      </i>` :
+      ''
+    }
+  `
+  const status = `
+    ${Translator.trans(data['statusName'], {}, 'support')}
+    ${data['statusDescription'] ? `
+      <i class="fa fa-info-circle pointer-hand"
+         data-toggle="tooltip"
+         data-container="body"
+         data-placement="top"
+         data-html="true"
+         title="${data['statusDescription']}"
+      >
+      </i>` :
+      ''
+    }
+  `
+  $(`#row-ticket-${data['id']} .ticket-type`).html(type)
+  $(`#row-ticket-${data['id']} .ticket-status`).html(status)
 }
 
 const removeTicket = function (event, ticketId) {

@@ -96,10 +96,30 @@
                         </td>
                         <td>
                             {{ ticket.getType().getName()|trans({}, 'support') }}
+                            {% if ticket.getType().getDescription() is not empty %}
+                                <i class="fa fa-info-circle pointer-hand"
+                                   data-toggle="tooltip"
+                                   data-container="body"
+                                   data-placement="top"
+                                   data-html="true"
+                                   title="{{ ticket.getType().getDescription() }}"
+                                >
+                                </i>
+                            {% endif %}
                         </td>
                         <td>
                             {% if ticket.getStatus() is not empty %}
                                 {{ ticket.getStatus().getName()|trans({}, 'support') }}
+                                {% if ticket.getStatus().getDescription() is not empty %}
+                                    <i class="fa fa-info-circle pointer-hand"
+                                       data-toggle="tooltip"
+                                       data-container="body"
+                                       data-placement="top"
+                                       data-html="true"
+                                       title="{{ ticket.getStatus().getDescription() }}"
+                                    >
+                                    </i>
+                                {% endif %}
                             {% else %}
                                 -
                             {% endif %}

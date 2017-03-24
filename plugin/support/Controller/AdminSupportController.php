@@ -911,6 +911,7 @@ class AdminSupportController extends Controller
                 if ($type !== $oldType) {
                     $data['type'] = [];
                     $data['type']['name'] = $ticket->getType()->getName();
+                    $data['type']['description'] = $ticket->getType()->getDescription();
                     $messageData['oldType'] = $oldType;
                     $messageData['type'] = $type;
                 }
@@ -919,6 +920,7 @@ class AdminSupportController extends Controller
                     $data['status'] = [];
                     $data['status']['name'] = $status->getName();
                     $data['status']['date'] = $intervention->getEndDate()->format('d/m/Y H:i');
+                    $data['status']['description'] = $status->getDescription();
                     $messageData['oldStatus'] = $oldStatus;
                     $messageData['status'] = $status;
                 }

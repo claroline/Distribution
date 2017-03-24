@@ -224,13 +224,38 @@ const updateComment = function (data) {
 
 const updateTicket = function (data) {
   if (data['type']) {
-    $('#ticket-type-column').html(Translator.trans(data['type']['name'], {}, 'support'))
+    const type = `
+      ${Translator.trans(data['type']['name'], {}, 'support')}
+      ${data['type']['description'] ? `
+        <i class="fa fa-info-circle pointer-hand"
+           data-toggle="tooltip"
+           data-container="body"
+           data-placement="top"
+           data-html="true"
+           title="${data['type']['description']}"
+        >
+        </i>` :
+        ''
+      }
+    `
+    $('#ticket-type-column').html(type)
   }
   if (data['status']) {
     const status = `
       <li>
           ${Translator.trans(data['status']['name'], {}, 'support')}
           (${data['status']['date']})
+          ${data['status']['description'] ? `
+            <i class="fa fa-info-circle pointer-hand"
+               data-toggle="tooltip"
+               data-container="body"
+               data-placement="top"
+               data-html="true"
+               title="${data['status']['description']}"
+            >
+            </i>` :
+            ''
+          }
       </li>
     `
     $('#interventions-list').append(status)

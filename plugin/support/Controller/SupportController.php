@@ -246,10 +246,12 @@ class SupportController extends Controller
             $status = $ticket->getStatus();
 
             if (!empty($type)) {
-                $data['type'] = $type->getName();
+                $data['typeName'] = $type->getName();
+                $data['typeDescription'] = $type->getDescription();
             }
             if (!empty($status)) {
-                $data['status'] = $status->getName();
+                $data['statusName'] = $status->getName();
+                $data['statusDescription'] = $status->getDescription();
             }
 
             return new JsonResponse($data, 200);
@@ -304,10 +306,12 @@ class SupportController extends Controller
             $status = $ticket->getStatus();
 
             if (!empty($type)) {
-                $data['type'] = $type->getName();
+                $data['typeName'] = $type->getName();
+                $data['typeDescription'] = $type->getDescription();
             }
             if (!empty($status)) {
-                $data['status'] = $status->getName();
+                $data['statusName'] = $status->getName();
+                $data['statusDescription'] = $status->getDescription();
             }
 
             return new JsonResponse($data, 200);
