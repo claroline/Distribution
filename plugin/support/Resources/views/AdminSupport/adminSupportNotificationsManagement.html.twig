@@ -52,8 +52,8 @@
             <table class="table">
                 <tr>
                     <td></td>
-                    <th class="text-center">{{ 'internal_message'|trans({}, 'support') }}</th>
-                    <th class="text-center">{{ 'mail'|trans({}, 'platform') }}</th>
+                    <th class="text-center">{{ 'platform_mailbox'|trans({}, 'support') }}</th>
+                    <th class="text-center">{{ 'external_mailbox'|trans({}, 'support') }}</th>
                 </tr>
                 <tr>
                     <th colspan="3">{{ 'support_contact'|trans({}, 'support') }}</th>
@@ -73,6 +73,11 @@
                                data-type="ticket_external"
                                {% if supportConfig.getNotify('ticket_external') %}checked{% endif %}
                         >
+                    </td>
+                </tr>
+                <tr>
+                    <td class="empty-row">
+                        <br>
                     </td>
                 </tr>
                 <tr>
@@ -113,6 +118,11 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="empty-row">
+                        <br>
+                    </td>
+                </tr>
+                <tr>
                     <th colspan="3">{{ 'user'|trans({}, 'platform') }}</th>
                 </tr>
                 <tr>
@@ -144,4 +154,9 @@
         window.contacts = {{ contacts|json_encode|raw }}
     </script>
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-support-admin-notifications-management.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/formalibresupport/css/notificationsManagement.css')}}">
 {% endblock %}
