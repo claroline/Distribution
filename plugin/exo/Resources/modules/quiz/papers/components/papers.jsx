@@ -25,10 +25,9 @@ export const PaperRow = props =>
     </td>
     <td>
       {utils.showScore(props.admin, props.finished, props.parameters) ?
-        props.score || 0 === props.score ?
-          <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
-          :
-          tex('paper_score_not_available')
+        props.score || 0 === props.score ? <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
+        :
+        tex('paper_score_not_available')
       }
     </td>
     <td className="text-right table-actions">
