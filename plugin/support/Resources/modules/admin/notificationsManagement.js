@@ -64,7 +64,7 @@ const addContact = function (user) {
             ${user['mail']}
         </td>
         <td>
-            <span class="btn btn-danger remove-support-contact-btn"
+            <span class="btn btn-danger btn-sm remove-support-contact-btn"
                   data-user-id="${user['id']}"
             >
                 <i class="fa fa-times-circle"></i>
