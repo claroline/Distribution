@@ -14,8 +14,8 @@ export const utils = {
       return isFinished
     } else if (showCorrectionAt === SHOW_CORRECTION_AT_DATE){
       const today = Date.parse(new Date(Date.now()))
-      const correctionDate = Date.parse(correctionDate)
-      return today >= correctionDate
+      const parsedCorrectionDate = Date.parse(correctionDate)
+      return today >= parsedCorrectionDate
     } else {
       return false
     }
