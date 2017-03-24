@@ -47,7 +47,7 @@ export const PairPaper = props => {
                         id={`pair-${answer.leftItem.id}-${answer.rightItem.id}-feedback`}
                         feedback={answer.feedback}
                       />
-                      { answer.score !== '' &&
+                      {props.showScore && answer.score !== '' &&
                         <SolutionScore score={answer.score}/>
                       }
                     </div>
@@ -109,7 +109,8 @@ PairPaper.propTypes = {
     items: T.arrayOf(T.object).isRequired,
     solutions: T.arrayOf(T.object).isRequired
   }).isRequired,
-  answer: T.array
+  answer: T.array,
+  showScore: T.bool.isRequired
 }
 
 PairPaper.defaultProps = {

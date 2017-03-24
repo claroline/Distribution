@@ -6,7 +6,6 @@ const quizId = state => state.quiz.id
 const papers = state => state.papers.papers
 const papersFetched = state => state.papers.isFetched
 const currentPaperId = state => state.papers.current
-const parameters = state => state.quiz.parameters
 
 const currentPaper = createSelector(
   papers,
@@ -20,6 +19,18 @@ const paperSteps = createSelector(
   currentPaper,
   (currentPaper) => currentPaper.structure.steps
 )
+
+const showScoreAt = paper => {
+  return paper.structure.parameters.showScoreAt
+}
+
+const showCorrectionAt = paper => {
+  return paper.structure.parameters.showCorrectionAt
+}
+
+const correctionDate = paper => {
+  return paper.structure.parameters.correctionDate
+}
 
 const itemScoreMax = item => {
   let scoreMax
@@ -69,5 +80,7 @@ export const selectors = {
   paperSteps,
   itemScoreMax,
   paperScoreMax,
-  parameters
+  showScoreAt,
+  showCorrectionAt,
+  correctionDate
 }

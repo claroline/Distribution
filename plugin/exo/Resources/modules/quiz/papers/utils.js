@@ -7,25 +7,25 @@ import {
 } from './../enums'
 
 export const utils = {
-  showCorrection(isAdmin, isFinished, parameters) {
+  showCorrection(isAdmin, isFinished, showCorrectionAt, correctionDate) {
     if (isAdmin) {
       return true
-    } else if (parameters.showCorrectionAt === SHOW_CORRECTION_AT_VALIDATION || parameters.showCorrectionAt === SHOW_CORRECTION_AT_LAST_ATTEMPT){
+    } else if (showCorrectionAt === SHOW_CORRECTION_AT_VALIDATION || showCorrectionAt === SHOW_CORRECTION_AT_LAST_ATTEMPT){
       return isFinished
-    } else if (parameters.showCorrectionAt === SHOW_CORRECTION_AT_DATE){
+    } else if (showCorrectionAt === SHOW_CORRECTION_AT_DATE){
       const today = Date.parse(new Date(Date.now()))
-      const correctionDate = Date.parse(parameters.correctionDate)
+      const correctionDate = Date.parse(correctionDate)
       return today >= correctionDate
     } else {
       return false
     }
   },
-  showScore(isAdmin, isFinished, parameters) {
+  showScore(isAdmin, isFinished, showScoreAt, showCorrectionAt, correctionDate) {
     if (isAdmin) {
       return true
-    } else if (parameters.showScoreAt === SHOW_SCORE_AT_CORRECTION){
-      return utils.showCorrection(isAdmin, isFinished, parameters)
-    } else if (parameters.showScoreAt === SHOW_SCORE_AT_VALIDATION){
+    } else if (showScoreAt === SHOW_SCORE_AT_CORRECTION){
+      return utils.showCorrection(isAdmin, isFinished, showCorrectionAt, correctionDate)
+    } else if (showScoreAt === SHOW_SCORE_AT_VALIDATION){
       return isFinished
     } else {
       return false

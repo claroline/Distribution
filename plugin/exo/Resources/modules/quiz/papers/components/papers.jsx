@@ -23,15 +23,15 @@ export const PaperRow = props =>
       <span className="sr-only">{tex(props.finished ? 'yes' : 'no')}</span>
       {props.finished && <span className="fa fa-fw fa-check" />}
     </td>
-    <td>
-      {utils.showScore(props.admin, props.finished, props.parameters) ?
+    <td className="text-right">
+      {props.showScore ?
         props.score || 0 === props.score ? <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
         :
         tex('paper_score_not_available')
       }
     </td>
     <td className="text-right table-actions">
-      <a href={`#papers/${props.id}`} disabled={!utils.showCorrection(props.admin, props.finished, props.parameters)} className="btn btn-link">
+      <a href={`#papers/${props.id}`} disabled={!props.showCorrection} className="btn btn-link">
         <span className="fa fa-fw fa-eye"></span>
       </a>
     </td>
@@ -49,11 +49,8 @@ PaperRow.propTypes = {
   finished: T.bool.isRequired,
   score: T.number,
   scoreMax: T.number,
-  parameters: T.shape({
-    showScoreAt: T.string.isRequired,
-    showCorrectionAt: T.string.isRequired,
-    correctionDate: T.string
-  }).isRequired
+  showScore: T.bool.isRequired,
+  showCorrection: T.bool.isRequired
 }
 
 let Papers = props =>
@@ -67,14 +64,20 @@ let Papers = props =>
           <th>{tex('paper_list_table_paper_number')}</th>
           <th>{tex('paper_list_table_start_date')}</th>
           <th>{tex('paper_list_table_end_date')}</th>
-          <th className="text-center">{tex('paper_finished')}</th>
+          <th>{tex('paper_finished')}</th>
           <th>{tex('paper_list_table_score')}</th>
           <th><span className="sr-only">{tex('actions')}</span></th>
         </tr>
       </thead>
       <tbody>
         {props.papers.map((paper, idx) =>
-          <PaperRow key={idx} admin={props.admin} {...paper} parameters={props.parameters} scoreMax={paperSelectors.paperScoreMax(paper)} />
+          <PaperRow
+            key={idx}
+            admin={props.admin}
+            {...paper}
+            showScore={utils.showScore(props.admin, paper.finished, paperSelectors.showScoreAt(paper), paperSelectors.showCorrectionAt(paper), paperSelectors.correctionDate(paper))}
+            showCorrection={utils.showCorrection(props.admin, paper.finished, paperSelectors.showCorrectionAt(paper), paperSelectors.correctionDate(paper))}
+            scoreMax={paperSelectors.paperScoreMax(paper)} />
         )}
       </tbody>
     </table>
@@ -82,19 +85,13 @@ let Papers = props =>
 
 Papers.propTypes = {
   admin: T.bool.isRequired,
-  papers: T.arrayOf(T.object).isRequired,
-  parameters: T.shape({
-    showScoreAt: T.string.isRequired,
-    showCorrectionAt: T.string.isRequired,
-    correctionDate: T.string
-  }).isRequired
+  papers: T.arrayOf(T.object).isRequired
 }
 
 function mapStateToProps(state) {
   return {
     admin: selectors.editable(state),
-    papers: paperSelectors.papers(state),
-    parameters: paperSelectors.parameters(state)
+    papers: paperSelectors.papers(state)
   }
 }
 

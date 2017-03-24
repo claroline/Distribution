@@ -35,7 +35,7 @@ let Quiz = props =>
       {props.editable &&
         <PageActions actions={viewActions(props.viewMode, props)} />
       }
-      {!props.editable && props.isRegistered && props.hasUserPapers &&
+      {!props.editable && props.registeredUser &&
         <PageActions actions={userViewActions(props.viewMode, props)} />
       }
     </PageHeader>
@@ -59,7 +59,7 @@ Quiz.propTypes = {
   steps: T.object.isRequired,
   editable: T.bool.isRequired,
   hasUserPapers: T.bool.isRequired,
-  isRegistered: T.bool.isRequired,
+  registeredUser: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
   saveEnabled: T.bool.isRequired,
@@ -285,7 +285,7 @@ function mapStateToProps(state) {
     published: select.published(state),
     hasPapers: select.hasPapers(state),
     hasUserPapers: select.hasUserPapers(state),
-    isRegistered: select.isRegistered(state),
+    registeredUser: select.registered(state),
     saveEnabled: select.saveEnabled(state),
     modal: select.modal(state),
     currentQuestionId: state.correction.currentQuestionId,

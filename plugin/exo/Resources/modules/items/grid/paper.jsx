@@ -494,7 +494,7 @@ class GridPaper extends Component {
                                     <div className="cell-body">{cell.data}</div>
                                   </div>
                                 </td>
-                              )
+                            )
                           } else {
                             return (
                                 <td
@@ -504,7 +504,7 @@ class GridPaper extends Component {
                                     isValid={valid}
                                     answers={this.props.answer}
                                     solutions={this.props.item.solutions}
-                                    showScore={this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL}
+                                    showScore={this.props.showScore && this.props.item.score.type === SCORE_SUM && this.props.item.sumMode === SUM_CELL}
                                     cell={cell}
                                     penalty={this.props.item.penalty}/>
                                 </td>
@@ -560,7 +560,7 @@ class GridPaper extends Component {
                                     <div className="cell-body">{cell.data}</div>
                                   </div>
                                 </td>
-                              )
+                            )
                           } else {
                             return (
                                 <td
@@ -584,7 +584,7 @@ class GridPaper extends Component {
             </div>
           }
         />
-      )
+    )
   }
 }
 
@@ -611,7 +611,8 @@ GridPaper.propTypes = {
     }).isRequired,
     solutions: T.arrayOf(T.object).isRequired
   }).isRequired,
-  answer: T.array.isRequired
+  answer: T.array.isRequired,
+  showScore: T.bool.isRequired
 }
 
 GridPaper.defaultProps = {

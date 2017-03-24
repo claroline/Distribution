@@ -26,7 +26,7 @@ export const ClozePaper = (props) => {
                   id={hole.id}
                   answer={answer ? answer.answerText : null}
                   choices={hole.choices}
-                  showScore={true}
+                  showScore={props.showScore}
                   solutions={solution.answers}
                 />
               )
@@ -69,7 +69,8 @@ ClozePaper.propTypes = {
     })).isRequired,
     solutions: T.arrayOf(T.object)
   }).isRequired,
-  answer: T.array.isRequired
+  answer: T.array.isRequired,
+  showScore: T.bool.isRequired
 }
 
 ClozePaper.defaultProps = {
