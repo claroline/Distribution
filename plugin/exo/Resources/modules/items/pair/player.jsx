@@ -2,19 +2,19 @@ import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
+import times from 'lodash/times'
 import {tex, t} from './../../utils/translate'
 import {utils} from './utils/utils'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
-import shuffle from 'lodash/shuffle'
-import times from 'lodash/times'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 let DropBox = props => {
   return props.connectDropTarget (
      <div className={classes(
-       'pair-item-drop-container',
-       {'on-hover': props.isOver}
+       'pair-item-placeholder drop-placeholder placeholder-hover',
+       {'hover': props.isOver}
      )}>
+       <span className="fa fa-fw fa-share fa-rotate-90" />
        {tex('set_drop_item')}
      </div>
    )
@@ -30,35 +30,34 @@ DropBox.propTypes = {
 
 DropBox = makeDroppable(DropBox, 'ITEM')
 
-const Pair = props =>
-  <div className="pair-element">
-    <div className="pair-element-data" dangerouslySetInnerHTML={{__html: props.item.data}} />
+const PairItem = props =>
+  <div className="pair-item">
     {props.item.removable &&
-      <div className="right-controls">
-        <TooltipButton
-          id={`pair-${props.item.id}-delete`}
-          className="fa fa-trash-o"
-          title={t('delete')}
-          onClick={() => props.handleItemRemove(props.item.id)}
-        />
-      </div>
+      <TooltipButton
+        id={`pair-${props.item.id}-delete`}
+        className="btn-link-default btn-item-remove pull-right"
+        title={t('delete')}
+        label={<span className="fa fa-fw fa-trash-o" />}
+        onClick={() => props.handleItemRemove(props.item.id)}
+      />
     }
+    <div className="item-content" dangerouslySetInnerHTML={{__html: props.item.data}} />
   </div>
 
-Pair.propTypes = {
+PairItem.propTypes = {
   item: T.object.isRequired,
   handleItemRemove: T.func.isRequired
 }
 
 const PairRow = props =>
-  <div className="pair-row">
+  <div className="pair answer-item">
     {props.row[0] === -1 ?
       <DropBox object={{x: props.rowId, y: 0}} onDrop={props.onDrop}/> :
-      <Pair item={props.row[0]} handleItemRemove={props.onRemove}/>
+      <PairItem item={props.row[0]} handleItemRemove={props.onRemove}/>
     }
     {props.row[1] === -1 ?
       <DropBox object={{x: props.rowId, y: 1}} onDrop={props.onDrop} /> :
-      <Pair item={props.row[1]} handleItemRemove={props.onRemove}/>
+      <PairItem item={props.row[1]} handleItemRemove={props.onRemove}/>
     }
   </div>
 
@@ -88,30 +87,28 @@ PairRowList.propTypes = {
 
 let Item = props => {
   return props.connectDragPreview (
-    <div className="item">
+    <div className="answer-item item">
+      {props.connectDragSource(
+        <div className="btn-drag pull-right">
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id={`item-${props.item.id}-drag`}>{t('move')}</Tooltip>
+            }>
+            <span
+              draggable="true"
+              className={classes(
+                'btn',
+                'btn-link-default',
+                'drag-handle'
+              )}
+            >
+              <span className="fa fa-fw fa-arrows" />
+            </span>
+          </OverlayTrigger>
+        </div>
+      )}
       <div className="item-content" dangerouslySetInnerHTML={{__html: props.item.data}} />
-      <div className="right-controls">
-        {props.connectDragSource(
-          <div>
-            <OverlayTrigger
-              placement="top"
-              overlay={
-                <Tooltip id={`item-${props.item.id}-drag`}>{t('move')}</Tooltip>
-              }>
-              <span
-                draggable="true"
-                className={classes(
-                  'tooltiped-button',
-                  'btn',
-                  'fa',
-                  'fa-bars',
-                  'drag-handle'
-                )}
-              />
-            </OverlayTrigger>
-          </div>
-        )}
-      </div>
     </div>
   )
 }
@@ -144,13 +141,9 @@ class PairPlayer extends Component {
     super(props)
 
     this.state = {
-      items: this.randomize(utils.pairItemsWithDisplayOption(props.item.items), props.item.random),
+      items: utils.pairItemsWithDisplayOption(props.item.items),
       answerItems: utils.generateAnswerPairItems(props.item.items, props.item.rows)
     }
-  }
-
-  randomize(items, random) {
-    return random ? shuffle(items) : items
   }
 
   updateAnswer() {
@@ -181,15 +174,17 @@ class PairPlayer extends Component {
 
   render() {
     return (
-      <div className="pair-question-player">
-        <div className="items-col">
+      <div className="pair-player row">
+        <div className="col-md-5 col-sm-5 items-col">
             <ItemList items={this.state.items} />
         </div>
-        <div className="pair-rows-col">
-            <PairRowList rows={this.props.item.rows}
-                         answerItems={this.state.answerItems}
-                         onItemDrop={(source, target) => this.handleItemDrop(source, target)}
-                         onItemRemove={(itemId) => this.handleItemRemove(itemId)}
+
+        <div className="col-md-7 col-sm-7 pairs-col">
+            <PairRowList
+              rows={this.props.item.rows}
+              answerItems={this.state.answerItems}
+              onItemDrop={(source, target) => this.handleItemDrop(source, target)}
+              onItemRemove={(itemId) => this.handleItemRemove(itemId)}
             />
         </div>
       </div>

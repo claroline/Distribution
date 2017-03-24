@@ -6,10 +6,12 @@ import {getDefinition, isQuestionType} from './../../../items/item-types'
 import {selectors} from './../selectors'
 import {Metadata as ItemMetadata} from './../../../items/components/metadata.jsx'
 import {ScoreBox} from './../../../items/components/score-box.jsx'
+import {ScoreGauge} from './../../../components/score-gauge.jsx'
 
 let Paper = props =>
   <div className="paper">
     <h2 className="paper-title">
+      <ScoreGauge userScore={props.paper.score} maxScore={selectors.paperScoreMax(props.paper)} size="sm" />
       {tex('correction')}&nbsp;{props.paper.number}
     </h2>
 
@@ -23,11 +25,7 @@ let Paper = props =>
           isQuestionType(item.type) ?
             <Panel key={item.id}>
               {getAnswerScore(item.id, props.paper.answers) !== undefined && getAnswerScore(item.id, props.paper.answers) !== null &&
-                <span className="pull-right">
-                  <h4>
-                    <ScoreBox score={getAnswerScore(item.id, props.paper.answers)} scoreMax={getItemScoreMax(item)}/>
-                  </h4>
-                </span>
+                <ScoreBox className="pull-right" score={getAnswerScore(item.id, props.paper.answers)} scoreMax={selectors.itemScoreMax(item)}/>
               }
               {item.title &&
                 <h4 className="item-title">{item.title}</h4>
@@ -37,8 +35,16 @@ let Paper = props =>
 
               {React.createElement(
                 getDefinition(item.type).paper,
-                {item, answer: getAnswer(item.id, props.paper.answers), answerObject: getAnswerObject(item.id, props.paper.answers)}
+                {item, answer: getAnswer(item.id, props.paper.answers), feedback: getAnswerFeedback(item.id, props.paper.answers)}
               )}
+
+              {item.feedback &&
+                <hr className="item-content-separator" />
+              }
+
+              {item.feedback &&
+                <div className="item-feedback" dangerouslySetInnerHTML={{__html: item.feedback}} />
+              }
             </Panel> :
             ''
         )}
@@ -49,7 +55,8 @@ let Paper = props =>
 Paper.propTypes = {
   paper: T.shape({
     id: T.string.isRequired,
-    number: T.number.isRequired
+    number: T.number.isRequired,
+    score: T.number
   }).isRequired,
   steps: T.arrayOf(T.shape({
     items: T.arrayOf(T.shape({
@@ -66,44 +73,16 @@ function getAnswer(itemId, answers) {
   return answer && answer.data ? answer.data : undefined
 }
 
-function getAnswerObject(itemId, answers) {
-  return answers.find(answer => answer.questionId === itemId)
+function getAnswerFeedback(itemId, answers) {
+  const answer = answers.find(answer => answer.questionId === itemId)
+
+  return answer && answer.feedback ? answer.feedback : null
 }
 
 function getAnswerScore(itemId, answers) {
   const answer = answers.find(answer => answer.questionId === itemId)
 
   return answer ? answer.score : undefined
-}
-
-function getItemScoreMax(item) {
-  let scoreMax
-
-  if (item && item.score) {
-    let expectedAnswers = []
-
-    switch (item.score.type) {
-      case 'manual':
-        scoreMax = item.score.max
-        break
-      case 'fixed':
-        scoreMax = item.score.success
-        break
-      case 'sum':
-        expectedAnswers = getDefinition(item.type).expectAnswer(item)
-
-        if (expectedAnswers.length > 0) {
-          scoreMax = 0
-          expectedAnswers.forEach(ca => {
-            if (ca.score && ca.score > 0) {
-              scoreMax += ca.score
-            }
-          })
-        }
-        break
-    }
-  }
-  return scoreMax
 }
 
 function mapStateToProps(state) {
