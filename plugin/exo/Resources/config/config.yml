@@ -6,6 +6,11 @@ plugin:
           name: ujm_exercise
           is_browsable: false
           icon: res_exo.png
+          actions:
+            # The name of the action is the translation key that will be used to display
+            #  the action in the list of available actions for your resource.
+            #  The name will be passed to you by the Event manager.
+            - name: papers
           activity_rules:
             - action: resource-ujm_exercise-exercise_evaluated
 

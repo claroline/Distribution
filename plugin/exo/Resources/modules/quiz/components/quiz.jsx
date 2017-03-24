@@ -35,7 +35,7 @@ let Quiz = props =>
       {props.editable &&
         <PageActions actions={viewActions(props.viewMode, props)} />
       }
-      {!props.editable && props.hasUserPapers &&
+      {!props.editable && props.isRegistered && props.hasUserPapers &&
         <PageActions actions={userViewActions(props.viewMode, props)} />
       }
     </PageHeader>
@@ -59,6 +59,7 @@ Quiz.propTypes = {
   steps: T.object.isRequired,
   editable: T.bool.isRequired,
   hasUserPapers: T.bool.isRequired,
+  isRegistered: T.bool.isRequired,
   viewMode: T.string.isRequired,
   updateViewMode: T.func.isRequired,
   saveEnabled: T.bool.isRequired,
@@ -86,7 +87,6 @@ function userViewActions(view, props) {
     primary: true
   }
 
-
   const papersAction = {
     icon: 'fa fa-fw fa-list',
     label: tex('results_list'),
@@ -96,6 +96,11 @@ function userViewActions(view, props) {
 
   switch (view) {
     case VIEW_PLAYER:
+      return [
+        overviewAction,
+        divider,
+        papersAction
+      ]
     case VIEW_ATTEMPT_END:
       return [
         overviewAction,
@@ -280,6 +285,7 @@ function mapStateToProps(state) {
     published: select.published(state),
     hasPapers: select.hasPapers(state),
     hasUserPapers: select.hasUserPapers(state),
+    isRegistered: select.isRegistered(state),
     saveEnabled: select.saveEnabled(state),
     modal: select.modal(state),
     currentQuestionId: state.correction.currentQuestionId,

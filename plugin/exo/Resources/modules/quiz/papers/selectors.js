@@ -6,6 +6,7 @@ const quizId = state => state.quiz.id
 const papers = state => state.papers.papers
 const papersFetched = state => state.papers.isFetched
 const currentPaperId = state => state.papers.current
+const parameters = state => state.quiz.parameters
 
 const currentPaper = createSelector(
   papers,
@@ -67,5 +68,6 @@ export const selectors = {
   currentPaper,
   paperSteps,
   itemScoreMax,
-  paperScoreMax
+  paperScoreMax,
+  parameters
 }
