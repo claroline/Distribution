@@ -9,11 +9,6 @@ be_simple_sso_auth:
             logout_url: http://cas.server.tld/logout
             validation_url: http://cas.server.tld/serviceValidate
 
-parameters:
-    be_simple.sso_auth.client.option.curlopt_ssl_verifypeer.value: false
-    be_simple.sso_auth.client.option.curlopt_ssl_verifyhost.value: false
-    be_simple.sso_auth.client.option.curlopt_sslversion.value: 1
-
 security:
     providers:
         cas_user:
