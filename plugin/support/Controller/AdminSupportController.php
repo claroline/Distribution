@@ -257,21 +257,33 @@ class AdminSupportController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/admin/support/contacts/management",
-     *     name="formalibre_admin_support_contacts_management",
+     *     "/admin/support/notifications/management",
+     *     name="formalibre_admin_support_notifications_management",
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
      * @EXT\Template()
      */
-    public function adminSupportContactsManagementAction()
+    public function adminSupportNotificationsManagementAction()
     {
-        $contactIds = $this->supportManager->getConfigurationContactsOption();
-        $contacts = $this->userManager->getUsersByIds($contactIds);
+        $contacts = [];
+        $config = $this->supportManager->getConfiguration();
+        $userIds = $config->getContacts();
+        $users = $this->userManager->getUsersByIds($userIds);
+
+        foreach ($users as $user) {
+            $contacts[] = [
+                'id' => $user->getId(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'mail' => $user->getMail(),
+            ];
+        }
 
         return [
             'contacts' => $contacts,
-            'title' => 'contacts_management',
+            'title' => 'notifications_management',
+            'supportConfig' => $config,
         ];
     }
 
@@ -377,24 +389,22 @@ class AdminSupportController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/admin/support/contacts/{contactIds}/add",
+     *     "/admin/support/contacts/add",
      *     name="formalibre_admin_support_contacts_add",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      */
-    public function adminSupportContactsAddAction($contactIds)
+    public function adminSupportContactsAddAction()
     {
         $config = $this->supportManager->getConfiguration();
-        $details = $config->getDetails();
-        $contacts = isset($details['contacts']) ? $details['contacts'] : [];
-        $toAdd = explode(',', $contactIds);
+        $contacts = $config->getContacts();
+        $toAdd = $this->request->request->get('contactIds', false);
 
         foreach ($toAdd as $userId) {
             $contacts[] = intval($userId);
         }
-        $details['contacts'] = $contacts;
-        $config->setDetails($details);
+        $config->setContacts($contacts);
         $this->supportManager->persistConfiguration($config);
 
         return new JsonResponse('success', 200);
@@ -406,24 +416,38 @@ class AdminSupportController extends Controller
      *     name="formalibre_admin_support_contact_remove",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      */
     public function adminSupportContactRemoveAction($contactId)
     {
         $config = $this->supportManager->getConfiguration();
-        $details = $config->getDetails();
+        $contacts = $config->getContacts();
+        $key = array_search($contactId, $contacts);
 
-        if (isset($details['contacts'])) {
-            $contacts = $details['contacts'];
-            $key = array_search($contactId, $contacts);
-
-            if ($key !== false) {
-                unset($contacts[$key]);
-                $details['contacts'] = $contacts;
-                $config->setDetails($details);
-                $this->supportManager->persistConfiguration($config);
-            }
+        if ($key !== false) {
+            unset($contacts[$key]);
+            $config->setContacts($contacts);
+            $this->supportManager->persistConfiguration($config);
         }
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/admin/support/notify/update",
+     *     name="formalibre_admin_support_notify_update",
+     *     options={"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
+     */
+    public function adminSupportNotifyUpdateAction()
+    {
+        $config = $this->supportManager->getConfiguration();
+        $type = $this->request->request->get('notifyType', false);
+        $value = boolval($this->request->request->get('notifyValue', false));
+        $config->setNotify($type, $value);
+        $this->supportManager->persistConfiguration($config);
 
         return new JsonResponse('success', 200);
     }

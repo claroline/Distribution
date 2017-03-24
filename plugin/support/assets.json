@@ -8,6 +8,7 @@
       "admin-ticket-display": "admin/ticketDisplay",
       "admin-types-management": "admin/typesManagement",
       "admin-status-management": "admin/statusManagement",
+      "admin-notifications-management": "admin/notificationsManagement",
       "ongoing-tickets": "support/ongoingTickets",
       "archives": "support/archives",
       "support-tabs": "support/supportTabs",

@@ -7,6 +7,7 @@ use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\MessageBundle\Manager\MessageManager;
 use FormaLibre\SupportBundle\Entity\Comment;
 use FormaLibre\SupportBundle\Entity\Configuration;
 use FormaLibre\SupportBundle\Entity\Intervention;
@@ -24,6 +25,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class SupportManager
 {
     private $mailManager;
+    private $messageManager;
     private $om;
     private $pagerFactory;
     private $router;
@@ -38,16 +40,18 @@ class SupportManager
 
     /**
      * @DI\InjectParams({
-     *     "mailManager"  = @DI\Inject("claroline.manager.mail_manager"),
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "pagerFactory" = @DI\Inject("claroline.pager.pager_factory"),
-     *     "router"       = @DI\Inject("router"),
-     *     "translator"   = @DI\Inject("translator"),
-     *     "userManager"  = @DI\Inject("claroline.manager.user_manager")
+     *     "mailManager"     = @DI\Inject("claroline.manager.mail_manager"),
+     *     "messageManager"  = @DI\Inject("claroline.manager.message_manager"),
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "pagerFactory"    = @DI\Inject("claroline.pager.pager_factory"),
+     *     "router"          = @DI\Inject("router"),
+     *     "translator"      = @DI\Inject("translator"),
+     *     "userManager"     = @DI\Inject("claroline.manager.user_manager")
      * })
      */
     public function __construct(
         MailManager $mailManager,
+        MessageManager $messageManager,
         ObjectManager $om,
         PagerFactory $pagerFactory,
         RouterInterface $router,
@@ -55,6 +59,7 @@ class SupportManager
         UserManager $userManager
     ) {
         $this->mailManager = $mailManager;
+        $this->messageManager = $messageManager;
         $this->om = $om;
         $this->pagerFactory = $pagerFactory;
         $this->router = $router;
@@ -247,6 +252,16 @@ class SupportManager
             $config = new Configuration();
             $details = [
                 'contacts' => [],
+                'notify' => [
+                    'ticket_internal' => true,
+                    'ticket_external' => true,
+                    'admin_message_internal' => true,
+                    'admin_message_external' => true,
+                    'user_message_internal' => true,
+                    'user_message_external' => true,
+                    'note_internal' => true,
+                    'note_external' => true,
+                ],
             ];
             $config->setDetails($details);
             $this->persistConfiguration($config);
@@ -261,28 +276,27 @@ class SupportManager
         $this->om->flush();
     }
 
-    public function getConfigurationContactsOption()
-    {
-        $config = $this->getConfiguration();
-        $details = $config->getDetails();
-
-        return isset($details['contacts']) ? $details['contacts'] : [];
-    }
-
     public function sendTicketMail(User $user, Ticket $ticket, $type = '', Comment $comment = null)
     {
+        $config = $this->getConfiguration();
         $errors = [];
         $contactMail = null;
-        $receivers = [];
+        $mailReceivers = [];
+        $messageReceivers = [];
         $extra = [];
+        $sendMessage = false;
+        $sendMail = false;
 
         switch ($type) {
             case 'new_ticket':
-                $contactIds = $this->getConfigurationContactsOption();
+                $sendMessage = $config->getNotify('ticket_internal');
+                $sendMail = $config->getNotify('ticket_external');
+                $contactIds = $config->getContacts();
                 $contactMail = $ticket->getContactMail();
 
-                if (count($contactIds) > 0) {
-                    $receivers = $this->userManager->getUsersByIds($contactIds);
+                if (($sendMessage || $sendMail) && count($contactIds) > 0) {
+                    $mailReceivers = $this->userManager->getUsersByIds($contactIds);
+                    $messageReceivers = $mailReceivers;
                     $subject = '['.
                         $this->translator->trans('new_ticket', [], 'support').
                         ']['.
@@ -308,11 +322,14 @@ class SupportManager
                 }
                 break;
             case 'ticket_edition':
-                $contactIds = $this->getConfigurationContactsOption();
+                $sendMessage = $config->getNotify('ticket_internal');
+                $sendMail = $config->getNotify('ticket_external');
+                $contactIds = $config->getContacts();
                 $contactMail = $ticket->getContactMail();
 
-                if (count($contactIds) > 0) {
-                    $receivers = $this->userManager->getUsersByIds($contactIds);
+                if (($sendMessage || $sendMail) && count($contactIds) > 0) {
+                    $mailReceivers = $this->userManager->getUsersByIds($contactIds);
+                    $messageReceivers = $mailReceivers;
                     $subject = '['.
                         $this->translator->trans('ticket_edition', [], 'support').
                         ']['.
@@ -338,10 +355,13 @@ class SupportManager
                 }
                 break;
             case 'ticket_deletion':
-                $contactIds = $this->getConfigurationContactsOption();
+                $sendMessage = $config->getNotify('ticket_internal');
+                $sendMail = $config->getNotify('ticket_external');
+                $contactIds = $config->getContacts();
 
-                if (count($contactIds) > 0) {
-                    $receivers = $this->userManager->getUsersByIds($contactIds);
+                if (($sendMessage || $sendMail) && count($contactIds) > 0) {
+                    $mailReceivers = $this->userManager->getUsersByIds($contactIds);
+                    $messageReceivers = $mailReceivers;
                     $subject = '['.
                         $this->translator->trans('ticket_deletion', [], 'support').
                         ']['.
@@ -355,9 +375,12 @@ class SupportManager
                 }
                 break;
             case 'new_admin_comment':
-                $extra['to'] = [$ticket->getContactMail()];
+                $sendMessage = $config->getNotify('user_message_internal');
+                $sendMail = $config->getNotify('user_message_external');
 
-                if (!is_null($comment)) {
+                if (($sendMessage || $sendMail) && !is_null($comment)) {
+                    $extra['to'] = [$ticket->getContactMail()];
+                    $messageReceivers = [$ticket->getUser()];
                     $subject = '['.
                         $this->translator->trans('new_ticket_message', [], 'support').
                         '] '.
@@ -371,11 +394,13 @@ class SupportManager
                 }
                 break;
             case 'new_comment':
-                $contactIds = $this->getConfigurationContactsOption();
+                $sendMessage = $config->getNotify('admin_message_internal');
+                $sendMail = $config->getNotify('admin_message_external');
                 $contactMail = $ticket->getContactMail();
 
-                if (count($contactIds) > 0 && !is_null($comment)) {
-                    $receivers = $this->userManager->getUsersByIds($contactIds);
+                if (($sendMessage || $sendMail) && !is_null($comment)) {
+                    $mailReceivers = $this->getStakeholdersByTicket($ticket);
+                    $messageReceivers = $mailReceivers;
                     $subject = '['.
                         $this->translator->trans('new_ticket_message', [], 'support').
                         ']['.
@@ -401,11 +426,13 @@ class SupportManager
                 }
                 break;
             case 'new_internal_note':
-                $contactIds = $this->getConfigurationContactsOption();
+                $sendMessage = $config->getNotify('note_internal');
+                $sendMail = $config->getNotify('note_external');
                 $contactMail = $ticket->getContactMail();
 
-                if (count($contactIds) > 0 && !is_null($comment)) {
-                    $receivers = $this->userManager->getUsersByIds($contactIds);
+                if (($sendMessage || $sendMail) && !is_null($comment)) {
+                    $mailReceivers = $this->getStakeholdersByTicket($ticket, $user);
+                    $messageReceivers = $mailReceivers;
                     $subject = '['.
                         $this->translator->trans('new_ticket_note', [], 'support').
                         ']['.
@@ -426,12 +453,16 @@ class SupportManager
                 break;
         }
 
-        if (count($receivers) > 0 || (isset($extra['to']) && count($extra['to']) > 0)) {
+        if ($sendMail && (count($mailReceivers) > 0 || (isset($extra['to']) && count($extra['to']) > 0))) {
             try {
-                $this->mailManager->send($subject, $content, $receivers, null, $extra, false, $contactMail);
+                $this->mailManager->send($subject, $content, $mailReceivers, null, $extra, false, $contactMail);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
+        }
+        if ($sendMessage && count($messageReceivers) > 0) {
+            $message = $this->messageManager->create($content, $subject, $messageReceivers, $user);
+            $this->messageManager->send($message, true, false);
         }
 
         return $errors;
@@ -533,6 +564,22 @@ class SupportManager
         }
 
         return $comment;
+    }
+
+    public function getStakeholdersByTicket(Ticket $ticket, User $ignoredUser = null)
+    {
+        $stakeholders = [];
+        $ticketUsers = $this->ticketUserRepo->findByTicket($ticket);
+
+        foreach ($ticketUsers as $ticketUser) {
+            $user = $ticketUser->getUser();
+
+            if (is_null($ignoredUser) || $user->getId() !== $ignoredUser->getId()) {
+                $stakeholders[] = $user;
+            }
+        }
+
+        return $stakeholders;
     }
 
     /**************************************
