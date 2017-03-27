@@ -3,7 +3,6 @@
 /*global UserPicker*/
 import $ from 'jquery'
 
-//var contactsIds = [{% for contact in contacts %}{{ contact.getId() }}{% if not loop.last %}, {% endif %}{% endfor %}];
 const contacts = window['contacts']
 let contactsIds = []
 contacts.forEach(c => contactsIds.push(c['id']))

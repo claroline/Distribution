@@ -703,6 +703,11 @@ class SupportManager
             $types;
     }
 
+    public function getTypeByName($name)
+    {
+        return $this->typeRepo->findOneByName($name);
+    }
+
     /**************************************
      * Access to StatusRepository methods *
      **************************************/

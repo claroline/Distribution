@@ -81,33 +81,7 @@ class SupportListener
         $httpCode = $event->getHttpCode();
 
         if ($httpCode === 400 || $httpCode === 500) {
-            $user = $event->getUser();
-            $exceptionClassTemp = $event->getExceptionClass();
-            $messageTemp = $event->getMessage();
-            $fileTemp = $event->getFile();
-            $lineTemp = $event->getLine();
-            $urlTemp = $event->getUrl();
-            $refererTemp = $event->getReferer();
-            $exceptionClass = empty($exceptionClassTemp) ? '-' : $exceptionClassTemp;
-            $message = empty($messageTemp) ? '-' : $messageTemp;
-            $file = empty($fileTemp) ? '-' : $fileTemp;
-            $line = empty($lineTemp) ? '-' : $lineTemp;
-            $url = empty($urlTemp) ? '-' : $urlTemp;
-            $referer = empty($refererTemp) ? '-' : $refererTemp;
-
-            $route = $this->router->generate(
-                'formalibre_ticket_from_issue_create_form',
-                [
-                    'user' => $user->getId(),
-                    'exceptionClass' => $exceptionClass,
-                    'message' => $message,
-                    'file' => $file,
-                    'line' => $line,
-                    'url' => $url,
-                    'referer' => $referer,
-                ]
-            );
-
+            $route = $this->router->generate('formalibre_ticket_from_issue_create_form');
             $menu = $event->getMenu();
             $menu->addChild(
                 $this->translator->trans('create_ticket_for_issue', [], 'support'),

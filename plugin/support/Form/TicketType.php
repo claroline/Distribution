@@ -54,7 +54,10 @@ class TicketType extends AbstractType
                     'required' => false,
                     'label' => 'additional_infos',
                     'translation_domain' => 'support',
-                    'attr' => ['placeholder' => $this->translator->trans('description_placeholder_text', [], 'support')],
+                    'attr' => [
+                        'placeholder' => $this->translator->trans('description_placeholder_text', [], 'support'),
+                        'rows' => 5,
+                    ],
                 ]
             );
         } else {
