@@ -293,6 +293,7 @@ class SupportManager
                 $sendMail = $config->getNotify('ticket_external');
                 $contactIds = $config->getContacts();
                 $contactMail = $ticket->getContactMail();
+                $url = $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true);
 
                 if (($sendMessage || $sendMail) && count($contactIds) > 0) {
                     $mailReceivers = $this->userManager->getUsersByIds($contactIds);
@@ -316,9 +317,7 @@ class SupportManager
                         $ticket->getContactPhone().
                         '<br>'.
                         $this->translator->trans('link', [], 'platform').
-                        ' : '.
-                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
-                        '<br><br>';
+                        ' : <a href="'.$url.'">'.$url.'</a><br><br>';
                 }
                 break;
             case 'ticket_edition':
@@ -326,6 +325,7 @@ class SupportManager
                 $sendMail = $config->getNotify('ticket_external');
                 $contactIds = $config->getContacts();
                 $contactMail = $ticket->getContactMail();
+                $url = $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true);
 
                 if (($sendMessage || $sendMail) && count($contactIds) > 0) {
                     $mailReceivers = $this->userManager->getUsersByIds($contactIds);
@@ -349,9 +349,7 @@ class SupportManager
                         $ticket->getContactPhone().
                         '<br>'.
                         $this->translator->trans('link', [], 'platform').
-                        ' : '.
-                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
-                        '<br><br>';
+                        ' : <a href="'.$url.'">'.$url.'</a><br><br>';
                 }
                 break;
             case 'ticket_deletion':
@@ -377,6 +375,7 @@ class SupportManager
             case 'new_admin_comment':
                 $sendMessage = $config->getNotify('user_message_internal');
                 $sendMail = $config->getNotify('user_message_external');
+                $url = $this->router->generate('formalibre_ticket_open', ['ticket' => $ticket->getId()], true);
 
                 if (($sendMessage || $sendMail) && !is_null($comment)) {
                     $extra['to'] = [$ticket->getContactMail()];
@@ -388,15 +387,14 @@ class SupportManager
                     $content = $comment->getContent().
                         '<br>'.
                         $this->translator->trans('link', [], 'platform').
-                        ' : '.
-                        $this->router->generate('formalibre_ticket_open', ['ticket' => $ticket->getId()], true).
-                        '<br><br>';
+                        ' : <a href="'.$url.'">'.$url.'</a><br><br>';
                 }
                 break;
             case 'new_comment':
                 $sendMessage = $config->getNotify('admin_message_internal');
                 $sendMail = $config->getNotify('admin_message_external');
                 $contactMail = $ticket->getContactMail();
+                $url = $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true);
 
                 if (($sendMessage || $sendMail) && !is_null($comment)) {
                     $mailReceivers = $this->getStakeholdersByTicket($ticket);
@@ -420,15 +418,14 @@ class SupportManager
                         $ticket->getContactPhone().
                         '<br>'.
                         $this->translator->trans('link', [], 'platform').
-                        ' : '.
-                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
-                        '<br><br>';
+                        ' : <a href="'.$url.'">'.$url.'</a><br><br>';
                 }
                 break;
             case 'new_internal_note':
                 $sendMessage = $config->getNotify('note_internal');
                 $sendMail = $config->getNotify('note_external');
                 $contactMail = $ticket->getContactMail();
+                $url = $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true);
 
                 if (($sendMessage || $sendMail) && !is_null($comment)) {
                     $mailReceivers = $this->getStakeholdersByTicket($ticket, $user);
@@ -444,9 +441,7 @@ class SupportManager
                     $content = $comment->getContent().
                         '<br>'.
                         $this->translator->trans('link', [], 'platform').
-                        ' : '.
-                        $this->router->generate('formalibre_admin_ticket_open', ['ticket' => $ticket->getId()], true).
-                        '<br><br>';
+                        ' : <a href="'.$url.'">'.$url.'</a><br><br>';
                 }
                 break;
             default:
