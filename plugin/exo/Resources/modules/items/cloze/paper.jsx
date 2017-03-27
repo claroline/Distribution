@@ -46,6 +46,7 @@ export const ClozePaper = (props) => {
               id: hole.id,
               component: (
                 <ExpectedAnswerHole
+                  showScore={props.showScore}
                   id={hole.id}
                   choices={hole.choices}
                   solutions={solution.answers}
