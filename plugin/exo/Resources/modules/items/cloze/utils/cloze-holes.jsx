@@ -179,6 +179,7 @@ class ExpectedAnswerHole extends Component {
 ExpectedAnswerHole.propTypes = {
   id: T.string.isRequired,
   choices: T.arrayOf(T.string),
+  showScore: T.bool.isRequired,
   solutions: T.arrayOf(T.shape({
     text: T.string.isRequired,
     score: T.number.isRequired,
