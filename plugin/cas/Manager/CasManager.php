@@ -196,6 +196,6 @@ class CasManager
      */
     public function unlinkAccount($userId)
     {
-        $this->em->getRepository("Claroline\CasBundle\Entity\CasUser")->unlinkCasUser($userId);
+        $this->om->getRepository("Claroline\CasBundle\Entity\CasUser")->unlinkCasUser($userId);
     }
 }
