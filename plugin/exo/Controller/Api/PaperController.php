@@ -117,9 +117,9 @@ class PaperController extends AbstractController
     public function deleteAllAction(Exercise $exercise)
     {
         try {
-          $this->assertHasPermission('ADMINISTRATE', $exercise);
+            $this->assertHasPermission('ADMINISTRATE', $exercise);
         } catch (AccessDeniedException $e) {
-          $this->assertHasPermission('MANAGE_PAPERS', $exercise);
+            $this->assertHasPermission('MANAGE_PAPERS', $exercise);
         }
 
         try {
@@ -145,9 +145,9 @@ class PaperController extends AbstractController
     public function deleteAction(Paper $paper)
     {
         try {
-          $this->assertHasPermission('ADMINISTRATE', $exercise);
+            $this->assertHasPermission('ADMINISTRATE', $exercise);
         } catch (AccessDeniedException $e) {
-          $this->assertHasPermission('MANAGE_PAPERS', $exercise);
+            $this->assertHasPermission('MANAGE_PAPERS', $exercise);
         }
 
         try {
@@ -172,9 +172,9 @@ class PaperController extends AbstractController
     public function exportCsvAction(Exercise $exercise)
     {
         try {
-          $this->assertHasPermission('ADMINISTRATE', $exercise);
+            $this->assertHasPermission('ADMINISTRATE', $exercise);
         } catch (AccessDeniedException $e) {
-          $this->assertHasPermission('MANAGE_PAPERS', $exercise);
+            $this->assertHasPermission('MANAGE_PAPERS', $exercise);
         }
 
         /** @var PaperRepository $repo */

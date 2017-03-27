@@ -117,6 +117,7 @@ class CorrectionController extends AbstractController
         if (!$this->authorization->isGranted('ADMINISTRATE', $collection) && !$this->authorization->isGranted('MANAGE_PAPERS', $collection)) {
             throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
+
         return true;
     }
 }
