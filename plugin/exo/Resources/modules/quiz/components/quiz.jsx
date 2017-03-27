@@ -90,7 +90,7 @@ function userViewActions(view, props) {
   const papersAction = {
     icon: 'fa fa-fw fa-list',
     label: tex('results_list'),
-    disabled: !props.hasUserPapers,
+    disabled: props.canViewPapers ? !props.canViewPapers && !props.hasPapers : !props.hasUserPapers,
     handleAction: '#papers'
   }
 
@@ -285,6 +285,7 @@ function mapStateToProps(state) {
     published: select.published(state),
     hasPapers: select.hasPapers(state),
     hasUserPapers: select.hasUserPapers(state),
+    papersAdmin: select.papersAdmin(state),
     registeredUser: select.registered(state),
     saveEnabled: select.saveEnabled(state),
     modal: select.modal(state),

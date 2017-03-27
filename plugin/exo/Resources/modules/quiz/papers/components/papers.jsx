@@ -90,7 +90,7 @@ Papers.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    admin: selectors.editable(state),
+    admin: selectors.editable(state) || selectors.papersAdmin(state),
     papers: paperSelectors.papers(state)
   }
 }

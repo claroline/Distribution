@@ -110,7 +110,7 @@ function getAnswerScore(itemId, answers) {
 
 function mapStateToProps(state) {
   return {
-    admin: selectors.editable(state),
+    admin: selectors.editable(state) || selectors.papersAdmin(state),
     paper: paperSelectors.currentPaper(state),
     steps: paperSelectors.paperSteps(state)
   }

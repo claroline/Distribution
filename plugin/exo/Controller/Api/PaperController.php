@@ -205,7 +205,7 @@ class PaperController extends AbstractController
     {
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
 
-        return $this->authorization->isGranted('ADMINISTRATE', $collection);
+        return $this->authorization->isGranted('ADMINISTRATE', $collection) || $this->authorization->isGranted('papers', $collection);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)
