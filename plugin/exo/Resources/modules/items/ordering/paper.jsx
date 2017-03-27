@@ -120,7 +120,7 @@ const OrderingPaper = props => {
                       id={`oredering-answer-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
-                    {props.item.score.type === SCORE_SUM &&
+                    {props.showScore && props.item.score.type === SCORE_SUM &&
                       <SolutionScore score={solution.score}/>
                     }
                   </div>
@@ -133,7 +133,7 @@ const OrderingPaper = props => {
                       id={`oredering-solution-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
-                    {props.item.score.type === SCORE_SUM &&
+                    {props.showScore && props.item.score.type === SCORE_SUM &&
                       <SolutionScore score={solution.score}/>
                     }
                   </div>
@@ -149,7 +149,7 @@ const OrderingPaper = props => {
                       id={`oredering-answer-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
-                    {props.item.score.type === SCORE_SUM &&
+                    {props.showScore && props.item.score.type === SCORE_SUM &&
                       <SolutionScore score={solution.score}/>
                     }
                   </div>
@@ -167,7 +167,7 @@ const OrderingPaper = props => {
                       id={`oredering-answer-${solution.itemId}-feedback`}
                       feedback={solution.feedback}
                     />
-                    {props.item.score.type === SCORE_SUM &&
+                    {props.showScore && props.item.score.type === SCORE_SUM &&
                       <SolutionScore score={solution.score}/>
                     }
                   </div>

@@ -305,7 +305,9 @@ export class MatchPaper extends Component
                             id={`answer-${solution.firstId}-${solution.secondId}-feedback`}
                             feedback={solution.feedback}
                           />
-                          <SolutionScore score={solution.score}/>
+                          {this.props.showScore &&
+                            <SolutionScore score={solution.score}/>
+                          }                          
                         </div>
                       )}
                     </div>

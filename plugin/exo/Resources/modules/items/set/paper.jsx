@@ -41,7 +41,7 @@ export const SetPaper = props => {
                               />
                               {props.showScore &&
                                 <SolutionScore score={utils.getAnswerSolutionScore(answer, props.item.solutions.associations)}/>
-                              }                              
+                              }
                             </div>
                             :
                             <div className="association bg-danger text-danger">
@@ -81,7 +81,9 @@ export const SetPaper = props => {
                         id={`odd-${item.itemId}-feedback`}
                         feedback={item.feedback}
                     />
-                    <SolutionScore score={item.score}/>
+                    {props.showScore &&
+                      <SolutionScore score={item.score}/>
+                    }
                   </div>
                 </li>
               )}
@@ -108,7 +110,9 @@ export const SetPaper = props => {
                                   id={`ass-${ass.itemId}-${ass.setId}-feedback`}
                                   feedback={ass.feedback}
                               />
-                            <SolutionScore score={ass.score}/>
+                            {props.showScore &&
+                              <SolutionScore score={ass.score}/>
+                            }
                           </div>
                         </li>
                       )}

@@ -88,7 +88,7 @@ export const ChoicePaper = props => {
                 />
               </div>
 
-              {SCORE_FIXED !== props.item.score.type &&
+              {props.showScore && SCORE_FIXED !== props.item.score.type &&
                 <SolutionScore score={solution.score} />
               }
             </label>

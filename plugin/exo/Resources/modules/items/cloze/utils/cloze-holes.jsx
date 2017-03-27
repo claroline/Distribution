@@ -167,7 +167,7 @@ class ExpectedAnswerHole extends Component {
         })}
         answer={this.state.answer}
         choices={this.props.choices}
-        showScore={true}
+        showScore={this.props.showScore}
         solution={solution}
         disabled={!this.props.choices || 0 === this.props.choices.length}
         onChange={(answer) => this.setState({answer: answer})}

@@ -89,7 +89,9 @@ export const PairPaper = props => {
                         id={`pair-${answer.leftItem.id}-${answer.rightItem.id}-feedback`}
                         feedback={answer.feedback}
                       />
-                      <SolutionScore score={answer.score}/>
+                      {props.showScore &&                         
+                        <SolutionScore score={answer.score}/>
+                      }
                     </div>
                   </li>
                 )}
