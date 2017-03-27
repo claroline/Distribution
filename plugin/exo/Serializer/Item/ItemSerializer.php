@@ -153,7 +153,7 @@ class ItemSerializer extends AbstractSerializer
                 ], $question, $questionData);
 
                 // Adds item feedback
-                if (!$this->hasOption(Transfer::INCLUDE_SOLUTIONS, $options)) {
+                if ($this->hasOption(Transfer::INCLUDE_SOLUTIONS, $options)) {
                     $this->mapEntityToObject([
                         'feedback' => 'feedback',
                     ], $question, $questionData);
@@ -205,6 +205,15 @@ class ItemSerializer extends AbstractSerializer
             }
         }
 
+        // Sets the creator of the Item if not set
+        $creator = $question->getCreator();
+        if (empty($creator) || !($creator instanceof User)) {
+            $token = $this->tokenStorage->getToken();
+            if (!empty($token) && $token->getUser() instanceof User) {
+                $question->setCreator($token->getUser());
+            }
+        }
+
         // Force client ID if needed
         if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
             $question->setUuid($data->id);
@@ -217,6 +226,7 @@ class ItemSerializer extends AbstractSerializer
                 'content' => 'content',
                 'title' => 'title',
                 'description' => 'description',
+                'feedback' => 'feedback',
                 'hints' => function (Item $question, \stdClass $data) use ($options) {
                     return $this->deserializeHints($question, $data->hints, $options);
                 },
@@ -350,15 +360,6 @@ class ItemSerializer extends AbstractSerializer
     {
         if (isset($metadata->model)) {
             $question->setModel($metadata->model);
-        }
-
-        // Sets the creator of the Item if not set
-        $creator = $question->getCreator();
-        if (empty($creator) || !($creator instanceof User)) {
-            $token = $this->tokenStorage->getToken();
-            if (!empty($token) && $token->getUser() instanceof User) {
-                $question->setCreator($token->getUser());
-            }
         }
 
         if (isset($metadata->category)) {

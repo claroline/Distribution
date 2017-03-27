@@ -25,13 +25,13 @@ export const SetPaper = props => {
                     </div>
                     <div className="set-body">
                       <ul>
-                      { utils.getSetItems(set.id, props.answer).map(answer =>
+                      { props.answer && props.answer.length > 0 && utils.getSetItems(set.id, props.answer).map(answer =>
                         <li key={`your-answer-assocation-${answer.itemId}-${answer.setId}`}>
                           { utils.answerInSolutions(answer, props.item.solutions.associations) ?
                             <div className={classes(
                                 'association',
-                                {'bg-success text-success': utils.isValidAnswer(answer, props.item.solutions.associations)},
-                                {'bg-danger text-danger': !utils.isValidAnswer(answer, props.item.solutions.associations)}
+                                {'correct-answer': utils.isValidAnswer(answer, props.item.solutions.associations)},
+                                {'incorrect-answer': !utils.isValidAnswer(answer, props.item.solutions.associations)}
                               )}>
                               <WarningIcon valid={utils.isValidAnswer(answer, props.item.solutions.associations)}/>
                               <div className="association-data" dangerouslySetInnerHTML={{__html: utils.getSolutionItemData(answer.itemId, props.item.items)}} />
@@ -99,7 +99,7 @@ export const SetPaper = props => {
                         <li key={`expected-association-${ass.itemId}-${ass.setId}`}>
                           <div className={classes(
                               'association',
-                              {'bg-info text-info': ass.score > 0}
+                              {'selected-answer': ass.score > 0}
                             )}>
                             <div className="association-data" dangerouslySetInnerHTML={{__html: utils.getSolutionItemData(ass.itemId, props.item.items)}} />
                             <Feedback
