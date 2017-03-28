@@ -7,7 +7,7 @@ use FormaLibre\SupportBundle\Entity\Status;
 use FormaLibre\SupportBundle\Entity\Type;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater090200 extends Updater
+class Updater100000 extends Updater
 {
     private $om;
 
