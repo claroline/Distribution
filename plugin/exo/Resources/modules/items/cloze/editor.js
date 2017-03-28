@@ -3,11 +3,11 @@ import {makeActionCreator, makeId} from './../../utils/utils'
 import cloneDeep from 'lodash/cloneDeep'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {utils} from './utils/utils'
+import {select} from './selectors'
 import {notBlank} from './../../utils/validate'
 import set from 'lodash/set'
 import get from 'lodash/get'
 import invariant from 'invariant'
-import flatten from 'lodash/flatten'
 import {tex} from './../../utils/translate'
 
 const UPDATE_TEXT = 'UPDATE_TEXT'
@@ -56,7 +56,7 @@ export default {
 
 function decorate(item) {
   return Object.assign({}, item, {
-    _text: utils.setEditorHtml(item.text, item.solutions)
+    _text: utils.setEditorHtml(item.text, item.holes, item.solutions)
   })
 }
 
@@ -100,7 +100,7 @@ function reduce(item = {}, action) {
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, action.holeId)
-      hole._multiple = hole.choices ? true: false
+      hole._multiple = !!hole.choices
       newItem._popover = true
       newItem._holeId = action.holeId
 
@@ -116,6 +116,8 @@ function reduce(item = {}, action) {
 
       answer[action.parameter] = action.value
 
+      updateHoleChoices(hole, solution)
+
       return newItem
     }
     case ADD_ANSWER: {
@@ -130,6 +132,8 @@ function reduce(item = {}, action) {
         score: 1
       })
 
+      updateHoleChoices(hole, solution)
+
       return newItem
     }
     case UPDATE_HOLE: {
@@ -142,10 +146,7 @@ function reduce(item = {}, action) {
         throw `${action.parameter} is not a valid hole attribute`
       }
 
-      const choices = hole._multiple ?
-         flatten(newItem.solutions.map(solution => solution.answers.map(answer => answer.text))): []
-
-      if (choices.length > 0) hole.choices = choices
+      updateHoleChoices(hole, getSolutionFromHole(newItem, hole))
 
       return newItem
     }
@@ -157,6 +158,7 @@ function reduce(item = {}, action) {
         feedback: '',
         size: 10,
         _score: 0,
+        _multiple: false,
         placeholder: ''
       }
 
@@ -174,7 +176,7 @@ function reduce(item = {}, action) {
       newItem.solutions.push(solution)
       newItem._popover = true
       newItem._holeId = hole.id
-      newItem._text = action.cb(utils.makeTinyHtml(solution))
+      newItem._text = action.cb(utils.makeTinyHtml(hole, solution))
       newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
 
       return newItem
@@ -183,11 +185,27 @@ function reduce(item = {}, action) {
       const newItem = cloneDeep(item)
       const holes = newItem.holes
       const solutions = newItem.solutions
+
+      // Remove from holes list
       holes.splice(holes.findIndex(hole => hole.id === action.holeId), 1)
-      solutions.splice(solutions.findIndex(solution => solution.holeId === action.holeId), 1)
+
+      // Remove from solutions
+      const solution = solutions.splice(solutions.findIndex(solution => solution.holeId === action.holeId), 1)
+
+      let bestAnswer
+      if (solution && 0 !== solution.length) {
+        // Retrieve the best answer
+        bestAnswer = select.getBestAnswer(solution[0].answers)
+      }
+
+      // Replace hole with the best answer text
       const regex = new RegExp(`(\\[\\[${action.holeId}\\]\\])`, 'gi')
-      newItem.text = newItem.text.replace(regex, '')
-      newItem._text = utils.setEditorHtml(newItem.text, newItem.solutions)
+      newItem.text = newItem.text.replace(regex, bestAnswer ? bestAnswer.text : '')
+      newItem._text = utils.setEditorHtml(newItem.text, newItem.holes, newItem.solutions)
+
+      if (newItem._holeId && newItem._holeId === action.holeId) {
+        newItem._popover = false
+      }
 
       return newItem
     }
@@ -198,6 +216,8 @@ function reduce(item = {}, action) {
       const answers = solution.answers
       answers.splice(answers.findIndex(answer => answer.text === action.text && answer.caseSensitive === action.caseSensitive), 1)
 
+      updateHoleChoices(hole, solution)
+
       return newItem
     }
     case CLOSE_POPOVER: {
@@ -206,6 +226,14 @@ function reduce(item = {}, action) {
 
       return newItem
     }
+  }
+}
+
+function updateHoleChoices(hole, holeSolution) {
+  if (hole._multiple) {
+    hole.choices = holeSolution.answers.map(answer => answer.text)
+  } else {
+    delete hole.choices
   }
 }
 
@@ -225,13 +253,13 @@ function validate(item) {
     const solution = getSolutionFromHole(item, hole)
     let hasPositiveValue = false
 
-    solution.answers.forEach((answer, key) => {
+    solution.answers.forEach((answer) => {
       if (notBlank(answer.text, true)) {
-        set(_errors, `answers.answer.${key}.text`, tex('cloze_empty_word_error'))
+        set(_errors, 'answers.text', tex('cloze_empty_word_error'))
       }
 
       if (notBlank(answer.score, true) && answer.score !== 0) {
-        set(_errors, `answers.answer.${key}.score`, tex('cloze_empty_score_error'))
+        set(_errors, 'answers.score', tex('cloze_empty_score_error'))
       }
 
       if (answer.score > 0) hasPositiveValue = true
@@ -242,7 +270,7 @@ function validate(item) {
     }
 
     if (!hasPositiveValue) {
-      set(_errors, 'answers.value', tex('solutions_requires_positive_answer'))
+      set(_errors, 'answers.value', tex('cloze_solutions_requires_positive_answer'))
     }
 
     if (hole._multiple && solution.answers.length < 2) {
