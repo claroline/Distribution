@@ -431,7 +431,8 @@ export class Selection extends Component {
     this.onSelect = this.onSelect.bind(this)
     this.updateText = this.updateText.bind(this)
     this.addSelection = this.addSelection.bind(this)
-    this.state = {trueStart: null, trueEnd: null, start: null, end: null}
+    this.state = {trueStart: null, trueEnd: null, start: null, end: null, allowSelection: true}
+    this.changeEditorMode = this.changeEditorMode.bind(this)
   }
 
   updateText() {
@@ -442,6 +443,10 @@ export class Selection extends Component {
     if (offsets) {
       this.setState({trueStart: offsets.trueStart, trueEnd: offsets.trueEnd, start: offsets.start, end: offsets.end})
     }
+  }
+
+  changeEditorMode(editorState) {
+    this.setState({ allowSelection: editorState.minimal})
   }
 
   addSelection() {
@@ -479,7 +484,7 @@ export class Selection extends Component {
       })
     }
 
-    return allowed
+    return allowed && this.state.allowSelection
   }
 
   render() {
@@ -605,12 +610,14 @@ export class Selection extends Component {
           onClick={this.onSelectionClick.bind(this)}
           content={this.props.item._text}
           updateText={this.updateText}
+          onChangeMode={this.changeEditorMode}
         />
       </FormGroup>
         <button
           type="button"
           className="btn btn-default"
-          disabled={!this.isSelectionCreationAllowed()}
+          disabled={!this.isSelectionCreationAllowed()
+          }
           onClick={() => this.props.onChange(this.addSelection())}><i className="fa fa-plus"/>
           {'\u00a0'}{tex('create_selection_zone')}
         </button>
