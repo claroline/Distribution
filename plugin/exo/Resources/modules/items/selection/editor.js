@@ -218,6 +218,7 @@ function recomputePositions(item, offsets, oldText) {
   toSort.forEach(element => {
     //this is where the word really start
     element._displayedBegin = utils.getHtmlLength(element) * idx + element.begin + utils.getFirstSpan(element).length
+    //element._displayedBegin = getOffsets(document.getElementById(item.id))
     idx++
 
     const amount = item._text.length - oldText.length
@@ -227,6 +228,12 @@ function recomputePositions(item, offsets, oldText) {
       element._displayedEnd += amount
       element.begin += amount
       element.end += amount
+    } else {
+      //inside a div
+      if (offsets.trueStart > element._displayedBegin && offsets.trueStart < element._displayedEnd) {
+        element._displayedEnd += amount
+        element.end += amount
+      }
     }
   })
 

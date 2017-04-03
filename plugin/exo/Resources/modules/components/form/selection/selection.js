@@ -15,9 +15,7 @@ export function getOffsets(element, selection = null) {
   let end = start + range.toString().length
   //let string = selection.toString()
 
-  const offsets = {
-    start, end
-  }
+  const offsets = { start, end }
 
   const html = element.innerHTML
 
