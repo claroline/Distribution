@@ -3,7 +3,6 @@ import get from 'lodash/get'
 import {asset} from '#/main/core/asset'
 import {tex} from './../../utils/translate'
 import {makeDroppable} from './../../utils/dragAndDrop'
-import {FileDropZone} from './../../components/form/file-drop-zone.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {ImageInput} from './components/image-input.jsx'
 import {ModeSelector} from './components/mode-selector.jsx'
@@ -34,7 +33,6 @@ AnswerDropZone = makeDroppable(AnswerDropZone, [
 export class Graphic extends Component {
   constructor(props) {
     super(props)
-    this.onDropImage = this.onDropImage.bind(this)
     this.onSelectImage = this.onSelectImage.bind(this)
     this.onClickImage = this.onClickImage.bind(this)
     this.onResize = this.onResize.bind(this)
@@ -50,7 +48,7 @@ export class Graphic extends Component {
       const img = this.createImage(this.props.item.image.data, this.props.item.image.url)
       img.onload = () => this.props.onChange(actions.resizeImage(img.width, img.height))
     } else {
-      this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
+      this.imgContainer.innerHTML = tex('graphic_pick')
     }
 
     window.addEventListener('resize', this.onResize)
@@ -68,7 +66,7 @@ export class Graphic extends Component {
 
       if (prevProps.item.image.data !== this.props.item.image.data) {
         if (!this.props.item.image.data) {
-          this.imgContainer.innerHTML = tex('graphic_drop_or_pick')
+          this.imgContainer.innerHTML = tex('graphic_pick')
         } else {
           img.src = this.props.item.image.data
         }
@@ -78,12 +76,6 @@ export class Graphic extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize)
-  }
-
-  onDropImage(files) {
-    if (files && files.length > 0) {
-      this.onSelectImage(files[0])
-    }
   }
 
   onSelectImage(file) {
@@ -204,7 +196,7 @@ export class Graphic extends Component {
             )}
           />
         }
-        <FileDropZone onDrop={this.onDropImage}>
+
           <div className="img-dropzone">
             <div className="img-widget">
               <AnswerDropZone onDrop={(item, props, offset) => {
@@ -249,7 +241,6 @@ export class Graphic extends Component {
               </AnswerDropZone>
             </div>
           </div>
-        </FileDropZone>
       </div>
     )
   }

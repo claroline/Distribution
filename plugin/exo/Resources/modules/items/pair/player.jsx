@@ -7,6 +7,7 @@ import {tex, t} from './../../utils/translate'
 import {utils} from './utils/utils'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
+import {ITEM} from './../../quiz/enums'
 
 let DropBox = props => {
   return props.connectDropTarget (
@@ -28,7 +29,7 @@ DropBox.propTypes = {
   object: T.object.isRequired
 }
 
-DropBox = makeDroppable(DropBox, 'ITEM')
+DropBox = makeDroppable(DropBox, ITEM)
 
 const PairItem = props =>
   <div className="pair-item">
@@ -86,7 +87,7 @@ PairRowList.propTypes = {
 }
 
 let Item = props => {
-  return props.connectDragPreview (
+  return (
     <div className="answer-item item">
       {props.connectDragSource(
         <div className="btn-drag pull-right">
@@ -115,11 +116,10 @@ let Item = props => {
 
 Item.propTypes = {
   connectDragSource: T.func.isRequired,
-  connectDragPreview: T.func.isRequired,
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, 'ITEM')
+Item = makeDraggable(Item, ITEM)
 
 const ItemList = props =>
   <ul>

@@ -60,7 +60,7 @@ export const GraphicPaper = props => {
               areas={expectedAreas}
             />
           </div>
-          <AnswerTable areas={expectedAreas} highlightScore={false}/>
+          <AnswerTable showScore={props.showScore} areas={expectedAreas} highlightScore={false}/>
         </div>
       }
     />

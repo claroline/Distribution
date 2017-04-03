@@ -196,7 +196,7 @@
     "formative": "Formative",
     "frequency": "Frequency",
     "from": "From",
-    "graphic_drop_or_pick": "Drop an image here or use the button above.",
+    "graphic_pick": "Pick an image using the button above.",
     "graphic_error_image_too_large": "Selected image is too big.",
     "graphic_error_no_image": "You must select an image.",
     "graphic_error_no_positive_solution": "At least one answer zone must have a positive score.",

@@ -9,6 +9,7 @@ import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
+import {ITEM} from './../../quiz/enums'
 
 let DropBox = props => props.connectDropTarget(
   <div className={classes(
@@ -27,7 +28,7 @@ DropBox.propTypes = {
   object: T.object.isRequired
 }
 
-DropBox = makeDroppable(DropBox, 'ITEM')
+DropBox = makeDroppable(DropBox, ITEM)
 
 class Association extends Component {
   constructor(props) {
@@ -210,7 +211,7 @@ SetList.propTypes = {
 }
 
 let Item = props => {
-  return props.connectDragPreview (
+  return (
     <div className="set-item answer-item">
       <div className="text-fields">
         <Textarea
@@ -262,11 +263,10 @@ let Item = props => {
 Item.propTypes = {
   onChange: T.func.isRequired,
   connectDragSource: T.func.isRequired,
-  connectDragPreview: T.func.isRequired,
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, 'ITEM')
+Item = makeDraggable(Item, ITEM)
 
 class ItemList extends Component {
   constructor(props) {

@@ -105,25 +105,23 @@ Item.propTypes = {
 }
 
 let OrderingItem = props => {
-  return props.connectDragPreview (
-    props.connectDropTarget (
-      <div className="item-container">
-        <Item {...props} />
-        {props.connectDragSource(
-          <span
-            title={t('move')}
-            draggable="true"
-            className={classes(
-              'tooltiped-button',
-              'btn',
-              'fa',
-              'fa-arrows',
-              'drag-handle'
-            )}
-          />
-        )}
-      </div>
-    )
+  return props.connectDropTarget (
+    <div className="item-container">
+      <Item {...props} />
+      {props.connectDragSource(
+        <span
+          title={t('move')}
+          draggable="true"
+          className={classes(
+            'tooltiped-button',
+            'btn',
+            'fa',
+            'fa-arrows',
+            'drag-handle'
+          )}
+        />
+      )}
+    </div>
   )
 }
 
@@ -137,12 +135,10 @@ OrderingItem.propTypes = {
   deletable: T.bool.isRequired,
   onChange: T.func.isRequired,
   connectDragSource: T.func.isRequired,
-  connectDragPreview: T.func.isRequired,
   connectDropTarget: T.func.isRequired,
   onSort: T.func.isRequired,
   index: T.number.isRequired
 }
-
 
 OrderingItem = makeSortable(OrderingItem, 'ORDERING_ITEM')
 
