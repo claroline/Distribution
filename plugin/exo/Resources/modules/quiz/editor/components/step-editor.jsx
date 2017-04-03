@@ -134,7 +134,7 @@ ItemHeader.propTypes = {
 }
 
 let ItemPanel = props =>
-  props.connectDragPreview(
+
     props.connectDropTarget(
       <div
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -181,7 +181,7 @@ let ItemPanel = props =>
           }
         </Panel>
       </div>
-  ))
+  )
 
 ItemPanel.propTypes = {
   id: T.string.isRequired,
@@ -243,7 +243,7 @@ ContentHeader.propTypes = {
 }
 
 let ContentPanel = props =>
-  props.connectDragPreview(
+
     props.connectDropTarget(
       <div
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -285,7 +285,7 @@ let ContentPanel = props =>
           }
         </Panel>
       </div>
-    ))
+    )
 
 ContentPanel.propTypes = {
   id: T.string.isRequired,
@@ -307,7 +307,10 @@ ContentPanel.propTypes = {
   validating: T.bool.isRequired
 }
 
-ItemPanel = makeSortable(ItemPanel, STEP_ITEM)
+ItemPanel = makeSortable(
+  ItemPanel,
+  STEP_ITEM
+)
 ContentPanel = makeSortable(ContentPanel, STEP_ITEM)
 
 class StepFooter extends Component {

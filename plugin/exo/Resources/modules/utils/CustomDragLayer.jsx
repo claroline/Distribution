@@ -1,6 +1,8 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DragLayer } from 'react-dnd'
+import {isQuestionType} from './../items/item-types'
 import {ContentThumbnailDragPreview} from './../contents/components/content-thumbnail-drag-preview.jsx'
+import {ItemPanelDragPreview, ContentPanelDragPreview} from './../quiz/editor/components/step-editor-drag-preview.jsx'
 import {
   BORDER_WIDTH,
   AREA_GUTTER
@@ -38,13 +40,14 @@ function getItemStyles(props) {
 
   const { x, y } = currentOffset
   const transform = `translate(${x}px, ${y}px)`
-  return props.itemType === 'answerArea' ?
-    {
+
+  switch (props.itemType) {
+    case TYPE_ANSWER_AREA:
+    case STEP_ITEM : return {
       transform: transform,
       WebkitTransform: transform
     }
-    :
-    {
+    default: return {
       transform: transform,
       WebkitTransform: transform,
       backgroundColor: '#aaa',
@@ -57,6 +60,7 @@ function getItemStyles(props) {
       opacity: 0.5,
       borderRadius: '5px'
     }
+  }
 }
 
 class CustomDragLayerComponent extends Component {
@@ -64,33 +68,25 @@ class CustomDragLayerComponent extends Component {
     switch (type) {
       case ITEM:
         return (
-        item.item.data ?
-          <div dangerouslySetInnerHTML={{__html: item.item.data}}></div>
-          :
-          <div>DRAGGING</div>
-      )
+          item.item.data ? <div dangerouslySetInnerHTML={{__html: item.item.data}}></div> : <div>DRAGGING</div>
+        )
       case THUMBNAIL:
         return (
-        <div>{item.title}</div>
-      )
+          <div>{item.title}</div>
+        )
       case CONTENT_THUMBNAIL:
         return (
           <ContentThumbnailDragPreview data={item.data} type={item.type} />
-      )
+        )
       case ORDERING_ITEM:
         return (
-          item.data ?
-          <div dangerouslySetInnerHTML={{__html: item.data}}></div>
-          :
-          <div>DRAGGING</div>
-      )
-      case STEP_ITEM:
+          item.data ? <div dangerouslySetInnerHTML={{__html: item.data}}></div> : <div>DRAGGING</div>
+        )
+      case STEP_ITEM: {
         return (
-          item.title ?
-            <div>{item.title}</div>
-            :
-            <div>DRAGGING</div>
-      )
+          isQuestionType(item.item.type) ? <ItemPanelDragPreview item={item.item} /> : <ContentPanelDragPreview item={item.item} />
+        )
+      }
       case TYPE_ANSWER_AREA: {
         const isRect = item.shape === SHAPE_RECT
         const def = item.geometry

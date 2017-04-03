@@ -4,7 +4,6 @@ import {FILE} from './../../quiz/enums'
 
 const fileTarget = {
   drop(props, monitor) {
-    console.log(monitor.getItem())
     props.onDrop(monitor.getItem().files)
   }
 }
