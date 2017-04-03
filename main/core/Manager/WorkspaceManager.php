@@ -1236,4 +1236,42 @@ class WorkspaceManager
             $this->workspaceRepo->findBy(['isPersonal' => false]) :
             $this->workspaceRepo->findNonPersonalByCodeAndName($code, $name, $offset, $limit);
     }
+
+    /**
+     * This method will bind each workspaces that don't already have an organization to the default one.
+     */
+    public function bindWorkspaceToOrganization()
+    {
+        $limit = 250;
+        $offset = 0;
+        $organizationManager = $this->container->get('claroline.manager.organization.organization_manager');
+        $this->log('Add organizations to workspaces...');
+        $this->om->startFlushSuite();
+        $countWorkspaces = $this->om->count('ClarolineCoreBundle:Workspace\Workspace');
+
+        while ($offset < $countWorkspaces) {
+            //if there is too many workspaces, we retrieve them by small amounts
+            $workspaces = $this->workspaceRepo->findBy([], null, $limit, $offset);
+            $default = $organizationManager->getDefault();
+            $this->om->merge($default);
+
+            foreach ($workspaces as $workspace) {
+                if (count($workspace->getOrganizations()) === 0) {
+                    $this->log('Add default organization for workspace '.$workspace->getCode());
+                    $workspace->addOrganization($default);
+                    $this->om->persist($workspace);
+                } else {
+                    $this->log('Organization already exists for workspace '.$workspace->getCode());
+                }
+            }
+
+            $this->log("Flushing... [UOW = {$this->om->getUnitOfWork()->size()}]");
+            $this->om->forceFlush();
+            $this->om->clear();
+
+            $offset += $limit;
+        }
+
+        $this->om->endFlushSuite();
+    }
 }

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Workspace;
 
+use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -560,5 +561,25 @@ class Workspace
     public function getPersonalUser()
     {
         return $this->personalUser;
+    }
+
+    public function getOrganizations()
+    {
+        return $this->organizations;
+    }
+
+    public function addOrganization(Organization $organization)
+    {
+        if (!$this->organizations->contains($organization)) {
+            $this->organizations->add($organization);
+        }
+    }
+
+    // todo: remove this method
+    public function setOrganizations($organizations)
+    {
+        $this->organizations = $organizations instanceof ArrayCollection ?
+            $organizations :
+            new ArrayCollection($organizations);
     }
 }

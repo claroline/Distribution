@@ -123,7 +123,7 @@ class Organization
      * @var Workspace[]|ArrayCollection
      *
      * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Workspace\Workspace",
+     *     targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace",
      *     mappedBy="organizations"
      * )
      * @ORM\JoinTable(name="claro_user_workspace")
