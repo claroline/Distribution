@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\LtiBundle\Entity\LtiApp;
+use UJM\LtiBundle\Entity\LtiResource;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -92,6 +93,30 @@ class LtiWsController extends Controller
         $em->flush();
 
         return $this->forward('UJMLtiBundle:LtiWs:tool_apps', ['workspace' => $ws]);
+    }
+
+    /**
+     * @Route("/open_app/{resource}", name="ujm_lti_open_app")
+     *
+     * @Template
+     *
+     * @param resource $resource
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function open_appAction($resource)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $ltiResource = $em->getRepository('UJMLtiBundle:LtiResource')->find($resource->getId());
+        $app = $ltiResource->getLtiApp();
+        $workspace = $resource->getResourceNode()->getWorkspace();
+        $ltiParams = $this->getLtiData($workspace, $app);
+        $vars['workspace'] = $workspace;
+        $vars['ltiApp'] = $app;
+        $vars['ltiDatas'] = $ltiParams['ltiData'];
+        $vars['signature'] = $ltiParams['signature'];
+
+        return $this->render('UJMLtiBundle:Lti:open_app.html.twig', $vars);
     }
 
     /**

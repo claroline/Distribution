@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
+use Claroline\CoreBundle\Event\OpenResourceEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -135,6 +136,23 @@ class LtiListener
                ]
         );
         $event->setErrorFormContent($content);
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("open_ujm_lti_resource")
+     *
+     * @param OpenResourceEvent $event
+     */
+    public function onOpen(OpenResourceEvent $event)
+    {
+        $params = [];
+        $params['_controller'] = 'UJMLtiBundle:LtiWs:open_app';
+        $params['resource'] = $event->getResource();
+        $subRequest = $this->request->duplicate([], null, $params);
+        $response = $this->httpKernel
+            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $event->setResponse($response);
         $event->stopPropagation();
     }
 }
