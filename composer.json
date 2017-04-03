@@ -38,6 +38,7 @@
         "hwi/oauth-bundle": "0.5.2",
         "icap/html-diff": "1.1.0",
         "idci/exporter-bundle": "1.0.0",
+        "jangobrick/php-svg": "dev-master",
         "jdorn/sql-formatter": "1.2.17",
         "jms/di-extra-bundle": "1.5.0",
         "jms/security-extra-bundle": "1.5.1",
@@ -181,7 +182,8 @@
             "Innova\\MediaResourceBundle\\": "plugin/media-resource",
             "Claroline\\DashboardBundle\\": "plugin/dashboard",
             "Claroline\\ClacoFormBundle\\": "plugin/claco-form",
-            "Claroline\\RemoteUserSynchronizationBundle\\": "plugin/remote-user-synchronization"
+            "Claroline\\RemoteUserSynchronizationBundle\\": "plugin/remote-user-synchronization",
+            "Claroline\\CasBundle\\": "plugin/cas"
         }
     },
     "extra": {
@@ -237,7 +239,8 @@
             "Claroline\\ChatBundle\\ClarolineChatBundle",
             "Claroline\\DashboardBundle\\ClarolineDashboardBundle",
             "Claroline\\ClacoFormBundle\\ClarolineClacoFormBundle",
-            "Claroline\\RemoteUserSynchronizationBundle\\ClarolineRemoteUserSynchronizationBundle"
+            "Claroline\\RemoteUserSynchronizationBundle\\ClarolineRemoteUserSynchronizationBundle",
+            "Claroline\\CasBundle\\ClarolineCasBundle"
         ]
     }
 }

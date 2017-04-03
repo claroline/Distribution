@@ -1,6 +1,6 @@
 {
     "type": "",
-    "actions": "",
+    "actions": "Aktionen",
     "all": "",
     "user": "",
     "end_date": "",
@@ -9,9 +9,9 @@
     "edit": "",
     "open": "",
     "users": "",
-    "add": "",
-    "back": "",
-    "category": "",
+    "add": "Hinzufügen",
+    "back": "Zürück",
+    "category": "Kategorie",
     "comment": "",
     "create": "",
     "creation_date": "",
@@ -34,5 +34,7 @@
     "unpublish": "",
     "upload": "",
     "validate": "",
-    "yes": "Ja"
+    "yes": "Ja",
+    "no": "Nein",
+    "search": "Suchen"
 }

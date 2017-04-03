@@ -5,6 +5,8 @@ import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
 import {FormGroup} from './../../../components/form/form-group.jsx'
 import {Textarea} from './../../../components/form/textarea.jsx'
 import {SubSection} from './../../../components/form/sub-section.jsx'
+import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
+import ObjectsEditor from './item-objects-editor.jsx'
 
 // TODO: add categories, objects, resources, define-as-model
 
@@ -32,6 +34,17 @@ const Metadata = props =>
         onChange={text => props.onChange('description', text)}
       />
     </FormGroup>
+    <FormGroup
+      controlId={`item-${props.item.id}-objects`}
+      label={tex('question_objects')}
+    >
+      <ObjectsEditor
+        showModal={props.showModal}
+        closeModal={props.closeModal}
+        validating={props.validating}
+        item={props.item}
+      />
+    </FormGroup>
   </fieldset>
 
 Metadata.propTypes = {
@@ -40,7 +53,10 @@ Metadata.propTypes = {
     title: T.string.isRequired,
     description: T.string.isRequired
   }).isRequired,
-  onChange: T.func.isRequired
+  showModal: T.func.isRequired,
+  closeModal: T.func.isRequired,
+  onChange: T.func.isRequired,
+  validating: T.bool.isRequired
 }
 
 const Hint = props =>
@@ -66,11 +82,11 @@ const Hint = props =>
         {id: props.id, penalty: e.target.value}
       )}
     />
-    <span
-      role="button"
+    <TooltipButton
+      id={`hint-${props.id}-delete`}
       title={t('delete')}
-      aria-label={t('delete')}
-      className="fa fa-trash-o"
+      label={<span className="fa fa-fw fa-trash-o"/>}
+      className="btn-link-default"
       onClick={props.onRemove}
     />
   </div>
@@ -91,27 +107,31 @@ const Hints = props =>
     {props.hints.length === 0 &&
       <div className="no-hint-info">{tex('no_hint_info')}</div>
     }
-    <ul id="hint-list">
-      {props.hints.map(hint =>
-        <li key={hint.id}>
-          <Hint
-            {...hint}
-            onChange={props.onChange}
-            onRemove={() => props.onChange(HINT_REMOVE, {id: hint.id})}
-          />
-        </li>
-      )}
-      <div className="footer">
-        <button
-          type="button"
-          className="btn btn-default"
-          onClick={() => props.onChange(HINT_ADD, {})}
-        >
-          <span className="fa fa-plus"/>
-          {tex('add_hint')}
-        </button>
-      </div>
-    </ul>
+
+    {props.hints.length !== 0 &&
+      <ul id="hint-list">
+        {props.hints.map(hint =>
+          <li key={hint.id}>
+            <Hint
+              {...hint}
+              onChange={props.onChange}
+              onRemove={() => props.onChange(HINT_REMOVE, {id: hint.id})}
+            />
+          </li>
+        )}
+      </ul>
+    }
+
+    <div className="footer">
+      <button
+        type="button"
+        className="btn btn-default"
+        onClick={() => props.onChange(HINT_ADD, {})}
+      >
+        <span className="fa fa-fw fa-plus"/>
+        {tex('add_hint')}
+      </button>
+    </div>
   </div>
 
 Hints.propTypes = {
@@ -151,11 +171,17 @@ export class ItemForm extends Component {
           hideText={tex('hide_metadata_fields')}
           toggle={() => this.setState({metaHidden: !this.state.metaHidden})}
         >
-          <Metadata item={this.props.item} onChange={this.props.onChange}/>
+          <Metadata
+            item={this.props.item}
+            showModal={this.props.showModal}
+            closeModal={this.props.closeModal}
+            onChange={this.props.onChange}
+            validating={this.props.validating}
+          />
         </SubSection>
-        <hr/>
+        <hr className="item-content-separator" />
         {this.props.children}
-        <hr/>
+        <hr className="item-content-separator" />
         <SubSection
           hidden={this.state.feedbackHidden}
           showText={tex('show_interact_fields')}
@@ -167,7 +193,7 @@ export class ItemForm extends Component {
               hints={this.props.item.hints}
               onChange={this.props.onHintsChange}
             />
-            <hr/>
+            <hr className="item-content-separator" />
             <FormGroup
               controlId={`item-${this.props.item.id}-feedback`}
               label={tex('feedback')}
@@ -195,6 +221,8 @@ ItemForm.propTypes = {
   }).isRequired,
   children: T.element.isRequired,
   validating: T.bool.isRequired,
+  showModal: T.func.isRequired,
+  closeModal: T.func.isRequired,
   onChange: T.func.isRequired,
   onHintsChange: T.func.isRequired
 }

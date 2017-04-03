@@ -1,5 +1,5 @@
 {
-    "config_update_error": "Problème lors de la mise à jour de la configuration de l'enregistreur vidéo",
+    "config_update_error": "Problème lors de la mise à jour de la configuration de l'enregistreur vidéo.",
     "config_update_success": "Mise à jour de la configuration de l'enregistreur vidéo effectuée avec succès.",
     "creating_resource": "Création de la ressource",
     "db_meter": "Db mètre",
@@ -18,6 +18,7 @@
     "start_recording": "Commencer l'enregistrement",
     "stop": "Stop",
     "stop_recording": "Arrêter l'enregistrement",
+    "validate": "Valider",
     "video_recorder_configuration_max_recording_time": "Temps d'enregistrement maximum (Secondes, 0 = infini)",
     "warning_message_record_end": "L'enregistrement est terminé.<br/>Cliquez sur \"Valider\" s'il convient ou sur \"Recommencer\".<br/>(Recommencer effacera l'enregistrement actuel.)"
 }

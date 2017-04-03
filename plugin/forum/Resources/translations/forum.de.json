@@ -1,6 +1,7 @@
 {
     "author": "",
-    "category": "",
+    "category": "Kategorie",
     "notifications": "",
-    "yes": "Ja"
+    "yes": "Ja",
+    "no": "Nein"
 }

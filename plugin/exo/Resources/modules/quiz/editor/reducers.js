@@ -6,6 +6,7 @@ import validate from './validators'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
 import {getDefinition} from './../../items/item-types'
+import {getContentDefinition} from './../../contents/content-types'
 import {ATTEMPT_FINISH} from './../player/actions'
 import {VIEW_MODE_UPDATE, OPEN_FIRST_STEP} from './../actions'
 import {
@@ -40,7 +41,15 @@ import {
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
-  quizChangeActions
+  quizChangeActions,
+  CONTENT_ITEM_CREATE,
+  CONTENT_ITEM_UPDATE,
+  CONTENT_ITEM_DETAIL_UPDATE,
+  ITEM_OBJECTS_UPDATE,
+  OBJECT_ADD,
+  OBJECT_CHANGE,
+  OBJECT_REMOVE,
+  OBJECT_MOVE
 } from './actions'
 
 function initialQuizState() {
@@ -138,6 +147,8 @@ function reduceSteps(steps = {}, action = {}) {
       })
       return update(steps, {[action.stepId]: {items: {$push: ids}}})
     }
+    case CONTENT_ITEM_CREATE:
+      return update(steps, {[action.stepId]: {items: {$push: [action.id]}}})
   }
   return steps
 }
@@ -149,6 +160,7 @@ function reduceItems(items = {}, action = {}) {
         id: action.id,
         type: action.itemType,
         content: '',
+        objects: [],
         hints: [],
         feedback: ''
       })
@@ -233,6 +245,99 @@ function reduceItems(items = {}, action = {}) {
       updatedItem = update(updatedItem, {_errors: {$set: errors}})
       return update(items, {[action.id]: {$set: updatedItem}})
     }
+    case CONTENT_ITEM_CREATE: {
+      let newItem = {
+        id: action.id,
+        type: action.contentType,
+        data: action.data,
+        title: '',
+        description: ''
+      }
+      const errors = validate.contentItem(newItem)
+      newItem = Object.assign({}, newItem, {_errors: errors})
+
+      return update(items, {[action.id]: {$set: newItem}})
+    }
+    case CONTENT_ITEM_UPDATE: {
+      let updatedItem = merge(
+        {},
+        items[action.id],
+        set({}, action.propertyPath, action.value)
+      )
+      updatedItem._errors = validate.contentItem(updatedItem)
+
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
+    case CONTENT_ITEM_DETAIL_UPDATE: {
+      const def = getContentDefinition(items[action.id].type)
+      let updatedItem = def.editor.reduce(items[action.id], action.subAction)
+      const errors = validate.contentItem(updatedItem)
+      updatedItem = update(updatedItem, {_errors: {$set: errors}})
+
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
+    case ITEM_OBJECTS_UPDATE:
+      switch (action.updateType) {
+        case OBJECT_ADD: {
+          let newObject = {
+            id: action.id,
+            data: '',
+            type: action.data.mimeType
+          }
+          const errors = validate.contentItem(newObject)
+          newObject = Object.assign({}, newObject, {_errors: errors})
+
+          return update(items, {
+            [action.itemId]: {
+              objects: {
+                $push: [newObject]
+              }
+            }
+          })
+        }
+        case OBJECT_CHANGE: {
+          const objects = items[action.itemId].objects
+          const index = objects.findIndex(object => object.id === action.data.id)
+          let updatedObject = objects[index]
+          updatedObject = update(updatedObject, {[action.data.property]: {$set: action.data.value}})
+          const errors = validate.contentItem(updatedObject)
+          updatedObject = update(updatedObject, {_errors: {$set: errors}})
+
+          return update(items, {
+            [action.itemId]: {
+              objects: {
+                [index]: {$set: updatedObject}
+              }
+            }
+          })
+        }
+        case OBJECT_REMOVE:
+          return update(items, {
+            [action.itemId]: {
+              objects: {
+                $set: items[action.itemId].objects.filter(
+                  object => object.id !== action.data.id
+                )
+              }
+            }
+          })
+        case OBJECT_MOVE: {
+          const index = items[action.itemId].objects.findIndex(o => o.id === action.data.id)
+          const swapIndex = items[action.itemId].objects.findIndex(o => o.id === action.data.swapId)
+          const object = items[action.itemId].objects[index]
+          const swapObject = items[action.itemId].objects[swapIndex]
+          return update(items, {
+            [action.itemId]: {
+              objects: {
+                [index]: {$set: swapObject},
+                [swapIndex]: {$set: object}
+              }
+            }
+          })
+        }
+        default:
+          return items
+      }
   }
   return items
 }
@@ -282,6 +387,10 @@ function reduceOpenPanels(panels = initialPanelState(), action = {}) {
     }
     case ITEM_CREATE: {
       const panelKey = makeItemPanelKey(action.itemType, action.id)
+      return update(panels, {[TYPE_STEP]: {[action.stepId]: {$set: panelKey}}})
+    }
+    case CONTENT_ITEM_CREATE: {
+      const panelKey = makeItemPanelKey(action.contentType, action.id)
       return update(panels, {[TYPE_STEP]: {[action.stepId]: {$set: panelKey}}})
     }
   }

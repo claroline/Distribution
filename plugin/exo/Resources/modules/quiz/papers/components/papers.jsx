@@ -1,8 +1,11 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
+
 import selectors from './../../selectors'
 import {selectors as paperSelectors} from './../selectors'
 import {tex} from './../../../utils/translate'
+import {ScoreBox} from './../../../items/components/score-box.jsx'
+import {utils} from './../utils'
 
 export const PaperRow = props =>
   <tr>
@@ -10,13 +13,26 @@ export const PaperRow = props =>
       <td>{props.user.name}</td>
     }
     <td>{props.number}</td>
-    <td>{props.startDate}</td>
-    <td>{props.endDate || '-'}</td>
-    <td>{tex(props.finished ? 'yes' : 'no')}</td>
-    <td>{props.score || '-'}</td>
     <td>
-      <a href={`#papers/${props.id}`}>
-        <span className="fa fa-eye"></span>
+      <small className="text-muted">{props.startDate}</small>
+    </td>
+    <td>
+      <small className="text-muted">{props.endDate || '-'}</small>
+    </td>
+    <td className="text-center">
+      <span className="sr-only">{tex(props.finished ? 'yes' : 'no')}</span>
+      {props.finished && <span className="fa fa-fw fa-check" />}
+    </td>
+    <td className="text-right">
+      {props.showScore ?
+        props.score || 0 === props.score ? <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
+        :
+        tex('paper_score_not_available')
+      }
+    </td>
+    <td className="text-right table-actions">
+      <a href={`#papers/${props.id}`} disabled={!props.showCorrection} className="btn btn-link">
+        <span className="fa fa-fw fa-eye"></span>
       </a>
     </td>
   </tr>
@@ -31,7 +47,10 @@ PaperRow.propTypes = {
   startDate: T.string.isRequired,
   endDate: T.string,
   finished: T.bool.isRequired,
-  score: T.number
+  score: T.number,
+  scoreMax: T.number,
+  showScore: T.bool.isRequired,
+  showCorrection: T.bool.isRequired
 }
 
 let Papers = props =>
@@ -47,12 +66,18 @@ let Papers = props =>
           <th>{tex('paper_list_table_end_date')}</th>
           <th>{tex('paper_finished')}</th>
           <th>{tex('paper_list_table_score')}</th>
-          <th>{tex('actions')}</th>
+          <th><span className="sr-only">{tex('actions')}</span></th>
         </tr>
       </thead>
       <tbody>
         {props.papers.map((paper, idx) =>
-          <PaperRow key={idx} admin={props.admin} {...paper}/>
+          <PaperRow
+            key={idx}
+            admin={props.admin}
+            {...paper}
+            showScore={utils.showScore(props.admin, paper.finished, paperSelectors.showScoreAt(paper), paperSelectors.showCorrectionAt(paper), paperSelectors.correctionDate(paper))}
+            showCorrection={utils.showCorrection(props.admin, paper.finished, paperSelectors.showCorrectionAt(paper), paperSelectors.correctionDate(paper))}
+            scoreMax={paperSelectors.paperScoreMax(paper)} />
         )}
       </tbody>
     </table>
@@ -65,7 +90,7 @@ Papers.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    admin: selectors.editable(state),
+    admin: selectors.editable(state) || selectors.papersAdmin(state),
     papers: paperSelectors.papers(state)
   }
 }

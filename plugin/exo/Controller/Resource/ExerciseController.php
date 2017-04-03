@@ -13,7 +13,8 @@ use UJM\ExoBundle\Library\Options\Transfer;
 /**
  * Exercise Controller renders views.
  *
- * @EXT\Route("/exercises", options={"expose"=true})
+ * @EXT\Route("/exercises/{id}", options={"expose"=true})
+ * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
  */
 class ExerciseController extends Controller
 {
@@ -23,9 +24,8 @@ class ExerciseController extends Controller
      * @param Exercise $exercise
      * @param User     $user
      *
-     * @EXT\Route("/{id}", name="ujm_exercise_open")
+     * @EXT\Route("", name="ujm_exercise_open")
      * @EXT\Method("GET")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\Template("UJMExoBundle:Exercise:open.html.twig")
      *
@@ -53,6 +53,8 @@ class ExerciseController extends Controller
         $exerciseData->meta->editable = $isAdmin;
         $exerciseData->meta->paperCount = (int) $nbPapers;
         $exerciseData->meta->userPaperCount = (int) $nbUserPapers;
+        $exerciseData->meta->registered = $user instanceof User;
+        $exerciseData->meta->canViewPapers = $this->canViewPapers($exercise);
 
         // Display the Summary of the Exercise
         return [
@@ -67,9 +69,8 @@ class ExerciseController extends Controller
     /**
      * To display the docimology's histograms.
      *
-     * @EXT\Route("/{id}/docimology", name="ujm_exercise_docimology")
+     * @EXT\Route("/docimology", name="ujm_exercise_docimology")
      * @EXT\Method("GET")
-     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      * @EXT\Template("UJMExoBundle:Exercise:docimology.html.twig")
      *
      * @param Exercise $exercise
@@ -92,6 +93,13 @@ class ExerciseController extends Controller
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
 
         return $this->get('security.authorization_checker')->isGranted('ADMINISTRATE', $collection);
+    }
+
+    private function canViewPapers(Exercise $exercise)
+    {
+        $collection = new ResourceCollection([$exercise->getResourceNode()]);
+
+        return $this->get('security.authorization_checker')->isGranted('papers', $collection);
     }
 
     private function assertHasPermission($permission, Exercise $exercise)

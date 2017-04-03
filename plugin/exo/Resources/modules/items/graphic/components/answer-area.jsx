@@ -102,20 +102,21 @@ export class AnswerArea extends Component {
           {resizers.map(makeResizer)}
 
           <span
-            className="fa fa-pencil"
+            className="fa fa-fw fa-pencil"
             role="button"
             style={common({right: -22})}
             onClick={e => {
               const rect = e.target.getBoundingClientRect()
+              const containerRect = document.getElementsByClassName('graphic-editor')[0].getBoundingClientRect()
               props.togglePopover(
                 props.id,
-                rect.left + window.pageXOffset - 189, // works with fixed size popover
-                rect.top + window.pageYOffset - 179
+                rect.left + window.pageXOffset - containerRect.left - 130, // works with fixed size popover and position relative container
+                rect.top + window.pageYOffset - containerRect.top - 66
               )
             }}
           />
           <span
-            className="fa fa-trash-o"
+            className="fa fa-fw fa-trash-o"
             role="button"
             style={common({right: -22, top: 20})}
             onClick={() => props.onDelete(props.id)}
