@@ -60,7 +60,10 @@ class ChoiceItem extends Component {
   constructor(props) {
     super(props)
     this.state = {showFeedback: false}
-    this.selectionId = this.props.selection ? this.props.selection.id: this.props.solution.selectionId
+  }
+
+  getSelectionId() {
+    return this.selectionId = this.props.selection ? this.props.selection.id: this.props.solution.selectionId
   }
 
   render() {
@@ -77,16 +80,16 @@ class ChoiceItem extends Component {
               type="number"
               value={this.props.score}
               step="0.5"
-              onChange={e => this.props.onChange(updateAnswer(Number(e.target.value), 'score', this.selectionId, this.props.item.mode))}
+              onChange={e => this.props.onChange(updateAnswer(Number(e.target.value), 'score', this.getSelectionId(), this.props.item.mode))}
             />
           }
           {this.props.item.score.type === SCORE_FIXED &&
             <span>
               <input
                 type="checkbox"
-                id={'selection-chk-' + this.selectionId}
+                id={'selection-chk-' + this.getSelectionId()}
                 checked={this.props.score > 0}
-                onChange={e => this.props.onChange(updateAnswer(e.target.checked ? 1 : 0, 'score', this.selectionId, this.props.item.mode))}
+                onChange={e => this.props.onChange(updateAnswer(e.target.checked ? 1 : 0, 'score', this.getSelectionId(), this.props.item.mode))}
               />
               <span>
                 {tex('correct_answer')}
@@ -95,7 +98,7 @@ class ChoiceItem extends Component {
           }
           <span>
             <TooltipButton
-              id={`choice-${this.selectionId}-feedback-toggle`}
+              id={`choice-${this.getSelectionId()}-feedback-toggle`}
               className="fa fa-comments-o pull-right"
               title={tex('choice_feedback_info')}
               onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
@@ -104,9 +107,9 @@ class ChoiceItem extends Component {
         {this.state.showFeedback &&
           <div className="feedback-container selection-form-row">
             <Textarea
-              id={`choice-${this.selectionId}-feedback`}
+              id={`choice-${this.getSelectionId()}-feedback`}
               title={tex('feedback')}
-              onChange={text => this.props.onChange(updateAnswer(text, 'feedback', this.selectionId, this.props.item.mode))}
+              onChange={text => this.props.onChange(updateAnswer(text, 'feedback', this.getSelectionId(), this.props.item.mode))}
               content={this.props.solution.feedback}
             />
           </div>
