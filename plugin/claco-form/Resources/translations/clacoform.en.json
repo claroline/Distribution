@@ -135,6 +135,7 @@
     "remove_category": "Remove category",
     "rich_text_field_info": "For the sake of readability, \"Rich text\" fields are not visible in the table of entries.",
     "search_mode": "List/Search mode",
+    "show_creator_picture": "Show creator picture",
     "show_field_label": "Show field label",
     "template_duplicated_variables_message": "Some fields are used more than once.",
     "template_management": "Template management",

@@ -135,6 +135,7 @@
     "remove_category": "Retirer la catégorie",
     "rich_text_field_info": "Par souci de lisibilité, les champs de type \"Texte riche\" ne sont pas visibles dans le tableau de recherche de fiches.",
     "search_mode": "Mode liste/recherche",
+    "show_creator_picture": "Afficher la photo de l'auteur",
     "show_field_label": "Afficher l'intitulé des champs",
     "template_duplicated_variables_message": "Certains champs sont utilisés plus d'une fois.",
     "template_management": "Gestion du template",
