@@ -27,11 +27,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ClacoFormController extends Controller
 {
     private $clacoFormManager;
+    private $filesDir;
     private $request;
     private $serializer;
     private $tokenStorage;
@@ -40,6 +42,7 @@ class ClacoFormController extends Controller
     /**
      * @DI\InjectParams({
      *     "clacoFormManager" = @DI\Inject("claroline.manager.claco_form_manager"),
+     *     "filesDir"         = @DI\Inject("%claroline.param.files_directory%"),
      *     "request"          = @DI\Inject("request"),
      *     "serializer"       = @DI\Inject("jms_serializer"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
@@ -48,12 +51,14 @@ class ClacoFormController extends Controller
      */
     public function __construct(
         ClacoFormManager $clacoFormManager,
+        $filesDir,
         Request $request,
         Serializer $serializer,
         TokenStorageInterface $tokenStorage,
         UserManager $userManager
     ) {
         $this->clacoFormManager = $clacoFormManager;
+        $this->filesDir = $filesDir;
         $this->request = $request;
         $this->serializer = $serializer;
         $this->tokenStorage = $tokenStorage;
@@ -973,5 +978,34 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->persistEntryUser($entryUser);
 
         return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/pdf/download",
+     *     name="claro_claco_form_entry_pdf_download",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Downloads pdf version of entry
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryPdfDownloadAction(User $user, Entry $entry)
+    {
+        $this->clacoFormManager->checkEntryAccess($entry);
+        $pdf = $this->clacoFormManager->generatePdfForEntry($entry, $user);
+
+        $headers = [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="'.$entry->getTitle().'.pdf"',
+        ];
+
+        return new Response(
+            file_get_contents($this->filesDir.DIRECTORY_SEPARATOR.'pdf'.DIRECTORY_SEPARATOR.$pdf->getPath()),
+            200,
+            $headers
+        );
     }
 }

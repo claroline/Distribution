@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="{{ asset('themes/claroline/bootstrap.css', null, true) }}" />
+    </head>
+    <body>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    {{ entry.getTitle() }}
+                </h3>
+            </div>
+            <div class="panel-body">
+                {% if template is empty %}
+                    {% for field in fields %}
+                        {% if withMeta or not field.getIsMetadata() %}
+                            <div class="row">
+                                <label class="col-md-3">
+                                    {{ field.getName()|raw }}
+                                </label>
+                                <div class="col-md-9">
+                                    {% if fieldValues[field.getId()] is defined %}
+                                        {% if field.getType() == constant('Claroline\\CoreBundle\\Entity\\Facet\\FieldFacet::DATE_TYPE') %}
+                                            {{ fieldValues[field.getId()]|date('d/m/Y') }}
+                                        {% elseif field.getType() == constant('Claroline\\CoreBundle\\Entity\\Facet\\FieldFacet::CHECKBOXES_TYPE') %}
+                                            {{ fieldValues[field.getId()]|join(', ') }}
+                                        {% elseif field.getType() == constant('Claroline\\CoreBundle\\Entity\\Facet\\FieldFacet::COUNTRY_TYPE') %}
+                                            {{ countries[fieldValues[field.getId()]] }}
+                                        {% elseif field.getType() == constant('Claroline\\CoreBundle\\Entity\\Facet\\FieldFacet::RICH_TEXT_TYPE') %}
+                                            {{ fieldValues[field.getId()]|raw }}
+                                        {% else %}
+                                            {{ fieldValues[field.getId()] }}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if not loop.last %}
+                                <hr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {{ template|raw }}
+                {% endif %}
+
+                {% if withMeta %}
+                    <br>
+                    <div>
+                        {% if entry.getPublicationDate() is not empty %}
+                            {{ 'publication_date'|trans({}, 'clacoform') }} :
+                            {{ entry.getPublicationDate()|date('d/m/Y') }}
+                            -
+                        {% endif %}
+                        {% if entry.getEditionDate() is not empty %}
+                            {{ 'edition_date'|trans({}, 'clacoform') }} :
+                            {{ entry.getEditionDate()|date('d/m/Y') }}
+                            -
+                        {% endif %}
+                        {{ 'author'|trans({}, 'platform') }} :
+
+                        {% if entry.getUser() is not empty %}
+                            {{ entry.getUser().getFirstName() }}
+                            {{ entry.getUser().getLastName() }}
+                        {% else %}
+                            {{ 'anonymous'|trans({}, 'platform') }}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

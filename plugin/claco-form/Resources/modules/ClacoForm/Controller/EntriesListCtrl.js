@@ -39,6 +39,7 @@ export default class EntriesManagementCtrl {
     this.fieldsColumns = {entries : [], myEntries : [], managerEntries : []}
     this.modes = []
     this.mode = null
+    this.userId = ClacoFormService.getUserId()
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
     this.initialize()
@@ -259,5 +260,9 @@ export default class EntriesManagementCtrl {
 
   changeEntryStatus(entry) {
     this.EntryService.changeEntryStatus(entry, this._updateEntryCallback)
+  }
+
+  downloadPdf(entryId) {
+    this.EntryService.downloadPdf(entryId)
   }
 }

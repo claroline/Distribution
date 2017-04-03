@@ -12,8 +12,9 @@
 //import fieldFormTemplate from '../Partial/field_form_modal.html'
 
 export default class EntryService {
-  constructor($http, $uibModal, ClarolineAPIService, FieldService) {
+  constructor($http, $window, $uibModal, ClarolineAPIService, FieldService) {
     this.$http = $http
+    this.$window = $window
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.FieldService = FieldService
@@ -289,6 +290,10 @@ export default class EntryService {
   saveEntryUser(entryId, entryUser) {
     const url = Routing.generate('claro_claco_form_entry_user_save', {entry: entryId})
     this.$http.put(url, {entryUserData: entryUser})
+  }
+
+  downloadPdf(entryId) {
+    this.$window.location.href = Routing.generate('claro_claco_form_entry_pdf_download', {entry: entryId})
   }
 
   static _getGlobal(name) {

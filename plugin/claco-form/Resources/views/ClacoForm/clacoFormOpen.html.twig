@@ -8,12 +8,10 @@
 
 {% set _resource = clacoForm %}
 
-{% block chat_content %}
-    {% block section_panel %}
-        <div id="claco-form-app" ng-cloak="" ng-app="ClacoFormModule">
-            <div ui-view></div>
-        </div>
-    {% endblock %}
+{% block section_panel %}
+    <div id="claco-form-app" ng-cloak="" ng-app="ClacoFormModule">
+        <div ui-view></div>
+    </div>
 {% endblock %}
 
 {% block stylesheets %}

@@ -48,9 +48,12 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
+use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\MessageBundle\Manager\MessageManager;
+use Claroline\PdfGeneratorBundle\Manager\PdfManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -66,9 +69,12 @@ class ClacoFormManager
     private $authorization;
     private $eventDispatcher;
     private $facetManager;
+    private $locationManager;
     private $messageManager;
     private $om;
+    private $pdfManager;
     private $router;
+    private $templating;
     private $tokenStorage;
     private $translator;
 
@@ -86,9 +92,12 @@ class ClacoFormManager
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
+     *     "locationManager" = @DI\Inject("claroline.manager.organization.location_manager"),
      *     "messageManager"  = @DI\Inject("claroline.manager.message_manager"),
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "pdfManager"      = @DI\Inject("claroline.manager.pdf_manager"),
      *     "router"          = @DI\Inject("router"),
+     *     "templating"      = @DI\Inject("templating"),
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "translator"      = @DI\Inject("translator")
      * })
@@ -97,18 +106,24 @@ class ClacoFormManager
         AuthorizationCheckerInterface $authorization,
         EventDispatcherInterface $eventDispatcher,
         FacetManager $facetManager,
+        LocationManager $locationManager,
         MessageManager $messageManager,
         ObjectManager $om,
+        PdfManager $pdfManager,
         RouterInterface $router,
+        TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator
     ) {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->facetManager = $facetManager;
+        $this->locationManager = $locationManager;
         $this->messageManager = $messageManager;
         $this->om = $om;
+        $this->pdfManager = $pdfManager;
         $this->router = $router;
+        $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
@@ -1334,6 +1349,128 @@ class ClacoFormManager
             $message = $this->messageManager->create($content, $subject, $receivers);
             $this->messageManager->send($message, true, false);
         }
+    }
+
+    public function generatePdfForEntry(Entry $entry, User $user)
+    {
+        $clacoForm = $entry->getClacoForm();
+        $fields = $clacoForm->getFields();
+        $fieldValues = [];
+
+        foreach ($entry->getFieldValues() as $fieldValue) {
+            $field = $fieldValue->getField();
+            $fieldValues[$field->getId()] = $fieldValue->getFieldFacetValue()->getValue();
+        }
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+        $template = $clacoForm->getTemplate();
+        $displayMeta = $clacoForm->getDisplayMetadata();
+        $isEntryManager = $user !== 'anon.' && $this->isEntryManager($entry, $user);
+        $withMeta = $canEdit || $displayMeta === 'all' || ($displayMeta === 'manager' && $isEntryManager);
+        $countries = empty($template) ? $this->locationManager->getCountries() : [];
+
+        if (!empty($template)) {
+            $template = str_replace('%clacoform_entry_title%', $entry->getTitle(), $template);
+
+            foreach ($fields as $field) {
+                if ($withMeta || !$field->getIsMetadata()) {
+                    switch ($field->getType()) {
+                        case FieldFacet::DATE_TYPE:
+                            $value = $fieldValues[$field->getId()]->format('d/m/Y');
+                            break;
+                        case FieldFacet::CHECKBOXES_TYPE:
+                            $value = implode(', ', $fieldValues[$field->getId()]);
+                            break;
+                        case FieldFacet::COUNTRY_TYPE:
+                            $value = $this->locationManager->getCountryByCode($fieldValues[$field->getId()]);
+                            break;
+                        default:
+                            $value = $fieldValues[$field->getId()];
+                    }
+                } else {
+                    $value = '';
+                }
+                $name = $this->removeAccent($this->removeQuote($field->getName()));
+                $template = str_replace("%$name%", $value, $template);
+            }
+        }
+        $html = $this->templating->render(
+            'ClarolineClacoFormBundle:ClacoForm:entry.html.twig',
+            [
+                'entry' => $entry,
+                'template' => $template,
+                'withMeta' => $withMeta,
+                'fields' => $fields,
+                'fieldValues' => $fieldValues,
+                'countries' => $countries,
+            ]
+        );
+
+        return $this->pdfManager->create($html, $entry->getTitle(), $user, 'clacoform_entries');
+    }
+
+    public function removeQuote($str)
+    {
+        return str_replace('\'', ' ', $str);
+    }
+
+    public function removeAccent($str)
+    {
+        $convertedStr = $str;
+        $convertedStr = str_replace('Ç', 'C', $convertedStr);
+        $convertedStr = str_replace('ç', 'c', $convertedStr);
+        $convertedStr = str_replace('è', 'e', $convertedStr);
+        $convertedStr = str_replace('é', 'e', $convertedStr);
+        $convertedStr = str_replace('ê', 'e', $convertedStr);
+        $convertedStr = str_replace('ë', 'e', $convertedStr);
+        $convertedStr = str_replace('È', 'E', $convertedStr);
+        $convertedStr = str_replace('É', 'E', $convertedStr);
+        $convertedStr = str_replace('Ê', 'E', $convertedStr);
+        $convertedStr = str_replace('Ë', 'E', $convertedStr);
+        $convertedStr = str_replace('à', 'a', $convertedStr);
+        $convertedStr = str_replace('á', 'a', $convertedStr);
+        $convertedStr = str_replace('â', 'a', $convertedStr);
+        $convertedStr = str_replace('ã', 'a', $convertedStr);
+        $convertedStr = str_replace('ä', 'a', $convertedStr);
+        $convertedStr = str_replace('ä', 'a', $convertedStr);
+        $convertedStr = str_replace('@', 'A', $convertedStr);
+        $convertedStr = str_replace('À', 'A', $convertedStr);
+        $convertedStr = str_replace('Á', 'A', $convertedStr);
+        $convertedStr = str_replace('Â', 'A', $convertedStr);
+        $convertedStr = str_replace('Ã', 'A', $convertedStr);
+        $convertedStr = str_replace('Ä', 'A', $convertedStr);
+        $convertedStr = str_replace('Å', 'A', $convertedStr);
+        $convertedStr = str_replace('ì', 'i', $convertedStr);
+        $convertedStr = str_replace('í', 'i', $convertedStr);
+        $convertedStr = str_replace('î', 'i', $convertedStr);
+        $convertedStr = str_replace('ï', 'i', $convertedStr);
+        $convertedStr = str_replace('Ì', 'I', $convertedStr);
+        $convertedStr = str_replace('Í', 'I', $convertedStr);
+        $convertedStr = str_replace('Î', 'I', $convertedStr);
+        $convertedStr = str_replace('Ï', 'I', $convertedStr);
+        $convertedStr = str_replace('ð', 'o', $convertedStr);
+        $convertedStr = str_replace('ò', 'o', $convertedStr);
+        $convertedStr = str_replace('ó', 'o', $convertedStr);
+        $convertedStr = str_replace('ô', 'o', $convertedStr);
+        $convertedStr = str_replace('õ', 'o', $convertedStr);
+        $convertedStr = str_replace('ö', 'o', $convertedStr);
+        $convertedStr = str_replace('Ò', 'O', $convertedStr);
+        $convertedStr = str_replace('Ó', 'O', $convertedStr);
+        $convertedStr = str_replace('Ô', 'O', $convertedStr);
+        $convertedStr = str_replace('Õ', 'O', $convertedStr);
+        $convertedStr = str_replace('Ö', 'O', $convertedStr);
+        $convertedStr = str_replace('ù', 'u', $convertedStr);
+        $convertedStr = str_replace('ú', 'u', $convertedStr);
+        $convertedStr = str_replace('û', 'u', $convertedStr);
+        $convertedStr = str_replace('ü', 'u', $convertedStr);
+        $convertedStr = str_replace('Ù', 'U', $convertedStr);
+        $convertedStr = str_replace('Ú', 'U', $convertedStr);
+        $convertedStr = str_replace('Û', 'U', $convertedStr);
+        $convertedStr = str_replace('Ü', 'U', $convertedStr);
+        $convertedStr = str_replace('ý', 'y', $convertedStr);
+        $convertedStr = str_replace('ÿ', 'y', $convertedStr);
+        $convertedStr = str_replace('Ý', 'Y', $convertedStr);
+
+        return $convertedStr;
     }
 
     /*****************************************
