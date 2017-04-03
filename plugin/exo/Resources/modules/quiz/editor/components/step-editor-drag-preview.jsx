@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import Panel from 'react-bootstrap/lib/Panel'
 import {trans} from './../../../utils/translate'
