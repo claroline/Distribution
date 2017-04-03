@@ -19,6 +19,7 @@ use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
@@ -34,6 +35,7 @@ class ClacoFormController extends Controller
 {
     private $clacoFormManager;
     private $filesDir;
+    private $platformConfigHandler;
     private $request;
     private $serializer;
     private $tokenStorage;
@@ -41,17 +43,19 @@ class ClacoFormController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "clacoFormManager" = @DI\Inject("claroline.manager.claco_form_manager"),
-     *     "filesDir"         = @DI\Inject("%claroline.param.files_directory%"),
-     *     "request"          = @DI\Inject("request"),
-     *     "serializer"       = @DI\Inject("jms_serializer"),
-     *     "tokenStorage"     = @DI\Inject("security.token_storage"),
-     *     "userManager"      = @DI\Inject("claroline.manager.user_manager")
+     *     "clacoFormManager"      = @DI\Inject("claroline.manager.claco_form_manager"),
+     *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
+     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "request"               = @DI\Inject("request"),
+     *     "serializer"            = @DI\Inject("jms_serializer"),
+     *     "tokenStorage"          = @DI\Inject("security.token_storage"),
+     *     "userManager"           = @DI\Inject("claroline.manager.user_manager")
      * })
      */
     public function __construct(
         ClacoFormManager $clacoFormManager,
         $filesDir,
+        PlatformConfigurationHandler $platformConfigHandler,
         Request $request,
         Serializer $serializer,
         TokenStorageInterface $tokenStorage,
@@ -59,6 +63,7 @@ class ClacoFormController extends Controller
     ) {
         $this->clacoFormManager = $clacoFormManager;
         $this->filesDir = $filesDir;
+        $this->platformConfigHandler = $platformConfigHandler;
         $this->request = $request;
         $this->serializer = $serializer;
         $this->tokenStorage = $tokenStorage;
@@ -115,6 +120,9 @@ class ClacoFormController extends Controller
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );
+        $canGeneratePdf = !$isAnon &&
+            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
+            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
 
         return [
             'isAnon' => $isAnon,
@@ -129,6 +137,7 @@ class ClacoFormController extends Controller
             'managerEntries' => $serializedManagerEntries,
             'nbEntries' => $nbEntries,
             'nbPublishedEntries' => $nbPublishedEntries,
+            'canGeneratePdf' => $canGeneratePdf,
         ];
     }
 

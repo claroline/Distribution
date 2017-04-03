@@ -308,4 +308,8 @@ export default class EntryViewCtrl {
   downloadPdf() {
     this.EntryService.downloadPdf(this.entryId)
   }
+
+  canGeneratePdf() {
+    return this.ClacoFormService.getCanGeneratePdf()
+  }
 }

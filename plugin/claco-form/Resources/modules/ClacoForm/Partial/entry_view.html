@@ -152,7 +152,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf()" ng-if="cfc.userId">
+                            <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf()" ng-if="cfc.canGeneratePdf()">
                                 <i class="fa fa-print"></i>
                             </button>
                             <button class="btn btn-default btn-sm"

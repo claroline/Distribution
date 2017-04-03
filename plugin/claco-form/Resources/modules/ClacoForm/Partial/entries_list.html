@@ -98,7 +98,7 @@
                                 </i>
                             </span>
                             <span ng-if="fc['id'] === 'actions'">
-                                <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.userId">
+                                <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.canGeneratePdf()">
                                     <i class="fa fa-print"></i>
                                 </button>
                                 <a class="btn btn-default btn-sm" ui-sref="entry_edition({entryId: entry['id']})">
@@ -190,7 +190,7 @@
                                 </i>
                             </span>
                             <span ng-if="fc['id'] === 'actions'">
-                                <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.userId">
+                                <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.canGeneratePdf()">
                                     <i class="fa fa-print"></i>
                                 </button>
                                 <a class="btn btn-default btn-sm" ui-sref="entry_edition({entryId: entry['id']})">
@@ -264,7 +264,7 @@
                                 </i>
                             </span>
                             <span ng-if="fc['id'] === 'actions'">
-                                <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.userId">
+                                <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.canGeneratePdf()">
                                     <i class="fa fa-print"></i>
                                 </button>
                                 <a class="btn btn-default btn-sm" ui-sref="entry_edition({entryId: entry['id']})">
