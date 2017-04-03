@@ -91,6 +91,7 @@ class ChoiceItem extends Component {
                 checked={this.props.score > 0}
                 onChange={e => this.props.onChange(updateAnswer(e.target.checked ? 1 : 0, 'score', this.getSelectionId(), this.props.item.mode))}
               />
+              {'\u00a0'}
               <span>
                 {tex('correct_answer')}
               </span>
@@ -257,6 +258,7 @@ class SelectionForm extends Component {
             disabled={this.getSolution().answers.length >= this.props.item.colors.length }
           >
             <i className="fa fa-plus"/>
+            {'\u00a0'}
             {tex('color')}
           </button>
         }
@@ -342,8 +344,8 @@ class HighlightAnswer extends Component {
       }>
         <div className='row'>
           <div className="col-xs-3">
-            <select className="color-select"
-              style={{ backgroundColor: color.code }}
+            <select className="color-select checkbox"
+              style={{ backgroundColor: color.code, verticalAlign: 'center', display: 'inline-block' }}
               onChange={e => this.props.onChange(actions.highlightUpdateAnswer('colorId', e.target.value, this.props.answer._answerId))}
               value={this.props.answer.colorId}
             >
@@ -387,7 +389,7 @@ class HighlightAnswer extends Component {
            />
         </div>
         <div className="col-xs-3">
-          <i onClick={() => this.props.onChange(actions.highlightRemoveAnswer(this.props.answer._answerId))} className="fa fa-trash-o pointer"></i>
+          <i onClick={() => this.props.onChange(actions.highlightRemoveAnswer(this.props.answer._answerId))} className="fa fa-trash-o pointer checkbox"></i>
         </div>
       </div>
       {this.state.showFeedback &&

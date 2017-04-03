@@ -610,7 +610,7 @@
     "selection_empty_text_error": "Please fill the text",
     "selection_text_must_contain_selections_error": "The text must have at least one selection",
     "selection_must_have_valid_answers_errors": "You need at least one valid answer",
-    "selection_answers_must_use_different_colors": "Colors must be different",
+    "selection_answers_must_use_different_colors_errors": "Colors must be different",
     "selection_colors_must_be_differents": "You can't use identical colors",
     "find": "Search",
     "highlight": "Highlight",

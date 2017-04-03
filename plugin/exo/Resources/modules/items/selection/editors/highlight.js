@@ -177,7 +177,7 @@ export function validate(item) {
     }
 
     if (hasDuplicates(selectedColors)) {
-      _errors.solutions = tex('selection_answers_must_use_different_colors ')
+      _errors.solutions = tex('selection_answers_must_use_different_colors_errors ')
     }
   }
 
