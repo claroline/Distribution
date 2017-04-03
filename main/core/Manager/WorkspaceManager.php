@@ -181,6 +181,12 @@ class WorkspaceManager
      */
     public function createWorkspace(Workspace $workspace)
     {
+        if (count($workspace->getOrganizations()) === 0) {
+            $organizationManager = $this->container->get('claroline.manager.organization.organization_manager');
+            $default = $organizationManager->getDefault();
+            $workspace->addOrganization($default);
+        }
+
         $ch = $this->container->get('claroline.config.platform_config_handler');
         $workspace->setMaxUploadResources($ch->getParameter('max_upload_resources'));
         $workspace->setMaxStorageSize($ch->getParameter('max_storage_size'));
