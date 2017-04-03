@@ -25,9 +25,9 @@ function getConfigurations() {
   registeredPackages.forEach(el => {
     if (packages.isMetaPackage(el.path)) {
       str += getMetaEntries(el.path)
-    } else {
+    } /*else {
       throw new Error('No implementation for client configuration file for the usual package.')
-    }
+    }*/
   })
 
   return str
