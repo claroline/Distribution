@@ -17,10 +17,10 @@ import {
   DIR_NW
 } from './../enums'
 
-const FRAME_GUTTER = 2
-const AREA_GUTTER = 8
-const BORDER_WIDTH = 2
-const RESIZER_SIZE = 6
+export const FRAME_GUTTER = 2
+export const AREA_GUTTER = 8
+export const BORDER_WIDTH = 2
+export const RESIZER_SIZE = 6
 
 export class AnswerArea extends Component {
   render() {
@@ -165,7 +165,9 @@ export const AnswerAreaDraggable = makeDraggable(
   TYPE_ANSWER_AREA,
   props => ({
     type: TYPE_ANSWER_AREA,
-    id: props.id
+    id: props.id,
+    geometry: props.geometry,
+    shape: props.shape
   })
 )
 

@@ -1,5 +1,23 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DragLayer } from 'react-dnd'
+import {ContentThumbnailDragPreview} from './../contents/components/content-thumbnail-drag-preview.jsx'
+import {
+  BORDER_WIDTH,
+  AREA_GUTTER
+} from './../items/graphic/components/answer-area.jsx'
+
+import {
+  SHAPE_RECT,
+  TYPE_ANSWER_AREA
+} from './../items/graphic/enums'
+
+import {
+  ITEM,
+  THUMBNAIL,
+  CONTENT_THUMBNAIL,
+  ORDERING_ITEM,
+  STEP_ITEM
+} from './../quiz/enums'
 
 const layerStyles = {
   position: 'fixed',
@@ -20,49 +38,79 @@ function getItemStyles(props) {
 
   const { x, y } = currentOffset
   const transform = `translate(${x}px, ${y}px)`
-  return {
-    transform: transform,
-    WebkitTransform: transform,
-    backgroundColor: '#aaa',
-    textAlign: 'center',
-    width: '100px',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    opacity: 0.5,
-    borderRadius: '5px'
-  }
+  return props.itemType === 'answerArea' ?
+    {
+      transform: transform,
+      WebkitTransform: transform
+    }
+    :
+    {
+      transform: transform,
+      WebkitTransform: transform,
+      backgroundColor: '#aaa',
+      textAlign: 'center',
+      width: '100px',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      opacity: 0.5,
+      borderRadius: '5px'
+    }
 }
 
-class CustomDragLayerComponent extends Component{
+class CustomDragLayerComponent extends Component {
   renderItem(type, item) {
     switch (type) {
-      case 'ITEM':
+      case ITEM:
         return (
         item.item.data ?
           <div dangerouslySetInnerHTML={{__html: item.item.data}}></div>
           :
           <div>DRAGGING</div>
       )
-      case 'THUMBNAIL':
+      case THUMBNAIL:
         return (
         <div>{item.title}</div>
       )
-      case 'ORDERING_ITEM':
+      case CONTENT_THUMBNAIL:
+        return (
+          <ContentThumbnailDragPreview data={item.data} type={item.type} />
+      )
+      case ORDERING_ITEM:
         return (
           item.data ?
           <div dangerouslySetInnerHTML={{__html: item.data}}></div>
           :
           <div>DRAGGING</div>
       )
-      case 'STEP_ITEM':
-        return(
+      case STEP_ITEM:
+        return (
           item.title ?
             <div>{item.title}</div>
             :
             <div>DRAGGING</div>
+      )
+      case TYPE_ANSWER_AREA: {
+        const isRect = item.shape === SHAPE_RECT
+        const def = item.geometry
+        const width = isRect ? def.coords[1].x - def.coords[0].x : def.radius * 2
+        const height = isRect ? def.coords[1].y - def.coords[0].y : def.radius * 2
+        const frameWidth = width + (AREA_GUTTER * 2)
+        const frameHeight = height + (AREA_GUTTER * 2)
+        const innerFrameWidth = frameWidth - BORDER_WIDTH * 2
+        const innerFrameHeight = frameHeight - BORDER_WIDTH * 2
+        const borderRadius = isRect ? 0 : def.radius
+        return (
+          <div style={{
+            borderRadius: borderRadius,
+            opacity: 0.5,
+            width: innerFrameWidth + 'px',
+            height: innerFrameHeight + 'px',
+            backgroundColor: def.color
+          }}/>
         )
+      }
     }
   }
 

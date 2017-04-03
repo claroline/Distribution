@@ -75,5 +75,6 @@ export const TEXT = '__NATIVE_TEXT__'
 // DRAGGABLE TYPES
 export const ITEM = 'ITEM'
 export const THUMBNAIL = 'THUMBNAIL'
-export const ORDERINGITEM = 'ORDERINGITEM'
+export const CONTENT_THUMBNAIL = 'CONTENT_THUMBNAIL'
+export const ORDERING_ITEM = 'ORDERING_ITEM'
 export const STEP_ITEM = 'STEP_ITEM'

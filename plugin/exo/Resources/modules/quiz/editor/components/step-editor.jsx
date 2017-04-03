@@ -19,6 +19,7 @@ import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
+import {STEP_ITEM} from './../../enums'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title editor-panel-title">
@@ -306,8 +307,8 @@ ContentPanel.propTypes = {
   validating: T.bool.isRequired
 }
 
-ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
-ContentPanel = makeSortable(ContentPanel, 'STEP_ITEM')
+ItemPanel = makeSortable(ItemPanel, STEP_ITEM)
+ContentPanel = makeSortable(ContentPanel, STEP_ITEM)
 
 class StepFooter extends Component {
   constructor(props) {
