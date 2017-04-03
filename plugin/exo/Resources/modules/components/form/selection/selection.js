@@ -1,9 +1,4 @@
 export function getOffsets(element, selection = null) {
-  //some initialization. This will be usefull later
-  let toAdd = 0
-  let i = 0
-  let j = 0
-  let forward = 0
 
   //tinymce has his own selection object so we pass it if we must. It might work with the window one (untested)
   if (!selection) {
@@ -26,10 +21,25 @@ export function getOffsets(element, selection = null) {
 
   const html = element.innerHTML
 
-  //here we do magic so we can know the real offset.
-  //the selection API always return offset from the textContent (aka plain text with no HTML)
-  //Therefore we have to add htmlentities and tags length to the offset
-  while (i <= offsets.start) {
+  //now we can compute the "real" offsets
+  let toAdd = getRealOffset(html, offsets.start)
+
+  offsets.trueStart = toAdd + offsets.start
+
+  toAdd = getRealOffset(html, offsets.end)
+  //fuck this shit, we have to take into account html stuff here aswell. We can't just use offset.end here
+  offsets.trueEnd = toAdd + offsets.end
+
+  return offsets
+}
+
+function getRealOffset(html, htmlContentOffset) {
+  let i = 0
+  let j = 0
+  let toAdd = 0
+  let forward = 0
+
+  while (i <= htmlContentOffset) {
     //this is the beginning of a tag
     if (html[j] === '<' ) {
       forward = getTillChar(html, j, '>')
@@ -54,13 +64,7 @@ export function getOffsets(element, selection = null) {
     forward = 0
   }
 
-  //now we can compute the "real" offsets
-  offsets.trueStart = toAdd + offsets.start
-
-  //fuck this shit, we have to take into account html stuff here aswell. We can't just use offset.end here
-  offsets.trueEnd = toAdd + offsets.end
-
-  return offsets
+  return toAdd
 }
 
 //this function just count the number of character till the one you chose as 'marker'
