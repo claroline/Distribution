@@ -238,11 +238,22 @@ class Workspace
      */
     protected $personalUser;
 
+    /**
+     * @var Organization[]|ArrayCollection
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization",
+     *     inversedBy="workspaces"
+     * )
+     */
+    protected $organizations;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
         $this->orderedTools = new ArrayCollection();
         $this->events = new ArrayCollection();
+        $this->organizations = new ArrayCollection();
     }
 
     public function getId()
