@@ -111,7 +111,7 @@ export default class EntryViewCtrl {
         const id = f['id']
         let replacedField = ''
 
-        if (this.metadataAllowed || !f['isMetadata']) {
+        if (this.metadataAllowed || !f['isMetadata'] || this.isEntryOwner()) {
           switch (f['type']) {
             case 3 :
               replacedField = this.$filter('date')(this.entry[id], 'dd/MM/yyyy')
@@ -311,5 +311,9 @@ export default class EntryViewCtrl {
 
   canGeneratePdf() {
     return this.ClacoFormService.getCanGeneratePdf()
+  }
+
+  isEntryOwner() {
+    return this.entry['user'] && this.entry['user']['id'] === this.userId
   }
 }

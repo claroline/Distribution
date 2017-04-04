@@ -187,7 +187,9 @@
                 <div template="cfc.template" ng-if="cfc.template">
                 </div>
                 <div ng-if="!cfc.template">
-                    <div ng-repeat="field in cfc.fields" ng-if="cfc.metadataAllowed || !field['isMetadata']">
+                    <div ng-repeat="field in cfc.fields"
+                         ng-if="cfc.metadataAllowed || !field['isMetadata'] || cfc.isEntryOwner()"
+                    >
                         <div class="row">
                             <label class="col-md-3">
                                 {{ field['name'] }}
