@@ -29,7 +29,3 @@ security:
             logout:
                 path: /logout
                 target: /
-
-parameters:
-    be_simple.sso_auth.client.option.curlopt_sslversion.value: 1
-    be_simple.sso_auth.client.option.curlopt_ssl_verifypeer.value: FALSE
