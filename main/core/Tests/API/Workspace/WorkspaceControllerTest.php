@@ -73,7 +73,19 @@ class WorkspaceControllerTest extends TransactionalTestCase
         ];
 
         $data['workspace_form'] = $values;
-        $this->client->request('PUT', "/api/workspace/{$workspace->getId()}}", $data);
+        $this->client->request('PUT', "/api/workspace/{$workspace->getId()}", $data);
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+        $this->assertEquals($data['name'], 'new');
+    }
+
+    public function testGetCopy()
+    {
+        $admin = $this->createAdmin();
+        $workspace = $this->persister->workspace('workspace', $admin);
+        $this->logIn($admin);
+
+        $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new");
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals($data['name'], 'new');

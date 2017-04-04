@@ -250,8 +250,12 @@ class WorkspaceController extends FOSRestController
         return $workspace;
     }
 
-    public function copy(Workspace $workspace)
+    /**
+     * @View(serializerGroups={"api_workspace"})
+     * @Get("/workspace/copy/{workspace}/{name}", name="workspace_copy", options={ "method_prefix" = false })
+     */
+    public function copyAction(Workspace $workspace, $name)
     {
-        return $workspace;
+        return $this->workspaceManager->copy($workspace, $name);
     }
 }

@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceFavourite;
@@ -189,8 +190,11 @@ class WorkspaceManager
         $ch = $this->container->get('claroline.config.platform_config_handler');
         $workspace->setMaxUploadResources($ch->getParameter('max_upload_resources'));
         $workspace->setMaxStorageSize($ch->getParameter('max_storage_size'));
+        $workspace->setGuid(uniqid('', true));
         $workspace->setMaxUsers($ch->getParameter('max_workspace_users'));
         $this->editWorkspace($workspace);
+
+        return $workspace;
     }
 
     public function editWorkspace(Workspace $workspace)
@@ -1264,5 +1268,191 @@ class WorkspaceManager
         }
 
         $this->om->endFlushSuite();
+    }
+
+    public function copy(Workspace $workspace, $name)
+    {
+        $newWorkspace = new Workspace();
+        $newWorkspace->setName($name);
+        $newWorkspace->setCode('[COPY] - '.$name);
+        $this->createWorkspace($newWorkspace);
+        $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
+        $this->duplicateOrderedTools($workspace, $newWorkspace);
+        $this->duplicateRootDirectory($workspace, $newWorkspace, $user);
+
+        return $newWorkspace;
+    }
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param \Claroline\CoreBundle\Entity\User                $user
+     */
+    private function duplicateRootDirectory(
+        Workspace $source,
+        Workspace $workspace,
+        User $user
+    ) {
+        $rootDirectory = new Directory();
+        $rootDirectory->setName($workspace->getName());
+        $directoryType = $this->resourceManager->getResourceTypeByName('directory');
+        $resource = $this->resourceManager->create(
+            $rootDirectory,
+            $directoryType,
+            $user,
+            $workspace,
+            null,
+            null,
+            []
+        );
+        $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
+        $root = $this->resourceManager->getWorkspaceRoot($source);
+        $rights = $root->getRights();
+        foreach ($rights as $right) {
+            $role = $right->getRole();
+            if ($role->getType() === 1) {
+                $newRight = $this->rightsManager->getRightsFromIdentityMapOrScheduledForInsert(
+                    $role->getName(),
+                    $resource->getResourceNode()
+                );
+            } else {
+                $newRight = new ResourceRights();
+                $newRight->setResourceNode($resource->getResourceNode());
+                if ($role->getWorkspace() === $source) {
+                    $key = $role->getTranslationKey();
+                    if (isset($workspaceRoles[$key]) && !empty($workspaceRoles[$key])) {
+                        $newRight->setRole($workspaceRoles[$key]);
+                    }
+                } else {
+                    $newRight->setRole($role);
+                }
+            }
+            $newRight->setMask($right->getMask());
+            $newRight->setCreatableResourceTypes($right->getCreatableResourceTypes()->toArray());
+            $this->om->persist($newRight);
+        }
+        $this->om->flush();
+
+        return $resource;
+    }
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     */
+    private function duplicateOrderedTools(Workspace $source, Workspace $workspace)
+    {
+        $this->log('Duplicating tools...');
+        $orderedTools = $source->getOrderedTools();
+        $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
+
+        foreach ($orderedTools as $orderedTool) {
+            $workspaceOrderedTool = $this->toolManager->setWorkspaceTool(
+                $orderedTool->getTool(),
+                $orderedTool->getOrder(),
+                $orderedTool->getName(),
+                $workspace
+            );
+            $rights = $orderedTool->getRights();
+            foreach ($rights as $right) {
+                $role = $right->getRole();
+                if ($role->getType() === 1) {
+                    $this->toolRightsManager->setToolRights(
+                        $workspaceOrderedTool,
+                        $role,
+                        $right->getMask()
+                    );
+                } else {
+                    $key = $role->getTranslationKey();
+                    if (isset($workspaceRoles[$key]) && !empty($workspaceRoles[$key])) {
+                        $this->toolRightsManager->setToolRights(
+                            $workspaceOrderedTool,
+                            $workspaceRoles[$key],
+                            $right->getMask()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+/**
+ * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
+ * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+ * @param \Claroline\CoreBundle\Entity\User                $user
+ */
+private function duplicateWorkspaceRoles(
+    Workspace $source,
+    Workspace $workspace,
+    User $user
+) {
+    $this->log('Duplicating roles...');
+    $guid = $workspace->getGuid();
+    $roles = $source->getRoles();
+    $unusedRolePartName = '_'.$source->getGuid();
+    foreach ($roles as $role) {
+        $roleName = str_replace($unusedRolePartName, '', $role->getName());
+        $createdRole = $this->roleManager->createWorkspaceRole(
+            $roleName.'_'.$guid,
+            $role->getTranslationKey(),
+            $workspace,
+            $role->isReadOnly()
+        );
+        if ($roleName === 'ROLE_WS_MANAGER') {
+            $user->addRole($createdRole);
+            $this->om->persist($user);
+        }
+    }
+}
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     */
+    private function duplicateWorkspaceOptions(Workspace $source, Workspace $workspace)
+    {
+        $sourceOptions = $source->getOptions();
+        if (!is_null($sourceOptions)) {
+            $options = new WorkspaceOptions();
+            $options->setWorkspace($workspace);
+            $details = $sourceOptions->getDetails();
+            if (!is_null($details)) {
+                $details['use_workspace_opening_resource'] = false;
+                $details['workspace_opening_resource'] = null;
+            }
+            $options->setDetails($details);
+            $workspace->setOptions($options);
+            $this->om->persist($options);
+            $this->om->persist($workspace);
+            $this->om->flush();
+        }
+    }
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     */
+    private function getArrayRolesByWorkspace(Workspace $workspace)
+    {
+        $workspaceRoles = [];
+        $uow = $this->om->getUnitOfWork();
+        $wRoles = $this->roleManager->getRolesByWorkspace($workspace);
+        $scheduledForInsert = $uow->getScheduledEntityInsertions();
+        foreach ($scheduledForInsert as $entity) {
+            if (get_class($entity) === 'Claroline\CoreBundle\Entity\Role') {
+                if ($entity->getWorkspace()) {
+                    if ($entity->getWorkspace()->getGuid() === $workspace->getGuid()) {
+                        $wRoles[] = $entity;
+                    }
+                }
+            }
+        }
+        //now we build the array
+        foreach ($wRoles as $wRole) {
+            $workspaceRoles[$wRole->getTranslationKey()] = $wRole;
+        }
+
+        return $workspaceRoles;
     }
 }
