@@ -1017,9 +1017,18 @@ class WorkspaceManager
     ) {
         $workspaces = $search === '' ?
             $this->workspaceRepo
-                ->findAllPersonalWorkspaces($orderedBy, $order) :
+                ->findAllPersonalWorkspaces(
+                    $orderedBy,
+                    $order,
+                    $this->container->get('security.context')->getToken()->getUser()
+                ) :
             $this->workspaceRepo
-                ->findAllPersonalWorkspacesBySearch($search, $orderedBy, $order);
+                ->findAllPersonalWorkspacesBySearch(
+                    $search,
+                    $orderedBy,
+                    $order,
+                    $this->container->get('security.context')->getToken()->getUser()
+                );
 
         return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
     }
@@ -1033,9 +1042,18 @@ class WorkspaceManager
     ) {
         $workspaces = $search === '' ?
             $this->workspaceRepo
-                ->findAllNonPersonalWorkspaces($orderedBy, $order) :
+                ->findAllNonPersonalWorkspaces(
+                    $orderedBy,
+                    $order,
+                    $this->container->get('security.context')->getToken()->getUser()
+                ) :
             $this->workspaceRepo
-                ->findAllNonPersonalWorkspacesBySearch($search, $orderedBy, $order);
+                ->findAllNonPersonalWorkspacesBySearch(
+                    $search,
+                    $orderedBy,
+                    $order,
+                    $this->container->get('security.context')->getToken()->getUser()
+                );
 
         return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
     }
