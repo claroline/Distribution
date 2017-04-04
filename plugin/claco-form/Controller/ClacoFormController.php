@@ -181,7 +181,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_field_create",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Creates a field
      *
@@ -231,7 +230,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_field_edit",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a field
      *
@@ -289,7 +287,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_field_delete",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes a field
      *
@@ -315,7 +312,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_get_field_by_name_excluding_id",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the field
      *
@@ -340,7 +336,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_field_choices_categories_retrieve",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Retrieves categories associated to choices from a field
      *
@@ -366,7 +361,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_category_create",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Creates a category
      *
@@ -416,7 +410,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_category_edit",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a category
      *
@@ -467,7 +460,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_category_delete",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes a category
      *
@@ -493,7 +485,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_keyword_create",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Creates a keyword
      *
@@ -519,7 +510,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_keyword_edit",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a keyword
      *
@@ -546,7 +536,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_keyword_delete",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes a keyword
      *
@@ -572,7 +561,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_get_keyword_by_name_excluding_id",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Returns the keyword
      *
@@ -704,7 +692,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_delete",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes an entry
      *
@@ -752,7 +739,6 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_status_change",
      *     options = {"expose"=true}
      * )
-     * @EXT\ParamConverter("user", converter="current_user")
      *
      * Changes status of an entry
      *
