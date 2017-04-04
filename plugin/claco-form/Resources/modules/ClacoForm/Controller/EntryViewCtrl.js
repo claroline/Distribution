@@ -111,7 +111,7 @@ export default class EntryViewCtrl {
         const id = f['id']
         let replacedField = ''
 
-        if (this.metadataAllowed || !f['isMetadata'] || this.isEntryOwner()) {
+        if (this.metadataAllowed || !f['isMetadata'] || this.isEntryOwner() || this.isShared()) {
           switch (f['type']) {
             case 3 :
               replacedField = this.$filter('date')(this.entry[id], 'dd/MM/yyyy')
@@ -314,6 +314,18 @@ export default class EntryViewCtrl {
   }
 
   isEntryOwner() {
-    return this.entry['user'] && this.entry['user']['id'] === this.userId
+    return this.entry && this.entry['user'] && this.entry['user']['id'] === this.userId
+  }
+
+  isShared() {
+    return this.entry && this.EntryService.isShared(this.entry['id'], this.userId)
+  }
+
+  canShare() {
+    return this.canEdit() || this.isEntryOwner() || this.isShared()
+  }
+
+  showEntrySharesManagement() {
+    this.EntryService.showEntrySharesManagement(this.entry)
   }
 }

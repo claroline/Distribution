@@ -91,7 +91,7 @@ class ClacoFormController extends Controller
         $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
         $nbEntries = count($allEntries);
         $nbPublishedEntries = count($publishedEntries);
-        $myEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByUser($clacoForm, $user);
+        $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
         $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
         $isCategoryManager = count($myCategories) > 0;
         $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
@@ -123,6 +123,7 @@ class ClacoFormController extends Controller
         $canGeneratePdf = !$isAnon &&
             $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
             file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
+        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
 
         return [
             'isAnon' => $isAnon,
@@ -138,6 +139,7 @@ class ClacoFormController extends Controller
             'nbEntries' => $nbEntries,
             'nbPublishedEntries' => $nbPublishedEntries,
             'canGeneratePdf' => $canGeneratePdf,
+            'sharedEntries' => $sharedEntries,
         ];
     }
 
@@ -1016,5 +1018,73 @@ class ClacoFormController extends Controller
             200,
             $headers
         );
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/shared/users/list",
+     *     name="claro_claco_form_entry_shared_users_list",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Retrieves list of users the entry is shared with
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entrySharedUsersListAction(User $user, Entry $entry)
+    {
+        $this->clacoFormManager->checkEntryShareRight($entry);
+        $users = $this->clacoFormManager->getSharedEntryUsers($entry);
+        $serializedUsers = $this->serializer->serialize(
+            $users,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+        $whitelist = $this->userManager->getAllVisibleUsersIdsForUserPicker($user);
+
+        return new JsonResponse(['users' => $serializedUsers, 'whitelist' => $whitelist], 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/users/share",
+     *     name="claro_claco_form_entry_users_share",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Shares entry ownership to users
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryUsersShareAction(Entry $entry)
+    {
+        $this->clacoFormManager->checkEntryShareRight($entry);
+        $usersIds = $this->request->request->get('usersIds', false);
+
+        if ($usersIds) {
+            $this->clacoFormManager->shareEntryWithUsers($entry, $usersIds);
+        }
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/user/{user}/unshare",
+     *     name="claro_claco_form_entry_user_unshare",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Shares entry ownership to users
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryUserUnshareAction(Entry $entry, User $user)
+    {
+        $this->clacoFormManager->checkEntryShareRight($entry);
+        $this->clacoFormManager->switchEntryUserShared($entry, $user, false);
+
+        return new JsonResponse('success', 200);
     }
 }

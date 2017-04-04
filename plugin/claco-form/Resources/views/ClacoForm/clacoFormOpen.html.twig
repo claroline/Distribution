@@ -46,6 +46,7 @@
         window.nbEntries = {{ nbEntries }}
         window.nbPublishedEntries = {{ nbPublishedEntries }}
         window.canGeneratePdf = {{ canGeneratePdf ? 'true' : 'false' }}
+        window.sharedEntries = {{ sharedEntries|json_encode|raw }}
     </script>
     <script type='text/javascript' src="{{ asset('packages/angular/angular.min.js') }}"></script>
     <script type='text/javascript' src="{{ asset('packages/ng-table/dist/ng-table.js') }}"></script>

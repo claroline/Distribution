@@ -9,7 +9,7 @@
 
 /*global Routing*/
 /*global Translator*/
-//import fieldFormTemplate from '../Partial/field_form_modal.html'
+import entrySharesManagementTemplate from '../Partial/entry_shares_management_modal.html'
 
 export default class EntryService {
   constructor($http, $window, $uibModal, ClarolineAPIService, FieldService) {
@@ -26,6 +26,7 @@ export default class EntryService {
     this.managerEntries = EntryService._getGlobal('managerEntries')
     this.nbEntries = EntryService._getGlobal('nbEntries')
     this.nbPublishedEntries = EntryService._getGlobal('nbPublishedEntries')
+    this.sharedEntries = EntryService._getGlobal('sharedEntries')
     this.categoryFilter = ''
     this.keywordFilter = ''
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
@@ -294,6 +295,37 @@ export default class EntryService {
 
   downloadPdf(entryId) {
     this.$window.location.href = Routing.generate('claro_claco_form_entry_pdf_download', {entry: entryId})
+  }
+
+  showEntrySharesManagement(entry) {
+    this.$uibModal.open({
+      template: entrySharesManagementTemplate,
+      controller: 'EntrySharesManagementModalCtrl',
+      controllerAs: 'cfc',
+      resolve: {
+        entry: () => { return entry }
+      }
+    })
+  }
+
+  shareEntry(entryId, usersIds) {
+    const url = Routing.generate('claro_claco_form_entry_users_share', {entry: entryId})
+    this.$http.put(url, {usersIds: usersIds})
+  }
+
+  unshareEntry(entryId, userId) {
+    const url = Routing.generate('claro_claco_form_entry_user_unshare', {entry: entryId, user: userId})
+    this.$http.delete(url)
+  }
+
+  getSharedUsers(entryId) {
+    const url = Routing.generate('claro_claco_form_entry_shared_users_list', {entry: entryId})
+
+    return this.$http.get(url)
+  }
+
+  isShared(entryId, userId) {
+    return this.sharedEntries[entryId] && this.sharedEntries[entryId][userId]
   }
 
   static _getGlobal(name) {

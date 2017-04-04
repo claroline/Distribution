@@ -49,6 +49,7 @@ use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use Claroline\PdfGeneratorBundle\Manager\PdfManager;
@@ -77,6 +78,7 @@ class ClacoFormManager
     private $templating;
     private $tokenStorage;
     private $translator;
+    private $userManager;
 
     private $categoryRepo;
     private $commentRepo;
@@ -99,7 +101,8 @@ class ClacoFormManager
      *     "router"          = @DI\Inject("router"),
      *     "templating"      = @DI\Inject("templating"),
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "translator"      = @DI\Inject("translator"),
+     *     "userManager"     = @DI\Inject("claroline.manager.user_manager"),
      * })
      */
     public function __construct(
@@ -113,7 +116,8 @@ class ClacoFormManager
         RouterInterface $router,
         TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        UserManager $userManager
     ) {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
@@ -126,6 +130,7 @@ class ClacoFormManager
         $this->templating = $templating;
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
+        $this->userManager = $userManager;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->clacoFormRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoForm');
         $this->clacoFormWidgetConfigRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoFormWidgetConfig');
@@ -1477,6 +1482,76 @@ class ClacoFormManager
         return $convertedStr;
     }
 
+    public function getSharedEntryUsers(Entry $entry)
+    {
+        $users = [];
+        $entryUsers = $this->entryUserRepo->findBy(['entry' => $entry, 'shared' => true]);
+
+        foreach ($entryUsers as $entryUser) {
+            $users[] = $entryUser->getUser();
+        }
+
+        return $users;
+    }
+
+    public function switchEntryUserShared(Entry $entry, User $user, $shared)
+    {
+        $this->om->startFlushSuite();
+        $entryUser = $this->getEntryUser($entry, $user);
+        $entryUser->setShared($shared);
+        $this->om->persist($entryUser);
+        $this->om->endFlushSuite();
+    }
+
+    public function shareEntryWithUsers(Entry $entry, array $usersIds)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($usersIds as $userId) {
+            $user = $this->userManager->getUserById($userId);
+
+            if (!empty($user)) {
+                $this->switchEntryUserShared($entry, $user, true);
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    public function getUserEntries(ClacoForm $clacoForm, User $user)
+    {
+        $entries = [];
+        $userEntries = $this->getEntriesByUser($clacoForm, $user);
+        $sharedEntryUser = $this->entryUserRepo->findSharedEntryUserByClacoFormAndUser($clacoForm, $user);
+
+        foreach ($userEntries as $entry) {
+            $entries[$entry->getId()] = $entry;
+        }
+        foreach ($sharedEntryUser as $entryUser) {
+            $entry = $entryUser->getEntry();
+            $entries[$entry->getId()] = $entry;
+        }
+
+        return array_values($entries);
+    }
+
+    public function generateSharedEntriesData(ClacoForm $clacoForm)
+    {
+        $data = [];
+        $sharedEntriesUsers = $this->entryUserRepo->findSharedEntriesUsersByClacoForm($clacoForm);
+
+        foreach ($sharedEntriesUsers as $entryUser) {
+            $entryId = $entryUser->getEntry()->getId();
+            $userId = $entryUser->getUser()->getId();
+
+            if (!isset($data[$entryId])) {
+                $data[$entryId] = [];
+            }
+            $data[$entryId][$userId] = true;
+        }
+
+        return $data;
+    }
+
     /*****************************************
      * Access to ClacoFormRepository methods *
      *****************************************/
@@ -1694,11 +1769,13 @@ class ClacoFormManager
         $canOpen = $this->hasRight($clacoForm, 'OPEN');
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
         $editionEnabled = $clacoForm->isEditionEnabled();
+        $isAnon = $user === 'anon.';
+        $isEntryShared = $isAnon ? false : $this->isEntryShared($entry, $user);
 
         return $canEdit || (
             $canOpen && (
-                ($editionEnabled && ($entry->getUser() === $user)) ||
-                (($user !== 'anon.') && $this->isEntryManager($entry, $user))
+                ($editionEnabled && ($entry->getUser() === $user || $isEntryShared)) ||
+                (!$isAnon && $this->isEntryManager($entry, $user))
             )
         );
     }
@@ -1752,6 +1829,30 @@ class ClacoFormManager
         $entry = $comment->getEntry();
 
         if (!$this->hasEntryAccessRight($entry) || (($user !== $comment->getUser()) && !$this->hasEntryModerationRight($entry))) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function isEntryShared(Entry $entry, User $user)
+    {
+        $entryUser = $this->entryUserRepo->findOneBy(['entry' => $entry, 'user' => $user, 'shared' => true]);
+
+        return !empty($entryUser);
+    }
+
+    public function hasEntryOwnership(Entry $entry)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $isAnon = $user === 'anon.';
+        $isOwner = !empty($entry->getUser()) && !$isAnon && $entry->getUser()->getId() === $user->getId();
+        $isShared = $isAnon ? false : $this->isEntryShared($entry, $user);
+
+        return $isOwner || $isShared;
+    }
+
+    public function checkEntryShareRight(Entry $entry)
+    {
+        if (!$this->hasRight($entry->getClacoForm(), 'EDIT') && !$this->hasEntryOwnership($entry)) {
             throw new AccessDeniedException();
         }
     }

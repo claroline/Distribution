@@ -158,6 +158,15 @@
                             <button class="btn btn-default btn-sm"
                                     data-toggle="tooltip"
                                     data-placement="top"
+                                    title="{{ 'share_entry'|trans:{}:'clacoform' }}"
+                                    ng-click="cfc.showEntrySharesManagement()"
+                                    ng-if="cfc.canShare()"
+                            >
+                                <i class="fa fa-share-alt"></i>
+                            </button>
+                            <button class="btn btn-default btn-sm"
+                                    data-toggle="tooltip"
+                                    data-placement="top"
                                     title="{{ 'unpublish'|trans:{}:'platform' }}"
                                     ng-click="cfc.changeEntryStatus()"
                                     ng-if="cfc.canManageEntry() && cfc.entry['status'] === 1"
@@ -188,7 +197,7 @@
                 </div>
                 <div ng-if="!cfc.template">
                     <div ng-repeat="field in cfc.fields"
-                         ng-if="cfc.metadataAllowed || !field['isMetadata'] || cfc.isEntryOwner()"
+                         ng-if="cfc.metadataAllowed || !field['isMetadata'] || cfc.isEntryOwner() || cfc.isShared()"
                     >
                         <div class="row">
                             <label class="col-md-3">
