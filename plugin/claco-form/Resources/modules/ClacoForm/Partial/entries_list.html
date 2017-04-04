@@ -141,8 +141,12 @@
                     </tr>
                 </table>
             </div>
-            <div class="alert alert-warning" ng-if="cfc.entries.length === 0">
-                {{ 'no_entry'|trans:{}:'clacoform' }}
+            <div ng-if="cfc.entries.length === 0">
+                <br>
+                <br>
+                <div class="alert alert-warning">
+                    {{ 'no_entry'|trans:{}:'clacoform' }}
+                </div>
             </div>
         </div>
         <div ng-if="cfc.mode === 'my_entries'">
@@ -215,8 +219,12 @@
                     </tr>
                 </table>
             </div>
-            <div class="alert alert-warning" ng-if="cfc.myEntries.length === 0">
-                {{ 'no_own_entry'|trans:{}:'clacoform' }}
+            <div ng-if="cfc.myEntries.length === 0">
+                <br>
+                <br>
+                <div class="alert alert-warning">
+                    {{ 'no_own_entry'|trans:{}:'clacoform' }}
+                </div>
             </div>
         </div>
         <div ng-if="cfc.mode === 'manager_entries'">
@@ -307,8 +315,12 @@
                     </tr>
                 </table>
             </div>
-            <div class="alert alert-warning" ng-if="cfc.managerEntries.length === 0">
-                {{ 'no_manager_entry'|trans:{}:'clacoform' }}
+            <div ng-if="cfc.managerEntries.length === 0">
+                <br>
+                <br>
+                <div class="alert alert-warning">
+                    {{ 'no_manager_entry'|trans:{}:'clacoform' }}
+                </div>
             </div>
         </div>
     </div>
