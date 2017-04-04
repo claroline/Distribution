@@ -35,7 +35,6 @@ use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WidgetManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
-use Claroline\CoreBundle\Manager\WorkspaceModelManager;
 use Claroline\CoreBundle\Manager\WorkspaceTagManager;
 use Claroline\CoreBundle\Manager\WorkspaceUserQueueManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -89,7 +88,6 @@ class WorkspaceController extends Controller
     private $utils;
     private $widgetManager;
     private $workspaceManager;
-    private $workspaceModelManager;
     private $workspaceUserQueueManager;
 
     /**
@@ -114,7 +112,6 @@ class WorkspaceController extends Controller
      *     "utils"                     = @DI\Inject("claroline.security.utilities"),
      *     "widgetManager"             = @DI\Inject("claroline.manager.widget_manager"),
      *     "workspaceManager"          = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "workspaceModelManager"     = @DI\Inject("claroline.manager.workspace_model_manager"),
      *     "workspaceUserQueueManager" = @DI\Inject("claroline.manager.workspace_user_queue_manager")
      * })
      */
@@ -139,7 +136,6 @@ class WorkspaceController extends Controller
         Utilities $utils,
         WidgetManager $widgetManager,
         WorkspaceManager $workspaceManager,
-        WorkspaceModelManager $workspaceModelManager,
         WorkspaceUserQueueManager $workspaceUserQueueManager
     ) {
         $this->authorization = $authorization;
@@ -162,7 +158,6 @@ class WorkspaceController extends Controller
         $this->utils = $utils;
         $this->widgetManager = $widgetManager;
         $this->workspaceManager = $workspaceManager;
-        $this->workspaceModelManager = $workspaceModelManager;
         $this->workspaceUserQueueManager = $workspaceUserQueueManager;
     }
 

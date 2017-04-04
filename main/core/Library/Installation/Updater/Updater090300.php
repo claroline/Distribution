@@ -37,10 +37,10 @@ class Updater090300 extends Updater
 
         foreach ($models as $model) {
             $code = '[MOD]'.$model->getName();
-            $this->log('Creating workspace from model '.$model->getName());
             $workspace = $om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
 
             if (!$workspace) {
+                $this->log('Creating workspace from model '.$model->getName());
                 $workspace = $this->container->get('claroline.manager.workspace_manager')->createWorkspaceFromModel(
                     $model,
                     $model->getUsers()[0],
@@ -51,9 +51,13 @@ class Updater090300 extends Updater
                 $workspace->setIsModel(true);
                 $managerRole = $roleManager->getManagerRole($workspace);
                 $roleManager->associateRoleToMultipleSubjects($model->getUsers()->toArray(), $managerRole);
+                $roleManager->associateRoleToMultipleSubjects($model->getGroups()->toArray(), $managerRole);
                 $this->om->persist($workspace);
                 $this->om->endFlushSuite();
             }
+
+            //TODO MODEL
+            //migration des cursus ici aussi
         }
     }
 

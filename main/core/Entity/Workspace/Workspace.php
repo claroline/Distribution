@@ -112,14 +112,6 @@ class Workspace
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Model\WorkspaceModel",
-     *     mappedBy="workspace"
-     * )
-     */
-    protected $models;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Tool\OrderedTool",
      *     mappedBy="workspace",
      *     cascade={"persist", "merge"}

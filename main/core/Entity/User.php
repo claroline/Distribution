@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
-use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -362,18 +361,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     protected $fieldsFacetValue;
 
     /**
-     * @var WorkspaceModel[]|ArrayCollection
-     *
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Model\WorkspaceModel",
-     *     inversedBy="users",
-     *     fetch="EXTRA_LAZY"
-     * )
-     * @ORM\JoinTable(name="claro_workspace_model_user")
-     */
-    protected $models;
-
-    /**
      * @var string
      *
      * @ORM\Column(nullable=true)
@@ -431,7 +418,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->orderedTools = new ArrayCollection();
         $this->fieldsFacetValue = new ArrayCollection();
-        $this->models = new ArrayCollection();
         $this->organizations = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->administratedOrganizations = new ArrayCollection();
@@ -1077,18 +1063,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function getInitDate()
     {
         return $this->initDate;
-    }
-
-    public function addModel(WorkspaceModel $model)
-    {
-        if (!$this->models->contains($model)) {
-            $this->models->add($model);
-        }
-    }
-
-    public function removeModel(WorkspaceModel $model)
-    {
-        $this->models->removeElement($model);
     }
 
     public function setAuthentication($authentication)

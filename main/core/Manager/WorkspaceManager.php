@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceFavourite;
@@ -192,44 +191,6 @@ class WorkspaceManager
     {
         $this->om->persist($workspace);
         $this->om->flush();
-    }
-
-    public function createWorkspaceFromModel(
-        WorkspaceModel $model,
-        User $user,
-        $name,
-        $code,
-        $description = null,
-        $displayable = false,
-        $selfRegistration = false,
-        $selfUnregistration = false,
-        &$errors = []
-    ) {
-        $this->om->startFlushSuite();
-        $this->log('Workspace from model beginning.');
-        $workspaceModelManager = $this->container->get('claroline.manager.workspace_model_manager');
-
-        $workspace = new Workspace();
-        $workspace->setName($name);
-        $workspace->setCode($code);
-        $workspace->setDescription($description);
-        $workspace->setDisplayable($displayable);
-        $workspace->setSelfRegistration($selfRegistration);
-        $workspace->setSelfUnregistration($selfUnregistration);
-        $guid = $this->ut->generateGuid();
-        $workspace->setGuid($guid);
-        $date = new \Datetime(date('d-m-Y H:i'));
-        $workspace->setCreationDate($date->getTimestamp());
-        $workspace->setCreator($user);
-
-        $errors = [];
-
-        $this->createWorkspace($workspace);
-        $workspaceModelManager->addDataFromModel($model, $workspace, $user, $errors);
-        $this->log('Workspace from model end.');
-        $this->om->endFlushSuite();
-
-        return $workspace;
     }
 
     /**
@@ -881,8 +842,8 @@ class WorkspaceManager
     public function importWorkspaces(array $workspaces, $logger = null, $update = false)
     {
         $i = 0;
-        $workspaceModelManager = $this->container->get('claroline.manager.workspace_model_manager');
         $this->om->startFlushSuite();
+
         foreach ($workspaces as $workspace) {
             ++$i;
             $endDate = null;
@@ -946,14 +907,16 @@ class WorkspaceManager
                     $workspace->setGuid($guid);
                     $date = new \Datetime(date('d-m-Y H:i'));
                     $workspace->setCreationDate($date->getTimestamp());
-                    $workspaceModelManager->addDataFromModel($model, $workspace, $user);
+                    //TODO MODEL
+                    //$workspaceModelManager->addDataFromModel($model, $workspace, $user);
                 } else {
                     $template = new File($this->container->getParameter('claroline.param.default_template'));
                     $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
                 }
             } else {
                 if ($model) {
-                    $workspaceModelManager->updateDataFromModel($model, $workspace);
+                    //TODO MODEL
+                    //$workspaceModelManager->updateDataFromModel($model, $workspace);
                 }
             }
 
@@ -1168,12 +1131,7 @@ class WorkspaceManager
     public function setLogger(LoggerInterface $logger)
     {
         $rm = $this->container->get('claroline.manager.resource_manager');
-        $wmm = $this->container->get('claroline.manager.workspace_model_manager');
         $tm = $this->container->get('claroline.manager.transfer_manager');
-
-        if (!$wmm->getLogger()) {
-            $wmm->setLogger($logger);
-        }
 
         if (!$rm->getLogger()) {
             $rm->setLogger($logger);

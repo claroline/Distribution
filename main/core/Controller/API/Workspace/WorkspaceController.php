@@ -225,4 +225,33 @@ class WorkspaceController extends FOSRestController
 
         return $workspace;
     }
+
+    /**
+     * @View(serializerGroups={"api_workspace"})
+     * @Get("/workspace/page/{page}/limit/{limit}/search", name="get_search_workspaces", options={ "method_prefix" = false })
+     */
+    public function getSearchWorkspacesAction($page, $limit)
+    {
+        $searches = $this->request->query->all();
+        //TODO WORKSPACE implement search partial list
+        $workspaces = $this->workspaceManager->searchPartialList($searches, $page, $limit);
+        $count = $this->workspaceManager->searchPartialList($searches, $page, $limit, true);
+
+        return ['workspaces' => $workspaces, 'total' => $count];
+    }
+
+    public function editAction(Workspace $workspace)
+    {
+        return $workspace;
+    }
+
+    public function deleteAction(Workspace $workspace)
+    {
+        return $workspace;
+    }
+
+    public function copy(Workspace $workspace)
+    {
+        return $workspace;
+    }
 }
