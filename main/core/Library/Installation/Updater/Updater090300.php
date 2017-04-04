@@ -29,6 +29,34 @@ class Updater090300 extends Updater
         $this->iconSetsDir = $container->getParameter('claroline.param.icon_sets_directory');
     }
 
+    public function preUpdate()
+    {
+        $roleManager = $this->container->get('claroline.manager.role_manager');
+        $om = $this->container->get('claroline.persistence.object_manager');
+        $models = $om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')->findAll();
+
+        foreach ($models as $model) {
+            $code = '[MOD]'.$model->getName();
+            $this->log('Creating workspace from model '.$model->getName());
+            $workspace = $om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
+
+            if (!$workspace) {
+                $workspace = $this->container->get('claroline.manager.workspace_manager')->createWorkspaceFromModel(
+                    $model,
+                    $model->getUsers()[0],
+                    $model->getName(),
+                    $code
+                );
+
+                $workspace->setIsModel(true);
+                $managerRole = $roleManager->getManagerRole($workspace);
+                $roleManager->associateRoleToMultipleSubjects($model->getUsers()->toArray(), $managerRole);
+                $this->om->persist($workspace);
+                $this->om->endFlushSuite();
+            }
+        }
+    }
+
     public function postUpdate()
     {
         $this->createPublicDirectory();

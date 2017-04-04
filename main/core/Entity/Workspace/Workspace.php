@@ -98,6 +98,11 @@ class Workspace
     protected $displayable = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $isModel = false;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
      *     mappedBy="workspace"
@@ -549,5 +554,15 @@ class Workspace
     public function getPersonalUser()
     {
         return $this->personalUser;
+    }
+
+    public function setIsModel($boolean)
+    {
+        $this->isModel = $boolean;
+    }
+
+    public function isModel()
+    {
+        return $this->isModel;
     }
 }
