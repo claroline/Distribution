@@ -229,7 +229,7 @@ export default class EntryService {
         const valueDate = new Date(v['fieldFacetValue']['value'])
         entry[fieldLabel] = `${valueDate.getDate()}/${valueDate.getMonth() + 1}/${valueDate.getFullYear()}`
       } else if (v['fieldFacetValue']['field_facet']['type'] === 6) {
-        entry[fieldLabel] = v['fieldFacetValue']['value'].join(', ')
+        entry[fieldLabel] = v['fieldFacetValue']['value'] ? v['fieldFacetValue']['value'].join(', ') : ''
       } else if (v['fieldFacetValue']['field_facet']['type'] === 7) {
         entry[fieldLabel] = this.FieldService.getCountryNameFromCode(v['fieldFacetValue']['value'])
       } else {

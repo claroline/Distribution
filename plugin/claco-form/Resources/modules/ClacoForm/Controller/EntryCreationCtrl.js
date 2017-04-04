@@ -85,7 +85,7 @@ export default class EntryCreationCtrl {
   }
 
   isAllowed() {
-    return this.ClacoFormService.getCanCreateEntry()
+    return this.canEdit() || this.ClacoFormService.getCanCreateEntry()
   }
 
   canManageKeywords() {

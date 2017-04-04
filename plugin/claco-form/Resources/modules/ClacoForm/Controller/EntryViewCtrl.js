@@ -117,7 +117,7 @@ export default class EntryViewCtrl {
               replacedField = this.$filter('date')(this.entry[id], 'dd/MM/yyyy')
               break
             case 6 :
-              replacedField = this.entry[id].join(', ')
+              replacedField = this.entry[id] ? this.entry[id].join(', ') : ''
               break
             case 7 :
               replacedField = this.FieldService.getCountryNameFromCode(this.entry[id])

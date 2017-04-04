@@ -596,13 +596,17 @@ class ClacoFormManager
 
     public function canCreateEntry(ClacoForm $clacoForm, User $user = null)
     {
-        $maxEntries = $clacoForm->getMaxEntries();
-
-        if (is_null($user)) {
-            $canCreate = $clacoForm->isCreationEnabled() && ($maxEntries === 0);
+        if ($this->hasRight($clacoForm, 'EDIT')) {
+            $canCreate = true;
         } else {
-            $userEntries = $this->getEntriesByUser($clacoForm, $user);
-            $canCreate = $clacoForm->isCreationEnabled() && (($maxEntries === 0) || ($maxEntries > count($userEntries)));
+            $maxEntries = $clacoForm->getMaxEntries();
+
+            if (is_null($user)) {
+                $canCreate = $clacoForm->isCreationEnabled() && ($maxEntries === 0);
+            } else {
+                $userEntries = $this->getEntriesByUser($clacoForm, $user);
+                $canCreate = $clacoForm->isCreationEnabled() && (($maxEntries === 0) || ($maxEntries > count($userEntries)));
+            }
         }
 
         return $canCreate;
