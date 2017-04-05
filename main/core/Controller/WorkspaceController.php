@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -45,7 +44,6 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormFactory;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -355,17 +353,12 @@ class WorkspaceController extends Controller
         $this->workspaceManager->setLogger($logger);
 
         if ($form->isValid()) {
-            $model = $form->get('model')->getData();
-
-            if (!is_null($model)) {
-                $this->createWorkspaceFromModel($model, $form);
-            } else {
-                $workspace = $form->getData();
-                $template = new File($this->templateArchive);
-                $user = $this->tokenStorage->getToken()->getUser();
-                $workspace->setCreator($user);
-                $workspace = $this->workspaceManager->create($workspace, $template);
-            }
+            //TODO MODEL
+            $workspace = $form->getData();
+            $template = new File($this->templateArchive);
+            $user = $this->tokenStorage->getToken()->getUser();
+            $workspace->setCreator($user);
+            $workspace = $this->workspaceManager->create($workspace, $template);
             $this->tokenUpdater->update($this->tokenStorage->getToken());
             $route = $this->router->generate('claro_workspace_by_user');
 
@@ -1485,56 +1478,6 @@ class WorkspaceController extends Controller
             'workspaceRoles' => $workspaceRoles,
             'resource' => $resource,
         ];
-    }
-
-    private function createWorkspaceFromModel(WorkspaceModel $model, FormInterface $form)
-    {
-        $this->workspaceManager->createWorkspaceFromModel(
-            $model,
-            $this->tokenStorage->getToken()->getUser(),
-            $form->get('name')->getData(),
-            $form->get('code')->getData(),
-            $form->get('description')->getData(),
-            $form->get('displayable')->getData(),
-            $form->get('selfRegistration')->getData(),
-            $form->get('selfUnregistration')->getData(),
-            $errors
-        );
-
-        $flashBag = $this->session->getFlashBag();
-
-        foreach ($errors['widgetConfigErrors'] as $widgetConfigError) {
-            $widgetName = $widgetConfigError['widgetName'];
-            $widgetInstanceName = $widgetConfigError['widgetInstanceName'];
-            $msg = '['.
-                $this->translator->trans($widgetName, [], 'widget').
-                '] '.
-                $this->translator->trans(
-                    'widget_configuration_copy_warning',
-                    ['%widgetInstanceName%' => $widgetInstanceName],
-                    'widget'
-                );
-            $flashBag->add('error', $msg);
-        }
-
-        foreach ($errors['resourceErrors'] as $resourceError) {
-            $resourceName = $resourceError['resourceName'];
-            $resourceType = $resourceError['resourceType'];
-            $isCopy = $resourceError['type'] === 'copy';
-
-            $msg = '['.
-                $this->translator->trans($resourceType, [], 'resource').
-                '] ';
-
-            if ($isCopy) {
-                $msg .= $this->translator->trans(
-                    'resource_copy_warning',
-                    ['%resourceName%' => $resourceName],
-                    'resource'
-                );
-            }
-            $flashBag->add('error', $msg);
-        }
     }
 
     private function throwWorkspaceDeniedException(Workspace $workspace)

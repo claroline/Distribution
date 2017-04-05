@@ -40,7 +40,9 @@ class Updater090300 extends Updater
     {
         $roleManager = $this->container->get('claroline.manager.role_manager');
         $om = $this->container->get('claroline.persistence.object_manager');
-        $models = $om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')->findAll();
+        //TODO MODEL
+        //GET FROM TABLES
+        $models = [];
 
         foreach ($models as $model) {
             $code = '[MOD]'.$model->getName();

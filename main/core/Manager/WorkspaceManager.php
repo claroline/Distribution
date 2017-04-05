@@ -13,6 +13,8 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\Directory;
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceFavourite;
@@ -873,6 +875,7 @@ class WorkspaceManager
             }
 
             if (isset($workspace[7])) {
+                //TODO MODEL
                 $model = $this->om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')
                 ->findOneByName($workspace[7]);
             }
@@ -1280,7 +1283,7 @@ class WorkspaceManager
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
         $this->duplicateOrderedTools($workspace, $newWorkspace);
-        $this->duplicateRootDirectory($workspace, $newWorkspace, $user);
+        $this->duplicateResources($workspace, $newWorkspace, $user);
 
         return $newWorkspace;
     }
@@ -1290,15 +1293,16 @@ class WorkspaceManager
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
      * @param \Claroline\CoreBundle\Entity\User                $user
      */
-    private function duplicateRootDirectory(
+    private function duplicateResources(
         Workspace $source,
         Workspace $workspace,
         User $user
     ) {
+        $this->log('Duplicating root directory...');
         $rootDirectory = new Directory();
         $rootDirectory->setName($workspace->getName());
         $directoryType = $this->resourceManager->getResourceTypeByName('directory');
-        $resource = $this->resourceManager->create(
+        $rootCopy = $this->resourceManager->create(
             $rootDirectory,
             $directoryType,
             $user,
@@ -1307,35 +1311,106 @@ class WorkspaceManager
             null,
             []
         );
-        $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
-        $root = $this->resourceManager->getWorkspaceRoot($source);
-        $rights = $root->getRights();
+        $workspaceRoles = $this->getArrayRolesByWorkspace($source);
+        $baseRoot = $this->resourceManager->getWorkspaceRoot($source);
+
+        /*** Copies rights ***/
+
+        $this->duplicateRights(
+            $baseRoot,
+            $rootCopy->getResourceNode(),
+            $workspaceRoles
+        );
+
+        $this->om->flush();
+        $this->om->startFlushSuite();
+        $copies = [];
+        $resourcesErrors = [];
+        $resourceNodes = $baseRoot->getChildren();
+        $this->log('Duplicating '.count($resourceNodes).' children...');
+
+        foreach ($resourceNodes as $resourceNode) {
+            try {
+                $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName());
+                $copy = $this->resourceManager->copy(
+                    $resourceNode,
+                    $rootDirectory->getResourceNode(),
+                    $user,
+                    false,
+                    false
+                );
+                $copy->getResourceNode()->setIndex($resourceNode->getIndex());
+                $this->om->persist($copy->getResourceNode());
+            } catch (NotPopulatedEventException $e) {
+                $resourcesErrors[] = [
+                    'resourceName' => $resourceNode->getName(),
+                    'resourceType' => $resourceNode->getResourceType()->getName(),
+                    'type' => 'copy',
+                    'error' => $e->getMessage(),
+                ];
+                continue;
+            }
+
+            /*** Copies rights ***/
+
+          $this->duplicateRights(
+                $resourceNode,
+                $copy->getResourceNode(),
+                $workspaceRoles
+            );
+        }
+
+        /*** Sets previous and next for each copied resource ***/
+        $this->linkResourcesArray($copies);
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * @param array $resources
+     */
+    private function linkResourcesArray(array $resources)
+    {
+        for ($i = 1; $i < count($resources); ++$i) {
+            $node = $resources[$i]->getResourceNode();
+            $node->setIndex($i);
+            $this->om->persist($node);
+        }
+    }
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $resourceNode
+     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $copy
+     * @param array                                              $workspaceRoles
+     */
+    private function duplicateRights(
+        ResourceNode $resourceNode,
+        ResourceNode $copy,
+        array $workspaceRoles
+    ) {
+        $rights = $resourceNode->getRights();
+        $workspace = $resourceNode->getWorkspace();
+
         foreach ($rights as $right) {
             $role = $right->getRole();
-            if ($role->getType() === 1) {
-                $newRight = $this->rightsManager->getRightsFromIdentityMapOrScheduledForInsert(
-                    $role->getName(),
-                    $resource->getResourceNode()
-                );
-            } else {
-                $newRight = new ResourceRights();
-                $newRight->setResourceNode($resource->getResourceNode());
-                if ($role->getWorkspace() === $source) {
-                    $key = $role->getTranslationKey();
-                    if (isset($workspaceRoles[$key]) && !empty($workspaceRoles[$key])) {
-                        $newRight->setRole($workspaceRoles[$key]);
-                    }
-                } else {
-                    $newRight->setRole($role);
-                }
-            }
+            $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
+            $key = $role->getTranslationKey();
+            $newRight = new ResourceRights();
+            $newRight->setResourceNode($copy);
             $newRight->setMask($right->getMask());
-            $newRight->setCreatableResourceTypes($right->getCreatableResourceTypes()->toArray());
-            $this->om->persist($newRight);
+            $newRight->setCreatableResourceTypes(
+                $right->getCreatableResourceTypes()->toArray()
+            );
+            if ($role->getWorkspace() === $workspace &&
+                isset($workspaceRoles[$key]) &&
+                !empty($workspaceRoles[$key])) {
+                $newRight->setRole($workspaceRoles[$key]);
+                $this->om->persist($newRight);
+            } else {
+                $newRight->setRole($role);
+                //TODO MODEL persist here aswell later
+            }
         }
         $this->om->flush();
-
-        return $resource;
     }
 
     /**
@@ -1349,7 +1424,7 @@ class WorkspaceManager
         $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
 
         foreach ($orderedTools as $orderedTool) {
-            $workspaceOrderedTool = $this->toolManager->setWorkspaceTool(
+            $workspaceOrderedTool = $this->container->get('claroline.manager.tool_manager')->setWorkspaceTool(
                 $orderedTool->getTool(),
                 $orderedTool->getOrder(),
                 $orderedTool->getName(),
@@ -1367,7 +1442,7 @@ class WorkspaceManager
                 } else {
                     $key = $role->getTranslationKey();
                     if (isset($workspaceRoles[$key]) && !empty($workspaceRoles[$key])) {
-                        $this->toolRightsManager->setToolRights(
+                        $this->container->get('claroline.manager.tool_rights_manager')->setToolRights(
                             $workspaceOrderedTool,
                             $workspaceRoles[$key],
                             $right->getMask()

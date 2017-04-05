@@ -257,6 +257,7 @@ class CsvUserValidator extends ConstraintValidator
             }
 
             if ($modelName) {
+                //TODO MODEL
                 $model = $this->om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')->findOneByName($modelName);
 
                 if (!$model) {

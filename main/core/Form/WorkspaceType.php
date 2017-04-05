@@ -31,7 +31,6 @@ class WorkspaceType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $user = $this->user;
         if (php_sapi_name() === 'cli') {
             $this->forApi = true;
         }
@@ -67,29 +66,6 @@ class WorkspaceType extends AbstractType
                 ['required' => false, 'label' => 'description']
             );
 
-        if (!$this->forApi) {
-            $builder->add(
-                    'model',
-                    'entity',
-                    [
-                        'class' => 'ClarolineCoreBundle:Model\WorkspaceModel',
-                        'query_builder' => function (EntityRepository $er) use ($user) {
-                            return $er->createQueryBuilder('wm')
-                                ->leftJoin('wm.users', 'u')
-                                ->leftJoin('wm.groups', 'g')
-                                ->leftJoin('g.users', 'gu')
-                                ->where('u.id = :userId')
-                                ->orWhere('gu.id = :userId')
-                                ->setParameter('userId', $user->getId())
-                                ->orderBy('wm.name', 'ASC');
-                        },
-                        'property' => 'nameAndWorkspace',
-                        'required' => false,
-                        'label' => 'model',
-                        'mapped' => false,
-                    ]
-                );
-        }
         $builder
                 ->add('displayable', 'checkbox', ['required' => false, 'label' => 'displayable_in_workspace_list'])
                 ->add('selfRegistration', 'checkbox', ['required' => false, 'label' => 'public_registration'])

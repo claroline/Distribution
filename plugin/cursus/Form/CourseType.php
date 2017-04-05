@@ -13,7 +13,6 @@ namespace Claroline\CursusBundle\Form;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CursusBundle\Manager\CursusManager;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -37,7 +36,6 @@ class CourseType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $user = $this->user;
         $validatorsRoles = $this->cursusManager->getValidatorsRoles();
         $workspaces = $this->cursusManager->getWorkspacesListForCurrentUser();
 
@@ -129,24 +127,6 @@ class CourseType extends AbstractType
                 'label' => 'workspace',
                 'translation_domain' => 'platform',
                 'multiple' => false,
-            ]
-        );
-        $builder->add(
-            'workspaceModel',
-            'entity',
-            [
-                'class' => 'ClarolineCoreBundle:Model\WorkspaceModel',
-                'query_builder' => function (EntityRepository $er) use ($user) {
-
-                    return $er->createQueryBuilder('wm')
-                        ->join('wm.users', 'u')
-                        ->where('u.id = :userId')
-                        ->setParameter('userId', $user->getId())
-                        ->orderBy('wm.name', 'ASC');
-                },
-                'property' => 'name',
-                'required' => false,
-                'label' => 'workspace_model',
             ]
         );
         $builder->add(

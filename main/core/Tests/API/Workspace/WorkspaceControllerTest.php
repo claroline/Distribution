@@ -83,12 +83,24 @@ class WorkspaceControllerTest extends TransactionalTestCase
     {
         $admin = $this->createAdmin();
         $workspace = $this->persister->workspace('workspace', $admin);
+        $parent = $this->client->getContainer()->get('claroline.manager.resource_manager')->getWorkspaceRoot($workspace);
+        $this->persister->directory('dir1', $parent, $workspace, $admin);
+        $this->persister->directory('dir2', $parent, $workspace, $admin);
+        $this->persister->directory('dir3', $parent, $workspace, $admin);
+
         $this->logIn($admin);
 
         $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new");
         $data = $this->client->getResponse()->getContent();
+        //at least it didn't crash
         $data = json_decode($data, true);
         $this->assertEquals($data['name'], 'new');
+
+        //performs additional checks here
+        $newWs = $this->client->getContainer()->get('claroline.manager.workspace_manager')->getWorkspaceById($data['id']);
+        $newParent = $this->client->getContainer()->get('claroline.manager.resource_manager')->getWorkspaceRoot($newWs);
+
+        $this->assertEquals(count($newParent->getChildren()), 3);
     }
 
     private function createAdmin()

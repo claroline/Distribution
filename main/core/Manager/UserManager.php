@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Group;
-use Claroline\CoreBundle\Entity\Model\WorkspaceModel;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -492,6 +491,7 @@ class UserManager
             $isMailNotified = isset($user[13]) ? (bool) $user[13] : $enableEmailNotifaction;
 
             if ($modelName) {
+                //TODO MODEL
                 $model = $this->objectManager
                     ->getRepository('Claroline\CoreBundle\Entity\Model\WorkspaceModel')
                     ->findOneByName($modelName);
@@ -965,30 +965,6 @@ class UserManager
     public function getUserById($userId)
     {
         return $this->userRepo->find($userId);
-    }
-
-    /**
-     * Returns users who don't have access to the model $model.
-     *
-     * @param WorkspaceModel $model
-     */
-    public function getUsersNotSharingModel(WorkspaceModel $model, $page = 1, $max = 20)
-    {
-        $res = $this->userRepo->findUsersNotSharingModel($model, false);
-
-        return $this->pagerFactory->createPager($res, $page, $max);
-    }
-
-    /**
-     * Returns users who don't have access to the model $model.
-     *
-     * @param WorkspaceModel $model
-     */
-    public function getUsersNotSharingModelBySearch(WorkspaceModel $model, $search, $page = 1, $max = 20)
-    {
-        $res = $this->userRepo->findUsersNotSharingModelBySearch($model, $search, false);
-
-        return $this->pagerFactory->createPager($res, $page, $max);
     }
 
     /**
