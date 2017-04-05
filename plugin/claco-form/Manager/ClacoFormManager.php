@@ -197,16 +197,6 @@ class ClacoFormManager
         $this->om->flush();
     }
 
-    public function copyClacoForm(ClacoForm $clacoForm)
-    {
-        $newClacoForm = new ClacoForm();
-        $newClacoForm->setName($clacoForm->getName());
-        $newClacoForm->setTemplate($clacoForm->getTemplate());
-        $this->om->persist($newClacoForm);
-
-        return $newClacoForm;
-    }
-
     public function saveClacoFormConfig(ClacoForm $clacoForm, array $configData)
     {
         $clacoForm->setDetails($configData);
@@ -1550,6 +1540,122 @@ class ClacoFormManager
         }
 
         return $data;
+    }
+
+    public function copyClacoForm(ClacoForm $clacoForm, ResourceNode $newNode)
+    {
+        $categoryLinks = [];
+        $categories = $clacoForm->getCategories();
+        $keywords = $clacoForm->getKeywords();
+        $fields = $clacoForm->getFields();
+
+        $newClacoForm = $this->copyResource($clacoForm);
+
+        foreach ($categories as $category) {
+            $newCategory = $this->copyCategory($newClacoForm, $category);
+            $categoryLinks[$category->getId()] = $newCategory;
+        }
+        foreach ($keywords as $keyword) {
+            $this->copyKeyword($newClacoForm, $keyword);
+        }
+        foreach ($fields as $field) {
+            $this->copyField($newClacoForm, $newNode, $field, $categoryLinks);
+        }
+
+        return $newClacoForm;
+    }
+
+    private function copyResource(ClacoForm $clacoForm)
+    {
+        $newClacoForm = new ClacoForm();
+        $newClacoForm->setName($clacoForm->getName());
+        $newClacoForm->setTemplate($clacoForm->getTemplate());
+        $newClacoForm->setDetails($clacoForm->getDetails());
+        $this->om->persist($newClacoForm);
+
+        return $newClacoForm;
+    }
+
+    private function copyCategory(ClacoForm $newClacoForm, Category $category)
+    {
+        $newCategory = new Category();
+        $newCategory->setClacoForm($newClacoForm);
+        $newCategory->setName($category->getName());
+        $newCategory->setDetails($category->getDetails());
+        $managers = $category->getManagers();
+
+        foreach ($managers as $manager) {
+            $newCategory->addManager($manager);
+        }
+        $this->om->persist($newCategory);
+
+        return $newCategory;
+    }
+
+    private function copyKeyword(ClacoForm $newClacoForm, Keyword $keyword)
+    {
+        $newKeyword = new Keyword();
+        $newKeyword->setClacoForm($newClacoForm);
+        $newKeyword->setName($keyword->getName());
+        $this->om->persist($newKeyword);
+
+        return $newKeyword;
+    }
+
+    private function copyField(ClacoForm $newClacoForm, ResourceNode $newNode, Field $field, array $categoryLinks)
+    {
+        $fieldFacetChoiceLinks = [];
+        $newField = new Field();
+        $newField->setClacoForm($newClacoForm);
+        $newField->setName($field->getName());
+        $newField->setType($field->getType());
+        $newField->setRequired($field->isRequired());
+        $newField->setIsMetadata($field->getIsMetadata());
+        $newField->setLocked($field->isLocked());
+        $newField->setLockedEditionOnly($field->getLockedEditionOnly());
+
+        $fieldFacet = $field->getFieldFacet();
+        $newFieldFacet = new FieldFacet();
+        $newFieldFacet->setName($fieldFacet->getName());
+        $newFieldFacet->setType($fieldFacet->getType());
+        $newFieldFacet->setPosition($fieldFacet->getPosition());
+        $newFieldFacet->setIsRequired($fieldFacet->isRequired());
+        $newFieldFacet->setIsEditable($fieldFacet->isEditable());
+        $newFieldFacet->setResourceNode($newNode);
+        $this->om->persist($newFieldFacet);
+        $newField->setFieldFacet($newFieldFacet);
+        $this->om->persist($newField);
+
+        $fieldFacetChoices = $fieldFacet->getFieldFacetChoices()->toArray();
+
+        foreach ($fieldFacetChoices as $fieldFacetChoice) {
+            $newFieldFacetChoice = new FieldFacetChoice();
+            $newFieldFacetChoice->setFieldFacet($newFieldFacet);
+            $newFieldFacetChoice->setLabel($fieldFacetChoice->getLabel());
+            $newFieldFacetChoice->setPosition($fieldFacetChoice->getPosition());
+            $this->om->persist($newFieldFacetChoice);
+            $fieldFacetChoiceLinks[$fieldFacetChoice->getId()] = $newFieldFacetChoice;
+        }
+        $fieldChoiceCategories = $field->getFieldChoiceCategories();
+
+        foreach ($fieldChoiceCategories as $fieldChoiceCategory) {
+            $choice = $fieldChoiceCategory->getFieldFacetChoice();
+            $categoryId = $fieldChoiceCategory->getCategory()->getId();
+
+            if (isset($categoryLinks[$categoryId])) {
+                $newFieldChoiceCategory = new FieldChoiceCategory();
+                $newFieldChoiceCategory->setField($newField);
+                $newFieldChoiceCategory->setValue($fieldChoiceCategory->getValue());
+                $newFieldChoiceCategory->setCategory($categoryLinks[$categoryId]);
+
+                if (!empty($choice) && isset($fieldFacetChoiceLinks[$choice->getId()])) {
+                    $newFieldChoiceCategory->setFieldFacetChoice($fieldFacetChoiceLinks[$choice->getId()]);
+                }
+                $this->om->persist($newFieldChoiceCategory);
+            }
+        }
+
+        return $fieldFacetChoiceLinks;
     }
 
     /*****************************************
