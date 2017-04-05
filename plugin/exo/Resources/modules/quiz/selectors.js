@@ -14,6 +14,9 @@ const title = state => state.quiz.title
 const meta = state => state.quiz.meta
 const viewMode = state => state.viewMode
 const hasPapers = state => state.quiz.meta.paperCount > 0 || (state.papers.papers && state.papers.papers.length > 0)
+const hasUserPapers = state => state.quiz.meta.userPaperCount > 0
+const papersAdmin = state => state.quiz.meta.canViewPapers
+const registered = state => state.quiz.meta.registered
 const saveEnabled = state => !state.editor.saved && !state.editor.saving
 const editorOpened = state => state.editor.opened
 const noItems = state =>
@@ -28,6 +31,9 @@ export default {
   items,
   empty,
   hasPapers,
+  hasUserPapers,
+  papersAdmin,
+  registered,
   description,
   meta,
   parameters,

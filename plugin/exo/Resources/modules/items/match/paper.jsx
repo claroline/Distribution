@@ -30,7 +30,9 @@ export const MatchLinkPopover = props =>
       {'fa-times text-danger' : props.solution.score <= 0 }
     )}>
     </div>
-    <SolutionScore score={props.solution.score} />
+    {props.showScore &&
+      <SolutionScore score={props.solution.score} />
+    }
 
     {props.solution.feedback &&
       <div className="match-association-feedback" dangerouslySetInnerHTML={{__html: props.solution.feedback}}/>
@@ -39,7 +41,8 @@ export const MatchLinkPopover = props =>
 
 MatchLinkPopover.propTypes = {
   top: T.number.isRequired,
-  solution: T.object.isRequired
+  solution: T.object.isRequired,
+  showScore: T.bool.isRequired
 }
 
 const MatchItem = props =>
@@ -194,6 +197,7 @@ export class MatchPaper extends Component
                           <MatchLinkPopover
                             top={this.state.top}
                             solution={this.state.current}
+                            showScore={this.props.showScore}
                           />
                         }
                     </div>
@@ -267,7 +271,9 @@ export class MatchPaper extends Component
                             id={`answer-${solution.firstId}-${solution.secondId}-feedback`}
                             feedback={solution.feedback}
                           />
-                          <SolutionScore score={solution.score}/>
+                          {this.props.showScore &&
+                            <SolutionScore score={solution.score}/>
+                          }                          
                         </div>
                       )}
                     </div>
@@ -298,7 +304,8 @@ MatchPaper.propTypes = {
     title: T.string,
     description: T.string
   }).isRequired,
-  answer: T.array
+  answer: T.array,
+  showScore: T.bool.isRequired
 }
 
 MatchPaper.defaultProps = {

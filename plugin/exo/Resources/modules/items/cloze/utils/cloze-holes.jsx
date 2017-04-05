@@ -2,20 +2,9 @@ import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 
 import {tex} from '#/main/core/translation'
-import {utils} from './utils'
+import {select} from '../selectors'
 import {Feedback} from '../../components/feedback-btn.jsx'
 import {SolutionScore} from '../../components/score.jsx'
-
-function getAnswerSolution(solutions, answerText) {
-  if (!answerText || 0 === answerText.length) {
-    return undefined
-  }
-
-  return solutions.find(answer => {
-    return (answer.caseSensitive && answer.text === answerText) // case sensitive
-      || (!answer.caseSensitive && answer.text.toLowerCase() === answerText.toLowerCase()) // case insensitive
-  })
-}
 
 const AnswerWarningIcon = props =>
   props.valid ?
@@ -121,7 +110,7 @@ SolutionHole.propTypes = {
  * Displays user answer for an Hole in papers and feedback.
  */
 const UserAnswerHole = props => {
-  const solution = getAnswerSolution(props.solutions, props.answer)
+  const solution = select.getAnswerSolution(props.solutions, props.answer)
 
   return (
     <SolutionHole
@@ -160,7 +149,7 @@ class ExpectedAnswerHole extends Component {
     super(props)
 
     // Retrieve the expected answer with the most point to display it in the hole
-    const bestAnswer = utils.getBestAnswer(this.props.solutions)
+    const bestAnswer = select.getBestAnswer(this.props.solutions)
 
     this.state = {
       answer: bestAnswer ? bestAnswer.text : ''
@@ -168,7 +157,7 @@ class ExpectedAnswerHole extends Component {
   }
 
   render() {
-    const solution = getAnswerSolution(this.props.solutions, this.state.answer)
+    const solution = select.getAnswerSolution(this.props.solutions, this.state.answer)
 
     return (
       <SolutionHole
@@ -178,7 +167,7 @@ class ExpectedAnswerHole extends Component {
         })}
         answer={this.state.answer}
         choices={this.props.choices}
-        showScore={true}
+        showScore={this.props.showScore}
         solution={solution}
         disabled={!this.props.choices || 0 === this.props.choices.length}
         onChange={(answer) => this.setState({answer: answer})}
@@ -190,6 +179,7 @@ class ExpectedAnswerHole extends Component {
 ExpectedAnswerHole.propTypes = {
   id: T.string.isRequired,
   choices: T.arrayOf(T.string),
+  showScore: T.bool.isRequired,
   solutions: T.arrayOf(T.shape({
     text: T.string.isRequired,
     score: T.number.isRequired,
