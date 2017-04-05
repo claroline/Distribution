@@ -1,9 +1,9 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
-import selectors from './../../selectors'
-import {selectors as paperSelectors} from './../selectors'
-import {tex} from './../../../utils/translate'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {selectors as paperSelect} from './../selectors'
+import {tex} from '#/main/core/translation'
 import {ScoreBox} from './../../../items/components/score-box.jsx'
 
 export const PaperRow = props =>
@@ -30,7 +30,7 @@ export const PaperRow = props =>
     </td>
     <td className="text-right table-actions">
       <a href={`#papers/${props.id}`} className="btn btn-link">
-        <span className="fa fa-fw fa-eye"></span>
+        <span className="fa fa-fw fa-eye" />
       </a>
     </td>
   </tr>
@@ -67,7 +67,7 @@ let Papers = props =>
       </thead>
       <tbody>
         {props.papers.map((paper, idx) =>
-          <PaperRow key={idx} admin={props.admin} {...paper} scoreMax={paperSelectors.paperScoreMax(paper)} />
+          <PaperRow key={idx} admin={props.admin} {...paper} scoreMax={paperSelect.paperScoreMax(paper)} />
         )}
       </tbody>
     </table>
@@ -80,8 +80,8 @@ Papers.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    admin: selectors.editable(state),
-    papers: paperSelectors.papers(state)
+    admin: resourceSelect.editable(state),
+    papers: paperSelect.papers(state)
   }
 }
 

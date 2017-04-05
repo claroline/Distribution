@@ -1,6 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
-import {tex} from '../../utils/translate'
+import {tex} from '#/main/core/translation'
 import Tab from 'react-bootstrap/lib/Tab'
 import Nav from 'react-bootstrap/lib/Nav'
 import Popover from 'react-bootstrap/lib/Popover'

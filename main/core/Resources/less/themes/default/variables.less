@@ -16,6 +16,17 @@
 
 
 // -
+// Z-indexes
+// ---
+
+@zindex-sidebar:    @zindex-navbar-fixed - 1;
+// z-index for full screen pages.
+// we want to pass over navbars but under tooltips, popovers and modals
+// modify with caution !
+@zindex-fullscreen: 1035;
+
+
+// -
 // Application
 // ---
 @app-max-width:           1200px; // max width for the app content

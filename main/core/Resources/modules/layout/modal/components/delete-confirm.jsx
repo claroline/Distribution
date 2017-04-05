@@ -1,10 +1,13 @@
 import React from 'react'
-import {t} from './../../utils/translate'
+
+import {t} from '#/main/core/translation'
 import {ConfirmModal} from './confirm.jsx'
 
-export const DeleteConfirmModal = props =>
+const DeleteConfirmModal = props =>
   <ConfirmModal
     confirmButtonText={t('delete')}
     isDangerous={true}
     {...props}
   />
+
+export {DeleteConfirmModal}

@@ -2,3 +2,22 @@
     border-radius: @modal-content-border-radius;
     box-shadow: @modal-content-box-shadow;
 }
+
+// better alignment in header
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .modal-title {
+        order: 1;
+        flex: 1;
+    }
+
+    .close {
+        order: 2;
+        // reset bootstrap
+        margin-top: 0;
+        float: none;
+    }
+}

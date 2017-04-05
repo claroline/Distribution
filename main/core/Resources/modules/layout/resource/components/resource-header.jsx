@@ -18,7 +18,19 @@ ResourceHeader.propTypes = {
   }).isRequired,
   subtitle: T.string,
   editEnabled: T.bool,
-  actions: T.array
+
+
+  edit: T.func,
+  publish: T.func,
+  unpublish: T.func,
+  manageRights: T.func,
+
+  share: T.func,
+  like: T.func,
+  favorite: T.func,
+
+  export: T.func,
+  delete: T.func
 }
 
 ResourceHeader.defaultProps = {

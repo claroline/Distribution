@@ -1,7 +1,7 @@
 import React, { PropTypes as T } from 'react'
 import classes from 'classnames'
 
-import {t} from '#/main/core/layout/translate'
+import {t} from '#/main/core/translation'
 
 export const ResultsPerPage = props =>
   <div className="results-per-page">

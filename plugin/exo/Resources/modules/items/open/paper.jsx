@@ -1,6 +1,6 @@
 import React, {PropTypes as T} from 'react'
 
-import {tex} from '../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {PaperTabs} from '../components/paper-tabs.jsx'
 import {Feedback} from '../components/feedback-btn.jsx'
 

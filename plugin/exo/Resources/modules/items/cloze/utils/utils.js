@@ -1,4 +1,4 @@
-import {tex} from './../../../utils/translate'
+import {tex} from '#/main/core/translation'
 import $ from 'jquery'
 
 export const utils = {}

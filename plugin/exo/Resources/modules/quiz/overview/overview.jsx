@@ -1,15 +1,13 @@
 import React, {Component, PropTypes as T} from 'react'
-import {connect} from 'react-redux'
 import classes from 'classnames'
-import {tex} from './../../utils/translate'
-import select from './../selectors'
+
+import {tex} from '#/main/core/translation'
 import {
   correctionModes,
   markModes,
   quizTypes,
   SHOW_CORRECTION_AT_DATE
 } from './../enums'
-import {actions as playerActions} from './../player/actions'
 
 const Parameter = props =>
   <tr>
@@ -104,34 +102,20 @@ const Layout = props =>
   <div className="quiz-overview">
     {props.empty &&
       <div className="alert alert-info text-center">
-        <span className="fa fa-fw fa-warning"></span>
-        <span>
-          {tex(props.editable ?
-            'exo_empty_user_can_edit' :
-            'exo_empty_user_read_only'
-          )}
-        </span>
+        <span className="fa fa-fw fa-warning" />
+        {tex('exo_empty_user_read_only')}
       </div>
     }
 
     {props.description &&
-      <div className="exercise-description panel panel-default">
-        <div
-          className="panel-body"
-          dangerouslySetInnerHTML={{ __html: props.description }}
-        ></div>
+      <div className="quiz-description panel panel-default">
+        <div className="panel-body" dangerouslySetInnerHTML={{ __html: props.description }} />
       </div>
     }
     {props.parameters.showMetadata &&
       <Parameters {...props}/>
     }
 
-    {props.empty && props.editable &&
-      <a href="#/editor" role="button" className="btn btn-block btn-primary btn-lg">
-        <span className="fa fa-fw fa-pencil"></span>
-        {tex('edit')}
-      </a>
-    }
     {!props.empty &&
       (props.parameters.maxAttempts === 0
         || props.meta.userPaperCount < props.parameters.maxAttempts) &&
@@ -177,7 +161,6 @@ class Overview extends Component {
         description={this.props.quiz.description}
         parameters={this.props.quiz.parameters}
         meta={this.props.quiz.meta}
-        play={() => this.props.play(this.props.quiz, this.props.steps)}
         additionalInfo={this.state.additionalInfo}
         onAdditionalToggle={() => this.setState({
           additionalInfo: !this.state.additionalInfo
@@ -212,27 +195,6 @@ Overview.propTypes = {
     }).isRequired
   }).isRequired,
   steps: T.object.isRequired,
-  play: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
-    empty: select.empty(state),
-    editable: select.editable(state),
-    quiz: select.quiz(state),
-    steps: select.steps(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    play() {
-      // TODO : optimisation - we may want to get a local paper if exists to avoid calling the server
-      dispatch(playerActions.play())
-    }
-  }
-}
-
-const ConnectedOverview = connect(mapStateToProps, mapDispatchToProps)(Overview)
-
-export {ConnectedOverview as Overview}
+export {Overview}

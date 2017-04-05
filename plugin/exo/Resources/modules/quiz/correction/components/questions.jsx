@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import {selectors as correctionSelectors} from './../selectors'
-import {tex} from './../../../utils/translate'
+import {tex} from '#/main/core/translation'
 
 export const QuestionRow = props =>
   <tr>

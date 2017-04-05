@@ -2,10 +2,11 @@ import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import Alert from 'react-bootstrap/lib/Alert'
 import Modal from 'react-bootstrap/lib/Modal'
-import {t} from './../../utils/translate'
+
+import {t} from '#/main/core/translation'
 import {BaseModal} from './base.jsx'
 
-export const MessageModal = props =>
+const MessageModal = props =>
   <BaseModal {...props}>
     <Modal.Body>
       <Alert bsStyle={props.bsStyle}>
@@ -38,3 +39,5 @@ MessageModal.propTypes = {
 MessageModal.defaultProps = {
   bsStyle: 'info'
 }
+
+export {MessageModal}

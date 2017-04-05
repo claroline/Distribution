@@ -18,12 +18,12 @@ const PublishAction = props =>
       'fa-eye-slash': !props.published,
       'fa-eye': props.published
     })}
-    action={props.togglePublish}
+    action={props.togglePublication}
   />
 
 PublishAction.propTypes = {
   published: T.bool.isRequired,
-  togglePublish: T.func.isRequired
+  togglePublication: T.func.isRequired
 }
 
 const FavoriteAction = props =>
@@ -87,101 +87,150 @@ const LikeAction = props =>
     id="resource-like"
     title="Like this resource"
     icon="fa fa-thumbs-o-up"
-    action={() => true}
+    action={props.handleLike}
   >
-    <span className="label label-primary">{props.likes}</span>
+    <span className="label label-primary">
+      {props.likes}
+    </span>
   </PageAction>
 
 LikeAction.propTypes = {
-  likes: T.number.isRequired
+  likes: T.number.isRequired,
+  handleLike: T.func.isRequired
 }
 
+/**
+ * @param props
+ * @constructor
+ */
 const ResourceActions = props =>
   <PageActions className="resource-actions">
-    <PageGroupActions>
-      <PageAction id="resource-edit" title="Edit this resource" icon="fa fa-pencil" primary={true} action="#editor" />
-      <PublishAction published={true} togglePublish={() => true} />
-      <ManageRightsAction rights="workspace" openRightsManagement={() => true} />
-    </PageGroupActions>
+    {props.resourceNode.meta.editable &&
+      <PageGroupActions>
+        {!props.editMode &&
+          <PageAction id="resource-edit" title="Edit this resource" icon="fa fa-pencil" primary={true} action={props.edit} />
+        }
+
+        {props.editMode &&
+          <PageAction
+            id="resource-save"
+            title="Save your modifications"
+            icon="fa fa-floppy-o"
+            primary={true}
+            disabled={props.save.disabled}
+            action={props.save.action}
+          />
+        }
+
+        <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
+        <ManageRightsAction rights="workspace" openRightsManagement={() => true} />
+      </PageGroupActions>
+    }
 
     <PageGroupActions>
-      <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
-      <LikeAction likes={100} />
       <FavoriteAction favorited={false} toggleFavorite={() => true} />
+      <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
+      <LikeAction likes={100} handleLike={() => true} />
     </PageGroupActions>
 
     <PageGroupActions>
-      <FullScreenAction fullScreen={false} toggleFullScreen={() => true} />
+      <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
       <MoreAction id="resource-more">
         <MenuItem header>Quiz</MenuItem>
-        <MenuItem eventKey="1">
-          <span className="fa fa-fw fa-play" />
-          Test quiz
-        </MenuItem>
-        <MenuItem eventKey="1">
-          <span className="fa fa-fw fa-list" />
-          Show results
-        </MenuItem>
-        <MenuItem eventKey="1">
-          <span className="fa fa-fw fa-pie-chart" />
-          Show statistics
-        </MenuItem>
-        <MenuItem eventKey="1">
-          <span className="fa fa-fw fa-check-square-o" />
-          Manual correction
-        </MenuItem>
+        {props.customActions.map((customAction, index) =>
+          React.createElement(MenuItem, {
+            key: `resource-more-action-${index}`,
+            eventKey: `resource-action-${index}`,
+            children: [
+              <span className={customAction.icon} />,
+              customAction.label
+            ],
+            [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
+          })
+        )}
 
         <MenuItem header>Management</MenuItem>
-        <MenuItem eventKey="1">
+        <MenuItem eventKey="5">
           <span className="fa fa-fw fa-pencil" />
           Edit properties
         </MenuItem>
-        <MenuItem eventKey="1">
+        <MenuItem eventKey="6">
           <span className="fa fa-fw fa-desktop" />
           Edit display options
         </MenuItem>
-        <MenuItem eventKey="1">
+        <MenuItem eventKey="7">
           <span className="fa fa-fw fa-tags" />
           Manage tags
         </MenuItem>
+        <MenuItem eventKey="5">
+          <span className="fa fa-fw fa-line-chart" />
+          Show tracking
+        </MenuItem>
 
-        <MenuItem eventKey="1">
+        <MenuItem eventKey="8">
           <span className="fa fa-fw fa-user-secret" />
           Show as...
         </MenuItem>
 
         <MenuItem header>Other</MenuItem>
-        <MenuItem eventKey="1">
+        <MenuItem eventKey="9">
           <span className="fa fa-fw fa-comment" />
           Add a comment
         </MenuItem>
 
-        <MenuItem eventKey="1">
+        <MenuItem eventKey="10">
           <span className="fa fa-fw fa-sticky-note" />
           Add a note
         </MenuItem>
 
-        <MenuItem divider />
-        <MenuItem eventKey="4">
-          <span className="fa fa-fw fa-upload" />
-          Export resource
-        </MenuItem>
+        {props.resourceNode.meta.exportable &&
+          <MenuItem divider/>
+        }
+        {props.resourceNode.meta.exportable &&
+          <MenuItem eventKey="resource-export">
+            <span className="fa fa-fw fa-upload" />
+            Export resource
+          </MenuItem>
+        }
 
-        <MenuItem divider />
-        <MenuItem eventKey="4" className="dropdown-link-danger">
-          <span className="fa fa-fw fa-trash" />
-          Delete resource
-        </MenuItem>
+        {props.resourceNode.meta.deletable &&
+          <MenuItem divider/>
+        }
+        {props.resourceNode.meta.deletable &&
+          <MenuItem eventKey="resource-delete" className="dropdown-link-danger">
+            <span className="fa fa-fw fa-trash" />
+            Delete resource
+          </MenuItem>
+        }
       </MoreAction>
     </PageGroupActions>
   </PageActions>
 
 ResourceActions.propTypes = {
-  editEnabled: T.bool
-}
+  resourceNode: T.shape({
+    meta: T.shape({
+      published: T.bool.isRequired,
+      editable: T.bool.isRequired,
+      deletable: T.bool.isRequired,
+      exportable: T.bool.isRequired,
+    }).isRequired,
+  }).isRequired,
+  fullscreen: T.bool.isRequired,
+  toggleFullscreen: T.func.isRequired,
+  togglePublication: T.func.isRequired,
 
-ResourceActions.defaultTypes = {
-  editEnabled: false
+  editMode: T.bool,
+  edit: T.oneOfType([T.func, T.string]).isRequired,
+  save: T.shape({
+    disabled: T.bool.isRequired,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }).isRequired,
+  customActions: T.arrayOf(T.shape({
+    icon: T.string.isRequired,
+    label: T.string.isRequired,
+    disabled: T.bool,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  })).isRequired
 }
 
 export {

@@ -1,7 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import Popover from 'react-bootstrap/lib/Popover'
-import {t, tex} from './../../../utils/translate'
+import {t, tex} from '#/main/core/translation'
 import {ColorPicker} from './../../../components/form/color-picker.jsx'
 import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
 import {Textarea} from './../../../components/form/textarea.jsx'

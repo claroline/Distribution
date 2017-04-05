@@ -1,4 +1,4 @@
-import {generateUrl} from './../../utils/routing'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 export const fetchCorrection = quizId => {
   return fetch(generateUrl('exercise_correction_questions', {exerciseId: quizId}), {

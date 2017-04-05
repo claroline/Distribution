@@ -3,7 +3,7 @@ import isEmpty from 'lodash/isEmpty'
 
 import {Words as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
-import {makeActionCreator} from './../../utils/utils'
+import {makeActionCreator} from '#/main/core/utilities/redux'
 import {keywords as keywordUtils} from './../../utils/keywords'
 
 const UPDATE_SOLUTION = 'UPDATE_SOLUTION'

@@ -1,6 +1,6 @@
 import React from 'react'
 import invariant from 'invariant'
-import {fadeModal, hideModal} from './actions'
+
 import {MessageModal} from './components/message.jsx'
 import {ConfirmModal} from './components/confirm.jsx'
 import {DeleteConfirmModal} from './components/delete-confirm.jsx'
@@ -20,12 +20,18 @@ export function registerModalType(type, component) {
   modals[type] = component
 }
 
-export function makeModal(type, props, fading, dispatch) {
+export function registerModalTypes(types) {
+  types.map(type => registerModalType(type[0], type[1]))
+}
+
+export function makeModal(type, props, fading, fadeCallback, hideCallback) {
   invariant(modals[type], `Unknown modal type "${type}"`)
+
   const baseProps = {
     show: !fading,
-    fadeModal: () => dispatch(fadeModal()),
-    hideModal:() => dispatch(hideModal())
+    fadeModal: () => fadeCallback(),
+    hideModal:() => hideCallback()
   }
+
   return React.createElement(modals[type], Object.assign(baseProps, props))
 }

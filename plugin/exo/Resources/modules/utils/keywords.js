@@ -1,6 +1,5 @@
 import {notBlank, number, chain} from './validate'
-import {tex, tcex} from './translate'
-
+import {tex, transChoice} from '#/main/core/translation'
 
 export const keywords = {}
 
@@ -44,7 +43,7 @@ keywords.validate = (collection, useScore, minKeywords) => {
 
   // Checks the number of keywords
   if (collection.length < minKeywords) {
-    errors.count = tcex('words_count_answers_error', minKeywords, {count: minKeywords})
+    errors.count = transChoice('words_count_answers_error', minKeywords, {count: minKeywords}, 'ujm_exo')
   }
 
   // Checks there is no duplicate keywords

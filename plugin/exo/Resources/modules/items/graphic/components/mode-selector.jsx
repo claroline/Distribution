@@ -1,6 +1,6 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
-import {tex} from './../../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {TooltipElement} from './../../../components/form/tooltip-element.jsx'
 import {MODE_RECT, MODE_CIRCLE, MODE_SELECT} from './../enums'
 

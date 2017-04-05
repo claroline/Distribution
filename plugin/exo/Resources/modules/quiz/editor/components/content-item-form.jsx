@@ -1,5 +1,5 @@
 import React, {PropTypes as T} from 'react'
-import {t} from './../../../utils/translate'
+import {t} from '#/main/core/translation'
 import {FormGroup} from './../../../components/form/form-group.jsx'
 import {Textarea} from './../../../components/form/textarea.jsx'
 

@@ -53,6 +53,10 @@
         margin-right: 15px;
         opacity: 0.25;
     }
+
+    > div {
+        margin-top: 5px;
+    }
 }
 
 .item-content-separator {
@@ -88,7 +92,7 @@
     margin-bottom: @answer-item-margin-bottom;
     box-shadow: @answer-item-box-shadow;
 
-    // used to removed default tag styles (e.g. in choices, class is added on a <label> which is bold)
+    // used to remove default tag styles (e.g. in choices, class is added on a <label> which is bold)
     // this permits to be consistent between item types
     font-weight: normal;
 }

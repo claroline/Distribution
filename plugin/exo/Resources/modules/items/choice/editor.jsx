@@ -1,7 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
-import {t, tex} from './../../utils/translate'
+import {t, tex} from '#/main/core/translation'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'

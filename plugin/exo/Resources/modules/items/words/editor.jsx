@@ -1,6 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {KeywordItems} from './../components/keywords.jsx'
 import {actions} from './editor.js'

@@ -5,18 +5,19 @@ import classes from 'classnames'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 
-import {tex, transChoice} from './../../utils/translate'
-import {makeModal} from './../../modal'
-import {showModal, fadeModal} from './../../modal/actions'
+import {tex, transChoice} from '#/main/core/translation'
+import {makeModal} from '#/main/core/layout/modal'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {select} from './../selectors'
 import {actions as paginationActions} from './../actions/pagination'
 import {actions as searchActions} from './../actions/search'
 import {select as paginationSelect} from './../selectors/pagination'
 
-import PageHeader from './../../components/layout/page-header.jsx'
-import PageActions from './../../components/layout/page-actions.jsx'
+import { Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
+import { PageActions, PageAction } from '#/main/core/layout/page/components/page-actions.jsx'
+import { DataList } from '#/main/core/layout/list/components/data-list.jsx'
+
 import VisibleQuestions from './../containers/visible-questions.jsx'
-import {Pagination} from './pagination/pagination.jsx'
 
 import {MODAL_SEARCH} from './modal/search.jsx'
 // TODO : do not load from editor
@@ -41,11 +42,14 @@ const Bank = (props) => {
   ]
 
   return (
-    <main className="page">
+    <Page>
       <PageHeader
-        title={<span>{tex('questions_bank')} <small>{props.totalResults}&nbsp;questions</small></span>}
+        title={tex('questions_bank')}
       >
-        <PageActions actions={actions} />
+        <PageActions>
+          <PageAction id="question-add" title="Add a question" icon="fa fa-plus" primary={true} />
+          <PageAction id="question-import" title="Import a question" icon="fa fa-download" />
+        </PageActions>
       </PageHeader>
 
       {props.modal.type &&
@@ -56,28 +60,48 @@ const Bank = (props) => {
         )
       }
 
-     <div className="page-content">
-       {0 === props.totalResults &&
-        <div className="empty-list">No results found.</div>
-       }
-
-       {0 < props.totalResults &&
-        <VisibleQuestions />
-       }
-
-       {0 < props.totalResults &&
-         <Pagination
-           current={props.pagination.current}
-           pageSize={props.pagination.pageSize}
-           pages={props.pages}
-           handlePageChange={props.handlePageChange}
-           handlePagePrevious={props.handlePagePrevious}
-           handlePageNext={props.handlePageNext}
-           handlePageSizeUpdate={props.handlePageSizeUpdate}
-         />
-       }
-     </div>
-    </main>
+     <PageContent>
+       <DataList
+         totalResults={props.totalResults}
+         filters={{
+           available: props.searchFilters,
+           active: [
+             {
+               property: 'question',
+               value: 'This is a search'
+             },
+             {
+               property: 'type',
+               value: 'Association'
+             },
+             {
+               property: 'category',
+               value: 'Guitar'
+             },
+             {
+               property: 'author',
+               value: 'Axel Penin'
+             }
+           ]
+         }}
+         pagination={{
+           current: props.pagination.current,
+           pageSize: props.pagination.pageSize,
+           pages: props.pages,
+           handlePageChange: props.handlePageChange,
+           handlePagePrevious: props.handlePagePrevious,
+           handlePageNext: props.handlePageNext,
+           handlePageSizeUpdate: props.handlePageSizeUpdate
+         }}
+         columns={{
+           available: ['type', 'question', 'category', 'authors'],
+           active: ['type', 'question']
+         }}
+       >
+         <VisibleQuestions />
+       </DataList>
+     </PageContent>
+    </Page>
   )
 }
 
@@ -119,7 +143,7 @@ function mapDispatchToProps(dispatch) {
   return {
     createModal: (type, props, fading) => makeModal(type, props, fading, dispatch),
     openSearchModal(searchFilters) {
-      dispatch(showModal(MODAL_SEARCH, {
+      dispatch(modalActions.showModal(MODAL_SEARCH, {
         title: tex('search'),
         filters: searchFilters,
         handleSearch: (searchFilters) => dispatch(searchActions.search(searchFilters)),
@@ -127,9 +151,9 @@ function mapDispatchToProps(dispatch) {
       }))
     },
     openAddModal() {
-      dispatch(showModal(MODAL_ADD_ITEM, {
+      dispatch(modalActions.showModal(MODAL_ADD_ITEM, {
         title: tex('add_question_from_new'),
-        handleSelect: () => dispatch(fadeModal())
+        handleSelect: () => dispatch(modalActions.fadeModal())
       }))
     },
     handlePagePrevious() {

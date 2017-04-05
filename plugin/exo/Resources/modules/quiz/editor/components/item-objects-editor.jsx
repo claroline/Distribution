@@ -1,9 +1,9 @@
 import React, {Component, PropTypes as T} from 'react'
-import {tex} from './../../../utils/translate'
-import {MODAL_DELETE_CONFIRM} from './../../../modal'
+import {connect} from 'react-redux'
+import {tex} from '#/main/core/translation'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_ADD_CONTENT} from './../components/add-content-modal.jsx'
 import {actions, OBJECT_CHANGE, OBJECT_MOVE, OBJECT_REMOVE} from './../actions.js'
-import {connect} from 'react-redux'
 import {getContentDefinition} from './../../../contents/content-types'
 import {ContentThumbnail} from './../../../contents/components/content-thumbnail.jsx'
 

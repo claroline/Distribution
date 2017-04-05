@@ -1,8 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
 import zipObject from 'lodash/zipObject'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
-import {makeActionCreator, makeId} from './../../utils/utils'
-import {tex} from './../../utils/translate'
+import {makeActionCreator, makeId} from '#/main/core/utilities/redux'
+import {tex} from '#/main/core/translation'
 import {notBlank} from './../../utils/validate'
 import {Boolean as component} from './editor.jsx'
 

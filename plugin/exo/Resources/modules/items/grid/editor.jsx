@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import Overlay from 'react-bootstrap/lib/Overlay'
 
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Radios} from './../../components/form/radios.jsx'
 import {SUM_CELL, SUM_COL, SUM_ROW, actions} from './editor'

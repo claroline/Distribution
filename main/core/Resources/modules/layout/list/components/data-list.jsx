@@ -1,6 +1,5 @@
 import React, {PropTypes as T} from 'react'
 
-import {TooltipElement} from '#/main/core/layout/components/tooltips.jsx'
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
 import {Pagination} from '#/main/core/layout/list/components/pagination.jsx'
 

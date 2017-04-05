@@ -1,7 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'

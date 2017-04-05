@@ -1,6 +1,6 @@
 import React, {PropTypes as T} from 'react'
 
-import {tex} from '../../utils/translate'
+import {tex} from '#/main/core/translation'
 
 export const OpenFeedback = props =>
   <div className="open-feedback">

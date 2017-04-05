@@ -1,6 +1,6 @@
 import {ITEM_CREATE} from './../../quiz/editor/actions'
 import {makeId} from './../../utils/utils'
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {resizeArea} from './resize'
 import {
   MODE_RECT,

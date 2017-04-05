@@ -2,9 +2,10 @@ import React, { PropTypes as T } from 'react'
 import classes from 'classnames'
 
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
+
+// todo : use Tooltip element
 
 /**
  * Base component for each page actions.
@@ -36,7 +37,8 @@ const PageAction = props =>
       >
         <span className={classes('page-action-icon', props.icon)} aria-hidden={true} />
         {props.children}
-      </button> :
+      </button>
+      :
       <a
         role="link"
         className={classes(
@@ -81,30 +83,29 @@ PageAction.defaultProps = {
 const FullScreenAction = props =>
   <PageAction
     id="page-fullscreen"
-    title={props.fullScreen ? 'Close fullscreen' : 'Show in fullscreen'}
+    title={props.fullscreen ? 'Close fullscreen' : 'Show in fullscreen'}
     icon={classes('fa', {
-      'fa-expand': !props.fullScreen,
-      'fa-collapse': props.fullScreen
+      'fa-expand': !props.fullscreen,
+      'fa-compress': props.fullscreen
     })}
-    action={props.toggleFullScreen}
+    action={props.toggleFullscreen}
   />
 
 FullScreenAction.propTypes = {
-  fullScreen: T.bool.isRequired,
-  toggleFullScreen: T.func.isRequired
+  fullscreen: T.bool.isRequired,
+  toggleFullscreen: T.func.isRequired
 }
 
-//  title="Show more available actions"
 const MoreAction = props =>
   <OverlayTrigger
-    placement='bottom'
+    placement="bottom"
     overlay={
       <Tooltip id="page-more-title">Show more actions</Tooltip>
     }
   >
     <DropdownButton
       id="page-more"
-      title={<span className="page-action-icon fa fa-ellipsis-v"></span>}
+      title={<span className="page-action-icon fa fa-ellipsis-v" />}
       bsStyle=""
       className="btn page-action-btn"
       noCaret={true}
@@ -125,11 +126,12 @@ MoreAction.propTypes = {
  * @constructor
  */
 const PageGroupActions = props =>
-  <div className="page-actions-group">
+  <div className={classes('page-actions-group', props.className)}>
     {props.children}
   </div>
 
 PageGroupActions.propTypes = {
+  className: T.string,
   children: T.node.isRequired
 }
 

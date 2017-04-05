@@ -1,9 +1,11 @@
 import invariant from 'invariant'
-import {makeActionCreator} from './../../utils/utils'
+
+import {makeActionCreator} from '#/main/core/utilities/redux'
+import {navigate} from './../router'
 import {actions as baseActions} from './../actions'
 import {VIEW_PAPERS, VIEW_PAPER} from './../enums'
-import {fetchPapers} from './api'
 import {selectors} from './selectors'
+import {REQUEST_SEND} from './../../api/actions'
 
 export const PAPER_ADD = 'PAPER_ADD'
 export const PAPERS_LIST = 'PAPERS_LIST'
@@ -19,13 +21,23 @@ const setPaperFetched = makeActionCreator(PAPER_FETCHED)
 actions.setCurrentPaper = makeActionCreator(PAPER_CURRENT, 'id')
 actions.addPaper = makeActionCreator(PAPER_ADD, 'paper')
 
+actions.fetchPapers = quizId => ({
+  [REQUEST_SEND]: {
+    route: ['exercise_papers', {exerciseId: quizId}],
+    request: {method: 'GET'},
+    success: (data, dispatch) => {
+      dispatch(initPapers(data))
+      dispatch(setPaperFetched())
+    },
+    failure: () => navigate('overview')
+  }
+})
+
 actions.displayPaper = id => {
   invariant(id, 'Paper id is mandatory')
   return (dispatch, getState) => {
     if (!selectors.papersFetched(getState())) {
-      fetchPapers(selectors.quizId(getState())).then(papers => {
-        dispatch(initPapers(papers))
-        dispatch(setPaperFetched())
+      dispatch(actions.fetchPapers(selectors.quizId(getState()))).then(() => {
         dispatch(actions.setCurrentPaper(id))
         dispatch(baseActions.updateViewMode(VIEW_PAPER))
       })
@@ -39,9 +51,7 @@ actions.displayPaper = id => {
 actions.listPapers = () => {
   return (dispatch, getState) => {
     if (!selectors.papersFetched(getState())) {
-      fetchPapers(selectors.quizId(getState())).then(papers => {
-        dispatch(initPapers(papers))
-        dispatch(setPaperFetched())
+      dispatch(actions.fetchPapers(selectors.quizId(getState()))).then(() => {
         dispatch(baseActions.updateViewMode(VIEW_PAPERS))
       })
     } else {

@@ -2,7 +2,7 @@ import freeze from 'deep-freeze'
 import {assertEqual} from './../../utils/test'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
 import select from './selectors'
-import {tex, t} from './../../utils/translate'
+import {tex, t} from '#/main/core/translation'
 
 describe('Thumbnails selector', () => {
   it('returns the quiz and step thumbs with active and errors set', () => {

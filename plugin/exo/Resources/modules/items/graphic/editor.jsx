@@ -1,7 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import {asset} from '#/main/core/asset'
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {makeDroppable} from './../../utils/dragAndDrop'
 import {FileDropZone} from './../../components/form/file-drop-zone.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'

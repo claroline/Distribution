@@ -1,6 +1,6 @@
 import React, {PropTypes as T} from 'react'
 import get from 'lodash/get'
-import {trans} from './../../utils/translate'
+import {trans} from '#/main/core/translation'
 import {FormGroup} from './../../components/form/form-group.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {actions} from './editor'

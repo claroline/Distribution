@@ -1,10 +1,11 @@
 import React, {PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
-import {t} from './../../utils/translate'
+
+import {t} from '#/main/core/translation'
 import {BaseModal} from './base.jsx'
 
-export const ConfirmModal = props =>
+const ConfirmModal = props =>
   <BaseModal {...props}>
     <Modal.Body>
       {props.question}
@@ -35,3 +36,5 @@ ConfirmModal.propTypes = {
   handleConfirm: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
+
+export {ConfirmModal}

@@ -1,5 +1,5 @@
 import invariant from 'invariant'
-import {makeActionCreator} from './../../utils/utils'
+import {makeActionCreator} from '#/main/core/utilities/redux'
 import {actions as baseActions} from './../actions'
 import {VIEW_CORRECTION_QUESTIONS, VIEW_CORRECTION_ANSWERS} from './../enums'
 import {fetchCorrection} from './api'

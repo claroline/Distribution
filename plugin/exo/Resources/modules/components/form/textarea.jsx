@@ -1,6 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 
 // see https://github.com/lovasoa/react-contenteditable
 export class ContentEditable extends Component {

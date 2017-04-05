@@ -27,6 +27,8 @@ use FOS\RestBundle\Controller\Annotations\NamePrefix;
 
 /**
  * @NamePrefix("api_")
+ *
+ * @deprecated will be replace y `ResourceNodeController`
  */
 class ResourceController extends FOSRestController
 {

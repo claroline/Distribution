@@ -10,7 +10,7 @@ import {ListSearch} from '#/main/core/layout/list/components/search.jsx'
 const ColumnsButton = props =>
   <TooltipElement
     id="list-columns"
-    position="bottom"
+    position="top"
     title="Click to display or hide columns"
   >
     <DropdownButton
@@ -47,7 +47,7 @@ ColumnsButton.propTypes = {
 const ListFormatButton = props =>
   <TooltipElement
     id="list-format"
-    position="bottom"
+    position="top"
     title="List view. (click to change list format)"
   >
     <DropdownButton

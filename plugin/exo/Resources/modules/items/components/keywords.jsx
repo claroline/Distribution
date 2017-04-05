@@ -4,7 +4,7 @@ import isEmpty from 'lodash/isEmpty'
 import classes from 'classnames'
 import Popover from 'react-bootstrap/lib/Popover'
 
-import {t, tex} from './../../utils/translate'
+import {t, tex} from '#/main/core/translation'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
