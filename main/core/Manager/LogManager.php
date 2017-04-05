@@ -333,7 +333,8 @@ class LogManager
             $workspaceIds,
             $maxResult,
             $resourceType,
-            $resourceNodeIds
+            $resourceNodeIds,
+            $data['group']
         );
 
         $adapter = new DoctrineORMAdapter($query);
@@ -354,7 +355,8 @@ class LogManager
             $workspaceIds,
             false,
             $resourceType,
-            $resourceNodeIds
+            $resourceNodeIds,
+            $data['group']
         );
 
         //List item delegation
@@ -671,6 +673,8 @@ class LogManager
             }
             $range = isset($formData['range']) ? $formData['range'] : null;
             $userSearch = isset($formData['user']) ? $formData['user'] : null;
+            $groupSearch = isset($formData['group']) ? $formData['group'] : null;
+
             if (!empty($data['orderBy'])) {
                 $orderBy = $data['orderBy'];
                 $order = $data['order'];
@@ -689,6 +693,7 @@ class LogManager
         $data['action'] = $action;
         $data['range'] = $range;
         $data['user'] = $userSearch;
+        $data['group'] = $groupSearch;
 
         if (isset($orderBy) && isset($order)) {
             $data['orderBy'] = $orderBy;

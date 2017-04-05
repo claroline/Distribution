@@ -51,7 +51,8 @@ class LogRepository extends EntityRepository
         $workspaceIds = null,
         $unique = false,
         $resourceType = null,
-        $resourceNodeIds = null
+        $resourceNodeIds = null,
+        $groupSearch = null
     ) {
         $queryBuilder = $this
             ->createQueryBuilder('log')
@@ -68,6 +69,7 @@ class LogRepository extends EntityRepository
         $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
         $queryBuilder = $this->addUserFilterToQueryBuilder($queryBuilder, $userSearch);
         $queryBuilder = $this->addResourceTypeFilterToQueryBuilder($queryBuilder, $resourceType);
+        $queryBuilder = $this->addGroupFilterToQueryBuilder($queryBuilder, $groupSearch);
 
         if ($workspaceIds !== null && count($workspaceIds) > 0) {
             $queryBuilder = $this->addWorkspaceFilterToQueryBuilder($queryBuilder, $workspaceIds);
