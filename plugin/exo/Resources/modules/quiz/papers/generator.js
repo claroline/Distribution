@@ -22,6 +22,7 @@ import {
 export function generatePaper(quiz, steps, items, previousPaper = null) {
   return {
     id: makeId(),
+    finished: false,
     number: previousPaper ? previousPaper.number + 1 : 1,
     anonymized: quiz.parameters.anonymizeAttempts,
     structure: generateStructure(quiz, steps, items, previousPaper)

@@ -156,23 +156,28 @@ actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
 
 actions.handleAttemptEnd = (paper) => {
   return (dispatch, getState) => {
+    const state = getState()
+    // If testMode we dont want to fetch papers from the server
+    if(state.testMode) {
+      dispatch(paperAction.setPaperFetched())
+    }
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
-    dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
+    dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(state))))
 
     // We will decide here if we show the correction now or not and where we redirect the user
     if (playerSelectors.hasEndPage(getState())) {
       // Show the end page
       navigate('play/end')
     } else {
-      switch (playerSelectors.showCorrectionAt(getState())) {
+      switch (playerSelectors.showCorrectionAt(state)) {
         case 'validation': {
           dispatch(paperAction.setCurrentPaper(paper.id))
           navigate('papers/' + paper.id)
           break
         }
         case 'date': {
-          const correctionDate = moment(playerSelectors.correctionDate(getState()))
+          const correctionDate = moment(playerSelectors.correctionDate(state))
           const today = moment()
           const showPaper = today.diff(correctionDate, 'days') >= 0
 
