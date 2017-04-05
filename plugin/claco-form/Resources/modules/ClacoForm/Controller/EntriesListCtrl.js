@@ -268,4 +268,8 @@ export default class EntriesManagementCtrl {
   canGeneratePdf() {
     return this.ClacoFormService.getCanGeneratePdf()
   }
+
+  deleteAllEntries() {
+    this.EntryService.deleteAllEntries()
+  }
 }

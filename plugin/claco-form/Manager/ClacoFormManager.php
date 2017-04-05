@@ -1542,6 +1542,24 @@ class ClacoFormManager
         return $data;
     }
 
+    public function deleteAllEntries(ClacoForm $clacoForm)
+    {
+        $entries = $this->getAllEntries($clacoForm);
+        $this->om->startFlushSuite();
+
+        foreach ($entries as $entry) {
+            $fieldValues = $entry->getFieldValues();
+
+            foreach ($fieldValues as $fieldValue) {
+                $fieldFacetValue = $fieldValue->getFieldFacetValue();
+                $this->om->remove($fieldFacetValue);
+                $this->om->remove($fieldValue);
+            }
+            $this->om->remove($entry);
+        }
+        $this->om->endFlushSuite();
+    }
+
     public function copyClacoForm(ClacoForm $clacoForm, ResourceNode $newNode)
     {
         $categoryLinks = [];

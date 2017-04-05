@@ -1073,4 +1073,19 @@ class ClacoFormController extends Controller
 
         return new JsonResponse('success', 200);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/all/entries/delete",
+     *     name="claro_claco_form_all_entries_delete",
+     *     options={"expose"=true}
+     * )
+     */
+    public function clacoFormAllEntriesDeleteAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
+        $this->clacoFormManager->deleteAllEntries($clacoForm);
+
+        return new JsonResponse('success', 200);
+    }
 }
