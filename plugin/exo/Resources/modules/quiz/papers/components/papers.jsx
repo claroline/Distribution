@@ -1,6 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
+import quizSelect from './../selectors'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {selectors as paperSelect} from './../selectors'
 import {tex} from '#/main/core/translation'
@@ -90,7 +91,7 @@ Papers.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    admin: resourceSelect.editable(state) || selectors.papersAdmin(state),
+    admin: resourceSelect.editable(state) || quizSelect.papersAdmin(state),
     papers: paperSelect.papers(state)
   }
 }

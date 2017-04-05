@@ -4,12 +4,10 @@ import {connect} from 'react-redux'
 import {t, tex} from '#/main/core/translation'
 import { Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 import {viewComponents} from './../views'
-import {select as resourceSelectors} from '#/main/core/layout/resource/selectors'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import select from './../selectors'
-import {selectors as correctionSelectors} from './../correction/selectors'
 import {actions as editorActions} from './../editor/actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {actions as correctionActions} from './../correction/actions'
 import {actions as quizActions} from './../actions'
 
 import {VIEW_EDITOR} from './../enums'
@@ -41,61 +39,6 @@ Quiz.propTypes = {
   saveEnabled: T.bool.isRequired,
   saveQuiz: T.func.isRequired
 }
-
-/*const saveCorrectionAction = {
-  icon: 'fa fa-fw fa-save',
-  label: t('save'),
-  disabled: !props.saveCorrectionEnabled,
-  action: () => props.saveCorrection(props.currentQuestionId)
-}*/
-
-  const overviewAction = {
-    icon: 'fa fa-fw fa-times',
-    label: t('close'),
-    handleAction: '#overview',
-    primary: true
-  }
-
-  const papersAction = {
-    icon: 'fa fa-fw fa-list',
-    label: tex('results_list'),
-    disabled: props.canViewPapers ? !props.canViewPapers && !props.hasPapers : !props.hasUserPapers,
-    handleAction: '#papers'
-  }
-
-  switch (view) {
-    case VIEW_PLAYER:
-      return [
-        overviewAction,
-        divider,
-        papersAction
-      ]
-    case VIEW_ATTEMPT_END:
-      return [
-        overviewAction,
-        divider,
-        papersAction
-      ]
-    case VIEW_PAPERS:
-      return [
-        overviewAction,
-        divider,
-        papersAction
-      ]
-    case VIEW_PAPER:
-      return [
-        overviewAction,
-        divider,
-        papersAction
-      ]
-    case VIEW_OVERVIEW:
-    default:
-      return [
-        papersAction
-      ]
-  }
-}
-
 
 function customActions(props) {
   const actions = []
@@ -147,16 +90,15 @@ function mapStateToProps(state) {
     quiz: select.quiz(state),
     steps: select.steps(state),
     viewMode: select.viewMode(state),
-    editable: resourceSelectors.editable(state),
+    editable: resourceSelect.editable(state),
     empty: select.empty(state),
-    published: resourceSelectors.published(state),
+    published: resourceSelect.published(state),
     hasPapers: select.hasPapers(state),
     hasUserPapers: select.hasUserPapers(state),
     papersAdmin: select.papersAdmin(state),
     registeredUser: select.registered(state),
     saveEnabled: select.saveEnabled(state),
-    currentQuestionId: state.correction.currentQuestionId,
-    saveCorrectionEnabled: correctionSelectors.hasCorrection(state)
+    currentQuestionId: state.correction.currentQuestionId
   }
 }
 
@@ -165,8 +107,7 @@ function mapDispatchToProps(dispatch) {
     updateViewMode: mode => dispatch(quizActions.updateViewMode(mode)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
     fadeModal: () => dispatch(modalActions.fadeModal()),
-    saveQuiz: () => dispatch(editorActions.save()),
-    saveCorrection: questionId => dispatch(correctionActions.saveCorrection(questionId))
+    saveQuiz: () => dispatch(editorActions.save())
   }
 }
 
