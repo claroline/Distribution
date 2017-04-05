@@ -40,20 +40,24 @@ class Updater090300 extends Updater
     {
         $roleManager = $this->container->get('claroline.manager.role_manager');
         $om = $this->container->get('claroline.persistence.object_manager');
-        //TODO MODEL
-        //GET FROM TABLES
-        $models = [];
+        $models = $this->connection->query('SELECT * FROM claro_workspace_model')->fetchAll();
 
         foreach ($models as $model) {
-            $code = '[MOD]'.$model->getName();
+            $code = '[MOD]'.$model['name'];
             $workspace = $om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
 
             if (!$workspace) {
-                $this->log('Creating workspace from model '.$model->getName());
+                $this->log('Creating workspace from model '.$model['name']);
+
+                /*$modelUsers = */$this->connection->query("SELECT * FROM claro_workspace_model_user u where u.model_id = {$model['id']}")->fetchAll();
+                /*$modelGroups = */$this->connection->query("SELECT * FROM claro_workspace_model_group g where g.model_id = {$model['id']}")->fetchAll();
+                /*$modelResources = */$this->connection->query("SELECT * FROM claro_workspace_model_resource r where r.model_id = {$model['id']}")->fetchAll();
+                /*$modelHomeTabs = */$this->connection->query("SELECT * FROM claro_workspace_model_home_tab mht where mht.model_id = {$model['id']}")->fetchAll();
+
                 $workspace = $this->container->get('claroline.manager.workspace_manager')->createWorkspaceFromModel(
                     $model,
                     $model->getUsers()[0],
-                    $model->getName(),
+                    $model['name'],
                     $code
                 );
 
@@ -63,6 +67,8 @@ class Updater090300 extends Updater
                 $roleManager->associateRoleToMultipleSubjects($model->getGroups()->toArray(), $managerRole);
                 $this->om->persist($workspace);
                 $this->om->endFlushSuite();
+            } else {
+                $this->log('Workspace already exists');
             }
 
             //TODO MODEL
