@@ -23,7 +23,7 @@ class LogsFetcherCommand extends ContainerAwareCommand
         parent::configure();
 
         $this->setName('claroline:logs:fetch')
-            ->setDescription('Send a friend request to a Claroline platform');
+            ->setDescription('Export logs by group');
         $this->setDefinition(
             [
                 new InputArgument('group', InputArgument::REQUIRED, 'The group to fetch'),
