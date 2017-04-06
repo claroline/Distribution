@@ -1285,7 +1285,7 @@ class WorkspaceManager
         $this->duplicateOrderedTools($workspace, $newWorkspace);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
         $this->duplicateResources(
-          $baseRoot->getChildren()->toArray(),
+          $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray(),
           $this->getArrayRolesByWorkspace($workspace),
           $user,
           $baseRoot
@@ -1322,7 +1322,7 @@ class WorkspaceManager
             $workspaceRoles
         );
 
-        return $baseRoot;
+        return $rootCopy->getResourceNode();
     }
 
     /**
@@ -1344,7 +1344,7 @@ class WorkspaceManager
 
         foreach ($resourceNodes as $resourceNode) {
             try {
-                $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName());
+                $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
                 $copy = $this->resourceManager->copy(
                     $resourceNode,
                     $rootNode,

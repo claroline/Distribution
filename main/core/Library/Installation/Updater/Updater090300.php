@@ -80,6 +80,7 @@ class Updater090300 extends Updater
                 $this->workspaceManager->duplicateWorkspaceRoles($baseWorkspace, $newWorkspace, $user);
                 $this->workspaceManager->duplicateOrderedTools($baseWorkspace, $newWorkspace);
                 $baseRoot = $this->workspaceManager->duplicateRoot($baseWorkspace, $newWorkspace, $user);
+
                 $this->workspaceManager->duplicateResources(
                   $nodes,
                   $this->workspaceManager->getArrayRolesByWorkspace($baseWorkspace),
@@ -97,8 +98,12 @@ class Updater090300 extends Updater
                 $this->log('Workspace already exists');
             }
 
-            //TODO MODEL
-            //migration des cursus ici aussi
+            $this->log("Updatig cursus for model {$model['name']}");
+            $modelResources = $this->connection->query("
+              UPDATE claro_cursusbundle_course r
+              SET r.workspace_model_id = {$newWorkspace->getId()}
+              WHERE r.workspace_model_id = {$model['id']}"
+            )->execute();
         }
     }
 
