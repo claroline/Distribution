@@ -178,12 +178,9 @@ class PaperManager
             ]);
         }
 
-        $result = [];
-        foreach ($papers as $paper) {
-            $result[$paper->getUuid()] = $this->export($paper);
-        }
-
-        return $result;
+        return array_map(function (Paper $paper) {
+            return $this->export($paper);
+        }, $papers);
     }
 
     /**

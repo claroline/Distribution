@@ -3,9 +3,9 @@ import {createSelector} from 'reselect'
 import {getDefinition} from './../../items/item-types'
 
 const quizId = state => state.quiz.id
-const papers = state => state.papers.papers
 const papersFetched = state => state.papers.isFetched
 const currentPaperId = state => state.papers.current
+const papers = state => state.papers.papers
 
 const currentPaper = createSelector(
   papers,
@@ -19,6 +19,18 @@ const paperSteps = createSelector(
   currentPaper,
   (currentPaper) => currentPaper.structure.steps
 )
+
+
+
+
+
+/*const papers = (state) => {
+  let papers = {}
+  state.papers.papers.forEach(paper => {
+    papers[paper.id] = paper
+  })
+  return papers
+}*/
 
 const showScoreAt = paper => {
   return paper.structure.parameters.showScoreAt

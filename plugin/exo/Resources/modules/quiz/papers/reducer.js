@@ -5,8 +5,13 @@ export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}
 
   switch (action.type) {
     case PAPERS_INIT:
+      let withKeys = {}
+      Object.keys(action.papers).forEach(key => {
+        const paper = action.papers[key]
+        withKeys[paper.id] = paper
+      })
       return Object.assign({}, state, {
-        papers: Object.assign({}, state.papers, action.papers)
+        papers: Object.assign({}, state.papers, withKeys)
       })
     case PAPER_CURRENT:
       return Object.assign({}, state, {
