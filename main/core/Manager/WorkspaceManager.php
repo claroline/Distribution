@@ -1273,11 +1273,14 @@ class WorkspaceManager
         $this->om->endFlushSuite();
     }
 
-    public function copy(Workspace $workspace, $name)
+    public function copy(Workspace $workspace, $name, $code = null)
     {
         $newWorkspace = new Workspace();
         $newWorkspace->setName($name);
-        $newWorkspace->setCode('[COPY] - '.$name);
+        if (!$code) {
+            $code = uniqid('', true);
+        }
+        $newWorkspace->setCode($code);
         $this->createWorkspace($newWorkspace);
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $user = $this->container->get('security.token_storage')->getToken()->getUser();

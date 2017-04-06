@@ -491,10 +491,10 @@ class UserManager
             $isMailNotified = isset($user[13]) ? (bool) $user[13] : $enableEmailNotifaction;
 
             if ($modelName) {
-                //TODO MODEL
+                //TODO MODEL TEST
                 $model = $this->objectManager
-                    ->getRepository('Claroline\CoreBundle\Entity\Model\WorkspaceModel')
-                    ->findOneByName($modelName);
+                    ->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace')
+                    ->findOneByCode($modelName);
             } else {
                 $model = null;
             }
@@ -657,10 +657,10 @@ class UserManager
     /**
      * Creates the personal workspace of a user.
      *
-     * @param \Claroline\CoreBundle\Entity\User $user
-     * @param Model                             $model
+     * @param \Claroline\CoreBundle\Entity\User                $user
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $model
      */
-    public function setPersonalWorkspace(User $user, $model = null)
+    public function setPersonalWorkspace(User $user, Workspace $model = null)
     {
         $locale = $this->platformConfigHandler->getParameter('locale_language');
         $this->translator->setLocale($locale);
@@ -682,16 +682,13 @@ class UserManager
             $template = new File($this->personalWsTemplateFile);
             $workspace = $this->transferManager->createWorkspace($workspace, $template, true);
         } else {
-            $workspace = $this->workspaceManager->createWorkspaceFromModel(
+            //TODO MODEL
+            $workspace = $this->workspaceManager->copy(
                 $model,
-                $user,
                 $personalWorkspaceName,
-                $user->getUsername(),
-                '',
-                false,
-                false,
-                false
+                $user->getUsername()
             );
+            $workspace->setCreator($user);
         }
 
         //add "my public documents" folder
