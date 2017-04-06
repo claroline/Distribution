@@ -87,19 +87,17 @@ class LogsFetcherCommand extends ContainerAwareCommand
 
         $results = $query->getResult();
 
-        $titles = [
-          'id', 'action', 'date', /*'details',*/ 'user',
-        ];
+        $titles = ['date', 'action', 'user', 'username', 'details'];
 
         $lines = [];
 
         foreach ($results as $result) {
             $lines[] = [
-            $result->getId(),
-            $result->getAction(),
             $result->getDateLog()->format('d-m-Y H:i:s'),
-            //serialize($result->getDetails()),
+            $result->getAction(),
             $result->getDoer()->getUsername(),
+            $result->getDoer()->getFirstName().' '.$result->getDoer()->getLastName(),
+            $this->getContainer()->get('claroline.log.manager')->getDetails($result),
           ];
         }
 
