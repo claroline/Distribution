@@ -20,18 +20,6 @@ const paperSteps = createSelector(
   (currentPaper) => currentPaper.structure.steps
 )
 
-
-
-
-
-/*const papers = (state) => {
-  let papers = {}
-  state.papers.papers.forEach(paper => {
-    papers[paper.id] = paper
-  })
-  return papers
-}*/
-
 const showScoreAt = paper => {
   return paper.structure.parameters.showScoreAt
 }
