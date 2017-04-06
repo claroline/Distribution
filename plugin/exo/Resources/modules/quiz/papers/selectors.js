@@ -11,7 +11,7 @@ const currentPaper = createSelector(
   papers,
   currentPaperId,
   (papers, currentId) => {
-    return papers.find(paper => paper.id === currentId)
+    return papers[currentId]
   }
 )
 

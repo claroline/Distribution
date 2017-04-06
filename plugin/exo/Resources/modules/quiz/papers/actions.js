@@ -22,23 +22,17 @@ actions.addPaper = makeActionCreator(PAPER_ADD, 'paper')
 actions.displayPaper = id => {
   invariant(id, 'Paper id is mandatory')
   return (dispatch, getState) => {
-    if (!selectors.papersFetched(getState())) {
+    if (!selectors.papersFetched(getState()) || !selectors.papers(getState())[id]) {
       fetchPapers(selectors.quizId(getState())).then(papers => {
         dispatch(initPapers(papers))
         dispatch(setPaperFetched())
-        dispatch(actions.showPaper(id))
+        dispatch(actions.setCurrentPaper(id))
+        dispatch(baseActions.updateViewMode(VIEW_PAPER))
       })
     } else {
-      dispatch(actions.showPaper(id))
+      dispatch(actions.setCurrentPaper(id))
+      dispatch(baseActions.updateViewMode(VIEW_PAPER))
     }
-  }
-}
-
-actions.showPaper = id => {
-  invariant(id, 'Paper id is mandatory')
-  return (dispatch, getState) => {
-    dispatch(actions.setCurrentPaper(id))
-    dispatch(baseActions.updateViewMode(VIEW_PAPER))
   }
 }
 

@@ -156,45 +156,38 @@ actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false) => {
 
 actions.handleAttemptEnd = (paper) => {
   return (dispatch, getState) => {
-    const state = getState()
     // Finish the current attempt
     dispatch(actions.finishAttempt(paper))
-    dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(state))))
+    dispatch(paperAction.addPaper(buildPaper(paper, playerSelectors.answers(getState()))))
 
-    if(quizSelectors.testMode) {
-      dispatch(paperAction.showPaper(paper.id))
-    } else {
-      // We will decide here if we show the correction now or not and where we redirect the user
-      if (playerSelectors.hasEndPage(getState())) {
+    // We will decide here if we show the correction now or not and where we redirect the user
+    if (playerSelectors.hasEndPage(getState())) {
         // Show the end page
-        navigate('play/end')
-      } else {
-        switch (playerSelectors.showCorrectionAt(state)) {
-          case 'validation': {
+      navigate('play/end')
+    } else {
+      switch (playerSelectors.showCorrectionAt(getState())) {
+        case 'validation': {
+          dispatch(paperAction.setCurrentPaper(paper.id))
+          navigate('papers/' + paper.id)
+          break
+        }
+        case 'date': {
+          const correctionDate = moment(playerSelectors.correctionDate(getState()))
+          const today = moment()
+          const showPaper = today.diff(correctionDate, 'days') >= 0
+
+          if (showPaper) {
             dispatch(paperAction.setCurrentPaper(paper.id))
             navigate('papers/' + paper.id)
-            break
+          } else {
+            navigate('overview')
           }
-          case 'date': {
-            const correctionDate = moment(playerSelectors.correctionDate(state))
-            const today = moment()
-            const showPaper = today.diff(correctionDate, 'days') >= 0
 
-            if (showPaper) {
-              dispatch(paperAction.setCurrentPaper(paper.id))
-              navigate('papers/' + paper.id)
-            } else {
-              navigate('overview')
-            }
-
-            break
-          }
-          default: navigate('overview')
+          break
         }
+        default: navigate('overview')
       }
     }
-
-
   }
 }
 
