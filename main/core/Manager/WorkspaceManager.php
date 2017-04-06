@@ -1283,21 +1283,21 @@ class WorkspaceManager
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
         $this->duplicateOrderedTools($workspace, $newWorkspace);
-        $this->duplicateResources($workspace, $newWorkspace, $user);
+        $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
+        $this->duplicateResources(
+          $baseRoot->getChildren(),
+          $this->getArrayRolesByWorkspace($workspace),
+          $user,
+          $baseRoot
+        );
 
         return $newWorkspace;
     }
 
-    /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     * @param \Claroline\CoreBundle\Entity\User                $user
-     */
-    private function duplicateResources(
-        Workspace $source,
-        Workspace $workspace,
-        User $user
-    ) {
+    public function duplicateRoot(Workspace $source,
+      Workspace $workspace,
+      User $user
+      ) {
         $this->log('Duplicating root directory...');
         $rootDirectory = new Directory();
         $rootDirectory->setName($workspace->getName());
@@ -1322,11 +1322,24 @@ class WorkspaceManager
             $workspaceRoles
         );
 
+        return $baseRoot;
+    }
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param \Claroline\CoreBundle\Entity\User                $user
+     */
+    public function duplicateResources(
+        array $resourceNodes,
+        array $workspaceRoles,
+        User $user,
+        ResourceNode $rootNode
+    ) {
         $this->om->flush();
         $this->om->startFlushSuite();
         $copies = [];
         $resourcesErrors = [];
-        $resourceNodes = $baseRoot->getChildren();
         $this->log('Duplicating '.count($resourceNodes).' children...');
 
         foreach ($resourceNodes as $resourceNode) {
@@ -1334,7 +1347,7 @@ class WorkspaceManager
                 $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName());
                 $copy = $this->resourceManager->copy(
                     $resourceNode,
-                    $rootDirectory->getResourceNode(),
+                    $rootNode,
                     $user,
                     false,
                     false
@@ -1368,7 +1381,7 @@ class WorkspaceManager
     /**
      * @param array $resources
      */
-    private function linkResourcesArray(array $resources)
+    public function linkResourcesArray(array $resources)
     {
         for ($i = 1; $i < count($resources); ++$i) {
             $node = $resources[$i]->getResourceNode();
@@ -1382,7 +1395,7 @@ class WorkspaceManager
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $copy
      * @param array                                              $workspaceRoles
      */
-    private function duplicateRights(
+    public function duplicateRights(
         ResourceNode $resourceNode,
         ResourceNode $copy,
         array $workspaceRoles
@@ -1417,7 +1430,7 @@ class WorkspaceManager
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
      */
-    private function duplicateOrderedTools(Workspace $source, Workspace $workspace)
+    public function duplicateOrderedTools(Workspace $source, Workspace $workspace)
     {
         $this->log('Duplicating tools...');
         $orderedTools = $source->getOrderedTools();
@@ -1458,7 +1471,7 @@ class WorkspaceManager
  * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
  * @param \Claroline\CoreBundle\Entity\User                $user
  */
-private function duplicateWorkspaceRoles(
+public function duplicateWorkspaceRoles(
     Workspace $source,
     Workspace $workspace,
     User $user
@@ -1486,7 +1499,7 @@ private function duplicateWorkspaceRoles(
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
      */
-    private function duplicateWorkspaceOptions(Workspace $source, Workspace $workspace)
+    public function duplicateWorkspaceOptions(Workspace $source, Workspace $workspace)
     {
         $sourceOptions = $source->getOptions();
         if (!is_null($sourceOptions)) {
@@ -1508,7 +1521,7 @@ private function duplicateWorkspaceRoles(
     /**
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
      */
-    private function getArrayRolesByWorkspace(Workspace $workspace)
+    public function getArrayRolesByWorkspace(Workspace $workspace)
     {
         $workspaceRoles = [];
         $uow = $this->om->getUnitOfWork();

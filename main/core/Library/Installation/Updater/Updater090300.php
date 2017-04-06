@@ -49,22 +49,43 @@ class Updater090300 extends Updater
             if (!$workspace) {
                 $this->log('Creating workspace from model '.$model['name']);
 
-                /*$modelUsers = */$this->connection->query("SELECT * FROM claro_workspace_model_user u where u.model_id = {$model['id']}")->fetchAll();
-                /*$modelGroups = */$this->connection->query("SELECT * FROM claro_workspace_model_group g where g.model_id = {$model['id']}")->fetchAll();
-                /*$modelResources = */$this->connection->query("SELECT * FROM claro_workspace_model_resource r where r.model_id = {$model['id']}")->fetchAll();
-                /*$modelHomeTabs = */$this->connection->query("SELECT * FROM claro_workspace_model_home_tab mht where mht.model_id = {$model['id']}")->fetchAll();
+                $modelUsers = $this->connection->query("SELECT * FROM claro_workspace_model_user u where u.model_id = {$model['id']}")->fetchAll();
+                $modelGroups = $this->connection->query("SELECT * FROM claro_workspace_model_group g where g.model_id = {$model['id']}")->fetchAll();
+                $modelResources = $this->connection->query("SELECT * FROM claro_workspace_model_resource r where r.model_id = {$model['id']}")->fetchAll();
 
-                $workspace = $this->container->get('claroline.manager.workspace_manager')->createWorkspaceFromModel(
-                    $model,
-                    $model->getUsers()[0],
-                    $model['name'],
-                    $code
+                $userIds = array_map(function ($data) {
+                    return $data['user_id'];
+                }, $modelUsers);
+                $groupIds = array_map(function ($data) {
+                    return $data['group_id'];
+                }, $modelGroups);
+                $nodeIds = array_map(function ($data) {
+                    return $data['resource_node_id'];
+                }, $modelResources);
+
+                $users = $om->findByIds('Claroline\CoreBundle\Entity\User', $userIds);
+                $groups = $om->findByIds('Claroline\CoreBundle\Entity\User', $groupIds);
+                $nodes = $om->findByIds('Claroline\CoreBundle\Entity\Resource\ResourceNode', $nodeIds);
+
+                $newWorkspace = new Workspace();
+                $newWorkspace->setName($name);
+                $newWorkspace->setCode('[COPY] - '.$name);
+                $this->createWorkspace($newWorkspace);
+                $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
+                $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
+                $this->duplicateOrderedTools($workspace, $newWorkspace);
+                $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
+                $this->duplicateResources(
+                  $nodes,
+                  $this->getArrayRolesByWorkspace($workspace),
+                  $user,
+                  $baseRoot
                 );
 
                 $workspace->setIsModel(true);
                 $managerRole = $roleManager->getManagerRole($workspace);
-                $roleManager->associateRoleToMultipleSubjects($model->getUsers()->toArray(), $managerRole);
-                $roleManager->associateRoleToMultipleSubjects($model->getGroups()->toArray(), $managerRole);
+                $roleManager->associateRoleToMultipleSubjects($users, $managerRole);
+                $roleManager->associateRoleToMultipleSubjects($groups, $managerRole);
                 $this->om->persist($workspace);
                 $this->om->endFlushSuite();
             } else {
