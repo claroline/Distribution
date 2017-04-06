@@ -987,7 +987,7 @@ class ClacoFormController extends Controller
      *
      * Downloads pdf version of entry
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function entryPdfDownloadAction(User $user, Entry $entry)
     {
@@ -1070,6 +1070,49 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkEntryShareRight($entry);
         $this->clacoFormManager->switchEntryUserShared($entry, $user, false);
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/entries/export",
+     *     name="claro_claco_form_entries_export",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Exports entries
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function clacoFormEntriesExportAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
+        $content = $this->clacoFormManager->exportEntries($clacoForm);
+        $headers = [
+            'Content-Transfer-Encoding' => 'octet-stream',
+            'Content-Type' => 'application/vnd.ms-excel; charset=utf-8',
+            'Content-Disposition' => 'attachment; filename="'.$clacoForm->getResourceNode()->getName().'.xls"',
+        ];
+
+        return new Response($content, 200, $headers);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/all/entries/delete",
+     *     name="claro_claco_form_all_entries_delete",
+     *     options={"expose"=true}
+     * )
+     *
+     * Deletes all entries
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function clacoFormAllEntriesDeleteAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
+        $this->clacoFormManager->deleteAllEntries($clacoForm);
 
         return new JsonResponse('success', 200);
     }
