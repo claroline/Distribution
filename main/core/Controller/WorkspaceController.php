@@ -457,15 +457,23 @@ class WorkspaceController extends Controller
             $hasManagerAccess = true;
         }
 
-        //if manager or admin, show every tools
-        if ($hasManagerAccess) {
-            $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
+        if ($workspace->isModel()) {
+            $orderedTools = array_filter($this->toolManager->getOrderedToolsByWorkspace($workspace), function ($orderedTool) {
+                return in_array($orderedTool->getTool()->getName(), ['home', 'resource_manager', 'users', 'parameters']);
+            });
             $hideToolsMenu = false;
         } else {
-            //otherwise only shows the relevant tools
-            $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
-            $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
+            //if manager or admin, show every tools
+          if ($hasManagerAccess) {
+              $orderedTools = $this->toolManager->getOrderedToolsByWorkspace($workspace);
+              $hideToolsMenu = false;
+          } else {
+              //otherwise only shows the relevant tools
+              $orderedTools = $this->toolManager->getOrderedToolsByWorkspaceAndRoles($workspace, $currentRoles);
+              $hideToolsMenu = $this->workspaceManager->isToolsMenuHidden($workspace);
+          }
         }
+
         $roleHasAccess = [];
         $workspaceRolesWithAccess = $this->roleManager
             ->getWorkspaceRoleWithToolAccess($workspace);
