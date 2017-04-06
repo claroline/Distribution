@@ -1734,6 +1734,9 @@ class AdminManagementController extends Controller
         $datas['sessionDefaultTotal'] = $this->configHandler->hasParameter('cursus_session_default_total') ?
             $this->configHandler->getParameter('cursus_session_default_total') :
             false;
+        $datas['sessionDefaultDuration'] = $this->configHandler->hasParameter('cursus_session_default_duration') ?
+            $this->configHandler->getParameter('cursus_session_default_duration') :
+            1;
 
         return new JsonResponse($datas, 200);
     }
@@ -1759,6 +1762,7 @@ class AdminManagementController extends Controller
         $this->configHandler->setParameter('cursus_enable_courses_profile_tab', $parameters['enableCoursesProfileTab']);
         $this->configHandler->setParameter('cursus_enable_ws_in_courses_profile_tab', $parameters['enableWsInCoursesProfileTab']);
         $this->configHandler->setParameter('cursus_session_default_total', $parameters['sessionDefaultTotal']);
+        $this->configHandler->setParameter('cursus_session_default_duration', $parameters['sessionDefaultDuration']);
 
         return new JsonResponse($parameters, 200);
     }

@@ -30,6 +30,7 @@ export default class GeneralParametersCtrl {
       this.configs['enableCoursesProfileTab'] = d['enableCoursesProfileTab']
       this.configs['enableWsInCoursesProfileTab'] = d['enableWsInCoursesProfileTab']
       this.configs['sessionDefaultTotal'] = parseInt(d['sessionDefaultTotal'])
+      this.configs['sessionDefaultDuration'] = parseInt(d['sessionDefaultDuration'])
     })
   }
 

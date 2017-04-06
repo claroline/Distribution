@@ -17,6 +17,7 @@ export default class CourseCreationModalCtrl {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
     this.FormBuilderService = FormBuilderService
+    this.CourseService = CourseService
     this.title = title
     this.cursusId = cursusId
     this.callback = callback
@@ -27,7 +28,7 @@ export default class CourseCreationModalCtrl {
       icon: null,
       publicRegistration: false,
       publicUnregistration: false,
-      defaultSessionDuration: 1,
+      defaultSessionDuration: null,
       withSessionEvent: true,
       workspace: null,
       workspaceModel: null,
@@ -85,6 +86,9 @@ export default class CourseCreationModalCtrl {
         const datas = JSON.parse(d['data'])
         datas.forEach(r => this.validatorsRoles.push(r['id']))
       }
+    })
+    this.CourseService.getGeneralParameters().then(d => {
+      this.course['defaultSessionDuration'] = d['sessionDefaultDuration']
     })
   }
 
