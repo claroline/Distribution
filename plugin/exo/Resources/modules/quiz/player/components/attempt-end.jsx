@@ -42,7 +42,8 @@ AttemptEnd.propTypes = {
   paper: T.shape({
     id: T.string.isRequired,
     score: T.number,
-    structure: T.object.isRequired
+    structure: T.object.isRequired,
+    finished: T.bool.isRequired
   }).isRequired
 }
 

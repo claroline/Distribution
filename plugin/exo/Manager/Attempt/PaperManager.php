@@ -180,7 +180,7 @@ class PaperManager
 
         $result = [];
         foreach ($papers as $paper) {
-          $result[$paper->getUuid()] = $this->export($paper);
+            $result[$paper->getUuid()] = $this->export($paper);
         }
 
         return $result;
