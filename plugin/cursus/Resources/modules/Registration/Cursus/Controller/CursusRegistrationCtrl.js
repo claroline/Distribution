@@ -10,14 +10,12 @@
 /*global Routing*/
 
 export default class CursusRegistrationCtrl {
-
-  constructor ($http) {
+  constructor($http) {
     this.$http = $http
     this.initialized = false
     this.cursusRoots = []
     this.hoveredCursusId = 0
     this.search = ''
-
     this.initialize()
   }
 

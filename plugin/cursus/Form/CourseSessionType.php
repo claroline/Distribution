@@ -120,7 +120,6 @@ class CourseSessionType extends AbstractType
                 'required' => false,
                 'class' => 'ClarolineCursusBundle:Cursus',
                 'query_builder' => function (EntityRepository $er) {
-
                     return $er->createQueryBuilder('c')
                         ->where('c.parent IS NULL')
                         ->orderBy('c.title', 'ASC');

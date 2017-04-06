@@ -16,7 +16,7 @@ import courseViewTemplate from '../Partial/course_view_modal.html'
 import coursesImportFormTemplate from '../Partial/courses_import_form.html'
 
 export default class CourseService {
-  constructor ($http, $uibModal, ClarolineAPIService) {
+  constructor($http, $uibModal, ClarolineAPIService) {
     this.$http = $http
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
@@ -60,19 +60,19 @@ export default class CourseService {
     }
   }
 
-  getCourse () {
+  getCourse() {
     return this.course
   }
 
-  getCourses () {
+  getCourses() {
     return this.courses
   }
 
-  isInitialized () {
+  isInitialized() {
     return this.initialized
   }
 
-  loadCourses (cursusId = null) {
+  loadCourses(cursusId = null) {
     if (this.initialized && !this.hasChanged && this.currentCursusId === cursusId) {
       return null
     } else {
@@ -93,7 +93,7 @@ export default class CourseService {
     }
   }
 
-  removeCourse (courseId) {
+  removeCourse(courseId) {
     const index = this.courses.findIndex(c => c['id'] === courseId)
 
     if (index > -1) {
@@ -102,7 +102,7 @@ export default class CourseService {
     }
   }
 
-  createCourse (cursusId = null, callback = null) {
+  createCourse(cursusId = null, callback = null) {
     const addCallback = callback !== null ? callback : this._addCourseCallback
     this.$uibModal.open({
       template: courseFormTemplate,
@@ -116,7 +116,7 @@ export default class CourseService {
     })
   }
 
-  editCourse (course, callback = null) {
+  editCourse(course, callback = null) {
     const updateCallback = callback !== null ? callback : this._updateCourseCallback
     this.$uibModal.open({
       template: courseFormTemplate,
@@ -130,7 +130,7 @@ export default class CourseService {
     })
   }
 
-  deleteCourse (courseId, callback = null) {
+  deleteCourse(courseId, callback = null) {
     const url = Routing.generate('api_delete_course', {course: courseId})
     const deleteCallback = callback !== null ? callback : this._removeCourseCallback
 
@@ -142,7 +142,7 @@ export default class CourseService {
     )
   }
 
-  viewCourse (courseId) {
+  viewCourse(courseId) {
     const index = this.courses.findIndex(c => c['id'] === courseId)
 
     if (index > -1) {
@@ -157,7 +157,7 @@ export default class CourseService {
     }
   }
 
-  importCourses (callback = null) {
+  importCourses(callback = null) {
     const addCallback = callback !== null ? callback : this._addCourseCallback
     this.$uibModal.open({
       template: coursesImportFormTemplate,
@@ -169,7 +169,7 @@ export default class CourseService {
     })
   }
 
-  getCourseById (courseId) {
+  getCourseById(courseId) {
     const index = this.courses.findIndex(c => c['id'] === courseId)
 
     if (index > -1) {
@@ -195,7 +195,7 @@ export default class CourseService {
     }
   }
 
-  getTinymceConfiguration () {
+  getTinymceConfiguration() {
     let tinymce = window.tinymce
     tinymce.claroline.init = tinymce.claroline.init || {}
     tinymce.claroline.plugins = tinymce.claroline.plugins || {}
@@ -230,7 +230,7 @@ export default class CourseService {
     return config
   }
 
-  removeFromArray (targetArray, id) {
+  removeFromArray(targetArray, id) {
     if (Array.isArray(targetArray)) {
       const index = targetArray.findIndex(t => t['id'] === id)
 
@@ -240,7 +240,7 @@ export default class CourseService {
     }
   }
 
-  getGeneralParameters () {
+  getGeneralParameters() {
     const url = Routing.generate('api_get_cursus_general_parameters')
     return this.$http.get(url).then(d => {
       if (d['status'] === 200) {
@@ -249,7 +249,7 @@ export default class CourseService {
     })
   }
 
-  setGeneralParameters (params) {
+  setGeneralParameters(params) {
     const url = Routing.generate('api_post_cursus_general_parameters')
     return this.$http.post(url, {parameters: params}).then(d => {
       if (d['status'] === 200) {
@@ -258,7 +258,7 @@ export default class CourseService {
     })
   }
 
-  getLocationResources () {
+  getLocationResources() {
     const url = Routing.generate('api_get_cursus_reservation_resources')
     return this.$http.get(url).then(d => {
       if (d['status'] === 200) {
@@ -267,7 +267,7 @@ export default class CourseService {
     })
   }
 
-  getLocations () {
+  getLocations() {
     const url = Routing.generate('api_get_cursus_locations')
     return this.$http.get(url).then(d => {
       if (d['status'] === 200) {

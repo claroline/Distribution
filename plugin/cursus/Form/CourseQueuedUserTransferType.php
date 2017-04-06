@@ -35,7 +35,6 @@ class CourseQueuedUserTransferType extends AbstractType
             [
                 'class' => 'ClarolineCursusBundle:CourseSession',
                 'query_builder' => function (EntityRepository $er) use ($course) {
-
                     return $er->createQueryBuilder('s')
                         ->join('s.course', 'c')
                         ->where('c.id = :courseId')

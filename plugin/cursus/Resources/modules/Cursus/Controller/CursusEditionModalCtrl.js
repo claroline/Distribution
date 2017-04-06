@@ -38,7 +38,7 @@ export default class CursusEditionModalCtrl {
     this.initializeCursus()
   }
 
-  initializeCursus () {
+  initializeCursus() {
     this.cursus['title'] = this.source['title']
     this.cursus['blocking'] = this.source['blocking']
 
@@ -67,7 +67,7 @@ export default class CursusEditionModalCtrl {
     })
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.cursus['title']) {
@@ -106,13 +106,13 @@ export default class CursusEditionModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.cursusErrors) {
       this.cursusErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.cursusErrors) {

@@ -37,7 +37,7 @@ export default class CursusCreationModalCtrl {
     this.initializeCursus()
   }
 
-  initializeCursus () {
+  initializeCursus() {
     const url = Routing.generate('api_get_workspaces')
     this.$http.get(url).then(d => {
       if (d['status'] === 200) {
@@ -47,7 +47,7 @@ export default class CursusCreationModalCtrl {
     })
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.cursus['title']) {
@@ -88,13 +88,13 @@ export default class CursusCreationModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.cursusErrors) {
       this.cursusErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.cursusErrors) {

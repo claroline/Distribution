@@ -108,7 +108,6 @@ class CourseSessionEditType extends AbstractType
                     'required' => true,
                     'class' => 'ClarolineCoreBundle:Role',
                     'query_builder' => function (EntityRepository $er) use ($workspace) {
-
                         return $er->createQueryBuilder('r')
                             ->join('r.workspace', 'w')
                             ->where('w.id = :workspaceId')
@@ -126,7 +125,6 @@ class CourseSessionEditType extends AbstractType
                     'required' => true,
                     'class' => 'ClarolineCoreBundle:Role',
                     'query_builder' => function (EntityRepository $er) use ($workspace) {
-
                         return $er->createQueryBuilder('r')
                             ->join('r.workspace', 'w')
                             ->where('w.id = :workspaceId')
@@ -145,7 +143,6 @@ class CourseSessionEditType extends AbstractType
                 'required' => false,
                 'class' => 'ClarolineCursusBundle:Cursus',
                 'query_builder' => function (EntityRepository $er) {
-
                     return $er->createQueryBuilder('c')
                         ->where('c.parent IS NULL')
                         ->orderBy('c.title', 'ASC');

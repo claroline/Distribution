@@ -137,7 +137,6 @@ class CourseType extends AbstractType
             [
                 'class' => 'ClarolineCoreBundle:Model\WorkspaceModel',
                 'query_builder' => function (EntityRepository $er) use ($user) {
-
                     return $er->createQueryBuilder('wm')
                         ->join('wm.users', 'u')
                         ->where('u.id = :userId')

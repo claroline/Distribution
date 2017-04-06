@@ -61,12 +61,12 @@ export default class CourseEditionModalCtrl {
     this.initializeCourse()
   }
 
-  _userpickerCallback (datas) {
+  _userpickerCallback(datas) {
     this.validators = datas === null ? [] : datas
     this.refreshScope()
   }
 
-  initializeCourse () {
+  initializeCourse() {
     if (this.source['tutorRoleName']) {
       this.course['tutorRoleName'] = this.source['tutorRoleName']
     }
@@ -129,14 +129,14 @@ export default class CourseEditionModalCtrl {
     }
   }
 
-  displayValidators () {
+  displayValidators() {
     let value = ''
     this.validators.forEach(u => value += `${u['firstName']} ${u['lastName']}, `)
 
     return value
   }
 
-  submit () {
+  submit() {
     this.resetErrors()
 
     if (!this.course['title']) {
@@ -218,13 +218,13 @@ export default class CourseEditionModalCtrl {
     }
   }
 
-  resetErrors () {
+  resetErrors() {
     for (const key in this.courseErrors) {
       this.courseErrors[key] = null
     }
   }
 
-  isValid () {
+  isValid() {
     let valid = true
 
     for (const key in this.courseErrors) {
@@ -237,11 +237,11 @@ export default class CourseEditionModalCtrl {
     return valid
   }
 
-  isUserpickerAvailable () {
+  isUserpickerAvailable() {
     return this.validatorsRoles.length > 0
   }
 
-  getSelectedUsersIds () {
+  getSelectedUsersIds() {
     let selectedUsersIds = []
     this.validators.forEach(v => {
       selectedUsersIds.push(v['id'])
@@ -250,7 +250,7 @@ export default class CourseEditionModalCtrl {
     return selectedUsersIds
   }
 
-  openUserPicker () {
+  openUserPicker() {
     let userPicker = new UserPicker()
     const options = {
       picker_name: 'validators-picker',
@@ -264,7 +264,7 @@ export default class CourseEditionModalCtrl {
     userPicker.open()
   }
 
-  manageRolesChoices () {
+  manageRolesChoices() {
     if (this.workspace) {
       this.getWorkspaceRoles()
     } else if (this.model) {
@@ -274,7 +274,7 @@ export default class CourseEditionModalCtrl {
     }
   }
 
-  getWorkspaceRoles () {
+  getWorkspaceRoles() {
     if (this.workspace) {
       const url = Routing.generate('course_workspace_roles_translation_keys_retrieve', {workspace: this.workspace['id']})
       this.$http.get(url).then(d => {
@@ -294,7 +294,7 @@ export default class CourseEditionModalCtrl {
     }
   }
 
-  getModelRoles () {
+  getModelRoles() {
     if (this.model) {
       const url = Routing.generate('ws_model_roles_translation_keys_retrieve', {model: this.model['id']})
       this.$http.get(url).then(d => {
@@ -314,7 +314,7 @@ export default class CourseEditionModalCtrl {
     }
   }
 
-  refreshScope () {
+  refreshScope() {
     this.$rootScope.$apply()
   }
 }
