@@ -118,6 +118,7 @@ class Updater090300 extends Updater
     public function createDefaultModel()
     {
         $this->log('Building default model...');
+        $this->workspaceManager->getDefaultModel();
     }
 
     public function dropModelTable()

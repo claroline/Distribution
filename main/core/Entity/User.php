@@ -1230,6 +1230,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->isRemoved = $isRemoved;
     }
 
+    //alias
+    public function remove()
+    {
+        $this->setIsRemoved(true);
+    }
+
     public function getIsRemoved()
     {
         return $this->isRemoved;

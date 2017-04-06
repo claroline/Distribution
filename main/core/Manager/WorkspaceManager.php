@@ -875,9 +875,9 @@ class WorkspaceManager
             }
 
             if (isset($workspace[7])) {
-                //TODO MODEL
-                $model = $this->om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')
-                ->findOneByName($workspace[7]);
+                //TODO MODEL TEST
+                $model = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')
+                  ->code($workspace[7]);
             }
 
             if (isset($workspace[8])) {
@@ -1545,5 +1545,26 @@ public function duplicateWorkspaceRoles(
         }
 
         return $workspaceRoles;
+    }
+
+    public function getDefaultModel()
+    {
+        $workspace = $this->getOneByCode('default');
+
+        if (!$workspace) {
+            //don't log this or it'll crash everything during the platform installation (some database tables aren't already created because they come from plugins)
+            $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
+            $workspace = new Workspace();
+            $workspace->setName('default');
+            $workspace->setCode('default');
+            $workspace->setIsModel(true);
+            $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());
+
+            $template = new File($this->container->getParameter('claroline.param.default_template'));
+            $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
+            $this->container->get('claroline.core_bundle.listener.log.log_listener')->default();
+        }
+
+        return $workspace;
     }
 }

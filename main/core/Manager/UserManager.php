@@ -935,6 +935,16 @@ class UserManager
     }
 
     /**
+     * @param string $guid
+     *
+     * @return \Claroline\CoreBundle\Entity\Workspace\Workspace
+     */
+    public function getOneByGuid($guid)
+    {
+        return $this->userRepo->findOneByGuid($guid);
+    }
+
+    /**
      * @param int $max
      *
      * @return User[]
@@ -1860,6 +1870,26 @@ class UserManager
         $user->disable();
         $this->objectManager->persist($user);
         $this->objectManager->flush();
+
+        return $user;
+    }
+
+    public function getDefaultUser()
+    {
+        $user = $this->getOneByGuid('claroline-connect');
+
+        if (!$user) {
+            $user = new User();
+            $user->setUsername('claroline-connect');
+            $user->setFirstName('claroline-connect');
+            $user->setLastName('claroline-connect');
+            $user->setMail('claroline-connect');
+            $user->setPlainPassword(uniqid('', true));
+            $user->setGuid('claroline-connect');
+            $user->disable();
+            $user->remove();
+            $this->createUser($user, false);
+        }
 
         return $user;
     }
