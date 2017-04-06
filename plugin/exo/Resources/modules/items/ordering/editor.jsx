@@ -60,13 +60,15 @@ class Item extends Component {
           }
           <TooltipButton
             id={`item-${this.props.id}-feedback-toggle`}
-            className="fa fa-comments-o"
+            className="btn-link-default"
+            label={<span className="fa fa-fw fa-comments-o"></span>}
             title={tex('choice_feedback_info')}
             onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
           />
           <TooltipButton
             id={`item-${this.props.id}-delete`}
-            className="fa fa-trash-o"
+            className="btn-link-default"
+            label={<span className="fa fa-fw fa-trash-o"></span>}
             enabled={this.props.deletable}
             title={t('delete')}
             onClick={() => this.props.onChange(
@@ -115,11 +117,11 @@ let OrderingItem = props => {
           className={classes(
             'tooltiped-button',
             'btn',
-            'fa',
-            'fa-arrows',
             'drag-handle'
           )}
-        />
+        >
+          <span className="fa fa-arrows"/>
+        </span>
       )}
     </div>
   )

@@ -2,7 +2,8 @@ import React, { Component, PropTypes as T } from 'react'
 import { DragLayer } from 'react-dnd'
 import {isQuestionType} from './../items/item-types'
 import {ContentThumbnailDragPreview} from './../contents/components/content-thumbnail-drag-preview.jsx'
-import {ItemPanelDragPreview, ContentPanelDragPreview} from './../quiz/editor/components/step-editor-drag-preview.jsx'
+import {ContentPanelDragPreview} from './../quiz/editor/components/step-editor-drag-preview.jsx'
+import {ItemPanelDragPreview} from './../quiz/editor/components/item-panel-drag-preview.jsx'
 import {
   BORDER_WIDTH,
   AREA_GUTTER
