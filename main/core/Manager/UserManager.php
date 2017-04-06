@@ -1876,7 +1876,7 @@ class UserManager
 
     public function getDefaultUser()
     {
-        $user = $this->getOneByGuid('claroline-connect');
+        $user = $this->getUserByUsername('claroline-connect');
 
         if (!$user) {
             $user = new User();
@@ -1885,7 +1885,6 @@ class UserManager
             $user->setLastName('claroline-connect');
             $user->setMail('claroline-connect');
             $user->setPlainPassword(uniqid('', true));
-            $user->setGuid('claroline-connect');
             $user->disable();
             $user->remove();
             $this->createUser($user, false);
