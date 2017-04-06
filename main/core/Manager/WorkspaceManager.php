@@ -1285,7 +1285,7 @@ class WorkspaceManager
         $this->duplicateOrderedTools($workspace, $newWorkspace);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
         $this->duplicateResources(
-          $baseRoot->getChildren(),
+          $baseRoot->getChildren()->toArray(),
           $this->getArrayRolesByWorkspace($workspace),
           $user,
           $baseRoot
