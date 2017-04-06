@@ -4,7 +4,7 @@ import {update} from '../../utils/utils'
 export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}) => {
 
   switch (action.type) {
-    case PAPERS_INIT:
+    case PAPERS_INIT: {
       let withKeys = {}
       Object.keys(action.papers).forEach(key => {
         const paper = action.papers[key]
@@ -13,6 +13,7 @@ export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}
       return Object.assign({}, state, {
         papers: Object.assign({}, state.papers, withKeys)
       })
+    }      
     case PAPER_CURRENT:
       return Object.assign({}, state, {
         current: action.id
