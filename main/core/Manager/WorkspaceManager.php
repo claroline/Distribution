@@ -1562,4 +1562,57 @@ public function duplicateWorkspaceRoles(
 
         return $workspace;
     }
+
+    /*
+     * Big user search method ! hell yeah !
+     */
+    public function searchPartialList($searches, $page, $limit, $count = false)
+    {
+        $baseFieldsName = Workspace::getWorkspaceSearchableFields();
+
+        $qb = $this->om->createQueryBuilder();
+        $count ? $qb->select('count(w)') : $qb->select('w');
+        $qb->from('Claroline\CoreBundle\Entity\Workspace\Workspace', 'w');
+
+        //Admin can see everything, but the others... well they can only see their own organizations.
+        if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
+            $currentUser = $this->tokenStorage->getToken()->getUser();
+            $qb->leftJoin('w.organizations', 'uo');
+            $qb->leftJoin('uo.administrators', 'ua');
+            $qb->andWhere('ua.id = :userId');
+            $qb->setParameter('userId', $currentUser->getId());
+        }
+
+        foreach ($searches as $key => $search) {
+            foreach ($search as $id => $el) {
+                if ($key === 'is_model') {
+                    $qb->andWhere("w.{$key} = :{$key}{$id}");
+                    $qb->setParameter($key.$id, $el);
+                }
+                if (in_array($key, $baseFieldsName)) {
+                    $qb->andWhere("UPPER (w.{$key}) LIKE :{$key}{$id}");
+                    $qb->setParameter($key.$id, '%'.strtoupper($el).'%');
+                }
+                if ($key === 'organization_name') {
+                    $qb->join('w.organizations', "o{$id}");
+                    $qb->andWhere("UPPER (o{$id}.name) LIKE :{$key}{$id}");
+                    $qb->setParameter($key.$id, '%'.strtoupper($el).'%');
+                }
+                if ($key === 'organization_id') {
+                    $qb->join('u.organizations', "o{$id}");
+                    $qb->andWhere('o{$id}.id = :id');
+                    $qb->setParameter($key.$id, $el);
+                }
+            }
+        }
+
+        $query = $qb->getQuery();
+
+        if ($page !== null && $limit !== null && !$count) {
+            $query->setMaxResults($limit);
+            $query->setFirstResult($page * $limit);
+        }
+
+        return $count ? $query->getSingleScalarResult() : $query->getResult();
+    }
 }

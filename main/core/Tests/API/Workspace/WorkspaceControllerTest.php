@@ -90,7 +90,7 @@ class WorkspaceControllerTest extends TransactionalTestCase
 
         $this->logIn($admin);
 
-        $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new");
+        $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new/0");
         $data = $this->client->getResponse()->getContent();
         //at least it didn't crash
         $data = json_decode($data, true);
@@ -101,6 +101,22 @@ class WorkspaceControllerTest extends TransactionalTestCase
         $newParent = $this->client->getContainer()->get('claroline.manager.resource_manager')->getWorkspaceRoot($newWs);
 
         $this->assertEquals(count($newParent->getChildren()), 3);
+    }
+
+    public function testSearchWorkspace()
+    {
+        $admin = $this->createAdmin();
+        $this->persister->workspace('abc', $admin);
+        $this->persister->workspace('def', $admin);
+
+        $this->logIn($admin);
+
+        $url = '/api/workspace/page/0/limit/10/search.json';
+        $this->client->request('GET', $url.'?name[]=abc');
+        $data = $this->client->getResponse()->getContent();
+        $data = json_decode($data, true);
+
+        $this->assertEquals(1, count($data['workspaces']));
     }
 
     private function createAdmin()

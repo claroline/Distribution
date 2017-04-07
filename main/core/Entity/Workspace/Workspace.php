@@ -589,4 +589,14 @@ class Workspace
             $organizations :
             new ArrayCollection($organizations);
     }
+
+    public static function getWorkspaceSearchableFields()
+    {
+        return ['name', 'code'];
+    }
+
+    public static function getSearchableFields()
+    {
+        return self::getWorkspaceSearchableFields();
+    }
 }

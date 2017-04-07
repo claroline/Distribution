@@ -173,17 +173,6 @@ class WorkspaceController extends FOSRestController
     }
 
     /**
-     * @View()
-     * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
-     */
-    public function deleteWorkspaceAction(Workspace $workspace)
-    {
-        $this->workspaceManager->deleteWorkspace($workspace);
-
-        return ['success'];
-    }
-
-    /**
      * @View(serializerGroups={"api_workspace"})
      * @Put("workspace/{workspace}", name="put_workspace", options={ "method_prefix" = false })
      * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
@@ -240,26 +229,28 @@ class WorkspaceController extends FOSRestController
         return ['workspaces' => $workspaces, 'total' => $count];
     }
 
-    public function editAction(Workspace $workspace)
-    {
-        return $workspace;
-    }
-
-    public function deleteAction(Workspace $workspace)
-    {
-        return $workspace;
-    }
-
     /**
      * @View(serializerGroups={"api_workspace"})
-     * @Get("/workspace/copy/{workspace}/{name}", name="workspace_copy", options={ "method_prefix" = false })
+     * @Get("/workspace/copy/{workspace}/{name}/{isModel}", name="workspace_copy", options={ "method_prefix" = false })
      */
-    public function copyAction(Workspace $workspace, $name)
+    public function copyAction(Workspace $workspace, $name, $isModel)
     {
         $newWorkspace = new Workspace();
         $newWorkspace->setName($name);
-        $newWorkspace->setCode('[COPY] - '.$name);
+        $code = $isModel ? '[MODEL] - '.$name : '[COPY] - '.$name;
+        $newWorkspace->setCode($code);
 
         return $this->workspaceManager->copy($workspace, $newWorkspace);
+    }
+
+    /**
+     * @View()
+     * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
+     */
+    public function deleteWorkspaceAction(Workspace $workspace)
+    {
+        $this->workspaceManager->deleteWorkspace($workspace);
+
+        return ['success'];
     }
 }
