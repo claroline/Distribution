@@ -87,7 +87,7 @@ class WorkspaceControllerTest extends TransactionalTestCase
         $this->persister->directory('dir1', $parent, $workspace, $admin);
         $this->persister->directory('dir2', $parent, $workspace, $admin);
         $this->persister->directory('dir3', $parent, $workspace, $admin);
-
+        $this->persister->flush();
         $this->logIn($admin);
 
         $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new/0");
@@ -96,11 +96,7 @@ class WorkspaceControllerTest extends TransactionalTestCase
         $data = json_decode($data, true);
         $this->assertEquals($data['name'], 'new');
 
-        //performs additional checks here
-        $newWs = $this->client->getContainer()->get('claroline.manager.workspace_manager')->getWorkspaceById($data['id']);
-        $newParent = $this->client->getContainer()->get('claroline.manager.resource_manager')->getWorkspaceRoot($newWs);
-
-        $this->assertEquals(count($newParent->getChildren()), 3);
+        $this->assertEquals(count($data['name']), 3);
     }
 
     public function testSearchWorkspace()

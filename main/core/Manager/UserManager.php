@@ -685,14 +685,14 @@ class UserManager
             //TODO MODEL
             $workspace = $this->workspaceManager->copy(
                 $model,
-                $personalWorkspaceName,
-                $user->getUsername()
+                $personalWorkspaceName
             );
             $workspace->setCreator($user);
         }
 
         //add "my public documents" folder
         $resourceManager = $this->container->get('claroline.manager.resource_manager');
+        //TODO MODEL
         $resourceManager->addPublicFileDirectory($workspace);
         $workspace->setIsPersonal(true);
         $user->setPersonalWorkspace($workspace);

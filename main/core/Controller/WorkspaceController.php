@@ -353,11 +353,13 @@ class WorkspaceController extends Controller
         $this->workspaceManager->setLogger($logger);
 
         if ($form->isValid()) {
-            //TODO MODEL
             $model = $form->get('model')->getData();
             $workspace = $form->getData();
             $user = $this->tokenStorage->getToken()->getUser();
             $workspace->setCreator($user);
+            if (!$model) {
+                $model = $this->workspaceManager->getDefaultModel();
+            }
             $workspace = $this->workspaceManager->copy($model, $workspace);
             $this->tokenUpdater->update($this->tokenStorage->getToken());
             $route = $this->router->generate('claro_workspace_by_user');
