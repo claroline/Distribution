@@ -346,7 +346,8 @@ class CursusManager
         $defaultSessionDuration = 1,
         $withSessionEvent = true,
         array $validators = [],
-        $displayOrder = 500
+        $displayOrder = 500,
+        array $organizations = []
     ) {
         $course = new Course();
         $course->setTitle($title);
@@ -377,6 +378,9 @@ class CursusManager
         }
         foreach ($validators as $validator) {
             $course->addValidator($validator);
+        }
+        foreach ($organizations as $organization) {
+            $course->addOrganization($organization);
         }
         $this->persistCourse($course);
         $event = new LogCourseCreateEvent($course);
@@ -2293,7 +2297,7 @@ class CursusManager
         $this->zipCourses($courses, $archive);
     }
 
-    public function importCourses(array $datas, $withIndex = true)
+    public function importCourses(array $datas, array $organizations, $withIndex = true)
     {
         $courses = [];
         $i = 0;
@@ -2313,6 +2317,9 @@ class CursusManager
             if (isset($data['icon'])) {
                 $course->setIcon($data['icon']);
             }
+            foreach ($organizations as $organization) {
+                $course->addOrganization($organization);
+            }
             $this->om->persist($course);
 
             if ($withIndex) {
@@ -2331,7 +2338,7 @@ class CursusManager
         return $courses;
     }
 
-    public function importCursus(array $datas, array $courses = [])
+    public function importCursus(array $datas, array $organizations, array $courses = [])
     {
         $roots = [];
         $cursusChildren = [];
@@ -2387,7 +2394,7 @@ class CursusManager
             }
         }
 
-        return $this->importRootCursus($roots, $cursusChildren, $courses);
+        return $this->importRootCursus($roots, $cursusChildren, $courses, $organizations);
     }
 
     private function getAllCoursesCodes()
@@ -2434,7 +2441,7 @@ class CursusManager
         return $result;
     }
 
-    private function importRootCursus(array $roots, array $children, array $courses)
+    private function importRootCursus(array $roots, array $children, array $courses, array $organizations)
     {
         $this->om->startFlushSuite();
         $codes = $this->getAllCursusCodes();
@@ -2459,6 +2466,9 @@ class CursusManager
                 $code = $this->generateValidCode($root['code'], $codes);
                 $cursus->setCode($code);
             }
+            foreach ($organizations as $organization) {
+                $cursus->addOrganization($organization);
+            }
             $this->om->persist($cursus);
             $createdCursus[$root['id']] = $cursus;
             ++$index;
@@ -2473,6 +2483,7 @@ class CursusManager
                     $children,
                     $courses,
                     $codes,
+                    $organizations,
                     $createdCursus,
                     $index
                 );
@@ -2489,6 +2500,7 @@ class CursusManager
         array $children,
         array $courses,
         array $codes,
+        array $organizations,
         array &$createdCursus,
         &$index
     ) {
@@ -2514,6 +2526,9 @@ class CursusManager
                     $code = $this->generateValidCode($child['code'], $codes);
                     $cursus->setCode($code);
                 }
+                foreach ($organizations as $organization) {
+                    $cursus->addOrganization($organization);
+                }
                 $this->om->persist($cursus);
                 $createdCursus[$child['id']] = $cursus;
                 ++$index;
@@ -2528,6 +2543,7 @@ class CursusManager
                         $children,
                         $courses,
                         $codes,
+                        $organizations,
                         $createdCursus,
                         $index
                     );
@@ -3020,8 +3036,7 @@ class CursusManager
     public function getValidatorsRoles()
     {
         $roles = [];
-        $registrationTool = $this->toolManager
-            ->getAdminToolByName('claroline_cursus_tool_registration');
+        $registrationTool = $this->toolManager->getAdminToolByName('claroline_cursus_tool_registration');
 
         if (!is_null($registrationTool)) {
             $roles = $registrationTool->getRoles()->toArray();
@@ -4700,6 +4715,26 @@ class CursusManager
         $this->messageManager->send($message, true, false);
     }
 
+    public function getOrganizationsByCourse(Course $course)
+    {
+        $organizations = [];
+        $courseOrgas = $course->getOrganizations();
+        $courseCursus = $this->cursusRepo->findBy(['course' => $course]);
+
+        foreach ($courseOrgas as $orga) {
+            $organizations[$orga->getId()] = $orga;
+        }
+        foreach ($courseCursus as $cursus) {
+            $cursusOrgas = $cursus->getOrganizations();
+
+            foreach ($cursusOrgas as $orga) {
+                $organizations[$orga->getId()] = $orga;
+            }
+        }
+
+        return $organizations;
+    }
+
     /***************************************************
      * Access to CursusDisplayedWordRepository methods *
      ***************************************************/
@@ -4808,6 +4843,15 @@ class CursusManager
             $this->courseRepo->findSearchedCourses($search, $orderedBy, $order);
 
         return $withPager ? $this->pagerFactory->createPagerFromArray($courses, $page, $max) : $courses;
+    }
+
+    public function getAllCoursesByOrganizations(array $organizations, $search = '', $orderedBy = 'title', $order = 'ASC')
+    {
+        $courses = empty($search) ?
+            $this->courseRepo->findAllCoursesByOrganizations($organizations, $orderedBy, $order) :
+            $this->courseRepo->findSearchedCoursesByOrganizations($organizations, $search, $orderedBy, $order);
+
+        return $courses;
     }
 
     public function getUnmappedCoursesByCursus(

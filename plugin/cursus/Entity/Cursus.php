@@ -384,6 +384,11 @@ class Cursus
         return $this;
     }
 
+    public function emptyOrganizations()
+    {
+        $this->organizations->clear();
+    }
+
     public function getTitleAndCode()
     {
         $result = $this->title;

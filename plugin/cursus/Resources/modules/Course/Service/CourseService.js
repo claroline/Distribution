@@ -78,11 +78,13 @@ export default class CourseService {
     } else {
       this.initialized = false
       this.courses.splice(0, this.courses.length)
-      const route = cursusId ? Routing.generate('api_get_all_unmapped_courses', {cursus: cursusId}) : Routing.generate('api_get_all_courses')
+      const route = cursusId ?
+        Routing.generate('api_get_all_unmapped_courses', {cursus: cursusId}) :
+        Routing.generate('api_get_all_courses')
 
       return this.$http.get(route).then(d => {
         if (d['status'] === 200) {
-          angular.merge(this.courses, d['data'])
+          angular.merge(this.courses, JSON.parse(d['data']))
           this.currentCursusId = cursusId
           this.hasChanged = false
           this.initialized = true

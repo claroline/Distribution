@@ -140,11 +140,18 @@ class CourseController extends Controller
      *     name="claro_cursus_courses_export",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * @param User $user
      */
-    public function coursesExportAction()
+    public function coursesExportAction(User $user)
     {
-        $courses = $this->cursusManager->getAllCourses('', 'id', 'ASC', false);
+        if ($this->authorization->isGranted('ROLE_ADMIN')) {
+            $courses = $this->cursusManager->getAllCourses('', 'id', 'ASC', false);
+        } else {
+            $organizations = $user->getAdministratedOrganizations()->toArray();
+            $courses = $this->cursusManager->getAllCoursesByOrganizations($organizations, '', 'id');
+        }
         $zipName = 'courses.zip';
         $mimeType = 'application/zip';
         $file = $this->cursusManager->zipDatas($courses, 'course');

@@ -184,6 +184,7 @@
     "no_template": "No template",
     "no_tutor": "No trainer",
     "no_unstarted_session": "No unstarted session",
+    "no_use_right_msg": "You don't have the required rights to use this tool.",
     "not_authorized": "Not allowed",
     "nothing_to_configure": "Nothing to configure",
     "ongoing_sessions": "Ongoing sessions",

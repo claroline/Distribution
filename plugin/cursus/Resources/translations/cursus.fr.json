@@ -184,6 +184,7 @@
     "no_template": "Aucun modèle",
     "no_tutor": "Aucun formateur",
     "no_unstarted_session": "Aucune session à venir",
+    "no_use_right_msg": "Vous n'avez pas les droits suffisants pour utiliser cet outil.",
     "not_authorized": "Non autorisé",
     "not_blank_error": "Cette valeur ne doit pas être vide.",
     "nothing_to_configure": "Rien à configurer",
