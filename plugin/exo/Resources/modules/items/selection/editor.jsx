@@ -307,7 +307,9 @@ class ColorElement extends Component {
     return (
       <div>
         <ColorPicker color={this.props.color.code}
-          onPick={(e) => {this.props.onChange(actions.highlightEditColor(this.props.color.id, e.hex))}}>
+          onPick={(e) => {this.props.onChange(actions.highlightEditColor(this.props.color.id, e.hex))}}
+          autoOpen={this.props.autoOpen}
+        >
         </ColorPicker>
         {'\u00a0'}
         <i onClick={() => this.props.onChange(actions.highlightRemoveColor(this.props.color.id))} className="fa fa-trash-o pointer"></i>
@@ -322,6 +324,7 @@ ColorElement.propTypes = {
     code: T.string.isRequired,
     id: T.string.isRequired
   }),
+  autoOpen: T.bool.isRequired,
   onChange: T.func.isRequired,
   _errors: T.object
 }
@@ -582,7 +585,7 @@ export class Selection extends Component {
             <div>{tex('possible_color_choices')}</div>
             {
               this.props.item.colors.map((color, index) => {
-                return (<ColorElement key={'color' + index} index={index} color={color} onChange={this.props.onChange}/>)
+                return (<ColorElement key={'color' + index} index={index} color={color} onChange={this.props.onChange} autoOpen={color._autoOpen}/>)
               })
             }
               {get(this.props.item, '_errors.colors') &&

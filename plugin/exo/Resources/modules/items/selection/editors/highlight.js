@@ -30,7 +30,8 @@ export function reduce(item = {}, action) {
 
       colors.push({
         id: makeId(),
-        code: '#'+(Math.random()*0xFFFFFF<<0).toString(16)
+        code: '#'+(Math.random()*0xFFFFFF<<0).toString(16),
+        _autoOpen: true
       })
 
       return Object.assign({}, item, {colors})

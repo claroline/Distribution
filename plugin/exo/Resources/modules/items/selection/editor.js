@@ -54,7 +54,13 @@ function decorate(item) {
       solution.answers = answers
     })
 
-    item = Object.assign({}, item, {solutions})
+    const colors = cloneDeep(item.colors)
+
+    colors.forEach(color => {
+      color._autoOpen = false
+    })
+
+    item = Object.assign({}, item, {solutions, colors})
   }
 
   //setting true positions here
@@ -284,6 +290,7 @@ function toHighlightMode(item) {
 
   return Object.assign({}, item, {colors: [{
     id: makeId(),
+    _autoOpen: false,
     code: '#'+(Math.random()*0xFFFFFF<<0).toString(16) //rainbow surfing robot unicorns were born here
   }], solutions})
 }
