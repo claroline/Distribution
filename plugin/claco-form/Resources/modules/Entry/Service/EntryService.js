@@ -9,11 +9,12 @@
 
 /*global Routing*/
 /*global Translator*/
-//import fieldFormTemplate from '../Partial/field_form_modal.html'
+import entrySharesManagementTemplate from '../Partial/entry_shares_management_modal.html'
 
 export default class EntryService {
-  constructor($http, $uibModal, ClarolineAPIService, FieldService) {
+  constructor($http, $window, $uibModal, ClarolineAPIService, FieldService) {
     this.$http = $http
+    this.$window = $window
     this.$uibModal = $uibModal
     this.ClarolineAPIService = ClarolineAPIService
     this.FieldService = FieldService
@@ -25,10 +26,12 @@ export default class EntryService {
     this.managerEntries = EntryService._getGlobal('managerEntries')
     this.nbEntries = EntryService._getGlobal('nbEntries')
     this.nbPublishedEntries = EntryService._getGlobal('nbPublishedEntries')
+    this.sharedEntries = EntryService._getGlobal('sharedEntries')
     this.categoryFilter = ''
     this.keywordFilter = ''
     this._updateEntryCallback = this._updateEntryCallback.bind(this)
     this._removeEntryCallback = this._removeEntryCallback.bind(this)
+    this._removeAllEntriesCallback = this._removeAllEntriesCallback.bind(this)
     this.initialize()
   }
 
@@ -77,6 +80,15 @@ export default class EntryService {
     if (entry['status'] === 1) {
       --this.nbPublishedEntries
     }
+  }
+
+  _removeAllEntriesCallback() {
+    this.entries.splice(0, this.entries.length)
+    this.myEntries.splice(0, this.myEntries.length)
+    this.managerEntries.splice(0, this.managerEntries.length)
+    this.sharedEntries = {}
+    this.nbEntries = 0
+    this.nbPublishedEntries = 0
   }
 
   initialize() {
@@ -228,7 +240,7 @@ export default class EntryService {
         const valueDate = new Date(v['fieldFacetValue']['value'])
         entry[fieldLabel] = `${valueDate.getDate()}/${valueDate.getMonth() + 1}/${valueDate.getFullYear()}`
       } else if (v['fieldFacetValue']['field_facet']['type'] === 6) {
-        entry[fieldLabel] = v['fieldFacetValue']['value'].join(', ')
+        entry[fieldLabel] = v['fieldFacetValue']['value'] ? v['fieldFacetValue']['value'].join(', ') : ''
       } else if (v['fieldFacetValue']['field_facet']['type'] === 7) {
         entry[fieldLabel] = this.FieldService.getCountryNameFromCode(v['fieldFacetValue']['value'])
       } else {
@@ -274,6 +286,67 @@ export default class EntryService {
 
   setKeywordFilter(filter) {
     this.keywordFilter = filter
+  }
+
+  getEntryUser(entryId) {
+    const url = Routing.generate('claro_claco_form_entry_user_retrieve', {entry: entryId})
+
+    return this.$http.get(url).then(d => {
+      if (d['status'] === 200) {
+        return JSON.parse(d['data'])
+      }
+    })
+  }
+
+  saveEntryUser(entryId, entryUser) {
+    const url = Routing.generate('claro_claco_form_entry_user_save', {entry: entryId})
+    this.$http.put(url, {entryUserData: entryUser})
+  }
+
+  downloadPdf(entryId) {
+    this.$window.location.href = Routing.generate('claro_claco_form_entry_pdf_download', {entry: entryId})
+  }
+
+  showEntrySharesManagement(entry) {
+    this.$uibModal.open({
+      template: entrySharesManagementTemplate,
+      controller: 'EntrySharesManagementModalCtrl',
+      controllerAs: 'cfc',
+      resolve: {
+        entry: () => { return entry }
+      }
+    })
+  }
+
+  shareEntry(entryId, usersIds) {
+    const url = Routing.generate('claro_claco_form_entry_users_share', {entry: entryId})
+    this.$http.put(url, {usersIds: usersIds})
+  }
+
+  unshareEntry(entryId, userId) {
+    const url = Routing.generate('claro_claco_form_entry_user_unshare', {entry: entryId, user: userId})
+    this.$http.delete(url)
+  }
+
+  getSharedUsers(entryId) {
+    const url = Routing.generate('claro_claco_form_entry_shared_users_list', {entry: entryId})
+
+    return this.$http.get(url)
+  }
+
+  isShared(entryId, userId) {
+    return this.sharedEntries[entryId] && this.sharedEntries[entryId][userId]
+  }
+
+  deleteAllEntries() {
+    const url = Routing.generate('claro_claco_form_all_entries_delete', {clacoForm: this.resourceId})
+
+    this.ClarolineAPIService.confirm(
+      {url, method: 'DELETE'},
+      this._removeAllEntriesCallback,
+      Translator.trans('delete_all_entries', {}, 'clacoform'),
+      Translator.trans('delete_all_entries_confirm_msg', {}, 'clacoform')
+    )
   }
 
   static _getGlobal(name) {
