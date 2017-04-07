@@ -4,6 +4,7 @@ namespace UJM\LtiBundle\Listener;
 
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
+use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -135,6 +136,18 @@ class LtiListener
         $response = $this->httpKernel
             ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("delete_ujm_lti_resource")
+     *
+     * @param DeleteResourceEvent $event
+     */
+    public function onDelete(DeleteResourceEvent $event)
+    {
+        $em = $this->container->get('doctrine.orm.entity_manager');
+        $em->remove($event->getResource());
         $event->stopPropagation();
     }
 }
