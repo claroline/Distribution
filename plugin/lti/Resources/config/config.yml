@@ -5,12 +5,6 @@ plugin:
         - name: 'LTI'
           class: 'fa fa-cog'
 
-    tools:
-        - name: ujm_lti_tool_apps
-          class: 'fa fa-cog'
-          is_displayable_in_workspace: true
-          is_displayable_in_desktop: false
-
     resources:
         - class: UJM\LtiBundle\Entity\LtiResource
           name: ujm_lti_resource

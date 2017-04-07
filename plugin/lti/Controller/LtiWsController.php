@@ -2,7 +2,6 @@
 
 namespace UJM\LtiBundle\Controller;
 
-use Claroline\CoreBundle\ClarolineCoreBundle;
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Proxies\__CG__\Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -18,83 +17,6 @@ use UJM\LtiBundle\Entity\LtiResource;
  */
 class LtiWsController extends Controller
 {
-    /**
-     * @Route("/tool_apps/{workspace}", name="ujm_lti_tool_apps")
-     *
-     * @Template
-     *
-     * @param Workspace $workspace
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function tool_appsAction(Workspace $workspace)
-    {
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $isWorkspaceManager = $this->isWorkspaceManager($workspace, $user);
-        $em = $this->getDoctrine()->getManager();
-        if ($isWorkspaceManager === true) {
-            $apps = $em->getRepository('UJMLtiBundle:LtiApp')->findAll();
-        } else {
-            $apps = $em->getRepository('UJMLtiBundle:LtiApp')->getAppsWs($workspace);
-        }
-        $vars['workspace'] = $workspace;
-        $vars['workspaceManager'] = $isWorkspaceManager;
-        $vars['apps'] = $apps;
-        foreach ($vars['apps'] as $app) {
-            $ltiParams = $this->getLtiData($workspace, $app);
-            $vars['ltiDatas']['app_'.$app->getId()] = $ltiParams['ltiData'];
-            $vars['signature']['app_'.$app->getId()] = $ltiParams['signature'];
-            $vars['published']['app_'.$app->getId()] = $this->appAlreadyPublish($app->getId(), $workspace->getId());
-        }
-
-        return $this->render('UJMLtiBundle:Lti:tool_apps.html.twig', $vars);
-    }
-
-    /**
-     * @Route("/tool_apps/publish/{wsId}/{appId}", name="ujm_lti_publish_app")
-     *
-     * @Template
-     *
-     * @param int wsId
-     * @param int appId
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function tool_publish_appAction($wsId, $appId)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $app = $em->getRepository('UJMLtiBundle:LtiApp')->find($appId);
-        $ws = $em->getRepository('ClarolineCoreBundle:Workspace\Workspace')->find($wsId);
-        $app->addWorkspace($ws);
-        $em->persist($app);
-        $em->flush();
-
-        return $this->forward('UJMLtiBundle:LtiWs:tool_apps', ['workspace' => $ws]);
-    }
-
-    /**
-     * @Route("/tool_apps/unpublish/{wsId}/{appId}", name="ujm_lti_unpublish_app")
-     *
-     * @Template
-     *
-     * @param int wsId
-     * @param int appId
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function tool_unpublish_appAction($wsId, $appId)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $app = $em->getRepository('UJMLtiBundle:LtiApp')->find($appId);
-        $ws = $em->getRepository('ClarolineCoreBundle:Workspace\Workspace')->find($wsId);
-
-        $app->removeWorkspace($ws);
-        $em->persist($app);
-        $em->flush();
-
-        return $this->forward('UJMLtiBundle:LtiWs:tool_apps', ['workspace' => $ws]);
-    }
-
     /**
      * @Route("/open_app/{resource}", name="ujm_lti_open_app")
      *
@@ -203,19 +125,5 @@ class LtiWsController extends Controller
         }
 
         return $isWorkspaceManager;
-    }
-
-    /**
-     * @param int $appId
-     * @param int $wsId
-     *
-     * @return int
-     */
-    private function appAlreadyPublish($appId, $wsId)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $app = $em->getRepository('UJMLtiBundle:LtiApp')->appAlreadyPublish($appId, $wsId);
-
-        return count($app);
     }
 }
