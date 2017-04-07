@@ -1586,7 +1586,11 @@ public function duplicateWorkspaceRoles(
         foreach ($searches as $key => $search) {
             foreach ($search as $id => $el) {
                 if ($key === 'is_model') {
-                    $qb->andWhere("w.{$key} = :{$key}{$id}");
+                    $qb->andWhere("w.isModel = :{$key}{$id}");
+                    $qb->setParameter($key.$id, $el);
+                }
+                if ($key === 'is_personal') {
+                    $qb->andWhere("w.isPersonal = :{$key}{$id}");
                     $qb->setParameter($key.$id, $el);
                 }
                 if (in_array($key, $baseFieldsName)) {
