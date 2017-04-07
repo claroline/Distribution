@@ -1272,14 +1272,9 @@ class WorkspaceManager
         $this->om->endFlushSuite();
     }
 
-    public function copy(Workspace $workspace, $name, $code = null)
+    public function copy(Workspace $workspace, Workspace $newWorkspace)
     {
-        $newWorkspace = new Workspace();
-        $newWorkspace->setName($name);
-        if (!$code) {
-            $code = uniqid('', true);
-        }
-        $newWorkspace->setCode($code);
+        $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
@@ -1551,7 +1546,8 @@ public function duplicateWorkspaceRoles(
         $workspace = $this->getOneByCode('default');
 
         if (!$workspace) {
-            //don't log this or it'll crash everything during the platform installation (some database tables aren't already created because they come from plugins)
+            //don't log this or it'll crash everything during the platform installation
+            //(some database tables aren't already created because they come from plugins)
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
             $workspace = new Workspace();
             $workspace->setName('default');
@@ -1559,7 +1555,7 @@ public function duplicateWorkspaceRoles(
             $workspace->setIsModel(true);
             $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());
 
-            $template = new File($this->container->getParameter('claroline.param.default_template'));
+            $template = new File($this->container->getParameter('claroline.param.personal_template'));
             $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->default();
         }

@@ -256,6 +256,10 @@ class WorkspaceController extends FOSRestController
      */
     public function copyAction(Workspace $workspace, $name)
     {
-        return $this->workspaceManager->copy($workspace, $name);
+        $newWorkspace = new Workspace();
+        $newWorkspace->setName($name);
+        $newWorkspace->setCode('[COPY] - '.$name);
+
+        return $this->workspaceManager->copy($workspace, $newWorkspace);
     }
 }
