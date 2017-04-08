@@ -1,3 +1,5 @@
+/* global jsPlumb */
+
 import {
   jsPlumbDefaultConfig,
   jsPlumbEnabledConfig,
@@ -5,8 +7,6 @@ import {
 } from './../enums'
 
 export const utils = {}
-
-/* global jsPlumb */
 
 /**
  * @var id solution id

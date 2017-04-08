@@ -1,5 +1,7 @@
-import {notBlank, number, chain} from './validate'
 import {tex, transChoice} from '#/main/core/translation'
+
+import {notBlank, number, chain} from './validate'
+import {makeId} from './utils'
 
 export const keywords = {}
 
@@ -54,6 +56,13 @@ keywords.validate = (collection, useScore, minKeywords) => {
   return errors
 }
 
+/**
+ * Checks if a keywords collection has duplicated items (based on text and caseSensitive).
+ *
+ * @param {Array} keywords - the list of keywords to check
+ *
+ * @returns {boolean} whether there are duplicates or not
+ */
 keywords.hasDuplicates = (keywords) => {
   let hasDuplicates = false
   keywords.forEach(keyword => {
@@ -68,3 +77,16 @@ keywords.hasDuplicates = (keywords) => {
 
   return hasDuplicates
 }
+
+/**
+ * Creates a new keyword object.
+ *
+ * @return {object} the new keyword
+ */
+keywords.createNew = () => ({
+  _id: makeId(),
+  text: '',
+  caseSensitive: false,
+  score: 1,
+  feedback: ''
+})

@@ -4,7 +4,7 @@ import classes from 'classnames'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 
-import {TooltipElement} from '#/main/core/layout/components/tooltips.jsx'
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {ListSearch} from '#/main/core/layout/list/components/search.jsx'
 
 const ColumnsButton = props =>

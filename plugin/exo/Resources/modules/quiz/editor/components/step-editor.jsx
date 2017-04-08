@@ -437,6 +437,7 @@ export const StepEditor = props =>
   <div>
     <PanelGroup accordion activeKey={props.activePanelKey}>
       <Panel
+        className="step-parameters"
         eventKey={makeStepPropPanelKey(props.step.id)}
         header={
           <ParametersHeader

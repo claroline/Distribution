@@ -74,11 +74,13 @@ export class MatchFeedback extends Component
       })
 
       const connectionClass = 'connection-' + answer.firstId + '-' + answer.secondId
-      connection.addClass(connectionClass)
+      if (connection) { // connection doesn't exist in tests has jsPlumb is mocked
+        connection.addClass(connectionClass)
 
-      connection.bind('click', (conn) => {
-        this.handleConnectionClick(conn)
-      })
+        connection.bind('click', (conn) => {
+          this.handleConnectionClick(conn)
+        })
+      }
     }
   }
 

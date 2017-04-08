@@ -7,8 +7,8 @@ import Popover from 'react-bootstrap/lib/Popover'
 import {t, tex} from '#/main/core/translation'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
-import {ErrorBlock} from './../../components/form/error-block.jsx'
-import {TooltipElement} from './../../components/form/tooltip-element.jsx'
+import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 
 /**
@@ -38,10 +38,11 @@ class KeywordItem extends Component {
         {!this.props.showScore &&
           <div className="keyword-expected">
             <TooltipElement
-              id={`tooltip-${this.props.index}-keyword-expected`}
+              id={`tooltip-${this.props.keyword._id}-keyword-expected`}
               tip={tex('grid_expected_keyword')}
             >
               <input
+                id={`keyword-${this.props.keyword._id}-expected`}
                 type="checkbox"
                 checked={this.props.keyword.expected}
                 onChange={e => this.props.updateKeyword('expected', e.target.checked)}
@@ -53,7 +54,7 @@ class KeywordItem extends Component {
         <div className="text-fields">
           <input
             type="text"
-            id={`solution-${this.props.index}-text`}
+            id={`keyword-${this.props.keyword._id}-text`}
             title={tex('response')}
             value={this.props.keyword.text}
             className="form-control"
@@ -64,7 +65,7 @@ class KeywordItem extends Component {
           {this.state.showFeedback &&
             <div className="feedback-container">
               <Textarea
-                id={`solution-${this.props.index}-feedback`}
+                id={`keyword-${this.props.keyword._id}-feedback`}
                 title={tex('feedback')}
                 content={this.props.keyword.feedback}
                 onChange={feedback => this.props.updateKeyword('feedback', feedback)}
@@ -75,10 +76,11 @@ class KeywordItem extends Component {
 
         <div className="keyword-case-sensitive">
           <TooltipElement
-            id={`tooltip-${this.props.index}-keyword-case-sensitive`}
+            id={`tooltip-${this.props.keyword._id}-keyword-case-sensitive`}
             tip={tex('words_case_sensitive')}
           >
             <input
+              id={`keyword-${this.props.index}-case-sensitive`}
               type="checkbox"
               disabled={!this.props.showCaseSensitive}
               title={tex('words_case_sensitive')}
@@ -91,7 +93,7 @@ class KeywordItem extends Component {
         <div className="right-controls">
           {this.props.showScore &&
             <input
-              id={`keyword-${this.props.index}-score`}
+              id={`keyword-${this.props.keyword._id}-score`}
               title={tex('score')}
               type="number"
               className="form-control keyword-score"
@@ -101,7 +103,7 @@ class KeywordItem extends Component {
           }
 
           <TooltipButton
-            id={`keyword-${this.props.index}-feedback-toggle`}
+            id={`keyword-${this.props.keyword._id}-feedback-toggle`}
             className="btn-link-default"
             label={<span className="fa fa-fw fa-comments-o"/>}
             title={tex('words_feedback_info')}
@@ -109,7 +111,7 @@ class KeywordItem extends Component {
           />
 
           <TooltipButton
-            id={`keyword-${this.props.index}-delete`}
+            id={`keyword-${this.props.keyword._id}-delete`}
             className="btn-link-default"
             enabled={this.props.keyword._deletable}
             title={t('delete')}
@@ -123,8 +125,8 @@ class KeywordItem extends Component {
 }
 
 KeywordItem.propTypes = {
-  index: T.number.isRequired,
   keyword: T.shape({
+    _id: T.string.isRequired,
     text: T.string.isRequired,
     feedback: T.string,
     score: T.number,
@@ -168,15 +170,14 @@ const KeywordItems = props =>
     }
 
     <ul>
-      {props.keywords.map((keyword, index) =>
+      {props.keywords.map(keyword =>
         <KeywordItem
-          key={index}
-          index={index}
+          key={keyword._id}
           keyword={keyword}
           showCaseSensitive={props.showCaseSensitive}
           showScore={props.showScore}
-          updateKeyword={(property, newValue) => props.updateKeyword(keyword, property, newValue)}
-          removeKeyword={() => props.removeKeyword(keyword)}
+          updateKeyword={(property, newValue) => props.updateKeyword(keyword._id, property, newValue)}
+          removeKeyword={() => props.removeKeyword(keyword._id)}
         />
       )}
     </ul>
@@ -209,6 +210,7 @@ KeywordItems.propTypes = {
    * The list of keywords to edit.
    */
   keywords: T.arrayOf(T.shape({
+    _id: T.string.isRequired,
     score: T.number.isRequired,
     text: T.string.isRequired,
     feedback: T.string,

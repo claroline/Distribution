@@ -38,9 +38,9 @@ class ResourceNodeManager
                 'license'    => $resourceNode->getLicense(),
                 'published'  => $resourceNode->isPublished(),
                 'portal'     => $resourceNode->isPublishedToPortal(),
-                'exportable' => $resourceNode->getResourceType()->isExportable(),
-                'editable'   => true,
-                'deletable'  => true,
+                'exportable' => $resourceNode->getResourceType()->isExportable(), // todo : check rights
+                'editable'   => true, // todo : check rights
+                'deletable'  => true, // todo : check rights
                 'authors' => [[
                     'id'       => $resourceNode->getCreator()->getGuid(),
                     'name'     => $resourceNode->getCreator()->getFullName(),
@@ -73,8 +73,8 @@ class ResourceNodeManager
             ],
             'user' => [
                 'favorite' => true, // it comes from a plugin
-                'like' => true,
-                'notes' => [],
+                'like' => true, // it comes from a plugin
+                'notes' => [], // it comes from a plugin
             ],
         ];
     }

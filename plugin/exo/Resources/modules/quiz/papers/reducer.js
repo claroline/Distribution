@@ -1,12 +1,12 @@
 import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
 import {update} from '../../utils/utils'
 
-export const reducePapers = (state = {papers: [], isFetched: false}, action = {}) => {
+export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}) => {
   let index
   switch (action.type) {
     case PAPERS_INIT:
       return Object.assign({}, state, {
-        papers: action.papers
+        papers: Object.assign({}, state.papers, action.papers)
       })
     case PAPER_CURRENT:
       return Object.assign({}, state, {

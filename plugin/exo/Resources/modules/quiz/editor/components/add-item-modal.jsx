@@ -1,6 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
+
 import {trans} from '#/main/core/translation'
 import {listItemMimeTypes, getDefinition} from './../../../items/item-types'
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'

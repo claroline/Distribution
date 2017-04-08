@@ -1,11 +1,8 @@
 import React, { PropTypes as T } from 'react'
 import classes from 'classnames'
-
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
 
-// todo : use Tooltip element
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 
 /**
  * Base component for each page actions.
@@ -14,11 +11,10 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
  * @constructor
  */
 const PageAction = props =>
-  <OverlayTrigger
-    placement='bottom'
-    overlay={
-      <Tooltip id={props.id}>{props.title}</Tooltip>
-    }
+  <TooltipElement
+    id={props.id}
+    position="bottom"
+    tip={props.title}
   >
     {typeof props.action === 'function' ?
       <button
@@ -56,7 +52,7 @@ const PageAction = props =>
         {props.children}
       </a>
     }
-  </OverlayTrigger>
+  </TooltipElement>
 
 PageAction.propTypes = {
   id: T.string.isRequired,
@@ -97,11 +93,10 @@ FullScreenAction.propTypes = {
 }
 
 const MoreAction = props =>
-  <OverlayTrigger
-    placement="bottom"
-    overlay={
-      <Tooltip id="page-more-title">Show more actions</Tooltip>
-    }
+  <TooltipElement
+    id="page-more-title"
+    position="bottom"
+    tip="Show more actions"
   >
     <DropdownButton
       id="page-more"
@@ -113,7 +108,7 @@ const MoreAction = props =>
     >
       {props.children}
     </DropdownButton>
-  </OverlayTrigger>
+  </TooltipElement>
 
 MoreAction.propTypes = {
   children: T.node.isRequired

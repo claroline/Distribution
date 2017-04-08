@@ -136,9 +136,8 @@ Layout.propTypes = {
     maxAttempts: T.number.isRequired
   }).isRequired,
   meta: T.shape({
-    created: T.string.isRequired,
     userPaperCount: T.number.isRequired
-  })
+  }).isRequired
 }
 
 Layout.defaultProps = {
@@ -175,26 +174,9 @@ Overview.propTypes = {
   editable: T.bool.isRequired,
   quiz: T.shape({
     description: T.string,
-    parameters: T.shape({
-      showMetadata: T.bool.isRequired,
-      type: T.string.isRequired,
-      randomOrder: T.string.isRequired,
-      randomPick: T.string.isRequired,
-      pick: T.number.isRequired,
-      duration: T.number.isRequired,
-      maxAttempts: T.number.isRequired,
-      interruptible: T.bool.isRequired,
-      showCorrectionAt: T.string.isRequired,
-      correctionDate: T.string,
-      anonymizeAttempts: T.bool.isRequired,
-      showScoreAt: T.string.isRequired
-    }).isRequired,
-    meta: T.shape({
-      created: T.string.isRequired,
-      userPaperCount: T.number.isRequired
-    }).isRequired
-  }).isRequired,
-  steps: T.object.isRequired,
+    meta: T.object.isRequired,
+    parameters: T.object.isRequired
+  }).isRequired
 }
 
 export {Overview}

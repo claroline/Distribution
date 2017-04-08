@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 
-import { TooltipElement } from '#/main/core/layout/components/tooltips.jsx'
+import { TooltipElement } from '#/main/core/layout/components/tooltip-element.jsx'
 
 /**
  * Link element.

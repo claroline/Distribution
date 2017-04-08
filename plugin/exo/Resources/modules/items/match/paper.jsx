@@ -85,11 +85,13 @@ export class MatchPaper extends Component
         })
 
         const connectionClass = 'connection-' + answer.firstId + '-' + answer.secondId
-        connection.addClass(connectionClass)
+        if (connection) {
+          connection.addClass(connectionClass)
 
-        connection.bind('click', (conn) => {
-          this.handleConnectionClick(conn)
-        })
+          connection.bind('click', (conn) => {
+            this.handleConnectionClick(conn)
+          })
+        }
       }
     } else {
       for (const solution of this.props.item.solutions) {

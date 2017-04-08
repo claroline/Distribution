@@ -1,6 +1,7 @@
 import React from 'react'
 import {shallow} from 'enzyme'
-import {spyConsole, renew, ensure} from './../../utils/test'
+
+import {spyConsole, renew, ensure} from '#/main/core/tests'
 import {ErrorBlock} from './error-block.jsx'
 
 describe('<ErrorBlock/>', () => {
@@ -18,7 +19,7 @@ describe('<ErrorBlock/>', () => {
   })
 
   it('renders a simple warning if needed', () => {
-    const block = shallow(<ErrorBlock text="ERROR" warnOnly/>)
+    const block = shallow(<ErrorBlock text="ERROR" warnOnly={true} />)
     ensure.propTypesOk()
     ensure.equal(block.hasClass('text-warning'), true)
   })

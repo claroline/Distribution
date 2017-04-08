@@ -5,7 +5,7 @@ import get from 'lodash/get'
 import {tex, t} from '#/main/core/translation'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
-import {ErrorBlock} from './../../components/form/error-block.jsx'
+import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {actions} from './editor'
 import {utils} from './utils/utils'
 
@@ -28,7 +28,9 @@ function drawSolutions(solutions, jsPlumbInstance){
     })
 
     const connectionClass = 'connection-' + solution.firstId + '-' + solution.secondId
-    connection.addClass(connectionClass)
+    if (connection) { // connection doesn't exist in tests has jsPlumb is mocked
+      connection.addClass(connectionClass)
+    }
   }
 }
 
@@ -56,7 +58,7 @@ class MatchLinkPopover extends Component {
                 title={'delete'}
                 enabled={this.props.solution._deletable}
                 className="btn-link-default"
-                label={<span className="fa fa-fw fa-trash-o"></span>}
+                label={<span className="fa fa-fw fa-trash-o" />}
                 onClick={() => this.props.solution._deletable &&
                 this.props.handleConnectionDelete(this.props.solution.firstId, this.props.solution.secondId)
                 }
@@ -65,7 +67,7 @@ class MatchLinkPopover extends Component {
                 id={`match-connection-${this.props.solution.firstId}-${this.props.solution.secondId}-close`}
                 title={'close'}
                 className="btn-link-default"
-                label={<span className="fa fa-fw fa-times"></span>}
+                label={<span className="fa fa-fw fa-times" />}
                 onClick={() => this.props.handlePopoverClose()}
               />
             </div>
@@ -86,7 +88,7 @@ class MatchLinkPopover extends Component {
                id={`solution-${this.props.solution.firstId}-${this.props.solution.secondId}-feedback-toggle`}
                className="btn-link-default"
                title={tex('feedback_association_created')}
-               label={<span className="fa fa-fw fa-comments-o"></span>}
+               label={<span className="fa fa-fw fa-comments-o" />}
                onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
              />
           </div>
@@ -234,7 +236,9 @@ class Match extends Component {
       const firstId = connection.sourceId.replace('source_', '')
       const secondId = connection.targetId.replace('target_', '')
       const connectionClass = 'connection-' + firstId + '-' + secondId
-      connection.connection.addClass(connectionClass)
+      if (connection) {
+        connection.connection.addClass(connectionClass)
+      }
       const positions = getPopoverPosition(connectionClass, this.props.item.id)
       const solution = {
         firstId: firstId,

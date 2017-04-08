@@ -1,6 +1,6 @@
 import React, {PropTypes as T} from 'react'
 import {tex} from '#/main/core/translation'
-import {TooltipElement} from './../../../components/form/tooltip-element.jsx'
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 
 export const ValidationStatus = props =>
   <TooltipElement

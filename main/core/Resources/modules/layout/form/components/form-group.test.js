@@ -1,6 +1,7 @@
 import React from 'react'
 import {shallow, mount} from 'enzyme'
-import {spyConsole, renew, ensure} from './../../utils/test'
+
+import {spyConsole, renew, ensure} from '#/main/core/tests'
 import {FormGroup} from './form-group.jsx'
 
 describe('<FormGroup/>', () => {

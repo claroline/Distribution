@@ -27,6 +27,7 @@ const Resource = props =>
         fullscreen={props.fullscreen}
         toggleFullscreen={props.toggleFullscreen}
         togglePublication={props.togglePublication}
+        showModal={props.showModal}
       />
     </PageHeader>
 
