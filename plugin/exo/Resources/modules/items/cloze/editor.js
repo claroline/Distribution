@@ -31,9 +31,9 @@ export const actions = {
   addAnswer: makeActionCreator(ADD_ANSWER, 'holeId'),
   saveHole: makeActionCreator(SAVE_HOLE),
   removeHole: makeActionCreator(REMOVE_HOLE, 'holeId'),
-  removeAnswer: makeActionCreator(REMOVE_ANSWER, 'holeId', 'keyword'),
+  removeAnswer: makeActionCreator(REMOVE_ANSWER, 'holeId', 'keywordId'),
   closePopover: makeActionCreator(CLOSE_POPOVER),
-  updateAnswer: (holeId, keyword, parameter, value) => {
+  updateAnswer: (holeId, keywordId, parameter, value) => {
     invariant(
       ['text', 'caseSensitive', 'feedback', 'score'].indexOf(parameter) > -1,
       'answer attribute is not valid'
@@ -42,7 +42,7 @@ export const actions = {
 
     return {
       type: UPDATE_ANSWER,
-      holeId, keyword, parameter, value
+      holeId, keywordId, parameter, value
     }
   }
 }
@@ -60,6 +60,7 @@ function decorate(item) {
     solutions: item.solutions.map(solution => {
         return Object.assign({}, solution, {
           answers: solution.answers.map(keyword => Object.assign({}, keyword, {
+            _id: makeId(),
             _deletable: solution.answers.length > 1
           }))
         })
@@ -78,6 +79,7 @@ function reduce(item = {}, action) {
         _text: ''
       })
     }
+
     case UPDATE_TEXT: {
       item = Object.assign({}, item, {
         text: utils.getTextWithPlacerHoldersFromHtml(action.text),
@@ -85,8 +87,8 @@ function reduce(item = {}, action) {
       })
 
       const holesToRemove = []
-      //we need to check if every hole is mapped to a placeholder
-      //if there is not placeholder, then remove the hole
+      // we need to check if every hole is mapped to a placeholder
+      // if there is not placeholder, then remove the hole
       item.holes.forEach(hole => {
         if (item.text.indexOf(`[[${hole.id}]]`) < 0) {
           holesToRemove.push(hole.id)
@@ -105,6 +107,7 @@ function reduce(item = {}, action) {
 
       return item
     }
+
     case OPEN_HOLE: {
       const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, action.holeId)
@@ -114,37 +117,38 @@ function reduce(item = {}, action) {
 
       return newItem
     }
-    case UPDATE_ANSWER: {
+
+    case ADD_HOLE: {
       const newItem = cloneDeep(item)
-      const hole = getHoleFromId(newItem, action.holeId)
-      const solution = getSolutionFromHole(newItem, hole)
-      const answer = solution.answers.find(
-        answer => answer.text === action.keyword.text && answer.caseSensitive === action.keyword.caseSensitive
-      )
 
-      answer[action.parameter] = action.value
-
-      updateHoleChoices(hole, solution)
-
-      return newItem
-    }
-    case ADD_ANSWER: {
-      const newItem = cloneDeep(item)
-      const hole = getHoleFromId(newItem, action.holeId)
-      const solution = getSolutionFromHole(newItem, hole)
-
-      solution.answers.push({
-        text: '',
-        caseSensitive: false,
+      const hole = {
+        id: makeId(),
         feedback: '',
-        score: 1,
-        _deletable: solution.answers.length > 0
-      })
+        size: 10,
+        _score: 0,
+        _multiple: false,
+        placeholder: ''
+      }
 
-      updateHoleChoices(hole, solution)
+      const keyword = keywordsUtils.createNew()
+      keyword.text = action.word
+      keyword._deletable = false
+
+      const solution = {
+        holeId: hole.id,
+        answers: [keyword]
+      }
+
+      newItem.holes.push(hole)
+      newItem.solutions.push(solution)
+      newItem._popover = true
+      newItem._holeId = hole.id
+      newItem._text = action.cb(utils.makeTinyHtml(hole, solution))
+      newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
 
       return newItem
     }
+
     case UPDATE_HOLE: {
       const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, newItem._holeId)
@@ -159,38 +163,7 @@ function reduce(item = {}, action) {
 
       return newItem
     }
-    case ADD_HOLE: {
-      const newItem = cloneDeep(item)
 
-      const hole = {
-        id: makeId(),
-        feedback: '',
-        size: 10,
-        _score: 0,
-        _multiple: false,
-        placeholder: ''
-      }
-
-      const solution = {
-        holeId: hole.id,
-        answers: [{
-          text: action.word,
-          caseSensitive: false,
-          feedback: '',
-          score: 1,
-          _deletable: false
-        }]
-      }
-
-      newItem.holes.push(hole)
-      newItem.solutions.push(solution)
-      newItem._popover = true
-      newItem._holeId = hole.id
-      newItem._text = action.cb(utils.makeTinyHtml(hole, solution))
-      newItem.text = utils.getTextWithPlacerHoldersFromHtml(newItem._text)
-
-      return newItem
-    }
     case REMOVE_HOLE: {
       const newItem = cloneDeep(item)
       const holes = newItem.holes
@@ -219,12 +192,41 @@ function reduce(item = {}, action) {
 
       return newItem
     }
+
+    case ADD_ANSWER: {
+      const newItem = cloneDeep(item)
+      const hole = getHoleFromId(newItem, action.holeId)
+      const solution = getSolutionFromHole(newItem, hole)
+
+      const keyword = keywordsUtils.createNew()
+      keyword._deletable = solution.answers.length > 0
+
+      solution.answers.push(keyword)
+
+      updateHoleChoices(hole, solution)
+
+      return newItem
+    }
+
+    case UPDATE_ANSWER: {
+      const newItem = cloneDeep(item)
+      const hole = getHoleFromId(newItem, action.holeId)
+      const solution = getSolutionFromHole(newItem, hole)
+      const answer = solution.answers.find(answer => answer._id === action.keywordId)
+
+      answer[action.parameter] = action.value
+
+      updateHoleChoices(hole, solution)
+
+      return newItem
+    }
+
     case REMOVE_ANSWER: {
       const newItem = cloneDeep(item)
       const hole = getHoleFromId(newItem, action.holeId)
       const solution = getSolutionFromHole(newItem, hole)
       const answers = solution.answers
-      answers.splice(answers.findIndex(answer => answer.text === action.keyword.text && answer.caseSensitive === action.keyword.caseSensitive), 1)
+      answers.splice(answers.findIndex(answer => answer._id === action.keywordId), 1)
 
       updateHoleChoices(hole, solution)
 
@@ -232,6 +234,7 @@ function reduce(item = {}, action) {
 
       return newItem
     }
+
     case CLOSE_POPOVER: {
       const newItem = cloneDeep(item)
       newItem._popover = false

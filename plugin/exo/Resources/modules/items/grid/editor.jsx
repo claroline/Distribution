@@ -245,8 +245,8 @@ const GridRow = props =>
         openSolution={() => props.openPopover(cell.id)}
         closeSolution={props.closePopover}
         addSolutionAnswer={() => props.addSolutionAnswer(cell.id)}
-        updateSolutionAnswer={(keyword, parameter, value) => props.updateSolutionAnswer(cell.id, keyword, parameter, value)}
-        removeSolutionAnswer={(keyword) => props.removeSolutionAnswer(cell.id, keyword)}
+        updateSolutionAnswer={(keywordId, parameter, value) => props.updateSolutionAnswer(cell.id, keywordId, parameter, value)}
+        removeSolutionAnswer={(keywordId) => props.removeSolutionAnswer(cell.id, keywordId)}
       />
     )}
 

@@ -41,8 +41,8 @@ export const actions = {
   openCellPopover: makeActionCreator(OPEN_CELL_POPOVER, 'cellId'),
   closeCellPopover: makeActionCreator(CLOSE_CELL_POPOVER),
   addSolutionAnswer: makeActionCreator(ADD_SOLUTION_ANSWER, 'cellId'),
-  removeSolutionAnswer: makeActionCreator(REMOVE_SOLUTION_ANSWER, 'cellId', 'keyword'),
-  updateSolutionAnswer: (cellId, keyword, parameter, value) => {
+  removeSolutionAnswer: makeActionCreator(REMOVE_SOLUTION_ANSWER, 'cellId', 'keywordId'),
+  updateSolutionAnswer: (cellId, keywordId, parameter, value) => {
     invariant(
       ['text', 'caseSensitive', 'expected', 'feedback', 'score'].indexOf(parameter) > -1,
       'answer attribute is not valid'
@@ -51,11 +51,24 @@ export const actions = {
 
     return {
       type: UPDATE_SOLUTION_ANSWER,
-      cellId, keyword, parameter, value
+      cellId, keywordId, parameter, value
     }
   }
 }
 
+function decorate(item) {
+  return Object.assign({}, item, {
+    solutions: item.solutions.map(solution => {
+        return Object.assign({}, solution, {
+          answers: solution.answers.map(keyword => Object.assign({}, keyword, {
+            _id: makeId(),
+            _deletable: solution.answers.length > 1
+          }))
+        })
+      }
+    )
+  })
+}
 
 function reduce(grid = {}, action) {
   switch (action.type) {
@@ -79,6 +92,7 @@ function reduce(grid = {}, action) {
         solutions: []
       })
     }
+
     case UPDATE_PROP: {
       const newItem = cloneDeep(grid)
       switch (action.property) {
@@ -182,14 +196,17 @@ function reduce(grid = {}, action) {
       }
       return newItem
     }
+
     case DELETE_COLUMN: {
       const newItem = cloneDeep(grid)
       return deleteCol(action.index, newItem, true)
     }
+
     case DELETE_ROW: {
       const newItem = cloneDeep(grid)
       return deleteRow(action.index, newItem, true)
     }
+
     case UPDATE_COLUMN_SCORE: {
       const newItem = cloneDeep(grid)
       const cellsInRow = utils.getCellsByCol(action.index, newItem.cells)
@@ -201,6 +218,7 @@ function reduce(grid = {}, action) {
       })
       return newItem
     }
+
     case UPDATE_ROW_SCORE: {
       const newItem = cloneDeep(grid)
       const cellsInRow = utils.getCellsByRow(action.index, newItem.cells)
@@ -212,6 +230,7 @@ function reduce(grid = {}, action) {
       })
       return newItem
     }
+
     case UPDATE_CELL: {
       const newItem = cloneDeep(grid)
       const cellToUpdate = newItem.cells.find(cell => cell.id === action.cellId)
@@ -229,6 +248,7 @@ function reduce(grid = {}, action) {
 
       return newItem
     }
+
     case CREATE_CELL_SOLUTION: {
       const newItem = cloneDeep(grid)
       const cell = newItem.cells.find(cell => cell.id === action.cellId)
@@ -237,6 +257,7 @@ function reduce(grid = {}, action) {
         cellId: action.cellId,
         answers: [
           {
+            _id: makeId(),
             text: cell.data ? cell.data : '',
             score: 1,
             caseSensitive: false,
@@ -257,6 +278,7 @@ function reduce(grid = {}, action) {
 
       return newItem
     }
+
     case DELETE_CELL_SOLUTION: {
       const newItem = cloneDeep(grid)
       const cell = newItem.cells.find(cell => cell.id === action.cellId)
@@ -272,6 +294,7 @@ function reduce(grid = {}, action) {
 
       return newItem
     }
+
     case CLOSE_CELL_POPOVER: {
       return Object.assign({}, grid, {
         _popover: null
@@ -283,12 +306,14 @@ function reduce(grid = {}, action) {
         _popover: action.cellId
       })
     }
+
     case ADD_SOLUTION_ANSWER: {
       const newItem = cloneDeep(grid)
       const cellToUpdate = newItem.cells.find(cell => cell.id === action.cellId)
       const solution = newItem.solutions.find(solution => solution.cellId === cellToUpdate.id)
 
       solution.answers.push({
+        _id: makeId(),
         text: '',
         caseSensitive: false,
         feedback: '',
@@ -303,13 +328,12 @@ function reduce(grid = {}, action) {
 
       return newItem
     }
+
     case UPDATE_SOLUTION_ANSWER: {
       const newItem = cloneDeep(grid)
       const cellToUpdate = newItem.cells.find(cell => cell.id === action.cellId)
       const solution = newItem.solutions.find(solution => solution.cellId === cellToUpdate.id)
-      const answer = solution.answers.find(
-        answer => answer.text === action.keyword.text && answer.caseSensitive === action.keyword.caseSensitive
-      )
+      const answer = solution.answers.find(answer => answer._id === action.keywordId)
 
       answer[action.parameter] = action.value
 
@@ -325,12 +349,13 @@ function reduce(grid = {}, action) {
 
       return newItem
     }
+
     case REMOVE_SOLUTION_ANSWER: {
       const newItem = cloneDeep(grid)
       const cellToUpdate = newItem.cells.find(cell => cell.id === action.cellId)
       const solution = newItem.solutions.find(solution => solution.cellId === cellToUpdate.id)
       const answers = solution.answers
-      answers.splice(answers.findIndex(answer => answer.text === action.keyword.text && answer.caseSensitive === action.keyword.caseSensitive), 1)
+      answers.splice(answers.findIndex(answer => answer._id === action.keywordId), 1)
 
       answers.forEach(keyword => keyword._deletable = answers.length > 1)
       if (cellToUpdate._multiple) {
@@ -430,5 +455,6 @@ function makeDefaultCell(x, y) {
 export default {
   component,
   reduce,
+  decorate,
   validate
 }

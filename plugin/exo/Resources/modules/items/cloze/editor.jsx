@@ -159,11 +159,11 @@ export class Cloze extends Component {
             addKeyword={() => this.props.onChange(
               actions.addAnswer(this.props.item._holeId)
             )}
-            removeKeyword={(keyword) => this.props.onChange(
-              actions.removeAnswer(this.props.item._holeId, keyword)
+            removeKeyword={(keywordId) => this.props.onChange(
+              actions.removeAnswer(this.props.item._holeId, keywordId)
             )}
-            updateKeyword={(keyword, property, newValue) => this.props.onChange(
-              actions.updateAnswer(this.props.item._holeId, keyword, property, newValue)
+            updateKeyword={(keywordId, property, newValue) => this.props.onChange(
+              actions.updateAnswer(this.props.item._holeId, keywordId, property, newValue)
             )}
             validating={this.props.validating}
             _errors={get(this.props.item, '_errors.'+this.props.item._holeId)}
