@@ -5,6 +5,7 @@ import {navigate} from './../router'
 import {actions as baseActions} from './../actions'
 import {VIEW_PAPERS, VIEW_PAPER} from './../enums'
 import {selectors} from './selectors'
+import {normalize} from './normalizer'
 import {REQUEST_SEND} from './../../api/actions'
 
 export const PAPER_ADD = 'PAPER_ADD'
@@ -26,7 +27,7 @@ actions.fetchPapers = quizId => ({
     route: ['exercise_papers', {exerciseId: quizId}],
     request: {method: 'GET'},
     success: (data, dispatch) => {
-      dispatch(initPapers(data))
+      dispatch(initPapers(normalize(data)))
       dispatch(setPaperFetched())
     },
     failure: () => navigate('overview')
@@ -36,7 +37,7 @@ actions.fetchPapers = quizId => ({
 actions.displayPaper = id => {
   invariant(id, 'Paper id is mandatory')
   return (dispatch, getState) => {
-    if (!selectors.papersFetched(getState())) {
+    if (!selectors.papersFetched(getState()) && !selectors.papers(getState())[id]) {
       dispatch(actions.fetchPapers(selectors.quizId(getState()))).then(() => {
         dispatch(actions.setCurrentPaper(id))
         dispatch(baseActions.updateViewMode(VIEW_PAPER))
