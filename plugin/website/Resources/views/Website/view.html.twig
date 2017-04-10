@@ -42,7 +42,7 @@
                             {% elseif currentPage.type == pageTypes.url %}
                                 <iframe width="100%" iframe-height-on-load="vm.contentHeight" src="{{ currentPage.url }}"></iframe>
                             {% elseif currentPage.type == pageTypes.resource %}
-                                <iframe width="100%" iframe-height-on-load="vm.contentHeight" class="claroline-app-iframe" src="{{ path('claro_resource_open', {
+                                <iframe width="100%" iframe-height-on-load="vm.contentHeight" src="{{ path('claro_resource_open', {
                                 'resourceType': currentPage.resourceNodeType,
                                 'node': currentPage.resourceNode.id,
                                 'iframe': 1
