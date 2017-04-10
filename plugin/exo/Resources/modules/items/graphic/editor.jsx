@@ -1,5 +1,6 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
+
 import {asset} from '#/main/core/asset'
 import {tex} from '#/main/core/translation'
 import {makeDroppable} from './../../utils/dragAndDrop'
@@ -201,6 +202,9 @@ export class Graphic extends Component {
             )}
             onClose={() => this.props.onChange(
               actions.togglePopover(this.props.item._popover.areaId, 0, 0, false)
+            )}
+            onDelete={id => this.props.onChange(
+              actions.deleteArea(this.props.item._popover.areaId)
             )}
           />
         }

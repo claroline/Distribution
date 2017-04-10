@@ -2,6 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import Popover from 'react-bootstrap/lib/Popover'
 import classes from 'classnames'
 import get from 'lodash/get'
+
 import {tex, t} from '#/main/core/translation'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
@@ -9,7 +10,7 @@ import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {actions} from './editor'
 import {utils} from './utils/utils'
 
-function getPopoverPosition(connectionClass, id){
+function getPopoverPosition(connectionClass, id) {
   const containerRect =  document.getElementById('popover-place-holder-' + id).getBoundingClientRect()
   const connectionRect =  document.querySelectorAll('.' + connectionClass)[0].getBoundingClientRect()
   // only compute top position
@@ -18,8 +19,7 @@ function getPopoverPosition(connectionClass, id){
   }
 }
 
-function drawSolutions(solutions, jsPlumbInstance){
-
+function drawSolutions(solutions, jsPlumbInstance) {
   for (const solution of solutions) {
     const connection = jsPlumbInstance.connect({
       source: 'source_' + solution.firstId,
@@ -35,7 +35,7 @@ function drawSolutions(solutions, jsPlumbInstance){
 }
 
 class MatchLinkPopover extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       showFeedback : false

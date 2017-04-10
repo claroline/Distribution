@@ -195,6 +195,7 @@
     "formative": "Formative",
     "frequency": "Frequency",
     "from": "From",
+    "graphic_area_edit": "Edit area",
     "graphic_drop_or_pick": "Drop an image here or use the button above.",
     "graphic_error_image_too_large": "Selected image is too big.",
     "graphic_error_no_image": "You must select an image.",

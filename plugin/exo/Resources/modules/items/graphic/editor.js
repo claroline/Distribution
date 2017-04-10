@@ -360,7 +360,7 @@ function validate(item) {
   }
 
   if (!item.image.data && !item.image.url) {
-    return {image: tex('graphic_error_no_image', {count: MAX_IMG_SIZE})}
+    return {image: tex('graphic_error_no_image')}
   }
 
   if (item.solutions.length === 0) {

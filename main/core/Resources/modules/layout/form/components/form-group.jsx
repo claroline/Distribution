@@ -3,22 +3,28 @@ import classes from 'classnames'
 
 import {ErrorBlock} from './error-block.jsx'
 
-export const FormGroup = ({controlId, label, help, error, children, warnOnly}) =>
-  <div className={classes('form-group', {
-    'has-error': error && !warnOnly,
-    'has-warning': error && warnOnly
+export const FormGroup = props =>
+  <div className={classes('form-group', props.className, {
+    'has-error': props.error && !props.warnOnly,
+    'has-warning': props.error && props.warnOnly
   })}>
-    <label className="control-label" htmlFor={controlId}>{label}</label>
-    {children}
+    <label
+      className={classes('control-label', {'sr-only': props.hideLabel})}
+      htmlFor={props.controlId}
+    >
+      {props.label}
+    </label>
 
-    {error &&
-      <ErrorBlock text={error} inGroup={true} warnOnly={warnOnly}/>
+    {props.children}
+
+    {props.error &&
+      <ErrorBlock text={props.error} inGroup={true} warnOnly={props.warnOnly}/>
     }
 
-    {help &&
-      <span id={`help-${controlId}`} className="help-block">
+    {props.help &&
+      <span id={`help-${props.controlId}`} className="help-block">
         <span className="fa fa-info-circle" />
-        {help}
+        {props.help}
       </span>
     }
   </div>
@@ -26,6 +32,8 @@ export const FormGroup = ({controlId, label, help, error, children, warnOnly}) =
 FormGroup.propTypes = {
   controlId: T.string.isRequired,
   label: T.string.isRequired,
+  hideLabel: T.bool,
+  className: T.string,
   children: T.element.isRequired,
   warnOnly: T.bool.isRequired,
   help: T.string,
@@ -33,5 +41,6 @@ FormGroup.propTypes = {
 }
 
 FormGroup.defaultProps = {
-  warnOnly: false
+  warnOnly: false,
+  hideLabel: false
 }
