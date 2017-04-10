@@ -285,11 +285,11 @@ export default class SessionService {
   loadSessions(callback = null) {
     if (!this.initialized) {
       this.sessions.splice(0, this.sessions.length)
-      const route = Routing.generate('api_get_sessions')
+      const route = Routing.generate('claroline_cursus_all_sessions_retrieve')
 
       return this.$http.get(route).then(d => {
         if (d['status'] === 200) {
-          angular.merge(this.sessions, d['data'])
+          angular.merge(this.sessions, JSON.parse(d['data']))
           this.computeSessionsStatus()
           this.generateCourseInfos()
           this.generateCourseSessions()

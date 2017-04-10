@@ -229,42 +229,6 @@ class CourseSessionUserRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findSearchedUnregisteredUsersBySession(
-        CourseSession $session,
-        $userType,
-        $search = '',
-        $orderedBy = 'firstName',
-        $order = 'ASC',
-        $executeQuery = true
-    ) {
-        $dql = "
-            SELECT DISTINCT u
-            FROM Claroline\CoreBundle\Entity\User u
-            WHERE u.isRemoved = false
-            AND
-            (
-                UPPER(u.firstName) LIKE :search
-                OR UPPER(u.lastName) LIKE :search
-                OR UPPER(u.username) LIKE :search
-            )
-            AND NOT EXISTS (
-                SELECT csu
-                FROM Claroline\CursusBundle\Entity\CourseSessionUser csu
-                WHERE csu.session = :session
-                AND csu.user = u
-                AND csu.userType = :userType
-            )
-            ORDER BY u.{$orderedBy} {$order}
-        ";
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('session', $session);
-        $query->setParameter('userType', $userType);
-        $upperSearch = strtoupper($search);
-        $query->setParameter('search', "%{$upperSearch}%");
-
-        return $executeQuery ? $query->getResult() : $query;
-    }
-
     public function findClosedSessionUsersByUser(User $user, $userType = CourseSessionUser::LEARNER)
     {
         $dql = '

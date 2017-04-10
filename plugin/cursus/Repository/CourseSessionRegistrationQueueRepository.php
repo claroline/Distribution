@@ -68,36 +68,6 @@ class CourseSessionRegistrationQueueRepository extends EntityRepository
         return $executeQuery ? $query->getOneOrNullResult() : $query;
     }
 
-    public function findSessionQueuesByCourse(Course $course, $executeQuery = true)
-    {
-        $dql = '
-            SELECT q
-            FROM Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue q
-            JOIN q.session s
-            WHERE s.course = :course
-            ORDER BY q.applicationDate DESC
-        ';
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('course', $course);
-
-        return $executeQuery ? $query->getResult() : $query;
-    }
-
-    public function findSessionQueuesByCourses(array $courses)
-    {
-        $dql = '
-            SELECT q
-            FROM Claroline\CursusBundle\Entity\CourseSessionRegistrationQueue q
-            JOIN q.session s
-            WHERE s.course IN (:courses)
-            ORDER BY q.applicationDate ASC
-        ';
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('courses', $courses);
-
-        return $query->getResult();
-    }
-
     public function findAllUnvalidatedSessionQueues()
     {
         $dql = '

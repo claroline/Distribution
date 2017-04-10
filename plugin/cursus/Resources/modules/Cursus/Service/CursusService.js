@@ -89,11 +89,13 @@ export default class CursusService {
       return null
     } else {
       this.cursus.splice(0, this.cursus.length)
-      const route = cursusId === null ? Routing.generate('api_get_all_root_cursus') : Routing.generate('api_get_one_cursus', {cursus: cursusId})
+      const route = cursusId === null ?
+        Routing.generate('claroline_cursus_all_root_cursus_retrieve') :
+        Routing.generate('claroline_cursus_retrieve', {cursus: cursusId})
 
       return this.$http.get(route).then(d => {
         if (d['status'] === 200) {
-          angular.merge(this.cursus, d['data'])
+          angular.merge(this.cursus, JSON.parse(d['data']))
           this.rootCursusId = cursusId
           this.initializeHierarchy()
           this.initialized = true
@@ -249,11 +251,11 @@ export default class CursusService {
   }
 
   getRootCursus() {
-    const url = Routing.generate('api_get_root_cursus')
+    const url = Routing.generate('claroline_cursus_all_root_cursus_retrieve')
 
     return this.$http.get(url).then(d => {
       if (d['status'] === 200) {
-        return d['data']
+        return JSON.parse(d['data'])
       }
     })
   }

@@ -21,10 +21,10 @@ export default class CursusRegistrationCtrl {
 
   initialize() {
     if (!this.initialized) {
-      const route = Routing.generate('api_get_all_root_cursus')
+      const route = Routing.generate('claroline_cursus_all_root_cursus_retrieve')
       this.$http.get(route).then(datas => {
         if (datas['status'] === 200) {
-          this.cursusRoots = datas['data']
+          this.cursusRoots = JSON.parse(datas['data'])
           this.initialized = true
         }
       })

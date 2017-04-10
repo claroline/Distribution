@@ -79,8 +79,8 @@ export default class CourseService {
       this.initialized = false
       this.courses.splice(0, this.courses.length)
       const route = cursusId ?
-        Routing.generate('api_get_all_unmapped_courses', {cursus: cursusId}) :
-        Routing.generate('api_get_all_courses')
+        Routing.generate('claroline_cursus_unmapped_courses_retrieve', {cursus: cursusId}) :
+        Routing.generate('claroline_cursus_all_courses_retrieve')
 
       return this.$http.get(route).then(d => {
         if (d['status'] === 200) {

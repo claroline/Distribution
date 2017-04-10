@@ -28,7 +28,6 @@ use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use JMS\DiExtraBundle\Annotation as DI;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -65,42 +64,6 @@ class CursusController extends FOSRestController
         $this->formFactory = $formFactory;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->request = $requestStack->getCurrentRequest();
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/root/cursus/all",
-     *     name="api_get_all_root_cursus"
-     * )
-     * @View(serializerGroups={"api_workspace_min"})
-     */
-    public function getAllRootCursusAction()
-    {
-        return $this->cursusManager->getAllRootCursus('', 'cursusOrder');
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/root/cursus",
-     *     name="api_get_root_cursus"
-     * )
-     * @View(serializerGroups={"api_user_min"})
-     */
-    public function getRootCursusAction()
-    {
-        return $this->cursusManager->getAllRootCursus('', 'cursusOrder');
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/cursus/{cursus}",
-     *     name="api_get_one_cursus"
-     * )
-     * @View(serializerGroups={"api_workspace_min"})
-     */
-    public function getOneCursusAction(Cursus $cursus)
-    {
-        return [$cursus];
     }
 
     /**
@@ -165,8 +128,7 @@ class CursusController extends FOSRestController
      */
     public function deleteCursusGroupsAction($cursusGroupsIdsTxt)
     {
-        $cursusGroups = $this->cursusManager
-            ->getCursusGroupsFromCursusGroupsIdsTxt($cursusGroupsIdsTxt);
+        $cursusGroups = $this->cursusManager->getCursusGroupsFromCursusGroupsIdsTxt($cursusGroupsIdsTxt);
         $this->cursusManager->unregisterGroupsFromCursus($cursusGroups);
 
         return new JsonResponse('success', 200);
@@ -384,24 +346,6 @@ class CursusController extends FOSRestController
         $results = $this->cursusManager->transferQueuedUserToSession($queue, $session);
 
         return $results;
-    }
-
-    /**
-     * @View(serializerGroups={"api_cursus"})
-     * @Get("/cursus/{cursus}/all/unmapped/courses")
-     */
-    public function getAllUnmappedCoursesAction(Cursus $cursus)
-    {
-        return $this->cursusManager->getUnmappedCoursesByCursus($cursus, '', 'title', 'ASC', false);
-    }
-
-    /**
-     * @View(serializerGroups={"api_user_min"})
-     * @Get("/sessions/all")
-     */
-    public function getSessionsAction()
-    {
-        return $this->cursusManager->getAllSessions();
     }
 
     /**

@@ -1493,7 +1493,7 @@ class AdminManagementController extends Controller
     public function getSessionUnregisteredUsersAction(User $user, CourseSession $session, $userType = 0)
     {
         $this->checkCourseAccess($user, $session->getCourse());
-        $users = $this->cursusManager->getUnregisteredUsersBySession($session, $userType, '', 'lastName', 'ASC', false);
+        $users = $this->cursusManager->getUnregisteredUsersBySession($session, $userType, 'lastName');
         $serializedUsers = $this->serializer->serialize(
             $users,
             'json',
@@ -1522,7 +1522,7 @@ class AdminManagementController extends Controller
     public function getSessionUnregisteredGroupsAction(User $user, CourseSession $session, $groupType = 0)
     {
         $this->checkCourseAccess($user, $session->getCourse());
-        $groups = $this->cursusManager->getUnregisteredGroupsBySession($session, $groupType, '', 'name', 'ASC', false);
+        $groups = $this->cursusManager->getUnregisteredGroupsBySession($session, $groupType);
         $serializedGroups = $this->serializer->serialize(
             $groups,
             'json',
@@ -2561,19 +2561,79 @@ class AdminManagementController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/api/cursus/all/courses/retrieve",
-     *     name="api_get_all_courses",
+     *     "/api/cursus/all/root/cursus/retrieve",
+     *     name="claroline_cursus_all_root_cursus_retrieve",
      *     options = {"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      *
-     * Returns the all courses accessible to current user
+     * Returns all accessible root cursus for current user
      *
      * @param User $user
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function getAllCoursesAction(User $user)
+    public function allRootCursussRetrieveAction(User $user)
+    {
+        $this->checkAccess($user);
+
+        if ($this->authorization->isGranted('ROLE_ADMIN')) {
+            $cursus = $this->cursusManager->getAllRootCursus();
+        } else {
+            $organizations = $user->getAdministratedOrganizations()->toArray();
+            $cursus = $this->cursusManager->getAllRootCursusByOrganizations($organizations);
+        }
+        $serializedCursus = $this->serializer->serialize(
+            $cursus,
+            'json',
+            SerializationContext::create()->setGroups(['api_workspace_min'])
+        );
+
+        return new JsonResponse($serializedCursus, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/{cursus}/retrieve",
+     *     name="claroline_cursus_retrieve",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns cursus
+     *
+     * @param User   $user
+     * @param Cursus $cursus
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function cursusRetrieveAction(User $user, Cursus $cursus)
+    {
+        $this->checkCursusAccess($user, $cursus);
+        $serializedCursus = $this->serializer->serialize(
+            [$cursus],
+            'json',
+            SerializationContext::create()->setGroups(['api_workspace_min'])
+        );
+
+        return new JsonResponse($serializedCursus, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/all/courses/retrieve",
+     *     name="claroline_cursus_all_courses_retrieve",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns all accessible courses for current user
+     *
+     * @param User $user
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function allCoursesRetrieveAction(User $user)
     {
         $this->checkAccess($user);
 
@@ -2583,7 +2643,6 @@ class AdminManagementController extends Controller
             $organizations = $user->getAdministratedOrganizations()->toArray();
             $courses = $this->cursusManager->getAllCoursesByOrganizations($organizations);
         }
-
         $serializedCourses = $this->serializer->serialize(
             $courses,
             'json',
@@ -2591,6 +2650,39 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse($serializedCourses, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/api/cursus/all/sessions/retrieve",
+     *     name="claroline_cursus_all_sessions_retrieve",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns all accessible sessions for current user
+     *
+     * @param User $user
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function allSessionsRetrieveAction(User $user)
+    {
+        $this->checkAccess($user);
+
+        if ($this->authorization->isGranted('ROLE_ADMIN')) {
+            $sessions = $this->cursusManager->getAllSessions();
+        } else {
+            $organizations = $user->getAdministratedOrganizations()->toArray();
+            $sessions = $this->cursusManager->getAllSessionsByOrganizations($organizations);
+        }
+        $serializedSessions = $this->serializer->serialize(
+            $sessions,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedSessions, 200);
     }
 
     /**
@@ -2622,6 +2714,40 @@ class AdminManagementController extends Controller
         return new JsonResponse($serializedOrganizations, 200);
     }
 
+    /**
+     * @EXT\Route(
+     *     "/cursus/{cursus}/unmapped/courses/retrieve",
+     *     name="claroline_cursus_unmapped_courses_retrieve",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * Returns all courses not linked to a curusus
+     *
+     * @param User   $user
+     * @param Cursus $cursus
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getAllUnmappedCoursesAction(User $user, Cursus $cursus)
+    {
+        $this->checkAccess($user);
+
+        if ($this->authorization->isGranted('ROLE_ADMIN')) {
+            $courses = $this->cursusManager->getUnmappedCoursesByCursus($cursus);
+        } else {
+            $organizations = $user->getAdministratedOrganizations()->toArray();
+            $courses = $this->cursusManager->getUnmappedCoursesByCursusAndOrganizations($cursus, $organizations);
+        }
+        $serializedCourses = $this->serializer->serialize(
+            $courses,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus'])
+        );
+
+        return new JsonResponse($serializedCourses, 200);
+    }
+
     private function checkAccess(User $user)
     {
         if (!$this->authorization->isGranted('ROLE_ADMIN') && count($user->getAdministratedOrganizations()->toArray()) === 0) {
@@ -2631,8 +2757,8 @@ class AdminManagementController extends Controller
 
     private function checkCursusAccess(User $user, Cursus $cursus)
     {
-        $userOrgas = $user->getAdministratedOrganizations()->toArray();
-        $cursusOrgas = $cursus->getOrganizations();
+        $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
+        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations());
 
         if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $cursusOrgas)) === 0) {
             throw new AccessDeniedException();
@@ -2641,11 +2767,22 @@ class AdminManagementController extends Controller
 
     private function checkCourseAccess(User $user, Course $course)
     {
-        $userOrgas = $user->getAdministratedOrganizations()->toArray();
-        $courseOrgas = $this->cursusManager->getOrganizationsByCourse($course);
+        $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
+        $courseOrgas = $this->extractOrganizationsIds($this->cursusManager->getOrganizationsByCourse($course));
 
         if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $courseOrgas)) === 0) {
             throw new AccessDeniedException();
         }
+    }
+
+    private function extractOrganizationsIds(array $organizations)
+    {
+        $ids = [];
+
+        foreach ($organizations as $organization) {
+            $ids[] = $organization->getId();
+        }
+
+        return $ids;
     }
 }

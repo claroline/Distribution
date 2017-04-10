@@ -18,20 +18,6 @@ use Doctrine\ORM\EntityRepository;
 
 class CourseRegistrationQueueRepository extends EntityRepository
 {
-    public function findCourseQueuesByCourse(Course $course, $executeQuery = true)
-    {
-        $dql = '
-            SELECT q
-            FROM Claroline\CursusBundle\Entity\CourseRegistrationQueue q
-            WHERE q.course = :course
-            ORDER BY q.applicationDate DESC
-        ';
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('course', $course);
-
-        return $executeQuery ? $query->getResult() : $query;
-    }
-
     public function findCourseQueuesByUser(User $user, $executeQuery = true)
     {
         $dql = '

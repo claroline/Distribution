@@ -150,7 +150,7 @@ class CourseController extends Controller
             $courses = $this->cursusManager->getAllCourses('', 'id', 'ASC', false);
         } else {
             $organizations = $user->getAdministratedOrganizations()->toArray();
-            $courses = $this->cursusManager->getAllCoursesByOrganizations($organizations, '', 'id');
+            $courses = $this->cursusManager->getAllCoursesByOrganizations($organizations, 'id');
         }
         $zipName = 'courses.zip';
         $mimeType = 'application/zip';
