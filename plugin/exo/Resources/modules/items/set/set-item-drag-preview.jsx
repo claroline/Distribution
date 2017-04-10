@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 
 export const SetItemDragPreview = props => {
   return (
@@ -10,4 +10,10 @@ export const SetItemDragPreview = props => {
       }
     </div>
   )
+}
+
+SetItemDragPreview.propTypes = {
+  item: T.shape({
+    data: T.string.isRequired
+  }).isRequired
 }

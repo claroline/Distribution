@@ -18,7 +18,6 @@ class ResizeDragLayer extends Component {
     }
 
     const area = this.props.areas.find(area => area.id === this.props.item.item.areaId)
-
     return (
       <AnswerArea
         id="area-drag-preview"

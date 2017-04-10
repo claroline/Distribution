@@ -1,15 +1,6 @@
 import React, { Component, PropTypes as T } from 'react'
 import { DragLayer } from 'react-dnd'
 
-const layerStyles = {
-  position: 'fixed',
-  pointerEvents: 'none',
-  zIndex: 100,
-  left: 0,
-  top: 0,
-  color: 'black'
-}
-
 function getItemStyles(props) {
   const { currentOffset } = props
   if (!currentOffset) {
@@ -29,7 +20,7 @@ function getItemStyles(props) {
 class CustomDragLayerComponent extends Component {
   render() {
     const { item, isDragging } = this.props
-    if (!isDragging) {
+    if (!isDragging || this.props.itemType === 'areaResizer') {
       return null
     }
 

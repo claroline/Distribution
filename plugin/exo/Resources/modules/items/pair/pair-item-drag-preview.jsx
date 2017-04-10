@@ -13,5 +13,7 @@ export const PairItemDragPreview = props => {
 }
 
 PairItemDragPreview.propTypes = {
-  item: T.object.isRequired
+  item: T.shape({
+    data: T.string.isRequired
+  }).isRequired
 }

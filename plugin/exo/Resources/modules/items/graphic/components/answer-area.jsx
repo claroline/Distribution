@@ -50,7 +50,8 @@ export class AnswerArea extends Component {
       props.resizable,
       props.id,
       RESIZER_SIZE,
-      this.el
+      this.el,
+      props.areas
     )
     const resizers = [
       [-halfSizer - border, -halfSizer - border, DIR_NW],
@@ -154,7 +155,8 @@ AnswerArea.propTypes = {
       }).isRequired,
       radius: T.number.isRequired
     })
-  ]).isRequired
+  ]).isRequired,
+  areas: T.arrayOf(T.object)
 }
 
 AnswerArea.defaultProps = {
@@ -166,9 +168,7 @@ export const AnswerAreaDraggable = makeDraggable(
   TYPE_ANSWER_AREA,
   props => ({
     type: TYPE_ANSWER_AREA,
-    id: props.id,
-    geometry: props.geometry,
-    shape: props.shape
+    id: props.id
   }),
   AnswerAreaDragPreview
 )
@@ -180,7 +180,7 @@ function common(rules) {
   })
 }
 
-function makeResizerFactory(resizable, areaId, size, el) {
+function makeResizerFactory(resizable, areaId, size, el, areas) {
   return (geometry, index) => {
     const Resizer = React.createElement(
       resizable ? AreaResizerDraggable : AreaResizer,
@@ -192,7 +192,8 @@ function makeResizerFactory(resizable, areaId, size, el) {
         key: `${areaId}-${index}`,
         top: geometry[0],
         left: geometry[1],
-        position: geometry[2]
+        position: geometry[2],
+        areas
       })
     )
     return Resizer
