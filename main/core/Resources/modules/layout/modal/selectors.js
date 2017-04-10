@@ -1,4 +1,3 @@
-import {createSelector} from 'reselect'
 
 const modal = state => state.modal
 

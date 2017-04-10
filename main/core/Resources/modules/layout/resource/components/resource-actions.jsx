@@ -152,9 +152,6 @@ const ResourceActions = props =>
         <MenuItem header>Management</MenuItem>
         <MenuItem
           eventKey="resource-edit-props"
-          onClick={() => props.showModal(MODAL_SEARCH, {
-            title: tex('search')
-          })}
         >
           <span className="fa fa-fw fa-pencil" />
           Edit properties
@@ -217,8 +214,8 @@ ResourceActions.propTypes = {
       published: T.bool.isRequired,
       editable: T.bool.isRequired,
       deletable: T.bool.isRequired,
-      exportable: T.bool.isRequired,
-    }).isRequired,
+      exportable: T.bool.isRequired
+    }).isRequired
   }).isRequired,
   fullscreen: T.bool.isRequired,
   toggleFullscreen: T.func.isRequired,

@@ -1,7 +1,4 @@
 
-import {SUM_CELL} from './../editor'
-import {SCORE_SUM, SCORE_FIXED} from './../../../quiz/enums'
-
 export const utils = {
   getCellsByCol(colIndex, cells) {
     return cells.filter(cell => parseFloat(cell.coordinates[0]) === parseFloat(colIndex))

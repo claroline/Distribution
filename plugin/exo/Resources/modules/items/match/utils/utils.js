@@ -26,3 +26,10 @@ utils.getJsPlumbInstance = (editEnabled) => {
 
   return instance
 }
+
+utils.resetJsPlumb = () => {
+  jsPlumb.detachEveryConnection()
+
+  // use reset instead of deleteEveryEndpoint because reset also remove event listeners
+  jsPlumb.reset()
+}

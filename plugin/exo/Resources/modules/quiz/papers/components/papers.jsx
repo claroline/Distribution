@@ -74,7 +74,7 @@ let Papers = props =>
         {Object.keys(props.papers).map((paperId) => {
           const paper = props.papers[paperId]
 
-            return (
+          return (
               <PaperRow
                 key={paperId}
                 admin={props.admin}

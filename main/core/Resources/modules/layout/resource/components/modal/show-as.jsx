@@ -1,6 +1,6 @@
-import React, {PropTypes as T} from 'react'
+import React from 'react'
 
-const ShowAsModal = props =>
+const ShowAsModal = () =>
   <div></div>
 
 ShowAsModal.propTypes = {

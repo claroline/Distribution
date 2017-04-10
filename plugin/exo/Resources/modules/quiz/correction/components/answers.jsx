@@ -117,9 +117,10 @@ Answers.propTypes = {
     score: T.object.isRequired
   }).isRequired,
   answers: T.arrayOf(T.object).isRequired,
+  saveEnabled: T.bool.isRequired,
   updateScore: T.func.isRequired,
   updateFeedback: T.func.isRequired,
-  saveEnabled: T.bool.isRequired
+  saveCorrection: T.func.isRequired
 }
 
 function mapStateToProps(state) {

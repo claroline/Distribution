@@ -1,6 +1,5 @@
 import set from 'lodash/set'
 import {trans} from '#/main/core/translation'
-import {extractTextFromHtml} from './utils'
 
 const tval = msg => trans(msg, {}, 'validators')
 

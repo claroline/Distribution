@@ -1,4 +1,4 @@
-import React, {PropTypes as T} from 'react'
+import React from 'react'
 
 const EditDisplayModal = props =>
   <div></div>

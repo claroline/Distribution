@@ -80,7 +80,7 @@ class KeywordItem extends Component {
             tip={tex('words_case_sensitive')}
           >
             <input
-              id={`keyword-${this.props.index}-case-sensitive`}
+              id={`keyword-${this.props.keyword._id}-case-sensitive`}
               type="checkbox"
               disabled={!this.props.showCaseSensitive}
               title={tex('words_case_sensitive')}
@@ -382,7 +382,7 @@ KeywordsPopover.propTypes = {
   /**
    * Custom css rules.
    */
-  styles: T.object,
+  style: T.object,
 
   /**
    * Removes the current solution.

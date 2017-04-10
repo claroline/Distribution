@@ -63,7 +63,8 @@ const HolePopover = props => {
 HolePopover.propTypes = {
   hole: T.shape({
     id: T.string.isRequired,
-    _multiple: T.bool.isRequired
+    _multiple: T.bool.isRequired,
+    size: T.number
   }).isRequired,
   solution: T.shape({
     answers: T.array.isRequired
