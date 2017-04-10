@@ -60,12 +60,12 @@ class RichTextFormatter
      *     "config"          = @DI\Inject("claroline.config.platform_config_handler")
      * })
      *
-     * @param UrlGeneratorInterface $router
-     * @param ResourceManager $resourceManager
-     * @param ObjectManager $om
-     * @param TransferManager $transferManager
-     * @param MaskManager $maskManager
-     * @param StrictDispatcher $eventDispatcher
+     * @param UrlGeneratorInterface        $router
+     * @param ResourceManager              $resourceManager
+     * @param ObjectManager                $om
+     * @param TransferManager              $transferManager
+     * @param MaskManager                  $maskManager
+     * @param StrictDispatcher             $eventDispatcher
      * @param PlatformConfigurationHandler $config
      */
     public function __construct(
