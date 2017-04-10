@@ -41,7 +41,7 @@ export class ColorPicker extends Component {
           onHide={() => this.setState({ open: false })}
           placement="bottom"
           container={this}
-          target={() => ReactDOM.findDOMNode(this.refs.target)}
+          target={this.refs.target}
           rootClose={true}
         >
           <TwitterPicker

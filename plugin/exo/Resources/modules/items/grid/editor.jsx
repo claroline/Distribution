@@ -1,5 +1,5 @@
 import React, {Component, PropTypes as T} from 'react'
-import ReactDOM from 'react-dom'
+import classes from 'classnames'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import Overlay from 'react-bootstrap/lib/Overlay'
@@ -93,7 +93,7 @@ class GridCell extends Component {
                 placement="bottom"
                 show={this.props.solutionOpened}
                 rootClose={isEmpty(this.props._errors)}
-                target={() => ReactDOM.findDOMNode(this.refs.popoverToggle)}
+                target={this.refs.popoverToggle}
                 onHide={this.props.closeSolution}
               >
                 <GridCellPopover
@@ -113,26 +113,23 @@ class GridCell extends Component {
               </Overlay>
             }
 
-            {undefined === this.props.solution &&
-              <TooltipButton
-                id={`cell-${this.props.cell.id}-create-solution`}
-                className="btn-link-default"
-                title={tex('grid_create_solution')}
-                label={<span className="fa fa-fw fa-plus" />}
-                onClick={this.props.createSolution}
-              />
-            }
-
-            {undefined !== this.props.solution &&
-              <TooltipButton
-                ref="popoverToggle"
-                id={`cell-${this.props.cell.id}-edit-solution`}
-                title={tex('grid_edit_solution')}
-                className="btn-link-default"
-                label={<span className="fa fa-fw fa-pencil"/>}
-                onClick={this.props.openSolution}
-              />
-            }
+            <TooltipButton
+              ref="popoverToggle"
+              id={`cell-${this.props.cell.id}-solution`}
+              title={undefined !== this.props.solution ? tex('grid_edit_solution') : tex('grid_create_solution')}
+              className="btn-link-default"
+              label={
+                <span
+                  className={classes('fa fa-fw', {
+                    'fa-pencil': undefined !== this.props.solution,
+                    'fa-plus': undefined === this.props.solution
+                  })}
+                />
+              }
+              onClick={
+                undefined !== this.props.solution ? this.props.openSolution : this.props.createSolution
+              }
+            />
 
             {undefined !== this.props.solution &&
               <TooltipButton
