@@ -12,15 +12,15 @@
 namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Form\WorkspaceImportType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -51,109 +51,14 @@ class WorkspacesController extends Controller
     }
 
     /**
-     * @EXT\Route(
-     *     "/page/{page}/max/{max}/order/{order}/direction/{direction}/type/{type}",
-     *     name="claro_admin_workspaces_management",
-     *     defaults={"page"=1, "search"="", "max"=50, "order"="id", "direction"="ASC", "type"=1},
-     *     options = {"expose"=true}
-     * )
-     * @EXT\Route(
-     *     "/page/{page}/search/{search}/max/{max}/order/{order}/direction/{direction}/type/{type}",
-     *     name="claro_admin_workspaces_management_search",
-     *     defaults={"page"=1, "search"="", "max"=50, "order"="id", "direction"="ASC", "type"=1},
-     *     options = {"expose"=true}
-     * )
      * @EXT\Template
-     *
-     * @param $page
-     * @param $search
-     * @param $max
-     * @param $order
-     * @param $direction
-     * @param $type
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function managementAction($page, $search, $max, $order, $direction, $type = 1)
+    public function managementAction()
     {
-        $workspaceType = intval($type);
+        $workspaces = $this->workspaceManager->searchPartialList([], 0, 20);
+        $count = $this->workspaceManager->searchPartialList([], 0, 20, true);
 
-        if ($workspaceType === 2) {
-            $pager = $this->workspaceManager->getAllPersonalWorkspaces(
-                $page,
-                $max,
-                $search,
-                $order,
-                $direction
-            );
-        } elseif ($workspaceType === 3) {
-            $pager = $search === '' ?
-                $this->workspaceManager
-                    ->findAllWorkspaces($page, $max, $order, $direction) :
-                $this->workspaceManager
-                    ->getWorkspaceByName($search, $page, $max, $order, $direction);
-        } else {
-            $pager = $this->workspaceManager->getAllNonPersonalWorkspaces(
-                $page,
-                $max,
-                $search,
-                $order,
-                $direction
-            );
-        }
-
-        return array(
-            'pager' => $pager,
-            'search' => $search,
-            'max' => $max,
-            'order' => $order,
-            'direction' => $direction,
-            'type' => $type,
-        );
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/visibility",
-     *      name="claro_admin_workspaces_management_visibility",
-     * )
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function toggleWorkspaceVisibilityAction(Request $request)
-    {
-        $postData = $request->request->all();
-        $workspace = $this->workspaceManager->getWorkspaceById($postData['id']);
-        $postData['visible'] === '1' ?
-            $workspace->setDisplayable(false) :
-            $workspace->setDisplayable(true);
-        $this->om->flush();
-
-        return new Response('Visibility changed', 204);
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/registration",
-     *      name="claro_admin_workspaces_management_registration",
-     * )
-     *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response with the css class to apply to the element
-     */
-    public function toggleWorkspacePublicRegistrationAction(Request $request)
-    {
-        $postData = $request->request->all();
-        $workspace = $this->workspaceManager->getWorkspaceById($postData['id']);
-        $postData['registration'] === 'unlock' ?
-            $workspace->setSelfRegistration(false) :
-            $workspace->setSelfRegistration(true);
-        $this->om->flush();
-
-        return new Response('Registration status changed', 204);
+        return ['workspaces' => $workspaces, 'count' => $count];
     }
 
     /**
@@ -181,7 +86,7 @@ class WorkspacesController extends Controller
             $this->om->startFlushSuite();
 
             foreach ($workspaces as $workspace) {
-                $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', array($workspace));
+                $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
                 $this->workspaceManager->deleteWorkspace($workspace);
             }
 
@@ -199,7 +104,7 @@ class WorkspacesController extends Controller
     {
         $form = $this->createForm(new WorkspaceImportType());
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 
     /**
@@ -228,6 +133,6 @@ class WorkspacesController extends Controller
             return $this->redirect($this->generateUrl('claro_admin_workspaces_management'));
         }
 
-        return array('form' => $form->createView());
+        return ['form' => $form->createView()];
     }
 }
