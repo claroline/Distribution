@@ -152,4 +152,14 @@ class BooleanDefinition extends AbstractDefinition
 
         return [];
     }
+
+    /**
+     * No additional identifier to regenerate.
+     *
+     * @param AbstractItem $item
+     */
+    public function refreshIdentifiers(AbstractItem $item)
+    {
+        return;
+    }
 }
