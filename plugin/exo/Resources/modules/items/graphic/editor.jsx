@@ -235,6 +235,9 @@ export class Graphic extends Component {
                         )
                       }}
                       geometry={this.getClientArea(solution.area)}
+                      areas={this.props.item.solutions.map(
+                        solution => this.getClientArea(solution.area)
+                      )}
                     />
                   )}
                 </div>

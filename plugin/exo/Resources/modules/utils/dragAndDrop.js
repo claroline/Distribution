@@ -7,7 +7,7 @@ export function makeDraggable(component, type, itemFactory = null, previewCompon
     beginDrag(props) {
       if (type === TYPE_AREA_RESIZER) {
         return {
-          id: props.areaId || 'fake_id',
+          id: props.areaId,
           item: itemFactory(props)
         }
       }

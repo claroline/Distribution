@@ -50,8 +50,7 @@ export class AnswerArea extends Component {
       props.resizable,
       props.id,
       RESIZER_SIZE,
-      this.el,
-      props.areas
+      this.el
     )
     const resizers = [
       [-halfSizer - border, -halfSizer - border, DIR_NW],
@@ -155,8 +154,7 @@ AnswerArea.propTypes = {
       }).isRequired,
       radius: T.number.isRequired
     })
-  ]).isRequired,
-  areas: T.arrayOf(T.object)
+  ]).isRequired
 }
 
 AnswerArea.defaultProps = {
@@ -180,7 +178,7 @@ function common(rules) {
   })
 }
 
-function makeResizerFactory(resizable, areaId, size, el, areas) {
+function makeResizerFactory(resizable, areaId, size, el) {
   return (geometry, index) => {
     const Resizer = React.createElement(
       resizable ? AreaResizerDraggable : AreaResizer,
@@ -192,8 +190,7 @@ function makeResizerFactory(resizable, areaId, size, el, areas) {
         key: `${areaId}-${index}`,
         top: geometry[0],
         left: geometry[1],
-        position: geometry[2],
-        areas
+        position: geometry[2]
       })
     )
     return Resizer
