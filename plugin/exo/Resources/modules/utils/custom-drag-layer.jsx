@@ -21,7 +21,7 @@ function getItemStyles(props) {
 class CustomDragLayerComponent extends Component {
   render() {
     const { item, isDragging } = this.props
-    if (!isDragging || this.props.itemType === 'areaResizer') {
+    if (!isDragging || this.props.itemType === TYPE_AREA_RESIZER) {
       return null
     }
 
