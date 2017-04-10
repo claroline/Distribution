@@ -9,9 +9,10 @@
     justify-content: space-between;
     align-items: center;
 
-    .modal-title {
-        order: 1;
-        flex: 1;
+    // sometimes `modal-title` class is missing
+    // so we need to grab rules from it
+    h4 {
+        &:extend(.modal-title);
     }
 
     .close {
@@ -20,4 +21,9 @@
         margin-top: 0;
         float: none;
     }
+}
+
+.modal-title {
+    order: 1;
+    flex: 1;
 }
