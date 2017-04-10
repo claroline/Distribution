@@ -61,7 +61,15 @@ PageAction.propTypes = {
   icon: T.string.isRequired,
   disabled: T.bool,
   children: T.node,
+
+  /**
+   * Additional CSS classes.
+   */
   className: T.string,
+
+  /**
+   * The target action of the button.
+   */
   action: T.oneOfType([T.string, T.func]).isRequired
 }
 

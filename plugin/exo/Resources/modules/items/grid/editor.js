@@ -58,15 +58,12 @@ export const actions = {
 
 function decorate(item) {
   return Object.assign({}, item, {
-    solutions: item.solutions.map(solution => {
-        return Object.assign({}, solution, {
-          answers: solution.answers.map(keyword => Object.assign({}, keyword, {
-            _id: makeId(),
-            _deletable: solution.answers.length > 1
-          }))
-        })
-      }
-    )
+    solutions: item.solutions.map(solution => Object.assign({}, solution, {
+      answers: solution.answers.map(keyword => Object.assign({}, keyword, {
+        _id: makeId(),
+        _deletable: solution.answers.length > 1
+      }))
+    }))
   })
 }
 

@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import classes from 'classnames'
 import Popover from 'react-bootstrap/lib/Popover'
 
-import {t, tex} from '#/main/core/translation'
+import {tex} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'
 import {ColorPicker} from './../../../components/form/color-picker.jsx'
 import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
@@ -79,7 +79,7 @@ export class AreaPopover extends Component {
 
         {this.state.showFeedback &&
           <FormGroup
-            controlId={`area-feedback`}
+            controlId="area-feedback"
             label={tex('feedback')}
             hideLabel={true}
             className="feedback-container form-last"

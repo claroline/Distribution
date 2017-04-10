@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
-import {t, tex} from '#/main/core/translation'
+import {tex} from '#/main/core/translation'
 import { Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 import {viewComponents} from './../views'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'

@@ -204,6 +204,7 @@ GridCell.propTypes = {
   }).isRequired,
   cell: T.shape({
     id: T.string.isRequired,
+    _multiple: T.bool.isRequired,
     data: T.string.isRequired,
     background: T.string.isRequired,
     color: T.string.isRequired,

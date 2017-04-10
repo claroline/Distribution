@@ -57,15 +57,12 @@ export default {
 function decorate(item) {
   return Object.assign({}, item, {
     _text: utils.setEditorHtml(item.text, item.holes, item.solutions),
-    solutions: item.solutions.map(solution => {
-        return Object.assign({}, solution, {
-          answers: solution.answers.map(keyword => Object.assign({}, keyword, {
-            _id: makeId(),
-            _deletable: solution.answers.length > 1
-          }))
-        })
-      }
-    )
+    solutions: item.solutions.map(solution => Object.assign({}, solution, {
+      answers: solution.answers.map(keyword => Object.assign({}, keyword, {
+        _id: makeId(),
+        _deletable: solution.answers.length > 1
+      }))
+    }))
   })
 }
 

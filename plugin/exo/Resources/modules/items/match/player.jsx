@@ -114,9 +114,9 @@ class MatchPlayer extends Component {
 
   componentWillUnmount(){
     window.removeEventListener('resize', this.handleWindowResize)
-    jsPlumb.detachEveryConnection()
-    // use reset instead of deleteEveryEndpoint because reset also remove event listeners
-    jsPlumb.reset()
+
+    utils.resetJsPlumb()
+
     this.jsPlumbInstance = null
     delete this.jsPlumbInstance
   }

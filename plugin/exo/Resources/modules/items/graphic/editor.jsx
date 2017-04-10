@@ -203,7 +203,7 @@ export class Graphic extends Component {
             onClose={() => this.props.onChange(
               actions.togglePopover(this.props.item._popover.areaId, 0, 0, false)
             )}
-            onDelete={id => this.props.onChange(
+            onDelete={() => this.props.onChange(
               actions.deleteArea(this.props.item._popover.areaId)
             )}
           />

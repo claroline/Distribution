@@ -24,7 +24,7 @@ export function registerModalTypes(types) {
   types.map(type => registerModalType(type[0], type[1]))
 }
 
-export function makeModal(type, props, fading, fadeCallback, hideCallback) {
+export function makeModal(type, props, fading, fadeCallback = () => true, hideCallback = () => true) {
   invariant(modals[type], `Unknown modal type "${type}"`)
 
   const baseProps = {

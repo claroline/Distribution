@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 
 import {tex} from '#/main/core/translation'
 import {CheckGroup} from './../../components/form/check-group.jsx'

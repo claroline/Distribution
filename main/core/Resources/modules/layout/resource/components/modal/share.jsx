@@ -1,6 +1,6 @@
-import React, {PropTypes as T} from 'react'
+import React from 'react'
 
-const ShareModal = props =>
+const ShareModal = () =>
   <div></div>
 
 ShareModal.propTypes = {

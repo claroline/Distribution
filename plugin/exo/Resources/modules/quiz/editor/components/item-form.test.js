@@ -1,5 +1,5 @@
 import React from 'react'
-import {shallow, mount} from 'enzyme'
+import {shallow} from 'enzyme'
 
 import {spyConsole, renew, ensure, mockTranslator} from '#/main/core/tests'
 import {ItemForm} from './item-form.jsx'
