@@ -196,17 +196,19 @@ function common(rules) {
 }
 
 function makeResizerFactory(resizable, areaId, size, el) {
-  return (geometry, index) => React.createElement(
-    resizable ? AreaResizerDraggable : AreaResizer,
-    Object.assign(geometry, {
-      areaId,
-      size,
-      areaEl: el,
-      connectDragSource: el => el,
-      key: `${areaId}-${index}`,
-      top: geometry[0],
-      left: geometry[1],
-      position: geometry[2]
-    })
-  )
+  return (geometry, index) => {
+    return React.createElement(
+      resizable ? AreaResizerDraggable : AreaResizer,
+      Object.assign(geometry, {
+        areaId,
+        size,
+        areaEl: el,
+        connectDragSource: el => el,
+        key: `${areaId}-${index}`,
+        top: geometry[0],
+        left: geometry[1],
+        position: geometry[2]
+      })
+    )
+  }
 }
