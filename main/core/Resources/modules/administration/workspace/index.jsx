@@ -1,20 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
-import {createStore} from '../../react/store/store'
+import {createStore} from '#/main/core/utilities/redux'
 import {reducers} from './reducers'
+import {Workspaces} from './workspaces.jsx'
 
 class WorkspaceAdministration {
-  constructor(workspaceData, noServer = false) {
-    this.store = createStore(Object.assign({noServer: noServer}, {pager: workspaceData}), reducers)
-  }
-
-  getJsx() {
-    return (
-      <div>
-          yolo
-      </div>
-    )
+  constructor(workspaceData) {
+    this.store = createStore(reducers, {pager: workspaceData})
   }
 
   render(element) {
@@ -22,7 +15,7 @@ class WorkspaceAdministration {
       React.createElement(
         Provider,
         {store: this.store},
-        this.getJsx()
+        React.createElement(Workspaces)
       ),
       element
     )
