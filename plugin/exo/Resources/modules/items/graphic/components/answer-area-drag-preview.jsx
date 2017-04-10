@@ -1,4 +1,4 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {PropTypes as T} from 'react'
 import {
   BORDER_WIDTH,
   AREA_GUTTER
@@ -28,4 +28,9 @@ export const AnswerAreaDragPreview = props => {
       backgroundColor: def.color
     }}/>
   )
+}
+
+AnswerAreaDragPreview.propTypes = {
+  shape: T.string.isRequired,
+  geometry: T.object.isRequired
 }

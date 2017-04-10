@@ -28,13 +28,13 @@ function getItemStyles(props) {
 
 class CustomDragLayerComponent extends Component {
   render() {
-    const { item, itemType, isDragging } = this.props
+    const { item, isDragging } = this.props
     if (!isDragging) {
       return null
     }
 
     return (
-      <div style={layerStyles}>
+      <div className="custom-drag-layer">
         <div style={getItemStyles(this.props)}>
           {item.previewComponnent(item.props)}
         </div>

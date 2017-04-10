@@ -6,3 +6,7 @@ export const ThumbnailDragPreview = props =>
       {props.title}
     </a>
   </span>
+
+ThumbnailDragPreview.propTypes = {
+  title: T.string.isRequired
+}

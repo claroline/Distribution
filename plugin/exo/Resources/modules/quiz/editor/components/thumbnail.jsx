@@ -3,7 +3,7 @@ import classes from 'classnames'
 import {t, tex} from './../../../utils/translate'
 import {makeSortable} from './../../../utils/sortable'
 import {MODAL_DELETE_CONFIRM} from './../../../modal'
-import {TYPE_STEP, TYPE_QUIZ, THUMBNAIL} from './../../enums'
+import {TYPE_STEP, TYPE_QUIZ} from './../../enums'
 import {ValidationStatus} from './validation-status.jsx'
 import {ThumbnailDragPreview} from './thumbnail-drag-preview.jsx'
 

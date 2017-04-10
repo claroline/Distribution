@@ -1,22 +1,8 @@
-import React, {Component, PropTypes as T} from 'react'
-
-const style = {
-  width: '100%',
-  height: '100%',
-  minWidth: '150px',
-  minHeight: '50px',
-  backgroundColor: '#aaa',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  opacity: 0.5,
-  borderRadius: '5px',
-  margin: '15px'
-}
+import React, {PropTypes as T} from 'react'
 
 export const OrderingItemDragPreview = props => {
   return (
-    <div style={style}>
+    <div className="ordering-item-preview">
       {props.data ?
         <div dangerouslySetInnerHTML={{__html: props.data}}></div>
         :
@@ -24,4 +10,9 @@ export const OrderingItemDragPreview = props => {
       }
     </div>
   )
+}
+
+
+OrderingItemDragPreview.propTypes = {
+  data: T.string.isRequired
 }
