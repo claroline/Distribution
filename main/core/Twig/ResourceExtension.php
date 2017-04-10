@@ -12,9 +12,9 @@
 namespace Claroline\CoreBundle\Twig;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
-use Claroline\CoreBundle\Manager\ResourceNodeManager;
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\ResourceNodeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

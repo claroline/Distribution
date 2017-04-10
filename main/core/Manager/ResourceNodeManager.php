@@ -13,7 +13,6 @@ class ResourceNodeManager
 {
     public function __construct()
     {
-
     }
 
     /**
@@ -22,32 +21,32 @@ class ResourceNodeManager
      * @param ResourceNode $resourceNode - the node to serialize
      * @param User         $currentUser  - the current user to know what to export
      *
-     * @return array                     - the serialized representation of the node
+     * @return array - the serialized representation of the node
      */
     public function serialize(ResourceNode $resourceNode, User $currentUser = null)
     {
         return [
-            'id'       => $resourceNode->getGuid(),
-            'name'     => $resourceNode->getName(),
+            'id' => $resourceNode->getGuid(),
+            'name' => $resourceNode->getName(),
             'mimeType' => $resourceNode->getMimeType(),
-            'type'     => $resourceNode->getResourceType()->getName(),
-            'poster'   => null,
+            'type' => $resourceNode->getResourceType()->getName(),
+            'poster' => null,
             'meta' => [
-                'created'    => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
-                'updated'    => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
-                'license'    => $resourceNode->getLicense(),
-                'published'  => $resourceNode->isPublished(),
-                'portal'     => $resourceNode->isPublishedToPortal(),
+                'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
+                'updated' => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
+                'license' => $resourceNode->getLicense(),
+                'published' => $resourceNode->isPublished(),
+                'portal' => $resourceNode->isPublishedToPortal(),
                 'exportable' => $resourceNode->getResourceType()->isExportable(), // todo : check rights
-                'editable'   => true, // todo : check rights
-                'deletable'  => true, // todo : check rights
+                'editable' => true, // todo : check rights
+                'deletable' => true, // todo : check rights
                 'authors' => [[
-                    'id'       => $resourceNode->getCreator()->getGuid(),
-                    'name'     => $resourceNode->getCreator()->getFullName(),
-                    'username' => $resourceNode->getCreator()->getUsername()
+                    'id' => $resourceNode->getCreator()->getGuid(),
+                    'name' => $resourceNode->getCreator()->getFullName(),
+                    'username' => $resourceNode->getCreator()->getUsername(),
                 ]],
                 'workspace' => [
-                    'id'   => $resourceNode->getWorkspace()->getGuid(),
+                    'id' => $resourceNode->getWorkspace()->getGuid(),
                     'name' => $resourceNode->getWorkspace()->getName(),
                     'code' => $resourceNode->getWorkspace()->getCode(),
                 ],
@@ -56,15 +55,15 @@ class ResourceNodeManager
                 ],
             ],
             'parameters' => [
-                'accessibleFrom'  => null,
+                'accessibleFrom' => null,
                 'accessibleUntil' => null,
-                'fullscreen'      => false,
-                'closeTarget'     => ''
+                'fullscreen' => false,
+                'closeTarget' => '',
             ],
             'rights' => [
 
             ],
-            'tags' => [ // it comes from a plugin
+            'tags' => [// it comes from a plugin
 
             ],
             'social' => [ // it comes from a plugin
@@ -100,6 +99,5 @@ class ResourceNodeManager
 
     public function delete(ResourceNode $resourceNode)
     {
-
     }
 }

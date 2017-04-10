@@ -43,9 +43,9 @@ class SimpleTextWidgetListener
      * })
      *
      * @param SimpleTextManager $simpleTextManager
-     * @param FormFactory $formFactory
-     * @param TwigEngine $templating
-     * @param ObjectManager $om
+     * @param FormFactory       $formFactory
+     * @param TwigEngine        $templating
+     * @param ObjectManager     $om
      */
     public function __construct(
         SimpleTextManager $simpleTextManager,
