@@ -105,9 +105,11 @@ class ExerciseImporter extends Importer implements RichTextInterface
                 $this->setText($item, 'content');
                 $this->setText($item, 'description');
 
-                array_walk($item->hints, function (\stdClass $hint) {
-                    $this->setText($hint, 'value');
-                });
+                if ($item->hints) {
+                    array_walk($item->hints, function (\stdClass $hint) {
+                        $this->setText($hint, 'value');
+                    });
+                }
             });
         });
 
@@ -139,9 +141,11 @@ class ExerciseImporter extends Importer implements RichTextInterface
                 $this->dumpText($item, 'content', $files);
                 $this->dumpText($item, 'description', $files);
 
-                array_walk($item->hints, function (\stdClass $hint) use (&$files) {
-                    $this->dumpText($hint, 'value', $files);
-                });
+                if ($item->hints) {
+                    array_walk($item->hints, function (\stdClass $hint) use (&$files) {
+                        $this->dumpText($hint, 'value', $files);
+                    });
+                }
             });
         });
 
