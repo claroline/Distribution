@@ -7,7 +7,12 @@ import {AnswerArea} from './answer-area.jsx'
 // this class doesn't hold any state but the drag layer decorator
 // requires it to be a "full" component, not a stateless function
 class ResizeDragLayer extends Component {
+  constructor(props){
+    super(props)
+    console.log(props)
+  }
   render() {
+    console.log(this.props)
     if (
       !this.props.canDrag ||
       !this.props.isDragging ||
@@ -17,7 +22,7 @@ class ResizeDragLayer extends Component {
       return null
     }
 
-    const area = this.props.areas.find(area => area.id === this.props.item.item.areaId)
+    const area = this.props.areas.find(area => area.id === this.props.item.areaId)
 
     return (
       <AnswerArea
@@ -26,7 +31,7 @@ class ResizeDragLayer extends Component {
         shape={area.shape}
         geometry={resizeArea(
           area,
-          this.props.item.item.position,
+          this.props.item.position,
           this.props.currentOffset.x,
           this.props.currentOffset.y
         )}

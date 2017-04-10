@@ -19,7 +19,8 @@ import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
-import {STEP_ITEM} from './../../enums'
+import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
+import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title editor-panel-title">
@@ -134,7 +135,6 @@ ItemHeader.propTypes = {
 }
 
 let ItemPanel = props =>
-
     props.connectDropTarget(
       <div
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -243,7 +243,6 @@ ContentHeader.propTypes = {
 }
 
 let ContentPanel = props =>
-
     props.connectDropTarget(
       <div
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -309,9 +308,14 @@ ContentPanel.propTypes = {
 
 ItemPanel = makeSortable(
   ItemPanel,
-  STEP_ITEM
+  'STEP_ITEM',
+  ItemPanelDragPreview
 )
-ContentPanel = makeSortable(ContentPanel, STEP_ITEM)
+ContentPanel = makeSortable(
+  ContentPanel,
+  'STEP_ITEM',
+  ContentPanelDragPreview
+)
 
 class StepFooter extends Component {
   constructor(props) {
@@ -366,7 +370,6 @@ class StepFooter extends Component {
   render() {
     return (
       <div className="step-footer">
-
         <div className="btn-group">
           <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
           <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

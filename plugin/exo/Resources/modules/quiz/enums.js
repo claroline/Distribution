@@ -65,16 +65,3 @@ export const markModes = [
 export const SCORE_SUM = 'sum'
 export const SCORE_FIXED = 'fixed'
 export const SCORE_MANUAL = 'manual'
-
-
-// REPLACEMENT FOR REACT-DND-HTML5-BACKEND NATIVE TYPES
-export const FILE = '__NATIVE_FILE__'
-export const URL = '__NATIVE_URL__'
-export const TEXT = '__NATIVE_TEXT__'
-
-// DRAGGABLE TYPES
-export const ITEM = 'ITEM'
-export const THUMBNAIL = 'THUMBNAIL'
-export const CONTENT_THUMBNAIL = 'CONTENT_THUMBNAIL'
-export const ORDERING_ITEM = 'ORDERING_ITEM'
-export const STEP_ITEM = 'STEP_ITEM'

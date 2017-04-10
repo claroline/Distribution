@@ -5,7 +5,7 @@ import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {tex, t} from './../../utils/translate'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
-import {ITEM} from './../../quiz/enums'
+import {SetItemDragPreview} from './set-item-drag-preview.jsx'
 
 let DropBox = props => {
   return props.connectDropTarget (
@@ -26,7 +26,7 @@ DropBox.propTypes = {
   object: T.object.isRequired
 }
 
-DropBox = makeDroppable(DropBox, ITEM)
+DropBox = makeDroppable(DropBox, 'ITEM')
 
 const Association = props =>
   <div className="association answer-item selected">
@@ -123,7 +123,7 @@ Item.propTypes = {
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, ITEM)
+Item = makeDraggable(Item, 'ITEM', null, SetItemDragPreview)
 
 const ItemList = props =>
     <ul>

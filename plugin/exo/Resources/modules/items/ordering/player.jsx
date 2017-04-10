@@ -6,7 +6,7 @@ import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL} from
 import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
-import {ITEM, ORDERING_ITEM} from './../../quiz/enums'
+import {OrderingItemDragPreview} from './ordering-item-drag-preview.jsx'
 
 let DropBox = props => {
   return props.connectDropTarget (
@@ -26,7 +26,7 @@ DropBox.propTypes = {
   canDrop: T.bool.isRequired
 }
 
-DropBox = makeDroppable(DropBox, ITEM)
+DropBox = makeDroppable(DropBox, 'ITEM')
 
 let SortableItem = props => {
   return props.connectDropTarget (
@@ -69,7 +69,11 @@ SortableItem.propTypes = {
   index: T.number.isRequired
 }
 
-SortableItem = makeSortable(SortableItem, ORDERING_ITEM)
+SortableItem = makeSortable(
+  SortableItem,
+  'ORDERING_ITEM',
+  OrderingItemDragPreview
+)
 
 let DraggableItem = props => {
   return props.connectDragSource(
@@ -95,7 +99,12 @@ DraggableItem.propTypes = {
   item: T.object.isRequired
 }
 
-DraggableItem = makeDraggable(DraggableItem, ITEM)
+DraggableItem = makeDraggable(
+  DraggableItem,
+  'ITEM',
+  null,
+  OrderingItemDragPreview
+)
 
 class OrderingPlayer extends Component {
 

@@ -2,7 +2,7 @@ import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
 import {t, tex} from './../../utils/translate'
-import {SCORE_SUM, SCORE_FIXED, ORDERING_ITEM} from './../../quiz/enums'
+import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
 import {ErrorBlock} from './../../components/form/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
@@ -11,6 +11,7 @@ import {Radios} from './../../components/form/radios.jsx'
 import {FormGroup} from './../../components/form/form-group.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, actions} from './editor'
+import {OrderingItemDragPreview} from './ordering-item-drag-preview.jsx'
 
 class Item extends Component {
   constructor(props) {
@@ -142,7 +143,7 @@ OrderingItem.propTypes = {
   index: T.number.isRequired
 }
 
-OrderingItem = makeSortable(OrderingItem, ORDERING_ITEM)
+OrderingItem = makeSortable(OrderingItem, 'ORDERING_ITEM', OrderingItemDragPreview)
 
 const OrderingOdd = props => {
   return (

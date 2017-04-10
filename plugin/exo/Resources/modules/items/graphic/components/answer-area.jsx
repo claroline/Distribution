@@ -3,6 +3,7 @@ import classes from 'classnames'
 import tinycolor from 'tinycolor2'
 import {makeDraggable} from './../../../utils/dragAndDrop'
 import {AreaResizer, AreaResizerDraggable} from './area-resizer.jsx'
+import {AnswerAreaDragPreview} from './answer-area-drag-preview.jsx'
 import {
   SHAPE_RECT,
   SHAPE_CIRCLE,
@@ -168,7 +169,8 @@ export const AnswerAreaDraggable = makeDraggable(
     id: props.id,
     geometry: props.geometry,
     shape: props.shape
-  })
+  }),
+  AnswerAreaDragPreview
 )
 
 function common(rules) {

@@ -6,8 +6,8 @@ import {ValidationStatus} from './../../quiz/editor/components/validation-status
 import {getContentDefinition} from './../content-types'
 import {connect} from 'react-redux'
 import {showModal, fadeModal, hideModal} from './../../modal/actions'
-import {CONTENT_THUMBNAIL} from './../../quiz/enums'
 import {MODAL_CONTENT} from './content-modal.jsx'
+import {ContentThumbnailDragPreview} from './content-thumbnail-drag-preview.jsx'
 
 const Actions = props =>
   <span className="content-thumbnail-actions">
@@ -60,7 +60,6 @@ Actions.propTypes = {
 }
 
 let ContentThumbnail = props => {
-
   return props.connectDropTarget(
       <span
         className={classes('content-thumbnail', {'active': props.active})}
@@ -131,7 +130,11 @@ ContentThumbnail.propTypes = {
   connectDropTarget: T.func.isRequired
 }
 
-ContentThumbnail = makeSortable(ContentThumbnail, CONTENT_THUMBNAIL)
+ContentThumbnail = makeSortable(
+  ContentThumbnail,
+  'CONTENT_THUMBNAIL',
+  ContentThumbnailDragPreview
+)
 
 
 function mapStateToProps() {

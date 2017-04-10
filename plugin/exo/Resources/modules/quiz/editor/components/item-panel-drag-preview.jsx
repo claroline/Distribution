@@ -18,7 +18,7 @@ ItemHeaderPreview.propTypes = {
 
 export const ItemPanelDragPreview = props =>
   <div>
-    <Panel header={<ItemHeaderPreview item={props.item}/>} />
+    <Panel header={<ItemHeaderPreview {...props}/>} />
   </div>
 
 
