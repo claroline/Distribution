@@ -99,6 +99,70 @@ LikeAction.propTypes = {
   handleLike: T.func.isRequired
 }
 
+function getMoreActions(resourceNode) {
+  return [
+    <MenuItem header>Management</MenuItem>,
+
+    <MenuItem
+      eventKey="resource-edit-props"
+    >
+      <span className="fa fa-fw fa-pencil" />
+      Edit properties
+    </MenuItem>,
+
+    <MenuItem eventKey="6">
+      <span className="fa fa-fw fa-desktop" />
+      Edit display options
+    </MenuItem>,
+
+    <MenuItem eventKey="7">
+      <span className="fa fa-fw fa-tags" />
+      Manage tags
+    </MenuItem>,
+
+    <MenuItem eventKey="5">
+      <span className="fa fa-fw fa-line-chart" />
+      Show tracking
+    </MenuItem>,
+
+    <MenuItem eventKey="8">
+      <span className="fa fa-fw fa-user-secret" />
+      Show as...
+    </MenuItem>,
+
+    <MenuItem header>Other</MenuItem>,
+
+    <MenuItem eventKey="9">
+      <span className="fa fa-fw fa-comment" />
+      Add a comment
+    </MenuItem>,
+
+    <MenuItem eventKey="10">,
+
+    <span className="fa fa-fw fa-sticky-note" />
+      Add a note
+    </MenuItem>,
+
+    resourceNode.meta.exportable &&
+    <MenuItem divider/>,
+
+    resourceNode.meta.exportable &&
+    <MenuItem eventKey="resource-export">
+      <span className="fa fa-fw fa-upload" />
+      Export resource
+    </MenuItem>,
+
+    resourceNode.meta.deletable &&
+    <MenuItem divider/>,
+
+    resourceNode.meta.deletable &&
+    <MenuItem eventKey="resource-delete" className="dropdown-link-danger">
+      <span className="fa fa-fw fa-trash" />
+      Delete resource
+    </MenuItem>
+  ]
+}
+
 /**
  * @param props
  * @constructor
@@ -122,16 +186,16 @@ const ResourceActions = props =>
           />
         }
 
-        <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
-        <ManageRightsAction rights="workspace" openRightsManagement={() => true} />
+        {/*<PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
+        <ManageRightsAction rights="workspace" openRightsManagement={() => true} />*/}
       </PageGroupActions>
     }
 
-    <PageGroupActions>
+    {/*<PageGroupActions>
       <FavoriteAction favorited={false} toggleFavorite={() => true} />
       <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
       <LikeAction likes={100} handleLike={() => true} />
-    </PageGroupActions>
+    </PageGroupActions>*/}
 
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
@@ -149,61 +213,7 @@ const ResourceActions = props =>
           })
         )}
 
-        <MenuItem header>Management</MenuItem>
-        <MenuItem
-          eventKey="resource-edit-props"
-        >
-          <span className="fa fa-fw fa-pencil" />
-          Edit properties
-        </MenuItem>
-        <MenuItem eventKey="6">
-          <span className="fa fa-fw fa-desktop" />
-          Edit display options
-        </MenuItem>
-        <MenuItem eventKey="7">
-          <span className="fa fa-fw fa-tags" />
-          Manage tags
-        </MenuItem>
-        <MenuItem eventKey="5">
-          <span className="fa fa-fw fa-line-chart" />
-          Show tracking
-        </MenuItem>
-
-        <MenuItem eventKey="8">
-          <span className="fa fa-fw fa-user-secret" />
-          Show as...
-        </MenuItem>
-
-        <MenuItem header>Other</MenuItem>
-        <MenuItem eventKey="9">
-          <span className="fa fa-fw fa-comment" />
-          Add a comment
-        </MenuItem>
-
-        <MenuItem eventKey="10">
-          <span className="fa fa-fw fa-sticky-note" />
-          Add a note
-        </MenuItem>
-
-        {props.resourceNode.meta.exportable &&
-          <MenuItem divider/>
-        }
-        {props.resourceNode.meta.exportable &&
-          <MenuItem eventKey="resource-export">
-            <span className="fa fa-fw fa-upload" />
-            Export resource
-          </MenuItem>
-        }
-
-        {props.resourceNode.meta.deletable &&
-          <MenuItem divider/>
-        }
-        {props.resourceNode.meta.deletable &&
-          <MenuItem eventKey="resource-delete" className="dropdown-link-danger">
-            <span className="fa fa-fw fa-trash" />
-            Delete resource
-          </MenuItem>
-        }
+        {/*{getMoreActions(props.resourceNode)}*/}
       </MoreAction>
     </PageGroupActions>
   </PageActions>
