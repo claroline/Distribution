@@ -51,7 +51,7 @@ class CourseRepository extends EntityRepository
         $dql = "
             SELECT c
             FROM Claroline\CursusBundle\Entity\Course c
-            JOIN c.organizations o
+            LEFT JOIN c.organizations o
             WHERE o IN (:organizations)
             OR EXISTS (
                 SELECT cu
@@ -98,6 +98,7 @@ class CourseRepository extends EntityRepository
         $dql = "
             SELECT c
             FROM Claroline\CursusBundle\Entity\Course c
+            LEFT JOIN c.organizations o
             WHERE (
                 o IN (:organizations)
                 OR EXISTS (

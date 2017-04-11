@@ -60,6 +60,7 @@ export default class CourseEditionModalCtrl {
     this.model = null
     this.rolesChoices = []
     this.organizations = []
+    this.lockedOrganizations = []
     this.organizationsList = []
     this._userpickerCallback = this._userpickerCallback.bind(this)
     this.initializeCourse()
@@ -122,7 +123,14 @@ export default class CourseEditionModalCtrl {
         if (this.source['organizations']) {
           this.source['organizations'].forEach(o => {
             const selectedOrganization = this.organizationsList.find(organization => organization['id'] === o['id'])
-            this.organizations.push(selectedOrganization)
+
+            if (selectedOrganization) {
+              this.organizations.push(selectedOrganization)
+            } else {
+              o['disabled'] = true
+              this.organizationsList.push(o)
+              this.lockedOrganizations.push(o)
+            }
           })
         }
       }
@@ -222,6 +230,7 @@ export default class CourseEditionModalCtrl {
     this.course['validators'] = []
     this.validators.forEach(v => this.course['validators'].push(v['id']))
     this.course['organizations'] = []
+    this.lockedOrganizations.forEach(o => this.course['organizations'].push(o['id']))
     this.organizations.forEach(o => this.course['organizations'].push(o['id']))
 
     if (this.isValid()) {

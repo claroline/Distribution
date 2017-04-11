@@ -18,7 +18,7 @@ export default class CursusEditionModalCtrl {
     this.callback = callback
     this.title = title
     this.source = cursus
-    this.cursusId = cursus['id']
+    this.parentId = cursus['parentId'] ? cursus['parentId'] : null
     this.cursus = {
       title: null,
       code: null,
@@ -26,15 +26,20 @@ export default class CursusEditionModalCtrl {
       icon: '',
       workspace: null,
       blocking: false,
-      color: ''
+      color: '',
+      organizations: []
     }
     this.cursusErrors = {
       title: null,
-      code: null
+      code: null,
+      organizations: null
     }
     this.tinymceOptions = CourseService.getTinymceConfiguration()
     this.workspaces = []
     this.workspace = null
+    this.organizations = []
+    this.lockedOrganizations = []
+    this.organizationsList = []
     this.initializeCursus()
   }
 
@@ -65,6 +70,30 @@ export default class CursusEditionModalCtrl {
         }
       }
     })
+
+    if (!this.parentId) {
+      const organizationsUrl = Routing.generate('claro_cursus_organizations_retrieve')
+      this.$http.get(organizationsUrl).then(d => {
+        if (d['status'] === 200) {
+          const datas = JSON.parse(d['data'])
+          datas.forEach(o => this.organizationsList.push(o))
+
+          if (this.source['organizations']) {
+            this.source['organizations'].forEach(o => {
+              const selectedOrganization = this.organizationsList.find(organization => organization['id'] === o['id'])
+
+              if (selectedOrganization) {
+                this.organizations.push(selectedOrganization)
+              } else {
+                o['disabled'] = true
+                this.organizationsList.push(o)
+                this.lockedOrganizations.push(o)
+              }
+            })
+          }
+        }
+      })
+    }
   }
 
   submit() {
@@ -82,10 +111,22 @@ export default class CursusEditionModalCtrl {
       this.cursusErrors['code'] = null
     }
 
+    if (!this.parentId && this.organizations.length === 0) {
+      this.cursusErrors['organizations'] = Translator.trans('form_not_blank_error', {}, 'cursus')
+    } else {
+      this.cursusErrors['organizations'] = null
+    }
+
     if (this.workspace) {
       this.cursus['workspace'] = this.workspace['id']
     } else {
       this.cursus['workspace'] = null
+    }
+
+    if (!this.parentId) {
+      this.cursus['organizations'] = []
+      this.lockedOrganizations.forEach(o => this.cursus['organizations'].push(o['id']))
+      this.organizations.forEach(o => this.cursus['organizations'].push(o['id']))
     }
 
     if (this.isValid()) {

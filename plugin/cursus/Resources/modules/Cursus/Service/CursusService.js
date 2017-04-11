@@ -136,7 +136,7 @@ export default class CursusService {
       controllerAs: 'cmc',
       resolve: {
         title: () => { return Translator.trans('cursus_creation', {}, 'cursus') },
-        cursusId: () => { return cursusId },
+        parentId: () => { return cursusId },
         callback: () => { return addCallback }
       }
     })

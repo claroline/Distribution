@@ -130,6 +130,10 @@ class AdminManagementController extends Controller
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template()
+     *
+     * @param User $user
+     *
+     * @return array
      */
     public function indexAction(User $user)
     {
@@ -160,6 +164,9 @@ class AdminManagementController extends Controller
         if ($cursusDatas['workspace']) {
             $worskpace = $this->workspaceManager->getWorkspaceById($cursusDatas['workspace']);
         }
+        $organizations = isset($cursusDatas['organizations']) && count($cursusDatas['organizations']) > 0 ?
+            $this->organizationManager->getOrganizationsByIds($cursusDatas['organizations']) :
+            [];
         if ($this->request->files->get('cursusDatas')['icon']) {
             $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
         }
@@ -173,7 +180,8 @@ class AdminManagementController extends Controller
             $blocking,
             $icon,
             $cursusDatas['color'],
-            $worskpace
+            $worskpace,
+            $organizations
         );
         $serializedCursus = $this->serializer->serialize(
             $createdCursus,
@@ -194,10 +202,14 @@ class AdminManagementController extends Controller
      *
      * Creates a child cursus
      *
+     * @param User   $user
+     * @param Cursus $parent
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function postCursusChildCreationAction(Cursus $parent)
+    public function postCursusChildCreationAction(User $user, Cursus $parent)
     {
+        $this->checkCursusAccess($user, $parent);
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $worskpace = null;
         $icon = null;
@@ -239,10 +251,14 @@ class AdminManagementController extends Controller
      *
      * Edits a cursus
      *
+     * @param User   $user
+     * @param Cursus $cursus
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function putCursusEditionAction(Cursus $cursus)
+    public function putCursusEditionAction(User $user, Cursus $cursus)
     {
+        $this->checkCursusAccess($user, $cursus);
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $cursus->setTitle($cursusDatas['title']);
         $cursus->setCode($cursusDatas['code']);
@@ -260,6 +276,12 @@ class AdminManagementController extends Controller
         if ($this->request->files->get('cursusDatas')['icon']) {
             $icon = $this->cursusManager->saveIcon($this->request->files->get('cursusDatas')['icon']);
             $cursus->setIcon($icon);
+        }
+        if (empty($cursus->getParent())) {
+            $organizations = isset($cursusDatas['organizations']) && count($cursusDatas['organizations']) > 0 ?
+                $this->organizationManager->getOrganizationsByIds($cursusDatas['organizations']) :
+                [];
+            $this->cursusManager->updateCursusOrganizations($cursus, $organizations);
         }
         $this->cursusManager->persistCursus($cursus);
         $event = new LogCursusEditEvent($cursus);
@@ -283,10 +305,14 @@ class AdminManagementController extends Controller
      *
      * Deletes cursus
      *
+     * @param User   $user
+     * @param Cursus $cursus
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function deleteCursusAction(Cursus $cursus)
+    public function deleteCursusAction(User $user, Cursus $cursus)
     {
+        $this->checkCursusAccess($user, $cursus);
         $serializedCursus = $this->serializer->serialize(
             $cursus,
             'json',
@@ -364,7 +390,7 @@ class AdminManagementController extends Controller
         $serializedCursus = $this->serializer->serialize(
             $rootCursus,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_workspace_min'])
         );
 
         return new JsonResponse($serializedCursus, 200);
@@ -377,9 +403,15 @@ class AdminManagementController extends Controller
      *     options = {"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * @param User   $user
+     * @param Cursus $cursus
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function postCursusCourseCreateAction(Cursus $cursus)
+    public function postCursusCourseCreateAction(User $user, Cursus $cursus)
     {
+        $this->checkCursusAccess($user, $cursus);
         $courseDatas = $this->request->request->get('courseDatas', false);
         $worskpace = null;
         $worskpaceModel = null;
@@ -442,7 +474,7 @@ class AdminManagementController extends Controller
         $serializedCursus = $this->serializer->serialize(
             $createdCursus,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_workspace_min'])
         );
 
         return new JsonResponse($serializedCursus, 200);
@@ -455,6 +487,8 @@ class AdminManagementController extends Controller
      *     options = {"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function postCourseCreateAction()
     {
@@ -533,14 +567,22 @@ class AdminManagementController extends Controller
      *     options = {"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * @param User   $user
+     * @param Cursus $cursus
+     * @param Course $course
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function postCursusCourseAddAction(Cursus $cursus, Course $course)
+    public function postCursusCourseAddAction(User $user, Cursus $cursus, Course $course)
     {
+        $this->checkCursusAccess($user, $cursus);
+        $this->checkCourseAccess($user, $course);
         $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, [$course]);
         $serializedCursus = $this->serializer->serialize(
             $createdCursus,
             'json',
-            SerializationContext::create()->setGroups(['api_cursus'])
+            SerializationContext::create()->setGroups(['api_workspace_min'])
         );
 
         return new JsonResponse($serializedCursus, 200);
@@ -784,7 +826,6 @@ class AdminManagementController extends Controller
     public function getCursusByCodeWithoutIdAction(User $user, $code, $id = 0)
     {
         $cursus = $this->cursusManager->getCursusByCodeWithoutId($code, $id);
-        $this->checkCursusAccess($user, $cursus);
         $serializedCursus = $this->serializer->serialize(
             $cursus,
             'json',
@@ -813,7 +854,6 @@ class AdminManagementController extends Controller
     public function getCourseByCodeWithoutIdAction(User $user, $code, $id = 0)
     {
         $course = $this->cursusManager->getCourseByCodeWithoutId($code, $id);
-        $this->checkCourseAccess($user, $course);
         $serializedCourse = $this->serializer->serialize(
             $course,
             'json',
@@ -2757,8 +2797,8 @@ class AdminManagementController extends Controller
 
     private function checkCursusAccess(User $user, Cursus $cursus)
     {
-        $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
-        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations());
+        $userOrgas = $this->cursusManager->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
+        $cursusOrgas = $this->cursusManager->extractOrganizationsIds($cursus->getOrganizations());
 
         if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $cursusOrgas)) === 0) {
             throw new AccessDeniedException();
@@ -2767,22 +2807,11 @@ class AdminManagementController extends Controller
 
     private function checkCourseAccess(User $user, Course $course)
     {
-        $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
-        $courseOrgas = $this->extractOrganizationsIds($this->cursusManager->getOrganizationsByCourse($course));
+        $userOrgas = $this->cursusManager->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
+        $courseOrgas = $this->cursusManager->extractOrganizationsIds($this->cursusManager->getOrganizationsByCourse($course));
 
         if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $courseOrgas)) === 0) {
             throw new AccessDeniedException();
         }
-    }
-
-    private function extractOrganizationsIds(array $organizations)
-    {
-        $ids = [];
-
-        foreach ($organizations as $organization) {
-            $ids[] = $organization->getId();
-        }
-
-        return $ids;
     }
 }

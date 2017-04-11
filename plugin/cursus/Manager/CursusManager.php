@@ -258,7 +258,8 @@ class CursusManager
         $blocking = false,
         $icon = null,
         $color = null,
-        Workspace $workspace = null
+        Workspace $workspace = null,
+        array $organizations = []
     ) {
         $cursus = new Cursus();
         $cursus->setTitle($title);
@@ -273,6 +274,11 @@ class CursusManager
         $orderMax = is_null($parent) ? $this->getLastRootCursusOrder() : $this->getLastCursusOrderByParent($parent);
         $order = is_null($orderMax) ? 1 : intval($orderMax) + 1;
         $cursus->setCursusOrder($order);
+        $cursusOrganizations = empty($parent) ? $organizations : $parent->getOrganizations();
+
+        foreach ($cursusOrganizations as $organization) {
+            $cursus->addOrganization($organization);
+        }
         $this->persistCursus($cursus);
         $event = new LogCursusCreateEvent($cursus);
         $this->eventDispatcher->dispatch('log', $event);
@@ -486,6 +492,11 @@ class CursusManager
             $newCursus->setBlocking(false);
             ++$lastOrder;
             $newCursus->setCursusOrder($lastOrder);
+            $organizations = $parent->getOrganizations();
+
+            foreach ($organizations as $organization) {
+                $newCursus->addOrganization($organization);
+            }
             $this->om->persist($newCursus);
             $createdCursus[] = $newCursus;
         }
@@ -614,7 +625,6 @@ class CursusManager
     public function unregisterUsersFromCursus(Cursus $cursus, array $users)
     {
         $this->checkCursusToolRegistrationAccess();
-        $toDelete = [];
         $coursesToUnregister = [];
         $root = $cursus->getRoot();
         $cursusRoot = $this->getOneCursusById($root);
@@ -4653,6 +4663,42 @@ class CursusManager
         }
 
         return $organizations;
+    }
+
+    public function updateCursusOrganizations(Cursus $cursus, array $organizations)
+    {
+        if (empty($cursus->getParent())) {
+            $cursusOrgasIds = $this->extractOrganizationsIds($cursus->getOrganizations());
+            $orgasIds = $this->extractOrganizationsIds($organizations);
+            $nbCursusOrgas = count($cursusOrgasIds);
+            $nbOrgas = count($orgasIds);
+
+            if ($nbCursusOrgas !== $nbOrgas || count(array_intersect($cursusOrgasIds, $orgasIds)) !== $nbOrgas) {
+                $this->om->startFlushSuite();
+                $allCursusRoot = $this->cursusRepo->findByRoot($cursus->getRoot());
+
+                foreach ($allCursusRoot as $cursusRoot) {
+                    $cursusRoot->emptyOrganizations();
+
+                    foreach ($organizations as $organization) {
+                        $cursusRoot->addOrganization($organization);
+                    }
+                    $this->om->persist($cursusRoot);
+                }
+                $this->om->endFlushSuite();
+            }
+        }
+    }
+
+    public function extractOrganizationsIds(array $organizations)
+    {
+        $ids = [];
+
+        foreach ($organizations as $organization) {
+            $ids[] = $organization->getId();
+        }
+
+        return $ids;
     }
 
     /***************************************************

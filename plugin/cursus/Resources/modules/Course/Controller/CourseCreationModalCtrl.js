@@ -91,16 +91,19 @@ export default class CourseCreationModalCtrl {
         datas.forEach(r => this.validatorsRoles.push(r['id']))
       }
     })
-    const organizationsUrl = Routing.generate('claro_cursus_organizations_retrieve')
-    this.$http.get(organizationsUrl).then(d => {
-      if (d['status'] === 200) {
-        const datas = JSON.parse(d['data'])
-        datas.forEach(o => {
-          this.organizationsList.push(o)
-          this.organizations.push(o)
-        })
-      }
-    })
+
+    if (!this.cursusId) {
+      const organizationsUrl = Routing.generate('claro_cursus_organizations_retrieve')
+      this.$http.get(organizationsUrl).then(d => {
+        if (d['status'] === 200) {
+          const datas = JSON.parse(d['data'])
+          datas.forEach(o => {
+            this.organizationsList.push(o)
+            this.organizations.push(o)
+          })
+        }
+      })
+    }
     this.CourseService.getGeneralParameters().then(d => {
       this.course['defaultSessionDuration'] = d['sessionDefaultDuration']
     })
@@ -153,7 +156,7 @@ export default class CourseCreationModalCtrl {
       }
     }
 
-    if (this.organizations.length === 0) {
+    if (!this.cursusId && this.organizations.length === 0) {
       this.courseErrors['organizations'] = Translator.trans('form_not_blank_error', {}, 'cursus')
     } else {
       this.courseErrors['organizations'] = null
@@ -180,8 +183,11 @@ export default class CourseCreationModalCtrl {
     }
     this.course['validators'] = []
     this.validators.forEach(v => this.course['validators'].push(v['id']))
-    this.course['organizations'] = []
-    this.organizations.forEach(o => this.course['organizations'].push(o['id']))
+
+    if (!this.cursusId) {
+      this.course['organizations'] = []
+      this.organizations.forEach(o => this.course['organizations'].push(o['id']))
+    }
 
     if (this.isValid()) {
       const checkCodeUrl = Routing.generate('api_get_course_by_code_without_id', {code: this.course['code']})
