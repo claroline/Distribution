@@ -74,14 +74,8 @@ class StepSerializer implements SerializerInterface
      */
     public function deserialize($data, $step = null, array $options = [])
     {
-        if (empty($step)) {
-            $step = new Step();
-        }
-
-        // Force client ID if needed
-        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-            $step->setUuid($data->id);
-        }
+        $step = $step ?: new Step();
+        $step->setUuid($data->id);
 
         if (isset($data->title)) {
             $step->setTitle($data->title);

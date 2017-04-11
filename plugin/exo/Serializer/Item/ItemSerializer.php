@@ -191,19 +191,15 @@ class ItemSerializer extends AbstractSerializer
      */
     public function deserialize($data, $question = null, array $options = [])
     {
-        if (empty($question)) {
+        if (empty($question) && !empty($data->id)) {
             // Loads the Item from DB if already exist
-            if (!empty($data->id)) {
-                $question = $this->om->getRepository('UJMExoBundle:Item\Item')->findOneBy([
-                    'uuid' => $data->id,
-                ]);
-            }
-
-            if (empty($question)) {
-                // Item not exist
-                $question = new Item();
-            }
+            $question = $this->om->getRepository('UJMExoBundle:Item\Item')->findOneBy([
+                'uuid' => $data->id,
+            ]);
         }
+
+        $question = $question ?: new Item();
+        $question->setUuid($data->id);
 
         // Sets the creator of the Item if not set
         $creator = $question->getCreator();
@@ -212,20 +208,6 @@ class ItemSerializer extends AbstractSerializer
             if (!empty($token) && $token->getUser() instanceof User) {
                 $question->setCreator($token->getUser());
             }
-        }
-
-        // Sets the creator of the Item if not set
-        $creator = $question->getCreator();
-        if (empty($creator) || !($creator instanceof User)) {
-            $token = $this->tokenStorage->getToken();
-            if (!empty($token) && $token->getUser() instanceof User) {
-                $question->setCreator($token->getUser());
-            }
-        }
-
-        // Force client ID if needed
-        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-            $question->setUuid($data->id);
         }
 
         if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $data->type)) {
