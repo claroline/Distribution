@@ -4,6 +4,7 @@ namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Entity\Misc\BooleanChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
@@ -154,12 +155,15 @@ class BooleanDefinition extends AbstractDefinition
     }
 
     /**
-     * No additional identifier to regenerate.
+     * Refreshes choice UUIDs.
      *
-     * @param AbstractItem $item
+     * @param BooleanQuestion $item
      */
     public function refreshIdentifiers(AbstractItem $item)
     {
-        return;
+        /** @var BooleanChoice $choice */
+        foreach ($item->getChoices() as $choice) {
+            $choice->refreshUuid();
+        }
     }
 }

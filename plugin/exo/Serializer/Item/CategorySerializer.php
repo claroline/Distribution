@@ -78,7 +78,7 @@ class CategorySerializer extends AbstractSerializer
      */
     public function deserialize($data, $category = null, array $options = [])
     {
-        if (empty($category) && !empty($data->id)) {
+        if (!$this->hasOption(Transfer::NO_FETCH, $options) && empty($category) && !empty($data->id)) {
             // Loads the Category from DB if already exist
             $category = $this->om->getRepository('UJMExoBundle:Item\Category')->findOneBy([
                 'uuid' => $data->id,

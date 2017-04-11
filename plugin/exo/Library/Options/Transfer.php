@@ -37,6 +37,18 @@ final class Transfer
 
     /**
      * Applies shuffle to the answers of a question.
+     *
+     * @var string
      */
     const SHUFFLE_ANSWERS = 'shuffleAnswers';
+
+    /**
+     * Avoids data fetch from DB.
+     *
+     * Not really aesthetic, this permits to force the recreation
+     * of shared entities (eg. Items, Categories) for importing/copying quizzes
+     *
+     * @var string
+     */
+    const NO_FETCH = 'noFetch';
 }

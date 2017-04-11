@@ -168,12 +168,15 @@ class ChoiceDefinition extends AbstractDefinition
     }
 
     /**
-     * No additional identifier to regenerate.
+     * Refreshes choice UUIDs.
      *
-     * @param AbstractItem $item
+     * @param ChoiceQuestion $item
      */
     public function refreshIdentifiers(AbstractItem $item)
     {
-        return;
+        /** @var Choice $choice */
+        foreach ($item->getChoices() as $choice) {
+            $choice->refreshUuid();
+        }
     }
 }

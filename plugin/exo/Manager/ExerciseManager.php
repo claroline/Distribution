@@ -171,7 +171,7 @@ class ExerciseManager
      */
     public function createCopy(\stdClass $srcData, Exercise $copyDestination = null)
     {
-        $copyDestination = $this->serializer->deserialize($srcData, $copyDestination);
+        $copyDestination = $this->serializer->deserialize($srcData, $copyDestination, [Transfer::NO_FETCH]);
         $this->refreshIdentifiers($copyDestination);
 
         // Persist copy
