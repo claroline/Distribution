@@ -16,8 +16,6 @@ export const AnswerAreaDragPreview = props => {
   const height = isRect ? def.coords[1].y - def.coords[0].y : def.radius * 2
   const frameWidth = width + (AREA_GUTTER * 2)
   const frameHeight = height + (AREA_GUTTER * 2)
-  const innerFrameWidth = frameWidth - BORDER_WIDTH * 2
-  const innerFrameHeight = frameHeight - BORDER_WIDTH * 2
   const borderRadius = isRect ? 0 : def.radius
   return (
     <div style={{
