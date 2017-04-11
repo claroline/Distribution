@@ -113,7 +113,6 @@ class GraphicQuestionSerializer implements SerializerInterface
      */
     private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $imageData, array $options)
     {
-
         $image = $graphicQuestion->getImage() ?: new Image();
 
         $image->setUuid($imageData->id);
@@ -140,7 +139,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             if ($publicFile) {
                 $image->setUrl($publicFile->getUrl());
             }
-        } else if (isset($imageData->url)) {
+        } elseif (isset($imageData->url)) {
             $image->setUrl($imageData->url);
         }
 

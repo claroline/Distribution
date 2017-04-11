@@ -99,7 +99,7 @@ LikeAction.propTypes = {
   handleLike: T.func.isRequired
 }
 
-function getMoreActions(resourceNode) {
+/*function getMoreActions(resourceNode) {
   return [
     <MenuItem header>Management</MenuItem>,
 
@@ -161,7 +161,7 @@ function getMoreActions(resourceNode) {
       Delete resource
     </MenuItem>
   ]
-}
+}*/
 
 /**
  * @param props

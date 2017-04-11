@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Serializer\Item;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Item\ItemObject;
-use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
 
 /**

@@ -140,7 +140,7 @@ class SelectionQuestionSerializer implements SerializerInterface
 
             // Searches for an existing color entity.
             foreach ($colorEntities as $entityIndex => $colorEntity) {
-              /* @var Color $colorEntity */
+                /* @var Color $colorEntity */
               if ($colorEntity->getUuid() === $colorData->id) {
                   $color = $colorEntity;
                   unset($colorEntities[$entityIndex]);
@@ -165,9 +165,9 @@ class SelectionQuestionSerializer implements SerializerInterface
      * Deserializes Question selection.
      *
      * @param SelectionQuestion $selectionQuestion
-     * @param array $selections
-     * @param array $solutions
-     * @param array $options
+     * @param array             $selections
+     * @param array             $solutions
+     * @param array             $options
      */
     private function deserializeSelections(SelectionQuestion $selectionQuestion, array $selections, array $solutions, array $options = [])
     {
