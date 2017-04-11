@@ -162,9 +162,9 @@ class ExerciseManager
 
     /**
      * Creates a copy of a quiz definition.
-     * (aka it creates a new entity if needed and generate new IDs for quiz data)
+     * (aka it creates a new entity if needed and generate new IDs for quiz data).
      *
-     * @param \stdClass $srcData
+     * @param \stdClass     $srcData
      * @param Exercise|null $copyDestination - an existing Exercise entity to store the copy
      *
      * @return Exercise
@@ -234,7 +234,7 @@ class ExerciseManager
 
         foreach ($exercise->getSteps() as $step) {
             $step->refreshUuid();
-            foreach ($step->getItems() as $item) {
+            foreach ($step->getQuestions() as $item) {
                 $this->itemManager->refreshIdentifiers($item);
             }
         }

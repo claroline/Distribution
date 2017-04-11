@@ -3,8 +3,6 @@
 namespace UJM\ExoBundle\Library\Item\Definition;
 
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
-use UJM\ExoBundle\Library\Attempt\AnswerPartInterface;
-use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 
 /**
  * Interface for the definition of a quiz item type.

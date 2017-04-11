@@ -134,7 +134,7 @@ class OpenDefinition extends AbstractDefinition
      * Not implemented because not relevant.
      *
      * @param AbstractItem $openQuestion
-     * @param array $answers
+     * @param array        $answers
      *
      * @return array
      */
