@@ -23,8 +23,8 @@ export const AnswerAreaDragPreview = props => {
     <div style={{
       borderRadius: borderRadius,
       opacity: 0.5,
-      width: innerFrameWidth + 'px',
-      height: innerFrameHeight + 'px',
+      width: frameWidth + 'px',
+      height: frameHeight + 'px',
       backgroundColor: def.color
     }}/>
   )

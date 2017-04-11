@@ -45,14 +45,10 @@ let SortableItem = props => {
           <span
             title={t('move')}
             draggable="true"
-            className={classes(
-              'tooltiped-button',
-              'btn',
-              'fa',
-              'fa-arrows',
-              'drag-handle'
-            )}
-          />
+            className="tooltiped-button btn"
+          >
+            <span className="fa fa-arrows drag-handle"/>
+          </span>
         </div>
       </div>
     )
@@ -78,18 +74,14 @@ SortableItem = makeSortable(
 let DraggableItem = props => {
   return props.connectDragSource(
     <div className="item">
-      <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.data}} />
+      <div className="item-data" dangerouslySetInnerHTML={{__html: props.item.data}} />      
       <span
         title={t('move')}
         draggable="true"
-        className={classes(
-          'tooltiped-button',
-          'btn',
-          'fa',
-          'fa-arrows',
-          'drag-handle'
-        )}
-      />
+        className="tooltiped-button btn"
+      >
+        <span className="fa fa-arrows drag-handle"/>
+      </span>
     </div>
   )
 }
@@ -102,7 +94,6 @@ DraggableItem.propTypes = {
 DraggableItem = makeDraggable(
   DraggableItem,
   'ITEM',
-  null,
   OrderingItemDragPreview
 )
 

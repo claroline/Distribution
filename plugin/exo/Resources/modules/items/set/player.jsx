@@ -123,7 +123,11 @@ Item.propTypes = {
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, 'ITEM', null, SetItemDragPreview)
+Item = makeDraggable(
+  Item,
+  'ITEM',
+  SetItemDragPreview
+)
 
 const ItemList = props =>
     <ul>

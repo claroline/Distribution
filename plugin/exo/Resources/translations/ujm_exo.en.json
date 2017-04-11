@@ -133,6 +133,7 @@
     "display_pagination": "Display with pagination",
     "docimology": "Grading system",
     "document": "Document",
+    "dragging_empty_item_data": "Dragging...",
     "drop_category": "Drop this category",
     "duplicate": "Duplicate",
     "duplicate_this_question": "<input type =\"text\" name='nbq' value='0' size='2' /> time this question (10 maximum allowed)",

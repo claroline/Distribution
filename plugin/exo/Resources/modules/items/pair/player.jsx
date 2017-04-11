@@ -122,8 +122,7 @@ Item.propTypes = {
 Item = makeDraggable(
   Item,
   'ITEM',
-  null,
-  PairItemDragPreview
+  PairItemDragPreview  
 )
 
 const ItemList = props =>

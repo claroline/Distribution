@@ -1,12 +1,13 @@
 import React, {PropTypes as T} from 'react'
+import {tex} from './../../utils/translate'
 
 export const OrderingItemDragPreview = props => {
   return (
-    <div className="ordering-item-preview">
+    <div className="drag-preview">
       {props.data ?
-        <div dangerouslySetInnerHTML={{__html: props.data}}></div>
+        <div dangerouslySetInnerHTML={{__html: props.data}} />
         :
-        <div>DRAGGING ITEM</div>
+        tex('dragging_empty_item_data')
       }
     </div>
   )

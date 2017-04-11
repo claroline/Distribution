@@ -24,6 +24,10 @@ export const BORDER_WIDTH = 2
 export const RESIZER_SIZE = 6
 
 export class AnswerArea extends Component {
+  constructor(props) {
+    super(props)
+  }
+
   render() {
     if (this.props.isDragging) {
       return null
@@ -164,11 +168,12 @@ AnswerArea.defaultProps = {
 export const AnswerAreaDraggable = makeDraggable(
   AnswerArea,
   TYPE_ANSWER_AREA,
+  AnswerAreaDragPreview,
   props => ({
     type: TYPE_ANSWER_AREA,
-    id: props.id
-  }),
-  AnswerAreaDragPreview
+    id: props.id,
+    props: props
+  })
 )
 
 function common(rules) {

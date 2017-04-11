@@ -2,7 +2,7 @@ import {DragSource, DropTarget} from 'react-dnd'
 import {DefaultPreviewComponent} from './default-preview-component.jsx'
 import {TYPE_AREA_RESIZER} from './../items/graphic/enums'
 
-export function makeDraggable(component, type, itemFactory = null, previewComponnent = null) {
+export function makeDraggable(component, type, previewComponnent = null, itemFactory = null) {
   const source = {
     beginDrag(props) {
       if (type === TYPE_AREA_RESIZER) {

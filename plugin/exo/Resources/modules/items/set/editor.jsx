@@ -266,7 +266,11 @@ Item.propTypes = {
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, 'ITEM', null, SetItemDragPreview)
+Item = makeDraggable(
+  Item,
+  'ITEM',
+  SetItemDragPreview
+)
 
 class ItemList extends Component {
   constructor(props) {

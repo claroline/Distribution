@@ -17,10 +17,6 @@ export function makeSortable(component, type, previewComponnent = null) {
         id: props.id,
         index: props.index,
         previewComponnent: previewComponnent ? previewComponnent : DefaultPreviewComponent,
-        //title: props.title,
-        //data: props.data,
-        //item: props.item,
-        //type: props.type,
         props: props
 
       }
