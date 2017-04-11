@@ -6,8 +6,8 @@ import {reducers} from './reducers'
 import {Workspaces} from './workspaces.jsx'
 
 class WorkspaceAdministration {
-  constructor(workspaceData) {
-    this.store = createStore(reducers, {pager: workspaceData})
+  constructor(workspaceData, user) {
+    this.store = createStore(reducers, {pager: workspaceData, user})
   }
 
   render(element) {
@@ -24,7 +24,8 @@ class WorkspaceAdministration {
 
 const container = document.querySelector('.workspace-administration-container')
 const workspaces = JSON.parse(container.dataset.workspaces)
-const count = container.dataset.count
-const adminTool = new WorkspaceAdministration({workspaces, count})
+const count = parseInt(container.dataset.count)
+const user = JSON.parse(container.dataset.user)
+const adminTool = new WorkspaceAdministration({workspaces, count}, user)
 
 adminTool.render(container)

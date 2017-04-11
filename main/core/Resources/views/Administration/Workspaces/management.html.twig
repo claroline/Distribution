@@ -23,6 +23,7 @@
     class="page-container workspace-administration-container"
     data-workspaces="{{ workspaces | json_serialize('api_workspace') | raw | escape }}"
     data-count="{{ count }}"
+    data-user="{{ user | json_serialize('api_user') | raw | escape }}"
   >
   </div>
 {% endblock %}

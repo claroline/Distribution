@@ -875,8 +875,7 @@ class WorkspaceManager
 
             if (isset($workspace[7])) {
                 //TODO MODEL TEST
-                $model = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')
-                  ->code($workspace[7]);
+                $model = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneBycode($workspace[7]);
             }
 
             if (isset($workspace[8])) {

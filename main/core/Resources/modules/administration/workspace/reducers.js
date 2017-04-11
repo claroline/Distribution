@@ -10,5 +10,6 @@ function changePage(state) {
 export const reducers = combineReducers({
   pager: makeReducer(0, {
     [CHANGE_PAGE]: changePage
-  })
+  }),
+  user: (state = null) => state
 })

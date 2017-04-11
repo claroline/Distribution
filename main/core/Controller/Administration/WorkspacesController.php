@@ -57,8 +57,9 @@ class WorkspacesController extends Controller
     {
         $workspaces = $this->workspaceManager->searchPartialList([], 0, 20);
         $count = $this->workspaceManager->searchPartialList([], 0, 20, true);
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
-        return ['workspaces' => $workspaces, 'count' => $count];
+        return ['workspaces' => $workspaces, 'count' => $count, 'user' => $user];
     }
 
     /**
