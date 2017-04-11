@@ -22,6 +22,7 @@ describe('<AreaPopover/>', () => {
         onChangeFeedback={() => {}}
         onPickColor={() => {}}
         onClose={() => {}}
+        onDelete={() => {}}
       />
     )
     ensure.propTypesOk()

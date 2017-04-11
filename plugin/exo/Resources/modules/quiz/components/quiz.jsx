@@ -67,11 +67,12 @@ function customActions(props) {
     action: '#papers'
   })
 
-  actions.push({
+  // not ready for now
+  /*actions.push({
     icon: 'fa fa-fw fa-pie-chart',
     label: tex('docimology'),
     action: '#'
-  })
+  })*/
 
   // Manual correction
   actions.push({

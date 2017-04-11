@@ -4,15 +4,32 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.manager.resource_node")
  */
 class ResourceNodeManager
 {
-    public function __construct()
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorization;
+
+    /**
+     * ResourceNodeManager constructor.
+     *
+     * @DI\InjectParams({
+     *     "authorization" = @DI\Inject("security.authorization_checker")
+     * })
+     *
+     * @param AuthorizationCheckerInterface $authorization
+     */
+    public function __construct(AuthorizationCheckerInterface $authorization)
     {
+        $this->authorization = $authorization;
     }
 
     /**
@@ -25,6 +42,8 @@ class ResourceNodeManager
      */
     public function serialize(ResourceNode $resourceNode, User $currentUser = null)
     {
+        $collection = new ResourceCollection([$resourceNode]);
+
         return [
             'id' => $resourceNode->getGuid(),
             'name' => $resourceNode->getName(),
@@ -37,9 +56,9 @@ class ResourceNodeManager
                 'license' => $resourceNode->getLicense(),
                 'published' => $resourceNode->isPublished(),
                 'portal' => $resourceNode->isPublishedToPortal(),
-                'exportable' => $resourceNode->getResourceType()->isExportable(), // todo : check rights
-                'editable' => true, // todo : check rights
-                'deletable' => true, // todo : check rights
+                'exportable' => $this->authorization->isGranted('EXPORT', $collection) && $resourceNode->getResourceType()->isExportable(),
+                'editable' => $this->authorization->isGranted('ADMINISTRATE', $collection),
+                'deletable' => $this->authorization->isGranted('DELETE', $collection),
                 'authors' => [[
                     'id' => $resourceNode->getCreator()->getGuid(),
                     'name' => $resourceNode->getCreator()->getFullName(),
