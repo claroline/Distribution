@@ -4692,17 +4692,6 @@ class CursusManager
         }
     }
 
-    public function extractOrganizationsIds(array $organizations)
-    {
-        $ids = [];
-
-        foreach ($organizations as $organization) {
-            $ids[] = $organization->getId();
-        }
-
-        return $ids;
-    }
-
     /***************************************************
      * Access to CursusDisplayedWordRepository methods *
      ***************************************************/
@@ -4919,21 +4908,39 @@ class CursusManager
         }
     }
 
-    public function getUnregisteredGroupsByCursus(
-        Cursus $cursus,
-        $search = '',
-        $orderedBy = 'name',
-        $order = 'ASC',
-        $withPager = true,
-        $page = 1,
-        $max = 50
-    ) {
+    public function getUnregisteredGroupsByCursus(Cursus $cursus, $search = '', $orderedBy = 'name', $order = 'ASC')
+    {
         $this->checkCursusToolRegistrationAccess();
-        $groups = empty($search) ?
-            $this->cursusGroupRepo->findUnregisteredGroupsByCursus($cursus, $orderedBy, $order) :
-            $this->cursusGroupRepo->findSearchedUnregisteredGroupsByCursus($cursus, $search, $orderedBy, $order);
+        $groups = [];
+        $user = $this->tokenStorage->getToken()->getUser();
 
-        return $withPager ? $this->pagerFactory->createPagerFromArray($groups, $page, $max) : $groups;
+        if ($user !== 'anon.') {
+            $this->checkCursusAccess($user, $cursus);
+
+            if ($this->authorization->isGranted('ROLE_ADMIN')) {
+                $groups = empty($search) ?
+                    $this->cursusGroupRepo->findUnregisteredGroupsByCursus($cursus, $orderedBy, $order) :
+                    $this->cursusGroupRepo->findSearchedUnregisteredGroupsByCursus($cursus, $search, $orderedBy, $order);
+            } else {
+                $organizations = $user->getAdministratedOrganizations()->toArray();
+                $groups = empty($search) ?
+                    $this->cursusGroupRepo->findUnregisteredGroupsByCursusAndOrganizations(
+                        $cursus,
+                        $organizations,
+                        $orderedBy,
+                        $order
+                    ) :
+                    $this->cursusGroupRepo->findSearchedUnregisteredGroupsByCursusAndOrganizations(
+                        $cursus,
+                        $organizations,
+                        $search,
+                        $orderedBy,
+                        $order
+                    );
+            }
+        }
+
+        return $groups;
     }
 
     public function getCursusGroupsByIds(array $ids, $executeQuery = true)
@@ -5179,9 +5186,27 @@ class CursusManager
         return $this->sessionGroupRepo->findSessionGroupsByGroup($group, $executeQuery);
     }
 
-    public function getUnregisteredGroupsBySession(CourseSession $session, $groupType, $orderedBy = 'name', $order = 'ASC')
-    {
-        return $this->sessionGroupRepo->findUnregisteredGroupsBySession($session, $groupType, $orderedBy, $order);
+    public function getUnregisteredGroupsBySession(
+        User $user,
+        CourseSession $session,
+        $groupType,
+        $orderedBy = 'name',
+        $order = 'ASC'
+    ) {
+        if ($this->authorization->isGranted('ROLE_ADMIN')) {
+            $groups = $this->sessionGroupRepo->findUnregisteredGroupsBySession($session, $groupType, $orderedBy, $order);
+        } else {
+            $organizations = $user->getAdministratedOrganizations()->toArray();
+            $groups = $this->sessionGroupRepo->findUnregisteredGroupsBySessionAndOrganizations(
+                $session,
+                $organizations,
+                $groupType,
+                $orderedBy,
+                $order
+            );
+        }
+
+        return $groups;
     }
 
     /**************************************************************
@@ -5426,6 +5451,17 @@ class CursusManager
      * Rights checking *
      *******************/
 
+    public function extractOrganizationsIds(array $organizations)
+    {
+        $ids = [];
+
+        foreach ($organizations as $organization) {
+            $ids[] = $organization->getId();
+        }
+
+        return $ids;
+    }
+
     private function checkCursusToolRegistrationAccess()
     {
         $cursusTool = $this->toolManager->getAdminToolByName('claroline_cursus_tool_registration');
@@ -5440,5 +5476,32 @@ class CursusManager
         $cursusTool = $this->toolManager->getAdminToolByName('claroline_cursus_tool_registration');
 
         return $this->authorization->isGranted('OPEN', $cursusTool);
+    }
+
+    public function checkAccess(User $user)
+    {
+        if (!$this->authorization->isGranted('ROLE_ADMIN') && count($user->getAdministratedOrganizations()->toArray()) === 0) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function checkCursusAccess(User $user, Cursus $cursus)
+    {
+        $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
+        $cursusOrgas = $this->extractOrganizationsIds($cursus->getOrganizations());
+
+        if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $cursusOrgas)) === 0) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    public function checkCourseAccess(User $user, Course $course)
+    {
+        $userOrgas = $this->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
+        $courseOrgas = $this->extractOrganizationsIds($this->getOrganizationsByCourse($course));
+
+        if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $courseOrgas)) === 0) {
+            throw new AccessDeniedException();
+        }
     }
 }

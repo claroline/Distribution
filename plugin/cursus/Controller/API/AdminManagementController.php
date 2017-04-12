@@ -209,7 +209,7 @@ class AdminManagementController extends Controller
      */
     public function postCursusChildCreationAction(User $user, Cursus $parent)
     {
-        $this->checkCursusAccess($user, $parent);
+        $this->cursusManager->checkCursusAccess($user, $parent);
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $worskpace = null;
         $icon = null;
@@ -258,7 +258,7 @@ class AdminManagementController extends Controller
      */
     public function putCursusEditionAction(User $user, Cursus $cursus)
     {
-        $this->checkCursusAccess($user, $cursus);
+        $this->cursusManager->checkCursusAccess($user, $cursus);
         $cursusDatas = $this->request->request->get('cursusDatas', false);
         $cursus->setTitle($cursusDatas['title']);
         $cursus->setCode($cursusDatas['code']);
@@ -312,7 +312,7 @@ class AdminManagementController extends Controller
      */
     public function deleteCursusAction(User $user, Cursus $cursus)
     {
-        $this->checkCursusAccess($user, $cursus);
+        $this->cursusManager->checkCursusAccess($user, $cursus);
         $serializedCursus = $this->serializer->serialize(
             $cursus,
             'json',
@@ -339,7 +339,7 @@ class AdminManagementController extends Controller
      */
     public function postCursusImportAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $file = $this->request->files->get('archive');
         $zip = new \ZipArchive();
 
@@ -411,7 +411,7 @@ class AdminManagementController extends Controller
      */
     public function postCursusCourseCreateAction(User $user, Cursus $cursus)
     {
-        $this->checkCursusAccess($user, $cursus);
+        $this->cursusManager->checkCursusAccess($user, $cursus);
         $courseDatas = $this->request->request->get('courseDatas', false);
         $worskpace = null;
         $worskpaceModel = null;
@@ -576,8 +576,8 @@ class AdminManagementController extends Controller
      */
     public function postCursusCourseAddAction(User $user, Cursus $cursus, Course $course)
     {
-        $this->checkCursusAccess($user, $cursus);
-        $this->checkCourseAccess($user, $course);
+        $this->cursusManager->checkCursusAccess($user, $cursus);
+        $this->cursusManager->checkCourseAccess($user, $course);
         $createdCursus = $this->cursusManager->addCoursesToCursus($cursus, [$course]);
         $serializedCursus = $this->serializer->serialize(
             $createdCursus,
@@ -605,7 +605,7 @@ class AdminManagementController extends Controller
      */
     public function putCourseEditionAction(User $user, Course $course)
     {
-        $this->checkCourseAccess($user, $course);
+        $this->cursusManager->checkCourseAccess($user, $course);
         $courseDatas = $this->request->request->get('courseDatas', false);
         $course->setTitle($courseDatas['title']);
         $course->setCode($courseDatas['code']);
@@ -705,7 +705,7 @@ class AdminManagementController extends Controller
      */
     public function deleteCourseAction(User $user, Course $course)
     {
-        $this->checkCourseAccess($user, $course);
+        $this->cursusManager->checkCourseAccess($user, $course);
         $serializedCourse = $this->serializer->serialize(
             $course,
             'json',
@@ -732,7 +732,7 @@ class AdminManagementController extends Controller
      */
     public function postCoursesImportAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $file = $this->request->files->get('archive');
         $zip = new \ZipArchive();
 
@@ -797,7 +797,7 @@ class AdminManagementController extends Controller
      */
     public function getCourseByIdAction(User $user, Course $course)
     {
-        $this->checkCourseAccess($user, $course);
+        $this->cursusManager->checkCourseAccess($user, $course);
         $serializedCourse = $this->serializer->serialize(
             $course,
             'json',
@@ -880,7 +880,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionByIdAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $serializedSession = $this->serializer->serialize(
             $session,
             'json',
@@ -904,7 +904,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionCreateAction(User $user, Course $course)
     {
-        $this->checkCourseAccess($user, $course);
+        $this->cursusManager->checkCourseAccess($user, $course);
         $sessionDatas = $this->request->request->get('sessionDatas', false);
         $defaultSession = is_bool($sessionDatas['defaultSession']) ?
             $sessionDatas['defaultSession'] :
@@ -979,7 +979,7 @@ class AdminManagementController extends Controller
      */
     public function putSessionEditionAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $sessionDatas = $this->request->request->get('sessionDatas', false);
         $defaultSession = is_bool($sessionDatas['defaultSession']) ?
             $sessionDatas['defaultSession'] :
@@ -1066,7 +1066,7 @@ class AdminManagementController extends Controller
      */
     public function deleteSessionAction(User $user, CourseSession $session, $mode = 0)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $serializedSession = $this->serializer->serialize(
             $session,
             'json',
@@ -1096,7 +1096,7 @@ class AdminManagementController extends Controller
      */
     public function resetSessionsDefaultAction(User $user, Course $course, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $course);
+        $this->cursusManager->checkCourseAccess($user, $course);
         $this->cursusManager->resetDefaultSessionByCourse($course, $session);
 
         return new JsonResponse('success', 200);
@@ -1119,7 +1119,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionEventByIdAction(User $user, SessionEvent $sessionEvent)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $serializedSessionEvent = $this->serializer->serialize(
             $sessionEvent,
             'json',
@@ -1143,7 +1143,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionEventCreateAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $sessionEventDatas = $this->request->request->get('sessionEventDatas', false);
         $trimmedStartDate = trim($sessionEventDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionEventDatas['endDate'], 'Zz');
@@ -1199,7 +1199,7 @@ class AdminManagementController extends Controller
      */
     public function putSessionEventEditionAction(User $user, SessionEvent $sessionEvent)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $sessionEventDatas = $this->request->request->get('sessionEventDatas', false);
         $trimmedStartDate = trim($sessionEventDatas['startDate'], 'Zz');
         $trimmedEndDate = trim($sessionEventDatas['endDate'], 'Zz');
@@ -1270,7 +1270,7 @@ class AdminManagementController extends Controller
      */
     public function deleteSessionEventAction(User $user, SessionEvent $sessionEvent)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $serializedSessionEvent = $this->serializer->serialize(
             $sessionEvent,
             'json',
@@ -1299,7 +1299,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionUsersBySessionAndTypeAction(User $user, CourseSession $session, $type)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $learners = $this->cursusManager->getSessionUsersBySessionAndType($session, $type);
         $serializedLearners = $this->serializer->serialize(
             $learners,
@@ -1327,7 +1327,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionUsersBySessionAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $sessionUsers = $this->cursusManager->getSessionUsersBySession($session);
         $serializedSessionUsers = $this->serializer->serialize(
             $sessionUsers,
@@ -1355,7 +1355,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionGroupsBySessionAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $sessionGroups = $this->cursusManager->getSessionGroupsBySession($session);
         $serializedSessionGroups = $this->serializer->serialize(
             $sessionGroups,
@@ -1383,7 +1383,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionPendingUsersBySessionAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $pendingUsers = $this->cursusManager->getSessionQueuesBySession($session);
         $serializedPendingUsers = $this->serializer->serialize(
             $pendingUsers,
@@ -1411,7 +1411,7 @@ class AdminManagementController extends Controller
      */
     public function deleteSessionUserAction(User $user, CourseSessionUser $sessionUser)
     {
-        $this->checkCourseAccess($user, $sessionUser->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionUser->getSession()->getCourse());
         $serializedSessionUser = $this->serializer->serialize(
             $sessionUser,
             'json',
@@ -1439,7 +1439,7 @@ class AdminManagementController extends Controller
      */
     public function deleteSessionGroupAction(User $user, CourseSessionGroup $sessionGroup)
     {
-        $this->checkCourseAccess($user, $sessionGroup->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionGroup->getSession()->getCourse());
         $serializedSessionGroup = $this->serializer->serialize(
             $sessionGroup,
             'json',
@@ -1468,7 +1468,7 @@ class AdminManagementController extends Controller
     public function acceptSessionRegistrationQueueAction(User $user, CourseSessionRegistrationQueue $queue)
     {
         $session = $queue->getSession();
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $queueUser = $queue->getUser();
         $results = $this->cursusManager->registerUsersToSession($session, [$queueUser], CourseSessionUser::LEARNER, true);
 
@@ -1503,7 +1503,7 @@ class AdminManagementController extends Controller
      */
     public function deleteSessionRegistrationQueueAction(User $user, CourseSessionRegistrationQueue $queue)
     {
-        $this->checkCourseAccess($user, $queue->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $queue->getSession()->getCourse());
         $serializedQueue = $this->serializer->serialize(
             $queue,
             'json',
@@ -1532,7 +1532,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionUnregisteredUsersAction(User $user, CourseSession $session, $userType = 0)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $users = $this->cursusManager->getUnregisteredUsersBySession($session, $userType, 'lastName');
         $serializedUsers = $this->serializer->serialize(
             $users,
@@ -1561,8 +1561,8 @@ class AdminManagementController extends Controller
      */
     public function getSessionUnregisteredGroupsAction(User $user, CourseSession $session, $groupType = 0)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
-        $groups = $this->cursusManager->getUnregisteredGroupsBySession($session, $groupType);
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
+        $groups = $this->cursusManager->getUnregisteredGroupsBySession($user, $session, $groupType);
         $serializedGroups = $this->serializer->serialize(
             $groups,
             'json',
@@ -1591,7 +1591,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionUserRegisterAction(User $authenticatedUser, CourseSession $session, User $user, $userType = 0)
     {
-        $this->checkCourseAccess($authenticatedUser, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($authenticatedUser, $session->getCourse());
         $results = $this->cursusManager->registerUsersToSession($session, [$user], $userType);
 
         return new JsonResponse($results, 200);
@@ -1616,7 +1616,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionGroupRegisterAction(User $user, CourseSession $session, Group $group, $groupType = 0)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $results = $this->cursusManager->registerGroupToSession($session, $group, $groupType);
 
         return new JsonResponse($results, 200);
@@ -1639,7 +1639,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionEventUnregisteredUsersAction(User $user, SessionEvent $sessionEvent)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $users = $this->cursusManager->getUnregisteredUsersBySessionEvent($sessionEvent);
         $serializedUsers = $this->serializer->serialize(
             $users,
@@ -1668,7 +1668,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionEventUserRegisterAction(User $authenticatedUser, SessionEvent $sessionEvent, User $user)
     {
-        $this->checkCourseAccess($authenticatedUser, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($authenticatedUser, $sessionEvent->getSession()->getCourse());
         $results = $this->cursusManager->registerUsersToSessionEvent($sessionEvent, [$user]);
 
         return new JsonResponse($results, 200);
@@ -1691,7 +1691,7 @@ class AdminManagementController extends Controller
      */
     public function getSessionEventUsersBySessionEventAction(User $user, SessionEvent $sessionEvent)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $sessionEventUsers = $this->cursusManager->getSessionEventUsersBySessionEvent($sessionEvent);
         $serializedSessionEventUsers = $this->serializer->serialize(
             $sessionEventUsers,
@@ -1719,7 +1719,7 @@ class AdminManagementController extends Controller
      */
     public function deleteSessionEventUserAction(User $user, SessionEventUser $sessionEventUser)
     {
-        $this->checkCourseAccess($user, $sessionEventUser->getSessionEvent()->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEventUser->getSessionEvent()->getSession()->getCourse());
         $serializedSessionEventUser = $this->serializer->serialize(
             $sessionEventUser,
             'json',
@@ -1746,7 +1746,7 @@ class AdminManagementController extends Controller
      */
     public function getValidatorsRolesAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $roles = $this->cursusManager->getValidatorsRoles();
         $serializedRoles = $this->serializer->serialize(
             $roles,
@@ -1773,7 +1773,7 @@ class AdminManagementController extends Controller
      */
     public function getWorkspacesAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $workspaces = $this->cursusManager->getWorkspacesListForCurrentUser();
         $serializedWorkspaces = $this->serializer->serialize(
             $workspaces,
@@ -1800,7 +1800,7 @@ class AdminManagementController extends Controller
      */
     public function getWorkspaceModelsAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $models = $this->workspaceModelManager->getModelsByUser($user);
         $serializedModels = $this->serializer->serialize(
             $models,
@@ -1827,7 +1827,7 @@ class AdminManagementController extends Controller
      */
     public function getLocationsAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $locations = $this->locationManager->getByTypes([Location::TYPE_DEPARTMENT, Location::TYPE_TRAINING]);
         $serializedLocations = $this->serializer->serialize(
             $locations,
@@ -1854,7 +1854,7 @@ class AdminManagementController extends Controller
      */
     public function getReservationResourcesAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $reservationResources = $this->cursusManager->getAllReservationResources();
         $serializedResources = $this->serializer->serialize(
             $reservationResources,
@@ -1881,7 +1881,7 @@ class AdminManagementController extends Controller
      */
     public function getCursusReservationResourcesAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $options = [
             'tag' => 'cursus_location',
             'strict' => true,
@@ -1918,7 +1918,7 @@ class AdminManagementController extends Controller
      */
     public function postReservationResourceTagAction(User $user, Resource $resource)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $options = ['tag' => ['cursus_location'], 'object' => $resource];
         $this->eventDispatcher->dispatch('claroline_tag_object', new GenericDatasEvent($options));
 
@@ -1942,7 +1942,7 @@ class AdminManagementController extends Controller
      */
     public function deleteReservationResourceTagAction(User $user, Resource $resource)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $this->tagManager->removeTaggedObjectByTagNameAndObjectIdAndClass(
             'cursus_location',
             $resource->getId(),
@@ -1968,7 +1968,7 @@ class AdminManagementController extends Controller
      */
     public function getGeneralParametersAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $datas = [];
         $datas['disableInvitations'] = $this->configHandler->hasParameter('cursus_disable_invitations') ?
             $this->configHandler->getParameter('cursus_disable_invitations') :
@@ -2011,7 +2011,7 @@ class AdminManagementController extends Controller
      */
     public function postGeneralParametersAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $parameters = $this->request->request->get('parameters', false);
         $this->configHandler->setParameter('cursus_disable_invitations', $parameters['disableInvitations']);
         $this->configHandler->setParameter('cursus_disable_certificates', $parameters['disableCertificates']);
@@ -2040,7 +2040,7 @@ class AdminManagementController extends Controller
      */
     public function getDocumentModelsAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $models = $this->cursusManager->getAllDocumentModels();
         $serializedModels = $this->serializer->serialize(
             $models,
@@ -2068,7 +2068,7 @@ class AdminManagementController extends Controller
      */
     public function getDocumentModelAction(User $user, DocumentModel $documentModel)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $serializedModel = $this->serializer->serialize(
             $documentModel,
             'json',
@@ -2092,7 +2092,7 @@ class AdminManagementController extends Controller
      */
     public function postDocumentModelCreateAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $documentModelDatas = $this->request->request->get('documentModelDatas', false);
         $documentModel = $this->cursusManager->createDocumentModel(
             $documentModelDatas['name'],
@@ -2123,7 +2123,7 @@ class AdminManagementController extends Controller
      */
     public function putDocumentModelEditAction(User $user, DocumentModel $documentModel)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $documentModelDatas = $this->request->request->get('documentModelDatas', false);
         $documentModel->setName($documentModelDatas['name']);
         $documentModel->setContent($documentModelDatas['content']);
@@ -2155,7 +2155,7 @@ class AdminManagementController extends Controller
      */
     public function deleteDocumentModelAction(User $user, DocumentModel $documentModel)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $serializedDocumentModel = $this->serializer->serialize(
             $documentModel,
             'json',
@@ -2183,7 +2183,7 @@ class AdminManagementController extends Controller
      */
     public function getDocumentModelsByTypeAction(User $user, $type)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $documentModels = $this->cursusManager->getDocumentModelsByType($type);
         $serializedModels = $this->serializer->serialize(
             $documentModels,
@@ -2212,7 +2212,7 @@ class AdminManagementController extends Controller
      */
     public function getPopulatedDocumentModelsByTypeAction(User $user, $type, $sourceId)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $documentModels = $this->cursusManager->getPopulatedDocumentModelsByType($type, $sourceId);
 
         return new JsonResponse($documentModels, 200);
@@ -2237,7 +2237,7 @@ class AdminManagementController extends Controller
      */
     public function getPopulatedDocumentModelsByTypeForUserAction(User $authenticatedUser, User $user, $type, $sourceId)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $documentModels = $this->cursusManager->getPopulatedDocumentModelsByType($type, $sourceId, $user);
 
         return new JsonResponse($documentModels, 200);
@@ -2260,7 +2260,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionEventRepeatAction(User $user, SessionEvent $sessionEvent)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $parameters = $this->request->request->get('repeatOptionsDatas', false);
         $iteration = [
             'Monday' => $parameters['monday'],
@@ -2297,7 +2297,7 @@ class AdminManagementController extends Controller
      */
     public function postLocationCreateAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $locationDatas = $this->request->request->get('locationDatas', false);
         $location = new Location();
         $location->setType(Location::TYPE_TRAINING);
@@ -2334,7 +2334,7 @@ class AdminManagementController extends Controller
      */
     public function putLocationEditAction(User $user, Location $location)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
 
         if ($location->getType() !== Location::TYPE_TRAINING) {
             throw new AccessDeniedException();
@@ -2375,7 +2375,7 @@ class AdminManagementController extends Controller
      */
     public function deleteLocationAction(User $user, Location $location)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
 
         if ($location->getType() !== Location::TYPE_TRAINING) {
             throw new AccessDeniedException();
@@ -2405,7 +2405,7 @@ class AdminManagementController extends Controller
      */
     public function postSessionMessageSendAction(User $user, CourseSession $session)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $messageDatas = $this->request->request->get('messageDatas', false);
         $this->cursusManager->sendMessageToSession(
             $user,
@@ -2435,7 +2435,7 @@ class AdminManagementController extends Controller
      */
     public function postDocumentSendAction(User $user, DocumentModel $documentModel, $sourceId)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $this->cursusManager->generateDocumentFromModel($documentModel, $sourceId);
 
         return new JsonResponse('success', 200);
@@ -2458,7 +2458,7 @@ class AdminManagementController extends Controller
      */
     public function postDocumentForUserSendAction(User $authenticatedUser, DocumentModel $documentModel, User $user, $sourceId)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $this->cursusManager->generateDocumentFromModelForUser($documentModel, $user, $sourceId);
 
         return new JsonResponse('success', 200);
@@ -2480,7 +2480,7 @@ class AdminManagementController extends Controller
      */
     public function exportCsvSessionUsersAction(User $user, CourseSession $session, $type)
     {
-        $this->checkCourseAccess($user, $session->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $session->getCourse());
         $exportType = intval($type);
         $users = [];
 
@@ -2548,7 +2548,7 @@ class AdminManagementController extends Controller
      */
     public function exportCsvSessionEventUsersAction(User $user, SessionEvent $sessionEvent, $type)
     {
-        $this->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
+        $this->cursusManager->checkCourseAccess($user, $sessionEvent->getSession()->getCourse());
         $exportType = intval($type);
         $users = [];
 
@@ -2615,7 +2615,7 @@ class AdminManagementController extends Controller
      */
     public function allRootCursussRetrieveAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
 
         if ($this->authorization->isGranted('ROLE_ADMIN')) {
             $cursus = $this->cursusManager->getAllRootCursus();
@@ -2649,7 +2649,7 @@ class AdminManagementController extends Controller
      */
     public function cursusRetrieveAction(User $user, Cursus $cursus)
     {
-        $this->checkCursusAccess($user, $cursus);
+        $this->cursusManager->checkCursusAccess($user, $cursus);
         $serializedCursus = $this->serializer->serialize(
             [$cursus],
             'json',
@@ -2675,7 +2675,7 @@ class AdminManagementController extends Controller
      */
     public function allCoursesRetrieveAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
 
         if ($this->authorization->isGranted('ROLE_ADMIN')) {
             $courses = $this->cursusManager->getAllCourses('', 'title', 'ASC', false);
@@ -2708,7 +2708,7 @@ class AdminManagementController extends Controller
      */
     public function allSessionsRetrieveAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
 
         if ($this->authorization->isGranted('ROLE_ADMIN')) {
             $sessions = $this->cursusManager->getAllSessions();
@@ -2741,7 +2741,7 @@ class AdminManagementController extends Controller
      */
     public function cursusOrganizationsRetrieveAction(User $user)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
         $organizations = $this->authorization->isGranted('ROLE_ADMIN') ?
             $this->organizationManager->getAll() :
             $user->getAdministratedOrganizations()->toArray();
@@ -2771,7 +2771,7 @@ class AdminManagementController extends Controller
      */
     public function getAllUnmappedCoursesAction(User $user, Cursus $cursus)
     {
-        $this->checkAccess($user);
+        $this->cursusManager->checkAccess($user);
 
         if ($this->authorization->isGranted('ROLE_ADMIN')) {
             $courses = $this->cursusManager->getUnmappedCoursesByCursus($cursus);
@@ -2786,32 +2786,5 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse($serializedCourses, 200);
-    }
-
-    private function checkAccess(User $user)
-    {
-        if (!$this->authorization->isGranted('ROLE_ADMIN') && count($user->getAdministratedOrganizations()->toArray()) === 0) {
-            throw new AccessDeniedException();
-        }
-    }
-
-    private function checkCursusAccess(User $user, Cursus $cursus)
-    {
-        $userOrgas = $this->cursusManager->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
-        $cursusOrgas = $this->cursusManager->extractOrganizationsIds($cursus->getOrganizations());
-
-        if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $cursusOrgas)) === 0) {
-            throw new AccessDeniedException();
-        }
-    }
-
-    private function checkCourseAccess(User $user, Course $course)
-    {
-        $userOrgas = $this->cursusManager->extractOrganizationsIds($user->getAdministratedOrganizations()->toArray());
-        $courseOrgas = $this->cursusManager->extractOrganizationsIds($this->cursusManager->getOrganizationsByCourse($course));
-
-        if (!$this->authorization->isGranted('ROLE_ADMIN') && count(array_intersect($userOrgas, $courseOrgas)) === 0) {
-            throw new AccessDeniedException();
-        }
     }
 }

@@ -117,4 +117,34 @@ class CourseSessionGroupRepository extends EntityRepository
 
         return $executeQuery ? $query->getResult() : $query;
     }
+
+    public function findUnregisteredGroupsBySessionAndOrganizations(
+        CourseSession $session,
+        array $organizations,
+        $groupType,
+        $orderedBy = 'name',
+        $order = 'ASC',
+        $executeQuery = true
+    ) {
+        $dql = "
+            SELECT DISTINCT g
+            FROM Claroline\CoreBundle\Entity\Group g
+            JOIN g.organizations go
+            WHERE go IN (:organizations)
+            AND NOT EXISTS (
+                SELECT csg
+                FROM Claroline\CursusBundle\Entity\CourseSessionGroup csg
+                WHERE csg.session = :session
+                AND csg.group = g
+                AND csg.groupType = :groupType
+            )
+            ORDER BY g.{$orderedBy} {$order}
+        ";
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('session', $session);
+        $query->setParameter('groupType', $groupType);
+        $query->setParameter('organizations', $organizations);
+
+        return $executeQuery ? $query->getResult() : $query;
+    }
 }

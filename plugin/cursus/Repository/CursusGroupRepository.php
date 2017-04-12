@@ -139,6 +139,64 @@ class CursusGroupRepository extends EntityRepository
         return $executeQuery ? $query->getResult() : $query;
     }
 
+    public function findUnregisteredGroupsByCursusAndOrganizations(
+        Cursus $cursus,
+        array $organizations,
+        $orderedBy = 'name',
+        $order = 'ASC',
+        $executeQuery = true
+    ) {
+        $dql = "
+            SELECT DISTINCT g
+            FROM Claroline\CoreBundle\Entity\Group g
+            JOIN g.organizations go
+            WHERE go IN (:organizations)
+            AND NOT EXISTS (
+                SELECT cg
+                FROM Claroline\CursusBundle\Entity\CursusGroup cg
+                WHERE cg.cursus = :cursus
+                AND cg.group = g
+            )
+            ORDER BY g.{$orderedBy} {$order}
+        ";
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('cursus', $cursus);
+        $query->setParameter('organizations', $organizations);
+
+        return $executeQuery ? $query->getResult() : $query;
+    }
+
+    public function findSearchedUnregisteredGroupsByCursusAndOrganizations(
+        Cursus $cursus,
+        array $organizations,
+        $search = '',
+        $orderedBy = 'name',
+        $order = 'ASC',
+        $executeQuery = true
+    ) {
+        $dql = "
+            SELECT DISTINCT g
+            FROM Claroline\CoreBundle\Entity\Group g
+            JOIN g.organizations go
+            WHERE go IN (:organizations)
+            AND UPPER(g.name) LIKE :search
+            AND NOT EXISTS (
+                SELECT cg
+                FROM Claroline\CursusBundle\Entity\CursusGroup cg
+                WHERE cg.cursus = :cursus
+                AND cg.group = g
+            )
+            ORDER BY g.{$orderedBy} {$order}
+        ";
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('cursus', $cursus);
+        $query->setParameter('organizations', $organizations);
+        $upperSearch = strtoupper($search);
+        $query->setParameter('search', "%{$upperSearch}%");
+
+        return $executeQuery ? $query->getResult() : $query;
+    }
+
     public function findCursusGroupsByIds(array $ids, $executeQuery = true)
     {
         $dql = '
