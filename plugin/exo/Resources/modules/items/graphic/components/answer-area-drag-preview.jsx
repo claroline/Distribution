@@ -13,8 +13,6 @@ export const AnswerAreaDragPreview = props => {
 
   const isRect = props.shape === SHAPE_RECT
   const def = props.geometry
-  const left = isRect ? def.coords[0].x : def.center.x - def.radius
-  const top = isRect ? def.coords[0].y : def.center.y - def.radius
   const width = isRect ? def.coords[1].x - def.coords[0].x : def.radius * 2
   const height = isRect ? def.coords[1].y - def.coords[0].y : def.radius * 2
   const frameWidth = width + (AREA_GUTTER * 2)
