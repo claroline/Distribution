@@ -1367,7 +1367,7 @@ class WorkspaceController extends Controller
                         ['%url%' => $url],
                         'platform'
                     );
-                    $this->session->getFlashBag() > add('error', $msg);
+                    $this->session->getFlashBag()->add('error', $msg);
                 }
             }
 
