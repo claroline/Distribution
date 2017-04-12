@@ -367,7 +367,7 @@ class ItemManager
             $itemData->description = $contentParser->parse($itemData->description);
         }
 
-        if ($itemData->hints) {
+        if (isset($itemData->hints)) {
             array_walk($itemData->hints, function (\stdClass $hint) use ($contentParser) {
                 $hint->value = $contentParser->parse($hint->value);
             });
