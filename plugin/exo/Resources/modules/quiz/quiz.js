@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
 import {DragDropContext} from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 import {Quiz as QuizComponent} from './components/quiz.jsx'
 import {normalize} from './normalizer'
 import {decorate} from './decorators'
@@ -16,6 +15,7 @@ import {MODAL_ADD_ITEM, AddItemModal} from './editor/components/add-item-modal.j
 import {MODAL_IMPORT_ITEMS, ImportItemsModal} from './editor/components/import-items-modal.jsx'
 import {MODAL_ADD_CONTENT, AddContentModal} from './editor/components/add-content-modal.jsx'
 import {MODAL_CONTENT, ContentModal} from './../contents/components/content-modal.jsx'
+import {default as HTML5Backend} from '#/main/core/html5-touch-backend'
 
 export class Quiz {
   constructor(rawQuizData, rawResourceNodeData, noServer = false) {
