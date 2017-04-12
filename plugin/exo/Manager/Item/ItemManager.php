@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\Definition\AnswerableItemDefinitionInterface;
 use UJM\ExoBundle\Library\Item\ItemDefinitionsCollection;
+use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -359,21 +360,25 @@ class ItemManager
 
     public function parseContents(ContentParserInterface $contentParser, \stdClass $itemData)
     {
-        if (isset($itemData->content)) {
-            $itemData->content = $contentParser->parse($itemData->content);
-        }
-
         if (isset($itemData->description)) {
             $itemData->description = $contentParser->parse($itemData->description);
         }
 
-        if (isset($itemData->hints)) {
-            array_walk($itemData->hints, function (\stdClass $hint) use ($contentParser) {
-                $hint->value = $contentParser->parse($hint->value);
-            });
+        if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $itemData->type)) {
+            // it's a question
+            $itemData->content = $contentParser->parse($itemData->content);
+            if (isset($itemData->hints)) {
+                array_walk($itemData->hints, function (\stdClass $hint) use ($contentParser) {
+                    $hint->value = $contentParser->parse($hint->value);
+                });
+            }
+
+            $definition = $this->itemDefinitions->get($itemData->type);
+        } else {
+            // it's a content
+            $definition = $this->itemDefinitions->get(ItemType::CONTENT);
         }
 
-        $definition = $this->itemDefinitions->get($itemData->type);
         $definition->parseContents($contentParser, $itemData);
     }
 }
