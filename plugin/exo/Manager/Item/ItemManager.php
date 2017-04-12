@@ -359,7 +359,10 @@ class ItemManager
 
     public function parseContents(ContentParserInterface $contentParser, \stdClass $itemData)
     {
-        $itemData->content = $contentParser->parse($itemData->content);
+        if (isset($itemData->content)) {
+            $itemData->content = $contentParser->parse($itemData->content);
+        }
+
         if (isset($itemData->description)) {
             $itemData->description = $contentParser->parse($itemData->description);
         }
