@@ -22,15 +22,15 @@ import {
 } from './../enums'
 
 const FRAME_GUTTER = 6
-const AREA_GUTTER = 8
+export const AREA_GUTTER = 8
 const BORDER_WIDTH = 2
 const RESIZER_SIZE = 12
 
 export class AnswerArea extends Component {
   render() {
-    if (this.props.isDragging) {
+    /*if (this.props.isDragging) {
       return null
-    }
+    }*/
 
     const props = this.props
     const isRect = this.props.shape === SHAPE_RECT
@@ -109,21 +109,39 @@ export class AnswerArea extends Component {
           {resizers.map(makeResizer)}
         </div>
 
-        {props.selected &&
+        {props.selected && !props.isDragging &&
           <div
             className="area-controls"
             style={{
               top: FRAME_GUTTER + AREA_GUTTER
             }}
-          />
-          <span
-            className="fa fa-fw fa-trash-o"
-            role="button"
-            style={common({right: -22, top: 20})}
-            onClick={() => props.onDelete(props.id)}
-          />
-        </span>
-      </span>
+          >
+            <TooltipButton
+              id="area-edit"
+              className="btn-default btn-sm"
+              label={<span className="fa fa-fw fa-pencil" />}
+              title={tex('graphic_area_edit')}
+              onClick={e => {
+                const rect = e.target.classList.contains('btn') ?
+                  e.target.getBoundingClientRect() : e.target.parentNode.getBoundingClientRect()
+                const containerRect = document.getElementsByClassName('graphic-editor')[0].getBoundingClientRect()
+                props.togglePopover(
+                  props.id,
+                  rect.left + (rect.width / 2) + window.pageXOffset - containerRect.left, // works with position relative container
+                  rect.top + rect.height + window.pageYOffset - containerRect.top
+                )
+              }}
+            />
+            <TooltipButton
+              id="area-edit"
+              className="btn-danger btn-sm"
+              label={<span className="fa fa-fw fa-trash-o" />}
+              title={tex('delete')}
+              onClick={() => props.onDelete(props.id)}
+            />
+          </div>
+        }
+      </div>
     )
   }
 }
@@ -166,8 +184,8 @@ export const AnswerAreaDraggable = makeDraggable(
   TYPE_ANSWER_AREA,
   AnswerAreaDragPreview,
   props => ({
-    type: TYPE_ANSWER_AREA,
     id: props.id,
+    type: TYPE_ANSWER_AREA,
     props: props
   })
 )

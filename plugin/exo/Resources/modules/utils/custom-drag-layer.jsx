@@ -10,7 +10,7 @@ function getItemStyles(props) {
     }
   }
 
-  const { x, y } = currentOffset
+  const {x, y} = currentOffset
   const transform = `translate(${x}px, ${y}px)`
   return {
     transform: transform
