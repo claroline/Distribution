@@ -5150,9 +5150,27 @@ class CursusManager
         }
     }
 
-    public function getUnregisteredUsersBySession(CourseSession $session, $userType, $orderedBy = 'firstName', $order = 'ASC')
-    {
-        return $this->sessionUserRepo->findUnregisteredUsersBySession($session, $userType, $orderedBy, $order);
+    public function getUnregisteredUsersBySession(
+        User $user,
+        CourseSession $session,
+        $userType,
+        $orderedBy = 'firstName',
+        $order = 'ASC'
+    ) {
+        if ($user->hasRole('ROLE_ADMIN')) {
+            $users = $this->sessionUserRepo->findUnregisteredUsersBySession($session, $userType, $orderedBy, $order);
+        } else {
+            $organizations = $user->getAdministratedOrganizations()->toArray();
+            $users = $this->sessionUserRepo->findUnregisteredUsersBySessionAndOrganizations(
+                $session,
+                $organizations,
+                $userType,
+                $orderedBy,
+                $order
+            );
+        }
+
+        return $users;
     }
 
     public function getSessionUsersByUserAndSessionStatus(User $user, $status, $currentDate = null, $search = '', $coursesList = null)

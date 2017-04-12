@@ -291,7 +291,8 @@ export default class CourseEditionModalCtrl {
       multiple: true,
       selected_users: this.getSelectedUsersIds(),
       forced_roles: this.validatorsRoles,
-      return_datas: true
+      return_datas: true,
+      filter_admin_orgas: true
     }
     userPicker.configure(options, this._userpickerCallback)
     userPicker.open()

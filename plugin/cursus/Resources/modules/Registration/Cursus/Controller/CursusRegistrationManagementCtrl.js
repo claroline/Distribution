@@ -256,7 +256,8 @@ export default class CursusRegistrationManagementCtrl {
       multiple: true,
       blacklist: usersIds,
       return_datas: true,
-      attach_name: false
+      attach_name: false,
+      filter_admin_orgas: true
     }
     userPicker.configure(config, this.userPickerCallBack)
     userPicker.open()

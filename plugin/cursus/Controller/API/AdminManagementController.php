@@ -1533,7 +1533,7 @@ class AdminManagementController extends Controller
     public function getSessionUnregisteredUsersAction(User $user, CourseSession $session, $userType = 0)
     {
         $this->cursusManager->checkCourseAccess($user, $session->getCourse());
-        $users = $this->cursusManager->getUnregisteredUsersBySession($session, $userType, 'lastName');
+        $users = $this->cursusManager->getUnregisteredUsersBySession($user, $session, $userType, 'lastName');
         $serializedUsers = $this->serializer->serialize(
             $users,
             'json',
