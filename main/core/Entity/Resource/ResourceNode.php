@@ -17,7 +17,8 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -40,9 +41,16 @@ class ResourceNode
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_resource_node"})
+     * @Serializer\Groups({"api_resource_node"})
      */
     protected $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column()
+     */
+    protected $guid;
 
     /**
      * @var string
@@ -68,7 +76,7 @@ class ResourceNode
     protected $modificationDate;
 
     /**
-     * @var ArrayCollection
+     * @var ResourceType
      *
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceType",
@@ -108,7 +116,7 @@ class ResourceNode
      * @Gedmo\TreePathSource
      * @ORM\Column()
      * @Assert\NotBlank()
-     * @Groups({"api_resource_node"})
+     * @Serializer\Groups({"api_resource_node"})
      */
     protected $name;
 
@@ -262,13 +270,6 @@ class ResourceNode
     protected $active = true;
 
     /**
-     * @var string
-     *
-     * @ORM\Column()
-     */
-    protected $guid;
-
-    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Facet\FieldFacet",
      *     mappedBy="resourceNode"
@@ -278,6 +279,7 @@ class ResourceNode
 
     public function __construct()
     {
+        $this->guid = Uuid::uuid4()->toString();
         $this->rights = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->logs = new ArrayCollection();
@@ -372,7 +374,7 @@ class ResourceNode
     /**
      * Returns the resource type.
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceType
+     * @return ResourceType
      */
     public function getResourceType()
     {
@@ -382,7 +384,7 @@ class ResourceNode
     /**
      * Sets the resource type.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType
+     * @param ResourceType
      */
     public function setResourceType(ResourceType $resourceType)
     {
@@ -392,7 +394,7 @@ class ResourceNode
     /**
      * Returns the resource creator.
      *
-     * @return \Claroline\CoreBundle\Entity\User
+     * @return User
      */
     public function getCreator()
     {
@@ -402,7 +404,7 @@ class ResourceNode
     /**
      * Sets the resource creator.
      *
-     * @param \Claroline\CoreBundle\Entity\User
+     * @param User $creator
      */
     public function setCreator(User $creator)
     {
@@ -422,7 +424,7 @@ class ResourceNode
     /**
      * Sets the workspace containing the resource instance.
      *
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param Workspace $workspace
      */
     public function setWorkspace(Workspace $workspace)
     {
@@ -432,7 +434,7 @@ class ResourceNode
     /**
      * Returns the workspace containing the resource instance.
      *
-     * @return \Claroline\CoreBundle\Entity\Workspace\Workspace
+     * @return Workspace
      */
     public function getWorkspace()
     {
@@ -831,7 +833,7 @@ class ResourceNode
     public function addField(FieldFacet $field)
     {
         if (!$this->fields->contains($field)) {
-            $this->fileds->add($field);
+            $this->fields->add($field);
         }
 
         return $this;

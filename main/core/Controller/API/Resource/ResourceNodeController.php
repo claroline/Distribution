@@ -3,9 +3,8 @@
 namespace Claroline\CoreBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Manager\ResourceNodeManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,19 +48,17 @@ class ResourceNodeController
      *
      * @EXT\Route("", name="claro_resource_update")
      * @EXT\Method("PUT")
-     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=true})
      *
      * @param ResourceNode $resourceNode
-     * @param User         $currentUser
      *
      * @return JsonResponse
      */
-    public function updateAction(ResourceNode $resourceNode, User $currentUser)
+    public function updateAction(ResourceNode $resourceNode)
     {
         $this->assertHasPermission('EDIT', $resourceNode);
 
         return new JsonResponse(
-            $this->resourceNodeManager->serialize($resourceNode, $currentUser)
+            $this->resourceNodeManager->serialize($resourceNode)
         );
     }
 
