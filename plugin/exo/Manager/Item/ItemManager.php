@@ -354,7 +354,14 @@ class ItemManager
             $hint->refreshUuid();
         }
 
-        $definition = $this->itemDefinitions->get($item->getMimeType());
+        if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $item->getMimeType())) {
+            // it's a question
+            $definition = $this->itemDefinitions->get($item->getMimeType());
+        } else {
+            // it's a content
+            $definition = $this->itemDefinitions->get(ItemType::CONTENT);
+        }
+
         $definition->refreshIdentifiers($item->getInteraction());
     }
 
