@@ -2,6 +2,9 @@ import React, { PropTypes as T } from 'react'
 import classes from 'classnames'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 
+import {trans} from '#/main/core/translation'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+
 import {
   PageActions,
   PageGroupActions,
@@ -99,7 +102,7 @@ LikeAction.propTypes = {
   handleLike: T.func.isRequired
 }
 
-/*function getMoreActions(resourceNode) {
+function getMoreActions(resourceNode) {
   return [
     <MenuItem header>Management</MenuItem>,
 
@@ -137,9 +140,8 @@ LikeAction.propTypes = {
       Add a comment
     </MenuItem>,
 
-    <MenuItem eventKey="10">,
-
-    <span className="fa fa-fw fa-sticky-note" />
+    <MenuItem eventKey="10">
+      <span className="fa fa-fw fa-sticky-note" />
       Add a note
     </MenuItem>,
 
@@ -150,18 +152,9 @@ LikeAction.propTypes = {
     <MenuItem eventKey="resource-export">
       <span className="fa fa-fw fa-upload" />
       Export resource
-    </MenuItem>,
-
-    resourceNode.meta.deletable &&
-    <MenuItem divider/>,
-
-    resourceNode.meta.deletable &&
-    <MenuItem eventKey="resource-delete" className="dropdown-link-danger">
-      <span className="fa fa-fw fa-trash" />
-      Delete resource
     </MenuItem>
   ]
-}*/
+}
 
 /**
  * @param props
@@ -186,16 +179,16 @@ const ResourceActions = props =>
           />
         }
 
-        {/*<PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
-        <ManageRightsAction rights="workspace" openRightsManagement={() => true} />*/}
+        <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
+        <ManageRightsAction rights="workspace" openRightsManagement={() => true} />
       </PageGroupActions>
     }
 
-    {/*<PageGroupActions>
+    <PageGroupActions>
       <FavoriteAction favorited={false} toggleFavorite={() => true} />
       <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
       <LikeAction likes={100} handleLike={() => true} />
-    </PageGroupActions>*/}
+    </PageGroupActions>
 
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
@@ -213,7 +206,29 @@ const ResourceActions = props =>
           })
         )}
 
-        {/*{getMoreActions(props.resourceNode)}*/}
+        {getMoreActions(props.resourceNode)}
+
+        {props.resourceNode.meta.deletable &&
+          <MenuItem divider />
+        }
+
+        {props.resourceNode.meta.deletable &&
+          <MenuItem
+            eventKey="resource-delete"
+            className="dropdown-link-danger"
+            onClick={e => {
+              e.stopPropagation()
+              props.showModal(MODAL_DELETE_CONFIRM, {
+                title: trans('delete', {}, 'resource'),
+                question: trans('delete_confirm_question', {}, 'resource'),
+                handleConfirm: () => true
+              })
+            }}
+          >
+            <span className="fa fa-fw fa-trash" />
+            {trans('delete', {}, 'resource')}
+          </MenuItem>
+        }
       </MoreAction>
     </PageGroupActions>
   </PageActions>

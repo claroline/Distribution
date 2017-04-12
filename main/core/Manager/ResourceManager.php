@@ -48,6 +48,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -77,7 +78,7 @@ class ResourceManager
     private $maskManager;
     /** @var IconManager */
     private $iconManager;
-    /** @var Dispatcher */
+    /** @var StrictDispatcher */
     private $dispatcher;
     /** @var ObjectManager */
     private $om;
@@ -150,15 +151,17 @@ class ResourceManager
      * array('ROLE_WS_XXX' => array('open' => true, 'edit' => false, ...
      * 'create' => array('directory', ...), 'role' => $entity))
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\AbstractResource $resource
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType     $resourceType
-     * @param \Claroline\CoreBundle\Entity\User                      $creator
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace       $workspace
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode     $parent
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceIcon     $icon
-     * @param array                                                  $rights
+     * @param AbstractResource $resource
+     * @param ResourceType     $resourceType
+     * @param User             $creator
+     * @param Workspace        $workspace
+     * @param ResourceNode     $parent
+     * @param ResourceIcon     $icon
+     * @param array            $rights
+     * @param bool             $isPublished
+     * @param bool             $createRights
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\AbstractResource
+     * @return AbstractResource
      */
     public function create(
         AbstractResource $resource,
@@ -172,7 +175,10 @@ class ResourceManager
         $createRights = true
     ) {
         $this->om->startFlushSuite();
+
         $this->checkResourcePrepared($resource);
+
+        /** @var ResourceNode $node */
         $node = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $node->setResourceType($resourceType);
         $node->setPublished($isPublished);
@@ -183,7 +189,6 @@ class ResourceManager
 
         $node->setMimeType($mimeType);
         $node->setName($resource->getName());
-        $name = $this->getUniqueName($node, $parent);
         $node->setCreator($creator);
 
         if (!$workspace && $parent) {
@@ -197,7 +202,7 @@ class ResourceManager
         }
 
         $node->setParent($parent);
-        $node->setName($name);
+        $node->setName($this->getUniqueName($node, $parent));
         $node->setClass(get_class($resource));
 
         if ($parent) {
@@ -227,7 +232,7 @@ class ResourceManager
             $parentPath .= $parent->getPathForDisplay().' / ';
         }
 
-        $node->setPathForCreationLog($parentPath.$name);
+        $node->setPathForCreationLog($parentPath.$node->getName());
         $node->setIcon($icon);
 
         //if it's an activity, initialize the permissions for its linked resources;
@@ -491,7 +496,7 @@ class ResourceManager
      *
      * @param array $resourceTypes
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceType
+     * @return array
      *
      * @throws ResourceTypeNotFoundException
      */
@@ -527,7 +532,7 @@ class ResourceManager
      * Insert the resource $resource at the 'index' position.
      *
      * @param ResourceNode $node
-     * @param int          $next
+     * @param int          $index
      *
      * @return ResourceNode
      */
@@ -645,33 +650,27 @@ class ResourceManager
     /**
      * Set the $node at the last position of the $parent.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $parent
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param ResourceNode $parent
+     * @param ResourceNode $node
+     * @param bool         $autoFlush
      */
-    public function setLastIndex(ResourceNode $parent, ResourceNode $node, $autoflush = true)
+    public function setLastIndex(ResourceNode $parent, ResourceNode $node, $autoFlush = true)
     {
         $max = $this->resourceNodeRepo->findLastIndex($parent);
         $node->setIndex($max + 1);
+
         $this->om->persist($node);
-        if ($autoflush) {
+
+        if ($autoFlush) {
             $this->om->flush();
         }
     }
 
     /**
-     * Remove the $node from the chained list.
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     */
-    public function removeIndex(ResourceNode $node)
-    {
-    }
-
-    /**
      * Checks if a resource in a node has a link to the target with a shortcut.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $parent
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $target
+     * @param ResourceNode $parent
+     * @param ResourceNode $target
      *
      * @return bool
      */
@@ -953,7 +952,8 @@ class ResourceManager
     /**
      * Removes a resource.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param ResourceNode $resourceNode
+     * @param bool         $force
      *
      * @throws \LogicException
      */
@@ -964,14 +964,15 @@ class ResourceManager
         if ($resourceNode->getParent() === null && !$force) {
             throw new \LogicException('Root directory cannot be removed');
         }
+
         $workspace = $resourceNode->getWorkspace();
         $nodes = $this->getDescendants($resourceNode);
         $count = count($nodes);
         $nodes[] = $resourceNode;
         $softDelete = $this->platformConfigHandler->getParameter('resource_soft_delete');
+
         $this->om->startFlushSuite();
         $this->log('Looping through '.$count.' children...');
-
         foreach ($nodes as $node) {
             $eventSoftDelete = false;
             $this->log('Removing '.$node->getName().'['.$node->getResourceType()->getName().':id:'.$node->getId().']');
@@ -1308,7 +1309,7 @@ class ResourceManager
         }
 
         throw new WrongClassException(
-            "{$class} doesn't extend Claroline\CoreBundle\Entity\Resource\AbstractResource."
+            "{$class} doesn't extend Claroline\\CoreBundle\\Entity\\Resource\\AbstractResource."
         );
     }
 
@@ -1333,7 +1334,7 @@ class ResourceManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param Workspace $workspace
      *
      * @return ResourceNode
      */
@@ -1343,7 +1344,7 @@ class ResourceManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param ResourceNode $node
      *
      * @return array
      */
@@ -1353,9 +1354,10 @@ class ResourceManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param string[]                                           $roles
-     * @param bool                                               $isSorted
+     * @param ResourceNode $node
+     * @param string[]     $roles
+     * @param mixed        $user
+     * @param bool         $withLastOpenDate
      *
      * @return array
      */
@@ -1369,8 +1371,8 @@ class ResourceManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param bool                                               $includeStartNode
+     * @param ResourceNode $node
+     * @param bool         $includeStartNode
      *
      * @return array
      */
@@ -1380,7 +1382,7 @@ class ResourceManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param ResourceNode $node
      *
      * @return array
      */
@@ -1390,9 +1392,9 @@ class ResourceManager
     }
 
     /**
-     * @param string                                             $mimeType
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $parent
-     * @param string[]|RoleInterface[]                           $roles
+     * @param string                   $mimeType
+     * @param ResourceNode             $parent
+     * @param string[]|RoleInterface[] $roles
      *
      * @return array
      */
@@ -1458,7 +1460,7 @@ class ResourceManager
     /**
      * @param Workspace $workspace
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode[]
+     * @return ResourceNode[]
      */
     public function getByWorkspace(Workspace $workspace)
     {
@@ -1466,9 +1468,10 @@ class ResourceManager
     }
 
     /**
-     * @param Workspace $workspace
+     * @param Workspace    $workspace
+     * @param ResourceType $resourceType
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode[]
+     * @return ResourceNode[]
      */
     public function getByWorkspaceAndResourceType(
         Workspace $workspace,
@@ -1483,7 +1486,7 @@ class ResourceManager
     /**
      * @param int[] $ids
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode[]
+     * @return ResourceNode[]
      */
     public function getByIds(array $ids)
     {
@@ -1494,19 +1497,21 @@ class ResourceManager
     }
 
     /**
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     * @param mixed $id
+     *
+     * @return ResourceNode
      */
     public function getById($id)
     {
-        return $this->resourceNodeRepo->findOneby(['id' => $id]);
+        return $this->resourceNodeRepo->findOneBy(['id' => $id]);
     }
 
     /**
      * Returns the resource linked to a node.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param ResourceNode $node
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\AbstractResource
+     * @return AbstractResource
      */
     public function getResourceFromNode(ResourceNode $node)
     {
@@ -1516,16 +1521,14 @@ class ResourceManager
     /**
      * Copy a resource node.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $newParent
-     * @param \Claroline\CoreBundle\Entity\User                  $user
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $last
-     * @param bool                                               $withRights
-     *                                                                       Defines if the rights of the copied node have to be created
-     * @param array                                              $rights
-     *                                                                       If defined, the copied node will have exactly the given rights
+     * @param ResourceNode $node
+     * @param ResourceNode $newParent
+     * @param User         $user
+     * @param bool         $withRights - Defines if the rights of the copied node have to be created
+     * @param array        $rights     - If defined, the copied node will have exactly the given rights
+     * @param int          $index
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     * @return ResourceNode
      */
     private function copyNode(
         ResourceNode $node,
@@ -1535,6 +1538,7 @@ class ResourceManager
         array $rights = [],
         $index = null
     ) {
+        /** @var ResourceNode $newNode */
         $newNode = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $newNode->setResourceType($node->getResourceType());
         $newNode->setCreator($user);
@@ -1606,8 +1610,8 @@ class ResourceManager
      * accessibility dates.
      *
      * @param ResourceNode $node            A directory
-     * @param datetime     $accessibleFrom
-     * @param datetime     $accessibleUntil
+     * @param \DateTime    $accessibleFrom
+     * @param \DateTime    $accessibleUntil
      */
     public function changeAccessibilityDate(
         ResourceNode $node,
@@ -1617,6 +1621,7 @@ class ResourceManager
         if ($node->getResourceType()->getName() === 'directory') {
             $descendants = $this->resourceNodeRepo->findDescendants($node);
 
+            /** @var ResourceNode $descendant */
             foreach ($descendants as $descendant) {
                 $descendant->setAccessibleFrom($accessibleFrom);
                 $descendant->setAccessibleUntil($accessibleUntil);
@@ -1631,6 +1636,8 @@ class ResourceManager
      *
      * @param ResourceType $resourceType
      * @param string       $actionName
+     *
+     * @return bool
      */
     public function isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
     {
@@ -1652,6 +1659,11 @@ class ResourceManager
         return $this->dispatcher->hasListeners($eventName);
     }
 
+    /**
+     * @param string $dirName
+     *
+     * @return bool
+     */
     private function isDirectoryEmpty($dirName)
     {
         $files = [];
@@ -1690,8 +1702,12 @@ class ResourceManager
     /**
      * Check if a file can be added in the workspace storage dir (disk usage limit).
      *
+     * @todo move into workspace manager
+     *
      * @param Workspace    $workspace
      * @param \SplFileInfo $file
+     *
+     * @return bool
      */
     public function checkEnoughStorageSpaceLeft(Workspace $workspace, \SplFileInfo $file)
     {
@@ -1706,7 +1722,11 @@ class ResourceManager
     /**
      * Check if a ResourceNode can be added in a Workspace (resource amount limit).
      *
+     * @todo move into workspace manager
+     *
      * @param Workspace $workspace
+     *
+     * @return bool
      */
     public function checkResourceLimitExceeded(Workspace $workspace)
     {
@@ -1719,8 +1739,11 @@ class ResourceManager
     /**
      * Adds the storage exceeded error in a form.
      *
-     * @param Form $form
-     * @param int  $filesize
+     * @todo move into workspace manager
+     *
+     * @param Form      $form
+     * @param int       $fileSize
+     * @param Workspace $workspace
      */
     public function addStorageExceededFormError(Form $form, $fileSize, Workspace $workspace)
     {
@@ -1743,7 +1766,7 @@ class ResourceManager
     }
 
     /**
-     * Search a ResourceNode wich is persisted but not flushed yet.
+     * Search a ResourceNode which is persisted but not flushed yet.
      *
      * @param Workspace $workspace
      * @param $name
@@ -1771,6 +1794,8 @@ class ResourceManager
 
     /**
      * Adds the public file directory in a workspace.
+     *
+     * @todo move in workspace manager
      *
      * @param Workspace $workspace
      *
@@ -1889,6 +1914,7 @@ class ResourceManager
         $batchSize = 500;
         $i = 0;
 
+        /** @var ResourceNode $resource */
         foreach ($resources as $resource) {
             if ($resource->getWorkspace() === null && $parent = $resource->getParent()) {
                 if ($workspace = $parent->getWorkspace()) {
