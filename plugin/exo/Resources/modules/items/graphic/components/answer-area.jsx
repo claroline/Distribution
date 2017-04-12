@@ -28,9 +28,9 @@ const RESIZER_SIZE = 12
 
 export class AnswerArea extends Component {
   render() {
-    /*if (this.props.isDragging) {
+    if (this.props.isDragging) {
       return null
-    }*/
+    }
 
     const props = this.props
     const isRect = this.props.shape === SHAPE_RECT
