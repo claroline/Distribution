@@ -77,6 +77,11 @@ Row.defaultProps = {
 class LazyLoadTable extends Component {
   constructor(props) {
     super(props)
+
+    this.handlePagePrevious = this.handlePagePrevious.bind(this)
+    this.handlePageNext = this.handlePageNext.bind(this)
+    this.handlePageChange = this.handlePageChange.bind(this)
+    this.handlePageSizeUpdate = this.handlePageSizeUpdate.bind(this)
     this.setState({selected: []})
   }
 
@@ -88,23 +93,22 @@ class LazyLoadTable extends Component {
     let selected = this.state.selected
     selected.indexOf(data) > -1 ? selected.push(data): selected.splice(selected.indexOf(data), 1)
     this.setState({selected})
-    //console.log(this.state)
   }
 
   handlePagePrevious(page) {
-    this.props.onChangePage(page++, this.props.pagination.pageSize)
+    this.props.onChangePage(page, this.props.pagination.pageSize)
   }
 
   handlePageNext(page) {
-    alert(page)
+    this.props.onChangePage(page, this.props.pagination.pageSize)
   }
 
   handlePageChange(page) {
-    alert(page)
+    return this.props.onChangePage(page, this.props.pagination.pageSize)
   }
 
   handlePageSizeUpdate(size) {
-    alert(size)
+    this.props.onChangePage(this.props.pagination.current, size)
   }
 
   render() {

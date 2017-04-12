@@ -1,7 +1,7 @@
 export const select = {
-  workspaces: state => state.pager.workspaces,
-  count: state => state.pager.count,
-  page: state => state.pager.page || 1,
-  size: state => state.pager.size || 20,
+  data: state => state.pagination.data,
+  totalResults: state => state.pagination.totalResults,
+  current: state => state.pagination.current || 1,
+  pageSize: state => state.pagination.pageSize || 20,
   user: state => state.user
 }
