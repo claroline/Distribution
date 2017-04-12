@@ -171,27 +171,57 @@ class CourseRegistrationQueueRepository extends EntityRepository
         return $query->getResult();
     }
 
-    public function findUnvalidatedCourseQueues()
+    public function findUnvalidatedCourseQueues(User $user)
     {
+        $organizations = $user->getAdministratedOrganizations()->toArray();
+
         $dql = '
             SELECT q
             FROM Claroline\CursusBundle\Entity\CourseRegistrationQueue q
-            WHERE q.status = :value
+            JOIN q.course c
+            LEFT JOIN c.organizations o
+            WHERE (
+                o IN (:organizations)
+                OR EXISTS (
+                    SELECT cu
+                    FROM Claroline\CursusBundle\Entity\Cursus cu
+                    JOIN cu.course cuc
+                    JOIN cu.organizations cuo
+                    WHERE cuc = c
+                    AND cuo IN (:organizations)
+                )
+            )
+            AND q.status = :value
             ORDER BY q.applicationDate ASC
         ';
         $query = $this->_em->createQuery($dql);
+        $query->setParameter('organizations', $organizations);
         $query->setParameter('value', CourseRegistrationQueue::WAITING);
 
         return $query->getResult();
     }
 
-    public function findUnvalidatedSearchedCourseQueues($search)
+    public function findUnvalidatedSearchedCourseQueues(User $user, $search)
     {
+        $organizations = $user->getAdministratedOrganizations()->toArray();
+
         $dql = '
             SELECT q
             FROM Claroline\CursusBundle\Entity\CourseRegistrationQueue q
             JOIN q.course c
-            WHERE q.status = :value
+            LEFT JOIN c.organizations o
+            WHERE (
+                o IN (:organizations)
+                OR EXISTS (
+                    SELECT cu
+                    FROM Claroline\CursusBundle\Entity\Cursus cu
+                    JOIN cu.course cuc
+                    JOIN cu.organizations cuo
+                    WHERE cuc = c
+                    AND cuo IN (:organizations)
+                )
+            )
+            AND q.status = :value
             AND (
                 UPPER(c.title) LIKE :search
                 OR UPPER(c.code) LIKE :search
@@ -199,6 +229,7 @@ class CourseRegistrationQueueRepository extends EntityRepository
             ORDER BY q.applicationDate ASC
         ';
         $query = $this->_em->createQuery($dql);
+        $query->setParameter('organizations', $organizations);
         $query->setParameter('value', CourseRegistrationQueue::WAITING);
         $upperSearch = strtoupper($search);
         $query->setParameter('search', "%{$upperSearch}%");

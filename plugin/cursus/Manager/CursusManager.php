@@ -2984,59 +2984,61 @@ class CursusManager
         $authenticatedUser = $this->tokenStorage->getToken()->getUser();
         $isAdmin = $this->authorization->isGranted('ROLE_ADMIN');
 
-        if ($isAdmin) {
-            $coursesQueues = empty($search) ?
-                $this->getAllUnvalidatedCourseQueues() :
-                $this->getAllSearchedUnvalidatedCourseQueues($search);
-            $sessionsQueues = empty($search) ?
-                $this->getAllUnvalidatedSessionQueues() :
-                $this->getAllSearchedUnvalidatedSessionQueues($search);
+        if ($authenticatedUser !== 'anon.') {
+            if ($isAdmin) {
+                $coursesQueues = empty($search) ?
+                    $this->getAllUnvalidatedCourseQueues() :
+                    $this->getAllSearchedUnvalidatedCourseQueues($search);
+                $sessionsQueues = empty($search) ?
+                    $this->getAllUnvalidatedSessionQueues() :
+                    $this->getAllSearchedUnvalidatedSessionQueues($search);
 
-            $datas['coursesQueues'] = $this->getCoursesQueuesDatasFromQueues($coursesQueues);
-            $datas['sessionsQueues'] = $this->getSessionsQueuesDatasFromQueues($sessionsQueues);
-        } else {
-            $validatorCoursesQueues = empty($search) ?
-                $this->getUnvalidatedCourseQueuesByValidator($authenticatedUser) :
-                $this->getUnvalidatedSearchedCourseQueuesByValidator($authenticatedUser, $search);
-            $orgaCoursesQueues = empty($search) ?
-                $this->getUnvalidatedCourseQueuesByOrganization($authenticatedUser) :
-                $this->getUnvalidatedSearchedCourseQueuesByOrganization($authenticatedUser, $search);
-            $simpleCoursesQueues = empty($search) ?
-                $this->getUnvalidatedCourseQueues() :
-                $this->getUnvalidatedSearchedCourseQueues($search);
+                $datas['coursesQueues'] = $this->getCoursesQueuesDatasFromQueues($coursesQueues);
+                $datas['sessionsQueues'] = $this->getSessionsQueuesDatasFromQueues($sessionsQueues);
+            } else {
+                $validatorCoursesQueues = empty($search) ?
+                    $this->getUnvalidatedCourseQueuesByValidator($authenticatedUser) :
+                    $this->getUnvalidatedSearchedCourseQueuesByValidator($authenticatedUser, $search);
+                $orgaCoursesQueues = empty($search) ?
+                    $this->getUnvalidatedCourseQueuesByOrganization($authenticatedUser) :
+                    $this->getUnvalidatedSearchedCourseQueuesByOrganization($authenticatedUser, $search);
+                $simpleCoursesQueues = empty($search) ?
+                    $this->getUnvalidatedCourseQueues($authenticatedUser) :
+                    $this->getUnvalidatedSearchedCourseQueues($authenticatedUser, $search);
 
-            $validatorSessionsQueues = empty($search) ?
-                $this->getUnvalidatedSessionQueuesByValidator($authenticatedUser) :
-                $this->getUnvalidatedSearchedSessionQueuesByValidator($authenticatedUser, $search);
-            $orgaSessionsQueues = empty($search) ?
-                $this->getUnvalidatedSessionQueuesByOrganization($authenticatedUser) :
-                $this->getUnvalidatedSearchedSessionQueuesByOrganization($authenticatedUser, $search);
-            $simpleSessionsQueues = empty($search) ?
-                $this->getUnvalidatedSessionQueues() :
-                $this->getUnvalidatedSearchedSessionQueues($search);
+                $validatorSessionsQueues = empty($search) ?
+                    $this->getUnvalidatedSessionQueuesByValidator($authenticatedUser) :
+                    $this->getUnvalidatedSearchedSessionQueuesByValidator($authenticatedUser, $search);
+                $orgaSessionsQueues = empty($search) ?
+                    $this->getUnvalidatedSessionQueuesByOrganization($authenticatedUser) :
+                    $this->getUnvalidatedSearchedSessionQueuesByOrganization($authenticatedUser, $search);
+                $simpleSessionsQueues = empty($search) ?
+                    $this->getUnvalidatedSessionQueues($authenticatedUser) :
+                    $this->getUnvalidatedSearchedSessionQueues($authenticatedUser, $search);
 
-            $coursesQueues = $this->mergeCourseQueues(
-                $validatorCoursesQueues,
-                $orgaCoursesQueues,
-                $simpleCoursesQueues
-            );
-            $sessionsQueues = $this->mergeSessionQueues(
-                $validatorSessionsQueues,
-                $orgaSessionsQueues,
-                $simpleSessionsQueues
-            );
-            $datas['coursesQueues'] = $this->computeCoursesQueuesDatas(
-                $validatorCoursesQueues,
-                $orgaCoursesQueues,
-                $simpleCoursesQueues
-            );
-            $datas['sessionsQueues'] = $this->computeSessionsQueuesDatas(
-                $validatorSessionsQueues,
-                $orgaSessionsQueues,
-                $simpleSessionsQueues
-            );
+                $coursesQueues = $this->mergeCourseQueues(
+                    $validatorCoursesQueues,
+                    $orgaCoursesQueues,
+                    $simpleCoursesQueues
+                );
+                $sessionsQueues = $this->mergeSessionQueues(
+                    $validatorSessionsQueues,
+                    $orgaSessionsQueues,
+                    $simpleSessionsQueues
+                );
+                $datas['coursesQueues'] = $this->computeCoursesQueuesDatas(
+                    $validatorCoursesQueues,
+                    $orgaCoursesQueues,
+                    $simpleCoursesQueues
+                );
+                $datas['sessionsQueues'] = $this->computeSessionsQueuesDatas(
+                    $validatorSessionsQueues,
+                    $orgaSessionsQueues,
+                    $simpleSessionsQueues
+                );
+            }
+            $datas['courses'] = $this->getCoursesDatasFromQueues($coursesQueues, $sessionsQueues);
         }
-        $datas['courses'] = $this->getCoursesDatasFromQueues($coursesQueues, $sessionsQueues);
 
         return $datas;
     }
@@ -5231,14 +5233,14 @@ class CursusManager
         return $this->sessionQueueRepo->findUnvalidatedSearchedSessionQueuesByOrganization($user, $search);
     }
 
-    public function getUnvalidatedSessionQueues()
+    public function getUnvalidatedSessionQueues(User $user)
     {
-        return $this->sessionQueueRepo->findUnvalidatedSessionQueues();
+        return $this->sessionQueueRepo->findUnvalidatedSessionQueues($user);
     }
 
-    public function getUnvalidatedSearchedSessionQueues($search)
+    public function getUnvalidatedSearchedSessionQueues(User $user, $search)
     {
-        return $this->sessionQueueRepo->findUnvalidatedSearchedSessionQueues($search);
+        return $this->sessionQueueRepo->findUnvalidatedSearchedSessionQueues($user, $search);
     }
 
     /*******************************************************
@@ -5285,14 +5287,14 @@ class CursusManager
         return $this->courseQueueRepo->findUnvalidatedSearchedCourseQueuesByOrganization($user, $search);
     }
 
-    public function getUnvalidatedCourseQueues()
+    public function getUnvalidatedCourseQueues(User $user)
     {
-        return $this->courseQueueRepo->findUnvalidatedCourseQueues();
+        return $this->courseQueueRepo->findUnvalidatedCourseQueues($user);
     }
 
-    public function getUnvalidatedSearchedCourseQueues($search)
+    public function getUnvalidatedSearchedCourseQueues(User $user, $search)
     {
-        return $this->courseQueueRepo->findUnvalidatedSearchedCourseQueues($search);
+        return $this->courseQueueRepo->findUnvalidatedSearchedCourseQueues($user, $search);
     }
 
     /*********************************************
