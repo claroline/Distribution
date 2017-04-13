@@ -5,10 +5,16 @@ import cloneDeep from 'lodash/cloneDeep'
 
 const PAGE_CHANGE = 'PAGE_CHANGE'
 const ON_SELECT = 'ON_SELECT'
+const REMOVE_WORKSPACE = 'REMOVE_WORKSPACE'
+const REMOVE_WORKSPACES = 'REMOVE_WORKSPACES'
+const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE'
 
 export const actions = {
   pageChange: makeActionCreator(PAGE_CHANGE, 'total', 'workspaces', 'current', 'pageSize'),
   onSelect: makeActionCreator(ON_SELECT, 'selected'),
+  removeWorkspace: makeActionCreator(REMOVE_WORKSPACE, 'workspace'),
+  removeWorkspaces: makeActionCreator(REMOVE_WORKSPACES, 'workspaces'),
+  updateWorkspace: makeActionCreator(UPDATE_WORKSPACE, 'workspace'),
   fetchPage: (current, pageSize) => ({
     [REQUEST_SEND]: {
       route: ['api_get_search_workspaces', {page: current++, limit: pageSize}],
@@ -42,6 +48,15 @@ const handlers = {
     pagination.selected = action.selected
 
     return Object.assign({}, state, {pagination})
+  },
+  [REMOVE_WORKSPACE]: (state) => {
+    return state
+  },
+  [REMOVE_WORKSPACES]: (state) => {
+    return state
+  },
+  [UPDATE_WORKSPACE]: (state) => {
+    return state
   }
 }
 

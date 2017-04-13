@@ -1612,7 +1612,10 @@ public function duplicateWorkspaceRoles(
         $query = $qb->getQuery();
 
         if ($page !== null && $limit !== null && !$count) {
-            $query->setMaxResults($limit);
+            //react table all is -1
+            if ($limit > -1) {
+                $query->setMaxResults($limit);
+            }
             $query->setFirstResult($page * $limit);
         }
 
