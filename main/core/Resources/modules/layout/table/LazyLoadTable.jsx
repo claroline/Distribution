@@ -95,12 +95,14 @@ class LazyLoadTable extends Component {
     this.setState({selected})
   }
 
-  handlePagePrevious(page) {
-    this.props.onChangePage(page, this.props.pagination.pageSize)
+  handlePagePrevious() {
+    //-2 because current starts at 0
+    this.props.onChangePage(this.props.pagination.current - 2, this.props.pagination.pageSize)
   }
 
-  handlePageNext(page) {
-    this.props.onChangePage(page, this.props.pagination.pageSize)
+  handlePageNext() {
+    //no +1 because current starts at 0
+    this.props.onChangePage(this.props.pagination.current, this.props.pagination.pageSize)
   }
 
   handlePageChange(page) {
@@ -108,7 +110,9 @@ class LazyLoadTable extends Component {
   }
 
   handlePageSizeUpdate(size) {
-    this.props.onChangePage(this.props.pagination.current, size)
+    const page = 0
+    //maybe compute a way to display the page of the current result
+    this.props.onChangePage(page, size)
   }
 
   render() {
