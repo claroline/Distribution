@@ -747,7 +747,7 @@ class CursusController extends Controller
 
         foreach ($sessionUsers as $sessionUser) {
             $session = $sessionUser->getSession();
-            $sessions[] = $session;
+            $sessions[$session->getId()] = $session;
             $workspace = $session->getWorkspace();
 
             if (!is_null($workspace)) {
@@ -763,7 +763,7 @@ class CursusController extends Controller
             }
         }
         $serializedSessions = $this->serializer->serialize(
-            $sessions,
+            array_values($sessions),
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );

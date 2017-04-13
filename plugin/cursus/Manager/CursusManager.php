@@ -984,18 +984,18 @@ class CursusManager
                     $this->om->persist($sessionUser);
                     $sessionUsers[] = $sessionUser;
 
-                    if ($type === CourseSessionUser::LEARNER) {
+                    if (intval($type) === CourseSessionUser::LEARNER) {
                         $this->sendSessionRegistrationConfirmationMessage($user, $session, 'registered');
-                    } elseif ($type === CourseSessionUser::PENDING_LEARNER) {
+
+                        if ($cascadeEvent) {
+                            $this->registerPendingSessionEventUsers($user, $session);
+                        }
+                        $this->registerUserToAllAutomaticSessionEvent($user, $session);
+                    } elseif (intval($type) === CourseSessionUser::PENDING_LEARNER) {
                         $this->sendSessionRegistrationConfirmationMessage($user, $session, 'pending');
                     }
                     $event = new LogCourseSessionUserRegistrationEvent($session, $user);
                     $this->eventDispatcher->dispatch('log', $event);
-
-                    if ($cascadeEvent) {
-                        $this->registerPendingSessionEventUsers($user, $session);
-                    }
-                    $this->registerUserToAllAutomaticSessionEvent($user, $session);
                 }
             }
             $role = null;
@@ -1134,8 +1134,11 @@ class CursusManager
             $event = new LogCourseSessionUserUnregistrationEvent($sessionUser);
             $this->eventDispatcher->dispatch('log', $event);
             $this->om->remove($sessionUser);
-            $sessionEventUsers = $this->getSessionEventUsersByUserAndSession($user, $session);
-            $this->unregisterUsersFromSessionEvent($sessionEventUsers);
+
+            if ($userType === CourseSessionUser::LEARNER) {
+                $sessionEventUsers = $this->getSessionEventUsersByUserAndSession($user, $session);
+                $this->unregisterUsersFromSessionEvent($sessionEventUsers);
+            }
         }
         $this->om->endFlushSuite();
     }
