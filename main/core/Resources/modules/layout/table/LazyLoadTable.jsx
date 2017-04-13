@@ -1,6 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
 import {Pagination} from '#/main/core/layout/list/components/pagination.jsx'
+import cloneDeep from 'lodash/cloneDeep'
 import {
   Table,
   TableRow,
@@ -30,7 +31,10 @@ const Header = props =>
   <TableHeader>
     <tr>
       <TableHeaderCell align="center">
-        <input type="checkbox" onChange={props.toggleSelectAll} />
+        <input
+          type="checkbox"
+          onChange={props.toggleSelectAll}
+        />
       </TableHeaderCell>
 
       {props.columns.map(column => {
@@ -51,7 +55,11 @@ Header.propTypes = {
 const Row = props =>
   <TableRow className={props.isSelected ? 'selected' : null}>
     <TableCell align="center">
-      <input type="checkbox" onChange={() => props.toggleSelect(props.data)} />
+      <input
+        type="checkbox"
+        onChange={() => props.toggleSelect(props.data)}
+        checked={props.isSelected}
+      />
     </TableCell>
     {props.columns.available.map(column => {
       return (
@@ -82,37 +90,57 @@ class LazyLoadTable extends Component {
     this.handlePageNext = this.handlePageNext.bind(this)
     this.handlePageChange = this.handlePageChange.bind(this)
     this.handlePageSizeUpdate = this.handlePageSizeUpdate.bind(this)
+    this.toggleSelectAll = this.toggleSelectAll.bind(this)
+    this.toggleSelect = this.toggleSelect.bind(this)
+  }
+
+  componentDidMount() {
     this.setState({selected: []})
   }
 
-  toggleSelectAll() {
-
+  toggleSelectAll(event) {
+    this.setState({selected: event.target.checked ? cloneDeep(this.props.pagination.data): []})
   }
 
   toggleSelect(data) {
     let selected = this.state.selected
-    selected.indexOf(data) > -1 ? selected.push(data): selected.splice(selected.indexOf(data), 1)
+    !this.isSelected(data) ? selected.push(data): selected.splice(this.findIndex(data), 1)
     this.setState({selected})
   }
 
   handlePagePrevious() {
     //-2 because current starts at 0
+    this.setState({selected: []})
     this.props.onChangePage(this.props.pagination.current - 2, this.props.pagination.pageSize)
   }
 
   handlePageNext() {
     //no +1 because current starts at 0
+    this.setState({selected: []})
     this.props.onChangePage(this.props.pagination.current, this.props.pagination.pageSize)
   }
 
   handlePageChange(page) {
+    this.setState({selected: []})
     return this.props.onChangePage(page, this.props.pagination.pageSize)
   }
 
   handlePageSizeUpdate(size) {
+    this.setState({selected: []})
     const page = 0
     //maybe compute a way to display the page of the current result
     this.props.onChangePage(page, size)
+  }
+
+  findIndex(el) {
+    if (!this.state) return -1
+
+    //slow but gives correct result
+    return this.state.selected.findIndex(selected => JSON.stringify(selected) === JSON.stringify(el))
+  }
+
+  isSelected(el) {
+    return this.findIndex(el) > -1
   }
 
   render() {
@@ -140,6 +168,7 @@ class LazyLoadTable extends Component {
                   renderers={this.props.renderers}
                   data={el}
                   toggleSelect={this.toggleSelect}
+                  isSelected={this.isSelected(el)}
                 />
               )}
             )}
@@ -158,7 +187,6 @@ class LazyLoadTable extends Component {
     )
   }
 }
-
 
 //active & onChange should maybe be removed
 
