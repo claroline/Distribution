@@ -4,9 +4,11 @@ import { makeReducer } from '#/main/core/utilities/redux'
 import cloneDeep from 'lodash/cloneDeep'
 
 const PAGE_CHANGE = 'PAGE_CHANGE'
+const ON_SELECT = 'ON_SELECT'
 
 export const actions = {
   pageChange: makeActionCreator(PAGE_CHANGE, 'total', 'workspaces', 'current', 'pageSize'),
+  onSelect: makeActionCreator(ON_SELECT, 'selected'),
   fetchPage: (current, pageSize) => ({
     [REQUEST_SEND]: {
       route: ['api_get_search_workspaces', {page: current++, limit: pageSize}],
@@ -32,6 +34,12 @@ const handlers = {
     pagination.data = action.workspaces
     pagination.current = action.current
     pagination.pageSize = action.pageSize
+
+    return Object.assign({}, state, {pagination})
+  },
+  [ON_SELECT]: (state, action) => {
+    const pagination = cloneDeep(state.pagination)
+    pagination.selected = action.selected
 
     return Object.assign({}, state, {pagination})
   }

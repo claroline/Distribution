@@ -10,6 +10,7 @@ import {
   TableHeaderCell,
   TableSortingCell
 } from '#/plugin/exo/components/table/table.jsx'
+import {findIndex} from './utilities'
 
 const EmptyList = props =>
   <div className="empty-list">
@@ -65,7 +66,6 @@ Header.defaultProps = {
   isSelected: false
 }
 
-
 const Row = props =>
   <TableRow className={props.isSelected ? 'selected' : null}>
     <TableCell align="center">
@@ -108,49 +108,42 @@ class LazyLoadTable extends Component {
     this.toggleSelect = this.toggleSelect.bind(this)
   }
 
-  componentDidMount() {
-    this.setState({selected: []})
-  }
-
   toggleSelectAll(event) {
-    this.setState({selected: event.target.checked ? cloneDeep(this.props.pagination.data): []})
+    this.props.onSelect(event.target.checked ? this.props.pagination.data: [])
   }
 
   toggleSelect(data) {
-    let selected = this.state.selected
-    !this.isSelected(data) ? selected.push(data): selected.splice(this.findIndex(data), 1)
-    this.setState({selected})
+    const selected = cloneDeep(this.props.pagination.selected)
+    this.isSelected(data) ? selected.splice(findIndex(selected, data), 1): selected.push(data)
+    this.props.onSelect(selected)
   }
 
   handlePagePrevious() {
     //-2 because current starts at 0
-    this.setState({selected: []})
+    this.props.onSelect([])
     this.props.onChangePage(this.props.pagination.current - 2, this.props.pagination.pageSize)
   }
 
   handlePageNext() {
     //no +1 because current starts at 0
-    this.setState({selected: []})
+    this.props.onSelect([])
     this.props.onChangePage(this.props.pagination.current, this.props.pagination.pageSize)
   }
 
   handlePageChange(page) {
-    this.setState({selected: []})
-    return this.props.onChangePage(page, this.props.pagination.pageSize)
+    this.props.onSelect([])
+    this.props.onChangePage(page, this.props.pagination.pageSize)
   }
 
   handlePageSizeUpdate(size) {
-    this.setState({selected: []})
+    this.props.onSelect([])
     const page = 0
     //maybe compute a way to display the page of the current result
     this.props.onChangePage(page, size)
   }
 
   findIndex(el) {
-    if (!this.state) return -1
-
-    //slow but gives correct result
-    return this.state.selected.findIndex(selected => JSON.stringify(selected) === JSON.stringify(el))
+    return findIndex(this.props.pagination.selected, el)
   }
 
   isSelected(el) {
@@ -158,10 +151,7 @@ class LazyLoadTable extends Component {
   }
 
   isAllSelected() {
-    if (!this.state) return false
-
-    //not effective at all but gets the job done
-    return this.state.selected.length === this.props.pagination.data.length
+    return this.props.pagination.selected.length === this.props.pagination.data.length
   }
 
   render() {
@@ -228,9 +218,11 @@ LazyLoadTable.propTypes = {
     totalResults: T.number.isRequired,
     pageSize: T.number.isRequired,
     current: T.number.isRequired,
-    data: T.arrayOf(T.object).isRequired
+    data: T.arrayOf(T.object).isRequired,
+    selected: T.arrayOf(T.object).isRequired
   }).isRequired,
   onChangePage: T.func,
+  onSelect: T.func,
   onSearch: T.func
 }
 

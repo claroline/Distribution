@@ -1,8 +1,8 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import {select} from './selectors'
-import {LazyLoadTable} from '#/main/core/layout/table/LazyLoadTable.jsx'
 import {actions} from './actions'
+import {LazyLoadTable} from '#/main/core/layout/table/LazyLoadTable.jsx'
 
 class Workspaces extends Component {
   constructor(props) {
@@ -27,14 +27,17 @@ class Workspaces extends Component {
 
   render() {
     return (
-      <LazyLoadTable
-        format="list"
-        columns={this.columns}
-        filters={this.filters}
-        pagination={this.props.pagination}
-        renderers={this.renderers}
-        onChangePage={this.props.onChangePage}
-      />
+      <div>
+        <LazyLoadTable
+          format="list"
+          columns={this.columns}
+          filters={this.filters}
+          pagination={this.props.pagination}
+          renderers={this.renderers}
+          onChangePage={this.props.onChangePage}
+          onSelect={this.props.onSelect}
+        />
+      </div>
     )
   }
 }
@@ -46,7 +49,8 @@ Workspaces.propTypes = {
     current: T.number.required,
     data: T.array(T.object)
   },
-  onChangePage: T.func.isRequired
+  onChangePage: T.func.isRequired,
+  onSelect: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -55,7 +59,8 @@ function mapStateToProps(state) {
       data: select.data(state),
       totalResults: select.totalResults(state),
       pageSize: select.pageSize(state),
-      current: select.current(state)
+      current: select.current(state),
+      selected: select.selected(state)
     }
   }
 }
@@ -64,6 +69,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onChangePage(page, size) {
       dispatch(actions.fetchPage(page, size))
+    },
+    onSelect(selected) {
+      dispatch(actions.onSelect(selected))
     }
   }
 }

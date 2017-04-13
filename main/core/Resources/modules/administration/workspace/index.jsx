@@ -7,6 +7,7 @@ import {Workspaces} from './workspaces.jsx'
 
 class WorkspaceAdministration {
   constructor(workspaceData, user) {
+    workspaceData.selected = []
     this.store = createStore(reducers, {pagination: workspaceData, user})
   }
 
