@@ -27,30 +27,44 @@ EmptyList.defaultProps = {
   hasFilters: false
 }
 
-const Header = props =>
-  <TableHeader>
-    <tr>
-      <TableHeaderCell align="center">
-        <input
-          type="checkbox"
-          onChange={props.toggleSelectAll}
-        />
-      </TableHeaderCell>
+class Header extends Component {
+  constructor(props) {
+    super(props)
+  }
 
-      {props.columns.map(column => {
-        return (
-          <TableSortingCell key={column}>
-            {column}
-          </TableSortingCell>
-        )
-      })}
-    </tr>
-  </TableHeader>
+  render() {
+    return (<TableHeader>
+      <tr>
+        <TableHeaderCell align="center">
+          <input
+            type="checkbox"
+            onChange={this.props.toggleSelectAll}
+            checked={this.props.isSelected}
+          />
+        </TableHeaderCell>
+
+        {this.props.columns.map(column => {
+          return (
+            <TableSortingCell key={column}>
+              {column}
+            </TableSortingCell>
+          )
+        })}
+      </tr>
+    </TableHeader>)
+  }
+}
 
 Header.propTypes = {
   columns: T.arrayOf(T.string).isRequired,
-  toggleSelectAll: T.func.isRequired
+  toggleSelectAll: T.func.isRequired,
+  isSelected: T.bool
 }
+
+Header.defaultProps = {
+  isSelected: false
+}
+
 
 const Row = props =>
   <TableRow className={props.isSelected ? 'selected' : null}>
@@ -143,6 +157,13 @@ class LazyLoadTable extends Component {
     return this.findIndex(el) > -1
   }
 
+  isAllSelected() {
+    if (!this.state) return false
+
+    //not effective at all but gets the job done
+    return this.state.selected.length === this.props.pagination.data.length
+  }
+
   render() {
     return (
       <div>
@@ -159,6 +180,7 @@ class LazyLoadTable extends Component {
           <Header
             columns={this.props.columns.available}
             toggleSelectAll={this.toggleSelectAll}
+            isSelected={this.isAllSelected()}
           />
           <tbody>
             {this.props.pagination.data.map(el => {
