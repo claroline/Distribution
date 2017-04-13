@@ -493,10 +493,15 @@ class CursusController extends Controller
      *     name="claro_cursus_courses_registration_widget_configure_form",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineCursusBundle:Widget:coursesRegistrationWidgetConfigureForm.html.twig")
+     *
+     * @param User           $user
+     * @param WidgetInstance $widgetInstance
+     *
+     * @return array
      */
-    public function coursesRegistrationWidgetConfigureFormAction(WidgetInstance $widgetInstance)
+    public function coursesRegistrationWidgetConfigureFormAction(User $user, WidgetInstance $widgetInstance)
     {
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $extra = $config->getExtra();
@@ -504,7 +509,7 @@ class CursusController extends Controller
         if (is_null($extra)) {
             $extra = [];
         }
-        $form = $this->formFactory->create(new CoursesWidgetConfigurationType($this->translator, $extra), $config);
+        $form = $this->formFactory->create(new CoursesWidgetConfigurationType($user, $this->translator, $extra), $config);
 
         return ['form' => $form->createView(), 'config' => $config];
     }
@@ -515,12 +520,17 @@ class CursusController extends Controller
      *     name="claro_cursus_courses_registration_widget_configure",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineCursusBundle:Widget:coursesRegistrationWidgetConfigureForm.html.twig")
+     *
+     * @param User           $user
+     * @param WidgetInstance $widgetInstance
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse | array
      */
-    public function coursesRegistrationWidgetConfigureAction(CoursesWidgetConfig $config)
+    public function coursesRegistrationWidgetConfigureAction(User $user, CoursesWidgetConfig $config)
     {
-        $form = $this->formFactory->create(new CoursesWidgetConfigurationType($this->translator), $config);
+        $form = $this->formFactory->create(new CoursesWidgetConfigurationType($user, $this->translator), $config);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -546,10 +556,15 @@ class CursusController extends Controller
      *     name="claro_cursus_my_courses_widget_configure_form",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineCursusBundle:Widget:myCoursesWidgetConfigureForm.html.twig")
+     *
+     * @param User           $user
+     * @param WidgetInstance $widgetInstance
+     *
+     * @return array
      */
-    public function myCoursesWidgetConfigureFormAction(WidgetInstance $widgetInstance)
+    public function myCoursesWidgetConfigureFormAction(User $user, WidgetInstance $widgetInstance)
     {
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $extra = $config->getExtra();
@@ -557,7 +572,7 @@ class CursusController extends Controller
         if (is_null($extra)) {
             $extra = [];
         }
-        $form = $this->formFactory->create(new MyCoursesWidgetConfigurationType($this->translator, $extra), $config);
+        $form = $this->formFactory->create(new MyCoursesWidgetConfigurationType($user, $this->translator, $extra), $config);
 
         return ['form' => $form->createView(), 'config' => $config];
     }
@@ -568,12 +583,17 @@ class CursusController extends Controller
      *     name="claro_cursus_my_courses_widget_configure",
      *     options={"expose"=true}
      * )
-     * @EXT\ParamConverter("authenticatedUser", options={"authenticatedUser" = true})
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineCursusBundle:Widget:myCoursesWidgetConfigureForm.html.twig")
+     *
+     * @param User           $user
+     * @param WidgetInstance $widgetInstance
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse | array
      */
-    public function myCoursesRegistrationWidgetConfigureAction(CoursesWidgetConfig $config)
+    public function myCoursesRegistrationWidgetConfigureAction(User $user, CoursesWidgetConfig $config)
     {
-        $form = $this->formFactory->create(new MyCoursesWidgetConfigurationType($this->translator), $config);
+        $form = $this->formFactory->create(new MyCoursesWidgetConfigurationType($user, $this->translator), $config);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
