@@ -245,8 +245,9 @@ class CursusController extends Controller
         $extra = $config->getExtra();
         $collapseCourses = isset($extra['collapseCourses']) ? $extra['collapseCourses'] : false;
         $collapseSessions = isset($extra['collapseSessions']) ? $extra['collapseSessions'] : false;
+        $displayAll = isset($extra['displayAll']) ? $extra['displayAll'] : false;
 
-        if (is_null($configCursus)) {
+        if ($displayAll || (is_null($configCursus) && !$isAnon && $authenticatedUser->hasRole('ROLE_ADMIN'))) {
             $courses = $this->cursusManager->getAllCourses(
                 $search,
                 $orderedBy,
@@ -256,15 +257,32 @@ class CursusController extends Controller
                 $max
             );
         } else {
-            $courses = $this->cursusManager->getDescendantCoursesByCursus(
-                $configCursus,
-                $search,
-                $orderedBy,
-                $order,
-                true,
-                $page,
-                $max
-            );
+            if (is_null($configCursus)) {
+                $courses = [];
+
+                if (!$isAnon) {
+                    $organizations = $authenticatedUser->getOrganizations();
+                    $courses = $this->cursusManager->getAllCoursesByOrganizations(
+                        $organizations,
+                        $search,
+                        $orderedBy,
+                        $order,
+                        true,
+                        $page,
+                        $max
+                    );
+                }
+            } else {
+                $courses = $this->cursusManager->getDescendantCoursesByCursus(
+                    $configCursus,
+                    $search,
+                    $orderedBy,
+                    $order,
+                    true,
+                    $page,
+                    $max
+                );
+            }
         }
         $coursesArray = [];
 
@@ -351,11 +369,22 @@ class CursusController extends Controller
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $configCursus = $config->getCursus();
         $configPublicSessions = $config->isPublicSessionsOnly();
+        $extra = $config->getExtra();
+        $displayAll = isset($extra['displayAll']) ? $extra['displayAll'] : false;
 
-        if (is_null($configCursus)) {
+        if ($displayAll || (is_null($configCursus) && !$isAnon && $authenticatedUser->hasRole('ROLE_ADMIN'))) {
             $courses = $this->cursusManager->getAllCourses($search, 'title', 'ASC', false);
         } else {
-            $courses = $this->cursusManager->getDescendantCoursesByCursus($configCursus, $search, 'title', 'ASC', false);
+            if (is_null($configCursus)) {
+                $courses = [];
+
+                if (!$isAnon) {
+                    $organizations = $authenticatedUser->getOrganizations();
+                    $courses = $this->cursusManager->getAllCoursesByOrganizations($organizations, $search);
+                }
+            } else {
+                $courses = $this->cursusManager->getDescendantCoursesByCursus($configCursus, $search, 'title', 'ASC', false);
+            }
         }
         $courseSessions = $this->cursusManager->getSessionsByCourses($courses, 'creationDate', 'ASC');
 
@@ -489,8 +518,9 @@ class CursusController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/courses/registration/widget/{widgetInstance}/configure/form",
+     *     "/courses/registration/widget/{widgetInstance}/configure/form/admin/{admin}",
      *     name="claro_cursus_courses_registration_widget_configure_form",
+     *     defaults={"admin"=""},
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
@@ -498,10 +528,11 @@ class CursusController extends Controller
      *
      * @param User           $user
      * @param WidgetInstance $widgetInstance
+     * @param string         $admin
      *
      * @return array
      */
-    public function coursesRegistrationWidgetConfigureFormAction(User $user, WidgetInstance $widgetInstance)
+    public function coursesRegistrationWidgetConfigureFormAction(User $user, WidgetInstance $widgetInstance, $admin = '')
     {
         $config = $this->cursusManager->getCoursesWidgetConfiguration($widgetInstance);
         $extra = $config->getExtra();
@@ -509,28 +540,36 @@ class CursusController extends Controller
         if (is_null($extra)) {
             $extra = [];
         }
-        $form = $this->formFactory->create(new CoursesWidgetConfigurationType($user, $this->translator, $extra), $config);
+        $form = $this->formFactory->create(
+            new CoursesWidgetConfigurationType($user, $this->translator, $extra, !empty($admin)),
+            $config
+        );
 
-        return ['form' => $form->createView(), 'config' => $config];
+        return ['form' => $form->createView(), 'config' => $config, 'admin' => $admin];
     }
 
     /**
      * @EXT\Route(
-     *     "/courses/registration/widget/configure/config/{config}",
+     *     "/courses/registration/widget/configure/config/{config}/admin/{admin}",
      *     name="claro_cursus_courses_registration_widget_configure",
+     *     defaults={"admin"=""},
      *     options={"expose"=true}
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineCursusBundle:Widget:coursesRegistrationWidgetConfigureForm.html.twig")
      *
-     * @param User           $user
-     * @param WidgetInstance $widgetInstance
+     * @param User                $user
+     * @param CoursesWidgetConfig $config
+     * @param string              $admin
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse | array
      */
-    public function coursesRegistrationWidgetConfigureAction(User $user, CoursesWidgetConfig $config)
+    public function coursesRegistrationWidgetConfigureAction(User $user, CoursesWidgetConfig $config, $admin = '')
     {
-        $form = $this->formFactory->create(new CoursesWidgetConfigurationType($user, $this->translator), $config);
+        $form = $this->formFactory->create(
+            new CoursesWidgetConfigurationType($user, $this->translator, [], !empty($admin)),
+            $config
+        );
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -541,12 +580,13 @@ class CursusController extends Controller
             }
             $extra['collapseCourses'] = $form->get('collapseCourses')->getData();
             $extra['collapseSessions'] = $form->get('collapseSessions')->getData();
+            $extra['displayAll'] = $form->has('displayAll') ? $form->get('displayAll')->getData() : false;
             $config->setExtra($extra);
             $this->cursusManager->persistCoursesWidgetConfiguration($config);
 
             return new JsonResponse('success', 204);
         } else {
-            return ['form' => $form->createView(), 'config' => $config];
+            return ['form' => $form->createView(), 'config' => $config, 'admin' => $admin];
         }
     }
 

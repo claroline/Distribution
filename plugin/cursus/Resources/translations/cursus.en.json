@@ -94,6 +94,7 @@
     "disable_invitations": "Disable invitations",
     "disable_session_event_registration": "Disable registration for session event",
     "disable_workspace_link": "Disable workspace link",
+    "display_all_courses": "Display all trainings",
     "display_course_details": "Display training details",
     "display_order": "Display order",
     "display_session_events": "Display session events",

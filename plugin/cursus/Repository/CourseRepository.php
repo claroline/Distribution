@@ -69,6 +69,38 @@ class CourseRepository extends EntityRepository
         return $query->getResult();
     }
 
+    public function findSearchedCoursesByOrganizations(array $organizations, $search = '', $orderedBy = 'title', $order = 'ASC')
+    {
+        $dql = "
+            SELECT c
+            FROM Claroline\CursusBundle\Entity\Course c
+            LEFT JOIN c.organizations o
+            WHERE (
+                o IN (:organizations)
+                OR EXISTS (
+                    SELECT cu
+                    FROM Claroline\CursusBundle\Entity\Cursus cu
+                    JOIN cu.course cuc
+                    JOIN cu.organizations cuo
+                    WHERE cuc = c
+                    AND cuo IN (:organizations)
+                )
+            )
+            AND (
+                UPPER(c.title) LIKE :search
+                OR UPPER(c.code) LIKE :search
+                OR UPPER(c.description) LIKE :search
+            )
+            ORDER BY c.{$orderedBy} {$order}
+        ";
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('organizations', $organizations);
+        $upperSearch = strtoupper($search);
+        $query->setParameter('search', "%{$upperSearch}%");
+
+        return $query->getResult();
+    }
+
     public function findUnmappedCoursesByCursus(Cursus $cursus, $orderedBy = 'title', $order = 'ASC', $executeQuery = true)
     {
         $dql = "

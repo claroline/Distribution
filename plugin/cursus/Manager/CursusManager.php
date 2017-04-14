@@ -4775,9 +4775,20 @@ class CursusManager
         return $withPager ? $this->pagerFactory->createPagerFromArray($courses, $page, $max) : $courses;
     }
 
-    public function getAllCoursesByOrganizations(array $organizations, $orderedBy = 'title', $order = 'ASC')
-    {
-        return $this->courseRepo->findAllCoursesByOrganizations($organizations, $orderedBy, $order);
+    public function getAllCoursesByOrganizations(
+        array $organizations,
+        $search = '',
+        $orderedBy = 'title',
+        $order = 'ASC',
+        $withPager = false,
+        $page = 1,
+        $max = 50
+    ) {
+        $courses = empty($search) ?
+            $this->courseRepo->findAllCoursesByOrganizations($organizations, $orderedBy, $order) :
+            $this->courseRepo->findSearchedCoursesByOrganizations($organizations, $search, $orderedBy, $order);
+
+        return $withPager ? $this->pagerFactory->createPagerFromArray($courses, $page, $max) : $courses;
     }
 
     public function getUnmappedCoursesByCursus(Cursus $cursus, $orderedBy = 'title', $order = 'ASC')

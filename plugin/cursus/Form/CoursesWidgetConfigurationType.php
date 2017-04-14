@@ -24,17 +24,32 @@ class CoursesWidgetConfigurationType extends AbstractType
     private $user;
     private $extra;
     private $translator;
+    private $isAdmin;
 
-    public function __construct(User $user, TranslatorInterface $translator, $extra = [])
+    public function __construct(User $user, TranslatorInterface $translator, $extra = [], $isAdmin = false)
     {
         $this->user = $user;
         $this->translator = $translator;
         $this->extra = $extra;
+        $this->isAdmin = $isAdmin;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $user = $this->user;
+
+        if ($this->isAdmin) {
+            $builder->add(
+                'displayAll',
+                'checkbox',
+                [
+                    'mapped' => false,
+                    'data' => isset($this->extra['displayAll']) ? $this->extra['displayAll'] : false,
+                    'label' => 'display_all_courses',
+                    'translation_domain' => 'cursus',
+                ]
+            );
+        }
         $builder->add(
             'cursus',
             'entity',
