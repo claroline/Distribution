@@ -231,16 +231,26 @@ class WorkspaceController extends FOSRestController
 
     /**
      * @View(serializerGroups={"api_workspace"})
-     * @Get("/workspace/copy/{workspace}/{name}/{isModel}", name="workspace_copy", options={ "method_prefix" = false })
      */
-    public function copyAction(Workspace $workspace, $name, $isModel)
+    public function copyWorkspacesAction($isModel)
     {
-        $newWorkspace = new Workspace();
-        $newWorkspace->setName($name);
-        $code = $isModel ? '[MODEL] - '.$name : '[COPY] - '.$name;
-        $newWorkspace->setCode($code);
+        $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+        $newWorkspaces = [];
 
-        return $this->workspaceManager->copy($workspace, $newWorkspace);
+        $this->om->startFlushSuite();
+
+        foreach ($workspaces as $workspace) {
+            $newWorkspace = new Workspace();
+            $newWorkspace->setName($name);
+            $code = $isModel ? '[MODEL] - '.$name : '[COPY] - '.$name;
+            $newWorkspace->setCode($code);
+            $newWorkspace = $this->workspaceManager->copy($workspace, $newWorkspace);
+            $newWorkspaces[] = $newWorkspace;
+        }
+
+        $this->om->endFlushSuite();
+
+        return $newWorkspaces;
     }
 
     /**
@@ -250,6 +260,22 @@ class WorkspaceController extends FOSRestController
     public function deleteWorkspaceAction(Workspace $workspace)
     {
         $this->workspaceManager->deleteWorkspace($workspace);
+
+        return ['success'];
+    }
+
+    public function deleteWorkspacesAction()
+    {
+        $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+
+        $this->om->startFlushSuite();
+
+        foreach ($workspaces as $workspace) {
+            $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
+            $this->workspaceManager->deleteWorkspace($workspace);
+        }
+
+        $this->om->endFlushSuite();
 
         return ['success'];
     }

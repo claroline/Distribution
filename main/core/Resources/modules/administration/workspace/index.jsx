@@ -4,6 +4,12 @@ import {Provider} from 'react-redux'
 import {createStore} from '#/main/core/utilities/redux'
 import {reducers} from './actions'
 import {Workspaces} from './workspaces.jsx'
+import {registerModalType} from '#/main/core/layout/modal'
+import {DeleteConfirmModal} from '#/main/core/layout/modal/components/delete-confirm.jsx'
+import {ConfirmModal} from '#/main/core/layout/modal/components/confirm.jsx'
+
+registerModalType('DELETE_MODAL', DeleteConfirmModal)
+registerModalType('CONFIRM_MODAL', ConfirmModal)
 
 class WorkspaceAdministration {
   constructor(workspaceData, user) {

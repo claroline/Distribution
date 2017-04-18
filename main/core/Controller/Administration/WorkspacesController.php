@@ -20,7 +20,6 @@ use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -60,41 +59,6 @@ class WorkspacesController extends Controller
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         return ['workspaces' => $workspaces, 'count' => $count, 'user' => $user];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/",
-     *     name="claro_admin_delete_workspaces",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\Method("DELETE")
-     * @EXT\ParamConverter(
-     *     "workspaces",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"multipleIds" = true}
-     * )
-     *
-     * Removes many workspaces from the platform.
-     *
-     * @param array $workspaces
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function deleteWorkspacesAction(array $workspaces)
-    {
-        if (count($workspaces) > 0) {
-            $this->om->startFlushSuite();
-
-            foreach ($workspaces as $workspace) {
-                $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
-                $this->workspaceManager->deleteWorkspace($workspace);
-            }
-
-            $this->om->endFlushSuite();
-        }
-
-        return new Response('Workspace(s) deleted', 204);
     }
 
     /**

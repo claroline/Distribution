@@ -100,6 +100,7 @@ class Workspace
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"api_workspace", "api_workspace_min"})
      */
     protected $isModel = false;
 
