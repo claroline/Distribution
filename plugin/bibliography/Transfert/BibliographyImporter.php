@@ -2,11 +2,9 @@
 
 namespace Icap\BibliographyBundle\Transfert;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Transfert\Importer;
 use Icap\BibliographyBundle\Manager\BookReferenceManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Definition\Processor;
 
@@ -71,7 +69,7 @@ class BibliographyImporter extends Importer implements ConfigurationInterface
         return $this->bookReferenceManager->import($data, $rootPath, $loggedUser);
     }
 
-    public function export(Workspace $workspace, array &$files, $object)
+    public function export($workspace, array &$files, $object)
     {
         return $this->bookReferenceManager->export($workspace, $files, $object);
     }
