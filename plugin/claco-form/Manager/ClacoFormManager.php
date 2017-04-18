@@ -342,6 +342,7 @@ class ClacoFormManager
         $isMetadata = false,
         $locked = false,
         $lockedEditionOnly = false,
+        $hidden = false,
         array $choices = []
     ) {
         $this->om->startFlushSuite();
@@ -353,6 +354,7 @@ class ClacoFormManager
         $field->setIsMetadata($isMetadata);
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
+        $field->setHidden($hidden);
         $fieldFacet = $this->facetManager->createField($name, $required, $type, $clacoForm->getResourceNode());
 
         if ($this->facetManager->isTypeWithChoices($type)) {
@@ -381,6 +383,7 @@ class ClacoFormManager
         $isMetadata = false,
         $locked = false,
         $lockedEditionOnly = false,
+        $hidden = false,
         array $oldChoices = [],
         array $newChoices = []
     ) {
@@ -391,6 +394,7 @@ class ClacoFormManager
         $field->setIsMetadata($isMetadata);
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
+        $field->setHidden($hidden);
         $fieldFacet = $field->getFieldFacet();
         $this->facetManager->editField($fieldFacet, $name, $required, $type);
 

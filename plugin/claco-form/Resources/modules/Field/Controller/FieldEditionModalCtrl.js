@@ -26,6 +26,7 @@ export default class FieldEditionModalCtrl {
       isMetadata: false,
       locked: false,
       lockedEditionOnly: false,
+      hidden: false,
       choices: []
     }
     this.fieldErrors = {

@@ -75,6 +75,8 @@
     "form_number_superior_error": "This value must be %value% or more.",
     "form_reserved_error": "This value is reserved.",
     "general_configuration": "General configuration",
+    "hidden_field": "Hidden field",
+    "hide_field": "Hide field",
     "keywords": "Keywords",
     "keywords_management": "Keywords management",
     "label_anonymous_comments_enabled": "Allow anonymous comments",

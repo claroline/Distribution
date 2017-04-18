@@ -156,6 +156,22 @@
                 </label>
             </div>
         </div>
+        <div class="form-group row">
+            <label class="control-label col-md-3">
+                {{ 'hide_field'|trans:{}:'clacoform' }}
+            </label>
+            <div class="col-md-9">
+                <label>
+                    <input type="radio" ng-model="cfc.field['hidden']" ng-value="true"/>
+                    {{ 'yes'|trans:{}:'platform' }}
+                </label>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                    <input type="radio" ng-model="cfc.field['hidden']" ng-value="false"/>
+                    {{ 'no'|trans:{}:'platform' }}
+                </label>
+            </div>
+        </div>
         <hr>
         <div class="form-group row">
             <label class="control-label col-md-3">

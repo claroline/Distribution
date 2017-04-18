@@ -205,6 +205,7 @@ class ClacoFormController extends Controller
         $lockedEditionOnly = is_bool($fieldData['lockedEditionOnly']) ?
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
+        $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
         $field = $this->clacoFormManager->createField(
             $clacoForm,
             $fieldData['name'],
@@ -213,6 +214,7 @@ class ClacoFormController extends Controller
             $isMetadata,
             $locked,
             $lockedEditionOnly,
+            $hidden,
             $choices
         );
         $serializedField = $this->serializer->serialize(
@@ -261,6 +263,7 @@ class ClacoFormController extends Controller
         $lockedEditionOnly = is_bool($fieldData['lockedEditionOnly']) ?
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
+        $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
         $this->clacoFormManager->editField(
             $field,
             $fieldData['name'],
@@ -269,6 +272,7 @@ class ClacoFormController extends Controller
             $isMetadata,
             $locked,
             $lockedEditionOnly,
+            $hidden,
             $oldChoices,
             $newChoices
         );

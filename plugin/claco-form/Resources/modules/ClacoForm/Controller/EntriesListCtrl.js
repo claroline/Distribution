@@ -161,26 +161,28 @@ export default class EntriesManagementCtrl {
       this.fieldsColumns['managerEntries'].push(keywordsFieldColumns)
     }
     this.fields.forEach(f => {
-      const id = f['id']
-      let data = {id: id, title: f['name']}
+      if (!f['hidden']) {
+        const id = f['id']
+        let data = {id: id, title: f['name']}
 
-      if (f['type'] === 3) {
-        data['sortable'] = `${id}`
-      } else {
-        data['sortable'] = `field_${id}`
-      }
-      data['filter'] = {['field_' + id]: 'text'}
-      this.columns['myEntries'][id] = {name: f['name'], value: false}
-      this.columns['managerEntries'][id] = {name: f['name'], value: false}
-      this.columnsKeys['myEntries'].push(id)
-      this.columnsKeys['managerEntries'].push(id)
-      this.fieldsColumns['myEntries'].push(data)
-      this.fieldsColumns['managerEntries'].push(data)
+        if (f['type'] === 3) {
+          data['sortable'] = `${id}`
+        } else {
+          data['sortable'] = `field_${id}`
+        }
+        data['filter'] = {['field_' + id]: 'text'}
+        this.columns['myEntries'][id] = {name: f['name'], value: false}
+        this.columns['managerEntries'][id] = {name: f['name'], value: false}
+        this.columnsKeys['myEntries'].push(id)
+        this.columnsKeys['managerEntries'].push(id)
+        this.fieldsColumns['myEntries'].push(data)
+        this.fieldsColumns['managerEntries'].push(data)
 
-      if (f['type'] !== 9 && (displayMetadata || !f['isMetadata'])) {
-        this.columns['entries'][id] = {name: f['name'], value: false}
-        this.columnsKeys['entries'].push(id)
-        this.fieldsColumns['entries'].push(data)
+        if (f['type'] !== 9 && (displayMetadata || !f['isMetadata'])) {
+          this.columns['entries'][id] = {name: f['name'], value: false}
+          this.columnsKeys['entries'].push(id)
+          this.fieldsColumns['entries'].push(data)
+        }
       }
     })
     this.columns['managerEntries']['actions'] = {name: transActions, value: true}

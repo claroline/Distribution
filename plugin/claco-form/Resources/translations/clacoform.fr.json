@@ -75,6 +75,8 @@
     "form_number_superior_error": "Cette valeur doit être supérieure ou égale à %value%.",
     "form_reserved_error": "Cette valeur est réservée.",
     "general_configuration": "Configuration générale",
+    "hidden_field": "Champ caché",
+    "hide_field": "Cacher le champ",
     "keywords": "Mots-clés",
     "keywords_management": "Gestion des mots-clés",
     "label_anonymous_comments_enabled": "Autoriser les commentaires anonymes",

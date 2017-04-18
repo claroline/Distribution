@@ -197,7 +197,7 @@
                 </div>
                 <div ng-if="!cfc.template">
                     <div ng-repeat="field in cfc.fields"
-                         ng-if="cfc.metadataAllowed || !field['isMetadata'] || cfc.isEntryOwner() || cfc.isShared()"
+                         ng-if="(cfc.metadataAllowed || !field['isMetadata'] || cfc.isEntryOwner() || cfc.isShared()) && !field['hidden']"
                     >
                         <div class="row">
                             <label class="col-md-3">
