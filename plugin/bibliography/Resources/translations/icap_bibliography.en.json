@@ -34,5 +34,6 @@
   "config_update_error" : "Problem while updating book reference editor configuration.",
   "api_not_configured": "API not configured",
   "select": "Select",
-  "isbn": "ISBN"
+  "isbn": "ISBN",
+  "link": "Web link"
 }

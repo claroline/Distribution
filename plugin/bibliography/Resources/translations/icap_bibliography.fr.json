@@ -34,5 +34,6 @@
   "config_update_error" : "Problème lors de la mise à jour de la configuration de l'éditeur de références bibliographiques.",
   "api_not_configured": "L'API n'est pas configurée",
   "select": "Choisir",
-  "isbn": "ISBN"
+  "isbn": "ISBN",
+  "link": "Lien web"
 }
