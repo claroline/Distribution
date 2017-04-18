@@ -1,0 +1,81 @@
+{% set layout = "ClarolineCoreBundle:Workspace:layout.html.twig" %}
+
+{% if isDesktop() %}
+    {% set layout = "ClarolineCoreBundle:Desktop:layout.html.twig" %}
+{% else %}
+    {% set workspace = _resource.getResourceNode().getWorkspace() %}
+{% endif %}
+
+{% extends layout %}
+
+{% block title %}{{ _resource.getResourceNode().getName() | striptags | raw }}{% endblock %}
+
+{% block section_content %}
+    <div class="panel-heading">
+        <h3 class="panel-title">{{ _resource.getResourceNode().getName() }}</h3>
+    </div>
+    <div class="panel-body" id="bookreference_content">
+
+        <div id="lesson-main-container" class="row">
+
+            {% if _resource.url and _resource.coverUrl %}
+                <div class="col-md-4">
+                    {% if _resource.coverUrl %}
+                        <img src="{{ _resource.coverUrl }}" />
+                        <br />
+                    {% endif %}
+
+                    {% if _resource.url %}
+                        <a href="{{ _resource.url }}" class="btn">Lien web</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <table class="col-md-8">
+                <tr>
+                    <td>{{ 'author' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.author }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'description' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.description|raw }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'abstract' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.abstract|raw }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'isbn' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.isbn }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'publisher' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.publisher }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'printer' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.printer }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'publication_year' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.publicationYear }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'language' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.language|locale(app.request.locale) }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'page_count' | trans({}, 'icap_bibliography') }}</td>
+                    <td>{{ _resource.pageCount }}</td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+    <div class="panel-footer">
+        {% render controller(
+        'IcapNotificationBundle:FollowerResource:renderForm',
+        {'resourceId': _resource.resourceNode.id, 'resourceClass': _resource.resourceNode.class}
+        ) %}
+    </div>
+{% endblock %}

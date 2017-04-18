@@ -1,0 +1,17 @@
+/* Loading bar */
+#loading-bar .bar {
+    background-color: #3278B4;
+    height: 3px;
+}
+
+#loading-bar-spinner .spinner-icon {
+    border-top-color: #3278B4;
+    border-left-color: #F89406;
+    width: 25px;
+    height: 25px;
+}
+
+/* ui-bootstrap tooltips can't be triggered on disabled buttons without this hack */
+[disabled] {
+    pointer-events: none;
+}
