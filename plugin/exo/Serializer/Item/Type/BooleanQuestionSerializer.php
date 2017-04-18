@@ -36,8 +36,8 @@ class BooleanQuestionSerializer implements SerializerInterface
     /**
      * Converts a Boolean question into a JSON-encodable structure.
      *
-     * @param ChoiceQuestion $choiceQuestion
-     * @param array          $options
+     * @param BooleanQuestion $question
+     * @param array           $options
      *
      * @return \stdClass
      */
@@ -63,11 +63,11 @@ class BooleanQuestionSerializer implements SerializerInterface
     /**
      * Converts raw data into a Boolean question entity.
      *
-     * @param \stdClass      $data
-     * @param ChoiceQuestion $choiceQuestion
-     * @param array          $options
+     * @param \stdClass       $data
+     * @param BooleanQuestion $question
+     * @param array           $options
      *
-     * @return ChoiceQuestion
+     * @return BooleanQuestion
      */
     public function deserialize($data, $question = null, array $options = [])
     {
@@ -115,7 +115,7 @@ class BooleanQuestionSerializer implements SerializerInterface
 
             // Searches for an existing choice entity.
             foreach ($choiceEntities as $entityIndex => $entityChoice) {
-                /** @var Choice $entityChoice */
+                /** @var BooleanChoice $entityChoice */
                 if ($entityChoice->getUuid() === $choiceData->id) {
                     $choice = $entityChoice;
                     unset($choiceEntities[$entityIndex]);
@@ -123,15 +123,8 @@ class BooleanQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (empty($choice)) {
-                // Create a new choice
-                $choice = new BooleanChoice();
-            }
-
-            // Force client ID if needed
-            if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-                $choice->setUuid($choiceData->id);
-            }
+            $choice = $choice ?: new BooleanChoice();
+            $choice->setUuid($choiceData->id);
 
             // Deserialize choice content
             $choice = $this->contentSerializer->deserialize($choiceData, $choice, $options);

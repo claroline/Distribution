@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\OpenQuestionSerializer;
+use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\OpenAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\OpenQuestionValidator;
 
@@ -130,8 +131,37 @@ class OpenDefinition extends AbstractDefinition
         return [];
     }
 
+    /**
+     * Not implemented because not relevant.
+     *
+     * @param AbstractItem $openQuestion
+     * @param array        $answers
+     *
+     * @return array
+     */
     public function getStatistics(AbstractItem $openQuestion, array $answers)
     {
         return [];
+    }
+
+    /**
+     * No additional identifier to regenerate.
+     *
+     * @param AbstractItem $item
+     */
+    public function refreshIdentifiers(AbstractItem $item)
+    {
+        return;
+    }
+
+    /**
+     * No additional content fields to process.
+     *
+     * @param ContentParserInterface $contentParser
+     * @param \stdClass              $item
+     */
+    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
+    {
+        return;
     }
 }

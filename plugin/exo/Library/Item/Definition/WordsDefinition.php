@@ -9,6 +9,7 @@ use UJM\ExoBundle\Entity\Misc\Keyword;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\WordsQuestionSerializer;
+use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\WordsAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\WordsQuestionValidator;
 
@@ -171,6 +172,27 @@ class WordsDefinition extends AbstractDefinition
         }
 
         return array_values($keywords);
+    }
+
+    /**
+     * No additional identifier to regenerate.
+     *
+     * @param AbstractItem $item
+     */
+    public function refreshIdentifiers(AbstractItem $item)
+    {
+        return;
+    }
+
+    /**
+     * No additional content fields to process.
+     *
+     * @param ContentParserInterface $contentParser
+     * @param \stdClass              $item
+     */
+    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
+    {
+        return;
     }
 
     private function containKeyword($string, Keyword $keyword)

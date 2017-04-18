@@ -1,0 +1,9 @@
+{% set formAction = path('claro_cas_link_account') %}
+
+{% extends 'ClarolineCoreBundle:Authentication:thirdPartyLogin.html.twig' %}
+
+{% block title %}{{ 'login' | trans({}, 'platform') ~ ' - ' ~ parent() | striptags | raw }}{% endblock %}
+
+{% block topBarRender %}
+    {% include 'ClarolineCasBundle:Connect:top_bar_render.html.twig' %}
+{% endblock %}

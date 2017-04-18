@@ -4,10 +4,12 @@ namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
+use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Entity\Misc\BooleanChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\BooleanQuestionSerializer;
+use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\BooleanAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\BooleanQuestionValidator;
 
@@ -151,5 +153,31 @@ class BooleanDefinition extends AbstractDefinition
         // TODO: Implement getStatistics() method.
 
         return [];
+    }
+
+    /**
+     * Refreshes choice UUIDs.
+     *
+     * @param BooleanQuestion $item
+     */
+    public function refreshIdentifiers(AbstractItem $item)
+    {
+        /** @var BooleanChoice $choice */
+        foreach ($item->getChoices() as $choice) {
+            $choice->refreshUuid();
+        }
+    }
+
+    /**
+     * Parses choices contents.
+     *
+     * @param ContentParserInterface $contentParser
+     * @param \stdClass              $item
+     */
+    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
+    {
+        array_walk($item->choices, function (\stdClass $choice) use ($contentParser) {
+            $choice->data = $contentParser->parse($choice->data);
+        });
     }
 }

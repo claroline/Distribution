@@ -21,9 +21,13 @@ class GraphicQuestionSerializer implements SerializerInterface
     private $fileUtils;
 
     /**
+     * GraphicQuestionSerializer constructor.
+     *
      * @DI\InjectParams({
      *     "fileUtils" = @DI\Inject("claroline.utilities.file")
      * })
+     *
+     * @param FileUtilities $fileUtils
      */
     public function __construct(FileUtilities $fileUtils)
     {
@@ -67,8 +71,8 @@ class GraphicQuestionSerializer implements SerializerInterface
             $graphicQuestion = new GraphicQuestion();
         }
 
-        $this->deserializeImage($graphicQuestion, $data->image, $options);
-        $this->deserializeAreas($graphicQuestion, $data->solutions, $options);
+        $this->deserializeImage($graphicQuestion, $data->image);
+        $this->deserializeAreas($graphicQuestion, $data->solutions);
 
         return $graphicQuestion;
     }
@@ -86,18 +90,20 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         $image = new \stdClass();
 
-        $image->id = $questionImg->getUuid();
-        $image->type = $questionImg->getType();
+        if ($questionImg) { // to handle old questions which may have no image
+            $image->id = $questionImg->getUuid();
+            $image->type = $questionImg->getType();
 
-        if (strpos($questionImg->getUrl(), './') === 0) {
-            // the way URLs were written previously isn't spec compliant
-            $image->url = substr($questionImg->getUrl(), 2);
-        } else {
-            $image->url = $questionImg->getUrl();
+            if (strpos($questionImg->getUrl(), './') === 0) {
+                // the way URLs were written previously isn't spec compliant
+                $image->url = substr($questionImg->getUrl(), 2);
+            } else {
+                $image->url = $questionImg->getUrl();
+            }
+
+            $image->width = $questionImg->getWidth();
+            $image->height = $questionImg->getHeight();
         }
-
-        $image->width = $questionImg->getWidth();
-        $image->height = $questionImg->getHeight();
 
         return $image;
     }
@@ -107,25 +113,22 @@ class GraphicQuestionSerializer implements SerializerInterface
      *
      * @param GraphicQuestion $graphicQuestion
      * @param \stdClass       $imageData
-     * @param array           $options
      */
-    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $imageData, array $options)
+    private function deserializeImage(GraphicQuestion $graphicQuestion, \stdClass $imageData)
     {
-        $typeParts = explode('/', $imageData->type);
         $image = $graphicQuestion->getImage() ?: new Image();
 
-        if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-            $image->setUuid($imageData->id);
-        }
-
+        $image->setUuid($imageData->id);
         $image->setType($imageData->type);
         $image->setTitle($imageData->id);
         $image->setWidth($imageData->width);
         $image->setHeight($imageData->height);
+
         $objectClass = get_class($graphicQuestion);
         $objectUuid = $graphicQuestion->getQuestion() ? $graphicQuestion->getQuestion()->getUuid() : null;
         $title = $graphicQuestion->getQuestion() ? $graphicQuestion->getQuestion()->getTitle() : null;
 
+        $typeParts = explode('/', $imageData->type);
         if (isset($imageData->data)) {
             $imageName = "{$imageData->id}.{$typeParts[1]}";
             $publicFile = $this->fileUtils->createFileFromData(
@@ -139,6 +142,8 @@ class GraphicQuestionSerializer implements SerializerInterface
             if ($publicFile) {
                 $image->setUrl($publicFile->getUrl());
             }
+        } elseif (isset($imageData->url)) {
+            $image->setUrl($imageData->url);
         }
 
         $graphicQuestion->setImage($image);
@@ -168,9 +173,8 @@ class GraphicQuestionSerializer implements SerializerInterface
      *
      * @param GraphicQuestion $graphicQuestion
      * @param array           $solutions
-     * @param array           $options
      */
-    private function deserializeAreas(GraphicQuestion $graphicQuestion, array $solutions, array $options)
+    private function deserializeAreas(GraphicQuestion $graphicQuestion, array $solutions)
     {
         $areaEntities = $graphicQuestion->getAreas()->toArray();
 
@@ -187,13 +191,8 @@ class GraphicQuestionSerializer implements SerializerInterface
                 }
             }
 
-            if (null === $area) {
-                $area = new Area();
-
-                if (!in_array(Transfer::USE_SERVER_IDS, $options)) {
-                    $area->setUuid($solutionData->area->id);
-                }
-            }
+            $area = $area ?: new Area();
+            $area->setUuid($solutionData->area->id);
 
             $area->setScore($solutionData->score);
             $area->setFeedback($solutionData->feedback);

@@ -1,10 +1,12 @@
 import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
-import selectors from './../../selectors'
-import {selectors as paperSelectors} from './../selectors'
-import {tex} from './../../../utils/translate'
+import quizSelect from './../selectors'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {selectors as paperSelect} from './../selectors'
+import {tex} from '#/main/core/translation'
 import {ScoreBox} from './../../../items/components/score-box.jsx'
+import {utils} from './../utils'
 
 export const PaperRow = props =>
   <tr>
@@ -20,17 +22,18 @@ export const PaperRow = props =>
     </td>
     <td className="text-center">
       <span className="sr-only">{tex(props.finished ? 'yes' : 'no')}</span>
-
       {props.finished && <span className="fa fa-fw fa-check" />}
     </td>
     <td className="text-right">
-      {props.score || 0 === props.score ?
-        <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
+      {props.showScore ?
+        props.score || 0 === props.score ? <ScoreBox size="sm" score={props.score} scoreMax={props.scoreMax} /> : '-'
+        :
+        tex('paper_score_not_available')
       }
     </td>
     <td className="text-right table-actions">
-      <a href={`#papers/${props.id}`} className="btn btn-link">
-        <span className="fa fa-fw fa-eye"></span>
+      <a href={`#papers/${props.id}`} disabled={!props.showCorrection} className="btn btn-link">
+        <span className="fa fa-fw fa-eye" />
       </a>
     </td>
   </tr>
@@ -46,7 +49,9 @@ PaperRow.propTypes = {
   endDate: T.string,
   finished: T.bool.isRequired,
   score: T.number,
-  scoreMax: T.number
+  scoreMax: T.number,
+  showScore: T.bool.isRequired,
+  showCorrection: T.bool.isRequired
 }
 
 let Papers = props =>
@@ -66,22 +71,33 @@ let Papers = props =>
         </tr>
       </thead>
       <tbody>
-        {props.papers.map((paper, idx) =>
-          <PaperRow key={idx} admin={props.admin} {...paper} scoreMax={paperSelectors.paperScoreMax(paper)} />
-        )}
+        {Object.keys(props.papers).map((paperId) => {
+          const paper = props.papers[paperId]
+
+          return (
+              <PaperRow
+                key={paperId}
+                admin={props.admin}
+                {...paper}
+                showScore={utils.showScore(props.admin, paper.finished, paperSelect.showScoreAt(paper), paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
+                showCorrection={utils.showCorrection(props.admin, paper.finished, paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
+                scoreMax={paperSelect.paperScoreMax(paper)}
+              />
+            )
+        })}
       </tbody>
     </table>
   </div>
 
 Papers.propTypes = {
   admin: T.bool.isRequired,
-  papers: T.arrayOf(T.object).isRequired
+  papers: T.object.isRequired
 }
 
 function mapStateToProps(state) {
   return {
-    admin: selectors.editable(state),
-    papers: paperSelectors.papers(state)
+    admin: resourceSelect.editable(state) || quizSelect.papersAdmin(state),
+    papers: paperSelect.papers(state)
   }
 }
 

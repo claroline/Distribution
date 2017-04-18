@@ -6,10 +6,13 @@ use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\MatchQuestion;
 use UJM\ExoBundle\Entity\Misc\Association;
+use UJM\ExoBundle\Entity\Misc\Label;
+use UJM\ExoBundle\Entity\Misc\Proposal;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\MatchQuestionSerializer;
+use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\MatchAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\MatchQuestionValidator;
 
@@ -174,5 +177,40 @@ class MatchDefinition extends AbstractDefinition
         // TODO: Implement getStatistics() method.
 
         return [];
+    }
+
+    /**
+     * Refreshes items UUIDs.
+     *
+     * @param MatchQuestion $item
+     */
+    public function refreshIdentifiers(AbstractItem $item)
+    {
+        /** @var Label $label */
+        foreach ($item->getLabels() as $label) {
+            $label->refreshUuid();
+        }
+
+        /** @var Proposal $proposal */
+        foreach ($item->getProposals() as $proposal) {
+            $proposal->refreshUuid();
+        }
+    }
+
+    /**
+     * Parses items contents.
+     *
+     * @param ContentParserInterface $contentParser
+     * @param \stdClass              $item
+     */
+    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
+    {
+        array_walk($item->firstSet, function (\stdClass $item) use ($contentParser) {
+            $item->data = $contentParser->parse($item->data);
+        });
+
+        array_walk($item->secondSet, function (\stdClass $item) use ($contentParser) {
+            $item->data = $contentParser->parse($item->data);
+        });
     }
 }

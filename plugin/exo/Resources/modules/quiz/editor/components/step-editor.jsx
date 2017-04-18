@@ -6,11 +6,11 @@ import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import {makeItemPanelKey, makeStepPropPanelKey} from './../../../utils/utils'
-import {t, tex, trans} from './../../../utils/translate'
+import {t, tex, trans} from '#/main/core/translation'
 import {makeSortable, SORT_VERTICAL} from './../../../utils/sortable'
 import {getDefinition, isQuestionType} from './../../../items/item-types'
 import {getContentDefinition} from './../../../contents/content-types'
-import {MODAL_DELETE_CONFIRM} from './../../../modal'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
 import {MODAL_ADD_CONTENT} from './../components/add-content-modal.jsx'
@@ -19,6 +19,8 @@ import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
+import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
+import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title editor-panel-title">
@@ -38,6 +40,14 @@ ParametersHeader.propTypes = {
 
 const ItemActions = props =>
   <div className="item-actions">
+    {props.hasErrors &&
+      <ValidationStatus
+        id={`${props.itemId}-panel-tip`}
+        validating={props.validating}
+        position="left"
+      />
+    }
+
     <OverlayTrigger
       placement="left"
       overlay={
@@ -88,6 +98,8 @@ const ItemActions = props =>
 ItemActions.propTypes = {
   itemId: T.string.isRequired,
   stepId: T.string.isRequired,
+  hasErrors: T.bool.isRequired,
+  validating: T.bool.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired
@@ -105,16 +117,12 @@ const ItemHeader = props =>
       <ItemIcon name={getDefinition(props.item.type).name}/>
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
-    {props.hasErrors &&
-      <ValidationStatus
-        id={`${props.item.id}-panel-tip`}
-        validating={props.validating}
-      />
-    }
 
     <ItemActions
       itemId={props.item.id}
       stepId={props.stepId}
+      hasErrors={props.hasErrors}
+      validating={props.validating}
       handleItemDeleteClick={props.handleItemDeleteClick}
       showModal={props.showModal}
       connectDragSource={props.connectDragSource}
@@ -133,7 +141,6 @@ ItemHeader.propTypes = {
 }
 
 let ItemPanel = props =>
-  props.connectDragPreview(
     props.connectDropTarget(
       <div
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -180,7 +187,7 @@ let ItemPanel = props =>
           }
         </Panel>
       </div>
-  ))
+  )
 
 ItemPanel.propTypes = {
   id: T.string.isRequired,
@@ -242,7 +249,6 @@ ContentHeader.propTypes = {
 }
 
 let ContentPanel = props =>
-  props.connectDragPreview(
     props.connectDropTarget(
       <div
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -284,7 +290,7 @@ let ContentPanel = props =>
           }
         </Panel>
       </div>
-    ))
+    )
 
 ContentPanel.propTypes = {
   id: T.string.isRequired,
@@ -306,8 +312,16 @@ ContentPanel.propTypes = {
   validating: T.bool.isRequired
 }
 
-ItemPanel = makeSortable(ItemPanel, 'STEP_ITEM')
-ContentPanel = makeSortable(ContentPanel, 'STEP_ITEM')
+ItemPanel = makeSortable(
+  ItemPanel,
+  'STEP_ITEM',
+  ItemPanelDragPreview
+)
+ContentPanel = makeSortable(
+  ContentPanel,
+  'STEP_ITEM',
+  ContentPanelDragPreview
+)
 
 class StepFooter extends Component {
   constructor(props) {
@@ -362,7 +376,6 @@ class StepFooter extends Component {
   render() {
     return (
       <div className="step-footer">
-
         <div className="btn-group">
           <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
           <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -431,6 +444,7 @@ export const StepEditor = props =>
   <div>
     <PanelGroup accordion activeKey={props.activePanelKey}>
       <Panel
+        className="step-parameters"
         eventKey={makeStepPropPanelKey(props.step.id)}
         header={
           <ParametersHeader

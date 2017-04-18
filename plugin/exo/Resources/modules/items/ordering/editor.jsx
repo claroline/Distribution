@@ -1,16 +1,17 @@
 import React, {Component, PropTypes as T} from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
-import {t, tex} from './../../utils/translate'
+import {t, tex} from '#/main/core/translation'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {makeSortable, SORT_HORIZONTAL, SORT_VERTICAL} from './../../utils/sortable'
-import {ErrorBlock} from './../../components/form/error-block.jsx'
+import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {Textarea} from './../../components/form/textarea.jsx'
 import {CheckGroup} from './../../components/form/check-group.jsx'
 import {Radios} from './../../components/form/radios.jsx'
-import {FormGroup} from './../../components/form/form-group.jsx'
+import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {MODE_INSIDE, MODE_BESIDE, DIRECTION_HORIZONTAL, DIRECTION_VERTICAL, actions} from './editor'
+import {OrderingItemDragPreview} from './ordering-item-drag-preview.jsx'
 
 class Item extends Component {
   constructor(props) {
@@ -60,13 +61,15 @@ class Item extends Component {
           }
           <TooltipButton
             id={`item-${this.props.id}-feedback-toggle`}
-            className="fa fa-comments-o"
+            className="btn-link-default"
+            label={<span className="fa fa-fw fa-comments-o"></span>}
             title={tex('choice_feedback_info')}
             onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
           />
           <TooltipButton
             id={`item-${this.props.id}-delete`}
-            className="fa fa-trash-o"
+            className="btn-link-default"
+            label={<span className="fa fa-fw fa-trash-o"></span>}
             enabled={this.props.deletable}
             title={t('delete')}
             onClick={() => this.props.onChange(
@@ -105,25 +108,23 @@ Item.propTypes = {
 }
 
 let OrderingItem = props => {
-  return props.connectDragPreview (
-    props.connectDropTarget (
-      <div className="item-container">
-        <Item {...props} />
-        {props.connectDragSource(
-          <span
-            title={t('move')}
-            draggable="true"
-            className={classes(
-              'tooltiped-button',
-              'btn',
-              'fa',
-              'fa-arrows',
-              'drag-handle'
-            )}
-          />
-        )}
-      </div>
-    )
+  return props.connectDropTarget (
+    <div className="item-container">
+      <Item {...props} />
+      {props.connectDragSource(
+        <span
+          title={t('move')}
+          draggable="true"
+          className={classes(
+            'tooltiped-button',
+            'btn',
+            'drag-handle'
+          )}
+        >
+          <span className="fa fa-arrows"/>
+        </span>
+      )}
+    </div>
   )
 }
 
@@ -137,14 +138,12 @@ OrderingItem.propTypes = {
   deletable: T.bool.isRequired,
   onChange: T.func.isRequired,
   connectDragSource: T.func.isRequired,
-  connectDragPreview: T.func.isRequired,
   connectDropTarget: T.func.isRequired,
   onSort: T.func.isRequired,
   index: T.number.isRequired
 }
 
-
-OrderingItem = makeSortable(OrderingItem, 'ORDERINGITEM')
+OrderingItem = makeSortable(OrderingItem, 'ORDERING_ITEM', OrderingItemDragPreview)
 
 const OrderingOdd = props => {
   return (

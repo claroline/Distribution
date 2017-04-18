@@ -1468,7 +1468,8 @@ class UserManager
         array $forcedUsers = [],
         array $forcedGroups = [],
         array $forcedRoles = [],
-        array $forcedWorkspaces = []
+        array $forcedWorkspaces = [],
+        $withAdminOrgas = false
     ) {
         if (count($searchedRoles) > 0 ||
             count($searchedGroups) > 0 ||
@@ -1487,6 +1488,9 @@ class UserManager
                 [] :
                 $this->generateWorkspaceRestrictions($user);
         }
+        $withOrgas = !$user->hasRole('ROLE_ADMIN') && !$withAllUsers && $withAdminOrgas;
+        $forcedOrganizations = $withOrgas ? $user->getAdministratedOrganizations()->toArray() : [];
+
         $users = $this->userRepo->findUsersForUserPicker(
             $search,
             $withUsername,
@@ -1501,10 +1505,37 @@ class UserManager
             $forcedUsers,
             $forcedGroups,
             $forcedRoles,
-            $forcedWorkspaces
+            $forcedWorkspaces,
+            $withOrgas,
+            $forcedOrganizations
         );
 
         return $this->pagerFactory->createPagerFromArray($users, $page, $max);
+    }
+
+    public function getAllVisibleUsersIdsForUserPicker(User $user)
+    {
+        $usersIds = [];
+        $roles = $this->generateRoleRestrictions($user);
+        $groups = $this->generateGroupRestrictions($user);
+        $workspaces = $this->generateWorkspaceRestrictions($user);
+        $users = $this->userRepo->findUsersForUserPicker(
+            '',
+            false,
+            false,
+            false,
+            'lastName',
+            'ASC',
+            $roles,
+            $groups,
+            $workspaces
+        );
+
+        foreach ($users as $user) {
+            $usersIds[] = $user->getId();
+        }
+
+        return $usersIds;
     }
 
     private function generateRoleRestrictions(User $user)

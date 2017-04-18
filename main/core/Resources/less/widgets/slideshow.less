@@ -3,9 +3,13 @@
  */
 
 .widget-slideshow {
+    position: relative;
     display: flex;
 
     .carousel-inner {
+        position: absolute; // required because of a bug in Safari: children don't fill height when parent 100%
+        left: 0;
+        right: 0;
         height: 100%; // fill the widget content
         width: 100% - (@carousel-control-width * 2); // avoid having the controls hover the cards
         margin: 0 auto;
@@ -58,12 +62,6 @@
         position: relative; // to contain path progression gauge
         padding: @widget-card-header-padding;
         height: @widget-card-header-height;
-
-        //display: flex; // for vertical centering. Mostly used when there is an image
-
-        img {
-            //flex: 1; // avoid img overflow the container in IE11 (maybe safari too)
-        }
     }
 
     .carousel-card-content {
