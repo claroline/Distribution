@@ -3,12 +3,13 @@ import get from 'lodash/get'
 import classes from 'classnames'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
-import {tex, t} from './../../utils/translate'
+import {tex, t} from '#/main/core/translation'
 import {Textarea} from './../../components/form/textarea.jsx'
-import {ErrorBlock} from './../../components/form/error-block.jsx'
+import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
+import {SetItemDragPreview} from './set-item-drag-preview.jsx'
 
 let DropBox = props => props.connectDropTarget(
   <div className={classes(
@@ -39,7 +40,7 @@ class Association extends Component {
 
   render(){
     return (
-      <div className={classes('association answer-item', {'expected-answer' : this.props.association.score > 0}, {'unexpected-answer': this.props.association.score < 1})}>
+      <div className={classes('association answer-item', {'expected-answer' : this.props.association.score > 0}, {'unexpected-answer': this.props.association.score <= 0})}>
         <div className="text-fields">
           <div className="association-data" dangerouslySetInnerHTML={{__html: this.props.association._itemData}} />
 
@@ -98,7 +99,7 @@ class Set extends Component {
   constructor(props) {
     super(props)
   }
-  
+
   render(){
     return (
       <div className="set answer-item">
@@ -210,7 +211,7 @@ SetList.propTypes = {
 }
 
 let Item = props => {
-  return props.connectDragPreview (
+  return (
     <div className="set-item answer-item">
       <div className="text-fields">
         <Textarea
@@ -262,11 +263,14 @@ let Item = props => {
 Item.propTypes = {
   onChange: T.func.isRequired,
   connectDragSource: T.func.isRequired,
-  connectDragPreview: T.func.isRequired,
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, 'ITEM')
+Item = makeDraggable(
+  Item,
+  'ITEM',
+  SetItemDragPreview
+)
 
 class ItemList extends Component {
   constructor(props) {

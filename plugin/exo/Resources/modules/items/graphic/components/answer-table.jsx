@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import tinycolor from 'tinycolor2'
-import {tex, transChoice} from './../../../utils/translate'
+import {tex, transChoice} from '#/main/core/translation'
 import {SHAPE_RECT} from './../enums'
 import {HoverFeedback} from './../../../components/form/hover-feedback.jsx'
 
@@ -37,9 +37,11 @@ export const AnswerTable = props =>
               feedback={area.feedback}
             />
           }
-          <span className="solution-score">
-            {transChoice('solution_score', area.score, {score: area.score}, 'ujm_exo')}
-          </span>
+          {props.showScore &&             
+            <span className="solution-score">
+              {transChoice('solution_score', area.score, {score: area.score}, 'ujm_exo')}
+            </span>
+          }
         </span>
       </div>
     )}
@@ -53,5 +55,6 @@ AnswerTable.propTypes = {
     color: T.string.isRequired,
     shape: T.string.isRequired,
     feedback: T.string
-  })).isRequired
+  })).isRequired,
+  showScore: T.bool.isRequired
 }

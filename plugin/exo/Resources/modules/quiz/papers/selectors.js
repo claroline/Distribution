@@ -3,15 +3,15 @@ import {createSelector} from 'reselect'
 import {getDefinition} from './../../items/item-types'
 
 const quizId = state => state.quiz.id
-const papers = state => state.papers.papers
 const papersFetched = state => state.papers.isFetched
 const currentPaperId = state => state.papers.current
+const papers = state => state.papers.papers
 
 const currentPaper = createSelector(
   papers,
   currentPaperId,
   (papers, currentId) => {
-    return papers.find(paper => paper.id === currentId)
+    return papers[currentId]
   }
 )
 
@@ -19,6 +19,18 @@ const paperSteps = createSelector(
   currentPaper,
   (currentPaper) => currentPaper.structure.steps
 )
+
+const showScoreAt = paper => {
+  return paper.structure.parameters.showScoreAt
+}
+
+const showCorrectionAt = paper => {
+  return paper.structure.parameters.showCorrectionAt
+}
+
+const correctionDate = paper => {
+  return paper.structure.parameters.correctionDate
+}
 
 const itemScoreMax = item => {
   let scoreMax
@@ -67,5 +79,8 @@ export const selectors = {
   currentPaper,
   paperSteps,
   itemScoreMax,
-  paperScoreMax
+  paperScoreMax,
+  showScoreAt,
+  showCorrectionAt,
+  correctionDate
 }

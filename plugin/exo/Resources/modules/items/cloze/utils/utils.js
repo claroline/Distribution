@@ -1,88 +1,144 @@
-import {tex} from './../../../utils/translate'
-import $ from 'jquery'
+import {tex} from '#/main/core/translation'
+import {select} from '../selectors'
 
 export const utils = {}
 
-utils.setEditorHtml = (text, solutions) => {
-  solutions.forEach(solution => {
+utils.setEditorHtml = (text, holes, solutions) => {
+  holes.forEach(hole => {
+    const solution = select.getHoleSolution(hole, solutions)
     const regex = new RegExp(`(\\[\\[${solution.holeId}\\]\\])`, 'gi')
-    text = text.replace(regex, utils.makeTinyHtml(solution))
+
+    text = text.replace(regex, utils.makeTinyHtml(hole, solution))
   })
 
   return text
 }
 
-utils.makeTinyHtml = (solution) => {
-  let input = ''
-  if (solution.answers.length === 1) {
-  //if one solutions
-    input = `
-      <span class="cloze-input" data-hole-id="${solution.holeId}">
-        <input
-          style="width: auto; margin: 10px; display: inline;"
-          class="hole-input form-control"
-          data-hole-id="${solution.holeId}"
-          type="text"
-        >
-        </input>
-        ${getEditButtons(solution)}
-      </span>
-    `
+utils.makeTinyHtml = (hole, solution) => {
+  let input = `<span class="cloze-hole answer-item" data-hole-id="${solution.holeId}" contentEditable="false">`
+
+  if (hole.choices) {
+    input += getSelectInput(hole, solution)
   } else {
-    input = `
-      <span class="cloze-input" data-hole-id="${solution.holeId}">
-        <select
-          style="width: auto; margin: 10px; display: inline;"
-          class="hole-input form-control"
-          data-hole-id="${solution.holeId}"
-          type="text"
-        >
-          <option> ${tex('please_choose')} </option>
-        </select>
-        ${getEditButtons(solution)}
-      </span>
-    `
+    input += getTextInput(hole, solution)
   }
+
+  input += getEditButtons(solution)
+  input += '</span>'
+
   return input
 }
 
-utils.getTextWithPlacerHoldersFromHtml = (text) =>
-{
+/**
+ * Replaces holes HTML with ID placeholders in the cloze text.
+ *
+ * @param {string} text
+ *
+ * @returns {string}
+ */
+utils.getTextWithPlacerHoldersFromHtml = (text) => {
   const tmp = document.createElement('div')
   tmp.innerHTML = text
 
-  $(tmp).find('.cloze-input').each(function () {
-    let id = $(this).attr('data-hole-id')
-    $(this).replaceWith(`[[${id}]]`)
-  })
+  tmp
+    .querySelectorAll('.cloze-hole')
+    .forEach(hole => {
+      hole.parentNode.replaceChild(document.createTextNode(`[[${hole.dataset.holeId}]]`), hole)
+    })
 
-  //we remove the last tag because it's added automatically
-  const regex = new RegExp('(<\/[^<>]*>$)', 'gi')
-  tmp.innerHTML = tmp.innerHTML.replace(regex, '')
-
-  return $(tmp).html()
+  return tmp.innerHTML
 }
 
-function getEditButtons(solution) {
+/**
+ * Get HTML for select hole.
+ *
+ * @param {object} hole
+ * @param {object} solution
+ *
+ * @return {string}
+ */
+function getSelectInput(hole, solution) {
+  const bestAnswer = select.getBestAnswer(solution.answers)
+
+  let input = `<select class="form-control input-sm" data-hole-id="${solution.holeId}">`
+
+  // create correct answers group
+  input += `<optgroup label="${tex('hole_correct_answers')}">`
+  solution.answers.filter(answer => 0 < answer.score).map(correctAnswer => {
+    input += '<option'
+    if (bestAnswer && bestAnswer.text === correctAnswer.text) {
+      input += ' selected="true"'
+    }
+    input += '>'
+    input += correctAnswer.text
+    input += '</option>'
+  })
+  input += '</optgroup>'
+
+  const incorrectAnswers = solution.answers.filter(answer => 0 >= answer.score)
+  if (0 !== incorrectAnswers.length) {
+    input += `<optgroup label="${tex('hole_incorrect_answers')}">`
+    incorrectAnswers.map(incorrectAnswer => {
+      input += '<option>'
+      input += incorrectAnswer.text
+      input += '</option>'
+    })
+    input += '</optgroup>'
+  }
+
+  input += '</select>'
+
+  return input
+}
+
+/**
+ * Get HTML for text hole.
+ *
+ * @param {object} hole
+ * @param {object} solution
+ *
+ * @return {string}
+ */
+function getTextInput(hole, solution) {
+  const bestAnswer = select.getBestAnswer(solution.answers)
+
   return `
-    <i style="cursor: pointer"
-      class="fa fa-fw fa-pencil edit-hole-btn"
-      data-hole-id="${solution.holeId}"
-    > &nbsp; </i>
-    <i style="cursor: pointer"
-      class="fa fa-fw fa-trash delete-hole-btn"
-      data-hole-id="${solution.holeId}"
-    > &nbsp;
-    </i>
+    <input
+      class="form-control input-sm"
+      data-hole-id="${hole.id}"
+      type="text"
+      disabled="true"
+      size="${hole.size}"
+      value="${bestAnswer ? bestAnswer.text : ''}"
+    />
   `
 }
 
-utils.getEditButtonsLength = () => {
-  const solution = {
-    guid: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-  }
-
-  return utils.makeTinyHtml(solution).length
+/**
+ * Get edit buttons for a Hole.
+ * NB : the &nbsp; inside icons is required to avoid TinyMCE to remove it.
+ *
+ * @param {object} solution
+ *
+ * @returns {string}
+ */
+function getEditButtons(solution) {
+  return `
+    <button
+      type="button"
+      class="btn btn-link-default edit-hole-btn"
+      data-hole-id="${solution.holeId}"
+    >
+      <span class="fa fa-fw fa-pencil edit-hole-btn-icon" data-hole-id="${solution.holeId}"></span>
+    </button>
+    <button
+      type="button"
+      class="btn btn-link-default delete-hole-btn"
+      data-hole-id="${solution.holeId}"
+    >
+      <span class="fa fa-fw fa-trash-o delete-hole-btn-icon" data-hole-id="${solution.holeId}"></span>
+    </button>
+  `
 }
 
 utils.getGuidLength = () => {
@@ -111,7 +167,7 @@ utils.split = (text, holes, solutions) => {
     prevWordLength = utils.getGuidLength() + 4
   })
 
-  //I want to rember the last element of the text so I add it aswell to the array
+  //I want to remember the last element of the text so I add it aswell to the array
   split.push({
     word: '#endoftext#',
     position: null,
@@ -123,6 +179,15 @@ utils.split = (text, holes, solutions) => {
   return split
 }
 
+/**
+ * Searches Holes in text and returns an ordered array of Holes
+ * based on their position in text.
+ *
+ * @param text
+ * @param holes
+ *
+ * @returns {Array}
+ */
 utils.getTextElements = (text, holes) => {
   const data = []
 
@@ -141,24 +206,4 @@ utils.getTextElements = (text, holes) => {
   })
 
   return data.sort((a, b) => a.position - b.position)
-}
-
-utils.getSolutionForAnswer = (solution, answer) => {
-  let answerText = ''
-  if (typeof answer === 'string') {
-    answerText = answer
-  } else {
-    answerText = answer.text ? answer.text: answer.answerText
-  }
-
-
-  if (!answerText) return null
-
-  let foundSolution = solution.answers.find(solAnswer => solAnswer.text.toLowerCase() === answerText.toLowerCase())
-
-  if (!foundSolution) return null
-
-  foundSolution = foundSolution.caseSensitive ? foundSolution.text === answer.text ? foundSolution: null: foundSolution
-
-  return foundSolution
 }

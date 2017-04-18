@@ -3,13 +3,14 @@ import get from 'lodash/get'
 import classes from 'classnames'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
-import {tex, t} from './../../utils/translate'
+import {tex, t} from '#/main/core/translation'
 import {Textarea} from './../../components/form/textarea.jsx'
-import {ErrorBlock} from './../../components/form/error-block.jsx'
+import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {makeDraggable, makeDroppable} from './../../utils/dragAndDrop'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
 import {utils} from './utils/utils'
+import {PairItemDragPreview} from './pair-item-drag-preview.jsx'
 
 let DropBox = props => {
   return props.connectDropTarget (
@@ -115,8 +116,8 @@ class Pair extends Component {
             <label>
               <input
                 type="checkbox"
-                disabled={this.props.showPins || utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index) ||  utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
-                checked={this.props.pair.ordered || utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index) ||  utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
+                disabled={this.props.showPins || utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index) || utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
+                checked={this.props.pair.ordered || utils.pairItemHasCoords(this.props.pair.itemIds[1], this.props.items, this.props.index) || utils.pairItemHasCoords(this.props.pair.itemIds[0], this.props.items, this.props.index)}
                 onChange={(e) => this.props.onChange(
                   actions.updatePair(this.props.index, 'ordered', e.target.checked)
                 )}
@@ -190,6 +191,13 @@ class PairList extends Component {
     }
   }
 
+  handlePinnableChange(checked) {
+    this.setState({pinIsAllowed: !this.state.pinIsAllowed})
+    if (!checked) {
+      this.props.onChange(actions.removeAllCoordinates())
+    }
+  }
+
   render(){
     return (
       <div className="pairs">
@@ -198,7 +206,7 @@ class PairList extends Component {
             <input
               type="checkbox"
               checked={this.state.pinIsAllowed}
-              onChange={() => this.setState({pinIsAllowed: !this.state.pinIsAllowed})}
+              onChange={(e) => this.handlePinnableChange(e.target.checked)}
             />
           {tex('pair_allow_pin_function')}
           </label>
@@ -335,7 +343,7 @@ OddList.propTypes = {
 }
 
 let Item = props => {
-  return props.connectDragPreview (
+  return (
     <div className="answer-item item">
       <div className="text-fields">
         <Textarea
@@ -387,11 +395,14 @@ let Item = props => {
 Item.propTypes = {
   onChange: T.func.isRequired,
   connectDragSource: T.func.isRequired,
-  connectDragPreview: T.func.isRequired,
   item: T.object.isRequired
 }
 
-Item = makeDraggable(Item, 'ITEM')
+Item = makeDraggable(
+  Item,
+  'ITEM',
+  PairItemDragPreview  
+)
 
 const ItemList = props => {
   return (

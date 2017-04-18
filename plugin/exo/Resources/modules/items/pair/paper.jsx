@@ -36,7 +36,7 @@ export const PairPaper = props => {
                 {yourAnswers.answers.map((answer) =>
                   <li key={`your-answer-id-${answer.leftItem.id}-${answer.rightItem.id}`}>
                     <div className={classes(
-                        'answer-item pair',
+                        'item',
                         {'correct-answer': answer.valid},
                         {'incorrect-answer': !answer.valid}
                       )}>
@@ -47,7 +47,7 @@ export const PairPaper = props => {
                         id={`pair-${answer.leftItem.id}-${answer.rightItem.id}-feedback`}
                         feedback={answer.feedback}
                       />
-                      { answer.score !== '' &&
+                      {props.showScore && answer.score !== '' &&
                         <SolutionScore score={answer.score}/>
                       }
                     </div>
@@ -89,7 +89,9 @@ export const PairPaper = props => {
                         id={`pair-${answer.leftItem.id}-${answer.rightItem.id}-feedback`}
                         feedback={answer.feedback}
                       />
-                      <SolutionScore score={answer.score}/>
+                      {props.showScore &&                         
+                        <SolutionScore score={answer.score}/>
+                      }
                     </div>
                   </li>
                 )}
@@ -98,7 +100,7 @@ export const PairPaper = props => {
           </div>
         }
       />
-    )
+  )
 }
 
 PairPaper.propTypes = {
@@ -109,7 +111,8 @@ PairPaper.propTypes = {
     items: T.arrayOf(T.object).isRequired,
     solutions: T.arrayOf(T.object).isRequired
   }).isRequired,
-  answer: T.array
+  answer: T.array,
+  showScore: T.bool.isRequired
 }
 
 PairPaper.defaultProps = {

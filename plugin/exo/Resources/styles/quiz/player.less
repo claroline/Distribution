@@ -4,13 +4,17 @@
   width: 100%; /* for IE11 : can not apply auto margin with max-width */
   margin: 0 auto;
 
+  .score-gauge {
+    margin-bottom: @component-margin-bottom;
+  }
+
   .step-title:first-child {
     margin-top: 0;
   }
 
   .step-description {
+    text-align: justify;
     margin-bottom: @line-height-computed;
-    word-break: break-all;
   }
 
   .player-nav {

@@ -1,12 +1,13 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 import {makeSortable} from './../../utils/sortable'
-import {t, tex} from './../../utils/translate'
+import {t, tex} from '#/main/core/translation'
 import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
 import {getContentDefinition} from './../content-types'
 import {connect} from 'react-redux'
-import {showModal, fadeModal, hideModal} from './../../modal/actions'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONTENT} from './content-modal.jsx'
+import {ContentThumbnailDragPreview} from './content-thumbnail-drag-preview.jsx'
 
 const Actions = props =>
   <span className="content-thumbnail-actions">
@@ -59,8 +60,7 @@ Actions.propTypes = {
 }
 
 let ContentThumbnail = props => {
-  return props.connectDragPreview(
-    props.connectDropTarget(
+  return props.connectDropTarget(
       <span
         className={classes('content-thumbnail', {'active': props.active})}
         style={{opacity: props.isDragging ? 0 : 1}}
@@ -106,7 +106,7 @@ let ContentThumbnail = props => {
         </span>
       </span>
     )
-  )
+
 }
 
 ContentThumbnail.propTypes = {
@@ -130,7 +130,11 @@ ContentThumbnail.propTypes = {
   connectDropTarget: T.func.isRequired
 }
 
-ContentThumbnail = makeSortable(ContentThumbnail, 'CONTENT_THUMBNAIL')
+ContentThumbnail = makeSortable(
+  ContentThumbnail,
+  'CONTENT_THUMBNAIL',
+  ContentThumbnailDragPreview
+)
 
 
 function mapStateToProps() {
@@ -139,9 +143,9 @@ function mapStateToProps() {
 
 function mapDispatchToProps(dispatch) {
   return {
-    showModal: (type, props) => dispatch(showModal(type, props)),
-    fadeModal: () => dispatch(fadeModal()),
-    hideModal: () => dispatch(hideModal())
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
+    fadeModal: () => dispatch(modalActions.fadeModal()),
+    hideModal: () => dispatch(modalActions.hideModal())
   }
 }
 

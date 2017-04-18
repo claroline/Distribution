@@ -1,7 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 
-import {tex} from '../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {Highlight} from './utils/highlight.jsx'
 import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
@@ -53,7 +53,7 @@ export const WordsPaper = (props) => {
           <Highlight
             text={props.answer}
             solutions={props.item.solutions}
-            showScore={true}
+            showScore={props.showScore}
           /> :
           <div className="no-answer">{tex('no_answer')}</div>
       }
@@ -78,7 +78,8 @@ WordsPaper.propTypes = {
     description: T.string.isRequired,
     solutions: T.arrayOf(T.object)
   }).isRequired,
-  answer: T.string.isRequired
+  answer: T.string.isRequired,
+  showScore: T.bool.isRequired
 }
 
 WordsPaper.defaultProps = {

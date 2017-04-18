@@ -9,6 +9,7 @@ use UJM\ExoBundle\Entity\Misc\Area;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\GraphicQuestionSerializer;
+use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
 use UJM\ExoBundle\Validator\JsonSchema\Attempt\AnswerData\GraphicAnswerValidator;
 use UJM\ExoBundle\Validator\JsonSchema\Item\Type\GraphicQuestionValidator;
 
@@ -108,11 +109,18 @@ class GraphicDefinition extends AbstractDefinition
         return $this->answerValidator;
     }
 
+    /**
+     * @param GraphicQuestion $question
+     * @param $answer
+     *
+     * @return CorrectedAnswer
+     */
     public function correctAnswer(AbstractItem $question, $answer)
     {
         $corrected = new CorrectedAnswer();
 
-        foreach ($question->getAreas()->toArray() as $area) {
+        /** @var Area $area */
+        foreach ($question->getAreas() as $area) {
             if (is_array($answer)) {
                 foreach ($answer as $coords) {
                     if ($this->isPointInArea($area, $coords->x, $coords->y)) {
@@ -142,33 +150,36 @@ class GraphicDefinition extends AbstractDefinition
 
     public function getStatistics(AbstractItem $graphicQuestion, array $answers)
     {
-        $areasMap = [];
-        foreach ($graphicQuestion->getAreas() as $area) {
-            $areasMap[$area->getId()] = $this->exportArea($area);
+        // TODO : implement
+
+        return [];
+    }
+
+    /**
+     * Refreshes image and areas UUIDs.
+     *
+     * @param GraphicQuestion $item
+     */
+    public function refreshIdentifiers(AbstractItem $item)
+    {
+        // generate image id
+        $item->getImage()->refreshUuid();
+
+        /** @var Area $area */
+        foreach ($item->getAreas() as $area) {
+            $area->refreshUuid();
         }
+    }
 
-        $areas = [];
-
-        /** @var Answer $answer */
-        foreach ($answers as $answer) {
-            $decoded = $this->convertAnswerDetails($answer);
-
-            foreach ($decoded as $coords) {
-                foreach ($areasMap as $area) {
-                    if ($this->graphicService->isInArea($coords, $area)) {
-                        if (!isset($areas[$area->id])) {
-                            $areas[$area->id] = new \stdClass();
-                            $areas[$area->id]->id = $area->id;
-                            $areas[$area->id]->count = 0;
-                        }
-
-                        ++$areas[$area->id]->count;
-                    }
-                }
-            }
-        }
-
-        return $areas;
+    /**
+     * No additional content fields to process.
+     *
+     * @param ContentParserInterface $contentParser
+     * @param \stdClass              $item
+     */
+    public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
+    {
+        return;
     }
 
     private function isPointInArea(Area $area, $x, $y)

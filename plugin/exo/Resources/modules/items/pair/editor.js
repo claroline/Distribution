@@ -1,8 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
-import {makeId, makeActionCreator} from './../../utils/utils'
+import {makeActionCreator} from '#/main/core/utilities/redux'
+import {makeId} from './../../utils/utils'
 import {notBlank, number, chain} from './../../utils/validate'
-import {tex} from './../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {utils} from './utils/utils'
 import {PairForm as component} from './editor.jsx'
 
@@ -15,6 +16,7 @@ const ADD_PAIR = 'ADD_PAIR'
 const REMOVE_PAIR = 'REMOVE_PAIR'
 const UPDATE_PAIR = 'UPDATE_PAIR'
 const DROP_PAIR_ITEM = 'DROP_PAIR_ITEM'
+const REMOVE_ALL_COORDS = 'REMOVE_ALL_COORDS'
 
 export const actions = {
   updateProperty: makeActionCreator(UPDATE_PROP, 'property', 'value'),
@@ -25,7 +27,8 @@ export const actions = {
   removePair: makeActionCreator(REMOVE_PAIR, 'leftId', 'rightId'),
   updatePair: makeActionCreator(UPDATE_PAIR, 'index', 'property', 'value'),
   dropPairItem: makeActionCreator(DROP_PAIR_ITEM, 'pairData', 'itemData'),
-  addItemCoordinates: makeActionCreator(ADD_ITEM_COORDINATES, 'itemId', 'brotherId', 'coords')
+  addItemCoordinates: makeActionCreator(ADD_ITEM_COORDINATES, 'itemId', 'brotherId', 'coords'),
+  removeAllCoordinates: makeActionCreator(REMOVE_ALL_COORDS)
 }
 
 function decorate(pair) {
@@ -229,6 +232,12 @@ function reduce(pair = {}, action) {
       const existingSolution = realSolutionList[action.pairData.index]
       existingSolution.itemIds[action.pairData.position] = action.itemData.id
 
+      return newItem
+    }
+
+    case REMOVE_ALL_COORDS: {
+      const newItem = cloneDeep(pair)
+      newItem.items.map(item => delete item.coordinates)
       return newItem
     }
   }

@@ -2,7 +2,7 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 import Panel from 'react-bootstrap/lib/Panel'
 
-import {tex} from './../../../utils/translate'
+import {tex} from '#/main/core/translation'
 import {getDefinition, isQuestionType} from './../../../items/item-types'
 import {getContentDefinition} from './../../../contents/content-types'
 import selectQuiz from './../../selectors'
@@ -14,6 +14,8 @@ import {ItemPlayer} from './item-player.jsx'
 import {ItemFeedback} from './item-feedback.jsx'
 import {ContentItemPlayer} from './content-item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
+
+import {CustomDragLayer} from './../../../utils/custom-drag-layer.jsx'
 
 const Player = props =>
   <div className="quiz-player">
@@ -72,6 +74,7 @@ const Player = props =>
       finish={() => props.finish(props.quizId, props.paper, props.answers, props.showFeedback)}
       currentStepSend={props.currentStepSend}
     />
+    <CustomDragLayer />
   </div>
 
 Player.propTypes = {
