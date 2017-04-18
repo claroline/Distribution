@@ -10,10 +10,11 @@ let _transFilter = new WeakMap()
 let _modalInstance = new WeakMap()
 let _modalFactory = new WeakMap()
 let _$scope = new WeakMap()
+let _url = new WeakMap()
 
 export default class WikiController {
 
-  constructor($resource, wikiService, $location, $anchorScroll, $routeParams, Messages, transFilter, modal, $scope, tinyMceConfig) {
+  constructor($resource, wikiService, $location, $anchorScroll, $routeParams, Messages, transFilter, modal, $scope, tinyMceConfig, url) {
     _$resource.set(this, $resource)
     _$location.set(this, $location)
     _$anchorScroll.set(this, $anchorScroll)
@@ -22,6 +23,7 @@ export default class WikiController {
     _modalInstance.set(this, null)
     _modalFactory.set(this, modal)
     _$scope.set(this, $scope)
+    _url.set(this, url)
 
     this.wiki = wikiService
     this.$routeParams = $routeParams
@@ -31,6 +33,11 @@ export default class WikiController {
     this.disableFormButtons = false
     this.disableModalButtons = false
     this.isFormOpen = false
+  }
+  
+  backToTop() {
+    _$location.get(this).hash('top')
+    _$anchorScroll.get(this)()
   }
 
   getFontSize(level) {
@@ -47,6 +54,13 @@ export default class WikiController {
 
   displayUrl(url) {
     _$location.get(this).url(url)
+  }
+
+  get pdfExportUrl() {
+    return _url.get(this)('icap_wiki_view', {
+      'wikiId': this.wiki.id,
+      '_format': 'pdf'
+    })
   }
 
   displayOptions() {
@@ -201,7 +215,7 @@ export default class WikiController {
   }
 
   cancelEditOptions() {
-    this.wiki.revertMode()
+    this.wiki.revertOptions()
     _$location.get(this).url('/')
   }
 
@@ -238,12 +252,13 @@ export default class WikiController {
 
   _saveSectionWithNewContribution(section, newContrib, updatedSection) {
     this.wiki.editSection(section, newContrib, updatedSection).then(
-      () => {
+      success => {
         if (newContrib.id === 0) {
           this._setMessage('success', 'icap_wiki_section_add_success')
         } else {
           this._setMessage('success', 'icap_wiki_section_update_success')
         }
+        _$location.get(this).hash(`sect-${success.section.id}`)
       },
       () => {
         if (newContrib.id === 0) {
@@ -251,6 +266,7 @@ export default class WikiController {
         } else {
           this._setMessage('danger', 'icap_wiki_section_update_error')
         }
+        _$location.get(this).hash('top')
       }
     ).finally(
       () => {
@@ -258,6 +274,8 @@ export default class WikiController {
         this.currentSections = []
         this.disableFormButtons = false
         this.isFormOpen = false
+
+        _$anchorScroll.get(this)()
       }
     )
   }
@@ -275,6 +293,9 @@ export default class WikiController {
     ).finally(() => {
       this.disableFormButtons = false
       this.isFormOpen = false
+
+      _$location.get(this).hash(`sect-${section.id}`)
+      _$anchorScroll.get(this)()
     })
   }
 
@@ -305,5 +326,6 @@ WikiController.$inject = [
   'transFilter',
   'wikiModal',
   '$scope',
-  'tinyMceConfig'
+  'tinyMceConfig',
+  'url'
 ]

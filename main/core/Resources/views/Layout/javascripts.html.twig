@@ -1,11 +1,30 @@
-<script src="{{ hotAsset('dist/es6_shim_dll.js') }}"></script>
+<script src="{{ hotAsset('dist/es6_dll.js') }}"></script>
 <script src="{{ hotAsset('dist/angular_dll.js') }}"></script>
-<script src="{{ hotAsset('dist/claroline-distribution-main-core-core-js.js') }}"></script>
+
+{% if app.environment == 'prod' %}
+    <script src="{{ hotAsset('dist/commons.js') }}"></script>
+{% endif %}
+
 <script>
     if (window.sessionStorage.getItem('hide_brower_warning')) {
         $('.outdated-browser-warning').hide();
     }
 </script>
+
+{# Polyfills #}
+<script src="{{ hotAsset('dist/claroline-distribution-main-core-core-js.js') }}"></script>
+<script src="{{ hotAsset('dist/claroline-distribution-main-core-whatwg-fetch.js') }}"></script>
+
+{# SVG external reference polyfill for IE<13 #}
+{% javascripts debug=false filter='jsmin' output='vendor/svg4everybody/svg4everybody.js'
+    '../node_modules/svg4everybody/dist/svg4everybody.js'
+%}
+    <script src="{{ asset_url }}"></script>
+    <script>
+        svg4everybody();
+    </script>
+{% endjavascripts %}
+
 <script src='{{ asset('bundles/clarolinecore/js/iframe/iframe.js') }}'></script>
 {% javascripts debug=false filter='jsmin' output='vendor/twitter/bootstrap/js/bootstrap.js'
     'packages/bootstrap/js/transition.js'
@@ -149,10 +168,6 @@
 
 <script src="{{ asset('bundles/stfalcontinymce/vendor/tinymce/tinymce.jquery.min.js') }}"></script>
 <script src="{{ asset('bundles/stfalcontinymce/vendor/tinymce/jquery.tinymce.min.js') }}"></script><!-- this is not duplicated file -->
-
-{% if app.environment == 'prod' %}
-    <script src="{{ hotAsset('dist/commons.js') }}"></script>
-{% endif %}
 
 <script src="{{ hotAsset('dist/claroline-distribution-main-core-tinymce.js') }}"></script>
 <script src="{{ asset('bundles/clarolinecore/js/tinymce/resource_picker_button.js') }}"></script>

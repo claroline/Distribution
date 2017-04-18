@@ -882,10 +882,9 @@ class WorkspaceManager
     {
         $i = 0;
         $workspaceModelManager = $this->container->get('claroline.manager.workspace_model_manager');
-
+        $this->om->startFlushSuite();
         foreach ($workspaces as $workspace) {
             ++$i;
-            $this->om->startFlushSuite();
             $endDate = null;
             $model = null;
             $name = $workspace[0];
@@ -1170,12 +1169,20 @@ class WorkspaceManager
     {
         $rm = $this->container->get('claroline.manager.resource_manager');
         $wmm = $this->container->get('claroline.manager.workspace_model_manager');
+        $tm = $this->container->get('claroline.manager.transfer_manager');
+
         if (!$wmm->getLogger()) {
             $wmm->setLogger($logger);
         }
+
         if (!$rm->getLogger()) {
             $rm->setLogger($logger);
         }
+
+        if (!$tm->getLogger()) {
+            $tm->setLogger($logger);
+        }
+
         $this->logger = $logger;
     }
 
@@ -1193,11 +1200,12 @@ class WorkspaceManager
 
         $archive = new \ZipArchive();
         $fileName = $file->getBasename('.zip');
-        $extractPath = $this->templateDirectory.DIRECTORY_SEPARATOR.$fileName;
+        $extractPath = $this->templateDirectory.$fileName;
 
         if ($archive->open($file->getPathname())) {
             $fs = new FileSystem();
             $fs->mkdir($extractPath);
+            $this->log("Extracting workspace to {$extractPath}...");
 
             if (!$archive->extractTo($extractPath)) {
                 throw new \Exception("The workspace archive couldn't be extracted");

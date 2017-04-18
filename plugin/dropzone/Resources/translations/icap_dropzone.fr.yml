@@ -48,9 +48,9 @@ Choose at least one type of document: Choisissez au moins un type de document
 Choose at least one type of ranking: Choisissez au moins un type de notation
 Must be before end allow drop: Doit être antérieur à la date de fin du dépôt
 Must be after start allow drop: Doit être postérieur au début du dépôt
-Must be before end peer review: Doit être antérieur à la fin de lévaluation par les pairs
-Must be after start peer review: Doit être postérieur au début de lévaluation par les pairs
-Must be before start peer review: Doit être antérieur au début de lévaluation par les pairs
+Must be before end peer review: Doit être antérieur à la fin de l'évaluation par les pairs
+Must be after start peer review: Doit être postérieur au début de l'évaluation par les pairs
+Must be before start peer review: Doit être antérieur au début de l'évaluation par les pairs
 Must be after end allow drop: Doit être postérieur à la fin du dépôt
 Choose a date: Choisissez une date
 Evaluation not started: l'évaluation na pas démarré
@@ -97,6 +97,7 @@ Copies being evaluated: Copies en cours d'évaluation
 Sort by user: Tri par utilisateur
 Established on: Copie rendue le :
 Last correction: Dernière correction le :
+last update: Dernière modification le :
 Documents: Documents :
 Grade: Note :
 Sort by date: Tri par date
@@ -135,7 +136,7 @@ Your report has been saved: Votre sigalement a été enregistré
 This correction has reported abuse: Cette correction a signalé un abus
 Remove report: Retirer le signalement
 Reason of reporting: Raison du signalement
-Edit evaluation: Modifier lévaluation
+Edit evaluation: Modifier l'évaluation
 Start review: Début de l'évaluation par les pairs
 Planification instruction: L'ouverture de l'évaluation peut se faire de manière manuelle ou automatique par dates.
 Planification peer review instruction: Elle se divise en plusieurs étapes : l'ouverture de l'évaluation en autorisant le dépôt, début de l'évaluation par les pairs qui clôture le dépôt et la fin de l'évaluation.
@@ -242,7 +243,7 @@ This copy contain a denied correction: Cette copie contient une correction refus
 notStarted:  non démarrée
 allowDrop:   dépôts autorisés
 allowDropAndPeerReview: dépôts autorisés et corrections par les pairs
-peerReview:  correction par les pairs 
+peerReview:  correction par les pairs
 finished :   Evaluation terminée
 user :  Utilisateur
 tools:  Outils
@@ -259,9 +260,9 @@ Documents added  the copy: Documents ajoutés à la copie
 no document added yet: Aucun document ajouté pour l'instant.
 Instructions for examiners: Instructions spécifiques aux correcteurs
 Examiners Instructions: Instructions aux correcteurs
-successMessage: Message en cas de réussite 
+successMessage: Message en cas de réussite
 failMessage: Message en cas d'échec
-Evaluation not started: L'évaluation na pas encore commencé. 
+Evaluation not started: L'évaluation na pas encore commencé.
 awaiting for drop: Evaluation commencée, en attente du dépôt.
 drop provided: Copie déposée
 correction n°%nb_correction%/%expected_correction%: correction n° %nb_correction%/%expected_correction% effectuée
@@ -300,8 +301,9 @@ Allow student to see his copy whereas the copy didnt received the expected numbe
 Drop have been unlocked: La copie a été débloquée
 This copy has been unlocked by admin.(it did not received the expected number of correction):  Cette copie a été débloquée par un administrateur. (Elle n'a pas reçu le nombre de corrections attendues).
 No copy waiting for correction: Aucune copie en attente de correction
-Notify on drop: Nofifier les administrateurs de l'évaluation quand quelqu'un dépose une copie.
+Notify on drop: Notifier les administrateurs de l'évaluation quand quelqu'un dépose une copie.
 Notifications: Notifications
+unfinished copies: Copies non terminées
 unterminated drops: copie(s) non terminée(s)
 Notify on drop: Notifier les administrateurs lorsqu'une copie est déposée.
 drop_info: Chaque document ajouté est sauvegardé automatiquement. Cependant, pensez à cliquer sur "Terminer" en bas à droite une fois que vous avez fini. Si vous ne le faites pas, votre copie sera considérée comme non-rendue.
@@ -351,3 +353,13 @@ Select Period: Sélectionnez une plage de dates
 Download copies in this period: Télécharger les copies déposées dans cette periode.
 No drops to download in this period: Aucune copie téléchargeable durant cette période.
 file_not_found: Le fichier n'a pas été trouvé.
+close copy: Clôturer la copie
+send reminder: Envoyer un rappel
+no unfinished copies: Aucune copie non terminée.
+closing text: Cette copie n'est pas terminée, vous pouvez la clôturer manuellement.
+close copy confirmation text: Êtes-vous sûr de vouloir clôturer la copie ?
+reminder sent: Le rappel a été envoyé.
+reminder message: Vous avez déposé une copie pour l'évaluation "%dropzonename%" le %dropdate%. Vous devez encore valider ce dépôt sur la <a href="%confirmation_url%">page de confirmation</a> pour que votre copie puisse être évaluée.
+reminder object: Copie non terminée
+copy closed: La copie a été cloturée.
+date_format_php: d/m/Y à H:i

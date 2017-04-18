@@ -109,7 +109,7 @@ class BlogImporter extends Importer implements ConfigurationInterface
     public function validate(array $data)
     {
         $processor = new Processor();
-        $result = $processor->processConfiguration($this, $data);
+        $processor->processConfiguration($this, $data);
     }
 
     /**
@@ -130,7 +130,7 @@ class BlogImporter extends Importer implements ConfigurationInterface
      *
      * @return array
      */
-    public function export(Workspace $workspace, array &$files, $object)
+    public function export($workspace, array &$files, $object)
     {
         return $this->blogManager->exportBlog($workspace, $files, $object);
     }
