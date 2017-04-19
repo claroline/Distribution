@@ -505,46 +505,6 @@ class WorkspaceManager
     }
 
     /**
-     * @param string[] $roleNames
-     * @param int      $page
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getWorkspacesByRoleNamesPager(array $roleNames, $page)
-    {
-        if (count($roleNames) > 0) {
-            $workspaces = $this->workspaceRepo->findMyWorkspacesByRoleNames($roleNames);
-        } else {
-            $workspaces = [];
-        }
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page);
-    }
-
-    /**
-     * @param string[] $roleNames
-     * @param string   $search
-     * @param int      $page
-     *
-     * @return \PagerFanta\PagerFanta
-     */
-    public function getWorkspacesByRoleNamesBySearchPager(
-        array $roleNames,
-        $search,
-        $page,
-        $orderedToolType = 0
-    ) {
-        if (count($roleNames) > 0) {
-            $workspaces = $this->workspaceRepo
-                ->findByRoleNamesBySearch($roleNames, $search, $orderedToolType);
-        } else {
-            $workspaces = [];
-        }
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page);
-    }
-
-    /**
      * @param \Claroline\CoreBundle\Entity\User $user
      * @param string[]                          $roleNames
      *
@@ -800,40 +760,6 @@ class WorkspaceManager
         return $user;
     }
 
-    /**
-     * @param int    $page
-     * @param int    $max
-     * @param string $orderedBy
-     *
-     * @return \Pagerfanta\Pagerfanta;
-     */
-    public function findAllWorkspaces($page, $max = 20, $orderedBy = 'id', $order = null)
-    {
-        $result = $this->workspaceRepo->findBy([], [$orderedBy => $order]);
-
-        return $this->pagerFactory->createPagerFromArray($result, $page, $max);
-    }
-
-    /**
-     * @param string $search
-     * @param int    $page
-     * @param int    $max
-     * @param string $orderedBy
-     *
-     * @return \Pagerfanta\Pagerfanta;
-     */
-    public function getWorkspaceByName(
-        $search,
-        $page,
-        $max = 20,
-        $orderedBy = 'id',
-        $order = 'ASC'
-    ) {
-        $query = $this->workspaceRepo->findByName($search, false, $orderedBy, $order);
-
-        return $this->pagerFactory->createPager($query, $page, $max);
-    }
-
     public function countUsers(Workspace $workspace, $includeGrps = false)
     {
         if ($includeGrps) {
@@ -972,31 +898,6 @@ class WorkspaceManager
         $workspaces = $search === '' ?
             $this->workspaceRepo->findDisplayablePersonalWorkspaces() :
             $this->workspaceRepo->findDisplayablePersonalWorkspacesBySearch($search);
-
-        return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
-    }
-
-    public function getAllPersonalWorkspaces(
-        $page = 1,
-        $max = 50,
-        $search = '',
-        $orderedBy = 'name',
-        $order = 'ASC'
-    ) {
-        $workspaces = $search === '' ?
-            $this->workspaceRepo
-                ->findAllPersonalWorkspaces(
-                    $orderedBy,
-                    $order,
-                    $this->container->get('security.context')->getToken()->getUser()
-                ) :
-            $this->workspaceRepo
-                ->findAllPersonalWorkspacesBySearch(
-                    $search,
-                    $orderedBy,
-                    $order,
-                    $this->container->get('security.context')->getToken()->getUser()
-                );
 
         return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
     }
