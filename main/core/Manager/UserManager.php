@@ -675,12 +675,10 @@ class UserManager
         $personalWorkspaceName = $this->translator->trans('personal_workspace', [], 'platform').' - '.$user->getUsername();
 
         if (!$model) {
-            $workspace = new Workspace();
-            $workspace->setName($personalWorkspaceName);
-            $workspace->setCode($code);
-            $workspace->setCreator($user);
-            $template = new File($this->personalWsTemplateFile);
-            $workspace = $this->transferManager->createWorkspace($workspace, $template, true);
+            $workspace = $this->workspaceManager->copy(
+              $this->workspaceManager->getDefaultModel(true),
+              $personalWorkspaceName
+          );
         } else {
             //TODO MODEL
             $workspace = $this->workspaceManager->copy(
@@ -1887,7 +1885,7 @@ class UserManager
             $user->setPlainPassword(uniqid('', true));
             $user->disable();
             $user->remove();
-            $this->createUser($user, false);
+            $this->createUser($user, false, [], null, null, [], false, false);
         }
 
         return $user;

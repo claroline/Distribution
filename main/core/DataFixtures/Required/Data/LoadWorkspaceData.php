@@ -27,6 +27,7 @@ class LoadWorkspaceData implements RequiredFixture
     public function load(ObjectManager $manager)
     {
         $this->container->get('claroline.manager.workspace_manager')->getDefaultModel();
+        $this->container->get('claroline.manager.workspace_manager')->getDefaultModel(true);
     }
 
     public function setContainer($container)
