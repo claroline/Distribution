@@ -111,7 +111,7 @@ ActionBar.propTypes = {
   },
   removeWorkspaces: T.func.isRequired,
   createModal: T.func.isRequired,
-  copyWorkspaces: T.dunc.isRequired
+  copyWorkspaces: T.func.isRequired
 }
 
 class ActionCell extends Component {
