@@ -236,14 +236,14 @@ class WorkspaceController extends FOSRestController
     {
         $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
         $newWorkspaces = [];
-
+        $isModel = intval($isModel);
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
             $newWorkspace = new Workspace();
-            $newWorkspace->setName($name);
-            $code = $isModel ? '[MODEL] - '.$name : '[COPY] - '.$name;
-            $newWorkspace->setCode($code);
+            $newWorkspace->setName($isModel ? '[MODEL] - '.$workspace->getName() : '[COPY] - '.$workspace->getName());
+            $newWorkspace->setIsModel($isModel);
+            $newWorkspace->setCode($isModel ? '[MODEL] - '.$workspace->getCode() : '[COPY] - '.$workspace->getCode());
             $newWorkspace = $this->workspaceManager->copy($workspace, $newWorkspace);
             $newWorkspaces[] = $newWorkspace;
         }
@@ -271,7 +271,7 @@ class WorkspaceController extends FOSRestController
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
-            $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
+            $this->container->get('claroline.event.event_dispatcher')->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
             $this->workspaceManager->deleteWorkspace($workspace);
         }
 

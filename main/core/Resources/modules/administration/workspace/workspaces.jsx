@@ -40,20 +40,47 @@ class ActionBar extends Component {
     })
   }
 
-  hideModal() {
-    this.setState({modal: {fading: true}})
-  }
-
   copySelection() {
     this.setState({
-      displayModal: true
+      modal: {
+        type: 'CONFIRM_MODAL',
+        props: {
+          isDangerous: false,
+          question: t('copy_workspaces_confirm', {workspace_list: this.props.pagination.selected.reduce((acc, workspace) => workspace.name + ' ,')}),
+          handleConfirm: () =>  {
+            this.setState({modal: {fading: true}})
+
+            return this.props.copyWorkspaces(this.props.pagination.selected, 0)
+          },
+          title: t('copy_workspace')
+        },
+        fading: false
+      }
     })
   }
 
   copyAsModelSelection() {
     this.setState({
-      displayModal: true
+      modal: {
+        type: 'CONFIRM_MODAL',
+        props: {
+          isDangerous: false,
+          question: t('copy_model_workspaces_confirm', {workspace_list: this.props.pagination.selected.reduce((acc, workspace) => workspace.name + ' ,')}),
+          handleConfirm: () =>  {
+            this.setState({modal: {fading: true}})
+
+            return this.props.copyWorkspaces(this.props.pagination.selected, 1)
+          },
+          title: t('copy_model_workspace')
+        },
+        fading: false
+      }
     })
+  }
+
+
+  hideModal() {
+    this.setState({modal: {fading: true}})
   }
 
   render() {
@@ -83,7 +110,8 @@ ActionBar.propTypes = {
     data: T.array(T.object)
   },
   removeWorkspaces: T.func.isRequired,
-  createModal: T.func.isRequired
+  createModal: T.func.isRequired,
+  copyWorkspaces: T.dunc.isRequired
 }
 
 class ActionCell extends Component {
@@ -141,6 +169,7 @@ class Workspaces extends Component {
           pagination={this.props.pagination}
           createModal={this.props.createModal}
           removeWorkspaces={this.props.removeWorkspaces}
+          copyWorkspaces={this.props.copyWorkspaces}
         />
         <LazyLoadTable
           format="list"
@@ -166,7 +195,8 @@ Workspaces.propTypes = {
   onChangePage: T.func.isRequired,
   onSelect: T.func.isRequired,
   createModal: T.func.isRequired,
-  removeWorkspaces: T.func.isRequired
+  removeWorkspaces: T.func.isRequired,
+  copyWorkspaces: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -186,7 +216,8 @@ function mapDispatchToProps(dispatch) {
     onChangePage: (page, size) => dispatch(actions.fetchPage(page, size)),
     onSelect: (selected) => dispatch(actions.onSelect(selected)),
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal),
-    removeWorkspaces: (workspaces) => dispatch(actions.removeWorkspaces(workspaces))
+    removeWorkspaces: (workspaces) => dispatch(actions.removeWorkspaces(workspaces)),
+    copyWorkspaces: (workspaces, isModel) => dispatch(actions.copyWorkspaces(workspaces, isModel))
   }
 }
 

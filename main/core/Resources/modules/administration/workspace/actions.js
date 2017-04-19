@@ -16,7 +16,7 @@ export const actions = {
   updateWorkspace: makeActionCreator(UPDATE_WORKSPACE, 'workspace'),
   removeWorkspaces: (workspaces) => ({
     [REQUEST_SEND] : {
-      url: generateUrl('api_delete_workspace') + workspaces.reduce((acc, workspace) => acc += 'ids=' + workspace.id + '&', '?'),
+      url: generateUrl('api_delete_workspace') + workspaces.reduce((acc, workspace) => acc += 'ids[]=' + workspace.id + '&', '?'),
       request: {
         method: 'DELETE'
       },
@@ -27,11 +27,11 @@ export const actions = {
       failure: () => alert('fail')
     }
   }),
-  copyWorkspaces: (workspaces, isModel = false) => ({
+  copyWorkspaces: (workspaces, isModel = 0) => ({
     [REQUEST_SEND] : {
-      url: generateUrl('api_copy_workspaces', {isModel: isModel}) + workspaces.reduce((acc, workspace) => acc += 'ids=' + workspace.id + '&', '?'),
+      url: generateUrl('api_copy_workspaces', {isModel: isModel}) + workspaces.reduce((acc, workspace) => acc += 'ids[]=' + workspace.id + '&', '?'),
       request: {
-        method: 'GET'
+        method: 'PATCH'
       },
       success: (data, dispatch) => {
         dispatch(actions.refreshPage())
