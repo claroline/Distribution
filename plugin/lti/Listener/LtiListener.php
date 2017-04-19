@@ -106,10 +106,6 @@ class LtiListener
             $em->persist($ltiResource);
             $event->setPublished(true);
             $event->setResources([$ltiResource]);
-
-            /*$event->setResources([$form->getData()]);
-            $event->stopPropagation();*/
-
             return;
         }
         $content = $this->container->get('templating')->render(
