@@ -256,10 +256,16 @@
     };
 
     server.prototype.open = function (event) {
-        window.location = Routing.generate('claro_resource_open', {
+
+        var url = Routing.generate('claro_resource_open', {
             resourceType: event.resourceType,
             node: event.nodeId
         });
+
+        event.resourceType !== 'hevinci_url' ?
+            window.location = url:
+            window.open(url, '_blank');
+        
     };
 
     server.prototype.download = function (event) {
