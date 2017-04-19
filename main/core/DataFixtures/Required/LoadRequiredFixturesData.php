@@ -74,22 +74,27 @@ class LoadRequiredFixturesData extends AbstractFixture implements ContainerAware
                     if (!isset($orderedClassNames[$order])) {
                         $orderedClassNames[$order] = $className;
                     } else {
-                        $orderedClassNames[] = $className;
+                        throw new \Exception('Order '.$order.' is already defined');
                     }
                 } else {
                     $unorderedClassNames[] = $className;
                 }
             }
         }
-        ksort($orderedClassNames);
 
-        foreach ($unorderedClassNames as $className) {
-            $orderedClassNames[] = $className;
-        }
+        ksort($orderedClassNames);
+        $orderedClassNames = array_merge($unorderedClassNames, $orderedClassNames);
 
         foreach ($orderedClassNames as $className) {
-            $this->log('load '.$className);
             $fixture = new $className();
+
+            $order = 'none';
+
+            if (method_exists($fixture, 'getOrder')) {
+                $order = $fixture->getOrder();
+            }
+
+            $this->log('load '.$className.' positon: '.$order);
             $fixture->setContainer($this->container);
             $fixture->load($om);
             $om->flush();

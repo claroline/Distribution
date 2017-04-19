@@ -680,8 +680,8 @@ class UserManager
         $workspace->setCreator($user);
 
         $workspace = !$model ?
-              $this->workspaceManager->copy($this->workspaceManager->getDefaultModel(true), $workspace) :
-              $this->workspaceManager->copy($model, $workspace);
+            $this->workspaceManager->copy($this->workspaceManager->getDefaultModel(true), $workspace) :
+            $this->workspaceManager->copy($model, $workspace);
 
         //add "my public documents" folder
         $resourceManager = $this->container->get('claroline.manager.resource_manager');

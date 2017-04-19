@@ -702,6 +702,7 @@ class WorkspaceController extends Controller
                 }
             }
         }
+
         $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
 
         if ($tool) {
