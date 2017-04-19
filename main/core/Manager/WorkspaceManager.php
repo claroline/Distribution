@@ -1275,8 +1275,11 @@ class WorkspaceManager
     {
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
+        $user = $token = $this->container->get('security.token_storage')->getToken() ?
+          $token->getUser() :
+          $this->container->get('claroline.manager.user_manager')->getDefaultUser();
+
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
         $this->duplicateOrderedTools($workspace, $newWorkspace);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
@@ -1290,7 +1293,8 @@ class WorkspaceManager
         return $newWorkspace;
     }
 
-    public function duplicateRoot(Workspace $source,
+    public function duplicateRoot(
+      Workspace $source,
       Workspace $workspace,
       User $user
       ) {
@@ -1307,6 +1311,7 @@ class WorkspaceManager
             null,
             []
         );
+
         $workspaceRoles = $this->getArrayRolesByWorkspace($source);
         $baseRoot = $this->resourceManager->getWorkspaceRoot($source);
 
@@ -1543,7 +1548,7 @@ public function duplicateWorkspaceRoles(
     public function getDefaultModel($isPersonal = false)
     {
         $name = $isPersonal ? 'default_personal' : 'default_workspace';
-        $workspace = $this->workspaceRepo->findBy(['code' => $name, 'isPersonal' => $isPersonal, 'isModel' => true]);
+        $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'isPersonal' => $isPersonal, 'isModel' => true]);
         $template = $isPersonal ?
           $this->container->getParameter('claroline.param.personal_template') :
           $this->container->getParameter('claroline.param.default_template');
@@ -1554,6 +1559,7 @@ public function duplicateWorkspaceRoles(
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
             $workspace = new Workspace();
             $workspace->setName($name);
+            $workspace->setIsPersonal($isPersonal);
             $workspace->setCode($name);
             $workspace->setIsModel(true);
             $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());
