@@ -7,25 +7,25 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class LtiResourceType  extends AbstractType
+class LtiResourceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('LtiApp', 'entity', array(
+        $builder->add('LtiApp', 'entity', [
             'class' => 'UJMLtiBundle:LtiApp',
             'query_builder' => function (EntityRepository $er) {
                 return $er->createQueryBuilder('l')
                     ->orderBy('l.title', 'ASC');
             },
             'choice_label' => 'title',
-        ));
+        ]);
         $builder->add(
             'name',
             'text',
-            array(
+            [
                 'label' => 'name',
-                'attr' => array('autofocus' => true),
-            )
+                'attr' => ['autofocus' => true],
+            ]
         );
     }
 

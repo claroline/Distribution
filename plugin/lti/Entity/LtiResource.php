@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="UJM\LtiBundle\Repository\LtiResourceRepository")
  * @ORM\Table(name="ujm_lti_resource")
  */
-class LtiResource  extends AbstractResource
+class LtiResource extends AbstractResource
 {
     /**
      * @ORM\ManyToOne(targetEntity="LtiApp")
