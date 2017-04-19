@@ -322,7 +322,16 @@ class WorkspaceParametersController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $user = $form->getData();
+            $data = $form->getData();
+
+            $user = new User();
+            $user->setFirstName($data ['firstName']);
+            $user->setLastName($data['lastName']);
+            $user->setUsername($data['username']);
+            $user->setPassword($data['plainPassword']);
+            $user->setMail($data['mail']);
+            $user->setLocale($data['locale']);
+
             $this->userManager->createUser($user);
             if ($workspace->getRegistrationValidation()) {
                 $this->workspaceManager->addUserQueue($workspace, $user);
