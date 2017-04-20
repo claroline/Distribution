@@ -13,6 +13,7 @@ class BookReferenceConfigurationRepository extends EntityRepository
     {
         return $this->createQueryBuilder('bookReferenceConfiguration')
             ->where('bookReferenceConfiguration.api_key = \'\'')
+            ->orWhere('bookReferenceConfiguration.api_key IS NULL')
             ->getQuery()
             ->getOneOrNullResult()
             ? false : true;
