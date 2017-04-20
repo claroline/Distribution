@@ -4,6 +4,7 @@ import invariant from 'invariant'
 import {MessageModal} from './components/message.jsx'
 import {ConfirmModal} from './components/confirm.jsx'
 import {DeleteConfirmModal} from './components/delete-confirm.jsx'
+import {UrlModal} from './components/url.jsx'
 
 export const MODAL_MESSAGE = 'MODAL_MESSAGE'
 export const MODAL_CONFIRM = 'MODAL_CONFIRM'
@@ -34,4 +35,23 @@ export function makeModal(type, props, fading, fadeCallback = () => true, hideCa
   }
 
   return React.createElement(modals[type], Object.assign(baseProps, props))
+}
+
+export function makeModalFromUrl(fading, fadeCallback = () => true, hideCallback = () => true, url) {
+  return fetch(url).then(response => {
+    return response.text()
+  }).then(text => {
+    const baseProps = {
+      show: !fading,
+      fadeModal: () => fadeCallback(),
+      hideModal:() => hideCallback(),
+      content: text
+    }
+
+    return React.createElement(UrlModal, baseProps)
+  })
+
+
+
+
 }

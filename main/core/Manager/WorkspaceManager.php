@@ -1176,8 +1176,8 @@ class WorkspaceManager
     {
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
-        $user = $token = $this->container->get('security.token_storage')->getToken() ?
-          $token->getUser() :
+        $user = $this->container->get('security.token_storage')->getToken() ?
+          $this->container->get('security.token_storage')->getToken()->getUser() :
           $this->container->get('claroline.manager.user_manager')->getDefaultUser();
 
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);

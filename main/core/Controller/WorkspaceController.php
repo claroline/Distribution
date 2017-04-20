@@ -309,7 +309,8 @@ class WorkspaceController extends Controller
     /**
      * @EXT\Route(
      *     "/new/form",
-     *     name="claro_workspace_creation_form"
+     *     name="claro_workspace_creation_form",
+     *     options={"expose"=true}
      * )
      *
      * @EXT\Template()

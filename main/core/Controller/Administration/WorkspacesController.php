@@ -62,7 +62,7 @@ class WorkspacesController extends Controller
     }
 
     /**
-     * @EXT\Route("/import/form", name="claro_admin_workspace_import_form")
+     * @EXT\Route("/import/form", name="claro_admin_workspace_import_form", options={"expose"=true})
      * @EXT\Template
      */
     public function importWorkspaceFormAction()
