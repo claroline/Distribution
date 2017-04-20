@@ -578,12 +578,13 @@ class FacetManager
             ->findBy(['forceCreationForm' => true]);
     }
 
-    public function addFacetFieldChoice($label, FieldFacet $field)
+    public function addFacetFieldChoice($label, FieldFacet $field, FieldFacetChoice $parent = null)
     {
         $choice = new FieldFacetChoice();
         $choice->setFieldFacet($field);
         $choice->setLabel($label);
         $choice->setPosition($this->om->count('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice'));
+        $choice->setParent($parent);
         $this->om->persist($choice);
         $this->om->flush();
 
