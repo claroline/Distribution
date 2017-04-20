@@ -27,7 +27,7 @@
   "api_options_line1" : "Book references can be populated through ISBNDB database at creation time.",
   "api_options_line2" : "You will have to store (in the following form) the API access key obtained after registration on:",
   "no_book_reference" : "No book reference found in this workspace.",
-  "available_on_line" : "available <a href=\"%url%\">online</a>",
+  "available_on_line" : "available <a href=\"url\">online</a>",
   "no_result" : "No result.",
   "search_in_progress" : "Search in progress...",
   "config_update_success" : "Book reference editor configuration updated successfully.",
