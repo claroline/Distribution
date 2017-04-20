@@ -113,11 +113,12 @@ export default class EntryViewCtrl {
           let replacedField = ''
 
           if (this.metadataAllowed || !f['isMetadata'] || this.isEntryOwner() || this.isShared()) {
-            switch (f['type']) {
+            switch (f['fieldFacet']['type']) {
               case 3 :
                 replacedField = this.$filter('date')(this.entry[id], 'dd/MM/yyyy')
                 break
               case 6 :
+              case 10 :
                 replacedField = this.entry[id] ? this.entry[id].join(', ') : ''
                 break
               case 7 :

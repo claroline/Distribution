@@ -25,8 +25,7 @@ export default class FieldCreationModalCtrl {
       isMetadata: false,
       locked: false,
       lockedEditionOnly: false,
-      hidden: false,
-      choices: []
+      hidden: false
     }
     this.fieldErrors = {
       name: null
@@ -34,10 +33,14 @@ export default class FieldCreationModalCtrl {
     this.types = FieldService.getTypes()
     this.type = this.types[0]
     this.index = 1
-    this.choices = [{index: this.index, value: '', category: null, categoryEnabled: false}]
+    this.choices = [{index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false}]
     this.choicesErrors = {}
     this.choicesErrors[this.index] = null
+    this.choicesChildren = {}
+    this.choicesChildrenErrors = {}
     this.categories = CategoryService.getCategories()
+    this.currentParentIndex = null
+    this.currentParent = null
     ++this.index
   }
 
@@ -70,6 +73,20 @@ export default class FieldCreationModalCtrl {
           })
         }
       })
+      for (const parentIndex in this.choicesChildren) {
+        this.choicesChildren[parentIndex].forEach(c => {
+          if (!c['value']) {
+            this.choicesChildrenErrors[c['index']] = Translator.trans('form_not_blank_error', {}, 'clacoform')
+          } else {
+            this.choicesChildren[parentIndex].forEach(nc => {
+              if ((nc['index'] !== c['index']) && (nc['value'] === c['value'])) {
+                this.choicesChildrenErrors[c['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+                this.choicesChildrenErrors[nc['index']] = Translator.trans('form_not_unique_error', {}, 'clacoform')
+              }
+            })
+          }
+        })
+      }
     }
     if (this.isValid()) {
       const checkNameUrl = Routing.generate(
@@ -80,7 +97,7 @@ export default class FieldCreationModalCtrl {
         if (d['status'] === 200) {
           if (d['data'] === 'null') {
             const url = Routing.generate('claro_claco_form_field_create', {clacoForm: this.resourceId})
-            this.$http.post(url, {fieldData: this.field, choicesData: this.choices}).then(d => {
+            this.$http.post(url, {fieldData: this.field, choicesData: this.choices, choicesChildrenData: this.choicesChildren}).then(d => {
               this.callback(d['data'])
               this.$uibModalInstance.close()
             })
@@ -98,6 +115,9 @@ export default class FieldCreationModalCtrl {
     }
     for (const key in this.choicesErrors) {
       this.choicesErrors[key] = null
+    }
+    for (const key in this.choicesChildrenErrors) {
+      this.choicesChildrenErrors[key] = null
     }
   }
 
@@ -122,6 +142,12 @@ export default class FieldCreationModalCtrl {
 
     for (const key in this.choicesErrors) {
       if (this.choicesErrors[key]) {
+        valid = false
+        break
+      }
+    }
+    for (const key in this.choicesChildrenErrors) {
+      if (this.choicesChildrenErrors[key]) {
         valid = false
         break
       }
@@ -172,6 +198,93 @@ export default class FieldCreationModalCtrl {
     if (choiceIndex > -1) {
       this.choices[choiceIndex]['categoryEnabled'] = false
       this.choices[choiceIndex]['category'] = null
+    }
+  }
+
+  switchChoiceCascade(index) {
+    if (index === this.currentParentIndex) {
+      this.currentParentIndex = null
+      this.currentParent['cascadeEnabled'] = false
+      this.currentParent = null
+    } else {
+      this.closeAllCascades()
+      const choiceIndex = this.choices.findIndex(c => c['index'] === index)
+
+      if (choiceIndex > -1) {
+        this.choices[choiceIndex]['cascadeEnabled'] = true
+        this.currentParent = this.choices[choiceIndex]
+        this.currentParentIndex = index
+      }
+    }
+  }
+
+  switchChildChoiceCascade(parentIndex, index) {
+    if (index === this.currentParentIndex) {
+      this.currentParentIndex = null
+      this.currentParent['cascadeEnabled'] = false
+      this.currentParent = null
+    } else {
+      this.closeRelativeCascades(parentIndex, index)
+      const choiceIndex = this.choicesChildren[parentIndex].findIndex(c => c['index'] === index)
+
+      if (choiceIndex > -1) {
+        this.choicesChildren[parentIndex][choiceIndex]['cascadeEnabled'] = true
+        this.currentParentIndex = index
+        this.currentParent = this.choicesChildren[parentIndex][choiceIndex]
+      }
+    }
+  }
+
+  closeRelativeCascades(parentIndex, index) {
+    this.choicesChildren[parentIndex].forEach(c => c['cascadeEnabled'] = false)
+
+    if (this.choicesChildren[index]) {
+      this.choicesChildren[index].forEach(c => c['cascadeEnabled'] = false)
+    }
+  }
+
+  closeAllCascades() {
+    this.choices.forEach(c => c['cascadeEnabled'] = false)
+
+    for (const parentId in this.choicesChildren) {
+      this.choicesChildren[parentId].forEach(c => c['cascadeEnabled'] = false)
+    }
+    this.currentParentIndex = null
+    this.currentParent = null
+  }
+
+  addChildChoice(parentIndex) {
+    if (!this.choicesChildren[parentIndex]) {
+      this.choicesChildren[parentIndex] = []
+    }
+    this.choicesChildren[parentIndex].push({index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false})
+    this.choicesChildrenErrors[this.index] = null
+    ++this.index
+  }
+
+  removeChildChoice(parentIndex, index) {
+    const choiceIndex = this.choicesChildren[parentIndex].findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choicesChildren[parentIndex].splice(choiceIndex, 1)
+      delete this.choicesErrors[index]
+    }
+  }
+
+  enableChildChoiceCategory(parentIndex, index) {
+    const choiceIndex = this.choicesChildren[parentIndex].findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choicesChildren[parentIndex][choiceIndex]['categoryEnabled'] = true
+    }
+  }
+
+  disableChildChoiceCategory(parentIndex, index) {
+    const choiceIndex = this.choicesChildren[parentIndex].findIndex(c => c['index'] === index)
+
+    if (choiceIndex > -1) {
+      this.choicesChildren[parentIndex][choiceIndex]['categoryEnabled'] = false
+      this.choicesChildren[parentIndex][choiceIndex]['category'] = null
     }
   }
 }

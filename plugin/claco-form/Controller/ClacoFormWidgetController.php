@@ -14,6 +14,7 @@ namespace Claroline\ClacoFormBundle\Controller;
 use Claroline\ClacoFormBundle\Entity\ClacoFormWidgetConfig;
 use Claroline\ClacoFormBundle\Form\ClacoFormWidgetConfigurationType;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
@@ -88,7 +89,7 @@ class ClacoFormWidgetController extends Controller
                 $values = [];
 
                 foreach ($fields as $field) {
-                    $type = $field->getType();
+                    $type = $field->getFieldFacet()->getType();
                     $fieldValue = $this->clacoFormManager->getFieldValueByEntryAndField($entry, $field);
 
                     if (is_null($fieldValue)) {
@@ -97,10 +98,14 @@ class ClacoFormWidgetController extends Controller
                         $value = $fieldValue->getFieldFacetValue()->getValue();
 
                         switch ($type) {
-                            case 3:
+                            case FieldFacet::DATE_TYPE:
                                 $value = !is_null($value) ? $value->format('d/m/Y') : $value;
                                 break;
-                            case 7:
+                            case FieldFacet::CHECKBOXES_TYPE:
+                            case FieldFacet::CASCADE_SELECT_TYPE:
+                                $value = is_array($value) ? implode(', ', $value) : $value;
+                                break;
+                            case FieldFacet::COUNTRY_TYPE:
                                 $value = $this->locationManager->getCountryByCode($value);
                                 break;
                         }

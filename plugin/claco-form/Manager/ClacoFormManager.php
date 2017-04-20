@@ -343,7 +343,8 @@ class ClacoFormManager
         $locked = false,
         $lockedEditionOnly = false,
         $hidden = false,
-        array $choices = []
+        array $choices = [],
+        array $choicesChildren = []
     ) {
         $this->om->startFlushSuite();
         $field = new Field();
@@ -355,7 +356,10 @@ class ClacoFormManager
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
         $field->setHidden($hidden);
-        $fieldFacet = $this->facetManager->createField($name, $required, $type, $clacoForm->getResourceNode());
+        $facetType = $type === FieldFacet::SELECT_TYPE && count($choicesChildren) > 0 ?
+            FieldFacet::CASCADE_SELECT_TYPE :
+            $type;
+        $fieldFacet = $this->facetManager->createField($name, $required, $facetType, $clacoForm->getResourceNode());
 
         if ($this->facetManager->isTypeWithChoices($type)) {
             foreach ($choices as $choice) {
@@ -364,6 +368,7 @@ class ClacoFormManager
                 if (!empty($choice['categoryId'])) {
                     $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
                 }
+                $this->createChildrenChoices($fieldFacetChoice, $choice['index'], $choicesChildren);
             }
         }
         $field->setFieldFacet($fieldFacet);
@@ -373,6 +378,20 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
 
         return $field;
+    }
+
+    private function createChildrenChoices(FieldFacetChoice $parent, $index, $choicesChildren)
+    {
+        if (isset($choicesChildren[$index])) {
+            foreach ($choicesChildren[$index] as $childChoice) {
+                $child = $this->facetManager->addFacetFieldChoice(
+                    $childChoice['value'],
+                    $parent->getFieldFacet(),
+                    $parent
+                );
+                $this->createChildrenChoices($child, $childChoice['index'], $choicesChildren);
+            }
+        }
     }
 
     public function editField(
@@ -1056,6 +1075,7 @@ class ClacoFormManager
                 $fieldFacetValue->setFloatValue($value);
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
+            case FieldFacet::CASCADE_SELECT_TYPE:
                 $fieldFacetValue->setArrayValue($value);
                 break;
             default:
@@ -1080,6 +1100,7 @@ class ClacoFormManager
                 $fieldFacetValue->setFloatValue($value);
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
+            case FieldFacet::CASCADE_SELECT_TYPE:
                 $fieldFacetValue->setArrayValue($value);
                 break;
             default:
@@ -1375,14 +1396,16 @@ class ClacoFormManager
 
             foreach ($fieldValues as $fiedValue) {
                 $field = $fiedValue->getField();
+                $fieldFacet = $field->getFieldFacet();
                 $fieldFacetValue = $fiedValue->getFieldFacetValue();
                 $val = $fieldFacetValue->getValue();
 
-                switch ($field->getType()) {
+                switch ($fieldFacet->getType()) {
                     case FieldFacet::DATE_TYPE:
                         $value = !empty($val) ? $val->format('d/m/Y') : '';
                         break;
                     case FieldFacet::CHECKBOXES_TYPE:
+                    case FieldFacet::CASCADE_SELECT_TYPE:
                         $value = is_array($val) ? implode(', ', $val) : '';
                         break;
                     case FieldFacet::COUNTRY_TYPE:
@@ -1428,11 +1451,14 @@ class ClacoFormManager
 
             foreach ($fields as $field) {
                 if ($withMeta || !$field->getIsMetadata()) {
-                    switch ($field->getType()) {
+                    $fieldFacet = $field->getFieldFacet();
+
+                    switch ($fieldFacet->getType()) {
                         case FieldFacet::DATE_TYPE:
                             $value = $fieldValues[$field->getId()]->format('d/m/Y');
                             break;
                         case FieldFacet::CHECKBOXES_TYPE:
+                        case FieldFacet::CASCADE_SELECT_TYPE:
                             $value = implode(', ', $fieldValues[$field->getId()]);
                             break;
                         case FieldFacet::COUNTRY_TYPE:
@@ -1706,6 +1732,7 @@ class ClacoFormManager
         $newField->setIsMetadata($field->getIsMetadata());
         $newField->setLocked($field->isLocked());
         $newField->setLockedEditionOnly($field->getLockedEditionOnly());
+        $newField->setHidden($field->isHidden());
 
         $fieldFacet = $field->getFieldFacet();
         $newFieldFacet = new FieldFacet();
@@ -1730,6 +1757,16 @@ class ClacoFormManager
             $newFieldFacetChoice->setPosition($fieldFacetChoice->getPosition());
             $this->om->persist($newFieldFacetChoice);
             $links['fieldFacetChoices'][$fieldFacetChoice->getId()] = $newFieldFacetChoice;
+        }
+        foreach ($fieldFacetChoices as $fieldFacetChoice) {
+            $parent = $fieldFacetChoice->getParent();
+
+            if (!empty($parent)) {
+                $newFieldFacetChoice = $links['fieldFacetChoices'][$fieldFacetChoice->getId()];
+                $newParent = $links['fieldFacetChoices'][$parent->getId()];
+                $newFieldFacetChoice->setParent($newParent);
+                $this->om->persist($newFieldFacetChoice);
+            }
         }
         $fieldChoiceCategories = $field->getFieldChoiceCategories();
 

@@ -18,6 +18,7 @@ use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -196,7 +197,7 @@ class ClacoFormController extends Controller
         if ($choicesData) {
             foreach ($choicesData as $choice) {
                 $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
-                $choices[] = ['value' => $choice['value'], 'categoryId' => $categoryId];
+                $choices[] = ['value' => $choice['value'], 'categoryId' => $categoryId, 'index' => $choice['index']];
             }
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
@@ -206,6 +207,9 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
+        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE ?
+            $this->request->request->get('choicesChildrenData', false) :
+            [];
         $field = $this->clacoFormManager->createField(
             $clacoForm,
             $fieldData['name'],
@@ -215,7 +219,8 @@ class ClacoFormController extends Controller
             $locked,
             $lockedEditionOnly,
             $hidden,
-            $choices
+            $choices,
+            $choicesChildren
         );
         $serializedField = $this->serializer->serialize(
             $field,
