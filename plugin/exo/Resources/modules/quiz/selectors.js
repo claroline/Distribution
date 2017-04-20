@@ -12,7 +12,6 @@ const description = state => state.quiz.description
 const parameters = state => state.quiz.parameters
 const title = state => state.quiz.title
 const meta = state => state.quiz.meta
-const editable = state => state.quiz.meta.editable
 const viewMode = state => state.viewMode
 const hasPapers = state => state.quiz.meta.paperCount > 0 || (state.papers.papers && state.papers.papers.length > 0)
 const hasUserPapers = state => state.quiz.meta.userPaperCount > 0
@@ -48,6 +47,5 @@ export default {
   noItems,
   firstStepId,
   hasOverview,
-  testMode,
-  editable
+  testMode
 }
