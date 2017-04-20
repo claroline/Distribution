@@ -61,6 +61,7 @@ class BookReferenceType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'data-ng-model' => 'vm.bookReference.summary',
+                    'class' => 'form-control',
                 ],
                 'label' => 'description',
             ]
@@ -73,6 +74,7 @@ class BookReferenceType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'data-ng-model' => 'vm.bookReference.abstract',
+                    'class' => 'form-control',
                 ],
                 'label' => 'abstract',
             ]
