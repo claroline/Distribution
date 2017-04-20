@@ -1,4 +1,4 @@
-import React, {PropTypes as T} from 'react'
+import React, {Component, PropTypes as T} from 'react'
 import isObject from 'lodash/isObject'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
@@ -20,7 +20,9 @@ import {
   SHUFFLE_ALWAYS,
   SHUFFLE_ONCE,
   SHUFFLE_NEVER,
-  SHOW_CORRECTION_AT_DATE
+  SHOW_CORRECTION_AT_DATE,
+  SCORE_OF_DEFAULT,
+  SCORE_OF_CUSTOM
 } from './../../enums'
 
 const Properties = props =>
@@ -224,77 +226,120 @@ Signing.propTypes = {
   onChange: T.func.isRequired
 }
 
-const Correction = props =>
-  <fieldset>
-    <FormGroup
-      controlId="quiz-showCorrectionAt"
-      label={tex('availability_of_correction')}
-    >
-      <select
-        id="quiz-showCorrectionAt"
-        value={props.parameters.showCorrectionAt}
-        className="form-control"
-        onChange={e => props.onChange('parameters.showCorrectionAt', e.target.value)}
-      >
-        {correctionModes.map(mode =>
-          <option key={mode[0]} value={mode[0]}>{tex(mode[1])}</option>
-        )}
-      </select>
-    </FormGroup>
-    {props.parameters.showCorrectionAt === SHOW_CORRECTION_AT_DATE &&
-      <div className="sub-fields">
+class Correction extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      scoreOfMode: props.parameters.scoreOf && props.parameters.scoreOf > 0 ? SCORE_OF_CUSTOM : SCORE_OF_DEFAULT
+    }
+  }
+
+  render() {
+    return(
+      <fieldset>
         <FormGroup
-          controlId="quiz-correctionDate"
-          label={tex('correction_date')}
+          controlId="quiz-showCorrectionAt"
+          label={tex('availability_of_correction')}
         >
-          <Date
-            id="quiz-correctionDate"
-            name="quiz-correctionDate"
-            value={props.parameters.correctionDate || ''}
-            onChange={date => props.onChange('parameters.correctionDate', formatDate(date))}
+          <select
+            id="quiz-showCorrectionAt"
+            value={this.props.parameters.showCorrectionAt}
+            className="form-control"
+            onChange={e => this.props.onChange('parameters.showCorrectionAt', e.target.value)}
+          >
+            {correctionModes.map(mode =>
+              <option key={mode[0]} value={mode[0]}>{tex(mode[1])}</option>
+            )}
+          </select>
+        </FormGroup>
+        {this.props.parameters.showCorrectionAt === SHOW_CORRECTION_AT_DATE &&
+          <div className="sub-fields">
+            <FormGroup
+              controlId="quiz-correctionDate"
+              label={tex('correction_date')}
+            >
+              <Date
+                id="quiz-correctionDate"
+                name="quiz-correctionDate"
+                value={this.props.parameters.correctionDate || ''}
+                onChange={date => this.props.onChange('parameters.correctionDate', formatDate(date))}
+              />
+            </FormGroup>
+          </div>
+        }
+        <FormGroup controlId="quiz-showScoreAt" label={tex('score_displaying')}>
+          <select
+            id="quiz-showScoreAt"
+            value={this.props.parameters.showScoreAt}
+            className="form-control"
+            onChange={e => this.props.onChange('parameters.showScoreAt', e.target.value)}
+          >
+            {markModes.map(mode =>
+              <option key={mode[0]} value={mode[0]}>
+                {tex(mode[1])}
+              </option>
+            )}
+          </select>
+        </FormGroup>
+        <FormGroup
+          controlId="quiz-score-of"
+          label={tex('quiz_score_of')}
+        >
+          <Radios
+            groupName="quiz-score-of"
+            options={[
+              {value: SCORE_OF_DEFAULT, label: tex('score_of_default')},
+              {value: SCORE_OF_CUSTOM, label: tex('score_of_custom')}
+            ]}
+            checkedValue={this.state.scoreOfMode}
+            onChange={mode => this.setState({scoreOfMode: mode})}
           />
         </FormGroup>
-      </div>
-    }
-    <FormGroup controlId="quiz-showScoreAt" label={tex('score_displaying')}>
-      <select
-        id="quiz-showScoreAt"
-        value={props.parameters.showScoreAt}
-        className="form-control"
-        onChange={e => props.onChange('parameters.showScoreAt', e.target.value)}
-      >
-        {markModes.map(mode =>
-          <option key={mode[0]} value={mode[0]}>
-            {tex(mode[1])}
-          </option>
-        )}
-      </select>
-    </FormGroup>
-    <CheckGroup
-      checkId="quiz-show-feedback"
-      checked={props.parameters.showFeedback}
-      label={tex('show_feedback')}
-      onChange={checked => props.onChange('parameters.showFeedback', checked)}
-    />
-    <CheckGroup
-      checkId="quiz-anonymizeAttempts"
-      checked={props.parameters.anonymizeAttempts}
-      label={tex('anonymous')}
-      onChange={checked => props.onChange('parameters.anonymizeAttempts', checked)}
-    />
-    <CheckGroup
-      checkId="quiz-showFullCorrection"
-      checked={props.parameters.showFullCorrection}
-      label={tex('maximal_correction')}
-      onChange={checked => props.onChange('parameters.showFullCorrection', checked)}
-    />
-    <CheckGroup
-      checkId="quiz-showStatistics"
-      checked={props.parameters.showStatistics}
-      label={tex('statistics')}
-      onChange={checked => props.onChange('parameters.showStatistics', checked)}
-    />
-  </fieldset>
+        { this.state.scoreOfMode ===  SCORE_OF_CUSTOM &&
+          <FormGroup
+            controlId="quiz-score-of-value"
+            help={tex('score_of')}
+            warnOnly={!this.props.validating}
+            error={get(this.props, 'errors.parameters.scoreOf')}
+          >
+            <input
+              id="quiz-score-of-value"
+              onChange={e => this.props.onChange('parameters.scoreOf', e.target.value)}
+              type="number"
+              min="1"
+              className="form-control"
+              value={this.props.parameters.scoreOf || 100}
+            />
+          </FormGroup>
+        }
+        <CheckGroup
+          checkId="quiz-show-feedback"
+          checked={this.props.parameters.showFeedback}
+          label={tex('show_feedback')}
+          onChange={checked => this.props.onChange('parameters.showFeedback', checked)}
+        />
+        <CheckGroup
+          checkId="quiz-anonymizeAttempts"
+          checked={this.props.parameters.anonymizeAttempts}
+          label={tex('anonymous')}
+          onChange={checked => this.props.onChange('parameters.anonymizeAttempts', checked)}
+        />
+        <CheckGroup
+          checkId="quiz-showFullCorrection"
+          checked={this.props.parameters.showFullCorrection}
+          label={tex('maximal_correction')}
+          onChange={checked => this.props.onChange('parameters.showFullCorrection', checked)}
+        />
+        <CheckGroup
+          checkId="quiz-showStatistics"
+          checked={this.props.parameters.showStatistics}
+          label={tex('statistics')}
+          onChange={checked => this.props.onChange('parameters.showStatistics', checked)}
+        />
+      </fieldset>
+    )
+  }
+}
 
 Correction.propTypes = {
   parameters: T.shape({
@@ -304,7 +349,8 @@ Correction.propTypes = {
     showStatistics: T.bool.isRequired,
     showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
-    correctionDate: T.string
+    correctionDate: T.string,
+    scoreOf: T.number
   }).isRequired,
   onChange: T.func.isRequired
 }

@@ -204,6 +204,9 @@ class ExerciseSerializer implements SerializerInterface
                 break;
         }
 
+        // score of parameter
+        $parameters->scoreOf = $exercise->getScoreOf();
+
         $correctionDate = $exercise->getDateCorrection();
         $parameters->correctionDate = !empty($correctionDate) ? $correctionDate->format('Y-m-d\TH:i:s') : null;
 
@@ -287,6 +290,10 @@ class ExerciseSerializer implements SerializerInterface
                     $exercise->setMarkMode(MarkMode::NEVER);
                     break;
             }
+        }
+
+        if (isset($parameters->scoreOf)) {
+            $exercise->setScoreOf($parameters->scoreOf);
         }
 
         if (isset($parameters->showCorrectionAt)) {
