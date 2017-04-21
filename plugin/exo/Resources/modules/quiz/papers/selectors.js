@@ -63,6 +63,10 @@ const itemScoreMax = item => {
 }
 
 const paperScoreMax = paper => {
+  if (paper.structure.parameters.scoreOf && paper.structure.parameters.scoreOf > 0) {
+    return paper.structure.parameters.scoreOf
+  }
+
   let scoreMax = 0
 
   paper.structure.steps.map(step =>

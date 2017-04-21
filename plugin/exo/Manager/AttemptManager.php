@@ -251,7 +251,7 @@ class AttemptManager
         }
 
         $paper->setInterrupted(!$finished);
-        $paper->setScore($this->paperManager->calculateScore($paper));
+        $paper->setScore($this->paperManager->calculateScore($paper, $paper->getExercise()->getScoreOf()));
 
         $this->om->persist($paper);
         $this->om->flush();

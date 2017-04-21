@@ -160,9 +160,9 @@ class Exercise extends AbstractResource
      * If 0, the score will be computed based on question maxs score.
      * Else score will be computed based on this value.
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="float")
      *
-     * @var int
+     * @var float
      */
     private $scoreOf = 0;
 
@@ -535,7 +535,7 @@ class Exercise extends AbstractResource
     /**
      * Sets scoreOf
      *
-     * @param int $scoreOf
+     * @param float $scoreOf
      */
     public function setScoreOf($scoreOf)
     {
@@ -545,7 +545,7 @@ class Exercise extends AbstractResource
     /**
      * Gets scoreOf
      *
-     * @return int
+     * @return float
      */
     public function getScoreOf()
     {

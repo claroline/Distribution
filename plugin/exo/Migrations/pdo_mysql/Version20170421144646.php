@@ -8,15 +8,15 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2017/04/20 06:56:11
+ * Generation date: 2017/04/21 02:47:06
  */
-class Version20170420065552 extends AbstractMigration
+class Version20170421144646 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql("
             ALTER TABLE ujm_exercise 
-            ADD scoreOf INT NOT NULL
+            ADD scoreOf DOUBLE PRECISION NOT NULL
         ");
     }
 
