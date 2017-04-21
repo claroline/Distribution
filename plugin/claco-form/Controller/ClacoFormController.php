@@ -125,6 +125,9 @@ class ClacoFormController extends Controller
             $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
             file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
         $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
+        $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
+            $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
+            2;
 
         return [
             'isAnon' => $isAnon,
@@ -141,6 +144,7 @@ class ClacoFormController extends Controller
             'nbPublishedEntries' => $nbPublishedEntries,
             'canGeneratePdf' => $canGeneratePdf,
             'sharedEntries' => $sharedEntries,
+            'cascadeLevelMax' => $cascadeLevelMax,
         ];
     }
 

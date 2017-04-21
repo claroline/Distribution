@@ -41,6 +41,7 @@ export default class FieldCreationModalCtrl {
     this.categories = CategoryService.getCategories()
     this.currentParentIndex = null
     this.currentParent = null
+    this.cascadeLevelMax = FieldService.getCascadeLevelMax()
     ++this.index
   }
 

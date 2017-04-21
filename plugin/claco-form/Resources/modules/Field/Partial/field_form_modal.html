@@ -90,7 +90,7 @@
                                     data-placement="top"
                                     title="{{ 'sub_list_management'|trans:{}:'clacoform' }}"
                                     ng-click="cfc.switchChoiceCascade(choice['index'])"
-                                    ng-if="cfc.type['value'] === 5"
+                                    ng-if="cfc.type['value'] === 5 && cfc.cascadeLevelMax > 0"
                             >
                                 <i class="fa fa-list-ul"></i>
                             </button>
@@ -131,7 +131,7 @@
 
                     <div class="margin-top-sm"
                          ng-include="'children_choices_management.html'"
-                         ng-init="parentIndex = choice['index']"
+                         ng-init="parentIndex = choice['index']; level = 1"
                          ng-if="cfc.type['value'] === 5 && choice['cascadeEnabled']"
                     >
                     </div>
@@ -263,6 +263,7 @@
                                     data-placement="top"
                                     title="{{ 'sub_list_management'|trans:{}:'clacoform' }}"
                                     ng-click="cfc.switchChildChoiceCascade(parentIndex, childrenChoice['index'])"
+                                    ng-if="cfc.cascadeLevelMax > level"
                             >
                                 <i class="fa fa-list-ul"></i>
                             </button>
@@ -307,7 +308,7 @@
 
                     <div class="margin-top-sm"
                          ng-include="'children_choices_management.html'"
-                         ng-init="parentIndex = childrenChoice['index']"
+                         ng-init="parentIndex = childrenChoice['index']; level = level + 1"
                          ng-if="childrenChoice['cascadeEnabled']"
                     >
                     </div>

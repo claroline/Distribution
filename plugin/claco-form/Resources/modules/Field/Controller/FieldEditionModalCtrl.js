@@ -26,8 +26,7 @@ export default class FieldEditionModalCtrl {
       isMetadata: false,
       locked: false,
       lockedEditionOnly: false,
-      hidden: false,
-      choices: []
+      hidden: false
     }
     this.fieldErrors = {
       name: null
@@ -39,7 +38,12 @@ export default class FieldEditionModalCtrl {
     this.index = 1
     this.choices = []
     this.choicesErrors = {}
+    this.choicesChildren = {}
+    this.choicesChildrenErrors = {}
     this.categories = CategoryService.getCategories()
+    this.currentParentIndex = null
+    this.currentParent = null
+    this.cascadeLevelMax = FieldService.getCascadeLevelMax()
     this.initializeField()
     this.initializeChoices()
   }
@@ -57,6 +61,8 @@ export default class FieldEditionModalCtrl {
 
   initializeChoices() {
     if (this.source['fieldFacet']['field_facet_choices'].length > 0) {
+      console.log(this.source['fieldFacet']['field_facet_choices'])
+
       this.source['fieldFacet']['field_facet_choices'].forEach(c => {
         const id = c['id']
         this.oldChoices.push({index: id, value: c['label'], category: null, categoryEnabled: false})
@@ -77,6 +83,7 @@ export default class FieldEditionModalCtrl {
                 this.oldChoices[oldChoiceIndex]['category'] = selectedCategory
                 this.oldChoices[oldChoiceIndex]['categoryEnabled'] = true
               }
+              this.oldChoices[oldChoiceIndex]['cascadeEnabled'] = false
             }
           })
         }
