@@ -33,7 +33,7 @@ export default class FieldCreationModalCtrl {
     this.types = FieldService.getTypes()
     this.type = this.types[0]
     this.index = 1
-    this.choices = [{index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false}]
+    this.choices = [{index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false, new: true}]
     this.choicesErrors = {}
     this.choicesErrors[this.index] = null
     this.choicesChildren = {}
@@ -147,10 +147,12 @@ export default class FieldCreationModalCtrl {
         break
       }
     }
-    for (const key in this.choicesChildrenErrors) {
-      if (this.choicesChildrenErrors[key]) {
-        valid = false
-        break
+    if (valid) {
+      for (const key in this.choicesChildrenErrors) {
+        if (this.choicesChildrenErrors[key]) {
+          valid = false
+          break
+        }
       }
     }
 
@@ -171,7 +173,7 @@ export default class FieldCreationModalCtrl {
   }
 
   addChoice() {
-    this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false})
+    this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false, new: true})
     this.choicesErrors[this.index] = null
     ++this.index
   }
@@ -182,6 +184,7 @@ export default class FieldCreationModalCtrl {
     if (choiceIndex > -1) {
       this.choices.splice(choiceIndex, 1)
       delete this.choicesErrors[index]
+      this.removeAllChildren(index)
     }
   }
 
@@ -258,7 +261,7 @@ export default class FieldCreationModalCtrl {
     if (!this.choicesChildren[parentIndex]) {
       this.choicesChildren[parentIndex] = []
     }
-    this.choicesChildren[parentIndex].push({index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false})
+    this.choicesChildren[parentIndex].push({index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false, new: true})
     this.choicesChildrenErrors[this.index] = null
     ++this.index
   }
@@ -269,6 +272,7 @@ export default class FieldCreationModalCtrl {
     if (choiceIndex > -1) {
       this.choicesChildren[parentIndex].splice(choiceIndex, 1)
       delete this.choicesErrors[index]
+      this.removeAllChildren(index)
     }
   }
 
@@ -286,6 +290,13 @@ export default class FieldCreationModalCtrl {
     if (choiceIndex > -1) {
       this.choicesChildren[parentIndex][choiceIndex]['categoryEnabled'] = false
       this.choicesChildren[parentIndex][choiceIndex]['category'] = null
+    }
+  }
+
+  removeAllChildren(index) {
+    if (this.choicesChildren[index]) {
+      this.choicesChildren[index].forEach(c => this.removeAllChildren(c['index']))
+      delete this.choicesChildren[index]
     }
   }
 }

@@ -672,4 +672,9 @@ class FacetManager
 
         return $withChoices;
     }
+
+    public function getFieldFacetChoiceById($id)
+    {
+        return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacetChoice')->findOneById($id);
+    }
 }

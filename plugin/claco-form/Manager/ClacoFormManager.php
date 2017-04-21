@@ -368,7 +368,7 @@ class ClacoFormManager
                 if (!empty($choice['categoryId'])) {
                     $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
                 }
-                $this->createChildrenChoices($fieldFacetChoice, $choice['index'], $choicesChildren);
+                $this->createChildrenChoices($field, $fieldFacetChoice, $choice['index'], $choicesChildren);
             }
         }
         $field->setFieldFacet($fieldFacet);
@@ -380,20 +380,6 @@ class ClacoFormManager
         return $field;
     }
 
-    private function createChildrenChoices(FieldFacetChoice $parent, $index, $choicesChildren)
-    {
-        if (isset($choicesChildren[$index])) {
-            foreach ($choicesChildren[$index] as $childChoice) {
-                $child = $this->facetManager->addFacetFieldChoice(
-                    $childChoice['value'],
-                    $parent->getFieldFacet(),
-                    $parent
-                );
-                $this->createChildrenChoices($child, $childChoice['index'], $choicesChildren);
-            }
-        }
-    }
-
     public function editField(
         Field $field,
         $name,
@@ -403,9 +389,23 @@ class ClacoFormManager
         $locked = false,
         $lockedEditionOnly = false,
         $hidden = false,
-        array $oldChoices = [],
-        array $newChoices = []
+        array $choices = [],
+        array $choicesChildren = []
     ) {
+        $oldChoices = [];
+
+        foreach ($choices as $choice) {
+            if (!$choice['new']) {
+                $oldChoices[] = $choice;
+            }
+        }
+        foreach ($choicesChildren as $parentId => $choicesList) {
+            foreach ($choicesList as $choice) {
+                if (!$choice['new']) {
+                    $oldChoices[] = $choice;
+                }
+            }
+        }
         $this->om->startFlushSuite();
         $field->setName($name);
         $field->setType($type);
@@ -415,16 +415,26 @@ class ClacoFormManager
         $field->setLockedEditionOnly($lockedEditionOnly);
         $field->setHidden($hidden);
         $fieldFacet = $field->getFieldFacet();
-        $this->facetManager->editField($fieldFacet, $name, $required, $type);
+        $facetType = $type === FieldFacet::SELECT_TYPE && count($choicesChildren) > 0 ?
+            FieldFacet::CASCADE_SELECT_TYPE :
+            $type;
+        $this->facetManager->editField($fieldFacet, $name, $required, $facetType);
 
         if ($this->facetManager->isTypeWithChoices($type)) {
             $this->updateChoices($field, $fieldFacet, $oldChoices);
 
-            foreach ($newChoices as $choice) {
-                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+            foreach ($choices as $choice) {
+                if ($choice['new']) {
+                    $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
 
-                if (!empty($choice['categoryId'])) {
-                    $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
+                    if (!empty($choice['categoryId'])) {
+                        $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
+                    }
+                } else {
+                    $fieldFacetChoice = $this->facetManager->getFieldFacetChoiceById($choice['index']);
+                }
+                if (!empty($fieldFacetChoice)) {
+                    $this->createChildrenChoices($field, $fieldFacetChoice, $choice['index'], $choicesChildren);
                 }
             }
         } else {
@@ -518,6 +528,28 @@ class ClacoFormManager
             $this->om->remove($choice);
         }
         $this->om->flush();
+    }
+
+    private function createChildrenChoices(Field $field, FieldFacetChoice $parent, $index, $choicesChildren)
+    {
+        if (isset($choicesChildren[$index])) {
+            foreach ($choicesChildren[$index] as $childChoice) {
+                if ($childChoice['new']) {
+                    $child = $this->facetManager->addFacetFieldChoice(
+                        $childChoice['value'],
+                        $parent->getFieldFacet(),
+                        $parent
+                    );
+
+                    if (!empty($childChoice['categoryId'])) {
+                        $this->createFieldChoiceCategory($field, $childChoice['categoryId'], $childChoice['value'], $child);
+                    }
+                } else {
+                    $child = $this->facetManager->getFieldFacetChoiceById($childChoice['index']);
+                }
+                $this->createChildrenChoices($field, $child, $childChoice['index'], $choicesChildren);
+            }
+        }
     }
 
     public function persistFieldChoiceCategory(FieldChoiceCategory $fieldChoiceCategory)

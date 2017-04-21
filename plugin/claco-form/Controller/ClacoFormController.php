@@ -196,13 +196,11 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $fieldData = $this->request->request->get('fieldData', false);
         $choicesData = $this->request->request->get('choicesData', false);
-        $choices = [];
+        $choices = $choicesData ? $choicesData : [];
 
-        if ($choicesData) {
-            foreach ($choicesData as $choice) {
-                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
-                $choices[] = ['value' => $choice['value'], 'categoryId' => $categoryId, 'index' => $choice['index']];
-            }
+        foreach ($choices as $key => $choice) {
+            $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+            $choices[$key]['categoryId'] = $categoryId;
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
         $isMetadata = is_bool($fieldData['isMetadata']) ? $fieldData['isMetadata'] : $fieldData['isMetadata'] === 'true';
@@ -211,9 +209,17 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
-        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE ?
-            $this->request->request->get('choicesChildrenData', false) :
+        $choiceChildrenData = $this->request->request->get('choicesChildrenData', false);
+        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE && $choiceChildrenData ?
+            $choiceChildrenData :
             [];
+
+        foreach ($choicesChildren as $parentId => $choicesList) {
+            foreach ($choicesList as $key => $choice) {
+                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+                $choicesChildren[$parentId][$key]['categoryId'] = $categoryId;
+            }
+        }
         $field = $this->clacoFormManager->createField(
             $clacoForm,
             $fieldData['name'],
@@ -251,20 +257,12 @@ class ClacoFormController extends Controller
         $clacoForm = $field->getClacoForm();
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $fieldData = $this->request->request->get('fieldData', false);
-        $oldChoicesData = $this->request->request->get('oldChoicesData', false);
         $choicesData = $this->request->request->get('choicesData', false);
-        $oldChoices = $oldChoicesData ? $oldChoicesData : [];
-        $newChoices = [];
+        $choices = $choicesData ? $choicesData : [];
 
-        foreach ($oldChoices as $key => $choice) {
+        foreach ($choices as $key => $choice) {
             $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
-            $oldChoices[$key]['categoryId'] = $categoryId;
-        }
-        if ($choicesData) {
-            foreach ($choicesData as $choice) {
-                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
-                $newChoices[] = ['value' => $choice['value'], 'categoryId' => $categoryId];
-            }
+            $choices[$key]['categoryId'] = $categoryId;
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
         $isMetadata = is_bool($fieldData['isMetadata']) ? $fieldData['isMetadata'] : $fieldData['isMetadata'] === 'true';
@@ -273,6 +271,17 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
+        $choiceChildrenData = $this->request->request->get('choicesChildrenData', false);
+        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE && $choiceChildrenData ?
+            $choiceChildrenData :
+            [];
+
+        foreach ($choicesChildren as $parentId => $choicesList) {
+            foreach ($choicesList as $key => $choice) {
+                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+                $choicesChildren[$parentId][$key]['categoryId'] = $categoryId;
+            }
+        }
         $this->clacoFormManager->editField(
             $field,
             $fieldData['name'],
@@ -282,8 +291,8 @@ class ClacoFormController extends Controller
             $locked,
             $lockedEditionOnly,
             $hidden,
-            $oldChoices,
-            $newChoices
+            $choices,
+            $choicesChildren
         );
         $serializedField = $this->serializer->serialize(
             $field,
