@@ -24,6 +24,12 @@ function initPaper(state, action) {
 }
 
 function finishPaper(state, action) {
+  // compute paper score if needed... but we miss some informations
+  /*console.log(state.structure.parameters.scoreOf)
+  let paperScore = action.paper.score || 0 === action.paper.score ? action.paper.score : null
+  if (paperScore && state.structure.parameters.scoreOf && state.structure.parameters.scoreOf > 0) {
+    paperScore =
+  }*/
   return update(state, {
     ['finished']: {$set: true},
     ['endDate']: {

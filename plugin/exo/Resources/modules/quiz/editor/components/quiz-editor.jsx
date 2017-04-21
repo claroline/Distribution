@@ -285,33 +285,28 @@ class Correction extends Component {
           controlId="quiz-score-of"
           label={tex('quiz_score_of')}
         >
-          <Radios
-            groupName="quiz-score-of"
-            options={[
-              {value: SCORE_OF_DEFAULT, label: tex('score_of_default')},
-              {value: SCORE_OF_CUSTOM, label: tex('score_of_custom')}
-            ]}
-            checkedValue={this.state.scoreOfMode}
-            onChange={mode => this.setState({scoreOfMode: mode})}
-          />
-        </FormGroup>
-        { this.state.scoreOfMode ===  SCORE_OF_CUSTOM &&
-          <FormGroup
-            controlId="quiz-score-of-value"
-            help={tex('score_of')}
-            warnOnly={!this.props.validating}
-            error={get(this.props, 'errors.parameters.scoreOf')}
-          >
-            <input
-              id="quiz-score-of-value"
-              onChange={e => this.props.onChange('parameters.scoreOf', e.target.value)}
-              type="number"
-              min="1"
-              className="form-control"
-              value={this.props.parameters.scoreOf || 100}
+          <div>
+            <Radios
+              groupName="quiz-score-of"
+              options={[
+                {value: SCORE_OF_DEFAULT, label: tex('quiz_score_of_mode_default')},
+                {value: SCORE_OF_CUSTOM, label: tex('quiz_score_of_mode_custom')}
+              ]}
+              checkedValue={this.state.scoreOfMode}
+              onChange={mode => this.setState({scoreOfMode: mode})}
             />
-          </FormGroup>
-        }
+            { this.state.scoreOfMode ===  SCORE_OF_CUSTOM &&
+              <input
+                id="quiz-score-of-value"
+                onChange={e => this.props.onChange('parameters.scoreOf', Number(e.target.value))}
+                type="number"
+                min="1"
+                className="form-control"
+                value={this.props.parameters.scoreOf || 100}
+              />
+            }
+          </div>
+        </FormGroup>
         <CheckGroup
           checkId="quiz-show-feedback"
           checked={this.props.parameters.showFeedback}
