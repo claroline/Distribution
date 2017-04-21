@@ -399,7 +399,7 @@ class ClacoFormManager
                 $oldChoices[] = $choice;
             }
         }
-        foreach ($choicesChildren as $parentId => $choicesList) {
+        foreach ($choicesChildren as $choicesList) {
             foreach ($choicesList as $choice) {
                 if (!$choice['new']) {
                     $oldChoices[] = $choice;
