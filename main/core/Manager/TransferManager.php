@@ -166,10 +166,14 @@ class TransferManager
 
         if ($workspace->getCode() === null && isset($data['parameters'])) {
             $workspace->setCode($data['parameters']['code']);
+        } else {
+            $workspace->setCode(uniqid());
         }
 
         if ($workspace->getName() === null && isset($data['parameters'])) {
             $workspace->setName($data['parameters']['name']);
+        } else {
+            $workspace->setName(uniqid());
         }
 
         //just to be sure doctrine is ok before doing all the workspace
