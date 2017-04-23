@@ -241,6 +241,9 @@ class ItemManager
      */
     public function calculateScore(Item $question, Answer $answer)
     {
+        // Get entities for score calculation
+        $question = $this->serializer->deserialize($questionData, new Item());
+
         // Let the question correct the answer
         $definition = $this->itemDefinitions->get($question->getMimeType());
         $corrected = $definition->correctAnswer($question->getInteraction(), json_decode($answer->getData()));
