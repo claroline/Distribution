@@ -8,15 +8,15 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/04/21 02:47:06
+ * Generation date: 2017/04/24 10:25:31
  */
-class Version20170421144646 extends AbstractMigration
+class Version20170424102517 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql('
             ALTER TABLE ujm_exercise
-            ADD scoreOf DOUBLE PRECISION NOT NULL
+            ADD totalScoreOn DOUBLE PRECISION NOT NULL
         ');
     }
 
@@ -24,7 +24,7 @@ class Version20170421144646 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE ujm_exercise
-            DROP scoreOf
+            DROP totalScoreOn
         ');
     }
 }

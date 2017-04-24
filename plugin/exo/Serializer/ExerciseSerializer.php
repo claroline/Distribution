@@ -205,7 +205,7 @@ class ExerciseSerializer implements SerializerInterface
         }
 
         // score of parameter
-        $parameters->scoreOf = $exercise->getScoreOf();
+        $parameters->totalScoreOn = $exercise->getTotalScoreOn();
 
         $correctionDate = $exercise->getDateCorrection();
         $parameters->correctionDate = !empty($correctionDate) ? $correctionDate->format('Y-m-d\TH:i:s') : null;
@@ -292,8 +292,8 @@ class ExerciseSerializer implements SerializerInterface
             }
         }
 
-        if (isset($parameters->scoreOf)) {
-            $exercise->setScoreOf($parameters->scoreOf);
+        if (isset($parameters->totalScoreOn)) {
+            $exercise->setTotalScoreOn($parameters->totalScoreOn);
         }
 
         if (isset($parameters->showCorrectionAt)) {

@@ -164,7 +164,7 @@ class Exercise extends AbstractResource
      *
      * @var float
      */
-    private $scoreOf = 0;
+    private $totalScoreOn = 0;
 
     /**
      * Exercise constructor.
@@ -533,22 +533,22 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Sets scoreOf.
+     * Sets totalScoreOn.
      *
-     * @param float $scoreOf
+     * @param float $totalScoreOn
      */
-    public function setScoreOf($scoreOf)
+    public function setTotalScoreOn($totalScoreOn)
     {
-        $this->scoreOf = $scoreOf;
+        $this->totalScoreOn = $totalScoreOn;
     }
 
     /**
-     * Gets scoreOf.
+     * Gets totalScoreOn.
      *
      * @return float
      */
-    public function getScoreOf()
+    public function getTotalScoreOn()
     {
-        return $this->scoreOf;
+        return $this->totalScoreOn;
     }
 }

@@ -21,9 +21,11 @@ import {
   SHUFFLE_ONCE,
   SHUFFLE_NEVER,
   SHOW_CORRECTION_AT_DATE,
-  SCORE_OF_DEFAULT,
-  SCORE_OF_CUSTOM
+  TOTAL_SCORE_ON_CUSTOM,
+  TOTAL_SCORE_ON_DEFAULT
 } from './../../enums'
+
+const TOTAL_SCORE_ON_DEFAULT_VALUE = 100
 
 const Properties = props =>
   <fieldset>
@@ -230,7 +232,7 @@ class Correction extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      scoreOfMode: props.parameters.scoreOf && props.parameters.scoreOf > 0 ? SCORE_OF_CUSTOM : SCORE_OF_DEFAULT
+      totalScoreOnMode: props.parameters.totalScoreOn && props.parameters.totalScoreOn > 0 ? TOTAL_SCORE_ON_CUSTOM : TOTAL_SCORE_ON_DEFAULT
     }
   }
 
@@ -282,27 +284,27 @@ class Correction extends Component {
           </select>
         </FormGroup>
         <FormGroup
-          controlId="quiz-score-of"
-          label={tex('quiz_score_of')}
+          controlId="quiz-total-score-on"
+          label={tex('quiz_total_score_on')}
         >
           <div>
             <Radios
-              groupName="quiz-score-of"
+              groupName="quiz-total-score-on"
               options={[
-                {value: SCORE_OF_DEFAULT, label: tex('quiz_score_of_mode_default')},
-                {value: SCORE_OF_CUSTOM, label: tex('quiz_score_of_mode_custom')}
+                {value: TOTAL_SCORE_ON_DEFAULT, label: tex('quiz_total_score_on_mode_default')},
+                {value: TOTAL_SCORE_ON_CUSTOM, label: tex('quiz_total_score_on_mode_custom')}
               ]}
-              checkedValue={this.state.scoreOfMode}
-              onChange={mode => this.setState({scoreOfMode: mode})}
+              checkedValue={this.state.totalScoreOnMode}
+              onChange={mode => this.setState({totalScoreOnMode: mode})}
             />
-            { this.state.scoreOfMode ===  SCORE_OF_CUSTOM &&
+            { this.state.totalScoreOnMode ===  TOTAL_SCORE_ON_CUSTOM &&
               <input
-                id="quiz-score-of-value"
-                onChange={e => this.props.onChange('parameters.scoreOf', Number(e.target.value))}
+                id="quiz-total-score-on-value"
+                onChange={e => this.props.onChange('parameters.totalScoreOn', Number(e.target.value))}
                 type="number"
                 min="1"
                 className="form-control"
-                value={this.props.parameters.scoreOf || 100}
+                value={this.props.parameters.totalScoreOn || TOTAL_SCORE_ON_DEFAULT_VALUE}
               />
             }
           </div>
@@ -345,7 +347,7 @@ Correction.propTypes = {
     showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string,
-    scoreOf: T.number
+    totalScoreOn: T.number
   }).isRequired,
   onChange: T.func.isRequired
 }
