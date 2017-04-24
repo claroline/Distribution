@@ -55,8 +55,8 @@ class ResourceNodeSerializer
         $serializedNode = [
             'id' => $resourceNode->getGuid(),
             'name' => $resourceNode->getName(),
-            'description' => null, // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
-            'poster' => null, // todo add as ResourceNode prop
+            'description' => '', // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
+            'poster' => null, // todo : add as ResourceNode prop
             'workspace' => [
                 'id' => $resourceNode->getWorkspace()->getGuid(),
                 'name' => $resourceNode->getWorkspace()->getName(),
@@ -64,7 +64,7 @@ class ResourceNodeSerializer
             ],
             'meta' => $this->getMeta($resourceNode),
             'parameters' => $this->getParameters($resourceNode),
-            'permissions' => $this->getPermissions($resourceNode),
+            'rights' => $this->getRights($resourceNode),
             'shortcuts' => $this->getShortcuts($resourceNode),
             'actions' => $this->getActions($resourceNode),
         ];
@@ -136,8 +136,9 @@ class ResourceNodeSerializer
         return [
             'accessibleFrom' => null,
             'accessibleUntil' => null,
-            'fullscreen' => false,
-            'closeTarget' => '',
+            'fullscreen' => false, // todo : add field
+            'closable' => false, // todo : add field
+            'closeTarget' => '', // todo : add field
         ];
     }
 
@@ -155,7 +156,7 @@ class ResourceNodeSerializer
         ];
     }
 
-    private function getPermissions(ResourceNode $resourceNode)
+    private function getRights(ResourceNode $resourceNode)
     {
         return [
 

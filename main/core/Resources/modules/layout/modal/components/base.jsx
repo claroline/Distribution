@@ -1,24 +1,33 @@
 import React, {PropTypes as T} from 'react'
+import classes from 'classnames'
 import Modal from 'react-bootstrap/lib/Modal'
 
 const BaseModal = props =>
   <Modal
+    bsSize={props.bsSize}
     show={props.show}
     onHide={props.fadeModal}
     onExited={props.hideModal}
     dialogClassName={props.className}
   >
     <Modal.Header closeButton>
-      <Modal.Title>{props.title}</Modal.Title>
+      <Modal.Title>
+        {props.icon &&
+          <span className={classes('modal-icon', props.icon)} />
+        }
+        {props.title}
+      </Modal.Title>
     </Modal.Header>
     {props.children}
   </Modal>
 
 BaseModal.propTypes = {
+  bsSize: T.string,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
   show: T.bool.isRequired,
-  title: T.string.isRequired,
+  icon: T.string,
+  title: T.node.isRequired,
   className: T.string,
   children: T.node.isRequired
 }

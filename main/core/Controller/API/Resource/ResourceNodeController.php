@@ -8,6 +8,7 @@ use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -50,12 +51,15 @@ class ResourceNodeController
      * @EXT\Method("PUT")
      *
      * @param ResourceNode $resourceNode
+     * @param Request      $request
      *
      * @return JsonResponse
      */
-    public function updateAction(ResourceNode $resourceNode)
+    public function updateAction(ResourceNode $resourceNode, Request $request)
     {
-        $this->assertHasPermission('EDIT', $resourceNode);
+        $this->assertHasPermission('ADMINISTRATE', $resourceNode);
+
+        $this->resourceNodeManager->update($request->getContent(), $resourceNode);
 
         return new JsonResponse(
             $this->resourceNodeManager->serialize($resourceNode)
@@ -74,7 +78,9 @@ class ResourceNodeController
      */
     public function publishAction(ResourceNode $resourceNode)
     {
-        $this->assertHasPermission('EDIT', $resourceNode);
+        $this->assertHasPermission('ADMINISTRATE', $resourceNode);
+
+        $this->resourceNodeManager->publish($resourceNode);
 
         return new JsonResponse(null, 204);
     }
@@ -91,7 +97,9 @@ class ResourceNodeController
      */
     public function unpublishAction(ResourceNode $resourceNode)
     {
-        $this->assertHasPermission('EDIT', $resourceNode);
+        $this->assertHasPermission('ADMINISTRATE', $resourceNode);
+
+        $this->resourceNodeManager->unpublish($resourceNode);
 
         return new JsonResponse(null, 204);
     }
@@ -122,6 +130,8 @@ class ResourceNodeController
     public function deleteAction(ResourceNode $resourceNode)
     {
         $this->assertHasPermission('DELETE', $resourceNode);
+
+        $this->resourceNodeManager->delete($resourceNode);
 
         return new JsonResponse(null, 204);
     }

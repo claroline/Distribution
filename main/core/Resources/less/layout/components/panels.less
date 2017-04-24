@@ -54,4 +54,13 @@
             margin-top: @panel-group-panel-margin; // use a var
         }
     }
+
+    .panel-title > a {
+        cursor: pointer; // the <a> tag to toggle the panel has no href, so the cursor do not change properly
+    }
+
+    .panel-title.opened {
+        color: @brand-primary;
+        font-weight: bold;
+    }
 }

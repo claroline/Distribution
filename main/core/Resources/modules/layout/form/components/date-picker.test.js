@@ -1,38 +1,42 @@
 import React from 'react'
 import {shallow, mount} from 'enzyme'
-import {spyConsole, renew, ensure} from '#/main/core/tests'
-import {Date} from './date.jsx'
 
-describe('<Date/>', () => {
+import {spyConsole, renew, ensure} from '#/main/core/tests'
+import {DatePicker} from './date-picker.jsx'
+
+describe('<DatePicker/>', () => {
   beforeEach(() => {
     spyConsole.watch()
-    renew(Date, 'Date')
+    renew(DatePicker, 'DatePicker')
   })
   afterEach(spyConsole.restore)
 
   it('has required props', () => {
-    shallow(<Date/>)
-    ensure.missingProps('Date', ['name', 'onChange'])
+    shallow(
+      React.createElement(DatePicker)
+    )
+    ensure.missingProps('DatePicker', ['name', 'onChange'])
   })
 
   it('has typed props', () => {
     shallow(
-      <Date
-        name={123}
-        value={false}
-        onChange="foo"
-      />
+      React.createElement(DatePicker, {
+        name: 123,
+        value: false,
+        onChange: 'foo'
+      })
     )
-    ensure.invalidProps('Date', ['name', 'value', 'onChange'])
+
+    ensure.invalidProps('DatePicker', ['name', 'value', 'onChange'])
   })
 
   it('renders a clickable input', () => {
     const date = mount(
-      <Date
-        name="NAME"
-        value="2012-09-01"
-        onChange={() => {}}
-      />
+      React.createElement(DatePicker, {
+        name: 'NAME',
+        value: '2012-09-01',
+        onChange: () => {}
+      })
     )
     ensure.propTypesOk()
 

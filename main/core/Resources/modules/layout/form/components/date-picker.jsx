@@ -3,34 +3,25 @@ import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'
 
-const locale = getLocale()
+import {getLocale} from '#/main/core/locale'
 
-export const Date = ({id, name, value, onChange}) =>
+const CustomDatePicker = ({id, name, value, onChange}) =>
   <DatePicker
     id={id || null}
     name={name}
     className="form-control"
     selected={value ? moment.utc(value) : null}
     minDate={moment.utc()}
-    locale={locale}
+    locale={getLocale()}
     onChange={date => onChange(moment.utc(date).format())}
     onBlur={() => {}}
   />
 
-Date.propTypes = {
+CustomDatePicker.propTypes = {
   id: T.string,
   name: T.string.isRequired,
   onChange: T.func.isRequired,
   value: T.string
 }
 
-// tmp: current way of retrieving locale...
-function getLocale() {
-  const locale = document.querySelector('#homeLocale')
-
-  if (locale) {
-    return locale.innerHTML.trim()
-  }
-
-  return 'en'
-}
+export {CustomDatePicker as DatePicker}
