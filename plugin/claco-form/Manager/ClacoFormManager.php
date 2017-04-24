@@ -161,6 +161,14 @@ class ClacoFormManager
 
         $clacoForm->setSearchEnabled(true);
         $clacoForm->setSearchColumnEnabled(true);
+        $clacoForm->setSearchColumns([
+            'title',
+            'creationDateString',
+            'userString',
+            'categoriesString',
+            'keywordsString',
+            'actions',
+        ]);
 
         $clacoForm->setDisplayMetadata('none');
 

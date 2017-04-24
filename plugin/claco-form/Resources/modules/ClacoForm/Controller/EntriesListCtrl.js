@@ -96,12 +96,19 @@ export default class EntriesManagementCtrl {
     const dateFieldColumn = {id: 'creationDateString', title: transDate, filter: {creationDateString: 'text'}, sortable: 'creationDate'}
     const userFieldColumn = {id: 'userString', title: transUser, filter: {userString: 'text'}, sortable: 'userString'}
 
-    this.columns['entries']['title'] = {name: transTitle, value: true}
-    this.columns['myEntries']['title'] = {name: transTitle, value: true}
-    this.columns['managerEntries']['title'] = {name: transTitle, value: true}
-    this.columns['managerEntries']['creationDateString'] = {name: transDate, value: true}
-    this.columns['managerEntries']['userString'] = {name: transUser, value: true}
-    this.columns['myEntries']['creationDateString'] = {name: transDate, value: true}
+    const titleColumnDisplay = this.checkColumnDefaultValue('title')
+    const dateColumnDisplay = this.checkColumnDefaultValue('creationDateString')
+    const userColumnDisplay = this.checkColumnDefaultValue('userString')
+    const categoriesColumnDisplay = this.checkColumnDefaultValue('categoriesString')
+    const keywordsColumnDisplay = this.checkColumnDefaultValue('keywordsString')
+    const actionsColumnDisplay = this.checkColumnDefaultValue('actions')
+
+    this.columns['entries']['title'] = {name: transTitle, value: titleColumnDisplay}
+    this.columns['myEntries']['title'] = {name: transTitle, value: titleColumnDisplay}
+    this.columns['managerEntries']['title'] = {name: transTitle, value: titleColumnDisplay}
+    this.columns['managerEntries']['creationDateString'] = {name: transDate, value: dateColumnDisplay}
+    this.columns['managerEntries']['userString'] = {name: transUser, value: userColumnDisplay}
+    this.columns['myEntries']['creationDateString'] = {name: transDate, value: dateColumnDisplay}
     this.columnsKeys['entries'].push('title')
     this.columnsKeys['myEntries'].push('title')
     this.columnsKeys['myEntries'].push('creationDateString')
@@ -119,17 +126,17 @@ export default class EntriesManagementCtrl {
     this.fieldsColumns['managerEntries'].push(userFieldColumn)
 
     if (displayMetadata)  {
-      this.columns['entries']['creationDateString'] = {name: transDate, value: true}
-      this.columns['entries']['userString'] = {name: transUser, value: true}
+      this.columns['entries']['creationDateString'] = {name: transDate, value: dateColumnDisplay}
+      this.columns['entries']['userString'] = {name: transUser, value: userColumnDisplay}
       this.columnsKeys['entries'].push('creationDateString')
       this.columnsKeys['entries'].push('userString')
       this.fieldsColumns['entries'].push(dateFieldColumn)
       this.fieldsColumns['entries'].push(userFieldColumn)
     }
     if (this.config['display_categories']) {
-      this.columns['entries']['categoriesString'] = {name: transCategories, value: true}
-      this.columns['myEntries']['categoriesString'] = {name: transCategories, value: true}
-      this.columns['managerEntries']['categoriesString'] = {name: transCategories, value: true}
+      this.columns['entries']['categoriesString'] = {name: transCategories, value: categoriesColumnDisplay}
+      this.columns['myEntries']['categoriesString'] = {name: transCategories, value: categoriesColumnDisplay}
+      this.columns['managerEntries']['categoriesString'] = {name: transCategories, value: categoriesColumnDisplay}
       this.columnsKeys['entries'].push('categoriesString')
       this.columnsKeys['myEntries'].push('categoriesString')
       this.columnsKeys['managerEntries'].push('categoriesString')
@@ -144,9 +151,9 @@ export default class EntriesManagementCtrl {
       this.fieldsColumns['managerEntries'].push(categoriesFieldColumns)
     }
     if (this.config['display_keywords']) {
-      this.columns['entries']['keywordsString'] = {name: transKeywords, value: true}
-      this.columns['myEntries']['keywordsString'] = {name: transKeywords, value: true}
-      this.columns['managerEntries']['keywordsString'] = {name: transKeywords, value: true}
+      this.columns['entries']['keywordsString'] = {name: transKeywords, value: keywordsColumnDisplay}
+      this.columns['myEntries']['keywordsString'] = {name: transKeywords, value: keywordsColumnDisplay}
+      this.columns['managerEntries']['keywordsString'] = {name: transKeywords, value: keywordsColumnDisplay}
       this.columnsKeys['entries'].push('keywordsString')
       this.columnsKeys['myEntries'].push('keywordsString')
       this.columnsKeys['managerEntries'].push('keywordsString')
@@ -171,31 +178,32 @@ export default class EntriesManagementCtrl {
           data['sortable'] = `field_${id}`
         }
         data['filter'] = {['field_' + id]: 'text'}
-        this.columns['myEntries'][id] = {name: f['name'], value: false}
-        this.columns['managerEntries'][id] = {name: f['name'], value: false}
+        const columnDisplay = this.checkColumnDefaultValue(id)
+        this.columns['myEntries'][id] = {name: f['name'], value: columnDisplay}
+        this.columns['managerEntries'][id] = {name: f['name'], value: columnDisplay}
         this.columnsKeys['myEntries'].push(id)
         this.columnsKeys['managerEntries'].push(id)
         this.fieldsColumns['myEntries'].push(data)
         this.fieldsColumns['managerEntries'].push(data)
 
         if (f['type'] !== 9 && (displayMetadata || !f['isMetadata'])) {
-          this.columns['entries'][id] = {name: f['name'], value: false}
+          this.columns['entries'][id] = {name: f['name'], value: columnDisplay}
           this.columnsKeys['entries'].push(id)
           this.fieldsColumns['entries'].push(data)
         }
       }
     })
-    this.columns['managerEntries']['actions'] = {name: transActions, value: true}
+    this.columns['managerEntries']['actions'] = {name: transActions, value: actionsColumnDisplay}
     this.columnsKeys['managerEntries'].push('actions')
     this.fieldsColumns['managerEntries'].push({id: 'actions', title: transActions})
 
     if (this.canEdit()) {
-      this.columns['entries']['actions'] = {name: transActions, value: true}
+      this.columns['entries']['actions'] = {name: transActions, value: actionsColumnDisplay}
       this.columnsKeys['entries'].push('actions')
       this.fieldsColumns['entries'].push({id: 'actions', title: transActions})
     }
     if (this.canEdit() || this.config['edition_enabled']) {
-      this.columns['myEntries']['actions'] = {name: transActions, value: true}
+      this.columns['myEntries']['actions'] = {name: transActions, value: actionsColumnDisplay}
       this.columnsKeys['myEntries'].push('actions')
       this.fieldsColumns['myEntries'].push({id: 'actions', title: transActions})
     }
@@ -269,5 +277,13 @@ export default class EntriesManagementCtrl {
 
   canGeneratePdf() {
     return this.ClacoFormService.getCanGeneratePdf()
+  }
+
+  checkColumnDefaultValue(value) {
+    if (this.config['search_columns']) {
+      return this.config['search_columns'].findIndex(sc => sc === value) > -1
+    } else {
+      return ['title', 'creationDateString', 'userString', 'categoriesString', 'keywordsString', 'actions'].findIndex(sc => sc === value) > -1
+    }
   }
 }

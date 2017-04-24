@@ -297,6 +297,21 @@ class ClacoForm extends AbstractResource
         $this->details['search_column_enabled'] = $searchColumnEnabled;
     }
 
+    public function getSearchColumns()
+    {
+        return !is_null($this->details) && isset($this->details['search_columns']) ?
+            $this->details['search_columns'] :
+            ['title', 'creationDateString', 'userString', 'categoriesString', 'keywordsString', 'actions'];
+    }
+
+    public function setSearchColumns(array $searchColumns)
+    {
+        if (is_null($this->details)) {
+            $this->details = [];
+        }
+        $this->details['search_columns'] = $searchColumns;
+    }
+
     public function getDisplayMetadata()
     {
         return !is_null($this->details) && isset($this->details['display_metadata']) ? $this->details['display_metadata'] : 'none';
