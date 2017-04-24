@@ -5,6 +5,7 @@ import {ErrorBlock} from './error-block.jsx'
 
 export const FormGroup = props =>
   <div className={classes('form-group', props.className, {
+    'form-last': props.last,
     'has-error': props.error && !props.warnOnly,
     'has-warning': props.error && props.warnOnly
   })}>
@@ -37,10 +38,12 @@ FormGroup.propTypes = {
   children: T.element.isRequired,
   warnOnly: T.bool.isRequired,
   help: T.string,
-  error: T.string
+  error: T.string,
+  last: T.bool
 }
 
 FormGroup.defaultProps = {
   warnOnly: false,
-  hideLabel: false
+  hideLabel: false,
+  last: false
 }

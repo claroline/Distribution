@@ -10,23 +10,16 @@ const ConfirmModal = props =>
     <Modal.Body>
       {props.question}
     </Modal.Body>
-    <Modal.Footer>
-      <button
-        className="btn btn-default"
-        onClick={props.fadeModal}
-      >
-        {t('cancel')}
-      </button>
-      <button
-        className={classes('btn', props.isDangerous ? 'btn-danger' : 'btn-primary')}
-        onClick={() => {
-          props.handleConfirm()
-          props.fadeModal()
-        }}
-      >
-        {props.confirmButtonText || t('Ok')}
-      </button>
-    </Modal.Footer>
+
+    <button
+      className={classes('modal-btn btn', props.isDangerous ? 'btn-danger' : 'btn-primary')}
+      onClick={() => {
+        props.handleConfirm()
+        props.fadeModal()
+      }}
+    >
+      {props.confirmButtonText || t('Ok')}
+    </button>
   </BaseModal>
 
 ConfirmModal.propTypes = {

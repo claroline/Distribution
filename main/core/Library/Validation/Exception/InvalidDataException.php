@@ -1,15 +1,11 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Validator;
+namespace Claroline\CoreBundle\Library\Validation\Exception;
 
 /**
  * Exception thrown by the Api when invalid data are received.
- *
- * @todo : use \Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException
- *
- * @deprecated
  */
-class ValidationException extends \Exception
+class InvalidDataException extends \Exception
 {
     private $errors;
 

@@ -1,40 +1,59 @@
-import React, {PropTypes as T} from 'react'
+import React, {Component, PropTypes as T} from 'react'
 
+import {registerModalTypes} from '#/main/core/layout/modal'
 import { Page, PageHeader, PageContent } from '#/main/core/layout/page/components/page.jsx'
 import { ResourceActions } from './resource-actions.jsx'
 
-const Resource = props =>
-  <Page
-    className="resource-page"
-    embedded={props.embedded}
-    fullscreen={props.fullscreen}
+import {MODAL_RESOURCE_PROPERTIES, EditPropertiesModal} from './modal/edit-properties.jsx'
+import {MODAL_RESOURCE_RIGHTS, EditRightsModal} from './modal/edit-rights.jsx'
 
-    modal={props.modal}
-    showModal={props.showModal}
-    fadeModal={props.fadeModal}
-    hideModal={props.hideModal}
-  >
-    <PageHeader
-      className="resource-header"
-      title={props.resourceNode.name}
-    >
-      <ResourceActions
-        resourceNode={props.resourceNode}
-        editMode={props.editMode}
-        edit={props.edit}
-        save={props.save}
-        customActions={props.customActions}
-        fullscreen={props.fullscreen}
-        toggleFullscreen={props.toggleFullscreen}
-        togglePublication={props.togglePublication}
-        showModal={props.showModal}
-      />
-    </PageHeader>
+class Resource extends Component {
+  constructor(props) {
+    super(props)
 
-    <PageContent>
-      {props.children}
-    </PageContent>
-  </Page>
+    // register modals
+    registerModalTypes([
+      [MODAL_RESOURCE_PROPERTIES, EditPropertiesModal],
+      [MODAL_RESOURCE_RIGHTS,     EditRightsModal]
+    ])
+  }
+
+  render() {
+    return (
+      <Page
+        className="resource-page"
+        embedded={this.props.embedded}
+        fullscreen={this.props.fullscreen}
+
+        modal={this.props.modal}
+        showModal={this.props.showModal}
+        fadeModal={this.props.fadeModal}
+        hideModal={this.props.hideModal}
+      >
+        <PageHeader
+          className="resource-header"
+          title={this.props.resourceNode.name}
+        >
+          <ResourceActions
+            resourceNode={this.props.resourceNode}
+            editMode={this.props.editMode}
+            edit={this.props.edit}
+            save={this.props.save}
+            customActions={this.props.customActions}
+            fullscreen={this.props.fullscreen}
+            toggleFullscreen={this.props.toggleFullscreen}
+            togglePublication={this.props.togglePublication}
+            showModal={this.props.showModal}
+          />
+        </PageHeader>
+
+        <PageContent>
+          {this.props.children}
+        </PageContent>
+      </Page>
+    )
+  }
+}
 
 Resource.propTypes = {
   resourceNode: T.shape({

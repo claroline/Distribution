@@ -23,7 +23,11 @@ import {MODAL_ADD_ITEM} from './../../quiz/editor/components/add-item-modal.jsx'
 // TODO : finish to refactor modals for using the ones embed in <Page> component
 
 const Bank = props =>
-  <Page>
+  <Page
+    modal={props.modal}
+    fadeModal={props.fadeModal}
+    hideModal={props.hideModal}
+  >
     <PageHeader
       title={tex('questions_bank')}
     >
@@ -87,6 +91,8 @@ Bank.propTypes = {
     pageSize: T.number.isRequired
   }),
   createModal: T.func.isRequired,
+  fadeModal: T.func.isRequired,
+  hideModal: T.func.isRequired,
   openSearchModal: T.func.isRequired,
   openAddModal: T.func.isRequired,
   handlePageChange: T.func.isRequired,
@@ -109,6 +115,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     createModal: (type, props, fading) => makeModal(type, props, fading, dispatch),
+    fadeModal() {
+      dispatch(modalActions.fadeModal())
+    },
+    hideModal() {
+      dispatch(modalActions.hideModal())
+    },
     openSearchModal(searchFilters) {
       dispatch(modalActions.showModal(MODAL_SEARCH, {
         title: tex('search'),

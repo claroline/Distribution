@@ -4,9 +4,9 @@ import classes from 'classnames'
 import get from 'lodash/get'
 
 import {tex, t} from '#/main/core/translation'
-import {Textarea} from './../../components/form/textarea.jsx'
-import {TooltipButton} from './../../components/form/tooltip-button.jsx'
+import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
+import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {actions} from './editor'
 import {utils} from './utils/utils'
 

@@ -6,7 +6,7 @@ import {t, tex} from '#/main/core/translation'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {actions} from './../actions'
 import {selectors as correctionSelectors} from './../selectors'
-import {Textarea} from './../../../components/form/textarea.jsx'
+import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
 
 class AnswerRow extends Component {

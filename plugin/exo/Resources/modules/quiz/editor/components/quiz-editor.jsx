@@ -1,17 +1,19 @@
 import React, {Component, PropTypes as T} from 'react'
+import classes from 'classnames'
 import isObject from 'lodash/isObject'
+import get from 'lodash/get'
+
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
-import get from 'lodash/get'
-import classes from 'classnames'
+
 import {t, tex} from '#/main/core/translation'
+import {formatDate} from '#/main/core/date'
 import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'
+import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
+import {DatePicker} from '#/main/core/layout/form/components/date-picker.jsx'
 import {CheckGroup} from './../../../components/form/check-group.jsx'
-import {Textarea} from './../../../components/form/textarea.jsx'
 import {Radios} from './../../../components/form/radios.jsx'
-import {Date} from './../../../components/form/date.jsx'
 import {ValidationStatus} from './validation-status.jsx'
-import {formatDate} from './../../../utils/date'
 
 import {
   shuffleModes,
@@ -295,6 +297,12 @@ class Correction extends Component {
           controlId="quiz-total-score-on"
           label={tex('quiz_total_score_on')}
         >
+          <DatePicker
+            id="quiz-correctionDate"
+            name="quiz-correctionDate"
+            value={props.parameters.correctionDate || ''}
+            onChange={date => props.onChange('parameters.correctionDate', formatDate(date))}
+          />
           <div>
             <Radios
               groupName="quiz-total-score-on"
