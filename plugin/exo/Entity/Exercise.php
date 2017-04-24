@@ -533,22 +533,22 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Sets scoreOf
+     * Sets scoreOf.
      *
      * @param float $scoreOf
      */
     public function setScoreOf($scoreOf)
     {
-      $this->scoreOf = $scoreOf;
+        $this->scoreOf = $scoreOf;
     }
 
     /**
-     * Gets scoreOf
+     * Gets scoreOf.
      *
      * @return float
      */
     public function getScoreOf()
     {
-      return $this->scoreOf;
+        return $this->scoreOf;
     }
 }
