@@ -186,13 +186,15 @@ class PaperController extends AbstractController
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
+                $structure = json_decode($paper->getStructure());
+                $scoreOf = $structure->parameters->scoreOf && floatval($structure->parameters->scoreOf) > 0 ? floatval($structure->parameters->scoreOf) : 20;
                 fputcsv($handle, [
                     $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
                     $paper->getNumber(),
                     $paper->getStart()->format('Y-m-d H:i:s'),
                     $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
                     $paper->isInterrupted(),
-                    $this->paperManager->calculateScore($paper, 20),
+                    $this->paperManager->calculateScore($paper, $scoreOf),
                 ], ';');
             }
 
