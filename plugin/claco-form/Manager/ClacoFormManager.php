@@ -841,15 +841,30 @@ class ClacoFormManager
 
     private function getCategoriesFromFieldAndValue(Field $field, $value)
     {
+        $fieldFacet = $field->getFieldFacet();
         $categories = [];
         $choiceCategories = [];
         $values = is_array($value) ? $value : [$value];
 
-        foreach ($values as $v) {
-            $fccs = $this->getFieldChoicesCategoriesByFieldAndValue($field, $v);
+        if ($fieldFacet->getType() === FieldFacet::CASCADE_SELECT_TYPE) {
+            $choice = null;
 
-            foreach ($fccs as $fcc) {
-                $choiceCategories[] = $fcc;
+            foreach ($values as $key => $val) {
+                $parent = $choice;
+                $choice = $this->facetManager->getChoiceByFieldFacetAndValueAndParent($fieldFacet, $val, $parent);
+                $fcc = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
+
+                if (!empty($fcc)) {
+                    $choiceCategories[] = $fcc;
+                }
+            }
+        } else {
+            foreach ($values as $v) {
+                $fccs = $this->getFieldChoicesCategoriesByFieldAndValue($field, $v);
+
+                foreach ($fccs as $fcc) {
+                    $choiceCategories[] = $fcc;
+                }
             }
         }
         foreach ($choiceCategories as $choiceCategory) {

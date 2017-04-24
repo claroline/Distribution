@@ -677,4 +677,11 @@ class FacetManager
     {
         return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacetChoice')->findOneById($id);
     }
+
+    public function getChoiceByFieldFacetAndValueAndParent(FieldFacet $fieldFacet, $value, FieldFacetChoice $parent = null)
+    {
+        return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacetChoice')->findOneBy(
+            ['fieldFacet' => $fieldFacet, 'name' => $value, 'parent' => $parent]
+        );
+    }
 }
