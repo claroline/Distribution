@@ -14,6 +14,7 @@ export default class FieldCreationModalCtrl {
   constructor($http, $uibModalInstance, FieldService, CategoryService, resourceId, title, callback) {
     this.$http = $http
     this.$uibModalInstance = $uibModalInstance
+    this.FieldService = FieldService
     this.CategoryService = CategoryService
     this.resourceId = resourceId
     this.title = title
@@ -42,7 +43,19 @@ export default class FieldCreationModalCtrl {
     this.currentParentIndex = null
     this.currentParent = null
     this.cascadeLevelMax = FieldService.getCascadeLevelMax()
+    this.selectFields = []
+    this.selectFieldToCopy = null
     ++this.index
+    this.initializeSelectFields()
+  }
+
+  initializeSelectFields() {
+    const fields = this.FieldService.getFields()
+    fields.forEach(f => {
+      if (f['type'] === 5) {
+        this.selectFields.push(f)
+      }
+    })
   }
 
   checkValues() {
@@ -53,6 +66,8 @@ export default class FieldCreationModalCtrl {
 
   submit() {
     this.resetErrors()
+    this.currentMode = 'button'
+    this.selectFieldToCopy = null
 
     if (!this.field['name']) {
       this.fieldErrors['name'] = Translator.trans('form_not_blank_error', {}, 'clacoform')
@@ -173,7 +188,14 @@ export default class FieldCreationModalCtrl {
   }
 
   addChoice() {
-    this.choices.push({index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false, new: true})
+    this.choices.push({
+      index: this.index,
+      value: '',
+      category: null,
+      categoryEnabled: false,
+      cascadeEnabled: false,
+      new: true
+    })
     this.choicesErrors[this.index] = null
     ++this.index
   }
@@ -206,6 +228,9 @@ export default class FieldCreationModalCtrl {
   }
 
   switchChoiceCascade(index) {
+    this.currentMode = 'button'
+    this.selectFieldToCopy = null
+
     if (index === this.currentParentIndex) {
       this.currentParentIndex = null
       this.currentParent['cascadeEnabled'] = false
@@ -223,6 +248,9 @@ export default class FieldCreationModalCtrl {
   }
 
   switchChildChoiceCascade(parentIndex, index) {
+    this.currentMode = 'button'
+    this.selectFieldToCopy = null
+
     if (index === this.currentParentIndex) {
       this.currentParentIndex = null
       this.currentParent['cascadeEnabled'] = false
@@ -257,11 +285,18 @@ export default class FieldCreationModalCtrl {
     this.currentParent = null
   }
 
-  addChildChoice(parentIndex) {
+  addChildChoice(parentIndex, value = '') {
     if (!this.choicesChildren[parentIndex]) {
       this.choicesChildren[parentIndex] = []
     }
-    this.choicesChildren[parentIndex].push({index: this.index, value: '', category: null, categoryEnabled: false, cascadeEnabled: false, new: true})
+    this.choicesChildren[parentIndex].push({
+      index: this.index,
+      value: value,
+      category: null,
+      categoryEnabled: false,
+      cascadeEnabled: false,
+      new: true
+    })
     this.choicesChildrenErrors[this.index] = null
     ++this.index
   }
@@ -298,5 +333,28 @@ export default class FieldCreationModalCtrl {
       this.choicesChildren[index].forEach(c => this.removeAllChildren(c['index']))
       delete this.choicesChildren[index]
     }
+  }
+
+  showSelectLists() {
+    this.currentMode = 'list'
+    this.selectFieldToCopy = null
+  }
+
+  cancelListCopy() {
+    this.currentMode = 'button'
+    this.selectFieldToCopy = null
+  }
+
+  copyList(parentIndex) {
+    const allChoices = this.selectFieldToCopy['fieldFacet'] && this.selectFieldToCopy['fieldFacet']['field_facet_choices'] ?
+      this.selectFieldToCopy['fieldFacet']['field_facet_choices'] :
+      []
+    allChoices.forEach(c => {
+      if (!c['parent']) {
+        this.addChildChoice(parentIndex, c['label'])
+      }
+    })
+    this.currentMode = 'button'
+    this.selectFieldToCopy = null
   }
 }
