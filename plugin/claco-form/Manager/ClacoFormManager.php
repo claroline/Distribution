@@ -693,6 +693,13 @@ class ClacoFormManager
             $this->getPublishedEntriesByDates($clacoForm, $startDate, $endDate);
     }
 
+    public function getRandomEntriesByCategories(ClacoForm $clacoForm, array $categoriesIds)
+    {
+        return count($categoriesIds) > 0 ?
+            $this->getPublishedEntriesByCategoriesAndDates($clacoForm, $categoriesIds) :
+            $this->getPublishedEntriesByDates($clacoForm);
+    }
+
     public function createEntry(ClacoForm $clacoForm, array $entryData, $title, array $keywordsData = [], User $user = null)
     {
         $this->om->startFlushSuite();
@@ -849,7 +856,7 @@ class ClacoFormManager
         if ($fieldFacet->getType() === FieldFacet::CASCADE_SELECT_TYPE) {
             $choice = null;
 
-            foreach ($values as $key => $val) {
+            foreach ($values as $val) {
                 $parent = $choice;
                 $choice = $this->facetManager->getChoiceByFieldFacetAndValueAndParent($fieldFacet, $val, $parent);
                 $fcc = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
@@ -1285,9 +1292,9 @@ class ClacoFormManager
         return $config;
     }
 
-    public function getNRandomEntries(ClacoForm $clacoForm, $nbEntries)
+    public function getNRandomEntries(ClacoForm $clacoForm, $nbEntries, array $categoriesIds)
     {
-        $randomEntries = $this->getRandomEntries($clacoForm);
+        $randomEntries = $this->getRandomEntriesByCategories($clacoForm, $categoriesIds);
         $count = count($randomEntries);
 
         if ($count > $nbEntries) {
@@ -1923,6 +1930,11 @@ class ClacoFormManager
         return $this->clacoFormRepo->findOneBy(['resourceNode' => $resourceNode]);
     }
 
+    public function getClacoFormByResourceNodeId($resourceNodeId)
+    {
+        return $this->clacoFormRepo->findClacoFormByResourceNodeId($resourceNodeId);
+    }
+
     /****************************************
      * Access to CategoryRepository methods *
      ****************************************/
@@ -1935,6 +1947,11 @@ class ClacoFormManager
     public function getCategoriesByManager(ClacoForm $clacoForm, User $manager)
     {
         return $this->categoryRepo->findCategoriesByManager($clacoForm, $manager);
+    }
+
+    public function getCategoriesByIds(array $ids)
+    {
+        return count($ids) > 0 ? $this->categoryRepo->findCategoriesByIds($ids) : [];
     }
 
     /*************************************

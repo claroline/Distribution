@@ -71,10 +71,11 @@ class ClacoFormWidgetController extends Controller
         $nbEntries = $config->getNbEntries();
         $showFieldLabel = $config->getShowFieldLabel();
         $showCreatorPicture = $config->getShowCreatorPicture();
+        $categoriesIds = $config->getCategories();
         $resourceNode = $config->getResourceNode();
         $clacoForm = is_null($resourceNode) ? null : $this->clacoFormManager->getClacoFormByResourceNode($resourceNode);
         $fields = $config->getFields();
-        $entries = is_null($clacoForm) ? [] : $this->clacoFormManager->getNRandomEntries($clacoForm, $nbEntries);
+        $entries = is_null($clacoForm) ? [] : $this->clacoFormManager->getNRandomEntries($clacoForm, $nbEntries, $categoriesIds);
         $data = [];
 
         foreach ($entries as $entry) {
@@ -135,7 +136,7 @@ class ClacoFormWidgetController extends Controller
     public function clacoFormWidgetConfigureFormAction(WidgetInstance $widgetInstance)
     {
         $config = $this->clacoFormManager->getClacoFormWidgetConfiguration($widgetInstance);
-        $form = $this->formFactory->create(new ClacoFormWidgetConfigurationType($config), $config);
+        $form = $this->formFactory->create(new ClacoFormWidgetConfigurationType($config, $this->clacoFormManager), $config);
 
         return ['form' => $form->createView(), 'config' => $config];
     }
@@ -150,16 +151,23 @@ class ClacoFormWidgetController extends Controller
      */
     public function clacoFormWidgetConfigureAction(ClacoFormWidgetConfig $config)
     {
-        $form = $this->formFactory->create(new ClacoFormWidgetConfigurationType($config), $config);
+        $form = $this->formFactory->create(new ClacoFormWidgetConfigurationType($config, $this->clacoFormManager), $config);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
             $nbEntries = $form->get('nbEntries')->getData();
             $showFieldLabel = $form->get('showFieldLabel')->getData();
             $showCreatorPicture = $form->get('showCreatorPicture')->getData();
+            $categoriesList = $form->get('categories')->getData();
             $config->setNbEntries($nbEntries);
             $config->setShowFieldLabel($showFieldLabel);
             $config->setShowCreatorPicture($showCreatorPicture);
+            $categoriesIdsList = [];
+
+            foreach ($categoriesList as $category) {
+                $categoriesIdsList[] = $category->getId();
+            }
+            $config->setCategories($categoriesIdsList);
             $this->clacoFormManager->persistClacoFormWidgetConfiguration($config);
 
             return new JsonResponse('success', 204);
@@ -182,6 +190,27 @@ class ClacoFormWidgetController extends Controller
 
         foreach ($fields as $field) {
             $data[] = ['id' => $field->getId(), 'name' => $field->getName()];
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/resource/node/{resourceNode}/categories/retrieve",
+     *     name="claro_claco_form_categories_retrieve",
+     *     options={"expose"=true}
+     * )
+     */
+    public function clacoFormCategoriesRetrieveAction(ResourceNode $resourceNode)
+    {
+        $clacoForm = $this->clacoFormManager->getClacoFormByResourceNode($resourceNode);
+        $displayCategories = $clacoForm->getDisplayCategories();
+        $data = [];
+        $categories = $displayCategories ? $clacoForm->getCategories() : [];
+
+        foreach ($categories as $category) {
+            $data[] = ['id' => $category->getId(), 'name' => $category->getName()];
         }
 
         return new JsonResponse($data);

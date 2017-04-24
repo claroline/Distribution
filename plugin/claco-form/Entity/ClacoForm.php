@@ -18,7 +18,7 @@ use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\ClacoFormBundle\Repository\ClacoFormRepository")
  * @ORM\Table(name="claro_clacoformbundle_claco_form")
  */
 class ClacoForm extends AbstractResource
