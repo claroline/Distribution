@@ -142,10 +142,16 @@ class ClacoFormWidgetConfigurationType extends AbstractType
                 $form = $event->getForm();
                 $clacoFormWidgetConfig = $event->getData();
                 $resourceNode = $clacoFormWidgetConfig->getResourceNode();
-                $clacoForm = $this->clacoFormManager->getClacoFormByResourceNode($resourceNode);
-                $displayCategories = $clacoForm->getDisplayCategories();
-                $categoriesIds = $this->config->getCategories();
-                $categories = $displayCategories ? $this->clacoFormManager->getCategoriesByIds($categoriesIds) : [];
+
+                if (empty($resourceNode)) {
+                    $displayCategories = false;
+                    $categories = [];
+                } else {
+                    $clacoForm = $this->clacoFormManager->getClacoFormByResourceNode($resourceNode);
+                    $displayCategories = $clacoForm->getDisplayCategories();
+                    $categoriesIds = $this->config->getCategories();
+                    $categories = $displayCategories ? $this->clacoFormManager->getCategoriesByIds($categoriesIds) : [];
+                }
 
                 $form->add(
                     'categories',
