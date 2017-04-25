@@ -37,6 +37,7 @@ class LtiWsController extends Controller
         $vars['ltiApp'] = $app;
         $vars['ltiDatas'] = $ltiParams['ltiData'];
         $vars['signature'] = $ltiParams['signature'];
+        $vars['target'] = $resource->getOpenInNewTab();
 
         return $this->render('UJMLtiBundle:Lti:open_app.html.twig', $vars);
     }

@@ -23,23 +23,20 @@
         <tr>
             <th>{{ 'title' | trans({}, 'platform') }}</th>
             <th>{{ 'description' | trans({}, 'platform') }}</th>
-            <th>{{ 'open_application'|trans({}, 'lti') }}</th>
         </tr>
         <tr>
             <td>{{ ltiApp.title }}</td>
             <td>{{ ltiApp.description }}</td>
-            <td>
-                <form id="form_app_{{ ltiApp.id }}" method="POST" target="lti" action="{{ printfTwig(ltiApp.url) }}">
-                    {% for key,value in ltiDatas %}
-                        <input type="hidden" name="{{ key }}" value="{{ value }}">
-                    {% endfor %}
-                    <input type="hidden" name="oauth_signature" value="{{ signature }}">
-                    <button onclick="displayFrameLti()" type="submit" title="{{ 'open_application_in_the_same_window'|trans({}, 'lti') }}"><i class="fa fa-arrow-circle-up"></i></button>
-                    <button onclick="targetApp('form_app_{{ ltiApp.id }}')" type="submit"  title="{{ 'open_application_in_a_new_window'|trans({}, 'lti') }}"><i class="fa fa-external-link-square"></i></button>
-                </form>
-            </td>
         </tr>
     </table>
+
+    <form id="form_app_{{ ltiApp.id }}" method="POST" target="lti" action="{{ printfTwig(ltiApp.url) }}">
+        {% for key,value in ltiDatas %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+        <input type="hidden" name="oauth_signature" value="{{ signature }}">
+    </form>
+
     <div id="frameLti" style="display: none">
         <iframe name="lti"  style="height: 700px; width: 100%"></iframe>
     </div>
@@ -49,11 +46,14 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        function displayFrameLti() {
+        var target = "{{ target }}";
+        if ( target ) {
+            $("#form_app_{{ ltiApp.id }}").attr('target', '_blank');
+        } else {
             $("#frameLti").show();
         }
-        function targetApp(form) {
-            $("#"+form).attr('target', '_blank');
-        }
+        jQuery(document).ready(function($){
+            $("#form_app_{{ ltiApp.id }}").submit();
+        });
     </script>
 {% endblock %}

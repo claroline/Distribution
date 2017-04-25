@@ -18,6 +18,11 @@ class LtiResource extends AbstractResource
     private $ltiApp;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $openInNewTab;
+
+    /**
      * @param LtiApp $ltiApp
      */
     public function setLtiApp($ltiApp)
@@ -31,5 +36,21 @@ class LtiResource extends AbstractResource
     public function getLtiApp()
     {
         return $this->ltiApp;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getOpenInNewTab()
+    {
+        return $this->openInNewTab;
+    }
+
+    /**
+     * @param bool $openInNewTab
+     */
+    public function setOpenInNewTab($openInNewTab)
+    {
+        $this->openInNewTab = $openInNewTab;
     }
 }

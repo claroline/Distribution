@@ -18,20 +18,29 @@ class LtiResourceType extends AbstractType
                     ->orderBy('l.title', 'ASC');
             },
             'choice_label' => 'title',
+            'label' => 'choice_app',
         ]);
         $builder->add(
             'name',
             'text',
             [
-                'label' => 'name',
+                'label' => 'name_app',
                 'attr' => ['autofocus' => true],
             ]
+        );
+        $builder->add(
+            'openInNewTab',
+            'checkbox',
+            [
+                'label' => 'open_application_in_a_new_window',
+            ]
+
         );
     }
 
     public function getName()
     {
-        return 'platform_parameters_form';
+        return 'ltiApp_form';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
