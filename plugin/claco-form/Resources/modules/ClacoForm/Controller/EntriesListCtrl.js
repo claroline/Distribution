@@ -245,6 +245,10 @@ export default class EntriesManagementCtrl {
     return columns
   }
 
+  isColumnDisplayed(type, name) {
+    return this.columns[type] && this.columns[type][name] && this.columns[type][name]['value']
+  }
+
   isDefaultField(name) {
     return name === 'title' ||
       name === 'userString' ||

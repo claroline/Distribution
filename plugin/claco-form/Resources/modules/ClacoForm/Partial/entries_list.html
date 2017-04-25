@@ -96,6 +96,14 @@
                                    ng-if="entry['comments'].length > 0"
                                 >
                                 </i>
+                                <a ui-sref="entry_view({entryId: entry['id']})" ng-if="!cfc.isColumnDisplayed('entries', 'title')">
+                                    <i class="fa fa-search"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="{{ 'open_entry'|trans:{}:'clacoform' }}"
+                                    >
+                                    </i>
+                                </a>
                             </span>
                             <span ng-if="fc['id'] === 'actions'">
                                 <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.canGeneratePdf()">
@@ -192,6 +200,14 @@
                                    ng-if="entry['comments'].length > 0"
                                 >
                                 </i>
+                                <a ui-sref="entry_view({entryId: entry['id']})" ng-if="!cfc.isColumnDisplayed('myEntries', 'title')">
+                                    <i class="fa fa-search"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="{{ 'open_entry'|trans:{}:'clacoform' }}"
+                                    >
+                                    </i>
+                                </a>
                             </span>
                             <span ng-if="fc['id'] === 'actions'">
                                 <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.canGeneratePdf()">
@@ -270,6 +286,14 @@
                                    ng-if="entry['comments'].length > 0"
                                 >
                                 </i>
+                                <a ui-sref="entry_view({entryId: entry['id']})" ng-if="!cfc.isColumnDisplayed('managerEntries', 'title')">
+                                    <i class="fa fa-search"
+                                       data-toggle="tooltip"
+                                       data-placement="top"
+                                       title="{{ 'open_entry'|trans:{}:'clacoform' }}"
+                                    >
+                                    </i>
+                                </a>
                             </span>
                             <span ng-if="fc['id'] === 'actions'">
                                 <button class="btn btn-default btn-sm" ng-click="cfc.downloadPdf(entry['id'])" ng-if="cfc.canGeneratePdf()">
