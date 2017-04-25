@@ -851,7 +851,14 @@ class ResourceManager
     public function setPublishedStatus(array $nodes, $arePublished)
     {
         foreach ($nodes as $node) {
-            $node->setPublished($arePublished);
+            $children = $this->getAllChildren($node, true);
+
+            //do it on every children aswell
+            foreach ($children as $child) {
+                $child->setPublished($arePublished);
+            }
+
+            //only warn for the roots
             $eventName = "publication_change_{$node->getResourceType()->getName()}";
             $resource = $this->getResourceFromNode($node);
             $this->dispatcher->dispatch($eventName, 'PublicationChange', [$resource]);
