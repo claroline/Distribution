@@ -40,6 +40,10 @@ utils.makeFindHtml = (text, solutions) => {
   return text
 }
 
+utils.getFindElementLength = () => {
+  return '<span class="checked-selection"></span>'.length
+}
+
 
 utils.getFirstSpan = (item) => {
   const id = item.selectionId ? item.selectionId: item.id
@@ -144,5 +148,10 @@ utils.getSelectionText = (item, selectionId = null) => {
     item.solutions.find(solution => solution.selectionId === selectionId):
     item.selections.find(selection => selection.id === selectionId)
 
-  return item.text.substring(selection.begin, selection.end)
+  const string = item.text.substring(selection.begin, selection.end)
+
+  const tmp = document.createElement('div')
+  tmp.innerHTML = string
+
+  return tmp.textContent
 }

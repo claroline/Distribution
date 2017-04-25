@@ -88,14 +88,14 @@ export class SelectionPlayer extends Component {
         {this.props.item.mode !== 'find' &&
           <SelectionText
             className="panel-body"
-            id="selection-text-box"
+            id={'selection-text-box-' + this.props.item.id}
             anchorPrefix="selection-element-yours"
             text={this.props.item.text}
             selections={getReactAnswerInputs(this.props.item, this.getOnAnswer(), this.answers)}
           />
         }
         {this.props.item.mode === 'find' &&
-          <div id="selection-text-box" className="pointer panel-body" dangerouslySetInnerHTML={{__html: utils.makeFindHtml(
+          <div id={'selection-text-box-' + this.props.item.id} className="pointer panel-body" dangerouslySetInnerHTML={{__html: utils.makeFindHtml(
             this.props.item.text,
             this.props.answer && this.props.answer.positions ?
               this.props.item.solutions.filter(solution => this.props.answer.positions.find(ans => ans >= solution.begin && ans <= solution.end)): []
@@ -108,15 +108,24 @@ export class SelectionPlayer extends Component {
 
   componentDidMount() {
     if (this.props.item.mode === 'find') {
-      document.getElementById('selection-text-box').addEventListener(
+      document.getElementById('selection-text-box-' + this.props.item.id).addEventListener(
         'click',
         () => {
-          let offsets = getOffsets(document.getElementById('selection-text-box'))
+          let offsets = getOffsets(document.getElementById('selection-text-box-' + this.props.item.id))
+          if (offsets.trueStart !== offsets.trueEnd) {
+            //must be a click and not a selection
+            return
+          }
           const leftTries = (this.props.item.tries || 0) - (this.props.answer ? this.props.answer.tries: 0)
           if (leftTries > 0) {
             this.props.item.solutions.forEach(element => {
-              if (offsets.start >= element.begin && offsets.end <= element.end) {
-                this.onFindAnswer(offsets.start)
+              //remove the appended span size for style
+              let toRemove = 0
+              this.props.answer.positions.filter(position => position <= element.end).sort().forEach(() => toRemove += utils.getFindElementLength())
+
+              const position = offsets.trueStart - toRemove
+              if (position >= element.begin && position <= element.end) {
+                this.onFindAnswer(position)
               }
             })
             this.onFindAnswer(null, true)

@@ -72,7 +72,7 @@ class PaperController extends AbstractController
         $this->assertHasPermission('OPEN', $exercise);
 
         return new JsonResponse(
-            $this->paperManager->exportExercisePapers($exercise, $this->isAdmin($exercise) ? null : $user)
+            $this->paperManager->serializeExercisePapers($exercise, $this->isAdmin($exercise) ? null : $user)
         );
     }
 
@@ -101,7 +101,7 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        return new JsonResponse($this->paperManager->export($paper));
+        return new JsonResponse($this->paperManager->serialize($paper));
     }
 
     /**
@@ -186,13 +186,15 @@ class PaperController extends AbstractController
 
             /** @var Paper $paper */
             foreach ($papers as $paper) {
+                $structure = json_decode($paper->getStructure());
+                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : 20;
                 fputcsv($handle, [
                     $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
                     $paper->getNumber(),
                     $paper->getStart()->format('Y-m-d H:i:s'),
                     $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
                     $paper->isInterrupted(),
-                    $this->paperManager->calculateScore($paper, 20),
+                    $this->paperManager->calculateScore($paper, $totalScoreOn),
                 ], ';');
             }
 
