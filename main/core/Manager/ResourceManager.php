@@ -852,10 +852,13 @@ class ResourceManager
     {
         foreach ($nodes as $node) {
             $children = $this->getAllChildren($node, true);
+            $node->setPublished($arePublished);
+            $this->om->persist($node);
 
             //do it on every children aswell
             foreach ($children as $child) {
                 $child->setPublished($arePublished);
+                $this->om->persist($child);
             }
 
             //only warn for the roots
