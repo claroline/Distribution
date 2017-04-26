@@ -69,7 +69,7 @@ function customActions(props) {
   })
 
   // Export results
-  if (props.editable && select.papersAdmin) {
+  if (props.editable && props.papersAdmin) {
     actions.push({
       icon: 'fa fa-fw fa-table',
       label: tex('export_csv_results'),
