@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Form;
 
 use Claroline\CoreBundle\Entity\Role;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -96,7 +97,7 @@ class ProfileCreationType extends AbstractType
                     'expanded' => true,
                     'multiple' => true,
                     'property' => 'translationKey',
-                    'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ($isAdmin) {
+                    'query_builder' => function (EntityRepository $er) use ($isAdmin) {
                         $query = $er->createQueryBuilder('r')
                                 ->where('r.type = '.Role::PLATFORM_ROLE)
                                 ->andWhere("r.name != 'ROLE_USER'")
