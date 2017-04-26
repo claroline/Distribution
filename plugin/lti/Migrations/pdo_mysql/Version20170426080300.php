@@ -8,15 +8,16 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/03/31 02:25:32
+ * Generation date: 2017/04/26 08:03:03
  */
-class Version20170331142531 extends AbstractMigration
+class Version20170426080300 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql('
             CREATE TABLE ujm_lti_resource (
                 id INT AUTO_INCREMENT NOT NULL, 
+                openInNewTab TINYINT(1) NOT NULL, 
                 ltiApp_id INT NOT NULL, 
                 resourceNode_id INT DEFAULT NULL, 
                 INDEX IDX_43618A03A58375FA (ltiApp_id), 
