@@ -121,7 +121,7 @@
     "attempt": "Tentative",
     "attempts": "Tentatives",
     "auth_mode": "Mode d'authentification",
-    "authentication": "Authentificatio",
+    "authentication": "Authentification",
     "authentication_invalid": "La source d'authentification %authentication% de la ligne %line% n'est pas valide.",
     "authentication_source": "Source d'authentification",
     "author": "Auteur",
@@ -460,6 +460,8 @@
     "friend_platform": "Plateformes amies",
     "from": "Depuis",
     "from_message": "De",
+    "fullscreen_off": "Fermer le plein écran",
+    "fullscreen_on": "Afficher en plein écran",
     "fullscreen_text_editor": "Vous pouvez utiliser la version plein écran de l'éditeur afin d'y inclure du HTML.",
     "general": "Général",
     "general_parameters": "Paramètres généraux",
@@ -1375,5 +1377,6 @@
     "your_username": "Votre nom d'utilisateur est",
     "your_workspace_activity_overview": "Aperçu des activités récentes de vos espaces d'activités",
     "ssl_enabled": "Activer SSL ?",
-    "visible_facet_form_explanation": "Le champ \"Visible\" vous permet de rendre l'élément visible ou non pour l'utilisateur."
+    "visible_facet_form_explanation": "Le champ \"Visible\" vous permet de rendre l'élément visible ou non pour l'utilisateur.",
+    "geolocate": "Géolocaliser"
 }
