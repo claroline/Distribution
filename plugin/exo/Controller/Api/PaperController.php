@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Translation\TranslatorInterface;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -187,7 +186,7 @@ class PaperController extends AbstractController
         $papersData = $this->exerciseManager->exportPapersToCsv($exercise);
 
         return new StreamedResponse(function () use ($papersData) {
-          $papersData;
+            $papersData;
         }, 200, [
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
