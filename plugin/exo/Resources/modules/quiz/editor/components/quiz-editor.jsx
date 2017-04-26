@@ -250,6 +250,39 @@ class Correction extends Component {
     return(
       <fieldset>
         <FormGroup
+          controlId="quiz-total-score-on"
+          label={tex('quiz_total_score_on')}
+        >
+          <Radios
+            groupName="quiz-total-score-on"
+            options={[
+              {value: TOTAL_SCORE_ON_DEFAULT, label: tex('quiz_total_score_on_mode_default')},
+              {value: TOTAL_SCORE_ON_CUSTOM, label: tex('quiz_total_score_on_mode_custom')}
+            ]}
+            checkedValue={this.state.totalScoreOnMode}
+            onChange={mode => this.handleScoreModeChange(mode)}
+          />
+        </FormGroup>
+
+        {this.state.totalScoreOnMode === TOTAL_SCORE_ON_CUSTOM &&
+          <div className="sub-fields">
+            <FormGroup
+              controlId="quiz-total-score-on-value"
+              label={tex('quiz_total_score')}
+            >
+              <input
+                id="quiz-total-score-on-value"
+                onChange={e => this.props.onChange('parameters.totalScoreOn', Number(e.target.value))}
+                type="number"
+                min="1"
+                className="form-control"
+                value={this.props.parameters.totalScoreOn || TOTAL_SCORE_ON_DEFAULT_VALUE}
+              />
+            </FormGroup>
+          </div>
+        }
+
+        <FormGroup
           controlId="quiz-showCorrectionAt"
           label={tex('availability_of_correction')}
         >
@@ -270,7 +303,7 @@ class Correction extends Component {
               controlId="quiz-correctionDate"
               label={tex('correction_date')}
             >
-              <Date
+              <DatePicker
                 id="quiz-correctionDate"
                 name="quiz-correctionDate"
                 value={this.props.parameters.correctionDate || ''}
@@ -293,38 +326,7 @@ class Correction extends Component {
             )}
           </select>
         </FormGroup>
-        <FormGroup
-          controlId="quiz-total-score-on"
-          label={tex('quiz_total_score_on')}
-        >
-          <DatePicker
-            id="quiz-correctionDate"
-            name="quiz-correctionDate"
-            value={props.parameters.correctionDate || ''}
-            onChange={date => props.onChange('parameters.correctionDate', formatDate(date))}
-          />
-          <div>
-            <Radios
-              groupName="quiz-total-score-on"
-              options={[
-                {value: TOTAL_SCORE_ON_DEFAULT, label: tex('quiz_total_score_on_mode_default')},
-                {value: TOTAL_SCORE_ON_CUSTOM, label: tex('quiz_total_score_on_mode_custom')}
-              ]}
-              checkedValue={this.state.totalScoreOnMode}
-              onChange={mode => this.handleScoreModeChange(mode)}
-            />
-            { this.state.totalScoreOnMode ===  TOTAL_SCORE_ON_CUSTOM &&
-              <input
-                id="quiz-total-score-on-value"
-                onChange={e => this.props.onChange('parameters.totalScoreOn', Number(e.target.value))}
-                type="number"
-                min="1"
-                className="form-control"
-                value={this.props.parameters.totalScoreOn || TOTAL_SCORE_ON_DEFAULT_VALUE}
-              />
-            }
-          </div>
-        </FormGroup>
+
         <CheckGroup
           checkId="quiz-show-feedback"
           checked={this.props.parameters.showFeedback}
