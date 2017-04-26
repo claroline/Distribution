@@ -2,7 +2,8 @@ import React, {PropTypes as T} from 'react'
 import {connect} from 'react-redux'
 
 import {tex} from '#/main/core/translation'
-import { Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
+import {generateUrl} from '#/main/core/fos-js-router'
+import {Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 import {viewComponents} from './../views'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import select from './../selectors'
@@ -68,12 +69,12 @@ function customActions(props) {
   })
 
   // Export results
-  if (props.editable) {
+  if (props.editable && select.papersAdmin) {
     actions.push({
       icon: 'fa fa-fw fa-table',
       label: tex('export_csv_results'),
       disabled: !props.hasPapers,
-      action: '#export'
+      action: generateUrl('exercise_papers_export', {exerciseId: props.quiz.id})
     })
   }
 

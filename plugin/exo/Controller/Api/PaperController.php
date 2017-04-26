@@ -4,7 +4,6 @@ namespace UJM\ExoBundle\Controller\Api;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +15,7 @@ use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Validator\ValidationException;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
-use UJM\ExoBundle\Repository\PaperRepository;
+use UJM\ExoBundle\Manager\ExerciseManager;
 
 /**
  * Paper Controller.
@@ -38,14 +37,9 @@ class PaperController extends AbstractController
     private $paperManager;
 
     /**
-     * @var EntityManager
+     * @var ExerciseManager
      */
-    private $em;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
+    private $exerciseManager;
 
     /**
      * PaperController constructor.
@@ -53,26 +47,21 @@ class PaperController extends AbstractController
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
-     *     "em"              = @DI\Inject("doctrine.orm.entity_manager"),
-     *     "translator"      = @DI\Inject("translator")
+     *     "exerciseManager" = @DI\Inject("ujm_exo.manager.exercise")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param PaperManager                  $paperManager
      * @param EntityManager                 $em
-     * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         PaperManager $paperManager,
-        EntityManager $em,
-        TranslatorInterface $translator
-    )
-    {
+        ExerciseManager $exerciseManager
+    ) {
         $this->authorization = $authorization;
         $this->paperManager = $paperManager;
-        $this->em = $em;
-        $this->translator = $translator;
+        $this->exerciseManager = $exerciseManager;
     }
 
     /**
@@ -191,32 +180,14 @@ class PaperController extends AbstractController
     public function exportCsvAction(Exercise $exercise)
     {
         if (!$this->isAdmin($exercise)) {
-            // Only administrator or Paper Managers can axport Papers
+            // Only administrator or Paper Managers can export Papers
             throw new AccessDeniedException();
         }
-        /** @var PaperRepository $repo */
-        $repo = $this->em->getRepository('UJMExoBundle:Attempt\Paper');
-        $papers = $repo->findBy([
-            'exercise' => $exercise,
-        ]);
-        return new StreamedResponse(function () use ($papers) {
-            $handle = fopen('php://output', 'w+');
-            /** @var Paper $paper */
-            foreach ($papers as $paper) {
-                $structure = json_decode($paper->getStructure());
-                $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : 20;
-                $user = $paper->getUser();
-                $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
-                fputcsv($handle, [
-                    $user ? $user->getFirstName().' - '.$user->getLastName() : $this->translator->trans('anonymous', [], 'platform'),
-                    $paper->getNumber(),
-                    $paper->getStart()->format('Y-m-d H:i:s'),
-                    $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
-                    $paper->isInterrupted(),
-                    $score !== floor($score) ? number_format($score, 2) : $score,
-                ], ';');
-            }
-            fclose($handle);
+
+        $papersData = $this->exerciseManager->exportPapersToCsv($exercise);
+
+        return new StreamedResponse(function () use ($papersData) {
+          $papersData;
         }, 200, [
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
