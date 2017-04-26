@@ -181,7 +181,8 @@
             "Innova\\MediaResourceBundle\\": "plugin/media-resource",
             "Claroline\\DashboardBundle\\": "plugin/dashboard",
             "Claroline\\ClacoFormBundle\\": "plugin/claco-form",
-            "Claroline\\RemoteUserSynchronizationBundle\\": "plugin/remote-user-synchronization"
+            "Claroline\\RemoteUserSynchronizationBundle\\": "plugin/remote-user-synchronization",
+            "Icap\\BibliographyBundle\\": "plugin/bibliography"
         }
     },
     "extra": {
@@ -237,7 +238,8 @@
             "Claroline\\ChatBundle\\ClarolineChatBundle",
             "Claroline\\DashboardBundle\\ClarolineDashboardBundle",
             "Claroline\\ClacoFormBundle\\ClarolineClacoFormBundle",
-            "Claroline\\RemoteUserSynchronizationBundle\\ClarolineRemoteUserSynchronizationBundle"
+            "Claroline\\RemoteUserSynchronizationBundle\\ClarolineRemoteUserSynchronizationBundle",
+            "Icap\\BibliographyBundle\\IcapBibliographyBundle"
         ]
     }
 }
