@@ -59,11 +59,15 @@ class PaperController extends AbstractController
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param PaperManager                  $paperManager
-     * @param EntityManager                  $em
+     * @param EntityManager                 $em
+     * @param TranslatorInterface           $translator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        PaperManager $paperManager, EntityManager $em, TranslatorInterface $translator)
+        PaperManager $paperManager,
+        EntityManager $em,
+        TranslatorInterface $translator
+    )
     {
         $this->authorization = $authorization;
         $this->paperManager = $paperManager;
