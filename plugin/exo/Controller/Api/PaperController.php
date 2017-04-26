@@ -183,10 +183,8 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        $papersData = $this->exerciseManager->exportPapersToCsv($exercise);
-
-        return new StreamedResponse(function () use ($papersData) {
-            $papersData;
+        return new StreamedResponse(function () use ($exercise) {
+            $this->exerciseManager->exportPapersToCsv($exercise);
         }, 200, [
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
