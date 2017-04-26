@@ -293,5 +293,4 @@ class ExerciseManager
 
         return $handle;
     }
-
 }
