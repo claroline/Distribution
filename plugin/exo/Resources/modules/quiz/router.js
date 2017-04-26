@@ -14,6 +14,7 @@ export function makeRouter(dispatch) {
       'editor': () => dispatch(actions.updateViewMode(VIEW_EDITOR)),
       'papers/:id': id => dispatch(paperActions.displayPaper(id)),
       'papers': () => dispatch(paperActions.listPapers()),
+      'export': () => dispatch(paperActions.exportPapers()),
       'correction/questions': () => dispatch(correctionActions.displayQuestions()),
       'correction/questions/:id': id => dispatch(correctionActions.displayQuestionAnswers(id)),
       'test': () => dispatch(playerActions.play(null, true)),

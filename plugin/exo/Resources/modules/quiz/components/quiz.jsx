@@ -67,6 +67,16 @@ function customActions(props) {
     action: '#papers'
   })
 
+  // Export results
+  if (props.editable) {
+    actions.push({
+      icon: 'fa fa-fw fa-table',
+      label: tex('export_csv_results'),
+      disabled: !props.hasPapers,
+      action: '#export'
+    })
+  }
+
   // not ready for now
   /*actions.push({
     icon: 'fa fa-fw fa-pie-chart',

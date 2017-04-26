@@ -104,6 +104,8 @@ function getResponseData(response) {
   if (contentType && contentType.indexOf('application/json') !== -1) {
     // Decode JSON
     data = response.json()
+  } else if(contentType && contentType.indexOf('application/force-download') !== -1) {
+    data = response.blob()
   } else {
     // Return raw data (maybe someday we will need to also manage files)
     data = response.text()

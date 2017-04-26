@@ -60,3 +60,30 @@ actions.listPapers = () => {
     }
   }
 }
+
+actions.exportPapers = () => {
+  return (dispatch, getState) => {
+    dispatch({
+      [REQUEST_SEND]: {
+        route: ['exercise_papers_export', {exerciseId: selectors.quizId(getState())}],
+        request: {
+          method: 'GET'
+        },
+        success: (data, dispatch) => {
+          const url = window.URL.createObjectURL(data)
+          let a = document.createElement('a')
+          a.style.display = 'none'
+          a.href = url
+          a.download = 'export.csv'
+          document.body.appendChild(a)
+          a.click()
+          setTimeout(function () {
+            document.body.removeChild(a)
+            window.URL.revokeObjectURL(url)
+          }, 100)
+        },
+        failure: () => navigate('overview')
+      }
+    })
+  }
+}

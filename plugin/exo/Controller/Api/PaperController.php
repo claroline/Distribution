@@ -4,12 +4,14 @@ namespace UJM\ExoBundle\Controller\Api;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Translation\TranslatorInterface;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -36,22 +38,37 @@ class PaperController extends AbstractController
     private $paperManager;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * PaperController constructor.
      *
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
-     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper")
+     *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
+     *     "em"              = @DI\Inject("doctrine.orm.entity_manager"),
+     *     "translator"      = @DI\Inject("translator")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param PaperManager                  $paperManager
+     * @param EntityManager                  $em
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        PaperManager $paperManager)
+        PaperManager $paperManager, EntityManager $em, TranslatorInterface $translator)
     {
         $this->authorization = $authorization;
         $this->paperManager = $paperManager;
+        $this->em = $em;
+        $this->translator = $translator;
     }
 
     /**
@@ -160,7 +177,7 @@ class PaperController extends AbstractController
     /**
      * Exports papers into a CSV file.
      *
-     * @EXT\Route("/export", name="exercise_papers_export")
+     * @EXT\Route("/export/csv", name="exercise_papers_export")
      * @EXT\Method("GET")
      *
      * @param Exercise $exercise
@@ -169,35 +186,32 @@ class PaperController extends AbstractController
      */
     public function exportCsvAction(Exercise $exercise)
     {
-        if (!$this->isAdmin($paper->getExercise())) {
+        if (!$this->isAdmin($exercise)) {
             // Only administrator or Paper Managers can axport Papers
             throw new AccessDeniedException();
         }
-
         /** @var PaperRepository $repo */
-        $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
-
+        $repo = $this->em->getRepository('UJMExoBundle:Attempt\Paper');
         $papers = $repo->findBy([
             'exercise' => $exercise,
         ]);
-
         return new StreamedResponse(function () use ($papers) {
             $handle = fopen('php://output', 'w+');
-
             /** @var Paper $paper */
             foreach ($papers as $paper) {
                 $structure = json_decode($paper->getStructure());
                 $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : 20;
+                $user = $paper->getUser();
+                $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
                 fputcsv($handle, [
-                    $paper->getUser()->getFirstName().'-'.$paper->getUser()->getLastName(),
+                    $user ? $user->getFirstName().' - '.$user->getLastName() : $this->translator->trans('anonymous', [], 'platform'),
                     $paper->getNumber(),
                     $paper->getStart()->format('Y-m-d H:i:s'),
                     $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
                     $paper->isInterrupted(),
-                    $this->paperManager->calculateScore($paper, $totalScoreOn),
+                    $score !== floor($score) ? number_format($score, 2) : $score,
                 ], ';');
             }
-
             fclose($handle);
         }, 200, [
             'Content-Type' => 'application/force-download',
