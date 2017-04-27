@@ -129,6 +129,9 @@ class AnalyticsController extends Controller
             ->getActiveUsersForDateRange($range);
 
         $connections = $actionsForRange;
+        $countConnectionsForDateRange = array_sum(array_map(function ($item) {
+            return $item[1];
+        }, $connections));
         $activeUsers = $this->analyticsManager->getActiveUsers();
 
         return [
@@ -136,6 +139,7 @@ class AnalyticsController extends Controller
             'form_criteria' => $criteriaForm->createView(),
             'activeUsers' => $activeUsers,
             'activeUsersForDateRange' => $activeUsersForDateRange,
+            'countConnectionsForDateRange' => $countConnectionsForDateRange,
         ];
     }
 

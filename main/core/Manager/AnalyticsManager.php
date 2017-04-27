@@ -226,7 +226,7 @@ class AnalyticsManager
      */
     public function getActiveUsersForDateRange($range)
     {
-        $resultData = $this->logRepository->activeUsers($range);
+        $resultData = $this->logRepository->activeUsersByDateRange($range);
 
         return $resultData;
     }
