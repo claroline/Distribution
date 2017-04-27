@@ -201,7 +201,6 @@
     }
 
     function buildParameters(viewName, parameters, isPicker, isDefault) {
-        console.log(parameters)
         var allowDirectorySelection = true;
         if (parameters.isDirectorySelectionAllowed !== undefined)
             allowDirectorySelection = parameters.isDirectorySelectionAllowed;
