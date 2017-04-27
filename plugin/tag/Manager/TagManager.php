@@ -363,9 +363,4 @@ class TagManager
     {
         return $this->taggedObjectRepo->findTaggedResourcesByRoles($user, $roleNames);
     }
-
-    public function getTaggedResourceNodesByTagName($tagName)
-    {
-        return $this->taggedObjectRepo->findTaggedResourceNodesByTagName($tagName);
-    }
 }
