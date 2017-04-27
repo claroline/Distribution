@@ -34,7 +34,9 @@ class ClarolineCursusBundle extends PluginBundle
     public function getRequiredPlugins()
     {
         return [
+            'Claroline\\MessageBundle\\ClarolineMessageBundle',
             'Claroline\\TagBundle\\ClarolineTagBundle',
+            'FormaLibre\\ReservationBundle\\FormaLibreReservationBundle',
         ];
     }
 }

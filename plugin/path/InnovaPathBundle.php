@@ -32,9 +32,7 @@ class InnovaPathBundle extends PluginBundle implements AutoConfigurableInterface
     public function getRequiredPlugins()
     {
         return [
-            'Claroline\\MessageBundle\\ClarolineMessageBundle',
             'Claroline\\TagBundle\\ClarolineTagBundle',
-            'FormaLibre\\ReservationBundle\\FormaLibreReservationBundle',
         ];
     }
 }
