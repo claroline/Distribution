@@ -201,12 +201,14 @@
     }
 
     function buildParameters(viewName, parameters, isPicker, isDefault) {
+        console.log(parameters)
         var allowDirectorySelection = true;
         if (parameters.isDirectorySelectionAllowed !== undefined)
             allowDirectorySelection = parameters.isDirectorySelectionAllowed;
         var mergedParameters = {
             viewName: viewName,
             isPickerMode: isPicker,
+            allowRootSelection: parameters.allowRootSelection || false,
             restrictForOwner: parameters.restrictForOwner || false,
             isWorkspace: parameters.isWorkspace || false,
             directoryId: resolveDirectoryId(parameters, isPicker, isDefault),
