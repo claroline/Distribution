@@ -1355,10 +1355,12 @@ class WorkspaceController extends Controller
         $this->workspaceManager->setLogger($logger);
 
         if ($form->isValid()) {
+            $urlImport = false;
             if ($form->get('workspace')->getData()) {
                 $file = $form->get('workspace')->getData();
                 $template = new File($file);
             } elseif ($form->get('fileUrl')->getData() && filter_var($form->get('fileUrl')->getData(), FILTER_VALIDATE_URL)) {
+                $urlImport = true;
                 $url = $form->get('fileUrl')->getData();
                 $template = $this->importFromUrl($url);
                 if ($template === null) {
@@ -1375,6 +1377,11 @@ class WorkspaceController extends Controller
                 $workspace = $form->getData();
                 $workspace->setCreator($this->tokenStorage->getToken()->getUser());
                 $this->workspaceManager->create($workspace, $template);
+                //delete manually created tmp if url import
+                if ($urlImport) {
+                    $fs = new FileSystem();
+                    $fs->remove($template);
+                }
                 $this->tokenUpdater->update($this->tokenStorage->getToken());
 
                 $route = $this->router->generate('claro_workspace_by_user');
