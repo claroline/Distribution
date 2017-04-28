@@ -70,10 +70,10 @@ class LtiController extends Controller
             return $this->redirectToRoute('ujm_admin_lti');
         }
 
-        return $this->render('UJMLtiBundle:Lti:appEdit.html.twig', array(
+        return $this->render('UJMLtiBundle:Lti:appEdit.html.twig', [
             'form' => $form->createView(),
             'appId' => $app->getId(),
-        ));
+        ]);
     }
 
     /**
