@@ -164,6 +164,7 @@
     "exo_empty_user_can_edit": "Ce questionnaire est vide. Editez et publiez-le afin de le remplir.",
     "exo_empty_user_read_only": "Ce questionnaire est vide et n'a pas encore été configuré par son concepteur. Veuillez revenir plus tard.",
     "expected_answer": "Réponse attendue",
+    "expected_answers": "Réponses attendues",
     "explain_coeff_dis0": "Les copies doivent comporter les mêmes questions pour pouvoir calculer le coéfficient de discrimination.",
     "explain_coeff_dis1": "Analyse de la pertinence des questions, ce coéfficient de corrélation varie de -1 à + 1.",
     "explain_coeff_dis2": "Les questions dont le coéfficient de discrimination se situe entre 0,35 et 0,65 maximisent la discrimination des étudiants.",
@@ -469,6 +470,9 @@
     "questions_export": "Exporter les questions sélectionnées",
     "questions_selected": "{1} <b>1</b> question sélectionnée|[2,Inf[ <b>%count%</b> questions sélectionnées",
     "questions_share": "Partager les questions sélectionnées",
+    "quiz_total_score_on": "Score du questionnaire",
+    "quiz_total_score_on_mode_default": "Le questionnaire est noté sur la somme des points des questions",
+    "quiz_total_score_on_mode_custom": "Le questionnaire est noté sur une valeur définie",
     "random_order": "Ordre aléatoire",
     "random_picking": "Tirage aléatoire",
     "random_questions": "Ordre des questions aléatoire",
@@ -628,5 +632,5 @@
     "no_try_left": "Aucun essai restant",
     "correct_answer": "Réponse correcte",
     "try_used": "Essais utilisés",
-    "selection_missing_click": "Pénalité par mauvaise click"
+    "selection_missing_click": "Pénalité par erreur"
 }

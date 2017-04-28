@@ -178,11 +178,12 @@
             "Innova\\VideoRecorderBundle\\": "plugin/video-recorder",
             "Innova\\AudioRecorderBundle\\": "plugin/audio-recorder",
             "Icap\\LessonBundle\\": "plugin/lesson",
-            "Claroline\\FlashCardBundle\\": "plugin/flashcard",
+            "Claroline\\FlashCardBundle\\": "plugin/flashcard",<<<<<<< bibliography-bundle-creation
             "Innova\\MediaResourceBundle\\": "plugin/media-resource",
             "Claroline\\DashboardBundle\\": "plugin/dashboard",
             "Claroline\\ClacoFormBundle\\": "plugin/claco-form",
             "Claroline\\RemoteUserSynchronizationBundle\\": "plugin/remote-user-synchronization",
+            "UJM\\LtiBundle\\": "plugin/lti",
             "Claroline\\CasBundle\\": "plugin/cas",
             "Icap\\BibliographyBundle\\": "plugin/bibliography"
         }
@@ -241,6 +242,7 @@
             "Claroline\\DashboardBundle\\ClarolineDashboardBundle",
             "Claroline\\ClacoFormBundle\\ClarolineClacoFormBundle",
             "Claroline\\RemoteUserSynchronizationBundle\\ClarolineRemoteUserSynchronizationBundle",
+            "UJM\\LtiBundle\\UJMLtiBundle",
             "Claroline\\CasBundle\\ClarolineCasBundle",
             "Icap\\BibliographyBundle\\IcapBibliographyBundle"
         ]

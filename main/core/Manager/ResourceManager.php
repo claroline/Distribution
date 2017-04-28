@@ -577,7 +577,7 @@ class ResourceManager
 
         foreach ($nodes as $node) {
             if ($node->getIndex() <= $index) {
-                $node->setIndex($node->getIndex());
+                $node->setIndex($node->getIndex() - 1);
             }
             $this->om->persist($node);
         }
@@ -851,7 +851,17 @@ class ResourceManager
     public function setPublishedStatus(array $nodes, $arePublished)
     {
         foreach ($nodes as $node) {
+            $children = $this->getAllChildren($node, true);
             $node->setPublished($arePublished);
+            $this->om->persist($node);
+
+            //do it on every children aswell
+            foreach ($children as $child) {
+                $child->setPublished($arePublished);
+                $this->om->persist($child);
+            }
+
+            //only warn for the roots
             $eventName = "publication_change_{$node->getResourceType()->getName()}";
             $resource = $this->getResourceFromNode($node);
             $this->dispatcher->dispatch($eventName, 'PublicationChange', [$resource]);
@@ -1142,12 +1152,12 @@ class ResourceManager
                         $obj = $event->getItem();
 
                         if ($obj !== null) {
-                            $archive->addFile($obj, iconv(mb_detect_encoding($filename), $this->getEncoding(), $filename));
+                            $archive->addFile($obj, iconv($this->ut->detectEncoding($filename), $this->getEncoding(), $filename));
                         } else {
-                            $archive->addFromString(iconv(mb_detect_encoding($filename), $this->getEncoding(), $filename), '');
+                            $archive->addFromString(iconv($this->ut->detectEncoding($filename), $this->getEncoding(), $filename), '');
                         }
                     } else {
-                        $archive->addEmptyDir(iconv(mb_detect_encoding($filename), $this->getEncoding(), $filename));
+                        $archive->addEmptyDir(iconv($this->ut->detectEncoding($filename), $this->getEncoding(), $filename));
                     }
 
                     $this->dispatcher->dispatch('log', 'Log\LogResourceExport', [$node]);
@@ -1561,7 +1571,7 @@ class ResourceManager
 
     private function getEncoding()
     {
-        return $this->ut->getDefaultEncoding();
+        return 'UTF-8//TRANSLIT';
     }
 
     /**

@@ -74,6 +74,7 @@
         var name = field.data('name');
 
         if (name) {
+            console.log(name, element)
             $('input', element).val(name);
         }
 
@@ -92,6 +93,7 @@
             'restrictForOwner',
             'isPickerMultiSelectAllowed',
             'isDirectorySelectionAllowed',
+            'allowRootSelection'
         ];
         var arrayParameterList = [
             'typeBlackList',
