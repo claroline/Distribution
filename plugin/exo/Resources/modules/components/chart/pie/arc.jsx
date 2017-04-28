@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import {arc} from 'd3-shape'
+import {PropTypes as T} from 'prop-types'
 
-const T = React.PropTypes
+import {arc} from 'd3-shape'
 
 /**
  * Draws an Arc on a Pie chart.

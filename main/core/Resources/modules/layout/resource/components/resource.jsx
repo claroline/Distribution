@@ -1,8 +1,9 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {registerModalTypes} from '#/main/core/layout/modal'
-import { Page, PageHeader, PageContent } from '#/main/core/layout/page/components/page.jsx'
-import { ResourceActions } from './resource-actions.jsx'
+import {Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
+import {ResourceActions} from './resource-actions.jsx'
 
 import {MODAL_RESOURCE_PROPERTIES, EditPropertiesModal} from './modal/edit-properties.jsx'
 import {MODAL_RESOURCE_RIGHTS, EditRightsModal} from './modal/edit-rights.jsx'

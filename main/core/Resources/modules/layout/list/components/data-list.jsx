@@ -1,4 +1,5 @@
-import React, {PropTypes as T} from 'react'
+import React from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
 import {Pagination} from '#/main/core/layout/list/components/pagination.jsx'
