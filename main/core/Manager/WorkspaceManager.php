@@ -1247,7 +1247,7 @@ class WorkspaceManager
 
     public function removeTemplate(File $file)
     {
-        $fileName = $file->getBasename();
+        $fileName = $file->getBasename('.zip');
         $extractPath = $this->templateDirectory.DIRECTORY_SEPARATOR.$fileName;
         $fs = new FileSystem();
         $fs->remove($extractPath);
