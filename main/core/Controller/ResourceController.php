@@ -267,6 +267,7 @@ class ResourceController
                 $options->getDetails();
             }
         }
+
         $this->request->getSession()->set('current_resource_node', $node);
         $isIframe = (bool) $this->request->query->get('iframe');
         //double check... first the resource, then the target
