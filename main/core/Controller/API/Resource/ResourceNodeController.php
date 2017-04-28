@@ -59,7 +59,7 @@ class ResourceNodeController
     {
         $this->assertHasPermission('ADMINISTRATE', $resourceNode);
 
-        $this->resourceNodeManager->update($request->getContent(), $resourceNode);
+        $this->resourceNodeManager->update(json_decode($request->getContent()), $resourceNode);
 
         return new JsonResponse(
             $this->resourceNodeManager->serialize($resourceNode)

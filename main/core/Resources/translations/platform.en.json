@@ -884,7 +884,7 @@
     "publish_resource": "Publish resource",
     "published": "Published",
     "published_to_portal": "Published to portal",
-    "published_to_portal_message": "This option automatically allows anonymous users to acces the resource. You have to remove the anonymous rights in resource's rights management section to restrict the acces again.",
+    "published_to_portal_message": "This option automatically allows anonymous users to access the resource. You have to remove the anonymous rights in resource's rights management section to restrict the acces again.",
     "put_back_permissions_after_update": "Don't forget to put back your original permissions after an update.",
     "radio": "Radio button",
     "receiver": "Receiver(s)",

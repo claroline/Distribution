@@ -118,9 +118,8 @@ function getMoreActions(resourceNode, props) {
       key="resource-edit-props"
       eventKey="resource-edit-props"
       onClick={() => props.showModal(MODAL_RESOURCE_PROPERTIES, {
-        name       : resourceNode.name,
-        description: resourceNode.description,
-        published  : resourceNode.meta.published
+        resourceNode: resourceNode,
+        save: props.updateProperties
       })}
     >
       <span className="fa fa-fw fa-pencil" />
@@ -304,12 +303,15 @@ ResourceActions.propTypes = {
   togglePublication: T.func.isRequired,
   showModal: T.func.isRequired,
 
+  updateProperties: T.func.isRequired,
+
   editMode: T.bool,
   edit: T.oneOfType([T.func, T.string]).isRequired,
   save: T.shape({
     disabled: T.bool.isRequired,
     action: T.oneOfType([T.string, T.func]).isRequired
   }).isRequired,
+
   customActions: T.arrayOf(T.shape({
     icon: T.string.isRequired,
     label: T.string.isRequired,

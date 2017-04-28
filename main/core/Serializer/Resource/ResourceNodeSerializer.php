@@ -55,8 +55,8 @@ class ResourceNodeSerializer
         $serializedNode = [
             'id' => $resourceNode->getGuid(),
             'name' => $resourceNode->getName(),
-            'description' => '', // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
             'poster' => null, // todo : add as ResourceNode prop
+            'thumbnail' => null,
             'workspace' => [
                 'id' => $resourceNode->getWorkspace()->getGuid(),
                 'name' => $resourceNode->getWorkspace()->getName(),
@@ -103,19 +103,21 @@ class ResourceNodeSerializer
         $collection = new ResourceCollection([$resourceNode]);
 
         return [
-            'type'      => $resourceNode->getResourceType()->getName(),
-            'mimeType'  => $resourceNode->getMimeType(),
-            'path'      => $this->getPath($resourceNode),
-            'created'   => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
-            'updated'   => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
-            'license'   => $resourceNode->getLicense(),
-            'published' => $resourceNode->isPublished(),
-            'portal'    => $resourceNode->isPublishedToPortal(),
-            'authors' => [[
+            'type'        => $resourceNode->getResourceType()->getName(),
+            'mimeType'    => $resourceNode->getMimeType(),
+            'path'        => $this->getPath($resourceNode),
+            'description' => null, // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
+            'created'     => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
+            'updated'     => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
+            'license'     => $resourceNode->getLicense(),
+            'authors'     => $resourceNode->getAuthor(),
+            'published'   => $resourceNode->isPublished(),
+            'portal'      => $resourceNode->isPublishedToPortal(),
+            'creator' => [
                 'id'       => $resourceNode->getCreator()->getGuid(),
                 'name'     => $resourceNode->getCreator()->getFullName(),
                 'username' => $resourceNode->getCreator()->getUsername(),
-            ]],
+            ],
 
             // it can be deduced from the presence (or not) of the action
             'exportable' => $this->authorization->isGranted('EXPORT', $collection) && $resourceNode->getResourceType()->isExportable(),
@@ -136,9 +138,12 @@ class ResourceNodeSerializer
         return [
             'accessibleFrom' => null,
             'accessibleUntil' => null,
-            'fullscreen' => false, // todo : add field
+            'fullscreen' => false, // todo : add field and migrate custom data (Scorm)
             'closable' => false, // todo : add field
-            'closeTarget' => '', // todo : add field
+
+            // todo : add field and migrate custom data (Scorm)
+            // values : 0 => ws / 1 => desktop. default = 0
+            'closeTarget' => 0,
         ];
     }
 

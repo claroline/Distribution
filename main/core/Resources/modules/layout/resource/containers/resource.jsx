@@ -81,7 +81,14 @@ ResourceContainer.propTypes = {
   customActions: T.array.isRequired,
   editMode: T.bool,
   edit: T.oneOfType([T.func, T.string]).isRequired,
-  save: T.object.isRequired
+  save: T.object.isRequired,
+
+  /**
+   * Updates the resource node properties.
+   *
+   * @param {object} resourceNode - the new resourceNode properties
+   */
+  updateProperties: T.func.isRequired
 }
 
 function mapStateToProps(state) {

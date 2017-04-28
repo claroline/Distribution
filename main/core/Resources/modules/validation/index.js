@@ -1,7 +1,6 @@
 import set from 'lodash/set'
-import {trans} from '#/main/core/translation'
 
-const tval = msg => trans(msg, {}, 'validators')
+import {tval} from '#/main/core/translation'
 
 export function notBlank(value, isHtml = false) {
   if (typeof value === 'string') {
