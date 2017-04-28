@@ -1,3 +1,7 @@
+const DEFAULT_DOMAIN    = 'message'
+const PLATFORM_DOMAIN   = 'platform'
+const VALIDATION_DOMAIN = 'validators'
+
 /**
  * Get the current application translator.
  * For now it's the one coming from https://github.com/willdurand/BazingaJsTranslationBundle.
@@ -17,7 +21,7 @@ export function getTranslator() {
  *
  * @returns {string}
  */
-export function trans(key, placeholders = {}, domain = 'message') {
+export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
   return getTranslator().trans(key, placeholders, domain)
 }
 
@@ -31,7 +35,7 @@ export function trans(key, placeholders = {}, domain = 'message') {
  *
  * @returns {string}
  */
-export function transChoice(key, count, placeholders = {}, domain = 'message') {
+export function transChoice(key, count, placeholders = {}, domain = DEFAULT_DOMAIN) {
   return getTranslator().transChoice(key, count, placeholders, domain)
 }
 
@@ -44,7 +48,19 @@ export function transChoice(key, count, placeholders = {}, domain = 'message') {
  * @returns {string}
  */
 export function t(message, placeholders = {}) {
-  return trans(message, placeholders, 'platform')
+  return trans(message, placeholders, PLATFORM_DOMAIN)
+}
+
+/**
+ * Shortcut to access `validators` messages.
+ *
+ * @param {string} message
+ * @param {object} placeholders
+ *
+ * @returns {string}
+ */
+export function tval(message, placeholders = {}) {
+  return trans(message, placeholders, VALIDATION_DOMAIN)
 }
 
 /**

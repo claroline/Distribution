@@ -44,6 +44,8 @@ class Resource extends Component {
             toggleFullscreen={this.props.toggleFullscreen}
             togglePublication={this.props.togglePublication}
             showModal={this.props.showModal}
+            fadeModal={this.props.fadeModal}
+            updateProperties={this.props.updateProperties}
           />
         </PageHeader>
 
@@ -76,7 +78,9 @@ Resource.propTypes = {
   customActions: T.array.isRequired,
   editMode: T.bool,
   edit: T.oneOfType([T.func, T.string]).isRequired,
-  save: T.object.isRequired
+  save: T.object.isRequired,
+
+  updateProperties: T.func.isRequired
 }
 
 Resource.defaultProps = {
