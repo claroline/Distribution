@@ -24,9 +24,11 @@
     <div class="panel-heading">
         <h3 class="panel-title">
             {{ _resource.getResourceNode().getName() }}
+            {% if isEditGranted %}
             <a class="pull-right" data-toggle="modal" data-target="#bookReferenceEditModal" href="#">
                 <i class="fa fa-pencil"></i> {{ 'edit' | trans({}, 'platform') }}
             </a>
+            {% endif %}
         </h3>
 
     </div>
