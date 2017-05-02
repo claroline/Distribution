@@ -47,7 +47,7 @@ class BookReferenceController extends Controller
      * )
      * @EXT\Template("IcapBibliographyBundle:BookReference:editForm.html.twig")
      */
-    public function changeBookReferenceAction(ResourceNode $node)
+    public function changeBookReferenceAction(ResourceNode $node, Request $request)
     {
         if (!$this->get('security.authorization_checker')->isGranted('edit', $node)) {
             throw new AccessDeniedException();
@@ -61,6 +61,8 @@ class BookReferenceController extends Controller
             throw new \Exception("This resource doesn't exist.");
         }
 
+        $bookReference->setName($bookReference->getResourceNode()->getName());
+
         $form = $this->formFactory->create(new BookReferenceType(), $bookReference);
         $form->handleRequest($this->request);
 
@@ -71,7 +73,14 @@ class BookReferenceController extends Controller
 
             $em->flush();
 
-            return new JsonResponse();
+            if ($request->isXmlHttpRequest()) {
+                // Modal is used by the resource manager
+                return new JsonResponse();
+            } else {
+                // Modal is displayed on node view page
+                return $this->redirectToRoute('claro_resource_open', ['resourceType' => 'icap_bibliography', 'node' => $bookReference->getResourceNode()->getId()]);
+            }
+
         }
 
         return ['form' => $form->createView(), 'node' => $node->getId()];

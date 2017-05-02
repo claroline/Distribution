@@ -22,7 +22,13 @@
 {% block section_content %}
 
     <div class="panel-heading">
-        <h3 class="panel-title">{{ _resource.getResourceNode().getName() }}</h3>
+        <h3 class="panel-title">
+            {{ _resource.getResourceNode().getName() }}
+            <a class="pull-right" data-toggle="modal" data-target="#bookReferenceEditModal" href="#">
+                <i class="fa fa-pencil"></i> {{ 'edit' | trans({}, 'platform') }}
+            </a>
+        </h3>
+
     </div>
     <div class="panel-body" id="bookreference_content">
 
@@ -89,4 +95,11 @@
         {'resourceId': _resource.resourceNode.id, 'resourceClass': _resource.resourceNode.class}
         ) %}
     </div>
+
+<div id="bookReferenceEditModal" class="modal fade" tabindex="-1" role="dialog">
+    {% render controller(
+    'IcapBibliographyBundle:BookReference:changeBookReference',
+    {'node': _resource.resourceNode.id}
+    ) %}
+</div>
 {% endblock %}
