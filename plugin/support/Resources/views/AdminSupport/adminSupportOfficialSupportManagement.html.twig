@@ -1,0 +1,39 @@
+{% extends 'FormaLibreSupportBundle:AdminSupport:adminSupportMenu.html.twig' %}
+
+{% block adminSupport %}
+    <div id="official-support-management-body">
+        <div id="official-support-info" class="well well-sm">
+            {{ 'official_support_info'|trans({}, 'support') }}
+        </div>
+
+        {% if supportToken is not empty %}
+            <b>{{ 'support_token'|trans({}, 'support') }}</b> : {{ supportToken }}
+        {% else %}
+            <br>
+            <div id="support-token-form-row" class="form-group row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input id="support-token-input"
+                               type="text"
+                               class="form-control"
+                               placeholder="{{ 'enter_support_token_msg'|trans({}, 'support') }}"
+                        >
+                        <span class="input-group-btn">
+                            <button id="support-token-validate-btn" class="btn btn-primary">
+                                {{ 'ok'|trans({}, 'platform') }}
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div id="token-error-block" class="help-block field-error col-md-12">
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'support' }) }}"></script>
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-support-admin-official-support-management.js') }}"></script>
+{% endblock %}

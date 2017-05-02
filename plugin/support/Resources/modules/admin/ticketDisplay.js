@@ -3,6 +3,8 @@
 import $ from 'jquery'
 import {asset} from '#/main/core/asset'
 
+let currentForwardBtn = null
+
 $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
   e.stopImmediatePropagation()
   e.preventDefault()
@@ -104,6 +106,16 @@ $('#ticket-edition-btn').on('click', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_support_ticket_intervention_create_form', {ticket: ticketId}),
     updateTicket,
+    function () {}
+  )
+})
+
+$('#informations-heading').on('click', '.forward-ticket-btn', function () {
+  currentForwardBtn = $(this)
+  const ticketId = $(this).data('ticket-id')
+  window.Claroline.Modal.displayForm(
+    Routing.generate('formalibre_admin_forwarded_ticket_create_form', {ticket: ticketId}),
+    addForwardedTicket,
     function () {}
   )
 })
@@ -266,4 +278,42 @@ const updateTicket = function (data) {
   if (data['privateComment']) {
     addPrivateComment(data['privateComment'])
   }
+}
+
+const addForwardedTicket = function (data) {
+  const nbForwarded = parseInt($('#forwarded-tickets-tab-badge').html())
+  $('#forwarded-tickets-tab-badge').html(nbForwarded + 1)
+  const url = Routing.generate('formalibre_admin_ticket_open', {ticket: data['forwardedId']})
+  const linkBtn = `
+    <a href="${url}"
+       class="btn btn-default"
+       data-toggle="tooltip"
+       title="${Translator.trans('forwarded_ticket', {}, 'support')}"
+    >
+        <i class="fa fa-asterisk"></i>
+    </a>
+  `
+  currentForwardBtn.after(linkBtn)
+  currentForwardBtn.remove()
+  let forwardStatusDescription = ''
+
+  if (data['status_description']) {
+    forwardStatusDescription = `
+      <i class="fa fa-info-circle pointer-hand"
+         data-toggle="tooltip"
+         data-container="body"
+         data-placement="top"
+         data-html="true"
+         title="${data['status_description']}"
+      >
+      </i>
+    `
+  }
+  let forwardStatus = `
+    <li>
+      ${Translator.trans(data['status_name'], {}, 'support')}
+      ${forwardStatusDescription}
+    </li>
+  `
+  $('#interventions-list').append(forwardStatus)
 }

@@ -577,13 +577,44 @@ class SupportManager
         return $stakeholders;
     }
 
+    public function initializeForwardedTicket(Ticket $ticket, User $user, Ticket $sourceTicket = null)
+    {
+        $this->om->startFlushSuite();
+        $ticket->setUser($user);
+        $ticket->setCreationDate(new \DateTime());
+        $ticket->setForwarded(true);
+        $newStatus = $this->getStatusByCode('NEW');
+
+        if (!empty($newStatus)) {
+            $this->createIntervention($ticket, $user, $newStatus);
+        }
+        if (!empty($sourceTicket)) {
+            $ticket->setLinkedTicket($sourceTicket);
+            $sourceTicket->setLinkedTicket($ticket);
+            $forwardedStatus = $this->getStatusByCode('FW');
+
+            if (!empty($forwardedStatus)) {
+                $messageData = [];
+                $messageData['oldStatus'] = $ticket->getStatus();
+                $messageData['status'] = $forwardedStatus;
+                $this->createIntervention($sourceTicket, $user, $forwardedStatus);
+                $this->createInterventionComment($user, $sourceTicket, $messageData, Comment::PUBLIC_COMMENT);
+            }
+            $this->persistTicket($sourceTicket);
+        }
+        $this->persistTicket($ticket);
+        $this->om->endFlushSuite();
+
+        return $ticket;
+    }
+
     /**************************************
      * Access to TicketRepository methods *
      **************************************/
 
     public function getTicketsByUser(User $user)
     {
-        return $this->ticketRepo->findBy(['user' => $user, 'userActive' => true]);
+        return $this->ticketRepo->findBy(['user' => $user, 'userActive' => true, 'forwarded' => false]);
     }
 
     public function getOngoingTickets(
@@ -632,7 +663,7 @@ class SupportManager
         return $withPager ? $this->pagerFactory->createPagerFromArray($tickets, $page, $max) : $tickets;
     }
 
-    public function getForwardedTickets(
+    public function getOngoingForwardedTickets(
         $search = '',
         $orderedBy = 'creationDate',
         $order = 'DESC',
@@ -640,7 +671,9 @@ class SupportManager
         $page = 1,
         $max = 50
     ) {
-        $tickets = [];
+        $tickets = empty($search) ?
+            $this->ticketRepo->findOngoingForwardedTickets($orderedBy, $order) :
+            $this->ticketRepo->findSearchedOngoingForwardedTickets($search, $orderedBy, $order);
 
         return $withPager ? $this->pagerFactory->createPagerFromArray($tickets, $page, $max) : $tickets;
     }
