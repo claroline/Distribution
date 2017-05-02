@@ -1008,11 +1008,22 @@ class AdminSupportController extends Controller
         $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
             $this->platformConfigHandler->getParameter('claroline_support_token') :
             null;
+        $data = null;
+
+        if (!empty($supportToken)) {
+            $url = 'https://api.claroline.cloud/cc/platform/contacts/'.$supportToken;
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $data = (array) json_decode(curl_exec($ch));
+            curl_close($ch);
+        }
 
         return [
             'supportToken' => $supportToken,
             'title' => 'official_support',
             'noOfficialSupportInfo' => true,
+            'data' => $data,
         ];
     }
 

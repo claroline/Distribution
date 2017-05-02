@@ -8,6 +8,44 @@
 
         {% if supportToken is not empty %}
             <b>{{ 'support_token'|trans({}, 'support') }}</b> : {{ supportToken }}
+
+            {% if data['contract'] is defined and data['contract'] is not empty %}
+                <br>
+                <b>{{ 'contract'|trans({}, 'support') }}</b> : {{ data['contract'] }}
+            {% endif %}
+
+            {% if data['contacts'] is defined and data['contract']|length > 0 %}
+                <br>
+                <h3>{{ 'contacts'|trans({}, 'support') }}</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th>{{ 'name'|trans({}, 'platform') }}</th>
+                            <th>{{ 'email'|trans({}, 'platform') }}</th>
+                            <th>{{ 'phone'|trans({}, 'platform') }}</th>
+                        </tr>
+                        {% for contact in data['contacts'] %}
+                            <tr>
+                                <td>{{ contact.details.name }}</td>
+                                <td>{{ contact.details.email }}</td>
+                                <td>
+                                    {% if contact.details.telephone is not empty %}
+                                        <i class="fa fa-phone"></i>
+                                        {{ contact.details.telephone }}
+                                    {% endif %}
+                                    {% if contact.details.cellPhone is not empty %}
+                                        {% if contact.details.telephone is not empty %}
+                                            <br>
+                                        {% endif %}
+                                        <i class="fa fa-mobile"></i>
+                                        {{ contact.details.cellPhone }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %}
         {% else %}
             <br>
             <div id="support-token-form-row" class="form-group row">
