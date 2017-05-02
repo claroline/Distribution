@@ -80,7 +80,6 @@ class BookReferenceController extends Controller
                 // Modal is displayed on node view page
                 return $this->redirectToRoute('claro_resource_open', ['resourceType' => 'icap_bibliography', 'node' => $bookReference->getResourceNode()->getId()]);
             }
-
         }
 
         return ['form' => $form->createView(), 'node' => $node->getId()];
