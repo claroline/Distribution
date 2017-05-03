@@ -4,14 +4,13 @@ import { connect } from 'react-redux'
 import {actions as currentObjectActions} from './../actions/current-object'
 
 import {PageHeader} from '#/main/core/layout/page/components/page.jsx'
-import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 // TODO : use barrel instead
 import BarChart from './../../components/chart/bar/bar-chart.jsx'
 import PieChart from './../../components/chart/pie/pie-chart.jsx'
 import CircularGauge from './../../components/chart/gauge/circlular-gauge.jsx'
-
-import ObjectSelector from './object-selector.jsx'
 
 const T = React.PropTypes
 
@@ -75,38 +74,26 @@ class Docimology extends Component {
 
   render() {
     return (
-      <div className="page-container">
+      <div className="page-container docimology-container">
         <PageHeader title="Docimology">
-          <PageActions
-            actions={[{
-              icon: 'fa fa-fw fa-sign-out',
-              label: 'Back to exercise',
-              handleAction: () => true,
-              primary: true
-            }]}
-          />
+          <PageActions>
+            <PageAction
+              id="back-to-exercise"
+              title={'Back to exercise'}
+              icon="fa fa-fw fa-sign-out"
+              action={generateUrl('ujm_exercise_open', {id: this.props.exercise.id})}
+            >
+            </PageAction>
+          </PageActions>
         </PageHeader>
 
-        <ObjectSelector
-          exercise={this.props.exercise}
-          current={this.props.currentObject}
-          handleSelect={this.props.selectObject}
-        />
         <GeneralStats />
 
         <h2 className="h3">Indice de réussite</h2>
 
         <div className="row">
-          <div className="col-md-4" style={{marginBottom: '20px'}}>
+          <div className="col-md-12" style={{marginBottom: '20px'}}>
             <PieChart data={[10, 6, 3, 5]} colors={['#b94a48', '#c09853', '#468847', '#aaa']} width={380} />
-          </div>
-
-          <div className="col-md-8">
-            <div className="panel panel-default">
-              <div className="panel-body">
-
-              </div>
-            </div>
           </div>
         </div>
 

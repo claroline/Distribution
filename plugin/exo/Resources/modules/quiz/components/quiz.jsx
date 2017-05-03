@@ -78,12 +78,14 @@ function customActions(props) {
     })
   }
 
-  // not ready for now
-  /*actions.push({
-    icon: 'fa fa-fw fa-pie-chart',
-    label: tex('docimology'),
-    action: '#'
-  })*/
+  // Docimology
+  if (props.editable || props.docimologyAdmin) {
+    actions.push({
+      icon: 'fa fa-fw fa-pie-chart',
+      label: tex('docimology'),
+      action: generateUrl('ujm_exercise_docimology', {id: props.quiz.id})
+    })
+  }
 
   // Manual correction
   actions.push({
@@ -108,6 +110,7 @@ function mapStateToProps(state) {
     hasPapers: select.hasPapers(state),
     hasUserPapers: select.hasUserPapers(state),
     papersAdmin: select.papersAdmin(state),
+    docimologyAdmin: select.docimologyAdmin(state),
     registeredUser: select.registered(state),
     saveEnabled: select.saveEnabled(state),
     currentQuestionId: state.correction.currentQuestionId
