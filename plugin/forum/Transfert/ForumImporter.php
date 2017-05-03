@@ -74,6 +74,7 @@ class ForumImporter extends Importer implements ConfigurationInterface, RichText
                                                 ->scalarNode('creator')->end()
                                                 ->scalarNode('author')->end()
                                                 ->scalarNode('creation_date')->end()
+                                                ->booleanNode('sticked')->defaultFalse()->end()
                                                 ->arrayNode('messages')
                                                     ->prototype('array')
                                                         ->children()
@@ -126,6 +127,10 @@ class ForumImporter extends Importer implements ConfigurationInterface, RichText
 
                     if ($subject['subject']['creator'] !== null) {
                         $creator = $repo->findOneByUsername($subject['subject']['creator']);
+                    }
+
+                    if (isset($subject['subject']['sticked'])) {
+                        $subjectEntity->setIsSticked($subject['subject']['sticked']);
                     }
 
                     if (isset($subject['subject']['creation_date'])) {
