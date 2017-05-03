@@ -81,7 +81,7 @@ class ExerciseController extends Controller
     public function docimologyAction(Exercise $exercise)
     {
         if (!$this->canViewDocimology($exercise)) {
-          throw new AccessDeniedException('not allowed to access this page');
+            throw new AccessDeniedException('not allowed to access this page');
         }
 
         return [
