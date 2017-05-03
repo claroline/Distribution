@@ -1,0 +1,42 @@
+{% extends 'ClarolineCoreBundle:Workspace:layout.html.twig' %}
+
+{% block title %}
+    {{ parent() ~ ' - ' ~ 'claroline_session_events_tool' | trans({}, "tools") | striptags | raw }}
+{% endblock %}
+
+{% block breadcrumb %}
+    {{
+        macros.workspaceBreadcrumbs(
+            workspace,
+            [
+                {
+                    'name': 'claroline_session_events_tool'|trans({}, 'tools'),
+                    'href': ''
+                }
+            ]
+        )
+    }}
+{% endblock %}
+
+{% block section_content %}
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            {{ 'claroline_session_events_tool'|trans({}, 'tools') }}
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="page-container session-events-tool-container">
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts debug=false
+        'js/translations/cursus/*.js'
+        'js/translations/tools/*.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-cursus-session-events-tool.js') }}"></script>
+{% endblock javascripts %}
