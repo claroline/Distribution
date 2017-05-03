@@ -8,13 +8,13 @@ import Docimology from './components/docimology.jsx'
 registerDefaultItemTypes()
 
 const exerciseRaw = JSON.parse(document.getElementById('docimology').dataset.exercise)
+const statsRaw = JSON.parse(document.getElementById('docimology').dataset.statistics)
+
+console.log(statsRaw)
 
 const store = createStore({
   exercise: exerciseRaw,
-  currentObject: {
-    type: 'exercise',
-    id: exerciseRaw.id
-  }
+  statistics: statsRaw
 })
 
 ReactDOM.render(

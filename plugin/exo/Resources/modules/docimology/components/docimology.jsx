@@ -29,21 +29,26 @@ CountCard.propTypes = {
   count: T.number.isRequired
 }
 
-const GeneralStats = () =>
+const GeneralStats = props =>
   <div className="general-stats row">
     <div className="col-md-3 col-xs-6">
-      <CountCard label="steps" icon="fa fa-th-list" count={6} />
+      <CountCard label="steps" icon="fa fa-th-list" count={props.statistics.nbSteps} />
     </div>
     <div className="col-md-3 col-xs-6">
-      <CountCard label="questions" icon="fa fa-question" count={10} />
+      <CountCard label="questions" icon="fa fa-question" count={props.statistics.nbQuestions} />
     </div>
     <div className="col-md-3 col-xs-6">
-      <CountCard label="users" icon="fa fa-user" count={24} />
+      <CountCard label="users" icon="fa fa-user" count={props.statistics.nbRegisteredUsers} />
+      <CountCard label="anonymous" icon="fa fa-user" count={props.statistics.nbAnonymousUsers} />
     </div>
     <div className="col-md-3 col-xs-6">
-      <CountCard label="papers" icon="fa fa-file" count={42} />
+      <CountCard label="papers" icon="fa fa-file" count={props.statistics.nbPapers} />
     </div>
   </div>
+ 
+GeneralStats.propTypes = {
+  statistics: T.object.isRequired
+}
 
 class Docimology extends Component {
   renderNoteBlock() {
@@ -87,7 +92,7 @@ class Docimology extends Component {
           </PageActions>
         </PageHeader>
 
-        <GeneralStats />
+        <GeneralStats {...this.props} />
 
         <h2 className="h3">Indice de réussite</h2>
 
@@ -108,23 +113,14 @@ class Docimology extends Component {
 
 Docimology.propTypes = {
   exercise: T.object.isRequired,
-  currentObject: T.object.isRequired,
-  selectObject: T.func.isRequired
+  statistics: T.object.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     exercise: state.exercise,
-    currentObject: state.currentObject
+    statistics: state.statistics
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    selectObject(type, id) {
-      dispatch(currentObjectActions.selectObject(type, id))
-    }
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Docimology)
+export default connect(mapStateToProps, null)(Docimology)

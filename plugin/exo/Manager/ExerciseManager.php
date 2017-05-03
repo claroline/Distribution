@@ -141,6 +141,25 @@ class ExerciseManager
     }
 
     /**
+     * Serializes an Exercise.
+     *
+     * @param Exercise $exercise
+     * @param array    $options
+     *
+     * @return \stdClass
+     */
+    public function getStatistics(Exercise $exercise)
+    {
+        return [
+            'nbSteps' => count($exercise->getSteps()->toArray()),
+            'nbQuestions' => $this->repository->countExerciseQuestion($exercise),
+            'nbPapers' => $this->paperManager->countExercisePapers($exercise),
+            'nbRegisteredUsers' =>  $this->paperManager->countDistinctPapersUsers($exercise),
+            'nbAnonymousUsers' => $this->paperManager->countAnonymousPapers($exercise)
+        ];
+    }
+
+    /**
      * Copies an Exercise resource.
      *
      * @param Exercise $exercise

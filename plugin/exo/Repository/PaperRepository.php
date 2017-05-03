@@ -125,6 +125,36 @@ class PaperRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
+    public function countDistinctPapersUsers(Exercise $exercise)
+    {
+      return (int) $this->getEntityManager()
+          ->createQuery('
+              SELECT COUNT(distinct p.user)
+              FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
+              WHERE p.exercise = :exercise
+                AND p.user IS NOT NULL
+          ')
+          ->setParameters([
+              'exercise' => $exercise,
+          ])
+          ->getSingleScalarResult();
+    }
+    
+    public function countAnonymousPapers(Exercise $exercise)
+    {
+      return (int) $this->getEntityManager()
+          ->createQuery('
+              SELECT COUNT(p.user)
+              FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
+              WHERE p.exercise = :exercise
+                AND p.user IS NULL
+          ')
+          ->setParameters([
+              'exercise' => $exercise,
+          ])
+          ->getSingleScalarResult();
+    }    
+
     /**
      * Finds papers of an exercise that needs correction (aka papers that have answers with `null` score).
      *

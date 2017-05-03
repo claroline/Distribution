@@ -166,7 +166,7 @@ class PaperManager
     public function serializeExercisePapers(Exercise $exercise, User $user = null)
     {
         if (!empty($user)) {
-            // Load papers for of a singe user
+            // Load papers for of a single user
             $papers = $this->repository->findBy([
                 'exercise' => $exercise,
                 'user' => $user,
@@ -249,11 +249,35 @@ class PaperManager
      *
      * @param Exercise $exercise
      *
-     * @return array
+     * @return int
      */
     public function countExercisePapers(Exercise $exercise)
     {
         return $this->repository->countExercisePapers($exercise);
+    }
+
+    /**
+     * Returns the number of different registered users that have passed a given exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @return int
+     */
+    public function countDistinctPapersUsers(Exercise $exercise)
+    {
+        return $this->repository->countDistinctPapersUsers($exercise);
+    }
+    
+    /**
+     * Returns the number of different anonymous users that have passed a given exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @return int
+     */
+    public function countAnonymousPapers(Exercise $exercise)
+    {
+        return $this->repository->countAnonymousPapers($exercise);
     }
 
     /**
