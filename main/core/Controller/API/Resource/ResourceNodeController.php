@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Controller\API;
+namespace Claroline\CoreBundle\Controller\API\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -15,8 +15,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * JSON API for resource node management.
  *
- * @EXT\Route("resources/{id}", options={"expose"=true})
- * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode", options={"mapping": {"id": "guid"}})
+ * @EXT\Route("resources/{resourceNode}", options={"expose"=true})
+ * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode")
  */
 class ResourceNodeController
 {
@@ -42,6 +42,21 @@ class ResourceNodeController
     {
         $this->authorization = $authorization;
         $this->resourceNodeManager = $resourceNodeManager;
+    }
+
+    /**
+     * Get a resourceNode properties.
+     *
+     * @EXT\Route("", name="claro_resource_get")
+     * @EXT\Method("GET")
+     *
+     * @param ResourceNode $resourceNode
+     *
+     * @return JsonResponse
+     */
+    public function getResourceNodeAction(ResourceNode $resourceNode)
+    {
+        return new JsonResponse($this->resourceNodeManager->serialize($resourceNode));
     }
 
     /**

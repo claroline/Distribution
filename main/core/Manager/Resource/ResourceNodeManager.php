@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\Manager\Resource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Serializer\Resource\ResourceNodeSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -36,13 +37,19 @@ class ResourceNodeManager
     private $serializer;
 
     /**
+     * @var ResourceManager
+     */
+    private $resourceManager;
+
+    /**
      * ResourceNodeManager constructor.
      *
      * @DI\InjectParams({
      *     "authorization"          = @DI\Inject("security.authorization_checker"),
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"        = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node")
+     *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
+     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
@@ -54,12 +61,14 @@ class ResourceNodeManager
         AuthorizationCheckerInterface $authorization,
         StrictDispatcher $eventDispatcher,
         ObjectManager $om,
-        ResourceNodeSerializer $resourceNodeSerializer)
+        ResourceNodeSerializer $resourceNodeSerializer,
+        ResourceManager $resourceManager)
     {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
         $this->serializer = $resourceNodeSerializer;
+        $this->resourceManager = $resourceManager;
     }
 
     /**
@@ -74,6 +83,7 @@ class ResourceNodeManager
         return $this->serializer->serialize($resourceNode);
     }
 
+    /* Plus tard
     public function create()
     {
         $node = new ResourceNode();
@@ -132,12 +142,12 @@ class ResourceNodeManager
 
         $node->setPathForCreationLog($parentPath.$node->getName());
         $node->setIcon($icon);
-    }
+    }*/
 
     /**
      * Updates a ResourceNode entity.
      *
-     * @param array $data
+     * @param array        $data
      * @param ResourceNode $resourceNode
      *
      * @return ResourceNode
@@ -147,13 +157,13 @@ class ResourceNodeManager
     public function update(array $data, ResourceNode $resourceNode)
     {
         $errors = $this->validate($data);
+
         if (count($errors) > 0) {
             throw new InvalidDataException('ResourceNode data are invalid.', $errors);
         }
 
-        // published
-        // name
-        // description
+        $this->resourceManager->setPublishedStatus([$resourceNode], $resourceNode->isPublished());
+        $this->resourceManager->rename($resourceNode, $resourceNode->getName());
 
         $this->om->persist($resourceNode);
         $this->om->flush();
@@ -170,6 +180,7 @@ class ResourceNodeManager
      */
     public function validate(array $data)
     {
+        //json-schema ? à discuter
         $errors = [];
 
         return $errors;
@@ -178,7 +189,7 @@ class ResourceNodeManager
     public function publish(ResourceNode $resourceNode)
     {
         if (!$resourceNode->isPublished()) {
-
+            $this->resourceManager->setPublishedStatus([$resourceNode], true);
         }
 
         return $resourceNode;
@@ -187,7 +198,7 @@ class ResourceNodeManager
     public function unpublish(ResourceNode $resourceNode)
     {
         if ($resourceNode->isPublished()) {
-
+            $this->resourceManager->setPublishedStatus([$resourceNode], false);
         }
 
         return $resourceNode;
@@ -195,6 +206,6 @@ class ResourceNodeManager
 
     public function delete(ResourceNode $resourceNode)
     {
-
+        $this->resourceManager->delete($resourceNode);
     }
 }

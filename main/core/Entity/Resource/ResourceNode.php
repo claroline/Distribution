@@ -277,6 +277,23 @@ class ResourceNode
      */
     protected $fields;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    protected $fullscreen = false;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    protected $closable = false;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(nullable=false, type="integer")
+     */
+    protected $closeTarget = 0;
+
     public function __construct()
     {
         $this->guid = Uuid::uuid4()->toString();
@@ -846,5 +863,45 @@ class ResourceNode
         }
 
         return $this;
+    }
+
+    public function setFullscreen($fullscreen)
+    {
+        $this->fullscreen = $fullscreen;
+    }
+
+    public function getFullscreen()
+    {
+        return $this->fullscreen;
+    }
+
+    public function isFullscreen()
+    {
+        return $this->getFullscreen();
+    }
+
+    public function getClosable()
+    {
+        return $this->closable;
+    }
+
+    public function isClosable()
+    {
+        return $this->getClosable();
+    }
+
+    public function setClosable($closable)
+    {
+        $this->closable = $closable;
+    }
+
+    public function getCloseTarget()
+    {
+        return $this->closeTarget;
+    }
+
+    public function setCloseTarget($closeTarget)
+    {
+        $this->closeTarget = $closeTarget;
     }
 }
