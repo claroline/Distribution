@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Action\AdditionalAction;
 use Claroline\CoreBundle\Entity\Activity\ActivityRuleAction;
 use Claroline\CoreBundle\Entity\Plugin;
@@ -32,6 +33,7 @@ use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\ToolMaskDecoderManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -43,6 +45,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class DatabaseWriter
 {
+    use LoggableTrait;
+
     private $em;
     private $im;
     private $mm;
@@ -274,6 +278,7 @@ class DatabaseWriter
      */
     private function updateResourceTypes($resourceConfiguration, Plugin $plugin, PluginBundle $pluginBundle)
     {
+        $this->log('Update resource type '.$resourceConfiguration['name']);
         $resourceType = $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')
             ->findOneByName($resourceConfiguration['name']);
 
@@ -434,13 +439,22 @@ class DatabaseWriter
      */
     public function persistResourceAction(array $action)
     {
+        $this->log('Updating resource action '.$action['name']);
+
         $resourceAction = new MenuAction();
 
         $resourceAction->setName($action['name']);
-        $resourceAction->setAsync(1);
+        $resourceAction->setAsync($action['is_async']);
         $resourceAction->setIsForm($action['is_form']);
-        $resourceAction->setIsCustom(1);
-        $resourceAction->setValue(1);
+        $resourceAction->setIsCustom($action['is_custom']);
+        $resourceAction->setValue($action['value']);
+        $resourceAction->setGroup($action['group']);
+        $resourceAction->setClass($action['class']);
+        if ($action['resource_type']) {
+            $resourceAction->setResourceType(
+              $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName($action['resource_type'])
+            );
+        }
 
         $this->em->persist($resourceAction);
 
@@ -452,8 +466,11 @@ class DatabaseWriter
      */
     public function updateResourceAction(array $action)
     {
+        $resourceType = $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')
+          ->findOneByName($action['resource_type']);
+
         $resourceAction = $this->em->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-            ->findOneBy(['name' => $action['name'], 'resourceType' => null, 'isCustom' => true]);
+            ->findOneBy(['name' => $action['name'], 'resourceType' => $resourceType, 'isCustom' => $action['is_custom']]);
 
         if ($resourceAction === null) {
             $this->persistResourceAction($action);
@@ -562,6 +579,7 @@ class DatabaseWriter
      */
     private function persistResourceTypes($resourceConfiguration, Plugin $plugin, PluginBundle $pluginBundle)
     {
+        $this->log('Adding resource type'.$resourceConfiguration['name']);
         $resourceType = new ResourceType();
         $resourceType->setName($resourceConfiguration['name']);
         $resourceType->setExportable($resourceConfiguration['is_exportable']);
@@ -855,5 +873,15 @@ class DatabaseWriter
             $this->em->remove($decoder);
         }
         $this->em->flush();
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
     }
 }

@@ -7,7 +7,6 @@ use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Manager\BreadcrumbManager;
 use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Manager\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -34,7 +33,6 @@ class ResourceNodeSerializer
      *     "authorization"     = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
      *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
-     *     "actionManager"     = @DI\Inject("claroline.manager.resource_action_manager"),
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
      *     "breadcrumbManager" = @DI\Inject("claroline.manager.breadcrumb_manager")
      * })
@@ -46,14 +44,12 @@ class ResourceNodeSerializer
         AuthorizationCheckerInterface $authorization,
         StrictDispatcher $eventDispatcher,
         MaskManager $maskManager,
-        ResourceActionManager $actionManager,
         BreadcrumbManager $breadcrumbManager,
         RightsManager $rightsManager
     ) {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->maskManager = $maskManager;
-        $this->actionManager = $actionManager;
         $this->breadcrumbManager = $breadcrumbManager;
         $this->rightsManager = $rightsManager;
     }
@@ -116,7 +112,7 @@ class ResourceNodeSerializer
         return [
             'type' => $resourceNode->getResourceType()->getName(),
             'mimeType' => $resourceNode->getMimeType(),
-            'path' => $this->getPath($resourceNode),
+            'path' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
             'description' => null, // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
             'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
@@ -130,7 +126,6 @@ class ResourceNodeSerializer
                 'username' => $resourceNode->getCreator()->getUsername(),
             ],
             'parameters' => $this->getParameters($resourceNode),
-            'path' => $this->getPath($resourceNode),
             'actions' => $this->getActions($resourceNode),
             'rights' => [
                 'all' => $this->getRights($resourceNode),
@@ -168,10 +163,11 @@ class ResourceNodeSerializer
             $data[$action->getName()] = [
             'name' => $action->getName(),
             'mask' => $action->getValue(),
-            'group' => $this->actionManager->getGroup($action),
-            'is_async' => $action->isAsync(),
-            'is_custom' => $action->isCustom(),
-            'is_form' => $action->isForm(),
+            'group' => $action->getGroup(),
+            'async' => $action->isAsync(),
+            'custom' => $action->isCustom(),
+            'form' => $action->isForm(),
+            'class' => $action->getClass(),
           ];
         }
 

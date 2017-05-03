@@ -1,0 +1,40 @@
+plugin:
+    resource_actions:
+        - name: compose
+          is_form: false
+          is_async: false
+          is_custom: true
+          group: activity
+          class: activity-class
+          resource_type: activity
+
+        - name: update_file
+          is_form: false
+          is_async: true
+          is_custom: true
+          group: core
+          class: file-class
+          resource_type: file
+
+    resources:
+        - class: Claroline\CoreBundle\Entity\Resource\File
+          name: file
+          is_exportable: true
+          activity_rules:
+            - action: resource-read
+
+        - class: Claroline\CoreBundle\Entity\Resource\Directory
+          name: directory
+          is_exportable: true
+
+        - class: Claroline\CoreBundle\Entity\Resource\Text
+          name: text
+          is_exportable: true
+
+        - class: Claroline\CoreBundle\Entity\Resource\ResourceShortcut
+          name: resource_shortcut
+          is_exportable: false
+
+        - class: Claroline\CoreBundle\Entity\Resource\Activity
+          name: activity
+          is_exportable: false

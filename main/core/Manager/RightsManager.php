@@ -730,7 +730,7 @@ class RightsManager
             return true;
         }
 
-        if ($token->getUser() === $resourceNode->getUser()) {
+        if ($token->getUser() === $resourceNode->getCreator()) {
             return true;
         }
 
@@ -759,7 +759,7 @@ class RightsManager
           $creatables = $this->getCreatableTypes($roleNames, $resourceNode);
 
           $perms = $this->maskManager->decodeMask(
-            $this->repository->findMaximumRights($roleNames, $resourceNode),
+            $this->rightsRepo->findMaximumRights($roleNames, $resourceNode),
             $resourceNode->getResourceType()
           );
       }

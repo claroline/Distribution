@@ -52,6 +52,16 @@ class MenuAction
     protected $value;
 
     /**
+     * @ORM\Column(name="group_name", nullable=true)
+     */
+    protected $group;
+
+    /**
+     * @ORM\Column(name="class", nullable=true)
+     */
+    protected $class;
+
+    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceType",
      *     inversedBy="actions",
@@ -166,5 +176,25 @@ class MenuAction
     public function isForm()
     {
         return $this->isForm;
+    }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    public function setClass($class)
+    {
+        $this->class = $class;
+    }
+
+    public function getClass()
+    {
+        return $this->class;
     }
 }
