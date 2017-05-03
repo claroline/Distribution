@@ -5,8 +5,6 @@ import {createStore} from './store'
 import {registerDefaultItemTypes} from './../items/item-types'
 import Docimology from './components/docimology.jsx'
 
-import './style.css'
-
 registerDefaultItemTypes()
 
 const exerciseRaw = JSON.parse(document.getElementById('docimology').dataset.exercise)
