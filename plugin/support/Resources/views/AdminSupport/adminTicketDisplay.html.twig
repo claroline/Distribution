@@ -316,19 +316,18 @@
                                     </div>
                                 {% else %}
                                     <div class="comment-contact col-md-2 col-sm-2 text-center comment-contact-left">
-                                        {% if commentUser.getPicture() != '' %}
+                                        {% if commentUser is not empty and commentUser.getPicture() != '' %}
                                             <img src="{{ asset('uploads/pictures/') ~  commentUser.getPicture() }}"
                                                  class="media-object comment-picture"
                                                  alt="{{ commentUser.getLastName() ~ ' ' ~ commentUser.getFirstName() }}"
                                             >
-                                            {{ commentUser.getFirstName() }}
-                                            {{ commentUser.getLastName() }}
-                                            <br>
-                                            {{ comment.getCreationDate()|intl_date_format }}
                                         {% else %}
                                             <h1 class="profile_picture_placeholder">
                                                 <i class="fa fa-user"></i>
                                             </h1>
+                                        {% endif %}
+
+                                        {% if commentUser is not empty %}
                                             {{ commentUser.getFirstName() }}
                                             {{ commentUser.getLastName() }}
                                             <br>

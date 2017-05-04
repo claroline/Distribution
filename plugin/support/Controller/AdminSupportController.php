@@ -981,7 +981,7 @@ class AdminSupportController extends Controller
                     $messageData['type'] = $type;
                 }
                 if ($status !== $oldStatus) {
-                    $intervention = $this->supportManager->createIntervention($ticket, $user, $status);
+                    $intervention = $this->supportManager->createIntervention($ticket, $status, $user);
                     $data['status'] = [];
                     $data['status']['name'] = $status->getName();
                     $data['status']['date'] = $intervention->getEndDate()->format('d/m/Y H:i');

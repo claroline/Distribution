@@ -64,16 +64,6 @@ class AdminTicketType extends AbstractType
                 'required' => true,
             ]
         );
-//        $builder->add(
-//            'comment',
-//            'tinymce',
-//            [
-//                'mapped' => false,
-//                'required' => true,
-//                'label' => 'comment',
-//                'translation_domain' => 'platform',
-//            ]
-//        );
     }
 
     public function getName()

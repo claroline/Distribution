@@ -44,6 +44,7 @@
     "no_linked_ticket": "No linked ticket",
     "no_support_contact": "No support contact",
     "no_ticket": "No ticket",
+    "not_valid_msg": "%param% is not valid",
     "note_deletion": "Removing note",
     "note_deletion_confirm_message": "Are you sure you want to remove this note?",
     "note_edition": "Note edition",
