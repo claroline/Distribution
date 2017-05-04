@@ -7,6 +7,7 @@ use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Manager\BreadcrumbManager;
 use Claroline\CoreBundle\Manager\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceMenuManager;
 use Claroline\CoreBundle\Manager\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -34,7 +35,8 @@ class ResourceNodeSerializer
      *     "eventDispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
      *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
      *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
-     *     "breadcrumbManager" = @DI\Inject("claroline.manager.breadcrumb_manager")
+     *     "breadcrumbManager" = @DI\Inject("claroline.manager.breadcrumb_manager"),
+     *     "menuManager"       = @DI\Inject("claroline.manager.resource_menu_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
@@ -45,6 +47,7 @@ class ResourceNodeSerializer
         StrictDispatcher $eventDispatcher,
         MaskManager $maskManager,
         BreadcrumbManager $breadcrumbManager,
+        ResourceMenuManager $menuManager,
         RightsManager $rightsManager
     ) {
         $this->authorization = $authorization;
@@ -52,6 +55,7 @@ class ResourceNodeSerializer
         $this->maskManager = $maskManager;
         $this->breadcrumbManager = $breadcrumbManager;
         $this->rightsManager = $rightsManager;
+        $this->menuManager = $menuManager;
     }
 
     /**
@@ -156,7 +160,7 @@ class ResourceNodeSerializer
     private function getActions(ResourceNode $resourceNode)
     {
         //ResourceManager::isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
-        $actions = $resourceNode->getResourceType()->getActions();
+        $actions = $this->menuManager->getMenus($resourceNode);
         $data = [];
 
         foreach ($actions as $action) {
