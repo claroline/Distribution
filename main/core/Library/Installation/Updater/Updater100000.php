@@ -25,12 +25,13 @@ class Updater100000 extends Updater
     {
         $this->container = $container;
         $this->logger = $logger;
-        $this->om = $container->get('claroline.manager.object_manager');
+        $this->om = $container->get('claroline.persistence.object_manager');
     }
 
     public function postUpdate()
     {
         $this->setResourceNodeProperties();
+        $this->rebuildMaskAndMenus();
     }
 
     public function setResourceNodeProperties()
@@ -65,5 +66,26 @@ class Updater100000 extends Updater
         $this->log('Clearing object manager...');
         $this->om->clear();
         $this->log('done !');
+    }
+
+    public function rebuildMaskAndMenus()
+    {
+        $this->log('Removing old menus and masks...');
+        $classes = ['ClarolineCoreBundle:Resource\MaskDecoder', 'ClarolineCoreBundle:Resource\MenuAction'];
+
+        foreach ($classes as $class) {
+            $entities = $this->om->getRepository($class)->findAll();
+
+            foreach ($entities as $entity) {
+                $this->om->remove($entity);
+            }
+        }
+
+        $this->om->flush();
+
+        $this->log('Building new menus and masks');
+        $this->container->get('claroline.plugin.installer')->setLogger($this->logger);
+        $this->container->get('claroline.plugin.installer')->updateAllConfiguration();
+        $this->log('On older plateforms, resource permissions might have changed');
     }
 }

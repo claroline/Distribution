@@ -1,5 +1,7 @@
 plugin:
     resource_actions:
+        # the value come from the MaskDecoder Entity
+        # specific menus for a resource
         - name: compose
           is_form: false
           is_async: false
@@ -7,6 +9,7 @@ plugin:
           group: activity
           class: activity-class
           resource_type: activity
+          value: 8
 
         - name: update_file
           is_form: false
@@ -15,6 +18,57 @@ plugin:
           group: core
           class: file-class
           resource_type: file
+          value: 8
+
+        # generic actions
+
+        - name: export
+          is_form: false
+          is_async: true
+          is_custom: false
+          group: core
+          class: changeme
+          value: 4
+
+        - name: delete
+          is_form: false
+          is_async: true
+          is_custom: false
+          group: core
+          class: changeme
+          value: 16
+
+        - name: edit-rights
+          is_form: true
+          is_async: true
+          is_custom: false
+          group: core
+          class: changeme
+          value: 32
+
+        - name: open-tracking
+          is_form: false
+          is_async: true
+          is_custom: false
+          group: core
+          class: changeme
+          value: 32
+
+        - name: rename
+          is_form: true
+          is_async: true
+          is_custom: false
+          group: core
+          class: changeme
+          value: 32
+
+        - name: edit-properties
+          is_form: true
+          is_async: true
+          is_custom: false
+          group: core
+          class: changeme
+          value: 32
 
     resources:
         - class: Claroline\CoreBundle\Entity\Resource\File

@@ -172,4 +172,17 @@ class Installer
             throw new \Exception($report);
         }
     }
+
+    public function updateAllConfiguration()
+    {
+        $bundles = $this->pluginManager->getInstalledBundles();
+
+        foreach ($bundles as $bundle) {
+            $this->log('Updating configuration for '.get_class($bundle['instance']));
+            $this->validator->activeUpdateMode();
+            $this->validatePlugin($bundle['instance']);
+            $this->validator->deactivateUpdateMode();
+            $this->recorder->update($bundle['instance'], $this->validator->getPluginConfiguration());
+        }
+    }
 }

@@ -34,6 +34,7 @@ use Claroline\CoreBundle\Manager\ToolMaskDecoderManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -129,7 +130,9 @@ class DatabaseWriter
         );
 
         if (null === $plugin) {
-            throw new \Exception('Unable to retrieve plugin for updating its configuration.');
+            $this->log('Unable to retrieve plugin for updating its configuration.', LogLevel::ERROR);
+
+            return;
         }
 
         $plugin->setHasOptions($pluginConfiguration['has_options']);
@@ -579,7 +582,7 @@ class DatabaseWriter
      */
     private function persistResourceTypes($resourceConfiguration, Plugin $plugin, PluginBundle $pluginBundle)
     {
-        $this->log('Adding resource type'.$resourceConfiguration['name']);
+        $this->log('Adding resource type '.$resourceConfiguration['name']);
         $resourceType = new ResourceType();
         $resourceType->setName($resourceConfiguration['name']);
         $resourceType->setExportable($resourceConfiguration['is_exportable']);

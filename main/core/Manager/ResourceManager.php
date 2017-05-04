@@ -1641,13 +1641,15 @@ class ResourceManager
      */
     public function isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
     {
+        $alwaysTrue = ['rename', 'edit-properties', 'edit-rights', 'open-tracking'];
+
+        if (in_array($actionName, $alwaysTrue)) {
+            return true;
+        }
+
         if ($resourceType) {
-            $alwaysTrue = ['rename', 'edit-properties', 'edit-rights', 'open-tracking'];
             //first, directories can be downloaded even if there is no listener attached to it
             if ($resourceType->getName() === 'directory' && $actionName === 'download') {
-                return true;
-            }
-            if (in_array($actionName, $alwaysTrue)) {
                 return true;
             }
 
