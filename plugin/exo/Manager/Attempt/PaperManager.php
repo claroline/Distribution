@@ -284,7 +284,7 @@ class PaperManager
      * Returns the max min and average score for a given exercise.
      *
      * @param Exercise $exercise
-     * @param float $scoreOn
+     * @param float    $scoreOn
      *
      * @return \stdClass
      */
@@ -294,13 +294,14 @@ class PaperManager
             'exercise' => $exercise,
         ]);
 
-        $scores =  $this->getPapersScores($papers, $scoreOn);
+        $scores = $this->getPapersScores($papers, $scoreOn);
 
         $result = new \stdClass();
         $result->min = min($scores);
         $result->max = max($scores);
         $average = array_sum($scores) / count($scores);
         $result->avg = $average !== floor($average) ? floatval(number_format($average, 2)) : $average;
+
         return $result;
     }
 
@@ -308,7 +309,7 @@ class PaperManager
      * Returns the number of fully, partially successfull and missed papers for a given exercise.
      *
      * @param Exercise $exercise
-     * @param float $scoreOn
+     * @param float    $scoreOn
      *
      * @return \stdClass
      */
@@ -324,14 +325,14 @@ class PaperManager
 
         $scores = $this->getPapersScores($papers, $scoreOn);
 
-        /** @var Paper $paper */
+        /* @var Paper $paper */
         foreach ($scores as $score) {
             if ($score === floatval(0)) {
-              ++$nbMissed;
-            } else if ($score === floatval($scoreOn)) {
-              ++$nbFullSuccess;
+                ++$nbMissed;
+            } elseif ($score === floatval($scoreOn)) {
+                ++$nbFullSuccess;
             } else {
-              ++$nbPartialSuccess;
+                ++$nbPartialSuccess;
             }
         }
 
@@ -339,6 +340,7 @@ class PaperManager
         $papersSuccessDistribution->nbFullSuccess = $nbFullSuccess;
         $papersSuccessDistribution->nbMissed = $nbMissed;
         $papersSuccessDistribution->nbPartialSuccess = $nbPartialSuccess;
+
         return $papersSuccessDistribution;
     }
 
@@ -346,7 +348,7 @@ class PaperManager
      * Returns the number of papers with a particular score for a given exercise.
      *
      * @param Exercise $exercise
-     * @param float $scoreOn
+     * @param float    $scoreOn
      *
      * @return array
      */
@@ -364,11 +366,12 @@ class PaperManager
 
         $result = [];
         foreach ($uniqueScores as $key) {
-          $matchingScores = array_filter($scores, function($score) use ($key){
-              return floatval($score) === floatval($key);
-          });
-          $result[$key] = count($matchingScores);
+            $matchingScores = array_filter($scores, function ($score) use ($key) {
+                return floatval($score) === floatval($key);
+            });
+            $result[$key] = count($matchingScores);
         }
+
         return $result;
     }
 
@@ -452,7 +455,7 @@ class PaperManager
             $score = $this->calculateScore($paper, $totalScoreOn);
             // since totalScoreOn might have change through papers report all scores on 100
             if ($scoreOn) {
-              $score = floatval(($scoreOn * $score) / $totalScoreOn);
+                $score = floatval(($scoreOn * $score) / $totalScoreOn);
             }
             $scores[] = $score !== floor($score) ? floatval(number_format($score, 2)) : $score;
         }

@@ -158,7 +158,7 @@ class ExerciseController extends AbstractController
      *
      * @EXT\Route("/{id}/docimology", name="exercise_docimology")
      * @EXT\Method("GET")
-    * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("exercise", class="UJMExoBundle:Exercise", options={"mapping": {"id": "uuid"}})
      *
      * @param Exercise $exercise
      *
@@ -169,8 +169,8 @@ class ExerciseController extends AbstractController
         $this->assertHasPermission('ADMINISTRATE', $exercise);
 
         return new JsonResponse([
-    			'exercise' => $this->exerciseManager->serialize($exercise, [Transfer::MINIMAL]),
-    			'statistics' => $this->exerciseManager->getStatistics($exercise, 100)
+                'exercise' => $this->exerciseManager->serialize($exercise, [Transfer::MINIMAL]),
+                'statistics' => $this->exerciseManager->getStatistics($exercise, 100),
         ]);
     }
 
@@ -182,6 +182,4 @@ class ExerciseController extends AbstractController
             throw new AccessDeniedException($collection->getErrorsForDisplay());
         }
     }
-
-
 }

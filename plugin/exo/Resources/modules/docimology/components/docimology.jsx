@@ -1,8 +1,6 @@
 import React, { Component, PropTypes as T } from 'react'
 import { connect } from 'react-redux'
 
-import {actions as currentObjectActions} from './../actions/current-object'
-
 import {PageHeader} from '#/main/core/layout/page/components/page.jsx'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {generateUrl} from '#/main/core/fos-js-router'

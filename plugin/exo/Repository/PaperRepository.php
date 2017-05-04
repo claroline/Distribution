@@ -134,7 +134,7 @@ class PaperRepository extends EntityRepository
      */
     public function countPapersUsers(Exercise $exercise)
     {
-      return (int) $this->getEntityManager()
+        return (int) $this->getEntityManager()
           ->createQuery('
               SELECT COUNT(distinct p.user)
               FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
@@ -156,7 +156,7 @@ class PaperRepository extends EntityRepository
      */
     public function countAnonymousPapers(Exercise $exercise)
     {
-      return (int) $this->getEntityManager()
+        return (int) $this->getEntityManager()
           ->createQuery('
               SELECT COUNT(p.user)
               FROM UJM\ExoBundle\Entity\Attempt\Paper AS p

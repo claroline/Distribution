@@ -46,9 +46,9 @@ class ExerciseRepository extends EntityRepository
     {
         return $this->getEntityManager()
             ->createQuery('
-                UPDATE UJM\ExoBundle\Entity\Attempt\Paper AS p 
-                SET p.invalidated = true 
-                WHERE p.exercise = :exercise 
+                UPDATE UJM\ExoBundle\Entity\Attempt\Paper AS p
+                SET p.invalidated = true
+                WHERE p.exercise = :exercise
                   AND p.invalidated = false
             ')
             ->setParameters([
@@ -56,24 +56,10 @@ class ExerciseRepository extends EntityRepository
             ])
             ->execute();
     }
-    
+
     public function countExerciseQuestion(Exercise $exercise)
     {
-		//SELECT COUNT(sq.question_id) FROM `ujm_exercise` exo JOIN ujm_step step ON step.exercise_id = exo.id JOIN ujm_step_question sq ON sq.step_id = step.id WHERE exo.id = 1
-		/*return (int) $this->createQueryBuilder('p')
-            ->select('COUNT(sq.question)')
-            ->join('p.exercise', 'e')
-            ->join('e.steps', 's')
-            ->join('s.stepQuestions', 'sq')
-            ->where('e = :exercise')
-            ->setParameters([
-                'exercise' => $exercise,
-            ])
-            ->getQuery()
-            ->getSingleScalarResult();*/
-            
-            
-         return (int) $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQuery('
                 SELECT COUNT(sq.question)
                 FROM UJM\ExoBundle\Entity\Exercise AS e
@@ -83,5 +69,5 @@ class ExerciseRepository extends EntityRepository
             ')
             ->setParameter('exercise', $exercise)
             ->getSingleScalarResult();
-	}
+    }
 }
