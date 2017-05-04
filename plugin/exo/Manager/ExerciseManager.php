@@ -148,18 +148,18 @@ class ExerciseManager
      *
      * @return \stdClass
      */
-    public function getStatistics(Exercise $exercise)
+    public function getStatistics(Exercise $exercise, $maxScore)
     {
         $statistics = new \stdClass();
+        $statistics->maxScore = $maxScore;
         $statistics->nbSteps = count($exercise->getSteps()->toArray());
         $statistics->nbQuestions = $this->repository->countExerciseQuestion($exercise);
         $statistics->nbPapers = $this->paperManager->countExercisePapers($exercise);
         $statistics->nbRegisteredUsers = $this->paperManager->countPapersUsers($exercise);
         $statistics->nbAnonymousUsers = $this->paperManager->countAnonymousPapers($exercise);
-        $statistics->maxScore = 100;
-        $statistics->minMaxAndAvgScores = $this->paperManager->getMinMaxAverageScores($exercise);
-        $statistics->paperSuccessDistribution = $this->paperManager->getPapersSuccessDistribution($exercise);
-        $statistics->paperScoreDistribution = $this->paperManager->getPaperScoreDistribution($exercise);
+        $statistics->minMaxAndAvgScores = $this->paperManager->getMinMaxAverageScores($exercise, $maxScore);
+        $statistics->paperSuccessDistribution = $this->paperManager->getPapersSuccessDistribution($exercise, $maxScore);
+        $statistics->paperScoreDistribution = $this->paperManager->getPaperScoreDistribution($exercise, $maxScore);
 
         return $statistics;
     }

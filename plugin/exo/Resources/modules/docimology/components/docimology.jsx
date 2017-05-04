@@ -49,15 +49,16 @@ GeneralStats.propTypes = {
 }
 
 class Docimology extends Component {
-  renderNoteBlock() {
+  renderNoteBlock(paperScoreDistribution) {
+    const scoreDistributionValues = Object.keys(paperScoreDistribution).map(key => { return paperScoreDistribution[key] })
     return (
       <div className="row">
         <div className="col-md-6">
           <div className="panel panel-default">
             <div className="panel-body">
               <BarChart
-                data={[ 1, 0, 2, 4, 3, 10, 5, 8, 10, 15, 10, 15, 20, 18, 17, 9, 7, 2, 0, 1 ]}
-                width={560}
+                data={scoreDistributionValues}
+                width={540}
                 height={200}
               />
             </div>
@@ -65,11 +66,11 @@ class Docimology extends Component {
         </div>
 
         <div className="note-gauges col-md-6">
-          <CircularGauge label="Minimum" color="#b94a48" value={3.5} max={20} width={180} size={25} />
+          <CircularGauge label="Minimum" color="#b94a48" value={this.props.statistics.minMaxAndAvgScores.min} max={this.props.statistics.maxScore} width={180} size={25} />
 
-          <CircularGauge label="Average" color="#c09853" value={11} max={20} width={180} size={25} />
+          <CircularGauge label="Average" color="#c09853" value={this.props.statistics.minMaxAndAvgScores.avg} max={this.props.statistics.maxScore} width={180} size={25} />
 
-          <CircularGauge label="Maximum" color="#468847" value={18} max={20} width={180} size={25} />
+          <CircularGauge label="Maximum" color="#468847" value={this.props.statistics.minMaxAndAvgScores.max} max={this.props.statistics.maxScore} width={180} size={25} />
         </div>
       </div>
     )
@@ -96,12 +97,18 @@ class Docimology extends Component {
 
         <div className="row">
           <div className="col-md-12" style={{marginBottom: '20px'}}>
-            <PieChart data={[10, 6, 3, 5]} colors={['#b94a48', '#c09853', '#468847', '#aaa']} width={380} />
+            <PieChart
+              data={[
+                this.props.statistics.paperSuccessDistribution.nbFullSuccess,
+                this.props.statistics.paperSuccessDistribution.nbPartialSuccess,
+                this.props.statistics.paperSuccessDistribution.nbMissed
+              ]}
+              colors={['#b94a48', '#c09853', '#468847']} width={380} />
           </div>
         </div>
 
         <h2 className="h3">Répartition des notes</h2>
-        {this.renderNoteBlock()}
+        {this.renderNoteBlock(this.props.statistics.paperScoreDistribution)}
 
         <h2 className="h3">Indice de difficulté</h2>
       </div>

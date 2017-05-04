@@ -167,10 +167,10 @@ class ExerciseController extends AbstractController
     public function docimologyAction(Exercise $exercise)
     {
         $this->assertHasPermission('ADMINISTRATE', $exercise);
-        
+
         return new JsonResponse([
-			'exercise' => $this->exerciseManager->serialize($exercise, [Transfer::MINIMAL]),
-			'statistics' => $this->exerciseManager->getStatistics($exercise)
+    			'exercise' => $this->exerciseManager->serialize($exercise, [Transfer::MINIMAL]),
+    			'statistics' => $this->exerciseManager->getStatistics($exercise, 100)
         ]);
     }
 
