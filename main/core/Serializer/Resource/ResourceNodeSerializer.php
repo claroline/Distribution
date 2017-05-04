@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\Serializer\Resource;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\BreadcrumbManager;
 use Claroline\CoreBundle\Manager\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceMenuManager;
@@ -113,10 +114,9 @@ class ResourceNodeSerializer
 
     private function getMeta(ResourceNode $resourceNode)
     {
-        return [
+        $meta = [
             'type' => $resourceNode->getResourceType()->getName(),
             'mimeType' => $resourceNode->getMimeType(),
-            'path' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
             'description' => null, // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
             'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
@@ -131,11 +131,14 @@ class ResourceNodeSerializer
             ],
             'parameters' => $this->getParameters($resourceNode),
             'actions' => $this->getActions($resourceNode),
-            'rights' => [
-                'all' => $this->getRights($resourceNode),
-                'current' => $this->getCurrentPermissions($resourceNode),
-            ],
+            'rights' => ['current' => $this->getCurrentPermissions($resourceNode)],
         ];
+
+        if ($this->hasPermission('ADMINISTRATE', $resourceNode)) {
+            $meta['rights']['all'] = $this->getRights($resourceNode);
+        }
+
+        return $meta;
     }
 
     private function getCurrentPermissions($resourceNode)
@@ -162,6 +165,8 @@ class ResourceNodeSerializer
         //ResourceManager::isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
         $actions = $this->menuManager->getMenus($resourceNode);
         $data = [];
+        $currentPerms = $this->getCurrentPermissions($resourceNode);
+        $currentMask = $this->maskManager->encodeMask($currentPerms, $resourceNode->getResourceType());
 
         foreach ($actions as $action) {
             $data[$action->getName()] = [
@@ -171,11 +176,13 @@ class ResourceNodeSerializer
             'async' => $action->isAsync(),
             'custom' => $action->isCustom(),
             'form' => $action->isForm(),
-            'class' => $action->getClass(),
+            'icon' => $action->getIcon(),
           ];
         }
 
-        return $data;
+        return array_filter($data, function ($action) use ($currentMask) {
+            return $action['mask'] & $currentMask;
+        });
     }
 
     private function getRights(ResourceNode $resourceNode)
@@ -226,5 +233,12 @@ class ResourceNodeSerializer
               ],
             ];
         }, $shortcuts);
+    }
+
+    private function hasPermission($permission, ResourceNode $resourceNode)
+    {
+        $collection = new ResourceCollection([$resourceNode]);
+
+        return $this->authorization->isGranted($permission, $collection);
     }
 }

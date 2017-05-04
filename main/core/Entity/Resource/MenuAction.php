@@ -57,9 +57,9 @@ class MenuAction
     protected $group;
 
     /**
-     * @ORM\Column(name="class", nullable=true)
+     * @ORM\Column(name="icon", nullable=true)
      */
-    protected $class;
+    protected $icon;
 
     /**
      * @ORM\ManyToOne(
@@ -188,13 +188,13 @@ class MenuAction
         return $this->group;
     }
 
-    public function setClass($class)
+    public function setIcon($icon)
     {
-        $this->class = $class;
+        $this->icon = $icon;
     }
 
-    public function getClass()
+    public function getIcon()
     {
-        return $this->class;
+        return $this->icon;
     }
 }

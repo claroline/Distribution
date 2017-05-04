@@ -452,7 +452,7 @@ class DatabaseWriter
         $resourceAction->setIsCustom($action['is_custom']);
         $resourceAction->setValue($action['value']);
         $resourceAction->setGroup($action['group']);
-        $resourceAction->setClass($action['class']);
+        $resourceAction->setIcon($action['class']);
         if ($action['resource_type']) {
             $resourceAction->setResourceType(
               $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName($action['resource_type'])

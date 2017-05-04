@@ -23,7 +23,7 @@ class Version20170501162214 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_menu_action
             ADD `group_name` VARCHAR(255) DEFAULT NULL,
-            ADD class VARCHAR(255) DEFAULT NULL
+            ADD icon VARCHAR(255) DEFAULT NULL
         ');
     }
 
@@ -38,7 +38,7 @@ class Version20170501162214 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_menu_action
             DROP `group_name`,
-            DROP class
+            DROP icon
         ');
     }
 }
