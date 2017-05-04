@@ -1,0 +1,1 @@
+{% if log.getDetails().doer is defined %}{{ log.getDetails().doer.firstName }} {{ log.getDetails().doer.lastName }}{% elseif log.getDoerType == 'platform' %}{{ ('log_default_user')|trans({}, 'log') }}{% elseif log.getDoerType == 'anonymous' %}{{ ('anonymous')|trans({}, 'platform') }}{% endif %}
