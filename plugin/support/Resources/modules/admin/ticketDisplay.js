@@ -27,6 +27,14 @@ $('#ticket-comment-form-box').on('click', '#add-comment-btn', function (e) {
         default:
           $('#ticket-comment-form-box').html(data)
       }
+    },
+    error: (response) => {
+      const errorAlert = `
+        <div class="alert alert-danger">
+            ${response.responseText}
+        </div>
+      `
+      $('#ticket-comment-form-box').html(errorAlert)
     }
   })
 })
@@ -41,7 +49,7 @@ $('#public-comments-box, #private-comments-box').on('click', '.edit-comment-btn'
       {comment: commentId, type: commentType}
     ),
     updateComment,
-    function () {}
+    () => {}
   )
 })
 
@@ -106,7 +114,7 @@ $('#ticket-edition-btn').on('click', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_support_ticket_intervention_create_form', {ticket: ticketId}),
     updateTicket,
-    function () {}
+    () => {}
   )
 })
 
@@ -116,7 +124,7 @@ $('#informations-heading').on('click', '.forward-ticket-btn', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_forwarded_ticket_create_form', {ticket: ticketId}),
     addForwardedTicket,
-    function () {}
+    () => {}
   )
 })
 
@@ -140,7 +148,22 @@ const addComment = function (data) {
           <i class="fa fa-user"></i>
       </h1>
     `
-
+  const actionButtons = data['editable'] ?
+    `
+      <br>
+      <button class="btn btn-default edit-comment-btn btn-sm"
+              data-comment-id="${data['comment']['id']}"
+              data-comment-type="${data['comment']['type']}"
+      >
+          <i class="fa fa-edit"></i>
+      </button>
+      <button class="btn btn-danger delete-comment-btn btn-sm"
+              data-comment-id="${data['comment']['id']}"
+      >
+          <i class="fa fa-trash"></i>
+      </button>
+    ` :
+    ''
   const comment = `
     <div class="media comment-row" id="row-comment-${data['comment']['id']}">
         <div class="comment-content col-md-10 col-sm-10 comment-content-left">
@@ -154,18 +177,7 @@ const addComment = function (data) {
             ${data['user']['lastName']}
             <br>
             ${data['comment']['creationDate']}
-            <br>
-            <button class="btn btn-default edit-comment-btn btn-sm"
-                    data-comment-id="${data['comment']['id']}"
-                    data-comment-type="${data['comment']['type']}"
-            >
-                <i class="fa fa-edit"></i>
-            </button>
-            <button class="btn btn-danger delete-comment-btn btn-sm"
-                    data-comment-id="${data['comment']['id']}"
-            >
-                <i class="fa fa-trash"></i>
-            </button>
+            ${actionButtons}
         </div>
     </div>
   `

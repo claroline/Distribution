@@ -34,7 +34,7 @@ $('#my-tickets-tab').on('click', '.forward-ticket-btn', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_forwarded_ticket_create_form', {ticket: ticketId}),
     addForwardedTicket,
-    function () {}
+    () => {}
   )
 })
 

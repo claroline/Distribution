@@ -577,12 +577,13 @@ class SupportManager
         return $stakeholders;
     }
 
-    public function initializeForwardedTicket(Ticket $ticket, User $user, Ticket $sourceTicket = null)
+    public function initializeForwardedTicket(Ticket $ticket, User $user, Ticket $sourceTicket = null, $officialUuid = null)
     {
         $this->om->startFlushSuite();
         $ticket->setUser($user);
         $ticket->setCreationDate(new \DateTime());
         $ticket->setForwarded(true);
+        $ticket->setOfficialUuid($officialUuid);
         $newStatus = $this->getStatusByCode('NEW');
 
         if (!empty($newStatus)) {

@@ -18,7 +18,7 @@ $('#create-ticket-btn').on('click', function () {
   window.Claroline.Modal.displayForm(
     Routing.generate('formalibre_admin_ticket_create_form'),
     addTicket,
-    function () {}
+    () => {}
   )
 })
 

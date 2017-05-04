@@ -120,6 +120,11 @@ class Ticket
      */
     protected $linkedTicket;
 
+    /**
+     * @ORM\Column(name="official_uuid", nullable=true)
+     */
+    protected $officialUuid;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -325,5 +330,15 @@ class Ticket
     public function setLinkedTicket(Ticket $linkedTicket)
     {
         $this->linkedTicket = $linkedTicket;
+    }
+
+    public function getOfficialUuid()
+    {
+        return $this->officialUuid;
+    }
+
+    public function setOfficialUuid($officialUuid)
+    {
+        $this->officialUuid = $officialUuid;
     }
 }

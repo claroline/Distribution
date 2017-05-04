@@ -90,8 +90,8 @@ class AdminSupportController extends Controller
     public function adminSupportOngoingTicketsAction($search = '', $page = 1, $max = 50, $orderedBy = 'creationDate', $order = 'DESC')
     {
         $tickets = $this->supportManager->getOngoingTickets($search, $orderedBy, $order, true, $page, $max);
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return [
@@ -123,8 +123,8 @@ class AdminSupportController extends Controller
         $closedTickets = $this->supportManager->getClosedTickets('', 'id', 'ASC', false);
         $forwardedTickets = $this->supportManager->getOngoingForwardedTickets('', 'id', 'ASC', false);
         $activeTicketUsers = $this->supportManager->getActiveTicketUserByUser($user);
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return [
@@ -157,8 +157,8 @@ class AdminSupportController extends Controller
         $order = 'DESC'
     ) {
         $tickets = $this->supportManager->getMyTickets($user, $search, $orderedBy, $order, true, $page, $max);
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return [
@@ -192,8 +192,8 @@ class AdminSupportController extends Controller
         $order = 'DESC'
     ) {
         $tickets = $this->supportManager->getClosedTickets($search, $orderedBy, $order, true, $page, $max);
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return [
@@ -227,8 +227,8 @@ class AdminSupportController extends Controller
         $order = 'DESC'
     ) {
         $tickets = $this->supportManager->getOngoingForwardedTickets($search, $orderedBy, $order, true, $page, $max);
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return [
@@ -342,8 +342,8 @@ class AdminSupportController extends Controller
      */
     public function adminTicketDisplayAction(Ticket $ticket)
     {
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return [
@@ -515,48 +515,81 @@ class AdminSupportController extends Controller
      */
     public function adminTicketCommentCreateAction(User $user, Ticket $ticket, $type)
     {
+        $isForwarded = $ticket->isForwarded();
         $comment = new Comment();
         $form = $this->formFactory->create(new CommentType(intval($type)), $comment);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            $comment->setTicket($ticket);
-            $comment->setUser($user);
-            $comment->setIsAdmin(true);
-            $comment->setType($type);
-            $comment->setCreationDate(new \DateTime());
-            $this->supportManager->persistComment($comment);
+            if ($isForwarded) {
+                $supportToken = $this->checkOfficialSupportAccess();
+                $platformUrl = $this->platformConfigHandler->hasParameter('support_platform_url') ?
+                    $this->platformConfigHandler->getParameter('support_platform_url') :
+                    '';
+                $url = 'https://api.claroline.cloud/cc/support/'.$supportToken.'/tickets/'.$ticket->getOfficialUuid().'/comments';
+                $postDataString = '{
+                    "comment":"'.urlencode($comment->getContent()).'",
+                    "platformUrl":"'.$platformUrl.'"
+                }';
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_POST, 1);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postDataString);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                $returnedData = (array) json_decode(curl_exec($ch));
+                $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
 
-            switch ($type) {
-                case Comment::PUBLIC_COMMENT:
-                    $this->supportManager->sendTicketMail(
-                        $user,
-                        $comment->getTicket(),
-                        'new_admin_comment',
-                        $comment
-                    );
-                    break;
-                case Comment::PRIVATE_COMMENT:
-                    $this->supportManager->sendTicketMail(
-                        $user,
-                        $comment->getTicket(),
-                        'new_internal_note',
-                        $comment
-                    );
-                    break;
+                if ($httpCode !== 201) {
+                    $data = is_array($returnedData) && count($returnedData) > 0 ?
+                        $returnedData[0] :
+                        $this->translator->trans('message_sending_has_failed', [], 'support');
+                }
+            } else {
+                $httpCode = 201;
             }
-            $data = [];
-            $data['comment'] = [];
-            $data['comment']['id'] = $comment->getId();
-            $data['comment']['content'] = $comment->getContent();
-            $data['comment']['type'] = $comment->getType();
-            $data['comment']['creationDate'] = $comment->getCreationDate()->format('d/m/Y H:i');
-            $data['user']['id'] = $user->getId();
-            $data['user']['firstName'] = $user->getFirstName();
-            $data['user']['lastName'] = $user->getLastName();
-            $data['user']['picture'] = $user->getPicture();
+            if ($httpCode === 201) {
+                $comment->setTicket($ticket);
+                $comment->setUser($user);
+                $comment->setIsAdmin(true);
+                $comment->setType($type);
+                $comment->setCreationDate(new \DateTime());
+                $this->supportManager->persistComment($comment);
 
-            return new JsonResponse($data, 201);
+                if (!$isForwarded) {
+                    switch ($type) {
+                        case Comment::PUBLIC_COMMENT:
+                            $this->supportManager->sendTicketMail(
+                                $user,
+                                $comment->getTicket(),
+                                'new_admin_comment',
+                                $comment
+                            );
+                            break;
+                        case Comment::PRIVATE_COMMENT:
+                            $this->supportManager->sendTicketMail(
+                                $user,
+                                $comment->getTicket(),
+                                'new_internal_note',
+                                $comment
+                            );
+                            break;
+                    }
+                }
+                $data = [];
+                $data['comment'] = [];
+                $data['comment']['id'] = $comment->getId();
+                $data['comment']['content'] = $comment->getContent();
+                $data['comment']['type'] = $comment->getType();
+                $data['comment']['creationDate'] = $comment->getCreationDate()->format('d/m/Y H:i');
+                $data['user']['id'] = $user->getId();
+                $data['user']['firstName'] = $user->getFirstName();
+                $data['user']['lastName'] = $user->getLastName();
+                $data['user']['picture'] = $user->getPicture();
+                $data['editable'] = !$isForwarded;
+            }
+
+            return new JsonResponse($data, $httpCode);
         } else {
             return [
                 'form' => $form->createView(),
@@ -1005,25 +1038,38 @@ class AdminSupportController extends Controller
      */
     public function adminSupportOfficialSupportManagementAction()
     {
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
-        $data = null;
+        $supportPlatformUrl = $this->platformConfigHandler->hasParameter('support_platform_url') ?
+            $this->platformConfigHandler->getParameter('support_platform_url') :
+            null;
+        $contactsData = null;
+        $supportData = null;
+        $platformUrl = !empty($this->platformConfigHandler->getParameter('domain_name')) ?
+            $this->platformConfigHandler->getParameter('domain_name') :
+            $this->request->getHost();
 
         if (!empty($supportToken)) {
-            $url = 'https://api.claroline.cloud/cc/platform/contacts/'.$supportToken;
+            $contactsUrl = 'https://api.claroline.cloud/cc/platform/contacts/'.$supportToken;
+            $supportUrl = 'https://api.claroline.cloud/cc/support/'.$supportToken;
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_URL, $contactsUrl);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $data = (array) json_decode(curl_exec($ch));
+            $contactsData = (array) json_decode(curl_exec($ch));
+            curl_setopt($ch, CURLOPT_URL, $supportUrl);
+            $supportData = (array) json_decode(curl_exec($ch));
             curl_close($ch);
         }
 
         return [
             'supportToken' => $supportToken,
+            'supportPlatformUrl' => $supportPlatformUrl,
             'title' => 'official_support',
             'noOfficialSupportInfo' => true,
-            'data' => $data,
+            'contactsData' => $contactsData,
+            'supportData' => $supportData,
+            'platformUrl' => $platformUrl,
         ];
     }
 
@@ -1038,12 +1084,16 @@ class AdminSupportController extends Controller
     public function adminSupportTokenRegisterAction()
     {
         $token = $this->request->request->get('token', false);
+        $platformUrl = $this->request->request->get('platformUrl', false);
 
         if ($token) {
-            $this->platformConfigHandler->setParameter('claroline_support_token', $token);
+            $this->platformConfigHandler->setParameter('support_token', $token);
+        }
+        if ($platformUrl) {
+            $this->platformConfigHandler->setParameter('support_platform_url', $platformUrl);
         }
 
-        return new JsonResponse($token, 200);
+        return new JsonResponse('success', 200);
     }
 
     /**
@@ -1057,8 +1107,8 @@ class AdminSupportController extends Controller
      */
     public function adminSupportOfficialSupportInfoAction()
     {
-        $supportToken = $this->platformConfigHandler->hasParameter('claroline_support_token') ?
-            $this->platformConfigHandler->getParameter('claroline_support_token') :
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
             null;
 
         return ['supportToken' => $supportToken];
@@ -1075,6 +1125,7 @@ class AdminSupportController extends Controller
      */
     public function adminTicketCreateFormAction(User $user)
     {
+        $this->checkOfficialSupportAccess();
         $ticket = new Ticket();
         $ticket->setContactMail($user->getMail());
         $ticket->setContactPhone($user->getPhone());
@@ -1094,6 +1145,10 @@ class AdminSupportController extends Controller
      */
     public function adminTicketCreateAction(User $user)
     {
+        $supportToken = $this->checkOfficialSupportAccess();
+        $platformUrl = $this->platformConfigHandler->hasParameter('support_platform_url') ?
+            $this->platformConfigHandler->getParameter('support_platform_url') :
+            '';
         $ticket = new Ticket();
         $ticket->setContactMail($user->getMail());
         $ticket->setContactPhone($user->getPhone());
@@ -1101,28 +1156,48 @@ class AdminSupportController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            //TODO: curl request to create ticket in manager before creating a forwarded ticket
-            $this->supportManager->initializeForwardedTicket($ticket, $user);
-            $data = [];
-            $data['id'] = $ticket->getId();
-            $data['title'] = $ticket->getTitle();
-            $data['creationDate'] = $ticket->getCreationDate()->format('d/m/Y H:i');
-            $data['user'] = [];
-            $data['user']['firstName'] = $user->getFirstName();
-            $data['user']['lastName'] = $user->getLastName();
-            $type = $ticket->getType();
-            $status = $ticket->getStatus();
+            $postDataString = '{
+                "type":"'.$ticket->getType()->getName().'",
+                "subject":"'.urlencode($ticket->getTitle()).'",
+                "platformUrl":"'.$platformUrl.'"
+            }';
+            $url = 'https://api.claroline.cloud/cc/support/'.$supportToken.'/tickets';
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postDataString);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $returnedData = (array) json_decode(curl_exec($ch));
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
 
-            if (!empty($type)) {
-                $data['typeName'] = $type->getName();
-                $data['typeDescription'] = $type->getDescription();
-            }
-            if (!empty($status)) {
-                $data['statusName'] = $status->getName();
-                $data['statusDescription'] = $status->getDescription();
+            if ($httpCode === 201) {
+                $this->supportManager->initializeForwardedTicket($ticket, $user, null, $returnedData['id']);
+                $data = [];
+                $data['id'] = $ticket->getId();
+                $data['title'] = $ticket->getTitle();
+                $data['creationDate'] = $ticket->getCreationDate()->format('d/m/Y H:i');
+                $data['user'] = [];
+                $data['user']['firstName'] = $user->getFirstName();
+                $data['user']['lastName'] = $user->getLastName();
+                $type = $ticket->getType();
+                $status = $ticket->getStatus();
+
+                if (!empty($type)) {
+                    $data['typeName'] = $type->getName();
+                    $data['typeDescription'] = $type->getDescription();
+                }
+                if (!empty($status)) {
+                    $data['statusName'] = $status->getName();
+                    $data['statusDescription'] = $status->getDescription();
+                }
+            } else {
+                $data = is_array($returnedData) && count($returnedData) > 0 ?
+                    $returnedData[0] :
+                    $this->translator->trans('forwarding_has_failed', [], 'support');
             }
 
-            return new JsonResponse($data, 200);
+            return new JsonResponse($data, $httpCode);
         } else {
             return ['form' => $form->createView(), 'user' => $user];
         }
@@ -1139,6 +1214,7 @@ class AdminSupportController extends Controller
      */
     public function adminForwardedTicketCreateFormAction(User $user, Ticket $ticket)
     {
+        $this->checkOfficialSupportAccess();
         $forwardedTicket = new Ticket();
         $forwardedTicket->setTitle($ticket->getTitle());
         $forwardedTicket->setContactMail($user->getMail());
@@ -1161,6 +1237,10 @@ class AdminSupportController extends Controller
      */
     public function adminForwardedTicketCreateAction(User $user, Ticket $ticket)
     {
+        $supportToken = $this->checkOfficialSupportAccess();
+        $platformUrl = $this->platformConfigHandler->hasParameter('support_platform_url') ?
+            $this->platformConfigHandler->getParameter('support_platform_url') :
+            '';
         $forwardedTicket = new Ticket();
         $forwardedTicket->setTitle($ticket->getTitle());
         $forwardedTicket->setContactMail($user->getMail());
@@ -1171,16 +1251,36 @@ class AdminSupportController extends Controller
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
-            //TODO: curl request to create ticket in manager before creating a forwarded ticket
-            $this->supportManager->initializeForwardedTicket($forwardedTicket, $user, $ticket);
-            $data = [
-                'forwardedId' => $forwardedTicket->getId(),
-                'id' => $ticket->getId(),
-                'status_name' => $ticket->getStatus() ? $ticket->getStatus()->getName() : '',
-                'status_description' => $ticket->getStatus() ? $ticket->getStatus()->getDescription() : '',
-            ];
+            $postDataString = '{
+                "type":"'.$forwardedTicket->getType()->getName().'",
+                "subject":"'.urlencode($forwardedTicket->getTitle()).'",
+                "platformUrl":"'.$platformUrl.'"
+            }';
+            $url = 'https://api.claroline.cloud/cc/support/'.$supportToken.'/tickets';
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postDataString);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $returnedData = (array) json_decode(curl_exec($ch));
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
 
-            return new JsonResponse($data, 200);
+            if ($httpCode === 201) {
+                $this->supportManager->initializeForwardedTicket($forwardedTicket, $user, $ticket, $returnedData['id']);
+                $data = [
+                    'forwardedId' => $forwardedTicket->getId(),
+                    'id' => $ticket->getId(),
+                    'status_name' => $ticket->getStatus() ? $ticket->getStatus()->getName() : '',
+                    'status_description' => $ticket->getStatus() ? $ticket->getStatus()->getDescription() : '',
+                ];
+            } else {
+                $data = is_array($returnedData) && count($returnedData) > 0 ?
+                    $returnedData[0] :
+                    $this->translator->trans('forwarding_has_failed', [], 'support');
+            }
+
+            return new JsonResponse($data, $httpCode);
         } else {
             return ['form' => $form->createView(), 'ticket' => $ticket, 'user' => $user];
         }
@@ -1200,5 +1300,18 @@ class AdminSupportController extends Controller
         $this->supportManager->deleteTicket($ticket);
 
         return new JsonResponse($ticketId, 200);
+    }
+
+    private function checkOfficialSupportAccess()
+    {
+        $supportToken = $this->platformConfigHandler->hasParameter('support_token') ?
+            $this->platformConfigHandler->getParameter('support_token') :
+            null;
+
+        if (empty($supportToken)) {
+            throw new AccessDeniedException();
+        }
+
+        return $supportToken;
     }
 }

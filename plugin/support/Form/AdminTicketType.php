@@ -55,6 +55,7 @@ class AdminTicketType extends AbstractType
                 'choice_translation_domain' => true,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('t')
+                        ->where('t.locked = true')
                         ->orderBy('t.name', 'ASC');
                 },
                 'property' => 'name',
@@ -63,16 +64,16 @@ class AdminTicketType extends AbstractType
                 'required' => true,
             ]
         );
-        $builder->add(
-            'comment',
-            'tinymce',
-            [
-                'mapped' => false,
-                'required' => true,
-                'label' => 'comment',
-                'translation_domain' => 'platform',
-            ]
-        );
+//        $builder->add(
+//            'comment',
+//            'tinymce',
+//            [
+//                'mapped' => false,
+//                'required' => true,
+//                'label' => 'comment',
+//                'translation_domain' => 'platform',
+//            ]
+//        );
     }
 
     public function getName()

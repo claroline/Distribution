@@ -8,13 +8,35 @@
 
         {% if supportToken is not empty %}
             <b>{{ 'support_token'|trans({}, 'support') }}</b> : {{ supportToken }}
+            <br>
+            <b>{{ 'platform_url'|trans({}, 'support') }}</b> : {{ supportPlatformUrl }}
 
-            {% if data['contract'] is defined and data['contract'] is not empty %}
+            {% if contactsData['contract'] is defined and contactsData['contract'] is not empty %}
                 <br>
-                <b>{{ 'contract'|trans({}, 'support') }}</b> : {{ data['contract'] }}
+                <b>{{ 'contract'|trans({}, 'support') }}</b> : {{ contactsData['contract'] }}
             {% endif %}
 
-            {% if data['contacts'] is defined and data['contract']|length > 0 %}
+            {% if supportData['supportContracts'] is defined and supportData['supportContracts']|length > 0 %}
+                <br>
+                <b>{{ 'support_contracts'|trans({}, 'support') }}</b> :
+                {% for contract in supportData['supportContracts'] %}
+                    {{ contract.num }}{% if not loop.last %},&nbsp;{% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% if supportData['remainingTokens'] is defined and supportData['remainingTokens'].technical is defined %}
+                <br>
+                <b>{{ 'remaining_support_credits'|trans({}, 'support') }} ({{ 'technical'|trans({}, 'support') }})</b> :
+                {{ supportData['remainingTokens'].technical }}
+            {% endif %}
+
+            {% if supportData['remainingTokens'] is defined and supportData['remainingTokens'].functional is defined %}
+                <br>
+                <b>{{ 'remaining_support_credits'|trans({}, 'support') }} ({{ 'functional'|trans({}, 'support') }})</b> :
+                {{ supportData['remainingTokens'].functional }}
+            {% endif %}
+
+            {% if contactsData['contacts'] is defined and contactsData['contract']|length > 0 %}
                 <br>
                 <h3>{{ 'contacts'|trans({}, 'support') }}</h3>
                 <div class="table-responsive">
@@ -24,7 +46,7 @@
                             <th>{{ 'email'|trans({}, 'platform') }}</th>
                             <th>{{ 'phone'|trans({}, 'platform') }}</th>
                         </tr>
-                        {% for contact in data['contacts'] %}
+                        {% for contact in contactsData['contacts'] %}
                             <tr>
                                 <td>{{ contact.details.name }}</td>
                                 <td>{{ contact.details.email }}</td>
@@ -48,23 +70,37 @@
             {% endif %}
         {% else %}
             <br>
-            <div id="support-token-form-row" class="form-group row">
-                <div class="col-md-6">
-                    <div class="input-group">
+            <div id="official-support-form">
+                <div id="support-token-form-row" class="form-group row">
+                    <label class="control-label col-md-3">
+                        {{ 'support_token'|trans({}, 'support') }}
+                    </label>
+                    <div class="col-md-6">
                         <input id="support-token-input"
                                type="text"
                                class="form-control"
-                               placeholder="{{ 'enter_support_token_msg'|trans({}, 'support') }}"
                         >
-                        <span class="input-group-btn">
-                            <button id="support-token-validate-btn" class="btn btn-primary">
-                                {{ 'ok'|trans({}, 'platform') }}
-                            </button>
-                        </span>
+                        <div id="token-error-block" class="help-block field-error">
+                        </div>
                     </div>
                 </div>
-                <div id="token-error-block" class="help-block field-error col-md-12">
+                <div id="support-platform-url-form-row" class="form-group row">
+                    <label class="control-label col-md-3">
+                        {{ 'platform_url'|trans({}, 'support') }}
+                    </label>
+                    <div class="col-md-6">
+                        <input id="support-platform-url-input"
+                               type="text"
+                               class="form-control"
+                               value="{{ platformUrl }}"
+                        >
+                        <div id="platform-url-error-block" class="help-block field-error">
+                        </div>
+                    </div>
                 </div>
+                <button id="support-token-validate-btn" class="btn btn-primary">
+                    {{ 'ok'|trans({}, 'platform') }}
+                </button>
             </div>
         {% endif %}
     </div>
