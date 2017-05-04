@@ -117,7 +117,6 @@ class TicketRepository extends EntityRepository
             JOIN t.status s
             WHERE s.code = 'FA'
             AND t.adminActive = true
-            AND t.forwarded = false
             ORDER BY t.{$orderedBy} {$order}
         ";
         $query = $this->_em->createQuery($dql);
@@ -133,7 +132,6 @@ class TicketRepository extends EntityRepository
             JOIN t.status s
             WHERE s.code != 'FA'
             AND t.adminActive = true
-            AND t.forwarded = false
             AND (
                 UPPER(t.title) LIKE :search
                 OR UPPER(t.description) LIKE :search
