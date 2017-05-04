@@ -263,11 +263,11 @@ class PaperManager
      *
      * @return int
      */
-    public function countDistinctPapersUsers(Exercise $exercise)
+    public function countPapersUsers(Exercise $exercise)
     {
-        return $this->repository->countDistinctPapersUsers($exercise);
+        return $this->repository->countPapersUsers($exercise);
     }
-    
+
     /**
      * Returns the number of different anonymous users that have passed a given exercise.
      *
@@ -278,6 +278,80 @@ class PaperManager
     public function countAnonymousPapers(Exercise $exercise)
     {
         return $this->repository->countAnonymousPapers($exercise);
+    }
+
+    /**
+     * Returns the max min and average score for a given exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @return array
+     */
+    public function getMinMaxAverageScores(Exercise $exercise)
+    {
+        $papers = $this->repository->findBy([
+            'exercise' => $exercise,
+        ]);
+
+        $scores =  $this->getPapersScores($papers);
+
+        $result = new \stdClass();
+        $result->minScore = min($scores);
+        $result->maxScore = max($scores);
+        $result->avgScore = array_sum($scores) / count($scores);
+        return $result;
+    }
+
+    public function getPapersSuccessDistribution(Exercise $exercise)
+    {
+        $papers = $this->repository->findBy([
+            'exercise' => $exercise,
+        ]);
+
+        $nbFullSuccess = 0;
+        $nbFullFailure = 0;
+        $nbPartialSuccess = 0;
+
+        $scores = $this->getPapersScores($papers);
+
+        /** @var Paper $paper */
+        foreach ($scores as $score) {
+            if ($score === 0) {
+              ++$nbFullFailure;
+            } else if ($score === 100) {
+              ++$nbFullSuccess;
+            } else {
+              ++$nbPartialSuccess;
+            }
+        }
+
+        $papersSuccessDistribution = new \stdClass();
+        $papersSuccessDistribution->nbFullSuccess = $nbFullSuccess;
+        $papersSuccessDistribution->nbFullFailure = $nbFullFailure;
+        $papersSuccessDistribution->nbPartialSuccess = $nbPartialSuccess;
+        return $papersSuccessDistribution;
+    }
+
+    public function getPaperScoreDistribution(Exercise $exercise)
+    {
+        $papers = $this->repository->findBy([
+            'exercise' => $exercise,
+        ]);
+
+        $scores = $this->getPapersScores($papers);
+
+        // get unique scores from scores array
+        $uniqueScores = array_unique($scores, SORT_NUMERIC);
+        sort($uniqueScores);
+
+        $result = [];
+        foreach ($uniqueScores as $key) {
+          $matchingScores = array_filter($scores, function($score) use ($key){
+              return floatval($score) === floatval($key);
+          });
+          $result[$key] = count($matchingScores);
+        }
+        return $result;
     }
 
     /**
@@ -339,5 +413,21 @@ class PaperManager
         }
 
         return $available;
+    }
+
+    private function getPapersScores($papers, $scoreOn = 100)
+    {
+        $scores = [];
+        /** @var Paper $paper */
+        foreach ($papers as $paper) {
+            $structure = json_decode($paper->getStructure());
+            $totalScoreOn = $structure->parameters->totalScoreOn && floatval($structure->parameters->totalScoreOn) > 0 ? floatval($structure->parameters->totalScoreOn) : $this->calculateTotal($paper);
+            $baseScore = $this->calculateScore($paper, $totalScoreOn);
+            // since totalScoreOn might have change through papers report all scores on 100
+            $score = floatval(($scoreOn * $baseScore) / $totalScoreOn);
+            $scores[] = $score !== floor($score) ? floatval(number_format($score, 2)) : $score;
+        }
+
+        return $scores;
     }
 }

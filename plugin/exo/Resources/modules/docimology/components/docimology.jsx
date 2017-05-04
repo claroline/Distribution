@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes as T } from 'react'
 import { connect } from 'react-redux'
 
 import {actions as currentObjectActions} from './../actions/current-object'
@@ -11,8 +11,6 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import BarChart from './../../components/chart/bar/bar-chart.jsx'
 import PieChart from './../../components/chart/pie/pie-chart.jsx'
 import CircularGauge from './../../components/chart/gauge/circlular-gauge.jsx'
-
-const T = React.PropTypes
 
 const CountCard = props =>
   <div className="count-card panel panel-default">
@@ -45,7 +43,7 @@ const GeneralStats = props =>
       <CountCard label="papers" icon="fa fa-file" count={props.statistics.nbPapers} />
     </div>
   </div>
- 
+
 GeneralStats.propTypes = {
   statistics: T.object.isRequired
 }

@@ -125,7 +125,14 @@ class PaperRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function countDistinctPapersUsers(Exercise $exercise)
+    /**
+     * Returns the number of registered users associated to a given exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @return int the number of registered users
+     */
+    public function countPapersUsers(Exercise $exercise)
     {
       return (int) $this->getEntityManager()
           ->createQuery('
@@ -139,7 +146,14 @@ class PaperRepository extends EntityRepository
           ])
           ->getSingleScalarResult();
     }
-    
+
+    /**
+     * Returns the number of annymous users associated to a given exercise.
+     *
+     * @param Exercise $exercise
+     *
+     * @return int the number of registered users
+     */
     public function countAnonymousPapers(Exercise $exercise)
     {
       return (int) $this->getEntityManager()
@@ -153,7 +167,7 @@ class PaperRepository extends EntityRepository
               'exercise' => $exercise,
           ])
           ->getSingleScalarResult();
-    }    
+    }
 
     /**
      * Finds papers of an exercise that needs correction (aka papers that have answers with `null` score).
