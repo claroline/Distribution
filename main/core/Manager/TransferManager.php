@@ -207,13 +207,13 @@ class TransferManager
     }
 
     /**
-     * @param $template Directory uncompressed template in plateform templateDirectory
-     * @param User $owner
-     * @param bool $isValidated
+     * @param Workspace $workspace
+     * @param string    $templatePath
+     * @param bool      $isValidated
      *
      * @throws InvalidConfigurationException
      *
-     * @return SimpleWorkbolspace
+     * @return Workspace
      *
      * The template doesn't need to be validated anymore if
      *  - it comes from the self::import() function
@@ -234,13 +234,14 @@ class TransferManager
     }
 
     /**
-     * @param File $template
-     * @param User $owner
+     * @param Workspace $workspace
+     * @param array     $data
+     * @param string template
      * @param bool $isValidated
      *
      * @throws InvalidConfigurationException
      *
-     * @return SimpleWorkbolspace
+     * @return Workspace
      *
      * The template doesn't need to be validated anymore if
      *  - it comes from the self::import() function
@@ -506,8 +507,9 @@ class TransferManager
     /**
      * Inject the rootPath.
      *
-     * @param $template template path
-     * @param array $data
+     * @param string $template
+     * @param User   $owner
+     * @param array  $data
      */
     private function setImportersForTemplate($template, User $owner, array $data)
     {
