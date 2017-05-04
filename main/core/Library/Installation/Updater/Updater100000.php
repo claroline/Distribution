@@ -85,7 +85,7 @@ class Updater100000 extends Updater
 
         $this->log('Building new menus and masks');
         $this->container->get('claroline.plugin.installer')->setLogger($this->logger);
-        $this->container->get('claroline.plugin.installer')->updateAllConfiguration();
+        $this->container->get('claroline.plugin.installer')->updateAllConfigurations();
         $this->log('On older plateforms, resource permissions might have changed !');
     }
 }

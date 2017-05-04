@@ -49,7 +49,8 @@ class ResourceNodeManager
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"        = @DI\Inject("claroline.event.event_dispatcher"),
      *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
-     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager")
+     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager"),
+     *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization

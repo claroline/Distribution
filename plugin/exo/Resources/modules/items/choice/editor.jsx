@@ -1,6 +1,8 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import classes from 'classnames'
+
 import {t, tex} from '#/main/core/translation'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'

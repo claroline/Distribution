@@ -173,7 +173,7 @@ class Installer
         }
     }
 
-    public function updateAllConfiguration()
+    public function updateAllConfigurations()
     {
         $bundles = $this->pluginManager->getInstalledBundles();
 
