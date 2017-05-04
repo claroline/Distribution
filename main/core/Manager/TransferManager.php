@@ -215,6 +215,7 @@ class TransferManager
      *
      * @return Workspace
      *
+     * Create workspace from uncompressed template
      * The template doesn't need to be validated anymore if
      *  - it comes from the self::import() function
      *  - we want to create a user from the default template (it should work no matter what)
