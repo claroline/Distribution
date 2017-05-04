@@ -56,6 +56,8 @@ class ResourceNodeController
      */
     public function getResourceNodeAction(ResourceNode $resourceNode)
     {
+        $this->assertHasPermission('OPEN', $resourceNode);
+
         return new JsonResponse($this->resourceNodeManager->serialize($resourceNode));
     }
 

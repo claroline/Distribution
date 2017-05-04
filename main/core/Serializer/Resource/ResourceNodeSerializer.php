@@ -149,13 +149,10 @@ class ResourceNodeSerializer
     private function getParameters(ResourceNode $resourceNode)
     {
         return [
-            'accessibleFrom' => null,
-            'accessibleUntil' => null,
-            'fullscreen' => $resourceNode->isFullscreen(), // todo : migrate custom data (Scorm)
+            'accessibleFrom' => $resourceNode->getAccessibleFrom() ? $resourceNode->getAccessibleFrom()->format('Y-m-d\TH:i:s') : null,
+            'accessibleUntil' => $resourceNode->getAccessibleUntil() ? $resourceNode->getAccessibleUntil()->format('Y-m-d\TH:i:s') : null,
+            'fullscreen' => $resourceNode->isFullscreen(),
             'closable' => $resourceNode->isClosable(),
-
-            // todo : add field and migrate custom data (Scorm)
-            // values : 0 => ws / 1 => desktop. default = 0
             'closeTarget' => $resourceNode->getCloseTarget(),
         ];
     }
