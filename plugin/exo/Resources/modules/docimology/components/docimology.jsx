@@ -5,6 +5,8 @@ import {PageHeader} from '#/main/core/layout/page/components/page.jsx'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {generateUrl} from '#/main/core/fos-js-router'
 
+import {t, tex} from '#/main/core/translation'
+
 // TODO : use barrel instead
 import BarChart from './../../components/chart/bar/bar-chart.jsx'
 import PieChart from './../../components/chart/pie/pie-chart.jsx'
@@ -26,20 +28,12 @@ CountCard.propTypes = {
 }
 
 const GeneralStats = props =>
-  <div className="general-stats row">
-    <div className="col-md-3 col-xs-6">
-      <CountCard label="steps" icon="fa fa-th-list" count={props.statistics.nbSteps} />
-    </div>
-    <div className="col-md-3 col-xs-6">
-      <CountCard label="questions" icon="fa fa-question" count={props.statistics.nbQuestions} />
-    </div>
-    <div className="col-md-3 col-xs-6">
-      <CountCard label="users" icon="fa fa-user" count={props.statistics.nbRegisteredUsers} />
-      <CountCard label="anonymous" icon="fa fa-user" count={props.statistics.nbAnonymousUsers} />
-    </div>
-    <div className="col-md-3 col-xs-6">
-      <CountCard label="papers" icon="fa fa-file" count={props.statistics.nbPapers} />
-    </div>
+  <div className="general-stats">
+    <CountCard label={tex('steps')} icon="fa fa-th-list" count={props.statistics.nbSteps} />
+    <CountCard label={tex('questions')} icon="fa fa-question" count={props.statistics.nbQuestions} />
+    <CountCard label={t('users')} icon="fa fa-user" count={props.statistics.nbRegisteredUsers} />
+    <CountCard label={t('anonymous')} icon="fa fa-user" count={props.statistics.nbAnonymousUsers} />
+    <CountCard label={tex('papers')} icon="fa fa-file" count={props.statistics.nbPapers} />
   </div>
 
 GeneralStats.propTypes = {
@@ -64,12 +58,12 @@ class Docimology extends Component {
         </div>
 
         <div className="note-gauges col-md-6">
-          <CircularGauge label="Minimum" color="#b94a48" value={this.props.statistics.minMaxAndAvgScores.min} max={this.props.statistics.maxScore} width={180} size={25} />
+          <CircularGauge label={tex('minimum')} color="#b94a48" value={this.props.statistics.minMaxAndAvgScores.min} max={this.props.statistics.maxScore} width={180} size={25} />
+          <CircularGauge label={tex('average')} color="#c09853" value={this.props.statistics.minMaxAndAvgScores.avg} max={this.props.statistics.maxScore} width={180} size={25} />
+          <CircularGauge label={tex('maximum')} color="#468847" value={this.props.statistics.minMaxAndAvgScores.max} max={this.props.statistics.maxScore} width={180} size={25} />
 
-          <CircularGauge label="Average" color="#c09853" value={this.props.statistics.minMaxAndAvgScores.avg} max={this.props.statistics.maxScore} width={180} size={25} />
+      </div>
 
-          <CircularGauge label="Maximum" color="#468847" value={this.props.statistics.minMaxAndAvgScores.max} max={this.props.statistics.maxScore} width={180} size={25} />
-        </div>
       </div>
     )
   }
@@ -77,7 +71,8 @@ class Docimology extends Component {
   render() {
     return (
       <div className="page-container docimology-container">
-        <PageHeader title="Docimology">
+        {/* PAPER SUCCESS DISTRIBUTION */}
+        <PageHeader title={tex('docimology')}>
           <PageActions>
             <PageAction
               id="back-to-exercise"
@@ -89,26 +84,58 @@ class Docimology extends Component {
           </PageActions>
         </PageHeader>
 
+        {/* PAPER SUCCESS DISTRIBUTION */}
         <GeneralStats {...this.props} />
 
-        <h2 className="h3">Indice de réussite</h2>
-
-        <div className="row">
-          <div className="col-md-12" style={{marginBottom: '20px'}}>
-            <PieChart
-              data={[
-                this.props.statistics.paperSuccessDistribution.nbFullSuccess,
-                this.props.statistics.paperSuccessDistribution.nbPartialSuccess,
-                this.props.statistics.paperSuccessDistribution.nbMissed
-              ]}
-              colors={['#b94a48', '#c09853', '#468847']} width={380} />
+        {/* PAPER SUCCESS DISTRIBUTION */}
+        <div className="paper-success-distribution">
+          <h2 className="h3">{tex('docimology_success_index')}</h2>
+          <div className="row">
+            <div className="col-md-6" style={{marginBottom: '20px'}}>
+              <PieChart
+                data={[
+                  this.props.statistics.paperSuccessDistribution.nbFullSuccess,
+                  this.props.statistics.paperSuccessDistribution.nbPartialSuccess,
+                  this.props.statistics.paperSuccessDistribution.nbMissed
+                ]}
+                colors={['#b94a48', '#c09853', '#468847']}
+                width={380}
+                showValue={true}
+              />
+            </div>
+            <div className="col-md-6 legend" style={{marginBottom: '20px'}}>
+              <ul>
+                <li className="inline-flex">
+                  <div className="color-legend" style={{backgroundColor:'#b94a48'}}></div>
+                  <span className="legend-label">{tex('docimology_papers_totally_successfull')}</span>
+                </li>
+                <li className="inline-flex">
+                  <div className="color-legend" style={{backgroundColor:'#c09853'}}></div>
+                  <span className="legend-label">{tex('docimology_papers_partially_successfull')}</span>
+                </li>
+                <li className="inline-flex">
+                  <div className="color-legend" style={{backgroundColor:'#468847'}}></div>
+                  <span className="legend-label">{tex('docimology_papers_missed')}</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-
-        <h2 className="h3">Répartition des notes</h2>
-        {this.renderNoteBlock(this.props.statistics.paperScoreDistribution)}
-
-        <h2 className="h3">Indice de difficulté</h2>
+        {/* PAPER SCORE DISTRIBUTION */}
+        <div className="paper-score-distribution">
+          <h2 className="h3">{tex('docimology_score_distribution')}</h2>
+          <h3 className="h5">
+            <span id="help" className="help-block">
+              <span className="fa fa-fw fa-info-circle"></span>
+              {tex('docimology_note_gauges_help')}
+            </span>
+          </h3>
+          {this.renderNoteBlock(this.props.statistics.paperScoreDistribution)}
+        </div>
+        {/* DIFFICULTY INDEX */}
+        <div className="difficulty-index">
+        <h2 className="h3">{tex('docimology_difficulty_index')}</h2>
+        </div>
       </div>
     )
   }

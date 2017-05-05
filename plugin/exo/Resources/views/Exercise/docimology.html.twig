@@ -13,6 +13,6 @@
 
 {% block javascripts %}
     {{ parent() }}
-
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'ujm_exo' }) }}"></script>
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-exo-docimology.js') }}"></script>
 {% endblock %}
