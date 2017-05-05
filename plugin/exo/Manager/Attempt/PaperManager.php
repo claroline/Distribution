@@ -297,9 +297,9 @@ class PaperManager
         $scores = $this->getPapersScores($papers, $scoreOn);
 
         $result = new \stdClass();
-        $result->min = min($scores);
-        $result->max = max($scores);
-        $average = array_sum($scores) / count($scores);
+        $result->min = count($scores) === 0 ? 0 : min($scores);
+        $result->max = count($scores) === 0 ? 0 : max($scores);
+        $average = count($scores) === 0 ? 0 : array_sum($scores) / count($scores);
         $result->avg = $average !== floor($average) ? floatval(number_format($average, 2)) : $average;
 
         return $result;
