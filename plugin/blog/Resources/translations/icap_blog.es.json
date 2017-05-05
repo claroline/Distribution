@@ -2,5 +2,7 @@
     "select": "Séleccionar",
     "apply": "Aplicar",
     "close": "Cerrar",
-    "search": "Buscar"
+    "search": "Buscar",
+    "maxlength_field": "",
+    "posts": "Respuestas"
 }
