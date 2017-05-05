@@ -281,7 +281,7 @@ class LogManager
         return $params;
     }
 
-    public function getResourceList($resource, $page, $maxResult = -1)
+    public function getResourceList($resource, $page = null, $maxResult = -1)
     {
         $resourceNodeIds = [$resource->getResourceNode()->getId()];
 
@@ -294,7 +294,9 @@ class LogManager
             $resourceNodeIds,
             get_class($resource)
         );
-        $params['_resource'] = $resource;
+        if ($page !== null) {
+            $params['_resource'] = $resource;
+        }
 
         return $params;
     }
