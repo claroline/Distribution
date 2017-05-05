@@ -61,8 +61,7 @@ class Docimology extends Component {
           <CircularGauge label={tex('minimum')} color="#b94a48" value={this.props.statistics.minMaxAndAvgScores.min} max={this.props.statistics.maxScore} width={180} size={25} />
           <CircularGauge label={tex('average')} color="#c09853" value={this.props.statistics.minMaxAndAvgScores.avg} max={this.props.statistics.maxScore} width={180} size={25} />
           <CircularGauge label={tex('maximum')} color="#468847" value={this.props.statistics.minMaxAndAvgScores.max} max={this.props.statistics.maxScore} width={180} size={25} />
-
-      </div>
+        </div>
 
       </div>
     )
@@ -98,7 +97,7 @@ class Docimology extends Component {
                   this.props.statistics.paperSuccessDistribution.nbPartialSuccess,
                   this.props.statistics.paperSuccessDistribution.nbMissed
                 ]}
-                colors={['#b94a48', '#c09853', '#468847']}
+                colors={['#468847', '#c09853', '#b94a48']}
                 width={380}
                 showValue={true}
               />
@@ -106,7 +105,7 @@ class Docimology extends Component {
             <div className="col-md-6 legend" style={{marginBottom: '20px'}}>
               <ul>
                 <li className="inline-flex">
-                  <div className="color-legend" style={{backgroundColor:'#b94a48'}}></div>
+                  <div className="color-legend" style={{backgroundColor:'#468847'}}></div>
                   <span className="legend-label">{tex('docimology_papers_totally_successfull')}</span>
                 </li>
                 <li className="inline-flex">
@@ -114,7 +113,7 @@ class Docimology extends Component {
                   <span className="legend-label">{tex('docimology_papers_partially_successfull')}</span>
                 </li>
                 <li className="inline-flex">
-                  <div className="color-legend" style={{backgroundColor:'#468847'}}></div>
+                  <div className="color-legend" style={{backgroundColor:'#b94a48'}}></div>
                   <span className="legend-label">{tex('docimology_papers_missed')}</span>
                 </li>
               </ul>
