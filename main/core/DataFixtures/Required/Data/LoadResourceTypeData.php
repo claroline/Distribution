@@ -21,11 +21,6 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 class LoadResourceTypeData implements RequiredFixture
 {
     /**
-     * Loads one meta type (document) and four resource types handled by the platform core :
-     * - File
-     * - Directory
-     * - Link
-     * - Text
      * All these resource types have the 'document' meta type.
      *
      * @param ObjectManager $manager

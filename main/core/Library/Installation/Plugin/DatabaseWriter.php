@@ -756,6 +756,7 @@ class DatabaseWriter
      */
     private function persistAdminTool($adminToolConfiguration, Plugin $plugin, AdminTool $adminTool)
     {
+        $this->log('Update admin tool '.$adminToolConfiguration['name']);
         $adminTool->setName($adminToolConfiguration['name']);
         $adminTool->setClass($adminToolConfiguration['class']);
         $adminTool->setPlugin($plugin);
