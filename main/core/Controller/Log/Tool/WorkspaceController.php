@@ -195,7 +195,8 @@ class WorkspaceController extends Controller
         $logManager = $this->get('claroline.log.manager');
 
         $response = new StreamedResponse(function () use ($logManager, $workspace) {
-            $results = $logManager->getWorkspaceList($workspace);
+            $workspaceList = $logManager->getWorkspaceList($workspace);
+            $results = $workspaceList['results'];
             $date_format = $this->translator->trans('date_format', [], 'platform');
             $handle = fopen('php://output', 'w+');
             fputcsv($handle, [
@@ -208,15 +209,11 @@ class WorkspaceController extends Controller
                 fputcsv($handle, [
                     $result->getDateLog()->format($date_format).' '.$result->getDateLog()->format('H:i'),
                     $this->translator->trans('log_'.$result->getAction().'_shortname', [], 'log'),
-                    $this->renderView('ClarolineCoreBundle:Log:export_list_item_doer.txt.twig', ['log' => $result]),
-                    $this->translator->trans('log_'.$result->getAction().'_sentence', [
-                        '%resource%' => $this->renderView('ClarolineCoreBundle:Log:export_list_item_resource.txt.twig', ['log' => $result]),
-                        '%receiver_user%' => $this->renderView('ClarolineCoreBundle:Log:export_list_item_receiver_user.txt.twig', ['log' => $result]),
-                        '%receiver_group%' => $this->renderView('ClarolineCoreBundle:Log:export_list_item_receiver_group.txt.twig', ['log' => $result]),
-                        '%role%' => $this->renderView('ClarolineCoreBundle:Log:export_list_item_role.txt.twig', ['log' => $result]),
-                        '%workspace%' => $this->renderView('ClarolineCoreBundle:Log:export_list_item_workspace.txt.twig', ['log' => $result]),
-                        '%tool%' => $this->renderView('ClarolineCoreBundle:Log:export_list_item_tool.txt.twig', ['log' => $result]),
-                    ], 'log'),
+                    $this->str_to_csv($this->renderView('ClarolineCoreBundle:Log:view_list_item_doer.html.twig', ['log' => $result])),
+                    $this->str_to_csv($this->renderView('ClarolineCoreBundle:Log:view_list_item_sentence.html.twig', [
+                        'log' => $result,
+                        'listItemView' => array_key_exists($result->getId(), $workspaceList['listItemViews']) ? $workspaceList['listItemViews'][$result->getId()] : null,
+                    ])),
                 ]);
             }
 
@@ -227,5 +224,17 @@ class WorkspaceController extends Controller
         $response->headers->set('Content-Disposition', 'attachment; filename="actions_'.$dateStr.'.csv"');
 
         return $response;
+    }
+
+    /**
+     * @param string $string
+     *
+     * @return string
+     *
+     * Sanitize a string by removing html tags, multiple spaces and new lines
+     */
+    private function str_to_csv($string)
+    {
+        return trim(preg_replace('/\s+/', ' ', strip_tags($string)));
     }
 }

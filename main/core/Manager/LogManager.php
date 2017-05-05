@@ -342,8 +342,13 @@ class LogManager
 
         if ($page === null) {
             // Return all results for export
-            return $query->getResult();
+            return [
+                'results' => $query->getResult(),
+                'listItemViews' => $this->renderLogs($query->getResult()),
+            ];
         } else {
+            // Return paged results
+
             // Return paged object for on-screen display
             $adapter = new DoctrineORMAdapter($query);
             $pager = new PagerFanta($adapter);
