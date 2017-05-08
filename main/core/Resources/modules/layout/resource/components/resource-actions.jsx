@@ -1,6 +1,13 @@
-import React, { PropTypes as T } from 'react'
+import React from 'react'
+import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
+
+import {t_res} from '#/main/core/layout/resource/translation'
+
+import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'
+import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
+import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/layout/resource/components/modal/edit-rights.jsx'
 
 import {
   PageActions,
@@ -99,69 +106,87 @@ LikeAction.propTypes = {
   handleLike: T.func.isRequired
 }
 
-/*function getMoreActions(resourceNode) {
+function getMoreActions(resourceNode, props) {
   return [
-    <MenuItem header>Management</MenuItem>,
+    <MenuItem
+      key="resource-group-management"
+      header={true}
+    >
+      Management
+    </MenuItem>,
 
     <MenuItem
+      key="resource-edit-props"
       eventKey="resource-edit-props"
+      onClick={() => props.showModal(MODAL_RESOURCE_PROPERTIES, {
+        resourceNode: resourceNode,
+        save: props.updateProperties
+      })}
     >
       <span className="fa fa-fw fa-pencil" />
-      Edit properties
+      {t_res('edit-properties')}
     </MenuItem>,
 
-    <MenuItem eventKey="6">
-      <span className="fa fa-fw fa-desktop" />
-      Edit display options
-    </MenuItem>,
-
-    <MenuItem eventKey="7">
+    <MenuItem
+      key="resource-manage-tags"
+      eventKey="resource-manage-tags"
+    >
       <span className="fa fa-fw fa-tags" />
       Manage tags
     </MenuItem>,
 
-    <MenuItem eventKey="5">
+    <MenuItem
+      key="resource-log"
+      eventKey="resource-log"
+    >
       <span className="fa fa-fw fa-line-chart" />
       Show tracking
     </MenuItem>,
 
-    <MenuItem eventKey="8">
+    <MenuItem
+      key="resource-show-as"
+      eventKey="resource-show-as"
+    >
       <span className="fa fa-fw fa-user-secret" />
       Show as...
     </MenuItem>,
 
-    <MenuItem header>Other</MenuItem>,
+    <MenuItem
+      key="resource-group-plugins"
+      header={true}
+    >
+      Other
+    </MenuItem>,
 
-    <MenuItem eventKey="9">
+    <MenuItem
+      key="resource-comments"
+      eventKey="resource-comments"
+    >
       <span className="fa fa-fw fa-comment" />
       Add a comment
     </MenuItem>,
 
-    <MenuItem eventKey="10">,
-
-    <span className="fa fa-fw fa-sticky-note" />
+    <MenuItem
+      key="resource-notes"
+      eventKey="resource-notes"
+    >
+      <span className="fa fa-fw fa-sticky-note" />
       Add a note
     </MenuItem>,
 
     resourceNode.meta.exportable &&
-    <MenuItem divider/>,
+    <MenuItem key="resource-export-divider" divider />,
 
     resourceNode.meta.exportable &&
-    <MenuItem eventKey="resource-export">
+    <MenuItem
+      key="resource-export"
+      eventKey="resource-export"
+    >
       <span className="fa fa-fw fa-upload" />
       Export resource
-    </MenuItem>,
-
-    resourceNode.meta.deletable &&
-    <MenuItem divider/>,
-
-    resourceNode.meta.deletable &&
-    <MenuItem eventKey="resource-delete" className="dropdown-link-danger">
-      <span className="fa fa-fw fa-trash" />
-      Delete resource
     </MenuItem>
   ]
-}*/
+}
 
 /**
  * @param props
@@ -172,13 +197,19 @@ const ResourceActions = props =>
     {props.resourceNode.meta.editable &&
       <PageGroupActions>
         {!props.editMode &&
-          <PageAction id="resource-edit" title="Edit this resource" icon="fa fa-pencil" primary={true} action={props.edit} />
+          <PageAction
+            id="resource-edit"
+            title={t_res('edit')}
+            icon="fa fa-pencil"
+            primary={true}
+            action={props.edit}
+          />
         }
 
         {props.editMode &&
           <PageAction
             id="resource-save"
-            title="Save your modifications"
+            title={t_res('save')}
             icon="fa fa-floppy-o"
             primary={true}
             disabled={props.save.disabled}
@@ -186,21 +217,33 @@ const ResourceActions = props =>
           />
         }
 
-        {/*<PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
-        <ManageRightsAction rights="workspace" openRightsManagement={() => true} />*/}
+        <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
+
+        <ManageRightsAction
+          rights="workspace"
+          openRightsManagement={() => props.showModal(MODAL_RESOURCE_RIGHTS, {
+            rights: props.resourceNode.rights
+          })}
+        />
       </PageGroupActions>
     }
 
-    {/*<PageGroupActions>
+    <PageGroupActions>
       <FavoriteAction favorited={false} toggleFavorite={() => true} />
       <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
       <LikeAction likes={100} handleLike={() => true} />
-    </PageGroupActions>*/}
+    </PageGroupActions>
 
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
       <MoreAction id="resource-more">
-        <MenuItem header>Quiz</MenuItem>
+        <MenuItem
+          key="resource-group-type"
+          header={true}
+        >
+          {t_res(props.resourceNode.meta.type)}
+        </MenuItem>
+
         {props.customActions.map((customAction, index) =>
           React.createElement(MenuItem, {
             key: `resource-more-action-${index}`,
@@ -213,14 +256,43 @@ const ResourceActions = props =>
           })
         )}
 
-        {/*{getMoreActions(props.resourceNode)}*/}
+        {getMoreActions(props.resourceNode, props)}
+
+        {props.resourceNode.meta.deletable &&
+          <MenuItem
+            key="resource-delete-divider"
+            divider={true}
+          />
+        }
+
+        {props.resourceNode.meta.deletable &&
+          <MenuItem
+            key="resource-delete"
+            eventKey="resource-delete"
+            className="dropdown-link-danger"
+            onClick={e => {
+              e.stopPropagation()
+              props.showModal(MODAL_DELETE_CONFIRM, {
+                title: t_res('delete'),
+                question: t_res('delete_confirm_question'),
+                handleConfirm: () => true
+              })
+            }}
+          >
+            <span className="fa fa-fw fa-trash" />
+            {t_res('delete')}
+          </MenuItem>
+        }
       </MoreAction>
     </PageGroupActions>
   </PageActions>
 
 ResourceActions.propTypes = {
   resourceNode: T.shape({
+    name: T.string.isRequired,
+    description: T.string,
     meta: T.shape({
+      type: T.string.isRequired,
       published: T.bool.isRequired,
       editable: T.bool.isRequired,
       deletable: T.bool.isRequired,
@@ -232,12 +304,15 @@ ResourceActions.propTypes = {
   togglePublication: T.func.isRequired,
   showModal: T.func.isRequired,
 
+  updateProperties: T.func.isRequired,
+
   editMode: T.bool,
   edit: T.oneOfType([T.func, T.string]).isRequired,
   save: T.shape({
     disabled: T.bool.isRequired,
     action: T.oneOfType([T.string, T.func]).isRequired
   }).isRequired,
+
   customActions: T.arrayOf(T.shape({
     icon: T.string.isRequired,
     label: T.string.isRequired,

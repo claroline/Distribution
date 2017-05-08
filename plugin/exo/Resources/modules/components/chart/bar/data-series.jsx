@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
+import {PropTypes as T} from 'prop-types'
 import {max, range} from 'd3-array'
 import {scaleLinear, scaleBand} from 'd3-scale'
 
 import Bar from './bar.jsx'
-
-const T = React.PropTypes
 
 /**
  * Represents data on a Bar chart.

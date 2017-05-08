@@ -228,6 +228,8 @@ class ResourceController
     }
 
     /**
+     * Opens a resource.
+     *
      * @EXT\Route(
      *     "/open/{resourceType}/{node}",
      *     name="claro_resource_open",
@@ -241,8 +243,6 @@ class ResourceController
      *     defaults={"resourceType" = null},
      *     options={"expose"=true}
      * )
-     *
-     * Opens a resource.
      *
      * @param ResourceNode $node         the node
      * @param string       $resourceType the resource type
@@ -1026,9 +1026,9 @@ class ResourceController
      * @param User         $user
      * @param int          $index
      *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @throws AccessDeniedException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function insertAt(ResourceNode $node, User $user, $index)
     {

@@ -1333,4 +1333,28 @@ class WorkspaceManager
 
         $this->om->endFlushSuite();
     }
+
+    public function isManager(Workspace $workspace, TokenInterface $token)
+    {
+        $roles = array_map(
+          function ($role) {
+              return $role->getRole();
+          },
+          $token->getRoles()
+      );
+
+        $managerRole = $this->roleManager->getManagerRole($workspace);
+
+        if ($workspace->getCreator() === $token->getUser()) {
+            return true;
+        }
+
+        foreach ($roles as $role) {
+            if (is_object($role) && $role->getName() === $managerRole) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
