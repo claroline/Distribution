@@ -147,6 +147,14 @@
                         >
                             <i class="fa fa-envelope"></i>
                         </button>
+                        <button class="btn btn-primary btn-sm"
+                                data-toggle="tooltip"
+                                data-placement="top"
+                                title="{{ 'go_to_workspace'|trans:{}:'cursus' }}"
+                                ng-click="cmc.openWorkspace(session['id'])"
+                        >
+                            <i class="fa fa-book"></i>
+                        </button>
                         <button class="btn btn-danger btn-sm"
                                 data-toggle="tooltip"
                                 data-placement="top"

@@ -270,4 +270,12 @@ export default class SessionManagementCtrl {
   exportUsers() {
     this.SessionService.exportUsersForm(this.sessionId)
   }
+
+  openWorkspace() {
+    this.SessionService.getWorkspaceFromSessionId(this.sessionId).then(d => {
+      if (d) {
+        window.location = Routing.generate('claro_workspace_open', {workspaceId: d})
+      }
+    })
+  }
 }
