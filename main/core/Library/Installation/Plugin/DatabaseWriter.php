@@ -349,7 +349,7 @@ class DatabaseWriter
         $this->persistWidget($widgetConfiguration, $plugin, $pluginBundle, $widget, $withDisplay);
     }
 
-    private function createAdditionalAction(array $action, PluginBundle $pluginBundle)
+    private function createAdditionalAction(array $action, Plugin $plugin)
     {
         $aa = new AdditionalAction();
         $aa->setClass($action['class']);
@@ -679,6 +679,7 @@ class DatabaseWriter
      */
     private function persistTool($toolConfiguration, Plugin $plugin, Tool $tool)
     {
+        $this->log('Update tool '.$toolConfiguration['name']);
         $tool->setName($toolConfiguration['name']);
         $tool->setDisplayableInDesktop($toolConfiguration['is_displayable_in_desktop']);
         $tool->setDisplayableInWorkspace($toolConfiguration['is_displayable_in_workspace']);
@@ -688,6 +689,8 @@ class DatabaseWriter
         $tool->setExportable($toolConfiguration['is_exportable']);
         $tool->setIsConfigurableInWorkspace($toolConfiguration['is_configurable_in_workspace']);
         $tool->setIsConfigurableInDesktop($toolConfiguration['is_configurable_in_desktop']);
+        $tool->setIsDesktopRequired($toolConfiguration['is_desktop_required']);
+        $tool->setIsWorkspaceRequired($toolConfiguration['is_workspace_required']);
         $tool->setIsLockedForAdmin($toolConfiguration['is_locked_for_admin']);
         $tool->setIsAnonymousExcluded($toolConfiguration['is_anonymous_excluded']);
 

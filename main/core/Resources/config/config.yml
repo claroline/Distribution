@@ -135,3 +135,98 @@ plugin:
           is_configurable: true
           is_displayable_in_desktop: true
           is_displayable_in_workspace: true
+
+    tools:
+        - name: home
+          class: home
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: true
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: false
+          is_exportable: true
+          is_locked_for_admin: false
+          is_anonymous_excluded: false
+        - name: parameters
+          class: cog
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: true
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: false
+          is_exportable: false
+          is_locked_for_admin: true
+          is_anonymous_excluded: true
+        - name: resource_manager
+          class: folder-open
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: true
+          is_configurable_in_workspace: true
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: false
+          is_exportable: true
+          is_locked_for_admin: false
+          is_anonymous_excluded: false
+        - name: logs
+          class: list
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: false
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: false
+          is_exportable: false
+          is_locked_for_admin: false
+          is_anonymous_excluded: true
+        - name: analytics
+          class: bar-chart-o
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: false
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: false
+          is_exportable: false
+          is_locked_for_admin: false
+          is_anonymous_excluded: true
+        - name: users
+          class: user
+          is_displayable_in_workspace: true
+          is_displayable_in_desktop: false
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: true
+          is_exportable: false
+          is_locked_for_admin: false
+          is_anonymous_excluded: true
+        - name: my_contacts
+          class: users
+          is_displayable_in_workspace: false
+          is_displayable_in_desktop: true
+          is_configurable_in_workspace: false
+          is_configurable_in_desktop: false
+          is_desktop_required: false
+          is_workspace_required: false
+          is_exportable: false
+          is_locked_for_admin: false
+          is_anonymous_excluded: true
+
+    additional_action:
+        - action: edit
+          class: fa-pencil
+          displayed_name: edit
+          type: admin_user_action
+        - action: show_workspaces
+          class: fa-book
+          displayed_name: show_workspaces
+          type: admin_user_action
+
+    themes:
+        - name: Claroline
+        - name: Claroline Black
+        - name: Claroline Mint
+        - name: Claroline Ruby

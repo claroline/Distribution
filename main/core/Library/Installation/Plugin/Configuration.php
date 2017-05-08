@@ -300,6 +300,8 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('is_exportable')->defaultValue(false)->end()
                         //@todo remove the following line later
                         ->scalarNode('has_options')->defaultValue(false)->end()
+                        ->scalarNode('is_desktop_required')->defaultValue(false)->end()
+                        ->scalarNode('is_workspace_required')->defaultValue(false)->end()
                         ->scalarNode('is_configurable_in_workspace')->defaultValue(false)->end()
                         ->scalarNode('is_configurable_in_desktop')->defaultValue(false)->end()
                         ->scalarNode('is_locked_for_admin')->defaultValue(false)->end()
