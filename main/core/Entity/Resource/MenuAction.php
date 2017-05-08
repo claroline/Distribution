@@ -120,7 +120,7 @@ class MenuAction
      *
      * @return MenuAction
      */
-    public function setResourceType(ResourceType $resourceType)
+    public function setResourceType(ResourceType $resourceType = null)
     {
         $this->resourceType = $resourceType;
 

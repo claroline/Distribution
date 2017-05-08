@@ -210,7 +210,7 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('is_custom')->defaultFalse()->end()
                         ->scalarNode('class')->defaultNull()->end()
                         ->scalarNode('group')->defaultNull()->end()
-                        ->scalarNode('value')->defaultValue(1)->end()
+                        ->scalarNode('value')->defaultValue('open')->end()
                         ->scalarNode('resource_type')->defaultNull()->end()
                     ->end()
                 ->end()

@@ -444,23 +444,32 @@ class DatabaseWriter
     {
         $this->log('Updating resource action '.$action['name']);
 
-        $resourceAction = new MenuAction();
+        $maskType = ($action['resource_type']) ?
+            $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName($action['resource_type']) :
+            //this is some kind of hack for the current implementation. Each mask has a resourcetype so we can't pick null
+            //and directory has all the default perms. Any other resource type would have done the trick anyway
+            $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName('directory');
+
+        $value = $this->mm->encodeMask([$action['value'] => true], $maskType);
+
+        $resourceType = $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName($action['resource_type']);
+        $resourceAction = $this->em->getRepository('ClarolineCoreBundle:Resource\MenuAction')
+            ->findOneBy(['name' => $action['name'], 'resourceType' => $resourceType]);
+
+        if (!$resourceAction) {
+            $resourceAction = new MenuAction();
+        }
 
         $resourceAction->setName($action['name']);
         $resourceAction->setAsync($action['is_async']);
         $resourceAction->setIsForm($action['is_form']);
         $resourceAction->setIsCustom($action['is_custom']);
-        $resourceAction->setValue($action['value']);
+        $resourceAction->setValue($value);
         $resourceAction->setGroup($action['group']);
         $resourceAction->setIcon($action['class']);
-        if ($action['resource_type']) {
-            $resourceAction->setResourceType(
-              $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findOneByName($action['resource_type'])
-            );
-        }
+        $resourceAction->setResourceType($resourceType);
 
         $this->em->persist($resourceAction);
-
         $this->em->flush();
     }
 
@@ -469,17 +478,7 @@ class DatabaseWriter
      */
     public function updateResourceAction(array $action)
     {
-        $resourceType = $this->em->getRepository('ClarolineCoreBundle:Resource\ResourceType')
-          ->findOneByName($action['resource_type']);
-
-        $resourceAction = $this->em->getRepository('ClarolineCoreBundle:Resource\MenuAction')
-            ->findOneBy(['name' => $action['name'], 'resourceType' => $resourceType, 'isCustom' => $action['is_custom']]);
-
-        if ($resourceAction === null) {
-            $this->persistResourceAction($action);
-        } else {
-            $resourceAction->setIsForm($action['is_form']);
-        }
+        $this->persistResourceAction($action);
     }
 
     /**

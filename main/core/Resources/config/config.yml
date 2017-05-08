@@ -9,7 +9,7 @@ plugin:
           group: activity
           class: activity-class
           resource_type: activity
-          value: 8
+          value: edit
 
         - name: update_file
           is_form: false
@@ -18,7 +18,7 @@ plugin:
           group: core
           class: file-class
           resource_type: file
-          value: 8
+          value: edit
 
         # generic actions
         - name: export
@@ -27,7 +27,7 @@ plugin:
           is_custom: false
           group: core
           class: changeme
-          value: 4
+          value: export
 
         - name: delete
           is_form: false
@@ -35,7 +35,7 @@ plugin:
           is_custom: false
           group: core
           class: changeme
-          value: 16
+          value: delete
 
         - name: edit-rights
           is_form: true
@@ -43,7 +43,7 @@ plugin:
           is_custom: false
           group: core
           class: changeme
-          value: 32
+          value: administrate
 
         - name: open-tracking
           is_form: false
@@ -51,7 +51,7 @@ plugin:
           is_custom: false
           group: core
           class: changeme
-          value: 32
+          value: administrate
 
         - name: rename
           is_form: true
@@ -59,7 +59,7 @@ plugin:
           is_custom: false
           group: core
           class: changeme
-          value: 32
+          value: administrate
 
         - name: edit-properties
           is_form: true
@@ -67,7 +67,7 @@ plugin:
           is_custom: false
           group: core
           class: changeme
-          value: 32
+          value: administrate
 
     resources:
         - class: Claroline\CoreBundle\Entity\Resource\File

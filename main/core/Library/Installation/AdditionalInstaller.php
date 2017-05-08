@@ -273,10 +273,6 @@ class AdditionalInstaller extends BaseInstaller
         $resourceIconsUpdater->setLogger($this->logger);
         $resourceIconsUpdater->postUpdate();
 
-        $additionalActionUpdater = new Updater\AdditionalActionUpdater($this->container, $this->logger);
-        $additionalActionUpdater->setLogger($this->logger);
-        $additionalActionUpdater->postUpdate();
-
         $docUpdater = new Updater\DocUpdater($this->container);
         $docUpdater->updateDocUrl('http://doc.claroline.com');
     }
