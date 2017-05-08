@@ -33,9 +33,9 @@ class ResourcesTextConfigurationType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'data-is-picker-multi-select-allowed' => false,
-                    'data-is-directory-selection-allowed' => false,
-                    'data-allow-root-selection' => true,
+                    'data-is-picker-multi-select-allowed' => '0',
+                    'data-is-directory-selection-allowed' => '0',
+                    'data-allow-root-selection' => '0',
                     'data-type-white-list' => 'text',
                 ],
                 'display_view_button' => false,
