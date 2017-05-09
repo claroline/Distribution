@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import {max, range} from 'd3-array'
 import {scaleLinear, scaleBand} from 'd3-scale'
+import {axisLeft} from 'd3-axis'
 
 import Bar from './bar.jsx'
 
@@ -20,12 +21,14 @@ export default class DataSeries extends Component {
       .rangeRound([0, this.props.width])
       .paddingInner([0.2])
 
+    const yAxis = axisLeft([0 , 10, 20 ,30 ,40 , 50 ,60 ,70 ,80 ,90 ,100])
+
     // D3 Axis - renders a d3 scale in SVG
-    /*var xAxis = d3.svg.axis()
+    /*const xAxis = d3.svg.axis()
       .scale(x)
       .orient("bottom");
 
-    var yAxis = d3.svg.axis()
+    const yAxis = d3.svg.axis()
       .scale(y)
       .orient("left")
       .ticks(10, "%");*/

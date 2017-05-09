@@ -1,6 +1,5 @@
 import React, { Component, PropTypes as T } from 'react'
 import {arc} from 'd3-shape'
-import {t, tex} from '#/main/core/translation'
 
 /**
  * Draws an Arc on a Pie chart.
