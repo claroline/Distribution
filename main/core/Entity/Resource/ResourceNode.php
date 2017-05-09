@@ -301,6 +301,7 @@ class ResourceNode
         $this->children = new ArrayCollection();
         $this->logs = new ArrayCollection();
         $this->fields = new ArrayCollection();
+        $this->shortcuts = new ArrayCollection();
     }
 
     /**

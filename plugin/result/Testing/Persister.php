@@ -15,45 +15,32 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Testing\Persister as ClarolinePersister;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\ResultBundle\Entity\Mark;
 use Claroline\ResultBundle\Entity\Result;
 
-class Persister
+class Persister extends ClarolinePersister
 {
     private $om;
     private $userRole;
     private $resultType;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(ObjectManager $om, $container)
     {
+        parent::__construct($om, $container);
         $this->om = $om;
     }
 
     public function user($username)
     {
-        $user = new User();
-        $user->setFirstName($username);
-        $user->setLastName($username);
-        $user->setUsername($username);
-        $user->setPassword($username);
-        $user->setMail($username.'@mail.com');
-        $user->setGuid($username);
-        $user->setPublicUrl($username);
-        $this->om->persist($user);
-
-        if (!$this->userRole) {
-            $this->userRole = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_USER');
-        }
-
-        $user->addRole($this->userRole);
+        $user = parent::user($username);
         $workspace = new Workspace();
         $workspace->setName($username);
         $workspace->setCreator($user);
         $workspace->setCode($username);
         $workspace->setGuid($username);
         $this->om->persist($workspace);
-
         $user->setPersonalWorkspace($workspace);
 
         return $user;

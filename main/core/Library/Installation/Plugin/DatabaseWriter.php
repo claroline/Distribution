@@ -233,7 +233,7 @@ class DatabaseWriter
         }
 
         foreach ($processedConfiguration['additional_action'] as $action) {
-            $this->createAdditionalAction($action, $plugin);
+            $this->updateAdditionalAction($action, $plugin);
         }
     }
 
@@ -269,6 +269,10 @@ class DatabaseWriter
 
         foreach ($processedConfiguration['admin_tools'] as $adminTool) {
             $this->updateAdminTool($adminTool, $plugin);
+        }
+
+        foreach ($processedConfiguration['additional_action'] as $action) {
+            $this->updateAdditionalAction($action, $plugin);
         }
     }
 
@@ -349,14 +353,23 @@ class DatabaseWriter
         $this->persistWidget($widgetConfiguration, $plugin, $pluginBundle, $widget, $withDisplay);
     }
 
-    private function createAdditionalAction(array $action, Plugin $plugin)
+    private function updateAdditionalAction(array $action, Plugin $plugin)
     {
-        $aa = new AdditionalAction();
+        $this->log("Adding action  {$action['type']}:{$action['displayed_name']}");
+        $aa = $this->em->getRepository('ClarolineCoreBundle:Action\AdditionalAction')->findOneBy([
+            'action' => $action['action'],
+            'type' => $action['type'],
+        ]);
+
+        if (!$aa) {
+            $aa = new AdditionalAction();
+        }
+
         $aa->setClass($action['class']);
         $aa->setAction($action['action']);
         $aa->setDisplayedName($action['displayed_name']);
         $aa->setType($action['type']);
-
+        $this->em->persist($aa);
         $this->em->flush();
     }
 
