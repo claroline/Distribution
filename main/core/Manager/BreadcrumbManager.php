@@ -85,7 +85,7 @@ class BreadcrumbManager
           $this->om->getRepository('ClarolineCoreBundle:Tool\OrderedTool')->findOneBy(['workspace' => $workspace, 'tool' => $tool]) :
           $this->om->getRepository('ClarolineCoreBundle:Tool\OrderedTool')->findOneBy(['user' => $user, 'tool' => $tool]);
 
-        $event->setBreadcrumb(array_merge($this->getBreadcrumb($object), $crumbs));
+        $object ? $event->setBreadcrumb(array_merge($this->getBreadcrumb($object), $crumbs)) : $event->setBreadcrumb($crumbs);
     }
 
     /**
