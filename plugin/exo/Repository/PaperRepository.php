@@ -158,7 +158,7 @@ class PaperRepository extends EntityRepository
     {
         return (int) $this->getEntityManager()
           ->createQuery('
-              SELECT COUNT(p.user)
+              SELECT COUNT(p.id)
               FROM UJM\ExoBundle\Entity\Attempt\Paper AS p
               WHERE p.exercise = :exercise
                 AND p.user IS NULL
