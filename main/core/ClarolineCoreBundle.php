@@ -160,6 +160,11 @@ class ClarolineCoreBundle extends PluginBundle implements AutoConfigurableInterf
         return 'DataFixtures/Required';
     }
 
+    public function getPostInstallFixturesDirectory($environment)
+    {
+        return 'DataFixtures/PostInstall';
+    }
+
     public function getAdditionalInstaller()
     {
         return new AdditionalInstaller();

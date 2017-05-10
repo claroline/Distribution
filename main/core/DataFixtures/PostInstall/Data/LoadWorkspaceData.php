@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\DataFixtures\Required\Data;
+namespace Claroline\CoreBundle\DataFixtures\PostInstall\Data;
 
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -37,6 +37,6 @@ class LoadWorkspaceData implements RequiredFixture
 
     public function getOrder()
     {
-        return 99;
+        return 1;
     }
 }
