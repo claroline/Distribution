@@ -25,5 +25,10 @@ class PostLoadRolesData implements RequiredFixture
 
     public function load(ObjectManager $manager)
     {
+        $role = $manager->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_WS_CREATOR');
+        $tool = $manager->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
+
+        $this->container->get('claroline.manager.tool_manager')
+          ->addRoleToAdminTool($tool, $role);
     }
 }

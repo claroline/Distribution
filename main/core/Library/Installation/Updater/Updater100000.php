@@ -12,6 +12,7 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
+use Claroline\CoreBundle\DataFixtures\PostInstall\Data\PostLoadRolesData;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -33,6 +34,15 @@ class Updater100000 extends Updater
         $this->installCore();
         $this->setResourceNodeProperties();
         $this->rebuildMaskAndMenus();
+        $this->enableWorkspaceList();
+    }
+
+    public function enableWorkspaceList()
+    {
+        $this->log('Enable workspace list...');
+        $fixtures = new PostLoadRolesData();
+        $fixtures->setContainer($this->container);
+        $fixtures->load($this->om);
     }
 
     public function installCore()
