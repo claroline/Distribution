@@ -7,6 +7,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {tex} from '#/main/core/translation'
 import {MODAL_MESSAGE} from '#/main/core/layout/modal'
 import {denormalize} from './../normalizer'
+import forOwn from 'lodash/forOwn'
 
 export const ITEM_CREATE = 'ITEM_CREATE'
 export const ITEM_UPDATE = 'ITEM_UPDATE'
@@ -24,6 +25,7 @@ export const STEP_CREATE = 'STEP_CREATE'
 export const STEP_DELETE = 'STEP_DELETE'
 export const STEP_UPDATE = 'STEP_UPDATE'
 export const STEP_MOVE = 'STEP_MOVE'
+export const STEP_ITEM_DELETE = 'STEP_ITEM_DELETE'
 export const QUIZ_UPDATE = 'QUIZ_UPDATE'
 export const HINT_ADD = 'HINT_ADD'
 export const HINT_CHANGE = 'HINT_CHANGE'
@@ -55,6 +57,7 @@ export const quizChangeActions = [
   STEP_MOVE,
   STEP_DELETE,
   STEP_UPDATE,
+  STEP_ITEM_DELETE,
   QUIZ_UPDATE,
   HINT_ADD,
   HINT_CHANGE,
@@ -72,7 +75,7 @@ export const quizChangeActions = [
 export const actions = {}
 
 actions.deleteStep = makeActionCreator(STEP_DELETE, 'id')
-actions.deleteItem = makeActionCreator(ITEM_DELETE, 'id', 'stepId')
+actions.deleteItem = makeActionCreator(ITEM_DELETE, 'id')
 actions.deleteItems = makeActionCreator(ITEMS_DELETE, 'ids')
 actions.moveItem = makeActionCreator(ITEM_MOVE, 'id', 'swapId', 'stepId')
 actions.moveStep = makeActionCreator(STEP_MOVE, 'id', 'swapId')
@@ -116,8 +119,35 @@ actions.deleteStepAndItems = id => {
   invariant(id, 'id is mandatory')
   return (dispatch, getState) => {
     dispatch(actions.nextObject(select.nextObject(getState())))
+    //I'll gave to double check that
     dispatch(actions.deleteItems(getState().steps[id].items.slice()))
     dispatch(actions.deleteStep(id))
+  }
+}
+
+actions.deleteStepItem = (id, stepId) => {
+  invariant(id, 'id is mandatory')
+  invariant(stepId, 'stepId is mandatory')
+
+  return (dispatch, getState) => {
+    const state = getState()
+    const steps = select.steps(state)
+    let countItems = 0
+    forOwn(steps, step => {
+      step.items.forEach(item => {
+        countItems += item === id ? 1: 0
+      })
+    })
+
+    dispatch({
+      type: STEP_ITEM_DELETE,
+      id,
+      stepId
+    })
+    
+    if (countItems <= 1) {
+      dispatch(actions.deleteItem(id))
+    }
   }
 }
 
