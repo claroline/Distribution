@@ -99,20 +99,18 @@ class Workspace
     protected $displayable = false;
 
     /**
+     * @ORM\Column(type="boolean")
+     * @Groups({"api_workspace", "api_workspace_min"})
+     */
+    protected $isModel = false;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
      *     mappedBy="workspace"
      * )
      */
     protected $resources;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Model\WorkspaceModel",
-     *     mappedBy="workspace"
-     * )
-     */
-    protected $models;
 
     /**
      * @ORM\OneToMany(
@@ -563,6 +561,16 @@ class Workspace
         return $this->personalUser;
     }
 
+    public function setIsModel($boolean)
+    {
+        $this->isModel = $boolean;
+    }
+
+    public function isModel()
+    {
+        return $this->isModel;
+    }
+
     public function getOrganizations()
     {
         return $this->organizations;
@@ -581,5 +589,15 @@ class Workspace
         $this->organizations = $organizations instanceof ArrayCollection ?
             $organizations :
             new ArrayCollection($organizations);
+    }
+
+    public static function getWorkspaceSearchableFields()
+    {
+        return ['name', 'code'];
+    }
+
+    public static function getSearchableFields()
+    {
+        return self::getWorkspaceSearchableFields();
     }
 }

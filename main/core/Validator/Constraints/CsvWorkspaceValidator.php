@@ -99,6 +99,7 @@ class CsvWorkspaceValidator extends ConstraintValidator
                 }
 
                 if ($modelName) {
+                    //TODO MODEL
                     if (!$this->om->getRepository('ClarolineCoreBundle:Model\WorkspaceModel')->findOneByName($modelName)) {
                         $msg = $this->translator->trans(
                                 'workspace_model_invalid',

@@ -37,4 +37,9 @@ class LoadToolsData implements RequiredFixture
     {
         $this->container = $container;
     }
+
+    public function getOrder()
+    {
+        return 4;
+    }
 }

@@ -36,4 +36,9 @@ class LoadResourceTypeData implements RequiredFixture
     {
         $this->container = $container;
     }
+
+    public function getOrder()
+    {
+        return 2;
+    }
 }

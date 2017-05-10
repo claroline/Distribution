@@ -28,6 +28,18 @@ class Configuration {
 
     return actions
   }
+
+  getWorkspacesAdministrationActions() {
+    let actions = []
+
+    for (var bundle in this.config) {
+      actions = union(actions, get(this.config[bundle], 'actions', []).filter(el => {
+        return el.type === 'administration_workspaces'
+      }))
+    }
+
+    return actions
+  }
 }
 
 // default actions. Maybe do something cleaner later

@@ -216,7 +216,6 @@ const ResourceActions = props =>
             action={props.save.action}
           />
         }
-
         <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
 
         <ManageRightsAction
@@ -255,7 +254,6 @@ const ResourceActions = props =>
             [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
           })
         )}
-
         {getMoreActions(props.resourceNode, props)}
 
         {props.resourceNode.meta.deletable &&

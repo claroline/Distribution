@@ -30,8 +30,26 @@ class Updater100000 extends Updater
 
     public function postUpdate()
     {
+        $this->installCore();
         $this->setResourceNodeProperties();
         $this->rebuildMaskAndMenus();
+    }
+
+    public function installCore()
+    {
+        $plugin = $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneBy([
+          'vendorName' => 'Claroline', 'bundleName' => 'CoreBundle',
+        ]);
+        if (!$plugin) {
+            $this->log('Persisting CoreBundle...');
+            $plugin = new Plugin();
+            $plugin->setBundleName('CoreBundle');
+            $plugin->setVendorName('Claroline');
+            $this->persist($plugin);
+            $this->flush();
+        } else {
+            $this->log('CoreBundle already installed');
+        }
     }
 
     public function setResourceNodeProperties()
