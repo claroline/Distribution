@@ -431,8 +431,10 @@ class UserManager
         $max = $roleUser->getMaxUsers();
         $total = $this->countUsersByRoleIncludingGroup($roleUser);
 
-        if ($total + count($users) > $max) {
-            throw new AddRoleException();
+        $countUsersToUpdate = $options['ignore-update'] ? 0 : $this->countUsersToUpdate($users);
+
+        if ($total + count($users) - $countUsersToUpdate > $max) {
+            throw new AddRoleException($total, count($users) - $countUsersToUpdate, $max);
         }
 
         $lg = $this->platformConfigHandler->getParameter('locale_language');
@@ -691,6 +693,26 @@ class UserManager
         $user->setPersonalWorkspace($workspace);
         $this->objectManager->persist($user);
         $this->objectManager->flush();
+    }
+
+    public function countUsersToUpdate(array $users)
+    {
+        $count = 0;
+
+        foreach ($users as $user) {
+            if (isset($user[5])) {
+                $code = trim($user[5]) === '' ? null : $user[5];
+            } else {
+                $code = null;
+            }
+
+            $userEntity = $this->getUserByUsernameOrMailOrCode($user[2], $user[4], $code);
+            if ($userEntity) {
+                ++$count;
+            }
+        }
+
+        return $count;
     }
 
     /**
@@ -1444,7 +1466,8 @@ class UserManager
         array $forcedUsers = [],
         array $forcedGroups = [],
         array $forcedRoles = [],
-        array $forcedWorkspaces = []
+        array $forcedWorkspaces = [],
+        $withAdminOrgas = false
     ) {
         if (count($searchedRoles) > 0 ||
             count($searchedGroups) > 0 ||
@@ -1463,6 +1486,9 @@ class UserManager
                 [] :
                 $this->generateWorkspaceRestrictions($user);
         }
+        $withOrgas = !$user->hasRole('ROLE_ADMIN') && !$withAllUsers && $withAdminOrgas;
+        $forcedOrganizations = $withOrgas ? $user->getAdministratedOrganizations()->toArray() : [];
+
         $users = $this->userRepo->findUsersForUserPicker(
             $search,
             $withUsername,
@@ -1477,7 +1503,9 @@ class UserManager
             $forcedUsers,
             $forcedGroups,
             $forcedRoles,
-            $forcedWorkspaces
+            $forcedWorkspaces,
+            $withOrgas,
+            $forcedOrganizations
         );
 
         return $this->pagerFactory->createPagerFromArray($users, $page, $max);
