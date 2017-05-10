@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-
-import ReactDOM from 'react-dom'
-import {max, min, range} from 'd3-array'
+import {max, min} from 'd3-array'
 import {scaleLinear, scaleBand} from 'd3-scale'
 import {axisLeft, axisBottom} from 'd3-axis'
 import {select} from 'd3-selection'
@@ -10,7 +8,6 @@ import Chart from './../base/chart.jsx'
 import DataSeries from './data-series.jsx'
 
 const T = React.PropTypes
-
 
 class Axis extends Component {
 
@@ -23,14 +20,14 @@ class Axis extends Component {
   }
 
   renderAxis() {
-    const node = ReactDOM.findDOMNode(this)
+    const node = this.refs.axis
     select(node).call(this.props.axis)
   }
 
   render() {
     const translate = `translate(0, ${this.props.height})`
     return (
-      <g className="axis" transform={this.props.axisType === 'x' ? translate : ''} />
+      <g className="axis" ref="axis" transform={this.props.axisType === 'x' ? translate : ''} />
     )
   }
 }
