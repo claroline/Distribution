@@ -15,7 +15,6 @@ export const ITEM_DELETE = 'ITEM_DELETE'
 export const ITEM_MOVE = 'ITEM_MOVE'
 export const ITEM_HINTS_UPDATE = 'ITEM_HINTS_UPDATE'
 export const ITEM_DETAIL_UPDATE = 'ITEM_DETAIL_UPDATE'
-export const ITEMS_DELETE = 'ITEMS_DELETE'
 export const ITEMS_IMPORT = 'ITEMS_IMPORT'
 export const OBJECT_NEXT = 'OBJECT_NEXT'
 export const OBJECT_SELECT = 'OBJECT_SELECT'
@@ -147,6 +146,7 @@ actions.deleteStepItem = (id, stepId) => {
       id,
       stepId
     })
+
     if (countItems <= 1) {
       dispatch(actions.deleteItem(id))
     }
