@@ -1511,7 +1511,7 @@ public function duplicateWorkspaceRoles(
 
         //Admin can see everything, but the others... well they can only see their own organizations.
         if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $currentUser = $this->tokenStorage->getToken()->getUser();
+            $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
             $qb->leftJoin('w.organizations', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
