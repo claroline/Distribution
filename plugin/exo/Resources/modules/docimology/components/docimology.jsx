@@ -1,4 +1,4 @@
-import React, { Component, PropTypes as T } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import {PageHeader} from '#/main/core/layout/page/components/page.jsx'
@@ -11,6 +11,8 @@ import {t, tex} from '#/main/core/translation'
 import BarChart from './../../components/chart/bar/bar-chart.jsx'
 import PieChart from './../../components/chart/pie/pie-chart.jsx'
 import CircularGauge from './../../components/chart/gauge/circlular-gauge.jsx'
+
+const T = React.PropTypes
 
 const CountCard = props =>
   <div className="count-card panel panel-default">
@@ -41,26 +43,50 @@ GeneralStats.propTypes = {
 }
 
 class Docimology extends Component {
-  renderNoteBlock(paperScoreDistribution) {
-    const scoreDistributionValues = Object.keys(paperScoreDistribution).map(key => { return paperScoreDistribution[key] })
+
+  renderNoteBlock() {
+
     return (
       <div className="row">
         <div className="col-md-6">
           <div className="panel panel-default">
             <div className="panel-body">
               <BarChart
-                data={scoreDistributionValues}
+                data={this.props.statistics.paperScoreDistribution}
                 width={540}
-                height={200}
+                height={250}
               />
             </div>
           </div>
         </div>
-
         <div className="note-gauges col-md-6">
-          <CircularGauge label={tex('minimum')} color="#b94a48" value={this.props.statistics.minMaxAndAvgScores.min} max={this.props.statistics.maxScore} width={180} size={25} />
-          <CircularGauge label={tex('average')} color="#c09853" value={this.props.statistics.minMaxAndAvgScores.avg} max={this.props.statistics.maxScore} width={180} size={25} />
-          <CircularGauge label={tex('maximum')} color="#468847" value={this.props.statistics.minMaxAndAvgScores.max} max={this.props.statistics.maxScore} width={180} size={25} />
+          <CircularGauge
+            label={tex('minimum')}
+            color="#b94a48"
+            value={this.props.statistics.minMaxAndAvgScores.min}
+            max={this.props.statistics.maxScore}
+            width={180}
+            size={25}
+            showValue={false}
+            />
+          <CircularGauge
+            label={tex('average')}
+            color="#c09853"
+            value={this.props.statistics.minMaxAndAvgScores.avg}
+            max={this.props.statistics.maxScore}
+            width={180}
+            size={25}
+            showValue={false}
+            />
+          <CircularGauge
+            label={tex('maximum')}
+            color="#468847"
+            value={this.props.statistics.minMaxAndAvgScores.max}
+            max={this.props.statistics.maxScore}
+            width={180}
+            size={25}
+            showValue={false}
+            />
         </div>
 
       </div>
@@ -68,6 +94,7 @@ class Docimology extends Component {
   }
 
   render() {
+    //const scoreDistributionValues = Object.keys(this.props.statistics.paperScoreDistribution).map(key => { return this.props.statistics.paperScoreDistribution[key] })
     return (
       <div className="page-container docimology-container">
         {/* PAPER SUCCESS DISTRIBUTION */}
@@ -75,7 +102,7 @@ class Docimology extends Component {
           <PageActions>
             <PageAction
               id="back-to-exercise"
-              title={'Back to exercise'}
+              title={tex('back_to_the_quiz')}
               icon="fa fa-fw fa-sign-out"
               action={generateUrl('ujm_exercise_open', {id: this.props.exercise.id})}
             >
@@ -129,7 +156,7 @@ class Docimology extends Component {
               {tex('docimology_note_gauges_help')}
             </span>
           </h3>
-          {this.renderNoteBlock(this.props.statistics.paperScoreDistribution)}
+          {this.renderNoteBlock()}
         </div>
         {/* DIFFICULTY INDEX */}
         <div className="difficulty-index">
