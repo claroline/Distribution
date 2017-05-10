@@ -1653,7 +1653,11 @@ class UserManager
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('u.organizations', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
+            $qb->leftJoin('u.groups', 'ug');
+            $qb->leftJoin('ug.organizations', 'go');
+            $qb->leftJoin('go.administrators', 'ga');
             $qb->andWhere('ua.id = :userId');
+            $qb->orWhere('ga.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
         }
 
