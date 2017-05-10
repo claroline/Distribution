@@ -76,7 +76,6 @@ export const actions = {}
 
 actions.deleteStep = makeActionCreator(STEP_DELETE, 'id')
 actions.deleteItem = makeActionCreator(ITEM_DELETE, 'id')
-actions.deleteItems = makeActionCreator(ITEMS_DELETE, 'ids')
 actions.moveItem = makeActionCreator(ITEM_MOVE, 'id', 'swapId', 'stepId')
 actions.moveStep = makeActionCreator(STEP_MOVE, 'id', 'swapId')
 actions.nextObject = makeActionCreator(OBJECT_NEXT, 'object')
@@ -120,7 +119,10 @@ actions.deleteStepAndItems = id => {
   return (dispatch, getState) => {
     dispatch(actions.nextObject(select.nextObject(getState())))
     //I'll gave to double check that
-    dispatch(actions.deleteItems(getState().steps[id].items.slice()))
+    getState().steps[id].items.forEach(item => {
+      dispatch(actions.deleteStepItem(item, id))
+    })
+
     dispatch(actions.deleteStep(id))
   }
 }
@@ -133,6 +135,7 @@ actions.deleteStepItem = (id, stepId) => {
     const state = getState()
     const steps = select.steps(state)
     let countItems = 0
+
     forOwn(steps, step => {
       step.items.forEach(item => {
         countItems += item === id ? 1: 0
@@ -144,7 +147,6 @@ actions.deleteStepItem = (id, stepId) => {
       id,
       stepId
     })
-    
     if (countItems <= 1) {
       dispatch(actions.deleteItem(id))
     }
