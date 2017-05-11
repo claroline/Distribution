@@ -32,6 +32,7 @@ import {
   STEP_CREATE,
   STEP_MOVE,
   STEP_DELETE,
+  STEP_ITEM_DELETE,
   STEP_UPDATE,
   QUIZ_UPDATE,
   QUIZ_SAVED,
@@ -125,7 +126,7 @@ function reduceSteps(steps = {}, action = {}) {
     }
     case ITEM_CREATE:
       return update(steps, {[action.stepId]: {items: {$push: [action.id]}}})
-    case ITEM_DELETE: {
+    case STEP_ITEM_DELETE: {
       const index = getIndex(steps[action.stepId].items, action.id)
       return update(steps, {[action.stepId]: {items: {$splice: [[index, 1]]}}})
     }
@@ -180,6 +181,20 @@ function reduceItems(items = {}, action = {}) {
         items[action.id],
         set({}, action.propertyPath, action.value)
       )
+
+      //feedback can't be empty
+      if (action.propertyPath === 'feedback') {
+        const tmp = document.createElement('div')
+        tmp.innerHTML = action.value
+        if (!(/\S/.test(tmp.textContent))) {
+          updatedItem = merge(
+            {},
+            items[action.id],
+            set({}, action.propertyPath, '')
+          )
+        }
+      }
+
       updatedItem._errors = validate.item(updatedItem)
 
       return update(items, {[action.id]: {$set: updatedItem}})
