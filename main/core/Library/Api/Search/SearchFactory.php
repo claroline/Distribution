@@ -45,8 +45,7 @@ class SearchFactory
      * Creates a new search.
      *
      * @param string $entityClass - the root entity for the search
-     *
-     * @param array $filters
+     * @param array  $filters
      *
      * @return ApiSearch
      */

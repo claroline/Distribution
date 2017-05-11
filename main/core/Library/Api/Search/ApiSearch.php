@@ -120,9 +120,9 @@ class ApiSearch
             'totalResults' => $totalResults,
             'pagination' => [
                 'current' => $page,
-                'pageSize' => $number
+                'pageSize' => $number,
             ],
-            'orderBy' => $this->orderBy
+            'orderBy' => $this->orderBy,
         ];
     }
 }

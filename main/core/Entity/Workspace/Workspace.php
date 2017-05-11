@@ -274,7 +274,7 @@ class Workspace
      * @Serializer\Groups({"api_workspace", "api_workspace_min"})
      * @Serializer\SerializedName("workspaceType")
      *
-     * @var integer
+     * @var int
      */
     protected $workspaceType;
 

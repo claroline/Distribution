@@ -41,7 +41,7 @@ class WorkspacesController extends Controller
      * })
      *
      * @param WorkspaceManager $workspaceManager
-     * @param ObjectManager $om
+     * @param ObjectManager    $om
      * @param StrictDispatcher $eventDispatcher
      */
     public function __construct(

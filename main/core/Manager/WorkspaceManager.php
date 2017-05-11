@@ -88,7 +88,7 @@ class WorkspaceManager
     private $sut;
     /** @var PagerFactory */
     private $pagerFactory;
-    /** @var WorkspaceFavouriteRepository  */
+    /** @var WorkspaceFavouriteRepository */
     private $workspaceFavouriteRepo;
     private $container;
     /** @var array */
@@ -111,15 +111,15 @@ class WorkspaceManager
      *     "container"             = @DI\Inject("service_container")
      * })
      *
-     * @param HomeTabManager $homeTabManager
-     * @param RoleManager $roleManager
-     * @param MaskManager $maskManager
-     * @param ResourceManager $resourceManager
-     * @param StrictDispatcher $dispatcher
-     * @param ObjectManager $om
-     * @param ClaroUtilities $ut
-     * @param Utilities $sut
-     * @param PagerFactory $pagerFactory
+     * @param HomeTabManager     $homeTabManager
+     * @param RoleManager        $roleManager
+     * @param MaskManager        $maskManager
+     * @param ResourceManager    $resourceManager
+     * @param StrictDispatcher   $dispatcher
+     * @param ObjectManager      $om
+     * @param ClaroUtilities     $ut
+     * @param Utilities          $sut
+     * @param PagerFactory       $pagerFactory
      * @param ContainerInterface $container
      */
     public function __construct(
@@ -218,8 +218,6 @@ class WorkspaceManager
         return $workspace;
     }
 
-    /**
-     */
     public function createWorkspace(Workspace $workspace)
     {
         if (count($workspace->getOrganizations()) === 0) {
@@ -441,7 +439,7 @@ class WorkspaceManager
      * @param string         $action
      * @param int            $orderedToolType
      *
-     * @return boolean[]
+     * @return bool[]
      */
     public function getAccesses(
         TokenInterface $token,
@@ -628,7 +626,7 @@ class WorkspaceManager
     public function getOneByGuid($guid)
     {
         return $this->workspaceRepo->findOneBy([
-            'guid' => $guid
+            'guid' => $guid,
         ]);
     }
 
@@ -640,7 +638,7 @@ class WorkspaceManager
     public function getOneByCode($code)
     {
         return $this->workspaceRepo->findOneBy([
-            'code' => $code
+            'code' => $code,
         ]);
     }
 
@@ -854,7 +852,7 @@ class WorkspaceManager
                 $user = $this->om
                     ->getRepository('ClarolineCoreBundle:User')
                     ->findOneBy([
-                        'username' => $workspace[6]
+                        'username' => $workspace[6],
                     ]);
             } else {
                 $user = $this->container->get('security.context')->getToken()->getUser();
@@ -863,7 +861,7 @@ class WorkspaceManager
             if (isset($workspace[7])) {
                 //TODO MODEL TEST
                 $model = $this->workspaceRepo->findOneBy([
-                    'code' => $workspace[7]
+                    'code' => $workspace[7],
                 ]);
             }
 
