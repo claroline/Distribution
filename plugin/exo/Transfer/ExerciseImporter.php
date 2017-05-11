@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Library\Transfert\Importer;
 use Claroline\CoreBundle\Library\Transfert\ResourceRichTextInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
@@ -58,9 +59,9 @@ class ExerciseImporter extends Importer implements ResourceRichTextInterface
         // Create the exercise entity
         // The rest of the structure will be created at the same time than the rich texts
         // Because this will not be possible to retrieves created entities as all ids are re-generated
-        $exercise = new Exercise();
+        //dump and move the exercise object items
 
-        return $exercise;
+        return new Exercise();
     }
 
     public function format($data, $exercise)
@@ -80,7 +81,30 @@ class ExerciseImporter extends Importer implements ResourceRichTextInterface
         //$exercise = $this->container->get('claroline.manager.resource_manager')->getResourceFromNode($node);
 
         // Create entities from import data
-        $this->container->get('ujm_exo.manager.exercise')->createCopy($quizData, $exercise);
+        $exercise = $this->container->get('ujm_exo.manager.exercise')->createCopy($quizData, $exercise);
+
+        $fileUtilities = $this->container->get('claroline.utilities.file');
+        $om = $this->container->get('claroline.persistence.object_manager');
+
+        //import the objects
+        foreach ($exercise->getSteps() as $step) {
+            foreach ($step->getStepQuestions() as $stepItem) {
+                foreach ($stepItem->getQuestion()->getObjects() as $object) {
+                    if ($object->getMimeType() !== 'text/html') {
+                        $ext = pathinfo($object->getData(), PATHINFO_EXTENSION);
+                        $basename = basename($object->getData());
+                        $dirname = pathinfo($object->getData(), PATHINFO_DIRNAME);
+                        $file = new File($this->getRootPath().DIRECTORY_SEPARATOR.$basename);
+
+                        $file = $fileUtilities->createFile($file);
+                        $object->setData($file->getUrl());
+                        $om->persist($object);
+                    }
+                }
+            }
+        }
+
+        $om->flush();
     }
 
     public function export($workspace, array &$files, $exercise)
@@ -99,6 +123,18 @@ class ExerciseImporter extends Importer implements ResourceRichTextInterface
             ->parseContents($contentParser, $exerciseData);
 
         $files = array_merge($files, $contentParser->getDumpedContents());
+
+        //we also want to dump the objects stored for each step.
+        foreach ($exercise->getSteps() as $step) {
+            foreach ($step->getStepQuestions() as $stepItem) {
+                foreach ($stepItem->getQuestion()->getObjects() as $object) {
+                    if ($object->getMimeType() !== 'text/html') {
+                        $files[basename($object->getData())] = $this->container
+                            ->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$object->getData();
+                    }
+                }
+            }
+        }
 
         return [
             // YML which will receive the quiz structure can not handle stdClasses (he prefers associative arrays)
