@@ -1,7 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-const BooleanSearch = props =>
+const BooleanSearch = () =>
   <span className="boolean-filter">
     <button type="button" className="btn btn-sm">
       <span className="fa fa-fw fa-check" />

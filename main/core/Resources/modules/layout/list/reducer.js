@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
+import {makeReducer} from '#/main/core/utilities/redux'
 
 import {
   LIST_FILTER_ADD,
@@ -27,10 +27,10 @@ function addFilter(state, action = {}) {
 }
 
 function removeFilter(state, action = {}) {
-  const newFilters = state.filters.slice(0);
+  const newFilters = state.filters.slice(0)
   const pos = state.filters.indexOf(action.filter)
   if (-1 !== pos) {
-    newFilters.splice(pos, 1);
+    newFilters.splice(pos, 1)
   }
 
   return Object.assign({}, state, {

@@ -39,7 +39,7 @@ const handlers = {
 
 const selectedHandlers = {
   // deselect all on page change
-  [PAGE_CHANGE]: (state, action) => []
+  [PAGE_CHANGE]: () => []
 }
 
 const reducer = combineReducers({

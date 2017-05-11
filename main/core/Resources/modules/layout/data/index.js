@@ -49,12 +49,12 @@ export function getType(typeName) {
  * @param definition
  */
 function validateDefinition(definition) {
-  invariant(typeof definition === 'object', `Data type definition must be an object.`)
+  invariant(typeof definition === 'object', 'Data type definition must be an object.')
 
-  invariant(typeof definition.parse === 'function',    `Data type 'parse' property must be a function.`)
-  invariant(typeof definition.render === 'function',   `Data type 'render' property must be a function.`)
-  invariant(typeof definition.validate === 'function', `Data type 'validate' property must be a function.`)
-  invariant(typeof definition.components === 'object', `Data type 'components' property must be a object.`)
+  invariant(typeof definition.parse === 'function',    'Data type "parse" property must be a function.')
+  invariant(typeof definition.render === 'function',   'Data type "render" property must be a function.')
+  invariant(typeof definition.validate === 'function', 'Data type "validate" property must be a function.')
+  invariant(typeof definition.components === 'object', 'Data type "components" property must be a object.')
 }
 
 /**
@@ -69,6 +69,6 @@ function setDefinitionDefaults(definition) {
   return Object.assign({
     parse: (value) => value,
     render: (raw) => raw,
-    validate: (value) => true
+    validate: () => true
   }, definition)
 }

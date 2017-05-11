@@ -259,6 +259,8 @@ Workspaces.propTypes = {
     pageSize: T.number.isRequired,
     current: T.number.isRequired
   }).isRequired,
+  handlePageChange: T.func.isRequired,
+  handlePageSizeUpdate: T.func.isRequired,
 
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,

@@ -14,8 +14,7 @@ import {
   getListDisplay,
   getDisplayableProps,
   getDisplayedProps,
-  getFilterableProps,
-  getSortableProps
+  getFilterableProps
 } from '#/main/core/layout/list/utils'
 
 const EmptyList = props =>
@@ -95,7 +94,7 @@ class DataList extends Component {
   }
 
   toggleColumn(column) {
-    const newColumns = this.state.currentColumns.slice(0);
+    const newColumns = this.state.currentColumns.slice(0)
     const pos = newColumns.indexOf(column)
     if (-1 === pos) {
       newColumns.push(column)

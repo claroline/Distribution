@@ -156,13 +156,17 @@ LazyLoadTable.propTypes = {
 
   filters: T.object.isRequired,
 
+  columns: T.shape({
+    available: T.array.isRequired
+  }),
+
   pagination: T.object.isRequired,
 
   selection: T.object.isRequired,
 
-  /*renderers: T.object,*/
-  /*onSelect: T.func,*/
-  /*onSearch: T.func*/
+  renderers: T.object,
+  onSelect: T.func,
+  onSearch: T.func
 }
 
 LazyLoadTable.defaultProps = {

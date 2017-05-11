@@ -92,11 +92,11 @@ const AvailableFilter = props => {
 
             {(typeDef && typeDef.components.search) &&
               React.createElement(typeDef.components.search, {
-              search: props.currentSearch,
-              isValid: isValidSearch,
-              updateSearch: props.updateSearch
-            })
-          }
+                search: props.currentSearch,
+                isValid: isValidSearch,
+                updateSearch: props.updateSearch
+              })
+            }
           </span>
         ]
       )}
