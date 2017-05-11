@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Entity\ItemType\ContentItem;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Options\Validation;
 use UJM\ExoBundle\Library\Validator\ValidationException;
@@ -93,11 +94,19 @@ class ExerciseImporter extends Importer implements ResourceRichTextInterface
                     if ($object->getMimeType() !== 'text/html') {
                         $basename = basename($object->getData());
                         $file = new File($this->getRootPath().DIRECTORY_SEPARATOR.$basename);
-
                         $file = $fileUtilities->createFile($file);
                         $object->setData($file->getUrl());
                         $om->persist($object);
                     }
+                }
+
+                if ($stepItem->getQuestion()->getInteraction() instanceof ContentItem && 1 !== preg_match('#^text\/[^/]+$#', $stepItem->getQuestion()->getMimeType())) {
+                    $contentItem = $stepItem->getQuestion()->getInteraction();
+                    $basename = basename($contentItem->getData());
+                    $file = new File($this->getRootPath().DIRECTORY_SEPARATOR.$basename);
+                    $file = $fileUtilities->createFile($file);
+                    $object->setData($file->getUrl());
+                    $om->persist($contentItem);
                 }
             }
         }
@@ -130,6 +139,19 @@ class ExerciseImporter extends Importer implements ResourceRichTextInterface
                         $files[basename($object->getData())] = $this->container
                             ->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$object->getData();
                     }
+                }
+            }
+        }
+
+        //same process for the content question type
+        //we also want to dump the objects stored for each step.
+        foreach ($exercise->getSteps() as $step) {
+            foreach ($step->getStepQuestions() as $stepItem) {
+                $item = $stepItem->getQuestion();
+                if ($item->getInteraction() instanceof ContentItem && 1 !== preg_match('#^text\/[^/]+$#', $item->getMimeType())) {
+                    $url = $item->getInteraction()->getData();
+                    $files[basename($url)] = $this->container
+                      ->getParameter('claroline.param.web_dir').DIRECTORY_SEPARATOR.$url;
                 }
             }
         }
