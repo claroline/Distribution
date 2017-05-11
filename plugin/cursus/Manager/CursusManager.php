@@ -2820,6 +2820,7 @@ class CursusManager
                     'sessionId' => $session->getId(),
                     'sessionName' => $session->getName(),
                     'sessionStatus' => $session->getSessionStatus(),
+                    'sessionDefault' => $session->isDefaultSession(),
                 ];
             }
         }
@@ -5067,6 +5068,11 @@ class CursusManager
     public function getSessionsByIds(array $ids, $executeQuery = true)
     {
         return count($ids) > 0 ? $this->courseSessionRepo->findSessionsByIds($ids, $executeQuery) : [];
+    }
+
+    public function getSessionsByWorkspace(Workspace $workspace)
+    {
+        return $this->courseSessionRepo->findBy(['workspace' => $workspace], ['name' => 'ASC']);
     }
 
     /*********************************************

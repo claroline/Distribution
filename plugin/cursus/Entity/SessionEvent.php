@@ -31,14 +31,14 @@ class SessionEvent
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      */
     protected $id;
 
     /**
      * @ORM\Column(name="event_name")
      * @Assert\NotBlank()
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      */
     protected $name;
 
@@ -54,21 +54,21 @@ class SessionEvent
 
     /**
      * @ORM\Column(name="start_date", type="datetime", nullable=false)
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      * @SerializedName("startDate")
      */
     protected $startDate;
 
     /**
      * @ORM\Column(name="end_date", type="datetime", nullable=false)
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      * @SerializedName("endDate")
      */
     protected $endDate;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      */
     protected $description;
 
@@ -126,14 +126,14 @@ class SessionEvent
 
     /**
      * @ORM\Column(name="max_users", nullable=true, type="integer")
-     * @Groups({"api_cursus", "api_user_min", "api_group_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min", "api_group_min"})
      * @SerializedName("maxUsers")
      */
     protected $maxUsers;
 
     /**
      * @ORM\Column(name="registration_type", type="integer", nullable=false, options={"default" = 0})
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      * @SerializedName("registrationType")
      */
     protected $registrationType = CourseSession::REGISTRATION_AUTO;

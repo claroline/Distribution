@@ -25,4 +25,4 @@ plugin:
     - name: claroline_session_events_tool
       is_displayable_in_workspace: true
       is_displayable_in_desktop: false
-      class: calendar
+      class: clock-o

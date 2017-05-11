@@ -14,15 +14,11 @@ namespace Claroline\CursusBundle\Controller\API;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-/**
- * @DI\Tag("security.secure_service")
- * @SEC\PreAuthorize("canOpenTool('claroline_session_events_tool')")
- */
 class SessionEventsToolController extends Controller
 {
     private $authorization;
@@ -53,6 +49,27 @@ class SessionEventsToolController extends Controller
      */
     public function indexAction(Workspace $workspace)
     {
-        return ['workspace' => $workspace];
+        $this->checkToolAccess($workspace);
+        $canEdit = $this->authorization->isGranted(['claroline_session_events_tool', 'edit'], $workspace);
+        $sessions = $this->cursusManager->getSessionsByWorkspace($workspace);
+        $sessionEvents = [];
+
+        foreach ($sessions as $session) {
+            $sessionEvents[$session->getId()] = $session->getEvents();
+        }
+
+        return [
+            'workspace' => $workspace,
+            'canEdit' => $canEdit ? 1 : 0,
+            'sessions' => $sessions,
+            'sessionEvents' => $sessionEvents,
+        ];
+    }
+
+    private function checkToolAccess(Workspace $workspace)
+    {
+        if (!$this->authorization->isGranted(['claroline_session_events_tool', 'open'], $workspace)) {
+            throw new AccessDeniedException();
+        }
     }
 }
