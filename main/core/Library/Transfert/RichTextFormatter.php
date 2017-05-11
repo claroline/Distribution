@@ -117,7 +117,7 @@ class RichTextFormatter
 
         foreach ($matches as $match) {
             $options = $this->extractFormatOptions($match[1]);
-            $uid = (int) $options['uid'];
+            $uid = $options['uid'];
             // optional parameters
             $option_text = null;
             if (isset($options['text'])) {
