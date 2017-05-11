@@ -49,8 +49,4 @@ export function makeModalFromUrl(fading, hideCallback = () => true, url) {
 
     return React.createElement(UrlModal, baseProps)
   })
-
-
-
-
 }

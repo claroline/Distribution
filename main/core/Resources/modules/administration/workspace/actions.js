@@ -1,14 +1,13 @@
 import { makeActionCreator } from '#/main/core/utilities/redux'
-import { REQUEST_SEND } from '#/main/core/utilities/api/actions'
-import { makeReducer, combineReducers } from '#/main/core/utilities/redux'
-import cloneDeep from 'lodash/cloneDeep'
 import {generateUrl} from '#/main/core/fos-js-router'
 
-const PAGE_CHANGE = 'PAGE_CHANGE'
-const ON_SELECT = 'ON_SELECT'
-const DELETE_WORKSPACES = 'DELETE_WORKSPACES'
-const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE'
-const COPY_WORKSPACE = 'COPY_WORKSPACE'
+import { REQUEST_SEND } from '#/main/core/utilities/api/actions'
+
+export const PAGE_CHANGE = 'PAGE_CHANGE'
+export const ON_SELECT = 'ON_SELECT'
+export const DELETE_WORKSPACES = 'DELETE_WORKSPACES'
+export const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE'
+export const COPY_WORKSPACE = 'COPY_WORKSPACE'
 
 export const actions = {
   pageChange: makeActionCreator(PAGE_CHANGE, 'total', 'workspaces', 'current', 'pageSize'),
@@ -21,7 +20,7 @@ export const actions = {
         method: 'DELETE'
       },
       success: (data, dispatch) => {
-        //do somethibg better
+        //do something better
         dispatch(actions.fetchPage(1, 20))
       },
       failure: () => alert('fail')
@@ -52,36 +51,3 @@ export const actions = {
   })
 }
 
-const initialState = {
-  pagination: {}
-}
-
-const handlers = {
-  [PAGE_CHANGE]: (state, action) => {
-    state = cloneDeep(state)
-
-    state.totalResults = action.total
-    state.data = action.workspaces
-    state.current = action.current
-    state.pageSize = action.pageSize
-
-    return state
-  },
-  [DELETE_WORKSPACES]: (/*state, action*/) => {
-    alert('gotcha the hander')
-  },
-  [ON_SELECT]: (state, action) => {
-    return Object.assign({}, state, {selected: action.selected})
-  },
-  [COPY_WORKSPACE]: (state) => {
-    return state
-  },
-  [UPDATE_WORKSPACE]: (state) => {
-    return state
-  }
-}
-
-export const reducers = combineReducers({
-  pagination: makeReducer(initialState, handlers),
-  user: makeReducer({user: {}}, {})
-})

@@ -18,7 +18,7 @@
     }}
 {% endblock %}
 
-{% block section_content %}
+{% block content %}
   <div
     class="page-container workspace-administration-container"
     data-workspaces="{{ workspaces | json_serialize('api_workspace') | raw | escape }}"
