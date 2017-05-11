@@ -91,9 +91,7 @@ class ExerciseImporter extends Importer implements ResourceRichTextInterface
             foreach ($step->getStepQuestions() as $stepItem) {
                 foreach ($stepItem->getQuestion()->getObjects() as $object) {
                     if ($object->getMimeType() !== 'text/html') {
-                        $ext = pathinfo($object->getData(), PATHINFO_EXTENSION);
                         $basename = basename($object->getData());
-                        $dirname = pathinfo($object->getData(), PATHINFO_DIRNAME);
                         $file = new File($this->getRootPath().DIRECTORY_SEPARATOR.$basename);
 
                         $file = $fileUtilities->createFile($file);
