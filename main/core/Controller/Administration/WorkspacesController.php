@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -19,7 +20,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -27,38 +27,51 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class WorkspacesController extends Controller
 {
-    private $workspaceManager;
     private $om;
     private $eventDispatcher;
-    private $workspaceAdminTool;
+    private $workspaceManager;
 
     /**
+     * WorkspacesController constructor.
+     *
      * @DI\InjectParams({
-     *     "workspaceManager"   = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
-     *     "eventDispatcher"    = @DI\Inject("claroline.event.event_dispatcher")
+     *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
+     *     "eventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
      * })
+     *
+     * @param WorkspaceManager $workspaceManager
+     * @param ObjectManager $om
+     * @param StrictDispatcher $eventDispatcher
      */
     public function __construct(
         WorkspaceManager $workspaceManager,
         ObjectManager $om,
-        StrictDispatcher $eventDispatcher
-    ) {
+        StrictDispatcher $eventDispatcher)
+    {
         $this->workspaceManager = $workspaceManager;
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template
+     *
+     * @param User $user
+     *
+     * @return array
      */
-    public function managementAction()
+    public function managementAction(User $user)
     {
         $workspaces = $this->workspaceManager->searchPartialList([], 0, 20);
         $count = $this->workspaceManager->searchPartialList([], 0, 20, true);
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
-        return ['workspaces' => $workspaces, 'count' => $count, 'user' => $user];
+        return [
+            'workspaces' => $workspaces,
+            'count' => $count,
+            'user' => $user,
+        ];
     }
 
     /**
@@ -87,6 +100,7 @@ class WorkspacesController extends Controller
             $data = $this->container->get('claroline.utilities.misc')->formatCsvOutput($data);
             $lines = str_getcsv($data, PHP_EOL);
 
+            $workspaces = [];
             foreach ($lines as $line) {
                 if (trim($line) !== '') {
                     $workspaces[] = str_getcsv($line, ';');
