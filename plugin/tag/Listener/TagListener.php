@@ -92,24 +92,31 @@ class TagListener
             $objectResponse = isset($datas['object_response']) && $datas['object_response'];
             $orderedBy = isset($datas['ordered_by']) ? $datas['ordered_by'] : 'id';
             $order = isset($datas['order']) ? $datas['order'] : 'ASC';
+            $ids = isset($datas['ids']) ? $datas['ids'] : [];
 
             $objects = $this->tagManager->getTaggedObjects(
                 $user,
                 $withPlatform,
                 $class,
                 $search,
-                $strictSearch
+                $strictSearch,
+                'name',
+                'ASC',
+                false,
+                1,
+                50,
+                $ids
             );
 
             if (!is_null($class) && $objectResponse) {
-                $ids = [];
+                $objectsIds = [];
 
                 foreach ($objects as $object) {
-                    $ids[] = $object->getObjectId();
+                    $objectsIds[] = $object->getObjectId();
                 }
                 $taggedObjects = $this->tagManager->getObjectsByClassAndIds(
                     $class,
-                    $ids,
+                    $objectsIds,
                     $orderedBy,
                     $order
                 );
@@ -195,6 +202,29 @@ class TagListener
         $url = $this->router->generate(
             'claro_tag_group_tag_form',
             ['group' => $group->getId()]
+        );
+
+        $menu = $event->getMenu();
+        $menu->addChild(
+            $this->translator->trans('tag_action', [], 'tag'),
+            ['uri' => $url]
+        )->setExtra('icon', 'fa fa-tags')
+        ->setExtra('display', 'modal_form');
+
+        return $menu;
+    }
+
+    /**
+     * @DI\Observe("claroline_user_additional_action")
+     *
+     * @param \Claroline\CoreBundle\Menu\UserAdditionalActionEvent $event
+     */
+    public function onUserActionMenuRender(UserAdditionalActionEvent $event)
+    {
+        $user = $event->getUser();
+        $url = $this->router->generate(
+            'claro_tag_user_tag_form',
+            ['user' => $user->getId()]
         );
 
         $menu = $event->getMenu();

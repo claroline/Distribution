@@ -198,9 +198,27 @@ class WorkspaceManager
     }
 
     /**
-     * @param Workspace $workspace
+     * Creates a workspace.
      *
-     * @return Workspace
+     * @param Workspace $workspace
+     * @param $template uncompressed template
+     *
+     * @return \Claroline\CoreBundle\Entity\Workspace\AbstractWorkspace
+     */
+    public function createFromTemplate(Workspace $workspace, $templateDirectory)
+    {
+        $transferManager = $this->container->get('claroline.manager.transfer_manager');
+
+        if ($this->logger) {
+            $transferManager->setLogger($this->logger);
+        }
+
+        $workspace = $transferManager->createWorkspaceFromTemplate($workspace, $templateDirectory, false);
+
+        return $workspace;
+    }
+
+    /**
      */
     public function createWorkspace(Workspace $workspace)
     {
@@ -1156,8 +1174,13 @@ class WorkspaceManager
 
     public function removeTemplate(File $file)
     {
-        $fileName = $file->getBasename();
+        $fileName = $file->getBasename('.zip');
         $extractPath = $this->templateDirectory.DIRECTORY_SEPARATOR.$fileName;
+        $this->removeTemplateDirectory($extractPath);
+    }
+
+    public function removeTemplateDirectory($extractPath)
+    {
         $fs = new FileSystem();
         $fs->remove($extractPath);
     }
@@ -1550,7 +1573,7 @@ class WorkspaceManager
 
         //Admin can see everything, but the others... well they can only see their own organizations.
         if (!$this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN')) {
-            $currentUser = $this->tokenStorage->getToken()->getUser();
+            $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
             $qb->leftJoin('w.organizations', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');

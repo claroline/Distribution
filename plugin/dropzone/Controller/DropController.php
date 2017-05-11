@@ -123,16 +123,16 @@ class DropController extends DropzoneBaseController
             }
 
             if ($form->isValid()) {
-                // change the folder name to take the datetime of the drop event
-                $dropDate = new \DateTime();
-                $date_format = $this->get('translator')->trans('date_form_datepicker_php', [], 'platform');
-                $rm = $this->get('claroline.manager.resource_manager');
-                $node = $rm->getById($notFinishedDrop->getHiddenDirectory()->getId());
-                // set the date time of the drop.
-                $folderName = $node->getName();
-                $rm->rename($node, $folderName.' '.$dropDate->format($date_format.' '.'H:i:s')); //());
-
-                //end setting datetime.
+                if ($notFinishedDrop->getHiddenDirectory()) {
+                    // change the folder name to take the datetime of the drop event
+                    $dropDate = new \DateTime();
+                    $date_format = $this->get('translator')->trans('date_form_datepicker_php', [], 'platform');
+                    $rm = $this->get('claroline.manager.resource_manager');
+                    $node = $rm->getById($notFinishedDrop->getHiddenDirectory()->getId());
+                    // set the date time of the drop.
+                    $folderName = $node->getName();
+                    $rm->rename($node, $folderName.' '.$dropDate->format($date_format.' '.'H:i:s')); //());
+                }
 
                 $notFinishedDrop->setFinished(true);
 
@@ -778,7 +778,7 @@ class DropController extends DropzoneBaseController
         // check  if the User is allowed to open the dropZone.
         $this->get('icap.manager.dropzone_voter')->isAllowToOpen($dropzone);
         // getting the userId to check if the current drop owner match with the loggued user.
-        $userId = $this->get('security.token_storage')->getToken()->getUser()->getId();
+        $userId = $this->tokenStorage->getToken()->getUser()->getId();
         $collection = new ResourceCollection([$dropzone->getResourceNode()]);
         $isAllowedToEdit = $this->get('security.authorization_checker')->isGranted('EDIT', $collection);
 

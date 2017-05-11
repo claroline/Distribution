@@ -176,6 +176,8 @@ class Course
      *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization"
      * )
      * @ORM\JoinTable(name="claro_cursusbundle_course_organizations")
+     * @Groups({"api_cursus", "api_user_min", "api_group_min", "api_workspace_min"})
+     * @SerializedName("organizations")
      */
     protected $organizations;
 
@@ -422,6 +424,11 @@ class Course
         }
 
         return $this;
+    }
+
+    public function emptyOrganizations()
+    {
+        $this->organizations->clear();
     }
 
     public function getDisplayOrder()
