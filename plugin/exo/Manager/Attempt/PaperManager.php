@@ -452,14 +452,14 @@ class PaperManager
         foreach ($papers as $paper) {
             $structure = json_decode($paper->getStructure());
 
-            if (!isset($structure->parameters->totalScoreOn) || floatval($structure->parameters->totalScoreOn) === 0) {
+            if (!isset($structure->parameters->totalScoreOn) || floatval($structure->parameters->totalScoreOn) === floatval(0)) {
                 $totalScoreOn = $this->calculateTotal($paper);
-            } else if (floatval($structure->parameters->totalScoreOn) > 0) {
+            } else {
                 $totalScoreOn = floatval($structure->parameters->totalScoreOn);
             }
 
             $score = $this->calculateScore($paper, $totalScoreOn);
-            // since totalScoreOn might have change through papers report all scores on 100
+            // since totalScoreOn might have change through papers report all scores on a define value
             if ($scoreOn) {
                 $score = floatval(($scoreOn * $score) / $totalScoreOn);
             }

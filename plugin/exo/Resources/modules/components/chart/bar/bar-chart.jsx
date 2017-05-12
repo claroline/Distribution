@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {max, min} from 'd3-array'
+import {max} from 'd3-array'
 import {scaleLinear, scaleBand} from 'd3-scale'
 import {axisLeft, axisBottom} from 'd3-axis'
 import {select} from 'd3-selection'
@@ -40,6 +40,14 @@ Axis.propTypes = {
 
 /**
  * Draws a Bar chart
+ * data must be formed as a key value object collection
+ * data : {
+ *   key1: value1,
+ *   key2: value2,
+ *   ...
+ * }
+ * each key value will be displayed on the x axis
+ * each data[key] value will be displayed on the y axis
  */
 export default class BarChart extends Component {
   render() {
@@ -51,7 +59,7 @@ export default class BarChart extends Component {
       }
     })
 
-    const margin = {top: 20, right: 20, bottom: 20, left: 20}
+    const margin = {top: 20, right: 20, bottom: 20, left: 30}
     const width = this.props.width - margin.left - margin.right
     const height = this.props.height - margin.top - margin.bottom
 
@@ -60,12 +68,12 @@ export default class BarChart extends Component {
       .range([height, 0])
 
     const xScale = scaleBand()
-      .domain([min(xValues), max(xValues)])
+      .domain(xValues)
       .rangeRound([0, width])
       .paddingInner([0.2])
 
     const yAxis = axisLeft(yScale)
-      .ticks(yValues.length + 1)
+      .ticks(max(yValues))
 
     const xAxis = axisBottom(xScale)
       .ticks(xValues.length + 1)

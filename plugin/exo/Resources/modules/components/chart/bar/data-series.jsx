@@ -5,12 +5,12 @@ const T = React.PropTypes
 
 /**
  * Represents data on a Bar chart.
- * data must be on object
+ * data must be an object
  * data {
  *  key1: value1,
  *  key2: value2
  * }
- * where key1 will be the value displayed on the x axis and value on the y axis
+ * where keys will be the values displayed on the x axis and values the ones on the y axis
  */
 export default class DataSeries extends Component {
   render() {
