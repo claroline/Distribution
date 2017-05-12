@@ -398,7 +398,7 @@ class UserManager
         $sendMail = true,
         $logger = null,
         $additionalRoles = [],
-        $enableEmailNotifaction = false,
+        $enableEmailNotifaction = null,
         $options = []
     ) {
         //build options
@@ -491,7 +491,12 @@ class UserManager
 
             $hasPersonalWorkspace = isset($user[11]) ? (bool) $user[11] : false;
             $isMailValidated = isset($user[12]) ? (bool) $user[12] : false;
-            $isMailNotified = isset($user[13]) ? (bool) $user[13] : $enableEmailNotifaction;
+
+            if ($enableEmailNotifaction === null) {
+                $isMailNotified = isset($user[13]) ? (bool) $user[13] : false;
+            } else {
+                $isMailNotified = $enableEmailNotifaction;
+            }
 
             if ($modelName) {
                 $model = $this->objectManager
