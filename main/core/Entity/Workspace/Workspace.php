@@ -223,6 +223,8 @@ class Workspace
      *
      * @Serializer\Groups({"api_workspace", "api_workspace_min"})
      * @Serializer\SerializedName("creationDate")
+     * @Serializer\Accessor(getter="getCreationDate")
+     * @Serializer\Type("DateTime<'Y-m-d\TH:i:s'>")
      *
      * @var \DateTime
      */

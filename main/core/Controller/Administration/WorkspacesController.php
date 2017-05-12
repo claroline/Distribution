@@ -58,11 +58,9 @@ class WorkspacesController extends Controller
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template
      *
-     * @param User $user
-     *
      * @return array
      */
-    public function managementAction(User $user)
+    public function managementAction()
     {
         $workspaces = $this->workspaceManager->searchPartialList([], 0, 20);
         $count = $this->workspaceManager->searchPartialList([], 0, 20, true);
@@ -70,7 +68,6 @@ class WorkspacesController extends Controller
         return [
             'workspaces' => $workspaces,
             'count' => $count,
-            'user' => $user,
         ];
     }
 
