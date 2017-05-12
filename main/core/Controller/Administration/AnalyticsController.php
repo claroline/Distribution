@@ -179,6 +179,40 @@ class AnalyticsController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/widgets",
+     *     name="claro_admin_analytics_widgets"
+     * )
+     *
+     * @EXT\Template("ClarolineCoreBundle:Administration\Analytics:analytics_widgets.html.twig")
+     *
+     * Displays platform analytics widgets page
+     *
+     * @return Response
+     *
+     * @throws \Exception
+     */
+    public function analyticsWidgetsAction()
+    {
+        $manager = $this->get('doctrine.orm.entity_manager');
+        $wsCount = $this->workspaceManager->getNbWorkspaces();
+        $resourceCount = $manager->getRepository('ClarolineCoreBundle:Resource\ResourceType')
+            ->countResourcesByType();
+
+        /** @var \Claroline\CoreBundle\Event\Analytics\PlatformContentItemEvent $event */
+        $event = $this->get('claroline.event.event_dispatcher')->dispatch(
+            'administration_analytics_platform_content_item_add',
+            'Analytics\PlatformContentItem'
+        );
+
+        return [
+            'wsCount' => $wsCount,
+            'resourceCount' => $resourceCount,
+            'otherItems' => $event->getItems(),
+        ];
+    }
+
+    /**
+     * @EXT\Route(
      *     "/top/{topType}",
      *     name="claro_admin_analytics_top",
      *     defaults={"topType" = "top_users_connections"}
