@@ -33,13 +33,11 @@ class WorkspaceAdministration {
 const container = document.querySelector('.workspace-administration-container')
 const workspaces = JSON.parse(container.dataset.workspaces)
 const count = parseInt(container.dataset.count)
-const user = JSON.parse(container.dataset.user)
 const adminTool = new WorkspaceAdministration({
   workspaces: {
     data: workspaces,
     totalResults: count
-  },
-  user: user
+  }
 })
 
 adminTool.render(container)
