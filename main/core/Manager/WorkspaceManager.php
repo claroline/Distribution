@@ -859,7 +859,6 @@ class WorkspaceManager
             }
 
             if (isset($workspace[7])) {
-                //TODO MODEL TEST
                 $model = $this->workspaceRepo->findOneBy([
                     'code' => $workspace[7],
                 ]);
