@@ -6,6 +6,12 @@
     {{ parent() }}
     <style type="text/css">
         span.small {font-size: 14px;}
+        div#widget-counts {
+            margin-bottom: 1em;
+        }
+        span.widget-count-number {
+            font-size: 25px;
+        }
     </style>
 {% endblock %}
 
@@ -32,37 +38,42 @@
     <div class="panel-body" id="workspace-list-div">
         {% include 'ClarolineCoreBundle:Administration\\Analytics:analytics_navbar.html.twig'%}
 
-        <div class="margin">
-            <h1>{{ wsCount }} SELECT COUNT(*) FROM `claro_widget_instance` AS cwi<span class="small"><i class="fa fa-book"></i> {{'widgets'|trans({}, 'platform')}}</span></h1>
+        <div id="widget-counts" class="row">
+            <div class="col-md-2">
+                <span class="widget-count-number">{{ fullWidgetCount }}</span><br /><span class="widget-count-label">{{'widgets'|trans({}, 'platform')}}</span>
+            </div>
+            <div class="col-md-2">
+                <span class="widget-count-number">{{ workspaceWidgetCount }}</span><br /><span class="widget-count-label">{{'in_workspaces'|trans({}, 'platform')}}</span>
+            </div>
+            <div class="col-md-2">
+                <span class="widget-count-number">{{ desktopWidgetCount }}</span><br /><span class="widget-count-label">{{'on_desktops'|trans({}, 'platform')}}</span>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-6">
-                {% include 'ClarolineCoreBundle:Log:resource_by_type_chart.html.twig' %}
+                {% include 'ClarolineCoreBundle:Log:widget_by_type_chart.html.twig' %}
             </div>
             <div class="col-md-6">
                 <div id="analytics-resources-list" class="panel panel-default">
                     <div class="panel-heading">
                         <i class="fa fa-list"></i>
-                        {{'resources_usage_list'|trans({}, 'platform')}}
+                        {{'widgets_usage_list'|trans({}, 'platform')}}
                     </div>
                     <div class="table-responsive">
                         <table class="table table-condensed">
-                            <tr><th>{{'resource'|trans({}, 'platform')}}</th><th>#</th></tr>
-                            {% for resource in resourceCount %}
-                                <tr><td>{{resource.name|trans({}, 'resource')}}</td><td>{{resource.total}}</td></tr>
-                            {% endfor %}
-                            {% if otherItems|length > 0 %}
-                            <tr><th>Autres</th><th>#</th></tr>
-                                {% for otherItem in otherItems %}
+                            <tr>
+                                <th>{{'widget_type'|trans({}, 'platform')}}</th>
+                                <th>#/{{'workspaces'|trans({}, 'platform')}}</th>
+                                <th>#/{{'desktops'|trans({}, 'platform')}}</th>
+                                <th>{{'total'|trans({}, 'widget')|capitalize}}</th>
+                            </tr>
+                            {% for widget in widgetList %}
                                 <tr>
-                                    <td>
-                                        <a href="{{ path('claro_admin_analytics_other_details', {item: otherItem.item}) }}"
-                                           title="{{ ('analytics_other_details_' ~ otherItem.item)|trans({}, 'analytics') }}">{{ otherItem.label }}</a>
-                                    </td>
-                                    <td>{{ otherItem.value }}</td>
-                                </tr>
-                                {% endfor %}
-                            {% endif %}
+                                    <td>{{widget.name|trans({}, 'widget')}}</td>
+                                    <td>{{widget.totalByWorkspace}}</td>
+                                    <td>{{widget.totalByDesktop}}</td>
+                                    <td>{{widget.total}}</td></tr>
+                            {% endfor %}
                         </table>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 {
     "activate": "",
     "delete_category": "",
+    "desktops": "",
     "display": "",
     "mandatory": "",
     "parameters": "Impostazioni",
@@ -10,5 +11,10 @@
     "copy_permalink_to_clipboard": "",
     "copy_to_clipboard_error": "",
     "copy_to_clipboard_success": "",
-    "count_connections_and_users_by_date_range": ""
+    "count_connections_and_users_by_date_range": "",
+    "in_workspaces": "",
+    "on_desktops": "",
+    "widget_type": "",
+    "widgets_usage_list": "",
+    "widgets_usage_ratio": ""
 }
