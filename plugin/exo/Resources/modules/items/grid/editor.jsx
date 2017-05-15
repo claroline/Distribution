@@ -252,7 +252,7 @@ const GridRow = props =>
       {props.score.type === SCORE_SUM && props.sumMode === SUM_ROW &&
         <input
           type="number"
-          min="0"
+          min="1"
           disabled={!utils.atLeastOneSolutionInRow(props.index, props.cells, props.solutions)}
           value={utils.getRowScore(props.cells, props.solutions)}
           className="form-control grid-score"
