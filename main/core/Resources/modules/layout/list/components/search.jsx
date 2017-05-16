@@ -29,6 +29,7 @@ const CurrentFilter = props => {
 }
 
 CurrentFilter.propTypes = {
+  type: T.string.isRequired,
   label: T.string.isRequired,
   value: T.any.isRequired,
   remove: T.func.isRequired

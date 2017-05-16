@@ -34,7 +34,8 @@ DataCell.propTypes = {
   rowData: T.object.isRequired,
   column: T.shape({
     name: T.string.isRequired,
-    type: T.string.isRequired
+    type: T.string.isRequired,
+    renderer: T.func
   }).isRequired
 }
 
@@ -96,15 +97,14 @@ const DataTableRow = props =>
             {props.actions.filter(action => action.isDangerous).map((action, actionIndex) => React.createElement(
               MenuItem,
               typeof action.action === 'function' ? {
-                  key: `data-row-${props.index}-action-dangerous-${actionIndex}`,
-                  className: 'dropdown-link-danger',
-                  onClick: () => action.action(props.row)
-                } : {
-                  key: `data-row-${props.index}-action-${actionIndex}`,
-                  className: 'dropdown-link-danger',
-                  href: action.action
-                },
-              ([
+                key: `data-row-${props.index}-action-dangerous-${actionIndex}`,
+                className: 'dropdown-link-danger',
+                onClick: () => action.action(props.row)
+              } : {
+                key: `data-row-${props.index}-action-${actionIndex}`,
+                className: 'dropdown-link-danger',
+                href: action.action
+              }, ([
                 <span key={`data-row-${props.index}-action-${actionIndex}-dangerous-icon`} className={action.icon} />,
                 action.label
               ]))

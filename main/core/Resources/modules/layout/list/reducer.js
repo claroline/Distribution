@@ -81,7 +81,7 @@ function toggleSelect(state, action = {}) {
 
 const filterReducer = makeReducer([], {
   [LIST_FILTER_ADD]: addFilter,
-  [LIST_FILTER_REMOVE]: removeFilter,
+  [LIST_FILTER_REMOVE]: removeFilter
 })
 
 const sortReducer = makeReducer({

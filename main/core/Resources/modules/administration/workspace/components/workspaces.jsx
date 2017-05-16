@@ -43,7 +43,7 @@ class Workspaces extends Component {
 
   copyWorkspaces(workspaceIds, asModel = false) {
     const workspaces = this.getWorkspaces(workspaceIds)
-    
+
     this.props.showModal(MODAL_CONFIRM, {
       title: transChoice(asModel ? 'copy_model_workspaces' : 'copy_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
       question: t(asModel ? 'copy_model_workspaces_confirm' : 'copy_workspaces_confirm', {
