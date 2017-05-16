@@ -637,6 +637,7 @@
     "list": "Liste",
     "list_groups": "Lister les groupes",
     "list_results_count": "{1} 1 résultat|[2,Inf[ %count% résultats",
+    "list_search_invalid_filter": "Ce filtre ne peut pas être utilisé avec votre recherche actuelle",
     "list_selected_count": "{1} 1 élément sélectionné|[2,Inf[ %count% éléments sélectionnés",
     "list_users": "Lister les utilisateurs",
     "list_view": "Vue en liste",

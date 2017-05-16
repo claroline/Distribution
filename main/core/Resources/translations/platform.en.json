@@ -628,6 +628,7 @@
     "list": "List",
     "list_groups": "List groups",
     "list_results_count": "{1} 1 result|[2,Inf[ %count% results",
+    "list_search_invalid_filter": "This filter can not be used with you current search",
     "list_selected_count": "{1} 1 selected element|[2,Inf[ %count% selected elements",
     "list_users": "List users",
     "list_view": "List view",
