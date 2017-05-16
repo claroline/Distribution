@@ -70,13 +70,13 @@ class MatchPlayer extends Component {
 
     // we have to wait for elements to be at there right place before drawing... so... timeout
     window.setTimeout(() => {
-      drawAnswers(this.props.answer , this.jsPlumbInstance)
+      drawAnswers(this.props.answer, this.jsPlumbInstance)
     }, 500)
 
     // use this event to create new answers
     this.jsPlumbInstance.bind('beforeDrop', (connection) => {
       // check that the connection is not already in jsPlumbConnections before creating it
-      const list = this.jsPlumbInstance.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId )
+      const list = this.jsPlumbInstance.getConnections().filter(el => el.sourceId === connection.sourceId && el.targetId === connection.targetId)
 
       if (list.length > 0) {
         return false
@@ -88,8 +88,8 @@ class MatchPlayer extends Component {
 
       // add answer
       this.props.onChange(
-          [{firstId: firstId, secondId: secondId}].concat(this.props.answer)
-       )
+        [{firstId: firstId, secondId: secondId}].concat(this.props.answer)
+      )
 
       return true
     })
@@ -106,10 +106,13 @@ class MatchPlayer extends Component {
       const secondId = connection.targetId.replace('target_', '')
       // remove answer
       this.props.onChange(
-         this.props.answer.filter(answer => answer.firstId !== firstId || answer.secondId !== secondId)
+        this.props.answer.filter(answer => answer.firstId !== firstId || answer.secondId !== secondId)
       )
       return true
     })
+
+    // fix anchors position if misplaced
+    this.jsPlumbInstance.bind('beforeDrag', () => this.handleWindowResize())
   }
 
   componentWillUnmount(){
@@ -137,14 +140,14 @@ class MatchPlayer extends Component {
           cssClass: 'endPoints',
           isSource: true,
           maxConnections: -1
-        })
+        }).bind('click', () => this.handleWindowResize())
       } else {
         this.jsPlumbInstance.addEndpoint(this.jsPlumbInstance.getSelector(selector), {
           anchor: anchor,
           cssClass: 'endPoints',
           isTarget: true,
           maxConnections: -1
-        })
+        }).bind('click', () => this.handleWindowResize())
       }
     }, 100)
   }
