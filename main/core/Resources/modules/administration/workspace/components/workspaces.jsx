@@ -22,6 +22,8 @@ import {select} from '#/main/core/administration/workspace/selectors'
 
 import {Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+
+import {LIST_PROP_DEFAULT, LIST_PROP_DISPLAYED} from '#/main/core/layout/list/utils'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
 class Workspaces extends Component {
@@ -95,12 +97,12 @@ class Workspaces extends Component {
               },
               {name: 'code', type: 'string', label: t('code')},
               {name: 'is_model', type: 'boolean', label: t('model')},
-              {name: 'isPersonal', type: 'boolean', label: t('personal_workspace')},
-              {name: 'displayable', type: 'boolean', label: t('displayable_in_workspace_list')},
+              {name: 'isPersonal', type: 'boolean', label: t('personal_workspace'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
+              {name: 'displayable', type: 'boolean', label: t('displayable_in_workspace_list'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
               {name: 'creationDate', type: 'date', label: t('creation_date')},
-              {name: 'maxStorageSize', type: 'string', label: t('max_storage_size')},
-              {name: 'maxUploadResources', type: 'number', label: t('max_amount_resources')},
-              {name: 'maxUsers', type: 'number', label: t('workspace_max_users')}
+              {name: 'maxStorageSize', type: 'string', label: t('max_storage_size'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
+              {name: 'maxUploadResources', type: 'number', label: t('max_amount_resources'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
+              {name: 'maxUsers', type: 'number', label: t('workspace_max_users'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED}
             ]}
 
             actions={[

@@ -17,6 +17,27 @@ import {
 
 const isRowSelected = (row, selection) => selection && -1 !== selection.current.indexOf(row.id)
 
+const DataCell = props => {
+  const typeDef = getTypeOrDefault(props.column.type)
+
+  return (typeof props.column.renderer === 'function') || !typeDef.components || !typeDef.components.table ?
+    <TableCell className={`${props.column.type}-cell`}>
+      {typeof props.column.renderer === 'function' ?
+        props.column.renderer(props.rowData) : typeDef.render(props.rowData[props.column.name])
+      }
+    </TableCell>
+    :
+    React.createElement(typeDef.components.table, {data: props.rowData[props.column.name]})
+}
+
+DataCell.propTypes = {
+  rowData: T.object.isRequired,
+  column: T.shape({
+    name: T.string.isRequired,
+    type: T.string.isRequired
+  }).isRequired
+}
+
 const DataTableRow = props =>
   <TableRow className={props.selected ? 'selected' : null}>
     {props.onSelect &&
@@ -30,11 +51,11 @@ const DataTableRow = props =>
     }
 
     {props.columns.map((column, columnIndex) =>
-      <TableCell key={`data-cell-${columnIndex}`}>
-        {typeof column.renderer === 'function' ?
-          column.renderer(props.row) : getTypeOrDefault(column.type).render(props.row[column.name])
-        }
-      </TableCell>
+      <DataCell
+        key={`data-cell-${columnIndex}`}
+        column={column}
+        rowData={props.row}
+      />
     )}
 
     {0 < props.actions.length &&
@@ -52,6 +73,7 @@ const DataTableRow = props =>
             pullRight={true}
           >
             <MenuItem header>Actions</MenuItem>
+
             {props.actions.filter(action => !action.isDangerous).map((action, actionIndex) => React.createElement(
               MenuItem,
               typeof action.action === 'function' ? {

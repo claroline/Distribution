@@ -3,12 +3,12 @@ export const LIST_PROP_DISPLAYABLE = 2
 export const LIST_PROP_FILTERABLE  = 4
 export const LIST_PROP_SORTABLE    = 8
 
-export const LIST_PROP_DEFAULT = LIST_PROP_DISPLAYED&LIST_PROP_SORTABLE&LIST_PROP_FILTERABLE&LIST_PROP_DISPLAYABLE
+export const LIST_PROP_DEFAULT = LIST_PROP_DISPLAYED|LIST_PROP_SORTABLE|LIST_PROP_FILTERABLE|LIST_PROP_DISPLAYABLE
 
-export const isPropDisplayable = (prop) => !prop.flags || prop.flags&LIST_PROP_DISPLAYABLE
-export const isPropDisplayed   = (prop) => !prop.flags || prop.flags&LIST_PROP_DISPLAYED
-export const isPropFilterable  = (prop) => !prop.flags || prop.flags&LIST_PROP_FILTERABLE
-export const isPropSortable    = (prop) => !prop.flags || prop.flags&LIST_PROP_SORTABLE
+export const isPropDisplayable = (prop) => !prop.flags || (prop.flags&LIST_PROP_DISPLAYABLE)
+export const isPropDisplayed   = (prop) => !prop.flags || (prop.flags&LIST_PROP_DISPLAYED)
+export const isPropFilterable  = (prop) => !prop.flags || (prop.flags&LIST_PROP_FILTERABLE)
+export const isPropSortable    = (prop) => !prop.flags || (prop.flags&LIST_PROP_SORTABLE)
 
 export function getListDisplay(available, format) {
   return available.find(availableFormat => availableFormat[0] === format)

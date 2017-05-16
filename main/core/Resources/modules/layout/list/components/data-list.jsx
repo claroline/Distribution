@@ -93,6 +93,8 @@ class DataList extends Component {
       currentColumns: getDisplayedProps(this.props.definition).map(prop => prop.name),
       currentDisplay: this.props.display ? this.props.display.current : LIST_DISPLAY_LIST[0]
     }
+
+    console.log(this.state.currentColumns)
   }
 
   getDataRepresentation() {
