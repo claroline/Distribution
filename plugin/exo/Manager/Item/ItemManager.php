@@ -343,7 +343,7 @@ class ItemManager
             }
         }
         // compute question success percentage
-        $questionStats->successPercent = $questionStats->seen > 0 ? (100 * $nbGoodAnswers) / $questionStats->seen : 0;
+        $questionStats->successPercent = $questionStats->answered > 0 ? (100 * $nbGoodAnswers) / $questionStats->answered : 0;
 
         return $questionStats;
     }

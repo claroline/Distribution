@@ -118,7 +118,7 @@ class Docimology extends Component {
         <div className="paper-success-distribution">
           <h2 className="h3">{tex('docimology_success_index')}</h2>
           <div className="row">
-            <div className="col-md-6" style={{marginBottom: '20px'}}>
+            <div className="col-md-4" style={{marginBottom: '20px'}}>
               <PieChart
                 data={[
                   this.props.statistics.paperSuccessDistribution.nbFullSuccess,
@@ -126,23 +126,23 @@ class Docimology extends Component {
                   this.props.statistics.paperSuccessDistribution.nbMissed
                 ]}
                 colors={['#468847', '#c09853', '#b94a48']}
-                width={380}
+                width={280}
                 showValue={true}
               />
             </div>
-            <div className="col-md-6 legend" style={{marginBottom: '20px'}}>
+            <div className="col-md-8 legend" style={{marginBottom: '20px'}}>
               <ul>
                 <li className="inline-flex">
                   <div className="color-legend" style={{backgroundColor:'#468847'}}></div>
-                  <span className="legend-label">{tex('docimology_papers_totally_successfull')}</span>
+                  <span className="legend-label">{tex('docimology_papers_totally_successfull')} {`(${this.props.statistics.paperSuccessDistribution.nbFullSuccess})`}</span>
                 </li>
                 <li className="inline-flex">
                   <div className="color-legend" style={{backgroundColor:'#c09853'}}></div>
-                  <span className="legend-label">{tex('docimology_papers_partially_successfull')}</span>
+                  <span className="legend-label">{tex('docimology_papers_partially_successfull')} {`(${this.props.statistics.paperSuccessDistribution.nbPartialSuccess})`}</span>
                 </li>
                 <li className="inline-flex">
                   <div className="color-legend" style={{backgroundColor:'#b94a48'}}></div>
-                  <span className="legend-label">{tex('docimology_papers_missed')}</span>
+                  <span className="legend-label">{tex('docimology_papers_missed')} {`(${this.props.statistics.paperSuccessDistribution.nbMissed})`}</span>
                 </li>
               </ul>
             </div>
@@ -174,6 +174,28 @@ class Docimology extends Component {
                   labels={{show:true, labelX:tex('docimology_question_title'), labelY:tex('docimology_success_percentage')}}
                   yTicks={5}
                 />
+                <span id="help" className="help-block">
+                  <span className="fa fa-fw fa-info-circle"></span>
+                  L'indice de difficulté équivaut à un pourcentage de réussite à la question.
+                </span>
+                <p>
+                  <span className="help-block">
+                    <span className="fa fa-fw"></span>
+                    Il se calcule avec le nombre de candidats ayant répondu correctement divisé par le nombre total de répondants.
+                  </span>
+                </p>
+                <p>
+                  <span className="help-block">
+                    <span className="fa fa-fw"></span>
+                    Si l'indice est élevé, c'est que la question est facile. Inversement, si un indice est faible, la question est difficile.
+                  </span>
+                </p>
+                <p>
+                  <span className="help-block">
+                    <span className="fa fa-fw"></span>
+                    Cet indice ne prend pas en compte les étudiants n'ayant pas vu la question..
+                  </span>
+                </p>
               </div>
             </div>
           </div>
