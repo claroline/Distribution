@@ -169,7 +169,7 @@ class ListSearch extends Component {
 
   addFilter(filterName, filterValue) {
     // reset current search field
-    this.setState({currentSearch: ''})
+    this.updateSearch('')
 
     // focus again the search field to avoid clicks when adding multiple filters
     this.searchInput.focus()

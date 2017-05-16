@@ -28,8 +28,8 @@ function addFilter(state, action = {}) {
 }
 
 function removeFilter(state, action = {}) {
-  const newFilters = state.filters.slice(0)
-  const pos = state.filters.indexOf(action.filter)
+  const newFilters = state.slice(0)
+  const pos = state.indexOf(action.filter)
   if (-1 !== pos) {
     newFilters.splice(pos, 1)
   }
@@ -60,11 +60,11 @@ function resetSelect() {
   return []
 }
 
-function toggleSelectAll(state, action) {
+function toggleSelectAll(state, action = {}) {
   return 0 < state.length ? [] : action.items
 }
 
-function toggleSelect(state, action) {
+function toggleSelect(state, action = {}) {
   const selected = state.slice(0)
 
   const itemPos = state.indexOf(action.id)

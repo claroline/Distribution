@@ -96,7 +96,7 @@ class Workspaces extends Component {
                 renderer: (rowData) => <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.id})} >{rowData.name}</a>
               },
               {name: 'code', type: 'string', label: t('code')},
-              {name: 'is_model', type: 'boolean', label: t('model')},
+              {name: 'isModel', type: 'boolean', label: t('model')},
               {name: 'isPersonal', type: 'boolean', label: t('personal_workspace'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
               {name: 'displayable', type: 'boolean', label: t('displayable_in_workspace_list'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
               {name: 'creationDate', type: 'date', label: t('creation_date')},
