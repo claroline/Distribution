@@ -1,8 +1,8 @@
 import invariant from 'invariant'
 
-import {BOOLEAN_TYPE,  booleanDefinition}  from '#/main/core/layout/data/types/boolean'
+import {BOOLEAN_TYPE,  booleanDefinition}  from '#/main/core/layout/data/types/boolean/index'
 import {COLOR_TYPE,    colorDefinition}    from '#/main/core/layout/data/types/color'
-import {DATE_TYPE,     dateDefinition}     from '#/main/core/layout/data/types/date'
+import {DATE_TYPE,     dateDefinition}     from '#/main/core/layout/data/types/date/index'
 import {DATETIME_TYPE, datetimeDefinition} from '#/main/core/layout/data/types/datetime'
 import {HTML_TYPE,     htmlDefinition}     from '#/main/core/layout/data/types/html'
 import {NUMBER_TYPE,   numberDefinition}   from '#/main/core/layout/data/types/number'
@@ -43,6 +43,18 @@ export function getType(typeName) {
   return dataTypes[typeName]
 }
 
+export function getDefaultType() {
+  return dataTypes[STRING_TYPE]
+}
+
+export function getTypeOrDefault(typeName) {
+  try {
+    return getType(typeName)
+  } catch (e) {
+    return getDefaultType()
+  }
+}
+
 /**
  * Validates a data type definition.
  *
@@ -54,7 +66,10 @@ function validateDefinition(definition) {
   invariant(typeof definition.parse === 'function',    'Data type "parse" property must be a function.')
   invariant(typeof definition.render === 'function',   'Data type "render" property must be a function.')
   invariant(typeof definition.validate === 'function', 'Data type "validate" property must be a function.')
-  invariant(typeof definition.components === 'object', 'Data type "components" property must be a object.')
+
+  if (definition.components) {
+    invariant(typeof definition.components === 'object', 'Data type "components" property must be a object.')
+  }
 }
 
 /**
@@ -67,8 +82,33 @@ function validateDefinition(definition) {
  */
 function setDefinitionDefaults(definition) {
   return Object.assign({
+    /**
+     * Parses a value.
+     *
+     * @param value
+     */
     parse: (value) => value,
+
+    /**
+     * Displays a value for the data type.
+     *
+     * @param raw
+     */
     render: (raw) => raw,
-    validate: () => true
+
+    /**
+     * Validates a value provided for the data type.
+     */
+    validate: () => true,
+
+    /**
+     * Custom components for the data type.
+     *
+     * Keys :
+     *   - search
+     *   - form
+     *   - table
+     */
+    components: {}
   }, definition)
 }

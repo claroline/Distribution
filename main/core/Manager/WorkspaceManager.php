@@ -1615,6 +1615,6 @@ class WorkspaceManager
             $query->setFirstResult($page * $limit);
         }
 
-        return $count ? $query->getSingleScalarResult() : $query->getResult();
+        return $count ? (int) $query->getSingleScalarResult() : $query->getResult();
     }
 }

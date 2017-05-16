@@ -1,8 +1,5 @@
-import moment from 'moment'
-
-import {t} from '#/main/core/translation'
-
-import {DateSearch} from '#/main/core/layout/data/types/components/date.jsx'
+import {isValidDate, localeDate, serverDate} from '#/main/core/layout/data/types/date/utils'
+import {DateSearch} from '#/main/core/layout/data/types/date/components/search.jsx'
 
 export const DATE_TYPE = 'date'
 
@@ -14,7 +11,7 @@ export const dateDefinition = {
    *
    * @return {string}
    */
-  parse: (display) => display,
+  parse: (display) => serverDate(display),
 
   /**
    * Renders ISO date into locale date.
@@ -23,7 +20,7 @@ export const dateDefinition = {
    *
    * @return {string}
    */
-  render: (raw) => moment(raw).format(t('date_range.js_format')),
+  render: (raw) => localeDate(raw),
 
   /**
    * Validates input value for a date.
@@ -32,9 +29,9 @@ export const dateDefinition = {
    *
    * @return {boolean}
    */
-  validate: (value) => typeof value === 'string' && moment(value).isValid(),
+  validate: (value) => typeof value === 'string' && isValidDate(value),
+
   components: {
-    display: null,
     form: null,
     table: null,
     search: DateSearch

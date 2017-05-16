@@ -8,7 +8,7 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 import invariant from 'invariant'
-import {apiMiddleware} from '#/main/core/utilities/api/middleware'
+import {apiMiddleware} from '#/main/core/api/middleware'
 
 const middleware = [apiMiddleware, thunk]
 

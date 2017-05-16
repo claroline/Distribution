@@ -7,7 +7,7 @@ const DateSearch = props =>
       <span className="available-filter-value">{props.search}</span>
     }
     &nbsp;
-    <button type="button" className="btn btn-sm">
+    <button type="button" className="btn btn-sm btn-filter">
       <span className="fa fa-fw fa-calendar" />
     </button>
   </span>

@@ -8,7 +8,6 @@ export const numberDefinition = {
   render: (raw) => raw,
   validate: (value) => !isNaN(parseFloat(value)) && isFinite(value),
   components: {
-    display: null,
     form: null,
     table: null
   }

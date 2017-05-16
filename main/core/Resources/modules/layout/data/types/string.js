@@ -6,10 +6,5 @@ export const stringDefinition = {
   parse: (display) => display,
   // nothing special to do
   render: (raw) => raw,
-  validate: (value) => typeof value === 'string',
-  components: {
-    display: null,
-    form: null,
-    table: null
-  }
+  validate: (value) => typeof value === 'string'
 }

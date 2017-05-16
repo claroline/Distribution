@@ -1,176 +1,72 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import ReactDOM from 'react-dom'
 import {connect} from 'react-redux'
-import classes from 'classnames'
 
-import {t} from '#/main/core/translation'
+import {t, transChoice} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {makeModal, makeModalFromUrl} from '#/main/core/layout/modal'
-import Configuration from '#/main/core/library/Configuration/Configuration'
-import {select} from '#/main/core/administration/workspace/selectors'
-import {actions} from '#/main/core/administration/workspace/actions'
-import {DEFAULT_LIST_DISPLAYS, DEFAULT_LIST_DISPLAY} from '#/main/core/layout/list/default'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 
+import Configuration from '#/main/core/library/Configuration/Configuration'
+
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
+import {actions as listActions} from '#/main/core/layout/list/actions'
+import {actions} from '#/main/core/administration/workspace/actions'
+
+import {select as modalSelect} from '#/main/core/layout/modal/selectors'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
+import {select} from '#/main/core/administration/workspace/selectors'
 
-import {actions as listActions} from '#/main/core/layout/list/actions'
-import { Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
-import { PageActions, PageAction } from '#/main/core/layout/page/components/page-actions.jsx'
-
+import {Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
-const ActionCell = props =>
-  <div className="table-actions">
-    <button className="btn btn-link workspace-additional-action" onClick={() => props.removeWorkspaces([props.workspace])}>
-      <span className="fa fa-trash workspace-action" />
-    </button>
-
-    {Configuration.getWorkspacesAdministrationActions().map(button => (
-      <button type="button" className="btn btn-link workspace-additional-action">
-        <span
-          className={classes(button.class, 'workspace-action')}
-          data-url={button.url(props.workspace.id)}
-          data-toggle="tooltip"
-          data-placement="left"
-          title={button.name()}
-          data-display-mode="modal_form"
-        />
-      </button>
-    ))}
-  </div>
-
-ActionCell.propTypes = {
-  workspace: T.object.isRequired,
-  removeWorkspaces: T.func.isRequired
-}
-
 class Workspaces extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      modal: {}
-    }
+  getWorkspaces(workspaceIds) {
+    return workspaceIds.map(workspaceId => this.props.data.find(workspace => workspaceId === workspace.id))
   }
 
-  removeWorkspaces(workspaces) {
-    this.setState({
-      modal: {
-        type: 'DELETE_MODAL',
-        urlModal: null,
-        props: {
-          url: null,
-          isDangerous: true,
-          question: t('remove_workspaces_confirm', {workspace_list: workspaces.reduce((acc, workspace) => workspace.name + ' ,')}),
-          handleConfirm: () =>  {
-            this.setState({modal: {fading: true}})
+  removeWorkspaces(workspaceIds) {
+    const workspaces = this.getWorkspaces(workspaceIds)
 
-            return this.props.removeWorkspaces(workspaces)
-          },
-          title: t('remove_workspace')
-        },
-        fading: false
-      }
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: transChoice('remove_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
+      question: t('remove_workspaces_confirm', {
+        workspace_list: workspaces.map(workspace => workspace.name).join(', ')
+      }),
+      handleConfirm: () => this.props.removeWorkspaces(workspaces)
     })
   }
 
-  copySelection() {
-    this.setState({
-      modal: {
-        urlModal: null,
-        type: 'CONFIRM_MODAL',
-        props: {
-          url: null,
-          isDangerous: false,
-          question: t('copy_workspaces_confirm', {workspace_list: this.props.selected.reduce((acc, workspace) => workspace.name + ' ,')}),
-          handleConfirm: () =>  {
-            this.setState({modal: {fading: true}})
+  copyWorkspaces(workspaceIds, asModel = false) {
+    const workspaces = this.getWorkspaces(workspaceIds)
 
-            return this.props.copyWorkspaces(this.props.selected, 0)
-          },
-          title: t('copy_workspace')
-        },
-        fading: false
-      }
-    })
-  }
-
-  copyAsModelSelection() {
-    this.setState({
-      modal: {
-        type: 'CONFIRM_MODAL',
-        url: null,
-        props: {
-          isDangerous: false,
-          question: t('copy_model_workspaces_confirm', {workspace_list: this.props.selected.reduce((acc, workspace) => workspace.name + ' ,')}),
-          handleConfirm: () =>  {
-            this.setState({modal: {fading: true}})
-
-            return this.props.copyWorkspaces(this.props.selected, 1)
-          },
-          title: t('copy_model_workspace')
-        },
-        fading: false
-      }
-    })
-  }
-
-  hideModal() {
-    ReactDOM.unmountComponentAtNode(document.getElementById('url-modal'))
-    this.setState({modal: {fading: true, urlModal: null}})
-  }
-
-  componentDidMount() {
-    const els = document.getElementsByClassName('workspace-additional-action')
-    const array = []
-    //because it's an arrayNode collection or something, we can't use forEach directly
-    array.forEach.call(els, el => {
-      el.addEventListener(
-        'click',
-        event => {
-          const node = event.target.querySelector('.workspace-action') || event.target
-          const url = node.dataset.url
-          const mode = node.dataset.displayMode
-
-          if (mode === 'modal_form') {
-            this.setState({
-              modal: {
-                type: 'URL_MODAL',
-                fading: false,
-                url
-              }
-            })
-            {this.state.modal.type === 'URL_MODAL' &&
-              this.props.createModalFromUrl(
-                this.state.modal.fading,
-                this.hideModal.bind(this),
-                this.state.modal.url
-              ).then(data => {
-                this.setState({modal: { urlModal: data} })
-                ReactDOM.render(data, document.getElementById('url-modal'))
-              })
-            }
-          } else {
-            window.location = url
-          }
-        }
-      )
+    this.props.showModal(MODAL_CONFIRM, {
+      title: t(asModel ? 'copy_model_workspace' : 'copy_workspace'),
+      question: t(asModel ? 'copy_model_workspaces_confirm' : 'copy_workspaces_confirm', {
+        workspace_list: workspaces.map(workspace => workspace.name).join(', ')
+      }),
+      handleConfirm: () => this.props.copyWorkspaces(workspaces, asModel)
     })
   }
 
   render() {
     return (
       <Page
-        fadeModal={() => true}
-        hideModal={() => true}
+        modal={this.props.modal}
+        fadeModal={this.props.fadeModal}
+        hideModal={this.props.hideModal}
       >
-        <PageHeader title={t('workspaces_management')}>
+        <PageHeader
+          title={t('workspaces_management')}
+        >
           <PageActions>
             <PageAction
               id="workspace-add"
-              title={t('create')}
+              title={t('create_workspace')}
               icon="fa fa-plus"
               primary={true}
               action={generateUrl('claro_workspace_creation_form')}
@@ -186,16 +82,6 @@ class Workspaces extends Component {
         </PageHeader>
 
         <PageContent>
-          {this.state.modal.type && this.state.modal.type !== 'URL_MODAL' &&
-            this.props.createModal(
-              this.state.modal.type,
-              this.state.modal.props,
-              this.state.modal.fading,
-              this.hideModal.bind(this)
-            )
-          }
-          <div id='url-modal'></div>
-
           <DataList
             data={this.props.data}
             totalResults={this.props.totalResults}
@@ -208,23 +94,51 @@ class Workspaces extends Component {
                 renderer: (rowData) => <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.id})} >{rowData.name}</a>
               },
               {name: 'code', type: 'string', label: t('code')},
-              {name: 'is_model', type: 'boolean', label: t('is_model')},
-              {name: 'displayable', type: 'boolean', label: t('displayable')},
-              {name: 'creationDate', type: 'date', label: t('creationDate')},
-              {name: 'maxStorageSize', type: 'string', label: t('maxStorageSize')},
-              {name: 'maxUploadResources', type: 'number', label: t('maxUploadResources')},
-              {name: 'maxUsers', type: 'number', label: t('maxUsers')}
+              {name: 'is_model', type: 'boolean', label: t('model')},
+              {name: 'isPersonal', type: 'boolean', label: t('personal_workspace')},
+              {name: 'displayable', type: 'boolean', label: t('displayable_in_workspace_list')},
+              {name: 'creationDate', type: 'date', label: t('creation_date')},
+              {name: 'maxStorageSize', type: 'string', label: t('max_storage_size')},
+              {name: 'maxUploadResources', type: 'number', label: t('max_amount_resources')},
+              {name: 'maxUsers', type: 'number', label: t('workspace_max_users')}
             ]}
 
-            display={{
-              available: DEFAULT_LIST_DISPLAYS,
-              current: DEFAULT_LIST_DISPLAY
-            }}
+            actions={[
+              ...Configuration.getWorkspacesAdministrationActions().map(action => {
+                return action.options.modal ? {
+                  icon: action.icon,
+                  label: action.name(),
+                  action: (row) => action.url(row.id)
+                } : {
+                  icon: action.icon,
+                  label: action.name(),
+                  action: (row) => action.url(row.id)
+                }
+              }), {
+                icon: 'fa fa-fw fa-copy',
+                label: t('duplicate'),
+                action: (row) => this.copyWorkspaces([row.id], false)
+              }, {
+                icon: 'fa fa-fw fa-clone',
+                label: t('make_model'),
+                action: (row) => this.copyWorkspaces([row.id], true)
+              }, {
+                icon: 'fa fa-fw fa-trash-o',
+                label: t('delete'),
+                action: (row) => this.removeWorkspaces([row.id]),
+                isDangerous: true
+              }
+            ]}
 
             filters={{
               current: this.props.filters,
               addFilter: this.props.addListFilter,
               removeFilter: this.props.removeListFilter
+            }}
+
+            sorting={{
+              current: this.props.sortBy,
+              updateSort: this.props.updateSort
             }}
 
             pagination={Object.assign({}, this.props.pagination, {
@@ -234,12 +148,12 @@ class Workspaces extends Component {
 
             selection={{
               current: this.props.selected,
-              toggle: this.props.onSelect,
-              toggleAll: this.props.onSelect,
+              toggle: this.props.toggleSelect,
+              toggleAll: this.props.toggleSelectAll,
               actions: [
-                {label: t('copy'), icon: 'fa fa-copy', action: () => this.copySelection(this.props.selected)},
-                {label: t('make_model'), icon: 'fa fa-copy', action: () => this.copyAsModelSelection(this.props.selected)},
-                {label: t('delete'), icon: 'fa fa-trash-o', action: () => this.removeWorkspaces(this.props.selected)}
+                {label: t('duplicate'), icon: 'fa fa-fw fa-copy', action: () => this.copyWorkspaces(this.props.selected, false)},
+                {label: t('make_model'), icon: 'fa fa-fw fa-clone', action: () => this.copyWorkspaces(this.props.selected, true)},
+                {label: t('delete'), icon: 'fa fa-fw fa-trash-o', action: () => this.removeWorkspaces(this.props.selected), isDangerous: true}
               ]
             }}
           />
@@ -252,9 +166,13 @@ class Workspaces extends Component {
 Workspaces.propTypes = {
   data: T.arrayOf(T.object),
   totalResults: T.number.isRequired,
-  selected: T.arrayOf(T.object).isRequired,
-  filters: T.array.isRequired,
+
+  removeWorkspaces: T.func.isRequired,
+  copyWorkspaces: T.func.isRequired,
+
   sortBy: T.object.isRequired,
+  updateSort: T.func.isRequired,
+
   pagination: T.shape({
     pageSize: T.number.isRequired,
     current: T.number.isRequired
@@ -262,43 +180,98 @@ Workspaces.propTypes = {
   handlePageChange: T.func.isRequired,
   handlePageSizeUpdate: T.func.isRequired,
 
+  filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,
 
-  onSelect: T.func.isRequired,
+  selected: T.array.isRequired,
+  toggleSelect: T.func.isRequired,
+  toggleSelectAll: T.func.isRequired,
+
+  modal: T.shape({
+    type: T.string,
+    fading: T.bool.isRequired,
+    props: T.object.isRequired
+  }),
   createModal: T.func.isRequired,
   createModalFromUrl: T.func.isRequired,
-  removeWorkspaces: T.func.isRequired,
-  copyWorkspaces: T.func.isRequired
+  showModal: T.func.isRequired,
+  fadeModal: T.func.isRequired,
+  hideModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     data: select.data(state),
     totalResults: select.totalResults(state),
-    selected: select.selected(state),
+    selected: listSelect.selected(state),
     pagination: {
       pageSize: paginationSelect.pageSize(state),
       current:  paginationSelect.current(state)
     },
     filters: listSelect.filters(state),
-    sortBy: listSelect.sortBy(state)
+    sortBy: listSelect.sortBy(state),
+    modal: modalSelect.modal(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    addListFilter: (property, value) => dispatch(listActions.addFilter(property, value)),
-    removeListFilter: (filter) => dispatch(listActions.removeFilter(filter)),
-    handlePageSizeUpdate: () => true,
-    handlePageChange: (page, size) => {
-      dispatch(actions.fetchPage(page, size))
+    // workspaces
+    removeWorkspaces: (workspaces) => {
+      dispatch(actions.removeWorkspaces(workspaces))
     },
-    onSelect: (selected) => dispatch(actions.onSelect(selected)),
+    copyWorkspaces: (workspaces, isModel) => {
+      dispatch(actions.copyWorkspaces(workspaces, isModel))
+    },
+
+    // search
+    addListFilter: (property, value) => {
+      dispatch(listActions.addFilter(property, value))
+      // grab updated workspace list
+      dispatch(actions.fetchWorkspaces())
+    },
+    removeListFilter: (filter) => {
+      dispatch(listActions.removeFilter(filter))
+      // grab updated workspace list
+      dispatch(actions.fetchWorkspaces())
+    },
+
+    // pagination
+    handlePageSizeUpdate: (pageSize) => {
+      dispatch(paginationActions.updatePageSize(pageSize))
+      // grab updated workspace list
+      dispatch(actions.fetchWorkspaces())
+    },
+    handlePageChange: (page) => {
+      dispatch(paginationActions.changePage(page))
+      // grab updated workspace list
+      dispatch(actions.fetchWorkspaces())
+    },
+
+    // sorting
+    updateSort: (property) => {
+      dispatch(listActions.updateSort(property))
+      // grab updated workspace list
+      dispatch(actions.fetchWorkspaces())
+    },
+
+    // selection
+    toggleSelect: (id) => dispatch(listActions.toggleSelect(id)),
+    toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items)),
+
+    // modals
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal),
     createModalFromUrl: (fading, hideModal, url) => makeModalFromUrl(fading, hideModal, url),
-    removeWorkspaces: (workspaces) => dispatch(actions.removeWorkspaces(workspaces)),
-    copyWorkspaces: (workspaces, isModel) => dispatch(actions.copyWorkspaces(workspaces, isModel))
+    showModal(modalType, modalProps) {
+      dispatch(modalActions.showModal(modalType, modalProps))
+    },
+    fadeModal() {
+      dispatch(modalActions.fadeModal())
+    },
+    hideModal() {
+      dispatch(modalActions.hideModal())
+    }
   }
 }
 

@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
-import {getType} from '#/main/core/layout/data'
+import {getTypeOrDefault} from '#/main/core/layout/data'
 import {getPropDefinition} from '#/main/core/layout/list/utils'
 
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
@@ -73,8 +73,8 @@ AvailableFilterFlag.propTypes = {
 }
 
 const AvailableFilter = props => {
-  const typeDef = getType(props.type)
-  const isValidSearch = !typeDef || !typeDef.validate || typeDef.validate(props.currentSearch)
+  const typeDef = getTypeOrDefault(props.type)
+  const isValidSearch = !typeDef.validate || typeDef.validate(props.currentSearch)
 
   return (
     <li role="presentation">
@@ -86,11 +86,11 @@ const AvailableFilter = props => {
             {props.label} <small>({props.type})</small>
           </span>,
           <span className="available-filter-form">
-            {(!typeDef || !typeDef.components.search) &&
+            {!typeDef.components.search &&
               <span className="available-filter-value">{isValidSearch ? props.currentSearch : '-'}</span>
             }
 
-            {(typeDef && typeDef.components.search) &&
+            {typeDef.components.search &&
               React.createElement(typeDef.components.search, {
                 search: props.currentSearch,
                 isValid: isValidSearch,
@@ -108,16 +108,16 @@ AvailableFilter.propTypes = {
   name: T.string.isRequired,
   label: T.string.isRequired,
   type: T.string.isRequired,
-  currentSearch: T.any,
+  currentSearch: T.string,
   onSelect: T.func.isRequired,
   updateSearch: T.func.isRequired
 }
 
 const FiltersList = props =>
   <menu className="search-available-filters">
-    {props.available.map((filter, idx) =>
+    {props.available.map(filter =>
       <AvailableFilter
-        key={idx}
+        key={`available-filter-${filter.name}`}
         name={filter.name}
         label={filter.label}
         type={filter.type}
@@ -134,7 +134,7 @@ FiltersList.propTypes = {
     type: T.string.isRequired,
     label: T.string.isRequired
   })).isRequired,
-  currentSearch: T.any,
+  currentSearch: T.string,
   onSelect: T.func.isRequired,
   updateSearch: T.func.isRequired
 }
@@ -182,7 +182,7 @@ class ListSearch extends Component {
         <div className="search-filters">
           {this.props.current.map(activeFilter =>
             <CurrentFilter
-              key={activeFilter.property}
+              key={`current-filter-${activeFilter.property}`}
               label={getPropDefinition(activeFilter.property, this.props.available).label}
               value={activeFilter.value}
               remove={() => this.props.removeFilter(activeFilter)}

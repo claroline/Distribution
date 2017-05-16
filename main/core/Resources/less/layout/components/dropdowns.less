@@ -9,6 +9,7 @@
 
     .dropdown-checkbox {
         label {
+            white-space: nowrap;
             display: block;
             padding: @dropdown-link-padding;
             padding-left: 35px; // for the checkbox
@@ -26,7 +27,8 @@
     .dropdown-link-danger a {
         color: @brand-danger;
 
-        &:hover {
+        &:hover,
+        &:focus {
             color: white;
             background: @brand-danger;
         }

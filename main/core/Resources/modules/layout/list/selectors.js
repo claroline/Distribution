@@ -12,8 +12,14 @@ const sortBy = createSelector(
   (list) => list.sortBy
 )
 
+const selected = createSelector(
+  [list],
+  (list) => list.selected
+)
+
 export const select = {
   list,
   filters,
-  sortBy
+  sortBy,
+  selected
 }

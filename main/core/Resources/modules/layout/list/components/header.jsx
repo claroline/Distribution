@@ -111,7 +111,7 @@ const ListActions = props =>
       />
     }
 
-    {props.display &&
+    {props.display && 1 < props.display.available.length &&
       <ListDisplayButton
         {...props.display}
       />

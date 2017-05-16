@@ -116,6 +116,7 @@ class ApiSearch
         }
 
         return [
+            'filters' => [],
             'results' => $results,
             'totalResults' => $totalResults,
             'pagination' => [

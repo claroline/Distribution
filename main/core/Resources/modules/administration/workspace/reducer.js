@@ -1,57 +1,31 @@
-import cloneDeep from 'lodash/cloneDeep'
-
-import { makeReducer, combineReducers } from '#/main/core/utilities/redux'
+import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
+import {reducer as apiReducer} from '#/main/core/api/reducer'
+import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
-import {reducer as listReducer} from '#/main/core/layout/list/reducer'
+import {makeListReducer} from '#/main/core/layout/list/reducer'
 
-import {
-  PAGE_CHANGE,
-  DELETE_WORKSPACES,
-  ON_SELECT,
-  COPY_WORKSPACE,
-  UPDATE_WORKSPACE
-} from './actions'
+import {WORKSPACES_LOAD} from './actions'
 
 const handlers = {
-  [PAGE_CHANGE]: (state, action) => {
-    state = cloneDeep(state)
-
-    state.totalResults = action.total
-    state.data = action.workspaces
-    //state.current = action.current
-    //state.pageSize = action.pageSize
-
-    return state
-  },
-  [DELETE_WORKSPACES]: (/*state, action*/) => {
-    alert('gotcha the handler')
-  },
-  [ON_SELECT]: (state, action) => {
-    return Object.assign({}, state, {selected: action.selected})
-  },
-  [COPY_WORKSPACE]: (state) => {
-    return state
-  },
-  [UPDATE_WORKSPACE]: (state) => {
-    return state
+  [WORKSPACES_LOAD]: (state, action) => {
+    return {
+      data: action.workspaces,
+      totalResults: action.total
+    }
   }
 }
 
-const selectedHandlers = {
-  // deselect all on page change
-  [PAGE_CHANGE]: () => []
-}
-
 const reducer = combineReducers({
-  totalResults: makeReducer(0, {}),
+  currentRequests: apiReducer,
   workspaces: makeReducer({
     data: [],
     totalResults: 0
   }, handlers),
-  user: makeReducer({}, {}),
-  selected: makeReducer([], selectedHandlers), // todo : may be put it in `list` object
   pagination: paginationReducer,
-  list: listReducer
+  list: makeListReducer(),
+  modal: modalReducer
 })
 
-export {reducer}
+export {
+  reducer
+}

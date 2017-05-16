@@ -8,7 +8,6 @@ export const colorDefinition = {
   render: (raw) => raw,
   validate: (value) => typeof value === 'string',
   components: {
-    display: null,
     form: null,
     table: null
   }

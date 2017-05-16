@@ -222,6 +222,7 @@ class WorkspaceController extends FOSRestController
     public function getSearchWorkspacesAction($page, $limit)
     {
         $searches = $this->request->query->all();
+
         //TODO WORKSPACE implement search partial list
         $workspaces = $this->workspaceManager->searchPartialList($searches, $page, $limit);
         $count = $this->workspaceManager->searchPartialList($searches, $page, $limit, true);

@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 
 import {transChoice} from '#/main/core/translation'
 
@@ -34,15 +35,20 @@ EmptyList.defaultProps = {
 }
 
 const SelectedData = props =>
-  <div className="selected-row">
-    <span className="fa fa-fw fa-check-square" />
-    <span
-      dangerouslySetInnerHTML={{ __html: transChoice('elements_selected', props.count, {count: props.count})}}
-    />
-    <div className="selected-bulk-actions">
-      {props.actions.map(action => typeof action.action === 'function' ?
+  <div className="list-selected">
+    <div className="list-selected-label">
+      <span className="fa fa-fw fa-check-square" />
+      {transChoice('list_selected_count', props.count, {count: props.count}, 'platform')}
+    </div>
+
+    <div className="list-selected-actions">
+      {props.actions.map((action, actionIndex) => typeof action.action === 'function' ?
         <button
-          className="btn btn-link"
+          key={`list-bulk-action-${actionIndex}`}
+          className={classes('btn', {
+            'btn-link-default': !action.isDangerous,
+            'btn-link-danger': action.isDangerous,
+          })}
           onClick={action.action}
         >
           <span className={action.icon} />
@@ -50,7 +56,11 @@ const SelectedData = props =>
         </button>
         :
         <a
-          className="btn btn-link"
+          key={`list-bulk-action-${actionIndex}`}
+          className={classes('btn', {
+            'btn-link-default': !action.isDangerous,
+            'btn-link-danger': action.isDangerous,
+          })}
           href={action.action}
         >
           <span className={action.icon} />
@@ -87,9 +97,26 @@ class DataList extends Component {
 
   getDataRepresentation() {
     if (LIST_DISPLAY_LIST === getListDisplay(this.props.display.available, this.state.currentDisplay)) {
-      return <DataTable data={this.props.data} columns={this.props.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name))} />
+      return (
+        <DataTable
+          data={this.props.data}
+          count={this.props.totalResults}
+          columns={this.props.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name))}
+          sorting={this.props.sorting}
+          selection={this.props.selection}
+          actions={this.props.actions}
+        />
+      )
     } else {
-      return <DataGrid data={this.props.data} />
+      return (
+        <DataGrid
+          data={this.props.data}
+          count={this.props.totalResults}
+          sorting={this.props.sorting}
+          selection={this.props.selection}
+          actions={this.props.actions}
+        />
+      )
     }
   }
 
@@ -129,6 +156,13 @@ class DataList extends Component {
           <EmptyList hasFilters={this.props.filters && 0 < this.props.filters.current.length} />
         }
 
+        {this.props.selection && 0 < this.props.selection.current.length &&
+          <SelectedData
+            count={this.props.selection.current.length}
+            actions={this.props.selection.actions}
+          />
+        }
+
         {0 < this.props.totalResults &&
           this.getDataRepresentation()
         }
@@ -149,6 +183,11 @@ DataList.propTypes = {
    * The data list to display.
    */
   data: T.array.isRequired,
+
+  /**
+   * Total results available in the list (without pagination if any).
+   */
+  totalResults: T.number.isRequired,
 
   /**
    * Definition of the data properties.
@@ -197,11 +236,6 @@ DataList.propTypes = {
   }),
 
   /**
-   * Total results available in the list.
-   */
-  totalResults: T.number.isRequired,
-
-  /**
    * Search filters configuration.
    * Providing this object automatically display the search box component.
    */
@@ -212,6 +246,18 @@ DataList.propTypes = {
     })).isRequired,
     addFilter: T.func.isRequired,
     removeFilter: T.func.isRequired
+  }),
+
+  /**
+   * Sorting configuration.
+   * Providing this object automatically display data sorting components.
+   */
+  sorting: T.shape({
+    current: T.shape({
+      property: T.string,
+      direction: T.number
+    }).isRequired,
+    updateSort: T.func.isRequired
   }),
 
   /**
@@ -226,11 +272,11 @@ DataList.propTypes = {
   }),
 
   /**
-   * Selection configuration
+   * Selection configuration.
    * Providing this object automatically display select checkboxes for each data results.
    */
   selection: T.shape({
-    current: T.array,
+    current: T.array.isRequired,
     toggle: T.func.isRequired,
     toggleAll: T.func.isRequired,
     actions: T.arrayOf(T.shape({
@@ -238,7 +284,23 @@ DataList.propTypes = {
       icon: T.string,
       action: T.oneOfType([T.string, T.func]).isRequired
     })).isRequired
-  })
+  }),
+
+  /**
+   * Actions available for each data row.
+   */
+  actions: T.arrayOf(T.shape({
+    label: T.string,
+    icon: T.string,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }))
+}
+
+DataList.defaultProps = {
+  display: {
+    available: [LIST_DISPLAY_LIST],
+    current: LIST_DISPLAY_LIST[0]
+  }
 }
 
 export {

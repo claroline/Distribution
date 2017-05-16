@@ -2,7 +2,23 @@
 @search-color: #262626;
 
 .data-list {
-
+    // Responsive table.
+    //
+    // I put it here to avoid possible side effects in other use of .table.
+    // The code can seem a little bit weird but it permits to have all rows the same height (1 line)
+    // and to add ellipsis on long texts.
+    //
+    // This is far from perfect but it's the best I can do for now.
+    //
+    // Drawbacks :
+    //  - all columns get the same width. So for some data it's too large (cf. boolean) or too small (long text / links).
+    /*.table td,*/ // it breaks dropdowns if uncommented
+    .table th {
+        max-width: 1px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 }
 
 .list-header {
@@ -107,11 +123,16 @@
 
         .available-filter {
             display: flex;
+            flex-wrap: wrap; // todo : enhance responsive. it's ugly on XS screen
             justify-content: space-between;
             padding: 0 @padding-large-horizontal;
             color: #3A3A3A;
 
-            .btn {
+            .btn + .btn {
+                margin-left: 5px;
+            }
+
+            .btn-filter {
                 background: #E4E4E4;
 
                 &:hover,
@@ -163,6 +184,38 @@
             .available-filter-value {
                 font-style: italic;
                 padding: 10px 0;
+            }
+        }
+    }
+}
+
+.list-selected {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: @table-cell-padding 0;
+
+    border: 1px solid transparent;
+    background: #ebebeb;
+
+    .list-selected-label {
+        .fa {
+            width: 40px; // same as .checkbox-cell. TODO : use a var
+            text-align: center;
+            margin-right: @table-cell-padding;
+        }
+    }
+
+    .list-selected-actions {
+        padding: 0 @table-cell-padding;
+        // todo : merge with table actions btns
+        white-space: nowrap; // avoids buttons to break on multi lines
+        .btn {
+            padding: 2px;
+
+            & + .btn {
+                margin-left: @table-cell-padding;
             }
         }
     }
