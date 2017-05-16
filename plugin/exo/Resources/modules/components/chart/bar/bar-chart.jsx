@@ -71,7 +71,7 @@ export default class BarChart extends Component {
 }
 
 BarChart.propTypes = {
-  data: T.object.isRequired,
+  data: T.array.isRequired,
   width: T.number,
   height: T.number,
   labels: T.shape({

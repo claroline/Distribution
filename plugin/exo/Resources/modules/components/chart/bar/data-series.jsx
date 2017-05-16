@@ -26,7 +26,7 @@ export default class DataSeries extends Component {
 }
 
 DataSeries.propTypes = {
-  data: T.object.isRequired,
+  data: T.array.isRequired,
   yScale: T.func.isRequired,
   xScale: T.func.isRequired,
   width: T.number.isRequired,

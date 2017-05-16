@@ -371,8 +371,8 @@ class PaperManager
             });
             $statsData = new \stdClass();
             $statsData->yData = count($matchingScores);
-            $statsData->xData =$key;
-            $paperScoreDistribution[$key] = $statsData;
+            $statsData->xData = $key;
+            $paperScoreDistribution[] = $statsData;
         }
 
         return $paperScoreDistribution;
@@ -399,7 +399,7 @@ class PaperManager
                   $questionData = new \stdClass();
                   $questionData->yData = $questionStats->successPercent;
                   $questionData->xData = $itemEntity->getTitle() ? strip_tags($itemEntity->getTitle()) : strip_tags($itemEntity->getContent());
-                  $questionStatistics[$item->id] = $questionData;
+                  $questionStatistics[] = $questionData;
                 }
               }
             }
