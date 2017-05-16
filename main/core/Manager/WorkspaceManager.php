@@ -859,7 +859,6 @@ class WorkspaceManager
             }
 
             if (isset($workspace[7])) {
-                //TODO MODEL TEST
                 $model = $this->workspaceRepo->findOneBy([
                     'code' => $workspace[7],
                 ]);
@@ -901,20 +900,17 @@ class WorkspaceManager
                 }
                 if ($model) {
                     $guid = $this->ut->generateGuid();
-                    $this->createWorkspace($workspace);
                     $workspace->setGuid($guid);
                     $date = new \Datetime(date('d-m-Y H:i'));
                     $workspace->setCreationDate($date->getTimestamp());
-                    //TODO MODEL
-                    //$workspaceModelManager->addDataFromModel($model, $workspace, $user);
+                    $this->copy($model, $workspace, $user);
                 } else {
                     $template = new File($this->container->getParameter('claroline.param.default_template'));
                     $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
                 }
             } else {
                 if ($model) {
-                    //TODO MODEL
-                    //$workspaceModelManager->updateDataFromModel($model, $workspace);
+                    $this->duplicateOrderedTools($model, $workspace);
                 }
             }
 
@@ -1238,11 +1234,12 @@ class WorkspaceManager
         $this->om->endFlushSuite();
     }
 
-    public function copy(Workspace $workspace, Workspace $newWorkspace)
+    public function copy(Workspace $workspace, Workspace $newWorkspace, User $user = null)
     {
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
-        $user = $this->container->get('security.token_storage')->getToken() ?
+
+        $user = $this->container->get('security.token_storage')->getToken() && !$user ?
           $this->container->get('security.token_storage')->getToken()->getUser() :
           $this->container->get('claroline.manager.user_manager')->getDefaultUser();
 

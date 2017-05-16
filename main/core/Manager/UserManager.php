@@ -493,7 +493,6 @@ class UserManager
             $isMailNotified = isset($user[13]) ? (bool) $user[13] : $enableEmailNotifaction;
 
             if ($modelName) {
-                //TODO MODEL TEST
                 $model = $this->objectManager
                     ->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace')
                     ->findOneByCode($modelName);
@@ -687,7 +686,6 @@ class UserManager
 
         //add "my public documents" folder
         $resourceManager = $this->container->get('claroline.manager.resource_manager');
-        //TODO MODEL
         $resourceManager->addPublicFileDirectory($workspace);
         $workspace->setIsPersonal(true);
         $user->setPersonalWorkspace($workspace);
@@ -827,6 +825,20 @@ class UserManager
         $query = $this->userRepo->findByName($search, false, $orderedBy);
 
         return $this->pagerFactory->createPager($query, $page, $max);
+    }
+
+    /**
+     * @param string $firstName
+     * @param string $lastName
+     *
+     * @return User[]
+     */
+    public function getUsersByFirstNameAndLastName($firstName, $lastName)
+    {
+        return $this->userRepo->findBy([
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+        ]);
     }
 
     /**
@@ -1629,7 +1641,16 @@ class UserManager
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('u.organizations', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
-            $qb->andWhere('ua.id = :userId');
+            $qb->leftJoin('u.groups', 'ug');
+            $qb->leftJoin('ug.organizations', 'go');
+            $qb->leftJoin('go.administrators', 'ga');
+            $qb->andWhere(
+              $qb->expr()->orX(
+                $qb->expr()->eq('ua.id', ':userId'),
+                $qb->expr()->eq('ga.id', ':userId')
+              )
+            );
+
             $qb->setParameter('userId', $currentUser->getId());
         }
 

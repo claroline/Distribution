@@ -508,8 +508,7 @@ class AdminManagementController extends Controller
             $worskpace = $this->workspaceManager->getWorkspaceById($courseDatas['workspace']);
         }
         if ($courseDatas['workspaceModel']) {
-            //TODO MODEL
-            //$worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
+            $worskpaceModel = $this->workspaceManager->getOneByName($courseDatas['workspaceModel']);
         }
         if ($this->request->files->get('courseDatas')['icon']) {
             $icon = $this->cursusManager->saveIcon($this->request->files->get('courseDatas')['icon']);
@@ -634,9 +633,8 @@ class AdminManagementController extends Controller
             $course->setWorkspace(null);
         }
         if ($courseDatas['workspaceModel']) {
-            //TODO MODEL
-            //$worskpaceModel = $this->workspaceModelManager->getModelById($courseDatas['workspaceModel']);
-            //$course->setWorkspaceModel($worskpaceModel);
+            $worskpaceModel = $this->workspaceManager->getWorkspaceById($courseDatas['workspaceModel']);
+            $course->setWorkspaceModel($worskpaceModel);
         } else {
             $course->setWorkspaceModel(null);
         }
