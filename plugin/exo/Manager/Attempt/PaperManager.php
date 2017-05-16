@@ -392,16 +392,16 @@ class PaperManager
             // base success compution on paper structure
             $structure = json_decode($paper->getStructure());
             foreach ($structure->steps as $step) {
-              foreach ($step->items as $item) {
-                $itemEntity = $itemRepository->findOneBy(['uuid' => $item->id]);
-                if (!array_key_exists($item->id, $questionStatistics)) {
-                  $questionStats = $this->itemManager->getStatistics($itemEntity, $exercise);
-                  $questionData = new \stdClass();
-                  $questionData->yData = $questionStats->successPercent;
-                  $questionData->xData = $itemEntity->getTitle() ? strip_tags($itemEntity->getTitle()) : strip_tags($itemEntity->getContent());
-                  $questionStatistics[] = $questionData;
+                foreach ($step->items as $item) {
+                    $itemEntity = $itemRepository->findOneBy(['uuid' => $item->id]);
+                    if (!array_key_exists($item->id, $questionStatistics)) {
+                        $questionStats = $this->itemManager->getStatistics($itemEntity, $exercise);
+                        $questionData = new \stdClass();
+                        $questionData->yData = $questionStats->successPercent;
+                        $questionData->xData = $itemEntity->getTitle() ? strip_tags($itemEntity->getTitle()) : strip_tags($itemEntity->getContent());
+                        $questionStatistics[] = $questionData;
+                    }
                 }
-              }
             }
         }
 

@@ -25,13 +25,13 @@ export default class Axis extends Component {
     switch (this.props.axisType) {
       case 'x':
         transform = `translate(0, ${this.props.height})`
-      break;
+        break
       case 'labelX':
         transform = `translate(${(this.props.width - this.props.margin.left - this.props.margin.right) / 2}, ${this.props.height + 50})`
-      break
+        break
       case 'labelY':
         transform = `translate(-60, ${(this.props.height + this.props.margin.top + this.props.margin.bottom) / 2})rotate(-90)`
-      break
+        break
     }
 
     return (

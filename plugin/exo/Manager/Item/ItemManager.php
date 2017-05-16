@@ -329,7 +329,6 @@ class ItemManager
                 }
             }
 
-
             // Let the handler of the question type parse and compile the data
             if ($definition instanceof AnswerableItemDefinitionInterface) {
                 $questionStats->solutions = $definition->getStatistics($question->getInteraction(), $answersData);
@@ -345,6 +344,7 @@ class ItemManager
         }
         // compute question success percentage
         $questionStats->successPercent = $questionStats->seen > 0 ? (100 * $nbGoodAnswers) / $questionStats->seen : 0;
+
         return $questionStats;
     }
 
