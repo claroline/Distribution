@@ -1,6 +1,7 @@
 /**
- * This file was copied from BazingaJsTranslationBundle
+ * This class was copied from BazingaJsTranslationBundle
  */
+
 
 var _messages     = {},
   _fallbackLocale = 'en',
@@ -69,7 +70,7 @@ export const Translator = {
      * @return {Object}           Translator
      * @api public
      */
-  add: (id, message, domain, locale) => {
+  add: function (id, message, domain, locale) {
     var _locale = locale || this.locale || this.fallback,
       _domain = domain || this.defaultDomain
 
@@ -101,7 +102,7 @@ export const Translator = {
      * @return {String}                 The translated string
      * @api public
      */
-  trans: (id, parameters, domain, locale) => {
+  trans: function (id, parameters, domain, locale) {
     var _message = get_message(
             id,
             domain,
@@ -124,7 +125,7 @@ export const Translator = {
      * @return {String}                 The translated string
      * @api public
      */
-  transChoice: (id, number, parameters, domain, locale) => {
+  transChoice: function (id, number, parameters, domain, locale) {
     var _message = get_message(
             id,
             domain,
@@ -158,7 +159,7 @@ export const Translator = {
      * @return {Object}         Translator
      * @api public
      */
-  fromJSON: (data) => {
+  fromJSON: function (data) {
     if (typeof data === 'string') {
       data = JSON.parse(data)
     }
@@ -191,14 +192,16 @@ export const Translator = {
     /**
      * @api public
      */
-  reset: () => {
+  reset: function () {
     _messages   = {}
     _domains    = []
     this.locale = get_current_locale()
   },
 
-  hasMessage: (key, domain, locale) => {
-    return has_message(locale, domain, key)
+  hasMessage: (id, _domain, _locale) => {
+    if (has_message(_locale, _domain, id)) {
+      return _messages[_locale][_domain][id]
+    }
   }
 }
 
