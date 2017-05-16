@@ -67,6 +67,12 @@ class MatchPlayer extends Component {
   componentDidMount() {
     this.jsPlumbInstance.setContainer(this.container)
     window.addEventListener('resize', this.handleWindowResize)
+    const images =  document.images
+
+    // required to fix position of anchors after images are loaded
+    for (let i = 0; i < images.length; ++i) {
+      images[i].addEventListener('load', this.handleWindowResize)
+    }
 
     // we have to wait for elements to be at there right place before drawing... so... timeout
     window.setTimeout(() => {
@@ -110,9 +116,6 @@ class MatchPlayer extends Component {
       )
       return true
     })
-
-    // fix anchors position if misplaced
-    this.jsPlumbInstance.bind('beforeDrag', () => this.handleWindowResize())
   }
 
   componentWillUnmount(){
@@ -140,14 +143,14 @@ class MatchPlayer extends Component {
           cssClass: 'endPoints',
           isSource: true,
           maxConnections: -1
-        }).bind('click', () => this.handleWindowResize())
+        })
       } else {
         this.jsPlumbInstance.addEndpoint(this.jsPlumbInstance.getSelector(selector), {
           anchor: anchor,
           cssClass: 'endPoints',
           isTarget: true,
           maxConnections: -1
-        }).bind('click', () => this.handleWindowResize())
+        })
       }
     }, 100)
   }
@@ -156,7 +159,7 @@ class MatchPlayer extends Component {
     return (
         <div id={`match-question-player-${this.props.item.id}`} className="match-player match-items row" ref={(el) => { this.container = el }}>
           <div className="item-col col-md-5 col-sm-5 col-xs-5">
-            <ul>
+            <ul className="match-items-list">
             {this.state.firstSet.map((item) =>
               <li key={'source_' + item.id}>
                 <MatchItem
@@ -173,7 +176,7 @@ class MatchPlayer extends Component {
           <div className="divide-col col-md-2 col-sm-2 col-xs-2" />
 
           <div className="item-col col-md-5 col-sm-5 col-xs-5">
-            <ul>
+            <ul className="match-items-list">
             {this.state.secondSet.map((item) =>
               <li key={'target_' + item.id}>
                 <MatchItem
