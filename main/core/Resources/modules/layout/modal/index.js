@@ -9,11 +9,13 @@ import {UrlModal} from './components/url.jsx'
 export const MODAL_MESSAGE = 'MODAL_MESSAGE'
 export const MODAL_CONFIRM = 'MODAL_CONFIRM'
 export const MODAL_DELETE_CONFIRM = 'MODAL_DELETE_CONFIRM'
+export const MODAL_URL = 'MODAL_URL'
 
 const modals = {
   [MODAL_MESSAGE]: MessageModal,
   [MODAL_CONFIRM]: ConfirmModal,
-  [MODAL_DELETE_CONFIRM]: DeleteConfirmModal
+  [MODAL_DELETE_CONFIRM]: DeleteConfirmModal,
+  [MODAL_URL]: UrlModal
 }
 
 export function registerModalType(type, component) {

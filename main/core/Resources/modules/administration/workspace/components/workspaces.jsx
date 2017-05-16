@@ -5,8 +5,7 @@ import {connect} from 'react-redux'
 import {t, transChoice} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {makeModal, makeModalFromUrl} from '#/main/core/layout/modal'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM, MODAL_URL} from '#/main/core/layout/modal'
 
 import Configuration from '#/main/core/library/Configuration/Configuration'
 
@@ -110,7 +109,9 @@ class Workspaces extends Component {
                 return action.options.modal ? {
                   icon: action.icon,
                   label: action.name(),
-                  action: (row) => action.url(row.id)
+                  action: (row) => this.props.showModal(MODAL_URL, {
+                    url: action.url(row.id)
+                  })
                 } : {
                   icon: action.icon,
                   label: action.name(),
@@ -263,7 +264,7 @@ function mapDispatchToProps(dispatch) {
     toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items)),
 
     // modals
-    createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal),
+    createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal),
     createModalFromUrl: (fading, hideModal, url) => makeModalFromUrl(fading, hideModal, url),
     showModal(modalType, modalProps) {
       dispatch(modalActions.showModal(modalType, modalProps))
