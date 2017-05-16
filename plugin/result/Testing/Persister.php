@@ -40,6 +40,7 @@ class Persister
         $user->setMail($username.'@mail.com');
         $user->setGuid($username);
         $user->setPublicUrl($username);
+        $user->setResetPasswordHash('126');
         $this->om->persist($user);
 
         if (!$this->userRole) {

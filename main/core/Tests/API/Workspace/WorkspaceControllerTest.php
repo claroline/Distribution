@@ -90,7 +90,7 @@ class WorkspaceControllerTest extends TransactionalTestCase
         $this->persister->flush();
         $this->logIn($admin);
 
-        $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new/0");
+        $this->client->request('GET', "/api/workspace/copy/{$workspace->getId()}/new/1");
         $data = $this->client->getResponse()->getContent();
         //at least it didn't crash
         $data = json_decode($data, true);

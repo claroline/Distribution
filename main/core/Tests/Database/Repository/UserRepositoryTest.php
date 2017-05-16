@@ -73,7 +73,7 @@ class UserRepositoryTest extends RepositoryTestCase
 
     public function testFindAll()
     {
-        $this->assertEquals(4, count(self::$repo->findAll()));
+        $this->assertEquals(5, count(self::$repo->findAll()));
         $this->assertInstanceOf('Doctrine\ORM\Query', self::$repo->findAll(false));
     }
 
@@ -118,12 +118,12 @@ class UserRepositoryTest extends RepositoryTestCase
     public function testFindUsersEnrolledInMostWorkspaces()
     {
         $users = self::$repo->findUsersEnrolledInMostWorkspaces(10);
-        $this->assertEquals(3, count($users));
-        $this->assertEquals('bob', $users[0]['username']);
+        $this->assertEquals(4, count($users));
+        $this->assertEquals('claroline-connect', $users[0]['username']);
         $lastUsers = [$users[1]['username'], $users[2]['username']];
-        $this->assertContains('jane', $lastUsers);
+        $this->assertContains('bob', $lastUsers);
         $this->assertContains('john', $lastUsers);
-        $this->assertEquals(1, $users[1]['total']);
+        $this->assertEquals(2, $users[1]['total']);
         $this->assertEquals(1, $users[2]['total']);
     }
 
@@ -142,11 +142,11 @@ class UserRepositoryTest extends RepositoryTestCase
 
     public function testFindUsernames()
     {
-        $this->assertEquals(4, count(self::$repo->findUsernames()));
+        $this->assertEquals(5, count(self::$repo->findUsernames()));
     }
 
     public function testFindEmails()
     {
-        $this->assertEquals(4, count(self::$repo->findEmails()));
+        $this->assertEquals(5, count(self::$repo->findEmails()));
     }
 }
