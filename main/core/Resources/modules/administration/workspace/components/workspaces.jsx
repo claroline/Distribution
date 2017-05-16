@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {t, transChoice} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {makeModal, makeModalFromUrl} from '#/main/core/layout/modal'
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM, MODAL_URL} from '#/main/core/layout/modal'
 
 import Configuration from '#/main/core/library/Configuration/Configuration'
@@ -44,9 +43,9 @@ class Workspaces extends Component {
 
   copyWorkspaces(workspaceIds, asModel = false) {
     const workspaces = this.getWorkspaces(workspaceIds)
-
+    
     this.props.showModal(MODAL_CONFIRM, {
-      title: t(asModel ? 'copy_model_workspace' : 'copy_workspace'),
+      title: transChoice(asModel ? 'copy_model_workspaces' : 'copy_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
       question: t(asModel ? 'copy_model_workspaces_confirm' : 'copy_workspaces_confirm', {
         workspace_list: workspaces.map(workspace => workspace.name).join(', ')
       }),
@@ -119,11 +118,11 @@ class Workspaces extends Component {
                 }
               }), {
                 icon: 'fa fa-fw fa-copy',
-                label: t('duplicate'),
+                label: t('copy_workspace'),
                 action: (row) => this.copyWorkspaces([row.id], false)
               }, {
                 icon: 'fa fa-fw fa-clone',
-                label: t('make_model'),
+                label: t('copy_model_workspace'),
                 action: (row) => this.copyWorkspaces([row.id], true)
               }, {
                 icon: 'fa fa-fw fa-trash-o',
@@ -196,8 +195,6 @@ Workspaces.propTypes = {
     fading: T.bool.isRequired,
     props: T.object.isRequired
   }),
-  createModal: T.func.isRequired,
-  createModalFromUrl: T.func.isRequired,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired
@@ -264,8 +261,6 @@ function mapDispatchToProps(dispatch) {
     toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items)),
 
     // modals
-    createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal),
-    createModalFromUrl: (fading, hideModal, url) => makeModalFromUrl(fading, hideModal, url),
     showModal(modalType, modalProps) {
       dispatch(modalActions.showModal(modalType, modalProps))
     },
