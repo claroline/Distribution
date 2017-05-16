@@ -47,7 +47,7 @@ const SelectedData = props =>
           key={`list-bulk-action-${actionIndex}`}
           className={classes('btn', {
             'btn-link-default': !action.isDangerous,
-            'btn-link-danger': action.isDangerous,
+            'btn-link-danger': action.isDangerous
           })}
           onClick={action.action}
         >
@@ -59,7 +59,7 @@ const SelectedData = props =>
           key={`list-bulk-action-${actionIndex}`}
           className={classes('btn', {
             'btn-link-default': !action.isDangerous,
-            'btn-link-danger': action.isDangerous,
+            'btn-link-danger': action.isDangerous
           })}
           href={action.action}
         >

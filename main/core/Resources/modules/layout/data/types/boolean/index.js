@@ -2,6 +2,7 @@ import {t} from '#/main/core/translation'
 
 import {parseBool} from '#/main/core/layout/data/types/boolean/utils'
 import {BooleanSearch} from '#/main/core/layout/data/types/boolean/components/search.jsx'
+import {BooleanCell} from '#/main/core/layout/data/types/boolean/components/table.jsx'
 
 export const BOOLEAN_TYPE = 'boolean'
 
@@ -19,8 +20,7 @@ export const booleanDefinition = {
     }
   },
   components: {
-    form: null,
-    table: null,
+    table: BooleanCell,
     search: BooleanSearch
   }
 }

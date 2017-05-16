@@ -60,7 +60,7 @@ function handleResponseError(error, failure, request, next) {
           failure(authError, dispatch)
           switch (authError.message) {
             case ERROR_AUTH_WINDOW_BLOCKED:
-              return showErrorModal(dispatch, tex('request_error_auth_blocked'))
+              return showErrorModal(dispatch, t('request_error_auth_blocked'))
             case ERROR_AUTH_WINDOW_CLOSED:
               return showHttpErrorModal(dispatch, 401)
             default:

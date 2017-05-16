@@ -7,23 +7,29 @@ import {getPropDefinition} from '#/main/core/layout/list/utils'
 
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 
-const CurrentFilter = props =>
-  <div className="search-filter">
-    <span className="search-filter-prop">
-      {props.label}
-    </span>
+const CurrentFilter = props => {
+  const typeDef = getTypeOrDefault(props.type)
 
-    <span className="search-filter-value">
-      {props.value}
+  return (
+    <div className="search-filter">
+      <span className="search-filter-prop">
+        {props.label}
+      </span>
 
-      <button type="button" className="btn btn-link" onClick={props.remove}>
-        <span className="fa fa-times" />
-        <span className="sr-only">{t('list_remove_filter')}</span>
-      </button>
-    </span>
-  </div>
+        <span className="search-filter-value">
+          {typeDef.render(props.value)}
+
+          <button type="button" className="btn btn-link" onClick={props.remove}>
+          <span className="fa fa-times" />
+          <span className="sr-only">{t('list_remove_filter')}</span>
+        </button>
+      </span>
+    </div>
+  )
+}
 
 CurrentFilter.propTypes = {
+  type: T.string.isRequired,
   label: T.string.isRequired,
   value: T.any.isRequired,
   remove: T.func.isRequired
@@ -61,7 +67,7 @@ const AvailableFilterFlag = props => props.isValid ?
   :
   <TooltipElement
     id={props.id}
-    tip="This filter can not be used with you current search"
+    tip={t('list_search_invalid_filter')}
     position="right"
   >
     <span className="cursor-help fa fa-fw fa-warning" />
@@ -80,12 +86,12 @@ const AvailableFilter = props => {
     <li role="presentation">
       {React.createElement(
         isValidSearch ? AvailableFilterActive : AvailableFilterDisabled,
-        isValidSearch ? {onSelect: props.onSelect} : {}, [
-          <span className="available-filter-prop">
+        isValidSearch ? {onSelect: () => props.onSelect(typeDef.parse(props.currentSearch))} : {}, [
+          <span key="available-filter-prop" className="available-filter-prop">
             <AvailableFilterFlag id={`${props.name}-filter-flag`} isValid={isValidSearch} />
             {props.label} <small>({props.type})</small>
           </span>,
-          <span className="available-filter-form">
+          <span key="available-filter-form" className="available-filter-form">
             {!typeDef.components.search &&
               <span className="available-filter-value">{isValidSearch ? props.currentSearch : '-'}</span>
             }
@@ -94,7 +100,7 @@ const AvailableFilter = props => {
               React.createElement(typeDef.components.search, {
                 search: props.currentSearch,
                 isValid: isValidSearch,
-                updateSearch: props.updateSearch
+                updateSearch: props.onSelect
               })
             }
           </span>
@@ -109,8 +115,7 @@ AvailableFilter.propTypes = {
   label: T.string.isRequired,
   type: T.string.isRequired,
   currentSearch: T.string,
-  onSelect: T.func.isRequired,
-  updateSearch: T.func.isRequired
+  onSelect: T.func.isRequired
 }
 
 const FiltersList = props =>
@@ -122,8 +127,7 @@ const FiltersList = props =>
         label={filter.label}
         type={filter.type}
         currentSearch={props.currentSearch}
-        onSelect={() => props.onSelect(filter.name)}
-        updateSearch={props.updateSearch}
+        onSelect={(filterValue) => props.onSelect(filter.name, filterValue)}
       />
     )}
   </menu>
@@ -135,8 +139,7 @@ FiltersList.propTypes = {
     label: T.string.isRequired
   })).isRequired,
   currentSearch: T.string,
-  onSelect: T.func.isRequired,
-  updateSearch: T.func.isRequired
+  onSelect: T.func.isRequired
 }
 
 FiltersList.defaultProps = {
@@ -156,20 +159,24 @@ class ListSearch extends Component {
     this.state = {
       currentSearch: ''
     }
+
+    this.addFilter = this.addFilter.bind(this)
+    this.updateSearch = this.updateSearch.bind(this)
   }
 
   componentDidMount() {
     this.searchInput.focus()
   }
 
-  addFilter(filter) {
-    const currentSearch = this.state.currentSearch
-    this.setState({currentSearch: ''})
+  addFilter(filterName, filterValue) {
+    // reset current search field
+    this.updateSearch('')
 
+    // focus again the search field to avoid clicks when adding multiple filters
     this.searchInput.focus()
-    this.props.addFilter(filter, currentSearch)
 
-    this.updateSearch = this.updateSearch.bind(this)
+    // update filters list
+    this.props.addFilter(filterName, filterValue)
   }
 
   updateSearch(search) {
@@ -183,6 +190,7 @@ class ListSearch extends Component {
           {this.props.current.map(activeFilter =>
             <CurrentFilter
               key={`current-filter-${activeFilter.property}`}
+              type={getPropDefinition(activeFilter.property, this.props.available).type}
               label={getPropDefinition(activeFilter.property, this.props.available).label}
               value={activeFilter.value}
               remove={() => this.props.removeFilter(activeFilter)}
@@ -207,8 +215,7 @@ class ListSearch extends Component {
           <FiltersList
             available={this.props.available}
             currentSearch={this.state.currentSearch}
-            onSelect={this.addFilter.bind(this)}
-            updateSearch={this.updateSearch}
+            onSelect={this.addFilter}
           />
         }
       </div>

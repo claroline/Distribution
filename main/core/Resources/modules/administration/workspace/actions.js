@@ -1,6 +1,7 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 
+import {actions as listActions} from '#/main/core/layout/list/actions'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
@@ -66,6 +67,7 @@ actions.fetchWorkspaces = () => (dispatch, getState) => {
         method: 'GET'
       },
       success: (data, dispatch) => {
+        dispatch(listActions.resetSelect())
         dispatch(actions.loadWorkspaces(data.workspaces, data.total))
       }
     }

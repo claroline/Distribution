@@ -1,39 +1,57 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 
+import {BaseModal} from './base.jsx'
+
+/**
+ * Displays a modal rendered from the server.
+ */
 class UrlModal extends Component {
   constructor(props) {
     super(props)
 
     this.id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
-    //this.id = uuid().replace(/-/g, '')
+
+    this.state = {
+      isFetching: true,
+      content: null
+    }
+
+    fetch(this.props.url, {method: 'GET', credentials: 'include'})
+      .then(response => response.text())
+      .then(text => this.onModalLoaded(text))
   }
 
   render() {
     return (
+    <BaseModal
+      {...this.props}
+      show={this.props.show && !this.state.isFetching}
+    >
       <div
         id={this.id}
-        dangerouslySetInnerHTML={{__html: this.props.content}}
+        dangerouslySetInnerHTML={{__html: this.state.content}}
       />
+    </BaseModal>
     )
   }
 
   submitForm() {
-    var form = document.querySelector(`#${this.id} form`)
-    var url = form.action
-
-    var formData = new FormData(form)
+    const form = document.querySelector(`#${this.id} form`)
+    const url = form.action
 
     fetch(url, {
       method: 'POST',
-      body: formData,
+      body: new FormData(form),
       credentials: 'include'
     }).then(data => {
       this.props.hideModal(data)
     })
   }
 
-  componentDidMount() {
-          //event.preventDefault();
+  onModalLoaded(content) {
+    this.setState({isFetching: false, content: content})
+
     document.querySelector(`#${this.id} button[type="submit"]`).addEventListener('click', event => {
       event.preventDefault()
       this.submitForm()
@@ -48,7 +66,8 @@ class UrlModal extends Component {
 
     const array = []
     const nodes = document.querySelectorAll(`#${this.id} [data-dismiss="modal"]`)
-    //because it's an arrayNode collection or something, we can't use forEach directtly
+
+    //because it's an arrayNode collection or something, we can't use forEach directly
     array.forEach.call(nodes, node => node.addEventListener('click', () => this.props.hideModal()))
   }
 }
@@ -57,12 +76,13 @@ UrlModal.propTypes = {
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
   show: T.bool.isRequired,
-  className: T.string,
-  content: T.string.isRequired
+  url: T.string.isRequired
 }
 
 // required when testing proptypes on code instrumented by istanbul
 // @see https://github.com/facebook/jest/issues/1824#issuecomment-250478026
 UrlModal.displayName = 'UrlModal'
 
-export {UrlModal}
+export {
+  UrlModal
+}

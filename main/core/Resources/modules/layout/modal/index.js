@@ -9,11 +9,13 @@ import {UrlModal} from './components/url.jsx'
 export const MODAL_MESSAGE = 'MODAL_MESSAGE'
 export const MODAL_CONFIRM = 'MODAL_CONFIRM'
 export const MODAL_DELETE_CONFIRM = 'MODAL_DELETE_CONFIRM'
+export const MODAL_URL = 'MODAL_URL'
 
 const modals = {
   [MODAL_MESSAGE]: MessageModal,
   [MODAL_CONFIRM]: ConfirmModal,
-  [MODAL_DELETE_CONFIRM]: DeleteConfirmModal
+  [MODAL_DELETE_CONFIRM]: DeleteConfirmModal,
+  [MODAL_URL]: UrlModal
 }
 
 export function registerModalType(type, component) {
@@ -35,18 +37,4 @@ export function makeModal(type, props, fading, fadeCallback = () => true, hideCa
   }
 
   return React.createElement(modals[type], Object.assign(baseProps, props))
-}
-
-export function makeModalFromUrl(fading, hideCallback = () => true, url) {
-  return fetch(url, {method: 'GET', credentials: 'include'}).then(response => {
-    return response.text()
-  }).then(text => {
-    const baseProps = {
-      show: !fading,
-      hideModal:() => hideCallback(),
-      content: text
-    }
-
-    return React.createElement(UrlModal, baseProps)
-  })
 }

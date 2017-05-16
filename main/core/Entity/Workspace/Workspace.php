@@ -128,6 +128,7 @@ class Workspace
      * @ORM\Column(type="boolean")
      *
      * @Serializer\Groups({"api_workspace", "api_workspace_min"})
+     * @Serializer\SerializedName("isModel")
      *
      * @var bool
      */
