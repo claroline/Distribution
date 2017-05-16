@@ -55,6 +55,8 @@ class Docimology extends Component {
                 data={this.props.statistics.paperScoreDistribution}
                 width={540}
                 height={250}
+                margin={{top: 20, right: 20, bottom: 80, left: 80}}
+                labels={{show:true, labelX:tex('docimology_score'), labelY:tex('docimology_nb_papers')}}
               />
             </div>
           </div>
@@ -94,10 +96,9 @@ class Docimology extends Component {
   }
 
   render() {
-    //const scoreDistributionValues = Object.keys(this.props.statistics.paperScoreDistribution).map(key => { return this.props.statistics.paperScoreDistribution[key] })
     return (
       <div className="page-container docimology-container">
-        {/* PAPER SUCCESS DISTRIBUTION */}
+        {/* STATISTICS HEADER */}
         <PageHeader title={tex('docimology')}>
           <PageActions>
             <PageAction
@@ -110,7 +111,7 @@ class Docimology extends Component {
           </PageActions>
         </PageHeader>
 
-        {/* PAPER SUCCESS DISTRIBUTION */}
+        {/* PAPER GENERAL STATISTICS */}
         <GeneralStats {...this.props} />
 
         {/* PAPER SUCCESS DISTRIBUTION */}
@@ -161,6 +162,22 @@ class Docimology extends Component {
         {/* DIFFICULTY INDEX */}
         <div className="difficulty-index">
         <h2 className="h3">{tex('docimology_difficulty_index')}</h2>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="panel panel-default">
+              <div className="panel-body">
+                <BarChart
+                  data={this.props.statistics.questionsDifficultyIndex}
+                  width={720}
+                  height={350}
+                  margin={{top: 20, right: 20, bottom: 80, left: 80}}
+                  labels={{show:true, labelX:tex('docimology_question_title'), labelY:tex('docimology_success_percentage')}}
+                  yTicks={5}
+                />
+              </div>
+            </div>
+          </div>
+          </div>
         </div>
       </div>
     )

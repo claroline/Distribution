@@ -160,6 +160,7 @@ class ExerciseManager
         $statistics->minMaxAndAvgScores = $this->paperManager->getMinMaxAverageScores($exercise, $maxScore);
         $statistics->paperSuccessDistribution = $this->paperManager->getPapersSuccessDistribution($exercise, $maxScore);
         $statistics->paperScoreDistribution = $this->paperManager->getPaperScoreDistribution($exercise, $maxScore);
+        $statistics->questionsDifficultyIndex = $this->paperManager->getQuestionsDifficultyIndex($exercise);
 
         return $statistics;
     }

@@ -364,15 +364,48 @@ class PaperManager
         $uniqueScores = array_unique($scores, SORT_NUMERIC);
         sort($uniqueScores);
 
-        $result = [];
+        $paperScoreDistribution = [];
         foreach ($uniqueScores as $key) {
             $matchingScores = array_filter($scores, function ($score) use ($key) {
                 return floatval($score) === floatval($key);
             });
-            $result[$key] = count($matchingScores);
+            $statsData = new \stdClass();
+            $statsData->yData = count($matchingScores);
+            $statsData->xData =$key;
+            $paperScoreDistribution[$key] = $statsData;
         }
 
-        return $result;
+        return $paperScoreDistribution;
+    }
+
+    public function getQuestionsDifficultyIndex(Exercise $exercise)
+    {
+        $papers = $this->repository->findBy([
+            'exercise' => $exercise,
+        ]);
+
+        $questionStatistics = [];
+        $itemRepository = $this->om->getRepository('UJMExoBundle:Item\Item');
+
+        /** @var Paper $paper */
+        foreach ($papers as $paper) {
+            // base success compution on paper structure
+            $structure = json_decode($paper->getStructure());
+            foreach ($structure->steps as $step) {
+              foreach ($step->items as $item) {
+                $itemEntity = $itemRepository->findOneBy(['uuid' => $item->id]);
+                if (!array_key_exists($item->id, $questionStatistics)) {
+                  $questionStats = $this->itemManager->getStatistics($itemEntity, $exercise);
+                  $questionData = new \stdClass();
+                  $questionData->yData = $questionStats->successPercent;
+                  $questionData->xData = $itemEntity->getTitle() ? strip_tags($itemEntity->getTitle()) : strip_tags($itemEntity->getContent());
+                  $questionStatistics[$item->id] = $questionData;
+                }
+              }
+            }
+        }
+
+        return $questionStatistics;
     }
 
     /**
