@@ -5,5 +5,7 @@ export const execute = file => {
   xhrObj.open('GET', file, false)
   xhrObj.send('')
 
-  eval(xhrObj.responseText)
+  if (xhrObj.status === 200) {
+    eval(xhrObj.responseText)
+  }
 }
