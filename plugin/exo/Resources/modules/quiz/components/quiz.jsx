@@ -61,15 +61,17 @@ function customActions(props) {
   }
 
   // Results
-  actions.push({
-    icon: 'fa fa-fw fa-list',
-    label: tex('results_list'),
-    disabled: !props.hasPapers,
-    action: '#papers'
-  })
+  if (props.registeredUser) {
+    actions.push({
+      icon: 'fa fa-fw fa-list',
+      label: tex('results_list'),
+      disabled: !props.hasPapers,
+      action: '#papers'
+    })
+  }
 
-  // Export results
-  if (props.editable && props.papersAdmin) {
+  if (props.editable || props.papersAdmin) {
+    // Export results
     actions.push({
       icon: 'fa fa-fw fa-table',
       label: tex('export_csv_results'),
