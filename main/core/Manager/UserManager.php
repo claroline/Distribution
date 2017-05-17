@@ -830,6 +830,20 @@ class UserManager
     }
 
     /**
+     * @param string $firstName
+     * @param string $lastName
+     *
+     * @return User[]
+     */
+    public function getUsersByFirstNameAndLastName($firstName, $lastName)
+    {
+        return $this->userRepo->findBy([
+            'firstName' => $firstName,
+            'lastName' => $lastName,
+        ]);
+    }
+
+    /**
      * @param \Claroline\CoreBundle\Entity\Group $group
      * @param int                                $page
      * @param int                                $max
@@ -1629,7 +1643,16 @@ class UserManager
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('u.organizations', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
-            $qb->andWhere('ua.id = :userId');
+            $qb->leftJoin('u.groups', 'ug');
+            $qb->leftJoin('ug.organizations', 'go');
+            $qb->leftJoin('go.administrators', 'ga');
+            $qb->andWhere(
+              $qb->expr()->orX(
+                $qb->expr()->eq('ua.id', ':userId'),
+                $qb->expr()->eq('ga.id', ':userId')
+              )
+            );
+
             $qb->setParameter('userId', $currentUser->getId());
         }
 
