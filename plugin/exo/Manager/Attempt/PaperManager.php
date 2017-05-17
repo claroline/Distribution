@@ -344,8 +344,6 @@ class PaperManager
         return $papersSuccessDistribution;
     }
 
-
-
     /**
      * Check if the solution of the Paper is available to User.
      *

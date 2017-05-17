@@ -303,6 +303,7 @@ class DocimologyManager
             return pow($x - $mean, 2);
         };
         $nbData = count($array) > 1 ? count($array) - 1 : 1;
+
         return sqrt(
           array_sum(
             array_map(

@@ -269,50 +269,49 @@ class ItemManager
     /**
      * Get all scores for an Answerable Item.
      *
-     * @param Item   $question
+     * @param Item $question
      *
-     * @return Array
+     * @return array
      */
     public function getItemScores(Exercise $exercise, Item $question)
     {
-          $definition = $this->itemDefinitions->get($question->getMimeType());
+        $definition = $this->itemDefinitions->get($question->getMimeType());
 
-          if ($definition instanceof AnswerableItemDefinitionInterface) {
-              return array_map(function ($answer) use ($question, $definition) {
-                  $score = $this->calculateScore($question, $answer);
+        if ($definition instanceof AnswerableItemDefinitionInterface) {
+            return array_map(function ($answer) use ($question, $definition) {
+                $score = $this->calculateScore($question, $answer);
                   // get total available for the question
                   $expected = $definition->expectAnswer($question->getInteraction());
-                  $total = $this->scoreManager->calculateTotal(json_decode($question->getScoreRule()), $expected);
+                $total = $this->scoreManager->calculateTotal(json_decode($question->getScoreRule()), $expected);
                   // report the score on 100
                   $score = (100 * $score) / $total;
-                  return $score;
-              }, $this->answerRepository->findByQuestion($question, $exercise));
-          }
 
-          return [];
+                return $score;
+            }, $this->answerRepository->findByQuestion($question, $exercise));
+        }
 
+        return [];
     }
 
     /**
      * Get average score for an Item.
      *
-     * @param Item   $question
-     * @param Array   $scores
+     * @param Item  $question
+     * @param array $scores
      *
      * @return float
      */
     public function getItemAverageScore(Item $question, $scores)
     {
-          $definition = $this->itemDefinitions->get($question->getMimeType());
+        $definition = $this->itemDefinitions->get($question->getMimeType());
 
-          if ($definition instanceof AnswerableItemDefinitionInterface) {
-              return array_map(function ($answer) use ($question) {
-                  return $this->calculateScore($question, $answer);
-              }, $this->answerRepository->findByQuestion($question, $exercise));
-          }
+        if ($definition instanceof AnswerableItemDefinitionInterface) {
+            return array_map(function ($answer) use ($question) {
+                return $this->calculateScore($question, $answer);
+            }, $this->answerRepository->findByQuestion($question, $exercise));
+        }
 
-          return [];
-
+        return [];
     }
 
     /**
