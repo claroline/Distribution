@@ -34,7 +34,7 @@ class UserRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException Symfony\Component\Security\Core\Exception\UsernameNotFoundException
+     * @expectedException \Symfony\Component\Security\Core\Exception\UsernameNotFoundException
      */
     public function testLoadUserByUsernameOnUnknownUsername()
     {
@@ -48,7 +48,7 @@ class UserRepositoryTest extends RepositoryTestCase
     }
 
     /**
-     * @expectedException Symfony\Component\Security\Core\Exception\UnsupportedUserException
+     * @expectedException \Symfony\Component\Security\Core\Exception\UnsupportedUserException
      */
     public function testRefreshUserThrowsAnExceptionOnUnsupportedUserClass()
     {
