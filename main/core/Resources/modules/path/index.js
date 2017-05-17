@@ -1,2 +1,2 @@
-export const locale = () => document.getElementById('homeLocale').innerHTML
-export const web = (path = '') => document.getElementById('homeAsset').innerHTML + path
+export const locale = () => document.getElementById('homeLocale') ? document.getElementById('homeLocale').innerHTML: null
+export const web = (path = '') => document.getElementById('homeAsset') ? document.getElementById('homeAsset').innerHTML + path: null
