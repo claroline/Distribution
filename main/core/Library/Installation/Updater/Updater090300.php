@@ -143,19 +143,4 @@ class Updater090300 extends Updater
             }
         }
     }
-
-    public function postUpdate()
-    {
-        $this->workspaceManager->bindWorkspaceToOrganization();
-        $this->createPublicDirectory();
-    }
-
-    private function createPublicDirectory()
-    {
-        if (!$this->fileSystem->exists($this->iconSetsDir)) {
-            $this->log('Creating icon sets directory in public files directory...');
-            $this->fileSystem->mkdir($this->iconSetsDir, 0775);
-            $this->fileSystem->chmod($this->iconSetsDir, 0775, 0000, true);
-        }
-    }
 }

@@ -37,7 +37,6 @@ class LoadAdminToolsData implements RequiredFixture
             ['roles_management', 'users'],
             ['widgets_management', 'list-alt'],
             ['organization_management', 'institution'],
-            ['model_management', 'cog'],
         ];
 
         foreach ($tools as $tool) {
