@@ -294,27 +294,6 @@ class ItemManager
     }
 
     /**
-     * Get average score for an Item.
-     *
-     * @param Item  $question
-     * @param array $scores
-     *
-     * @return float
-     */
-    public function getItemAverageScore(Item $question, $scores)
-    {
-        $definition = $this->itemDefinitions->get($question->getMimeType());
-
-        if ($definition instanceof AnswerableItemDefinitionInterface) {
-            return array_map(function ($answer) use ($question) {
-                return $this->calculateScore($question, $answer);
-            }, $this->answerRepository->findByQuestion($question, $exercise));
-        }
-
-        return [];
-    }
-
-    /**
      * Calculates the total score of a question.
      *
      * @param \stdClass $questionData

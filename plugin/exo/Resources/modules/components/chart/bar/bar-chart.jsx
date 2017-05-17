@@ -36,10 +36,9 @@ export default class BarChart extends Component {
       .paddingInner([0.2])
 
     const yAxis = axisLeft(yScale)
-      .ticks(this.props.yTicks ? this.props.yTicks : max(yValues))
+      .tickValues(yValues)
 
     const xAxis = axisBottom(xScale)
-      .ticks(this.props.xTicks ? this.props.xTicks : xValues.length + 1)
       .tickValues(xValues)
 
     return (
@@ -84,9 +83,7 @@ BarChart.propTypes = {
     right: T.number.isRequired,
     bottom: T.number.isRequired,
     left: T.number.isRequired
-  }).isRequired,
-  xTicks: T.number,
-  yTicks: T.number
+  }).isRequired
 }
 
 BarChart.defaultProps = {

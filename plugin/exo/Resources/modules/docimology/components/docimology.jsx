@@ -172,30 +172,23 @@ class Docimology extends Component {
                   height={350}
                   margin={{top: 20, right: 20, bottom: 80, left: 80}}
                   labels={{show:true, labelX:tex('docimology_question_title', 'docimology'), labelY:tex('docimology_success_percentage', 'docimology')}}
-                  yTicks={5}
                 />
                 <span id="help" className="help-block">
                   <span className="fa fa-fw fa-info-circle"></span>
-                  L'indice de difficulté équivaut à un pourcentage de réussite à la question.
+                  {tex('docimology_difficulty_index_help_part_1', 'docimology')}
                 </span>
-                <p>
-                  <span className="help-block">
-                    <span className="fa fa-fw"></span>
-                    Il se calcule avec le nombre de candidats ayant répondu correctement divisé par le nombre total de répondants.
-                  </span>
-                </p>
-                <p>
-                  <span className="help-block">
-                    <span className="fa fa-fw"></span>
-                    Si l'indice est élevé, c'est que la question est facile. Inversement, si un indice est faible, la question est difficile.
-                  </span>
-                </p>
-                <p>
-                  <span className="help-block">
-                    <span className="fa fa-fw"></span>
-                    Cet indice ne prend pas en compte les étudiants n'ayant pas vu la question.
-                  </span>
-                </p>
+                <span className="help-block">
+                  <span className="fa fa-fw"></span>
+                  {tex('docimology_difficulty_index_help_part_2', 'docimology')}
+                </span>
+                <span className="help-block">
+                  <span className="fa fa-fw"></span>
+                  {tex('docimology_difficulty_index_help_part_3', 'docimology')}
+                </span>
+                <span className="help-block">
+                  <span className="fa fa-fw"></span>
+                  {tex('docimology_difficulty_index_help_part_4', 'docimology')}
+                </span>
               </div>
             </div>
           </div>
@@ -215,30 +208,23 @@ class Docimology extends Component {
                   height={350}
                   margin={{top: 20, right: 20, bottom: 80, left: 80}}
                   labels={{show:true, labelX:tex('docimology_question_title', 'docimology'), labelY:tex('docimology_discrimination_coefficient', 'docimology')}}
-                  yTicks={2}
                 />
                 <span id="help" className="help-block">
                   <span className="fa fa-fw fa-info-circle"></span>
-                  Le coefficient de discrimination d'une question est un coeeficient de correlation entre les résultats obtenus à la question et ceux obtenus au test entier.
+                  {tex('docimology_discrimination_coefficient_help_part_1', 'docimology')}
                 </span>
-                <p>
-                  <span className="help-block">
-                    <span className="fa fa-fw"></span>
-                    Une valeur positive souligne une question qui conforte les meilleurs tandis qu'une valeur négative signifie que ce sont les apprenants ayant les moins bonnes notes qui ont le mieux répondu.
-                  </span>
-                </p>
-                <p>
-                  <span className="help-block">
-                    <span className="fa fa-fw"></span>
-                    Quand une question a un CD négatif, cela signifie qu'elle pénalise les meilleurs. Il vaut donc mieux éviter de telles questions.
-                  </span>
-                </p>
-                <p>
-                  <span className="help-block">
-                    <span className="fa fa-fw"></span>
-                    Il est à remarquer que, si tous les étudiants obtiennent le même score à une question, le coefficient ne sera pas défini.
-                  </span>
-                </p>
+                <span className="help-block">
+                  <span className="fa fa-fw"></span>
+                  {tex('docimology_discrimination_coefficient_help_part_2', 'docimology')}
+                </span>
+                <span className="help-block">
+                  <span className="fa fa-fw"></span>
+                  {tex('docimology_discrimination_coefficient_help_part_3', 'docimology')}
+                </span>
+                <span className="help-block">
+                  <span className="fa fa-fw"></span>
+                  {tex('docimology_discrimination_coefficient_help_part_4', 'docimology')}
+                </span>
               </div>
             </div>
           </div>
