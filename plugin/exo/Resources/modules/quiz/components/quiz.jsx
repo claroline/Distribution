@@ -68,13 +68,21 @@ function customActions(props) {
     action: '#papers'
   })
 
-  // Export results
   if (props.editable && props.papersAdmin) {
+    // Export results
     actions.push({
       icon: 'fa fa-fw fa-table',
       label: tex('export_csv_results'),
       disabled: !props.hasPapers,
       action: generateUrl('exercise_papers_export', {exerciseId: props.quiz.id})
+    })
+
+    // Manual correction
+    actions.push({
+      icon: 'fa fa-fw fa-check-square-o',
+      label: tex('manual_correction'),
+      disabled: !props.hasPapers,
+      action: '#correction/questions'
     })
   }
 
@@ -84,14 +92,6 @@ function customActions(props) {
     label: tex('docimology'),
     action: '#'
   })*/
-
-  // Manual correction
-  actions.push({
-    icon: 'fa fa-fw fa-check-square-o',
-    label: tex('manual_correction'),
-    disabled: !props.hasPapers,
-    action: '#correction/questions'
-  })
 
   return actions
 }
