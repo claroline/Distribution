@@ -23,12 +23,14 @@ class UserRepositoryTest extends RepositoryTestCase
         self::$repo = self::getRepository('ClarolineCoreBundle:User');
         self::createWorkspace('ws_1');
         self::createWorkspace('ws_2');
+        self::createWorkspace('ws_3');
         self::createRole('ROLE_1', self::get('ws_1'));
         self::createRole('ROLE_2', self::get('ws_2'));
+        self::createRole('ROLE_3', self::get('ws_3'));
         self::createUser('john', [self::get('ROLE_1')]);
         self::createUser('jane');
         self::createUser('bill');
-        self::createUser('bob', [self::get('ROLE_1'), self::get('ROLE_2')]);
+        self::createUser('bob', [self::get('ROLE_1'), self::get('ROLE_2'), self::get('ROLE_3')]);
         self::createGroup('group_1', [self::get('jane')], [self::get('ROLE_1')]);
         self::createGroup('group_2', [self::get('jane'), self::get('bill'), self::get('bob')]);
     }
@@ -119,10 +121,10 @@ class UserRepositoryTest extends RepositoryTestCase
     {
         $users = self::$repo->findUsersEnrolledInMostWorkspaces(10);
         $this->assertEquals(4, count($users));
-        $this->assertEquals('claroline-connect', $users[0]['username']);
+        $this->assertEquals('bob', $users[0]['username']);
         $lastUsers = [$users[1]['username'], $users[2]['username']];
-        $this->assertContains('bob', $lastUsers);
-        $this->assertContains('john', $lastUsers);
+        $this->assertContains('claroline-connect', $lastUsers);
+        $this->assertContains('jane', $lastUsers);
         $this->assertEquals(2, $users[1]['total']);
         $this->assertEquals(1, $users[2]['total']);
     }
