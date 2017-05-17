@@ -1,6 +1,6 @@
 let _url = new WeakMap()
 
-export default class ExternalSourceUserConfigService {
+export default class ExternalSourceGroupConfigService {
 
   constructor(url, $http) {
     _url.set(this, url)
@@ -17,7 +17,7 @@ export default class ExternalSourceUserConfigService {
   }
 
   save(source, sourceConfig) {
-    const url = _url.get(this)('claro_admin_external_user_group_source_update_user_configuration', {
+    const url = _url.get(this)('claro_admin_external_user_group_source_update_group_configuration', {
       'source': source
     })
 
@@ -30,4 +30,4 @@ export default class ExternalSourceUserConfigService {
   }
 }
 
-ExternalSourceUserConfigService.$inject = ['url', '$http']
+ExternalSourceGroupConfigService.$inject = ['url', '$http']

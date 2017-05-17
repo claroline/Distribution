@@ -32,14 +32,21 @@
     </div>
     {{ macros.flashBox() }}
     <div class="page-body">
-        <form role="form" class="form-horizontal" autocomplete="false" action="{{path('claro_admin_external_user_group_source_update_user_configuration', { 'source': source })}}" method="post" {{ form_enctype(form) }} id="form_settings" enctype='multipart/form-data'>
-            {{ form_widget(form) }}
-            <div class="form-group row">
-                <div class="col-md-offset-3 col-md-9">
-                    <button type="submit" class="btn btn-primary">{{ 'save'|trans({}, 'platform') }}</button>
-                    <a href="{{ path('claro_admin_external_user_group_config_index') }}" type="button" class="btn btn-default">{{ 'cancel'|trans({}, 'platform') }}</a>
-                </div>
-            </div>
-        </form>
+        <external-source-user-config></external-source-user-config>
     </div>
+
+
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        window.fieldNames = {{ fieldNames|json_serialize(['Default'])|raw }};
+        window.externalSource = '{{ source }}';
+        window.sourceConfig = {{ sourceConfig|json_serialize(['Default'])|raw }};
+        window.tableNames = {{ tableNames|json_serialize(['Default'])|raw }};
+
+    </script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'claro_external_user_group' }) }}"></script>
+    <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-plugin-external-user-group-synchronization-user-config.js') }}"></script>
+{% endblock%}

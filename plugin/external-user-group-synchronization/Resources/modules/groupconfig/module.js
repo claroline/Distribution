@@ -6,11 +6,11 @@ import {} from '#/main/core/fos-js-router/module'
 import {} from '#/main/core/asset/module'
 import {} from '#/main/core/html-truster/module'
 import register from '#/main/core/register/register'
-import externalSourceUserConfig from './userconfig.directive'
-import externalSourceUserConfigService from './userconfig.service'
+import externalSourceGroupConfig from './groupconfig.directive'
+import externalSourceGroupConfigService from './groupconfig.service'
 
-let externalSourceUserConfigApp =  new register(
-  'externalSourceUserConfigApp',
+let externalSourceGroupConfigApp =  new register(
+  'externalSourceGroupConfigApp',
   [
     'angular-loading-bar',
     'ui.modal',
@@ -21,16 +21,17 @@ let externalSourceUserConfigApp =  new register(
     'ui.translation'
   ])
 
-externalSourceUserConfigApp
-    .directive('externalSourceUserConfig', externalSourceUserConfig)
-    .service('externalSourceUserConfigService', externalSourceUserConfigService)
+externalSourceGroupConfigApp
+    .directive('externalSourceGroupConfig', externalSourceGroupConfig)
+    .service('externalSourceGroupConfigService', externalSourceGroupConfigService)
     .value('externalSource', window.externalSource)
     .value('sourceConfig', window.sourceConfig)
     .value('tableNames', window.tableNames)
-    .value('fieldNames', window.fieldNames)
+    .value('groupFieldNames', window.groupFieldNames)
+    .value('userGroupFieldNames', window.userGroupFieldNames)
 
 
 //Bootstrap angular in body
 angular.element(document).ready(function () {
-  angular.bootstrap(document.getElementsByTagName('body')[ 0 ], [ 'externalSourceUserConfigApp' ])
+  angular.bootstrap(document.getElementsByTagName('body')[ 0 ], [ 'externalSourceGroupConfigApp' ])
 })

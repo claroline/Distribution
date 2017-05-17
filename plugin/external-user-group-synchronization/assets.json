@@ -1,7 +1,9 @@
 {
   "webpack": {
     "entry": {
-      "resource-list": "list/module"
+      "resource-list": "list/module",
+      "user-config": "userconfig/module",
+      "group-config": "groupconfig/module"
     }
   }
 }

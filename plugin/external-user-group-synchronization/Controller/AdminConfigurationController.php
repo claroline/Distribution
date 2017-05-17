@@ -13,7 +13,6 @@
 namespace Claroline\ExternalSynchronizationBundle\Controller;
 
 use Claroline\ExternalSynchronizationBundle\Form\ExternalSourceConfigurationType;
-use Claroline\ExternalSynchronizationBundle\Form\ExternalSourceUserConfigurationType;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
@@ -21,6 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class ExternalUserGroupSynchronizationAdminController.
@@ -36,8 +36,22 @@ class AdminConfigurationController extends Controller
      */
     private $externalUserGroupSyncManager;
 
+    private $translator;
+
     /**
-     * @EXT\Route("/", name="claro_admin_external_user_group_config_index")
+     * @DI\InjectParams({
+     *     "translator"     = @DI\Inject("translator"),
+     * })
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    /**
+     * @EXT\Route("/",
+     *     options={"expose"=true},
+     *     name="claro_admin_external_user_group_config_index")
      * @EXT\Template("ClarolineExternalSynchronizationBundle:Configuration:index.html.twig")
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -146,48 +160,85 @@ class AdminConfigurationController extends Controller
     {
         $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
         $tableNames = $this->externalUserGroupSyncManager->getTableNames($source);
-        $form = $this->createForm(
-            new ExternalSourceUserConfigurationType(),
-            $sourceConfig,
-            ['table_names' => $tableNames]
-        );
+        $fieldNames = isset($sourceConfig['user_config']['table'])
+            ? $this->externalUserGroupSyncManager->getColumnNamesForTable($source, $sourceConfig['user_config']['table'])
+            : null;
 
         return [
+            'fieldNames' => $fieldNames,
             'sourceConfig' => $sourceConfig,
             'source' => $source,
-            'form' => $form->createView(),
+            'tableNames' => $tableNames,
         ];
     }
 
     /**
-     * @EXT\Route("/edit/user/{source}", name="claro_admin_external_user_group_source_update_user_configuration")
+     * @EXT\Route("/edit/group/{source}",
+     *     options={"expose"=true},
+     *     name="claro_admin_external_user_group_source_group_configuration_form"
+     * )
+     * @EXT\Method({ "GET" })
+     * @EXT\Template("ClarolineExternalSynchronizationBundle:Configuration:groupConfiguration.html.twig")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function groupConfigurationForSourceAction($source)
+    {
+        $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
+        $tableNames = $this->externalUserGroupSyncManager->getTableNames($source);
+        $groupFieldNames = isset($sourceConfig['group_config']['table'])
+            ? $this->externalUserGroupSyncManager->getColumnNamesForTable($source, $sourceConfig['group_config']['table'])
+            : null;
+        $userGroupFieldNames = isset($sourceConfig['group_config']['user_group_config']['table'])
+            ? $this->externalUserGroupSyncManager->getColumnNamesForTable($source, $sourceConfig['group_config']['user_group_config']['table'])
+            : null;
+
+        return [
+            'groupFieldNames' => $groupFieldNames,
+            'userGroupFieldNames' => $userGroupFieldNames,
+            'sourceConfig' => $sourceConfig,
+            'source' => $source,
+            'tableNames' => $tableNames,
+        ];
+    }
+
+    /**
+     * @EXT\Route("/edit/user/{source}",
+     *     options={"expose"=true},
+     *     name="claro_admin_external_user_group_source_update_user_configuration")
      * @EXT\Method({ "POST" })
-     * @EXT\Template("ClarolineExternalSynchronizationBundle:Configuration:userConfiguration.html.twig")
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function updateUserConfigurationForSourceAction(Request $request, $source)
     {
-        $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
-        $tableNames = $this->externalUserGroupSyncManager->getTableNames($source);
-        $form = $this->createForm(
-            new ExternalSourceUserConfigurationType(),
-            $sourceConfig,
-            ['table_names' => $tableNames]
-        );
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $config = $form->getData();
-            $this->externalUserGroupSyncManager->setExternalSource($config['name'], $config);
+        return $this->updateConfigurationForSourceAction($request, $source, 'user_config_update_success');
+    }
 
-            return $this->redirectToRoute('claro_admin_external_user_group_config_index');
-        }
+    /**
+     * @EXT\Route("/edit/group/{source}",
+     *     options={"expose"=true},
+     *     name="claro_admin_external_user_group_source_update_group_configuration")
+     * @EXT\Method({ "POST" })
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateGroupConfigurationForSourceAction(Request $request, $source)
+    {
+        return $this->updateConfigurationForSourceAction($request, $source, 'group_config_update_success');
+    }
 
-        return [
-            'sourceConfig' => $sourceConfig,
-            'source' => $source,
-            'form' => $form->createView(),
-        ];
+    private function updateConfigurationForSourceAction(Request $request, $source, $message)
+    {
+        $sourceConfig = $request->get('sourceConfig');
+
+        $this->externalUserGroupSyncManager->setExternalSource($sourceConfig['source'], $sourceConfig['data']);
+
+        $request->getSession()
+            ->getFlashBag()
+            ->add('success', $this->translator->trans($message, [], 'claro_external_user_group'));
+
+        return new JsonResponse(['updated' => true], 200);
     }
 
     /**
