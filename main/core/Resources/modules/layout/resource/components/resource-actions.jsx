@@ -174,10 +174,10 @@ function getMoreActions(resourceNode, props) {
       Add a note
     </MenuItem>,
 
-    resourceNode.meta.exportable &&
+    resourceNode.rights.current.export &&
     <MenuItem key="resource-export-divider" divider />,
 
-    resourceNode.meta.exportable &&
+    resourceNode.rights.current.export &&
     <MenuItem
       key="resource-export"
       eventKey="resource-export"
@@ -194,7 +194,7 @@ function getMoreActions(resourceNode, props) {
  */
 const ResourceActions = props =>
   <PageActions className="resource-actions">
-    {props.resourceNode.meta.editable &&
+    {props.resourceNode.rights.current.edit &&
       <PageGroupActions>
         {!props.editMode &&
           <PageAction
@@ -256,14 +256,14 @@ const ResourceActions = props =>
         )}
         {getMoreActions(props.resourceNode, props)}
 
-        {props.resourceNode.meta.deletable &&
+        {props.resourceNode.rights.current.delete &&
           <MenuItem
             key="resource-delete-divider"
             divider={true}
           />
         }
 
-        {props.resourceNode.meta.deletable &&
+        {props.resourceNode.rights.current.delete &&
           <MenuItem
             key="resource-delete"
             eventKey="resource-delete"
@@ -291,11 +291,15 @@ ResourceActions.propTypes = {
     description: T.string,
     meta: T.shape({
       type: T.string.isRequired,
-      published: T.bool.isRequired,
-      editable: T.bool.isRequired,
-      deletable: T.bool.isRequired,
-      exportable: T.bool.isRequired
-    }).isRequired
+      published: T.bool.isRequired
+    }).isRequired,
+    rights: T.shape({
+      current: T.shape({
+        edit: T.bool,
+        export: T.bool,
+        delete: T.bool
+      })
+    })
   }).isRequired,
   fullscreen: T.bool.isRequired,
   toggleFullscreen: T.func.isRequired,
