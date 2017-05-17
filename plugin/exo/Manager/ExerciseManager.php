@@ -141,31 +141,6 @@ class ExerciseManager
     }
 
     /**
-     * Serializes an Exercise.
-     *
-     * @param Exercise $exercise
-     * @param array    $options
-     *
-     * @return \stdClass
-     */
-    public function getStatistics(Exercise $exercise, $maxScore)
-    {
-        $statistics = new \stdClass();
-        $statistics->maxScore = $maxScore;
-        $statistics->nbSteps = count($exercise->getSteps()->toArray());
-        $statistics->nbQuestions = $this->repository->countExerciseQuestion($exercise);
-        $statistics->nbPapers = $this->paperManager->countExercisePapers($exercise);
-        $statistics->nbRegisteredUsers = $this->paperManager->countPapersUsers($exercise);
-        $statistics->nbAnonymousUsers = $this->paperManager->countAnonymousPapers($exercise);
-        $statistics->minMaxAndAvgScores = $this->paperManager->getMinMaxAverageScores($exercise, $maxScore);
-        $statistics->paperSuccessDistribution = $this->paperManager->getPapersSuccessDistribution($exercise, $maxScore);
-        $statistics->paperScoreDistribution = $this->paperManager->getPaperScoreDistribution($exercise, $maxScore);
-        $statistics->questionsDifficultyIndex = $this->paperManager->getQuestionsDifficultyIndex($exercise);
-
-        return $statistics;
-    }
-
-    /**
      * Copies an Exercise resource.
      *
      * @param Exercise $exercise

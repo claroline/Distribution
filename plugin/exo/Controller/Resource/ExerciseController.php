@@ -88,7 +88,7 @@ class ExerciseController extends Controller
             'workspace' => $exercise->getResourceNode()->getWorkspace(),
             '_resource' => $exercise,
             'exercise' => $this->get('ujm_exo.manager.exercise')->serialize($exercise, [Transfer::MINIMAL]),
-            'statistics' => $this->get('ujm_exo.manager.exercise')->getStatistics($exercise, 100),
+            'statistics' => $this->get('ujm_exo.manager.docimology')->getStatistics($exercise, 100),
         ];
     }
 

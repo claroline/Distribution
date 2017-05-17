@@ -319,7 +319,7 @@ class PaperManager
             'exercise' => $exercise,
         ]);
 
-        $nbFullSuccess = 0;
+        $nbSuccess = 0;
         $nbMissed = 0;
         $nbPartialSuccess = 0;
 
@@ -330,83 +330,21 @@ class PaperManager
             if ($score === floatval(0)) {
                 ++$nbMissed;
             } elseif ($score === floatval($scoreOn)) {
-                ++$nbFullSuccess;
+                ++$nbSuccess;
             } else {
                 ++$nbPartialSuccess;
             }
         }
 
         $papersSuccessDistribution = new \stdClass();
-        $papersSuccessDistribution->nbFullSuccess = $nbFullSuccess;
+        $papersSuccessDistribution->nbSuccess = $nbSuccess;
         $papersSuccessDistribution->nbMissed = $nbMissed;
         $papersSuccessDistribution->nbPartialSuccess = $nbPartialSuccess;
 
         return $papersSuccessDistribution;
     }
 
-    /**
-     * Returns the number of papers with a particular score for a given exercise.
-     *
-     * @param Exercise $exercise
-     * @param float    $scoreOn
-     *
-     * @return array
-     */
-    public function getPaperScoreDistribution(Exercise $exercise, $scoreOn)
-    {
-        $papers = $this->repository->findBy([
-            'exercise' => $exercise,
-        ]);
 
-        $scores = $this->getPapersScores($papers, $scoreOn);
-
-        // get unique scores from scores array
-        $uniqueScores = array_unique($scores, SORT_NUMERIC);
-        sort($uniqueScores);
-
-        $paperScoreDistribution = [];
-        foreach ($uniqueScores as $key) {
-            $matchingScores = array_filter($scores, function ($score) use ($key) {
-                return floatval($score) === floatval($key);
-            });
-            $statsData = new \stdClass();
-            $statsData->yData = count($matchingScores);
-            $statsData->xData = $key;
-            $paperScoreDistribution[] = $statsData;
-        }
-
-        return $paperScoreDistribution;
-    }
-
-    public function getQuestionsDifficultyIndex(Exercise $exercise)
-    {
-        $papers = $this->repository->findBy([
-            'exercise' => $exercise,
-        ]);
-
-        $questionStatistics = [];
-        $itemRepository = $this->om->getRepository('UJMExoBundle:Item\Item');
-
-        /** @var Paper $paper */
-        foreach ($papers as $paper) {
-            // base success compution on paper structure
-            $structure = json_decode($paper->getStructure());
-            foreach ($structure->steps as $step) {
-                foreach ($step->items as $item) {
-                    $itemEntity = $itemRepository->findOneBy(['uuid' => $item->id]);
-                    if (!array_key_exists($item->id, $questionStatistics)) {
-                        $questionStats = $this->itemManager->getStatistics($itemEntity, $exercise);
-                        $questionData = new \stdClass();
-                        $questionData->yData = $questionStats->successPercent;
-                        $questionData->xData = $itemEntity->getTitle() ? strip_tags($itemEntity->getTitle()) : strip_tags($itemEntity->getContent());
-                        $questionStatistics[] = $questionData;
-                    }
-                }
-            }
-        }
-
-        return $questionStatistics;
-    }
 
     /**
      * Check if the solution of the Paper is available to User.
@@ -467,38 +405,5 @@ class PaperManager
         }
 
         return $available;
-    }
-
-    /**
-     * Get scores for a paper.
-     * If $scoreOn is not null then all scores are reported on this value.
-     *
-     * @param Exercise $exercise
-     * @param float    $scoreOn
-     *
-     * @return array
-     */
-    private function getPapersScores($papers, $scoreOn = null)
-    {
-        $scores = [];
-        /** @var Paper $paper */
-        foreach ($papers as $paper) {
-            $structure = json_decode($paper->getStructure());
-
-            if (!isset($structure->parameters->totalScoreOn) || floatval($structure->parameters->totalScoreOn) === floatval(0)) {
-                $totalScoreOn = $this->calculateTotal($paper);
-            } else {
-                $totalScoreOn = floatval($structure->parameters->totalScoreOn);
-            }
-
-            $score = $this->calculateScore($paper, $totalScoreOn);
-            // since totalScoreOn might have change through papers report all scores on a define value
-            if ($scoreOn) {
-                $score = floatval(($scoreOn * $score) / $totalScoreOn);
-            }
-            $scores[] = $score !== floor($score) ? floatval(number_format($score, 2)) : $score;
-        }
-
-        return $scores;
     }
 }

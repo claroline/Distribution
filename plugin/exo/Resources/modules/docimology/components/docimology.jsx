@@ -56,14 +56,14 @@ class Docimology extends Component {
                 width={540}
                 height={250}
                 margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                labels={{show:true, labelX:tex('docimology_score'), labelY:tex('docimology_nb_papers')}}
+                labels={{show:true, labelX:tex('docimology_score', 'docimology'), labelY:tex('docimology_nb_papers', 'docimology')}}
               />
             </div>
           </div>
         </div>
         <div className="note-gauges col-md-6">
           <CircularGauge
-            label={tex('minimum')}
+            label={tex('minimum', 'docimology')}
             color="#b94a48"
             value={this.props.statistics.minMaxAndAvgScores.min}
             max={this.props.statistics.maxScore}
@@ -72,7 +72,7 @@ class Docimology extends Component {
             showValue={false}
             />
           <CircularGauge
-            label={tex('average')}
+            label={tex('average', 'docimology')}
             color="#c09853"
             value={this.props.statistics.minMaxAndAvgScores.avg}
             max={this.props.statistics.maxScore}
@@ -81,7 +81,7 @@ class Docimology extends Component {
             showValue={false}
             />
           <CircularGauge
-            label={tex('maximum')}
+            label={tex('maximum', 'docimology')}
             color="#468847"
             value={this.props.statistics.minMaxAndAvgScores.max}
             max={this.props.statistics.maxScore}
@@ -99,7 +99,7 @@ class Docimology extends Component {
     return (
       <div className="page-container docimology-container">
         {/* STATISTICS HEADER */}
-        <PageHeader title={tex('docimology')}>
+        <PageHeader title={tex('docimology', 'docimology')}>
           <PageActions>
             <PageAction
               id="back-to-exercise"
@@ -116,12 +116,12 @@ class Docimology extends Component {
 
         {/* PAPER SUCCESS DISTRIBUTION */}
         <div className="paper-success-distribution">
-          <h2 className="h3">{tex('docimology_success_index')}</h2>
+          <h2 className="h3">{tex('docimology_success_index', 'docimology')}</h2>
           <div className="row">
             <div className="col-md-4" style={{marginBottom: '20px'}}>
               <PieChart
                 data={[
-                  this.props.statistics.paperSuccessDistribution.nbFullSuccess,
+                  this.props.statistics.paperSuccessDistribution.nbSuccess,
                   this.props.statistics.paperSuccessDistribution.nbPartialSuccess,
                   this.props.statistics.paperSuccessDistribution.nbMissed
                 ]}
@@ -134,15 +134,15 @@ class Docimology extends Component {
               <ul>
                 <li className="inline-flex">
                   <div className="color-legend" style={{backgroundColor:'#468847'}}></div>
-                  <span className="legend-label">{tex('docimology_papers_totally_successfull')} {`(${this.props.statistics.paperSuccessDistribution.nbFullSuccess})`}</span>
+                  <span className="legend-label">{tex('docimology_papers_totally_successfull', 'docimology')} {`(${this.props.statistics.paperSuccessDistribution.nbSuccess})`}</span>
                 </li>
                 <li className="inline-flex">
                   <div className="color-legend" style={{backgroundColor:'#c09853'}}></div>
-                  <span className="legend-label">{tex('docimology_papers_partially_successfull')} {`(${this.props.statistics.paperSuccessDistribution.nbPartialSuccess})`}</span>
+                  <span className="legend-label">{tex('docimology_papers_partially_successfull', 'docimology')} {`(${this.props.statistics.paperSuccessDistribution.nbPartialSuccess})`}</span>
                 </li>
                 <li className="inline-flex">
                   <div className="color-legend" style={{backgroundColor:'#b94a48'}}></div>
-                  <span className="legend-label">{tex('docimology_papers_missed')} {`(${this.props.statistics.paperSuccessDistribution.nbMissed})`}</span>
+                  <span className="legend-label">{tex('docimology_papers_missed', 'docimology')} {`(${this.props.statistics.paperSuccessDistribution.nbMissed})`}</span>
                 </li>
               </ul>
             </div>
@@ -150,19 +150,19 @@ class Docimology extends Component {
         </div>
         {/* PAPER SCORE DISTRIBUTION */}
         <div className="paper-score-distribution">
-          <h2 className="h3">{tex('docimology_score_distribution')}</h2>
+          <h2 className="h3">{tex('docimology_score_distribution', 'docimology')}</h2>
           <h3 className="h5">
             <span id="help" className="help-block">
               <span className="fa fa-fw fa-info-circle"></span>
-              {tex('docimology_note_gauges_help')}
+              {tex('docimology_note_gauges_help', 'docimology')}
             </span>
           </h3>
           {this.renderNoteBlock()}
         </div>
         {/* DIFFICULTY INDEX */}
         <div className="difficulty-index">
-        <h2 className="h3">{tex('docimology_difficulty_index')}</h2>
-        <div className="row">
+          <h2 className="h3">{tex('docimology_difficulty_index', 'docimology')}</h2>
+          <div className="row">
           <div className="col-md-12">
             <div className="panel panel-default">
               <div className="panel-body">
@@ -171,7 +171,7 @@ class Docimology extends Component {
                   width={720}
                   height={350}
                   margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                  labels={{show:true, labelX:tex('docimology_question_title'), labelY:tex('docimology_success_percentage')}}
+                  labels={{show:true, labelX:tex('docimology_question_title', 'docimology'), labelY:tex('docimology_success_percentage', 'docimology')}}
                   yTicks={5}
                 />
                 <span id="help" className="help-block">
@@ -193,7 +193,50 @@ class Docimology extends Component {
                 <p>
                   <span className="help-block">
                     <span className="fa fa-fw"></span>
-                    Cet indice ne prend pas en compte les étudiants n'ayant pas vu la question..
+                    Cet indice ne prend pas en compte les étudiants n'ayant pas vu la question.
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        {/* DISCRIMINATION COEFFICIENT */}
+        <div className="discrimination-index">
+          <h2 className="h3">{tex('docimology_discrimination_coefficient', 'docimology')}</h2>
+          <div className="row">
+          <div className="col-md-12">
+            <div className="panel panel-default">
+              <div className="panel-body">
+                <BarChart
+                  data={this.props.statistics.discriminationCoefficient}
+                  width={720}
+                  height={350}
+                  margin={{top: 20, right: 20, bottom: 80, left: 80}}
+                  labels={{show:true, labelX:tex('docimology_question_title', 'docimology'), labelY:tex('docimology_discrimination_coefficient', 'docimology')}}
+                  yTicks={2}
+                />
+                <span id="help" className="help-block">
+                  <span className="fa fa-fw fa-info-circle"></span>
+                  Le coefficient de discrimination d'une question est un coeeficient de correlation entre les résultats obtenus à la question et ceux obtenus au test entier.
+                </span>
+                <p>
+                  <span className="help-block">
+                    <span className="fa fa-fw"></span>
+                    Une valeur positive souligne une question qui conforte les meilleurs tandis qu'une valeur négative signifie que ce sont les apprenants ayant les moins bonnes notes qui ont le mieux répondu.
+                  </span>
+                </p>
+                <p>
+                  <span className="help-block">
+                    <span className="fa fa-fw"></span>
+                    Quand une question a un CD négatif, cela signifie qu'elle pénalise les meilleurs. Il vaut donc mieux éviter de telles questions.
+                  </span>
+                </p>
+                <p>
+                  <span className="help-block">
+                    <span className="fa fa-fw"></span>
+                    Il est à remarquer que, si tous les étudiants obtiennent le même score à une question, le coefficient ne sera pas défini.
                   </span>
                 </p>
               </div>

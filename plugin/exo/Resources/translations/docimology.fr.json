@@ -1,0 +1,15 @@
+{
+    "docimology": "Docimologie",
+    "docimology_difficulty_index": "Indice de difficulté",
+    "docimology_note_gauges_help": "Du fait de la possiblité de modifier les exercices alors que des copies on déjà été réalisées, les notes sont calculées puis rapportés sur 100.",
+    "docimology_papers_totally_successfull": "Nombre de copies entièrement justes",
+    "docimology_papers_partially_successfull": "Nombre de copies partiellement justes",
+    "docimology_papers_missed": "Nombre de copies ratées",
+    "docimology_score_distribution": "Répartition des scores",
+    "docimology_success_index": "Indice de réussite",
+    "docimology_nb_papers": "Nombre de copies",
+    "docimology_score": "Score",
+    "docimology_success_percentage": "Pourcentage de réussite",
+    "docimology_question_title": "Titre de la question",
+    "docimology_discrimination_coefficient": "Coefficient de discrimination"
+}
