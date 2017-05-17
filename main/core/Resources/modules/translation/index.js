@@ -2,6 +2,10 @@ const DEFAULT_DOMAIN    = 'message'
 const PLATFORM_DOMAIN   = 'platform'
 const VALIDATION_DOMAIN = 'validators'
 
+import {execute} from '#/main/core/file-loader'
+import {web} from '#/main/core/path'
+import {Translator} from './translator'
+
 /**
  * Get the current application translator.
  * For now it's the one coming from https://github.com/willdurand/BazingaJsTranslationBundle.
@@ -9,7 +13,9 @@ const VALIDATION_DOMAIN = 'validators'
  * @returns {Translator}
  */
 export function getTranslator() {
-  return window.Translator
+  window.Translator = Translator
+
+  return Translator
 }
 
 /**
@@ -21,8 +27,14 @@ export function getTranslator() {
  *
  * @returns {string}
  */
-export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
-  return getTranslator().trans(key, placeholders, domain)
+export function trans(key, placeholders = {}, domain = 'message') {
+  if (!isLoaded(key, domain)) {
+    execute(web(`js/translations/${domain}/${getLocale()}.js`))
+  }
+
+  const trans = getTranslator().trans(key, placeholders, domain = DEFAULT_DOMAIN)
+
+  return trans
 }
 
 /**
@@ -35,7 +47,12 @@ export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
  *
  * @returns {string}
  */
+
 export function transChoice(key, count, placeholders = {}, domain = DEFAULT_DOMAIN) {
+  if (!isLoaded(key, domain)) {
+    execute(web(`js/translations/${domain}/${getLocale()}.js`))
+  }
+
   return getTranslator().transChoice(key, count, placeholders, domain)
 }
 
@@ -73,4 +90,22 @@ export function tval(message, placeholders = {}) {
  */
 export function tex(message, domain = 'ujm_exo') {
   return trans(message, {}, domain)
+}
+
+/**
+ * Returns if the translation is loaded for the current locale
+ *
+ * @returns {boolean}
+ */
+export function isLoaded(message, domain) {
+  return getTranslator().hasMessage(message, domain, getLocale())
+}
+
+/**
+ * Returns the current locale
+ *
+ * @returns {string}
+ */
+export function getLocale() {
+  return getTranslator().locale
 }

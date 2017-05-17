@@ -24,9 +24,11 @@ function decrementRequests(state) {
   return count
 }
 
-export const reducers = {
-  currentRequests: makeReducer(0, {
-    [REQUESTS_INCREMENT]: incrementRequests,
-    [REQUESTS_DECREMENT]: decrementRequests
-  })
+const reducer = makeReducer(0, {
+  [REQUESTS_INCREMENT]: incrementRequests,
+  [REQUESTS_DECREMENT]: decrementRequests
+})
+
+export {
+  reducer
 }

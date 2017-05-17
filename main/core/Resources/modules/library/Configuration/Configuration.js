@@ -55,7 +55,11 @@ function getDefaultConfig(config) {
 function setDefaultBundle(bundle) {
   if (bundle.actions) {
     bundle.actions.forEach((action, key) => {
-      bundle.actions[key] = defaults(action, {href: '#', class: 'fa fa-cog'})
+      bundle.actions[key] = defaults(action, {
+        url: '#',
+        icon: 'fa fa-fw fa-cog',
+        options: {}
+      })
     })
   }
 }

@@ -1,7 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import { ResultsPerPage } from './results-per-page.jsx'
+import {DEFAULT_PAGE_SIZE} from '#/main/core/layout/pagination/selectors'
+import {countPages} from '#/main/core/layout/pagination/utils'
+import {ResultsPerPage} from '#/main/core/layout/pagination/components/results-per-page.jsx'
 
 const PaginationLink = props =>
   <li className={props.className}>
@@ -91,8 +93,10 @@ NextLink.defaultProps = {
 }
 
 const Pagination = props => {
+  const pages = countPages(props.totalResults, props.pageSize)
+
   const PageLinks = []
-  for (let i = 0; i < props.pages; i++) {
+  for (let i = 0; i < pages; i++) {
     PageLinks.push(
       <PageLink
         key={i}
@@ -110,18 +114,18 @@ const Pagination = props => {
         handlePageSizeUpdate={props.handlePageSizeUpdate}
       />
 
-      {1 !== props.pages &&
+      {1 !== pages &&
         <ul className="pagination">
           <PreviousLink
             disabled={0 === props.current}
-            handlePagePrevious={props.handlePagePrevious}
+            handlePagePrevious={() => props.handlePageChange(props.current - 1)}
           />
 
           {PageLinks}
 
           <NextLink
-            disabled={props.pages - 1 === props.current}
-            handlePageNext={props.handlePageNext}
+            disabled={pages - 1 === props.current}
+            handlePageNext={() => props.handlePageChange(props.current + 1)}
           />
         </ul>
       }
@@ -130,13 +134,17 @@ const Pagination = props => {
 }
 
 Pagination.propTypes = {
-  current: T.number.isRequired,
+  current: T.number,
   pageSize: T.number.isRequired,
-  pages: T.number.isRequired,
-  handlePagePrevious: T.func.isRequired,
-  handlePageNext: T.func.isRequired,
+  totalResults: T.number.isRequired,
+  //pages: T.number.isRequired,
   handlePageChange: T.func.isRequired,
   handlePageSizeUpdate: T.func.isRequired
+}
+
+Pagination.defaultProps = {
+  current: 0,
+  pageSize: DEFAULT_PAGE_SIZE
 }
 
 export {

@@ -507,7 +507,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             )
             AND u.isRemoved = false
             GROUP BY u.id
-            ORDER BY total DESC
+            ORDER BY total DESC, name ASC
         ";
 
         $query = $this->_em->createQuery($dql);

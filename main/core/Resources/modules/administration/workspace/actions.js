@@ -1,87 +1,77 @@
-import { makeActionCreator } from '#/main/core/utilities/redux'
-import { REQUEST_SEND } from '#/main/core/utilities/api/actions'
-import { makeReducer, combineReducers } from '#/main/core/utilities/redux'
-import cloneDeep from 'lodash/cloneDeep'
+import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 
-const PAGE_CHANGE = 'PAGE_CHANGE'
-const ON_SELECT = 'ON_SELECT'
-const DELETE_WORKSPACES = 'DELETE_WORKSPACES'
-const UPDATE_WORKSPACE = 'UPDATE_WORKSPACE'
-const COPY_WORKSPACE = 'COPY_WORKSPACE'
+import {actions as listActions} from '#/main/core/layout/list/actions'
+import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
+import {select as listSelect} from '#/main/core/layout/list/selectors'
+import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 
-export const actions = {
-  pageChange: makeActionCreator(PAGE_CHANGE, 'total', 'workspaces', 'current', 'pageSize'),
-  onSelect: makeActionCreator(ON_SELECT, 'selected'),
-  updateWorkspace: makeActionCreator(UPDATE_WORKSPACE, 'workspace'),
-  removeWorkspaces: (workspaces) => ({
-    [REQUEST_SEND] : {
-      url: generateUrl('api_delete_workspace') + workspaces.reduce((acc, workspace) => acc += 'ids[]=' + workspace.id + '&', '?'),
-      request: {
-        method: 'DELETE'
-      },
-      success: (data, dispatch) => {
-        //do somethibg better
-        dispatch(actions.fetchPage(1, 20))
-      },
-      failure: () => alert('fail')
+import {REQUEST_SEND} from '#/main/core/api/actions'
+
+export const WORKSPACES_LOAD = 'WORKSPACES_LOAD'
+
+export const actions = {}
+
+actions.loadWorkspaces = makeActionCreator(WORKSPACES_LOAD, 'workspaces', 'total')
+
+actions.removeWorkspaces = (workspaces) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('api_delete_workspace') + workspaceQueryString(workspaces),
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      //do something better
+      dispatch(paginationActions.changePage(0))
+      dispatch(actions.fetchWorkspaces())
     }
-  }),
-  copyWorkspaces: (workspaces, isModel = 0) => ({
-    [REQUEST_SEND] : {
-      url: generateUrl('api_copy_workspaces', {isModel: isModel}) + workspaces.reduce((acc, workspace) => acc += 'ids[]=' + workspace.id + '&', '?'),
-      request: {
-        method: 'PATCH'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.refreshPage())
-      }
-    }
-  }),
-  fetchPage: (current, pageSize) => ({
+  }
+})
+
+actions.copyWorkspaces = (workspaces, isModel = 0) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('api_copy_workspaces', {isModel: isModel}) + workspaceQueryString(workspaces),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => dispatch(actions.fetchWorkspaces())
+  }
+})
+
+actions.fetchWorkspaces = () => (dispatch, getState) => {
+  const state = getState()
+
+  const page = paginationSelect.current(state)
+  const pageSize = paginationSelect.pageSize(state)
+  let url = generateUrl('api_get_search_workspaces', {page: page, limit: pageSize}) + '?'
+
+  // build queryString
+  let queryString = ''
+
+  // add filters
+  const filters = listSelect.filters(state)
+  if (0 < filters.length) {
+    queryString += filters.map(filter => `filters[${filter.property}]=${filter.value}`).join('&')
+  }
+
+  // add sort by
+  const sortBy = listSelect.sortBy(state)
+  if (sortBy.property && 0 !== sortBy.direction) {
+    queryString += `${0 < queryString.length ? '&':''}sortBy=${-1 === sortBy.direction ? '-':''}${sortBy.property}`
+  }
+
+  dispatch({
     [REQUEST_SEND]: {
-      route: ['api_get_search_workspaces', {page: current++, limit: pageSize}],
+      url: url + queryString,
       request: {
         method: 'GET'
       },
       success: (data, dispatch) => {
-        dispatch(actions.pageChange(data.total, data.workspaces, current, pageSize))
-      },
-      failure: () => alert('fail')
+        dispatch(listActions.resetSelect())
+        dispatch(actions.loadWorkspaces(data.workspaces, data.total))
+      }
     }
   })
 }
 
-const initialState = {
-  pagination: {}
-}
-
-const handlers = {
-  [PAGE_CHANGE]: (state, action) => {
-    state = cloneDeep(state)
-
-    state.totalResults = action.total
-    state.data = action.workspaces
-    state.current = action.current
-    state.pageSize = action.pageSize
-
-    return state
-  },
-  [DELETE_WORKSPACES]: (/*state, action*/) => {
-    alert('gotcha the hander')
-  },
-  [ON_SELECT]: (state, action) => {
-    return Object.assign({}, state, {selected: action.selected})
-  },
-  [COPY_WORKSPACE]: (state) => {
-    return state
-  },
-  [UPDATE_WORKSPACE]: (state) => {
-    return state
-  }
-}
-
-export const reducers = combineReducers({
-  pagination: makeReducer(initialState, handlers),
-  user: makeReducer({user: {}}, {})
-})
+const workspaceQueryString = (workspaces) => '?' + workspaces.map(workspace => 'ids[]='+workspace.id).join('&')

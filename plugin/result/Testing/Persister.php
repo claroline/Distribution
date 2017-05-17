@@ -34,7 +34,22 @@ class Persister extends ClarolinePersister
 
     public function user($username)
     {
-        $user = parent::user($username);
+        $user = new User();
+        $user->setFirstName($username);
+        $user->setLastName($username);
+        $user->setUsername($username);
+        $user->setPassword($username);
+        $user->setMail($username.'@mail.com');
+        $user->setGuid($username);
+        $user->setPublicUrl($username);
+        $user->setIsMailValidated(true);
+        $this->om->persist($user);
+
+        if (!$this->userRole) {
+            $this->userRole = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_USER');
+        }
+
+        $user->addRole($this->userRole);
         $workspace = new Workspace();
         $workspace->setName($username);
         $workspace->setCreator($user);
