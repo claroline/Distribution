@@ -61,12 +61,14 @@ function customActions(props) {
   }
 
   // Results
-  actions.push({
-    icon: 'fa fa-fw fa-list',
-    label: tex('results_list'),
-    disabled: !props.hasPapers,
-    action: '#papers'
-  })
+  if (props.registeredUser) {
+    actions.push({
+      icon: 'fa fa-fw fa-list',
+      label: tex('results_list'),
+      disabled: !props.hasPapers,
+      action: '#papers'
+    })
+  }
 
   if (props.editable || props.papersAdmin) {
     // Export results
