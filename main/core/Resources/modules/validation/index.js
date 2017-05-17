@@ -1,6 +1,6 @@
 import set from 'lodash/set'
 
-import {tval} from '#/main/core/translation'
+import {trans, tval} from '#/main/core/translation'
 
 export function notBlank(value, isHtml = false) {
   if (typeof value === 'string') {
