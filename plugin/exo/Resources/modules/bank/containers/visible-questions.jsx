@@ -45,12 +45,11 @@ const mapDispatchToProps = (dispatch) => {
     onShare: (items) => {
       dispatch(modalActions.showModal(MODAL_SHARE, {
         title: transChoice('share_items', items.length, {count: items.length}, 'ujm_exo'),
-        fadeModal: modalActions.fadeModal,
+        fadeModal: () => dispatch(modalActions.fadeModal()),
         handleShare: (users, adminRights) => {
           dispatch(modalActions.fadeModal())
           dispatch(questionsActions.shareQuestions(items, users, adminRights))
-        },
-        fadeModal: () => dispatch(modalActions.fadeModal())
+        }
       }))
     },
 
