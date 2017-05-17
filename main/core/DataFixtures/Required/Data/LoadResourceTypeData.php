@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
+use Claroline\CoreBundle\Entity\Activity\ActivityRuleAction;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 
 /**
