@@ -11,13 +11,17 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Required;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoadRequiredFixturesData extends AbstractFixture implements ContainerAwareInterface
 {
+    use LoggableTrait;
+
     /**
      * {@inheritdoc}
      */
@@ -26,14 +30,21 @@ class LoadRequiredFixturesData extends AbstractFixture implements ContainerAware
         $this->container = $container;
     }
 
+    private function getDir()
+    {
+        $reflector = new \ReflectionClass(get_class($this));
+        $filename = $reflector->getFileName();
+
+        return dirname($filename);
+    }
+
     /**
      * {@inheritdoc}
      */
     public function load(ObjectManager $manager)
     {
-        $fixturesDir = __DIR__.DIRECTORY_SEPARATOR.'Data';
+        $fixturesDir = $this->getDir().DIRECTORY_SEPARATOR.'Data';
         $om = $this->container->get('claroline.persistence.object_manager');
-        //$om->startFlushSuite();
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($fixturesDir),
@@ -41,7 +52,7 @@ class LoadRequiredFixturesData extends AbstractFixture implements ContainerAware
         );
 
         foreach ($iterator as $file) {
-            if (($fileName = $file->getBasename('.php')) == $file->getBasename()) {
+            if (($file->getBasename('.php')) === $file->getBasename()) {
                 continue;
             }
             $sourceFile = realpath($file->getPathName());
@@ -50,8 +61,8 @@ class LoadRequiredFixturesData extends AbstractFixture implements ContainerAware
         }
 
         $declared = get_declared_classes();
-        $orderedClassNames = array();
-        $unorderedClassNames = array();
+        $orderedClassNames = [];
+        $unorderedClassNames = [];
 
         foreach ($declared as $className) {
             $reflClass = new \ReflectionClass($className);
@@ -71,24 +82,37 @@ class LoadRequiredFixturesData extends AbstractFixture implements ContainerAware
                     if (!isset($orderedClassNames[$order])) {
                         $orderedClassNames[$order] = $className;
                     } else {
-                        $orderedClassNames[] = $className;
+                        throw new \Exception('Order '.$order.' is already defined');
                     }
                 } else {
                     $unorderedClassNames[] = $className;
                 }
             }
         }
-        ksort($orderedClassNames);
 
-        foreach ($unorderedClassNames as $className) {
-            $orderedClassNames[] = $className;
-        }
+        ksort($orderedClassNames);
+        $orderedClassNames = array_merge($unorderedClassNames, $orderedClassNames);
 
         foreach ($orderedClassNames as $className) {
             $fixture = new $className();
+
+            $order = 'none';
+
+            if (method_exists($fixture, 'getOrder')) {
+                $order = $fixture->getOrder();
+            }
+
+            $this->log('load '.$className.' positon: '.$order);
             $fixture->setContainer($this->container);
             $fixture->load($om);
             $om->flush();
         }
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 }

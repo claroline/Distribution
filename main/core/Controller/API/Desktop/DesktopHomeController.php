@@ -681,7 +681,7 @@ class DesktopHomeController extends Controller
         return $this->apiManager->handleFormView(
             'ClarolineCoreBundle:API:Widget\widgetInstanceEditForm.html.twig',
             $form,
-            ['extra_infos' => $widget->isConfigurable()]
+            ['extra_infos' => $widget->isConfigurable(), 'form_view' => ['instance' => $widgetInstance]]
         );
     }
 
@@ -842,6 +842,7 @@ class DesktopHomeController extends Controller
                 'extra_parameters' => null,
                 'serializer_group' => 'api_widget',
                 'extra_infos' => $widget->isConfigurable(),
+                'form_view' => ['instance' => $widgetInstance],
             ];
 
             return $this->apiManager->handleFormView(

@@ -25,11 +25,11 @@ export const MODAL_RESOURCE_PROPERTIES = 'MODAL_RESOURCE_PROPERTIES'
 const MetaPanel = props =>
   <fieldset>
     <FormGroup
-      controlId={`resource-description`}
+      controlId="resource-description"
       label={t_res('resource_description')}
     >
       <Textarea
-        id={`resource-description`}
+        id="resource-description"
         content={props.meta.description || ''}
         onChange={description => props.updateParameter('meta.description', description)}
       />

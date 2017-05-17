@@ -58,6 +58,7 @@ class InstallationManager
 
     public function install(InstallableInterface $bundle, $insertPlugin = true)
     {
+        $this->fixtureLoader->setLogger($this->logger);
         $this->log(sprintf('<comment>Installing %s %s... </comment>', $bundle->getName(), $bundle->getVersion()));
         $additionalInstaller = $this->getAdditionalInstaller($bundle);
 
@@ -72,7 +73,7 @@ class InstallationManager
         }
 
         if ($fixturesDir = $bundle->getRequiredFixturesDirectory($this->environment)) {
-            $this->log('Loading required fixtures...');
+            $this->log("Loading required fixtures ($fixturesDir)...");
             $this->fixtureLoader->load($bundle, $fixturesDir);
         }
 
@@ -89,6 +90,11 @@ class InstallationManager
             $this->log('Parsing config.yml file for '.get_class($bundle).'...');
             $installer->validatePlugin($bundle);
             $dbWriter->insert($bundle, $validator->getPluginConfiguration());
+        }
+
+        if ($fixturesDir = $bundle->getPostInstallFixturesDirectory($this->environment)) {
+            $this->log("Loading post installation fixtures ($fixturesDir)...");
+            $this->fixtureLoader->load($bundle, $fixturesDir);
         }
     }
 

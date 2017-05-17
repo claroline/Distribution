@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'

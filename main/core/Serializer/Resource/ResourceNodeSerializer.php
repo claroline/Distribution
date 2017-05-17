@@ -2,7 +2,10 @@
 
 namespace Claroline\CoreBundle\Serializer\Resource;
 
+use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceRights;
+use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -10,6 +13,7 @@ use Claroline\CoreBundle\Manager\BreadcrumbManager;
 use Claroline\CoreBundle\Manager\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceMenuManager;
 use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -18,6 +22,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class ResourceNodeSerializer
 {
+    private $om;
+
     /**
      * @var AuthorizationCheckerInterface
      */
@@ -28,10 +34,19 @@ class ResourceNodeSerializer
      */
     private $eventDispatcher;
 
+    private $maskManager;
+
+    private $breadcrumbManager;
+
+    private $menuManager;
+
+    private $rightsManager;
+
     /**
      * ResourceNodeManager constructor.
      *
      * @DI\InjectParams({
+     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
      *     "authorization"     = @DI\Inject("security.authorization_checker"),
      *     "eventDispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
      *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
@@ -40,10 +55,16 @@ class ResourceNodeSerializer
      *     "menuManager"       = @DI\Inject("claroline.manager.resource_menu_manager")
      * })
      *
+     * @param ObjectManager                 $om
      * @param AuthorizationCheckerInterface $authorization
      * @param StrictDispatcher              $eventDispatcher
+     * @param MaskManager                   $maskManager
+     * @param BreadcrumbManager             $breadcrumbManager
+     * @param ResourceMenuManager           $menuManager
+     * @param RightsManager                 $rightsManager
      */
     public function __construct(
+        ObjectManager $om,
         AuthorizationCheckerInterface $authorization,
         StrictDispatcher $eventDispatcher,
         MaskManager $maskManager,
@@ -51,6 +72,7 @@ class ResourceNodeSerializer
         ResourceMenuManager $menuManager,
         RightsManager $rightsManager
     ) {
+        $this->om = $om;
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->maskManager = $maskManager;
@@ -79,9 +101,15 @@ class ResourceNodeSerializer
                 'code' => $resourceNode->getWorkspace()->getCode(),
             ] : [],
             'meta' => $this->getMeta($resourceNode),
+            'parameters' => $this->getParameters($resourceNode),
+            'rights' => ['current' => $this->getCurrentPermissions($resourceNode)],
             'shortcuts' => $this->getShortcuts($resourceNode),
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
         ];
+
+        if ($this->hasPermission('ADMINISTRATE', $resourceNode)) {
+            $meta['rights']['all'] = $this->getRights($resourceNode);
+        }
 
         return $this->decorate($resourceNode, $serializedNode);
     }
@@ -129,14 +157,8 @@ class ResourceNodeSerializer
                 'name' => $resourceNode->getCreator()->getFullName(),
                 'username' => $resourceNode->getCreator()->getUsername(),
             ],
-            'parameters' => $this->getParameters($resourceNode),
             'actions' => $this->getActions($resourceNode),
-            'rights' => ['current' => $this->getCurrentPermissions($resourceNode)],
         ];
-
-        if ($this->hasPermission('ADMINISTRATE', $resourceNode)) {
-            $meta['rights']['all'] = $this->getRights($resourceNode);
-        }
 
         return $meta;
     }
@@ -167,14 +189,14 @@ class ResourceNodeSerializer
 
         foreach ($actions as $action) {
             $data[$action->getName()] = [
-            'name' => $action->getName(),
-            'mask' => $action->getValue(),
-            'group' => $action->getGroup(),
-            'async' => $action->isAsync(),
-            'custom' => $action->isCustom(),
-            'form' => $action->isForm(),
-            'icon' => $action->getIcon(),
-          ];
+                'name' => $action->getName(),
+                'mask' => $action->getValue(),
+                'group' => $action->getGroup(),
+                'async' => $action->isAsync(),
+                'custom' => $action->isCustom(),
+                'form' => $action->isForm(),
+                'icon' => $action->getIcon(),
+            ];
         }
 
         return array_filter($data, function ($action) use ($currentMask) {
@@ -185,49 +207,50 @@ class ResourceNodeSerializer
     private function getRights(ResourceNode $resourceNode)
     {
         $decoders = $resourceNode->getResourceType()->getMaskDecoders()->toArray();
-        $serializedDecoders = array_map(function ($decoder) {
+        $serializedDecoders = array_map(function (MaskDecoder $decoder) {
             return [
-            'name' => $decoder->getName(),
-            'value' => $decoder->getValue(),
-          ];
+                'name' => $decoder->getName(),
+                'value' => $decoder->getValue(),
+            ];
         }, $decoders);
 
         $rights = $resourceNode->getRights()->toArray();
-        $serializedRights = [];
+        $serializedRights = array_map(function (ResourceRights $right) use ($resourceNode) {
+            return [
+                'id' => $right->getId(),
+                'mask' => $right->getMask(),
+                'role' => [
+                    'id' => $right->getRole()->getId(),
+                    'name' => $right->getRole()->getName(),
+                    'key' => $right->getRole()->getTranslationKey(),
+                ],
+                'permissions' => array_merge(
+                    $this->maskManager->decodeMask($right->getMask(), $resourceNode->getResourceType()),
+                    ['create' => $this->rightsManager->getCreatableTypes([$right->getRole()->getName()], $resourceNode)]
+                ),
+            ];
+        }, $rights);
 
-        foreach ($rights as $right) {
-            $serializedRights[] = [
-            'role' => [
-              'id' => $right->getRole()->getId(),
-              'name' => $right->getRole()->getName(),
-              'key' => $right->getRole()->getTranslationKey(),
-            ],
-            'mask' => $right->getMask(),
-            'id' => $right->getId(),
-            'permissions' => array_merge(
-              $this->maskManager->decodeMask($right->getMask(), $resourceNode->getResourceType()),
-              ['create' => $this->rightsManager->getCreatableTypes([$right->getRole()->getName()], $resourceNode)]),
-
-          ];
-        }
-
-        return ['decoders' => $serializedDecoders, 'permissions' => $serializedRights];
+        return [
+            'decoders' => $serializedDecoders,
+            'permissions' => $serializedRights,
+        ];
     }
 
     private function getShortcuts(ResourceNode $resourceNode)
     {
         $shortcuts = $resourceNode->getShortcuts()->toArray();
 
-        return array_map(function ($shortcut) {
-            $node = $this->getResourceFromNode($shortcut);
+        return array_map(function (ResourceShortcut $shortcut) {
+            $node = $shortcut->getResourceNode();
 
             return [
-              'name' => $node->getName(),
-              'workspace' => [
-                'id' => $node->getWorkspace()->getId(),
-                'name' => $node->getWorkspace()->getName(),
-                'code' => $node->getWorkspace()->getCode(),
-              ],
+                'name' => $node->getName(),
+                'workspace' => [
+                    'id' => $node->getWorkspace()->getId(),
+                    'name' => $node->getWorkspace()->getName(),
+                    'code' => $node->getWorkspace()->getCode(),
+                ],
             ];
         }, $shortcuts);
     }

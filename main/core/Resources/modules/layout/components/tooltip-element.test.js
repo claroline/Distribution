@@ -15,10 +15,9 @@ describe('<TooltipElement/>', () => {
       React.createElement(TooltipElement, {
         id: 'ID',
         tip: 'TIP'
-      },
-        React.createElement('span', {}, 'CONTENT')
-      )
+      }, React.createElement('span', {}, 'CONTENT'))
     )
+
     ensure.propTypesOk()
     ensure.equal(element.text(), 'CONTENT')
     // not sure if/how the tooltip itself should be tested

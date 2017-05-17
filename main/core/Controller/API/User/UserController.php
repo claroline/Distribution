@@ -189,7 +189,7 @@ class UserController extends FOSRestController
         $profileType = new ProfileCreationType(
             $this->localeManager,
             [$roleUser],
-            true,
+            $this->container->get('security.token_storage')->getToken()->getUser(),
             $this->authenticationManager->getDrivers()
         );
         $profileType->enableApi();
@@ -232,7 +232,8 @@ class UserController extends FOSRestController
             true,
             true,
             $accesses,
-            $this->authenticationManager->getDrivers()
+            $this->authenticationManager->getDrivers(),
+            $this->container->get('security.token_storage')->getToken()->getUser()
         );
 
         // keep track of the previous username before submittingthe form
@@ -263,7 +264,7 @@ class UserController extends FOSRestController
     /**
      * @View(serializerGroups={"api_user"})
      * @ParamConverter("user", class="ClarolineCoreBundle:User", options={"repository_method" = "findForApi"})
-     * @Get("/user/{user}", name="get_user", options={ "method_prefix" = false })
+     * @Get("/user/{user}/get", name="get_user", options={ "method_prefix" = false })
      */
     public function getUserAction(User $user)
     {

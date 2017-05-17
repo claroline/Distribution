@@ -1,5 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 
 import {t}         from '#/main/core/translation'
