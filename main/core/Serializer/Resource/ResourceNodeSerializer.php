@@ -101,6 +101,7 @@ class ResourceNodeSerializer
                 'code' => $resourceNode->getWorkspace()->getCode(),
             ] : [],
             'meta' => $this->getMeta($resourceNode),
+            'parameters' => $this->getParameters($resourceNode),
             'rights' => ['current' => $this->getCurrentPermissions($resourceNode)],
             'shortcuts' => $this->getShortcuts($resourceNode),
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
@@ -156,7 +157,6 @@ class ResourceNodeSerializer
                 'name' => $resourceNode->getCreator()->getFullName(),
                 'username' => $resourceNode->getCreator()->getUsername(),
             ],
-            'parameters' => $this->getParameters($resourceNode),
             'actions' => $this->getActions($resourceNode),
         ];
 
