@@ -1516,7 +1516,7 @@ class WorkspaceManager
             $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());
             $template = new File($this->container->getParameter('claroline.param.personal_template'));
             $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
-            $this->container->get('claroline.core_bundle.listener.log.log_listener')->default();
+            $this->container->get('claroline.core_bundle.listener.log.log_listener')->setDefaults();
         }
 
         return $workspace;
