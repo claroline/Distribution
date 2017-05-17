@@ -76,12 +76,12 @@ class DocumentController extends DropzoneBaseController
             $slugify = new Slugify();
 
             $user = $drop->getUser();
-            $str = $user->getFirstName().'-'.$user->getLastName();
-            $str = $slugify->slugify($str, ' ');
-
-            $name = $this->get('translator')->trans('Copy n°%number%', ['%number%' => $drop->getNumber()], 'innova_collecticiel');
-            $name .= ' - '.$str;
-            $hiddenDropDirectory->setName($name);
+            $username = $user->getUsername();
+            $directoryName = $user->getLastName().' '.$user->getFirstName();
+            $directoryName = $slugify->slugify($directoryName, ' ');
+            // Add username to ensure directory name is unique even if some users share the same name
+            $directoryName .= ' - '.$username;
+            $hiddenDropDirectory->setName($directoryName);
 
             $parent = $this->getDropZoneHiddenDirectory($dropzone);
             $role = $this
