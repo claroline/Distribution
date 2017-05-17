@@ -68,7 +68,7 @@ function customActions(props) {
     action: '#papers'
   })
 
-  if (props.editable && props.papersAdmin) {
+  if (props.editable || props.papersAdmin) {
     // Export results
     actions.push({
       icon: 'fa fa-fw fa-table',
@@ -76,6 +76,13 @@ function customActions(props) {
       disabled: !props.hasPapers,
       action: generateUrl('exercise_papers_export', {exerciseId: props.quiz.id})
     })
+
+    // not ready for now
+    /*actions.push({
+     icon: 'fa fa-fw fa-pie-chart',
+     label: tex('docimology'),
+     action: '#'
+     })*/
 
     // Manual correction
     actions.push({
@@ -85,13 +92,6 @@ function customActions(props) {
       action: '#correction/questions'
     })
   }
-
-  // not ready for now
-  /*actions.push({
-    icon: 'fa fa-fw fa-pie-chart',
-    label: tex('docimology'),
-    action: '#'
-  })*/
 
   return actions
 }
