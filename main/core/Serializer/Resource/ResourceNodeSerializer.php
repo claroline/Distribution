@@ -107,8 +107,9 @@ class ResourceNodeSerializer
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
         ];
 
+        //?
         if ($this->hasPermission('ADMINISTRATE', $resourceNode)) {
-            $meta['rights']['all'] = $this->getRights($resourceNode);
+            $serializedNode['meta']['rights']['all'] = $this->getRights($resourceNode);
         }
 
         return $this->decorate($resourceNode, $serializedNode);
