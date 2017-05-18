@@ -8,16 +8,13 @@
                 {{ 'user_table_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_table_name"
+                <input name="claroline_external_synchronization_source_table_name"
                         data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_table_name"
                         class="form-control"
                         data-ng-model="vm.sourceConfig.user_config.table"
-                        data-ng-change="vm.tableChange()"
-                        data-ng-options="option for option in vm.tableNames"
-                        required="required">
-                    <option value="">-- {{ 'choose_table' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        required="required" />
+                </input>
             </div>
         </div>
 
@@ -27,15 +24,13 @@
                 {{ 'id_field_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_field_id"
-                        data-ng-disabled="!vm.sourceConfig.user_config.table || vm.is_request_pending || !vm.tableFieldNames.length"
+                <input name="claroline_external_synchronization_source_field_id"
+                        data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_field_id"
                         class="form-control"
                         data-ng-model="vm.sourceConfig.user_config.fields.id"
-                        data-ng-options="option for option in vm.tableFieldNames"
-                        required="required">
-                    <option value="">-- {{ 'choose_field' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        required="required" />
+                </input>
             </div>
         </div>
 
@@ -45,15 +40,13 @@
                 {{ 'username_field_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_field_username"
-                        data-ng-disabled="!vm.sourceConfig.user_config.table || vm.is_request_pending || !vm.tableFieldNames.length"
+                <input name="claroline_external_synchronization_source_field_username"
+                        data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_field_username"
                         class="form-control"
                         data-ng-model="vm.sourceConfig.user_config.fields.username"
-                        data-ng-options="option for option in vm.tableFieldNames"
-                        required="required">
-                    <option value="">-- {{ 'choose_field' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        required="required" />
+                </input>
             </div>
         </div>
 
@@ -63,15 +56,13 @@
                 {{ 'first_name_field_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_field_first_name"
-                        data-ng-disabled="!vm.sourceConfig.user_config.table || vm.is_request_pending || !vm.tableFieldNames.length"
+                <input name="claroline_external_synchronization_source_field_first_name"
+                        data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_field_first_name"
                         class="form-control"
                         data-ng-model="vm.sourceConfig.user_config.fields.first_name"
-                        data-ng-options="option for option in vm.tableFieldNames"
-                        required="required">
-                    <option value="">-- {{ 'choose_field' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        required="required" />
+                </input>
             </div>
         </div>
 
@@ -81,15 +72,13 @@
                 {{ 'last_name_field_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_field_last_name"
-                        data-ng-disabled="!vm.sourceConfig.user_config.table || vm.is_request_pending || !vm.tableFieldNames.length"
+                <input name="claroline_external_synchronization_source_field_last_name"
+                        data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_field_last_name"
                         class="form-control"
                         data-ng-model="vm.sourceConfig.user_config.fields.last_name"
-                        data-ng-options="option for option in vm.tableFieldNames"
-                        required="required">
-                    <option value="">-- {{ 'choose_field' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        required="required" />
+                </input>
             </div>
         </div>
 
@@ -99,15 +88,12 @@
                 {{ 'email_field_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_field_email"
-                        data-ng-disabled="!vm.sourceConfig.user_config.table || vm.is_request_pending || !vm.tableFieldNames.length"
+                <input name="claroline_external_synchronization_source_field_email"
+                        data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_field_email"
                         class="form-control"
                         data-ng-model="vm.sourceConfig.user_config.fields.email"
-                        data-ng-options="option for option in vm.tableFieldNames"
-                        required="required">
-                    <option value="">-- {{ 'choose_field' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        required="required" />
             </div>
         </div>
 
@@ -117,14 +103,12 @@
                 {{ 'admin_code_field_name' | trans:{}:'claro_external_user_group' }}
             </label>
             <div class="col-md-9">
-                <select name="claroline_external_synchronization_source_field_code"
-                        data-ng-disabled="!vm.sourceConfig.user_config.table || vm.is_request_pending || !vm.tableFieldNames.length"
+                <input name="claroline_external_synchronization_source_field_code"
+                        data-ng-disabled="vm.is_request_pending"
                         id="claroline_external_synchronization_source_field_code"
                         class="form-control"
-                        data-ng-model="vm.sourceConfig.user_config.fields.code"
-                        data-ng-options="option for option in vm.tableFieldNames">
-                    <option value="">-- {{ 'choose_field' | trans:{}:'claro_external_user_group' }} --</option>
-                </select>
+                        data-ng-model="vm.sourceConfig.user_config.fields.code" />
+                </input>
             </div>
         </div>
 

@@ -14,6 +14,29 @@ export default class ExternalSourceGroupConfigController {
     _transFilter.set(this, transFilter)
     this.alerts = []
     this.is_request_pending = false
+
+    this.init()
+  }
+
+  init() {
+    // Try to detect if an error has been made using the simple form configuration
+    if (
+      (this.tableNames.length
+      && 'group_config' in this.sourceConfig
+      && 'table' in this.sourceConfig.group_config
+      && !this.tableNames.includes(this.sourceConfig.group_config.table))
+      ||
+      (this.tableNames.length
+      && 'group_config' in this.sourceConfig
+      && 'table' in this.sourceConfig.group_config
+      && 'user_group_config' in this.sourceConfig.group_config
+      && 'table' in this.sourceConfig.group_config.user_group_config
+      && !this.tableNames.includes(this.sourceConfig.group_config.user_group_config.table))
+    ) {
+      // Alert and reset data : the user will have to reconfigure the group source
+      this._setAlert('danger', 'group_config_update_discrepancy')
+      this.sourceConfig.group_config = []
+    }
   }
 
   groupTableChange() {

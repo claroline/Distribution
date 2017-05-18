@@ -13,6 +13,21 @@ export default class ExternalSourceUserConfigController {
     _transFilter.set(this, transFilter)
     this.alerts = []
     this.is_request_pending = false
+
+    this.init()
+  }
+
+  init() {
+    // Try to detect if an error has been made using the simple form configuration
+    if (this.tableNames.length
+      && 'user_config' in this.sourceConfig
+      && 'table' in this.sourceConfig.user_config
+      && !this.tableNames.includes(this.sourceConfig.user_config.table)
+    ) {
+      // Alert and reset data : the user will have to reconfigure the user source
+      this._setAlert('danger', 'user_config_update_discrepancy')
+      this.sourceConfig.user_config = []
+    }
   }
 
   tableChange() {
@@ -48,12 +63,12 @@ export default class ExternalSourceUserConfigController {
   }
 }
 ExternalSourceUserConfigController.$inject = [
-    'externalSourceUserConfigService',
-    'externalSource',
-    'sourceConfig',
-    'tableNames',
-    'fieldNames',
-    'url',
-    '$window',
-    'transFilter'
+  'externalSourceUserConfigService',
+  'externalSource',
+  'sourceConfig',
+  'tableNames',
+  'fieldNames',
+  'url',
+  '$window',
+  'transFilter'
 ]
