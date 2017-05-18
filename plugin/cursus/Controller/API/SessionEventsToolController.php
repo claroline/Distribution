@@ -12,10 +12,12 @@
 namespace Claroline\CursusBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -66,9 +68,33 @@ class SessionEventsToolController extends Controller
         ];
     }
 
+    /**
+     * @EXT\Route(
+     *     "/workspace/{workspace}/session/event/{sessionEvent}/delete",
+     *     name="claro_cursus_session_event_delete",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventDeleteAction(Workspace $workspace, SessionEvent $sessionEvent)
+    {
+        $this->checkSessionEventEditionAccess($workspace, $sessionEvent);
+        $this->cursusManager->deleteSessionEvent($sessionEvent);
+
+        return new JsonResponse('success', 200);
+    }
+
     private function checkToolAccess(Workspace $workspace)
     {
         if (!$this->authorization->isGranted(['claroline_session_events_tool', 'open'], $workspace)) {
+            throw new AccessDeniedException();
+        }
+    }
+
+    private function checkSessionEventEditionAccess(Workspace $workspace, SessionEvent $sessionEvent)
+    {
+        if (!$this->authorization->isGranted(['claroline_session_events_tool', 'edit'], $workspace) ||
+            $workspace->getId() !== $sessionEvent->getSession()->getWorkspace()->getId()
+        ) {
             throw new AccessDeniedException();
         }
     }

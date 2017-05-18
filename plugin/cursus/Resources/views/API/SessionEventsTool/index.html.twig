@@ -26,6 +26,7 @@
     </div>
     <div class="panel-body">
         <div class="page-container session-events-tool-container"
+             data-workspace="{{ workspace.getId() }}"
              data-editable="{{ canEdit }}"
              data-sessions="{{ sessions | json_serialize('api_cursus_min') | raw | escape }}"
              data-events="{{ sessionEvents | json_serialize('api_cursus_min') | raw | escape }}"

@@ -1,21 +1,17 @@
-import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
-import {VIEW_USER} from './views'
+import {generateUrl} from '#/main/core/fos-js-router'
+import { REQUEST_SEND } from '#/plugin/exo/api/actions'
 
-const initialState = {
-  canEdit: 0,
-  sessions: {},
-  sessionId: null,
-  events: {},
-  mode: VIEW_USER
+export const actions = {
+  deleteSessionEvent: (workspaceId, sessionEventId) => ({
+    [REQUEST_SEND] : {
+      url: generateUrl('claro_cursus_session_event_delete', {workspace: workspaceId, sessionEvent: sessionEventId}),
+      request: {
+        method: 'DELETE'
+      },
+      success: (data, dispatch) => {
+
+      },
+      failure: () => alert('fail')
+    }
+  })
 }
-
-const handlers = {
-}
-
-export const reducers = combineReducers({
-  canEdit: makeReducer(initialState['canEdit'], handlers),
-  sessions: makeReducer(initialState['sessions'], handlers),
-  sessionId: makeReducer(initialState['sessionId'], handlers),
-  events: makeReducer(initialState['events'], handlers),
-  mode: makeReducer(initialState['mode'], handlers)
-})
