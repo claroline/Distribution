@@ -24,6 +24,8 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {LIST_PROP_DEFAULT, LIST_PROP_DISPLAYED} from '#/main/core/layout/list/utils'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
+import {openUserPicker} from '#/main/core/user-picker'
+
 class Workspaces extends Component {
   getWorkspaces(workspaceIds) {
     return workspaceIds.map(workspaceId => this.props.data.find(workspace => workspaceId === workspace.id))
@@ -51,6 +53,11 @@ class Workspaces extends Component {
       }),
       handleConfirm: () => this.props.copyWorkspaces(workspaces, asModel)
     })
+  }
+
+  managerUsers(workspaceId) {
+    const el = openUserPicker(false, () => true, () => true, {title: 'user_picker'})
+    console.log(el)
   }
 
   render() {
@@ -129,6 +136,12 @@ class Workspaces extends Component {
                 label: t('delete'),
                 action: (row) => this.removeWorkspaces([row.id]),
                 isDangerous: true
+              },
+              {
+                icon: 'fa fa-fw fa-user',
+                label: t('manager'),
+                action: (row) => this.managerUsers(row.id),
+                isDangerous: false
               }
             ]}
 
