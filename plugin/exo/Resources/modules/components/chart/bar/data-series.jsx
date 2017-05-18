@@ -29,7 +29,6 @@ DataSeries.propTypes = {
   data: T.object.isRequired,
   yScale: T.func.isRequired,
   xScale: T.func.isRequired,
-  width: T.number.isRequired,
   height: T.number.isRequired,
   color: T.string
 }

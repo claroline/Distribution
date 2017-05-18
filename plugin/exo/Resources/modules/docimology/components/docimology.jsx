@@ -12,6 +12,18 @@ import BarChart from './../../components/chart/bar/bar-chart.jsx'
 import PieChart from './../../components/chart/pie/pie-chart.jsx'
 import CircularGauge from './../../components/chart/gauge/circlular-gauge.jsx'
 
+import {
+  AXIS_POSITION_LEFT,
+  AXIS_POSITION_TOP,
+  AXIS_POSITION_RIGHT,
+  AXIS_POSITION_BOTTOM,
+  AXIS_POSITION_MIDDLE,
+  AXIS_TYPE_X,
+  AXIS_TYPE_Y,
+  AXIS_TYPE_LABEL_X,
+  AXIS_TYPE_LABEL_Y
+} from './../../components/chart/bar/enums'
+
 const T = React.PropTypes
 
 const CountCard = props =>
@@ -56,7 +68,22 @@ class Docimology extends Component {
                 width={540}
                 height={250}
                 margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                labels={{show:true, labelX:tex('docimology_score', 'docimology'), labelY:tex('docimology_nb_papers', 'docimology')}}
+                xAxis={{
+                  position: AXIS_POSITION_BOTTOM,
+                  label: {
+                    show:true,
+                    position: AXIS_POSITION_BOTTOM,
+                    text: tex('docimology_score', 'docimology')
+                  }
+                }}
+                yAxis={{
+                  position: AXIS_POSITION_LEFT,
+                  label: {
+                    show:true,
+                    position: AXIS_POSITION_LEFT,
+                    text: tex('docimology_nb_papers', 'docimology')
+                  }
+                }}
               />
             </div>
           </div>
@@ -90,7 +117,6 @@ class Docimology extends Component {
             showValue={false}
             />
         </div>
-
       </div>
     )
   }
@@ -171,24 +197,44 @@ class Docimology extends Component {
                   width={720}
                   height={350}
                   margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                  labels={{show:true, labelX:tex('docimology_question_title', 'docimology'), labelY:tex('docimology_success_percentage', 'docimology')}}
+                  xAxis={{
+                    position: AXIS_POSITION_BOTTOM,
+                    label: {
+                      show:true ,
+                      position: AXIS_POSITION_BOTTOM,
+                      text: tex('docimology_question_title', 'docimology')
+                    }
+                  }}
+                  yAxis={{
+                    position: AXIS_POSITION_LEFT,
+                    label: {
+                      show:true ,
+                      position: AXIS_POSITION_LEFT,
+                      text: tex('docimology_difficulty_index', 'docimology')
+                    }
+                  }}
                 />
-                <span id="help" className="help-block">
-                  <span className="fa fa-fw fa-info-circle"></span>
-                  {tex('docimology_difficulty_index_help_part_1', 'docimology')}
-                </span>
-                <span className="help-block">
-                  <span className="fa fa-fw"></span>
-                  {tex('docimology_difficulty_index_help_part_2', 'docimology')}
-                </span>
-                <span className="help-block">
-                  <span className="fa fa-fw"></span>
-                  {tex('docimology_difficulty_index_help_part_3', 'docimology')}
-                </span>
-                <span className="help-block">
-                  <span className="fa fa-fw"></span>
-                  {tex('docimology_difficulty_index_help_part_4', 'docimology')}
-                </span>
+                <div className="docimology-help">
+                  <div className="icon">
+                    <span className="help-block">
+                      <span className="fa fa-fw fa-info-circle"></span>
+                    </span>
+                  </div>
+                  <div className="text">
+                    <span className="help-block">
+                      {tex('docimology_difficulty_index_help_part_1', 'docimology')}
+                    </span>
+                    <span className="help-block">
+                      {tex('docimology_difficulty_index_help_part_2', 'docimology')}
+                    </span>
+                    <span className="help-block">
+                        {tex('docimology_difficulty_index_help_part_3', 'docimology')}
+                    </span>
+                    <span className="help-block">
+                      {tex('docimology_difficulty_index_help_part_4', 'docimology')}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -199,35 +245,55 @@ class Docimology extends Component {
         <div className="discrimination-index">
           <h2 className="h3">{tex('docimology_discrimination_coefficient', 'docimology')}</h2>
           <div className="row">
-          <div className="col-md-12">
-            <div className="panel panel-default">
-              <div className="panel-body">
-                <BarChart
-                  data={this.props.statistics.discriminationCoefficient}
-                  width={720}
-                  height={350}
-                  margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                  labels={{show:true, labelX:tex('docimology_question_title', 'docimology'), labelY:tex('docimology_discrimination_coefficient', 'docimology')}}
-                />
-                <span id="help" className="help-block">
-                  <span className="fa fa-fw fa-info-circle"></span>
-                  {tex('docimology_discrimination_coefficient_help_part_1', 'docimology')}
-                </span>
-                <span className="help-block">
-                  <span className="fa fa-fw"></span>
-                  {tex('docimology_discrimination_coefficient_help_part_2', 'docimology')}
-                </span>
-                <span className="help-block">
-                  <span className="fa fa-fw"></span>
-                  {tex('docimology_discrimination_coefficient_help_part_3', 'docimology')}
-                </span>
-                <span className="help-block">
-                  <span className="fa fa-fw"></span>
-                  {tex('docimology_discrimination_coefficient_help_part_4', 'docimology')}
-                </span>
+            <div className="col-md-12">
+              <div className="panel panel-default">
+                <div className="panel-body">
+                  <BarChart
+                    data={this.props.statistics.discriminationCoefficient}
+                    width={720}
+                    height={350}
+                    margin={{top: 20, right: 20, bottom: 80, left: 80}}
+                    xAxis={{
+                      position: AXIS_POSITION_BOTTOM,
+                      label: {
+                        show:true ,
+                        position: AXIS_POSITION_BOTTOM,
+                        text: tex('docimology_question_title', 'docimology')
+                      }
+                    }}
+                    yAxis={{
+                      position: AXIS_POSITION_LEFT,
+                      label: {
+                        show:true ,
+                        position: AXIS_POSITION_LEFT,
+                        text: tex('docimology_discrimination_coefficient', 'docimology')
+                      }
+                    }}
+                  />
+                  <div className="docimology-help">
+                    <div className="icon">
+                      <span className="help-block">
+                        <span className="fa fa-fw fa-info-circle"></span>
+                      </span>
+                    </div>
+                    <div className="text">
+                      <span className="help-block">
+                        {tex('docimology_discrimination_coefficient_help_part_1', 'docimology')}
+                      </span>
+                      <span className="help-block">
+                        {tex('docimology_discrimination_coefficient_help_part_2', 'docimology')}
+                      </span>
+                      <span className="help-block">
+                        {tex('docimology_discrimination_coefficient_help_part_3', 'docimology')}
+                      </span>
+                      <span className="help-block">
+                        {tex('docimology_discrimination_coefficient_help_part_4', 'docimology')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
           </div>
         </div>
       </div>

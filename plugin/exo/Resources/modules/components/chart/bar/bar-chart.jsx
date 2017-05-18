@@ -6,6 +6,17 @@ import {axisLeft, axisBottom} from 'd3-axis'
 import Chart from './../base/chart.jsx'
 import DataSeries from './data-series.jsx'
 import Axis from './axis.jsx'
+import {
+  AXIS_POSITION_LEFT,
+  AXIS_POSITION_TOP,
+  AXIS_POSITION_RIGHT,
+  AXIS_POSITION_BOTTOM,
+  AXIS_POSITION_MIDDLE,
+  AXIS_TYPE_X,
+  AXIS_TYPE_Y,
+  AXIS_TYPE_LABEL_X,
+  AXIS_TYPE_LABEL_Y
+} from './enums'
 
 const T = React.PropTypes
 
@@ -36,10 +47,10 @@ export default class BarChart extends Component {
       .paddingInner([0.2])
 
     const yAxis = axisLeft(yScale)
-      .tickValues(yValues)
+      .tickValues([...new Set(yValues)])
 
     const xAxis = axisBottom(xScale)
-      .tickValues(xValues)
+      .tickValues([...new Set(xValues)])
 
     return (
       <Chart
@@ -49,19 +60,17 @@ export default class BarChart extends Component {
         <g transform={`translate(${this.props.margin.left}, ${this.props.margin.top})`}>
           <DataSeries
             data={this.props.data}
-            width={width}
             height={height}
             yScale={yScale}
             xScale={xScale}
           />
-
-          <Axis height={height} width={width} margin={this.props.margin} axis={yAxis} axisType="y" />
-          <Axis height={height} width={width} margin={this.props.margin} axis={xAxis} axisType="x" />
-          {this.props.labels.show &&
-            <g>
-              <Axis height={height} width={width} margin={this.props.margin} axisType="labelX" axisLabel={this.props.labels.labelX} />
-              <Axis height={height} width={width} margin={this.props.margin} axisType="labelY" axisLabel={this.props.labels.labelY} />
-            </g>
+          <Axis height={height} width={width} position={this.props.xAxis.position} margin={this.props.margin} axis={xAxis} type={AXIS_TYPE_X} />
+          <Axis height={height} width={width} position={this.props.yAxis.position} margin={this.props.margin} axis={yAxis} type={AXIS_TYPE_Y} />
+          {this.props.xAxis.label.show &&
+            <Axis height={height} width={width} margin={this.props.margin} position={this.props.xAxis.label.position} type={AXIS_TYPE_LABEL_X} label={this.props.xAxis.label.text} />
+          }
+          {this.props.yAxis.label.show &&
+            <Axis height={height} width={width} margin={this.props.margin} position={this.props.yAxis.label.position} type={AXIS_TYPE_LABEL_Y} label={this.props.yAxis.label.text} />
           }
         </g>
       </Chart>
@@ -73,17 +82,28 @@ BarChart.propTypes = {
   data: T.object.isRequired,
   width: T.number,
   height: T.number,
-  labels: T.shape({
-    show:T.bool.isRequired,
-    labelX: T.string,
-    labelY: T.string
-  }).isRequired,
   margin: T.shape({
     top: T.number.isRequired,
     right: T.number.isRequired,
     bottom: T.number.isRequired,
     left: T.number.isRequired
-  }).isRequired
+  }).isRequired,
+  xAxis: T.shape({
+    position: T.oneOf([AXIS_POSITION_TOP, AXIS_POSITION_MIDDLE, AXIS_POSITION_BOTTOM]),
+    label: T.shape({
+      show: T.bool.isRequired,
+      text: T.string,
+      position: T.oneOf([AXIS_POSITION_TOP, AXIS_POSITION_MIDDLE, AXIS_POSITION_BOTTOM])
+    })
+  }),
+  yAxis: T.shape({
+    position: T.oneOf([AXIS_POSITION_LEFT, AXIS_POSITION_MIDDLE, AXIS_POSITION_RIGHT]),
+    label: T.shape({
+      show: T.bool.isRequired,
+      text: T.string,
+      position:T.oneOf([AXIS_POSITION_LEFT, AXIS_POSITION_MIDDLE, AXIS_POSITION_RIGHT])
+    })
+  })
 }
 
 BarChart.defaultProps = {
@@ -94,10 +114,5 @@ BarChart.defaultProps = {
     right: 20,
     bottom: 20,
     left: 30
-  },
-  labels: {
-    show: false,
-    labelX: 'X Axis Data',
-    labelY: 'Y Axis Data'
   }
 }
