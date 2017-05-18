@@ -159,7 +159,7 @@ class AdminConfigurationController extends Controller
     public function userConfigurationForSourceAction($source)
     {
         $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
-        $tableNames = $this->externalUserGroupSyncManager->getTableNames($source);
+        $tableNames = $this->externalUserGroupSyncManager->getTableAndViewNames($source);
         $fieldNames = isset($sourceConfig['user_config']['table'])
             ? $this->externalUserGroupSyncManager->getColumnNamesForTable($source, $sourceConfig['user_config']['table'])
             : null;
@@ -185,7 +185,7 @@ class AdminConfigurationController extends Controller
     public function groupConfigurationForSourceAction($source)
     {
         $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
-        $tableNames = $this->externalUserGroupSyncManager->getTableNames($source);
+        $tableNames = $this->externalUserGroupSyncManager->getTableAndViewNames($source);
         $groupFieldNames = isset($sourceConfig['group_config']['table'])
             ? $this->externalUserGroupSyncManager->getColumnNamesForTable($source, $sourceConfig['group_config']['table'])
             : null;
@@ -259,23 +259,6 @@ class AdminConfigurationController extends Controller
 
     /**
      * @param $source
-     * @EXT\Route("/{source}/tables",
-     *     options={"expose"=true},
-     *     name="claro_admin_external_user_group_table_names"
-     * )
-     * @EXT\Method({ "GET" })
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getTableNamesForSourceAction($source)
-    {
-        $columns = $this->externalUserGroupSyncManager->getTableNames($source);
-
-        return new JsonResponse($columns);
-    }
-
-    /**
-     * @param $source
      * @param $table
      * @EXT\Route("/{source}/{table}/columns",
      *     options={"expose"=true},
@@ -311,17 +294,18 @@ class AdminConfigurationController extends Controller
 
     /**
      * @param $source
-     * @EXT\Route("/{source}/groups",
+     * @EXT\Route("/{source}/groups/search/{search}",
      *     options={"expose"=true},
+     *     defaults={"search"=""},
      *     name="claro_admin_external_user_group_groups"
      * )
      * @EXT\Method({ "GET" })
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getGroupsForSourceAction($source)
+    public function getGroupsForSourceAction($source, $search)
     {
-        $groups = $this->externalUserGroupSyncManager->loadGroupsForExternalSource($source);
+        $groups = $this->externalUserGroupSyncManager->searchGroupsForExternalSource($source, $search);
 
         return new JsonResponse($groups);
     }

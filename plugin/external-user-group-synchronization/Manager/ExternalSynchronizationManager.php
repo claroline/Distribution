@@ -126,11 +126,23 @@ class ExternalSynchronizationManager
         return true;
     }
 
-    public function getTableNames($sourceName)
+    public function getTableAndViewNames($sourceName)
     {
         $repo = $this->getRepositoryForExternalSource($this->getExternalSource($sourceName));
 
-        return $repo->findTableNames();
+        $names = [];
+        try {
+            $names = $repo->findTableNames();
+        } catch (\Exception $e) {
+            unset($e);
+        }
+        try {
+            $names = array_merge($names, $repo->findViewNames());
+        } catch (\Exception $e) {
+            unset($e);
+        }
+
+        return $names;
     }
 
     public function getColumnNamesForTable($sourceName, $table)
@@ -148,12 +160,12 @@ class ExternalSynchronizationManager
         return $repo->findUsers();
     }
 
-    public function loadGroupsForExternalSource($sourceName)
+    public function searchGroupsForExternalSource($sourceName, $search = null, $max = -1)
     {
         $externalSource = $this->getExternalSource($sourceName);
         $repo = $this->getRepositoryForExternalSource($externalSource);
 
-        return $repo->findGroups();
+        return $repo->findGroups($search, $max);
     }
 
     public function saveConfig()
