@@ -43,6 +43,7 @@ export default class CircularGauge extends Component {
           colors={[this.props.color, '#ccc']}
           innerRadius={radius - this.props.size}
           outerRadius={radius}
+          showValue={this.props.showValue}
         />
       </Chart>
     )
@@ -55,7 +56,8 @@ CircularGauge.propTypes = {
   color: T.string,
   label: T.string,
   width: T.number,
-  size: T.number
+  size: T.number,
+  showValue: T.bool.isRequired
 }
 
 CircularGauge.defaultProps = {
@@ -63,5 +65,6 @@ CircularGauge.defaultProps = {
   color: '#337ab7', // Default bootstrap primary color
   label: null,
   width: 200,
-  size: 30
+  size: 30,
+  showValue: true
 }
