@@ -302,17 +302,18 @@ class DocimologyManager
         $sdSquare = function ($x, $mean) {
             return pow($x - $mean, 2);
         };
+        // avoid division by 0
         $nbData = count($array) > 1 ? count($array) - 1 : 1;
+        $fillNbData = count($array) > 1 ? count($array) : 1;
 
         return sqrt(
           array_sum(
             array_map(
               $sdSquare,
               $array,
-              array_fill(0, count($array), (array_sum($array) / count($array)))
+              array_fill(0, count($array), (array_sum($array) / $fillNbData))
             )
-          )
-          / $nbData
+          ) / $nbData
         );
     }
 

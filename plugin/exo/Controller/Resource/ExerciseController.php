@@ -109,9 +109,9 @@ class ExerciseController extends Controller
     private function canViewDocimology(Exercise $exercise)
     {
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
-        $isGranted = $this->get('security.authorization_checker')->isGranted('VIEW_DOCIMOLOGY', $collection);
+        $isGranted = $this->get('security.authorization_checker')->isGranted('VIEW_DOCIMOLOGY', $collection) || $this->isAdmin($exercise);
 
-        return $isGranted ? true : $this->isAdmin($exercise);
+        return $isGranted;
     }
 
     private function assertHasPermission($permission, Exercise $exercise)
