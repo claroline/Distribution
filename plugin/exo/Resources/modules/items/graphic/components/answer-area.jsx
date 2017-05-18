@@ -1,3 +1,6 @@
+//otherwise eslint looks buggy and triggers a false positive for the makeResizerFactory function
+/* eslint react/display-name: 0 */
+
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
@@ -21,6 +24,7 @@ import {
   DIR_W,
   DIR_NW
 } from './../enums'
+
 
 const FRAME_GUTTER = 6
 export const AREA_GUTTER = 8
