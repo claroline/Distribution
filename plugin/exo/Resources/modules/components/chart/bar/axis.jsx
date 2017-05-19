@@ -2,11 +2,6 @@ import React, { Component } from 'react'
 import {select} from 'd3-selection'
 
 import {
-  AXIS_POSITION_LEFT,
-  AXIS_POSITION_TOP,
-  AXIS_POSITION_RIGHT,
-  AXIS_POSITION_BOTTOM,
-  AXIS_POSITION_MIDDLE,
   AXIS_TYPE_X,
   AXIS_TYPE_Y,
   AXIS_TYPE_LABEL_X,
@@ -36,18 +31,10 @@ export default class Axis extends Component {
     let transform = ''
     switch (this.props.type) {
       case AXIS_TYPE_X:
-        if (this.props.position === AXIS_POSITION_MIDDLE) {
-          transform = `translate(0, ${this.props.height / 2})`
-        } else if (this.props.position === AXIS_POSITION_BOTTOM) {
           transform = `translate(0, ${this.props.height})`
-        }
         break
       case AXIS_TYPE_Y:
-          if (this.props.position === AXIS_POSITION_MIDDLE) {
-            transform = `translate(0, ${this.props.height / 2})`
-          } else if (this.props.position === AXIS_POSITION_RIGHT) {
-            transform = `translate(${this.props.width}, 0)`
-          }
+          transform = `translate(0, 0)`
           break
       case AXIS_TYPE_LABEL_X:
         transform = `translate(${(this.props.width - this.props.margin.left - this.props.margin.right) / 2}, ${this.props.height + 40})`
@@ -78,6 +65,5 @@ Axis.propTypes = {
     right: T.number.isRequired,
     bottom: T.number.isRequired,
     left: T.number.isRequired
-  }).isRequired,
-  position: T.oneOf([AXIS_POSITION_LEFT, AXIS_POSITION_TOP, AXIS_POSITION_RIGHT, AXIS_POSITION_MIDDLE, AXIS_POSITION_BOTTOM]).isRequired
+  }).isRequired
 }

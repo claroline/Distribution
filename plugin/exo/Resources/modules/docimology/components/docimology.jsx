@@ -54,6 +54,17 @@ GeneralStats.propTypes = {
   statistics: T.object.isRequired
 }
 
+const fake = {
+  "a":{
+    xData: "a",
+    yData: "-1"
+  },
+  "b":{
+    xData: "b",
+    yData: "1"
+  }
+}
+
 class Docimology extends Component {
 
   renderNoteBlock() {
@@ -68,21 +79,13 @@ class Docimology extends Component {
                 width={540}
                 height={250}
                 margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                xAxis={{
-                  position: AXIS_POSITION_BOTTOM,
-                  label: {
-                    show:true,
-                    position: AXIS_POSITION_BOTTOM,
-                    text: tex('docimology_score', 'docimology')
-                  }
+                yAxisLabel={{
+                  show:true,
+                  text: tex('docimology_nb_papers', 'docimology')
                 }}
-                yAxis={{
-                  position: AXIS_POSITION_LEFT,
-                  label: {
-                    show:true,
-                    position: AXIS_POSITION_LEFT,
-                    text: tex('docimology_nb_papers', 'docimology')
-                  }
+                xAxisLabel={{
+                  show:true,
+                  text: tex('docimology_score', 'docimology')
                 }}
               />
             </div>
@@ -197,21 +200,13 @@ class Docimology extends Component {
                   width={720}
                   height={350}
                   margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                  xAxis={{
-                    position: AXIS_POSITION_BOTTOM,
-                    label: {
-                      show:true ,
-                      position: AXIS_POSITION_BOTTOM,
-                      text: tex('docimology_question_title', 'docimology')
-                    }
+                  yAxisLabel={{
+                    show:true,
+                    text: tex('docimology_difficulty_index', 'docimology')
                   }}
-                  yAxis={{
-                    position: AXIS_POSITION_LEFT,
-                    label: {
-                      show:true ,
-                      position: AXIS_POSITION_LEFT,
-                      text: tex('docimology_difficulty_index', 'docimology')
-                    }
+                  xAxisLabel={{
+                    show:true,
+                    text: tex('docimology_question_title', 'docimology')
                   }}
                 />
                 <div className="docimology-help">
@@ -253,21 +248,13 @@ class Docimology extends Component {
                     width={720}
                     height={350}
                     margin={{top: 20, right: 20, bottom: 80, left: 80}}
-                    xAxis={{
-                      position: AXIS_POSITION_BOTTOM,
-                      label: {
-                        show:true ,
-                        position: AXIS_POSITION_BOTTOM,
-                        text: tex('docimology_question_title', 'docimology')
-                      }
+                    yAxisLabel={{
+                      show:true,
+                      text: tex('docimology_discrimination_coefficient', 'docimology')
                     }}
-                    yAxis={{
-                      position: AXIS_POSITION_LEFT,
-                      label: {
-                        show:true ,
-                        position: AXIS_POSITION_LEFT,
-                        text: tex('docimology_discrimination_coefficient', 'docimology')
-                      }
+                    xAxisLabel={{
+                      show:true,
+                      text: tex('docimology_question_title', 'docimology')
                     }}
                   />
                   <div className="docimology-help">
