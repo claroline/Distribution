@@ -1,6 +1,3 @@
-//otherwise eslint looks buggy and triggers a false positive for the makeResizerFactory function
-/* eslint react/display-name: 0 */
-
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
@@ -24,7 +21,6 @@ import {
   DIR_W,
   DIR_NW
 } from './../enums'
-
 
 const FRAME_GUTTER = 6
 export const AREA_GUTTER = 8
@@ -202,17 +198,21 @@ function common(rules) {
 }
 
 function makeResizerFactory(resizable, areaId, size, el) {
-  return (geometry, index) => React.createElement(
-    resizable ? AreaResizerDraggable : AreaResizer,
-    Object.assign(geometry, {
-      areaId,
-      size,
-      areaEl: el,
-      connectDragSource: el => el,
-      key: `${areaId}-${index}`,
-      top: geometry[0],
-      left: geometry[1],
-      position: geometry[2]
-    })
-  )
+  return (geometry, index) => {
+    const Resizer = React.createElement(
+      resizable ? AreaResizerDraggable : AreaResizer,
+      Object.assign(geometry, {
+        areaId,
+        size,
+        areaEl: el,
+        connectDragSource: el => el,
+        key: `${areaId}-${index}`,
+        top: geometry[0],
+        left: geometry[1],
+        position: geometry[2]
+      })
+    )
+
+    return Resizer
+  }
 }
