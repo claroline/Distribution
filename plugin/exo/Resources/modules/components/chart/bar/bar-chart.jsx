@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {max, min} from 'd3-array'
+import {max} from 'd3-array'
 import {scaleLinear, scaleBand} from 'd3-scale'
 import {axisLeft, axisBottom} from 'd3-axis'
 

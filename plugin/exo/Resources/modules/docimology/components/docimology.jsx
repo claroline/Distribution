@@ -12,18 +12,6 @@ import BarChart from './../../components/chart/bar/bar-chart.jsx'
 import PieChart from './../../components/chart/pie/pie-chart.jsx'
 import CircularGauge from './../../components/chart/gauge/circlular-gauge.jsx'
 
-import {
-  AXIS_POSITION_LEFT,
-  AXIS_POSITION_TOP,
-  AXIS_POSITION_RIGHT,
-  AXIS_POSITION_BOTTOM,
-  AXIS_POSITION_MIDDLE,
-  AXIS_TYPE_X,
-  AXIS_TYPE_Y,
-  AXIS_TYPE_LABEL_X,
-  AXIS_TYPE_LABEL_Y
-} from './../../components/chart/bar/enums'
-
 const T = React.PropTypes
 
 const CountCard = props =>
@@ -52,17 +40,6 @@ const GeneralStats = props =>
 
 GeneralStats.propTypes = {
   statistics: T.object.isRequired
-}
-
-const fake = {
-  "a":{
-    xData: "a",
-    yData: "-1"
-  },
-  "b":{
-    xData: "b",
-    yData: "1"
-  }
 }
 
 class Docimology extends Component {

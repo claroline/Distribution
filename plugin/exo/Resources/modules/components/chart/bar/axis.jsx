@@ -31,11 +31,11 @@ export default class Axis extends Component {
     let transform = ''
     switch (this.props.type) {
       case AXIS_TYPE_X:
-          transform = `translate(0, ${this.props.height})`
+        transform = `translate(0, ${this.props.height})`
         break
       case AXIS_TYPE_Y:
-          transform = `translate(0, 0)`
-          break
+        transform = `translate(0, 0)`
+        break
       case AXIS_TYPE_LABEL_X:
         transform = `translate(${(this.props.width - this.props.margin.left - this.props.margin.right) / 2}, ${this.props.height + 40})`
         break
