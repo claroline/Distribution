@@ -311,15 +311,18 @@ class AdminConfigurationController extends Controller
     }
 
     /**
-     * @EXT\Route("/synchronization", name="claro_admin_external_user_group_source_synchronization")
-     * @EXT\Template("ClarolineExternalSynchronizationBundle:Configuration:index.html.twig")
+     * @EXT\Route("/synchronize/source/{source}/{cas}/{casField}",
+     *     defaults={"cas"=false, "casField"="username"},
+     *     name="claro_admin_external_user_group_source_synchronization"
+     * )
+     * @EXT\Method({ "GET" })
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function sourceSynchronizationAction()
+    public function synchronizeSourceAction($source, $cas, $casField)
     {
-        $sources = $this->externalUserGroupSyncManager->getExternalSourcesNames();
+        $res = $this->externalUserGroupSyncManager->synchronizeUsersForExternalSource($source);
 
-        return ['sources' => $sources];
+        return new JsonResponse($res);
     }
 }

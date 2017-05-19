@@ -13,6 +13,7 @@
 namespace Claroline\ExternalSynchronizationBundle\Repository;
 
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Query\QueryBuilder;
 
 class ExternalResourceSynchronizationRepository
 {
@@ -45,7 +46,7 @@ class ExternalResourceSynchronizationRepository
         return empty($cols) ? [] : array_keys($cols);
     }
 
-    public function findUsers($max = -1, $page = -1)
+    public function findUsers($max = -1, $page = -1, $omitNulls = false)
     {
         $qb = $this->createUserQueryBuilder();
 
@@ -53,11 +54,36 @@ class ExternalResourceSynchronizationRepository
             return [];
         }
 
+        if ($omitNulls) {
+            $this->omitNullUserValues($qb);
+        }
+
         if ($max > 0) {
             $qb->setMaxResults($max)->setFirstResult($max * max(0, $page));
         }
 
         return $qb->execute()->fetchAll();
+    }
+
+    public function countUsers($omitNulls = false)
+    {
+        $qb = $this->conn->createQueryBuilder();
+        $userConf = (isset($this->config['user_config'])) ? $this->config['user_config'] : [];
+        $fields = (isset($userConf['fields'])) ? $userConf['fields'] : [];
+
+        if (empty($userConf) || empty($fields)) {
+            return null;
+        }
+
+        if ($omitNulls) {
+            $this->omitNullUserValues($qb);
+        }
+
+        $qb
+            ->select('COUNT('.$fields['id'].') AS nb')
+            ->from($userConf['table']);
+
+        return intval($qb->execute()->fetch()['nb']);
     }
 
     public function findGroups($search = null, $max = -1)
@@ -143,5 +169,20 @@ class ExternalResourceSynchronizationRepository
             ->from($groupConf['table']);
 
         return $qb;
+    }
+
+    private function omitNullUserValues(QueryBuilder $qb)
+    {
+        $userConf = (isset($this->config['user_config'])) ? $this->config['user_config'] : [];
+        $fields = (isset($userConf['fields'])) ? $userConf['fields'] : [];
+        if (empty($userConf) || empty($fields)) {
+            return null;
+        }
+
+        $qb
+            ->andWhere($qb->expr()->isNotNull($fields['username']))
+            ->andWhere($qb->expr()->isNotNull($fields['email']))
+            ->andWhere($qb->expr()->isNotNull($fields['first_name']))
+            ->andWhere($qb->expr()->isNotNull($fields['last_name']));
     }
 }

@@ -1325,6 +1325,11 @@ class UserManager
         );
     }
 
+    public function getUsersByUsernamesOrMails($usernames, $mails, $executeQuery = true)
+    {
+        return $this->userRepo->findUsersByUsernamesOrMails($usernames, $mails, $executeQuery);
+    }
+
     public function getUserByUsernameOrMailOrCode($username, $mail, $code)
     {
         if (empty($code) || !$this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {

@@ -16,4 +16,19 @@ use Doctrine\ORM\EntityRepository;
 
 class ExternalUserRepository extends EntityRepository
 {
+    public function findByExternalIdsAndSourceSlug($externalIds, $sourceSlug)
+    {
+        if (empty($externalIds)) {
+            return [];
+        }
+
+        $qb = $this
+            ->createQueryBuilder('ext_user')
+            ->where('ext_user.sourceSlug = :source')
+            ->andWhere('ext_user.externalUserId IN (:ids)')
+            ->setParameter('source', $sourceSlug)
+            ->setParameter('ids', $externalIds);
+
+        return $qb->getQuery()->getResult();
+    }
 }

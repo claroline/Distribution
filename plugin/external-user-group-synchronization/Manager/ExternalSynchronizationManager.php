@@ -12,13 +12,18 @@
 
 namespace Claroline\ExternalSynchronizationBundle\Manager;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\GroupManager;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\ExternalSynchronizationBundle\Entity\ExternalUser;
 use Claroline\ExternalSynchronizationBundle\Repository\ExternalResourceSynchronizationRepository;
 use Cocur\Slugify\Slugify;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Dumper;
 use Symfony\Component\Yaml\Parser;
@@ -30,6 +35,8 @@ use Symfony\Component\Yaml\Parser;
  */
 class ExternalSynchronizationManager
 {
+    use LoggableTrait;
+
     /** @var string */
     private $syncFilePath;
     /** @var ObjectManager */
@@ -38,6 +45,10 @@ class ExternalSynchronizationManager
     private $userManager;
     /** @var GroupManager */
     private $groupManager;
+    /** @var ExternalSynchronizationUserManager */
+    private $externalUserManager;
+    /** @var \Claroline\CasBundle\Manager\CasManager|object */
+    private $casManager;
     /** @var PlatformConfigurationHandler */
     private $platformConfigHandler;
     /** @var mixed */
@@ -54,7 +65,10 @@ class ExternalSynchronizationManager
      *     "synchronizationDir"     = @DI\Inject("%claroline.param.synchronization_directory%"),
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
+     *     "externalUserManager"    = @DI\Inject("claroline.manager.external_user_sync_manager"),
      *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
+     *     "pluginManager"          = @DI\Inject("claroline.manager.plugin_manager"),
+     *     "container"              = @DI\Inject("service_container"),
      *     "platformConfigHandler"  = @DI\Inject("claroline.config.platform_config_handler")
      * })
      *
@@ -68,7 +82,10 @@ class ExternalSynchronizationManager
         $synchronizationDir,
         ObjectManager $om,
         UserManager $userManager,
+        ExternalSynchronizationUserManager $externalUserManager,
         GroupManager $groupManager,
+        PluginManager $pluginManager,
+        ContainerInterface $container,
         PlatformConfigurationHandler $platformConfigHandler
     ) {
         $this->syncFilePath = $synchronizationDir.'external.sources.yml';
@@ -77,9 +94,14 @@ class ExternalSynchronizationManager
         $this->slugify = new Slugify();
         $this->om = $om;
         $this->userManager = $userManager;
+        $this->externalUserManager = $externalUserManager;
         $this->groupManager = $groupManager;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->sourcesArray = $this->loadExternalSources();
+        $this->casManager = null;
+        if ($pluginManager->isLoaded('ClarolineCasBundle')) {
+            $this->casManager = $container->get('claroline.manager.cas_manager');
+        }
     }
 
     public function getExternalSourcesNames()
@@ -166,6 +188,91 @@ class ExternalSynchronizationManager
         $repo = $this->getRepositoryForExternalSource($externalSource);
 
         return $repo->findGroups($search, $max);
+    }
+
+    public function synchronizeUsersForExternalSource(
+        $sourceName,
+        $synchronizeCas = false,
+        $casSychronizedField = 'username'
+    ) {
+        // Initialize parameters
+        $batchSize = 60;
+        $sourceName = $this->slugifyName($sourceName);
+        $casSychronizedField = ucfirst($casSychronizedField);
+        // Get external source repository
+        $externalSource = $this->getExternalSource($sourceName);
+        $externalSourceRepo = $this->getRepositoryForExternalSource($externalSource);
+
+        // Count users in external source to synchronize
+        $countUsers = $externalSourceRepo->countUsers(true);
+        $this->log("Synchronizing {$countUsers} users for source '{$externalSource['name']}'");
+        // While there are still users to sync
+        $cnt = 0;
+        while ($countUsers > 0) {
+            // Current batch size
+            $curBatchSize = min($batchSize, $countUsers);
+            $firstUserIndex = $cnt * $batchSize;
+            $lastUserIndex = $firstUserIndex + $curBatchSize;
+            $this->log("Syncing users {$firstUserIndex} -> {$lastUserIndex}");
+            // Get users from external source
+            $externalSourceUsers = $externalSourceRepo->findUsers($curBatchSize, $cnt, true);
+            $externalSourceUserIds = array_column($externalSourceUsers, 'id');
+            $externalSourceUserUsernames = array_column($externalSourceUsers, 'username');
+            $externalSourceUserEmails = array_column($externalSourceUsers, 'email');
+            // Get already synchronized users
+            $alreadyImportedUsers = $this
+                ->externalUserManager
+                ->getExternalUsersByExternalIdsAndSourceSlug($externalSourceUserIds, $sourceName);
+            $alreadyImportedUserIds = array_map(
+                function (ExternalUser $extUser) {
+                    return $extUser->getExternalUserId();
+                },
+                $alreadyImportedUsers
+            );
+            // Get already existing users by username or mail in platform
+            $existingPlatformUsers = $this
+                ->userManager
+                ->getUsersByUsernamesOrMails($externalSourceUserUsernames, $externalSourceUserEmails, true);
+            $existingPlatformUserUsernames = array_map(
+                function (User $user) {
+                    return $user->getUsername();
+                },
+                $alreadyImportedUsers
+            );
+            $existingPlatformUserMails = array_map(
+                function (User $user) {
+                    return $user->getMail();
+                },
+                $alreadyImportedUsers
+            );
+            // If CAS enabled get existing user in CAS
+            $existingCasUsers = [];
+            $existingCasUserIds = [];
+            if ($synchronizeCas && !is_null($this->casManager) && isset(${"externalSourceUser${casSychronizedField}s"})) {
+                $existingCasUsers = $this
+                    ->casManager
+                    ->getCasUsersByCasIds(${"externalSourceUser${casSychronizedField}s"});
+                $existingCasUserIds = array_map(
+                    function ($casUser) {
+                        return $casUser->getCasId();
+                    },
+                    $existingCasUsers
+                );
+            }
+            // TODO: random password random_bytes(10);
+            // unset for commit
+            unset($alreadyImportedUserIds);
+            unset($existingPlatformUsers);
+            unset($existingPlatformUserUsernames);
+            unset($existingPlatformUserMails);
+            unset($existingCasUsers);
+            unset($existingCasUserIds);
+
+            $countUsers -= $curBatchSize;
+            ++$cnt;
+        }
+
+        return $countUsers;
     }
 
     public function saveConfig()
