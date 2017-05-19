@@ -114,6 +114,12 @@
                                 <i class="fa fa-plus"></i> 
                                 {{ 'add_groups' | trans({}, 'platform') }}
                             </a>
+                            <a href="{{ path('claro_admin_external_user_sync_groups_list', {'workspace': workspace.getId()}) }}"
+                               class="btn btn-default dropdown-toggle"
+                               role="button"
+                            >
+                                {{ 'external_group_list' | trans({}, 'platform') }}
+                            </a>
                         </div>
                     </div>
                 {% endif %}

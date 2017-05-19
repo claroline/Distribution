@@ -96,12 +96,17 @@ class ExternalResourceSynchronizationRepository
 
         if (!empty($search)) {
             $qb
+<<<<<<< HEAD
                 ->andWhere(
                     $qb->expr()->orX(
                         $qb->expr()->like($this->config['group_config']['fields']['group_name'], ':search'),
                         $qb->expr()->like($this->config['group_config']['fields']['code'], ':search')
                     ))
                 ->setParameter('search', '%'.$search.'%');
+=======
+                ->andWhere($qb->expr()->like($this->config['group_config']['fields']['group_name'], '?'))
+                ->setParameter(0, '%'.$search.'%');
+>>>>>>> 5daf605... Admin pages for importing external groups into workspace
         }
 
         if ($max > 0) {
@@ -109,6 +114,15 @@ class ExternalResourceSynchronizationRepository
         }
 
         return $qb->execute()->fetchAll();
+    }
+
+    public function findOneGroupById($id)
+    {
+        return $this->createGroupQueryBuilder()
+            ->andWhere($this->config['group_config']['fields']['id'] .' = :id')
+            ->setParameter('id', $id)
+            ->execute()
+            ->fetch();
     }
 
     private function initializeConnection()
@@ -157,6 +171,7 @@ class ExternalResourceSynchronizationRepository
         if (empty($groupConf) || empty($fields)) {
             return null;
         }
+<<<<<<< HEAD
 
         $qb
             ->select(
@@ -165,8 +180,19 @@ class ExternalResourceSynchronizationRepository
                 (empty($fields['type']) ? 'NULL' : $fields['type']).' AS type',
                 (empty($fields['code']) ? 'NULL' : $fields['code']).' AS code',
                 (empty($fields['user_count']) ? 'NULL' : $fields['user_count']).' AS user_count'
+=======
+        $groupConfTable = $groupConf['table'];
+        $groupConfFields = $groupConf['fields'];
+        $qb
+            ->select(
+                $groupConfFields['id'].' AS id',
+                $groupConfFields['group_name'].' AS name',
+                (empty($groupConfFields['type']) ? 'NULL' : $groupConfFields['type']).' AS type',
+                (empty($groupConfFields['count']) ? 'NULL' : $groupConfFields['count']).' AS user_count',
+                (empty($groupConfFields['code']) ? 'NULL' : $groupConfFields['code']).' AS code'
+>>>>>>> 5daf605... Admin pages for importing external groups into workspace
             )
-            ->from($groupConf['table']);
+            ->from($groupConfTable);
 
         return $qb;
     }

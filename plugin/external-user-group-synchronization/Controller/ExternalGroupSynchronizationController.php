@@ -14,12 +14,15 @@ namespace Claroline\ExternalSynchronizationBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\ExternalSynchronizationBundle\Entity\ExternalGroup;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationGroupManager;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class ExternalGroupSynchronizationController extends Controller
@@ -50,6 +53,7 @@ class ExternalGroupSynchronizationController extends Controller
     /**
      * @EXT\Route("/workspace/{workspace}/page/{page}/max/{max}/order/{order}/direction/{direction}/search/{search}",
      *     name="claro_admin_external_user_sync_groups_list",
+     *     options={"expose"=true},
      *     defaults={"page"=1, "search"="", "max"=50, "order"="name", "direction"="ASC"},
      * )
      * @EXT\Template("ClarolineExternalSynchronizationBundle:Groups:list.html.twig")
@@ -61,7 +65,9 @@ class ExternalGroupSynchronizationController extends Controller
     {
         $this->checkAccess($workspace);
         $canEdit = $this->hasEditionAccess($workspace);
+        $isAdmin = $this->isAdmin();
         $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
+        $sources = $this->externalUserGroupSyncManager->getExternalSourcesNames(['group_config']);
         $pager = $this->externalGroupSyncManager->getExternalGroupsByRolesAndSearch(
             $wsRoles,
             $search,
@@ -80,7 +86,61 @@ class ExternalGroupSynchronizationController extends Controller
             'order' => $order,
             'direction' => $direction,
             'canEdit' => $canEdit,
+            'isAdmin' => $isAdmin,
+            'sources' => $sources,
         ];
+    }
+
+    /**
+     * @EXT\Route("/workspace/{workspace}/externalgroups/source/{source}/order/{order}/direction/{direction}/search/{search}",
+     *     name="claro_admin_external_groups_list_search",
+     *     defaults={"page"=1, "search"="", "order"="name", "direction"="ASC"},
+     *     options={"expose"=true},
+     * )
+     * @EXT\Template("ClarolineExternalSynchronizationBundle:Groups:externalGroupsList.html.twig")
+     */
+    public function unregisteredExternalGroupsListAction(Workspace $workspace, $source, $order, $direction, $search)
+    {
+        $this->checkAccess($workspace);
+        $canEdit = $this->hasEditionAccess($workspace);
+
+        $externalGroups = $search ? $this->externalUserGroupSyncManager->loadGroupsForExternalSource($source, $search) : [];
+        $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
+
+        return [
+            'externalGroups' => $externalGroups,
+            'wsRoles' => $wsRoles,
+            'source' => $source,
+            'canEdit' => $canEdit,
+        ];
+    }
+
+    /**
+     * @EXT\Route("/workspace/{workspace}/externalgroups/source/{source}",
+     *     name="claro_admin_external_groups_register",
+     *     options={"expose"=true},
+     * )
+     * @EXT\ParamConverter(
+     *     "roles",
+     *     class="ClarolineCoreBundle:Role",
+     *     options={"multipleIds"=true, "name"="roleIds"}
+     * )
+     * @EXT\Template()
+     */
+    public function registerExternalGroupsAction(Request $request, array $roles, Workspace $workspace, $source)
+    {
+        $externalGroupIds = $request->get('groupIds');
+
+        foreach ($externalGroupIds as $externalGroupId) {
+            $externalGroup = $this->externalGroupSyncManager->getExternalGroupByExternalIdAndSourceSlug($externalGroupId, $source);
+            if (is_null($externalGroup)) {
+                $this->externalGroupSyncManager->importExternalGroup($externalGroupId, $roles, $source);
+            } else {
+                // TODO: associate roles
+            }
+        }
+
+        return new JsonResponse(['registered' => true], 200);
     }
 
     private function checkAccess(Workspace $workspace)
@@ -93,5 +153,10 @@ class ExternalGroupSynchronizationController extends Controller
     private function hasEditionAccess(Workspace $workspace)
     {
         return $this->authorization->isGranted(['users', 'edit'], $workspace);
+    }
+
+    private function isAdmin()
+    {
+        return $this->authorization->isGranted('ROLE_ADMIN');
     }
 }

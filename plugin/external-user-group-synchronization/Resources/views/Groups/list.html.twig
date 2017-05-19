@@ -89,13 +89,12 @@
                 </li>
             {% endif %}
         </ul>
-        <h3>{{ "external_groups_list" | trans({}, "claro_external_user_group") }}</h3>
+        <h3>{{ "external_group_list" | trans({}, "claro_external_user_group") }}</h3>
         {{ macros.flashBox() }}
     </div>
 
     <div class="list-group">
         <div class="list-group-item">
-            {# Uncomment when method is ready to search and display external groups
             {% if search != '' %}
                 <div class="alert alert-info">
                     {{ 'results_for_search_on'|trans({}, 'platform') }} :
@@ -106,14 +105,31 @@
 
                 {% if canEdit %}
                     <div class="col-md-8">
-                        <div class="btn-group margin-md">
-                            <a href="{{ path('claro_workspace_unregistered_group_list', {'workspace': workspace.getId()}) }}"
-                               class="btn btn-default dropdown-toggle"
-                               role="button"
-                            >
-                                <i class="fa fa-plus"></i>
-                                {{ 'add_groups' | trans({}, 'platform') }}
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
+                                <i class="fa fa-plus"></i> {{ 'add_groups' | trans({}, 'platform') }}
+                                <span class="caret"></span>
                             </a>
+                            <ul class="dropdown-menu">
+                                {% for slug, name in sources  %}
+                                    <li>
+                                        <a href="{{ path('claro_admin_external_groups_list_search', {'workspace': workspace.getId(), 'source': slug}) }}">
+                                            {{ name }}
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    {% if isAdmin %}
+                                    <li>
+                                        <a href="{{ path('claro_admin_external_user_group_config_index') }}">
+                                            <i class="fa fa-cogs"></i>
+                                            {{ 'configure_external_sources' | trans({}, 'claro_external_user_group') }}
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                        <li><a href="#">{{ 'no_external_source_configured' | trans({}, 'claro_external_user_group') }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
                         </div>
                     </div>
                 {% endif %}
@@ -150,6 +166,8 @@
                                     {{ 'name'|trans({}, 'platform') }}
                                 </a>
                             </th>
+                            <th>{{ 'external_resource'|trans({}, 'claro_external_user_group') }}</th>
+                            <th>{{ 'user_count'|trans({}, 'claro_external_user_group') }}</th>
                             <th>{{ 'role'|trans({}, 'platform') }}</th>
                         </tr>
                         </thead>
@@ -160,12 +178,14 @@
                                 data-group-id="{{ group.getId() }}"
                             >
                                 <td>
-                                    <a href="{{ path('claro_workspace_users_of_group', {'workspace': workspace.getId(), 'group': group.getId() }) }}">
-                                        {{ group.name }}
-                                    </a>
+                                    {{ group.group.name }}
                                 </td>
                                 <td>
-                                    {% for role in group.getEntityRoles() %}
+                                    {{ sources[group.sourceSlug] }}
+                                </td>
+                                <td>{{ group.group.users|length }} <a href="{{ path('claro_workspace_users_of_group', {'workspace': workspace.getId(), 'group': group.getId() }) }}" class="label label-info" target="_blank">{{ 'show_list'|trans({}, 'claro_external_user_group') }} <i class="fa fa-external-link"></i></a></td>
+                                <td>
+                                    {% for role in group.group.getEntityRoles() %}
                                         {% if role.getWorkspace() == workspace %}
                                             <span class="label label-success"
                                                   id="label-{{ role.getId () }}-{{ group.getId()}}"
@@ -195,7 +215,6 @@
                     {{ 'no_group'|trans({}, 'platform') }}
                 </div>
             {% endif %}
-            #}
         </div>
     </div>
 {% endblock %}

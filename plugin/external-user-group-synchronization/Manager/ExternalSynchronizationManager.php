@@ -104,12 +104,14 @@ class ExternalSynchronizationManager
         }
     }
 
-    public function getExternalSourcesNames()
+    public function getExternalSourcesNames($filterBy = ['user_config', 'group_config'])
     {
         $sources = $this->sourcesArray['sources'];
         $names = [];
         foreach ($sources as $key => $source) {
-            $names[$key] = $source['name'];
+            if ($this->isPropertyConfigured($source, $filterBy)) {
+                $names[$key] = $source['name'];
+            }
         }
 
         return $names;
@@ -182,11 +184,17 @@ class ExternalSynchronizationManager
         return $repo->findUsers();
     }
 
+<<<<<<< HEAD
     public function searchGroupsForExternalSource($sourceName, $search = null, $max = -1)
+=======
+    public function loadGroupsForExternalSource($sourceName, $search)
+>>>>>>> 5daf605... Admin pages for importing external groups into workspace
     {
         $externalSource = $this->getExternalSource($sourceName);
+
         $repo = $this->getRepositoryForExternalSource($externalSource);
 
+<<<<<<< HEAD
         return $repo->findGroups($search, $max);
     }
 
@@ -273,6 +281,9 @@ class ExternalSynchronizationManager
         }
 
         return $countUsers;
+=======
+        return $repo->findGroups($search);
+>>>>>>> 5daf605... Admin pages for importing external groups into workspace
     }
 
     public function saveConfig()
@@ -304,8 +315,20 @@ class ExternalSynchronizationManager
         return $this->slugify->slugify($name, '_');
     }
 
-    private function getRepositoryForExternalSource($resourceConfig)
+    public function getRepositoryForExternalSource($resourceConfig)
     {
         return new ExternalResourceSynchronizationRepository($resourceConfig);
+    }
+
+    private function isPropertyConfigured($source, $filters)
+    {
+        $isConfigured = true;
+        foreach ($filters as $filter) {
+            if (!array_key_exists($filter, $source)) {
+                $isConfigured = false;
+                break;
+            };
+        }
+        return $isConfigured;
     }
 }
