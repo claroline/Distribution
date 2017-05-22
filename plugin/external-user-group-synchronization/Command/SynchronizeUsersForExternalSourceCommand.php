@@ -13,6 +13,7 @@
 namespace Claroline\ExternalSynchronizationBundle\Command;
 
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
+use Claroline\CoreBundle\Library\Security\PlatformRoles;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,6 +44,20 @@ class SynchronizeUsersForExternalSourceCommand extends ContainerAwareCommand
             'c',
             InputOption::VALUE_NONE,
             'When set to true, also syncrhronize CAS users'
+        );
+
+        $this->addOption(
+            'wsc',
+            'w',
+            InputOption::VALUE_NONE,
+            'When set to true, subscribe users to WS_CREATOR role'
+        );
+
+        $this->addOption(
+            'admin',
+            'a',
+            InputOption::VALUE_NONE,
+            'When set to true, subscribe users to ADMIN role'
         );
     }
 
@@ -87,9 +102,23 @@ class SynchronizeUsersForExternalSourceCommand extends ContainerAwareCommand
             $cas = true;
         }
 
+        $additionalRole = null;
+        $additionalRoleName = null;
+        if ($input->getOption('admin')) {
+            $additionalRoleName = PlatformRoles::ADMIN;
+        }
+        if ($input->getOption('wsc')) {
+            $additionalRoleName = PlatformRoles::WS_CREATOR;
+        }
+
+        if (!is_null($additionalRoleName)) {
+            $roleManager = $this->getContainer()->get('claroline.manager.role_manager');
+            $additionalRole = $roleManager->getRoleByName($additionalRoleName);
+        }
+
         $externalSyncManager = $this->getContainer()->get('claroline.manager.external_user_group_sync_manager');
         $consoleLogger = ConsoleLogger::get($output);
         $externalSyncManager->setLogger($consoleLogger);
-        $externalSyncManager->synchronizeUsersForExternalSource($sourceSlug, $cas, $casField);
+        $externalSyncManager->synchronizeUsersForExternalSource($sourceSlug, $cas, $casField, $additionalRole);
     }
 }

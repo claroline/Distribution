@@ -196,6 +196,7 @@ class ExternalResourceSynchronizationRepository
                 (empty($fields['type']) ? 'NULL' : $fields['type']).' AS type',
                 (empty($fields['code']) ? 'NULL' : $fields['code']).' AS code',
 <<<<<<< HEAD
+<<<<<<< HEAD
                 (empty($fields['user_count']) ? 'NULL' : $fields['user_count']).' AS user_count'
 =======
         $groupConfTable = $groupConf['table'];
@@ -234,6 +235,9 @@ class ExternalResourceSynchronizationRepository
             ->select(
                 $fields['id_user'].' AS id_user',
                 $fields['id_group'].' AS id_group'
+=======
+                (empty($fields['count']) ? 'NULL' : $fields['count']).' AS user_count'
+>>>>>>> 96cea53... Fix group user count display in external group list
             )
             ->from($userGroupConf['table']);
 
