@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {t, transChoice} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM, MODAL_URL} from '#/main/core/layout/modal'
+import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
 
 import Configuration from '#/main/core/library/Configuration/Configuration'
 
@@ -24,11 +24,17 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {LIST_PROP_DEFAULT, LIST_PROP_DISPLAYED} from '#/main/core/layout/list/utils'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
-import {openUserPicker} from '#/main/core/user-picker'
-
 class Workspaces extends Component {
+  constructor(props) {
+    super(props)
+  }
+
   getWorkspaces(workspaceIds) {
     return workspaceIds.map(workspaceId => this.props.data.find(workspace => workspaceId === workspace.id))
+  }
+
+  getWorkspace(workspaceId) {
+    return this.props.data.find(workspace => workspaceId === workspace.id)
   }
 
   removeWorkspaces(workspaceIds) {
@@ -55,18 +61,32 @@ class Workspaces extends Component {
     })
   }
 
+  handleUserSelect(user, workspace) {
+    this.props.addManager(workspace, user)
+  }
+
+  handleUserRemove(user, workspace) {
+    this.props.removeManager(workspace, user)
+  }
+
   managerUsers(workspaceId) {
-    const el = openUserPicker(false, () => true, () => true, {title: 'user_picker'})
-    console.log(el)
+    const workspace = this.props.data.find(workspace => workspaceId === workspace.id)
+
+    this.props.showModal(MODAL_USER_PICKER, {
+      handleSelect: (user) => this.handleUserSelect(user, workspace),
+      handleRemove: (user) => this.handleUserRemove(user, workspace),
+      selected: workspace.managers
+    })
   }
 
   render() {
     return (
       <Page
+        id="workspace-management"
         modal={this.props.modal}
         fadeModal={this.props.fadeModal}
         hideModal={this.props.hideModal}
-      >
+        >
         <PageHeader
           title={t('workspaces_management')}
         >
@@ -198,7 +218,8 @@ Workspaces.propTypes = {
   filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,
-
+  addManager: T.func.isRequired,
+  removeManager: T.func.isRequired,
   selected: T.array.isRequired,
   toggleSelect: T.func.isRequired,
   toggleSelectAll: T.func.isRequired,
@@ -237,7 +258,12 @@ function mapDispatchToProps(dispatch) {
     copyWorkspaces: (workspaces, isModel) => {
       dispatch(actions.copyWorkspaces(workspaces, isModel))
     },
-
+    addManager: (workspace, user) => {
+      dispatch(actions.addManager(workspace, user))
+    },
+    removeManager: (workspace, user) => {
+      dispatch(actions.removeManager(workspace, user))
+    },
     // search
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))
