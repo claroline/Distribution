@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\API\Workspace;
 
+use Claroline\CoreBundle\API\Finder;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\WorkspaceType;
@@ -47,6 +48,7 @@ class WorkspaceController extends FOSRestController
     private $utilities;
     private $workspaceManager;
     private $workspaceRepo;
+    private $finder;
 
     /**
      * @DI\InjectParams({
@@ -58,7 +60,7 @@ class WorkspaceController extends FOSRestController
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utilities"        = @DI\Inject("claroline.utilities.misc"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "serializer"       = @DI\Inject("claroline.serializer.workspace")
+     *     "finder"           = @DI\Inject("claroline.API.finder")
      * })
      */
     public function __construct(
@@ -70,7 +72,7 @@ class WorkspaceController extends FOSRestController
         TokenStorageInterface $tokenStorage,
         ClaroUtilities $utilities,
         WorkspaceManager $workspaceManager,
-        $serializer
+        Finder $finder
     ) {
         $this->formFactory = $formFactory;
         $this->om = $om;
@@ -81,7 +83,7 @@ class WorkspaceController extends FOSRestController
         $this->utilities = $utilities;
         $this->workspaceManager = $workspaceManager;
         $this->workspaceRepo = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace');
-        $this->serializer = $serializer;
+        $this->finder = $finder;
     }
 
     /**
@@ -223,16 +225,11 @@ class WorkspaceController extends FOSRestController
      */
     public function getSearchWorkspacesAction($page, $limit)
     {
-        $serializer = $this->serializer;
-        $searches = $this->request->query->all();
-
-        $workspaces = array_map(function ($workspace) use ($serializer) {
-            return $serializer->serialize($workspace);
-        }, $this->workspaceManager->searchPartialList($searches, 0, 20));
-
-        $count = $this->workspaceManager->searchPartialList($searches, $page, $limit, true);
-
-        return ['workspaces' => $workspaces, 'total' => $count];
+        return $this->finder->search(
+          'Claroline\CoreBundle\Entity\Workspace\Workspace',
+          $page,
+          $limit
+        );
     }
 
     /**

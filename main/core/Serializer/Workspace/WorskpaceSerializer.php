@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.serializer.workspace")
+ * @DI\Tag("claroline.serializer")
  */
 class WorskpaceSerializer
 {
@@ -59,9 +60,9 @@ class WorskpaceSerializer
     /**
      * Serializes a Workspace entity for the JSON api.
      *
-     * @param ResourceNode $resourceNode - the node to serialize
+     * @param Workspace $workspace - the workspace to serialize
      *
-     * @return array - the serialized representation of the node
+     * @return array - the serialized representation of the workspace
      */
     public function serialize(Workspace $workspace)
     {

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\API\Finder;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -39,7 +40,7 @@ class WorkspacesController extends Controller
      *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "serializer"       = @DI\Inject("claroline.serializer.workspace")
+     *     "finder"           = @DI\Inject("claroline.API.finder")
      * })
      *
      * @param WorkspaceManager    $workspaceManager
@@ -51,12 +52,12 @@ class WorkspacesController extends Controller
         WorkspaceManager $workspaceManager,
         ObjectManager $om,
         StrictDispatcher $eventDispatcher,
-        $serializer
+        Finder $finder
     ) {
         $this->workspaceManager = $workspaceManager;
         $this->om = $om;
         $this->eventDispatcher = $eventDispatcher;
-        $this->serializer = $serializer;
+        $this->finder = $finder;
     }
 
     /**
@@ -66,17 +67,11 @@ class WorkspacesController extends Controller
      */
     public function managementAction()
     {
-        !$serializer = $this->serializer;
-        $workspaces = array_map(function ($workspace) use ($serializer) {
-            return $serializer->serialize($workspace);
-        }, $this->workspaceManager->searchPartialList([], 0, 20));
-
-        $count = $this->workspaceManager->searchPartialList([], 0, 20, true);
-
-        return [
-            'workspaces' => $workspaces,
-            'count' => $count,
-        ];
+        return $this->finder->search(
+          'Claroline\CoreBundle\Entity\Workspace\Workspace',
+          0,
+          20
+        );
     }
 
     /**

@@ -21,8 +21,8 @@
 {% block content %}
   <div
     class="page-container workspace-administration-container"
-    data-workspaces="{{ workspaces | json_encode | raw | escape }}"
-    data-count="{{ count }}"
+    data-workspaces="{{ data | json_encode | raw | escape }}"
+    data-count="{{ total }}"
   >
   </div>
 {% endblock %}
