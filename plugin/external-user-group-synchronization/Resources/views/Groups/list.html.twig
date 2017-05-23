@@ -252,7 +252,11 @@
           url: route,
           type: 'DELETE',
           success: function() {
-            target.parent().parent().parent().remove();
+            if(target.parents('td').children('span.label').length > 1) {
+              target.parents('span.label').remove()
+            } else {
+              target.parents('tr.row-group').remove();
+            }
           },
           error: function (jqXHR, textStatus, errorThrown) {
             window.Claroline.Modal.hide();
