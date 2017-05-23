@@ -107,4 +107,22 @@ class ExternalSynchronizationGroupManager
             $this->om->flush();
         }
     }
+
+    public function removeGroupsFromDeletedExternalSource($source)
+    {
+        $groups = $this->externalGroupRepo->findBySourceSlug($source);
+        foreach ($groups as $group) {
+            $this->om->remove($group);
+        }
+        $this->om->flush();
+    }
+
+    public function updateGroupsFromUpdatedExternalSource($old_source, $new_source)
+    {
+        $groups = $this->externalGroupRepo->findBySourceSlug($old_source);
+        foreach ($groups as $group) {
+            $group->setSourceSlug($new_source);
+        }
+        $this->om->flush();
+    }
 }

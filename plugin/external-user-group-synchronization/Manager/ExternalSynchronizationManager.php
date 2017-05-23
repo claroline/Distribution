@@ -113,7 +113,7 @@ class ExternalSynchronizationManager
         }
     }
 
-    public function getExternalSourcesNames($filterBy = ['user_config', 'group_config'])
+    public function getExternalSourcesNames($filterBy = [])
     {
         $sources = $this->sourcesArray['sources'];
         $names = [];
@@ -124,6 +124,19 @@ class ExternalSynchronizationManager
         }
 
         return $names;
+    }
+
+    public function getExternalSourceList()
+    {
+        $sources = $this->sourcesArray['sources'];
+        $sourceList = [];
+        foreach ($sources as $key => $source) {
+            $sourceList[] = [
+                'name' => $source['name'],
+                'slug' => $key,
+            ];
+        }
+        return $sourceList;
     }
 
     public function getExternalSource($name)
@@ -145,7 +158,7 @@ class ExternalSynchronizationManager
 
         $this->sourcesArray['sources'][$name] = $config;
 
-        return $this->saveConfig();
+        return $this->saveConfig() ? $name : false;
     }
 
     public function deleteExternalSource($sourceName)
@@ -461,8 +474,9 @@ class ExternalSynchronizationManager
 
     public function saveConfig()
     {
+        return file_put_contents($this->syncFilePath, $this->ymlDumper->dump($this->sourcesArray, 3));
         if (!empty($this->sourcesArray['sources'])) {
-            return file_put_contents($this->syncFilePath, $this->ymlDumper->dump($this->sourcesArray, 3));
+
         }
 
         return false;

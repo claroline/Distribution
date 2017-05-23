@@ -36,6 +36,12 @@ class AdminConfigurationController extends Controller
      */
     private $externalUserGroupSyncManager;
 
+    /**
+     * @var ExternalSynchronizationGroupManager
+     * @DI\Inject("claroline.manager.external_user_group_sync_group_manager")
+     */
+    private $externalGroupManager;
+
     private $translator;
 
     /**
@@ -58,7 +64,7 @@ class AdminConfigurationController extends Controller
      */
     public function indexAction()
     {
-        $sources = $this->externalUserGroupSyncManager->getExternalSourcesNames();
+        $sources = $this->externalUserGroupSyncManager->getExternalSourceList();
 
         return ['sources' => $sources];
     }
@@ -103,40 +109,35 @@ class AdminConfigurationController extends Controller
      *     options={"expose"=true},
      *     name="claro_admin_external_user_group_edit_source_form"
      * )
-     * @EXT\Method({ "GET" })
      * @EXT\Template("ClarolineExternalSynchronizationBundle:Configuration:editSource.html.twig")
      *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editSourceAction($source)
+    public function editSourceAction(Request $request, $source)
     {
         $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
         $form = $this->createForm(new ExternalSourceConfigurationType(), $sourceConfig);
 
-        return [
-            'sourceConfig' => $sourceConfig,
-            'source' => $source,
-            'form' => $form->createView(),
-        ];
-    }
+        if ($request->isMethod('POST')) {
 
-    /**
-     * @EXT\Route("/edit/{source}", name="claro_admin_external_user_group_update_source")
-     * @EXT\Method({ "POST" })
-     * @EXT\Template("ClarolineExternalSynchronizationBundle:Configuration:editSource.html.twig")
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function updateSourceAction(Request $request, $source)
-    {
-        $sourceConfig = $this->externalUserGroupSyncManager->getExternalSource($source);
-        $form = $this->createForm(new ExternalSourceConfigurationType(), $sourceConfig);
-        $form->handleRequest($request);
-        if ($form->isValid()) {
+            $form->handleRequest($request);
             $config = $form->getData();
-            $this->externalUserGroupSyncManager->setExternalSource($config['name'], $config);
 
-            return $this->redirectToRoute('claro_admin_external_user_group_config_index');
+            $sources = $this->externalUserGroupSyncManager->getExternalSourcesNames();
+
+            if ($form->isValid() && !in_array($config['name'], $sources)) {
+
+                $new_slug = $this->externalUserGroupSyncManager->setExternalSource($config['name'], $config, $source);
+
+                $this->externalGroupManager->updateGroupsFromUpdatedExternalSource($source, $new_slug);
+
+                return $this->redirectToRoute('claro_admin_external_user_group_config_index');
+
+            } else if (in_array($config['name'], $sources)) {
+
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', $this->translator->trans('name_not_unique', [], 'claro_external_user_group'));
+            }
         }
 
         return [
@@ -253,6 +254,10 @@ class AdminConfigurationController extends Controller
     public function deleteSourceAction($source)
     {
         $deleted = $this->externalUserGroupSyncManager->deleteExternalSource($source);
+
+        $this->externalGroupManager->removeGroupsFromDeletedExternalSource($source);
+
+        // Todo: remove users (ExternalUser Entities)
 
         return new JsonResponse(['deleted' => true], !$deleted ? 500 : 200);
     }

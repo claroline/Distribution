@@ -28,13 +28,7 @@
     </div>
     {{ macros.flashBox() }}
     <div class="page-body">
-        {% if sources is empty %}
-            <div class="alert alert-warning">
-                <i class="fa fa-warning"></i> {{ 'no_configured_external_sources' | trans({}, 'claro_external_user_group') }}
-            </div>
-        {% else %}
-            <external-source-list></external-source-list>
-        {% endif %}
+        <external-source-list></external-source-list>
         <div>
             <a class="btn btn-primary" href="{{ path('claro_admin_external_user_group_new_source_form') }}"><i class="fa fa-plus"></i> {{ 'add_source' | trans({}, 'claro_external_user_group') }}</a>
         </div>

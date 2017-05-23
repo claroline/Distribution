@@ -106,30 +106,40 @@
                 {% if canEdit %}
                     <div class="col-md-8">
                         <div class="btn-group">
-                            <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
-                                <i class="fa fa-plus"></i> {{ 'import_external_groups' | trans({}, 'platform') }}
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                {% for slug, name in sources  %}
-                                    <li>
-                                        <a href="{{ path('claro_admin_external_groups_list_search', {'workspace': workspace.getId(), 'source': slug}) }}">
-                                            {{ name }}
-                                        </a>
-                                    </li>
+                            {% if sources is empty %}
+                                {% if isAdmin %}
+                                    <a class="btn btn-default"  href="{{ path('claro_admin_external_user_group_config_index') }}">
+                                        <i class="fa fa-cogs"></i>
+                                        {{ 'configure_external_sources' | trans({}, 'claro_external_user_group') }}
+                                    </a>
                                 {% else %}
-                                    {% if isAdmin %}
-                                    <li>
-                                        <a href="{{ path('claro_admin_external_user_group_config_index') }}">
-                                            <i class="fa fa-cogs"></i>
-                                            {{ 'configure_external_sources' | trans({}, 'claro_external_user_group') }}
-                                        </a>
-                                    </li>
-                                    {% else %}
-                                        <li><a href="#">{{ 'no_external_source_configured' | trans({}, 'claro_external_user_group') }}</a></li>
-                                    {% endif %}
+                                    <p>{{ 'no_external_source_configured' | trans({}, 'claro_external_user_group') }}</p>
+                                {% endif %}
+                            {% elseif sources|length == 1 %}
+                                {# 1 external source : button #}
+                                {% for slug, name in sources  %}
+                                    <a class="btn btn-default" href="{{ path('claro_admin_external_groups_list_search', {'workspace': workspace.getId(), 'source': slug}) }}">
+                                        <i class="fa fa-plus"></i> {{ 'add_from'|trans({'name': name}, 'claro_external_user_group') }}
+                                    </a>
                                 {% endfor %}
-                            </ul>
+
+                            {% else  %}
+                                {# more than 1 source : dropdown #}
+                                    <a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="#">
+                                        <i class="fa fa-plus"></i> {{ 'import_external_groups' | trans({}, 'platform') }}
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        {% for slug, name in sources  %}
+                                            <li>
+                                                <a href="{{ path('claro_admin_external_groups_list_search', {'workspace': workspace.getId(), 'source': slug}) }}">
+                                                    {{ name }}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
@@ -181,7 +191,11 @@
                                     {{ group.group.name }}
                                 </td>
                                 <td>
+                                    {% if sources[group.sourceSlug] is defined %}
                                     {{ sources[group.sourceSlug] }}
+                                    {% else %}
+                                    {{ group.sourceSlug }}
+                                    {% endif %}
                                 </td>
                                 <td>{{ group.group.users|length }} <a href="{{ path('claro_workspace_users_of_group', {'workspace': workspace.getId(), 'group': group.getId() }) }}" class="label label-info" target="_blank">{{ 'show_list'|trans({}, 'claro_external_user_group') }} <i class="fa fa-external-link"></i></a></td>
                                 <td>

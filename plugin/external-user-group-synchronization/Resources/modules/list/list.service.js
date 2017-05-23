@@ -14,7 +14,11 @@ export default class ExternalSourceListService {
     return this._request('DELETE', this._path('claro_admin_external_user_group_delete_source', {'source': source})).then(
       data => {
         if (data.deleted === true) {
-          this.externalSources[source] = null
+
+          let index = this.externalSources.findIndex((elem) => {return elem.slug === source})
+          if (index > -1) {
+            this.externalSources.splice(index, 1)
+          }
         }
         return this._resolve(this.externalSources)
       },
