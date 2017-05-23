@@ -39,7 +39,7 @@ class Finder
         $this->serializer = $serializer;
     }
 
-    public function addFinder($finder)
+    public function addFinder(FinderInterface $finder)
     {
         $this->finders[] = $finder;
     }

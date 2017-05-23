@@ -49,18 +49,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     }
 
     /**
-     * @param PlatformConfigurationHandler $platformConfigHandler
-     *
-     * @DI\InjectParams({
-     *      "tokenStorage" = @DI\Inject("security.token_storage")
-     * })
-     */
-    public function setTokenStorage($tokenStorage)
-    {
-        $this->tokenStorage = $tokenStorage;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function loadUserByUsername($username)
