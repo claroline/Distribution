@@ -25,15 +25,15 @@ class ExternalGroupRepository extends EntityRepository
     ) {
         $qb = $this
             ->createQueryBuilder('ext_group')
-            ->innerJoin('ext_group.group', 'group')
-            ->innerJoin('group.roles', 'role')
+            ->innerJoin('ext_group.group', 'intGroup')
+            ->innerJoin('intGroup.roles', 'role')
             ->where('role IN (:roles)')
-            ->orderBy("group.{$orderedBy}", $order)
+            ->orderBy("intGroup.{$orderedBy}", $order)
             ->setParameter('roles', $roles);
         if (!empty($search)) {
             $search = strtoupper($search);
             $qb
-                ->andWhere('UPPER(group.name) LIKE :search')
+                ->andWhere($qb->expr()->like('UPPER(intGroup.name)', ':search'))
                 ->setParameter('search', "%{$search}%");
         }
 
