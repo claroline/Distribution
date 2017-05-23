@@ -27,8 +27,8 @@ class Finder
 
     /**
      * @DI\InjectParams({
-     *     "container"      = @DI\Inject("service_container"),
-     *     "om"     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "container"  = @DI\Inject("service_container"),
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer" = @DI\Inject("claroline.API.serializer")
      * })
      */
