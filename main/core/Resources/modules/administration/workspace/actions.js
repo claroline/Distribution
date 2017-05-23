@@ -100,7 +100,7 @@ actions.fetchWorkspaces = () => (dispatch, getState) => {
       },
       success: (data, dispatch) => {
         dispatch(listActions.resetSelect())
-        dispatch(actions.loadWorkspaces(data.data, data.total))
+        dispatch(actions.loadWorkspaces(data.results, data.total))
       }
     }
   })

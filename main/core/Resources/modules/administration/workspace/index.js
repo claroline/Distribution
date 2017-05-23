@@ -31,11 +31,23 @@ class WorkspaceAdministration {
 const container = document.querySelector('.workspace-administration-container')
 const workspaces = JSON.parse(container.dataset.workspaces)
 const count = parseInt(container.dataset.count)
+const page = parseInt(container.dataset.page)
+const pageSize = parseInt(container.dataset.pagesize)
+const filters = JSON.parse(container.dataset.filters)
+const sortBy = JSON.parse(container.dataset.orderby)
 
 const adminTool = new WorkspaceAdministration({
   workspaces: {
     data: workspaces,
     totalResults: count
+  },
+  pagination: {
+    pageSize,
+    current: page
+  },
+  list: {
+    filters,
+    sortBy
   }
 })
 

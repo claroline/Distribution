@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -22,19 +21,16 @@ use Symfony\Component\HttpFoundation\Request;
 class Finder
 {
     private $finders;
-    private $container;
     private $serializer;
 
     /**
      * @DI\InjectParams({
-     *     "container"  = @DI\Inject("service_container"),
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer" = @DI\Inject("claroline.API.serializer")
      * })
      */
-    public function __construct(ContainerInterface $container, ObjectManager $om, Serializer $serializer)
+    public function __construct(ObjectManager $om, Serializer $serializer)
     {
-        $this->container = $container;
         $this->om = $om;
         $this->serializer = $serializer;
     }
@@ -53,16 +49,11 @@ class Finder
         }
     }
 
-    public function search($class, $page, $limit, array $searches = null)
+    public function search($class, $page, $limit, array $searches = [])
     {
         $serializer = $this->serializer;
-
-        if (!$searches) {
-            $searches = $this->container->get('request')->query->all();
-        }
-
         $filters = isset($searches['filters']) ? $searches['filters'] : [];
-
+        $orderBy = isset($searches['orderBy']) ? $searches['orderBy'] : [];
         $data = $this->fetch($class, $page, $limit, $searches);
         //maybe do only 1 request later
         $count = $this->fetch($class, $page, $limit, $searches, true);
@@ -72,12 +63,13 @@ class Finder
         }, $data);
 
         return [
-          'data' => $data,
+          'results' => $data,
           'total' => $count,
           'page' => $page,
           'limit' => $limit,
           'class' => $class,
-          'searches' => $filters,
+          'filters' => $filters,
+          'orderBy' => $orderBy,
         ];
     }
 

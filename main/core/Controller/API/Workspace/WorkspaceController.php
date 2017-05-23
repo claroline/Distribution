@@ -228,7 +228,8 @@ class WorkspaceController extends FOSRestController
         return $this->finder->search(
           'Claroline\CoreBundle\Entity\Workspace\Workspace',
           $page,
-          $limit
+          $limit,
+          $this->container->get('request')->query->all()
         );
     }
 
