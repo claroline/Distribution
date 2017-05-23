@@ -197,7 +197,7 @@
                                     {{ group.sourceSlug }}
                                     {% endif %}
                                 </td>
-                                <td>{{ group.group.users|length }} <a href="{{ path('claro_workspace_users_of_group', {'workspace': workspace.getId(), 'group': group.getId() }) }}" class="label label-info" target="_blank">{{ 'show_list'|trans({}, 'claro_external_user_group') }} <i class="fa fa-external-link"></i></a></td>
+                                <td>{{ group.group.users|length }} <a href="{{ path('claro_workspace_users_of_group', {'workspace': workspace.getId(), 'group': group.group.id }) }}" class="label label-info" target="_blank">{{ 'show_list'|trans({}, 'claro_external_user_group') }} <i class="fa fa-external-link"></i></a></td>
                                 <td>
                                     {% for role in group.group.getEntityRoles() %}
                                         {% if role.getWorkspace() == workspace %}
@@ -208,7 +208,7 @@
 
                                                 {% if canEdit %}
                                                     <i class="fa fa-times-circle pointer-hand remove-role-button"
-                                                       href="{{ path('claro_workspace_remove_role_from_group', {'workspace': workspace.getId(), 'group': group.getId(), 'role': role.getId() } ) }}"
+                                                       href="{{ path('claro_workspace_remove_role_from_group', {'workspace': workspace.getId(), 'group': group.group.id, 'role': role.getId() } ) }}"
                                                     >
                                                         </i>
                                                 {% endif %}
