@@ -57,7 +57,8 @@ class WorkspaceController extends FOSRestController
      *     "defaultTemplate"  = @DI\Inject("%claroline.param.default_template%"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utilities"        = @DI\Inject("claroline.utilities.misc"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "serializer"       = @DI\Inject("claroline.serializer.workspace")
      * })
      */
     public function __construct(
@@ -68,7 +69,8 @@ class WorkspaceController extends FOSRestController
         $defaultTemplate,
         TokenStorageInterface $tokenStorage,
         ClaroUtilities $utilities,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        $serializer
     ) {
         $this->formFactory = $formFactory;
         $this->om = $om;
@@ -79,6 +81,7 @@ class WorkspaceController extends FOSRestController
         $this->utilities = $utilities;
         $this->workspaceManager = $workspaceManager;
         $this->workspaceRepo = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace');
+        $this->serializer = $serializer;
     }
 
     /**
@@ -216,15 +219,17 @@ class WorkspaceController extends FOSRestController
     }
 
     /**
-     * @View(serializerGroups={"api_workspace"})
      * @Get("/workspace/page/{page}/limit/{limit}/search", name="get_search_workspaces", options={ "method_prefix" = false })
      */
     public function getSearchWorkspacesAction($page, $limit)
     {
+        $serializer = $this->serializer;
         $searches = $this->request->query->all();
 
-        //TODO WORKSPACE implement search partial list
-        $workspaces = $this->workspaceManager->searchPartialList($searches, $page, $limit);
+        $workspaces = array_map(function ($workspace) use ($serializer) {
+            return $serializer->serialize($workspace);
+        }, $this->workspaceManager->searchPartialList($searches, 0, 20));
+
         $count = $this->workspaceManager->searchPartialList($searches, $page, $limit, true);
 
         return ['workspaces' => $workspaces, 'total' => $count];
