@@ -13,6 +13,7 @@
 namespace Claroline\ExternalSynchronizationBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationGroupManager;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationManager;
@@ -48,6 +49,12 @@ class ExternalGroupSynchronizationController extends Controller
      *  @DI\Inject("claroline.manager.role_manager")
      */
     private $roleManager;
+
+    /**
+     * @var GroupManager
+     * @DI\Inject("claroline.manager.group_manager")
+     */
+    private $groupManager;
 
     /**
      * @EXT\Route("/workspace/{workspace}/page/{page}/max/{max}/order/{order}/direction/{direction}/search/{search}",
@@ -132,6 +139,7 @@ class ExternalGroupSynchronizationController extends Controller
         foreach ($externalGroupIds as $externalGroupId) {
             $externalGroup = $this->externalGroupSyncManager->getExternalGroupByExternalIdAndSourceSlug($externalGroupId, $source);
             if (is_null($externalGroup)) {
+                // Group doesn't exist and has to be created
                 $group = $this->externalUserGroupSyncManager->getExternalSourceGroupById($source, $externalGroupId);
                 $extGroup = $this->externalGroupSyncManager->importExternalGroup(
                     $externalGroupId,
@@ -141,7 +149,8 @@ class ExternalGroupSynchronizationController extends Controller
                 );
                 $this->externalUserGroupSyncManager->syncrhonizeGroupForExternalSource($source, $extGroup);
             } else {
-                // TODO: associate roles
+                // External group exists, find related internal group and adjust roles
+                $this->groupManager->setPlatformRoles($externalGroup->getGroup(), $roles);
             }
         }
 
