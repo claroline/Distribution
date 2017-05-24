@@ -1083,6 +1083,7 @@ class RoleManager
         foreach ($workspaces as $workspace) {
             $this->log('Checking collaborator role for workspace '.$workspace->getCode().'...');
             $collaborator = $this->getCollaboratorRole($workspace);
+            $manager = $this->getManagerRole($workspace);
 
             if (!$collaborator) {
                 $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
@@ -1093,10 +1094,21 @@ class RoleManager
                     true
                 );
                 ++$i;
+            }
 
-                if ($i % 300 === 0) {
-                    $this->om->forceFlush();
-                }
+            if (!$manager) {
+                $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
+                $this->createWorkspaceRole(
+                    'ROLE_WS_MANAGER_'.$workspace->getGuid(),
+                    'manager',
+                    $workspace,
+                    true
+                );
+                ++$i;
+            }
+
+            if ($i % 300 === 0) {
+                $this->om->forceFlush();
             }
         }
 
