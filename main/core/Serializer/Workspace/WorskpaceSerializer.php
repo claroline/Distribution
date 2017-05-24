@@ -76,9 +76,9 @@ class WorskpaceSerializer
           'name' => $workspace->getName(),
           'code' => $workspace->getCode(),
           'creator' => [
-            'id' => $creator ? $creator->getId(): 0,
-            'uuid' => $creator ? $creator->getId(): 0,
-            'username' => $creator ? $creator->getUsername(): 'undefined',
+            'id' => $creator ? $creator->getId() : 0,
+            'uuid' => $creator ? $creator->getId() : 0,
+            'username' => $creator ? $creator->getUsername() : 'undefined',
           ],
           'roles' => array_map(function ($role) {
               return [
