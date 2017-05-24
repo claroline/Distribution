@@ -39,4 +39,22 @@ class ExternalGroupRepository extends EntityRepository
 
         return $executeQuery ? $qb->getQuery()->getResult() : $qb->getQuery();
     }
+
+    public function deactivateGroupsForSource($source)
+    {
+        $now = new \DateTime();
+        $now->setTime(0, 0, 0);
+
+        $qb = $this
+            ->createQueryBuilder('ext_group')
+            ->update()
+            ->set('ext_group.active', ':inactive')
+            ->where('ext_group.sourceSlug = :source')
+            ->andWhere('ext_group.lastSynchronizationDate < :now')
+            ->setParameter('inactive', false)
+            ->setParameter('source', $source)
+            ->setParameter('now', $now);
+
+        $qb->getQuery()->execute();
+    }
 }

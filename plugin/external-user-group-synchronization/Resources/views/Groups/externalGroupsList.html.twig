@@ -14,7 +14,7 @@
 
 {% extends 'ClarolineCoreBundle:Workspace:layout.html.twig' %}
 
-{% block title %}{{ parent() ~ ' - ' ~ "external_groups_registration_in_workspace" | trans({}, "platform") | striptags | raw }}{% endblock %}
+{% block title %}{{ parent() ~ ' - ' ~ "external_groups_registration_in_workspace" | trans({}, "claro_external_user_group") | striptags | raw }}{% endblock %}
 
 {% block breadcrumb %}
     {{
@@ -26,7 +26,7 @@
         'href': path('claro_admin_external_user_sync_groups_list', {'workspace': workspace.getId()})
     },
     {
-        'name': 'external_groups_registration_in_workspace'|trans({}, 'platform'),
+        'name': 'external_groups_registration_in_workspace'|trans({}, 'claro_external_user_group'),
         'href': ''
     }
     ]
@@ -46,7 +46,7 @@
                 </a>
             </li>
         </ul>
-        <h3>{{ 'external_groups_registration_in_workspace'|trans({}, 'platform') }}</h3>
+        <h3>{{ 'external_groups_registration_in_workspace'|trans({}, 'claro_external_user_group') }}</h3>
         {{ macros.flashBox() }}
         <div id="custom-flashbag-div" class="clearfix alert alert-success hide">
             <a id="flashbag-close-button" class="close" href="#" aria-hidden="true">&times;</a>
@@ -90,7 +90,6 @@
                             <th>{{ 'type'|trans({}, 'platform') }}</th>
                             <th>{{ 'code'|trans({}, 'platform') }}</th>
                             <th>{{ 'user_count'|trans({}, 'claro_external_user_group') }}</th>
-                            <th></th>
                         </tr>
                         </thead>
                         <tbody id="user-table-body">
@@ -102,7 +101,6 @@
                                 <td>{{ group.type }}</td>
                                 <td>{{ group.code }}</td>
                                 <td>{{ group.user_count }}</td>
-                                <td></td>
                             </tr>
                         {% endfor %}
 

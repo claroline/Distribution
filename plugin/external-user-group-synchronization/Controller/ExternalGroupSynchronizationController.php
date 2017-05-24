@@ -14,7 +14,6 @@ namespace Claroline\ExternalSynchronizationBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\RoleManager;
-use Claroline\ExternalSynchronizationBundle\Entity\ExternalGroup;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationGroupManager;
 use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -125,7 +124,6 @@ class ExternalGroupSynchronizationController extends Controller
      *     class="ClarolineCoreBundle:Role",
      *     options={"multipleIds"=true, "name"="roleIds"}
      * )
-     * @EXT\Template()
      */
     public function registerExternalGroupsAction(Request $request, array $roles, Workspace $workspace, $source)
     {
@@ -134,7 +132,14 @@ class ExternalGroupSynchronizationController extends Controller
         foreach ($externalGroupIds as $externalGroupId) {
             $externalGroup = $this->externalGroupSyncManager->getExternalGroupByExternalIdAndSourceSlug($externalGroupId, $source);
             if (is_null($externalGroup)) {
-                $this->externalGroupSyncManager->importExternalGroup($externalGroupId, $roles, $source);
+                $group = $this->externalUserGroupSyncManager->getExternalSourceGroupById($source, $externalGroupId);
+                $extGroup = $this->externalGroupSyncManager->importExternalGroup(
+                    $externalGroupId,
+                    $roles,
+                    $source,
+                    $group['name']
+                );
+                $this->externalUserGroupSyncManager->syncrhonizeGroupForExternalSource($source, $extGroup);
             } else {
                 // TODO: associate roles
             }

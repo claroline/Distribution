@@ -65,6 +65,7 @@ class ExternalGroup
     public function __construct($externalGroupId = null, $sourceSlug = null, Group $group = null)
     {
         $this->externalGroupId = $externalGroupId;
+        $this->sourceSlug = $sourceSlug;
         $this->group = $group;
         $this->active = true;
         $this->lastSynchronizationDate = new \DateTime();
@@ -156,6 +157,20 @@ class ExternalGroup
         $this->lastSynchronizationDate = $lastSynchronizationDate;
 
         return $this;
+    }
+
+    public function updateLastSynchronizationDate()
+    {
+        $now = new \DateTime();
+        $lastSyncDate = $this->lastSynchronizationDate;
+        if ($now->format('Y-m-d') !== $lastSyncDate->format('Y-m-d')) {
+            $this->lastSynchronizationDate = new \DateTime();
+            $this->active = true;
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

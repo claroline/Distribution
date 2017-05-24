@@ -119,10 +119,26 @@ class ExternalResourceSynchronizationRepository
     public function findOneGroupById($id)
     {
         return $this->createGroupQueryBuilder()
-            ->andWhere($this->config['group_config']['fields']['id'] .' = :id')
+            ->andWhere($this->config['group_config']['fields']['id'].' = :id')
             ->setParameter('id', $id)
             ->execute()
             ->fetch();
+    }
+
+    public function findUserIdsByGroupId($groupId)
+    {
+        $qb = $this->createUserGroupQueryBuilder();
+
+        if (is_null($qb)) {
+            return [];
+        }
+
+        $qb
+            ->where($this->config['group_config']['user_group_config']['fields']['id_group'].' = :id')
+            ->setParameter('id', $groupId);
+        $res = $qb->execute()->fetchAll();
+
+        return empty($res) ? [] : array_column($res, 'id_user');
     }
 
     private function initializeConnection()
@@ -179,6 +195,7 @@ class ExternalResourceSynchronizationRepository
                 $fields['group_name'].' AS name',
                 (empty($fields['type']) ? 'NULL' : $fields['type']).' AS type',
                 (empty($fields['code']) ? 'NULL' : $fields['code']).' AS code',
+<<<<<<< HEAD
                 (empty($fields['user_count']) ? 'NULL' : $fields['user_count']).' AS user_count'
 =======
         $groupConfTable = $groupConf['table'];
@@ -191,8 +208,34 @@ class ExternalResourceSynchronizationRepository
                 (empty($groupConfFields['count']) ? 'NULL' : $groupConfFields['count']).' AS user_count',
                 (empty($groupConfFields['code']) ? 'NULL' : $groupConfFields['code']).' AS code'
 >>>>>>> 5daf605... Admin pages for importing external groups into workspace
+=======
+                (empty($fields['count']) ? 'NULL' : $fields['count']).' AS user_count'
+>>>>>>> 7da0a3b... Created commands for user and group synchronization
             )
             ->from($groupConfTable);
+
+        return $qb;
+    }
+
+    private function createUserGroupQueryBuilder()
+    {
+        $qb = $this->conn->createQueryBuilder();
+        $userGroupConf = (
+            isset($this->config['group_config']) &&
+            isset($this->config['group_config']['user_group_config'])
+        ) ? $this->config['group_config']['user_group_config'] : [];
+        $fields = (isset($userGroupConf['fields'])) ? $userGroupConf['fields'] : [];
+
+        if (empty($userGroupConf) || empty($fields)) {
+            return null;
+        }
+
+        $qb
+            ->select(
+                $fields['id_user'].' AS id_user',
+                $fields['id_group'].' AS id_group'
+            )
+            ->from($userGroupConf['table']);
 
         return $qb;
     }

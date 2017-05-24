@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\ExternalSynchronizationBundle\Entity\ExternalGroup;
-use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationManager;
 use Claroline\ExternalSynchronizationBundle\Repository\ExternalGroupRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -34,8 +33,6 @@ class ExternalSynchronizationGroupManager
     private $groupManager;
     /** @var ExternalGroupRepository */
     private $externalGroupRepo;
-    /** @var ExternalSynchronizationManager */
-    private $externalSyncManager;
     /** @var PagerFactory */
     private $pagerFactory;
 
@@ -43,26 +40,22 @@ class ExternalSynchronizationGroupManager
      * @DI\InjectParams({
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
-     *     "externalSyncManager"    = @DI\Inject("claroline.manager.external_user_group_sync_manager"),
      *     "pagerFactory"           = @DI\Inject("claroline.pager.pager_factory")
      * })
      *
      * @param ObjectManager $om
      * @param GroupManager  $groupManager
-     * @param ExternalSynchronizationManager $externalSyncManager
      * @param PagerFactory  $pagerFactory
      */
     public function __construct(
         ObjectManager $om,
         GroupManager $groupManager,
-        ExternalSynchronizationManager $externalSyncManager,
         PagerFactory $pagerFactory
     ) {
         $this->om = $om;
         $this->groupManager = $groupManager;
         $this->pagerFactory = $pagerFactory;
         $this->externalGroupRepo = $om->getRepository('ClarolineExternalSynchronizationBundle:ExternalGroup');
-        $this->externalSyncManager = $externalSyncManager;
     }
 
     public function getExternalGroupById($id)
@@ -88,26 +81,30 @@ class ExternalSynchronizationGroupManager
         return $this->pagerFactory->createPager($query, $page, $max);
     }
 
-    public function importExternalGroup($externalGroupId, $roles, $source)
+    public function importExternalGroup($externalGroupId, $roles, $source, $name)
     {
         $internalGroup = new Group();
-
-        $repo = $this->externalSyncManager->getRepositoryForExternalSource($this->externalSyncManager->getExternalSource($source));
-        $name = $repo->findOneGroupById($externalGroupId)['name'];
 
         $internalGroup->setName($name);
         $internalGroup->setPlatformRoles($roles);
         $this->groupManager->insertGroup($internalGroup);
-
-        $externalGroup = new ExternalGroup();
-        $externalGroup
-            ->setExternalGroupId($externalGroupId)
-            ->setSourceSlug($source)
-            ->setGroup($internalGroup);
-
+        $externalGroup = new ExternalGroup($externalGroupId, $source, $internalGroup);
         $this->om->persist($externalGroup);
         $this->om->flush();
 
-        //TODO: Import Users
+        return $externalGroup;
+    }
+
+    public function getExternalGroupsBySourceSlug($sourceSlug)
+    {
+        return $this->externalGroupRepo->findBy(['sourceSlug' => $sourceSlug]);
+    }
+
+    public function updateExternalGroupDate(ExternalGroup $externalGroup)
+    {
+        if ($externalGroup->updateLastSynchronizationDate()) {
+            $this->om->persist($externalGroup);
+            $this->om->flush();
+        }
     }
 }

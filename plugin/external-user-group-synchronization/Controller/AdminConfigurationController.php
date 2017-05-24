@@ -321,7 +321,7 @@ class AdminConfigurationController extends Controller
      */
     public function synchronizeSourceAction($source, $cas, $casField)
     {
-        $res = $this->externalUserGroupSyncManager->synchronizeUsersForExternalSource($source);
+        $res = $this->externalUserGroupSyncManager->synchronizeUsersForExternalSource($source, $cas, $casField);
 
         return new JsonResponse($res);
     }

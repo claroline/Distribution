@@ -12,8 +12,10 @@
 
 namespace Claroline\ExternalSynchronizationBundle\Manager;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\ExternalSynchronizationBundle\Entity\ExternalUser;
 use Claroline\ExternalSynchronizationBundle\Repository\ExternalUserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -54,8 +56,31 @@ class ExternalSynchronizationUserManager
         return $this->externalUserRepo->findOneBy(['externalUserId' => $externalId, 'sourceSlug' => $sourceSlug]);
     }
 
+    /**
+     * @param $externalIds
+     * @param $sourceSlug
+     *
+     * @return array
+     */
     public function getExternalUsersByExternalIdsAndSourceSlug($externalIds, $sourceSlug)
     {
         return $this->externalUserRepo->findByExternalIdsAndSourceSlug($externalIds, $sourceSlug);
+    }
+
+    public function createExternalUser($externalId, $sourceSlug, User $user)
+    {
+        $externalUser = new ExternalUser($externalId, $sourceSlug, $user);
+        $this->om->persist($externalUser);
+        $this->om->flush();
+
+        return $externalUser;
+    }
+
+    public function updateExternalUserDate(ExternalUser $externalUser)
+    {
+        if ($externalUser->updateLastSynchronizationDate()) {
+            $this->om->persist($externalUser);
+            $this->om->flush();
+        }
     }
 }

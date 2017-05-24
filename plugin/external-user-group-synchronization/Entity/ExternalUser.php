@@ -60,6 +60,7 @@ class ExternalUser
     public function __construct($externalUserId = null, $sourceSlug = null, User $user = null)
     {
         $this->externalUserId = $externalUserId;
+        $this->sourceSlug = $sourceSlug;
         $this->user = $user;
         $this->lastSynchronizationDate = new \DateTime();
     }
@@ -130,6 +131,19 @@ class ExternalUser
         $this->lastSynchronizationDate = $lastSynchronizationDate;
 
         return $this;
+    }
+
+    public function updateLastSynchronizationDate()
+    {
+        $now = new \DateTime();
+        $lastSyncDate = $this->lastSynchronizationDate;
+        if ($now->format('Y-m-d') !== $lastSyncDate->format('Y-m-d')) {
+            $this->lastSynchronizationDate = new \DateTime();
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
