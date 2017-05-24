@@ -1081,7 +1081,7 @@ class RoleManager
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
-            $this->log('Checking collaborator role for workspace '.$workspace->getCode().'...');
+            $this->log('Checking roles role for workspace '.$workspace->getCode().'...');
             $collaborator = $this->getCollaboratorRole($workspace);
             $manager = $this->getManagerRole($workspace);
 
@@ -1097,7 +1097,7 @@ class RoleManager
             }
 
             if (!$manager) {
-                $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
+                $this->log('Adding manager role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
                 $this->createWorkspaceRole(
                     'ROLE_WS_MANAGER_'.$workspace->getGuid(),
                     'manager',
