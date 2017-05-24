@@ -338,6 +338,7 @@
     "delete_platform_friend_message": "Do you really want to remove this friend platform?",
     "delete_users": "Remove users",
     "delete_users_confirm": "Do you really want to remove the users [ %user_list% ] ?",
+    "deprecated": "Deprecated",
     "description": "Description",
     "desktop": "Desktop",
     "desktops": "Desktops",

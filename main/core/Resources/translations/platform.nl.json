@@ -332,6 +332,7 @@
     "delete_platform_friend_message": "Bent u er zeker van dat u dit vriendplatform wenst te verwijderen ?",
     "delete_users": "Gebruikers verwijderen",
     "delete_users_confirm": "Bent u er zeker van dat u deze gebruiker(s) [ %user_list% ] wenst te verwijderen ?",
+    "deprecated": "",
     "description": "Beschrijving",
     "desktop": "Bureaublad",
     "desktops": "",

@@ -188,7 +188,7 @@
                                 data-group-id="{{ group.getId() }}"
                             >
                                 <td>
-                                    {{ group.group.name }}
+                                    {{ group.group.name }}{% if not group.active %} <em>({{ 'deprecated'|trans({}, 'platform')|lower }})</em>{% endif %}
                                 </td>
                                 <td>
                                     {% if sources[group.sourceSlug] is defined %}

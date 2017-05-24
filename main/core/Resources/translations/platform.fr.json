@@ -342,6 +342,7 @@
     "delete_platform_friend_message": "Êtes-vous sûr de vouloir supprimer cette plateforme amie ?",
     "delete_users": "Supprimer des utilisateurs",
     "delete_users_confirm": "Êtes-vous sûr de vouloir supprimer ces utilisateurs [ %user_list% ] ?",
+    "deprecated": "Obsolète",
     "description": "Description",
     "desktop": "Bureau",
     "desktops": "Bureaux",
