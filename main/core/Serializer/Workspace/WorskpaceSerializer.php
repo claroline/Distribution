@@ -80,6 +80,7 @@ class WorskpaceSerializer
             'uuid' => $creator ? $creator->getId() : 0,
             'username' => $creator ? $creator->getUsername() : 'undefined',
           ],
+          'isModel' => $workspace->isModel(),
           'roles' => array_map(function ($role) {
               return [
                 'id' => $role->getId(),
