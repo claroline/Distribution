@@ -21,7 +21,7 @@ import {select} from '#/main/core/administration/workspace/selectors'
 import {Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 
-import {LIST_PROP_DEFAULT, LIST_PROP_DISPLAYED} from '#/main/core/layout/list/utils'
+import {LIST_PROP_DEFAULT, LIST_PROP_DISPLAYED, LIST_PROP_DISPLAYABLE, LIST_PROP_FILTERABLE} from '#/main/core/layout/list/utils'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
 class Workspaces extends Component {
@@ -124,7 +124,9 @@ class Workspaces extends Component {
               {name: 'isModel', type: 'boolean', label: t('model')},
               {name: 'isPersonal', type: 'boolean', label: t('personal_workspace'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
               {name: 'displayable', type: 'boolean', label: t('displayable_in_workspace_list'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
-              {name: 'creationDate', type: 'date', label: t('creation_date')},
+              {name: 'dateCreation', type: 'date', label: t('creation_date'), flags:~LIST_PROP_FILTERABLE},
+              {name: 'createdAfter', type: 'date', label: t('created_after'), flags: LIST_PROP_FILTERABLE&~LIST_PROP_DISPLAYABLE&~LIST_PROP_DISPLAYED},
+              {name: 'createdBefore', type: 'date', label: t('created_before'), flags: LIST_PROP_FILTERABLE&~LIST_PROP_DISPLAYABLE&~LIST_PROP_DISPLAYED},
               {name: 'maxStorageSize', type: 'string', label: t('max_storage_size'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
               {name: 'maxUploadResources', type: 'number', label: t('max_amount_resources'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED},
               {name: 'maxUsers', type: 'number', label: t('workspace_max_users'), flags: LIST_PROP_DEFAULT&~LIST_PROP_DISPLAYED}

@@ -247,6 +247,8 @@
     "create_widget_instance": "Créer un nouveau Widget",
     "create_workspace": "Créer un espace d'activités",
     "created_by": "Créé par %creator% le %creationDate%",
+    "created_before": "Créé avant",
+    "created_after": "Créé après",
     "creating": "En cours de création",
     "creation": "Création",
     "creation_date": "Date de création",
