@@ -86,6 +86,8 @@
     "delete_location": "Supprimer la localisation",
     "delete_location_confirm_message": "Êtes-vous sûr de vouloir supprimer cette localisation ?",
     "delete_selected_courses": "Supprimer les formations séléctionnées",
+    "delete_selected_session_events": "Supprimer les séances séléctionnées",
+    "delete_selected_session_events_confirm_message": "Êtes-vous sûr de vouloir supprimer les séances sélectionnées ?",
     "delete_selected_sessions": "Supprimer les sessions séléctionnées",
     "delete_session": "Supprimer la session",
     "delete_session_event": "Supprimer la séance",

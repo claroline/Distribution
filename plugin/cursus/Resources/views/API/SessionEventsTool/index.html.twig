@@ -30,9 +30,15 @@
              data-editable="{{ canEdit }}"
              data-sessions="{{ sessions | json_serialize('api_cursus_min') | raw | escape }}"
              data-events="{{ sessionEvents | json_serialize('api_cursus_min') | raw | escape }}"
+             data-events-total="{{ sessionEventsTotal }}"
         >
         </div>
     </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-plugin-exo-quiz-resource.css') }}" />
 {% endblock %}
 
 {% block javascripts %}

@@ -2,14 +2,18 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
 import {createStore} from '#/main/core/utilities/redux'
-import {registerModalType} from '#/main/core/layout/modal'
+import {registerModalTypes} from '#/main/core/layout/modal'
 import {DeleteConfirmModal} from '#/main/core/layout/modal/components/delete-confirm.jsx'
+import {EventFormModal} from './components/event-form-modal.jsx'
 import {reducers} from './reducers'
 import {VIEW_MANAGER, VIEW_USER, viewComponents} from './views'
 
 class SessionEventsTool {
   constructor(workspaceId, canEdit, sessions, events) {
-    registerModalType('DELETE_MODAL', DeleteConfirmModal)
+    registerModalTypes([
+      ['DELETE_MODAL', DeleteConfirmModal],
+      ['MODAL_EVENT_FORM', EventFormModal]
+    ])
     const sessionId = sessions.length === 1 ? sessions[0]['id'] : null
     this.mode = canEdit ? VIEW_MANAGER : VIEW_USER
     this.store = createStore(
@@ -19,7 +23,10 @@ class SessionEventsTool {
         canEdit: canEdit,
         sessions: sessions,
         sessionId: sessionId,
-        events: events,
+        events: {
+          data: events,
+          totalResults: eventsTotal
+        },
         mode: this.mode
       }
     )
@@ -42,6 +49,7 @@ const workspaceId = parseInt(container.dataset.workspace)
 const canEdit = parseInt(container.dataset.editable)
 const sessions = JSON.parse(container.dataset.sessions)
 const events = JSON.parse(container.dataset.events)
+const eventsTotal = parseInt(container.dataset.eventsTotal)
 const tool = new SessionEventsTool(workspaceId, canEdit, sessions, events)
 
 tool.render(container)

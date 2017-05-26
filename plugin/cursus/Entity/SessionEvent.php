@@ -302,4 +302,9 @@ class SessionEvent
     {
         $this->registrationType = $registrationType;
     }
+
+    public static function getSearchableFields()
+    {
+        return ['name'];
+    }
 }
