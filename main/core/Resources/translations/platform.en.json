@@ -712,6 +712,7 @@
     "missing_%password%": "The variable %password% is missing for \"%language%\".",
     "missing_%username%": "The variable %username% is missing for \"%language%\".",
     "mixed": "Mixed",
+    "base_model": "Base model",
     "mode": "Mode",
     "model": "Model",
     "models": "Models",
