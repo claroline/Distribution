@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t, transChoice} from '#/main/core/translation'
+import {t, transChoice, ClarolineTranslator} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
 
@@ -136,13 +136,13 @@ class Workspaces extends Component {
               ...Configuration.getWorkspacesAdministrationActions().map(action => {
                 return action.options.modal ? {
                   icon: action.icon,
-                  label: action.name(),
+                  label: action.name(ClarolineTranslator),
                   action: (row) => this.props.showModal(MODAL_URL, {
                     url: action.url(row.id)
                   })
                 } : {
                   icon: action.icon,
-                  label: action.name(),
+                  label: action.name(ClarolineTranslator),
                   action: (row) => action.url(row.id)
                 }
               }), {
