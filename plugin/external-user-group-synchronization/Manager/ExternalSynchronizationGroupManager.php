@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\GroupRepository;
 use Claroline\ExternalSynchronizationBundle\Entity\ExternalGroup;
 use Claroline\ExternalSynchronizationBundle\Repository\ExternalGroupRepository;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -31,6 +32,8 @@ class ExternalSynchronizationGroupManager
     private $om;
     /** @var GroupManager */
     private $groupManager;
+    /** @var  GroupRepository */
+    private $groupRepo;
     /** @var ExternalGroupRepository */
     private $externalGroupRepo;
     /** @var PagerFactory */
@@ -56,6 +59,7 @@ class ExternalSynchronizationGroupManager
         $this->groupManager = $groupManager;
         $this->pagerFactory = $pagerFactory;
         $this->externalGroupRepo = $om->getRepository('ClarolineExternalSynchronizationBundle:ExternalGroup');
+        $this->groupRepo = $om->getRepository('ClarolineCoreBundle:Group');
     }
 
     public function getExternalGroupById($id)
@@ -81,11 +85,10 @@ class ExternalSynchronizationGroupManager
         return $this->pagerFactory->createPager($query, $page, $max);
     }
 
-    public function importExternalGroup($externalGroupId, $roles, $source, $name)
+    public function importExternalGroup($externalGroupId, $roles, $source, $name, $code = null)
     {
         $internalGroup = new Group();
-
-        $internalGroup->setName($name);
+        $internalGroup->setName($this->createValidName($name, $code));
         $internalGroup->setPlatformRoles($roles);
         $this->groupManager->insertGroup($internalGroup);
         $externalGroup = new ExternalGroup($externalGroupId, $source, $internalGroup);
@@ -137,5 +140,21 @@ class ExternalSynchronizationGroupManager
     public function updateGroupsExternalSourceName($oldSource, $newSource)
     {
         $this->externalGroupRepo->updateSourceSlug($oldSource, $newSource);
+    }
+
+    private function createValidName($name, $code)
+    {
+        $validName = $name;
+        // Is the name already used ?
+        if (count($this->groupRepo->findByName($name)) > 0) {
+            if ($code) {
+                $validName .= " [$code]";
+            } else {
+                $date = date('YmdHis');
+                $validName = "[ext-$date] " . $name;
+            }
+        }
+
+        return $validName;
     }
 }

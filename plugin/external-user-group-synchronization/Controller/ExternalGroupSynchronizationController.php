@@ -145,7 +145,8 @@ class ExternalGroupSynchronizationController extends Controller
                     $externalGroupId,
                     $roles,
                     $source,
-                    $group['name']
+                    $group['name'],
+                    $group['code']
                 );
                 $this->externalUserGroupSyncManager->syncrhonizeGroupForExternalSource($source, $extGroup);
             } else {
