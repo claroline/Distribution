@@ -421,6 +421,7 @@
     "export": "Uitvoeren",
     "exportable": "Uitvoerbaar",
     "ext_php_missing": "De php uitbreiding %ext% ontbreekt.",
+    "external_group_list": "",
     "external_pdo_database": "Externe gegevensbank (PDO)",
     "facebook": "Facebook",
     "facebook_application_validation_error": "De aangemled ID's zijn ongeldig.",

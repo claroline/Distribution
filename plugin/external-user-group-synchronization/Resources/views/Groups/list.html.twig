@@ -119,7 +119,7 @@
                                 {# 1 external source : button #}
                                 {% for slug, name in sources  %}
                                     <a class="btn btn-default" href="{{ path('claro_admin_external_groups_list_search', {'workspace': workspace.getId(), 'source': slug}) }}">
-                                        <i class="fa fa-plus"></i> {{ 'add_from'|trans({'name': name}, 'claro_external_user_group') }}
+                                        <i class="fa fa-plus"></i> {{ 'import_from'|trans({'%name%': name}, 'claro_external_user_group') }}
                                     </a>
                                 {% endfor %}
 

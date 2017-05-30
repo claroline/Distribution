@@ -430,6 +430,7 @@
     "export": "Export",
     "exportable": "Exportable",
     "ext_php_missing": "The php extension %ext% is missing",
+    "external_group_list": "External group list",
     "external_pdo_database": "External database (PDO)",
     "facebook": "Facebook",
     "facebook_application_validation_error": "Provided credentials are not valid.",

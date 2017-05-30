@@ -435,6 +435,7 @@
     "export": "Exporter",
     "exportable": "Exportable",
     "ext_php_missing": "L'extension php %ext% est manquante.",
+    "external_group_list": "Liste des groupes externes",
     "external_pdo_database": "Base de données externe (PDO)",
     "facebook": "Facebook",
     "facebook_application_validation_error": "Les identifiants fournis ne sont pas valides.",
