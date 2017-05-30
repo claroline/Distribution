@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import isEmpty from 'lodash/isEmpty'
 
 import Modal from 'react-bootstrap/lib/Modal'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
@@ -10,9 +11,55 @@ import {t}         from '#/main/core/translation'
 import {t_res}     from '#/main/core/layout/resource/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 
-import {getSimpleAccessRule, setSimpleAccessRule} from '#/main/core/layout/resource/rights/utils'
+import {getSimpleAccessRule, setSimpleAccessRule, hasCustomRules} from '#/main/core/layout/resource/rights/utils'
 
 export const MODAL_RESOURCE_RIGHTS = 'MODAL_RESOURCE_RIGHTS'
+
+const CreatePermission = props =>
+  <td
+    key="create-cell"
+    className="create-cell"
+  >
+    <OverlayTrigger
+      trigger="click"
+      placement="left"
+      rootClose={true}
+      overlay={
+        <Popover
+          id="popover-positioned-top"
+          className="popover-list-group"
+          title={
+            <label className="checkbox-inline">
+              <input type="checkbox" />
+              {t('resource_type')}
+            </label>
+          }
+        >
+          <ul className="list-group">
+            {Object.keys(props.permission).map(resourceType =>
+              <li key={resourceType} className="list-group-item">
+                <label className="checkbox-inline">
+                  <input
+                    type="checkbox"
+                    checked={props.permission[resourceType]}
+                  />
+                  {t_res(resourceType)}
+                </label>
+              </li>
+            )}
+          </ul>
+        </Popover>
+      }
+    >
+      <button type="button" className="btn btn-link-default">
+        <span className="fa fa-fw fa-folder-open" />
+      </button>
+    </OverlayTrigger>
+  </td>
+
+CreatePermission.propTypes = {
+  permission: T.object.isRequired
+}
 
 const RolePermissions = props =>
   <tr>
@@ -21,78 +68,22 @@ const RolePermissions = props =>
     </th>
 
     {Object.keys(props.permissions).map(permission =>
-      <td
-        key={`${permission}-checkbox`}
-        className={classes({
-          'checkbox-cell': 'create' !== permission,
-          'create-cell': 'create' === permission
-        })}
-      >
-        <input
-          type="checkbox"
-          checked={props.permissions[permission]}
-          onChange={() => props.updatePermission(!props.permissions[permission])}
-        />
-
-        {'create' === permission &&
-          <OverlayTrigger
-            trigger="click"
-            placement="left"
-            rootClose={true}
-            overlay={
-              <Popover
-                id="popover-positioned-top"
-                className="popover-list-group"
-                title={
-                  <label className="checkbox-inline">
-                    <input type="checkbox" />
-                    {t('resource_type')}
-                  </label>
-                }
-              >
-                <ul className="list-group">
-                  {[
-                    'file',
-                    'directory',
-                    'text',
-                    'resource_shortcut',
-                    'activity',
-                    'claroline_forum',
-                    'claroline_survey',
-                    'claroline_announcement_aggregate',
-                    'claroline_scorm_12',
-                    'claroline_scorm_2004',
-                    'claroline_web_resource',
-                    'innova_collecticiel',
-                    'hevinci_url',
-                    'icap_blog',
-                    'icap_dropzone',
-                    'icap_wiki',
-                    'claroline_result',
-                    'innova_path',
-                    'icap_website',
-                    'claroline_flashcard',
-                    'ujm_exercise',
-                    'icap_lesson',
-                    'claroline_claco_form'
-                  ].map(resourceType =>
-                    <li key={resourceType} className="list-group-item">
-                      <label className="checkbox-inline">
-                        <input type="checkbox" />
-                        {t_res(resourceType)}
-                      </label>
-                    </li>
-                  )}
-                </ul>
-              </Popover>
-            }
-          >
-            <button type="button" className="btn btn-link-default">
-              <span className="fa fa-fw fa-folder-open" />
-            </button>
-          </OverlayTrigger>
-        }
-      </td>
+      'create' !== permission ?
+        <td
+            key={`${permission}-checkbox`}
+            className={classes({
+              'checkbox-cell': 'create' !== permission,
+              'create-cell': 'create' === permission
+            })}
+        >
+          <input
+            type="checkbox"
+            checked={props.permissions[permission]}
+            onChange={() => props.updatePermission(!props.permissions[permission])}
+          />
+        </td>
+      :
+        !isEmpty(props.permissions[permission]) && <CreatePermission permission={props.permissions[permission]} />
     )}
   </tr>
 
@@ -111,6 +102,7 @@ const AdvancedTab = props =>
         <tr>
           <th scope="col">{t('role')}</th>
           {Object.keys(props.permissions['ROLE_USER'].permissions).map(permission =>
+            ('create' !== permission || !isEmpty(props.permissions['ROLE_USER'].permissions[permission])) &&
             <th key={`${permission}-header`} scope="col">
               <div className="permission-name-container">
                 <span className="permission-name">{t_res(permission)}</span>
@@ -132,7 +124,7 @@ const AdvancedTab = props =>
       </tbody>
     </table>
 
-    <Modal.Body>
+    {/*<Modal.Body>
       <div className="input-group">
         <span className="input-group-addon">
           Add a workspace
@@ -140,7 +132,7 @@ const AdvancedTab = props =>
         </span>
         <input type="text" className="form-control" />
       </div>
-    </Modal.Body>
+    </Modal.Body>*/}
   </div>
 
 AdvancedTab.propTypes = {
@@ -175,15 +167,24 @@ const SimpleTab = props =>
       <SimpleAccessRule mode="workspace" icon="fa fa-book" {...props} />
       <SimpleAccessRule mode="admin" icon="fa fa-lock" {...props} />
     </div>
+
+    {props.customRules &&
+      <p className="resource-custom-rules-info">
+        <span className="fa fa-asterisk" />
+        {t_res('resource_rights_custom_help')}
+      </p>
+    }
   </Modal.Body>
 
 SimpleTab.propTypes = {
   currentMode: T.string,
+  customRules: T.bool,
   toggleMode: T.func.isRequired
 }
 
 SimpleTab.defaultProps = {
-  currentMode: ''
+  currentMode: '',
+  customRules: false
 }
 
 class EditRightsModal extends Component {
@@ -194,6 +195,7 @@ class EditRightsModal extends Component {
       activeTab: 'simple',
       pendingChanges: false,
       currentMode: getSimpleAccessRule(this.props.resourceNode.rights.all.permissions, this.props.resourceNode.workspace),
+      customRules: hasCustomRules(this.props.resourceNode.rights.all.permissions, this.props.resourceNode.workspace),
       rights: Object.assign({}, this.props.resourceNode.rights.all)
     }
 
@@ -257,6 +259,7 @@ class EditRightsModal extends Component {
         {'simple' === this.state.activeTab &&
           <SimpleTab
             currentMode={this.state.currentMode}
+            customRules={this.state.customRules}
             toggleMode={this.toggleSimpleMode}
           />
         }

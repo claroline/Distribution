@@ -3,7 +3,10 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 
+import {generateUrl} from '#/main/core/fos-js-router'
 import {t_res} from '#/main/core/layout/resource/translation'
+
+import {getSimpleAccessRule, hasCustomRules} from '#/main/core/layout/resource/rights/utils'
 
 import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'
 import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
@@ -20,11 +23,8 @@ import {
 const PublishAction = props =>
   <PageAction
     id="resource-publish"
-    title={props.published ? 'This resource is published. (click to unpublish it)' : 'This resource is not published. (click to publish it)'}
-    icon={classes('fa', {
-      'fa-eye-slash': !props.published,
-      'fa-eye': props.published
-    })}
+    title={t_res(props.published ? 'resource_unpublish' : 'resource_publish')}
+    icon={classes(props.published ? 'fa-eye' : 'fa-eye-slash', 'fa')}
     action={props.togglePublication}
   />
 
@@ -56,17 +56,17 @@ const ManageRightsAction = props => {
       title = 'This resource is accessible by everyone. (click to edit access rights)'
       icon = 'fa-unlock'
       break
-    case 'admin':
-      title = 'This resource is accessible by managers only. (click to edit access rights)'
-      icon = 'fa-lock'
+    case 'user':
+      title = 'This resource is accessible by platform users. (click to edit access rights)'
+      icon = 'fa-unlock'
       break
     case 'workspace':
       title = 'This resource is accessible by workspace users. (click to edit access rights)'
       icon = 'fa-unlock-alt'
       break
-    case 'custom':
-      title = 'This resource has custom access rights. (click to edit access rights)'
-      icon = 'fa-unlock-alt'
+    case 'admin':
+      title = 'This resource is accessible by managers only. (click to edit access rights)'
+      icon = 'fa-lock'
       break
   }
 
@@ -77,7 +77,7 @@ const ManageRightsAction = props => {
       icon={classes('fa', icon)}
       action={props.openRightsManagement}
     >
-      {'custom' === props.rights &&
+      {props.customRules &&
         <span className="fa fa-asterisk text-danger" />
       }
     </PageAction>
@@ -85,8 +85,13 @@ const ManageRightsAction = props => {
 }
 
 ManageRightsAction.propTypes = {
-  rights: T.oneOf(['all', 'admin', 'workspace', 'custom']).isRequired,
+  rights: T.oneOf(['all', 'admin', 'workspace']).isRequired,
+  customRules: T.bool,
   openRightsManagement: T.func.isRequired
+}
+
+ManageRightsAction.defaultProps = {
+  customRules: false
 }
 
 const LikeAction = props =>
@@ -112,7 +117,7 @@ function getMoreActions(resourceNode, props) {
       key="resource-group-management"
       header={true}
     >
-      Management
+      {t_res('resource_management')}
     </MenuItem>,
 
     <MenuItem
@@ -127,64 +132,97 @@ function getMoreActions(resourceNode, props) {
       {t_res('edit-properties')}
     </MenuItem>,
 
-    <MenuItem
+    // TODO : grab custom actions from plugins
+    /*<MenuItem
       key="resource-manage-tags"
       eventKey="resource-manage-tags"
     >
       <span className="fa fa-fw fa-tags" />
       Manage tags
-    </MenuItem>,
+    </MenuItem>,*/
 
-    <MenuItem
+    // TODO : enable tracking. It can't be enabled because for now resource actions wants the ID of the node
+    // and we only have its UUID
+    /*<MenuItem
       key="resource-log"
       eventKey="resource-log"
     >
       <span className="fa fa-fw fa-line-chart" />
-      Show tracking
-    </MenuItem>,
+      {t_res('open-tracking')}
+    </MenuItem>,*/
 
-    <MenuItem
+    // TODO : create new action
+    /*<MenuItem
       key="resource-show-as"
       eventKey="resource-show-as"
     >
       <span className="fa fa-fw fa-user-secret" />
       Show as...
-    </MenuItem>,
+    </MenuItem>,*/
 
-    <MenuItem
+    // TODO : grab custom actions from plugins
+    /*<MenuItem
       key="resource-group-plugins"
       header={true}
     >
       Other
-    </MenuItem>,
+    </MenuItem>,*/
 
-    <MenuItem
+    /*<MenuItem
       key="resource-comments"
       eventKey="resource-comments"
     >
       <span className="fa fa-fw fa-comment" />
       Add a comment
-    </MenuItem>,
+    </MenuItem>,*/
 
-    <MenuItem
+    /*<MenuItem
       key="resource-notes"
       eventKey="resource-notes"
     >
       <span className="fa fa-fw fa-sticky-note" />
       Add a note
-    </MenuItem>,
+    </MenuItem>,*/
 
-    resourceNode.rights.current.export &&
-    <MenuItem key="resource-export-divider" divider />,
+    // TODO : enable delete and export. It can't be enabled because for now resource actions wants the ID of the node
+    // and we only have its UUID
+    /*resourceNode.rights.current.export &&
+    <MenuItem key="resource-export-divider" divider={true} />,
 
     resourceNode.rights.current.export &&
     <MenuItem
       key="resource-export"
       eventKey="resource-export"
+      href={generateUrl('claro_resource_action', {
+        resourceType: resourceNode.meta.type,
+        action: 'export',
+        node: resourceNode.id
+      })}
     >
       <span className="fa fa-fw fa-upload" />
       {t_res('export')}
-    </MenuItem>
+    </MenuItem>,
+
+    resourceNode.rights.current.delete &&
+    <MenuItem key="resource-delete-divider" divider={true} />,
+
+    resourceNode.rights.current.delete &&
+    <MenuItem
+      key="resource-delete"
+      eventKey="resource-delete"
+      className="dropdown-link-danger"
+      onClick={e => {
+        e.stopPropagation()
+        props.showModal(MODAL_DELETE_CONFIRM, {
+          title: t_res('delete'),
+          question: t_res('delete_confirm_question'),
+          handleConfirm: () => true
+        })
+      }}
+    >
+      <span className="fa fa-fw fa-trash" />
+      {t_res('delete')}
+    </MenuItem>*/
   ]
 }
 
@@ -217,7 +255,8 @@ const ManagementGroupActions = props =>
 
     {props.resourceNode.rights.current.administrate &&
       <ManageRightsAction
-        rights="workspace"
+        rights={getSimpleAccessRule(props.resourceNode.rights.all.permissions, props.resourceNode.workspace)}
+        customRules={hasCustomRules(props.resourceNode.rights.all.permissions, props.resourceNode.workspace)}
         openRightsManagement={() => props.showModal(MODAL_RESOURCE_RIGHTS, {
           resourceNode: props.resourceNode,
           save: props.updateProperties
@@ -228,11 +267,8 @@ const ManagementGroupActions = props =>
 
 ManagementGroupActions.propTypes = {
   resourceNode: T.shape({
-    name: T.string.isRequired,
-    description: T.string,
     workspace: T.object,
     meta: T.shape({
-      type: T.string.isRequired,
       published: T.bool.isRequired
     }).isRequired,
     rights: T.shape({
@@ -241,10 +277,32 @@ ManagementGroupActions.propTypes = {
         administrate: T.bool,
         export: T.bool,
         delete: T.bool
-      }),
-      all: T.object.isRequired
+      }).isRequired,
+      all: T.shape({
+        permissions: T.object.isRequired
+      }).isRequired
     })
-  }).isRequired
+  }).isRequired,
+  save: T.shape({
+    disabled: T.bool.isRequired,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }).isRequired,
+  edit: T.oneOfType([T.func, T.string]).isRequired,
+  editMode: T.bool,
+  togglePublication: T.func.isRequired,
+  showModal: T.func.isRequired,
+  updateProperties: T.func.isRequired
+}
+
+const CustomGroupActions = props =>
+  <PageGroupActions>
+    <FavoriteAction favorited={false} toggleFavorite={() => true} />
+    <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
+    <LikeAction likes={100} handleLike={() => true} />
+  </PageGroupActions>
+
+CustomGroupActions.propTypes = {
+
 }
 
 /**
@@ -254,14 +312,18 @@ ManagementGroupActions.propTypes = {
 const ResourceActions = props =>
   <PageActions className="resource-actions">
     {(props.resourceNode.rights.current.edit || props.resourceNode.rights.current.administrate) &&
-      <ManagementGroupActions resourceNode={props.resourceNode} />
+      <ManagementGroupActions
+        resourceNode={props.resourceNode}
+        save={props.save}
+        edit={props.edit}
+        editMode={props.editMode}
+        togglePublication={props.togglePublication}
+        showModal={props.showModal}
+        updateProperties={props.updateProperties}
+      />
     }
 
-    {/*<PageGroupActions>
-      <FavoriteAction favorited={false} toggleFavorite={() => true} />
-      <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
-      <LikeAction likes={100} handleLike={() => true} />
-    </PageGroupActions>*/}
+    {/*<CustomGroupActions />*/}
 
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
@@ -284,33 +346,8 @@ const ResourceActions = props =>
             [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
           })
         )}
+
         {getMoreActions(props.resourceNode, props)}
-
-        {props.resourceNode.rights.current.delete &&
-          <MenuItem
-            key="resource-delete-divider"
-            divider={true}
-          />
-        }
-
-        {props.resourceNode.rights.current.delete &&
-          <MenuItem
-            key="resource-delete"
-            eventKey="resource-delete"
-            className="dropdown-link-danger"
-            onClick={e => {
-              e.stopPropagation()
-              props.showModal(MODAL_DELETE_CONFIRM, {
-                title: t_res('delete'),
-                question: t_res('delete_confirm_question'),
-                handleConfirm: () => true
-              })
-            }}
-          >
-            <span className="fa fa-fw fa-trash" />
-            {t_res('delete')}
-          </MenuItem>
-        }
       </MoreAction>
     </PageGroupActions>
   </PageActions>

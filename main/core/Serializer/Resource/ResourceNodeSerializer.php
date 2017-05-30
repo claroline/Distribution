@@ -21,6 +21,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class ResourceNodeSerializer
 {
+    /**
+     * @var ObjectManager
+     */
     private $om;
 
     /**
@@ -33,12 +36,24 @@ class ResourceNodeSerializer
      */
     private $eventDispatcher;
 
+    /**
+     * @var MaskManager
+     */
     private $maskManager;
 
+    /**
+     * @var BreadcrumbManager
+     */
     private $breadcrumbManager;
 
+    /**
+     * @var ResourceMenuManager
+     */
     private $menuManager;
 
+    /**
+     * @var RightsManager
+     */
     private $rightsManager;
 
     /**

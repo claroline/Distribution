@@ -223,6 +223,8 @@ class EditPropertiesModal extends Component {
       validating: false,
       errors: {}
     }
+
+    this.save = this.save.bind(this)
   }
 
   /**
@@ -259,6 +261,7 @@ class EditPropertiesModal extends Component {
 
     if (isEmpty(errors)) {
       this.props.save(this.state.resourceNode)
+      this.props.fadeModal()
     }
   }
 
@@ -359,11 +362,8 @@ class EditPropertiesModal extends Component {
 
         <button
           className="modal-btn btn btn-primary"
-          disabled={!this.state.pendingChanges}
-          onClick={() => {
-            this.save()
-            this.props.fadeModal()
-          }}
+          disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
+          onClick={this.save}
         >
           {t('save')}
         </button>
