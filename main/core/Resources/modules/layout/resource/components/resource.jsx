@@ -3,10 +3,10 @@ import {PropTypes as T} from 'prop-types'
 
 import {registerModalTypes} from '#/main/core/layout/modal'
 import {Page, PageHeader, PageContent} from '#/main/core/layout/page/components/page.jsx'
-import {ResourceActions} from './resource-actions.jsx'
+import {ResourceActions} from '#/main/core/layout/resource/components/resource-actions.jsx'
 
-import {MODAL_RESOURCE_PROPERTIES, EditPropertiesModal} from './modal/edit-properties.jsx'
-import {MODAL_RESOURCE_RIGHTS, EditRightsModal} from './modal/edit-rights.jsx'
+import {MODAL_RESOURCE_PROPERTIES, EditPropertiesModal} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
+import {MODAL_RESOURCE_RIGHTS, EditRightsModal} from '#/main/core/layout/resource/rights/components/modal/edit-rights.jsx'
 
 class Resource extends Component {
   constructor(props) {
@@ -27,7 +27,6 @@ class Resource extends Component {
         fullscreen={this.props.fullscreen}
 
         modal={this.props.modal}
-        showModal={this.props.showModal}
         fadeModal={this.props.fadeModal}
         hideModal={this.props.hideModal}
       >

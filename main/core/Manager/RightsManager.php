@@ -356,6 +356,8 @@ class RightsManager
     }
 
     /**
+     * @todo we don't need to return the translation keys. This needs to be change for the new resource manager
+     *
      * @param string[]                                           $roles
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
      *

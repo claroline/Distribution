@@ -7,7 +7,7 @@ import {t_res} from '#/main/core/layout/resource/translation'
 
 import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'
 import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
-import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/layout/resource/components/modal/edit-rights.jsx'
+import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/layout/resource/rights/components/modal/edit-rights.jsx'
 
 import {
   PageActions,
@@ -183,7 +183,7 @@ function getMoreActions(resourceNode, props) {
       eventKey="resource-export"
     >
       <span className="fa fa-fw fa-upload" />
-      Export resource
+      {t_res('export')}
     </MenuItem>
   ]
 }
@@ -194,7 +194,7 @@ function getMoreActions(resourceNode, props) {
  */
 const ResourceActions = props =>
   <PageActions className="resource-actions">
-    {props.resourceNode.rights.current.edit &&
+    {(props.resourceNode.rights.current.edit || props.resourceNode.rights.current.administrate) &&
       <PageGroupActions>
         {!props.editMode &&
           <PageAction
@@ -221,7 +221,8 @@ const ResourceActions = props =>
         <ManageRightsAction
           rights="workspace"
           openRightsManagement={() => props.showModal(MODAL_RESOURCE_RIGHTS, {
-            rights: props.resourceNode.rights
+            resourceNode: props.resourceNode,
+            save: props.updateProperties
           })}
         />
       </PageGroupActions>
@@ -289,6 +290,7 @@ ResourceActions.propTypes = {
   resourceNode: T.shape({
     name: T.string.isRequired,
     description: T.string,
+    workspace: T.object,
     meta: T.shape({
       type: T.string.isRequired,
       published: T.bool.isRequired
@@ -296,11 +298,14 @@ ResourceActions.propTypes = {
     rights: T.shape({
       current: T.shape({
         edit: T.bool,
+        administrate: T.bool,
         export: T.bool,
         delete: T.bool
-      })
+      }),
+      all: T.object.isRequired
     })
   }).isRequired,
+
   fullscreen: T.bool.isRequired,
   toggleFullscreen: T.func.isRequired,
   togglePublication: T.func.isRequired,

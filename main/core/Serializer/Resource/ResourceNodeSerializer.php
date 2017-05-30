@@ -95,21 +95,25 @@ class ResourceNodeSerializer
             'name' => $resourceNode->getName(),
             'poster' => null, // todo : add as ResourceNode prop
             'thumbnail' => null,
-            'workspace' => $resourceNode->getWorkspace() ? [
-                'id' => $resourceNode->getWorkspace()->getGuid(),
-                'name' => $resourceNode->getWorkspace()->getName(),
-                'code' => $resourceNode->getWorkspace()->getCode(),
-            ] : [],
             'meta' => $this->getMeta($resourceNode),
             'parameters' => $this->getParameters($resourceNode),
-            'rights' => ['current' => $this->getCurrentPermissions($resourceNode)],
+            'rights' => [
+                'current' => $this->getCurrentPermissions($resourceNode),
+            ],
             'shortcuts' => $this->getShortcuts($resourceNode),
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
         ];
 
-        //?
+        if (!empty($resourceNode->getWorkspace())) {
+            $serializedNode['workspace'] = [
+                'id' => $resourceNode->getWorkspace()->getGuid(),
+                'name' => $resourceNode->getWorkspace()->getName(),
+                'code' => $resourceNode->getWorkspace()->getCode(),
+            ];
+        }
+
         if ($this->hasPermission('ADMINISTRATE', $resourceNode)) {
-            $serializedNode['meta']['rights']['all'] = $this->getRights($resourceNode);
+            $serializedNode['rights']['all'] = $this->getRights($resourceNode);
         }
 
         return $this->decorate($resourceNode, $serializedNode);
@@ -215,9 +219,10 @@ class ResourceNodeSerializer
             ];
         }, $decoders);
 
-        $rights = $resourceNode->getRights()->toArray();
-        $serializedRights = array_map(function (ResourceRights $right) use ($resourceNode) {
-            return [
+        $serializedRights = [];
+        $rights = $resourceNode->getRights();
+        foreach ($rights as $right) {
+            $serializedRights[$right->getRole()->getName()] = [
                 'id' => $right->getId(),
                 'mask' => $right->getMask(),
                 'role' => [
@@ -227,10 +232,11 @@ class ResourceNodeSerializer
                 ],
                 'permissions' => array_merge(
                     $this->maskManager->decodeMask($right->getMask(), $resourceNode->getResourceType()),
-                    ['create' => $this->rightsManager->getCreatableTypes([$right->getRole()->getName()], $resourceNode)]
+                    // todo : array_keys should be remove when `getCreatableTypes` will return only types without translations
+                    ['create' => array_keys($this->rightsManager->getCreatableTypes([$right->getRole()->getName()], $resourceNode))]
                 ),
             ];
-        }, $rights);
+        }
 
         return [
             'decoders' => $serializedDecoders,

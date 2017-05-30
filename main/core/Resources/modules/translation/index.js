@@ -4,7 +4,9 @@ const VALIDATION_DOMAIN = 'validators'
 
 import {execute} from '#/main/core/file-loader'
 import {web} from '#/main/core/path'
-import {Translator} from './translator'
+
+// todo : make it work
+//import {Translator} from './translator'
 
 /**
  * Get the current application translator.
@@ -13,9 +15,7 @@ import {Translator} from './translator'
  * @returns {Translator}
  */
 export function getTranslator() {
-  window.Translator = Translator
-
-  return Translator
+  return window.Translator
 }
 
 /**
@@ -27,14 +27,13 @@ export function getTranslator() {
  *
  * @returns {string}
  */
-export function trans(key, placeholders = {}, domain = 'message') {
-  if (!isLoaded(key, domain)) {
+export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
+  // todo : make it work
+  /*if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
-  }
+  }*/
 
-  const trans = getTranslator().trans(key, placeholders, domain = DEFAULT_DOMAIN)
-
-  return trans
+  return getTranslator().trans(key, placeholders, domain)
 }
 
 /**
@@ -49,9 +48,9 @@ export function trans(key, placeholders = {}, domain = 'message') {
  */
 
 export function transChoice(key, count, placeholders = {}, domain = DEFAULT_DOMAIN) {
-  if (!isLoaded(key, domain)) {
+  /*if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
-  }
+  }*/
 
   return getTranslator().transChoice(key, count, placeholders, domain)
 }
