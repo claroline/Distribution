@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
+
 export default class SessionManagementCtrl {
   constructor($stateParams, NgTableParams, CourseService, SessionService, SessionEventService, DocumentModelService) {
     this.NgTableParams = NgTableParams

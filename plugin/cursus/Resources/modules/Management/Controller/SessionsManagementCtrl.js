@@ -7,6 +7,7 @@
  * file that was distributed with this source code.
  */
 
+/*global Routing*/
 import coursesListTemplate from '../Partial/session_creation_courses_list.html'
 
 export default class SessionsManagementCtrl {
