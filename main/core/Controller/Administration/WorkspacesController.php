@@ -16,12 +16,10 @@ use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Serializer\Workspace\WorkspaceSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -31,8 +29,8 @@ class WorkspacesController extends Controller
 {
     private $om;
     private $eventDispatcher;
+    private $finder;
     private $workspaceManager;
-    private $workspaceSerializer;
 
     /**
      * WorkspacesController constructor.
@@ -44,10 +42,10 @@ class WorkspacesController extends Controller
      *     "finder"           = @DI\Inject("claroline.API.finder")
      * })
      *
-     * @param WorkspaceManager    $workspaceManager
-     * @param ObjectManager       $om
-     * @param StrictDispatcher    $eventDispatcher
-     * @param WorkspaceSerializer $serializer
+     * @param WorkspaceManager $workspaceManager
+     * @param ObjectManager $om
+     * @param StrictDispatcher $eventDispatcher
+     * @param Finder $finder
      */
     public function __construct(
         WorkspaceManager $workspaceManager,
@@ -66,7 +64,7 @@ class WorkspacesController extends Controller
      *
      * @return array
      */
-    public function managementAction(User $user)
+    public function managementAction()
     {
         return $this->finder->search(
           'Claroline\CoreBundle\Entity\Workspace\Workspace',
