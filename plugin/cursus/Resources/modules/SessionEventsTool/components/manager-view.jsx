@@ -218,7 +218,7 @@ ManagerView.propTypes = {
   pagination: T.shape({
     pageSize: T.number.isRequired,
     current: T.number.isRequired
-  }).isRequired,
+  }).isRequired
 }
 
 function mapStateToProps(state) {

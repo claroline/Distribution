@@ -239,6 +239,7 @@ EventFormModal.propTypes = {
     registrationType: T.number.isRequired,
     maxUsers: T.number
   }).isRequired,
+  mode: T.string.isRequired,
   session: T.object,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
