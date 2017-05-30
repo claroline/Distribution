@@ -3,12 +3,12 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 
-import {generateUrl} from '#/main/core/fos-js-router'
+/*import {generateUrl} from '#/main/core/fos-js-router'*/
 import {t_res} from '#/main/core/layout/resource/translation'
 
 import {getSimpleAccessRule, hasCustomRules} from '#/main/core/layout/resource/rights/utils'
 
-import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'
+/*import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'*/
 import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
 import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/layout/resource/rights/components/modal/edit-rights.jsx'
 
@@ -130,7 +130,7 @@ function getMoreActions(resourceNode, props) {
     >
       <span className="fa fa-fw fa-pencil" />
       {t_res('edit-properties')}
-    </MenuItem>,
+    </MenuItem>/*,*/
 
     // TODO : grab custom actions from plugins
     /*<MenuItem
@@ -294,7 +294,7 @@ ManagementGroupActions.propTypes = {
   updateProperties: T.func.isRequired
 }
 
-const CustomGroupActions = props =>
+const CustomGroupActions = () =>
   <PageGroupActions>
     <FavoriteAction favorited={false} toggleFavorite={() => true} />
     <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />

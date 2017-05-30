@@ -41,11 +41,11 @@ class WorkspaceSerializer
      *     "roleManager"       = @DI\Inject("claroline.manager.role_manager")
      * })
      *
-     * @param ObjectManager $om
+     * @param ObjectManager                 $om
      * @param AuthorizationCheckerInterface $authorization
-     * @param StrictDispatcher $eventDispatcher
-     * @param UserManager $userManager
-     * @param RoleManager $roleManager
+     * @param StrictDispatcher              $eventDispatcher
+     * @param UserManager                   $userManager
+     * @param RoleManager                   $roleManager
      */
     public function __construct(
         ObjectManager $om,
