@@ -1,8 +1,7 @@
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
-//import DatePicker from 'react-datepicker'
-//import moment from 'moment'
-//import 'react-datepicker/dist/react-datepicker.css'
+import classes from 'classnames'
+import moment from 'moment'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {t, trans} from '#/main/core/translation'
 import {Textarea} from '#/plugin/exo/components/form/textarea.jsx'
@@ -16,7 +15,12 @@ export const MODAL_EVENT_FORM = 'MODAL_EVENT_FORM'
 export class EventFormModal  extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      hasError: false,
+      nameError: null,
+      startDateError: null,
+      endDateError: null
+    }
 
     if (props.event.name) {
       this.state['name'] = props.event.name
@@ -29,6 +33,16 @@ export class EventFormModal  extends Component {
     }
     if (props.event.maxUsers !== null) {
       this.state['maxUsers'] = props.event.maxUsers
+    }
+    if (props.event.startDate) {
+      this.state['startDate'] = new Date(props.event.startDate)
+    } else {
+      this.state['startDate'] = new Date(props.session.startDate)
+    }
+    if (props.event.endDate) {
+      this.state['endDate'] = new Date(props.event.endDate)
+    } else {
+      this.state['endDate'] = new Date(props.session.endDate)
     }
   }
 
@@ -46,24 +60,76 @@ export class EventFormModal  extends Component {
       case 'maxUsers':
         this.setState({maxUsers: value})
         break
+      case 'startDate':
+        this.setState({startDate: value})
+        break
+      case 'endDate':
+        this.setState({endDate: value})
+        break
     }
     this.props.updateEventForm(property, value)
+  }
+
+  createSessionEvent() {
+    if (!this.state['hasError']) {
+      this.props.createSessionEvent(this.props.session.id, this.state)
+      this.props.fadeModal()
+    }
+  }
+
+  validateSessionEvent() {
+    const validation = {
+      hasError: false,
+      nameError: null,
+      startDateError: null,
+      endDateError: null,
+      maxUsersError: null
+    }
+
+    if (!this.state['name']) {
+      validation['nameError'] = trans('form_not_blank_error', {}, 'cursus')
+      validation['hasError'] = true
+    }
+    if (!moment(this.state['startDate']).isValid()) {
+      validation['startDateError'] = trans('form_not_valid_error', {}, 'cursus')
+      validation['hasError'] = true
+    }
+    if (!moment(this.state['endDate']).isValid()) {
+      validation['endDateError'] = trans('form_not_valid_error', {}, 'cursus')
+      validation['hasError'] = true
+    }
+    if (this.state['maxUsers'] !== undefined && this.state['maxUsers'] !== null && this.state['maxUsers'] !== '' &&
+      (isNaN(parseInt(this.state['maxUsers'])) || parseInt(this.state['maxUsers']) < 0)
+    ) {
+      validation['maxUsersError'] = trans('form_number_superior_error', {value: 0}, 'cursus')
+      validation['hasError'] = true
+    }
+    this.setState(validation, this.createSessionEvent)
+  }
+
+  componentWillUnmount() {
+    this.props.resetFormData()
   }
 
   render() {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
-          <div className="form-group row">
-            <div className="control-label col-md-3">
-              <label>{t('name')}</label>
-            </div>
+          <div className={classes('form-group row', {'has-error': this.state.nameError})}>
+            <label className="control-label col-md-3">
+              {t('name')}
+            </label>
             <div className="col-md-9">
               <input type="text"
                      className="form-control"
                      value={this.state.name}
-                     onChange={e => this.props.updateEventForm('name', e.target.value)}
+                     onChange={e => this.updateEventProps('name', e.target.value)}
               />
+              {this.state.nameError &&
+                <div className="help-block field-error">
+                  {this.state.nameError}
+                </div>
+              }
             </div>
           </div>
 
@@ -74,13 +140,13 @@ export class EventFormModal  extends Component {
             <div className="col-md-9">
               <Textarea id="event-form-description"
                         content={this.state.description}
-                        onChange={text => this.props.updateEventForm('description', text)}
+                        onChange={text => this.updateEventProps('description', text)}
               >
               </Textarea>
             </div>
           </div>
 
-          <div className="form-group row">
+          <div className={classes('form-group row', {'has-error': this.state.startDateError})}>
             <div className="control-label col-md-3">
               <label>{t('start_date')}</label>
             </div>
@@ -90,11 +156,37 @@ export class EventFormModal  extends Component {
                         timeFormat={true}
                         locale={locale}
                         utc={true}
-                        onChange={date => this.props.updateEventForm('startDate', date)}
+                        defaultValue={this.state.startDate}
+                        onChange={date => this.updateEventProps('startDate', date)}
               />
+              {this.state.startDateError &&
+                <div className="help-block field-error">
+                  {this.state.startDateError}
+                </div>
+              }
             </div>
           </div>
 
+          <div className={classes('form-group row', {'has-error': this.state.endDateError})}>
+            <div className="control-label col-md-3">
+              <label>{t('end_date')}</label>
+            </div>
+            <div className="col-md-9">
+              <Datetime closeOnSelect={true}
+                        dateFormat={true}
+                        timeFormat={true}
+                        locale={locale}
+                        utc={true}
+                        defaultValue={this.state.endDate}
+                        onChange={date => this.updateEventProps('endDate', date)}
+              />
+              {this.state.endDateError &&
+                <div className="help-block field-error">
+                  {this.state.endDateError}
+                </div>
+              }
+            </div>
+          </div>
 
           <div className="form-group row">
             <div className="control-label col-md-3">
@@ -112,7 +204,7 @@ export class EventFormModal  extends Component {
             </div>
           </div>
 
-          <div className="form-group row">
+          <div className={classes('form-group row', {'has-error': this.state.maxUsersError})}>
             <div className="control-label col-md-3">
               <label>{trans('max_users', {}, 'cursus')}</label>
             </div>
@@ -121,8 +213,13 @@ export class EventFormModal  extends Component {
                      className="form-control"
                      value={this.state.maxUsers}
                      min="0"
-                     onChange={e => this.props.updateEventForm('maxUsers', e.target.value)}
+                     onChange={e => this.updateEventProps('maxUsers', e.target.value)}
               />
+              {this.state.maxUsersError &&
+                <div className="help-block field-error">
+                  {this.state.maxUsersError}
+                </div>
+              }
             </div>
           </div>
         </Modal.Body>
@@ -130,7 +227,7 @@ export class EventFormModal  extends Component {
           <button className="btn btn-default" onClick={this.props.fadeModal}>
             {t('cancel')}
           </button>
-          <button className="btn btn-primary" onClick={() => {}}>
+          <button className="btn btn-primary" onClick={() => this.validateSessionEvent()}>
             {t('ok')}
           </button>
         </Modal.Footer>
@@ -157,7 +254,6 @@ EventFormModal.propTypes = {
 function getLocale() {
   const homeLocale = document.querySelector('#homeLocale')
 
-console.log(homeLocale.innerHTML)
   if (homeLocale) {
     return homeLocale.innerHTML.trim()
   }

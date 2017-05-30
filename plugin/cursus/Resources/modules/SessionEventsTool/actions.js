@@ -7,12 +7,15 @@ import {actions as paginationActions} from '#/main/core/layout/pagination/action
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 
 export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
+export const SESSION_EVENT_ADD = 'SESSION_EVENT_ADD'
 export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
 
 export const actions = {}
 
 actions.loadSessionEvents = makeActionCreator(SESSION_EVENTS_LOAD, 'sessionEvents', 'total')
+
+actions.addSessionEvent = makeActionCreator(SESSION_EVENT_ADD, 'sessionEvent')
 
 actions.deleteSessionEvent = (workspaceId, sessionEventId) => ({
   [REQUEST_SEND] : {
@@ -39,6 +42,44 @@ actions.deleteSessionEvents = (workspaceId, sessionEvents) => ({
     }
   }
 })
+
+actions.createSessionEvent = (sessionId, eventData) => {
+  return (dispatch) => {
+    const formData = new FormData()
+
+    if (eventData['name'] !== undefined) {
+      formData.append('name', eventData['name'])
+    }
+    if (eventData['description'] !== undefined) {
+      formData.append('description', eventData['description'])
+    }
+    if (eventData['startDate'] !== undefined) {
+      formData.append('startDate', eventData['startDate'])
+    }
+    if (eventData['endDate'] !== undefined) {
+      formData.append('endDate', eventData['endDate'])
+    }
+    if (eventData['registrationType'] !== undefined) {
+      formData.append('registrationType', eventData['registrationType'])
+    }
+    if (eventData['maxUsers'] !== undefined) {
+      formData.append('maxUsers', eventData['maxUsers'])
+    }
+
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_cursus_session_event_create', {session: sessionId}),
+        request: {
+          method: 'POST',
+          body: formData
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.addSessionEvent(JSON.parse(data)))
+        }
+      }
+    })
+  }
+}
 
 actions.fetchSessionEvents = () => (dispatch, getState) => {
   const state = getState()

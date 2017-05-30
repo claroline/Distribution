@@ -79,7 +79,10 @@ class ManagerView extends Component {
         props: {
           title: `${trans('session_event_creation', {}, 'cursus')}`,
           updateEventForm: this.props.updateEventForm,
-          event: this.props.eventFormData
+          event: this.props.eventFormData,
+          session: this.props.session,
+          createSessionEvent: this.props.createSessionEvent,
+          resetFormData: this.props.resetEventForm
         },
         fading: false
       }
@@ -187,6 +190,7 @@ function mapStateToProps(state) {
     events: selectors.sessionEvents(state),
     total: selectors.sessionEventsTotal(state),
     eventFormData: selectors.eventFormData(state),
+    session: selectors.currentSession(state),
     selected: listSelect.selected(state),
     filters: listSelect.filters(state),
     sortBy: listSelect.sortBy(state),
@@ -199,6 +203,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    createSessionEvent: (sessionId, eventData) => {
+      dispatch(actions.createSessionEvent(sessionId, eventData))
+    },
     deleteSessionEvent: (workspaceId, sessionEventId) => {
       dispatch(actions.deleteSessionEvent(workspaceId, sessionEventId))
     },

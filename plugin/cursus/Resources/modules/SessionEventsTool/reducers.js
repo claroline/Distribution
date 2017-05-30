@@ -3,7 +3,7 @@ import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
 import {VIEW_USER} from './views'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
-import {SESSION_EVENTS_LOAD, EVENT_FORM_RESET, EVENT_FORM_UPDATE} from './actions'
+import {SESSION_EVENTS_LOAD, SESSION_EVENT_ADD, EVENT_FORM_RESET, EVENT_FORM_UPDATE} from './actions'
 
 const initialState = {
   workspaceId: null,
@@ -23,15 +23,24 @@ const initialState = {
   }
 }
 
-const handlers2 = {
+const handlers = {
 
 }
 
-const handlers = {
+const eventsHandlers = {
   [SESSION_EVENTS_LOAD]: (state, action) => {
     return {
       data: action.sessionEvents,
       totalResults: action.total
+    }
+  },
+  [SESSION_EVENT_ADD]: (state, action) => {
+    const events = cloneDeep(state.data)
+    events.push(action.sessionEvent)
+
+    return {
+      data: events,
+      totalResults: state.totalResults + 1
     }
   }
 }
@@ -47,12 +56,12 @@ const eventFormHandlers = {
 }
 
 export const reducers = combineReducers({
-  workspaceId: makeReducer(initialState['workspaceId'], handlers2),
-  canEdit: makeReducer(initialState['canEdit'], handlers2),
-  sessions: makeReducer(initialState['sessions'], handlers2),
-  sessionId: makeReducer(initialState['sessionId'], handlers2),
-  events: makeReducer(initialState['events'], handlers),
-  mode: makeReducer(initialState['mode'], handlers2),
+  workspaceId: makeReducer(initialState['workspaceId'], handlers),
+  canEdit: makeReducer(initialState['canEdit'], handlers),
+  sessions: makeReducer(initialState['sessions'], handlers),
+  sessionId: makeReducer(initialState['sessionId'], handlers),
+  events: makeReducer(initialState['events'], eventsHandlers),
+  mode: makeReducer(initialState['mode'], handlers),
   eventForm: makeReducer(initialState['eventForm'], eventFormHandlers),
   list: makeListReducer(),
   pagination: paginationReducer

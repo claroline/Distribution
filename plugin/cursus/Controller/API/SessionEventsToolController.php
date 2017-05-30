@@ -81,6 +81,47 @@ class SessionEventsToolController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/workspace/session/{session}/event/create",
+     *     name="claro_cursus_session_event_create",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventCreateAction(CourseSession $session)
+    {
+        $this->checkToolAccess($session->getWorkspace(), 'edit');
+        $name = $this->request->get('name', false) ? $this->request->get('name') : null;
+        $description = $this->request->get('description', false) ? $this->request->get('description') : null;
+        $startDate = $this->request->get('startDate', false) ? new \DateTime($this->request->get('startDate')) : null;
+        $endDate = $this->request->get('endDate', false) ? new \DateTime($this->request->get('endDate')) : null;
+        $registrationType = $this->request->get('registrationType', false) ?
+            intval($this->request->get('registrationType')) :
+            CourseSession::REGISTRATION_AUTO;
+        $maxUsers = $this->request->get('maxUsers', false);
+        $maxUsers = $maxUsers !== false && $maxUsers !== '' ? intval($maxUsers) : null;
+        $sessionEvent = $this->cursusManager->createSessionEvent(
+            $session,
+            $name,
+            $description,
+            $startDate,
+            $endDate,
+            null,
+            null,
+            null,
+            [],
+            $registrationType,
+            $maxUsers
+        );
+        $serializedSessionEvent = $this->serializer->serialize(
+            $sessionEvent,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus_min'])
+        );
+
+        return new JsonResponse($serializedSessionEvent, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/workspace/{workspace}/session/event/{sessionEvent}/delete",
      *     name="claro_cursus_session_event_delete",
      *     options = {"expose"=true}
@@ -136,9 +177,9 @@ class SessionEventsToolController extends Controller
         return new JsonResponse($content, 200);
     }
 
-    private function checkToolAccess(Workspace $workspace = null)
+    private function checkToolAccess(Workspace $workspace = null, $right = 'open')
     {
-        if (is_null($workspace) || !$this->authorization->isGranted(['claroline_session_events_tool', 'open'], $workspace)) {
+        if (is_null($workspace) || !$this->authorization->isGranted(['claroline_session_events_tool', $right], $workspace)) {
             throw new AccessDeniedException();
         }
     }
