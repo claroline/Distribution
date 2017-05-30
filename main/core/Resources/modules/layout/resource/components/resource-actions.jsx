@@ -188,6 +188,65 @@ function getMoreActions(resourceNode, props) {
   ]
 }
 
+const ManagementGroupActions = props =>
+  <PageGroupActions>
+    {(props.resourceNode.rights.current.edit && !props.editMode) &&
+      <PageAction
+        id="resource-edit"
+        title={t_res('edit')}
+        icon="fa fa-pencil"
+        primary={true}
+        action={props.edit}
+      />
+    }
+
+    {(props.resourceNode.rights.current.edit && props.editMode) &&
+      <PageAction
+        id="resource-save"
+        title={t_res('save')}
+        icon="fa fa-floppy-o"
+        primary={true}
+        disabled={props.save.disabled}
+        action={props.save.action}
+      />
+    }
+
+    {props.resourceNode.rights.current.administrate &&
+      <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication}/>
+    }
+
+    {props.resourceNode.rights.current.administrate &&
+      <ManageRightsAction
+        rights="workspace"
+        openRightsManagement={() => props.showModal(MODAL_RESOURCE_RIGHTS, {
+          resourceNode: props.resourceNode,
+          save: props.updateProperties
+        })}
+      />
+    }
+  </PageGroupActions>
+
+ManagementGroupActions.propTypes = {
+  resourceNode: T.shape({
+    name: T.string.isRequired,
+    description: T.string,
+    workspace: T.object,
+    meta: T.shape({
+      type: T.string.isRequired,
+      published: T.bool.isRequired
+    }).isRequired,
+    rights: T.shape({
+      current: T.shape({
+        edit: T.bool,
+        administrate: T.bool,
+        export: T.bool,
+        delete: T.bool
+      }),
+      all: T.object.isRequired
+    })
+  }).isRequired
+}
+
 /**
  * @param props
  * @constructor
@@ -195,44 +254,14 @@ function getMoreActions(resourceNode, props) {
 const ResourceActions = props =>
   <PageActions className="resource-actions">
     {(props.resourceNode.rights.current.edit || props.resourceNode.rights.current.administrate) &&
-      <PageGroupActions>
-        {!props.editMode &&
-          <PageAction
-            id="resource-edit"
-            title={t_res('edit')}
-            icon="fa fa-pencil"
-            primary={true}
-            action={props.edit}
-          />
-        }
-
-        {props.editMode &&
-          <PageAction
-            id="resource-save"
-            title={t_res('save')}
-            icon="fa fa-floppy-o"
-            primary={true}
-            disabled={props.save.disabled}
-            action={props.save.action}
-          />
-        }
-        <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication} />
-
-        <ManageRightsAction
-          rights="workspace"
-          openRightsManagement={() => props.showModal(MODAL_RESOURCE_RIGHTS, {
-            resourceNode: props.resourceNode,
-            save: props.updateProperties
-          })}
-        />
-      </PageGroupActions>
+      <ManagementGroupActions resourceNode={props.resourceNode} />
     }
 
-    <PageGroupActions>
+    {/*<PageGroupActions>
       <FavoriteAction favorited={false} toggleFavorite={() => true} />
       <PageAction id="resource-share" title="Share this resource" icon="fa fa-share" action="#share" />
       <LikeAction likes={100} handleLike={() => true} />
-    </PageGroupActions>
+    </PageGroupActions>*/}
 
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />

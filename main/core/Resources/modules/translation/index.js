@@ -5,8 +5,7 @@ const VALIDATION_DOMAIN = 'validators'
 import {execute} from '#/main/core/file-loader'
 import {web} from '#/main/core/path'
 
-// todo : make it work
-//import {Translator} from './translator'
+import {Translator} from './translator'
 
 /**
  * Get the current application translator.
@@ -15,7 +14,9 @@ import {web} from '#/main/core/path'
  * @returns {Translator}
  */
 export function getTranslator() {
-  return window.Translator
+  window.Translator = Translator
+
+  return Translator
 }
 
 /**
@@ -28,10 +29,9 @@ export function getTranslator() {
  * @returns {string}
  */
 export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
-  // todo : make it work
-  /*if (!isLoaded(key, domain)) {
+  if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
-  }*/
+  }
 
   return getTranslator().trans(key, placeholders, domain)
 }
@@ -48,9 +48,9 @@ export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
  */
 
 export function transChoice(key, count, placeholders = {}, domain = DEFAULT_DOMAIN) {
-  /*if (!isLoaded(key, domain)) {
+  if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
-  }*/
+  }
 
   return getTranslator().transChoice(key, count, placeholders, domain)
 }

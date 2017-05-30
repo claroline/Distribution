@@ -71,22 +71,22 @@ const setSimpleAccessRule = (perms, rule, workspace = null) => {
       anonymous.permissions.open = true
       users.permissions.open     = true
       wsUsers.permissions.open   = true
-      break;
+      break
     case 'user':
       anonymous.permissions.open = false
       users.permissions.open     = true
       wsUsers.permissions.open   = true
-      break;
+      break
     case 'workspace':
       anonymous.permissions.open = false
       users.permissions.open     = false
       wsUsers.permissions.open   = true
-      break;
+      break
     case 'admin':
       anonymous.permissions.open = false
       users.permissions.open     = false
       wsUsers.permissions.open   = false
-      break;
+      break
   }
 
   return Object.assign({}, perms, {
@@ -101,6 +101,7 @@ export {
   roleUser,
   roleWorkspaceUser,
   findRolePermissions,
+  setRolePermission,
   hasCustomRules,
   getSimpleAccessRule,
   setSimpleAccessRule

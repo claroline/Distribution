@@ -17,6 +17,11 @@ class Resource extends Component {
       [MODAL_RESOURCE_PROPERTIES, EditPropertiesModal],
       [MODAL_RESOURCE_RIGHTS,     EditRightsModal]
     ])
+
+    // open resource in fullscreen if configured
+    this.state = {
+      fullscreen: this.props.fullscreen || this.props.resourceNode.parameters.fullscreen
+    }
   }
 
   render() {
@@ -24,7 +29,7 @@ class Resource extends Component {
       <Page
         className="resource-page"
         embedded={this.props.embedded}
-        fullscreen={this.props.fullscreen}
+        fullscreen={this.state.fullscreen}
 
         modal={this.props.modal}
         fadeModal={this.props.fadeModal}
@@ -59,7 +64,10 @@ class Resource extends Component {
 
 Resource.propTypes = {
   resourceNode: T.shape({
-    name: T.string.isRequired
+    name: T.string.isRequired,
+    parameters: T.shape({
+      fullscreen: T.bool.isRequired
+    }).isRequired
   }).isRequired,
   fullscreen: T.bool,
   embedded: T.bool,

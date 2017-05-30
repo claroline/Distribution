@@ -25,7 +25,9 @@ import {Resource} from '../components/resource.jsx'
  * @constructor
  */
 const ResourceContainer = props =>
-  <Resource {...props}>
+  <Resource
+    {...props}
+  >
     {props.children}
   </Resource>
 
@@ -34,11 +36,6 @@ ResourceContainer.propTypes = {
    * Is the resource displayed in fullscreen mode ?
    */
   fullscreen: T.bool.isRequired,
-
-  /**
-   * The current resource node.
-   */
-  resourceNode: T.object.isRequired,
 
   /**
    * Application of the resource node.
