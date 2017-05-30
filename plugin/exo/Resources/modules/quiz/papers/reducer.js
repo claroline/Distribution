@@ -1,5 +1,6 @@
 import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
 import {update} from '../../utils/utils'
+import {utils} from './utils'
 
 export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}) => {
 
@@ -13,10 +14,12 @@ export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}
       return Object.assign({}, state, {
         current: action.id
       })
-    case PAPER_ADD:
+    case PAPER_ADD: {
+      const paper = update(action.paper, {score: {$set: utils.computeScore(action.paper, action.paper.answers)}})
       return Object.assign({}, state, {
-        papers: update(state.papers, {[action.paper.id]:{$set: action.paper}})
+        papers: update(state.papers, {[paper.id]:{$set: paper}})
       })
+    }
     case PAPER_FETCHED:
       return Object.assign({}, state, {
         isFetched: true

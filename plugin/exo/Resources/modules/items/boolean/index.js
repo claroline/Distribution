@@ -2,9 +2,14 @@ import editor from './editor'
 import {BooleanPaper} from './paper.jsx'
 import {BooleanPlayer} from './player.jsx'
 import {BooleanFeedback} from './feedback.jsx'
+import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
 
 function expectAnswer(item) {
   return item.solutions
+}
+
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
 }
 
 export default {
@@ -14,5 +19,6 @@ export default {
   player: BooleanPlayer,
   feedback: BooleanFeedback,
   editor,
-  expectAnswer
+  expectAnswer,
+  getCorrectedAnswer
 }

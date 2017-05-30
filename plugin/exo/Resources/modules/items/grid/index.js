@@ -2,6 +2,7 @@ import editor, {SUM_CELL, SUM_COL, SUM_ROW} from './editor'
 import {GridPaper} from './paper.jsx'
 import {GridPlayer} from './player.jsx'
 import {GridFeedback} from './feedback.jsx'
+import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
 
 // As a grid question can have several cells with several choices,
 // this function will return an array with the answers that have the biggest score
@@ -66,6 +67,10 @@ function expectAnswer(item) {
   return data
 }
 
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
+}
+
 export default {
   type: 'application/x.grid+json',
   name: 'grid',
@@ -73,5 +78,6 @@ export default {
   player: GridPlayer,
   feedback: GridFeedback,
   editor,
-  expectAnswer
+  expectAnswer,
+  getCorrectedAnswer
 }

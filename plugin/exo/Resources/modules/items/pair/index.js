@@ -2,9 +2,14 @@ import editor from './editor'
 import {PairPaper} from './paper.jsx'
 import {PairPlayer} from './player.jsx'
 import {PairFeedback} from './feedback.jsx'
+import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
 
 function expectAnswer(item) {
   return item.solutions
+}
+
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
 }
 
 export default {
@@ -14,5 +19,6 @@ export default {
   player: PairPlayer,
   feedback: PairFeedback,
   editor,
-  expectAnswer
+  expectAnswer,
+  getCorrectedAnswer
 }

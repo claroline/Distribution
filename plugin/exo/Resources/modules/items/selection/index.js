@@ -2,6 +2,7 @@ import editor from './editor'
 import {SelectionPaper} from './paper.jsx'
 import {SelectionPlayer} from './player.jsx'
 import {SelectionFeedback} from './feedback.jsx'
+import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
 
 //compute max score
 function expectAnswer(item) {
@@ -15,6 +16,10 @@ function expectAnswer(item) {
   }
 }
 
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
+}
+
 export default {
   type: 'application/x.selection+json',
   name: 'selection',
@@ -22,5 +27,6 @@ export default {
   player: SelectionPlayer,
   feedback: SelectionFeedback,
   editor,
-  expectAnswer
+  expectAnswer,
+  getCorrectedAnswer
 }

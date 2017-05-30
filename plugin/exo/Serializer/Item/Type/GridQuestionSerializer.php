@@ -140,8 +140,17 @@ class GridQuestionSerializer implements SerializerInterface
         $gridQuestion->setRows($data->rows);
         $gridQuestion->setColumns($data->cols);
         $gridQuestion->setSumMode($data->sumMode);
-        $gridQuestion->setBorderWidth($data->border['width']);
-        $gridQuestion->setBorderColor($data->border['color']);
+
+        if ($data->border instanceof \stdClass) {
+            //during the import, we're an instance of /stdClass otherwise I'm not sure
+            //Exo TODO: why if/else required ? double check that
+            $gridQuestion->setBorderWidth($data->border->width);
+            $gridQuestion->setBorderColor($data->border->color);
+        } else {
+            $gridQuestion->setBorderWidth($data->border['width']);
+            $gridQuestion->setBorderColor($data->border['color']);
+        }
+
         // Deserialize cells and solutions
         $this->deserializeCells($gridQuestion, $data->cells, $data->solutions, $options);
 

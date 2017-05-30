@@ -2,9 +2,14 @@ import editor from './editor'
 import {WordsPaper} from './paper.jsx'
 import {WordsPlayer} from './player.jsx'
 import {WordsFeedback} from './feedback.jsx'
+import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
 
 function expectAnswer(item) {
   return item.solutions
+}
+
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
 }
 
 export default {
@@ -14,5 +19,6 @@ export default {
   player: WordsPlayer,
   feedback: WordsFeedback,
   editor,
-  expectAnswer
+  expectAnswer,
+  getCorrectedAnswer
 }

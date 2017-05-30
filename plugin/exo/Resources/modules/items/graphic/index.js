@@ -2,9 +2,14 @@ import editor from './editor'
 import {GraphicPaper} from './paper.jsx'
 import {GraphicPlayer} from './player.jsx'
 import {GraphicFeedback} from './feedback.jsx'
+import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
 
 function expectAnswer(item) {
   return item.solutions.filter(solution => solution.score > 0)
+}
+
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
 }
 
 export default {
@@ -14,5 +19,6 @@ export default {
   player: GraphicPlayer,
   feedback: GraphicFeedback,
   editor,
-  expectAnswer
+  expectAnswer,
+  getCorrectedAnswer
 }
