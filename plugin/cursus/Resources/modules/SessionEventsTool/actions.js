@@ -8,14 +8,18 @@ import {select as paginationSelect} from '#/main/core/layout/pagination/selector
 
 export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
 export const SESSION_EVENT_ADD = 'SESSION_EVENT_ADD'
+export const SESSION_EVENT_UPDATE = 'SESSION_EVENT_UPDATE'
 export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
+export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
 
 export const actions = {}
 
 actions.loadSessionEvents = makeActionCreator(SESSION_EVENTS_LOAD, 'sessionEvents', 'total')
 
 actions.addSessionEvent = makeActionCreator(SESSION_EVENT_ADD, 'sessionEvent')
+
+actions.updateSessionEvent = makeActionCreator(SESSION_EVENT_UPDATE, 'sessionEvent')
 
 actions.deleteSessionEvent = (workspaceId, sessionEventId) => ({
   [REQUEST_SEND] : {
@@ -81,6 +85,44 @@ actions.createSessionEvent = (sessionId, eventData) => {
   }
 }
 
+actions.editSessionEvent = (eventId, eventData) => {
+  return (dispatch) => {
+    const formData = new FormData()
+
+    if (eventData['name'] !== undefined) {
+      formData.append('name', eventData['name'])
+    }
+    if (eventData['description'] !== undefined) {
+      formData.append('description', eventData['description'])
+    }
+    if (eventData['startDate'] !== undefined) {
+      formData.append('startDate', eventData['startDate'])
+    }
+    if (eventData['endDate'] !== undefined) {
+      formData.append('endDate', eventData['endDate'])
+    }
+    if (eventData['registrationType'] !== undefined) {
+      formData.append('registrationType', eventData['registrationType'])
+    }
+    if (eventData['maxUsers'] !== undefined) {
+      formData.append('maxUsers', eventData['maxUsers'])
+    }
+
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_cursus_session_event_edit', {sessionEvent: eventId}),
+        request: {
+          method: 'POST',
+          body: formData
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.updateSessionEvent(JSON.parse(data)))
+        }
+      }
+    })
+  }
+}
+
 actions.fetchSessionEvents = () => (dispatch, getState) => {
   const state = getState()
   const page = paginationSelect.current(state)
@@ -119,5 +161,7 @@ actions.fetchSessionEvents = () => (dispatch, getState) => {
 actions.resetEventForm = makeActionCreator(EVENT_FORM_RESET)
 
 actions.updateEventForm = makeActionCreator(EVENT_FORM_UPDATE, 'property', 'value')
+
+actions.loadEventForm = makeActionCreator(EVENT_FORM_LOAD, 'event')
 
 const sessionEventsQueryString = (sessinEvents) => '?' + sessinEvents.map(sessionEventId => 'ids[]='+sessionEventId).join('&')

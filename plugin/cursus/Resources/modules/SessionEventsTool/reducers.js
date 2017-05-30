@@ -3,7 +3,7 @@ import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
 import {VIEW_USER} from './views'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
-import {SESSION_EVENTS_LOAD, SESSION_EVENT_ADD, EVENT_FORM_RESET, EVENT_FORM_UPDATE} from './actions'
+import {SESSION_EVENTS_LOAD, SESSION_EVENT_ADD, SESSION_EVENT_UPDATE, EVENT_FORM_RESET, EVENT_FORM_UPDATE, EVENT_FORM_LOAD} from './actions'
 
 const initialState = {
   workspaceId: null,
@@ -42,6 +42,20 @@ const eventsHandlers = {
       data: events,
       totalResults: state.totalResults + 1
     }
+  },
+  [SESSION_EVENT_UPDATE]: (state, action) => {
+    const events = state.data.map((event) => {
+      if (event.id === action.sessionEvent.id) {
+        return action.sessionEvent
+      } else {
+        return event
+      }
+    })
+
+    return {
+      data: events,
+      totalResults: state.totalResults
+    }
   }
 }
 
@@ -52,6 +66,9 @@ const eventFormHandlers = {
     newEvent[action.property] = action.value
 
     return newEvent
+  },
+  [EVENT_FORM_LOAD]: (state, action) => {
+    return action.event
   }
 }
 

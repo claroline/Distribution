@@ -19,30 +19,13 @@ export class EventFormModal  extends Component {
       hasError: false,
       nameError: null,
       startDateError: null,
-      endDateError: null
-    }
-
-    if (props.event.name) {
-      this.state['name'] = props.event.name
-    }
-    if (props.event.description) {
-      this.state['description'] = props.event.description
-    }
-    if (props.event.registrationType !== undefined) {
-      this.state['registrationType'] = props.event.registrationType
-    }
-    if (props.event.maxUsers !== null) {
-      this.state['maxUsers'] = props.event.maxUsers
-    }
-    if (props.event.startDate) {
-      this.state['startDate'] = new Date(props.event.startDate)
-    } else {
-      this.state['startDate'] = new Date(props.session.startDate)
-    }
-    if (props.event.endDate) {
-      this.state['endDate'] = new Date(props.event.endDate)
-    } else {
-      this.state['endDate'] = new Date(props.session.endDate)
+      endDateError: null,
+      name: props.event.name ? props.event.name : undefined,
+      description: props.event.description ? props.event.description : undefined,
+      registrationType: props.event.registrationType ? props.event.registrationType : undefined,
+      maxUsers: props.event.maxUsers ? props.event.maxUsers : undefined,
+      startDate: props.event.startDate ?  new Date(props.event.startDate) : new Date(props.session.startDate),
+      endDate: props.event.endDate ?  new Date(props.event.endDate) : new Date(props.session.endDate)
     }
   }
 
@@ -70,9 +53,13 @@ export class EventFormModal  extends Component {
     this.props.updateEventForm(property, value)
   }
 
-  createSessionEvent() {
+  registerSessionEvent() {
     if (!this.state['hasError']) {
-      this.props.createSessionEvent(this.props.session.id, this.state)
+      if (this.props.mode === 'creation') {
+        this.props.confirmAction(this.props.session.id, this.state)
+      } else if (this.props.mode === 'edition') {
+        this.props.confirmAction(this.props.event.id, this.state)
+      }
       this.props.fadeModal()
     }
   }
@@ -104,7 +91,13 @@ export class EventFormModal  extends Component {
       validation['maxUsersError'] = trans('form_number_superior_error', {value: 0}, 'cursus')
       validation['hasError'] = true
     }
-    this.setState(validation, this.createSessionEvent)
+    this.setState(validation, this.registerSessionEvent)
+  }
+
+  componentDidMount() {
+    if (this.props.mode === 'edition') {
+      this.props.loadFormData(this.props.event)
+    }
   }
 
   componentWillUnmount() {
@@ -246,9 +239,13 @@ EventFormModal.propTypes = {
     registrationType: T.number.isRequired,
     maxUsers: T.number
   }).isRequired,
+  session: T.object,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
-  updateEventForm: T.func.isRequired
+  updateEventForm: T.func.isRequired,
+  confirmAction: T.func.isRequired,
+  resetFormData: T.func.isRequired,
+  loadFormData: T.func
 }
 
 function getLocale() {

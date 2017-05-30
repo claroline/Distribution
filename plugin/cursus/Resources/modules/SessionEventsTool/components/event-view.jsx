@@ -2,8 +2,6 @@ import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import {selectors} from '../selectors'
 
-/* global Routing */
-
 class EventView extends Component {
   render() {
     return (
@@ -34,7 +32,7 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps() {
   return {
   }
 }

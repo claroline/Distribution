@@ -122,6 +122,41 @@ class SessionEventsToolController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/workspace/session/event/{sessionEvent}/edit",
+     *     name="claro_cursus_session_event_edit",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventEditAction(SessionEvent $sessionEvent)
+    {
+        $this->checkToolAccess($sessionEvent->getSession()->getWorkspace(), 'edit');
+        $name = $this->request->get('name', false) ? $this->request->get('name') : null;
+        $description = $this->request->get('description', false) ? $this->request->get('description') : null;
+        $startDate = $this->request->get('startDate', false) ? new \DateTime($this->request->get('startDate')) : null;
+        $endDate = $this->request->get('endDate', false) ? new \DateTime($this->request->get('endDate')) : null;
+        $registrationType = $this->request->get('registrationType', false) ?
+            intval($this->request->get('registrationType')) :
+            CourseSession::REGISTRATION_AUTO;
+        $maxUsers = $this->request->get('maxUsers', false);
+        $maxUsers = $maxUsers !== false && $maxUsers !== '' ? intval($maxUsers) : null;
+        $sessionEvent->setName($name);
+        $sessionEvent->setDescription($description);
+        $sessionEvent->setStartDate($startDate);
+        $sessionEvent->setEndDate($endDate);
+        $sessionEvent->setRegistrationType($registrationType);
+        $sessionEvent->setMaxUsers($maxUsers);
+        $this->cursusManager->persistSessionEvent($sessionEvent);
+        $serializedSessionEvent = $this->serializer->serialize(
+            $sessionEvent,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus_min'])
+        );
+
+        return new JsonResponse($serializedSessionEvent, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/workspace/{workspace}/session/event/{sessionEvent}/delete",
      *     name="claro_cursus_session_event_delete",
      *     options = {"expose"=true}

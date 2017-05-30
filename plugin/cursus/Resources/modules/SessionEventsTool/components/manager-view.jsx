@@ -1,6 +1,5 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
-import ReactDOM from 'react-dom'
 import {trans, t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'
@@ -10,7 +9,6 @@ import {actions as paginationActions} from '#/main/core/layout/pagination/action
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
-import {MODAL_EVENT_FORM} from './event-form-modal.jsx'
 
 const registrationTypes = [
   trans('event_registration_automatic', {}, 'cursus'),
@@ -71,18 +69,37 @@ class ManagerView extends Component {
   }
 
   showEventCreationForm() {
-    this.props.resetEventForm()
     this.setState({
       modal: {
         type: 'MODAL_EVENT_FORM',
         urlModal: null,
         props: {
+          mode: 'creation',
           title: `${trans('session_event_creation', {}, 'cursus')}`,
           updateEventForm: this.props.updateEventForm,
           event: this.props.eventFormData,
           session: this.props.session,
-          createSessionEvent: this.props.createSessionEvent,
+          confirmAction: this.props.createSessionEvent,
           resetFormData: this.props.resetEventForm
+        },
+        fading: false
+      }
+    })
+  }
+
+  showEventEditionForm(sessionEvent) {
+    this.setState({
+      modal: {
+        type: 'MODAL_EVENT_FORM',
+        urlModal: null,
+        props: {
+          mode: 'edition',
+          title: `${trans('session_event_edition', {}, 'cursus')}`,
+          updateEventForm: this.props.updateEventForm,
+          event: sessionEvent,
+          confirmAction: this.props.editSessionEvent,
+          resetFormData: this.props.resetEventForm,
+          loadFormData: this.props.loadEventForm
         },
         fading: false
       }
@@ -119,7 +136,8 @@ class ManagerView extends Component {
           actions={[
             {
               icon: 'fa fa-fw fa-edit',
-              label: t('edit')
+              label: t('edit'),
+              action: (row) => this.showEventEditionForm(row)
             }, {
               icon: 'fa fa-fw fa-trash-o',
               label: t('delete'),
@@ -176,12 +194,31 @@ ManagerView.propTypes = {
     registrationType: T.number.isRequired,
     maxUsers: T.number
   })).isRequired,
+  createSessionEvent: T.func.isRequired,
+  editSessionEvent: T.func.isRequired,
   deleteSessionEvent: T.func.isRequired,
+  deleteSessionEvents: T.func.isRequired,
+  resetEventForm: T.func.isRequired,
+  updateEventForm: T.func.isRequired,
+  loadEventForm: T.func.isRequired,
   filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,
   sortBy: T.object.isRequired,
-  updateSort: T.func.isRequired
+  updateSort: T.func.isRequired,
+  handlePageSizeUpdate: T.func.isRequired,
+  handlePageChange: T.func.isRequired,
+  toggleSelect: T.func.isRequired,
+  toggleSelectAll: T.func.isRequired,
+  createModal: T.func.isRequired,
+  eventFormData: T.object.isRequired,
+  session: T.object,
+  total: T.number.isRequired,
+  selected: T.array.isRequired,
+  pagination: T.shape({
+    pageSize: T.number.isRequired,
+    current: T.number.isRequired
+  }).isRequired,
 }
 
 function mapStateToProps(state) {
@@ -206,6 +243,9 @@ function mapDispatchToProps(dispatch) {
     createSessionEvent: (sessionId, eventData) => {
       dispatch(actions.createSessionEvent(sessionId, eventData))
     },
+    editSessionEvent: (eventId, eventData) => {
+      dispatch(actions.editSessionEvent(eventId, eventData))
+    },
     deleteSessionEvent: (workspaceId, sessionEventId) => {
       dispatch(actions.deleteSessionEvent(workspaceId, sessionEventId))
     },
@@ -215,6 +255,7 @@ function mapDispatchToProps(dispatch) {
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal),
     resetEventForm: () => dispatch(actions.resetEventForm()),
     updateEventForm: (property, value) => dispatch(actions.updateEventForm(property, value)),
+    loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
     // search
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))
@@ -240,7 +281,7 @@ function mapDispatchToProps(dispatch) {
     },
     // selection
     toggleSelect: (id) => dispatch(listActions.toggleSelect(id)),
-    toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items)),
+    toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items))
   }
 }
 
