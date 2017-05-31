@@ -68,6 +68,7 @@ function calculate(scoreRule, correctedAnswer) {
       //console.error('Unknown score type ' + scoreRule.type)
   }
 
+  //no penalty implemented yet
   return score ?  applyPenalties(score, correctedAnswer): score
 }
 

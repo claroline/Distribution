@@ -1,14 +1,15 @@
-class Answerable {
-  constructor(el) {
-    this.el = el
+export class Answerable {
+  constructor(score = null, penalty = null) {
+    this.score = score
+    this.penalty = penalty
   }
 
   getScore() {
-    return this.el.score ? this.el.score: this.el._score
+    return this.score
   }
 
   getPenalty() {
-    //console.log(this.el)
+    return this.penalty
   }
 }
 
@@ -25,7 +26,7 @@ export class CorrectedAnswer {
   }
 
   addExpected(expected) {
-    this.expected.push(new Answerable(expected))
+    this.expected.push(expected)
   }
 
   getMissing() {
@@ -33,7 +34,7 @@ export class CorrectedAnswer {
   }
 
   addMissing(missing) {
-    this.missing = this.missing.push(new Answerable(missing))
+    this.missing = this.missing.push(missing)
   }
 
   getUnexpected() {
@@ -41,7 +42,7 @@ export class CorrectedAnswer {
   }
 
   addUnexpected(unexpected) {
-    this.unexpected.push(new Answerable(unexpected))
+    this.unexpected.push(unexpected)
   }
 
   getPenalties() {
@@ -49,6 +50,6 @@ export class CorrectedAnswer {
   }
 
   addPenalty(penalty) {
-    this.penalty.push(new Answerable(penalty))
+    this.penalty.push(penalty)
   }
 }

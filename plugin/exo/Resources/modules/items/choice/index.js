@@ -2,7 +2,7 @@ import editor from './editor'
 import {ChoicePaper} from './paper.jsx'
 import {ChoicePlayer} from './player.jsx'
 import {ChoiceFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 function expectAnswer(item) {
   return item.multiple ?
@@ -15,16 +15,13 @@ function getCorrectedAnswer(item, answers) {
   const corrected = new CorrectedAnswer()
 
   item.choices.forEach(choice => {
+    const score = choice._score
     if (answers.data.indexOf(choice.id) > -1) {
-      if (choice.score > 0 || choice._score > 0) {
-        corrected.addExpected(choice)
-      } else {
-        corrected.addUnexpected(choice)
-      }
+      score > 0 ?
+        corrected.addExpected(new Answerable(score)) :
+        corrected.addUnexpected(new Answerable(score))
     } else {
-      if (choice.score > 0 || choice._score > 0) {
-        corrected.addMissing(choice)
-      }
+      if (score > 0) corrected.addMissing(new Answerable(score))
     }
   })
 
