@@ -54,10 +54,10 @@ class ResourceNodeManager
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param StrictDispatcher $eventDispatcher
-     * @param ObjectManager $om
-     * @param ResourceNodeSerializer $resourceNodeSerializer
-     * @param ResourceManager $resourceManager
+     * @param StrictDispatcher              $eventDispatcher
+     * @param ObjectManager                 $om
+     * @param ResourceNodeSerializer        $resourceNodeSerializer
+     * @param ResourceManager               $resourceManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,

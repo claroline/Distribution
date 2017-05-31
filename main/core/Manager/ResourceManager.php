@@ -111,16 +111,16 @@ class ResourceManager
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
      * })
      *
-     * @param RoleManager $roleManager
-     * @param IconManager $iconManager
-     * @param ContainerInterface $container
-     * @param RightsManager $rightsManager
-     * @param StrictDispatcher $dispatcher
-     * @param ObjectManager $om
-     * @param ClaroUtilities $ut
-     * @param Utilities $secut
-     * @param MaskManager $maskManager
-     * @param TranslatorInterface $translator
+     * @param RoleManager                  $roleManager
+     * @param IconManager                  $iconManager
+     * @param ContainerInterface           $container
+     * @param RightsManager                $rightsManager
+     * @param StrictDispatcher             $dispatcher
+     * @param ObjectManager                $om
+     * @param ClaroUtilities               $ut
+     * @param Utilities                    $secut
+     * @param MaskManager                  $maskManager
+     * @param TranslatorInterface          $translator
      * @param PlatformConfigurationHandler $platformConfigHandler
      */
     public function __construct(

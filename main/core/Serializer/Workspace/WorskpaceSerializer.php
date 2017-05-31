@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @DI\Service("claroline.serializer.workspace")
  * @DI\Tag("claroline.serializer")
  */
-class WorkspaceSerializer
+class WorskpaceSerializer
 {
     private $om;
 
