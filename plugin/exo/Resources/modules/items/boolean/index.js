@@ -25,23 +25,6 @@ function getCorrectedAnswer(item, answer) {
   return corrected
 }
 
-/*
-foreach ($question->getChoices() as $choice) {
-    if (!empty($answer) && $choice->getUuid() === $answer) {
-        // Choice has been selected by the user
-        if (0 < $choice->getScore()) {
-            $corrected->addExpected($choice);
-        } else {
-            $corrected->addUnexpected($choice);
-        }
-    } elseif (0 < $choice->getScore()) {
-        // The choice is not selected but it's part of the correct answer
-        $corrected->addMissing($choice);
-    }
-}
-
-return $corrected;
-*/
 export default {
   type: 'application/x.boolean+json',
   name: 'boolean',
