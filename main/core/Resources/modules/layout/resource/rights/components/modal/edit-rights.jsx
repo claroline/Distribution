@@ -80,7 +80,7 @@ const RolePermissions = props =>
           <input
             type="checkbox"
             checked={props.permissions[permission]}
-            onChange={() => props.updatePermission(!props.permissions[permission])}
+            onChange={() => props.updatePermissions(merge({}, props.permissions, {[permission]: !props.permissions[permission]}))}
           />
         </td>
       :
@@ -93,7 +93,7 @@ RolePermissions.propTypes = {
     key: T.string.isRequired
   }).isRequired,
   permissions: T.object.isRequired,
-  updatePermission: T.func.isRequired
+  updatePermissions: T.func.isRequired
 }
 
 const AdvancedTab = props =>
@@ -119,7 +119,7 @@ const AdvancedTab = props =>
           key={roleName}
           role={props.permissions[roleName].role}
           permissions={props.permissions[roleName].permissions}
-          updatePermission={() => true}
+          updatePermissions={(permissions) => props.updateRolePermissions(roleName, permissions)}
         />
       )}
       </tbody>
@@ -137,7 +137,8 @@ const AdvancedTab = props =>
   </div>
 
 AdvancedTab.propTypes = {
-  permissions: T.object.isRequired
+  permissions: T.object.isRequired,
+  updateRolePermissions: T.func.isRequired
 }
 
 const SimpleAccessRule = props =>
@@ -201,17 +202,30 @@ class EditRightsModal extends Component {
     }
 
     this.toggleSimpleMode = this.toggleSimpleMode.bind(this)
+    this.updatePermissions = this.updatePermissions.bind(this)
     this.save = this.save.bind(this)
   }
 
   toggleSimpleMode(mode) {
     const newPermissions = setSimpleAccessRule(this.state.rights.permissions, mode, this.props.resourceNode.workspace)
 
+    this.updatePermissions(newPermissions)
+  }
+
+  updateRolePermissions(roleName, permissions) {
+    const newPermissions = merge({}, this.state.rights.permissions, {
+      [this.state.rights.permissions[roleName]]: permissions
+    })
+
+    this.updatePermissions(newPermissions)
+  }
+
+  updatePermissions(permissions) {
     this.setState({
       pendingChanges: true,
-      currentMode: getSimpleAccessRule(newPermissions, this.props.resourceNode.workspace),
+      currentMode: getSimpleAccessRule(permissions, this.props.resourceNode.workspace),
       rights: Object.assign({}, this.state.rights, {
-        permissions: newPermissions
+        permissions: permissions
       })
     })
   }
@@ -268,6 +282,7 @@ class EditRightsModal extends Component {
         {'advanced' === this.state.activeTab &&
           <AdvancedTab
             permissions={this.state.rights.permissions}
+            updateRolePermissions={this.updateRolePermissions}
           />
         }
 
