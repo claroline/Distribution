@@ -202,7 +202,7 @@ class EditRightsModal extends Component {
     }
 
     this.toggleSimpleMode = this.toggleSimpleMode.bind(this)
-    this.updatePermissions = this.updatePermissions.bind(this)
+    this.updateRolePermissions = this.updateRolePermissions.bind(this)
     this.save = this.save.bind(this)
   }
 
@@ -214,7 +214,9 @@ class EditRightsModal extends Component {
 
   updateRolePermissions(roleName, permissions) {
     const newPermissions = merge({}, this.state.rights.permissions, {
-      [this.state.rights.permissions[roleName]]: permissions
+      [roleName]: merge({}, this.state.rights.permissions[roleName], {
+        permissions: permissions
+      })
     })
 
     this.updatePermissions(newPermissions)
@@ -224,6 +226,7 @@ class EditRightsModal extends Component {
     this.setState({
       pendingChanges: true,
       currentMode: getSimpleAccessRule(permissions, this.props.resourceNode.workspace),
+      customRules: hasCustomRules(permissions, this.props.resourceNode.workspace),
       rights: Object.assign({}, this.state.rights, {
         permissions: permissions
       })

@@ -53,19 +53,19 @@ const ManageRightsAction = props => {
   let title, icon
   switch (props.rights) {
     case 'all':
-      title = 'This resource is accessible by everyone. (click to edit access rights)'
+      title = 'resource_rights_all_tip'
       icon = 'fa-unlock'
       break
     case 'user':
-      title = 'This resource is accessible by platform users. (click to edit access rights)'
+      title = 'resource_rights_user_tip'
       icon = 'fa-unlock'
       break
     case 'workspace':
-      title = 'This resource is accessible by workspace users. (click to edit access rights)'
+      title = 'resource_rights_workspace_tip'
       icon = 'fa-unlock-alt'
       break
     case 'admin':
-      title = 'This resource is accessible by managers only. (click to edit access rights)'
+      title = 'resource_rights_admin_tip'
       icon = 'fa-lock'
       break
   }

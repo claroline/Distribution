@@ -30,10 +30,6 @@ const standardRoles = (workspace = null) => {
  */
 const findRolePermissions = (roleName, perms) => perms[roleName] ? perms[roleName].permissions : {}
 
-const setRolePermission = (roleName, permission, value) => {
-
-}
-
 /**
  * Checks if a role has custom permissions.
  * By default a role only have the `open` perm.
@@ -43,7 +39,7 @@ const setRolePermission = (roleName, permission, value) => {
  * @param rolePerms
  */
 const roleHaveCustomPerms = (rolePerms) => {
-  const customPerms = Object.keys(rolePerms).filter(permName => -1 !== ['open', 'create'].indexOf(rolePerms[permName]) && rolePerms[permName])
+  const customPerms = Object.keys(rolePerms).filter(permName => -1 === ['open', 'create'].indexOf(permName) && rolePerms[permName])
 
   return 0 < customPerms.length
 }
@@ -72,8 +68,6 @@ const hasCustomRules = (perms, workspace = null) => {
 
 /**
  * Computes permissions to get a single string representing who have the `open` right.
- *
- * @todo manages the `custom` case
  *
  * @param {object} perms
  * @param {object} workspace
@@ -140,7 +134,6 @@ export {
   roleUser,
   roleWorkspaceUser,
   findRolePermissions,
-  setRolePermission,
   hasCustomRules,
   getSimpleAccessRule,
   setSimpleAccessRule
