@@ -125,7 +125,7 @@ function getMoreActions(resourceNode, props) {
       eventKey="resource-edit-props"
       onClick={() => props.showModal(MODAL_RESOURCE_PROPERTIES, {
         resourceNode: resourceNode,
-        save: props.updateProperties
+        save: props.updateNode
       })}
     >
       <span className="fa fa-fw fa-pencil" />
@@ -250,7 +250,10 @@ const ManagementGroupActions = props =>
     }
 
     {props.resourceNode.rights.current.administrate &&
-      <PublishAction published={props.resourceNode.meta.published} togglePublication={props.togglePublication}/>
+      <PublishAction
+        published={props.resourceNode.meta.published}
+        togglePublication={() => props.togglePublication(props.resourceNode)}
+      />
     }
 
     {props.resourceNode.rights.current.administrate &&
@@ -259,7 +262,7 @@ const ManagementGroupActions = props =>
         customRules={hasCustomRules(props.resourceNode.rights.all.permissions, props.resourceNode.workspace)}
         openRightsManagement={() => props.showModal(MODAL_RESOURCE_RIGHTS, {
           resourceNode: props.resourceNode,
-          save: props.updateProperties
+          save: props.updateNode
         })}
       />
     }
@@ -291,7 +294,7 @@ ManagementGroupActions.propTypes = {
   editMode: T.bool,
   togglePublication: T.func.isRequired,
   showModal: T.func.isRequired,
-  updateProperties: T.func.isRequired
+  updateNode: T.func.isRequired
 }
 
 const CustomGroupActions = () =>
@@ -319,7 +322,7 @@ const ResourceActions = props =>
         editMode={props.editMode}
         togglePublication={props.togglePublication}
         showModal={props.showModal}
-        updateProperties={props.updateProperties}
+        updateNode={props.updateNode}
       />
     }
 
@@ -374,10 +377,10 @@ ResourceActions.propTypes = {
 
   fullscreen: T.bool.isRequired,
   toggleFullscreen: T.func.isRequired,
-  togglePublication: T.func.isRequired,
   showModal: T.func.isRequired,
 
-  updateProperties: T.func.isRequired,
+  togglePublication: T.func.isRequired,
+  updateNode: T.func.isRequired,
 
   editMode: T.bool,
   edit: T.oneOfType([T.func, T.string]).isRequired,

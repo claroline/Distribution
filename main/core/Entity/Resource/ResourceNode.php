@@ -121,6 +121,13 @@ class ResourceNode
     protected $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    protected $description = null;
+
+    /**
      * @var ResourceNode
      *
      * @Gedmo\TreeParent
@@ -312,6 +319,22 @@ class ResourceNode
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 
     /**

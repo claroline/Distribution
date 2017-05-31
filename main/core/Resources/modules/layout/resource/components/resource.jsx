@@ -20,8 +20,16 @@ class Resource extends Component {
 
     // open resource in fullscreen if configured
     this.state = {
-      fullscreen: this.props.fullscreen || this.props.resourceNode.parameters.fullscreen
+      fullscreen: this.props.resourceNode.parameters.fullscreen
     }
+
+    this.toggleFullscreen = this.toggleFullscreen.bind(this)
+  }
+
+  toggleFullscreen() {
+    this.setState({
+      fullscreen: !this.state.fullscreen
+    })
   }
 
   render() {
@@ -45,12 +53,12 @@ class Resource extends Component {
             edit={this.props.edit}
             save={this.props.save}
             customActions={this.props.customActions}
-            fullscreen={this.props.fullscreen}
-            toggleFullscreen={this.props.toggleFullscreen}
+            fullscreen={this.state.fullscreen}
+            toggleFullscreen={this.toggleFullscreen}
             togglePublication={this.props.togglePublication}
             showModal={this.props.showModal}
             fadeModal={this.props.fadeModal}
-            updateProperties={this.props.updateProperties}
+            updateNode={this.props.updateNode}
           />
         </PageHeader>
 
@@ -69,7 +77,6 @@ Resource.propTypes = {
       fullscreen: T.bool.isRequired
     }).isRequired
   }).isRequired,
-  fullscreen: T.bool,
   embedded: T.bool,
   children: T.node.isRequired,
   modal: T.shape({
@@ -80,15 +87,14 @@ Resource.propTypes = {
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
-  toggleFullscreen: T.func.isRequired,
-  togglePublication: T.func.isRequired,
 
   customActions: T.array.isRequired,
   editMode: T.bool,
   edit: T.oneOfType([T.func, T.string]).isRequired,
   save: T.object.isRequired,
 
-  updateProperties: T.func.isRequired
+  togglePublication: T.func.isRequired,
+  updateNode: T.func.isRequired
 }
 
 Resource.defaultProps = {

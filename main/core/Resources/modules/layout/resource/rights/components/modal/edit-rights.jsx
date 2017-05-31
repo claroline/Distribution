@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
+import merge from 'lodash/merge'
 
 import Modal from 'react-bootstrap/lib/Modal'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
@@ -216,7 +217,7 @@ class EditRightsModal extends Component {
   }
 
   save() {
-    this.props.save()
+    this.props.save(merge({}, this.props.resourceNode, {rights: {all: this.state.rights}}))
     this.props.fadeModal()
   }
 

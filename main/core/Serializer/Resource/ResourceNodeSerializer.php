@@ -164,7 +164,7 @@ class ResourceNodeSerializer
         $meta = [
             'type' => $resourceNode->getResourceType()->getName(),
             'mimeType' => $resourceNode->getMimeType(),
-            'description' => null, // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
+            'description' => $resourceNode->getDescription(), // todo : migrate custom descriptions (Path, Quiz, etc.)
             'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
             'license' => $resourceNode->getLicense(),

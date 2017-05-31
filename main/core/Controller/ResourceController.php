@@ -335,6 +335,8 @@ class ResourceController extends Controller
      * Publishes many nodes from a workspace.
      * Takes an array of ids as parameters (query string: "ids[]=1&ids[]=2" ...).
      *
+     * @todo to be merge with ResourceNodeController::publishAction (works with UUIDs)
+     *
      * @param array $nodes
      *
      * @return Response
@@ -362,6 +364,8 @@ class ResourceController extends Controller
      *
      * Unpublishes many nodes from a workspace.
      * Takes an array of ids as parameters (query string: "ids[]=1&ids[]=2" ...).
+     *
+     * @todo to be merge with ResourceNodeController::unpublishAction (works with UUIDs)
      *
      * @param array $nodes
      *

@@ -15,8 +15,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * JSON API for resource node management.
  *
- * @EXT\Route("resources/{resourceNode}", options={"expose"=true})
- * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode")
+ * @EXT\Route("resources/{id}", options={"expose"=true})
+ * @EXT\ParamConverter("resourceNode", class="ClarolineCoreBundle:Resource\ResourceNode", options={"mapping": {"id": "guid"}})
  */
 class ResourceNodeController
 {
@@ -47,7 +47,7 @@ class ResourceNodeController
     /**
      * Get a resourceNode properties.
      *
-     * @EXT\Route("", name="claro_resource_get")
+     * @EXT\Route("", name="claro_resource_node_get")
      * @EXT\Method("GET")
      *
      * @param ResourceNode $resourceNode
@@ -64,7 +64,7 @@ class ResourceNodeController
     /**
      * Updates a resource node properties.
      *
-     * @EXT\Route("", name="claro_resource_update")
+     * @EXT\Route("", name="claro_resource_node_update")
      * @EXT\Method("PUT")
      *
      * @param ResourceNode $resourceNode
@@ -76,7 +76,7 @@ class ResourceNodeController
     {
         $this->assertHasPermission('ADMINISTRATE', $resourceNode);
 
-        $this->resourceNodeManager->update(json_decode($request->getContent()), $resourceNode);
+        $this->resourceNodeManager->update(json_decode($request->getContent(), true), $resourceNode);
 
         return new JsonResponse(
             $this->resourceNodeManager->serialize($resourceNode)
@@ -86,8 +86,10 @@ class ResourceNodeController
     /**
      * Publishes a resource node.
      *
-     * @EXT\Route("/publish", name="claro_resource_publish")
+     * @EXT\Route("/publish", name="claro_resource_node_publish")
      * @EXT\Method("PUT")
+     *
+     * @todo to be merge with ResourceController::publishAction (works with ids)
      *
      * @param ResourceNode $resourceNode
      *
@@ -105,8 +107,10 @@ class ResourceNodeController
     /**
      * Unpublishes a resource node.
      *
-     * @EXT\Route("/unpublish", name="claro_resource_unpublish")
+     * @EXT\Route("/unpublish", name="claro_resource_node_unpublish")
      * @EXT\Method("PUT")
+     *
+     * @todo to be merge with ResourceController::unpublishAction (works with ids)
      *
      * @param ResourceNode $resourceNode
      *

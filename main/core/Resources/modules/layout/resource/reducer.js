@@ -2,25 +2,25 @@ import merge from 'lodash/merge'
 
 import {makeReducer} from '#/main/core/utilities/redux'
 import {
-  RESOURCE_PUBLICATION_TOGGLE,
-  RESOURCE_UPDATE_PROPERTIES
+  RESOURCE_UPDATE_PUBLICATION,
+  RESOURCE_UPDATE_NODE
 } from './actions'
 
 function togglePublication(currentState) {
-  return updateProperties(currentState, {
+  return merge({}, currentState, {
     meta: {
       published: !currentState.meta.published
     }
   })
 }
 
-function updateProperties(currentState, action) {
+function updateNode(currentState, action) {
   return merge({}, currentState, action.resourceNode)
 }
 
 const reducer = makeReducer({}, {
-  [RESOURCE_PUBLICATION_TOGGLE]: togglePublication,
-  [RESOURCE_UPDATE_PROPERTIES]: updateProperties
+  [RESOURCE_UPDATE_PUBLICATION]: togglePublication,
+  [RESOURCE_UPDATE_NODE]: updateNode
 })
 
 export {reducer}

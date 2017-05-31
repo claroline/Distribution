@@ -54,9 +54,10 @@ class ResourceNodeManager
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param ObjectManager                 $om
-     * @param StrictDispatcher              $eventDispatcher
-     * @param ResourceNodeSerializer        $resourceNodeSerializer
+     * @param StrictDispatcher $eventDispatcher
+     * @param ObjectManager $om
+     * @param ResourceNodeSerializer $resourceNodeSerializer
+     * @param ResourceManager $resourceManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
@@ -84,67 +85,6 @@ class ResourceNodeManager
         return $this->serializer->serialize($resourceNode);
     }
 
-    /* Plus tard
-    public function create()
-    {
-        $node = new ResourceNode();
-
-        $node->setResourceType($resourceType);
-        $node->setPublished($isPublished);
-
-        $mimeType = ($resource->getMimeType() === null) ?
-            'custom/'.$resourceType->getName() :
-            $resource->getMimeType();
-
-        $node->setMimeType($mimeType);
-        $node->setName($resource->getName());
-        $node->setCreator($creator);
-
-        if (!$workspace && $parent) {
-            if ($parent->getWorkspace()) {
-                $workspace = $parent->getWorkspace();
-            }
-        }
-
-        if ($workspace) {
-            $node->setWorkspace($workspace);
-        }
-
-        $node->setParent($parent);
-        $node->setName($this->getUniqueName($node, $parent));
-        $node->setClass(get_class($resource));
-
-        if ($parent) {
-            $this->setLastIndex($parent, $node);
-        }
-
-        if (!is_null($parent)) {
-            $node->setAccessibleFrom($parent->getAccessibleFrom());
-            $node->setAccessibleUntil($parent->getAccessibleUntil());
-        }
-
-        $resource->setResourceNode($node);
-
-        if ($createRights) {
-            $this->setRights($node, $parent, $rights);
-        }
-        $this->om->persist($node);
-        $this->om->persist($resource);
-
-        if (empty($icon)) {
-            $icon = $this->iconManager->getIcon($resource, $workspace);
-        }
-
-        $parentPath = '';
-
-        if ($parent) {
-            $parentPath .= $parent->getPathForDisplay().' / ';
-        }
-
-        $node->setPathForCreationLog($parentPath.$node->getName());
-        $node->setIcon($icon);
-    }*/
-
     /**
      * Updates a ResourceNode entity.
      *
@@ -163,13 +103,55 @@ class ResourceNodeManager
             throw new InvalidDataException('ResourceNode data are invalid.', $errors);
         }
 
-        $this->resourceManager->setPublishedStatus([$resourceNode], $resourceNode->isPublished());
-        $this->resourceManager->rename($resourceNode, $resourceNode->getName());
+        if ($data['name'] !== $resourceNode->getName()) {
+            $this->resourceManager->rename($resourceNode, $data['name'], true);
+        }
+
+        $this->updateMeta($data['meta'], $resourceNode);
+        $this->updateParameters($data['parameters'], $resourceNode);
 
         $this->om->persist($resourceNode);
         $this->om->flush();
 
         return $resourceNode;
+    }
+
+    private function updateMeta(array $meta, ResourceNode $resourceNode)
+    {
+        if ($meta['published'] !== $resourceNode->isPublished()) {
+            $this->resourceManager->setPublishedStatus([$resourceNode], $meta['published']);
+        }
+
+        $resourceNode->setPublishedToPortal($meta['portal']);
+
+        if (isset($meta['description'])) {
+            $resourceNode->setDescription($meta['description']);
+        }
+
+        if (isset($meta['license'])) {
+            $resourceNode->setLicense($meta['license']);
+        }
+
+        if (isset($meta['authors'])) {
+            $resourceNode->setAuthor($meta['authors']);
+        }
+    }
+
+    private function updateParameters(array $parameters, ResourceNode $resourceNode)
+    {
+        if (!empty($parameters['accessibleFrom'])) {
+            $accessibleFrom = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleFrom']);
+            $resourceNode->setAccessibleFrom($accessibleFrom);
+        }
+
+        if (!empty($parameters['accessibleUntil'])) {
+            $accessibleUntil = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleUntil']);
+            $resourceNode->setAccessibleUntil($accessibleUntil);
+        }
+
+        $resourceNode->setFullscreen($parameters['fullscreen']);
+        $resourceNode->setClosable($parameters['closable']);
+        $resourceNode->setCloseTarget($parameters['closeTarget']);
     }
 
     /**
@@ -183,6 +165,33 @@ class ResourceNodeManager
     {
         //json-schema ? à discuter
         $errors = [];
+
+        if (empty($data['name'])) {
+            $errors[] = [
+                'path' => '/name',
+                'message' => 'name can not be empty',
+            ];
+        }
+
+        if (!empty($parameters['accessibleFrom'])) {
+            $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleFrom']);
+            if (!$dateTime || $dateTime->format('Y-m-d\TH:i:s') !== $parameters['accessibleFrom']) {
+                $errors[] = [
+                    'path' => '/parameters/accessibleFrom',
+                    'message' => 'Invalid date format',
+                ];
+            }
+        }
+
+        if (!empty($parameters['accessibleUntil'])) {
+            $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleUntil']);
+            if (!$dateTime || $dateTime->format('Y-m-d\TH:i:s') !== $parameters['accessibleUntil']) {
+                $errors[] = [
+                    'path' => '/parameters/accessibleUntil',
+                    'message' => 'Invalid date format',
+                ];
+            }
+        }
 
         return $errors;
     }
