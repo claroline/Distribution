@@ -2,7 +2,7 @@ import editor from './editor'
 import {SetPaper} from './paper.jsx'
 import {SetPlayer} from './player.jsx'
 import {SetFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 function expectAnswer(item) {
   return item.solutions && item.solutions.associations ? item.solutions.associations : []

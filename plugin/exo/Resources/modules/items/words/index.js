@@ -2,7 +2,7 @@ import editor from './editor'
 import {WordsPaper} from './paper.jsx'
 import {WordsPlayer} from './player.jsx'
 import {WordsFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 function expectAnswer(item) {
   return item.solutions

@@ -2,7 +2,7 @@ import editor from './editor'
 import {SelectionPaper} from './paper.jsx'
 import {SelectionPlayer} from './player.jsx'
 import {SelectionFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 //compute max score
 function expectAnswer(item) {

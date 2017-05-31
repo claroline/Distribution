@@ -2,7 +2,7 @@ import editor from './editor'
 import {OrderingPaper} from './paper.jsx'
 import {OrderingPlayer} from './player.jsx'
 import {OrderingFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 function expectAnswer(item) {
   return item.solutions

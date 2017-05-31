@@ -2,7 +2,7 @@ import editor from './editor'
 import {ChoicePaper} from './paper.jsx'
 import {ChoicePlayer} from './player.jsx'
 import {ChoiceFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 function expectAnswer(item) {
   return item.multiple ?

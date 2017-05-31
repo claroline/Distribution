@@ -2,7 +2,7 @@ import editor, {SUM_CELL, SUM_COL, SUM_ROW} from './editor'
 import {GridPaper} from './paper.jsx'
 import {GridPlayer} from './player.jsx'
 import {GridFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 // As a grid question can have several cells with several choices,
 // this function will return an array with the answers that have the biggest score

@@ -2,7 +2,7 @@ import editor from './editor'
 import {GraphicPaper} from './paper.jsx'
 import {GraphicPlayer} from './player.jsx'
 import {GraphicFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 function expectAnswer(item) {
   return item.solutions.filter(solution => solution.score > 0)

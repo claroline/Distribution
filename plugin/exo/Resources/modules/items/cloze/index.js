@@ -2,7 +2,7 @@ import editor from './editor'
 import {ClozePaper} from './paper.jsx'
 import {ClozePlayer} from './player.jsx'
 import {ClozeFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/items/item-types'
+import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 // As a cloze question can have several holes with several choices,
 // this function will return an array with the answers that have the biggest score
