@@ -61,15 +61,17 @@ function customActions(props) {
   }
 
   // Results
-  actions.push({
-    icon: 'fa fa-fw fa-list',
-    label: tex('results_list'),
-    disabled: !props.hasPapers,
-    action: '#papers'
-  })
+  if (props.registeredUser) {
+    actions.push({
+      icon: 'fa fa-fw fa-list',
+      label: tex('results_list'),
+      disabled: !props.hasPapers,
+      action: '#papers'
+    })
+  }
 
-  // Export results
-  if (props.editable && props.papersAdmin) {
+  if (props.editable || props.papersAdmin) {
+    // Export results
     actions.push({
       icon: 'fa fa-fw fa-table',
       label: tex('export_csv_results'),
@@ -78,12 +80,14 @@ function customActions(props) {
     })
   }
 
-  // not ready for now
-  /*actions.push({
-    icon: 'fa fa-fw fa-pie-chart',
-    label: tex('docimology'),
-    action: '#'
-  })*/
+  // Docimology
+  if (props.editable || props.docimologyAdmin) {
+    actions.push({
+      icon: 'fa fa-fw fa-pie-chart',
+      label: tex('docimology'),
+      action: generateUrl('ujm_exercise_docimology', {id: props.quiz.id})
+    })
+  }
 
   // Manual correction
   actions.push({
@@ -108,6 +112,7 @@ function mapStateToProps(state) {
     hasPapers: select.hasPapers(state),
     hasUserPapers: select.hasUserPapers(state),
     papersAdmin: select.papersAdmin(state),
+    docimologyAdmin: select.docimologyAdmin(state),
     registeredUser: select.registered(state),
     saveEnabled: select.saveEnabled(state),
     currentQuestionId: state.correction.currentQuestionId
