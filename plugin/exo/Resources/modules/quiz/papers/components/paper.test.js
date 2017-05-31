@@ -22,8 +22,8 @@ describe('<Paper/>', () => {
 
     const store = configureMockStore()({
       resourceNode: {
-        meta: {
-          editable: true
+        rights: {
+          current: {edit: true}
         }
       },
       quiz: {
