@@ -34,7 +34,7 @@ export class CorrectedAnswer {
   }
 
   addMissing(missing) {
-    this.missing = this.missing.push(missing)
+    this.missing.push(missing)
   }
 
   getUnexpected() {
