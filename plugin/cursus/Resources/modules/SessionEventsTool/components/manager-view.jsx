@@ -111,76 +111,84 @@ class ManagerView extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <DataList
-          data={this.props.events}
-          totalResults={this.props.total}
-          definition={[
-            {
-              name: 'name',
-              type: 'string',
-              label: t('name'),
-              renderer: (rowData) => <a href={`#${rowData.id}`}>{rowData.name}</a>
-            },
-            {name: 'startDate', type: 'date', label: t('start_date')},
-            {name: 'endDate', type: 'date', label: t('end_date')},
-            {name: 'maxUsers', type: 'number', label: trans('max_users', {}, 'cursus')},
-            {
-              name: 'registrationType',
-              type: 'number',
-              label: t('registration'),
-              renderer: (rowData) => registrationTypes[rowData.registrationType]
-            }
-          ]}
-          actions={[
-            {
-              icon: 'fa fa-fw fa-edit',
-              label: t('edit'),
-              action: (row) => this.showEventEditionForm(row)
-            }, {
-              icon: 'fa fa-fw fa-trash-o',
-              label: t('delete'),
-              action: (row) => this.deleteSessionEvent(row),
-              isDangerous: true
-            }
-          ]}
-          filters={{
-            current: this.props.filters,
-            addFilter: this.props.addListFilter,
-            removeFilter: this.props.removeListFilter
-          }}
-          sorting={{
-            current: this.props.sortBy,
-            updateSort: this.props.updateSort
-          }}
-          pagination={Object.assign({}, this.props.pagination, {
-            handlePageChange: this.props.handlePageChange,
-            handlePageSizeUpdate: this.props.handlePageSizeUpdate
-          })}
-          selection={{
-            current: this.props.selected,
-            toggle: this.props.toggleSelect,
-            toggleAll: this.props.toggleSelectAll,
-            actions: [
-              {label: t('delete'), icon: 'fa fa-fw fa-trash-o', action: () => this.deleteSessionEvents(this.props.selected), isDangerous: true}
-            ]
-          }}
-        />
-        <br/>
-        <button className="btn btn-primary" onClick={() => this.showEventCreationForm()}>
-          {trans('create_session_event', {}, 'cursus')}
-        </button>
-        {this.state.modal.type &&
-          this.props.createModal(
-            this.state.modal.type,
-            this.state.modal.props,
-            this.state.modal.fading,
-            this.hideModal.bind(this)
-          )
-        }
-      </div>
-    )
+    if (this.props.session) {
+      return (
+        <div>
+          <DataList
+            data={this.props.events}
+            totalResults={this.props.total}
+            definition={[
+              {
+                name: 'name',
+                type: 'string',
+                label: t('name'),
+                renderer: (rowData) => <a href={`#${rowData.id}`}>{rowData.name}</a>
+              },
+              {name: 'startDate', type: 'date', label: t('start_date')},
+              {name: 'endDate', type: 'date', label: t('end_date')},
+              {name: 'maxUsers', type: 'number', label: trans('max_users', {}, 'cursus')},
+              {
+                name: 'registrationType',
+                type: 'number',
+                label: t('registration'),
+                renderer: (rowData) => registrationTypes[rowData.registrationType]
+              }
+            ]}
+            actions={[
+              {
+                icon: 'fa fa-fw fa-edit',
+                label: t('edit'),
+                action: (row) => this.showEventEditionForm(row)
+              }, {
+                icon: 'fa fa-fw fa-trash-o',
+                label: t('delete'),
+                action: (row) => this.deleteSessionEvent(row),
+                isDangerous: true
+              }
+            ]}
+            filters={{
+              current: this.props.filters,
+              addFilter: this.props.addListFilter,
+              removeFilter: this.props.removeListFilter
+            }}
+            sorting={{
+              current: this.props.sortBy,
+              updateSort: this.props.updateSort
+            }}
+            pagination={Object.assign({}, this.props.pagination, {
+              handlePageChange: this.props.handlePageChange,
+              handlePageSizeUpdate: this.props.handlePageSizeUpdate
+            })}
+            selection={{
+              current: this.props.selected,
+              toggle: this.props.toggleSelect,
+              toggleAll: this.props.toggleSelectAll,
+              actions: [
+                {label: t('delete'), icon: 'fa fa-fw fa-trash-o', action: () => this.deleteSessionEvents(this.props.selected), isDangerous: true}
+              ]
+            }}
+          />
+          <br/>
+          <button className="btn btn-primary" onClick={() => this.showEventCreationForm()}>
+            {trans('create_session_event', {}, 'cursus')}
+          </button>
+          {this.state.modal.type &&
+            this.props.createModal(
+              this.state.modal.type,
+              this.state.modal.props,
+              this.state.modal.fading,
+              this.hideModal.bind(this)
+            )
+          }
+        </div>
+      )
+    } else {
+      return (
+        <div className="alert alert-warning">
+          {trans('no_session_associated_to_workspace', {}, 'cursus')}
+        </div>
+      )
+    }
   }
 }
 
@@ -194,6 +202,9 @@ ManagerView.propTypes = {
     registrationType: T.number.isRequired,
     maxUsers: T.number
   })).isRequired,
+  eventFormData: T.object.isRequired,
+  session: T.object,
+  total: T.number.isRequired,
   createSessionEvent: T.func.isRequired,
   editSessionEvent: T.func.isRequired,
   deleteSessionEvent: T.func.isRequired,
@@ -201,6 +212,7 @@ ManagerView.propTypes = {
   resetEventForm: T.func.isRequired,
   updateEventForm: T.func.isRequired,
   loadEventForm: T.func.isRequired,
+  createModal: T.func.isRequired,
   filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,
@@ -208,13 +220,9 @@ ManagerView.propTypes = {
   updateSort: T.func.isRequired,
   handlePageSizeUpdate: T.func.isRequired,
   handlePageChange: T.func.isRequired,
+  selected: T.array.isRequired,
   toggleSelect: T.func.isRequired,
   toggleSelectAll: T.func.isRequired,
-  createModal: T.func.isRequired,
-  eventFormData: T.object.isRequired,
-  session: T.object,
-  total: T.number.isRequired,
-  selected: T.array.isRequired,
   pagination: T.shape({
     pageSize: T.number.isRequired,
     current: T.number.isRequired

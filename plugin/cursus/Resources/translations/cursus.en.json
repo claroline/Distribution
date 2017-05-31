@@ -183,6 +183,7 @@
     "no_resource": "No resource",
     "no_result": "No result",
     "no_session": "No training session",
+    "no_session_associated_to_workspace": "No training session associated to this workspace",
     "no_session_event": "No session event",
     "no_template": "No template",
     "no_tutor": "No trainer",

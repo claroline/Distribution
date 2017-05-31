@@ -68,7 +68,7 @@ class SessionEventsToolController extends Controller
         $sessions = $this->cursusManager->getSessionsByWorkspace($workspace);
         $sessionEventsData = count($sessions) > 0 ?
             $this->cursusManager->searchSessionEventsPartialList($sessions[0], [], 0, 20) :
-            ['sessionsEvents' => [], 'count' => 0];
+            ['sessionEvents' => [], 'count' => 0];
 
         return [
             'workspace' => $workspace,
