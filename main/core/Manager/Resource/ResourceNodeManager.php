@@ -3,9 +3,11 @@
 namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
 use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Serializer\Resource\ResourceNodeSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -37,6 +39,11 @@ class ResourceNodeManager
     private $serializer;
 
     /**
+     * @var RightsManager
+     */
+    private $rightsManager;
+
+    /**
      * @var ResourceManager
      */
     private $resourceManager;
@@ -49,14 +56,15 @@ class ResourceNodeManager
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"        = @DI\Inject("claroline.event.event_dispatcher"),
      *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
-     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager"),
-     *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node")
+     *     "rightsManager"          = @DI\Inject("claroline.manager.rights_manager"),
+     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param StrictDispatcher              $eventDispatcher
      * @param ObjectManager                 $om
      * @param ResourceNodeSerializer        $resourceNodeSerializer
+     * @param RightsManager                 $rightsManager
      * @param ResourceManager               $resourceManager
      */
     public function __construct(
@@ -64,12 +72,14 @@ class ResourceNodeManager
         StrictDispatcher $eventDispatcher,
         ObjectManager $om,
         ResourceNodeSerializer $resourceNodeSerializer,
+        RightsManager $rightsManager,
         ResourceManager $resourceManager)
     {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
         $this->serializer = $resourceNodeSerializer;
+        $this->rightsManager = $rightsManager;
         $this->resourceManager = $resourceManager;
     }
 
@@ -109,7 +119,7 @@ class ResourceNodeManager
 
         $this->updateMeta($data['meta'], $resourceNode);
         $this->updateParameters($data['parameters'], $resourceNode);
-
+        $this->updateRights($data['rights']['all']['permissions'], $resourceNode);
         $this->om->persist($resourceNode);
         $this->om->flush();
 
@@ -152,6 +162,15 @@ class ResourceNodeManager
         $resourceNode->setFullscreen($parameters['fullscreen']);
         $resourceNode->setClosable($parameters['closable']);
         $resourceNode->setCloseTarget($parameters['closeTarget']);
+    }
+
+    private function updateRights(array $rights, ResourceNode $resourceNode)
+    {
+        foreach ($rights as $rolePerms) {
+            /** @var Role $role */
+            $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($rolePerms['role']['id']);
+            $this->rightsManager->editPerms($rolePerms['permissions'], $role, $resourceNode);
+        }
     }
 
     /**
