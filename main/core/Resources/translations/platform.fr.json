@@ -247,6 +247,8 @@
     "create_widget_instance": "Créer un nouveau Widget",
     "create_workspace": "Créer un espace d'activités",
     "created_by": "Créé par %creator% le %creationDate%",
+    "created_before": "Créé avant",
+    "created_after": "Créé après",
     "creating": "En cours de création",
     "creation": "Création",
     "creation_date": "Date de création",
@@ -721,6 +723,7 @@
     "mixed": "Mixte",
     "mode": "Mode",
     "model": "Modèle",
+    "base_model": "Modèle de base",
     "models": "Modèles",
     "month": "mois",
     "month.April": "Avril",
@@ -802,7 +805,7 @@
     "ok": "Ok",
     "on_desktops": "sur des bureaux",
     "only_for_workspace_creation": "Seulement pour la création d'un espace d'activités",
-    "open": "Ouverte",
+    "open": "Ouvrir",
     "open_resource_when_opening_ws": "Ouvrir une ressource à l'ouverture de l'espace d'activités",
     "opening_date": "Date d'ouverture",
     "operation_done": "Opération effectuée.",
@@ -1126,6 +1129,7 @@
     "show_as_user": "Se connecter en tant qu'utilisateur",
     "show_help_button": "Montrer le bouton d'aide",
     "show_mail": "Montrer le courriel",
+    "show_more_actions": "Afficher plus d'actions",
     "show_name_in_top_bar": "Afficher le nom de la plateforme dans la barre supérieure",
     "show_phone": "Montrer le numéro de téléphone",
     "show_picture": "Montrer la photo",
@@ -1405,5 +1409,6 @@
     "your_workspace_activity_overview": "Aperçu des activités récentes de vos espaces d'activités",
     "ssl_enabled": "Activer SSL ?",
     "visible_facet_form_explanation": "Le champ \"Visible\" vous permet de rendre l'élément visible ou non pour l'utilisateur.",
-    "geolocate": "Géolocaliser"
+    "geolocate": "Géolocaliser",
+    "widget_no_content": "Ce widget n'a aucun contenu pour l'instant."
 }

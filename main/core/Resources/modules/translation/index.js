@@ -1,6 +1,10 @@
+const DEFAULT_DOMAIN    = 'message'
+const PLATFORM_DOMAIN   = 'platform'
+const VALIDATION_DOMAIN = 'validators'
+
 import {execute} from '#/main/core/file-loader'
 import {web} from '#/main/core/path'
-import {Translator} from './translator'
+import {Translator as BaseTranslator} from './translator'
 
 /**
  * Get the current application translator.
@@ -9,9 +13,9 @@ import {Translator} from './translator'
  * @returns {Translator}
  */
 export function getTranslator() {
-  window.Translator = Translator
+  window.Translator = BaseTranslator
 
-  return Translator
+  return BaseTranslator
 }
 
 /**
@@ -23,14 +27,12 @@ export function getTranslator() {
  *
  * @returns {string}
  */
-export function trans(key, placeholders = {}, domain = 'message') {
+export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
   if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
   }
 
-  const trans = getTranslator().trans(key, placeholders, domain)
-
-  return trans
+  return getTranslator().trans(key, placeholders, domain)
 }
 
 /**
@@ -43,7 +45,8 @@ export function trans(key, placeholders = {}, domain = 'message') {
  *
  * @returns {string}
  */
-export function transChoice(key, count, placeholders = {}, domain = 'message') {
+
+export function transChoice(key, count, placeholders = {}, domain = DEFAULT_DOMAIN) {
   if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
   }
@@ -60,7 +63,19 @@ export function transChoice(key, count, placeholders = {}, domain = 'message') {
  * @returns {string}
  */
 export function t(message, placeholders = {}) {
-  return trans(message, placeholders, 'platform')
+  return trans(message, placeholders, PLATFORM_DOMAIN)
+}
+
+/**
+ * Shortcut to access `validators` messages.
+ *
+ * @param {string} message
+ * @param {object} placeholders
+ *
+ * @returns {string}
+ */
+export function tval(message, placeholders = {}) {
+  return trans(message, placeholders, VALIDATION_DOMAIN)
 }
 
 /**
@@ -91,4 +106,9 @@ export function isLoaded(message, domain) {
  */
 export function getLocale() {
   return getTranslator().locale
+}
+
+export const ClarolineTranslator = {
+  trans: (key, placeholders = {}, domain = 'message') => trans(key, placeholders, domain),
+  transChoice: (key, count, placeholders = {}, domain = 'message') => transChoice(key, count, placeholders, domain)
 }

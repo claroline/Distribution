@@ -10,6 +10,7 @@ export const MODAL_MESSAGE = 'MODAL_MESSAGE'
 export const MODAL_CONFIRM = 'MODAL_CONFIRM'
 export const MODAL_DELETE_CONFIRM = 'MODAL_DELETE_CONFIRM'
 export const MODAL_URL = 'MODAL_URL'
+export const MODAL_USER_PICKER = 'MODAL_USER_PICKER'
 
 const modals = {
   [MODAL_MESSAGE]: MessageModal,
@@ -37,4 +38,22 @@ export function makeModal(type, props, fading, fadeCallback = () => true, hideCa
   }
 
   return React.createElement(modals[type], Object.assign(baseProps, props))
+}
+
+export function makeModalFromUrl(fading, hideCallback = () => true, url) {
+  return fetch(url, {method: 'GET', credentials: 'include'}).then(response => {
+    return response.text()
+  }).then(text => {
+    const baseProps = {
+      show: !fading,
+      hideModal:() => hideCallback(),
+      content: text
+    }
+
+    return React.createElement(UrlModal, baseProps)
+  })
+
+
+
+
 }
