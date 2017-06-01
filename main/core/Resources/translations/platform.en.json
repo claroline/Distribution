@@ -901,7 +901,7 @@
     "publish_resource": "Publish resource",
     "published": "Published",
     "published_to_portal": "Published to portal",
-    "published_to_portal_message": "This option automatically allows anonymous users to acces the resource. You have to remove the anonymous rights in resource's rights management section to restrict the acces again.",
+    "published_to_portal_message": "This option automatically allows anonymous users to access the resource. You have to remove the anonymous rights in resource's rights management section to restrict the acces again.",
     "put_back_permissions_after_update": "Don't forget to put back your original permissions after an update.",
     "radio": "Radio button",
     "receiver": "Receiver(s)",
@@ -1113,6 +1113,7 @@
     "show_as_user": "Show as user",
     "show_help_button": "Show help button",
     "show_mail": "Show email",
+    "show_more_actions": "Show more actions",
     "show_name_in_top_bar": "Show platform name in the top bar",
     "show_phone": "Show phone",
     "show_picture": "Show picture",
@@ -1388,5 +1389,6 @@
     "your_profile_is_n_complete": "Your profile is %n%% complete",
     "your_username": "Your username is",
     "your_workspace_activity_overview": "Overview of recent activities in your workspaces",
-    "geolocate": "Geolocate"
+    "geolocate": "Geolocate",
+    "widget_no_content": "This widget has no content for now."
 }
