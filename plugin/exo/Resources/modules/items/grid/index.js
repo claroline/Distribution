@@ -2,7 +2,7 @@ import editor, {SUM_CELL, SUM_COL, SUM_ROW} from './editor'
 import {GridPaper} from './paper.jsx'
 import {GridPlayer} from './player.jsx'
 import {GridFeedback} from './feedback.jsx'
-import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
+import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
 // As a grid question can have several cells with several choices,
 // this function will return an array with the answers that have the biggest score
@@ -68,7 +68,7 @@ function expectAnswer(item) {
 }
 
 function getCorrectedAnswer(item, answers) {
-  const expected = new CorrectedAnswer(item, answers)
+  const expected = new CorrectedAnswer()
   //console.log(item, answers)
 
   answers.data.forEach(answer => {
@@ -90,7 +90,12 @@ function getCorrectedAnswer(item, answers) {
 }
 
 function findCellExpectedAnswer(cell) {
-  return cell
+  let best = false
+  cell.choice.forEach(cell => {
+    if (!best || best.score < choice.score) best = choice
+  })
+
+  return best
 }
 
 export default {
