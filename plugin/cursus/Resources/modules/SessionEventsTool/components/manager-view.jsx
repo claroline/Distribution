@@ -4,17 +4,12 @@ import {trans, t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'
 import {actions} from '../actions'
+import {registrationTypes} from '../enums'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
-
-const registrationTypes = [
-  trans('event_registration_automatic', {}, 'cursus'),
-  trans('event_registration_manual', {}, 'cursus'),
-  trans('event_registration_public', {}, 'cursus')
-]
 
 class ManagerView extends Component {
   constructor(props) {
@@ -122,7 +117,7 @@ class ManagerView extends Component {
                 name: 'name',
                 type: 'string',
                 label: t('name'),
-                renderer: (rowData) => <a href={`#${rowData.id}`}>{rowData.name}</a>
+                renderer: (rowData) => <a href={`#event/${rowData.id}`}>{rowData.name}</a>
               },
               {name: 'startDate', type: 'date', label: t('start_date')},
               {name: 'endDate', type: 'date', label: t('end_date')},

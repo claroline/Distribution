@@ -1,17 +1,27 @@
 import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
-import {VIEW_USER} from './views'
+import {VIEW_USER} from './enums'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
-import {SESSION_EVENTS_LOAD, SESSION_EVENT_ADD, SESSION_EVENT_UPDATE, EVENT_FORM_RESET, EVENT_FORM_UPDATE, EVENT_FORM_LOAD} from './actions'
+import {
+  SESSION_EVENTS_LOAD,
+  SESSION_EVENT_LOAD,
+  SESSION_EVENT_ADD,
+  SESSION_EVENT_UPDATE,
+  EVENT_FORM_RESET,
+  EVENT_FORM_UPDATE,
+  EVENT_FORM_LOAD,
+  UPDATE_VIEW_MODE
+} from './actions'
 
 const initialState = {
   workspaceId: null,
   canEdit: 0,
   sessions: {},
   sessionId: null,
+  currentEvent: {},
   events: {},
-  mode: VIEW_USER,
+  viewMode: VIEW_USER,
   eventForm: {
     id: null,
     name: null,
@@ -23,11 +33,15 @@ const initialState = {
   }
 }
 
-const handlers = {
+const mainReducers = {}
 
+const currentEventReducers = {
+  [SESSION_EVENT_LOAD]: (state, action) => {
+    return action.sessionEvent
+  }
 }
 
-const eventsHandlers = {
+const eventsReducers = {
   [SESSION_EVENTS_LOAD]: (state, action) => {
     return {
       data: action.sessionEvents,
@@ -59,7 +73,7 @@ const eventsHandlers = {
   }
 }
 
-const eventFormHandlers = {
+const eventFormReducers = {
   [EVENT_FORM_RESET]: () => initialState['eventForm'],
   [EVENT_FORM_UPDATE]: (event, action) => {
     const newEvent = cloneDeep(event)
@@ -72,14 +86,21 @@ const eventFormHandlers = {
   }
 }
 
+const viewReducers = {
+  [UPDATE_VIEW_MODE]: (state, action) => {
+    return action.mode
+  }
+}
+
 export const reducers = combineReducers({
-  workspaceId: makeReducer(initialState['workspaceId'], handlers),
-  canEdit: makeReducer(initialState['canEdit'], handlers),
-  sessions: makeReducer(initialState['sessions'], handlers),
-  sessionId: makeReducer(initialState['sessionId'], handlers),
-  events: makeReducer(initialState['events'], eventsHandlers),
-  mode: makeReducer(initialState['mode'], handlers),
-  eventForm: makeReducer(initialState['eventForm'], eventFormHandlers),
+  workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
+  canEdit: makeReducer(initialState['canEdit'], mainReducers),
+  sessions: makeReducer(initialState['sessions'], mainReducers),
+  sessionId: makeReducer(initialState['sessionId'], mainReducers),
+  currentEvent: makeReducer(initialState['currentEvent'], currentEventReducers),
+  events: makeReducer(initialState['events'], eventsReducers),
+  viewMode: makeReducer(initialState['viewMode'], viewReducers),
+  eventForm: makeReducer(initialState['eventForm'], eventFormReducers),
   list: makeListReducer(),
   pagination: paginationReducer
 })

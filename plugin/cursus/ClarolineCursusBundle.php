@@ -36,8 +36,7 @@ class ClarolineCursusBundle extends PluginBundle
         return [
             'Claroline\\MessageBundle\\ClarolineMessageBundle',
             'Claroline\\TagBundle\\ClarolineTagBundle',
-            'FormaLibre\\ReservationBundle\\FormaLibreReservationBundle',
-            'UJM\\ExoBundle\\UJMExoBundle',
+            'FormaLibre\\ReservationBundle\\FormaLibreReservationBundle'
         ];
     }
 }

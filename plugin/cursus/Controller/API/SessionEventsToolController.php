@@ -122,6 +122,25 @@ class SessionEventsToolController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/workspace/session/event/{sessionEvent}/fetch",
+     *     name="claro_cursus_session_event_fetch",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventFetchAction(SessionEvent $sessionEvent)
+    {
+        $this->checkToolAccess($sessionEvent->getSession()->getWorkspace(), 'open');
+        $serializedSessionEvent = $this->serializer->serialize(
+            $sessionEvent,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus_min'])
+        );
+
+        return new JsonResponse($serializedSessionEvent, 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/workspace/session/event/{sessionEvent}/edit",
      *     name="claro_cursus_session_event_edit",
      *     options = {"expose"=true}

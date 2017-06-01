@@ -1,10 +1,7 @@
 import {ManagerView} from './components/manager-view.jsx'
 import {UserView} from './components/user-view.jsx'
 import {EventView} from './components/event-view.jsx'
-
-export const VIEW_MANAGER = 'manager_mode'
-export const VIEW_USER = 'user_mode'
-export const VIEW_EVENT = 'event_view'
+import {VIEW_MANAGER, VIEW_USER, VIEW_EVENT} from './enums'
 
 export const viewComponents = {
   [VIEW_MANAGER]: ManagerView,

@@ -5,13 +5,16 @@ import {actions as listActions} from '#/main/core/layout/list/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
+import {VIEW_MANAGER, VIEW_USER, VIEW_EVENT} from './enums'
 
 export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
+export const SESSION_EVENT_LOAD = 'SESSION_EVENT_LOAD'
 export const SESSION_EVENT_ADD = 'SESSION_EVENT_ADD'
 export const SESSION_EVENT_UPDATE = 'SESSION_EVENT_UPDATE'
 export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
 export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
+export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
 
 export const actions = {}
 
@@ -157,6 +160,37 @@ actions.fetchSessionEvents = () => (dispatch, getState) => {
     }
   })
 }
+
+actions.fetchSessionEvent = (sessionEventId) => {
+  return (dispatch) => {
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_cursus_session_event_fetch', {sessionEvent: sessionEventId}),
+        request: {method: 'GET'},
+        success: (data, dispatch) => {
+          dispatch(actions.loadSessionEvent(JSON.parse(data)))
+        }
+      }
+    })
+  }
+}
+
+actions.displayMainView = () => (dispatch, getState) => {
+  const state = getState()
+  const mode = state['canEdit'] ? VIEW_MANAGER : VIEW_USER
+  dispatch(actions.updateViewMode(mode))
+}
+
+actions.displaySessionEvent = (sessionEventId) => {
+  return (dispatch) => {
+    dispatch(actions.fetchSessionEvent(sessionEventId))
+    dispatch(actions.updateViewMode(VIEW_EVENT))
+  }
+}
+
+actions.loadSessionEvent = makeActionCreator(SESSION_EVENT_LOAD, 'sessionEvent')
+
+actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
 
 actions.resetEventForm = makeActionCreator(EVENT_FORM_RESET)
 
