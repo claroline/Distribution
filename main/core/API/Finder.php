@@ -77,7 +77,7 @@ class Finder
           'page' => $page,
           'limit' => $limit,
           'class' => $class,
-          'filters' => $filterObjects,
+          'filters' => $filters,
           'orderBy' => $orderBy,
         ];
     }

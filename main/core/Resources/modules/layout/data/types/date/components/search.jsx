@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import {Date} from '#/plugin/exo/components/form/date.jsx'
+import {Date} from '#/main/core/layout/form/components/date-picker.jsx'
 import moment from 'moment'
 
 class DateSearch extends Component {
