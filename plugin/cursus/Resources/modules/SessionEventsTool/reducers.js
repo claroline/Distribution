@@ -40,6 +40,9 @@ const currentEventReducers = {
   [CURRENT_EVENT_RESET]: () => initialState['currentEvent'],
   [SESSION_EVENT_LOAD]: (state, action) => {
     return action.sessionEvent
+  },
+  [SESSION_EVENT_UPDATE]: (state, action) => {
+    return state.id === action.sessionEvent.id ? action.sessionEvent : state
   }
 }
 

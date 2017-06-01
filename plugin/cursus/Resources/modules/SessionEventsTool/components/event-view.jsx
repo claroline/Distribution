@@ -1,13 +1,44 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import {trans, t} from '#/main/core/translation'
+import {makeModal} from '#/main/core/layout/modal'
 import {actions} from '../actions'
 import {selectors} from '../selectors'
 import {registrationTypes} from '../enums'
 
 class EventView extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      modal: {}
+    }
+  }
+
   componentWillUnmount() {
     this.props.resetCurrentSessionEvent()
+  }
+
+  showEventEditionForm(sessionEvent) {
+    this.setState({
+      modal: {
+        type: 'MODAL_EVENT_FORM',
+        urlModal: null,
+        props: {
+          mode: 'edition',
+          title: `${trans('session_event_edition', {}, 'cursus')}`,
+          updateEventForm: this.props.updateEventForm,
+          event: sessionEvent,
+          confirmAction: this.props.editSessionEvent,
+          resetFormData: this.props.resetEventForm,
+          loadFormData: this.props.loadEventForm
+        },
+        fading: false
+      }
+    })
+  }
+
+  hideModal() {
+    this.setState({modal: {fading: true, urlModal: null}})
   }
 
   render() {
@@ -20,6 +51,7 @@ class EventView extends Component {
                     data-toggle="tooltip"
                     data-placement="top"
                     title={trans('edit_session_event', {}, 'cursus')}
+                    onClick={() => this.showEventEditionForm(this.props.event)}
             >
               <i className="fa fa-edit"></i>
             </button>
@@ -133,6 +165,14 @@ class EventView extends Component {
             ''
           }
         </div>
+        {this.state.modal.type &&
+          this.props.createModal(
+            this.state.modal.type,
+            this.state.modal.props,
+            this.state.modal.fading,
+            this.hideModal.bind(this)
+          )
+        }
         <br/>
         <a className="btn btn-default" href={'#'}>
           <i className="fa fa-arrow-left"></i>
@@ -155,7 +195,12 @@ EventView.propTypes = {
     maxUsers: T.number
   }).isRequired,
   canEdit: T.number.isRequired,
-  resetCurrentSessionEvent: T.func.isRequired
+  resetCurrentSessionEvent: T.func.isRequired,
+  editSessionEvent: T.func,
+  resetEventForm: T.func,
+  updateEventForm: T.func,
+  loadEventForm: T.func,
+  createModal: T.func
 }
 
 function mapStateToProps(state) {
@@ -169,7 +214,14 @@ function mapDispatchToProps(dispatch) {
   return {
     resetCurrentSessionEvent: () => {
       dispatch(actions.resetCurrentSessionEvent())
-    }
+    },
+    editSessionEvent: (eventId, eventData) => {
+      dispatch(actions.editSessionEvent(eventId, eventData))
+    },
+    resetEventForm: () => dispatch(actions.resetEventForm()),
+    updateEventForm: (property, value) => dispatch(actions.updateEventForm(property, value)),
+    loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
+    createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal)
   }
 }
 

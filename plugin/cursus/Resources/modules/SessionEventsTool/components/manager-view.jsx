@@ -14,7 +14,6 @@ import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 class ManagerView extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       modal: {}
     }
