@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 const locale = getLocale()
 
-export class Date extends Component {
+class Date extends Component {
   constructor(props) {
     super(props)
   }
@@ -56,3 +56,5 @@ function getLocale() {
 
   return 'en'
 }
+
+export {Date as DatePicker}

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import {Date} from '#/main/core/layout/form/components/date-picker.jsx'
+import {DatePicker} from '#/main/core/layout/form/components/date-picker.jsx'
 import moment from 'moment'
 
 class DateSearch extends Component {
@@ -24,7 +24,7 @@ class DateSearch extends Component {
           <span className="available-filter-value">{this.props.search}</span>
         }
         &nbsp;
-        <Date
+        <DatePicker
           className="input-hide"
           showCalendarButton={true}
           onChange={(date) => {
@@ -35,7 +35,7 @@ class DateSearch extends Component {
           onBlur={() => alert('blur')}
           open={this.state.open}
         >
-        </Date>
+        </DatePicker>
       </span>
     )
   }
