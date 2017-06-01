@@ -10,6 +10,7 @@ let SessionEventsToolLayout = props =>
   </div>
 
 SessionEventsToolLayout.propTypes = {
+  viewMode: T.string.isRequired
 }
 
 function mapStateToProps(state) {

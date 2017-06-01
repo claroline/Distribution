@@ -1,15 +1,20 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import {trans, t} from '#/main/core/translation'
+import {actions} from '../actions'
 import {selectors} from '../selectors'
 import {registrationTypes} from '../enums'
 
 class EventView extends Component {
+  componentWillUnmount() {
+    this.props.resetCurrentSessionEvent()
+  }
+
   render() {
     return (
       <div>
         <h3>{this.props.event.name}</h3>
-        {this.props.canEdit &&
+        {this.props.canEdit ?
           <span className="pull-right">
             <button className="btn btn-primary margin-right-sm"
                     data-toggle="tooltip"
@@ -46,7 +51,8 @@ class EventView extends Component {
             >
                 <i className="fa fa-info"></i>
             </button>
-          </span>
+          </span> :
+          ''
         }
         <br/>
         <br/>
@@ -100,7 +106,7 @@ class EventView extends Component {
               </div>
             </div>
           </div>
-          {this.props.canEdit &&
+          {this.props.canEdit ?
             <div className="panel panel-default">
               <div className="panel-heading" role="tab" id="participants-heading">
                 <h4 className="panel-title">
@@ -123,7 +129,8 @@ class EventView extends Component {
                 <div className="panel-body">
                 </div>
               </div>
-            </div>
+            </div> :
+            ''
           }
         </div>
         <br/>
@@ -141,11 +148,14 @@ EventView.propTypes = {
   event: T.shape({
     id: T.number,
     name: T.string,
+    description: T.string,
     startDate: T.string,
     endDate: T.string,
-    registrationType: T.number
+    registrationType: T.number,
+    maxUsers: T.number
   }).isRequired,
-  canEdit: T.bool.isRequired
+  canEdit: T.number.isRequired,
+  resetCurrentSessionEvent: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -155,8 +165,11 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps() {
+function mapDispatchToProps(dispatch) {
   return {
+    resetCurrentSessionEvent: () => {
+      dispatch(actions.resetCurrentSessionEvent())
+    }
   }
 }
 

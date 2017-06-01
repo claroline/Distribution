@@ -8,6 +8,7 @@ import {
   SESSION_EVENT_LOAD,
   SESSION_EVENT_ADD,
   SESSION_EVENT_UPDATE,
+  CURRENT_EVENT_RESET,
   EVENT_FORM_RESET,
   EVENT_FORM_UPDATE,
   EVENT_FORM_LOAD,
@@ -36,6 +37,7 @@ const initialState = {
 const mainReducers = {}
 
 const currentEventReducers = {
+  [CURRENT_EVENT_RESET]: () => initialState['currentEvent'],
   [SESSION_EVENT_LOAD]: (state, action) => {
     return action.sessionEvent
   }

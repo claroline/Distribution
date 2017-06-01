@@ -11,6 +11,7 @@ export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
 export const SESSION_EVENT_LOAD = 'SESSION_EVENT_LOAD'
 export const SESSION_EVENT_ADD = 'SESSION_EVENT_ADD'
 export const SESSION_EVENT_UPDATE = 'SESSION_EVENT_UPDATE'
+export const CURRENT_EVENT_RESET = 'CURRENT_EVENT_RESET'
 export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
 export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
@@ -187,6 +188,8 @@ actions.displaySessionEvent = (sessionEventId) => {
     dispatch(actions.updateViewMode(VIEW_EVENT))
   }
 }
+
+actions.resetCurrentSessionEvent = makeActionCreator(CURRENT_EVENT_RESET)
 
 actions.loadSessionEvent = makeActionCreator(SESSION_EVENT_LOAD, 'sessionEvent')
 

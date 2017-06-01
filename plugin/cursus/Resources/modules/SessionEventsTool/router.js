@@ -1,6 +1,5 @@
 import {Router, history} from 'backbone'
 import {actions} from './actions'
-import {VIEW_EVENT} from './views'
 
 let router = null
 
