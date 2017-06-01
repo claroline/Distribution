@@ -67,8 +67,30 @@ function expectAnswer(item) {
   return data
 }
 
-function getCorrectedAnswer() {
-  return new CorrectedAnswer()
+function getCorrectedAnswer(item, answers) {
+  const expected = new CorrectedAnswer(item, answers)
+  //console.log(item, answers)
+
+  answers.data.forEach(answer => {
+    const cell = item.cells.find(cell => cell.id === answer.cellId)
+    const choice = {} //answer.choice
+
+    if (choice) {
+      if (choice.isExpected) {
+        expected.addExpected(choice)
+      } else {
+        expected.addUnexpected(choice)
+      }
+    } else {
+      expected.addMissing(findCellExpectedAnswer(cell))
+    }
+  })
+
+  return expected
+}
+
+function findCellExpectedAnswer(cell) {
+  return cell
 }
 
 export default {
