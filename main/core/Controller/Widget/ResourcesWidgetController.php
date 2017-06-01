@@ -249,7 +249,6 @@ class ResourcesWidgetController extends Controller
      */
     public function displayResourceTextWidgetAction(WidgetInstance $widgetInstance)
     {
-        //  var_dump($widgetInstance);
         $config = $this->widgetManager->getConfiguration($widgetInstance);
         $details = $config->getDetails();
         if (isset($details) && isset($details['nodeId'])) {
