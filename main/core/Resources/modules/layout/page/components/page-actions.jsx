@@ -106,7 +106,7 @@ const MoreAction = props =>
   <TooltipElement
     id="page-more-title"
     position="bottom"
-    tip="Show more actions"
+    tip={t('show_more_actions')}
   >
     <DropdownButton
       id="page-more"

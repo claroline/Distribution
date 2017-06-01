@@ -4,7 +4,6 @@ namespace Claroline\CoreBundle\Serializer\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
@@ -22,6 +21,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class ResourceNodeSerializer
 {
+    /**
+     * @var ObjectManager
+     */
     private $om;
 
     /**
@@ -34,12 +36,24 @@ class ResourceNodeSerializer
      */
     private $eventDispatcher;
 
+    /**
+     * @var MaskManager
+     */
     private $maskManager;
 
+    /**
+     * @var BreadcrumbManager
+     */
     private $breadcrumbManager;
 
+    /**
+     * @var ResourceMenuManager
+     */
     private $menuManager;
 
+    /**
+     * @var RightsManager
+     */
     private $rightsManager;
 
     /**
@@ -95,20 +109,25 @@ class ResourceNodeSerializer
             'name' => $resourceNode->getName(),
             'poster' => null, // todo : add as ResourceNode prop
             'thumbnail' => null,
-            'workspace' => $resourceNode->getWorkspace() ? [
-                'id' => $resourceNode->getWorkspace()->getGuid(),
-                'name' => $resourceNode->getWorkspace()->getName(),
-                'code' => $resourceNode->getWorkspace()->getCode(),
-            ] : [],
             'meta' => $this->getMeta($resourceNode),
             'parameters' => $this->getParameters($resourceNode),
-            'rights' => ['current' => $this->getCurrentPermissions($resourceNode)],
+            'rights' => [
+                'current' => $this->getCurrentPermissions($resourceNode),
+            ],
             'shortcuts' => $this->getShortcuts($resourceNode),
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
         ];
 
+        if (!empty($resourceNode->getWorkspace())) {
+            $serializedNode['workspace'] = [
+                'id' => $resourceNode->getWorkspace()->getGuid(),
+                'name' => $resourceNode->getWorkspace()->getName(),
+                'code' => $resourceNode->getWorkspace()->getCode(),
+            ];
+        }
+
         if ($this->hasPermission('ADMINISTRATE', $resourceNode)) {
-            $meta['rights']['all'] = $this->getRights($resourceNode);
+            $serializedNode['rights']['all'] = $this->getRights($resourceNode);
         }
 
         return $this->decorate($resourceNode, $serializedNode);
@@ -145,7 +164,7 @@ class ResourceNodeSerializer
         $meta = [
             'type' => $resourceNode->getResourceType()->getName(),
             'mimeType' => $resourceNode->getMimeType(),
-            'description' => null, // todo : add as ResourceNode prop and migrate custom descriptions (Path, Quiz, etc.)
+            'description' => $resourceNode->getDescription(), // todo : migrate custom descriptions (Path, Quiz, etc.)
             'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
             'license' => $resourceNode->getLicense(),
@@ -214,9 +233,10 @@ class ResourceNodeSerializer
             ];
         }, $decoders);
 
-        $rights = $resourceNode->getRights()->toArray();
-        $serializedRights = array_map(function (ResourceRights $right) use ($resourceNode) {
-            return [
+        $serializedRights = [];
+        $rights = $resourceNode->getRights();
+        foreach ($rights as $right) {
+            $serializedRights[$right->getRole()->getName()] = [
                 'id' => $right->getId(),
                 'mask' => $right->getMask(),
                 'role' => [
@@ -226,10 +246,11 @@ class ResourceNodeSerializer
                 ],
                 'permissions' => array_merge(
                     $this->maskManager->decodeMask($right->getMask(), $resourceNode->getResourceType()),
-                    ['create' => $this->rightsManager->getCreatableTypes([$right->getRole()->getName()], $resourceNode)]
+                    // todo : array_keys should be remove when `getCreatableTypes` will return only types without translations
+                    ['create' => array_keys($this->rightsManager->getCreatableTypes([$right->getRole()->getName()], $resourceNode))]
                 ),
             ];
-        }, $rights);
+        }
 
         return [
             'decoders' => $serializedDecoders,

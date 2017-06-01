@@ -4,6 +4,7 @@ const VALIDATION_DOMAIN = 'validators'
 
 import {execute} from '#/main/core/file-loader'
 import {web} from '#/main/core/path'
+
 import {Translator} from './translator'
 
 /**
@@ -27,14 +28,12 @@ export function getTranslator() {
  *
  * @returns {string}
  */
-export function trans(key, placeholders = {}, domain = 'message') {
+export function trans(key, placeholders = {}, domain = DEFAULT_DOMAIN) {
   if (!isLoaded(key, domain)) {
     execute(web(`js/translations/${domain}/${getLocale()}.js`))
   }
 
-  const trans = getTranslator().trans(key, placeholders, domain = DEFAULT_DOMAIN)
-
-  return trans
+  return getTranslator().trans(key, placeholders, domain)
 }
 
 /**

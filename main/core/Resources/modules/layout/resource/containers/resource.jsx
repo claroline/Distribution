@@ -4,8 +4,6 @@ import {connect} from 'react-redux'
 
 import {select as modalSelect} from '#/main/core/layout/modal/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {select as pageSelect} from '#/main/core/layout/page/selectors'
-import {actions as pageActions} from '#/main/core/layout/page/actions'
 import {select as resourceSelect} from './../selectors'
 import {actions as resourceActions} from './../actions'
 import {Resource} from '../components/resource.jsx'
@@ -18,42 +16,23 @@ import {Resource} from '../components/resource.jsx'
  *
  * Requires the following reducers to be registered in your store :
  *   - modal
- *   - page
  *   - resource
  *
  * @param props
  * @constructor
  */
 const ResourceContainer = props =>
-  <Resource {...props}>
+  <Resource
+    {...props}
+  >
     {props.children}
   </Resource>
 
 ResourceContainer.propTypes = {
   /**
-   * Is the resource displayed in fullscreen mode ?
-   */
-  fullscreen: T.bool.isRequired,
-
-  /**
-   * The current resource node.
-   */
-  resourceNode: T.object.isRequired,
-
-  /**
-   * Application of the resource node.
+   * Application of the resource.
    */
   children: T.node,
-
-  /**
-   * Toggles fullscreen mode.
-   */
-  toggleFullscreen: T.func.isRequired,
-
-  /**
-   * Changes publication status of the resource.
-   */
-  togglePublication: T.func.isRequired,
 
   /**
    * Current displayed modal if any.
@@ -85,17 +64,21 @@ ResourceContainer.propTypes = {
   save: T.object.isRequired,
 
   /**
+   * Changes publication status of the resource.
+   */
+  togglePublication: T.func.isRequired,
+
+  /**
    * Updates the resource node properties.
    *
    * @param {object} resourceNode - the new resourceNode properties
    */
-  updateProperties: T.func.isRequired
+  updateNode: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     modal: modalSelect.modal(state),
-    fullscreen: pageSelect.fullscreen(state),
     resourceNode: resourceSelect.resourceNode(state)
   }
 }
@@ -105,7 +88,6 @@ const ConnectedResource = connect(
   mapStateToProps,
   Object.assign(
     {},
-    pageActions,
     modalActions,
     resourceActions
   )

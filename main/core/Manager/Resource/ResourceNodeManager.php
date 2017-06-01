@@ -3,9 +3,11 @@
 namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
 use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Serializer\Resource\ResourceNodeSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -37,6 +39,11 @@ class ResourceNodeManager
     private $serializer;
 
     /**
+     * @var RightsManager
+     */
+    private $rightsManager;
+
+    /**
      * @var ResourceManager
      */
     private $resourceManager;
@@ -49,26 +56,30 @@ class ResourceNodeManager
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
      *     "eventDispatcher"        = @DI\Inject("claroline.event.event_dispatcher"),
      *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node"),
-     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager"),
-     *     "resourceNodeSerializer" = @DI\Inject("claroline.serializer.resource_node")
+     *     "rightsManager"          = @DI\Inject("claroline.manager.rights_manager"),
+     *     "resourceManager"        = @DI\Inject("claroline.manager.resource_manager")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param ObjectManager                 $om
      * @param StrictDispatcher              $eventDispatcher
+     * @param ObjectManager                 $om
      * @param ResourceNodeSerializer        $resourceNodeSerializer
+     * @param RightsManager                 $rightsManager
+     * @param ResourceManager               $resourceManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         StrictDispatcher $eventDispatcher,
         ObjectManager $om,
         ResourceNodeSerializer $resourceNodeSerializer,
+        RightsManager $rightsManager,
         ResourceManager $resourceManager)
     {
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
         $this->serializer = $resourceNodeSerializer;
+        $this->rightsManager = $rightsManager;
         $this->resourceManager = $resourceManager;
     }
 
@@ -83,67 +94,6 @@ class ResourceNodeManager
     {
         return $this->serializer->serialize($resourceNode);
     }
-
-    /* Plus tard
-    public function create()
-    {
-        $node = new ResourceNode();
-
-        $node->setResourceType($resourceType);
-        $node->setPublished($isPublished);
-
-        $mimeType = ($resource->getMimeType() === null) ?
-            'custom/'.$resourceType->getName() :
-            $resource->getMimeType();
-
-        $node->setMimeType($mimeType);
-        $node->setName($resource->getName());
-        $node->setCreator($creator);
-
-        if (!$workspace && $parent) {
-            if ($parent->getWorkspace()) {
-                $workspace = $parent->getWorkspace();
-            }
-        }
-
-        if ($workspace) {
-            $node->setWorkspace($workspace);
-        }
-
-        $node->setParent($parent);
-        $node->setName($this->getUniqueName($node, $parent));
-        $node->setClass(get_class($resource));
-
-        if ($parent) {
-            $this->setLastIndex($parent, $node);
-        }
-
-        if (!is_null($parent)) {
-            $node->setAccessibleFrom($parent->getAccessibleFrom());
-            $node->setAccessibleUntil($parent->getAccessibleUntil());
-        }
-
-        $resource->setResourceNode($node);
-
-        if ($createRights) {
-            $this->setRights($node, $parent, $rights);
-        }
-        $this->om->persist($node);
-        $this->om->persist($resource);
-
-        if (empty($icon)) {
-            $icon = $this->iconManager->getIcon($resource, $workspace);
-        }
-
-        $parentPath = '';
-
-        if ($parent) {
-            $parentPath .= $parent->getPathForDisplay().' / ';
-        }
-
-        $node->setPathForCreationLog($parentPath.$node->getName());
-        $node->setIcon($icon);
-    }*/
 
     /**
      * Updates a ResourceNode entity.
@@ -163,13 +113,64 @@ class ResourceNodeManager
             throw new InvalidDataException('ResourceNode data are invalid.', $errors);
         }
 
-        $this->resourceManager->setPublishedStatus([$resourceNode], $resourceNode->isPublished());
-        $this->resourceManager->rename($resourceNode, $resourceNode->getName());
+        if ($data['name'] !== $resourceNode->getName()) {
+            $this->resourceManager->rename($resourceNode, $data['name'], true);
+        }
 
+        $this->updateMeta($data['meta'], $resourceNode);
+        $this->updateParameters($data['parameters'], $resourceNode);
+        $this->updateRights($data['rights']['all']['permissions'], $resourceNode);
         $this->om->persist($resourceNode);
         $this->om->flush();
 
         return $resourceNode;
+    }
+
+    private function updateMeta(array $meta, ResourceNode $resourceNode)
+    {
+        if ($meta['published'] !== $resourceNode->isPublished()) {
+            $this->resourceManager->setPublishedStatus([$resourceNode], $meta['published']);
+        }
+
+        $resourceNode->setPublishedToPortal($meta['portal']);
+
+        if (isset($meta['description'])) {
+            $resourceNode->setDescription($meta['description']);
+        }
+
+        if (isset($meta['license'])) {
+            $resourceNode->setLicense($meta['license']);
+        }
+
+        if (isset($meta['authors'])) {
+            $resourceNode->setAuthor($meta['authors']);
+        }
+    }
+
+    private function updateParameters(array $parameters, ResourceNode $resourceNode)
+    {
+        if (!empty($parameters['accessibleFrom'])) {
+            $accessibleFrom = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleFrom']);
+            $resourceNode->setAccessibleFrom($accessibleFrom);
+        }
+
+        if (!empty($parameters['accessibleUntil'])) {
+            $accessibleUntil = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleUntil']);
+            $resourceNode->setAccessibleUntil($accessibleUntil);
+        }
+
+        $resourceNode->setFullscreen($parameters['fullscreen']);
+        $resourceNode->setClosable($parameters['closable']);
+        $resourceNode->setCloseTarget($parameters['closeTarget']);
+    }
+
+    private function updateRights(array $rights, ResourceNode $resourceNode)
+    {
+        foreach ($rights as $rolePerms) {
+            /** @var Role $role */
+            $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($rolePerms['role']['id']);
+            $this->rightsManager->editPerms($rolePerms['permissions'], $role, $resourceNode);
+        }
     }
 
     /**
@@ -183,6 +184,33 @@ class ResourceNodeManager
     {
         //json-schema ? à discuter
         $errors = [];
+
+        if (empty($data['name'])) {
+            $errors[] = [
+                'path' => '/name',
+                'message' => 'name can not be empty',
+            ];
+        }
+
+        if (!empty($parameters['accessibleFrom'])) {
+            $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleFrom']);
+            if (!$dateTime || $dateTime->format('Y-m-d\TH:i:s') !== $parameters['accessibleFrom']) {
+                $errors[] = [
+                    'path' => '/parameters/accessibleFrom',
+                    'message' => 'Invalid date format',
+                ];
+            }
+        }
+
+        if (!empty($parameters['accessibleUntil'])) {
+            $dateTime = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters['accessibleUntil']);
+            if (!$dateTime || $dateTime->format('Y-m-d\TH:i:s') !== $parameters['accessibleUntil']) {
+                $errors[] = [
+                    'path' => '/parameters/accessibleUntil',
+                    'message' => 'Invalid date format',
+                ];
+            }
+        }
 
         return $errors;
     }

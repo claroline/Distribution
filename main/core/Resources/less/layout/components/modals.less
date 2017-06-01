@@ -52,9 +52,7 @@
     }
 
     .active > a {
-        border-color: @modal-header-border-color;
-        border-top-color: transparent;
-        border-bottom-color: transparent;
+        border-color: transparent @modal-header-border-color !important;
     }
 }
 
@@ -82,5 +80,21 @@
         .panel-heading {
             background: #F5F5F5; // todo : use a var
         }
+    }
+}
+
+// customize tables
+.modal-content > .table,
+.modal-content > div > .table { // allows SPA containers
+    margin-bottom: 0;
+
+    tbody {
+        background: @modal-content-bg;
+        border: none;
+        box-shadow: none;
+    }
+
+    + .modal-body {
+        border-top: 1px solid @table-border-color;
     }
 }

@@ -31,7 +31,7 @@ class ResourceNodeControllerTest extends TransactionalTestCase
     {
         $this->login($this->john);
         $resource = $this->persister->file('test', 'text/html', true, $this->john);
-        $this->client->request('GET', "/api/resources/{$resource->getResourceNode()->getId()}");
+        $this->client->request('GET', "/api/resources/{$resource->getResourceNode()->getGuid()}");
         $response = $this->client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
     }

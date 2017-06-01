@@ -223,6 +223,8 @@ class EditPropertiesModal extends Component {
       validating: false,
       errors: {}
     }
+
+    this.save = this.save.bind(this)
   }
 
   /**
@@ -259,7 +261,24 @@ class EditPropertiesModal extends Component {
 
     if (isEmpty(errors)) {
       this.props.save(this.state.resourceNode)
+      this.props.fadeModal()
     }
+  }
+
+  makePanel(id, icon, title, content) {
+    return (
+      <Panel
+        eventKey={id}
+        header={
+          <h5 className={classes('panel-title', {opened: id === this.state.openedPanel})}>
+            <span className={classes('fa fa-fw', icon)} style={{marginRight: 10}} />
+            {title}
+          </h5>
+        }
+      >
+        {content}
+      </Panel>
+    )
   }
 
   render() {
@@ -292,82 +311,59 @@ class EditPropertiesModal extends Component {
           activeKey={this.state.openedPanel}
           onSelect={(activeKey) => this.setState({openedPanel: activeKey !== this.state.openedPanel ? activeKey : null})}
         >
-          <Panel
-            eventKey="resource-meta"
-            header={
-              <h5 className={classes('panel-title', {opened: 'resource-meta' === this.state.openedPanel})}>
-                <span className="fa fa-fw fa-info" style={{marginRight: 10}} />
-                Information
-              </h5>
-            }
-          >
+          {this.makePanel(
+            'resource-meta',
+            'fa-info',
+            'Information',
             <MetaPanel
               meta={this.state.resourceNode.meta}
               updateParameter={this.updateProperty.bind(this)}
               validating={this.state.validating}
               errors={this.state.errors}
             />
-          </Panel>
+          )}
 
-          <Panel
-            eventKey="resource-dates"
-            header={
-              <h5 className={classes('panel-title', {opened: 'resource-dates' === this.state.openedPanel})}>
-                <span className="fa fa-fw fa-calendar" style={{marginRight: 10}} />
-                Accessibility dates
-              </h5>
-            }
-          >
+          {this.makePanel(
+            'resource-dates',
+            'fa-calendar',
+            'Accessibility dates',
             <AccessibilityDatesPanel
               parameters={this.state.resourceNode.parameters}
               updateParameter={this.updateProperty.bind(this)}
               validating={this.state.validating}
               errors={this.state.errors}
             />
-          </Panel>
+          )}
 
-          <Panel
-            eventKey="resource-display"
-            header={
-              <h5 className={classes('panel-title', {opened: 'resource-display' === this.state.openedPanel})}>
-                <span className="fa fa-fw fa-desktop" style={{marginRight: 10}} />
-                Display parameters
-              </h5>
-            }
-          >
+          {this.makePanel(
+            'resource-display',
+            'fa-desktop',
+            'Display parameters',
             <DisplayPanel
               parameters={this.state.resourceNode.parameters}
               updateParameter={this.updateProperty.bind(this)}
               validating={this.state.validating}
               errors={this.state.errors}
             />
-          </Panel>
+          )}
 
-          <Panel
-            eventKey="resource-license"
-            header={
-              <h5 className={classes('panel-title', {opened: 'resource-license' === this.state.openedPanel})}>
-                <span className="fa fa-fw fa-copyright" style={{marginRight: 10}} />
-                Authors & License
-              </h5>
-            }
-          >
+          {this.makePanel(
+            'resource-license',
+            'fa-copyright',
+            'Authors & License',
             <LicensePanel
               meta={this.state.resourceNode.meta}
               updateParameter={this.updateProperty.bind(this)}
               validating={this.state.validating}
               errors={this.state.errors}
             />
-          </Panel>
+          )}
         </PanelGroup>
 
         <button
           className="modal-btn btn btn-primary"
-          disabled={!this.state.pendingChanges}
-          onClick={() => {
-            this.save()
-            this.props.fadeModal()
-          }}
+          disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
+          onClick={this.save}
         >
           {t('save')}
         </button>

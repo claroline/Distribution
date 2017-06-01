@@ -1,58 +1,46 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
-import {max, range} from 'd3-array'
-import {scaleLinear, scaleBand} from 'd3-scale'
-
 import Bar from './bar.jsx'
 
 /**
  * Represents data on a Bar chart.
  */
 export default class DataSeries extends Component {
+
   render() {
-    const yScale = scaleLinear()
-      .domain([0, max(this.props.data)])
-      .range([0, this.props.height])
-
-    const xScale = scaleBand()
-      .domain(range(this.props.data.length))
-      .rangeRound([0, this.props.width])
-      .paddingInner([0.2])
-
-    // D3 Axis - renders a d3 scale in SVG
-    /*var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .ticks(10, "%");*/
+    const hasNegativeValues = Object.keys(this.props.data).some(key => parseFloat(this.props.data[key].yData) < 0)
 
     return (
       <g>
-        {this.props.data.map((point, i) => (
-          <Bar
-            key={i}
-            height={yScale(point)}
-            width={xScale.bandwidth()}
-            offset={xScale(i)}
-            maxHeight={this.props.height}
-            color={this.props.color}
-          />
-        ))}
+        {Object.keys(this.props.data).map((key, i) => {
+          const isNegativeValue = parseFloat(this.props.data[key].yData) < 0
+          return (
+            <Bar
+              key={i}
+              height={isNegativeValue ? 0 : this.props.yScale(this.props.data[key].yData)}
+              width={this.props.xScale.bandwidth()}
+              offsetX={this.props.xScale(this.props.data[key].xData)}
+              offsetY={isNegativeValue ? this.props.height / 2 : 0}
+              maxHeight={hasNegativeValues ? this.props.height / 2 : this.props.height}
+              color={isNegativeValue ? this.props.altColor : this.props.color}
+            />
+          )
+        })}
       </g>
     )
   }
 }
 
 DataSeries.propTypes = {
-  data: T.array.isRequired,
-  width: T.number.isRequired,
+  data: T.object.isRequired,
+  yScale: T.func.isRequired,
+  xScale: T.func.isRequired,
   height: T.number.isRequired,
-  color: T.string
+  color: T.string,
+  altColor: T.string
 }
 
 DataSeries.defaultProps = {
-  color: '#337ab7' // Default bootstrap primary color
+  color: '#337ab7', // Default bootstrap primary color
+  altColor: 'brown'
 }

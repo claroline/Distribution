@@ -13,7 +13,7 @@ import {
   TableHeader,
   TableHeaderCell,
   TableSortingCell
-} from './../../components/table/table.jsx'
+} from '#/main/core/layout/table/components/table.jsx'
 
 const SelectedRow = props =>
   <tr className="selected-rows active">

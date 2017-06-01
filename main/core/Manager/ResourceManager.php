@@ -95,7 +95,7 @@ class ResourceManager
     private $container;
 
     /**
-     * Constructor.
+     * ResourceManager constructor.
      *
      * @DI\InjectParams({
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
@@ -110,6 +110,18 @@ class ResourceManager
      *     "translator"            = @DI\Inject("translator"),
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler")
      * })
+     *
+     * @param RoleManager                  $roleManager
+     * @param IconManager                  $iconManager
+     * @param ContainerInterface           $container
+     * @param RightsManager                $rightsManager
+     * @param StrictDispatcher             $dispatcher
+     * @param ObjectManager                $om
+     * @param ClaroUtilities               $ut
+     * @param Utilities                    $secut
+     * @param MaskManager                  $maskManager
+     * @param TranslatorInterface          $translator
+     * @param PlatformConfigurationHandler $platformConfigHandler
      */
     public function __construct(
         RoleManager $roleManager,
@@ -329,9 +341,9 @@ class ResourceManager
     /**
      * Checks if an array of serialized resources share the same parent.
      *
-     * @param array nodes
+     * @param array $nodes
      *
-     * @return array
+     * @return bool
      */
     public function haveSameParents(array $nodes)
     {
@@ -801,7 +813,8 @@ class ResourceManager
                 if ($env === 'dev') {
                     $message = 'The resource '.$node->getName().' was not found (node id is '.$node->getId().')';
                     $this->container->get('logger')->error($message);
-                    throw new ResourceNotFoundException($message);
+
+                    return;
                 } else {
                     //if something is malformed in production, try to not break everything if we don't need to. Just retun null.
                     return;
@@ -1234,19 +1247,23 @@ class ResourceManager
     /**
      * Renames a node.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param string                                             $name
+     * @param ResourceNode $node
+     * @param string       $name
+     * @param bool         $noFlush
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     * @return ResourceNode
      */
-    public function rename(ResourceNode $node, $name)
+    public function rename(ResourceNode $node, $name, $noFlush = false)
     {
         $node->setName($name);
         $name = $this->getUniqueName($node, $node->getParent());
         $node->setName($name);
         $this->om->persist($node);
         $this->logChangeSet($node);
-        $this->om->flush();
+
+        if (!$noFlush) {
+            $this->om->flush();
+        }
 
         return $node;
     }
