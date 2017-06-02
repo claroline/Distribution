@@ -27,6 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SessionEvent
 {
+    const TYPE_NONE = 0;
+    const TYPE_EVENT = 1;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -137,6 +140,23 @@ class SessionEvent
      * @SerializedName("registrationType")
      */
     protected $registrationType = CourseSession::REGISTRATION_AUTO;
+
+    /**
+     * @ORM\Column(name="event_type", type="integer", nullable=false, options={"default" = 0})
+     * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
+     * @SerializedName("type")
+     */
+    protected $type = self::TYPE_NONE;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CursusBundle\Entity\SessionEventGroup",
+     *     inversedBy="events"
+     * )
+     * @ORM\JoinColumn(name="event_group", nullable=true, onDelete="SET NULL")
+     * @Groups({"api_user_min"})
+     */
+    protected $eventGroup;
 
     public function __construct()
     {
@@ -301,6 +321,26 @@ class SessionEvent
     public function setRegistrationType($registrationType)
     {
         $this->registrationType = $registrationType;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    public function getEventGroup()
+    {
+        return $this->eventGroup;
+    }
+
+    public function setEventGroup(SessionEventGroup $eventGroup = null)
+    {
+        $this->eventGroup = $eventGroup;
     }
 
     public static function getSearchableFields()
