@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
+import {PropTypes as T} from 'prop-types'
 import {pie} from 'd3-shape'
 
 import Arc from './arc.jsx'
-
-const T = React.PropTypes
 
 export default class DataSeries extends Component {
   render() {
@@ -20,6 +19,8 @@ export default class DataSeries extends Component {
             outerRadius={this.props.outerRadius}
             startAngle={arc.startAngle}
             endAngle={arc.endAngle}
+            value={arc.value}
+            showValue={this.props.showValue}
           />
         ))}
       </g>
@@ -31,9 +32,9 @@ DataSeries.propTypes = {
   data: T.array.isRequired,
   colors: T.arrayOf(T.string).isRequired,
   innerRadius: T.number.isRequired,
-  outerRadius: T.number.isRequired
+  outerRadius: T.number.isRequired,
+  showValue: T.bool.isRequired
 }
 
 DataSeries.defaultProps = {
-
 }

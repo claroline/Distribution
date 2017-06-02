@@ -1,7 +1,9 @@
-import React, {PropTypes as T} from 'react'
+import React from 'react'
+import {PropTypes as T} from 'prop-types'
+
 import {connect} from 'react-redux'
 
-import quizSelect from './../selectors'
+import quizSelect from './../../selectors'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {selectors as paperSelect} from './../selectors'
 import {tex, t} from '#/main/core/translation'
