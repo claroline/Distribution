@@ -292,7 +292,6 @@ class BlogManager
 
         foreach ($scheduledForInsert as $entity) {
             if (get_class($entity) === 'Icap\BlogBundle\Entity\Tag') {
-
                 if (strtoupper(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $entity->getName())) === strtoupper(iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name))) {
                     return $entity;
                 }
