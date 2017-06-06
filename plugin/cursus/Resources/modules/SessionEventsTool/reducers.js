@@ -9,6 +9,8 @@ import {
   SESSION_EVENT_ADD,
   SESSION_EVENT_UPDATE,
   CURRENT_EVENT_RESET,
+  CURRENT_EVENT_ADD_PARTICIPANTS,
+  CURRENT_EVENT_REMOVE_PARTICIPANTS,
   EVENT_FORM_RESET,
   EVENT_FORM_UPDATE,
   EVENT_FORM_LOAD,
@@ -20,7 +22,10 @@ const initialState = {
   canEdit: 0,
   sessions: {},
   sessionId: null,
-  currentEvent: {},
+  currentEvent: {
+    data: {},
+    participants: []
+  },
   events: {},
   viewMode: VIEW_USER,
   eventForm: {
@@ -42,7 +47,27 @@ const currentEventReducers = {
     return action.sessionEvent
   },
   [SESSION_EVENT_UPDATE]: (state, action) => {
-    return state.id === action.sessionEvent.id ? action.sessionEvent : state
+    return state.data.id === action.sessionEvent.id ?
+      Object.assign({}, state, {data: action.sessionEvent}) :
+      state
+  },
+  [CURRENT_EVENT_ADD_PARTICIPANTS]: (state, action) => {
+    const participants = cloneDeep(state.participants)
+    action.sessionEventUsers.forEach(seu => participants.push(seu))
+
+    return Object.assign({}, state, {participants: participants})
+  },
+  [CURRENT_EVENT_REMOVE_PARTICIPANTS]: (state, action) => {
+    const participants = cloneDeep(state.participants)
+    action.sessionEventUsersIds.forEach(id => {
+      const index = participants.findIndex(p => p.id === id)
+
+      if (index > -1) {
+        participants.splice(index, 1)
+      }
+    })
+
+    return Object.assign({}, state, {participants: participants})
   }
 }
 

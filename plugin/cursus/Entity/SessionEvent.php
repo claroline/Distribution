@@ -101,7 +101,7 @@ class SessionEvent
     /**
      * @ORM\ManyToOne(targetEntity="FormaLibre\ReservationBundle\Entity\Resource")
      * @ORM\JoinColumn(name="location_resource_id", nullable=true, onDelete="SET NULL")
-     * @Groups({"api_cursus", "api_user_min"})
+     * @Groups({"api_user_min"})
      * @SerializedName("locationResource")
      */
     protected $locationResource;

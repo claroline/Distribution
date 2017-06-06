@@ -12,6 +12,7 @@
 namespace Claroline\CursusBundle\Controller\API;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Manager\CursusManager;
@@ -27,6 +28,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SessionEventsToolController extends Controller
 {
+    private $apiManager;
     private $authorization;
     private $cursusManager;
     private $request;
@@ -34,6 +36,7 @@ class SessionEventsToolController extends Controller
 
     /**
      * @DI\InjectParams({
+     *     "apiManager"    = @DI\Inject("claroline.manager.api_manager"),
      *     "authorization" = @DI\Inject("security.authorization_checker"),
      *     "cursusManager" = @DI\Inject("claroline.manager.cursus_manager"),
      *     "request"       = @DI\Inject("request"),
@@ -41,11 +44,13 @@ class SessionEventsToolController extends Controller
      * })
      */
     public function __construct(
+        ApiManager $apiManager,
         AuthorizationCheckerInterface $authorization,
         CursusManager $cursusManager,
         Request $request,
         Serializer $serializer
     ) {
+        $this->apiManager = $apiManager;
         $this->authorization = $authorization;
         $this->cursusManager = $cursusManager;
         $this->request = $request;
@@ -135,8 +140,14 @@ class SessionEventsToolController extends Controller
             'json',
             SerializationContext::create()->setGroups(['api_cursus_min'])
         );
+        $sessionEventUsers = $this->cursusManager->getSessionEventUsersBySessionEvent($sessionEvent);
+        $serializedParticipants = $this->serializer->serialize(
+            $sessionEventUsers,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
 
-        return new JsonResponse($serializedSessionEvent, 200);
+        return new JsonResponse(['data' => $serializedSessionEvent, 'participants' => $serializedParticipants], 200);
     }
 
     /**
@@ -198,8 +209,7 @@ class SessionEventsToolController extends Controller
      */
     public function sessionEventsDeleteAction(Workspace $workspace)
     {
-        $sessionEvents = $this->container->get('claroline.manager.api_manager')
-            ->getParameters('ids', 'Claroline\CursusBundle\Entity\SessionEvent');
+        $sessionEvents = $this->apiManager->getParameters('ids', 'Claroline\CursusBundle\Entity\SessionEvent');
         $this->checkSessionEventsEditionAccess($workspace, $sessionEvents);
         $this->cursusManager->deleteSessionEvents($sessionEvents);
 
@@ -229,6 +239,51 @@ class SessionEventsToolController extends Controller
         ];
 
         return new JsonResponse($content, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/session/event/{sessionEvent}/users/register",
+     *     name="claro_cursus_session_event_users_register",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventUsersRegisterAction(SessionEvent $sessionEvent)
+    {
+        $this->checkToolAccess($sessionEvent->getSession()->getWorkspace(), 'edit');
+        $users = $this->apiManager->getParameters('ids', 'Claroline\CoreBundle\Entity\User');
+        $results = $this->cursusManager->registerUsersToSessionEvent($sessionEvent, $users);
+
+        return new JsonResponse($results, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/session/event/users/delete",
+     *     name="claro_cursus_session_event_users_delete",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventUsersDeleteAction()
+    {
+        $sessionEventUsers = $this->apiManager->getParameters('ids', 'Claroline\CursusBundle\Entity\SessionEventUser');
+        $workspaces = [];
+
+        foreach ($sessionEventUsers as $sessionEventUser) {
+            $workspace = $sessionEventUser->getSessionEvent()->getSession()->getWorkspace();
+            $workspaces[$workspace->getId()] = $workspace;
+        }
+        foreach ($workspaces as $workspace) {
+            $this->checkToolAccess($workspace, 'edit');
+        }
+        $serializedSessionEventUsers = $this->serializer->serialize(
+            $sessionEventUsers,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus_min'])
+        );
+        $this->cursusManager->unregisterUsersFromSessionEvent($sessionEventUsers);
+
+        return new JsonResponse($serializedSessionEventUsers, 200);
     }
 
     private function checkToolAccess(Workspace $workspace = null, $right = 'open')

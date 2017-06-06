@@ -4,7 +4,7 @@ import {trans, t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
 import {actions} from '../actions'
 import {selectors} from '../selectors'
-import {registrationTypes} from '../enums'
+import {registrationTypes, registrationStatus} from '../enums'
 
 class EventView extends Component {
   constructor(props) {
@@ -12,6 +12,7 @@ class EventView extends Component {
     this.state = {
       modal: {}
     }
+    this.addParticipants = this.addParticipants.bind(this)
   }
 
   componentWillUnmount() {
@@ -37,6 +38,40 @@ class EventView extends Component {
     })
   }
 
+  showParticipantsSelection() {
+    let userPicker = new UserPicker()
+    const options = {
+      picker_name: 'validators-picker',
+      picker_title: Translator.trans('validators_selection', {}, 'cursus'),
+      multiple: true,
+      //selected_users: this.getSelectedUsersIds(),
+      forced_workspaces: [this.props.workspaceId],
+      return_datas: true,
+      blacklist: this.getParticipantsIds()
+    }
+    userPicker.configure(options, this.addParticipants)
+    userPicker.open()
+  }
+
+  getParticipantsIds() {
+    const ids = []
+    this.props.participants.forEach(p => ids.push(p['user'].id))
+
+    return ids
+  }
+
+  addParticipants(users) {
+    if (users) {
+      const toAdd = []
+      users.forEach(u => toAdd.push(u.id))
+      this.props.registerParticipants(this.props.event.id, toAdd)
+    }
+  }
+
+  removeParticipant(id) {
+    this.props.deleteParticipants([id])
+  }
+
   hideModal() {
     this.setState({modal: {fading: true, urlModal: null}})
   }
@@ -59,29 +94,9 @@ class EventView extends Component {
                     data-toggle="tooltip"
                     data-placement="top"
                     title={trans('register_participants', {}, 'cursus')}
+                    onClick={() => this.showParticipantsSelection()}
             >
                 <i className="fa fa-user-plus"></i>
-            </button>
-            <button className="btn btn-primary margin-right-sm"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title={trans('invite_learners_to_session_event', {}, 'cursus')}
-            >
-                <i className="fa fa-plus-square"></i>
-            </button>
-            <button className="btn btn-primary margin-right-sm"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title={trans('generate_event_certificates', {}, 'cursus')}
-            >
-                <i className="fa fa-graduation-cap"></i>
-            </button>
-            <button className="btn btn-primary"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title={trans('informations_management', {}, 'cursus')}
-            >
-                <i className="fa fa-info"></i>
             </button>
           </span> :
           ''
@@ -159,6 +174,48 @@ class EventView extends Component {
                    aria-labelledby="participants-heading"
               >
                 <div className="panel-body">
+                  {this.props.participants.length > 0 ?
+                    <div className="table-responsive">
+                      <table className="table table-stripped">
+                        <thead>
+                        <tr>
+                          <th>{t('last_name')}</th>
+                          <th>{t('first_name')}</th>
+                          <th>{t('status')}</th>
+                          <th>{t('actions')}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          {this.props.participants.map((p, idx) =>
+                            <tr key={idx}>
+                              <td>{p.user.lastName}</td>
+                              <td>{p.user.firstName}</td>
+                              <td>
+                                {p.registrationStatus === 0 &&
+                                  <label className="label label-success">
+                                    {registrationStatus[p.registrationStatus]}
+                                  </label>
+                                }
+                                {p.registrationStatus === 1 &&
+                                  <label className="label label-warning">
+                                    {registrationStatus[p.registrationStatus]}
+                                  </label>
+                                }
+                              </td>
+                              <td>
+                                <button className="btn btn-danger btn-sm" onClick={() => this.removeParticipant(p.id)}>
+                                  <i className="fa fa-trash"></i>
+                                </button>
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div> :
+                    <div className="alert alert-warning">
+                      {trans('no_participant', {}, 'cursus')}
+                    </div>
+                  }
                 </div>
               </div>
             </div> :
@@ -185,6 +242,7 @@ class EventView extends Component {
 }
 
 EventView.propTypes = {
+  workspaceId: T.number.isRequired,
   event: T.shape({
     id: T.number,
     name: T.string,
@@ -194,18 +252,23 @@ EventView.propTypes = {
     registrationType: T.number,
     maxUsers: T.number
   }).isRequired,
+  participants: T.array.isRequired,
   canEdit: T.number.isRequired,
   resetCurrentSessionEvent: T.func.isRequired,
   editSessionEvent: T.func,
   resetEventForm: T.func,
   updateEventForm: T.func,
   loadEventForm: T.func,
+  registerParticipants: T.func,
+  deleteParticipants: T.func,
   createModal: T.func
 }
 
 function mapStateToProps(state) {
   return {
+    workspaceId: state.workspaceId,
     event: selectors.currentEvent(state),
+    participants: selectors.currentParticipants(state),
     canEdit: selectors.canEdit(state)
   }
 }
@@ -221,6 +284,8 @@ function mapDispatchToProps(dispatch) {
     resetEventForm: () => dispatch(actions.resetEventForm()),
     updateEventForm: (property, value) => dispatch(actions.updateEventForm(property, value)),
     loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
+    registerParticipants: (eventId, usersIds) => dispatch(actions.registerUsersToSessionEvent(eventId, usersIds)),
+    deleteParticipants: (sessionEventUsersIds) => dispatch(actions.deleteSessionEventUsers(sessionEventUsersIds)),
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal)
   }
 }

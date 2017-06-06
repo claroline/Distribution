@@ -5473,7 +5473,7 @@ class CursusManager
 
     public function getSessionEventUsersBySessionEvent(SessionEvent $sessionEvent)
     {
-        return $this->sessionEventUserRepo->findBy(['sessionEvent' => $sessionEvent], ['registrationStatus' => 'DESC']);
+        return $this->sessionEventUserRepo->findSessionEventUsersBySessionEvent($sessionEvent);
     }
 
     public function getSessionEventUsersByUser(User $user)

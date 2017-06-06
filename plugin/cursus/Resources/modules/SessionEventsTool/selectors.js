@@ -4,7 +4,8 @@ const canEdit = state => state.canEdit
 const sessions = state => state.sessions
 const sessionId = state => state.sessionId
 const events = state => state.events
-const currentEvent = state => state.currentEvent
+const currentEvent = state => state.currentEvent.data
+const currentParticipants = state => state.currentEvent.participants
 const viewMode = state => state.viewMode
 
 const currentSession = createSelector(
@@ -31,5 +32,6 @@ export const selectors = {
   eventFormData,
   currentSession,
   currentEvent,
+  currentParticipants,
   viewMode
 }

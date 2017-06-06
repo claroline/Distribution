@@ -5,6 +5,7 @@ import {actions as listActions} from '#/main/core/layout/list/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
+import {trans} from '#/main/core/translation'
 import {VIEW_MANAGER, VIEW_USER, VIEW_EVENT} from './enums'
 
 export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
@@ -12,6 +13,8 @@ export const SESSION_EVENT_LOAD = 'SESSION_EVENT_LOAD'
 export const SESSION_EVENT_ADD = 'SESSION_EVENT_ADD'
 export const SESSION_EVENT_UPDATE = 'SESSION_EVENT_UPDATE'
 export const CURRENT_EVENT_RESET = 'CURRENT_EVENT_RESET'
+export const CURRENT_EVENT_ADD_PARTICIPANTS = 'CURRENT_EVENT_ADD_PARTICIPANTS'
+export const CURRENT_EVENT_REMOVE_PARTICIPANTS = 'CURRENT_EVENT_REMOVE_PARTICIPANTS'
 export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
 export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
@@ -40,7 +43,7 @@ actions.deleteSessionEvent = (workspaceId, sessionEventId) => ({
 
 actions.deleteSessionEvents = (workspaceId, sessionEvents) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('claro_cursus_session_events_delete', {workspace: workspaceId}) + sessionEventsQueryString(sessionEvents),
+    url: generateUrl('claro_cursus_session_events_delete', {workspace: workspaceId}) + getQueryString(sessionEvents),
     request: {
       method: 'DELETE'
     },
@@ -169,12 +172,44 @@ actions.fetchSessionEvent = (sessionEventId) => {
         url: generateUrl('claro_cursus_session_event_fetch', {sessionEvent: sessionEventId}),
         request: {method: 'GET'},
         success: (data, dispatch) => {
-          dispatch(actions.loadSessionEvent(JSON.parse(data)))
+          dispatch(actions.loadSessionEvent({data: JSON.parse(data['data']), participants: JSON.parse(data['participants'])}))
         }
       }
     })
   }
 }
+
+actions.registerUsersToSessionEvent = (sessionEventId, usersIds) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_cursus_session_event_users_register', {sessionEvent: sessionEventId}) + getQueryString(usersIds),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      if (data['status'] === 'failed') {
+        alert(trans('required_places_msg', {remainingPlaces: data['datas']['remainingPlaces'], requiredPlaces: data['datas']['requiredPlaces']}, 'cursus'))
+        console.log(data['datas'])
+      } else {
+        const sessionEventUsers = JSON.parse(data['sessionEventUsers'])
+        dispatch(actions.addParticipants(sessionEventUsers))
+      }
+    }
+  }
+})
+
+actions.deleteSessionEventUsers = (sessionEventUsersIds) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_cursus_session_event_users_delete') + getQueryString(sessionEventUsersIds),
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      const sessionEventUsersIds = []
+      JSON.parse(data).forEach(seu => sessionEventUsersIds.push(seu.id))
+      dispatch(actions.removeParticipants(sessionEventUsersIds))
+    }
+  }
+})
 
 actions.displayMainView = () => (dispatch, getState) => {
   const state = getState()
@@ -191,6 +226,10 @@ actions.displaySessionEvent = (sessionEventId) => {
 
 actions.resetCurrentSessionEvent = makeActionCreator(CURRENT_EVENT_RESET)
 
+actions.addParticipants = makeActionCreator(CURRENT_EVENT_ADD_PARTICIPANTS, 'sessionEventUsers')
+
+actions.removeParticipants = makeActionCreator(CURRENT_EVENT_REMOVE_PARTICIPANTS, 'sessionEventUsersIds')
+
 actions.loadSessionEvent = makeActionCreator(SESSION_EVENT_LOAD, 'sessionEvent')
 
 actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
@@ -201,4 +240,4 @@ actions.updateEventForm = makeActionCreator(EVENT_FORM_UPDATE, 'property', 'valu
 
 actions.loadEventForm = makeActionCreator(EVENT_FORM_LOAD, 'event')
 
-const sessionEventsQueryString = (sessinEvents) => '?' + sessinEvents.map(sessionEventId => 'ids[]='+sessionEventId).join('&')
+const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')
