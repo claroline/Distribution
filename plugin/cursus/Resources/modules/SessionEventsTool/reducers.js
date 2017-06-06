@@ -14,7 +14,9 @@ import {
   EVENT_FORM_RESET,
   EVENT_FORM_UPDATE,
   EVENT_FORM_LOAD,
-  UPDATE_VIEW_MODE
+  UPDATE_VIEW_MODE,
+  CURRENT_ERROR_RESET,
+  CURRENT_ERROR_UPDATE
 } from './actions'
 
 const initialState = {
@@ -36,7 +38,8 @@ const initialState = {
     endDate: null,
     registrationType: 0,
     maxUsers: null
-  }
+  },
+  currentError: null
 }
 
 const mainReducers = {}
@@ -122,6 +125,13 @@ const viewReducers = {
   }
 }
 
+const currentErrorReducers = {
+  [CURRENT_ERROR_RESET]: () => initialState['currentError'],
+  [CURRENT_ERROR_UPDATE]: (state, action) => {
+    return action.error
+  }
+}
+
 export const reducers = combineReducers({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
@@ -131,6 +141,7 @@ export const reducers = combineReducers({
   events: makeReducer(initialState['events'], eventsReducers),
   viewMode: makeReducer(initialState['viewMode'], viewReducers),
   eventForm: makeReducer(initialState['eventForm'], eventFormReducers),
+  currentError: makeReducer(initialState['currentError'], currentErrorReducers),
   list: makeListReducer(),
   pagination: paginationReducer
 })

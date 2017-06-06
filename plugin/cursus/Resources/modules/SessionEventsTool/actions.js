@@ -19,6 +19,8 @@ export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
 export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
 export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
+export const CURRENT_ERROR_RESET = 'CURRENT_ERROR_RESET'
+export const CURRENT_ERROR_UPDATE = 'CURRENT_ERROR_UPDATE'
 
 export const actions = {}
 
@@ -187,8 +189,14 @@ actions.registerUsersToSessionEvent = (sessionEventId, usersIds) => ({
     },
     success: (data, dispatch) => {
       if (data['status'] === 'failed') {
-        alert(trans('required_places_msg', {remainingPlaces: data['datas']['remainingPlaces'], requiredPlaces: data['datas']['requiredPlaces']}, 'cursus'))
-        console.log(data['datas'])
+        const errorMsg = trans('registration_failed', {}, 'cursus') +
+          '. ' +
+          trans(
+            'required_places_msg',
+            {remainingPlaces: data['datas']['remainingPlaces'], requiredPlaces: data['datas']['requiredPlaces']},
+            'cursus'
+          )
+        dispatch(actions.updateCurrentError(errorMsg))
       } else {
         const sessionEventUsers = JSON.parse(data['sessionEventUsers'])
         dispatch(actions.addParticipants(sessionEventUsers))
@@ -239,5 +247,9 @@ actions.resetEventForm = makeActionCreator(EVENT_FORM_RESET)
 actions.updateEventForm = makeActionCreator(EVENT_FORM_UPDATE, 'property', 'value')
 
 actions.loadEventForm = makeActionCreator(EVENT_FORM_LOAD, 'event')
+
+actions.resetCurrentError = makeActionCreator(CURRENT_ERROR_RESET)
+
+actions.updateCurrentError = makeActionCreator(CURRENT_ERROR_UPDATE, 'error')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

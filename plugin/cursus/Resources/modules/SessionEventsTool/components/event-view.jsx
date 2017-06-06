@@ -103,6 +103,12 @@ class EventView extends Component {
         }
         <br/>
         <br/>
+        {this.props.currentError &&
+          <div className="alert alert-danger">
+            <i className="close fa fa-times" onClick={() => this.props.resetCurrentError()}></i>
+            {this.props.currentError}
+          </div>
+        }
         <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div className="panel panel-default">
             <div className="panel-heading" role="tab" id="description-heading">
@@ -254,6 +260,7 @@ EventView.propTypes = {
   }).isRequired,
   participants: T.array.isRequired,
   canEdit: T.number.isRequired,
+  currentError: T.string,
   resetCurrentSessionEvent: T.func.isRequired,
   editSessionEvent: T.func,
   resetEventForm: T.func,
@@ -261,6 +268,7 @@ EventView.propTypes = {
   loadEventForm: T.func,
   registerParticipants: T.func,
   deleteParticipants: T.func,
+  resetCurrentError: T.func,
   createModal: T.func
 }
 
@@ -269,7 +277,8 @@ function mapStateToProps(state) {
     workspaceId: state.workspaceId,
     event: selectors.currentEvent(state),
     participants: selectors.currentParticipants(state),
-    canEdit: selectors.canEdit(state)
+    canEdit: selectors.canEdit(state),
+    currentError: selectors.currentError(state)
   }
 }
 
@@ -286,6 +295,7 @@ function mapDispatchToProps(dispatch) {
     loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
     registerParticipants: (eventId, usersIds) => dispatch(actions.registerUsersToSessionEvent(eventId, usersIds)),
     deleteParticipants: (sessionEventUsersIds) => dispatch(actions.deleteSessionEventUsers(sessionEventUsersIds)),
+    resetCurrentError: () => dispatch(actions.resetCurrentError()),
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal)
   }
 }
