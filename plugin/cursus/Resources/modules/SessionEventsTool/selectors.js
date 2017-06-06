@@ -8,6 +8,7 @@ const currentEvent = state => state.currentEvent.data
 const currentParticipants = state => state.currentEvent.participants
 const viewMode = state => state.viewMode
 const currentError = state => state.currentError
+const eventsUsers = state => state.eventsUsers
 
 const currentSession = createSelector(
   [sessions, sessionId],
@@ -35,5 +36,6 @@ export const selectors = {
   currentEvent,
   currentParticipants,
   viewMode,
-  currentError
+  currentError,
+  eventsUsers
 }

@@ -16,7 +16,8 @@ import {
   EVENT_FORM_LOAD,
   UPDATE_VIEW_MODE,
   CURRENT_ERROR_RESET,
-  CURRENT_ERROR_UPDATE
+  CURRENT_ERROR_UPDATE,
+  EVENTS_USERS_ADD
 } from './actions'
 
 const initialState = {
@@ -29,6 +30,7 @@ const initialState = {
     participants: []
   },
   events: {},
+  eventsUsers: {},
   viewMode: VIEW_USER,
   eventForm: {
     id: null,
@@ -132,6 +134,15 @@ const currentErrorReducers = {
   }
 }
 
+const eventsUsersReducers = {
+  [EVENTS_USERS_ADD]: (state, action) => {
+    const eventsUsers = cloneDeep(state)
+    action.sessionEventUsers.forEach(seu => eventsUsers[seu.sessionEvent.id] = seu)
+
+    return eventsUsers
+  }
+}
+
 export const reducers = combineReducers({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
@@ -139,6 +150,7 @@ export const reducers = combineReducers({
   sessionId: makeReducer(initialState['sessionId'], mainReducers),
   currentEvent: makeReducer(initialState['currentEvent'], currentEventReducers),
   events: makeReducer(initialState['events'], eventsReducers),
+  eventsUsers: makeReducer(initialState['eventsUsers'], eventsUsersReducers),
   viewMode: makeReducer(initialState['viewMode'], viewReducers),
   eventForm: makeReducer(initialState['eventForm'], eventFormReducers),
   currentError: makeReducer(initialState['currentError'], currentErrorReducers),

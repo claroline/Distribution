@@ -4297,24 +4297,48 @@ class CursusManager
                             $eventDatas = $this->registerUsersToSessionEvent($sessionEvent, [$user]);
 
                             if ($eventDatas['status'] === 'failed') {
-                                $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
+                                $eventUser = $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
+                                $results['sessionEventUsers'] = $this->serializer->serialize(
+                                    [$eventUser],
+                                    'json',
+                                    SerializationContext::create()->setGroups(['api_user_min'])
+                                );
+                            } else {
+                                $results['sessionEventUsers'] = $eventDatas['sessionEventUsers'];
                             }
                             $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'success', $eventDatas['status']);
                         } elseif ($sessionRegistrationStatus === 'pending') {
-                            $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
+                            $eventUser = $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
                             $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'pending', 'failed');
+                            $results['sessionEventUsers'] = $this->serializer->serialize(
+                                [$eventUser],
+                                'json',
+                                SerializationContext::create()->setGroups(['api_user_min'])
+                            );
                         }
                     }
                 } elseif (!is_null($sessionUser)) {
                     $eventDatas = $this->registerUsersToSessionEvent($sessionEvent, [$user]);
 
                     if ($eventDatas['status'] === 'failed') {
-                        $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
+                        $eventUser = $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
+                        $results['sessionEventUsers'] = $this->serializer->serialize(
+                            [$eventUser],
+                            'json',
+                            SerializationContext::create()->setGroups(['api_user_min'])
+                        );
+                    } else {
+                        $results['sessionEventUsers'] = $eventDatas['sessionEventUsers'];
                     }
                     $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'none', $eventDatas['status']);
                 } else {
-                    $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
+                    $eventUser = $this->createSessionEventUser($user, $sessionEvent, SessionEventUser::PENDING, null, new \DateTime());
                     $this->sendEventRegistrationConfirmationMessage($user, $sessionEvent, 'none', 'failed');
+                    $results['sessionEventUsers'] = $this->serializer->serialize(
+                        [$eventUser],
+                        'json',
+                        SerializationContext::create()->setGroups(['api_user_min'])
+                    );
                 }
             }
         }

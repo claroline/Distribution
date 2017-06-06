@@ -21,14 +21,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity
  * @ORM\Table(
- *     name="claro_cursusbundle_session_event_group",
+ *     name="claro_cursusbundle_session_event_set",
  *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="event_group_unique_name_session", columns={"group_name", "session_id"})
+ *         @ORM\UniqueConstraint(name="event_set_unique_name_session", columns={"set_name", "session_id"})
  *     }
  * )
  * @DoctrineAssert\UniqueEntity({"session", "name"})
  */
-class SessionEventGroup
+class SessionEventSet
 {
     /**
      * @ORM\Column(type="integer")
@@ -39,7 +39,7 @@ class SessionEventGroup
     protected $id;
 
     /**
-     * @ORM\Column(name="group_name")
+     * @ORM\Column(name="set_name")
      * @Assert\NotBlank()
      * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
      */
@@ -56,16 +56,16 @@ class SessionEventGroup
     protected $session;
 
     /**
-     * @ORM\Column(name="group_limit", nullable=false, type="integer")
+     * @ORM\Column(name="set_limit", nullable=false, type="integer")
      * @Groups({"api_cursus", "api_cursus_min", "api_user_min"})
-     * @SerializedName("groupLimit")
+     * @SerializedName("limit")
      */
     protected $limit = 1;
 
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CursusBundle\Entity\SessionEvent",
-     *     mappedBy="eventGroup"
+     *     mappedBy="eventSet"
      * )
      * @ORM\OrderBy({"startDate" = "ASC"})
      * @Groups({"api_cursus", "api_user_min"})

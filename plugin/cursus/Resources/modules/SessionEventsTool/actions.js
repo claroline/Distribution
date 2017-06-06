@@ -21,6 +21,7 @@ export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
 export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
 export const CURRENT_ERROR_RESET = 'CURRENT_ERROR_RESET'
 export const CURRENT_ERROR_UPDATE = 'CURRENT_ERROR_UPDATE'
+export const EVENTS_USERS_ADD = 'EVENTS_USERS_ADD'
 
 export const actions = {}
 
@@ -232,6 +233,19 @@ actions.displaySessionEvent = (sessionEventId) => {
   }
 }
 
+actions.selfRegisterToSessionEvent = (sessionEventId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_cursus_session_event_self_register', {sessionEvent: sessionEventId}),
+    request: {
+      method: 'POST'
+    },
+    success: (data, dispatch) => {
+      const sessionEventUsers = JSON.parse(data['sessionEventUsers'])
+      dispatch(actions.addEventsUsers(sessionEventUsers))
+    }
+  }
+})
+
 actions.resetCurrentSessionEvent = makeActionCreator(CURRENT_EVENT_RESET)
 
 actions.addParticipants = makeActionCreator(CURRENT_EVENT_ADD_PARTICIPANTS, 'sessionEventUsers')
@@ -251,5 +265,7 @@ actions.loadEventForm = makeActionCreator(EVENT_FORM_LOAD, 'event')
 actions.resetCurrentError = makeActionCreator(CURRENT_ERROR_RESET)
 
 actions.updateCurrentError = makeActionCreator(CURRENT_ERROR_UPDATE, 'error')
+
+actions.addEventsUsers = makeActionCreator(EVENTS_USERS_ADD, 'sessionEventUsers')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

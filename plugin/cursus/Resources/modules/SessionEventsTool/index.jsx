@@ -13,7 +13,7 @@ import {EventFormModal} from './components/event-form-modal.jsx'
 import {SessionEventsToolLayout} from './components/session-events-tool-layout.jsx'
 
 class SessionEventsTool {
-  constructor(workspaceId, canEdit, sessions, events) {
+  constructor(workspaceId, canEdit, sessions, events, eventsUsers) {
     registerModalTypes([
       ['DELETE_MODAL', DeleteConfirmModal],
       ['MODAL_EVENT_FORM', EventFormModal]
@@ -31,6 +31,7 @@ class SessionEventsTool {
           data: events,
           totalResults: eventsTotal
         },
+        eventsUsers: eventsUsers,
         viewMode: this.viewMode
       }
     )
@@ -56,6 +57,7 @@ const canEdit = parseInt(container.dataset.editable)
 const sessions = JSON.parse(container.dataset.sessions)
 const events = JSON.parse(container.dataset.events)
 const eventsTotal = parseInt(container.dataset.eventsTotal)
-const tool = new SessionEventsTool(workspaceId, canEdit, sessions, events)
+const eventsUsers = JSON.parse(container.dataset.eventsUsers)
+const tool = new SessionEventsTool(workspaceId, canEdit, sessions, events, eventsUsers)
 
 tool.render(container)

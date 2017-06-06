@@ -150,13 +150,13 @@ class SessionEvent
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CursusBundle\Entity\SessionEventGroup",
+     *     targetEntity="Claroline\CursusBundle\Entity\SessionEventSet",
      *     inversedBy="events"
      * )
-     * @ORM\JoinColumn(name="event_group", nullable=true, onDelete="SET NULL")
+     * @ORM\JoinColumn(name="event_set", nullable=true, onDelete="SET NULL")
      * @Groups({"api_user_min"})
      */
-    protected $eventGroup;
+    protected $eventSet;
 
     public function __construct()
     {
@@ -333,14 +333,14 @@ class SessionEvent
         $this->type = $type;
     }
 
-    public function getEventGroup()
+    public function getEventSet()
     {
-        return $this->eventGroup;
+        return $this->eventSet;
     }
 
-    public function setEventGroup(SessionEventGroup $eventGroup = null)
+    public function setEventSet(SessionEventSet $eventSet = null)
     {
-        $this->eventGroup = $eventGroup;
+        $this->eventSet = $eventSet;
     }
 
     public static function getSearchableFields()

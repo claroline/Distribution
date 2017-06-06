@@ -3,7 +3,7 @@ import React, {Component, PropTypes as T} from 'react'
 import {trans, t} from '#/main/core/translation'
 import {actions} from '../actions'
 import {selectors} from '../selectors'
-import {registrationTypes} from '../enums'
+import {registrationTypes, registrationStatus} from '../enums'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
@@ -27,12 +27,38 @@ class UserView extends Component {
               },
               {name: 'startDate', type: 'date', label: t('start_date')},
               {name: 'endDate', type: 'date', label: t('end_date')},
-              {name: 'maxUsers', type: 'number', label: trans('max_users', {}, 'cursus')},
               {
-                name: 'registrationType',
-                type: 'number',
+                name: 'registration',
+                type: 'none',
                 label: t('registration'),
-                renderer: (rowData) => registrationTypes[rowData.registrationType]
+                renderer: (rowData) => {
+                  if (this.props.eventsUsers[rowData.id]) {
+                    switch (this.props.eventsUsers[rowData.id].registrationStatus) {
+                      case 0 :
+                        return (
+                          <label className="label label-success">
+                            {registrationStatus[this.props.eventsUsers[rowData.id].registrationStatus]}
+                          </label>
+                        )
+                      case 1 :
+                        return (
+                          <label className="label label-warning">
+                            {registrationStatus[this.props.eventsUsers[rowData.id].registrationStatus]}
+                          </label>
+                        )
+                      default :
+                        return ('')
+                    }
+                  } else if (rowData.registrationType === 2) {
+                    return (
+                      <button className="btn btn-default" onClick={() => this.props.selfRegisterToSessionEvent(rowData.id)}>
+                        {trans('self_register_to_session_event', {}, 'cursus')}
+                      </button>
+                    )
+                  } else {
+                    return ('')
+                  }
+                }
               }
             ]}
             filters={{
@@ -71,6 +97,8 @@ UserView.propTypes = {
   })).isRequired,
   session: T.object,
   total: T.number.isRequired,
+  eventsUsers: T.object,
+  selfRegisterToSessionEvent: T.func,
   filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,
@@ -89,6 +117,7 @@ function mapStateToProps(state) {
     events: selectors.sessionEvents(state),
     total: selectors.sessionEventsTotal(state),
     session: selectors.currentSession(state),
+    eventsUsers: selectors.eventsUsers(state),
     filters: listSelect.filters(state),
     sortBy: listSelect.sortBy(state),
     pagination: {
@@ -100,6 +129,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    selfRegisterToSessionEvent: (sessionEventId) => {
+      dispatch(actions.selfRegisterToSessionEvent(sessionEventId))
+    },
     // search
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))

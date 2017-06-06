@@ -11,6 +11,7 @@
 
 namespace Claroline\CursusBundle\Controller\API;
 
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CursusBundle\Entity\CourseSession;
@@ -62,11 +63,12 @@ class SessionEventsToolController extends Controller
      *     "/workspace/{workspace}/tool/session/events/index",
      *     name="claro_cursus_session_events_tool_index"
      * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      * @EXT\Template()
      *
      * @return array
      */
-    public function indexAction(Workspace $workspace)
+    public function indexAction(User $user, Workspace $workspace)
     {
         $this->checkToolAccess($workspace);
         $canEdit = $this->authorization->isGranted(['claroline_session_events_tool', 'edit'], $workspace);
@@ -74,6 +76,13 @@ class SessionEventsToolController extends Controller
         $sessionEventsData = count($sessions) > 0 ?
             $this->cursusManager->searchSessionEventsPartialList($sessions[0], [], 0, 20) :
             ['sessionEvents' => [], 'count' => 0];
+        $sessionEventUsers = $this->cursusManager->getSessionEventUsersByUser($user);
+        $eventsUsers = [];
+
+        foreach ($sessionEventUsers as $sessionEventUser) {
+            $sessionEvent = $sessionEventUser->getSessionEvent();
+            $eventsUsers[$sessionEvent->getId()] = $sessionEventUser;
+        }
 
         return [
             'workspace' => $workspace,
@@ -81,6 +90,7 @@ class SessionEventsToolController extends Controller
             'sessions' => $sessions,
             'sessionEvents' => $sessionEventsData['sessionEvents'],
             'sessionEventsTotal' => $sessionEventsData['count'],
+            'sessionEventUsers' => $eventsUsers,
         ];
     }
 
