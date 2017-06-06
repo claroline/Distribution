@@ -733,10 +733,11 @@ class ClacoFormManager
                 $type = $field->getType();
 
                 if ($this->facetManager->isTypeWithChoices($type)) {
-                    $categories = $this->getCategoriesFromFieldAndValue($field, $value);
+                    $choiceCategories = $this->getCategoriesFromFieldAndValue($field, $value);
 
-                    foreach ($categories as $category) {
+                    foreach ($choiceCategories as $category) {
                         $entry->addCategory($category);
+                        $categories[$category->getId()] = $category;
                     }
                 }
             }
@@ -1020,7 +1021,7 @@ class ClacoFormManager
                         'clacoform'
                     );
                     $message = $this->messageManager->create($content, $object, $managers);
-                    $this->messageManager->send($message, true, false);
+                    $this->messageManager->send($message);
                 }
             }
         }
@@ -1040,7 +1041,7 @@ class ClacoFormManager
                         'clacoform'
                     );
                     $message = $this->messageManager->create($content, $object, $managers);
-                    $this->messageManager->send($message, true, false);
+                    $this->messageManager->send($message);
                 }
             }
         }
@@ -1060,7 +1061,7 @@ class ClacoFormManager
                         'clacoform'
                     );
                     $message = $this->messageManager->create($content, $object, $managers);
-                    $this->messageManager->send($message, true, false);
+                    $this->messageManager->send($message);
                 }
             }
         }
@@ -1098,7 +1099,7 @@ class ClacoFormManager
                     '</a><br><br>';
 
                 $message = $this->messageManager->create($content, $object, $receivers);
-                $this->messageManager->send($message, true, false);
+                $this->messageManager->send($message);
             }
         }
     }
@@ -1433,7 +1434,7 @@ class ClacoFormManager
         }
         if ($sendMessage && count($receivers) > 0) {
             $message = $this->messageManager->create($content, $subject, $receivers);
-            $this->messageManager->send($message, true, false);
+            $this->messageManager->send($message);
         }
     }
 

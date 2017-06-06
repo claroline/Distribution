@@ -663,6 +663,21 @@ class WidgetManager
         return $widgetInstance;
     }
 
+    public function getConfiguration(WidgetInstance $instance)
+    {
+        return $this->widgetDisplayConfigRepo->findOneBy([
+          'workspace' => $instance->getWorkspace(),
+          'user' => $instance->getUser(),
+          'widgetInstance' => $instance,
+        ]);
+    }
+
+    public function persistConfiguration(WidgetDisplayConfig $config)
+    {
+        $this->om->persist($config);
+        $this->om->flush();
+    }
+
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -671,5 +686,29 @@ class WidgetManager
     public function getLogger()
     {
         return $this->logger;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbWidgetInstances()
+    {
+        return $this->widgetInstanceRepo->countWidgetInstances();
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbWorkspaceWidgetInstances()
+    {
+        return $this->widgetInstanceRepo->countWidgetInstances('workspace');
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbDesktopWidgetInstances()
+    {
+        return $this->widgetInstanceRepo->countWidgetInstances('desktop');
     }
 }

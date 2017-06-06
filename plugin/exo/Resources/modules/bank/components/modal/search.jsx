@@ -1,4 +1,5 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import size from 'lodash/size'
 import Modal from 'react-bootstrap/lib/Modal'
@@ -134,7 +135,7 @@ export class SearchModal extends Component {
 
         <Modal.Footer>
           {0 < size(this.props.filters) &&
-            <button className="btn btn-link link-danger pull-left" onClick={this.props.clearFilters}>
+            <button className="btn btn-link btn-link-danger pull-left" onClick={this.props.clearFilters}>
               <span className="fa fa-fw fa-ban"></span>
               {tex('filters_reset')}
             </button>

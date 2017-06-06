@@ -988,8 +988,19 @@ class RoleManager
         foreach ($datas as $data) {
             $username = $data[0];
             $roleName = $data[1];
+            $firstName = isset($data[2]) ? $data[2] : null;
+            $lastName = isset($data[3]) ? $data[3] : null;
 
-            $user = $this->userRepo->findOneUserByUsername($username);
+            $user = null;
+            if (!empty($username)) {
+                $user = $this->userRepo->findOneUserByUsername($username);
+            } elseif (!empty($firstName) && !empty($lastName)) {
+                $user = $this->userRepo->findOneBy([
+                    'firstName' => $firstName,
+                    'lastName' => $lastName,
+                ]);
+            }
+
             $roles = $this->roleRepo->findRolesByWorkspaceCodeAndTranslationKey(
                 $workspace->getCode(),
                 $roleName
@@ -1030,18 +1041,18 @@ class RoleManager
 
     public function isHomeLocked(User $user)
     {
-        $isLocked = false;
         $adminRole = $this->getRoleByUserAndRoleName($user, 'ROLE_ADMIN');
+        $isLocked = is_null($adminRole);
 
-        if (is_null($adminRole)) {
+        if ($isLocked) {
             $roles = $this->getPlatformRoles($user);
             $rolesOptions = $this->getRoleOptionsByRoles($roles);
 
             foreach ($rolesOptions as $options) {
                 $details = $options->getDetails();
 
-                if (isset($details['home_lock']) && $details['home_lock']) {
-                    $isLocked = true;
+                if (!isset($details['home_lock']) || !$details['home_lock']) {
+                    $isLocked = false;
                     break;
                 }
             }
@@ -1070,8 +1081,9 @@ class RoleManager
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
-            $this->log('Checking collaborator role for workspace '.$workspace->getCode().'...');
+            $this->log('Checking roles role for workspace '.$workspace->getCode().'...');
             $collaborator = $this->getCollaboratorRole($workspace);
+            $manager = $this->getManagerRole($workspace);
 
             if (!$collaborator) {
                 $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
@@ -1082,10 +1094,21 @@ class RoleManager
                     true
                 );
                 ++$i;
+            }
 
-                if ($i % 300 === 0) {
-                    $this->om->forceFlush();
-                }
+            if (!$manager) {
+                $this->log('Adding manager role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
+                $this->createWorkspaceRole(
+                    'ROLE_WS_MANAGER_'.$workspace->getGuid(),
+                    'manager',
+                    $workspace,
+                    true
+                );
+                ++$i;
+            }
+
+            if ($i % 300 === 0) {
+                $this->om->forceFlush();
             }
         }
 

@@ -10,7 +10,7 @@
         max-width: 100%;
     }
 
-    // Changes some components behaviors when thy are inside a panel
+    // Changes some components behaviors when they are inside a panel
     > table thead tr td,
     > table tbody tr td,
     > table thead tr th,
@@ -53,5 +53,15 @@
         + .panel {
             margin-top: @panel-group-panel-margin; // use a var
         }
+    }
+
+    .panel-title > a {
+        display: block; // make the click zone fill the parent block
+        cursor: pointer; // the <a> tag to toggle the panel has no href, so the cursor do not change properly
+    }
+
+    .panel-title.opened {
+        color: @brand-primary;
+        font-weight: bold;
     }
 }

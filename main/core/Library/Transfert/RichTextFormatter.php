@@ -117,7 +117,7 @@ class RichTextFormatter
 
         foreach ($matches as $match) {
             $options = $this->extractFormatOptions($match[1]);
-            $uid = (int) $options['uid'];
+            $uid = $options['uid'];
             // optional parameters
             $option_text = null;
             if (isset($options['text'])) {
@@ -127,7 +127,7 @@ class RichTextFormatter
             if (isset($options['style'])) {
                 $option_style = $options['style'];
             }
-            $option_embed = true;
+            $option_embed = null;
             if (isset($options['embed'])) {
                 $option_embed = (bool) $options['embed'];
             }
@@ -359,7 +359,7 @@ class RichTextFormatter
                 $embed_option = ',embed=0';
             }
 
-            $tag = '[[uid='.$node->getId().$text_option.$embed_option.$css_style_option.$target_option.']]';
+            $tag = '[[uid='.$node->getGuid().$text_option.$embed_option.$css_style_option.$target_option.']]';
             $txt = str_replace($matchReplaced[0], $tag, $txt);
         } else {
             //match embeded media
@@ -375,7 +375,7 @@ class RichTextFormatter
                 if (isset($css_style)) {
                     $css_style_option = ",style='".addslashes($css_style)."'";
                 }
-                $tag = '[[uid='.$node->getId().$css_style_option.']]';
+                $tag = '[[uid='.$node->getGuid().$css_style_option.']]';
                 $txt = str_replace($matchReplaced[0], $tag, $txt);
             }
         }
@@ -530,7 +530,7 @@ class RichTextFormatter
      *
      * @param ResourceNode $node
      */
-    public function generateDisplayedUrlForTinyMce(ResourceNode $node, $text = null, $embed = true, $style = null, $target = null)
+    public function generateDisplayedUrlForTinyMce(ResourceNode $node, $text, $embed, $style = null, $target = null)
     {
         if (strpos('_'.$node->getMimeType(), 'image') > 0) {
             $cssStyle = $style ? $style : 'max-width:100%;';
@@ -540,7 +540,8 @@ class RichTextFormatter
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            if ($embed) {
+            //embed images by default
+            if (!isset($embed) || $embed) {
                 return "<img style='".$cssStyle."' src='".$url."' alt='".$node->getName()."'>";
             }
         }
@@ -551,25 +552,42 @@ class RichTextFormatter
                 ['node' => $node->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-            if ($embed) {
+            //embed audio/video by default
+            if (!isset($embed) || $embed) {
                 return "<source type='".$node->getMimeType()."' src='".$url."'></source>";
             }
         }
 
-        $url = $this->router->generate(
-            'claro_resource_open',
-            [
-                'resourceType' => $node->getResourceType()->getName(),
-                'node' => $node->getId(),
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
         //hyperlink text, fallback to node name if none
         $link_text = isset($text) ? stripslashes($text) : $node->getName();
         $cssStyle = isset($style) ? "style='".stripslashes($style)."'" : '';
         $targetProperty = isset($target) ? "target='".$target."'" : '';
 
-        return "<a {$cssStyle} {$targetProperty} href='{$url}'>{$link_text}</a>";
+        //no embed by default
+        if ($embed) {
+            $url = $this->router->generate(
+                'claro_resource_open',
+                [
+                    'resourceType' => $node->getResourceType()->getName(),
+                    'node' => $node->getId(),
+                    'iframe' => 1,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return "<iframe {$cssStyle} src='{$url}'></iframe>";
+        } else {
+            $url = $this->router->generate(
+                'claro_resource_open',
+                [
+                    'resourceType' => $node->getResourceType()->getName(),
+                    'node' => $node->getId(),
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return "<a {$cssStyle} {$targetProperty} href='{$url}'>{$link_text}</a>";
+        }
     }
 
     public function addImporter(Importer $importer)

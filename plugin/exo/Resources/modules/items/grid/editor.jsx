@@ -1,4 +1,5 @@
-import React, {Component, PropTypes as T} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
@@ -253,7 +254,8 @@ const GridRow = props =>
         <input
           type="number"
           min="0"
-          disabled={!utils.atLeastOneSolutionInRow(props.cells, props.solutions)}
+          step="0.5"
+          disabled={!utils.atLeastOneSolutionInRow(props.index, props.cells, props.solutions)}
           value={utils.getRowScore(props.cells, props.solutions)}
           className="form-control grid-score"
           onChange={e => props.updateScore(e.target.value)}
@@ -351,6 +353,7 @@ const GridTable = props =>
               <input
                 type="number"
                 min="0"
+                step="0.5"
                 disabled={!utils.atLeastOneSolutionInCol(colIndex, props.item.cells, props.item.solutions)}
                 value={utils.getColScore(colIndex, props.item.cells, props.item.solutions)}
                 className="form-control grid-score"
@@ -443,6 +446,7 @@ const Grid = props =>
               id={`item-${props.item.id}-fixedSuccess`}
               type="number"
               min="0"
+              step="0.5"
               value={props.item.score.success}
               className="form-control"
               onChange={e => props.onChange(
