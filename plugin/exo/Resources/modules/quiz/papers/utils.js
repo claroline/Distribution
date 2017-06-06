@@ -60,6 +60,7 @@ function calculate(scoreRule, correctedAnswer) {
       score = 0
       correctedAnswer.getExpected().forEach(el => score += el.getScore())
       correctedAnswer.getUnexpected().forEach(el => score += el.getScore())
+      correctedAnswer.getPenalties().forEach(el => score -= el.getScore())
       break
     case 'manual':
     case 'none':
@@ -68,16 +69,5 @@ function calculate(scoreRule, correctedAnswer) {
       //console.error('Unknown score type ' + scoreRule.type)
   }
 
-  //no penalty implemented yet
-  return score ?  applyPenalties(score, correctedAnswer): score
-}
-
-function applyPenalties(score, correctedAnswer) {
-  correctedAnswer.getPenalties().forEach(penalty => {
-    score -= penalty.getPenalty()
-  })
-
   return score
 }
-
-//calculateTotal is probably already computed somewhere else

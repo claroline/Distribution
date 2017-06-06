@@ -1,15 +1,10 @@
 export class Answerable {
-  constructor(score = null, penalty = null) {
+  constructor(score = null) {
     this.score = score
-    this.penalty = penalty
   }
 
   getScore() {
     return this.score
-  }
-
-  getPenalty() {
-    return this.penalty
   }
 }
 
@@ -50,6 +45,6 @@ export class CorrectedAnswer {
   }
 
   addPenalty(penalty) {
-    this.penalty.push(penalty)
+    this.penalties.push(penalty)
   }
 }

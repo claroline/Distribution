@@ -10,13 +10,13 @@ function expectAnswer(item) {
     [item.solutions.reduce((prev, current) => prev.score > current.score ? prev : current)]
 }
 
-function getCorrectedAnswer(item, answers) {
+function getCorrectedAnswer(item, answers = null) {
 
   const corrected = new CorrectedAnswer()
 
   item.choices.forEach(choice => {
     const score = choice._score
-    if (answers.data.indexOf(choice.id) > -1) {
+    if (answers && answers.data.indexOf(choice.id) > -1) {
       score > 0 ?
         corrected.addExpected(new Answerable(score)) :
         corrected.addUnexpected(new Answerable(score))

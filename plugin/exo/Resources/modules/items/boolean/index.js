@@ -8,12 +8,12 @@ function expectAnswer(item) {
   return item.solutions
 }
 
-function getCorrectedAnswer(item, answer) {
+function getCorrectedAnswer(item, answer = null) {
   const corrected = new CorrectedAnswer()
 
   item.choices.forEach(choice => {
     const score = choice._score
-    if (answer.data === choice.id) {
+    if (answer && answer.data === choice.id) {
       score > 0 ?
         corrected.addExpected(new Answerable(score)) :
         corrected.addUnexpected(new Answerable(score))

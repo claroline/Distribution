@@ -30,12 +30,12 @@ function expectAnswer(item) {
   return data
 }
 
-function getCorrectedAnswer(item, answers) {
+function getCorrectedAnswer(item, answers = null) {
   const corrected = new CorrectedAnswer()
 
   item.solutions.forEach(solution => {
     const hole = item.holes.find(hole => hole.id === solution.holeId)
-    const answer = answers.data.find(answer => answer.holeId === hole.id)
+    const answer = answer ? answers.data.find(answer => answer.holeId === hole.id): null
     const expected = findSolutionExpectedAnswer(solution)
 
     if (answer) {
