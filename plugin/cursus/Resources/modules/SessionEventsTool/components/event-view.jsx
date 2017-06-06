@@ -1,3 +1,4 @@
+/*global UserPicker*/
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import {trans, t} from '#/main/core/translation'
@@ -42,7 +43,7 @@ class EventView extends Component {
     let userPicker = new UserPicker()
     const options = {
       picker_name: 'validators-picker',
-      picker_title: Translator.trans('validators_selection', {}, 'cursus'),
+      picker_title: trans('validators_selection', {}, 'cursus'),
       multiple: true,
       //selected_users: this.getSelectedUsersIds(),
       forced_workspaces: [this.props.workspaceId],
