@@ -97,12 +97,13 @@ function getCorrectAnswerForSumCellsMode(item, answer = {data: []}) {
         null
 
     if (userAnswer) {
-      (userAnswer.score > 0) ?
+      userAnswer.score > 0 ?
             corrected.addExpected(new Answerable(userAnswer.score)):
             corrected.addUnexpected(new Answerable(userAnswer.score))
     } else {
-      corrected.addMissing(new Answerable(bestAnswer.score))
-      corrected.addPenalty(new Answerable(item.penalty))
+      userAnswer.score > 0 ?
+          corrected.addMissing(new Answerable(bestAnswer.score)):
+          corrected.addPenalty(new Answerable(item.penalty))
     }
   })
 
