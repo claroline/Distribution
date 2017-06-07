@@ -26,7 +26,7 @@ class AdministrationToolListener
         $this->request = $requestStack->getCurrentRequest();
         $this->httpKernel = $httpKernel;
     }
-    
+
     /**
      * @DI\Observe("administration_tool_platform_parameters")
      *
