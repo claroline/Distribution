@@ -60,13 +60,13 @@ export default class ExternalSourceGroupConfigController {
   }
 
   cancel() {
-    this._$window.location.href = _url.get(this)('claro_admin_external_user_group_config_index')
+    this._$window.location.href = _url.get(this)('claro_admin_external_sync_config_index')
   }
 
   save() {
     this.is_request_pending  = true
     this._externalSourceGroupConfigService.save(this.externalSource, this.sourceConfig).then(() => {
-      this._$window.location.href = _url.get(this)('claro_admin_external_user_group_config_index')
+      this._$window.location.href = _url.get(this)('claro_admin_external_sync_config_index')
     },
     () => {
       this._setAlert('danger', 'group_config_update_failure')

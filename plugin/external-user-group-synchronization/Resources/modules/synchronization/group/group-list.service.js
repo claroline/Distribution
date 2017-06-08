@@ -1,13 +1,41 @@
-export default class ExternalSourceListService {
-  constructor(externalSources, $http, $q, $filter) {
+/**
+ * Created by panos on 5/30/17.
+ */
+export class GroupListService {
+  constructor(externalSource, $http, $q, $filter) {
     this._http = $http
     this._q = $q
     this._filter = $filter
-    this.externalSources = externalSources
+    this._sourceSlug = externalSource.slug
   }
 
-  getExternalSources() {
-    return this._resolve(this.externalSources)
+  getGroups(searchObj) {
+    return this._request(
+      'GET',
+      this._path(
+        'claro_admin_external_sync_source_search_groups',
+        {
+          'source': this._sourceSlug,
+          'page': searchObj.page || 1,
+          'max': searchObj.max || 50,
+          'orderBy': searchObj.orderBy || 'name',
+          'direction': searchObj.direction || 'ASC',
+          'search': searchObj.query || ''
+        })
+    )
+  }
+
+  synchronizeGroup(groupId, unsubscribe) {
+    return this._request(
+      'GET',
+      this._path(
+        'claro_admin_external_sync_source_group_synchronize',
+        {
+          'source': this._sourceSlug,
+          'groupId': groupId,
+          'unsubscribe': unsubscribe || true
+        })
+    )
   }
 
   remove(source) {
@@ -55,4 +83,6 @@ export default class ExternalSourceListService {
     return this._q.resolve(data)
   }
 }
-ExternalSourceListService.$inject = ['externalSources', '$http', '$q', '$filter']
+
+GroupListService.$inject = [ 'externalSource', '$http', '$q', '$filter' ]
+

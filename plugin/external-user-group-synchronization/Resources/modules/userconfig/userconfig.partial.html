@@ -1,5 +1,6 @@
-<div uib-alert class="alert col-md-12" data-ng-repeat="alert in vm.alerts" data-dismiss-on-timeout="3000" data-type="{{alert.type}}" data-close="vm.closeAlert($index)">{{alert.msg | trans:{}:'platform'}}</div>
-
+<div class="alert-fixed">
+    <div uib-alert class="alert col-md-12" data-ng-repeat="alert in vm.alerts" data-dismiss-on-timeout="3000" data-type="{{alert.type}}" data-close="vm.closeAlert($index)">{{alert.msg | trans:{}:'platform'}}</div>
+</div>
 <form class="form-horizontal" autocomplete="false" id="form_user_config" name="user_config" novalidate>
     <div id="claroline_external_synchronization_source_form">
         <div class="form-group row">

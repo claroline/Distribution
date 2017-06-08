@@ -488,7 +488,8 @@ class UserManager
                 $organizationName = null;
             }
 
-            $hasPersonalWorkspace = isset($user[11]) ? (bool) $user[11] : false;
+            $hasPersonalWorkspace = (isset($user[11]) && !is_null($user[11]) && trim($user[11]) !== '') ?
+                (bool) $user[11] : null;
             $isMailValidated = isset($user[12]) ? (bool) $user[12] : false;
             $isMailNotified = isset($user[13]) ? (bool) $user[13] : $enableEmailNotifaction;
 
@@ -520,9 +521,15 @@ class UserManager
             } else {
                 $group = null;
             }
-
-            $userEntity = $this->getUserByUsernameOrMailOrCode($username, $email, $code);
-
+            try {
+                $userEntity = $this->getUserByUsernameOrMailOrCode($username, $email, $code);
+            } catch (\Exception $e) {
+                if ($logger) {
+                    $logger(" Skipping  {$username}...");
+                }
+                $skipped[] = $fullName;
+                continue;
+            }
             if ($userEntity && $options['ignore-update']) {
                 if ($logger) {
                     $logger(" Skipping  {$userEntity->getUsername()}...");

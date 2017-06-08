@@ -34,7 +34,7 @@ class ExternalGroupSynchronizationController extends Controller
 
     /**
      * @var ExternalSynchronizationGroupManager
-     * @DI\Inject("claroline.manager.external_user_group_sync_group_manager")
+     * @DI\Inject("claroline.manager.external_group_sync_manager")
      */
     private $externalGroupSyncManager;
 

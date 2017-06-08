@@ -12,8 +12,14 @@
 
 namespace Claroline\ExternalSynchronizationBundle\Listener;
 
+use Claroline\CoreBundle\Event\Log\LogGenericEvent;
+use Claroline\CoreBundle\Event\Log\LogUserDeleteEvent;
+use Claroline\CoreBundle\Event\RenderExternalGroupsButtonEvent;
 use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
+use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationManager;
+use Claroline\ExternalSynchronizationBundle\Manager\ExternalSynchronizationUserManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -24,18 +30,35 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ExternalSynchronizationListener
 {
     private $translator;
+    private $templating;
+    private $externalSyncManager;
+    private $externalSyncUserManager;
 
     /**
      * ExternalUserGroupSynchronizationListener constructor.
      *
-     * @param TranslatorInterface $translator
+     * @param TranslatorInterface                $translator
+     * @param TwigEngine                         $templating
+     * @param ExternalSynchronizationManager     $externalSyncManager
+     * @param ExternalSynchronizationUserManager $externalSyncUserManager
+     *
      * @DI\InjectParams({
-     *     "translator"     = @DI\Inject("translator")
+     *     "translator"                 = @DI\Inject("translator"),
+     *     "templating"                 = @DI\Inject("templating"),
+     *     "externalSyncManager"        = @DI\Inject("claroline.manager.external_user_group_sync_manager"),
+     *     "externalSyncUserManager"    = @DI\Inject("claroline.manager.external_user_sync_manager")
      * })
      */
-    public function __construct(TranslatorInterface $translator)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        TwigEngine $templating,
+        ExternalSynchronizationManager $externalSyncManager,
+        ExternalSynchronizationUserManager $externalSyncUserManager
+    ) {
         $this->translator = $translator;
+        $this->templating = $templating;
+        $this->externalSyncManager = $externalSyncManager;
+        $this->externalSyncUserManager = $externalSyncUserManager;
     }
 
     /**
@@ -52,10 +75,42 @@ class ExternalSynchronizationListener
         $menu->addChild(
             $name,
             [
-                'route' => 'claro_admin_external_user_group_config_index',
+                'route' => 'claro_admin_external_sync_config_index',
             ]
         )->setExtra('name', $name);
 
         return $menu;
+    }
+
+    /**
+     * @DI\Observe("claroline_external_sync_groups_button_render")
+     *
+     * @param RenderExternalGroupsButtonEvent $event
+     */
+    public function onExternalSynchronizationGroupsButtonRender(RenderExternalGroupsButtonEvent $event)
+    {
+        $sources = $this->externalSyncManager->getExternalSourcesNames(['group_config']);
+        if (!empty($sources)) {
+            $content = $this->templating->render(
+                'ClarolineExternalSynchronizationBundle:Groups:externalGroupsButton.html.twig',
+                ['workspace' => $event->getWorkspace()]
+            );
+            $event->addContent($content);
+        }
+    }
+
+    /**
+     * @DI\Observe("log")
+     *
+     * @param LogGenericEvent $event
+     */
+    public function onDeleteUser(LogGenericEvent $event)
+    {
+        if ($event instanceof LogUserDeleteEvent) {
+            $receiver = $event->getReceiver();
+            if ($receiver !== null) {
+                $this->externalSyncUserManager->deleteExternalUserByUserId($receiver->getId());
+            }
+        }
     }
 }

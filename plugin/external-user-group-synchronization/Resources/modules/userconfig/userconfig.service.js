@@ -8,7 +8,7 @@ export default class ExternalSourceUserConfigService {
   }
 
   getFieldNames(source, table) {
-    const url = _url.get(this)('claro_admin_external_user_group_table_columns', {
+    const url = _url.get(this)('claro_admin_external_sync_table_columns', {
       'source': source,
       'table': table
     })
@@ -17,7 +17,7 @@ export default class ExternalSourceUserConfigService {
   }
 
   save(source, sourceConfig) {
-    const url = _url.get(this)('claro_admin_external_user_group_source_update_user_configuration', {
+    const url = _url.get(this)('claro_admin_external_sync_source_update_user_configuration', {
       'source': source
     })
 

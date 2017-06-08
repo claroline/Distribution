@@ -23,7 +23,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 /**
  * Class ExternalSynchronizationManager.
  *
- * @DI\Service("claroline.manager.external_user_group_sync_group_manager")
+ * @DI\Service("claroline.manager.external_group_sync_manager")
  */
 class ExternalSynchronizationGroupManager
 {
@@ -108,21 +108,34 @@ class ExternalSynchronizationGroupManager
         }
     }
 
-    public function removeGroupsFromDeletedExternalSource($source)
-    {
-        $groups = $this->externalGroupRepo->findBySourceSlug($source);
-        foreach ($groups as $group) {
-            $this->om->remove($group);
-        }
-        $this->om->flush();
+    public function searchExternalGroupsForSource(
+        $source,
+        $page = 1,
+        $max = 50,
+        $orderBy = 'name',
+        $direction = 'ASC',
+        $search = ''
+    ) {
+        return $this->externalGroupRepo->searchForSourcePaginated($source, $page, $max, $orderBy, $direction, $search);
     }
 
-    public function updateGroupsFromUpdatedExternalSource($old_source, $new_source)
+    public function countExternalGroupsForSourceAndSearch($source, $search = '')
     {
-        $groups = $this->externalGroupRepo->findBySourceSlug($old_source);
-        foreach ($groups as $group) {
-            $group->setSourceSlug($new_source);
-        }
-        $this->om->flush();
+        return $this->externalGroupRepo->countBySearchForSource($source, $search);
+    }
+
+    public function countUsersInExternalGroup(ExternalGroup $externalGroup)
+    {
+        return $this->externalGroupRepo->countUsersInGroup($externalGroup);
+    }
+
+    public function deleteGroupsForExternalSource($source)
+    {
+        $this->externalGroupRepo->deleteBySourceSlug($source);
+    }
+
+    public function updateGroupsExternalSourceName($oldSource, $newSource)
+    {
+        $this->externalGroupRepo->updateSourceSlug($oldSource, $newSource);
     }
 }

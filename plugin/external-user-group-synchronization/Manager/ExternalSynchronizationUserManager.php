@@ -83,4 +83,35 @@ class ExternalSynchronizationUserManager
             $this->om->flush();
         }
     }
+
+    public function searchExternalUsersForSource(
+        $source,
+        $page = 1,
+        $max = 50,
+        $orderBy = 'username',
+        $direction = 'ASC',
+        $search = ''
+    ) {
+        return $this->externalUserRepo->searchForSourcePaginated($source, $page, $max, $orderBy, $direction, $search);
+    }
+
+    public function countExternalUsersForSourceAndSearch($source, $search = '')
+    {
+        return $this->externalUserRepo->countBySearchForSource($source, $search);
+    }
+
+    public function deleteUsersForExternalSource($source)
+    {
+        $this->externalUserRepo->deleteBySourceSlug($source);
+    }
+
+    public function updateUsersExternalSourceName($old_source, $new_source)
+    {
+        $this->externalUserRepo->updateSourceSlug($old_source, $new_source);
+    }
+
+    public function deleteExternalUserByUserId($userId)
+    {
+        $this->externalUserRepo->deleteExternalUserByUserId($userId);
+    }
 }

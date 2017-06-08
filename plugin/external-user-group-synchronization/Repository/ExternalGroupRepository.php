@@ -12,6 +12,7 @@
 
 namespace Claroline\ExternalSynchronizationBundle\Repository;
 
+use Claroline\ExternalSynchronizationBundle\Entity\ExternalGroup;
 use Doctrine\ORM\EntityRepository;
 
 class ExternalGroupRepository extends EntityRepository
@@ -56,5 +57,85 @@ class ExternalGroupRepository extends EntityRepository
             ->setParameter('now', $now);
 
         $qb->getQuery()->execute();
+    }
+
+    public function deleteBySourceSlug($source)
+    {
+        $qb = $this
+            ->createQueryBuilder('ext_group')
+            ->delete()
+            ->where('ext_group.sourceSlug = :source')
+            ->setParameter('source', $source);
+
+        $qb->getQuery()->execute();
+    }
+
+    public function updateSourceSlug($oldSource, $newSource)
+    {
+        $qb = $this->createQueryBuilder('ext_group')
+            ->update()
+            ->set('ext_group.sourceSlug', ':newSource')
+            ->where('ext_group.sourceSlug = :oldSource')
+            ->setParameter('newSource', $newSource)
+            ->setParameter('oldSource', $oldSource);
+
+        $qb->getQuery()->execute();
+    }
+
+    public function countBySearchForSource($source, $search = '')
+    {
+        $qb = $this->createQueryBuilder('ext_group')
+            ->select('COUNT(ext_group.id) AS cnt')
+            ->where('ext_group.sourceSlug = :source')
+            ->setParameter('source', $source);
+        if (!empty($search)) {
+            $qb
+                ->innerJoin('ext_group.group', 'grp')
+                ->andWhere($qb->expr()->like('UPPER(grp.name)', ':search'))
+                ->setParameter('search', '%'.strtoupper($search).'%');
+        }
+
+        return intval($qb->getQuery()->getSingleResult()['cnt']);
+    }
+
+    public function searchForSourcePaginated(
+        $source,
+        $page = 1,
+        $max = 50,
+        $orderBy = 'name',
+        $direction = 'ASC',
+        $search = ''
+    ) {
+        $page = max(0, $page - 1);
+
+        $qb = $this->createQueryBuilder('ext_group')
+            ->innerJoin('ext_group.group', 'grp')
+            ->leftJoin('grp.users', 'usr', false)
+            ->select('ext_group.id, grp.name', 'COUNT(usr) AS members')
+            ->where('ext_group.sourceSlug = :source')
+            ->setMaxResults($max)
+            ->setFirstResult($max * $page)
+            ->orderBy('grp.'.$orderBy, $direction)
+            ->groupBy('grp')
+            ->setParameter('source', $source);
+        if (!empty($search)) {
+            $qb
+                ->andWhere($qb->expr()->like('UPPER(grp.name)', ':search'))
+                ->setParameter('search', '%'.strtoupper($search).'%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countUsersInGroup(ExternalGroup $externalGroup)
+    {
+        $qb = $this->createQueryBuilder('ext_group')
+            ->innerJoin('ext_group.group', 'grp')
+            ->leftJoin('grp.users', 'usr', false)
+            ->select('COUNT(usr) AS cnt')
+            ->where('ext_group = :group')
+            ->setParameter('group', $externalGroup);
+
+        return intval($qb->getQuery()->getSingleResult()['cnt']);
     }
 }
