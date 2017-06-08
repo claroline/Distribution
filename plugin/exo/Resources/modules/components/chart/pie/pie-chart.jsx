@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
+import {PropTypes as T} from 'prop-types'
 
 import Chart from './../base/chart.jsx'
 import DataSeries from './data-series.jsx'
-
-const T = React.PropTypes
 
 /**
  * Draws a Bar chart
@@ -20,6 +19,7 @@ export default class PieChart extends Component {
           colors={this.props.colors}
           innerRadius={0}
           outerRadius={this.props.width/2}
+          showValue={this.props.showValue}
         />
       </Chart>
     )
@@ -29,9 +29,11 @@ export default class PieChart extends Component {
 PieChart.propTypes = {
   data: T.array.isRequired,
   colors: T.arrayOf(T.string).isRequired,
-  width: T.number
+  width: T.number,
+  showValue: T.bool.isRequired
 }
 
 PieChart.defaultProps = {
-  width: 550
+  width: 550,
+  showValue: true
 }
