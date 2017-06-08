@@ -100,6 +100,21 @@ class ManagerView extends Component {
     })
   }
 
+  showEventRepeatForm(sessionEvent) {
+    this.setState({
+      modal: {
+        type: 'MODAL_EVENT_REPEAT_FORM',
+        urlModal: null,
+        props: {
+          title: `${trans('repeat_session_event', {}, 'cursus')}`,
+          event: sessionEvent,
+          repeatSessionEvent: this.props.repeatSessionEvent
+        },
+        fading: false
+      }
+    })
+  }
+
   hideModal() {
     this.setState({modal: {fading: true, urlModal: null}})
   }
@@ -133,7 +148,13 @@ class ManagerView extends Component {
                 icon: 'fa fa-fw fa-edit',
                 label: t('edit'),
                 action: (row) => this.showEventEditionForm(row)
-              }, {
+              },
+              {
+                icon: 'fa fa-fw fa-files-o',
+                label: trans('repeat_session_event', {}, 'cursus'),
+                action: (row) => this.showEventRepeatForm(row)
+              },
+              {
                 icon: 'fa fa-fw fa-trash-o',
                 label: t('delete'),
                 action: (row) => this.deleteSessionEvent(row),
@@ -202,6 +223,7 @@ ManagerView.propTypes = {
   createSessionEvent: T.func.isRequired,
   editSessionEvent: T.func.isRequired,
   deleteSessionEvent: T.func.isRequired,
+  repeatSessionEvent: T.func.isRequired,
   deleteSessionEvents: T.func.isRequired,
   resetEventForm: T.func.isRequired,
   updateEventForm: T.func.isRequired,
@@ -250,6 +272,9 @@ function mapDispatchToProps(dispatch) {
     },
     deleteSessionEvent: (workspaceId, sessionEventId) => {
       dispatch(actions.deleteSessionEvent(workspaceId, sessionEventId))
+    },
+    repeatSessionEvent: (sessionEventId, repeatEventData) => {
+      dispatch(actions.repeatSessionEvent(sessionEventId, repeatEventData))
     },
     deleteSessionEvents: (workspaceId, sessionEvents) => {
       dispatch(actions.deleteSessionEvents(workspaceId, sessionEvents))

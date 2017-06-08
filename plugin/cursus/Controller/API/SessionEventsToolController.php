@@ -296,6 +296,46 @@ class SessionEventsToolController extends Controller
         return new JsonResponse($serializedSessionEventUsers, 200);
     }
 
+    /**
+     * @EXT\Route(
+     *     "/workspace/session/event/{sessionEvent}/repeat",
+     *     name="claro_cursus_session_event_repeat",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function postSessionEventRepeatAction(SessionEvent $sessionEvent)
+    {
+        $this->checkToolAccess($sessionEvent->getSession()->getWorkspace(), 'edit');
+        $monday = boolval($this->request->get('monday', false));
+        $tuesday = boolval($this->request->get('tuesday', false));
+        $wednesday = boolval($this->request->get('wednesday', false));
+        $thursday = boolval($this->request->get('thursday', false));
+        $friday = boolval($this->request->get('friday', false));
+        $saturday = boolval($this->request->get('saturday', false));
+        $sunday = boolval($this->request->get('sunday', false));
+        $iteration = [
+            'Monday' => $monday,
+            'Tuesday' => $tuesday,
+            'Wednesday' => $wednesday,
+            'Thursday' => $thursday,
+            'Friday' => $friday,
+            'Saturday' => $saturday,
+            'Sunday' => $sunday,
+        ];
+        $endDate = $this->request->get('until', false) ? new \DateTime($this->request->get('until')) : null;
+        $duration = $this->request->get('duration', false);
+        $duration = $duration !== false && $duration !== '' ? intval($duration) : null;
+
+        $createdSessionEvents = $this->cursusManager->repeatSessionEvent($sessionEvent, $iteration, $endDate, $duration);
+        $serializedSessionEvents = $this->serializer->serialize(
+            $createdSessionEvents,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus_min'])
+        );
+
+        return new JsonResponse($serializedSessionEvents, 200);
+    }
+
     private function checkToolAccess(Workspace $workspace = null, $right = 'open')
     {
         if (is_null($workspace) || !$this->authorization->isGranted(['claroline_session_events_tool', $right], $workspace)) {

@@ -7,6 +7,7 @@ import {
   SESSION_EVENTS_LOAD,
   SESSION_EVENT_LOAD,
   SESSION_EVENT_ADD,
+  SESSION_EVENTS_ADD,
   SESSION_EVENT_UPDATE,
   CURRENT_EVENT_RESET,
   CURRENT_EVENT_ADD_PARTICIPANTS,
@@ -90,6 +91,15 @@ const eventsReducers = {
     return {
       data: events,
       totalResults: state.totalResults + 1
+    }
+  },
+  [SESSION_EVENTS_ADD]: (state, action) => {
+    const events = cloneDeep(state.data)
+    action.sessionEvents.forEach(se => events.push(se))
+
+    return {
+      data: events,
+      totalResults: state.totalResults + action.sessionEvents.length
     }
   },
   [SESSION_EVENT_UPDATE]: (state, action) => {

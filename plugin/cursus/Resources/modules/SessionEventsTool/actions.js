@@ -11,6 +11,7 @@ import {VIEW_MANAGER, VIEW_USER, VIEW_EVENT} from './enums'
 export const SESSION_EVENTS_LOAD = 'SESSION_EVENTS_LOAD'
 export const SESSION_EVENT_LOAD = 'SESSION_EVENT_LOAD'
 export const SESSION_EVENT_ADD = 'SESSION_EVENT_ADD'
+export const SESSION_EVENTS_ADD = 'SESSION_EVENTS_ADD'
 export const SESSION_EVENT_UPDATE = 'SESSION_EVENT_UPDATE'
 export const CURRENT_EVENT_RESET = 'CURRENT_EVENT_RESET'
 export const CURRENT_EVENT_ADD_PARTICIPANTS = 'CURRENT_EVENT_ADD_PARTICIPANTS'
@@ -28,6 +29,8 @@ export const actions = {}
 actions.loadSessionEvents = makeActionCreator(SESSION_EVENTS_LOAD, 'sessionEvents', 'total')
 
 actions.addSessionEvent = makeActionCreator(SESSION_EVENT_ADD, 'sessionEvent')
+
+actions.addSessionEvents = makeActionCreator(SESSION_EVENTS_ADD, 'sessionEvents')
 
 actions.updateSessionEvent = makeActionCreator(SESSION_EVENT_UPDATE, 'sessionEvent')
 
@@ -127,6 +130,52 @@ actions.editSessionEvent = (eventId, eventData) => {
         },
         success: (data, dispatch) => {
           dispatch(actions.updateSessionEvent(JSON.parse(data)))
+        }
+      }
+    })
+  }
+}
+
+actions.repeatSessionEvent = (sessionEventId, repeatEventData) => {
+  return (dispatch) => {
+    const formData = new FormData()
+
+    if (repeatEventData['monday'] !== undefined) {
+      formData.append('monday', repeatEventData['monday'] ? 1 : 0)
+    }
+    if (repeatEventData['tuesday'] !== undefined) {
+      formData.append('tuesday', repeatEventData['tuesday'] ? 1 : 0)
+    }
+    if (repeatEventData['wednesday'] !== undefined) {
+      formData.append('wednesday', repeatEventData['wednesday'] ? 1 : 0)
+    }
+    if (repeatEventData['thursday'] !== undefined) {
+      formData.append('thursday', repeatEventData['thursday'] ? 1 : 0)
+    }
+    if (repeatEventData['friday'] !== undefined) {
+      formData.append('friday', repeatEventData['friday'] ? 1 : 0)
+    }
+    if (repeatEventData['saturday'] !== undefined) {
+      formData.append('saturday', repeatEventData['saturday'] ? 1 : 0)
+    }
+    if (repeatEventData['sunday'] !== undefined) {
+      formData.append('sunday', repeatEventData['sunday'] ? 1 : 0)
+    }
+    if (repeatEventData['until'] !== undefined) {
+      formData.append('until', repeatEventData['until'])
+    }
+    if (repeatEventData['duration'] !== undefined) {
+      formData.append('duration', repeatEventData['duration'])
+    }
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_cursus_session_event_repeat', {sessionEvent: sessionEventId}),
+        request: {
+          method: 'POST',
+          body: formData
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.addSessionEvents(JSON.parse(data)))
         }
       }
     })
