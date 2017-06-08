@@ -3,14 +3,9 @@ import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
 import moment from 'moment'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 import {t, trans} from '#/main/core/translation'
-import Datetime from 'react-datetime'
-import 'react-datetime/css/react-datetime.css'
 import {DatePicker} from '#/main/core/layout/form/components/date-picker.jsx'
 import {formatDate} from '#/main/core/date'
-
-const locale = getLocale()
 
 export const MODAL_EVENT_REPEAT_FORM = 'MODAL_EVENT_REPEAT_FORM'
 
@@ -257,13 +252,4 @@ EventRepeatFormModal.propTypes = {
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
   repeatSessionEvent: T.func.isRequired
-}
-
-function getLocale() {
-  const homeLocale = document.querySelector('#homeLocale')
-
-  if (homeLocale) {
-    return homeLocale.innerHTML.trim()
-  }
-  return 'en'
 }
