@@ -143,7 +143,7 @@ class GridQuestionSerializer implements SerializerInterface
 
         if ($data->border instanceof \stdClass) {
             //during the import, we're an instance of /stdClass otherwise I'm not sure
-            //Exo TODO: why if/else required ? double check that
+            //we should remove the array version IMO
             $gridQuestion->setBorderWidth($data->border->width);
             $gridQuestion->setBorderColor($data->border->color);
         } else {

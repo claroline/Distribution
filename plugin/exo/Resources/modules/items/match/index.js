@@ -25,12 +25,14 @@ function getCorrectedAnswer(item, answer = {data: []}) {
     }
   })
 
-  times(item.solutions.filter(solution => solution.score > 0).length - answer.data.length, () => corrected.addPenalty(new Answerable(item.penalty)))
+  const answersCount = answer && answer.data ? answer.data.length: 0
+  times(item.solutions.filter(solution => solution.score > 0).length - answersCount, () => corrected.addPenalty(new Answerable(item.penalty)))
 
   return corrected
 }
 
 function findAnswer(solution, answers) {
+  if (!answers) answers = []
   return answers.find(answer => (answer.firstId === solution.firstId) && (answer.secondId === solution.secondId))
 }
 

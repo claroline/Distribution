@@ -9,7 +9,9 @@ function expectAnswer(item) {
 }
 
 function getCorrectedAnswer() {
-  return new CorrectedAnswer()
+  const corrected = new CorrectedAnswer()
+
+  return corrected
 }
 
 export default {
