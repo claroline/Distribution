@@ -23,6 +23,8 @@ export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
 export const CURRENT_ERROR_RESET = 'CURRENT_ERROR_RESET'
 export const CURRENT_ERROR_UPDATE = 'CURRENT_ERROR_UPDATE'
 export const EVENTS_USERS_ADD = 'EVENTS_USERS_ADD'
+export const EVENT_COMMENTS_RESET = 'EVENT_COMMENTS_RESET'
+export const EVENT_COMMENTS_LOAD = 'EVENT_COMMENTS_LOAD'
 
 export const actions = {}
 
@@ -316,5 +318,9 @@ actions.resetCurrentError = makeActionCreator(CURRENT_ERROR_RESET)
 actions.updateCurrentError = makeActionCreator(CURRENT_ERROR_UPDATE, 'error')
 
 actions.addEventsUsers = makeActionCreator(EVENTS_USERS_ADD, 'sessionEventUsers')
+
+actions.resetEventComments = makeActionCreator(EVENT_COMMENTS_RESET)
+
+actions.loadEventComments = makeActionCreator(EVENT_COMMENTS_LOAD, 'eventComments')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

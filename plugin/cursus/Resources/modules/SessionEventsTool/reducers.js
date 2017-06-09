@@ -18,7 +18,9 @@ import {
   UPDATE_VIEW_MODE,
   CURRENT_ERROR_RESET,
   CURRENT_ERROR_UPDATE,
-  EVENTS_USERS_ADD
+  EVENTS_USERS_ADD,
+  EVENT_COMMENTS_RESET,
+  EVENT_COMMENTS_LOAD
 } from './actions'
 
 const initialState = {
@@ -42,7 +44,8 @@ const initialState = {
     registrationType: 0,
     maxUsers: null
   },
-  currentError: null
+  currentError: null,
+  eventComments: []
 }
 
 const mainReducers = {}
@@ -153,6 +156,13 @@ const eventsUsersReducers = {
   }
 }
 
+const eventCommentsReducers = {
+  [EVENT_COMMENTS_RESET]: () => initialState['eventComments'],
+  [EVENT_COMMENTS_LOAD]: (state, action) => {
+    return action.eventComments
+  }
+}
+
 export const reducers = combineReducers({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
@@ -164,6 +174,7 @@ export const reducers = combineReducers({
   viewMode: makeReducer(initialState['viewMode'], viewReducers),
   eventForm: makeReducer(initialState['eventForm'], eventFormReducers),
   currentError: makeReducer(initialState['currentError'], currentErrorReducers),
+  eventComments: makeReducer(initialState['eventComments'], eventCommentsReducers),
   list: makeListReducer(),
   pagination: paginationReducer
 })
