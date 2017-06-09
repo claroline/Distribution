@@ -5,10 +5,6 @@ import {SetFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import times from 'lodash/times'
 
-function expectAnswer(item) {
-  return item.solutions && item.solutions.associations ? item.solutions.associations : []
-}
-
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
 
@@ -38,6 +34,5 @@ export default {
   player: SetPlayer,
   feedback: SetFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

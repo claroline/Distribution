@@ -4,12 +4,6 @@ import {ChoicePlayer} from './player.jsx'
 import {ChoiceFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
-function expectAnswer(item) {
-  return item.multiple ?
-    item.solutions.filter(s => s.score > 0):
-    [item.solutions.reduce((prev, current) => prev.score > current.score ? prev : current)]
-}
-
 function getCorrectedAnswer(item, answers = null) {
 
   const corrected = new CorrectedAnswer()
@@ -35,6 +29,5 @@ export default {
   player: ChoicePlayer,
   feedback: ChoiceFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

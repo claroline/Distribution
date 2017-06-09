@@ -6,10 +6,6 @@ import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/componen
 import cloneDeep from 'lodash/cloneDeep'
 import times from 'lodash/times'
 
-function expectAnswer(item) {
-  return item.solutions
-}
-
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
 
@@ -48,6 +44,5 @@ export default {
   player: PairPlayer,
   feedback: PairFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

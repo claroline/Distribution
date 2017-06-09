@@ -5,10 +5,6 @@ import {MatchFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import times from 'lodash/times'
 
-function expectAnswer(item) {
-  return item.solutions
-}
-
 function getCorrectedAnswer(item, answer = {data: []}) {
   const corrected = new CorrectedAnswer()
 
@@ -43,6 +39,5 @@ export default {
   player: MatchPlayer,
   feedback: MatchFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

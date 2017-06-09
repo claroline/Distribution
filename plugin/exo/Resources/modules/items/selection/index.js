@@ -5,18 +5,6 @@ import {SelectionFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 import times from 'lodash/times'
 
-//compute max score
-function expectAnswer(item) {
-  switch (item.mode) {
-    case 'select':
-      return item.solutions.filter(s => s.score > 0)
-    case 'find':
-      return item.solutions.filter(s => s.score > 0)
-    case 'highlight':
-      return item.solutions.map(solution => solution.answers.reduce((prev, current) => prev.score > current.score ? prev : current))
-  }
-}
-
 function getCorrectedAnswer(item, answer) {
   const corrected = new CorrectedAnswer()
 
@@ -98,6 +86,5 @@ export default {
   player: SelectionPlayer,
   feedback: SelectionFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

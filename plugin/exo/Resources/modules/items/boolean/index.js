@@ -4,10 +4,6 @@ import {BooleanPlayer} from './player.jsx'
 import {BooleanFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
-function expectAnswer(item) {
-  return item.solutions
-}
-
 function getCorrectedAnswer(item, answer = null) {
   const corrected = new CorrectedAnswer()
 
@@ -32,6 +28,5 @@ export default {
   player: BooleanPlayer,
   feedback: BooleanFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

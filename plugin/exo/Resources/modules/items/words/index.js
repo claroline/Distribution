@@ -4,10 +4,6 @@ import {WordsPlayer} from './player.jsx'
 import {WordsFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
-function expectAnswer(item) {
-  return item.solutions
-}
-
 function getCorrectedAnswer(item, answer = {data: ''}) {
   const corrected = new CorrectedAnswer()
 
@@ -26,11 +22,13 @@ function getCorrectedAnswer(item, answer = {data: ''}) {
   return corrected
 }
 
-function containsKeyword(keyword, caseSensitive, text = '') {
-  const regex = new RegExp(keyword, caseSensitive ? '': 'i')
-  const test = regex.test(text)
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&')
+}
 
-  return test
+function containsKeyword(keyword, caseSensitive, text = '') {
+  const regex = new RegExp(escapeRegExp(keyword), caseSensitive ? '': 'i')
+  return regex.test(text)
 }
 
 export default {
@@ -40,6 +38,5 @@ export default {
   player: WordsPlayer,
   feedback: WordsFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }

@@ -4,10 +4,6 @@ import {GraphicPlayer} from './player.jsx'
 import {GraphicFeedback} from './feedback.jsx'
 import {CorrectedAnswer, Answerable} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
-function expectAnswer(item) {
-  return item.solutions.filter(solution => solution.score > 0)
-}
-
 function getCorrectedAnswer(item, answers) {
   const corrected = new CorrectedAnswer()
 
@@ -59,6 +55,5 @@ export default {
   player: GraphicPlayer,
   feedback: GraphicFeedback,
   editor,
-  expectAnswer,
   getCorrectedAnswer
 }
