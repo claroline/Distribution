@@ -91,6 +91,7 @@ class ManagerView extends Component {
           title: `${trans('session_event_edition', {}, 'cursus')}`,
           updateEventForm: this.props.updateEventForm,
           event: sessionEvent,
+          session: this.props.session,
           confirmAction: this.props.editSessionEvent,
           resetFormData: this.props.resetEventForm,
           loadFormData: this.props.loadEventForm

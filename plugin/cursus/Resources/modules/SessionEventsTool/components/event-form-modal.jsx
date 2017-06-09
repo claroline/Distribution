@@ -20,6 +20,7 @@ export class EventFormModal  extends Component {
       nameError: null,
       startDateError: null,
       endDateError: null,
+      registrationTypeError: null,
       name: props.event.name ? props.event.name : undefined,
       description: props.event.description ? props.event.description : undefined,
       registrationType: props.event.registrationType ? props.event.registrationType : undefined,
@@ -70,7 +71,8 @@ export class EventFormModal  extends Component {
       nameError: null,
       startDateError: null,
       endDateError: null,
-      maxUsersError: null
+      maxUsersError: null,
+      registrationTypeError: null
     }
 
     if (!this.state['name']) {
@@ -89,6 +91,10 @@ export class EventFormModal  extends Component {
       (isNaN(parseInt(this.state['maxUsers'])) || parseInt(this.state['maxUsers']) < 0)
     ) {
       validation['maxUsersError'] = trans('form_number_superior_error', {value: 0}, 'cursus')
+      validation['hasError'] = true
+    }
+    if (parseInt(this.state['registrationType']) === 2 && !this.props.session.publicRegistration) {
+      validation['registrationTypeError'] = trans('form_public_session_event_error', {}, 'cursus')
       validation['hasError'] = true
     }
     this.setState(validation, this.registerSessionEvent)
@@ -147,7 +153,7 @@ export class EventFormModal  extends Component {
               <Datetime closeOnSelect={true}
                         dateFormat={true}
                         timeFormat={true}
-                        locale={locale}
+                        locale="fr"
                         utc={true}
                         defaultValue={this.state.startDate}
                         onChange={date => this.updateEventProps('startDate', date)}
@@ -168,7 +174,7 @@ export class EventFormModal  extends Component {
               <Datetime closeOnSelect={true}
                         dateFormat={true}
                         timeFormat={true}
-                        locale={locale}
+                        locale="fr"
                         utc={true}
                         defaultValue={this.state.endDate}
                         onChange={date => this.updateEventProps('endDate', date)}
@@ -181,7 +187,7 @@ export class EventFormModal  extends Component {
             </div>
           </div>
 
-          <div className="form-group row">
+          <div className={classes('form-group row', {'has-error': this.state.registrationTypeError})}>
             <div className="control-label col-md-3">
               <label>{trans('session_event_registration', {}, 'cursus')}</label>
             </div>
@@ -192,8 +198,15 @@ export class EventFormModal  extends Component {
               >
                 <option value="0">{trans('event_registration_automatic', {}, 'cursus')}</option>
                 <option value="1">{trans('event_registration_manual', {}, 'cursus')}</option>
-                <option value="2">{trans('event_registration_public', {}, 'cursus')}</option>
+                <option className={classes({'text-muted': !this.props.session.publicRegistration})} value="2">
+                  {trans('event_registration_public', {}, 'cursus')}
+                </option>
               </select>
+              {this.state.registrationTypeError &&
+                <div className="help-block field-error">
+                  {this.state.registrationTypeError}
+                </div>
+              }
             </div>
           </div>
 
