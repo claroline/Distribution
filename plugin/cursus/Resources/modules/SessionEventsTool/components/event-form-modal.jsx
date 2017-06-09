@@ -8,8 +8,6 @@ import {t, trans} from '#/main/core/translation'
 import Datetime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
 
-const locale = getLocale()
-
 export const MODAL_EVENT_FORM = 'MODAL_EVENT_FORM'
 
 export class EventFormModal  extends Component {
@@ -260,13 +258,4 @@ EventFormModal.propTypes = {
   confirmAction: T.func.isRequired,
   resetFormData: T.func.isRequired,
   loadFormData: T.func
-}
-
-function getLocale() {
-  const homeLocale = document.querySelector('#homeLocale')
-
-  if (homeLocale) {
-    return homeLocale.innerHTML.trim()
-  }
-  return 'en'
 }

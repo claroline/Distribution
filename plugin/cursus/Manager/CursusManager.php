@@ -4508,6 +4508,14 @@ class CursusManager
         return $sessionEventUser;
     }
 
+    public function acceptSessionEventUser(SessionEventUser $sessionEventUser)
+    {
+        $sessionEventUser->setRegistrationStatus(SessionEventUser::REGISTERED);
+        $sessionEventUser->setRegistrationDate(new \DateTime());
+        $this->om->persist($sessionEventUser);
+        $this->om->flush();
+    }
+
     public function sendSessionRegistrationConfirmationMessage(User $user, CourseSession $session, $sessionStatus)
     {
         $content = '';

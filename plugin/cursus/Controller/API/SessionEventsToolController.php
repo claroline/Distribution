@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CursusBundle\Entity\CourseSession;
 use Claroline\CursusBundle\Entity\SessionEvent;
+use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Manager\CursusManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;
@@ -294,6 +295,26 @@ class SessionEventsToolController extends Controller
         $this->cursusManager->unregisterUsersFromSessionEvent($sessionEventUsers);
 
         return new JsonResponse($serializedSessionEventUsers, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/session/event/user/{sessionEventUser}/delete",
+     *     name="claro_cursus_session_event_user_accept",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionEventUserAcceptAction(SessionEventUser $sessionEventUser)
+    {
+        $this->checkToolAccess($sessionEventUser->getSessionEvent()->getSession()->getWorkspace(), 'edit');
+        $this->cursusManager->acceptSessionEventUser($sessionEventUser);
+        $serializedSessionEventUser = $this->serializer->serialize(
+            $sessionEventUser,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedSessionEventUser, 200);
     }
 
     /**

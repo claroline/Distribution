@@ -12,6 +12,7 @@ import {
   CURRENT_EVENT_RESET,
   CURRENT_EVENT_ADD_PARTICIPANTS,
   CURRENT_EVENT_REMOVE_PARTICIPANTS,
+  CURRENT_EVENT_UPDATE_PARTICIPANT,
   EVENT_FORM_RESET,
   EVENT_FORM_UPDATE,
   EVENT_FORM_LOAD,
@@ -73,6 +74,17 @@ const currentEventReducers = {
 
       if (index > -1) {
         participants.splice(index, 1)
+      }
+    })
+
+    return Object.assign({}, state, {participants: participants})
+  },
+  [CURRENT_EVENT_UPDATE_PARTICIPANT]: (state, action) => {
+    const participants = state.participants.map(p => {
+      if (p.id === action.sessionEventUser.id) {
+        return action.sessionEventUser
+      } else {
+        return p
       }
     })
 

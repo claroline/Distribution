@@ -30,6 +30,7 @@ class EventView extends Component {
           title: `${trans('session_event_edition', {}, 'cursus')}`,
           updateEventForm: this.props.updateEventForm,
           event: sessionEvent,
+          session: this.props.session,
           confirmAction: this.props.editSessionEvent,
           resetFormData: this.props.resetEventForm,
           loadFormData: this.props.loadEventForm
@@ -71,6 +72,10 @@ class EventView extends Component {
 
   removeParticipant(id) {
     this.props.deleteParticipants([id])
+  }
+
+  acceptParticipant(id) {
+    this.props.acceptParticipant(id)
   }
 
   hideModal() {
@@ -210,6 +215,12 @@ class EventView extends Component {
                                 }
                               </td>
                               <td>
+                                {p.registrationStatus === 1 &&
+                                  <button className="btn btn-success btn-sm" onClick={() => this.acceptParticipant(p.id)}>
+                                    <i className="fa fa-check"></i>
+                                  </button>
+                                }
+                                &nbsp;
                                 <button className="btn btn-danger btn-sm" onClick={() => this.removeParticipant(p.id)}>
                                   <i className="fa fa-trash"></i>
                                 </button>
@@ -259,6 +270,7 @@ EventView.propTypes = {
     registrationType: T.number,
     maxUsers: T.number
   }).isRequired,
+  session: T.object,
   participants: T.array.isRequired,
   canEdit: T.number.isRequired,
   currentError: T.string,
@@ -269,6 +281,7 @@ EventView.propTypes = {
   loadEventForm: T.func,
   registerParticipants: T.func,
   deleteParticipants: T.func,
+  acceptParticipant: T.func,
   resetCurrentError: T.func,
   createModal: T.func
 }
@@ -277,6 +290,7 @@ function mapStateToProps(state) {
   return {
     workspaceId: state.workspaceId,
     event: selectors.currentEvent(state),
+    session: selectors.currentSession(state),
     participants: selectors.currentParticipants(state),
     canEdit: selectors.canEdit(state),
     currentError: selectors.currentError(state)
@@ -296,6 +310,7 @@ function mapDispatchToProps(dispatch) {
     loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
     registerParticipants: (eventId, usersIds) => dispatch(actions.registerUsersToSessionEvent(eventId, usersIds)),
     deleteParticipants: (sessionEventUsersIds) => dispatch(actions.deleteSessionEventUsers(sessionEventUsersIds)),
+    acceptParticipant: (sessionEventUserId) => dispatch(actions.acceptSessionEventUser(sessionEventUserId)),
     resetCurrentError: () => dispatch(actions.resetCurrentError()),
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal)
   }

@@ -16,6 +16,7 @@ export const SESSION_EVENT_UPDATE = 'SESSION_EVENT_UPDATE'
 export const CURRENT_EVENT_RESET = 'CURRENT_EVENT_RESET'
 export const CURRENT_EVENT_ADD_PARTICIPANTS = 'CURRENT_EVENT_ADD_PARTICIPANTS'
 export const CURRENT_EVENT_REMOVE_PARTICIPANTS = 'CURRENT_EVENT_REMOVE_PARTICIPANTS'
+export const CURRENT_EVENT_UPDATE_PARTICIPANT = 'CURRENT_EVENT_UPDATE_PARTICIPANT'
 export const EVENT_FORM_RESET = 'EVENT_FORM_RESET'
 export const EVENT_FORM_UPDATE = 'EVENT_FORM_UPDATE'
 export const EVENT_FORM_LOAD = 'EVENT_FORM_LOAD'
@@ -271,6 +272,18 @@ actions.deleteSessionEventUsers = (sessionEventUsersIds) => ({
   }
 })
 
+actions.acceptSessionEventUser = (sessionEventUserId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_cursus_session_event_user_accept', {sessionEventUser: sessionEventUserId}),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateParticipant(JSON.parse(data)))
+    }
+  }
+})
+
 actions.displayMainView = () => (dispatch, getState) => {
   const state = getState()
   const mode = state['canEdit'] ? VIEW_MANAGER : VIEW_USER
@@ -302,6 +315,8 @@ actions.resetCurrentSessionEvent = makeActionCreator(CURRENT_EVENT_RESET)
 actions.addParticipants = makeActionCreator(CURRENT_EVENT_ADD_PARTICIPANTS, 'sessionEventUsers')
 
 actions.removeParticipants = makeActionCreator(CURRENT_EVENT_REMOVE_PARTICIPANTS, 'sessionEventUsersIds')
+
+actions.updateParticipant = makeActionCreator(CURRENT_EVENT_UPDATE_PARTICIPANT, 'sessionEventUser')
 
 actions.loadSessionEvent = makeActionCreator(SESSION_EVENT_LOAD, 'sessionEvent')
 
