@@ -7,6 +7,11 @@ export class GroupListService {
     this._q = $q
     this._filter = $filter
     this._sourceSlug = externalSource.slug
+    this._hasGroupConfig = !!(externalSource.group_config)
+  }
+
+  hasGroupConfig() {
+    return this._resolve(this._hasGroupConfig)
   }
 
   getGroups(searchObj) {

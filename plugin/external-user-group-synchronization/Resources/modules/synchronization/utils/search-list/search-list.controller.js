@@ -17,7 +17,7 @@ export class SearchListController {
 
   get search() {
     return {
-      'page': this.page,
+      'page': Math.min(this.page, this.pages),
       'max': this.max,
       'orderBy': this.orderBy,
       'direction': this.direction,

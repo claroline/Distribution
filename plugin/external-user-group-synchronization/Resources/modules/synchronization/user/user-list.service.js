@@ -9,6 +9,11 @@ export class UserListService {
     this._sourceSlug = externalSource.slug
     this._totalExternalUsers = externalSource.totalExternalUsers
     this._platformRoles = platformRoles
+    this._hasUserConfig = !!(externalSource.user_config)
+  }
+
+  hasUserConfig() {
+    return this._resolve(this._hasUserConfig)
   }
 
   getUsers(searchObj) {

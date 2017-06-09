@@ -211,6 +211,11 @@ class CasManager
         return $this->om->getRepository('ClarolineCasBundle:CasUser')->findCasUsersByCasIds($casIds);
     }
 
+    public function getCasUsersByCasIdsOrUserIds($casIds, $userIds)
+    {
+        return $this->om->getRepository('ClarolineCasBundle:CasUser')->findCasUsersByCasIdsOrUserIds($casIds, $userIds);
+    }
+
     /**
      * @param $userId
      */

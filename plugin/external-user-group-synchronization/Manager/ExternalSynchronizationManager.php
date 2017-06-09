@@ -40,7 +40,8 @@ class ExternalSynchronizationManager
 {
     use LoggableTrait;
 
-    const USER_BATCH_SIZE = 250;
+    const USER_BATCH_SIZE_COMMAND = 250;
+    const USER_BATCH_SIZE_BROWSER = 50;
 
     /** @var string */
     private $syncFilePath;
@@ -248,7 +249,7 @@ class ExternalSynchronizationManager
         $batch = null
     ) {
         // Initialize parameters
-        $batchSize = self::USER_BATCH_SIZE;
+        $batchSize = is_null($batch) ? self::USER_BATCH_SIZE_COMMAND : self::USER_BATCH_SIZE_BROWSER;
         $sourceName = $this->slugifyName($sourceName);
         $casSynchronizedFieldUcf = ucfirst($casSynchronizedField);
         // Get external source repository
@@ -271,7 +272,8 @@ class ExternalSynchronizationManager
         $cnt = (!is_null($batch)) ? max(0, $batch - 1) : 0;
         // Liste of already examined usernames and mails
         $existingCasUsers = [];
-        $existingCasUserIds = [];
+        $existingCasIds = [];
+        $existingCasUsernames = [];
         $this->om->allowForceFlush(false);
         while ($countUsers > 0) {
             // Start flash suite
@@ -312,6 +314,12 @@ class ExternalSynchronizationManager
                 },
                 $existingPlatformUsers
             );
+            $existingPlatformUserIds = array_map(
+                function (User $user) {
+                    return $user->getId();
+                },
+                $existingPlatformUsers
+            );
             // If CAS enabled get existing user in CAS
             if (
                 $synchronizeCas &&
@@ -320,10 +328,19 @@ class ExternalSynchronizationManager
             ) {
                 $existingCasUsers = $this
                     ->casManager
-                    ->getCasUsersByCasIds(${"externalSourceUser${casSynchronizedFieldUcf}s"});
-                $existingCasUserIds = array_map(
+                    ->getCasUsersByCasIdsOrUserIds(
+                        ${"externalSourceUser${casSynchronizedFieldUcf}s"},
+                        $existingPlatformUserIds
+                    );
+                $existingCasIds = array_map(
                     function ($casUser) {
                         return $casUser->getCasId();
+                    },
+                    $existingCasUsers
+                );
+                $existingCasUsernames = array_map(
+                    function ($casUser) {
+                        return $casUser->getUser()->getUsername();
                     },
                     $existingCasUsers
                 );
@@ -352,7 +369,7 @@ class ExternalSynchronizationManager
                 if (
                     is_null($alreadyImportedUser) &&
                     !empty($existingCasUsers) &&
-                    ($key = array_search($externalSourceUser[$casSynchronizedField], $existingCasUserIds)) !== false
+                    ($key = array_search($externalSourceUser[$casSynchronizedField], $existingCasIds)) !== false
                 ) {
                     $casAccount = $existingCasUsers[$key];
                     $alreadyImportedUser = $this->externalUserManager->createExternalUser(
@@ -413,7 +430,8 @@ class ExternalSynchronizationManager
                 if (
                     !is_null($this->casManager) &&
                     $synchronizeCas &&
-                    !in_array($externalSourceUser[$casSynchronizedField], $existingCasUserIds)
+                    !in_array($externalSourceUser[$casSynchronizedField], $existingCasIds) &&
+                    !in_array($externalSourceUser['username'], $existingCasUsernames)
                 ) {
                     $this->casManager->createCasUser($externalSourceUser[$casSynchronizedField], $user);
                 }

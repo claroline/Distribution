@@ -10,9 +10,17 @@ export class GroupListController {
   $onInit() {
     this.groups = []
     this.totalGroups = 0
-    this.fieldNames = [ 'name', 'members' ]
+    this.configured = true
+    this.fieldNames = [ 'name', 'user_count' ]
     this.actions = [{'name': 'synchronize', 'icon': 'fa-refresh', 'action': this.synchronizeGroup.bind(this)}]
     this.getGroups()
+    this.hasGroupConfig()
+  }
+
+  hasGroupConfig() {
+    this._GroupListService.hasGroupConfig().then(data => {
+      this.configured = data
+    })
   }
 
   synchronizeGroup(group) {

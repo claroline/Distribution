@@ -111,7 +111,7 @@ class ExternalGroupRepository extends EntityRepository
         $qb = $this->createQueryBuilder('ext_group')
             ->innerJoin('ext_group.group', 'grp')
             ->leftJoin('grp.users', 'usr', false)
-            ->select('ext_group.id, grp.name', 'COUNT(usr) AS members')
+            ->select('ext_group.id, grp.name', 'COUNT(usr) AS user_count')
             ->where('ext_group.sourceSlug = :source')
             ->setMaxResults($max)
             ->setFirstResult($max * $page)

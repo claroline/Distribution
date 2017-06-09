@@ -36,4 +36,16 @@ class CasUserRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findCasUsersByCasIdsOrUserIds($casIds, $userIds)
+    {
+        $qb = $this
+            ->createQueryBuilder('cas')
+            ->where('cas.casId IN (:ids)')
+            ->orWhere('cas.user IN (:users)')
+            ->setParameter('ids', $casIds)
+            ->setParameter('users', $userIds);
+
+        return $qb->getQuery()->getResult();
+    }
 }
