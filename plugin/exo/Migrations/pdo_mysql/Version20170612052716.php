@@ -16,7 +16,7 @@ class Version20170612052716 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE ujm_exercise 
-            ADD end_message LONGTEXT NOT NULL
+            ADD end_message LONGTEXT DEFAULT NULL
         ');
     }
 

@@ -86,7 +86,7 @@ class Exercise extends AbstractResource
     /**
      * A message to display at the end of the quiz.
      *
-     * @ORM\Column(name="end_message", type="text")
+     * @ORM\Column(name="end_message", type="text", nullable=true)
      *
      * @var string
      */
