@@ -473,7 +473,7 @@ QuizEditor.propTypes = {
       showStatistics: T.bool.isRequired,
       showFullCorrection: T.bool.isRequired,
       showFeedback: T.bool.isRequired
-    }).isRequired,
+    }).isRequired
   }).isRequired,
   validating: T.bool.isRequired,
   updateProperties: T.func.isRequired,
