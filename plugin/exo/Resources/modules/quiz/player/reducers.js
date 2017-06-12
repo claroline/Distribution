@@ -30,7 +30,7 @@ function finishPaper(state, action) {
       $set: (action.paper.endDate ? action.paper.endDate : moment().format('YYYY-MM-DD\Thh:mm:ss'))
     },
     ['score']: {
-      $set: (action.paper.score || 0 === action.paper.score ? action.paper.score : null)
+      $set: action.paper.score
     }
   })
 }

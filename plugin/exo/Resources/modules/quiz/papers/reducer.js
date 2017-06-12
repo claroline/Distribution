@@ -15,7 +15,9 @@ export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}
         current: action.id
       })
     case PAPER_ADD: {
-      const paper = update(action.paper, {score: {$set: utils.computeScore(action.paper, action.paper.answers)}})
+      const paper = !action.paper.score ?
+        update(action.paper, {score: {$set: utils.computeScore(action.paper, action.paper.answers)}}):
+        action.paper
       return Object.assign({}, state, {
         papers: update(state.papers, {[paper.id]:{$set: paper}})
       })

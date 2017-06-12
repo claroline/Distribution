@@ -42,7 +42,6 @@ export const utils = {
         total += calculate(item.score, correctedAnswer)
       })
     })
-
     return total
   }
 }
