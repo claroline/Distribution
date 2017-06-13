@@ -191,7 +191,7 @@ class ExerciseManager
 
         $exercise->getResourceNode()->setPublished(true);
         $this->om->persist($exercise);
-        
+
         $this->om->flush();
     }
 
