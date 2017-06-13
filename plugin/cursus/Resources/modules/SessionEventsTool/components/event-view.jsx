@@ -299,6 +299,7 @@ EventView.propTypes = {
     endDate: T.string,
     registrationType: T.number,
     maxUsers: T.number,
+    location: T.object,
     locationExtra: T.string
   }).isRequired,
   session: T.object,

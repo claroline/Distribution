@@ -291,7 +291,8 @@ EventFormModal.propTypes = {
     endDate: T.string,
     registrationType: T.number.isRequired,
     maxUsers: T.number,
-    description: T.string
+    location: T.object,
+    locationExtra: T.string
   }).isRequired,
   mode: T.string.isRequired,
   session: T.object,
