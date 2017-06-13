@@ -123,6 +123,7 @@ class ClozeDefinition extends AbstractDefinition
         if (!is_null($answer)) {
             foreach ($answer as $holeAnswer) {
                 $hole = $question->getHole($holeAnswer->holeId);
+                if ($hole) {
                 $keyword = $hole->getKeyword($holeAnswer->answerText);
                 if (!empty($keyword)) {
                     if (0 < $keyword->getScore()) {
@@ -134,6 +135,7 @@ class ClozeDefinition extends AbstractDefinition
                     // Retrieve the best answer for the hole
                     $corrected->addMissing($this->findHoleExpectedAnswer($hole));
                 }
+            }
             }
         } else {
             $holes = $question->getHoles();
@@ -190,7 +192,7 @@ class ClozeDefinition extends AbstractDefinition
                     // Increment the hole answers count
                     ++$holes[$holeAnswer->holeId]->answered;
 
-                    $keyword = $holesMap[$holeAnswer->holeId]->getKeyword($holeAnswer->answerText);
+                    $keyword = isset($holesMap[$holeAnswer->holeId]) ? $holesMap[$holeAnswer->holeId]->getKeyword($holeAnswer->answerText): null;
                     if ($keyword) {
                         if (!isset($holes[$holeAnswer->holeId]->keywords[$keyword->getId()])) {
                             // Initialize the Hole keyword counter if it's the first time we find it
