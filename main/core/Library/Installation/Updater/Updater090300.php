@@ -14,11 +14,11 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\InstallationBundle\Updater\Updater;
-use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\DBAL\Exception\TableNotFoundException;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Psr\Log\LogLevel;
 
 class Updater090300 extends Updater
 {
@@ -63,8 +63,8 @@ class Updater090300 extends Updater
             $workspace = $om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneByCode($code);
 
             if (!$workspace) {
-                $i++;
-                $this->log('Creating workspace from model '.$model['name'] .': ' . $i . '/' . count($models));
+                ++$i;
+                $this->log('Creating workspace from model '.$model['name'].': '.$i.'/'.count($models));
 
                 try {
                     $modelUsers = $this->connection->query("SELECT * FROM claro_workspace_model_user u where u.workspacemodel_id = {$model['id']}")->fetchAll();
@@ -114,7 +114,7 @@ class Updater090300 extends Updater
                     $token = new UsernamePasswordToken($defaultUser, '123', 'main', $defaultUser->getRoles());
                     $this->container->get('security.token_storage')->setToken($token);
                     $this->om->merge($defaultUser);
-                
+
                     $this->log("Updatig cursus for model {$model['name']}");
                     try {
                         $modelResources = $this->connection->query("
@@ -135,7 +135,6 @@ class Updater090300 extends Updater
                 $this->log('Workspace already exists');
             }
         }
-        
 
         $this->connection->query('SET FOREIGN_KEY_CHECKS=1');
         $this->dropModelTable();

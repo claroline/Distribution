@@ -70,22 +70,22 @@ class Updater100000 extends Updater
         $i = 0;
         $this->log("Adding properties for {$totalObjects} resource nodes...");
 
-        $this->connection->query("
+        $this->connection->query('
             UPDATE claro_resource_node crn
             SET crn.fullscreen = false
-            WHERE crn.fullscreen is NULL"
+            WHERE crn.fullscreen is NULL'
         )->execute();
 
-        $this->connection->query("
+        $this->connection->query('
             UPDATE claro_resource_node crn
             SET crn.closable = false
-            WHERE crn.closable is NULL"
+            WHERE crn.closable is NULL'
         )->execute();
-       
-        $this->connection->query("
+
+        $this->connection->query('
             UPDATE claro_resource_node crn
             SET crn.closeTarget = 0
-            WHERE crn.closeTarget is NULL"
+            WHERE crn.closeTarget is NULL'
         )->execute();
     }
 
