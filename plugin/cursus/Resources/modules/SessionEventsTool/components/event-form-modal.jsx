@@ -1,3 +1,4 @@
+import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
@@ -7,10 +8,11 @@ import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 import {t, trans} from '#/main/core/translation'
 import Datetime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
+import {actions} from '../actions'
 
 export const MODAL_EVENT_FORM = 'MODAL_EVENT_FORM'
 
-export class EventFormModal  extends Component {
+class EventFormModal  extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -24,7 +26,9 @@ export class EventFormModal  extends Component {
       registrationType: props.event.registrationType ? props.event.registrationType : undefined,
       maxUsers: props.event.maxUsers ? props.event.maxUsers : undefined,
       startDate: props.event.startDate ?  new Date(props.event.startDate) : new Date(props.session.startDate),
-      endDate: props.event.endDate ?  new Date(props.event.endDate) : new Date(props.session.endDate)
+      endDate: props.event.endDate ?  new Date(props.event.endDate) : new Date(props.session.endDate),
+      location: props.event.location ? props.event.location.id : undefined,
+      locationExtra: props.event.locationExtra ? props.event.locationExtra : undefined
     }
   }
 
@@ -47,6 +51,12 @@ export class EventFormModal  extends Component {
         break
       case 'endDate':
         this.setState({endDate: value})
+        break
+      case 'location':
+        this.setState({location: value})
+        break
+      case 'locationExtra':
+        this.setState({locationExtra: value})
         break
     }
     this.props.updateEventForm(property, value)
@@ -99,6 +109,8 @@ export class EventFormModal  extends Component {
   }
 
   componentDidMount() {
+    this.props.loadLocations()
+
     if (this.props.mode === 'edition') {
       this.props.loadFormData(this.props.event)
     }
@@ -226,6 +238,36 @@ export class EventFormModal  extends Component {
               }
             </div>
           </div>
+
+          <div className="form-group row">
+            <div className="control-label col-md-3">
+              <label>{t('locations')}</label>
+            </div>
+            <div className="col-md-9">
+              <select className="form-control"
+                      value={this.state.location}
+                      onChange={e => this.updateEventProps('location', e.target.value)}
+              >
+                <option value="0"></option>
+                {this.props.locations.map((l, idx) =>
+                  <option key={idx} value={l.id}>{l.name}</option>
+                )}
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group row">
+            <div className="control-label col-md-3">
+              <label>{trans('location_extra', {}, 'cursus')}</label>
+            </div>
+            <div className="col-md-9">
+              <Textarea id="event-form-location-extra"
+                        content={this.state.locationExtra}
+                        onChange={text => this.updateEventProps('locationExtra', text)}
+              >
+              </Textarea>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeModal}>
@@ -248,14 +290,33 @@ EventFormModal.propTypes = {
     startDate: T.string,
     endDate: T.string,
     registrationType: T.number.isRequired,
-    maxUsers: T.number
+    maxUsers: T.number,
+    description: T.string
   }).isRequired,
   mode: T.string.isRequired,
   session: T.object,
+  locations: T.array,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
   updateEventForm: T.func.isRequired,
   confirmAction: T.func.isRequired,
   resetFormData: T.func.isRequired,
-  loadFormData: T.func
+  loadFormData: T.func,
+  loadLocations: T.func
 }
+
+function mapStateToProps(state) {
+  return {
+    locations: state.locations
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loadLocations: () => dispatch(actions.getAllLocations())
+  }
+}
+
+const ConnectedEventFormModal = connect(mapStateToProps, mapDispatchToProps)(EventFormModal)
+
+export {ConnectedEventFormModal as EventFormModal}

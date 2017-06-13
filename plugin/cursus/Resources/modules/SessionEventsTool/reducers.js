@@ -21,7 +21,9 @@ import {
   CURRENT_ERROR_UPDATE,
   EVENTS_USERS_ADD,
   EVENT_COMMENTS_RESET,
-  EVENT_COMMENTS_LOAD
+  EVENT_COMMENTS_LOAD,
+  LOCATIONS_LOAD,
+  LOCATIONS_LOADED_UPDATE
 } from './actions'
 
 const initialState = {
@@ -43,10 +45,13 @@ const initialState = {
     startDate: null,
     endDate: null,
     registrationType: 0,
-    maxUsers: null
+    maxUsers: null,
+    locationExtra: null
   },
   currentError: null,
-  eventComments: []
+  eventComments: [],
+  locations: [],
+  locationsLoaded: false
 }
 
 const mainReducers = {}
@@ -175,6 +180,14 @@ const eventCommentsReducers = {
   }
 }
 
+const locationsReducers = {
+  [LOCATIONS_LOAD]: (state, action) => action.locations
+}
+
+const locationsLoadedReducers = {
+  [LOCATIONS_LOADED_UPDATE]: (state, action) => action.loaded
+}
+
 export const reducers = combineReducers({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
@@ -187,6 +200,8 @@ export const reducers = combineReducers({
   eventForm: makeReducer(initialState['eventForm'], eventFormReducers),
   currentError: makeReducer(initialState['currentError'], currentErrorReducers),
   eventComments: makeReducer(initialState['eventComments'], eventCommentsReducers),
+  locations: makeReducer(initialState['locations'], locationsReducers),
+  locationsLoaded: makeReducer(initialState['locationsLoaded'], locationsLoadedReducers),
   list: makeListReducer(),
   pagination: paginationReducer
 })

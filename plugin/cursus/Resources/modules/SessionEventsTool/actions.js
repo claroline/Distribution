@@ -26,6 +26,8 @@ export const CURRENT_ERROR_UPDATE = 'CURRENT_ERROR_UPDATE'
 export const EVENTS_USERS_ADD = 'EVENTS_USERS_ADD'
 export const EVENT_COMMENTS_RESET = 'EVENT_COMMENTS_RESET'
 export const EVENT_COMMENTS_LOAD = 'EVENT_COMMENTS_LOAD'
+export const LOCATIONS_LOAD = 'LOCATIONS_LOAD'
+export const LOCATIONS_LOADED_UPDATE = 'LOCATIONS_LOADED_UPDATE'
 
 export const actions = {}
 
@@ -85,6 +87,12 @@ actions.createSessionEvent = (sessionId, eventData) => {
     if (eventData['maxUsers'] !== undefined) {
       formData.append('maxUsers', eventData['maxUsers'])
     }
+    if (eventData['location'] !== undefined) {
+      formData.append('location', eventData['location'])
+    }
+    if (eventData['locationExtra'] !== undefined) {
+      formData.append('locationExtra', eventData['locationExtra'])
+    }
 
     dispatch({
       [REQUEST_SEND]: {
@@ -122,6 +130,12 @@ actions.editSessionEvent = (eventId, eventData) => {
     }
     if (eventData['maxUsers'] !== undefined) {
       formData.append('maxUsers', eventData['maxUsers'])
+    }
+    if (eventData['location'] !== undefined) {
+      formData.append('location', eventData['location'])
+    }
+    if (eventData['locationExtra'] !== undefined) {
+      formData.append('locationExtra', eventData['locationExtra'])
     }
 
     dispatch({
@@ -314,6 +328,29 @@ actions.selfRegisterToSessionEvent = (sessionEventId) => ({
   }
 })
 
+actions.getAllLocations = () => (dispatch, getState) => {
+  const state = getState()
+  const workspaceId = state.workspaceId
+  const loaded = state.locationsLoaded
+  const url = generateUrl('claro_cursus_locations_retrieve', {workspace: workspaceId})
+
+  if (!loaded) {
+    dispatch({
+      [REQUEST_SEND]: {
+        url: url,
+        request: {
+          method: 'GET'
+        },
+        success: (data, dispatch) => {
+          const locations = JSON.parse(data)
+          dispatch(actions.loadLocations(locations))
+          dispatch(actions.updateLocationsLoaded(true))
+        }
+      }
+    })
+  }
+}
+
 actions.resetCurrentSessionEvent = makeActionCreator(CURRENT_EVENT_RESET)
 
 actions.addParticipants = makeActionCreator(CURRENT_EVENT_ADD_PARTICIPANTS, 'sessionEventUsers')
@@ -341,5 +378,9 @@ actions.addEventsUsers = makeActionCreator(EVENTS_USERS_ADD, 'sessionEventUsers'
 actions.resetEventComments = makeActionCreator(EVENT_COMMENTS_RESET)
 
 actions.loadEventComments = makeActionCreator(EVENT_COMMENTS_LOAD, 'eventComments')
+
+actions.loadLocations = makeActionCreator(LOCATIONS_LOAD, 'locations')
+
+actions.updateLocationsLoaded = makeActionCreator(LOCATIONS_LOADED_UPDATE, 'loaded')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

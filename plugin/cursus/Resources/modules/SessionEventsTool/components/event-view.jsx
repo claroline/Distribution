@@ -46,7 +46,6 @@ class EventView extends Component {
       picker_name: 'validators-picker',
       picker_title: trans('validators_selection', {}, 'cursus'),
       multiple: true,
-      //selected_users: this.getSelectedUsersIds(),
       forced_workspaces: [this.props.workspaceId],
       return_datas: true,
       blacklist: this.getParticipantsIds()
@@ -162,6 +161,37 @@ class EventView extends Component {
                     {trans('no_description', {}, 'cursus')}
                   </div>
                 }
+                <hr/>
+                {this.props.event['location'] || this.props.event['locationExtra'] ?
+                  <div>
+                    <h4>{t('location')}</h4>
+                    {this.props.event['location'] &&
+                      <div>
+                        {this.props.event['location']['name']}
+                        <br/>
+                        {this.props.event['location']['street'] }, {this.props.event['location']['street_number'] }
+                        {this.props.event['location']['box_number'] &&
+                          <span> / {this.props.event['location']['box_number']}</span>
+                        }
+                        <br/>
+                        {this.props.event['location']['pc']} {this.props.event['location']['town']}
+                        <br/>
+                        {this.props.event['location']['country']}
+                        {this.props.event['location']['phone'] &&
+                          <span>
+                            <br/>
+                            {this.props.event['location']['phone']}
+                          </span>
+                        }
+                      </div>
+                    }
+                    <div dangerouslySetInnerHTML={{__html: this.props.event['locationExtra']}}>
+                    </div>
+                  </div> :
+                  <div className="alert alert-warning">
+                    {trans('no_location', {}, 'cursus')}
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -268,7 +298,8 @@ EventView.propTypes = {
     startDate: T.string,
     endDate: T.string,
     registrationType: T.number,
-    maxUsers: T.number
+    maxUsers: T.number,
+    locationExtra: T.string
   }).isRequired,
   session: T.object,
   participants: T.array.isRequired,
