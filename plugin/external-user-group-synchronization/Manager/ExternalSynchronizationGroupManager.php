@@ -32,7 +32,7 @@ class ExternalSynchronizationGroupManager
     private $om;
     /** @var GroupManager */
     private $groupManager;
-    /** @var  GroupRepository */
+    /** @var GroupRepository */
     private $groupRepo;
     /** @var ExternalGroupRepository */
     private $externalGroupRepo;
@@ -151,7 +151,7 @@ class ExternalSynchronizationGroupManager
                 $validName .= " [$code]";
             } else {
                 $date = date('YmdHis');
-                $validName = "[ext-$date] " . $name;
+                $validName = "[ext-$date] ".$name;
             }
         }
 
