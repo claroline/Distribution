@@ -95,18 +95,12 @@ class ExternalResourceSynchronizationRepository
         }
 
         if (!empty($search)) {
-            $qb
-<<<<<<< HEAD
-                ->andWhere(
-                    $qb->expr()->orX(
-                        $qb->expr()->like($this->config['group_config']['fields']['group_name'], ':search'),
-                        $qb->expr()->like($this->config['group_config']['fields']['code'], ':search')
-                    ))
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like($this->config['group_config']['fields']['group_name'], ':search'),
+                    $qb->expr()->like($this->config['group_config']['fields']['code'], ':search')
+                ))
                 ->setParameter('search', '%'.$search.'%');
-=======
-                ->andWhere($qb->expr()->like($this->config['group_config']['fields']['group_name'], '?'))
-                ->setParameter(0, '%'.$search.'%');
->>>>>>> 5daf605... Admin pages for importing external groups into workspace
         }
 
         if ($max > 0) {
@@ -187,7 +181,6 @@ class ExternalResourceSynchronizationRepository
         if (empty($groupConf) || empty($fields)) {
             return null;
         }
-<<<<<<< HEAD
 
         $qb
             ->select(
@@ -195,25 +188,9 @@ class ExternalResourceSynchronizationRepository
                 $fields['group_name'].' AS name',
                 (empty($fields['type']) ? 'NULL' : $fields['type']).' AS type',
                 (empty($fields['code']) ? 'NULL' : $fields['code']).' AS code',
-<<<<<<< HEAD
-<<<<<<< HEAD
-                (empty($fields['user_count']) ? 'NULL' : $fields['user_count']).' AS user_count'
-=======
-        $groupConfTable = $groupConf['table'];
-        $groupConfFields = $groupConf['fields'];
-        $qb
-            ->select(
-                $groupConfFields['id'].' AS id',
-                $groupConfFields['group_name'].' AS name',
-                (empty($groupConfFields['type']) ? 'NULL' : $groupConfFields['type']).' AS type',
-                (empty($groupConfFields['count']) ? 'NULL' : $groupConfFields['count']).' AS user_count',
-                (empty($groupConfFields['code']) ? 'NULL' : $groupConfFields['code']).' AS code'
->>>>>>> 5daf605... Admin pages for importing external groups into workspace
-=======
                 (empty($fields['count']) ? 'NULL' : $fields['count']).' AS user_count'
->>>>>>> 7da0a3b... Created commands for user and group synchronization
             )
-            ->from($groupConfTable);
+            ->from($groupConf['table']);
 
         return $qb;
     }
@@ -235,9 +212,6 @@ class ExternalResourceSynchronizationRepository
             ->select(
                 $fields['id_user'].' AS id_user',
                 $fields['id_group'].' AS id_group'
-=======
-                (empty($fields['count']) ? 'NULL' : $fields['count']).' AS user_count'
->>>>>>> 96cea53... Fix group user count display in external group list
             )
             ->from($userGroupConf['table']);
 

@@ -110,7 +110,7 @@ class ExternalGroupSynchronizationController extends Controller
         $this->checkAccess($workspace);
         $canEdit = $this->hasEditionAccess($workspace);
 
-        $externalGroups = $search ? $this->externalUserGroupSyncManager->loadGroupsForExternalSource($source, $search) : [];
+        $externalGroups = $search ? $this->externalUserGroupSyncManager->searchGroupsForExternalSource($source, $search) : [];
         $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
 
         return [

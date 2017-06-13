@@ -217,19 +217,12 @@ class ExternalSynchronizationManager
         return $repo->findUsers();
     }
 
-<<<<<<< HEAD
     public function searchGroupsForExternalSource($sourceName, $search = null, $max = -1)
-=======
-    public function loadGroupsForExternalSource($sourceName, $search)
->>>>>>> 5daf605... Admin pages for importing external groups into workspace
     {
         $externalSource = $this->getExternalSource($sourceName);
         $repo = $this->getRepositoryForExternalSource($externalSource);
 
-<<<<<<< HEAD
         return $repo->findGroups($search, $max);
-<<<<<<< HEAD
-=======
     }
 
     public function getExternalSourceGroupById($sourceName, $groupId)
@@ -238,7 +231,6 @@ class ExternalSynchronizationManager
         $repo = $this->getRepositoryForExternalSource($externalSource);
 
         return $repo->findOneGroupById($groupId);
->>>>>>> 7da0a3b... Created commands for user and group synchronization
     }
 
     public function synchronizeUsersForExternalSource(
@@ -480,12 +472,6 @@ class ExternalSynchronizationManager
         $this->om->allowForceFlush(true);
     }
 
-<<<<<<< HEAD
-        return $countUsers;
-=======
-        return $repo->findGroups($search);
->>>>>>> 5daf605... Admin pages for importing external groups into workspace
-=======
     public function syncrhonizeGroupForExternalSource($sourceName, ExternalGroup $extGroup, $forceUnsubscribe = true)
     {
         $externalSource = $this->getExternalSource($sourceName);
@@ -528,7 +514,6 @@ class ExternalSynchronizationManager
         $this->externalGroupManager->updateExternalGroupDate($extGroup);
         $this->om->endFlushSuite();
         $this->log('Group '.$group->getName().' has been synced.');
->>>>>>> 7da0a3b... Created commands for user and group synchronization
     }
 
     public function saveConfig()
