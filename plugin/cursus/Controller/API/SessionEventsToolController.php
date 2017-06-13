@@ -307,14 +307,17 @@ class SessionEventsToolController extends Controller
     public function sessionEventUserAcceptAction(SessionEventUser $sessionEventUser)
     {
         $this->checkToolAccess($sessionEventUser->getSessionEvent()->getSession()->getWorkspace(), 'edit');
-        $this->cursusManager->acceptSessionEventUser($sessionEventUser);
-        $serializedSessionEventUser = $this->serializer->serialize(
-            $sessionEventUser,
-            'json',
-            SerializationContext::create()->setGroups(['api_user_min'])
-        );
+        $results = $this->cursusManager->acceptSessionEventUser($sessionEventUser);
 
-        return new JsonResponse($serializedSessionEventUser, 200);
+        if ($results['status'] === 'success') {
+            $results['data'] = $this->serializer->serialize(
+                $results['data'],
+                'json',
+                SerializationContext::create()->setGroups(['api_user_min'])
+            );
+        }
+
+        return new JsonResponse($results, 200);
     }
 
     /**

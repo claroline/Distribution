@@ -279,7 +279,11 @@ actions.acceptSessionEventUser = (sessionEventUserId) => ({
       method: 'PUT'
     },
     success: (data, dispatch) => {
-      dispatch(actions.updateParticipant(JSON.parse(data)))
+      if (data['status'] === 'success') {
+        dispatch(actions.updateParticipant(JSON.parse(data['data'])))
+      } else {
+        dispatch(actions.updateCurrentError(data['data']))
+      }
     }
   }
 })
