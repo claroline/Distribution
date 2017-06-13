@@ -521,15 +521,9 @@ class UserManager
             } else {
                 $group = null;
             }
-            try {
-                $userEntity = $this->getUserByUsernameOrMailOrCode($username, $email, $code);
-            } catch (\Exception $e) {
-                if ($logger) {
-                    $logger(" Skipping  {$username}...");
-                }
-                $skipped[] = $fullName;
-                continue;
-            }
+
+            $userEntity = $this->getUserByUsernameOrMailOrCode($username, $email, $code);
+
             if ($userEntity && $options['ignore-update']) {
                 if ($logger) {
                     $logger(" Skipping  {$userEntity->getUsername()}...");
