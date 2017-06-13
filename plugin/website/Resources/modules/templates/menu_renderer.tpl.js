@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 angular.module('app').run([
   '$templateCache',
@@ -10,4 +10,4 @@ angular.module('app').run([
       '</ul>'
     )
   }
-]);
+])

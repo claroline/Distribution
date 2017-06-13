@@ -1,9 +1,9 @@
 'use strict';
 
 (function () {
-  var module;
+  var module
 
-  module = angular.module('wxy.pushmenu', [ 'ngAnimate' ]);
+  module = angular.module('wxy.pushmenu', [ 'ngAnimate' ])
 
   /**
    * Templates
@@ -21,7 +21,7 @@
         '</div>'
       )
     }
-  ]);
+  ])
 
   module.run([
     '$templateCache',
@@ -50,7 +50,7 @@
         '</div>'
       )
     }
-  ]);
+  ])
 
   module.directive('wxyPushMenu', [
     'wxyOptions', 'wxyUtils', function (wxyOptions, wxyUtils) {
@@ -62,32 +62,32 @@
           menuStyle: '='
         },
         controller: function ($scope, $element, $attrs) {
-          var options, width;
-          $scope.options = options = angular.extend(wxyOptions, $scope.options);
-          $scope.level = 0;
-          $scope.visible = true;
-          width = options.menuWidth || 265;
-          $scope.menuWidth = width;
-          width = $scope.width = width + options.overlapWidth * wxyUtils.DepthOf($scope.menu);
+          var options, width
+          $scope.options = options = angular.extend(wxyOptions, $scope.options)
+          $scope.level = 0
+          $scope.visible = true
+          width = options.menuWidth || 265
+          $scope.menuWidth = width
+          width = $scope.width = width + options.overlapWidth * wxyUtils.DepthOf($scope.menu)
           this.GetBaseWidth = function () {
-            return width;
-          };
+            return width
+          }
           this.GetOptions = function () {
-            return options;
-          };
+            return options
+          }
           $scope.$watch('menuWidth', function (value) {
-            width = parseInt(value);
-            $scope.menuWidth = width;
-            $scope.width = width + options.overlapWidth * wxyUtils.DepthOf($scope.menu);
-            wxyUtils.FixLeftContainers(options.containersToPush, width);
-          });
+            width = parseInt(value)
+            $scope.menuWidth = width
+            $scope.width = width + options.overlapWidth * wxyUtils.DepthOf($scope.menu)
+            wxyUtils.FixLeftContainers(options.containersToPush, width)
+          })
         },
         templateUrl: 'pushmenu/main_menu.tpl',
         restrict: 'E',
         replace: true
-      };
+      }
     }
-  ]);
+  ])
 
   module.directive('wxySubmenu', [
     '$animate', '$compile', 'wxyUtils', function ($animate, $compile, wxyUtils) {
@@ -100,156 +100,156 @@
           menuStyle: '='
         },
         compile: function compile(tElement, tAttr, transclude) {
-          var compiledContents, contents;
-          contents = tElement.contents().remove();
-          compiledContents = null;
+          var compiledContents, contents
+          contents = tElement.contents().remove()
+          compiledContents = null
           return {
             pre: function preLink(scope, iElement, iAttr, ctrl) {
               if (!compiledContents) {
-                compiledContents = $compile(contents);
+                compiledContents = $compile(contents)
               }
               compiledContents(scope, function (clone, scope) {
-                return iElement.append(clone);
-              });
+                return iElement.append(clone)
+              })
             },
             post: function postLink(scope, element, attr, ctrl) {
               var collapse, marginCollapsed, onOpen, options,
-                _this = this;
-              scope.options = options = ctrl.GetOptions();
-              scope.correctionWidth = 0;
-              scope.childrenLevel = scope.level + 1;
+                _this = this
+              scope.options = options = ctrl.GetOptions()
+              scope.correctionWidth = 0
+              scope.childrenLevel = scope.level + 1
               onOpen = function () {
                 if (!scope.collapsed) {
-                  scope.inactive = false;
+                  scope.inactive = false
                 }
-                scope.$emit('submenuOpened', scope.level);
-              };
+                scope.$emit('submenuOpened', scope.level)
+              }
               if (scope.level === 0) {
-                scope.collasped = false;
-                marginCollapsed = options.rootOverlapWidth - ctrl.GetBaseWidth();
+                scope.collasped = false
+                marginCollapsed = options.rootOverlapWidth - ctrl.GetBaseWidth()
                 if (options.collapsed) {
-                  scope.collapsed = true;
-                  scope.inactive = true;
+                  scope.collapsed = true
+                  scope.inactive = true
                   element.css({
                     marginLeft: marginCollapsed + 'px'
-                  });
+                  })
                 }
                 collapse = function () {
-                  scope.collapsed = !scope.collapsed;
-                  scope.inactive = scope.collapsed;
-                  marginCollapsed = options.rootOverlapWidth - ctrl.GetBaseWidth();
-                  element.data('from', scope.collapsed ? 0 : marginCollapsed);
-                  element.data('to', scope.collapsed ? marginCollapsed : 0);
+                  scope.collapsed = !scope.collapsed
+                  scope.inactive = scope.collapsed
+                  marginCollapsed = options.rootOverlapWidth - ctrl.GetBaseWidth()
+                  element.data('from', scope.collapsed ? 0 : marginCollapsed)
+                  element.data('to', scope.collapsed ? marginCollapsed : 0)
                   if (scope.collapsed) {
-                    options.onCollapseMenuStart();
+                    options.onCollapseMenuStart()
                   } else {
-                    options.onExpandMenuStart();
+                    options.onExpandMenuStart()
                   }
                   $animate.addClass(element, 'slide').then(function () {
-                    element.removeClass('slide');
+                    element.removeClass('slide')
                     if (parseInt(element.css('marginLeft')) != element.data('to')) {
                       element.animate({
                         marginLeft: element.data('to') + 'px'
-                      });
+                      })
                     }
                     scope.$apply(function () {
                       if (scope.collapsed) {
-                        return options.onCollapseMenuEnd();
+                        return options.onCollapseMenuEnd()
                       } else {
-                        return options.onExpandMenuEnd();
+                        return options.onExpandMenuEnd()
                       }
-                    });
-                  });
-                  wxyUtils.PushContainers(options.containersToPush, scope.collapsed ? marginCollapsed + ctrl.GetBaseWidth() : ctrl.GetBaseWidth());
-                };
+                    })
+                  })
+                  wxyUtils.PushContainers(options.containersToPush, scope.collapsed ? marginCollapsed + ctrl.GetBaseWidth() : ctrl.GetBaseWidth())
+                }
               }
               scope.openMenu = function (event) {
-                wxyUtils.StopEventPropagation(event);
-                scope.$broadcast('menuOpened', scope.level);
-                options.onTitleItemClick(event, menu);
+                wxyUtils.StopEventPropagation(event)
+                scope.$broadcast('menuOpened', scope.level)
+                options.onTitleItemClick(event, menu)
                 if (scope.level === 0 && !scope.inactive || scope.collapsed) {
-                  collapse();
+                  collapse()
                 } else {
-                  scope.inactive = !scope.inactive;
-                  scope.$emit('toggleMenu');
+                  scope.inactive = !scope.inactive
+                  scope.$emit('toggleMenu')
                 }
-              };
+              }
               scope.onSubmenuClicked = function (item, $event) {
                 if (item.children && item.children.length > 0) {
-                  item.displayed = true;
-                  scope.inactive = true;
+                  item.displayed = true
+                  scope.inactive = true
                   //options.onGroupItemClick($event, item);
                 }
-              };
+              }
               scope.goBack = function (event, menu) {
                 if (scope.level != 0) {
-                  options.onBackItemClick(event, menu);
-                  scope.visible = false;
-                  return scope.$emit('submenuClosed', scope.level);
+                  options.onBackItemClick(event, menu)
+                  scope.visible = false
+                  return scope.$emit('submenuClosed', scope.level)
                 }
-              };
+              }
               scope.$watch('visible', function (visible) {
                 if (visible) {
                   if (scope.level > 0) {
-                    options.onExpandMenuStart();
-                    var fromAnimation = 0;
-                    var toAnimation = 0;
+                    options.onExpandMenuStart()
+                    var fromAnimation = 0
+                    var toAnimation = 0
                     if (options.direction == 'ltr') {
-                      fromAnimation = -ctrl.GetBaseWidth();
+                      fromAnimation = -ctrl.GetBaseWidth()
                     } else if (options.direction == 'rtl') {
-                      fromAnimation = ctrl.GetBaseWidth();
+                      fromAnimation = ctrl.GetBaseWidth()
                     }
-                    element.data('from', fromAnimation);
-                    element.data('to', toAnimation);
+                    element.data('from', fromAnimation)
+                    element.data('to', toAnimation)
                     $animate.addClass(element, 'slide').then(function () {
-                      element.removeClass('slide');
+                      element.removeClass('slide')
                       scope.$apply(function () {
-                        options.onExpandMenuEnd();
-                      });
-                    });
+                        options.onExpandMenuEnd()
+                      })
+                    })
                   }
-                  onOpen();
+                  onOpen()
                 }
-              });
+              })
               scope.$watch('menuWidth', function (value) {
-                scope.width = ctrl.GetBaseWidth() + scope.correctionWidth;
-              });
+                scope.width = ctrl.GetBaseWidth() + scope.correctionWidth
+              })
               scope.$on('submenuOpened', function (event, level) {
-                var correction;
-                correction = level - scope.level;
-                scope.correctionWidth = options.overlapWidth * correction;
-                scope.width = ctrl.GetBaseWidth() + scope.correctionWidth;
+                var correction
+                correction = level - scope.level
+                scope.correctionWidth = options.overlapWidth * correction
+                scope.width = ctrl.GetBaseWidth() + scope.correctionWidth
                 if (scope.level === 0) {
-                  wxyUtils.PushContainers(options.containersToPush, scope.width);
+                  wxyUtils.PushContainers(options.containersToPush, scope.width)
                 }
-              });
+              })
               scope.$on('submenuClosed', function (event, level) {
                 if (level - scope.level === 1) {
-                  onOpen();
-                  wxyUtils.StopEventPropagation(event);
+                  onOpen()
+                  wxyUtils.StopEventPropagation(event)
                 }
-              });
+              })
               scope.$on('menuOpened', function (event, level) {
                 if (scope.level - level > 0) {
-                  scope.visible = false;
+                  scope.visible = false
                 }
-              });
+              })
               scope.$on('toggleMenu', function (event) {
 
                 if (scope.level === 0) {
-                  wxyUtils.StopEventPropagation(event);
-                  collapse();
+                  wxyUtils.StopEventPropagation(event)
+                  collapse()
                 }
-              });
+              })
               scope.getStyle = function (item) {
-                return wxyUtils.getStyle(scope.menuStyle, item, item.hovered);
-              };
+                return wxyUtils.getStyle(scope.menuStyle, item, item.hovered)
+              }
               scope.menuOver = function (item) {
-                item.hovered = true;
-              };
+                item.hovered = true
+              }
               scope.menuLeave = function (item) {
-                item.hovered = false;
-              };
+                item.hovered = false
+              }
             }
           }
         },
@@ -257,56 +257,56 @@
         require: '^wxyPushMenu',
         restrict: 'EA',
         replace: true
-      };
+      }
     }
-  ]);
+  ])
 
   module.factory('wxyUtils', function () {
-    var DepthOf, PushContainers, StopEventPropagation, FixLeftContainers, getStyle;
+    var DepthOf, PushContainers, StopEventPropagation, FixLeftContainers, getStyle
     StopEventPropagation = function (e) {
       if (e.stopPropagation && e.preventDefault) {
-        e.stopPropagation();
-        e.preventDefault();
+        e.stopPropagation()
+        e.preventDefault()
       } else {
-        e.cancelBubble = true;
-        e.returnValue = false;
+        e.cancelBubble = true
+        e.returnValue = false
       }
-    };
+    }
     DepthOf = function (menu) {
-      var depth, item, maxDepth, _i, _len, _ref;
-      maxDepth = 0;
+      var depth, item, maxDepth, _i, _len, _ref
+      maxDepth = 0
       if (menu.children) {
-        _ref = menu.children;
+        _ref = menu.children
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          item = _ref[ _i ];
+          item = _ref[ _i ]
           if (item.children && item.children.length > 0) {
-            depth = DepthOf(item) + 1;
+            depth = DepthOf(item) + 1
           }
           if (depth > maxDepth) {
-            maxDepth = depth;
+            maxDepth = depth
           }
         }
       }
-      return maxDepth;
-    };
+      return maxDepth
+    }
     PushContainers = function (containersToPush, absoluteDistance) {
       if (!containersToPush) {
-        return;
+        return
       }
       return $.each(containersToPush, function () {
         return $(this).stop().animate({
           marginLeft: absoluteDistance
-        });
-      });
-    };
+        })
+      })
+    }
     FixLeftContainers = function (containersToPush, leftValue) {
       if (!containersToPush) {
-        return;
+        return
       }
       return $.each(containersToPush, function () {
-        return $(this).css({marginLeft: leftValue + 'px'});
-      });
-    };
+        return $(this).css({marginLeft: leftValue + 'px'})
+      })
+    }
     getStyle = function (navStyle, menu, hovered) {
       var style = {
         color: (menu.isSection ? navStyle.sectionFontColor : navStyle.menuFontColor),
@@ -316,8 +316,8 @@
         'font-family': navStyle.menuFontFamily,
         'font-size': navStyle.menuFontSize,
         'font-style': navStyle.menuFontStyle
-      };
-      return style;
+      }
+      return style
     }
 
     return {
@@ -326,22 +326,22 @@
       PushContainers: PushContainers,
       FixLeftContainers: FixLeftContainers,
       getStyle: getStyle
-    };
-  });
+    }
+  })
 
   module.animation('.slide', function () {
     return {
       addClass: function (element, className) {
-        element.removeClass('slide');
+        element.removeClass('slide')
         element.css({
           marginLeft: element.data('from') + 'px'
-        });
+        })
         element.animate({
           marginLeft: element.data('to') + 'px'
-        });
+        })
       }
-    };
-  });
+    }
+  })
 
   module.value('wxyOptions', {
     containersToPush: null,
@@ -383,6 +383,6 @@
     },
     onMenuReady: function () {
     }
-  });
+  })
 
-}).call(this);
+}).call(this)
