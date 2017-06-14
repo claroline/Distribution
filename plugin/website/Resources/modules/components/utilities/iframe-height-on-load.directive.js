@@ -11,7 +11,6 @@ export default class iframeHeightOnLoadDirective {
       try {
         iFrameHeight = element[ 0 ].contentWindow.document.body.scrollHeight + 20 + 'px'
       } catch (err) {
-        console.log(err)
       }
       let iFrameWidth = '100%'
       element.css('width', iFrameWidth)

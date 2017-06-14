@@ -1,5 +1,7 @@
 'use strict'
 
+import angular from 'angular/index'
+
 angular.module('app').run([
   '$templateCache',
   function ($templateCache) {

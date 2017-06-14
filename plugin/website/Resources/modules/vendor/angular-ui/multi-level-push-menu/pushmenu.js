@@ -1,5 +1,8 @@
 'use strict';
 
+import $ from 'jquery'
+import angular from 'angular/index'
+
 (function () {
   var module
 
