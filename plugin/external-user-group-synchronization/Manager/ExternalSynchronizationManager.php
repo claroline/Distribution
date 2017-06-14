@@ -228,7 +228,7 @@ class ExternalSynchronizationManager
         $externalSource = $this->getExternalSource($sourceName);
         $repo = $this->getRepositoryForExternalSource($externalSource);
         $groups = $repo->findGroups($search, $max);
-        foreach($groups as &$group) {
+        foreach ($groups as &$group) {
             $group['name'] = $this->utilities->stringToUtf8($group['name']);
             if (!empty($group['type'])) {
                 $group['type'] = $this->utilities->stringToUtf8($group['type']);
