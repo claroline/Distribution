@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import $ from 'jquery'
 import angular from 'angular/index'
@@ -64,7 +64,7 @@ import angular from 'angular/index'
           menuWidth: '=',
           menuStyle: '='
         },
-        controller: function ($scope, $element, $attrs) {
+        controller: function ($scope, $element) {
           var options, width
           $scope.options = options = angular.extend(wxyOptions, $scope.options)
           $scope.level = 0
@@ -102,22 +102,21 @@ import angular from 'angular/index'
           menuWidth: '=',
           menuStyle: '='
         },
-        compile: function compile(tElement, tAttr, transclude) {
+        compile: function compile(tElement, tAttr) {
           var compiledContents, contents
           contents = tElement.contents().remove()
           compiledContents = null
           return {
-            pre: function preLink(scope, iElement, iAttr, ctrl) {
+            pre: function preLink(scope, iElement, iAttr) {
               if (!compiledContents) {
                 compiledContents = $compile(contents)
               }
-              compiledContents(scope, function (clone, scope) {
+              compiledContents(scope, function (clone) {
                 return iElement.append(clone)
               })
             },
             post: function postLink(scope, element, attr, ctrl) {
               var collapse, marginCollapsed, onOpen, options,
-                _this = this
               scope.options = options = ctrl.GetOptions()
               scope.correctionWidth = 0
               scope.childrenLevel = scope.level + 1
@@ -166,7 +165,7 @@ import angular from 'angular/index'
                   wxyUtils.PushContainers(options.containersToPush, scope.collapsed ? marginCollapsed + ctrl.GetBaseWidth() : ctrl.GetBaseWidth())
                 }
               }
-              scope.openMenu = function (event) {
+              scope.openMenu = function (event, menu) {
                 wxyUtils.StopEventPropagation(event)
                 scope.$broadcast('menuOpened', scope.level)
                 options.onTitleItemClick(event, menu)
@@ -177,7 +176,7 @@ import angular from 'angular/index'
                   scope.$emit('toggleMenu')
                 }
               }
-              scope.onSubmenuClicked = function (item, $event) {
+              scope.onSubmenuClicked = function (item) {
                 if (item.children && item.children.length > 0) {
                   item.displayed = true
                   scope.inactive = true
@@ -214,7 +213,7 @@ import angular from 'angular/index'
                   onOpen()
                 }
               })
-              scope.$watch('menuWidth', function (value) {
+              scope.$watch('menuWidth', function () {
                 scope.width = ctrl.GetBaseWidth() + scope.correctionWidth
               })
               scope.$on('submenuOpened', function (event, level) {
@@ -334,7 +333,7 @@ import angular from 'angular/index'
 
   module.animation('.slide', function () {
     return {
-      addClass: function (element, className) {
+      addClass: function (element) {
         element.removeClass('slide')
         element.css({
           marginLeft: element.data('from') + 'px'
