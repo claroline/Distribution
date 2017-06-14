@@ -28,7 +28,8 @@ class EventFormModal  extends Component {
       startDate: props.event.startDate ?  new Date(props.event.startDate) : new Date(props.session.startDate),
       endDate: props.event.endDate ?  new Date(props.event.endDate) : new Date(props.session.endDate),
       location: props.event.location ? props.event.location.id : undefined,
-      locationExtra: props.event.locationExtra ? props.event.locationExtra : undefined
+      locationExtra: props.event.locationExtra ? props.event.locationExtra : undefined,
+      teachers: props.event.tutors ? props.event.tutors.map(t => t.id) : []
     }
   }
 
@@ -58,8 +59,17 @@ class EventFormModal  extends Component {
       case 'locationExtra':
         this.setState({locationExtra: value})
         break
+      case 'teachers':
+        const teachers = []
+
+        for (let i = 0; i < value.length; ++i) {
+          if (value[i]['selected']) {
+            teachers.push(value[i]['value'])
+          }
+        }
+        this.setState({teachers: teachers})
+        break
     }
-    this.props.updateEventForm(property, value)
   }
 
   registerSessionEvent() {
@@ -110,14 +120,7 @@ class EventFormModal  extends Component {
 
   componentDidMount() {
     this.props.loadLocations()
-
-    if (this.props.mode === 'edition') {
-      this.props.loadFormData(this.props.event)
-    }
-  }
-
-  componentWillUnmount() {
-    this.props.resetFormData()
+    this.props.loadTeachers()
   }
 
   render() {
@@ -241,7 +244,7 @@ class EventFormModal  extends Component {
 
           <div className="form-group row">
             <div className="control-label col-md-3">
-              <label>{t('locations')}</label>
+              <label>{t('location')}</label>
             </div>
             <div className="col-md-9">
               <select className="form-control"
@@ -268,6 +271,24 @@ class EventFormModal  extends Component {
               </Textarea>
             </div>
           </div>
+
+          <div className="form-group row">
+            <div className="control-label col-md-3">
+              <label>{trans('tutors', {}, 'cursus')}</label>
+            </div>
+            <div className="col-md-9">
+              <select className="form-control"
+                      value={this.state.teachers}
+                      onChange={e => this.updateEventProps('teachers', e.target.options)}
+                      multiple
+              >
+                <option value="0"></option>
+                {this.props.teachers.map((t, idx) =>
+                  <option key={idx} value={t.id}>{t.firstName} {t.lastName}</option>
+                )}
+              </select>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeModal}>
@@ -292,29 +313,31 @@ EventFormModal.propTypes = {
     registrationType: T.number.isRequired,
     maxUsers: T.number,
     location: T.object,
-    locationExtra: T.string
+    locationExtra: T.string,
+    tutors: T.array
   }).isRequired,
   mode: T.string.isRequired,
   session: T.object,
   locations: T.array,
+  teachers: T.array,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired,
-  updateEventForm: T.func.isRequired,
   confirmAction: T.func.isRequired,
-  resetFormData: T.func.isRequired,
-  loadFormData: T.func,
-  loadLocations: T.func
+  loadLocations: T.func,
+  loadTeachers: T.func
 }
 
 function mapStateToProps(state) {
   return {
-    locations: state.locations
+    locations: state.locations,
+    teachers: state.teachers
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadLocations: () => dispatch(actions.getAllLocations())
+    loadLocations: () => dispatch(actions.getAllLocations()),
+    loadTeachers: () => dispatch(actions.getSessionTeachers())
   }
 }
 

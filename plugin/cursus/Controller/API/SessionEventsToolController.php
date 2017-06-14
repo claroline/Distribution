@@ -16,7 +16,9 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
+use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CursusBundle\Entity\CourseSession;
+use Claroline\CursusBundle\Entity\CourseSessionUser;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Manager\CursusManager;
@@ -38,6 +40,7 @@ class SessionEventsToolController extends Controller
     private $locationManager;
     private $request;
     private $serializer;
+    private $userManager;
 
     /**
      * @DI\InjectParams({
@@ -46,7 +49,8 @@ class SessionEventsToolController extends Controller
      *     "cursusManager"   = @DI\Inject("claroline.manager.cursus_manager"),
      *     "locationManager" = @DI\Inject("claroline.manager.organization.location_manager"),
      *     "request"         = @DI\Inject("request"),
-     *     "serializer"      = @DI\Inject("jms_serializer")
+     *     "serializer"      = @DI\Inject("jms_serializer"),
+     *     "userManager"     = @DI\Inject("claroline.manager.user_manager")
      * })
      */
     public function __construct(
@@ -55,7 +59,8 @@ class SessionEventsToolController extends Controller
         CursusManager $cursusManager,
         LocationManager $locationManager,
         Request $request,
-        Serializer $serializer
+        Serializer $serializer,
+        UserManager $userManager
     ) {
         $this->apiManager = $apiManager;
         $this->authorization = $authorization;
@@ -63,6 +68,7 @@ class SessionEventsToolController extends Controller
         $this->locationManager = $locationManager;
         $this->request = $request;
         $this->serializer = $serializer;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -122,9 +128,19 @@ class SessionEventsToolController extends Controller
         $maxUsers = $maxUsers !== false && $maxUsers !== '' ? intval($maxUsers) : null;
         $locationExtra = $this->request->get('locationExtra', false) ? $this->request->get('locationExtra') : null;
         $locationId = intval($this->request->get('location', false));
+        $location = $locationId ? $this->locationManager->getLocationById($locationId) : null;
+        $teachers = [];
+        $teachersParams = $this->request->get('teachers', false);
 
-        if ($locationId) {
-            $location = $this->locationManager->getLocationById($locationId);
+        if ($teachersParams) {
+            $teachersIds = explode(',', $teachersParams);
+
+            if ($teachersIds) {
+                if (intval($teachersIds[0]) === 0) {
+                    array_splice($teachersIds, 0, 1);
+                }
+                $teachers = $this->userManager->getUsersByIds($teachersIds);
+            }
         }
         $sessionEvent = $this->cursusManager->createSessionEvent(
             $session,
@@ -135,7 +151,7 @@ class SessionEventsToolController extends Controller
             $location,
             $locationExtra,
             null,
-            [],
+            $teachers,
             $registrationType,
             $maxUsers
         );
@@ -193,6 +209,23 @@ class SessionEventsToolController extends Controller
         $maxUsers = $this->request->get('maxUsers', false);
         $maxUsers = $maxUsers !== false && $maxUsers !== '' ? intval($maxUsers) : null;
         $locationExtra = $this->request->get('locationExtra', false) ? $this->request->get('locationExtra') : null;
+        $sessionEvent->emptyTutors();
+        $teachersParams = $this->request->get('teachers', false);
+
+        if ($teachersParams) {
+            $teachersIds = explode(',', $teachersParams);
+
+            if ($teachersIds) {
+                if (intval($teachersIds[0]) === 0) {
+                    array_splice($teachersIds, 0, 1);
+                }
+                $teachers = $this->userManager->getUsersByIds($teachersIds);
+
+                foreach ($teachers as $teacher) {
+                    $sessionEvent->addTutor($teacher);
+                }
+            }
+        }
         $sessionEvent->setName($name);
         $sessionEvent->setDescription($description);
         $sessionEvent->setStartDate($startDate);
@@ -201,14 +234,8 @@ class SessionEventsToolController extends Controller
         $sessionEvent->setMaxUsers($maxUsers);
         $sessionEvent->setLocationExtra($locationExtra);
         $locationId = intval($this->request->get('location', false));
-
-        if ($locationId) {
-            $location = $this->locationManager->getLocationById($locationId);
-
-            if (!is_null($location)) {
-                $sessionEvent->setLocation($location);
-            }
-        }
+        $location = $locationId ? $this->locationManager->getLocationById($locationId) : null;
+        $sessionEvent->setLocation($location);
         $this->cursusManager->persistSessionEvent($sessionEvent);
         $serializedSessionEvent = $this->serializer->serialize(
             $sessionEvent,
@@ -267,7 +294,7 @@ class SessionEventsToolController extends Controller
             'sessionEvents' => $this->serializer->serialize(
                 $data['sessionEvents'],
                 'json',
-                SerializationContext::create()->setGroups(['api_cursus_min'])
+                SerializationContext::create()->setGroups(['api_user_min'])
             ),
             'total' => $data['count'],
         ];
@@ -401,6 +428,26 @@ class SessionEventsToolController extends Controller
         );
 
         return new JsonResponse($serializedLocations, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/cursus/session/{session}/teachers/retrieve",
+     *     name="claro_cursus_session_teachers_retrieve",
+     *     options = {"expose"=true}
+     * )
+     */
+    public function sessionTeachersRetrieveAction(CourseSession $session)
+    {
+        $this->checkToolAccess($session->getWorkspace(), 'edit');
+        $users = $this->cursusManager->getUsersBySessionAndType($session, CourseSessionUser::TEACHER);
+        $serializedUsers = $this->serializer->serialize(
+            $users,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedUsers, 200);
     }
 
     private function checkToolAccess(Workspace $workspace = null, $right = 'open')

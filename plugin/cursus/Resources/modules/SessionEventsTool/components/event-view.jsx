@@ -28,12 +28,9 @@ class EventView extends Component {
         props: {
           mode: 'edition',
           title: `${trans('session_event_edition', {}, 'cursus')}`,
-          updateEventForm: this.props.updateEventForm,
           event: sessionEvent,
           session: this.props.session,
-          confirmAction: this.props.editSessionEvent,
-          resetFormData: this.props.resetEventForm,
-          loadFormData: this.props.loadEventForm
+          confirmAction: this.props.editSessionEvent
         },
         fading: false
       }
@@ -192,6 +189,22 @@ class EventView extends Component {
                     {trans('no_location', {}, 'cursus')}
                   </div>
                 }
+                <hr/>
+                {this.props.event['tutors'] && this.props.event['tutors'].length > 0 ?
+                  <div>
+                    <h4>{trans('tutors', {}, 'cursus')}</h4>
+                    <ul>
+                      {this.props.event['tutors'].map((tutor, index) =>
+                        <li key={index}>
+                          {tutor['firstName']} {tutor['lastName']}
+                        </li>
+                      )}
+                    </ul>
+                  </div> :
+                  <div className="alert alert-warning">
+                    {trans('no_tutor', {}, 'cursus')}
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -308,9 +321,6 @@ EventView.propTypes = {
   currentError: T.string,
   resetCurrentSessionEvent: T.func.isRequired,
   editSessionEvent: T.func,
-  resetEventForm: T.func,
-  updateEventForm: T.func,
-  loadEventForm: T.func,
   registerParticipants: T.func,
   deleteParticipants: T.func,
   acceptParticipant: T.func,
@@ -337,9 +347,6 @@ function mapDispatchToProps(dispatch) {
     editSessionEvent: (eventId, eventData) => {
       dispatch(actions.editSessionEvent(eventId, eventData))
     },
-    resetEventForm: () => dispatch(actions.resetEventForm()),
-    updateEventForm: (property, value) => dispatch(actions.updateEventForm(property, value)),
-    loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
     registerParticipants: (eventId, usersIds) => dispatch(actions.registerUsersToSessionEvent(eventId, usersIds)),
     deleteParticipants: (sessionEventUsersIds) => dispatch(actions.deleteSessionEventUsers(sessionEventUsersIds)),
     acceptParticipant: (sessionEventUserId) => dispatch(actions.acceptSessionEventUser(sessionEventUserId)),

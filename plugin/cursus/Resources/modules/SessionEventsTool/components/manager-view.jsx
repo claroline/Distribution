@@ -70,11 +70,18 @@ class ManagerView extends Component {
         props: {
           mode: 'creation',
           title: `${trans('session_event_creation', {}, 'cursus')}`,
-          updateEventForm: this.props.updateEventForm,
-          event: this.props.eventFormData,
+          event: {
+            id: null,
+            name: null,
+            description: null,
+            startDate: null,
+            endDate: null,
+            registrationType: 0,
+            maxUsers: null,
+            locationExtra: null
+          },
           session: this.props.session,
-          confirmAction: this.props.createSessionEvent,
-          resetFormData: this.props.resetEventForm
+          confirmAction: this.props.createSessionEvent
         },
         fading: false
       }
@@ -89,12 +96,9 @@ class ManagerView extends Component {
         props: {
           mode: 'edition',
           title: `${trans('session_event_edition', {}, 'cursus')}`,
-          updateEventForm: this.props.updateEventForm,
           event: sessionEvent,
           session: this.props.session,
-          confirmAction: this.props.editSessionEvent,
-          resetFormData: this.props.resetEventForm,
-          loadFormData: this.props.loadEventForm
+          confirmAction: this.props.editSessionEvent
         },
         fading: false
       }
@@ -218,7 +222,6 @@ ManagerView.propTypes = {
     registrationType: T.number.isRequired,
     maxUsers: T.number
   })).isRequired,
-  eventFormData: T.object.isRequired,
   session: T.object,
   total: T.number.isRequired,
   createSessionEvent: T.func.isRequired,
@@ -226,9 +229,6 @@ ManagerView.propTypes = {
   deleteSessionEvent: T.func.isRequired,
   repeatSessionEvent: T.func.isRequired,
   deleteSessionEvents: T.func.isRequired,
-  resetEventForm: T.func.isRequired,
-  updateEventForm: T.func.isRequired,
-  loadEventForm: T.func.isRequired,
   createModal: T.func.isRequired,
   filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
@@ -251,7 +251,6 @@ function mapStateToProps(state) {
     workspaceId: state.workspaceId,
     events: selectors.sessionEvents(state),
     total: selectors.sessionEventsTotal(state),
-    eventFormData: selectors.eventFormData(state),
     session: selectors.currentSession(state),
     selected: listSelect.selected(state),
     filters: listSelect.filters(state),
@@ -281,9 +280,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.deleteSessionEvents(workspaceId, sessionEvents))
     },
     createModal: (type, props, fading, hideModal) => makeModal(type, props, fading, hideModal, hideModal),
-    resetEventForm: () => dispatch(actions.resetEventForm()),
-    updateEventForm: (property, value) => dispatch(actions.updateEventForm(property, value)),
-    loadEventForm: (event) => dispatch(actions.loadEventForm(event)),
     // search
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))
