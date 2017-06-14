@@ -16,6 +16,7 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -67,6 +68,8 @@ class ExternalSynchronizationManager
     private $ymlParser;
     /** @var Dumper */
     private $ymlDumper;
+    /** @var ClaroUtilities */
+    private $utilities;
 
     /**
      * @DI\InjectParams({
@@ -78,7 +81,8 @@ class ExternalSynchronizationManager
      *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
      *     "pluginManager"          = @DI\Inject("claroline.manager.plugin_manager"),
      *     "container"              = @DI\Inject("service_container"),
-     *     "platformConfigHandler"  = @DI\Inject("claroline.config.platform_config_handler")
+     *     "platformConfigHandler"  = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "utilities"              = @DI\Inject("claroline.utilities.misc")
      * })
      *
      * @param $synchronizationDir
@@ -96,7 +100,8 @@ class ExternalSynchronizationManager
         GroupManager $groupManager,
         PluginManager $pluginManager,
         ContainerInterface $container,
-        PlatformConfigurationHandler $platformConfigHandler
+        PlatformConfigurationHandler $platformConfigHandler,
+        ClaroUtilities $utilities
     ) {
         $this->syncFilePath = $synchronizationDir.'external.sources.yml';
         $this->ymlParser = new Parser();
@@ -110,6 +115,7 @@ class ExternalSynchronizationManager
         $this->platformConfigHandler = $platformConfigHandler;
         $this->sourcesArray = $this->loadExternalSources();
         $this->casManager = null;
+        $this->utilities = $utilities;
         if ($pluginManager->isLoaded('ClarolineCasBundle')) {
             $this->casManager = $container->get('claroline.manager.cas_manager');
         }
@@ -221,16 +227,28 @@ class ExternalSynchronizationManager
     {
         $externalSource = $this->getExternalSource($sourceName);
         $repo = $this->getRepositoryForExternalSource($externalSource);
+        $groups = $repo->findGroups($search, $max);
+        foreach($groups as &$group) {
+            $group['name'] = $this->utilities->stringToUtf8($group['name']);
+            if (!empty($group['type'])) {
+                $group['type'] = $this->utilities->stringToUtf8($group['type']);
+            }
+        }
 
-        return $repo->findGroups($search, $max);
+        return $groups;
     }
 
     public function getExternalSourceGroupById($sourceName, $groupId)
     {
         $externalSource = $this->getExternalSource($sourceName);
         $repo = $this->getRepositoryForExternalSource($externalSource);
+        $group = $repo->findOneGroupById($groupId);
+        $group['name'] = $this->utilities->stringToUtf8($group['name']);
+        if (!empty($group['type'])) {
+            $group['type'] = $this->utilities->stringToUtf8($group['type']);
+        }
 
-        return $repo->findOneGroupById($groupId);
+        return $group;
     }
 
     public function synchronizeUsersForExternalSource(
@@ -266,6 +284,9 @@ class ExternalSynchronizationManager
         $existingCasUsers = [];
         $existingCasIds = [];
         $existingCasUsernames = [];
+        // List with already processed usernames and emails
+        $alreadyProcessedUserUsernames = [];
+        $alreadyProcessedUserEmails = [];
         $this->om->allowForceFlush(false);
         while ($countUsers > 0) {
             // Start flash suite
@@ -326,30 +347,31 @@ class ExternalSynchronizationManager
                     );
                 $existingCasIds = array_map(
                     function ($casUser) {
-                        return $casUser->getCasId();
+                        return strtoupper($casUser->getCasId());
                     },
                     $existingCasUsers
                 );
                 $existingCasUsernames = array_map(
                     function ($casUser) {
-                        return $casUser->getUser()->getUsername();
+                        return strtoupper($casUser->getUser()->getUsername());
                     },
                     $existingCasUsers
                 );
             }
-            $syncedUserUsernames = [];
-            $syncedUserEmails = [];
+            // List with already used public urls
+            $publicUrlList = [];
             // For every user
             foreach ($externalSourceUsers as $externalSourceUser) {
+                $externalSourceUser['username'] = $this->utilities->stringToUtf8($externalSourceUser['username']);
                 // If user already examined, ommit user
                 if (
-                    in_array($externalSourceUser['username'], $syncedUserUsernames) ||
-                    in_array($externalSourceUser['email'], $syncedUserEmails)
+                    in_array(strtoupper($externalSourceUser['username']), $alreadyProcessedUserUsernames) ||
+                    in_array($externalSourceUser['email'], $alreadyProcessedUserEmails)
                 ) {
                     continue;
                 }
-                $syncedUserUsernames[] = $externalSourceUser['username'];
-                $syncedUserEmails[] = $externalSourceUser['email'];
+                $alreadyProcessedUserUsernames[] = strtoupper($externalSourceUser['username']);
+                $alreadyProcessedUserEmails[] = $externalSourceUser['email'];
                 $this->log("Syncing user: {$externalSourceUser['username']}");
                 $alreadyImportedUser = null;
                 $casAccount = null;
@@ -361,7 +383,9 @@ class ExternalSynchronizationManager
                 if (
                     is_null($alreadyImportedUser) &&
                     !empty($existingCasUsers) &&
-                    ($key = array_search($externalSourceUser[$casSynchronizedField], $existingCasIds)) !== false
+                    ($key = array_search(
+                        strtoupper($externalSourceUser[$casSynchronizedField]), $existingCasIds)
+                    ) !== false
                 ) {
                     $casAccount = $existingCasUsers[$key];
                     $alreadyImportedUser = $this->externalUserManager->createExternalUser(
@@ -398,14 +422,17 @@ class ExternalSynchronizationManager
                     $user->setIsMailValidated(true);
                 }
                 // Update or set user values
-                $user->setFirstName($externalSourceUser['first_name']);
-                $user->setLastName($externalSourceUser['last_name']);
+                $user->setFirstName($this->utilities->stringToUtf8($externalSourceUser['first_name']));
+                $user->setLastName($this->utilities->stringToUtf8($externalSourceUser['last_name']));
                 $user->setMail($externalSourceUser['email']);
                 if (!empty($externalSourceUser['code'])) {
-                    $user->setAdministrativeCode($externalSourceUser['code']);
+                    $user->setAdministrativeCode($this->utilities->stringToUtf8($externalSourceUser['code']));
                 }
                 if (is_null($alreadyImportedUser)) {
-                    $this->userManager->createUser($user, true, $rolesToAdd);
+                    $publicUrl = $this->userManager->generatePublicUrl($user);
+                    $publicUrl .= in_array($publicUrl, $publicUrlList) ? '_'.uniqid() : '';
+                    $publicUrlList[] = $publicUrl;
+                    $this->userManager->createUser($user, true, $rolesToAdd, null, $publicUrl);
                     $this->externalUserManager->createExternalUser(
                         $externalSourceUser['id'],
                         $sourceName,
@@ -422,8 +449,8 @@ class ExternalSynchronizationManager
                 if (
                     !is_null($this->casManager) &&
                     $synchronizeCas &&
-                    !in_array($externalSourceUser[$casSynchronizedField], $existingCasIds) &&
-                    !in_array($externalSourceUser['username'], $existingCasUsernames)
+                    !in_array(strtoupper($externalSourceUser[$casSynchronizedField]), $existingCasIds) &&
+                    !in_array(strtoupper($externalSourceUser['username']), $existingCasUsernames)
                 ) {
                     $this->casManager->createCasUser($externalSourceUser[$casSynchronizedField], $user);
                 }
