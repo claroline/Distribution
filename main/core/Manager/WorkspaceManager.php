@@ -1261,11 +1261,8 @@ class WorkspaceManager
         return false;
     }
 
-    public function copy(Workspace $workspace, $code/*, Workspace $newWorkspace*/)
+    public function copy(Workspace $workspace, Workspace $newWorkspace)
     {
-        $newWorkspace = new Workspace();
-        $newWorkspace->setName($code);
-        $newWorkspace->setCode($code);
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
         $user = $this->container->get('security.token_storage')->getToken() ?
