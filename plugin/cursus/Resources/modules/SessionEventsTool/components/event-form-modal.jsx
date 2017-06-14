@@ -34,6 +34,8 @@ class EventFormModal  extends Component {
   }
 
   updateEventProps(property, value) {
+    const data = []
+
     switch (property) {
       case 'name':
         this.setState({name: value})
@@ -60,14 +62,12 @@ class EventFormModal  extends Component {
         this.setState({locationExtra: value})
         break
       case 'teachers':
-        const teachers = []
-
         for (let i = 0; i < value.length; ++i) {
           if (value[i]['selected']) {
-            teachers.push(value[i]['value'])
+            data.push(value[i]['value'])
           }
         }
-        this.setState({teachers: teachers})
+        this.setState({teachers: data})
         break
     }
   }

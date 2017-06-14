@@ -313,7 +313,8 @@ EventView.propTypes = {
     registrationType: T.number,
     maxUsers: T.number,
     location: T.object,
-    locationExtra: T.string
+    locationExtra: T.string,
+    tutors: T.array
   }).isRequired,
   session: T.object,
   participants: T.array.isRequired,
