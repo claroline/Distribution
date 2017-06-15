@@ -271,7 +271,10 @@ class AdditionalInstaller extends BaseInstaller
 
         $docUpdater = new Updater\DocUpdater($this->container);
         $docUpdater->updateDocUrl('http://doc.claroline.com');
+    }
 
+    public function end()
+    {
         $this->log('Updating resource icons...');
         $this->container->get('claroline.manager.icon_set_manager')->setLogger($this->logger);
         $this->container->get('claroline.manager.icon_set_manager')->addDefaultIconSets();
