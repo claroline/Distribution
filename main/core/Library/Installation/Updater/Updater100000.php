@@ -36,7 +36,6 @@ class Updater100000 extends Updater
         $this->setResourceNodeProperties();
         $this->rebuildMaskAndMenus();
         $this->enableWorkspaceList();
-        $this->addIconSet();
     }
 
     public function enableWorkspaceList()
