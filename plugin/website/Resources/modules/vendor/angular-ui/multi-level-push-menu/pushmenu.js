@@ -116,7 +116,8 @@ import angular from 'angular/index'
               })
             },
             post: function postLink(scope, element, attr, ctrl) {
-              var collapse, marginCollapsed, onOpen, options,
+              var collapse, marginCollapsed, onOpen, options, _this = this
+
               scope.options = options = ctrl.GetOptions()
               scope.correctionWidth = 0
               scope.childrenLevel = scope.level + 1
