@@ -81,8 +81,8 @@ class ReservationToolListener
     {
         $resourcesTypes = $this->em->getRepository('FormaLibreReservationBundle:ResourceType')->findAll();
 
-        foreach ($resourcesTypes as $resourcesTypeKey => $resourcesType) {
-            foreach ($resourcesType->getResources() as $resourceKey => $resource) {
+        foreach ($resourcesTypes as $resourcesType) {
+            foreach ($resourcesType->getResources() as $resource) {
                 if (!$this->reservationManager->hasAccess($this->tokenStorage->getToken()->getUser(), $resource, ReservationController::SEE)) {
                     $resourcesType->removeResource($resource);
                 }

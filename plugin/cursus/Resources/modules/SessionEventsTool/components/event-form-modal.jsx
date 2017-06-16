@@ -30,7 +30,7 @@ class EventFormModal  extends Component {
       location: props.event.location ? props.event.location.id : undefined,
       locationExtra: props.event.locationExtra ? props.event.locationExtra : undefined,
       teachers: props.event.tutors ? props.event.tutors.map(t => t.id) : [],
-      isAgendaEvent: props.event.type === 1,
+      isAgendaEvent: props.event.type === 1
     }
   }
 
