@@ -5,7 +5,7 @@ namespace FormaLibre\ReservationBundle\Manager;
 use Claroline\AgendaBundle\Entity\Event;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\GenericDatasEvent;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
@@ -166,13 +166,13 @@ class ReservationManager
 
     public function deleteEventsBoundToResource(Resource $resource)
     {
-        $genericDatas = new GenericDatasEvent();
-        $genericDatas->setDatas($resource);
+        $genericData = new GenericDataEvent();
+        $genericData->setData($resource);
 
         $this->eventDispatcher->dispatch(
             'formalibre_delete_event_from_resource',
-            'GenericDatas',
-            ['datas' => $genericDatas]
+            'GenericData',
+            ['datas' => $genericData]
         );
     }
 

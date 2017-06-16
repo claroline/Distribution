@@ -12,7 +12,7 @@
 namespace Claroline\CursusBundle\Listener;
 
 use Claroline\CoreBundle\Event\DisplayToolEvent;
-use Claroline\CoreBundle\Event\GenericDatasEvent;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\OpenAdministrationToolEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -100,9 +100,9 @@ class CursusListener
     /**
      * @DI\Observe("claroline_profile_courses_tab_options")
      *
-     * @param GenericDatasEvent $event
+     * @param GenericDataEvent $event
      */
-    public function onProfileCoursesTabOptionsRequest(GenericDatasEvent $event)
+    public function onProfileCoursesTabOptionsRequest(GenericDataEvent $event)
     {
         $data = [];
         $facetPreferences = $this->facetManager->getVisiblePublicPreference();
@@ -117,11 +117,11 @@ class CursusListener
     /**
      * @DI\Observe("claroline_learner_closed_sessions")
      *
-     * @param GenericDatasEvent $event
+     * @param GenericDataEvent $event
      */
-    public function onLearnerClosedSessionsRequest(GenericDatasEvent $event)
+    public function onLearnerClosedSessionsRequest(GenericDataEvent $event)
     {
-        $user = $event->getDatas();
+        $user = $event->getData();
         $facetPreferences = $this->facetManager->getVisiblePublicPreference();
         $enabled = $facetPreferences['baseData'] ?
             $this->platformConfigHandler->getParameter('cursus_enable_courses_profile_tab') :
