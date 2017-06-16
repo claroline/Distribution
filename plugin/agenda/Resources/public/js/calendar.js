@@ -112,7 +112,7 @@
     }
 
      function onEventClick(event, jsEvent)
-     {console.log(event)
+     {
          var workspaceId = event.workspace_id ? event.workspace_id : 0;
          if (workspacePermissions[workspaceId] && event.editable !== false) {
              // If the user can edit the event
