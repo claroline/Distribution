@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\DataFixtures\PostInstall\Data;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 
-class PostLoadRolesData implements RequiredFixture
+class LoadIconsData implements RequiredFixture
 {
     private $container;
 
@@ -25,9 +25,6 @@ class PostLoadRolesData implements RequiredFixture
 
     public function load(ObjectManager $manager)
     {
-        $role = $manager->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_WS_CREATOR');
-        $tool = $manager->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
-
-        $this->container->get('claroline.manager.tool_manager')->addRoleToAdminTool($tool, $role);
+        $this->container->get('claroline.manager.icon_set_manager')->addDefaultIconSets();
     }
 }

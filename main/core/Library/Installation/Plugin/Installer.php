@@ -73,6 +73,7 @@ class Installer
     {
         $this->logger = $logger;
         $this->baseInstaller->setLogger($logger);
+        $this->recorder->setLogger($logger);
     }
 
     /**
@@ -143,6 +144,11 @@ class Installer
         $this->recorder->update($plugin, $this->validator->getPluginConfiguration());
     }
 
+    public function end(PluginBundleInterface $plugin)
+    {
+        $this->baseInstaller->end($plugin);
+    }
+
     public function checkInstallationStatus(PluginBundleInterface $plugin, $shouldBeInstalled = true)
     {
         $this->log(sprintf('<fg=blue>Checking installation status for plugin %s</fg=blue>', $plugin->getName()));
@@ -182,6 +188,8 @@ class Installer
             $this->validator->activeUpdateMode();
             $this->validatePlugin($bundle['instance']);
             $this->validator->deactivateUpdateMode();
+            $this->log('Plugin validated: proceed to database changes...');
+            $this->om->clear();
             $this->recorder->update($bundle['instance'], $this->validator->getPluginConfiguration());
         }
     }
