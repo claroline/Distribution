@@ -67,7 +67,6 @@ class Updater100000 extends Updater
     {
         $entities = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->findAll();
         $totalObjects = count($entities);
-        $i = 0;
         $this->log("Adding properties for {$totalObjects} resource nodes...");
 
         $this->connection->query('
