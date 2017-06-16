@@ -188,10 +188,9 @@ class ThemeManager
 
         return count($themes) > 0 ? $themes[count($themes) - 1] : null;
     }
-    
-    public static function listStockThemesName() 
-    {
-         return self::$stockThemes;
-    }
 
+    public static function listStockThemesName()
+    {
+        return self::$stockThemes;
+    }
 }
