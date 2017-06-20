@@ -13,9 +13,9 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\CoreBundle\DataFixtures\PostInstall\Data\PostLoadRolesData;
+use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Claroline\CoreBundle\Entity\Plugin;
 
 class Updater100000 extends Updater
 {
