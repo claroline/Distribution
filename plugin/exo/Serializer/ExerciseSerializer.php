@@ -174,7 +174,7 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->showOverview = $exercise->getShowOverview();
         $parameters->showEndPage = $exercise->getShowEndPage();
         
-        if (!empty($exercise->getEndMessage()) {
+        if (!empty($exercise->getEndMessage())) {
             $parameters->endMessage = $exercise->getEndMessage();
         }
         
