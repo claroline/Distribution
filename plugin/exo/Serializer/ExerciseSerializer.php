@@ -173,11 +173,11 @@ class ExerciseSerializer implements SerializerInterface
         // Visibility parameters
         $parameters->showOverview = $exercise->getShowOverview();
         $parameters->showEndPage = $exercise->getShowEndPage();
-        
+
         if (!empty($exercise->getEndMessage())) {
             $parameters->endMessage = $exercise->getEndMessage();
         }
-        
+
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
