@@ -5620,6 +5620,11 @@ class CursusManager
         return $this->sessionEventUserRepo->findSessionEventUsersFromListBySessionEventAndStatus($sessionEvent, $users, $status);
     }
 
+    public function getSessionEventUsersByUserAndEventSet(User $user, SessionEventSet $eventSet)
+    {
+        return $this->sessionEventUserRepo->findSessionEventUsersByUserAndEventSet($user, $eventSet);
+    }
+
     /***************************************************
      * Access to SessionEventCommentRepository methods *
      ***************************************************/

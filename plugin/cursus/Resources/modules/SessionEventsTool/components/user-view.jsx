@@ -87,7 +87,7 @@ class UserView extends Component {
                       default :
                         return ('')
                     }
-                  } else if (rowData.registrationType === 2) {
+                  } else if (!this.props.disableRegistration && rowData.registrationType === 2) {
                     if (rowData.eventSet) {
                       return (
                         <button className="btn btn-default" onClick={() => this.showSessionEventSet(rowData.eventSet)}>
@@ -144,6 +144,7 @@ class UserView extends Component {
 }
 
 UserView.propTypes = {
+  disableRegistration: T.bool,
   events: T.arrayOf(T.shape({
     id: T.number.isRequired,
     name: T.string.isRequired,
@@ -171,6 +172,7 @@ UserView.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    disableRegistration: selectors.disableRegistration(state),
     events: selectors.sessionEvents(state),
     total: selectors.sessionEventsTotal(state),
     session: selectors.currentSession(state),

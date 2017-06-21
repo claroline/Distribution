@@ -6,6 +6,8 @@ import classes from 'classnames'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {t, trans} from '#/main/core/translation'
 import {actions} from '../actions'
+import {selectors} from '../selectors'
+import {registrationStatus} from '../enums'
 
 export const MODAL_EVENT_SET_REGISTRATION = 'MODAL_EVENT_SET_REGISTRATION'
 
@@ -22,6 +24,9 @@ class EventSetRegistrationModal  extends Component {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
+          <div className="well well-sm">
+            {trans('session_event_set_limit_info', {limit: this.props.eventSet.limit}, 'cursus')}
+          </div>
           <div className="table-responsive">
             <table className="table table-bordered">
               <tbody>
@@ -90,9 +95,19 @@ class EventSetRegistrationModal  extends Component {
                       </div>
                     </td>
                     <td className="text-center">
-                      <button className="btn btn-default">
-                        {t('register')}
-                      </button>
+                      {this.props.registrations[e.id] ?
+                        this.props.registrations[e.id].registrationStatus === 0 ?
+                          <span className="label label-success">
+                            {registrationStatus[this.props.registrations[e.id].registrationStatus]}
+                          </span> :
+                          <span className="label label-warning">
+                            {registrationStatus[this.props.registrations[e.id].registrationStatus]}
+                          </span> :
+                        !this.props.disableRegistration && this.props.eventSet.limit > this.props.nbRegistrations &&
+                          <button className="btn btn-default" onClick={() => this.props.selfRegisterToSessionEvent(e.id)}>
+                            {t('register')}
+                          </button>
+                      }
                     </td>
                   </tr>
                 )}
@@ -111,28 +126,36 @@ class EventSetRegistrationModal  extends Component {
 }
 
 EventSetRegistrationModal.propTypes = {
+  disableRegistration: T.bool,
   eventSet: T.shape({
     id: T.number,
     name: T.string,
     limit: T.number
   }).isRequired,
   events: T.array,
+  registrations: T.object,
+  nbRegistrations: T.number,
   loadSetEvents: T.func.isRequired,
   resetSetEvents: T.func.isRequired,
+  selfRegisterToSessionEvent: T.func.isRequired,
   fadeModal: T.func.isRequired,
   hideModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
-    events: state.setEvents
+    disableRegistration: selectors.disableRegistration(state),
+    events: state.setEvents.events,
+    registrations: state.setEvents.registrations,
+    nbRegistrations: state.setEvents.nbRegistrations
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadSetEvents: (eventSetId) => dispatch(actions.getSetEvents(eventSetId)),
+    loadSetEvents: eventSetId => dispatch(actions.getSetEvents(eventSetId)),
     resetSetEvents: () => dispatch(actions.resetSetEvents()),
+    selfRegisterToSessionEvent: sessionEventId => dispatch(actions.selfRegisterToSessionEvent(sessionEventId, true))
   }
 }
 

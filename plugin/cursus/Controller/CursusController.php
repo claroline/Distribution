@@ -478,8 +478,15 @@ class CursusController extends Controller
         $disableRegistration = $this->platformConfigHandler->hasParameter('cursus_disable_session_event_registration') ?
             $this->platformConfigHandler->getParameter('cursus_disable_session_event_registration') :
             true;
+        $isSetAvailable = true;
+        $eventSet = $sessionEvent->getEventSet();
 
-        if (!$disableRegistration && ($sessionEvent->getRegistrationType() === CourseSession::REGISTRATION_PUBLIC)) {
+        if (!empty($eventSet)) {
+            $limit = $eventSet->getLimit();
+            $setRegistrations = $this->cursusManager->getSessionEventUsersByUserAndEventSet($user, $eventSet);
+            $isSetAvailable = $limit > count($setRegistrations);
+        }
+        if (!$disableRegistration && ($sessionEvent->getRegistrationType() === CourseSession::REGISTRATION_PUBLIC) && $isSetAvailable) {
             $results = $this->cursusManager->selfRegisterUserToSessionEvent($sessionEvent, $user);
         }
 

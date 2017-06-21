@@ -32,6 +32,7 @@ export const TEACHERS_LOAD = 'TEACHERS_LOAD'
 export const TEACHERS_LOADED_UPDATE = 'TEACHERS_LOADED_UPDATE'
 export const SET_EVENTS_RESET = 'SET_EVENTS_RESET'
 export const SET_EVENTS_LOAD = 'SET_EVENTS_LOAD'
+export const SET_EVENTS_USERS_ADD = 'SET_EVENTS_USERS_ADD'
 
 export const actions = {}
 
@@ -335,7 +336,7 @@ actions.displaySessionEvent = (sessionEventId) => {
   }
 }
 
-actions.selfRegisterToSessionEvent = (sessionEventId) => ({
+actions.selfRegisterToSessionEvent = (sessionEventId, addInSet = false) => ({
   [REQUEST_SEND]: {
     url: generateUrl('claro_cursus_session_event_self_register', {sessionEvent: sessionEventId}),
     request: {
@@ -344,6 +345,10 @@ actions.selfRegisterToSessionEvent = (sessionEventId) => ({
     success: (data, dispatch) => {
       const sessionEventUsers = JSON.parse(data['sessionEventUsers'])
       dispatch(actions.addEventsUsers(sessionEventUsers))
+
+      if (addInSet) {
+        dispatch(actions.addSetEventsUsers(sessionEventUsers))
+      }
     }
   }
 })
@@ -506,7 +511,7 @@ actions.getSetEvents = (sessionEventSetId) => (dispatch) => {
         method: 'GET'
       },
       success: (data, dispatch) => {
-        dispatch(actions.loadSetEvents(JSON.parse(data)))
+        dispatch(actions.loadSetEvents(JSON.parse(data.events), JSON.parse(data.registrations)))
       }
     }
   })
@@ -550,6 +555,8 @@ actions.updateTeachersLoaded = makeActionCreator(TEACHERS_LOADED_UPDATE, 'loaded
 
 actions.resetSetEvents = makeActionCreator(SET_EVENTS_RESET)
 
-actions.loadSetEvents = makeActionCreator(SET_EVENTS_LOAD, 'events')
+actions.loadSetEvents = makeActionCreator(SET_EVENTS_LOAD, 'events', 'registrations')
+
+actions.addSetEventsUsers = makeActionCreator(SET_EVENTS_USERS_ADD, 'sessionEventUsers')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

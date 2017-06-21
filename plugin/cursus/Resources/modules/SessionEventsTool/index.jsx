@@ -33,6 +33,7 @@ class SessionEventsTool {
       {
         workspaceId: workspaceId,
         canEdit: canEdit,
+        disableRegistration: disableRegistration,
         sessions: sessions,
         sessionId: sessionId,
         events: {
@@ -62,6 +63,7 @@ class SessionEventsTool {
 const container = document.querySelector('.session-events-tool-container')
 const workspaceId = parseInt(container.dataset.workspace)
 const canEdit = parseInt(container.dataset.editable)
+const disableRegistration = parseInt(container.dataset.disableRegistration)
 const sessions = JSON.parse(container.dataset.sessions)
 const events = JSON.parse(container.dataset.events)
 const eventsTotal = parseInt(container.dataset.eventsTotal)

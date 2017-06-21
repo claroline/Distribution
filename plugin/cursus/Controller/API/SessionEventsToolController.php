@@ -14,6 +14,7 @@ namespace Claroline\CursusBundle\Controller\API;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -31,6 +32,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -38,38 +40,46 @@ class SessionEventsToolController extends Controller
 {
     private $apiManager;
     private $authorization;
+    private $configHandler;
     private $cursusManager;
     private $locationManager;
     private $request;
     private $serializer;
+    private $tokenStorage;
     private $userManager;
 
     /**
      * @DI\InjectParams({
      *     "apiManager"      = @DI\Inject("claroline.manager.api_manager"),
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "configHandler"   = @DI\Inject("claroline.config.platform_config_handler"),
      *     "cursusManager"   = @DI\Inject("claroline.manager.cursus_manager"),
      *     "locationManager" = @DI\Inject("claroline.manager.organization.location_manager"),
      *     "request"         = @DI\Inject("request"),
      *     "serializer"      = @DI\Inject("jms_serializer"),
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "userManager"     = @DI\Inject("claroline.manager.user_manager")
      * })
      */
     public function __construct(
         ApiManager $apiManager,
         AuthorizationCheckerInterface $authorization,
+        PlatformConfigurationHandler $configHandler,
         CursusManager $cursusManager,
         LocationManager $locationManager,
         Request $request,
         Serializer $serializer,
+        TokenStorageInterface $tokenStorage,
         UserManager $userManager
     ) {
         $this->apiManager = $apiManager;
         $this->authorization = $authorization;
+        $this->configHandler = $configHandler;
         $this->cursusManager = $cursusManager;
         $this->locationManager = $locationManager;
         $this->request = $request;
         $this->serializer = $serializer;
+        $this->tokenStorage = $tokenStorage;
         $this->userManager = $userManager;
     }
 
@@ -98,6 +108,9 @@ class SessionEventsToolController extends Controller
             $sessionEvent = $sessionEventUser->getSessionEvent();
             $eventsUsers[$sessionEvent->getId()] = $sessionEventUser;
         }
+        $disableRegistration = $this->configHandler->hasParameter('cursus_disable_session_event_registration') ?
+            $this->configHandler->getParameter('cursus_disable_session_event_registration') :
+            true;
 
         return [
             'workspace' => $workspace,
@@ -106,6 +119,7 @@ class SessionEventsToolController extends Controller
             'sessionEvents' => $sessionEventsData['sessionEvents'],
             'sessionEventsTotal' => $sessionEventsData['count'],
             'sessionEventUsers' => $eventsUsers,
+            'disableRegistration' => $disableRegistration ? 1 : 0,
         ];
     }
 
@@ -591,13 +605,28 @@ class SessionEventsToolController extends Controller
     {
         $this->checkToolAccess($sessionEventSet->getSession()->getWorkspace(), 'open');
         $events = $sessionEventSet->getEvents();
+        $user = $this->tokenStorage->getToken()->getUser();
+        $eventUsers = $user !== 'anon.' ?
+            $this->cursusManager->getSessionEventUsersByUserAndEventSet($user, $sessionEventSet) :
+            [];
+        $registrations = [];
+
+        foreach ($eventUsers as $eventUser) {
+            $sessionEventId = $eventUser->getSessionEvent()->getId();
+            $registrations[$sessionEventId] = $eventUser;
+        }
         $serializedEvents = $this->serializer->serialize(
             $events,
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );
+        $serializedRegistrations = $this->serializer->serialize(
+            $registrations,
+            'json',
+            SerializationContext::create()->setGroups(['api_cursus_min'])
+        );
 
-        return new JsonResponse($serializedEvents, 200);
+        return new JsonResponse(['events' => $serializedEvents, 'registrations' => $serializedRegistrations], 200);
     }
 
     /**

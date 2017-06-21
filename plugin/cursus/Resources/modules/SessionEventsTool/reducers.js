@@ -27,12 +27,14 @@ import {
   TEACHERS_LOAD,
   TEACHERS_LOADED_UPDATE,
   SET_EVENTS_RESET,
-  SET_EVENTS_LOAD
+  SET_EVENTS_LOAD,
+  SET_EVENTS_USERS_ADD
 } from './actions'
 
 const initialState = {
   workspaceId: null,
   canEdit: 0,
+  disableRegistration: 1,
   sessions: {},
   sessionId: null,
   currentEvent: {
@@ -58,7 +60,11 @@ const initialState = {
   locationsLoaded: false,
   teachers: [],
   teachersLoaded: false,
-  setEvents: []
+  setEvents: {
+    events: [],
+    registrations: {},
+    nbRegistrations: 0
+  }
 }
 
 const mainReducers = {}
@@ -219,12 +225,31 @@ const teachersLoadedReducers = {
 
 const setEventsReducers = {
   [SET_EVENTS_RESET]: () => initialState['setEvents'],
-  [SET_EVENTS_LOAD]: (state, action) => action.events
+  [SET_EVENTS_LOAD]: (state, action) => {
+    return {
+      events: action.events,
+      registrations: action.registrations,
+      nbRegistrations: Object.keys(action.registrations).length
+    }
+  },
+  [SET_EVENTS_USERS_ADD]: (state, action) => {
+    const registrations = cloneDeep(state.registrations)
+    action.sessionEventUsers.forEach(seu => {
+      registrations[seu.sessionEvent.id] = seu
+    })
+
+    return {
+      events: state.events,
+      registrations: registrations,
+      nbRegistrations: state.nbRegistrations + action.sessionEventUsers.length
+    }
+  }
 }
 
 export const reducers = combineReducers({
   workspaceId: makeReducer(initialState['workspaceId'], mainReducers),
   canEdit: makeReducer(initialState['canEdit'], mainReducers),
+  disableRegistration: makeReducer(initialState['disableRegistration'], mainReducers),
   sessions: makeReducer(initialState['sessions'], mainReducers),
   sessionId: makeReducer(initialState['sessionId'], mainReducers),
   currentEvent: makeReducer(initialState['currentEvent'], currentEventReducers),
