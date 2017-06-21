@@ -82,7 +82,7 @@ describe('Decorator', () => {
           showScoreAt: SHOW_SCORE_AT_CORRECTION,
           showStatistics: false,
           showFullCorrection: true,
-          endMessage: ""
+          endMessage: ''
         }
       },
       steps: {
@@ -204,7 +204,7 @@ describe('Decorator', () => {
           showScoreAt: SHOW_SCORE_AT_CORRECTION,
           showStatistics: false,
           showFullCorrection: true,
-          endMessage: ""
+          endMessage: ''
         }
       },
       steps: {
