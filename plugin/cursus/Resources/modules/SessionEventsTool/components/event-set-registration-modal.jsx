@@ -2,7 +2,6 @@ import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
 import moment from 'moment'
 import Modal from 'react-bootstrap/lib/Modal'
-import classes from 'classnames'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {t, trans} from '#/main/core/translation'
 import {actions} from '../actions'
@@ -52,7 +51,7 @@ class EventSetRegistrationModal  extends Component {
                           {(e.location || e.locationExtra) &&
                             <div>
                               <hr/>
-                                <b>{t('location')}</b>
+                              <b>{t('location')}</b>
                             </div>
                           }
                           {e.location &&

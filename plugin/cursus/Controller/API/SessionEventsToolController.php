@@ -620,13 +620,13 @@ class SessionEventsToolController extends Controller
             'json',
             SerializationContext::create()->setGroups(['api_user_min'])
         );
-        $serializedRegistrations = $this->serializer->serialize(
+        $serializedRegs = $this->serializer->serialize(
             $registrations,
             'json',
             SerializationContext::create()->setGroups(['api_cursus_min'])
         );
 
-        return new JsonResponse(['events' => $serializedEvents, 'registrations' => $serializedRegistrations], 200);
+        return new JsonResponse(['events' => $serializedEvents, 'registrations' => $serializedRegs], 200);
     }
 
     /**
