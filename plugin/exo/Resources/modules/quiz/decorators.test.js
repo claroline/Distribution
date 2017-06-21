@@ -203,7 +203,8 @@ describe('Decorator', () => {
           anonymizeAttempts: false,
           showScoreAt: SHOW_SCORE_AT_CORRECTION,
           showStatistics: false,
-          showFullCorrection: true
+          showFullCorrection: true,
+          endMessage: ""
         }
       },
       steps: {
