@@ -19,6 +19,11 @@ echo "Last minor version: ${LAST_VERSION_BLOCK}"
 
 CURRENT_COMMIT=`git rev-parse HEAD`
 
+if [ "${CURRENT_COMMIT}" = "${LAST_COMMIT}" ]; then
+  echo "Nothing to update, already at the latest version"
+  exit 0
+fi
+
 LAST_MINOR_VERSION=`echo "${LAST_VERSION_BLOCK}" | cut -d "-" -f1`
 
 if [ ! -z "${TYPE_VERSION}" ]; then
@@ -33,11 +38,6 @@ fi
 FULL_VERSION="${BASE_VERSION}.${CURRENT_VERSION_BLOCK}"
 
 echo "Current minor version: ${FULL_VERSION}"
-
-#if [ "${CURRENT_COMMIT}" = "${LAST_COMMIT}" ]; then
-#  echo "Nothing to update, already at the latest version"
-#  exit 0
-#fi
 
 # create the VERSION.txt file
 {
