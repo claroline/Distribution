@@ -13,6 +13,7 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\CoreBundle\DataFixtures\PostInstall\Data\PostLoadRolesData;
+use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -36,7 +37,6 @@ class Updater100000 extends Updater
         $this->setResourceNodeProperties();
         $this->rebuildMaskAndMenus();
         $this->enableWorkspaceList();
-        $this->addIconSet();
     }
 
     public function enableWorkspaceList()
@@ -57,8 +57,8 @@ class Updater100000 extends Updater
             $plugin = new Plugin();
             $plugin->setBundleName('CoreBundle');
             $plugin->setVendorName('Claroline');
-            $this->persist($plugin);
-            $this->flush();
+            $this->om->persist($plugin);
+            $this->om->flush();
         } else {
             $this->log('CoreBundle already installed');
         }
@@ -68,7 +68,6 @@ class Updater100000 extends Updater
     {
         $entities = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')->findAll();
         $totalObjects = count($entities);
-        $i = 0;
         $this->log("Adding properties for {$totalObjects} resource nodes...");
 
         $this->connection->query('
