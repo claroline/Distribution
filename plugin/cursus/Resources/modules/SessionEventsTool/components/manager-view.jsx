@@ -238,9 +238,12 @@ class ManagerView extends Component {
               current: this.props.selected,
               toggle: this.props.toggleSelect,
               toggleAll: this.props.toggleSelectAll,
-              actions: [
-                {label: t('delete'), icon: 'fa fa-fw fa-trash-o', action: () => this.deleteSessionEvents(this.props.selected), isDangerous: true}
-              ]
+              actions: [{
+                label: t('delete'),
+                icon: 'fa fa-fw fa-trash-o',
+                action: () => this.deleteSessionEvents(this.props.selected),
+                isDangerous: true
+              }]
             }}
           />
           <br/>

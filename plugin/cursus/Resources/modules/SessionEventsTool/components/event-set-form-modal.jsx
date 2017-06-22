@@ -74,10 +74,11 @@ class EventSetFormModal  extends Component {
               {t('name')}
             </label>
             <div className="col-md-9">
-              <input type="text"
-                     className="form-control"
-                     value={this.state.name}
-                     onChange={e => this.updateEventSetProps('name', e.target.value)}
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.name}
+                onChange={e => this.updateEventSetProps('name', e.target.value)}
               />
               {this.state.nameError &&
                 <div className="help-block field-error">
@@ -92,11 +93,12 @@ class EventSetFormModal  extends Component {
               <label>{t('limit')}</label>
             </div>
             <div className="col-md-9">
-              <input type="number"
-                     className="form-control"
-                     value={this.state.limit}
-                     min="1"
-                     onChange={e => this.updateEventSetProps('limit', e.target.value)}
+              <input
+                type="number"
+                className="form-control"
+                value={this.state.limit}
+                min="1"
+                onChange={e => this.updateEventSetProps('limit', e.target.value)}
               />
               {this.state.limitError &&
                 <div className="help-block field-error">

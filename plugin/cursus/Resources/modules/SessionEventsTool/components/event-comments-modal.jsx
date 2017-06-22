@@ -62,21 +62,23 @@ class EventCommentsModal  extends Component {
           <div className="panel panel-default">
             <div className="panel-heading" role="tab" id="description-heading">
               <h4 className="panel-title">
-                <a role="button"
-                   data-toggle="collapse"
-                   href="#event-collapse"
-                   aria-expanded="true"
-                   aria-controls="event-collapse"
+                <a
+                  role="button"
+                  data-toggle="collapse"
+                  href="#event-collapse"
+                  aria-expanded="true"
+                  aria-controls="event-collapse"
                 >
                   {trans('session_event', {}, 'cursus')}
                   <i className="pull-right fa fa-chevron-down"></i>
                 </a>
               </h4>
             </div>
-            <div id="event-collapse"
-                 className="panel-collapse collapse"
-                 role="tabpanel"
-                 aria-labelledby="event-heading"
+            <div
+              id="event-collapse"
+              className="panel-collapse collapse"
+              role="tabpanel"
+              aria-labelledby="event-heading"
             >
               <div className="panel-body">
                 <h3>{this.props.event['name']}</h3>
@@ -142,27 +144,22 @@ class EventCommentsModal  extends Component {
               {this.state.showCreationForm ?
                 <div>
                   <label>{trans('add_information', {}, 'cursus')}</label>
-                  <Textarea id="new-event-comment"
-                            content={this.state.newComment}
-                            onChange={text => this.updateNewComment(text)}
+                  <Textarea
+                    id="new-event-comment"
+                    content={this.state.newComment}
+                    onChange={text => this.updateNewComment(text)}
                   >
                   </Textarea>
                   <br/>
-                  <button className="btn btn-primary"
-                          onClick={() => this.validateNewComment(false)}
-                  >
+                  <button className="btn btn-primary" onClick={() => this.validateNewComment(false)}>
                       {t('ok')}
                   </button>
                   &nbsp;
-                  <button className="btn btn-default"
-                          onClick={() => this.switchCreationForm(false)}
-                  >
+                  <button className="btn btn-default" onClick={() => this.switchCreationForm(false)}>
                       {t('cancel')}
                   </button>
                 </div> :
-                <button className="btn btn-default"
-                        onClick={() => this.switchCreationForm(true)}
-                >
+                <button className="btn btn-default" onClick={() => this.switchCreationForm(true)}>
                   <i className="fa fa-plus-circle"></i>
                   &nbsp;
                   {trans('add_information', {}, 'cursus')}
@@ -187,21 +184,18 @@ class EventCommentsModal  extends Component {
                         <tr key={index}>
                           <td colSpan="3">
                             <label>{trans('edit_information', {}, 'cursus')}</label>
-                            <Textarea id="edition-event-comment"
-                                      content={this.state.currentComment}
-                                      onChange={text => this.updateCurrentComment(text)}
+                            <Textarea
+                              id="edition-event-comment"
+                              content={this.state.currentComment}
+                              onChange={text => this.updateCurrentComment(text)}
                             >
                             </Textarea>
                             <br/>
-                            <button className="btn btn-primary"
-                                    onClick={() => this.validateEditionComment()}
-                            >
+                            <button className="btn btn-primary" onClick={() => this.validateEditionComment()}>
                                 {t('ok')}
                             </button>
                             &nbsp;
-                            <button className="btn btn-default"
-                                    onClick={() => this.switchEditionForm(0, null)}
-                            >
+                            <button className="btn btn-default" onClick={() => this.switchEditionForm(0, null)}>
                                 {t('cancel')}
                             </button>
                           </td>
@@ -218,20 +212,22 @@ class EventCommentsModal  extends Component {
                           </td>
                           {this.props.canEdit &&
                             <td>
-                              <button className="btn btn-default btn-sm"
-                                      data-toggle="tooltip"
-                                      data-placement="left"
-                                      title={trans('edit_information', {}, 'cursus')}
-                                      onClick={() => this.switchEditionForm(c['id'], c['content'])}
+                              <button
+                                className="btn btn-default btn-sm"
+                                data-toggle="tooltip"
+                                data-placement="left"
+                                title={trans('edit_information', {}, 'cursus')}
+                                onClick={() => this.switchEditionForm(c['id'], c['content'])}
                               >
                                 <i className="fa fa-edit"></i>
                               </button>
                               &nbsp;
-                              <button className="btn btn-danger btn-sm"
-                                      data-toggle="tooltip"
-                                      data-placement="left"
-                                      title={trans('delete_information', {}, 'cursus')}
-                                      onClick={() => this.props.deleteComment(c['id'])}
+                              <button
+                                className="btn btn-danger btn-sm"
+                                data-toggle="tooltip"
+                                data-placement="left"
+                                title={trans('delete_information', {}, 'cursus')}
+                                onClick={() => this.props.deleteComment(c['id'])}
                               >
                                 <i className="fa fa-trash"></i>
                               </button>
