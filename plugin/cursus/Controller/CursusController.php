@@ -22,6 +22,7 @@ use Claroline\CursusBundle\Entity\CoursesWidgetConfig;
 use Claroline\CursusBundle\Entity\CursusDisplayedWord;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventComment;
+use Claroline\CursusBundle\Entity\SessionEventSet;
 use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Form\CoursesWidgetConfigurationType;
 use Claroline\CursusBundle\Form\MyCoursesWidgetConfigurationType;
@@ -1099,6 +1100,34 @@ class CursusController extends Controller
         $this->cursusManager->deleteSessionEventComment($sessionEventComment);
 
         return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/courses/widget/{widgetInstance}/session/event/set/{sessionEventSet}/registration",
+     *     name="claro_courses_widget_session_event_set_registration",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Template("ClarolineCursusBundle:Cursus:sessionEventSetRegistrationModal.html.twig")
+     */
+    public function coursesWidgetSessionEventSetRegistrationAction(WidgetInstance $widgetInstance, SessionEventSet $sessionEventSet)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $eventUsers = $user !== 'anon.' ?
+            $this->cursusManager->getSessionEventUsersByUserAndEventSet($user, $sessionEventSet) :
+            [];
+        $registrations = [];
+
+        foreach ($eventUsers as $eventUser) {
+            $sessionEventId = $eventUser->getSessionEvent()->getId();
+            $registrations[$sessionEventId] = $eventUser;
+        }
+
+        return [
+            'widgetInstance' => $widgetInstance,
+            'eventSet' => $sessionEventSet,
+            'registrations' => $registrations,
+        ];
     }
 
     private function checkToolAccess()
