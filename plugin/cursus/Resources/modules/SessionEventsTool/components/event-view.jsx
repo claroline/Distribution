@@ -1,6 +1,7 @@
 /*global UserPicker*/
 import {connect} from 'react-redux'
-import React, {Component, PropTypes as T} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
