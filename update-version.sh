@@ -58,6 +58,8 @@ mapfile -t COMMITNAMES <<< "$COMMITNAMES"
 COMMITSTRING=''
 MERGESTRING=''
 
+echo $COMMITNAMES
+
 i=0
 
 for COMMIT in $COMMITS
@@ -66,9 +68,7 @@ do
       #we don't log them yet, but jenkins already do that
       MERGESTRING="${MERGESTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
     else
-      COMMITSTRING="${COMMITSTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
+      printf "claroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
     fi
     i=$((i + 1))
 done
-
-`echo ${COMMITSTRING} >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md`
