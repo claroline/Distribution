@@ -68,7 +68,7 @@ do
         #we don't log them yet, but jenkins already do that
         MERGESTRING="${MERGESTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
     else
-        printf "[${COMMITNAMES[$i]}](https://github.com/claroline/Distribution/commit/${COMMIT})  "$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
+        printf "- [${COMMITNAMES[$i]}](https://github.com/claroline/Distribution/commit/${COMMIT})  "$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
     fi
     i=$((i + 1))
 done
