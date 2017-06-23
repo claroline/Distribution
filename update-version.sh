@@ -62,6 +62,8 @@ MERGESTRING=''
 
 i=0
 
+ printf "# Version $FULL_VERSION  "$'\n'$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
+
 for COMMIT in $COMMITS
 do
     if [[ ${COMMITNAMES[$i]} == *"Merge"* ]]; then
@@ -69,8 +71,9 @@ do
         MERGESTRING="${MERGESTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
     else
         NAMELINKS=`echo ${COMMITNAMES[$i]} | sed -r 's/\(#([^)]*)\).*/[#\1]\(https:\/\/github.com\/claroline\/Distribution\/pull\/\1\)/'`
-        echo $NAMELINKS
         printf "[${COMMIT}](https://github.com/claroline/Distribution/commit/${COMMIT}) - ${NAMELINKS}  "$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
     fi
     i=$((i + 1))
 done
+
+ printf $'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
