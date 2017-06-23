@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Version;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use FOS\RestBundle\View\View;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Entity\Version;
 
 /**
  * @DI\Service("claroline.manager.version_manager")
@@ -39,11 +39,12 @@ class VersionManager
     public function registerCurrent()
     {
         $data = $this->getVersionFile();
-        $version = $this->repo->findOneByVersion($data[0]):
+        $version = $this->repo->findOneByVersion($data[0]);
+
         if ($version) {
-           throw new \Exception('Version already registered');
+            throw new \Exception('Version already registered');
         }
-        
+
         $version = new Version($data[0], $data[1], $data[2]);
         $this->om->persist($version);
         $this->om->flush();
@@ -66,7 +67,7 @@ class VersionManager
 
     public function getVersionFilePath()
     {
-        return __DIR__ . '/../../VERSION.txt'
+        return __DIR__.'/../../VERSION.txt';
     }
 
     public function validateCurrent()

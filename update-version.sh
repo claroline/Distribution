@@ -40,10 +40,10 @@ FULL_VERSION="${BASE_VERSION}.${CURRENT_VERSION_BLOCK}"
 echo "Current minor version: ${FULL_VERSION}"
 
 # create the VERSION.txt file
-{
-echo $FULL_VERSION
-echo `git rev-parse HEAD`
-echo $BRANCH_NAME
-} > VERSION.txt
+# {
+# echo $FULL_VERSION
+# echo `git rev-parse HEAD`
+# echo $BRANCH_NAME
+# } > VERSION.txt
 
 #git log $(LAST_COMMIT)..$(CURRENT_COMMIT) --oneline  | cut -d " " -f 1
