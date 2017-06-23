@@ -17,3 +17,6 @@ claroline/distribution@812ceb9 - [CoreBundle] Missing use and stuff for v10 upgr
 claroline/distribution@654a919 - [CoreBundle] Simplify user registration form. (#2509)
 
 claroline/Distribution#59431d1
+
+
+claroline/Distribution@59431d1
