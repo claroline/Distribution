@@ -11,16 +11,21 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Version;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use FOS\RestBundle\View\View;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * @DI\Service("claroline.manager.version_manager")
  */
 class VersionManager
 {
+    use LoggableTrait;
+
     /**
      * @DI\InjectParams({
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
@@ -38,16 +43,26 @@ class VersionManager
 
     public function registerCurrent()
     {
+        $this->log('Registering current version');
         $data = $this->getVersionFile();
         $version = $this->repo->findOneByVersion($data[0]);
 
         if ($version) {
-            throw new \Exception('Version already registered');
+            $this->log("Version {$version->getVersion()} already registered !", LogLevel::ERROR);
+
+            return;
         }
 
         $version = new Version($data[0], $data[1], $data[2]);
         $this->om->persist($version);
         $this->om->flush();
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     public function getCurrent()
@@ -62,12 +77,12 @@ class VersionManager
     {
         $data = file_get_contents($this->getVersionFilePath());
 
-        return split('\n', $data);
+        return explode("\n", $data);
     }
 
     public function getVersionFilePath()
     {
-        return __DIR__.'/../../VERSION.txt';
+        return __DIR__.'/../../../VERSION.txt';
     }
 
     public function validateCurrent()

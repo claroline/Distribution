@@ -37,6 +37,7 @@ class Updater100000 extends Updater
         $this->setResourceNodeProperties();
         $this->rebuildMaskAndMenus();
         $this->enableWorkspaceList();
+        $this->registerVersion();
     }
 
     public function enableWorkspaceList()
@@ -108,5 +109,11 @@ class Updater100000 extends Updater
         $this->container->get('claroline.plugin.installer')->setLogger($this->logger);
         $this->container->get('claroline.plugin.installer')->updateAllConfigurations();
         $this->log('On older plateforms, resource permissions might have changed !');
+    }
+
+    public function registerVersion()
+    {
+        $this->container->get('claroline.manager.version_manager')->setLogger($this->logger);
+        $this->container->get('claroline.manager.version_manager')->registerCurrent();
     }
 }

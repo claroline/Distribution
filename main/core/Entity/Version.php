@@ -23,6 +23,7 @@ class Version
     /**
      * @ORM\Id
      * @ORM\Column(name="session_id", type="string", length=255)
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
