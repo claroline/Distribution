@@ -46,4 +46,29 @@ echo "Current minor version: ${FULL_VERSION}"
 # echo $BRANCH_NAME
 # } > VERSION.txt
 
-#git log $(LAST_COMMIT)..$(CURRENT_COMMIT) --oneline  | cut -d " " -f 1
+# building log file
+LOGS=`git log ${LAST_COMMIT}..${CURRENT_COMMIT} --oneline`
+
+COMMITS="$( cut -d " " -f -1 <<< "$LOGS" )"
+COMMITNAMES="$( cut -d " " -f 2- <<< "$LOGS" )"
+
+COMMITS=$(tr " " "\n" <<< "$COMMITS")
+mapfile -t COMMITNAMES <<< "$COMMITNAMES"
+
+COMMITSTRING=''
+MERGESTRING=''
+
+i=0
+
+for COMMIT in $COMMITS
+do
+    if [[ ${COMMITNAMES[$i]} == *"Merge"* ]]; then
+      #we don't log them yet, but jenkins already do that
+      MERGESTRING="${MERGESTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
+    else
+      COMMITSTRING="${COMMITSTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
+    fi
+    i=$((i + 1))
+done
+
+`echo ${COMMITSTRING} >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.txt`
