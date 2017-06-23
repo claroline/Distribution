@@ -1,4 +1,4 @@
-claroline/distribution@59431d1 - use printf instead of echo
+claroline/Distribution@59431d1 - use printf instead of echo
 claroline/distribution@9619b16 - md file
 claroline/distribution@fd8bb98 - Changelog tracking
 claroline/distribution@be46e7d - wip
