@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BASE_VERSION=$1
 BRANCH_NAME=$2
 TYPE_VERSION=$3
@@ -40,11 +42,11 @@ FULL_VERSION="${BASE_VERSION}.${CURRENT_VERSION_BLOCK}"
 echo "Current minor version: ${FULL_VERSION}"
 
 # create the VERSION.txt file
-{
-echo $FULL_VERSION
-echo `git rev-parse HEAD`
-echo $BRANCH_NAME
-} > VERSION.txt
+# {
+# echo $FULL_VERSION
+# echo `git rev-parse HEAD`
+# echo $BRANCH_NAME
+# } > VERSION.txt
 
 # building log file
 LOGS=`git log ${LAST_COMMIT}..${CURRENT_COMMIT} --oneline`
@@ -58,8 +60,6 @@ mapfile -t COMMITNAMES <<< "$COMMITNAMES"
 COMMITSTRING=''
 MERGESTRING=''
 
-echo $COMMITNAMES
-
 i=0
 
 for COMMIT in $COMMITS
@@ -68,7 +68,9 @@ do
         #we don't log them yet, but jenkins already do that
         MERGESTRING="${MERGESTRING}\nclaroline/distribution@${COMMIT} - ${COMMITNAMES[$i]}"
     else
-        printf "- [${COMMITNAMES[$i]}](https://github.com/claroline/Distribution/commit/${COMMIT})  "$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
+        NAMELINKS=`echo ${COMMITNAMES[$i]} | sed -r 's/\(#([^)]*)\).*/[#\1]\(https:\/\/github.com\/claroline\/Distribution\/pull\/\1\)/'`
+        echo $NAMELINKS
+        printf "[${COMMIT}](https://github.com/claroline/Distribution/commit/${COMMIT}) - ${NAMELINKS}  "$'\n' >> changelogs/${BRANCH_NAME}-${BASE_VERSION}.x.md
     fi
     i=$((i + 1))
 done
