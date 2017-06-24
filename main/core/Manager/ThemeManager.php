@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
@@ -53,6 +54,35 @@ class ThemeManager
         $this->om = $om;
         $this->config = $config;
         $this->themeDir = $kernelDir.'/../web/themes';
+    }
+
+    public function all()
+    {
+        return $this->om
+            ->getRepository('ClarolineCoreBundle:Theme\Theme')
+            ->findBy([], ['name' => 'ASC']);
+    }
+
+    public function create(array $data)
+    {
+        return $this->update(new Theme, $data);
+    }
+
+    public function update(Theme $theme, array $data)
+    {
+        $errors = $this->validate($data);
+        if (count($errors) > 0) {
+            throw new InvalidDataException('Theme is not valid', $errors);
+        }
+
+        return $theme;
+    }
+
+    public function validate(array $data)
+    {
+        $errors = [];
+
+        return $errors;
     }
 
     /**

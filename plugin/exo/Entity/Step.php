@@ -4,11 +4,10 @@ namespace UJM\ExoBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Library\Model\AttemptParametersTrait;
 use UJM\ExoBundle\Library\Model\OrderTrait;
-use UJM\ExoBundle\Library\Model\UuidTrait;
+use Claroline\CoreBundle\Library\Model\UuidTrait;
 
 /**
  * A step represents a group of items (questions or content) inside an exercise.
@@ -67,7 +66,7 @@ class Step
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
         $this->stepQuestions = new ArrayCollection();
     }
 

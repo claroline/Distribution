@@ -60,9 +60,10 @@ class ThemeController
 
     /**
      * @EXT\Route("/", name="claro_admin_theme_list")
+     * @EXT\Method("GET")
      * @EXT\Template()
      */
-    public function listAction()
+    public function indexAction()
     {
         return [
             'isReadOnly' => !$this->manager->isThemeDirWritable(),

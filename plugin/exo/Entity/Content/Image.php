@@ -3,8 +3,7 @@
 namespace UJM\ExoBundle\Entity\Content;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
-use UJM\ExoBundle\Library\Model\UuidTrait;
+use Claroline\CoreBundle\Library\Model\UuidTrait;
 
 /**
  * Image.
@@ -65,7 +64,7 @@ class Image
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
     }
 
     /**

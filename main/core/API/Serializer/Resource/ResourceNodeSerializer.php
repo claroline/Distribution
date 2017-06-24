@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Serializer\Resource;
+namespace Claroline\CoreBundle\API\Serializer\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;

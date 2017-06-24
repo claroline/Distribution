@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Serializer\Workspace;
+namespace Claroline\CoreBundle\API\Serializer\Workspace;
 
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * @DI\Service("claroline.serializer.workspace")
  * @DI\Tag("claroline.serializer")
  */
-class WorskpaceSerializer
+class WorkspaceSerializer
 {
     private $om;
 

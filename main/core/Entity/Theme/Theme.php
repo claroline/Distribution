@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity\Theme;
 
 use Claroline\CoreBundle\Entity\Plugin;
+use Claroline\CoreBundle\Library\Model\UuidTrait;
 use Claroline\CoreBundle\Manager\ThemeManager;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,6 +31,8 @@ class Theme
      */
     private $id;
 
+    use UuidTrait;
+
     /**
      * @var string
      *
@@ -47,6 +50,11 @@ class Theme
      * @ORM\Column(name="extending_default", type="boolean")
      */
     protected $extendingDefault = false;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * @return int

@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use Claroline\CoreBundle\API\Finder;
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -20,7 +20,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @DI\Tag("security.secure_service")
@@ -46,13 +45,13 @@ class WorkspacesController extends Controller
      * @param WorkspaceManager $workspaceManager
      * @param ObjectManager    $om
      * @param StrictDispatcher $eventDispatcher
-     * @param Finder           $finder
+     * @param FinderProvider           $finder
      */
     public function __construct(
         WorkspaceManager $workspaceManager,
         ObjectManager $om,
         StrictDispatcher $eventDispatcher,
-        Finder $finder
+        FinderProvider $finder
     ) {
         $this->workspaceManager = $workspaceManager;
         $this->om = $om;

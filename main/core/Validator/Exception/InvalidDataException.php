@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Library\Validation\Exception;
+namespace Claroline\CoreBundle\Validator\Exception;
 
 /**
  * Exception thrown by the Api when invalid data are received.

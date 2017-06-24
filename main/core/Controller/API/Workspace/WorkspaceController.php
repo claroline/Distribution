@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\API\Workspace;
 
-use Claroline\CoreBundle\API\Finder;
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\WorkspaceType;
@@ -72,7 +72,7 @@ class WorkspaceController extends FOSRestController
         TokenStorageInterface $tokenStorage,
         ClaroUtilities $utilities,
         WorkspaceManager $workspaceManager,
-        Finder $finder
+        FinderProvider $finder
     ) {
         $this->formFactory = $formFactory;
         $this->om = $om;

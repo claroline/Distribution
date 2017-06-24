@@ -1,0 +1,33 @@
+{% extends "ClarolineCoreBundle:Administration:layout.html.twig" %}
+
+{% block title %}{{ parent() ~ ' - ' ~ 'theme_management' | trans({}, 'theme') | striptags | raw }}{% endblock %}
+
+{% block breadcrumb %}
+    {{ macros.breadcrumbs([
+        {
+            'icon': 'fa fa-cog',
+            'name': 'administration'|trans({}, 'platform'),
+            'href': path('claro_admin_index')
+        },
+        {
+            'name': 'theme_management'|trans({}, 'theme'),
+            'href': ''
+        }
+    ]) }}
+{% endblock %}
+
+{% block content %}
+    <div
+        class="page-container themes-container"
+        data-themes="{{ themes | json_encode | raw | escape }}"
+        data-read-only="{{ isReadOnly }}"
+    >
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {# Claroline JS #}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-main-core-theme-management.js') }}"></script>
+{% endblock %}
