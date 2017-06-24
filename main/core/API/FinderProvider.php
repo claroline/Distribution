@@ -12,41 +12,78 @@
 namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @DI\Service("claroline.API.finder")
  */
-class Finder
+class FinderProvider
 {
-    private $finders;
+    /**
+     * @var ObjectManager
+     */
+    private $om;
+
+    /**
+     * @var SerializerProvider
+     */
     private $serializer;
 
     /**
+     * The list of registered finders in the platform.
+     *
+     * @var array
+     */
+    private $finders = [];
+
+    /**
+     * Finder constructor.
+     *
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer" = @DI\Inject("claroline.API.serializer")
      * })
+     *
+     * @param ObjectManager $om
+     * @param SerializerProvider $serializer
      */
-    public function __construct(ObjectManager $om, Serializer $serializer)
+    public function __construct(
+        ObjectManager $om,
+        SerializerProvider $serializer)
     {
         $this->om = $om;
         $this->serializer = $serializer;
     }
 
-    public function addFinder(FinderInterface $finder)
+    /**
+     * Registers a new finder.
+     *
+     * @param FinderInterface $finder
+     */
+    public function add(FinderInterface $finder)
     {
-        $this->finders[] = $finder;
+        $this->finders[$finder->getClass()] = $finder;
     }
 
-    public function getFinder($class)
+    /**
+     * Gets a registered finder instance.
+     *
+     * @param string $class
+     *
+     * @return FinderInterface
+     *
+     * @throws \Exception
+     */
+    public function get($class)
     {
-        foreach ($this->finders as $finder) {
-            if ($finder->getClass() === $class) {
-                return $finder;
-            }
+        if (empty($this->finders[$class])) {
+            throw new \Exception(
+                sprintf('No finder found for class "%s" Maybe you forgot to add the "claroline.finder" tag to your finder.', $class)
+            );
         }
+
+        return $this->finders[$class];
     }
 
     public function search($class, $page, $limit, array $searches = [])
@@ -54,8 +91,9 @@ class Finder
         $serializer = $this->serializer;
         $filters = isset($searches['filters']) ? $searches['filters'] : [];
         $orderBy = isset($searches['orderBy']) ? $searches['orderBy'] : [];
+
+        // execute queries
         $data = $this->fetch($class, $page, $limit, $searches);
-        //maybe do only 1 request later
         $count = $this->fetch($class, $page, $limit, $searches, true);
 
         $data = array_map(function ($el) use ($serializer) {
@@ -90,7 +128,7 @@ class Finder
         $count ? $qb->select('count(obj)') : $qb->select('obj');
         $qb->from($class, 'obj');
         $filters = isset($searches['filters']) ? $searches['filters'] : [];
-        $qb = $this->getFinder($class)->configureQueryBuilder($qb, $filters);
+        $qb = $this->get($class)->configureQueryBuilder($qb, $filters);
 
         if (!empty($searches['sortBy'])) {
             // reverse order starts by a -

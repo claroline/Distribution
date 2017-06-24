@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller;
+namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Form\ThemeType;
@@ -36,11 +36,17 @@ class ThemeController
     private $router;
 
     /**
+     * ThemeController constructor.
+     *
      * @DI\InjectParams({
      *     "manager" = @DI\Inject("claroline.manager.theme_manager"),
      *     "factory" = @DI\Inject("form.factory"),
      *     "router"  = @DI\Inject("router")
      * })
+     *
+     * @param ThemeManager $manager
+     * @param FormFactoryInterface $factory
+     * @param RouterInterface $router
      */
     public function __construct(
         ThemeManager $manager,
@@ -54,9 +60,10 @@ class ThemeController
 
     /**
      * @EXT\Route("/", name="claro_admin_theme_list")
+     * @EXT\Method("GET")
      * @EXT\Template()
      */
-    public function listAction()
+    public function indexAction()
     {
         return [
             'isReadOnly' => !$this->manager->isThemeDirWritable(),
@@ -67,6 +74,10 @@ class ThemeController
     /**
      * @EXT\Route("/{id}", name="claro_admin_theme_delete")
      * @EXT\Method("DELETE")
+     *
+     * @param Theme $theme
+     *
+     * @return JsonResponse
      */
     public function deleteAction(Theme $theme)
     {
@@ -81,7 +92,9 @@ class ThemeController
      */
     public function formAction()
     {
-        return ['form' => $this->formFactory->create(new ThemeType())];
+        return [
+            'form' => $this->formFactory->create(new ThemeType()),
+        ];
     }
 
     /**

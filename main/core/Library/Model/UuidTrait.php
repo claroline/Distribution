@@ -1,6 +1,6 @@
 <?php
 
-namespace UJM\ExoBundle\Library\Model;
+namespace Claroline\CoreBundle\Library\Model;
 
 use Ramsey\Uuid\Uuid;
 

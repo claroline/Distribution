@@ -182,7 +182,7 @@ class GeneralType extends AbstractType
                     'label' => 'login_target_route_option',
                 ]
             )
-            ->add(
+            /*->add(
                 'redirectAfterLoginOption',
                 'choice',
                 [
@@ -195,8 +195,14 @@ class GeneralType extends AbstractType
                     'multiple' => false,
                     'label' => 'redirect_after_login_option',
                 ]
-            )
-            ->add(
+            )*/
+            ->add('redirectAfterLogin', 'redirect_after_login_form', [
+                'label' => 'redirect_after_login_option',
+                'mapped' => false,
+                'required' => false,
+                'lockedParams' => $this->lockedParams
+            ])
+            /*->add(
                 'redirectAfterLoginUrl',
                 'text',
                 [
@@ -204,6 +210,15 @@ class GeneralType extends AbstractType
                     'required' => false,
                 ]
             )
+            ->add(
+                'defaultWorkspaceTag',
+                'text',
+                [
+                    'label' => 'default_workspace_tag',
+                    'required' => false,
+                    'disabled' => isset($options['lockedParams']['default_workspace_tag']),
+                ]
+            )*/
             ->add(
                 'accountDuration',
                 'integer',
@@ -304,15 +319,6 @@ class GeneralType extends AbstractType
                         PlatformDefaults::REGISTRATION_MAIL_VALIDATION_PARTIAL => 'send_mail_info',
                         PlatformDefaults::REGISTRATION_MAIL_VALIDATION_FULL => 'force_mail_validation',
                     ],
-                ]
-            )
-            ->add(
-                'defaultWorkspaceTag',
-                'text',
-                [
-                    'label' => 'default_workspace_tag',
-                    'required' => false,
-                    'disabled' => isset($this->lockedParams['default_workspace_tag']),
                 ]
             )
             ->add(

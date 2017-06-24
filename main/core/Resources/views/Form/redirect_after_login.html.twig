@@ -1,0 +1,23 @@
+{% block redirect_after_login_form_widget %}
+    <div {{ block('widget_container_attributes') }}>
+        {% for child in form.redirectAfterLoginOption %}
+            {% if 'redirect_after_login_option_url' == child.vars.label %}
+                <div class="radio radio-with-input">
+                    {{ form_widget(child) }}
+                    <div style="display: inline-block;">
+                    {{ form_widget(form.redirectAfterLoginUrl) }}
+                    </div>
+                </div>
+            {% elseif 'redirect_after_login_option_workspace_tag' == child.vars.label %}
+                <div class="radio radio-with-input">
+                    {{ form_widget(child) }}
+                    <div style="display: inline-block;">
+                    {{ form_widget(form.defaultWorkspaceTag) }}
+                    </div>
+                </div>
+            {% else %}
+                {{ form_widget(child) }}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,165 @@
+
+{% set externalAuthentication = render(controller('ClarolineCoreBundle:Authentication:renderExternalAuthenticationButton', {})) %}
+{% set primaryExternalAuthentication = render(controller('ClarolineCoreBundle:Authentication:renderPrimaryExternalAuthenticationButton', {})) %}
+
+<h1 class="login-title page-title text-center">
+    {{ 'login' | trans({}, "platform")}}
+</h1>
+
+<div class="login-container">
+    <div class="authentication-column account-authentication-column">
+        {% if primaryExternalAuthentication is not empty %}
+            <div class="primary-external-authentication-column">
+                {{ primaryExternalAuthentication|raw }}
+            </div>
+        {% endif %}
+
+        <p class="login-help">Connect with your claroline account :</p>
+
+        <form role="form" action="{{ path('claro_security_login_check') }}" method="post" id="login-form">
+            {% if error is defined and error %}
+                <div class="alert alert-danger">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ 'login_failure'|trans({}, 'platform') }}
+                </div>
+            {% endif %}
+
+            {% if is_expired is defined and is_expired %}
+                <div class="alert alert-danger">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ 'closed_account'|trans({}, 'platform') }}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label class="sr-only" for="username">
+                    {{ 'username_or_email'|trans({}, 'platform') }}
+                </label>
+
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="fa fa-fw fa-user" role="presentation"></span>
+                    </span>
+                    <input type="text" class="form-control" id="username" name="_username" placeholder="{{ 'username_or_email' | trans({}, 'platform') }}" tabindex="1" autofocus />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="sr-only" for="password">
+                    {{ 'password'|trans({}, 'platform') }}
+                </label>
+
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="fa fa-fw fa-lock" role="presentation"></span>
+                    </span>
+                    <input type="password" class="form-control" id="password" name="_password" placeholder="{{ 'password'|trans({}, 'platform') }}" tabindex="2" />
+                </div>
+            </div>
+
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" id="remember_me" name="_remember_me" /> {{ 'keep_me_logged_in'|trans({}, 'platform') }}
+                </label>
+            </div>
+
+            <p>
+                <a href ="{{ path('claro_security_forgot_password')}}" tabindex="4" title="{{ 'forgot_password'|trans({}, 'platform') }}">
+                    {{ 'forgot_password'|trans({}, 'platform') }}
+                </a>
+            </p>
+
+            <button type="submit" class="btn btn-primary btn-block" tabindex="3">{{ 'login'|trans({}, 'platform') }}</button>
+        </form>
+
+        <div class="authentication-or">
+            OR
+        </div>
+    </div>
+
+    {#{% if externalAuthentication is not empty %}#}
+        <div class="authentication-column external-authentication-column">
+            <p class="login-help">Use one of your other account :</p>
+
+            {#{{ externalAuthentication|raw }}#}
+            <div class="external_authentication">
+                <a href="#" id="facebook-connect-btn" class='btn facebook-connect btn-third-party-login'
+                   data-toggle="tooltip" data-placement="top" title="{{ 'login_with_third_party'|trans({'%name%':'facebook'|trans({}, 'icap_oauth')}, 'platform') }}"
+                >
+                    <span class="sr-only">{{ 'login_with_third_party'|trans({'%name%':'facebook'|trans({}, 'icap_oauth')}, 'platform') }}</span>
+                </a>
+
+                <a href="#" id="google-connect-btn" class='btn google-connect btn-third-party-login'
+                   data-toggle="tooltip" data-placement="top" title="{{ 'login_with_third_party'|trans({'%name%':'google'|trans({}, 'icap_oauth')}, 'platform') }}"
+                >
+                    <span class="sr-only">{{ 'login_with_third_party'|trans({'%name%':'google'|trans({}, 'icap_oauth')}, 'platform') }}</span>
+                </a>
+
+                <a href="#" id="twitter-connect-btn" class='btn twitter-connect btn-third-party-login'
+                   data-toggle="tooltip" data-placement="top" title="{{ 'login_with_third_party'|trans({'%name%':'twitter'|trans({}, 'icap_oauth')}, 'platform') }}"
+                >
+                    <span class="sr-only">{{ 'login_with_third_party'|trans({'%name%':'twitter'|trans({}, 'icap_oauth')}, 'platform') }}</span>
+                </a>
+            </div>
+        </div>
+    {#{% endif %}#}
+</div>
+
+{% if selfRegistrationAllowed is defined and selfRegistrationAllowed
+      and showRegisterButton is defined and showRegisterButton
+%}
+    <div class="registration-container">
+        <hr class="registration-separator" />
+        <h2>
+            No account yet ?
+            <small>Create one, it's rapid and easy.</small>
+        </h2>
+
+        <div class="panel panel-default">
+            <form class="panel-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>First name</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label>Last name</label>
+                            <input type="text" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-block btn-primary">
+                    Inscription
+                </button>
+            </form>
+        </div>
+    </div>
+
+    {#<a class="btn btn-default btn-block" tabindex="3" href="{{ path('claro_registration_user_registration_form') }}" title="{{ 'register'|trans({}, 'platform') }}">
+        {{ 'register'|trans({}, 'platform') }}
+    </a>#}
+{% endif %}
+
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $('.claro-oauth').click(function(event) {
+      event.preventDefault();
+      var form = $('#login-form');
+      form.attr('action', $(event.target).attr('href'));
+      form.submit();
+    });
+  });
+</script>

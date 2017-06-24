@@ -8,7 +8,7 @@
             {
                 'icon': 'fa fa-cog',
                 'name': 'administration'|trans({}, 'platform'),
-                'href': path('claro_admin_parameters_index')
+                'href': path('claro_admin_index')
             },
             {
                 'name': 'workspaces_management'|trans({}, 'platform'),
@@ -25,8 +25,8 @@
     data-count="{{ total }}"
     data-filters="{{ filters | json_encode | raw | escape }}"
     data-orderby="{{ orderBy | json_encode | raw | escape }}"
-    data-page="0"
-    data-pageSize="20"
+    data-page="{{ page }}"
+    data-pageSize="{{ limit }}"
   >
   </div>
 {% endblock %}

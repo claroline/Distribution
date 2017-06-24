@@ -23,12 +23,12 @@
             <!--
             <directory>main/*/Tests/</directory>
             <directory>plugin/*/Tests/</directory>
-            <directory>main/core/Tests/API/Admin</directory>
             -->
             <!-- Uncomment the following elements individually in the meantime -->
 
             <directory>main/core/Tests/API/</directory>
             <directory>main/core/Tests/Security/</directory>
+            <directory>main/core/Tests/Library/</directory>
             <directory>main/migration/Tests/</directory>
             <!-- <directory>plugin/activity-tool/Tests/</directory> -->
             <!-- <directory>plugin/announcement/Tests/</directory> -->

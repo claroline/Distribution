@@ -4,9 +4,8 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\ItemType\ClozeQuestion;
-use UJM\ExoBundle\Library\Model\UuidTrait;
+use Claroline\CoreBundle\Library\Model\UuidTrait;
 
 /**
  * Hole.
@@ -80,7 +79,7 @@ class Hole
     public function __construct()
     {
         $this->keywords = new ArrayCollection();
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
     }
 
     /**

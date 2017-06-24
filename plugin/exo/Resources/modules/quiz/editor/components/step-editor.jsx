@@ -25,7 +25,7 @@ import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
 import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
 
 const ParametersHeader = props =>
-  <div onClick={props.onClick} className="panel-title editor-panel-title">
+  <div onClick={props.onClick} className="panel-title editor-panel-title" aria-expanded={props.active}>
     <span className={
       classes(
         'fa fa-fw',
@@ -115,7 +115,7 @@ const ItemHeader = props =>
       makeItemPanelKey(props.item.type, props.item.id)
     )}
   >
-    <span className="panel-title">
+    <span className="panel-title" aria-expanded={props.expanded}>
       <ItemIcon name={getDefinition(props.item.type).name}/>
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
@@ -139,7 +139,8 @@ ItemHeader.propTypes = {
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  expanded: T.bool.isRequired
 }
 
 let ItemPanel = props =>
@@ -158,6 +159,7 @@ let ItemPanel = props =>
               connectDragSource={props.connectDragSource}
               hasErrors={!isEmpty(props.item._errors)}
               validating={props.validating}
+              expanded={props.expanded}
             />
           }
           collapsible={true}
@@ -218,8 +220,8 @@ const ContentHeader = props =>
       makeItemPanelKey(props.item.type, props.item.id)
     )}
   >
-    <span className="panel-title">
-      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)}></span>
+    <span className="panel-title" aria-expanded={props.expanded}>
+      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)} />
       {props.item.title || trans(getContentDefinition(props.item.type).type, {}, 'question_types')}
     </span>
 
@@ -247,7 +249,8 @@ ContentHeader.propTypes = {
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  expanded: T.bool.isRequired
 }
 
 let ContentPanel = props =>
@@ -266,6 +269,7 @@ let ContentPanel = props =>
               connectDragSource={props.connectDragSource}
               hasErrors={!isEmpty(props.item._errors)}
               validating={props.validating}
+              expanded={props.expanded}
             />
           }
           collapsible={true}

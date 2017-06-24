@@ -3,9 +3,8 @@
 namespace UJM\ExoBundle\Entity\Attempt;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\Item\Item;
-use UJM\ExoBundle\Library\Model\UuidTrait;
+use Claroline\CoreBundle\Library\Model\UuidTrait;
 
 /**
  * An answer represents a user answer to a question.
@@ -95,7 +94,7 @@ class Answer
 
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
     }
 
     /**

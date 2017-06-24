@@ -19,26 +19,21 @@ class ApiConfigPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        //finder pass
-        if (false === $container->hasDefinition('claroline.API.finder')) {
+        $this->register($container, 'claroline.API.finder',     'claroline.finder');
+        $this->register($container, 'claroline.API.serializer', 'claroline.serializer');
+        $this->register($container, 'claroline.API.validator',  'claroline.validator');
+    }
+
+    private function register(ContainerBuilder $container, $provider, $registerTag)
+    {
+        if (false === $container->hasDefinition($provider)) {
             return;
         }
 
-        $finder = $container->getDefinition('claroline.API.finder');
+        $providerDef = $container->getDefinition($provider);
 
-        foreach ($container->findTaggedServiceIds('claroline.finder') as $id => $attributes) {
-            $finder->addMethodCall('addFinder', [new Reference($id)]);
-        }
-
-        //serializer pass
-        if (false === $container->hasDefinition('claroline.API.serializer')) {
-            return;
-        }
-
-        $serializer = $container->getDefinition('claroline.API.serializer');
-
-        foreach ($container->findTaggedServiceIds('claroline.serializer') as $id => $attributes) {
-            $serializer->addMethodCall('addSerializer', [new Reference($id)]);
+        foreach ($container->findTaggedServiceIds($registerTag) as $id => $attributes) {
+            $providerDef->addMethodCall('add', [new Reference($id)]);
         }
     }
 }

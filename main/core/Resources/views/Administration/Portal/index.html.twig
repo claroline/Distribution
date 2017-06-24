@@ -1,5 +1,7 @@
 {% extends "ClarolineCoreBundle:Administration:layout.html.twig" %}
 
+{% form_theme form "bootstrap_3_layout.html.twig" %}
+
 {% block title %}{{ parent() ~ ' - ' ~ 'portal' | trans({}, 'platform') | striptags | raw }}{% endblock %}
 
 {% block breadcrumb %}
@@ -22,22 +24,37 @@
     }}
 {% endblock %}
 
-{% block section_content %}
-    <div class="panel-heading">
-        <h3 class="panel-title">{{ 'portal'|trans({}, 'platform') }}</h3>
+{% block content %}
+    <div class="page-container">
+        <main class="page">
+            <header class="page-header">
+                <h1>
+                    {{ 'parameters'|trans({}, 'platform') }}
+                    <small>{{ 'portal'|trans({}, 'platform') }}</small>
+                </h1>
+            </header>
+
+            <form role="form" class="page-content" action="{{path('claro_admin_portal_parameters')}}" method="post">
+                <div class="panel panel-default">
+                    {{ macros.flashBox() }}
+
+                    <div class="panel-body">
+                        {{ form_errors(form) }}
+                        {{ form_row(form.portalResources) }}
+                        {{ form_rest(form) }}
+                    </div>
+                </div>
+
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'save'|trans({}, 'platform') }}
+                    </button>
+
+                    <a class="btn btn-default" href="{{ path('claro_admin_index') }}">
+                        {{ 'cancel'|trans({}, 'platform') }}
+                    </a>
+                </div>
+            </form>
+        </main>
     </div>
-    <form role="form" class="form-horizontal general_parameters_form" action="{{path('claro_admin_portal_parameters')}}" method="post" id="form">
-        {{ macros.flashBox() }}
-        <div class="panel-body">
-            {{ form_errors(form) }}
-            {{ form_row(form.portalResources) }}
-            {{ form_rest(form) }}
-        </div>
-        <div class="panel-footer">
-            <button type="submit" class="btn btn-primary">{{ 'ok'|trans({}, 'platform') }}</button>
-            <a href="{{ path('claro_admin_index') }}">
-                <button type="button" class="btn btn-default">{{ 'cancel'|trans({}, 'platform') }}</button>
-            </a>
-        </div>
-    </form>
 {% endblock %}

@@ -4,9 +4,8 @@ namespace UJM\ExoBundle\Entity\Misc;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\ItemType\GridQuestion;
-use UJM\ExoBundle\Library\Model\UuidTrait;
+use Claroline\CoreBundle\Library\Model\UuidTrait;
 
 /**
  * GridItem.
@@ -113,7 +112,7 @@ class Cell
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
         $this->choices = new ArrayCollection();
     }
 

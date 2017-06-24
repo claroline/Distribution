@@ -1,6 +1,37 @@
 {% extends "ClarolineCoreBundle:Administration:layout.html.twig" %}
 
-{% form_theme form_settings "ClarolineCoreBundle:Form:redirect_after_login_theme.html.twig" %}
+{% form_theme form_settings "bootstrap_3_layout.html.twig" %}
+
+{% macro makePanel(parent, id, icon, title, fields) %}
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="{{ id }}-heading">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" data-parent="#{{ parent }}" href="#{{ id }}-content" aria-expanded="false" aria-controls="{{ id }}-content">
+                    {% if icon is not empty %}
+                    <span class="panel-title-icon fa fa-fw {{ icon }}"></span>
+                    {% endif %}
+
+                    {{ title }}
+                </a>
+            </h4>
+        </div>
+        <div id="{{ id }}-content" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ id }}-heading">
+            <div class="panel-body">
+                {% for field in fields %}
+                {{ form_row(field) }}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% import _self as localMacro %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link type="text/css" rel="stylesheet" href="{{ asset('packages/jquery-ui/themes/base/jquery-ui.min.css') }}" />
+{% endblock %}
 
 {% block title %}{{ parent() ~ ' - ' ~ 'general' | trans({}, 'platform') | striptags | raw }}{% endblock %}
 
@@ -17,85 +48,148 @@
                 'href': path('claro_admin_index')
             },
             {
-            'name': 'general'|trans({}, 'platform'),
-            'href': ''
+                'name': 'general'|trans({}, 'platform'),
+                'href': ''
             }
         ])
     }}
 {% endblock %}
 
-{% block section_content %}
-    <div class="panel-heading">
-        <h3 class="panel-title">{{ 'general'|trans({}, 'platform') }}</h3>
-    </div>
-    <form role="form" class="form-horizontal general_parameters_form" action="{{path('claro_admin_parameters_general')}}" method="post" {{ form_enctype(form_settings) }} id="form_settings" enctype='multipart/form-data'>
-        {{ macros.flashBox() }}
-        <div class="panel-body">
-            {{ form_errors(form_settings) }}
+{% block content %}
+    <div class="page-container">
+        <main class="page">
+            <header class="page-header">
+                <h1>
+                    {{ 'parameters'|trans({}, 'platform') }}
+                    <small>{{ 'general'|trans({}, 'platform') }}</small>
+                </h1>
+            </header>
 
-            {{ form_row(form_settings.name) }}
-            {{ form_row(form_settings.description) }}
-            {{ form_row(form_settings.supportEmail) }}
-            {{ form_row(form_settings.allowSelfRegistration) }}
-            {{ form_row(form_settings.registerButtonAtLogin) }}
-            {{ form_row(form_settings.defaultRole) }}
-            {{ form_row(form_settings.localeLanguage) }}
-            {{ form_row(form_settings.formCaptcha) }}
-            {{ form_row(form_settings.formHoneypot) }}
-            {{ form_row(form_settings.redirectAfterLoginOption) }}
-            {{ form_row(form_settings.accountDuration) }}
-            {{ form_row(form_settings.platformInitDate) }}
-            {{ form_row(form_settings.platformLimitDate) }}
-            {{ form_row(form_settings.anonymousPublicProfile) }}
+            <form class="page-content" role="form" action="{{path('claro_admin_parameters_general')}}" method="post" {{ form_enctype(form_settings) }} id="form_settings" enctype='multipart/form-data'>
+                {{ macros.flashBox() }}
+                <div class="panel panel-default">
+                    {{ form_errors(form_settings) }}
 
-            {% set value = form_settings.vars.value.portfolioUrl %}
-            <div class="form-group row portfolio_url_row">
-                {{ form_label(form_settings.portfolioUrl) }}
-                <div class="col-md-9">
-                    <div class="portfolio-url">
-                        <div class="radio portfolio_url">
-                            <label class="col-md-12">
-                                <div class="pull-left">
-                                    <input type="radio" name="portfolioUrlOptions" id="portfolioUrlOptions1" value="0" {% if value is empty %} checked="checked"{% endif %}>
-                                    <span>{{ 'internal_portfolio'|trans({}, 'platform') }}</span>
+                    <div class="panel-body">
+                        {# info #}
+                        {{ form_row(form_settings.name) }}
+                        {{ form_row(form_settings.description) }}
+                        {{ form_row(form_settings.localeLanguage) }}
+                    </div>
+
+                    <div class="panel-group" id="platform-params" role="tablist" aria-multiselectable="true">
+                        {{ localMacro.makePanel('platform-params', 'dates', 'fa-calendar', 'Dates', [
+                            form_settings.platformInitDate,
+                            form_settings.platformLimitDate
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'registration', 'fa-user-plus', 'Registration', [
+                            form_settings.allowSelfRegistration,
+                            form_settings.registerButtonAtLogin,
+                            form_settings.defaultRole,
+                            form_settings.accountDuration,
+                            form_settings.registrationMailValidation
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'login', 'fa-sign-in', 'Login', [
+                            form_settings.loginTargetRoute,
+                            form_settings.redirectAfterLogin
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'workspaces', 'fa-book', 'Workspaces', [
+                            form_settings.maxWorkspaceUsers,
+                            form_settings.sendMailAtWorkspaceRegistration
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'notifications', 'fa-bell', 'Notifications', [
+                            form_settings.isNotificationActive
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'domain', 'fa-globe', 'Domain', [
+                            form_settings.domainName,
+                            form_settings.sslEnabled
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'storage', 'fa-server', 'Storage', [
+                            form_settings.maxStorageSize,
+                            form_settings.maxUploadResources,
+                            form_settings.tmpDir
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'anonymous', 'fa-user-secret', 'Anonymous', [
+                            form_settings.anonymousPublicProfile,
+                            form_settings.formCaptcha,
+                            form_settings.formHoneypot
+                        ]) }}
+
+                        {{ localMacro.makePanel('platform-params', 'help', 'fa-question-circle', 'Help & Support', [
+                            form_settings.showHelpButton,
+                            form_settings.helpUrl,
+                            form_settings.supportEmail
+                        ]) }}
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="other-heading">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#platform-params" href="#other-content" aria-expanded="false" aria-controls="other-content">
+                                        <span class="panel-title-icon fa fa-fw fa-ellipsis-h"></span>
+                                        Others
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="other-content" class="panel-collapse collapse" role="tabpanel" aria-labelledby="other-heading">
+                                <div class="panel-body">
+                                    {# Portfolio #}
+                                    <div class="form-group">
+                                        {% set value = form_settings.vars.value.portfolioUrl %}
+                                        {{ form_label(form_settings.portfolioUrl) }}
+
+                                        <div class="portfolio-url">
+                                            <div class="radio portfolio_url">
+                                                <label for="portfolioUrlOptions1">
+                                                    <input type="radio" name="portfolioUrlOptions" id="portfolioUrlOptions1" value="0" {% if value is empty %} checked="checked"{% endif %} />
+                                                    {{ 'internal_portfolio'|trans({}, 'platform') }}
+                                                </label>
+                                            </div>
+
+                                            <div class="radio radio-with-input">
+                                                <label for="portfolioUrlOptions2">
+                                                    <input type="radio" name="portfolioUrlOptions" id="portfolioUrlOptions2" value="1" {% if value is not empty %} checked="checked"{% endif %} />
+                                                    {{ 'general_parameters_portfolio_url_help'|trans({}, 'platform') }}
+
+                                                    <span class="portfolio_url_field" style="display: inline-block;">
+                                                        {{ form_widget(form_settings.portfolioUrl) }}
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {{ form_rest(form_settings) }}
                                 </div>
-                            </label>
-                        </div>
-                        <div class="radio radio-with-input">
-                            <label class="col-md-12">
-                                <div class="pull-left">
-                                    <input type="radio" name="portfolioUrlOptions" id="portfolioUrlOptions2" value="1" {% if value is not empty %} checked="checked"{% endif %}>
-                                    <span>{{ 'general_parameters_portfolio_url_help'|trans({}, 'platform') }}</span>
-                                </div>
-                                <div class="col-md-6 portfolio_url_field">
-                                    {{ form_widget(form_settings.portfolioUrl) }}
-                                </div>
-                            </label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {{ form_rest(form_settings) }}
-        </div>
-        <div class="panel-footer">
-            <button type="submit" class="btn btn-primary">{{ 'ok'|trans({}, 'platform') }}</button>
-            <a href="{{ path('claro_admin_index') }}">
-                <button type="button" class="btn btn-default">{{ 'cancel'|trans({}, 'platform') }}</button>
-            </a>
-        </div>
-    </form>
-{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet"
-          href="{{ asset('packages/jquery-ui/themes/base/jquery-ui.min.css') }}"
-          type="text/css"
-    />
+                <div class="text-right">
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'save'|trans({}, 'platform') }}
+                    </button>
+
+                    <a class="btn btn-default" href="{{ path('claro_admin_index') }}">
+                        {{ 'cancel'|trans({}, 'platform') }}
+                    </a>
+                </div>
+            </form>
+        </main>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+
+    <script src="{{ asset('packages/jquery-ui/jquery-ui.min.js') }}"></script>
     <script type="text/javascript">
         (function($) {
             "use strict";
@@ -104,23 +198,17 @@
                 var portfolioUrlRadio = $(".portfolio_url input[type=radio]");
                 var portfolioUrlField = $(".portfolio_url_field input");
 
-                portfolioUrlField.on('keyup', function (event) {
+                portfolioUrlField.on('keyup', function () {
                     if ('' !== $(this).val()) {
                         portfolioUrlRadio.prop("checked", true);
                     }
                 });
+
+                var tagsList = [{% for tag in tags %}"{{ tag|raw }}"{% if not loop.last %}, {% endif %}{% endfor %}];
+                $('#platform_parameters_form_defaultWorkspaceTag').autocomplete({
+                    source: tagsList
+                });
             });
         })(jQuery);
-    </script>
-    <script type="text/javascript"
-            src="{{ asset('packages/jquery-ui/jquery-ui.min.js') }}"
-    >
-    </script>
-    <script type="text/javascript">
-        var tagsList = [{% for tag in tags %}"{{ tag|raw }}"{% if not loop.last %}, {% endif %}{% endfor %}];
-
-        $('#platform_parameters_form_defaultWorkspaceTag').autocomplete({
-            source: tagsList
-        });
     </script>
 {% endblock %}
