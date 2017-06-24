@@ -30,10 +30,10 @@ class ApiConfigPass implements CompilerPassInterface
             return;
         }
 
-        $serializer = $container->getDefinition($provider);
+        $providerDef = $container->getDefinition($provider);
 
         foreach ($container->findTaggedServiceIds($registerTag) as $id => $attributes) {
-            $serializer->addMethodCall('add', [new Reference($id)]);
+            $providerDef->addMethodCall('add', [new Reference($id)]);
         }
     }
 }

@@ -21,12 +21,9 @@ claro_theme:
     resource: "@ClarolineCoreBundle/Controller/Administration/ThemeController.php"
     type: annotation
 
-claro_theme_confirm:
-    pattern: /admin/theme/confirm
-    options: { expose: true }
-    defaults:
-        _controller: FrameworkBundle:Template:template
-        template: 'ClarolineCoreBundle:Administration:Theme/confirm.html.twig'
+claro_theme_api:
+    resource: "@ClarolineCoreBundle/Controller/API/Admin/ThemeController.php"
+    type: annotation
 
 claro_content_typeerror:
     pattern: /content/typeerror

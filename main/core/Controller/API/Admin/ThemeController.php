@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @EXT\Route("/themes")
+ * @EXT\Route("/themes", name="claro_theme", options={"expose" = true})
  */
 class ThemeController
 {
