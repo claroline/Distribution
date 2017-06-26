@@ -275,6 +275,8 @@ class AdditionalInstaller extends BaseInstaller
 
     public function end()
     {
+        $this->container->get('claroline.manager.version_manager')->setLogger($this->logger);
+        $this->container->get('claroline.manager.version_manager')->registerCurrent();
         $this->log('Updating resource icons...');
         $this->container->get('claroline.manager.icon_set_manager')->setLogger($this->logger);
         $this->container->get('claroline.manager.icon_set_manager')->addDefaultIconSets();

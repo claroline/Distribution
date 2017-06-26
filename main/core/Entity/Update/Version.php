@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Entity;
+namespace Claroline\CoreBundle\Entity\Update;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -22,7 +22,7 @@ class Version
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="session_id", type="string", length=255)
+     * @ORM\Column(name="id", type="string", length=255)
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;

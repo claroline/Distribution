@@ -15,6 +15,7 @@ use Claroline\BundleRecorder\Detector\Detector;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
+use Claroline\CoreBundle\Manager\VersionManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use Composer\Json\JsonFile;
@@ -22,6 +23,7 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\InstalledFilesystemRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -49,22 +51,26 @@ class OperationExecutor
      *     "kernel"             = @DI\Inject("kernel"),
      *     "baseInstaller"      = @DI\Inject("claroline.installation.manager"),
      *     "pluginInstaller"    = @DI\Inject("claroline.plugin.installer"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
+     *     "versionManager"     = @DI\Inject("claroline.manager.version_manager")
      * })
      */
     public function __construct(
         KernelInterface $kernel,
         InstallationManager $baseInstaller,
         Installer $pluginInstaller,
-        ObjectManager $om
+        ObjectManager $om,
+        VersionManager $versionManager
     ) {
         $this->kernel = $kernel;
+        $this->versionManager = $versionManager;
         $this->baseInstaller = $baseInstaller;
         $this->pluginInstaller = $pluginInstaller;
         $this->previousRepoFile = $this->kernel->getRootDir().'/config/previous-installed.json';
         $this->installedRepoFile = $this->kernel->getRootDir().'/../vendor/composer/installed.json';
         $this->bundleFile = $this->kernel->getRootDir().'/config/bundles.ini';
         $this->detector = new Detector();
+        $this->versionManager = $versionManager;
         $this->om = $om;
     }
 
@@ -110,7 +116,7 @@ class OperationExecutor
     {
         $this->log('Building install/update operations list...');
 
-        $previous = $this->openRepository($this->previousRepoFile);
+        $previous = $this->openRepository($this->previousRepoFile, true, false);
         $current = $this->openRepository($this->installedRepoFile);
 
         /** @var PackageInterface $currentPackage */
@@ -138,10 +144,21 @@ class OperationExecutor
 
                     $previousPackage = $this->findPreviousPackage($bundle);
 
-                    if ($previousPackage && $foundBundle) {
-                        $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
-                        $operations[$bundle]->setFromVersion($previousPackage->getVersion());
-                        $operations[$bundle]->setToVersion($currentPackage->getVersion());
+                    if ($foundBundle && $previousPackage) {
+                        $isDistribution = $currentPackage->getName() === 'claroline/distribution';
+                        $fromVersionEntity = $this->versionManager->getLatestUpgraded();
+                        $toVersion = $this->versionManager->getCurrent();
+
+                        if ($isDistribution && $versionInstalled && $toVersion) {
+                            $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
+                            $operations[$bundle]->setFromVersion($fromVersionEntity->getVersion());
+                            $operations[$bundle]->setToVersion($toVersion);
+                        //old update <= v10
+                        } else {
+                            $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
+                            $operations[$bundle]->setFromVersion($previousPackage->getVersion());
+                            $operations[$bundle]->setToVersion($currentPackage->getVersion());
+                        }
                     } else {
                         //if we found something in the database, it means it was removed from composer.json and not properly uninstalled
                         if ($foundBundle) {
@@ -217,15 +234,7 @@ class OperationExecutor
     {
         $this->log('Executing install/update operations...');
 
-        $previousRepo = $this->openRepository($this->previousRepoFile, false);
-
-        if (!is_writable($this->previousRepoFile)) {
-            throw new \RuntimeException(
-                "'{$this->previousRepoFile}' must be writable",
-                456 // this code is there for unit testing only
-            );
-        }
-
+        $previousRepo = $this->openRepository($this->previousRepoFile, false, false);
         $bundles = $this->getBundlesByFqcn();
 
         foreach ($operations as $operation) {
@@ -275,15 +284,22 @@ class OperationExecutor
      *
      * @return InstalledFilesystemRepository
      */
-    private function openRepository($repoFile, $filter = true)
+    private function openRepository($repoFile, $filter = true, $force = true)
     {
         $json = new JsonFile($repoFile);
 
         if (!$json->exists()) {
-            throw new \RuntimeException(
-                "Repository file '{$repoFile}' doesn't exist",
-                123 // this code is there for unit testing only
-            );
+            if ($force) {
+                throw new \RuntimeException(
+                   "'{$this->previousRepoFile}' must be writable",
+                   456 // this code is there for unit testing only
+                );
+            } else {
+                $this->log("Repository file '{$repoFile}' doesn't exist", LogLevel::ERROR);
+
+                return;
+            }
+            $this->log("Repository file '{$repoFile}' doesn't exist", LogLevel::ERROR);
         }
 
         $repo = new InstalledFilesystemRepository($json);
@@ -316,7 +332,11 @@ class OperationExecutor
 
     private function findPreviousPackage($bundle)
     {
-        $previous = $this->openRepository($this->previousRepoFile);
+        $previous = $this->openRepository($this->previousRepoFile, true, false);
+
+        if (!$previous) {
+            return;
+        }
 
         foreach ($previous->getCanonicalPackages() as $package) {
             $extra = $package->getExtra();

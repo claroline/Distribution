@@ -8,15 +8,15 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution
  *
- * Generation date: 2017/06/23 04:18:17
+ * Generation date: 2017/06/26 11:11:29
  */
-class Version20170623161815 extends AbstractMigration
+class Version20170626111128 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
         $this->addSql("
             CREATE TABLE claro_version (
-                session_id VARCHAR(255) NOT NULL, 
+                id VARCHAR(255) NOT NULL, 
                 commit VARCHAR(255) NOT NULL, 
                 version VARCHAR(255) NOT NULL, 
                 branch VARCHAR(255) NOT NULL, 
@@ -24,29 +24,37 @@ class Version20170623161815 extends AbstractMigration
                 date INT DEFAULT NULL, 
                 UNIQUE INDEX UNIQ_DF5F6E644ED42EAD (commit), 
                 UNIQUE INDEX UNIQ_DF5F6E64BF1CD3C3 (version), 
-                PRIMARY KEY(session_id)
+                PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
-            DROP INDEX UNIQ_478C5861D17F50A6 ON claro_resource_icon
+            CREATE TABLE claro_updater_executed (
+                id VARCHAR(255) NOT NULL, 
+                version_id VARCHAR(255) DEFAULT NULL, 
+                bundle VARCHAR(255) NOT NULL, 
+                INDEX IDX_7C1EE2674BBC2705 (version_id), 
+                PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
         $this->addSql("
-            ALTER TABLE claro_resource_icon 
-            DROP uuid
+            ALTER TABLE claro_updater_executed 
+            ADD CONSTRAINT FK_7C1EE2674BBC2705 FOREIGN KEY (version_id) 
+            REFERENCES claro_version (id) 
+            ON DELETE SET NULL
         ");
     }
 
     public function down(Schema $schema)
     {
         $this->addSql("
+            ALTER TABLE claro_updater_executed 
+            DROP FOREIGN KEY FK_7C1EE2674BBC2705
+        ");
+        $this->addSql("
             DROP TABLE claro_version
         ");
         $this->addSql("
-            ALTER TABLE claro_resource_icon 
-            ADD uuid VARCHAR(36) NOT NULL COLLATE utf8_unicode_ci
-        ");
-        $this->addSql("
-            CREATE UNIQUE INDEX UNIQ_478C5861D17F50A6 ON claro_resource_icon (uuid)
+            DROP TABLE claro_updater_executed
         ");
     }
 }

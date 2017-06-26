@@ -12,8 +12,11 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Entity\Version;
+use Claroline\CoreBundle\Entity\Update\UpdaterExecuted;
+use Claroline\CoreBundle\Entity\Update\Version;
+use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\InstallationBundle\Bundle\InstallableInterface;
 use FOS\RestBundle\View\View;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -37,7 +40,7 @@ class VersionManager
         $container
     ) {
         $this->om = $om;
-        $this->repo = $this->om->getRepository('ClarolineCoreBundle:Version');
+        $this->repo = $this->om->getRepository('ClarolineCoreBundle:Update\Version');
         $this->container = $container;
     }
 
@@ -58,6 +61,13 @@ class VersionManager
         $this->om->flush();
     }
 
+    public function registerBundle(PluginBundleInterface $bundle)
+    {
+        $executed = new UpdaterExecuted($this->getLatestUpgraded(), $bundle->getBundleFQCN());
+        $this->om->persist($executed);
+        $this->om->flush();
+    }
+
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -67,20 +77,27 @@ class VersionManager
 
     public function getCurrent()
     {
+        return $this->getVersionFile()[0];
     }
 
     public function getLatestUpgraded()
     {
+        return $this->repo->getLatestExecuted();
     }
 
     public function getVersionFile()
     {
-        $data = file_get_contents($this->getVersionFilePath());
+        $data = file_get_contents($this->getDistributionVersionFilePAth());
 
         return explode("\n", $data);
     }
 
-    public function getVersionFilePath()
+    public function getVersionFilePath(InstallableInterface $bundle)
+    {
+        var_dump($bundle);
+    }
+
+    public function getDistributionVersionFilePAth()
     {
         return __DIR__.'/../../../VERSION.txt';
     }

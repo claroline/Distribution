@@ -59,6 +59,7 @@ class InstallationManager
     public function install(InstallableInterface $bundle, $insertPlugin = true)
     {
         $this->fixtureLoader->setLogger($this->logger);
+        $version = $this->container->get('claroline.manager.version_manager')->getVersionFilePath($bundle);
         $this->log(sprintf('<comment>Installing %s %s... </comment>', $bundle->getName(), $bundle->getVersion()));
         $additionalInstaller = $this->getAdditionalInstaller($bundle);
 
