@@ -2,7 +2,7 @@
 
 namespace Innova\VideoRecorderBundle;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Innova\VideoRecorderBundle\Installation\AdditionalInstaller;
@@ -10,7 +10,7 @@ use Innova\VideoRecorderBundle\Installation\AdditionalInstaller;
 /**
  * Bundle class.
  */
-class InnovaVideoRecorderBundle extends PluginBundle implements AutoConfigurableInterface
+class InnovaVideoRecorderBundle extends DistributionPluginBundle implements AutoConfigurableInterface
 {
     public function supports($environment)
     {

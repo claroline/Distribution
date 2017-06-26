@@ -19,7 +19,7 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Claroline\BundleRecorder\Detector\Detector;
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 
 /**
  * This class contains common methods for the plugin install/uninstall commands.
@@ -68,8 +68,8 @@ abstract class AbstractPluginCommand extends ContainerAwareCommand
             if ($name === $bundleName) {
                 $bundle = new $bundleFqcn($kernel);
 
-                if (!$bundle instanceof PluginBundle) {
-                    throw new \Exception("Bundle {$bundle->getName()} must extend PluginBundle");
+                if (!$bundle instanceof DistributionPluginBundle) {
+                    throw new \Exception("Bundle {$bundle->getName()} must extend DistributionPluginBundle");
                 }
 
                 return $bundle;

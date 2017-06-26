@@ -17,6 +17,8 @@ use Claroline\CoreBundle\Entity\Update\Version;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Bundle\InstallableInterface;
+use Composer\Json\JsonFile;
+use Composer\Repository\InstalledFilesystemRepository;
 use FOS\RestBundle\View\View;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -42,21 +44,22 @@ class VersionManager
         $this->om = $om;
         $this->repo = $this->om->getRepository('ClarolineCoreBundle:Update\Version');
         $this->container = $container;
+        $this->installedRepoFile = $this->container->get('kernel')->getRootDir().'/../vendor/composer/installed.json';
     }
 
-    public function registerCurrent()
+    public function register(InstallableInterface $bundle)
     {
-        $this->log('Registering current version');
-        $data = $this->getVersionFile();
-        $version = $this->repo->findOneByVersion($data[0]);
+        $data = $this->getVersionFile($bundle);
+        $version = $this->repo->findBy(['version' => $data[0], 'bundle' => $bundle->getBundleFQCN()]);
 
         if ($version) {
-            $this->log("Version {$version->getVersion()} already registered !", LogLevel::ERROR);
+            $this->log("Version {$version->getBundle()} {$version->getVersion()} already registered !", LogLevel::ERROR);
 
             return;
         }
 
-        $version = new Version($data[0], $data[1], $data[2]);
+        $this->log("Registering {$bundle->getBundleFQCN()} version {$data[0]}");
+        $version = new Version($data[0], $data[1], $data[2], $bundle->getBundleFQCN());
         $this->om->persist($version);
         $this->om->flush();
     }
@@ -94,7 +97,7 @@ class VersionManager
 
     public function getVersionFilePath(InstallableInterface $bundle)
     {
-        var_dump($bundle);
+        var_dump($bundle->getVersionFilePath());
     }
 
     public function getDistributionVersionFilePAth()
@@ -104,5 +107,36 @@ class VersionManager
 
     public function validateCurrent()
     {
+    }
+
+    /**
+     * @param string $repoFile
+     * @param bool   $filter
+     *
+     * @return InstalledFilesystemRepository
+     */
+    public function openRepository($repoFile, $filter = true)
+    {
+        $json = new JsonFile($repoFile);
+
+        if (!$json->exists()) {
+            throw new \RuntimeException(
+               "'{$this->previousRepoFile}' must be writable",
+               456 // this code is there for unit testing only
+            );
+        }
+
+        $repo = new InstalledFilesystemRepository($json);
+
+        if ($filter) {
+            foreach ($repo->getPackages() as $package) {
+                if ($package->getType() !== 'claroline-core'
+                    && $package->getType() !== 'claroline-plugin') {
+                    $repo->removePackage($package);
+                }
+            }
+        }
+
+        return $repo;
     }
 }

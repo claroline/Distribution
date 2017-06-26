@@ -16,24 +16,33 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="claro_version")
+ * @ORM\Table(
+ *     name="claro_version",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(
+ *             name="unique_version",
+ *             columns={"version", "bundle", "branch"}
+ *         )
+ *     },
+ *)
  */
 class Version
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="id", type="string", length=255)
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(unique=true)
+     * @ORM\Column()
      */
     protected $commit;
 
     /**
-     * @ORM\Column(unique=true)
+     * @ORM\Column()
      */
     protected $version;
 
@@ -41,6 +50,11 @@ class Version
      * @ORM\Column()
      */
     protected $branch;
+
+    /**
+     * @ORM\Column()
+     */
+    protected $bundle;
 
     /**
      * @ORM\Column(name="is_upgraded", type="boolean")
@@ -56,11 +70,12 @@ class Version
      */
     protected $date;
 
-    public function __construct($version = null, $commit = null, $branch = null)
+    public function __construct($version = null, $commit = null, $branch = null, $bundle = null)
     {
         $this->version = $version;
         $this->commit = $commit;
         $this->branch = $branch;
+        $this->bundle = $bundle;
     }
 
     public function getId()
@@ -116,5 +131,10 @@ class Version
     public function isUpgraded()
     {
         return $this->isUpgraded;
+    }
+
+    public function getBundle()
+    {
+        return $this->bundle;
     }
 }

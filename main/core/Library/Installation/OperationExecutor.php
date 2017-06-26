@@ -18,12 +18,9 @@ use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Manager\VersionManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
-use Composer\Json\JsonFile;
 use Composer\Package\PackageInterface;
-use Composer\Repository\InstalledFilesystemRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -116,8 +113,8 @@ class OperationExecutor
     {
         $this->log('Building install/update operations list...');
 
-        $previous = $this->openRepository($this->previousRepoFile, true, false);
-        $current = $this->openRepository($this->installedRepoFile);
+        $previous = $this->versionManager->openRepository($this->previousRepoFile, true);
+        $current = $this->versionManager->openRepository($this->installedRepoFile);
 
         /** @var PackageInterface $currentPackage */
         foreach ($current->getCanonicalPackages() as $currentPackage) {
@@ -234,7 +231,7 @@ class OperationExecutor
     {
         $this->log('Executing install/update operations...');
 
-        $previousRepo = $this->openRepository($this->previousRepoFile, false, false);
+        $previousRepo = $this->versionManager->openRepository($this->previousRepoFile, false, false);
         $bundles = $this->getBundlesByFqcn();
 
         foreach ($operations as $operation) {
@@ -278,44 +275,6 @@ class OperationExecutor
         }
     }
 
-    /**
-     * @param string $repoFile
-     * @param bool   $filter
-     *
-     * @return InstalledFilesystemRepository
-     */
-    private function openRepository($repoFile, $filter = true, $force = true)
-    {
-        $json = new JsonFile($repoFile);
-
-        if (!$json->exists()) {
-            if ($force) {
-                throw new \RuntimeException(
-                   "'{$this->previousRepoFile}' must be writable",
-                   456 // this code is there for unit testing only
-                );
-            } else {
-                $this->log("Repository file '{$repoFile}' doesn't exist", LogLevel::ERROR);
-
-                return;
-            }
-            $this->log("Repository file '{$repoFile}' doesn't exist", LogLevel::ERROR);
-        }
-
-        $repo = new InstalledFilesystemRepository($json);
-
-        if ($filter) {
-            foreach ($repo->getPackages() as $package) {
-                if ($package->getType() !== 'claroline-core'
-                    && $package->getType() !== 'claroline-plugin') {
-                    $repo->removePackage($package);
-                }
-            }
-        }
-
-        return $repo;
-    }
-
     private function getBundlesByFqcn()
     {
         $byFqcn = [];
@@ -332,7 +291,7 @@ class OperationExecutor
 
     private function findPreviousPackage($bundle)
     {
-        $previous = $this->openRepository($this->previousRepoFile, true, false);
+        $previous = $this->versionManager->openRepository($this->previousRepoFile, true);
 
         if (!$previous) {
             return;

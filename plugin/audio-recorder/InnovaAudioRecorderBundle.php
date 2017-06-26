@@ -2,7 +2,7 @@
 
 namespace Innova\AudioRecorderBundle;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Innova\AudioRecorderBundle\Installation\AdditionalInstaller;
@@ -10,7 +10,7 @@ use Innova\AudioRecorderBundle\Installation\AdditionalInstaller;
 /**
  * Bundle class.
  */
-class InnovaAudioRecorderBundle extends PluginBundle implements AutoConfigurableInterface
+class InnovaAudioRecorderBundle extends DistributionPluginBundle implements AutoConfigurableInterface
 {
     public function supports($environment)
     {

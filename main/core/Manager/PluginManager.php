@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Plugin;
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\KernelBundle\Manager\BundleManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -334,7 +334,7 @@ class PluginManager
     public function getInstalledBundles()
     {
         return array_filter($this->bundleManager->getActiveBundles(true), function ($bundle) {
-            return $bundle['instance'] instanceof PluginBundle;
+            return $bundle['instance'] instanceof DistributionPluginBundle;
         });
     }
 

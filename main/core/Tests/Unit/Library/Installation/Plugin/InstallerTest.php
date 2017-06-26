@@ -25,7 +25,7 @@ class InstallerTest extends MockeryTestCase
     {
         parent::setUp();
 
-        $this->plugin = $this->mock('Claroline\CoreBundle\Library\PluginBundle');
+        $this->plugin = $this->mock('Claroline\CoreBundle\Library\DistributionPluginBundle');
         $this->validator = $this->mock('Claroline\CoreBundle\Library\Installation\Plugin\Validator');
         $this->recorder = $this->mock('Claroline\CoreBundle\Library\Installation\Plugin\Recorder');
         $this->baseInstaller = $this->mock('Claroline\InstallationBundle\Manager\InstallationManager');

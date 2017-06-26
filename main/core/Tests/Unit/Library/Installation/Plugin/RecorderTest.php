@@ -21,7 +21,7 @@ class RecorderTest extends MockeryTestCase
 
     protected function setUp()
     {
-        $this->plugin = $this->mock('Claroline\CoreBundle\Library\PluginBundle');
+        $this->plugin = $this->mock('Claroline\CoreBundle\Library\DistributionPluginBundle');
         $this->dbWriter = $this->mock('Claroline\CoreBundle\Library\Installation\Plugin\DatabaseWriter');
         $this->recorder = new Recorder($this->dbWriter);
     }

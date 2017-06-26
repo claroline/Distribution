@@ -11,12 +11,12 @@
 
 namespace Valid\Custom;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 
 /**
  * Plugin overriding all the ClarolinePlugin methods.
  */
-class ValidCustom extends PluginBundle
+class ValidCustom extends DistributionPluginBundle
 {
     public function getRoutingResourcesPaths()
     {

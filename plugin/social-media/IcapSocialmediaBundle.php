@@ -2,7 +2,7 @@
 
 namespace Icap\SocialmediaBundle;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\CoreBundle\Library\Installation\AdditionalInstaller;
 
@@ -10,7 +10,7 @@ use Claroline\CoreBundle\Library\Installation\AdditionalInstaller;
  * Bundle class.
  * Uncomment if necessary.
  */
-class IcapSocialmediaBundle extends PluginBundle
+class IcapSocialmediaBundle extends DistributionPluginBundle
 {
     public function getConfiguration($environment)
     {

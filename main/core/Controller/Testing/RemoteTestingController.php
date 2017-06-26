@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Testing;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\CoreBundle\Library\Workspace\TemplateBuilder;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -58,7 +58,7 @@ class RemoteTestingController extends Controller
         $installer = $this->container->get('claroline.plugin.installer');
 
         foreach ($bundles as $bundle) {
-            if ($bundle instanceof PluginBundle) {
+            if ($bundle instanceof DistributionPluginBundle) {
                 $installer->install($bundle);
             }
         }

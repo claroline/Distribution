@@ -5,10 +5,10 @@ namespace Icap\PortfolioBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\ConfigurationProviderInterface;
 use Icap\PortfolioBundle\Installation\AdditionalInstaller;
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class IcapPortfolioBundle extends PluginBundle implements ConfigurationProviderInterface
+class IcapPortfolioBundle extends DistributionPluginBundle implements ConfigurationProviderInterface
 {
     public function getConfiguration($environment)
     {

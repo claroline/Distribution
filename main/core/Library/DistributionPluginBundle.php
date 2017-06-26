@@ -18,6 +18,6 @@ abstract class DistributionPluginBundle extends PluginBundle
 {
     public function getVersionFilePath()
     {
-        return $this->getPath() . '/../../VERSION.txt'
+        return realpath($this->getPath().'/../../VERSION.txt');
     }
 }
