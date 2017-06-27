@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\API\Workspace;
 
+use Claroline\CoreBundle\API\Finder;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\WorkspaceType;
@@ -47,6 +48,7 @@ class WorkspaceController extends FOSRestController
     private $utilities;
     private $workspaceManager;
     private $workspaceRepo;
+    private $finder;
 
     /**
      * @DI\InjectParams({
@@ -57,7 +59,8 @@ class WorkspaceController extends FOSRestController
      *     "defaultTemplate"  = @DI\Inject("%claroline.param.default_template%"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utilities"        = @DI\Inject("claroline.utilities.misc"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "finder"           = @DI\Inject("claroline.API.finder")
      * })
      */
     public function __construct(
@@ -68,7 +71,8 @@ class WorkspaceController extends FOSRestController
         $defaultTemplate,
         TokenStorageInterface $tokenStorage,
         ClaroUtilities $utilities,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        Finder $finder
     ) {
         $this->formFactory = $formFactory;
         $this->om = $om;
@@ -79,6 +83,7 @@ class WorkspaceController extends FOSRestController
         $this->utilities = $utilities;
         $this->workspaceManager = $workspaceManager;
         $this->workspaceRepo = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace');
+        $this->finder = $finder;
     }
 
     /**
@@ -173,17 +178,6 @@ class WorkspaceController extends FOSRestController
     }
 
     /**
-     * @View()
-     * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
-     */
-    public function deleteWorkspaceAction(Workspace $workspace)
-    {
-        $this->workspaceManager->deleteWorkspace($workspace);
-
-        return ['success'];
-    }
-
-    /**
      * @View(serializerGroups={"api_workspace"})
      * @Put("workspace/{workspace}", name="put_workspace", options={ "method_prefix" = false })
      * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
@@ -224,5 +218,69 @@ class WorkspaceController extends FOSRestController
         }
 
         return $workspace;
+    }
+
+    /**
+     * @Get("/workspace/page/{page}/limit/{limit}/search", name="get_search_workspaces", options={ "method_prefix" = false })
+     */
+    public function getSearchWorkspacesAction($page, $limit)
+    {
+        return $this->finder->search(
+          'Claroline\CoreBundle\Entity\Workspace\Workspace',
+          $page,
+          $limit,
+          $this->container->get('request')->query->all()
+        );
+    }
+
+    /**
+     * @View(serializerGroups={"api_workspace"})
+     */
+    public function copyWorkspacesAction($isModel)
+    {
+        $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+        $newWorkspaces = [];
+        $isModel = intval($isModel);
+        $this->om->startFlushSuite();
+
+        foreach ($workspaces as $workspace) {
+            $newWorkspace = new Workspace();
+            $newWorkspace->setName($isModel ? '[MODEL] - '.$workspace->getName() : '[COPY] - '.$workspace->getName());
+            $newWorkspace->setIsModel($isModel);
+            $newWorkspace->setCode($isModel ? '[MODEL] - '.$workspace->getCode() : '[COPY] - '.$workspace->getCode());
+            $newWorkspace = $this->workspaceManager->copy($workspace, $newWorkspace);
+            $newWorkspaces[] = $newWorkspace;
+        }
+
+        $this->om->endFlushSuite();
+
+        return $newWorkspaces;
+    }
+
+    /**
+     * @View()
+     * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
+     */
+    public function deleteWorkspaceAction(Workspace $workspace)
+    {
+        $this->workspaceManager->deleteWorkspace($workspace);
+
+        return ['success'];
+    }
+
+    public function deleteWorkspacesAction()
+    {
+        $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+
+        $this->om->startFlushSuite();
+
+        foreach ($workspaces as $workspace) {
+            $this->container->get('claroline.event.event_dispatcher')->dispatch('log', 'Log\LogWorkspaceDelete', [$workspace]);
+            $this->workspaceManager->deleteWorkspace($workspace);
+        }
+
+        $this->om->endFlushSuite();
+
+        return ['success'];
     }
 }

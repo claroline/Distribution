@@ -127,7 +127,7 @@ class RichTextFormatter
             if (isset($options['style'])) {
                 $option_style = $options['style'];
             }
-            $option_embed = true;
+            $option_embed = null;
             if (isset($options['embed'])) {
                 $option_embed = (bool) $options['embed'];
             }
@@ -530,18 +530,24 @@ class RichTextFormatter
      *
      * @param ResourceNode $node
      */
-    public function generateDisplayedUrlForTinyMce(ResourceNode $node, $text = null, $embed = true, $style = null, $target = null)
+    public function generateDisplayedUrlForTinyMce(ResourceNode $node, $text, $embed, $style = null, $target = null)
     {
+        $cssStyle = isset($style) ? "style='".stripslashes($style)."'" : '';
+
         if (strpos('_'.$node->getMimeType(), 'image') > 0) {
-            $cssStyle = $style ? $style : 'max-width:100%;';
             $url = $this->router->generate(
                 'claro_file_get_media',
                 ['node' => $node->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
-            if ($embed) {
-                return "<img style='".$cssStyle."' src='".$url."' alt='".$node->getName()."'>";
+            //embed images by default
+            if (!isset($embed) || $embed) {
+                if (empty($cssStyle)) {
+                    $cssStyle = "style='max-width:100%;'";
+                }
+
+                return '<img '.$cssStyle." src='".$url."' alt='".$node->getName()."'>";
             }
         }
 
@@ -551,25 +557,56 @@ class RichTextFormatter
                 ['node' => $node->getId()],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-            if ($embed) {
+            //embed audio/video by default
+            if (!isset($embed) || $embed) {
                 return "<source type='".$node->getMimeType()."' src='".$url."'></source>";
             }
         }
 
-        $url = $this->router->generate(
-            'claro_resource_open',
-            [
-                'resourceType' => $node->getResourceType()->getName(),
-                'node' => $node->getId(),
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        if (strpos('_'.$node->getMimeType(), 'x-shockwave-flash') > 0) {
+            $url = $this->router->generate(
+                'claro_file_get_media',
+                ['node' => $node->getId()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            //embed flash by default
+            if (!isset($embed) || $embed) {
+                return '<object '.$cssStyle." type='".$node->getMimeType()."' data='".$url."'>".
+                            "<param name='allowFullScreen' value='true' />".
+                            "<param name='src' value='".$url."' />".
+                        '</object>';
+            }
+        }
+
         //hyperlink text, fallback to node name if none
         $link_text = isset($text) ? stripslashes($text) : $node->getName();
-        $cssStyle = isset($style) ? "style='".stripslashes($style)."'" : '';
         $targetProperty = isset($target) ? "target='".$target."'" : '';
 
-        return "<a {$cssStyle} {$targetProperty} href='{$url}'>{$link_text}</a>";
+        //no embed by default
+        if ($embed) {
+            $url = $this->router->generate(
+                'claro_resource_open',
+                [
+                    'resourceType' => $node->getResourceType()->getName(),
+                    'node' => $node->getId(),
+                    'iframe' => 1,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return "<iframe {$cssStyle} src='{$url}'></iframe>";
+        } else {
+            $url = $this->router->generate(
+                'claro_resource_open',
+                [
+                    'resourceType' => $node->getResourceType()->getName(),
+                    'node' => $node->getId(),
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            return "<a {$cssStyle} {$targetProperty} href='{$url}'>{$link_text}</a>";
+        }
     }
 
     public function addImporter(Importer $importer)

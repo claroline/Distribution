@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Controller;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\GenericDatasEvent;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\ImportResourcesType;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -229,6 +229,8 @@ class ResourceController extends Controller
     }
 
     /**
+     * Opens a resource.
+     *
      * @EXT\Route(
      *     "/open/{resourceType}/{node}",
      *     name="claro_resource_open",
@@ -242,8 +244,6 @@ class ResourceController extends Controller
      *     defaults={"resourceType" = null},
      *     options={"expose"=true}
      * )
-     *
-     * Opens a resource.
      *
      * @param ResourceNode $node         the node
      * @param string       $resourceType the resource type
@@ -335,6 +335,8 @@ class ResourceController extends Controller
      * Publishes many nodes from a workspace.
      * Takes an array of ids as parameters (query string: "ids[]=1&ids[]=2" ...).
      *
+     * @todo to be merge with ResourceNodeController::publishAction (works with UUIDs)
+     *
      * @param array $nodes
      *
      * @return Response
@@ -362,6 +364,8 @@ class ResourceController extends Controller
      *
      * Unpublishes many nodes from a workspace.
      * Takes an array of ids as parameters (query string: "ids[]=1&ids[]=2" ...).
+     *
+     * @todo to be merge with ResourceNodeController::unpublishAction (works with UUIDs)
      *
      * @param array $nodes
      *
@@ -1000,7 +1004,7 @@ class ResourceController extends Controller
                 'ordered_by' => 'name',
                 'ids' => $ids,
             ];
-            $event = $this->eventDispatcher->dispatch('claroline_retrieve_tagged_objects', new GenericDatasEvent($options));
+            $event = $this->eventDispatcher->dispatch('claroline_retrieve_tagged_objects', new GenericDataEvent($options));
             $taggedResources = $event->getResponse();
             $resources = $this->mergeSearchedResources($resources, $taggedResources);
         }
@@ -1088,9 +1092,9 @@ class ResourceController extends Controller
      * @param User         $user
      * @param int          $index
      *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @throws AccessDeniedException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function insertAt(ResourceNode $node, User $user, $index)
     {
