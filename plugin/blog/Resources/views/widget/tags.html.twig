@@ -1,5 +1,5 @@
 {% if blog is not null %}
-    <p>{{ blog.resourceNode.name }}</p>
+    <p>{% if blog.resourceNode is not null %}{{ blog.resourceNode.name }}{% endif %}</p>
 
     <div class="tag-cloud-container">
         {% include 'IcapBlogBundle:Layout:tags.html.twig' with {'blogOptions': blogOptions} %}

@@ -13,7 +13,7 @@ use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
  *          @ORM\UniqueConstraint(name="unique_widget_blog", columns={"resourceNode_id", "widgetInstance_id"})
  *      }
  * )
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Icap\BlogBundle\Repository\WidgetBlogRepository")
  */
 class WidgetBlog
 {
