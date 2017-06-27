@@ -2,7 +2,6 @@
 
 namespace Icap\BlogBundle\Listener;
 
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
@@ -88,10 +87,10 @@ class BlogListener extends ContainerAware
 
         $widgetInstanceRepo = $this->container->get('doctrine.orm.entity_manager')->getRepository('Claroline\CoreBundle\Entity\Widget\WidgetInstance');
         $widgetBlogRepo = $this->container->get('icap.blog.widgetblog_repository');
-        $widgetTagListBlogRepo = $this->container->get('icap.blog.widgettaglistblog_repository');
+        $widgetTagListRepo = $this->container->get('icap.blog.widgettaglistblog_repository');
 
         $blogWidgets = $widgetBlogRepo->findByResourceNode($blog->getResourceNode());
-        $tagListBlogWidgets = $widgetTagListBlogRepo->findByResourceNode($blog->getResourceNode());
+        $tagListWidgets = $widgetTagListRepo->findByResourceNode($blog->getResourceNode());
 
         $entityManager = $this->container->get('claroline.persistence.object_manager');
 
@@ -103,10 +102,10 @@ class BlogListener extends ContainerAware
         }
 
         // Remove tag list blog widgets
-        foreach ($tagListBlogWidgets as $tagListBlogWidget) {
-            $entityManager->remove($tagListBlogWidget);
-            $widgetTagListBlogInstance = $widgetInstanceRepo->findOneById($tagListBlogWidget->getWidgetInstance()->getId());
-            $entityManager->remove($widgetTagListBlogInstance);
+        foreach ($tagListWidgets as $tagListWidget) {
+            $entityManager->remove($tagListWidget);
+            $widgetInstance = $widgetInstanceRepo->findOneById($tagListWidget->getWidgetInstance()->getId());
+            $entityManager->remove($widgetInstance);
         }
 
         $entityManager->flush();
