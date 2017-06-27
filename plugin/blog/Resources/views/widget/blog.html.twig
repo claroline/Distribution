@@ -1,5 +1,5 @@
 {% if blog is not null %}
-    <p>{% if blog.resourceNode is not null %}{{ blog.resourceNode.name }}{% endif %}</p>
+    <p>{{ blog.resourceNode.name }}</p>
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
         {% for post in posts %}
         <div class="panel panel-default">
