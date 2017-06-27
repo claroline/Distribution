@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\ContentManager;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\RoleManager;
@@ -41,6 +42,7 @@ use Claroline\CursusBundle\Entity\CursusUser;
 use Claroline\CursusBundle\Entity\DocumentModel;
 use Claroline\CursusBundle\Entity\SessionEvent;
 use Claroline\CursusBundle\Entity\SessionEventComment;
+use Claroline\CursusBundle\Entity\SessionEventSet;
 use Claroline\CursusBundle\Entity\SessionEventUser;
 use Claroline\CursusBundle\Event\Log\LogCourseCreateEvent;
 use Claroline\CursusBundle\Event\Log\LogCourseDeleteEvent;
@@ -125,10 +127,12 @@ class CursusManager
     private $documentModelRepo;
     private $reservationResourceRepo;
     private $sessionEventRepo;
+    private $sessionEventSetRepo;
     private $sessionEventUserRepo;
     private $sessionGroupRepo;
     private $sessionQueueRepo;
     private $sessionUserRepo;
+    private $fu;
 
 /**
  * @DI\InjectParams({
@@ -154,7 +158,8 @@ class CursusManager
  *     "ut"                    = @DI\Inject("claroline.utilities.misc"),
  *     "utils"                 = @DI\Inject("claroline.security.utilities"),
  *     "workspaceManager"      = @DI\Inject("claroline.manager.workspace_manager"),
- *     "pdfManager"            = @DI\Inject("claroline.manager.pdf_manager")
+ *     "pdfManager"            = @DI\Inject("claroline.manager.pdf_manager"),
+ *     "fu"                    = @DI\Inject("claroline.utilities.file")
  * })
  */
     // why no claroline dispatcher ?
@@ -181,6 +186,7 @@ class CursusManager
         Utilities $utils,
         WorkspaceManager $workspaceManager,
         PdfManager $pdfManager,
+        FileUtilities $fu,
         $clarolineDispatcher
     ) {
         $this->archiveDir = $container->getParameter('claroline.param.platform_generated_archive_path');
@@ -208,6 +214,7 @@ class CursusManager
         $this->workspaceManager = $workspaceManager;
         $this->clarolineDispatcher = $clarolineDispatcher;
         $this->pdfManager = $pdfManager;
+        $this->fu = $fu;
 
         $this->courseRepo = $om->getRepository('ClarolineCursusBundle:Course');
         $this->courseQueueRepo = $om->getRepository('ClarolineCursusBundle:CourseRegistrationQueue');
@@ -221,6 +228,7 @@ class CursusManager
         $this->reservationResourceRepo = $om->getRepository('FormaLibre\ReservationBundle\Entity\Resource');
         $this->sessionEventCommentRepo = $om->getRepository('ClarolineCursusBundle:SessionEventComment');
         $this->sessionEventRepo = $om->getRepository('ClarolineCursusBundle:SessionEvent');
+        $this->sessionEventSetRepo = $om->getRepository('ClarolineCursusBundle:SessionEventSet');
         $this->sessionEventUserRepo = $om->getRepository('ClarolineCursusBundle:SessionEventUser');
         $this->sessionGroupRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionGroup');
         $this->sessionQueueRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionRegistrationQueue');
@@ -268,9 +276,13 @@ class CursusManager
         $cursus->setCourse($course);
         $cursus->setDescription($description);
         $cursus->setBlocking($blocking);
-        $cursus->setIcon($icon);
+        $course->refreshUuid();
         $cursus->setWorkspace($workspace);
         $cursus->setDetails(['color' => $color]);
+        if ($icon) {
+            $icon = $this->saveIcon($icon, $cursus);
+            $cursus->setIcon($icon);
+        }
         $orderMax = is_null($parent) ? $this->getLastRootCursusOrder() : $this->getLastCursusOrderByParent($parent);
         $order = is_null($orderMax) ? 1 : intval($orderMax) + 1;
         $cursus->setCursusOrder($order);
@@ -354,6 +366,7 @@ class CursusManager
         array $organizations = []
     ) {
         $course = new Course();
+        $course->refreshUuid();
         $course->setTitle($title);
         $course->setCode($code);
         $course->setPublicRegistration($publicRegistration);
@@ -361,7 +374,12 @@ class CursusManager
         $course->setRegistrationValidation($registrationValidation);
         $course->setWorkspaceModel($workspaceModel);
         $course->setWorkspace($workspace);
-        $course->setIcon($icon);
+
+        if ($icon) {
+            $icon = $this->saveIcon($icon, $course);
+            $course->setIcon($icon);
+        }
+
         $course->setUserValidation($userValidation);
         $course->setOrganizationValidation($organizationValidation);
         $course->setDefaultSessionDuration($defaultSessionDuration);
@@ -1516,7 +1534,8 @@ class CursusManager
         array $tutors = [],
         $registrationType = CourseSession::REGISTRATION_AUTO,
         $maxUsers = null,
-        $type = SessionEvent::TYPE_NONE
+        $type = SessionEvent::TYPE_NONE,
+        SessionEventSet $eventSet = null
     ) {
         $eventName = is_null($name) ? $session->getName() : $name;
         $eventStartDate = is_null($startDate) ? $session->getStartDate() : $startDate;
@@ -1534,6 +1553,7 @@ class CursusManager
         $sessionEvent->setRegistrationType($registrationType);
         $sessionEvent->setMaxUsers($maxUsers);
         $sessionEvent->setType($type);
+        $sessionEvent->setEventSet($eventSet);
 
         foreach ($tutors as $tutor) {
             $sessionEvent->addTutor($tutor);
@@ -1853,15 +1873,16 @@ class CursusManager
         return $currentCode;
     }
 
-    public function saveIcon(UploadedFile $tmpFile)
+    public function saveIcon(UploadedFile $tmpFile, $object)
     {
-        $extension = $tmpFile->getClientOriginalExtension();
-        $hashName = $this->container->get('claroline.utilities.misc')->generateGuid().
-            '.'.
-            $extension;
-        $tmpFile->move($this->iconsDirectory, $hashName);
+        if (!method_exists($object, 'getUuid')) {
+            throw new \Exception('Object '.$object->__toString().' has no method getUuid');
+        }
 
-        return $hashName;
+        $publicFile = $this->fu->createFile($tmpFile, $tmpFile->getBasename());
+        $this->fu->createFileUse($publicFile, get_class($object), $object->getUuid());
+
+        return '../../'.$publicFile->getUrl();
     }
 
     public function changeIcon(Course $course, UploadedFile $tmpFile)
@@ -2272,9 +2293,11 @@ class CursusManager
             if (isset($data['icon'])) {
                 $course->setIcon($data['icon']);
             }
+
             foreach ($organizations as $organization) {
                 $course->addOrganization($organization);
             }
+
             $this->om->persist($course);
 
             if ($withIndex) {
@@ -4830,6 +4853,40 @@ class CursusManager
         return $data;
     }
 
+    public function persistSessionEventSet(SessionEventSet $sessionEventSet)
+    {
+        $this->om->persist($sessionEventSet);
+        $this->om->flush();
+    }
+
+    public function createSessionEventSet(CourseSession $session, $name, $limit = 1)
+    {
+        $set = new SessionEventSet();
+        $set->setSession($session);
+        $set->setName($name);
+        $set->setLimit($limit);
+        $this->persistSessionEventSet($set);
+
+        return $set;
+    }
+
+    public function deleteSessionEventSet(SessionEventSet $sessionEventSet)
+    {
+        $this->om->remove($sessionEventSet);
+        $this->om->flush();
+    }
+
+    public function getSessionEventSet(CourseSession $session, $name)
+    {
+        $set = $this->getSessionEventSetsBySessionAndName($session, $name);
+
+        if (empty($set)) {
+            $set = $this->createSessionEventSet($session, $name);
+        }
+
+        return $set;
+    }
+
     /***************************************************
      * Access to CursusDisplayedWordRepository methods *
      ***************************************************/
@@ -5228,6 +5285,11 @@ class CursusManager
         return $this->sessionEventRepo->findSessionEventsByWorkspace($workspace);
     }
 
+    public function getSessionEventsByUser(User $user)
+    {
+        return $this->sessionEventRepo->findSessionEventsByUser($user);
+    }
+
     /*************************************************
      * Access to CourseSessionUserRepository methods *
      *************************************************/
@@ -5576,6 +5638,11 @@ class CursusManager
         return $this->sessionEventUserRepo->findSessionEventUsersFromListBySessionEventAndStatus($sessionEvent, $users, $status);
     }
 
+    public function getSessionEventUsersByUserAndEventSet(User $user, SessionEventSet $eventSet)
+    {
+        return $this->sessionEventUserRepo->findSessionEventUsersByUserAndEventSet($user, $eventSet);
+    }
+
     /***************************************************
      * Access to SessionEventCommentRepository methods *
      ***************************************************/
@@ -5583,6 +5650,20 @@ class CursusManager
     public function getSessionEventCommentsBySessionEvent(SessionEvent $sessionEvent)
     {
         return $this->sessionEventCommentRepo->findBy(['sessionEvent' => $sessionEvent]);
+    }
+
+    /***********************************************
+     * Access to SessionEventSetRepository methods *
+     ***********************************************/
+
+    public function getSessionEventSetsBySession(CourseSession $session)
+    {
+        return $this->sessionEventSetRepo->findSessionEventSetsBySession($session);
+    }
+
+    public function getSessionEventSetsBySessionAndName(CourseSession $session, $name)
+    {
+        return $this->sessionEventSetRepo->findSessionEventSetsBySessionAndName($session, $name);
     }
 
     /******************
