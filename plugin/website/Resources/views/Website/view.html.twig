@@ -9,6 +9,13 @@
 {% set hideFooter = true %}
 {% set hideBreadcrumb = true %}
 
+{# parent div#wrap classes must be kept only if website isn't displayed in fullscreen #}
+{% block wrap_default_classes %}
+ {% if options.totalWidth > 0 %}
+    {{ parent() }}
+ {% endif %}
+{% endblock %}
+
 {% block section_panel %}
     <div class="website-container" data-ng-cloak ng-controller="MainController as vm">
         <div class="loading text-center" ng-if="!pageLoaded" >
@@ -59,17 +66,17 @@
                         {% if options.footerText is not empty %}
                             <div class="footerContent">{{ options.footerText|raw }}</div>
                         {% endif %}
-                        {% if options.copyrightEnabled is not empty %}
+                        {% if options.copyrightEnabled is not empty and options.copyrightText is not empty %}
                             <div class="copyright-text">© Copyright {{ options.copyrightText }}</div>
                         {% endif %}
                     </div>
                 </footer>
             {% endif %}
-            {% if options.analyticsProvider=="xiti" and options.analyticsId is not empty %}
+            {% if options.analyticsProvider=="xiti" and options.analyticsAccountId is not empty %}
                 <a href="http://www.xiti.com/xiti.asp?s=<%=webSite.options.analyticsAccountId%>" title="WebAnalytics" target="_top">
                     <script type="text/javascript">
                         //<!--
-                        Xt_param = 's={{ options.analyticsId }}&p={{ _resource.name~" - "~currentPage.title }}';
+                        Xt_param = 's={{ options.analyticsAccountId }}&p={{ _resource.name~" - "~currentPage.title }}';
                         try {Xt_r = top.document.referrer;}
                         catch(e) {Xt_r = document.referrer; }
                         Xt_h = new Date();
@@ -82,7 +89,7 @@
                         //-->
                     </script>
                     <noscript>
-                        <img width="39" height="25" src="http://logv17.xiti.com/hit.xiti?s={{ options.analyticsId }}&p={{ _resource.name~" - "~currentPage.title }}" alt="WebAnalytics" />
+                        <img width="39" height="25" src="http://logv17.xiti.com/hit.xiti?s={{ options.analyticsAccountId }}&p={{ _resource.name~" - "~currentPage.title }}" alt="WebAnalytics" />
                     </noscript></a>
             {% endif %}
         </div>
@@ -112,14 +119,14 @@
         })();
     </script>
 
-    {% if options.analyticsProvider=="google" and options.analyticsId is not empty %}
+    {% if options.analyticsProvider=="google" and options.analyticsAccountId is not empty %}
         <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
                 (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                     m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
             })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-            ga('create', '{{ options.analyticsId }}', 'auto');
+            ga('create', '{{ options.analyticsAccountId }}', 'auto');
             ga('send', 'pageview');
         </script>
     {% endif %}

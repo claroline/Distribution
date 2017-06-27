@@ -264,6 +264,10 @@ class TransferManager
             $workspace->setName($data['parameters']['name']);
         }
 
+        if (isset($data['guid'])) {
+            $workspace->setName($data['parameters']['guid']);
+        }
+
         //just to be sure doctrine is ok before doing all the workspace
         $this->om->startFlushSuite();
         $data = $this->reorderData($data);
@@ -274,7 +278,10 @@ class TransferManager
             $isValidated = true;
         }
 
-        $workspace->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
+        if (!$workspace->getGuid()) {
+            $workspace->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
+        }
+
         $date = new \Datetime(date('d-m-Y H:i'));
         $workspace->setCreationDate($date->getTimestamp());
         $this->om->persist($workspace);
@@ -390,6 +397,7 @@ class TransferManager
         $files = [];
         $data['parameters']['code'] = $workspace->getCode();
         $data['parameters']['name'] = $workspace->getName();
+        $data['parameters']['guid'] = $workspace->getGuid();
         $data['roles'] = $this->getImporterByName('roles')->export($workspace, $files, null);
         $data['tools'] = $this->getImporterByName('tools')->export($workspace, $files, null);
         $_resManagerData = [];

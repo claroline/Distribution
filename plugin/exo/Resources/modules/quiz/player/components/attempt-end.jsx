@@ -1,4 +1,5 @@
-import React, {PropTypes as T} from 'react'
+import React from 'react'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {tex} from '#/main/core/translation'
@@ -24,6 +25,10 @@ const AttemptEnd = props => {
         <div className={showScore ? 'col-md-9':'col-md-12'}>
           <h2 className="step-title">{tex('attempt_end_title')}</h2>
           <p>{tex('attempt_end_info')}</p>
+          {props.endMessage &&
+            <p>{props.endMessage}</p>
+          }
+
           {showCorrection &&
             <a href={`#papers/${props.paper.id}`} className="btn btn-start btn-lg btn-block btn-primary">
               {tex('view_paper')}
@@ -45,13 +50,15 @@ AttemptEnd.propTypes = {
     score: T.number,
     structure: T.object.isRequired,
     finished: T.bool.isRequired
-  }).isRequired
+  }).isRequired,
+  endMessage: T.string
 }
 
 function mapStateToProps(state) {
   return {
     admin: resourceSelect.editable(state) || quizSelectors.papersAdmin(state),
-    paper: playerSelectors.paper(state)
+    paper: playerSelectors.paper(state),
+    endMessage: playerSelectors.quizEndMessage(state)
   }
 }
 

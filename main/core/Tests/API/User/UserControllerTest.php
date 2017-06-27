@@ -27,7 +27,7 @@ class UserControllerTest extends TransactionalTestCase
         $this->client->request('GET', '/api/users.json');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $data = $this->client->getResponse()->getContent();
-        $this->assertEquals(1, count(json_decode($data, true)));
+        $this->assertEquals(2, count(json_decode($data, true)));
     }
 
     public function testGetUsersActionIsSecured()
@@ -225,7 +225,7 @@ class UserControllerTest extends TransactionalTestCase
         $this->client->request('GET', "api/user/{$john->getId()}/get.json");
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
+        $this->assertEquals(401, $this->client->getResponse()->getStatusCode());
     }
 
     public function testDeleteUserAction()

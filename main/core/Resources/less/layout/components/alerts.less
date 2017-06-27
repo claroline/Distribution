@@ -11,18 +11,21 @@
     }
 }
 
-.alert-claroline-danger {
-    width: 100%;
+.alert-fixed {
+    width: 94%;
     position: fixed;
     z-index: 10000; /* @todo: somehow find a "good" z-index */
-    top: 35px;
+    top: 65px;
+    left: 3%;
     text-align: center;
 }
 
-.alert-email-confirm {
-    width: 100%;
-    position: fixed;
-    z-index: 10000; /* @todo: somehow find a "good" z-index */
+.alert-claroline-danger {
+    .alert-fixed;
     top: 35px;
-    text-align: center;
+}
+
+.alert-email-confirm {
+    .alert-fixed;
+    top: 35px;
 }
