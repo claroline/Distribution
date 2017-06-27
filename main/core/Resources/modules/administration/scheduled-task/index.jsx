@@ -1,0 +1,54 @@
+import React from 'react'
+import ReactDOM from 'react-dom'
+import {Provider} from 'react-redux'
+import {DragDropContext} from 'react-dnd'
+import {default as TouchBackend} from 'react-dnd-touch-backend'
+import {createStore} from '#/main/core/utilities/redux'
+import {registerModalTypes} from '#/main/core/layout/modal'
+import {DeleteConfirmModal} from '#/main/core/layout/modal/components/delete-confirm.jsx'
+import {makeRouter} from './router'
+import {reducers} from './reducers'
+import {VIEW_MANAGEMENT} from './enums'
+import {AdminTaskToolLayout} from './components/admin-task-tool-layout.jsx'
+import {TaskTypeFormModal} from './components/task-type-form-modal.jsx'
+
+class AdminTaskTool {
+  constructor(isCronConfigured, tasks, total) {
+    registerModalTypes([
+      ['DELETE_MODAL', DeleteConfirmModal],
+      ['MODAL_TASK_TYPE_FORM', TaskTypeFormModal]
+    ])
+    this.store = createStore(
+      reducers,
+      {
+        isCronConfigured: isCronConfigured,
+        tasks: {
+          data: tasks,
+          total: total
+        },
+        viewMode: VIEW_MANAGEMENT
+      }
+    )
+    this.dndSessionEventsTool = DragDropContext(TouchBackend({enableMouseEvents: true}))(AdminTaskToolLayout)
+    makeRouter(this.store.dispatch.bind(this.store))
+  }
+
+  render(element) {
+    ReactDOM.render(
+      React.createElement(
+        Provider,
+        {store: this.store},
+        React.createElement(this.dndSessionEventsTool)
+      ),
+      element
+    )
+  }
+}
+
+const container = document.querySelector('.admin-task-tool-container')
+const isCronConfigured = parseInt(container.dataset.isCronConfigured)
+const tasks = JSON.parse(container.dataset.tasks)
+const total = parseInt(container.dataset.total)
+const tool = new AdminTaskTool(isCronConfigured, tasks, total)
+
+tool.render(container)
