@@ -2,9 +2,9 @@
 
 namespace Claroline\AgendaBundle;
 
+use Claroline\AgendaBundle\Installation\AdditionalInstaller;
 use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
-use Claroline\AgendaBundle\Installation\AdditionalInstaller;
 
 /**
  * Bundle class.

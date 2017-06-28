@@ -28,8 +28,8 @@ class RecorderTest extends MockeryTestCase
 
     public function testRecorderProperlyDelegatesToWritersOnRegister()
     {
-        $this->dbWriter->shouldReceive('insert')->once()->with($this->plugin, array());
-        $this->recorder->register($this->plugin, array());
+        $this->dbWriter->shouldReceive('insert')->once()->with($this->plugin, []);
+        $this->recorder->register($this->plugin, []);
     }
 
     public function testRecorderProperlyDelegatesToWritersOnUnregister()

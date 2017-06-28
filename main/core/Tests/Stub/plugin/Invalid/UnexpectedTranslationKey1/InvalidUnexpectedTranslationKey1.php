@@ -17,6 +17,6 @@ class InvalidUnexpectedTranslationKey1 extends DistributionPluginBundle
 {
     public function getNameTranslationKey()
     {
-        return array();
+        return [];
     }
 }

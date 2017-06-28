@@ -97,7 +97,7 @@ class DatabaseWriter
      * Persists a plugin in the database.
      *
      * @param DistributionPluginBundle $pluginBundle
-     * @param array        $pluginConfiguration
+     * @param array                    $pluginConfiguration
      */
     public function insert(DistributionPluginBundle $pluginBundle, array $pluginConfiguration)
     {
@@ -115,7 +115,7 @@ class DatabaseWriter
 
     /**
      * @param DistributionPluginBundle $pluginBundle
-     * @param array        $pluginConfiguration
+     * @param array                    $pluginConfiguration
      *
      * @throws \Exception
      */
@@ -200,8 +200,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $processedConfiguration
-     * @param Plugin       $plugin
+     * @param array                    $processedConfiguration
+     * @param Plugin                   $plugin
      * @param DistributionPluginBundle $pluginBundle
      */
     private function persistConfiguration($processedConfiguration, Plugin $plugin, DistributionPluginBundle $pluginBundle)
@@ -239,8 +239,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $processedConfiguration
-     * @param Plugin       $plugin
+     * @param array                    $processedConfiguration
+     * @param Plugin                   $plugin
      * @param DistributionPluginBundle $pluginBundle
      */
     private function updateConfiguration($processedConfiguration, Plugin $plugin, DistributionPluginBundle $pluginBundle)
@@ -278,8 +278,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resourceConfiguration
-     * @param Plugin       $plugin
+     * @param array                    $resourceConfiguration
+     * @param Plugin                   $plugin
      * @param DistributionPluginBundle $pluginBundle
      *
      * @return ResourceType
@@ -328,9 +328,9 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $widgetConfiguration
+     * @param array                    $widgetConfiguration
      * @param DistributionPluginBundle $pluginBundle
-     * @param Plugin       $plugin
+     * @param Plugin                   $plugin
      */
     private function updateWidget(
         $widgetConfiguration,
@@ -375,8 +375,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resource
-     * @param ResourceType $resourceType
+     * @param array                    $resource
+     * @param ResourceType             $resourceType
      * @param DistributionPluginBundle $pluginBundle
      */
     private function persistIcons(array $resource, ResourceType $resourceType, DistributionPluginBundle $pluginBundle)
@@ -414,8 +414,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resource
-     * @param ResourceType $resourceType
+     * @param array                    $resource
+     * @param ResourceType             $resourceType
      * @param DistributionPluginBundle $pluginBundle
      */
     private function updateIcons(array $resource, ResourceType $resourceType, DistributionPluginBundle $pluginBundle)
@@ -589,8 +589,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $resourceConfiguration
-     * @param Plugin       $plugin
+     * @param array                    $resourceConfiguration
+     * @param Plugin                   $plugin
      * @param DistributionPluginBundle $pluginBundle
      *
      * @return ResourceType
@@ -634,8 +634,8 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $widgetConfiguration
-     * @param Plugin       $plugin
+     * @param array                    $widgetConfiguration
+     * @param Plugin                   $plugin
      * @param DistributionPluginBundle $pluginBundle
      */
     private function createWidget($widgetConfiguration, Plugin $plugin, DistributionPluginBundle $pluginBundle, array $roles = [])
@@ -649,10 +649,10 @@ class DatabaseWriter
     }
 
     /**
-     * @param array        $widgetConfiguration
-     * @param Plugin       $plugin
+     * @param array                    $widgetConfiguration
+     * @param Plugin                   $plugin
      * @param DistributionPluginBundle $pluginBundle
-     * @param Widget       $widget
+     * @param Widget                   $widget
      */
     private function persistWidget($widgetConfiguration, Plugin $plugin, DistributionPluginBundle $pluginBundle, Widget $widget, $withDisplay = true)
     {

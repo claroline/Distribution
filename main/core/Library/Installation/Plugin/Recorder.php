@@ -55,7 +55,7 @@ class Recorder
      * Registers a plugin.
      *
      * @param DistributionPluginBundle $plugin
-     * @param array        $pluginConfiguration
+     * @param array                    $pluginConfiguration
      */
     public function register(DistributionPluginBundle $plugin, array $pluginConfiguration)
     {
@@ -68,7 +68,7 @@ class Recorder
      * Update configuration for a plugin.
      *
      * @param DistributionPluginBundle $plugin
-     * @param array        $pluginConfiguration
+     * @param array                    $pluginConfiguration
      */
     public function update(DistributionPluginBundle $plugin, array $pluginConfiguration)
     {

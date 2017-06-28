@@ -17,6 +17,6 @@ class InvalidUnexpectedRoutingPrefix1 extends DistributionPluginBundle
 {
     public function getRoutingPrefix()
     {
-        return array();
+        return [];
     }
 }
