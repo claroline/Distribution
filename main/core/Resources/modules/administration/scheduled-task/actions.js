@@ -5,12 +5,18 @@ import {actions as listActions} from '#/main/core/layout/list/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
+import {
+  VIEW_MANAGEMENT,
+  VIEW_MAIL_FORM,
+  VIEW_MESSAGE_FORM
+} from './enums'
 
 export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
 export const TASKS_LOAD = 'TASKS_LOAD'
 export const TASK_ADD = 'TASK_ADD'
 export const TASK_FORM_RESET = 'TASK_FORM_RESET'
 export const TASK_FORM_LOAD = 'TASK_FORM_LOAD'
+export const TASK_FORM_TYPE_UPDATE = 'TASK_FORM_TYPE_UPDATE'
 
 export const actions = {}
 
@@ -52,6 +58,27 @@ actions.fetchTasks = () => (dispatch, getState) => {
 }
 
 actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
+
+actions.displayManagementView = () => {
+  return (dispatch) => {
+    dispatch(actions.resetTaskForm('mail'))
+    dispatch(actions.updateViewMode(VIEW_MANAGEMENT))
+  }
+}
+
+actions.displayMailView = () => {
+  return (dispatch) => {
+    dispatch(actions.updateTaskFormType('mail'))
+    dispatch(actions.updateViewMode(VIEW_MAIL_FORM))
+  }
+}
+
+actions.displayMessageView = () => {
+  return (dispatch) => {
+    dispatch(actions.updateTaskFormType('message'))
+    dispatch(actions.updateViewMode(VIEW_MESSAGE_FORM))
+  }
+}
 
 actions.createMessageTask = (data) => {
   return (dispatch) => {
@@ -132,5 +159,7 @@ actions.addTask = makeActionCreator(TASK_ADD, 'task')
 actions.resetTaskForm = makeActionCreator(TASK_FORM_RESET)
 
 actions.loadTaskForm = makeActionCreator(TASK_FORM_LOAD, 'task')
+
+actions.updateTaskFormType = makeActionCreator(TASK_FORM_TYPE_UPDATE, 'value')
 
 const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

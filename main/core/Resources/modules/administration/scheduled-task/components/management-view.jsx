@@ -1,6 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import moment from 'moment'
 import {t} from '#/main/core/translation'
 import {makeModal} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'
@@ -99,18 +100,19 @@ class ManagementView extends Component {
               {
                 name: 'name',
                 type: 'string',
-                label: t('title'),
-                renderer: (rowData) => <a href={`#task/${rowData.id}`}>{rowData.name}</a>
+                label: t('title')
               },
               {
                 name: 'type',
                 type: 'string',
-                label: t('type')
+                label: t('type'),
+                renderer: (rowData) => t(rowData.type)
               },
               {
                 name: 'scheduledDate',
                 type: 'date',
-                label: t('scheduled_date')
+                label: t('scheduled_date'),
+                renderer: (rowData) => moment(rowData.scheduledDate).format('DD/MM/YYYY HH:mm')
               }
             ]}
             actions={[
@@ -183,6 +185,7 @@ ManagementView.propTypes = {
     scheduledDate: T.string.isRequired
   })).isRequired,
   total: T.number.isRequired,
+  loadTaskForm: T.func,
   deleteTasks: T.func,
   createModal: T.func.isRequired,
   filters: T.array.isRequired,

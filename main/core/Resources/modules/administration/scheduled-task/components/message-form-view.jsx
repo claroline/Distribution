@@ -20,7 +20,7 @@ class MessageFormView extends Component {
       receiversError: null,
       objectError: null,
       contentError: null,
-      type: 'message',
+      type: this.props.task.type ? this.props.task.type : undefined,
       name: this.props.task.name ? this.props.task.name : undefined,
       scheduledDate: this.props.task.scheduledDate ?  new Date(this.props.task.scheduledDate) : new Date(),
       receivers : this.props.task.users ? this.props.task.users : [],
@@ -35,8 +35,8 @@ class MessageFormView extends Component {
     this.props.resetTaskForm()
   }
 
-  updateMailProps(property, value) {
-    const data = []
+  updateProps(property, value) {
+    let ids = []
 
     switch (property) {
       case 'name':
@@ -52,7 +52,7 @@ class MessageFormView extends Component {
         this.setState({content: value})
         break
       case 'receivers':
-        const ids = value.map(v => v.id)
+        ids = value.map(v => v.id)
         this.setState({receivers: value, receiversIds: ids})
         break
     }
@@ -74,7 +74,7 @@ class MessageFormView extends Component {
 
   addReceivers(users) {
     const receivers = users ? users : []
-    this.updateMailProps('receivers', receivers)
+    this.updateProps('receivers', receivers)
   }
 
   registerTask() {
@@ -88,7 +88,7 @@ class MessageFormView extends Component {
     }
   }
 
-  validateMail() {
+  validate() {
     const validation = {
       hasError: false,
       scheduledDateError: null,
@@ -117,119 +117,121 @@ class MessageFormView extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <h1>{t('message_sending')}</h1>
-        <hr/>
-        <div className="form-group row">
-          <label className="control-label col-md-3">
-            {t('title')}
-          </label>
-          <div className="col-md-9">
-            <input
-              type="text"
-              className="form-control"
-              value={this.state.name}
-              onChange={e => this.updateMailProps('name', e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className={classes('form-group row', {'has-error': this.state.scheduledDateError})}>
-          <div className="control-label col-md-3">
-            <label>{t('planning_date')}</label>
-          </div>
-          <div className="col-md-9">
-            <Datetime
-              closeOnSelect={true}
-              dateFormat={true}
-              timeFormat={true}
-              locale="fr"
-              utc={true}
-              defaultValue={this.state.scheduledDate}
-              onChange={date => this.updateMailProps('scheduledDate', date)}
-            />
-            {this.state.scheduledDateError &&
-            <div className="help-block field-error">
-              {this.state.scheduledDateError}
-            </div>
-            }
-          </div>
-        </div>
-
-        <div className={classes('form-group row', {'has-error': this.state.receiversError})}>
-          <label className="control-label col-md-3">
-            {t('receivers')}
-          </label>
-          <div className="col-md-9">
-            <div className="input-group">
+    if (this.state.type) {
+      return (
+        <div>
+          <h1>{this.state.type === 'message' ? t('message_sending') : t('mail_sending')}</h1>
+          <hr/>
+          <div className="form-group row">
+            <label className="control-label col-md-3">
+              {t('title')}
+            </label>
+            <div className="col-md-9">
               <input
                 type="text"
                 className="form-control"
-                value={this.state.receivers.map(r => `${r.firstName} ${r.lastName}`)}
-                disabled
+                value={this.state.name}
+                onChange={e => this.updateProps('name', e.target.value)}
               />
-              <span className="input-group-btn">
-                <button className="btn btn-default" onClick={() => this.showReceiversSelection()}>
-                  <i className="fa fa-user"></i>
-                </button>
-              </span>
             </div>
-            {this.state.receiversError &&
-              <div className="help-block field-error">
-                {this.state.receiversError}
-              </div>
-            }
           </div>
-        </div>
 
-        <div className={classes('form-group row', {'has-error': this.state.objectError})}>
-          <label className="control-label col-md-3">
-            {t('object')}
-          </label>
-          <div className="col-md-9">
-            <input
-              type="text"
-              className="form-control"
-              value={this.state.object}
-              onChange={e => this.updateMailProps('object', e.target.value)}
-            />
-            {this.state.objectError &&
+          <div className={classes('form-group row', {'has-error': this.state.scheduledDateError})}>
+            <div className="control-label col-md-3">
+              <label>{t('planning_date')}</label>
+            </div>
+            <div className="col-md-9">
+              <Datetime
+                closeOnSelect={true}
+                dateFormat={true}
+                timeFormat={true}
+                locale="fr"
+                utc={true}
+                defaultValue={this.state.scheduledDate}
+                onChange={date => this.updateProps('scheduledDate', date)}
+              />
+              {this.state.scheduledDateError &&
               <div className="help-block field-error">
-                {this.state.objectError}
+                {this.state.scheduledDateError}
               </div>
-            }
+              }
+            </div>
           </div>
-        </div>
 
-        <div className={classes('form-group row', {'has-error': this.state.contentError})}>
-          <div className="control-label col-md-3">
-            <label>{t('content')}</label>
-          </div>
-          <div className="col-md-9">
-            <Textarea
-              id="mail-form-content"
-              content={this.state.content}
-              onChange={text => this.updateMailProps('content', text)}
-            >
-            </Textarea>
-            {this.state.contentError &&
-              <div className="help-block field-error">
-                {this.state.contentError}
+          <div className={classes('form-group row', {'has-error': this.state.receiversError})}>
+            <label className="control-label col-md-3">
+              {t('receivers')}
+            </label>
+            <div className="col-md-9">
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={this.state.receivers.map(r => `${r.firstName} ${r.lastName}`)}
+                  disabled
+                />
+                <span className="input-group-btn">
+                  <button className="btn btn-default" onClick={() => this.showReceiversSelection()}>
+                    <i className="fa fa-user"></i>
+                  </button>
+                </span>
               </div>
-            }
+              {this.state.receiversError &&
+                <div className="help-block field-error">
+                  {this.state.receiversError}
+                </div>
+              }
+            </div>
           </div>
+
+          <div className={classes('form-group row', {'has-error': this.state.objectError})}>
+            <label className="control-label col-md-3">
+              {t('object')}
+            </label>
+            <div className="col-md-9">
+              <input
+                type="text"
+                className="form-control"
+                value={this.state.object}
+                onChange={e => this.updateProps('object', e.target.value)}
+              />
+              {this.state.objectError &&
+                <div className="help-block field-error">
+                  {this.state.objectError}
+                </div>
+              }
+            </div>
+          </div>
+
+          <div className={classes('form-group row', {'has-error': this.state.contentError})}>
+            <div className="control-label col-md-3">
+              <label>{t('content')}</label>
+            </div>
+            <div className="col-md-9">
+              <Textarea
+                id="message-form-content"
+                content={this.state.content}
+                onChange={text => this.updateProps('content', text)}
+              >
+              </Textarea>
+              {this.state.contentError &&
+                <div className="help-block field-error">
+                  {this.state.contentError}
+                </div>
+              }
+            </div>
+          </div>
+          <hr/>
+          <button className="btn btn-primary" onClick={() => this.validate()}>
+            {t('ok')}
+          </button>
+          &nbsp;
+          <a className="btn btn-default" href={'#'}>
+            {t('cancel')}
+          </a>
         </div>
-        <hr/>
-        <button className="btn btn-primary" onClick={() => this.validateMail()}>
-          {t('ok')}
-        </button>
-        &nbsp;
-        <a className="btn btn-default" href={'#'}>
-          {t('cancel')}
-        </a>
-      </div>
-    )
+      )
+    }
   }
 }
 

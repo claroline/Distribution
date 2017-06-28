@@ -9,7 +9,8 @@ import {
   TASKS_LOAD,
   TASK_ADD,
   TASK_FORM_RESET,
-  TASK_FORM_LOAD
+  TASK_FORM_LOAD,
+  TASK_FORM_TYPE_UPDATE
 } from './actions'
 
 const initialState = {
@@ -56,7 +57,8 @@ const tasksReducers = {
 
 const taskFormReducers = {
   [TASK_FORM_RESET]: () => initialState['taskForm'],
-  [TASK_FORM_LOAD]: (state, action) => action.task
+  [TASK_FORM_LOAD]: (state, action) => action.task,
+  [TASK_FORM_TYPE_UPDATE]: (state, action) => Object.assign({}, state, {type: action.value})
 }
 
 export const reducers = combineReducers({

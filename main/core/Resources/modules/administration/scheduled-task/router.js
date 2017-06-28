@@ -1,19 +1,14 @@
 import {Router, history} from 'backbone'
 import {actions} from './actions'
-import {
-  VIEW_MANAGEMENT,
-  VIEW_MAIL_FORM,
-  VIEW_MESSAGE_FORM
-} from './enums'
 
 let router = null
 
 export function makeRouter(dispatch) {
   const AdminTaskToolRouter = Router.extend({
     routes: {
-      '': () => dispatch(actions.updateViewMode(VIEW_MANAGEMENT)),
-      'mail': () => dispatch(actions.updateViewMode(VIEW_MAIL_FORM)),
-      'message': () => dispatch(actions.updateViewMode(VIEW_MESSAGE_FORM))
+      '': () => dispatch(actions.displayManagementView()),
+      'mail': () => dispatch(actions.displayMailView()),
+      'message': () => dispatch(actions.displayMessageView())
     }
   })
   router = new AdminTaskToolRouter()
