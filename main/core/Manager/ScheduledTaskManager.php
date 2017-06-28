@@ -164,7 +164,6 @@ class ScheduledTaskManager
         $this->persistScheduledTask($task);
     }
 
-
     /*********************************************
      * Access to ScheduledTaskRepository methods *
      *********************************************/
