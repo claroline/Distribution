@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
-use RuntimeException;
 use JMS\DiExtraBundle\Annotation as DI;
+use RuntimeException;
 
 /**
  * The plugin loader is used to instantiate a plugin bundle class (in order to

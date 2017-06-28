@@ -34,7 +34,8 @@ class OperationExecutorTest extends \PHPUnit_Framework_TestCase
         $this->pluginInstaller = $this->mock('Claroline\CoreBundle\Library\Installation\Plugin\Installer');
         $this->detector = $this->mock('Claroline\BundleRecorder\Detector\Detector');
         $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
-        $this->executor = new OperationExecutor($this->kernel, $this->baseInstaller, $this->pluginInstaller, $this->om);
+        $this->versionManager = $this->mock('Claroline\CoreBundle\Manager\VersionManager');
+        $this->executor = new OperationExecutor($this->kernel, $this->baseInstaller, $this->pluginInstaller, $this->om, $this->versionManager);
         $this->executor->setBundleDetector($this->detector);
 
         // always build a fake fqcn based on the given path
