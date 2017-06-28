@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Entity\Update\UpdaterExecuted;
 use Claroline\CoreBundle\Entity\Update\Version;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -50,24 +49,27 @@ class VersionManager
     public function register(InstallableInterface $bundle)
     {
         $data = $this->getVersionFile($bundle);
-        $version = $this->repo->findBy(['version' => $data[0], 'bundle' => $bundle->getBundleFQCN()]);
+
+        $version = $this->repo->findOneBy(['version' => $data[0], 'bundle' => $bundle->getBundleFQCN()]);
 
         if ($version) {
             $this->log("Version {$version->getBundle()} {$version->getVersion()} already registered !", LogLevel::ERROR);
 
-            return;
+            return $version;
         }
 
         $this->log("Registering {$bundle->getBundleFQCN()} version {$data[0]}");
         $version = new Version($data[0], $data[1], $data[2], $bundle->getBundleFQCN());
         $this->om->persist($version);
         $this->om->flush();
+
+        return $version;
     }
 
-    public function registerBundle(PluginBundleInterface $bundle)
+    public function execute(Version $version)
     {
-        $executed = new UpdaterExecuted($this->getLatestUpgraded(), $bundle->getBundleFQCN());
-        $this->om->persist($executed);
+        $version->setIsUpgraded(true);
+        $this->om->persist($version);
         $this->om->flush();
     }
 
@@ -83,9 +85,11 @@ class VersionManager
         return $this->getVersionFile()[0];
     }
 
-    public function getLatestUpgraded()
+    public function getLatestUpgraded($bundle)
     {
-        return $this->repo->getLatestExecuted();
+        $fqcn = $bundle instanceof PluginBundleInterface ? $bundle->getBundleFQCN() : $bundle;
+
+        return $this->repo->getLatestExecuted($fqcn);
     }
 
     public function getVersionFile()
@@ -95,18 +99,9 @@ class VersionManager
         return explode("\n", $data);
     }
 
-    public function getVersionFilePath(InstallableInterface $bundle)
-    {
-        var_dump($bundle->getVersionFilePath());
-    }
-
     public function getDistributionVersionFilePAth()
     {
         return __DIR__.'/../../../VERSION.txt';
-    }
-
-    public function validateCurrent()
-    {
     }
 
     /**
@@ -121,7 +116,7 @@ class VersionManager
 
         if (!$json->exists()) {
             throw new \RuntimeException(
-               "'{$this->previousRepoFile}' must be writable",
+               "'{$repoFile}' must be writable",
                456 // this code is there for unit testing only
             );
         }
@@ -138,5 +133,42 @@ class VersionManager
         }
 
         return $repo;
+    }
+
+    public function findInstalledPackage(PluginBundleInterface $bundle)
+    {
+        //look for something in the database
+        $package = $this->getLatestUpgraded($bundle);
+
+        if ($package) {
+            return $package;
+        }
+
+        $previous = $this->versionManager->openRepository($this->previousRepoFile, true);
+
+        if (!$previous) {
+            return;
+        }
+
+        foreach ($previous->getCanonicalPackages() as $package) {
+            $extra = $package->getExtra();
+
+            if ($extra && array_key_exists('bundles', $extra)) {
+                //Otherwise convert the name in a dirty little way
+              //If it's a metapackage, check in the bundle list
+              foreach ($extra['bundles'] as $installedBundle) {
+                  if ($installedBundle === $bundle) {
+                      return new Package($package->getName(), $package->getVersion());
+                  }
+              }
+            } else {
+                $bundleParts = explode('\\', $bundle);
+
+              //magic !
+              if (preg_replace('/[^A-Za-z0-9]/', '', $package->getPrettyName()) === strtolower($bundleParts[2])) {
+                  return new Package($package->getName(), $package->getVersion());
+              }
+            }
+        }
     }
 }

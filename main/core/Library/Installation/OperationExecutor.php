@@ -112,8 +112,6 @@ class OperationExecutor
     public function buildOperationList()
     {
         $this->log('Building install/update operations list...');
-
-        $previous = $this->versionManager->openRepository($this->previousRepoFile, true);
         $current = $this->versionManager->openRepository($this->installedRepoFile);
 
         /** @var PackageInterface $currentPackage */
@@ -143,13 +141,17 @@ class OperationExecutor
 
                     if ($foundBundle && $previousPackage) {
                         $isDistribution = $currentPackage->getName() === 'claroline/distribution';
-                        $fromVersionEntity = $this->versionManager->getLatestUpgraded();
+                        $fromVersionEntity = $this->versionManager->getLatestUpgraded($bundle);
                         $toVersion = $this->versionManager->getCurrent();
 
-                        if ($isDistribution && $versionInstalled && $toVersion) {
-                            $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
-                            $operations[$bundle]->setFromVersion($fromVersionEntity->getVersion());
-                            $operations[$bundle]->setToVersion($toVersion);
+                        if ($isDistribution && $fromVersionEntity && $toVersion) {
+                            if ($fromVersionEntity->getVersion() === $toVersion && $fromVersionEntity->isUpgraded()) {
+                                $this->log('Package '.$bundle.'already upgraded to the '.$toVersion.'version. Skipping...');
+                            } else {
+                                $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
+                                $operations[$bundle]->setFromVersion($fromVersionEntity->getVersion());
+                                $operations[$bundle]->setToVersion($toVersion);
+                            }
                         //old update <= v10
                         } else {
                             $operations[$bundle] = new Operation(Operation::UPDATE, $currentPackage, $bundle);
@@ -169,6 +171,7 @@ class OperationExecutor
                     }
                 }
             } else {
+                $previous = $this->versionManager->openRepository($this->previousRepoFile, true);
                 $previousPackage = $previous->findPackage($currentPackage->getName(), '*');
                 //old <= v6 package detection
                 if (!$previousPackage) {

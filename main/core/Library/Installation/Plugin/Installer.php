@@ -91,6 +91,8 @@ class Installer
      */
     public function install(PluginBundleInterface $plugin)
     {
+        $this->versionManager->setLogger($this->logger);
+        $version = $this->versionManager->register($plugin);
         $this->checkInstallationStatus($plugin, false);
         $this->validatePlugin($plugin);
         $this->log('Saving configuration...');
@@ -116,8 +118,7 @@ class Installer
             $this->pluginManager->disable($pluginEntity);
         }
 
-        $this->versionManager->setLogger($this->logger);
-        $this->versionManager->register($plugin);
+        $version = $this->versionManager->execute($version);
     }
 
     /**
@@ -142,6 +143,8 @@ class Installer
      */
     public function update(PluginBundleInterface $plugin, $currentVersion, $targetVersion)
     {
+        $this->versionManager->setLogger($this->logger);
+        $version = $this->versionManager->register($plugin);
         $this->checkInstallationStatus($plugin, true);
         $this->validator->activeUpdateMode();
         $this->validatePlugin($plugin);
@@ -149,8 +152,7 @@ class Installer
         $this->log('Updating plugin configuration...');
         $this->baseInstaller->update($plugin, $currentVersion, $targetVersion);
         $this->recorder->update($plugin, $this->validator->getPluginConfiguration());
-        $this->versionManager->setLogger($this->logger);
-        $this->versionManager->register($plugin);
+        $this->versionManager->execute($version);
     }
 
     public function end(PluginBundleInterface $plugin)

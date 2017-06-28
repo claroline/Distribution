@@ -15,22 +15,29 @@ use Doctrine\ORM\EntityRepository;
 
 class VersionRepository extends EntityRepository
 {
-    public function getLatest()
+    public function getLatest($fqcn)
     {
         return $this->createQueryBuilder('e')->
             orderBy('e.date', 'DESC')->
+            where('e.bundle LIKE :bundle')->
+            setParameter('bundle', "%{$fqcn}%")->
             setMaxResults(1)->
             getQuery()->
             getOneOrNullResult();
     }
 
-    public function getLatestExecuted()
+    public function getLatestExecuted($fqcn)
     {
-        return $this->createQueryBuilder('e')
+        $fqcn = addcslashes($fqcn, '\\');
+
+        $query = $this->createQueryBuilder('e')
             ->orderBy('e.date', 'DESC')
-            ->where('e.isUpgraded', false)
+            ->where('e.isUpgraded = TRUE')
+            ->andWhere('e.bundle LIKE :bundle')
             ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->setParameter('bundle', "%{$fqcn}%")
+            ->getQuery();
+
+        return $query->getOneOrNullResult();
     }
 }
