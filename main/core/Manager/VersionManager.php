@@ -32,8 +32,8 @@ class VersionManager
 
     /**
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "container"    = @DI\Inject("service_container")
+     *     "om"        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "container" = @DI\Inject("service_container")
      * })
      */
     public function __construct(

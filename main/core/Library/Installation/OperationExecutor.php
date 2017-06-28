@@ -21,6 +21,7 @@ use Claroline\InstallationBundle\Manager\InstallationManager;
 use Composer\Package\PackageInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -234,7 +235,7 @@ class OperationExecutor
     {
         $this->log('Executing install/update operations...');
 
-        $previousRepo = $this->versionManager->openRepository($this->previousRepoFile, false, false);
+        //$previousRepo = $this->versionManager->openRepository($this->previousRepoFile, false, false);
         $bundles = $this->getBundlesByFqcn();
 
         foreach ($operations as $operation) {
@@ -244,20 +245,23 @@ class OperationExecutor
 
             if ($operation->getType() === Operation::INSTALL) {
                 $installer->install($bundles[$operation->getBundleFqcn()]);
-                $previousRepo->addPackage(clone $operation->getPackage());
+                //$previousRepo->addPackage(clone $operation->getPackage());
             } elseif ($operation->getType() === Operation::UPDATE) {
-                $installer->update(
-                    $bundles[$operation->getBundleFqcn()],
-                    $operation->getFromVersion(),
-                    $operation->getToVersion()
-                );
-                // there's no cleaner way to update the version of a package...
-                $version = new \ReflectionProperty('Composer\Package\Package', 'version');
-                $version->setAccessible(true);
-                $version->setValue($operation->getPackage(), $operation->getToVersion());
+                if (array_key_exists($operation->getBundleFqcn(), $bundles)) {
+                    $installer->update(
+                      $bundles[$operation->getBundleFqcn()],
+                      $operation->getFromVersion(),
+                      $operation->getToVersion()
+                  );
+                  // there's no cleaner way to update the version of a package...
+                  $version = new \ReflectionProperty('Composer\Package\Package', 'version');
+                    $version->setAccessible(true);
+                    $version->setValue($operation->getPackage(), $operation->getToVersion());
+                } else {
+                    $this->log("Could not update {$operation->getBundleFqcn()}... Please update manually.", LogLevel::ERROR);
+                }
             }
-
-            $previousRepo->write();
+            //$previousRepo->write();
         }
 
         $this->log('Removing previous local repository snapshot...');

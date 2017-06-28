@@ -59,8 +59,6 @@ class Recorder
      */
     public function register(DistributionPluginBundle $plugin, array $pluginConfiguration)
     {
-        $pluginFqcn = get_class($plugin);
-
         return $this->dbWriter->insert($plugin, $pluginConfiguration);
     }
 
@@ -72,7 +70,6 @@ class Recorder
      */
     public function update(DistributionPluginBundle $plugin, array $pluginConfiguration)
     {
-        $pluginFqcn = get_class($plugin);
         $this->dbWriter->update($plugin, $pluginConfiguration);
     }
 
