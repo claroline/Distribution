@@ -17,7 +17,7 @@ export class MessageDetailsModal  extends Component {
               <label>{t('scheduled_date')}</label>
             </div>
             <div className="col-md-9">
-              {moment(this.props.task.scheduledData).format('DD/MM/YYYY HH:mm')}
+              {moment(this.props.task.scheduledDate).format('DD/MM/YYYY HH:mm')}
             </div>
           </div>
           <hr/>
