@@ -89,7 +89,12 @@ class VersionManager
     {
         $fqcn = $bundle instanceof PluginBundleInterface ? $bundle->getBundleFQCN() : $bundle;
 
-        return $this->repo->getLatestExecuted($fqcn);
+        try {
+            return $this->repo->getLatestExecuted($fqcn);
+        } catch (\Exception $e) {
+            //table is not here yet if version < 10
+            return null;
+        }
     }
 
     public function getVersionFile()
