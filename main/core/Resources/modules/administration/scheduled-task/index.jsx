@@ -11,12 +11,14 @@ import {reducers} from './reducers'
 import {VIEW_MANAGEMENT} from './enums'
 import {AdminTaskToolLayout} from './components/admin-task-tool-layout.jsx'
 import {TaskTypeFormModal} from './components/task-type-form-modal.jsx'
+import {MessageDetailsModal} from './components/message-details-modal.jsx'
 
 class AdminTaskTool {
   constructor(isCronConfigured, tasks, total) {
     registerModalTypes([
       ['DELETE_MODAL', DeleteConfirmModal],
-      ['MODAL_TASK_TYPE_FORM', TaskTypeFormModal]
+      ['MODAL_TASK_TYPE_FORM', TaskTypeFormModal],
+      ['MODAL_DETAILS_TASK_MESSAGE', MessageDetailsModal]
     ])
     this.store = createStore(
       reducers,

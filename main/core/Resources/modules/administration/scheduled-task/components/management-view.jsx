@@ -85,6 +85,22 @@ class ManagementView extends Component {
     })
   }
 
+  showTaskDetails(task) {
+    const type = task.type === 'mail' ? 'MESSAGE' : task.type.toUpperCase()
+
+    this.setState({
+      modal: {
+        type: `MODAL_DETAILS_TASK_${type}`,
+        urlModal: null,
+        props: {
+          title: task.name ? task.name : t(task.type),
+          task: task
+        },
+        fading: false
+      }
+    })
+  }
+
   hideModal() {
     this.setState({modal: {fading: true, urlModal: null}})
   }
@@ -100,7 +116,11 @@ class ManagementView extends Component {
               {
                 name: 'name',
                 type: 'string',
-                label: t('title')
+                label: t('title'),
+                renderer: (rowData) =>
+                  <a className="pointer-hand" onClick={() => this.showTaskDetails(rowData)}>
+                    {rowData.name}
+                  </a>
               },
               {
                 name: 'type',
@@ -121,6 +141,11 @@ class ManagementView extends Component {
               }
             ]}
             actions={[
+              {
+                icon: 'fa fa-fw fa-eye',
+                label: t('view'),
+                action: (row) => this.showTaskDetails(row)
+              },
               {
                 icon: 'fa fa-fw fa-edit',
                 label: t('edit'),
