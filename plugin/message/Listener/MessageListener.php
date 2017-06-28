@@ -107,15 +107,14 @@ class MessageListener
     public function onWorkspaceUsersConfigureMessage(ContactAdditionalActionEvent $event)
     {
         $user = $event->getUser();
-
         $menu = $event->getMenu();
-        $messageMenuLink = $menu->addChild(
-                $this->translator->trans('messages', [], 'platform'),
-                ['route' => 'claro_message_show']
-            )
-            ->setExtra('icon', 'fa fa-envelope')
-            ->setExtra('qstring', 'userIds[]='.$user->getId())
-            ->setExtra('title', $this->translator->trans('message', [], 'platform'));
+        $menu->addChild(
+            $this->translator->trans('messages', [], 'platform'),
+            ['route' => 'claro_message_show']
+        )
+        ->setExtra('icon', 'fa fa-envelope')
+        ->setExtra('qstring', 'userIds[]='.$user->getId())
+        ->setExtra('title', $this->translator->trans('message', [], 'platform'));
     }
 
     /**
