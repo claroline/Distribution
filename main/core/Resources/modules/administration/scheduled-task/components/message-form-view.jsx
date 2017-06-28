@@ -146,7 +146,7 @@ class MessageFormView extends Component {
                 dateFormat={true}
                 timeFormat={true}
                 locale="fr"
-                utc={true}
+                utc={false}
                 defaultValue={this.state.scheduledDate}
                 onChange={date => this.updateProps('scheduledDate', date)}
               />
