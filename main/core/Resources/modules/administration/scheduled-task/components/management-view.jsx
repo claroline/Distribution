@@ -113,6 +113,11 @@ class ManagementView extends Component {
                 type: 'date',
                 label: t('scheduled_date'),
                 renderer: (rowData) => moment(rowData.scheduledDate).format('DD/MM/YYYY HH:mm')
+              },
+              {
+                name: 'executed',
+                type: 'boolean',
+                label: t('executed')
               }
             ]}
             actions={[

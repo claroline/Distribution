@@ -11,6 +11,8 @@
 
 namespace Claroline\MessageBundle\Listener;
 
+use Claroline\CoreBundle\Event\GenericDataEvent;
+use Claroline\CoreBundle\Manager\ScheduledTaskManager;
 use Claroline\CoreBundle\Menu\ConfigureMenuEvent;
 use Claroline\CoreBundle\Menu\ContactAdditionalActionEvent;
 use Claroline\CoreBundle\Event\SendMessageEvent;
@@ -34,6 +36,7 @@ class MessageListener
     private $translator;
     private $request;
     private $httpKernel;
+    private $taskManager;
 
     /**
      * @DI\InjectParams({
@@ -42,7 +45,8 @@ class MessageListener
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "translator"      = @DI\Inject("translator"),
      *     "httpKernel"      = @DI\Inject("http_kernel"),
-     *     "requestStack"    = @DI\Inject("request_stack")
+     *     "requestStack"    = @DI\Inject("request_stack"),
+     *     "taskManager"     = @DI\Inject("claroline.manager.scheduled_task_manager"),
      * })
      */
     public function __construct(
@@ -51,7 +55,8 @@ class MessageListener
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
         RequestStack $requestStack,
-        HttpKernelInterface $httpKernel
+        HttpKernelInterface $httpKernel,
+        ScheduledTaskManager $taskManager
     ) {
         $this->messageManager = $messageManager;
         $this->router = $router;
@@ -59,6 +64,7 @@ class MessageListener
         $this->translator = $translator;
         $this->request = $requestStack->getCurrentRequest();
         $this->httpKernel = $httpKernel;
+        $this->taskManager = $taskManager;
     }
 
     /**
@@ -187,6 +193,27 @@ class MessageListener
         $subRequest = $this->request->duplicate(array(), null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setContent($response->getContent());
+        $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("claroline_scheduled_task_execute_message")
+     *
+     * @param GenericDataEvent $event
+     */
+    public function onExecuteMessageTask(GenericDataEvent $event)
+    {
+        $task = $event->getData();
+        $data = $task->getData();
+        $users = $task->getUsers();
+        $object = isset($data['object']) ? $data['object'] : null;
+        $content = isset($data['content']) ? $data['content'] : null;
+
+        if (count($users) > 0 && !empty($object) && !empty($content)) {
+            $message = $this->messageManager->create($content, $object, $users);
+            $this->messageManager->send($message);
+            $this->taskManager->markTaskAsExecuted($task, new \DateTime());
+        }
         $event->stopPropagation();
     }
 }

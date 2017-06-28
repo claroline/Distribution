@@ -153,4 +153,24 @@ class ScheduledTaskManager
         }
         $this->om->endFlushSuite();
     }
+
+    public function markTaskAsExecuted(ScheduledTask $task, \DateTime $executionDate = null)
+    {
+        if (empty($executionDate)) {
+            $executionDate = new \DateTime();
+        }
+        $task->setExecuted(true);
+        $task->setExecutionDate($executionDate);
+        $this->persistScheduledTask($task);
+    }
+
+
+    /*********************************************
+     * Access to ScheduledTaskRepository methods *
+     *********************************************/
+
+    public function getTasksToExecute()
+    {
+        return $this->scheduledTaskRepo->findTasksToExecute();
+    }
 }
