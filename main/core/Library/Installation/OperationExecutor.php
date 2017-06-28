@@ -235,7 +235,6 @@ class OperationExecutor
     {
         $this->log('Executing install/update operations...');
 
-        //$previousRepo = $this->versionManager->openRepository($this->previousRepoFile, false, false);
         $bundles = $this->getBundlesByFqcn();
 
         foreach ($operations as $operation) {
@@ -245,7 +244,6 @@ class OperationExecutor
 
             if ($operation->getType() === Operation::INSTALL) {
                 $installer->install($bundles[$operation->getBundleFqcn()]);
-                //$previousRepo->addPackage(clone $operation->getPackage());
             } elseif ($operation->getType() === Operation::UPDATE) {
                 if (array_key_exists($operation->getBundleFqcn(), $bundles)) {
                     $installer->update(
@@ -261,7 +259,6 @@ class OperationExecutor
                     $this->log("Could not update {$operation->getBundleFqcn()}... Please update manually.", LogLevel::ERROR);
                 }
             }
-            //$previousRepo->write();
         }
 
         $this->log('Removing previous local repository snapshot...');
