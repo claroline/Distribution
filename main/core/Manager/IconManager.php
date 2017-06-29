@@ -25,7 +25,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @DI\Service("claroline.manager.icon_manager")
@@ -214,7 +213,6 @@ class IconManager
      */
     public function createCustomIcon(File $file, Workspace $workspace = null)
     {
-        $fileName = $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getFilename();
         $this->om->startFlushSuite();
         $mimeElements = explode('/', $file->getMimeType());
         $ds = DIRECTORY_SEPARATOR;
