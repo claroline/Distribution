@@ -1265,7 +1265,8 @@ class WorkspaceManager
     {
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
-        $user = $this->container->get('security.token_storage')->getToken() ?
+        $token = $this->container->get('security.token_storage')->getToken();
+        $user = $token && $token->getUser() !== 'anon.' ?
           $this->container->get('security.token_storage')->getToken()->getUser() :
           $this->container->get('claroline.manager.user_manager')->getDefaultUser();
 
@@ -1299,7 +1300,7 @@ class WorkspaceManager
             []
         );
 
-        $workspaceRoles = $this->getArrayRolesByWorkspace($source);
+        $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
         $baseRoot = $this->resourceManager->getWorkspaceRoot($source);
 
         /*** Copies rights ***/
@@ -1393,8 +1394,7 @@ class WorkspaceManager
 
         foreach ($rights as $right) {
             $role = $right->getRole();
-            $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().
-                '...'.$copy->getId().' - '.$role->getId());
+            $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
             $key = $role->getTranslationKey();
             $newRight = new ResourceRights();
             $newRight->setResourceNode($copy);

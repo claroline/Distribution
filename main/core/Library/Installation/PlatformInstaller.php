@@ -21,7 +21,6 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -100,10 +99,24 @@ class PlatformInstaller
         $this->operationExecutor->execute($operations);
     }
 
+    public function updateAll($from, $to)
+    {
+        $operations = [];
+        $pluginManager = $this->container->get('claroline.manager.plugin_manager');
+        $bundles = $pluginManager->getInstalledBundles();
+
+        foreach ($bundles as $bundle) {
+            $operations[get_class($bundle['instance'])] = new Operation(Operation::UPDATE, $bundle['instance'], get_class($bundle['instance']));
+            $operations[get_class($bundle['instance'])]->setFromVersion($from);
+            $operations[get_class($bundle['instance'])]->setToVersion($to);
+        }
+
+        $this->operationExecutor->execute($operations);
+    }
+
     private function launchPreInstallActions()
     {
         $this->createDatabaseIfNotExists();
-        $this->createPublicSubDirectories();
     }
 
     private function createDatabaseIfNotExists()
@@ -126,26 +139,6 @@ class PlatformInstaller
                     'Database cannot be created : check that the parameters you provided '
                     .'are correct and/or that you have sufficient permissions.'
                 );
-            }
-        }
-    }
-
-    private function createPublicSubDirectories()
-    {
-        $this->log('Creating public sub-directories...');
-        $directories = [
-            $this->container->getParameter('claroline.param.thumbnails_directory'),
-            $this->container->getParameter('claroline.param.uploads_directory'),
-            $this->container->getParameter('claroline.param.uploads_directory').'/badges',
-            $this->container->getParameter('claroline.param.uploads_directory').'/logos',
-            $this->container->getParameter('claroline.param.uploads_directory').'/pictures',
-        ];
-
-        foreach ($directories as $directory) {
-            if (!is_dir($directory)) {
-                $fs = new FileSystem();
-                $this->log('Creating '.$directory.'...');
-                $fs->mkdir($directory);
             }
         }
     }

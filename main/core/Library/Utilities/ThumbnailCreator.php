@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Library\Utilities;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JangoBrick\SVG\Nodes\Embedded\SVGImageElement;
 use JangoBrick\SVG\SVGImage;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @DI\Service("claroline.utilities.thumbnail_creator")
@@ -28,12 +28,13 @@ class ThumbnailCreator
     private $isFfmpegLoaded;
     private $ut;
     private $fs;
+    private $fileUtilities;
 
     /**
      * @DI\InjectParams({
-     *     "kernelRootDir" = @DI\Inject("%kernel.root_dir%"),
+     *     "kernelRootDir"      = @DI\Inject("%kernel.root_dir%"),
      *     "thumbnailDirectory" = @DI\Inject("%claroline.param.thumbnails_directory%"),
-     *     "ut"       = @DI\Inject("claroline.utilities.misc")
+     *     "ut"                 = @DI\Inject("claroline.utilities.misc")
      * })
      */
     public function __construct($kernelRootDir, $thumbnailDirectory, ClaroUtilities $ut)
@@ -166,9 +167,9 @@ class ThumbnailCreator
         imagedestroy($dstImg);
     }
 
+    //TODO REMOVE thumbnail directory
     public function shortcutThumbnail(
         $srcImg,
-        Workspace $workspace = null,
         $stampImg = null,
         $targetDirPath = null,
         $filename = null // Just the filename, no extension
@@ -195,8 +196,6 @@ class ThumbnailCreator
 
         if (!empty($targetDirPath)) {
             $dir = $targetDirPath.$ds.$filename;
-        } elseif (!is_null($workspace)) {
-            $dir = $this->thumbnailDir.$ds.$workspace->getCode().$ds.$filename;
         } else {
             $dir = $this->thumbnailDir.$ds.$filename;
         }
