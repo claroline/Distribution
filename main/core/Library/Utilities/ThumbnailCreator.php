@@ -196,8 +196,6 @@ class ThumbnailCreator
 
         if (!empty($targetDirPath)) {
             $dir = $targetDirPath.$ds.$filename;
-        } elseif (!is_null($workspace)) {
-            $dir = $this->thumbnailDir.$ds.$workspace->getCode().$ds.$filename;
         } else {
             $dir = $this->thumbnailDir.$ds.$filename;
         }
