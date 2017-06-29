@@ -216,7 +216,6 @@ class IconManager
     {
         $fileName = $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getFilename();
         $this->om->startFlushSuite();
-        $extension = pathinfo($fileName, PATHINFO_EXTENSION);
         $mimeElements = explode('/', $file->getMimeType());
         $ds = DIRECTORY_SEPARATOR;
 
