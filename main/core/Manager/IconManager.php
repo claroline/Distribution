@@ -118,7 +118,7 @@ class IconManager
 
             if ($publicFile) {
                 $thumbnailPath = $this->webdir.$ds.$publicFile->getUrl();
-                $relativeUrl = str_replace($this->webdir, '', $thumbnailPath);
+                $relativeUrl = ltrim(str_replace($this->webdir, '', $thumbnailPath), "{$ds}");
                 $icon = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
                 $icon->setMimeType('custom');
                 $icon->setRelativeUrl($relativeUrl);
