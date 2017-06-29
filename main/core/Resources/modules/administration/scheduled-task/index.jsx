@@ -1,8 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'
-import {DragDropContext} from 'react-dnd'
-import {default as TouchBackend} from 'react-dnd-touch-backend'
 import {createStore} from '#/main/core/utilities/redux'
 import {registerModalTypes} from '#/main/core/layout/modal'
 import {DeleteConfirmModal} from '#/main/core/layout/modal/components/delete-confirm.jsx'
@@ -31,7 +29,6 @@ class AdminTaskTool {
         viewMode: VIEW_MANAGEMENT
       }
     )
-    this.dndSessionEventsTool = DragDropContext(TouchBackend({enableMouseEvents: true}))(AdminTaskToolLayout)
     makeRouter(this.store.dispatch.bind(this.store))
   }
 
@@ -40,7 +37,7 @@ class AdminTaskTool {
       React.createElement(
         Provider,
         {store: this.store},
-        React.createElement(this.dndSessionEventsTool)
+        React.createElement(AdminTaskToolLayout)
       ),
       element
     )
