@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Library\Utilities;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JangoBrick\SVG\Nodes\Embedded\SVGImageElement;
 use JangoBrick\SVG\SVGImage;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -171,7 +170,6 @@ class ThumbnailCreator
     //TODO REMOVE thumbnail directory
     public function shortcutThumbnail(
         $srcImg,
-        Workspace $workspace = null,
         $stampImg = null,
         $targetDirPath = null,
         $filename = null // Just the filename, no extension
