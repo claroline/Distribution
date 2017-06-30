@@ -1263,23 +1263,31 @@ class WorkspaceManager
 
     public function copy(Workspace $workspace, Workspace $newWorkspace)
     {
+        //throw new \Exception($workspace->getName());
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
-        $user = $token && $token->getUser() !== 'anon.' ?
-          $this->container->get('security.token_storage')->getToken()->getUser() :
-          $this->container->get('claroline.manager.user_manager')->getDefaultUser();
 
+        if ($token && $token->getUser() === 'anon.') {
+            $user = $this->container->get('claroline.manager.user_manager')->getDefaultUser();
+        } else {
+            $user = $workspace->getCreator() ?
+            $newWorkspace->getCreator() :
+            $this->container->get('security.token_storage')->getToken()->getUser();
+        }
+
+        $this->om->startFlushSuite();
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
         $this->duplicateOrderedTools($workspace, $newWorkspace);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
         $this->duplicateResources(
           $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray(),
-          $this->getArrayRolesByWorkspace($workspace),
+          $this->getArrayRolesByWorkspace($newWorkspace),
           $user,
           $baseRoot
         );
+        $this->om->endFlushSuite();
 
         return $newWorkspace;
     }
@@ -1290,6 +1298,7 @@ class WorkspaceManager
         $rootDirectory = new Directory();
         $rootDirectory->setName($workspace->getName());
         $directoryType = $this->resourceManager->getResourceTypeByName('directory');
+
         $rootCopy = $this->resourceManager->create(
             $rootDirectory,
             $directoryType,
@@ -1331,7 +1340,6 @@ class WorkspaceManager
         $copies = [];
         $resourcesErrors = [];
         $this->log('Duplicating '.count($resourceNodes).' children...');
-
         foreach ($resourceNodes as $resourceNode) {
             try {
                 $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
@@ -1344,6 +1352,12 @@ class WorkspaceManager
                 );
                 $copy->getResourceNode()->setIndex($resourceNode->getIndex());
                 $this->om->persist($copy->getResourceNode());
+                /*** Copies rights ***/
+                $this->duplicateRights(
+                    $resourceNode,
+                    $copy->getResourceNode(),
+                    $workspaceRoles
+                );
             } catch (NotPopulatedEventException $e) {
                 $resourcesErrors[] = [
                     'resourceName' => $resourceNode->getName(),
@@ -1353,14 +1367,6 @@ class WorkspaceManager
                 ];
                 continue;
             }
-
-            /*** Copies rights ***/
-
-          $this->duplicateRights(
-                $resourceNode,
-                $copy->getResourceNode(),
-                $workspaceRoles
-            );
         }
 
         /*** Sets previous and next for each copied resource ***/
@@ -1394,7 +1400,6 @@ class WorkspaceManager
 
         foreach ($rights as $right) {
             $role = $right->getRole();
-            $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
             $key = $role->getTranslationKey();
             $newRight = new ResourceRights();
             $newRight->setResourceNode($copy);
@@ -1406,10 +1411,11 @@ class WorkspaceManager
                 isset($workspaceRoles[$key]) &&
                 !empty($workspaceRoles[$key])) {
                 $newRight->setRole($workspaceRoles[$key]);
+
+                $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
                 $this->om->persist($newRight);
             } else {
                 $newRight->setRole($role);
-                //$this->om->persist($newRight);
                 //TODO MODEL persist here aswell later
             }
         }
@@ -1436,6 +1442,7 @@ class WorkspaceManager
             $rights = $orderedTool->getRights();
             foreach ($rights as $right) {
                 $role = $right->getRole();
+
                 if ($role->getType() === 1) {
                     $this->container->get('claroline.manager.tool_rights_manager')->setToolRights(
                         $workspaceOrderedTool,
@@ -1479,6 +1486,8 @@ class WorkspaceManager
                 $workspace,
                 $role->isReadOnly()
             );
+
+            $this->om->persist($createdRole);
             if ($roleName === 'ROLE_WS_MANAGER') {
                 $user->addRole($createdRole);
                 $this->om->persist($user);
