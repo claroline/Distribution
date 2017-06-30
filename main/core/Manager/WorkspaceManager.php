@@ -1263,7 +1263,6 @@ class WorkspaceManager
 
     public function copy(Workspace $workspace, Workspace $newWorkspace)
     {
-        //throw new \Exception($workspace->getName());
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
