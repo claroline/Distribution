@@ -1267,13 +1267,17 @@ class WorkspaceManager
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
+        $user = null;
 
-        if ($token && $token->getUser() === 'anon.') {
-            $user = $this->container->get('claroline.manager.user_manager')->getDefaultUser();
-        } else {
+        if ($token && $token->getUser() !== 'anon.') {
             $user = $workspace->getCreator() ?
             $newWorkspace->getCreator() :
             $this->container->get('security.token_storage')->getToken()->getUser();
+        }
+
+        //last fool proof check in case something weird happens
+        if (!$user) {
+            $user = $this->container->get('claroline.manager.user_manager')->getDefaultUser();
         }
 
         $this->om->startFlushSuite();
