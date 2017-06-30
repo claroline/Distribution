@@ -5,10 +5,8 @@ import {OpenFeedback} from './feedback.jsx'
 
 import {CorrectedAnswer} from '#/plugin/exo/quiz/correction/components/corrected-answer'
 
-function getCorrectedAnswer(item, answer = null) {
-  const corrected = new CorrectedAnswer()
-
-  return corrected
+function getCorrectedAnswer() {
+  return new CorrectedAnswer()
 }
 
 export default {
