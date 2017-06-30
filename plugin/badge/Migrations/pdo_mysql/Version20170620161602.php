@@ -13,10 +13,14 @@ use Doctrine\DBAL\Schema\Schema;
 class Version20170620161602 extends AbstractMigration
 {
     public function up(Schema $schema)
-    {
+    {/*
         $this->addSql('
             ALTER TABLE claro_badge
             ADD uuid VARCHAR(36) NOT NULL
+        ');*/
+        $this->addSql('
+            UPDATE claro_badge
+            SET uuid = (SELECT UUID())
         ');
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_74F39F0FD17F50A6 ON claro_badge (uuid)
