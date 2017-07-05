@@ -1576,7 +1576,7 @@ class WorkspaceManager
                     $this->dispatcher->dispatch(
                         'copy_widget_config_'.$widget['widget']->getName(),
                         'CopyWidgetConfiguration',
-                        [$widget['original'], $widget['copy'], $resourceInfos, $tabsInfos]
+                        [$widget['original'], $widget['copy'], [], $tabsInfos]
                     );
                 } catch (NotPopulatedEventException $e) {
                     $widgetCongigErrors[] = [
