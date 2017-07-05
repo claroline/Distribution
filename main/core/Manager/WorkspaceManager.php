@@ -1438,7 +1438,6 @@ class WorkspaceManager
         $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
 
         foreach ($orderedTools as $orderedTool) {
-            var_dump($orderedTool->getName().' '.$orderedTool->getOrder());
             $workspaceOrderedTool = $this->container->get('claroline.manager.tool_manager')->setWorkspaceTool(
                 $orderedTool->getTool(),
                 $orderedTool->getOrder(),
