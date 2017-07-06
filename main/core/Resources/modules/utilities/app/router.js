@@ -1,5 +1,4 @@
 import React from 'react'
-import {PropTypes as T, checkPropTypes} from 'prop-types'
 import {
   hashHistory,
   HashRouter as Router,
@@ -10,19 +9,19 @@ import {
 function getRouteComponent(route) {
   // todo validate route config
 
-  const props = {
+  const routeProps = {
     key: route.path,
     path: route.path,
     exact: !!route.exact
   }
 
   if (route.routes) {
-    props.children = React.createElement(Switch, {}, route.routes.map(routeConfig => getRouteComponent(routeConfig)))
+    routeProps.children = React.createElement(Switch, {}, route.routes.map(routeConfig => getRouteComponent(routeConfig)))
   } else {
-    props.component = route.component
+    routeProps.component = route.component
   }
 
-  return React.createElement(Route, props)
+  return React.createElement(Route, routeProps)
 }
 
 /**
