@@ -1796,7 +1796,6 @@ class AdminManagementController extends Controller
         );
 
         return new JsonResponse($data['results'], 200);
-        //return new JsonResponse($serializedModels, 200);
     }
 
     /**
