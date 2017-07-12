@@ -103,7 +103,10 @@ class ToolRightsManager
                  if (!$root) {
                      return;
                  }
-                 $this->rightsManager->editPerms(['open' => $perms['open']], $role, $root, false, [], true);
+
+                 if ($rightsMask) {
+                     $this->rightsManager->editPerms($rightsMask, $role, $root, false, [], true);
+                 }
              }
          }
     }
