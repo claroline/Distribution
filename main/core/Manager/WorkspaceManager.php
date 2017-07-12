@@ -1358,14 +1358,16 @@ class WorkspaceManager
                     false,
                     false
                 );
-                $copy->getResourceNode()->setIndex($resourceNode->getIndex());
-                $this->om->persist($copy->getResourceNode());
-                /*** Copies rights ***/
-                $this->duplicateRights(
-                    $resourceNode,
-                    $copy->getResourceNode(),
-                    $workspaceRoles
-                );
+                if ($copy) {
+                    $copy->getResourceNode()->setIndex($resourceNode->getIndex());
+                    $this->om->persist($copy->getResourceNode());
+                    /*** Copies rights ***/
+                    $this->duplicateRights(
+                        $resourceNode,
+                        $copy->getResourceNode(),
+                        $workspaceRoles
+                    );
+                }
             } catch (NotPopulatedEventException $e) {
                 $resourcesErrors[] = [
                     'resourceName' => $resourceNode->getName(),
