@@ -103,8 +103,7 @@ class ToolRightsManager
                  if (!$root) {
                      return;
                  }
-                 $perms = $this->maskManager->decodeMask($rightsMask, $orderedTool->getTool());
-                 $this->rightsManager->editPerms(['open' => $perms['open']], $role, $root, false);
+                 $this->rightsManager->editPerms(['open' => $perms['open']], $role, $root, false, [], true);
              }
          }
     }
