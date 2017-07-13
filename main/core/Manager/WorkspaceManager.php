@@ -1298,8 +1298,16 @@ class WorkspaceManager
 
         foreach ($resourceNodes as $resourceNode) {
             if ($resourceNode->getResourceType()->getName() === 'activity') {
-                $primRes = $resourceNode->getPrimaryResource();
-                unset($toCopy[$primRes->getGuid()]);
+                $primRes = $this->resourceManager->getResourceFromNode($resourceNode)->getPrimaryResource();
+                $parameters = $this->resourceManager->getResourceFromNode($resourceNode)->getParameters();
+                if ($primRes) { 
+                    unset($toCopy[$primRes->getGuid()]);
+                }
+                if ($parameters) {
+                    foreach ($parameters->getSecondaryResources() as $secRes) {
+                        unset($topCopy[$secRes->getGuid()]);
+                    }
+                }
                 unset($toCopy[$resourceNode->getGuid()]);
             }
         }
