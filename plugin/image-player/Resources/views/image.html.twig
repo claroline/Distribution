@@ -10,43 +10,13 @@
 
 {% block title %}{{ image.getResourceNode().getName() ~ ' - ' ~ parent() | striptags | raw }}{% endblock %}
 
-{% block section_content %}
-    <div class="panel-heading">
-        <h3 class="panel-title"> {{ image.getResourceNode().getName() }} </h3>
+{% block content %}
+    <div
+            class="page-container image-container"
+            data-image="{{ image | json_encode | raw | escape }}"
+            data-resource-node="{{ _resource | get_serialized_node | json_encode | raw | escape }}"
+    >
     </div>
-    <div class="panel-body">
-        <div id="image-player" class="carousel slide" style="width:100%">
-            <div class="carousel-inner">
-                {% for img in images %}
-                    <div align="center" class="item{% if img.getResourceNode().getId() ==  _resource.getResourceNode().getId() %} active{% endif %}" data-name="{{ img.getResourceNode().getName() }}"  data-id="{{ img.getResourceNode().getId() }}">
-                        <img src="{{ path ("claro_image", {"node": img.getResourceNode.getId()}) }}">
-                    </div>
-                {% endfor %}
-            </div>
-            {% if images | length > 1 %}
-                <a class="left carousel-control" href="#image-player" data-slide="prev">
-                    <i class="icon-prev"></i>
-                </a>
-                <a class="right carousel-control" href="#image-player" data-slide="next">
-                    <i class="icon-next"></i>
-                </a>
-            {% endif %}
-
-            <div class="float-right-top">
-                <a class="btn btn-default close pointer-hand" onClick="javascript:enterFullscreen(this.parentNode.parentNode)"><i class="fa fa-expand"></i></a>
-            </div>
-        </div>
-    </div>
-    {% if canExport %}
-        <div class="panel-footer">
-            <a class="btn btn-primary" href="{{ path('claro_resource_download') }}?ids[]={{ _resource.getResourceNode().getId() }}">
-                <i class="fa fa-download"></i> {{ 'download'|trans({}, 'platform') }}
-            </a>
-            <a id="copy-permalink-to-clipboard" class="btn btn-default" href="{{ path ("claro_image", {"node": image.getResourceNode.getId()}) }}">
-                <i class="fa fa-clipboard"></i> {{ 'copy_permalink_to_clipboard'|trans({}, 'platform') }}
-            </a>
-        </div>
-    {% endif %}
 {% endblock %}
 {% block javascripts_header %}
     {{ parent() }}
@@ -89,21 +59,7 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    <script>
-        (function() {
-            "use strict";
-
-            $('#image-player').on('slid.bs.carousel', function () {
-                var title = $(".item.active", this).data('name');
-                var id = $(".item.active", this).data('id');
-                $('.panel-heading .panel-title').html(title);
-                $('.breadcrumb li').last().html(title);
-                $('.panel-footer .btn.btn-primary').attr('href', $('.panel-footer .btn.btn-primary').attr('href').replace(/(ids\[\]=)[^\&]+/, '$1' + id));
-                $('.panel-footer #copy-permalink-to-clipboard').attr('href', $('.panel-footer #copy-permalink-to-clipboard').attr('href').replace(/\d+$/, id));
-            });
-        })();
-    </script>
-
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-image-player-image.js') }}"></script>
     <script type="text/javascript" src="{{ hotAsset('dist/claroline-distribution-main-core-copy-text-to-clipboard.js') }}" ></script>
     <script>
         document.querySelector('a#copy-permalink-to-clipboard').addEventListener('click', function(event) {

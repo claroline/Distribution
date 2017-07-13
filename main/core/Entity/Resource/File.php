@@ -17,7 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FileRepository")
  * @ORM\Table(name="claro_file")
  */
-class File extends AbstractResource
+class File extends AbstractResource implements \JsonSerializable
 {
     /**
      * @ORM\Column(type="integer", nullable=false)
@@ -91,5 +91,13 @@ class File extends AbstractResource
     public function setHashName($hashName)
     {
         $this->hashName = $hashName;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'hashName' => $this->hashName,
+        ];
     }
 }
