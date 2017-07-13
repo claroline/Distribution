@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 
-const getTotalResults = (state) => state.totalResults
+const getTotalResults = (state) => state.questions.totalResults
 const getPagination   = (state) => state.pagination
 
 const getPageSize = createSelector(

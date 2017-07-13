@@ -2,6 +2,7 @@
 
 namespace UJM\ExoBundle\Controller\Tool;
 
+use Claroline\CoreBundle\API\Finder;
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -27,39 +28,46 @@ class QuestionBankController
     private $userSerializer;
 
     /**
+     * @var Finder
+     */
+    private $finder;
+
+    /**
      * QuestionBankController constructor.
      *
      * @DI\InjectParams({
      *     "itemManager" = @DI\Inject("ujm_exo.manager.item"),
-     *     "userSerializer"  = @DI\Inject("ujm_exo.serializer.user")
+     *     "userSerializer"  = @DI\Inject("ujm_exo.serializer.user"),
+     *     "finder" = @DI\Inject("claroline.API.finder")
      * })
      *
      * @param ItemManager    $itemManager
      * @param UserSerializer $userSerializer
+     * @param Finder $finder
      */
-    public function __construct(ItemManager $itemManager, UserSerializer $userSerializer)
+    public function __construct(ItemManager $itemManager, UserSerializer $userSerializer, Finder $finder)
     {
         $this->itemManager = $itemManager;
         $this->userSerializer = $userSerializer;
+        $this->finder = $finder;
     }
 
     /**
      * Opens the bank of Questions for the current user.
      *
-     * @param User $user
-     *
      * @EXT\Route("", name="question_bank")
      * @EXT\Method("GET")
-     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("UJMExoBundle:Tool:question-bank.html.twig")
      *
      * @return array
      */
-    public function openAction(User $user)
+    public function openAction()
     {
-        return [
-            'initialSearch' => $this->itemManager->search($user),
-            'currentUser' => $this->userSerializer->serialize($user),
-        ];
+        return $this->finder->search(
+            'UJM\ExoBundle\Entity\Item\Item',
+            0,
+            20,
+            ['filters' => ['isModel' => false, 'isPersonal' => false]]
+        );
     }
 }

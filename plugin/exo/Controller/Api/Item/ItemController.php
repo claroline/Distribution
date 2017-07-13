@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Controller\Api\Item;
 
 use Claroline\CoreBundle\Entity\User;
+use FOS\RestBundle\Controller\Annotations\Get;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,38 +27,38 @@ class ItemController extends AbstractController
     private $itemManager;
 
     /**
+     * @var Finder
+     */
+    private $finder;
+
+    /**
      * ItemController constructor.
      *
      * @DI\InjectParams({
-     *     "itemManager" = @DI\Inject("ujm_exo.manager.item")
+     *     "itemManager" = @DI\Inject("ujm_exo.manager.item"),
+     *     "finder" = @DI\Inject("claroline.API.finder")
      * })
      *
      * @param ItemManager $itemManager
+     * @param Finder      $finder
      */
-    public function __construct(ItemManager $itemManager)
+    public function __construct(ItemManager $itemManager, Finder $finder)
     {
         $this->itemManager = $itemManager;
+        $this->finder = $finder;
     }
 
     /**
-     * Searches for questions.
-     *
-     * @EXT\Route("/search", name="question_search")
-     * @EXT\Method("POST")
-     * @EXT\ParamConverter("user", converter="current_user")
-     *
-     * @param User    $user
-     * @param Request $request
-     *
-     * @return JsonResponse
+     * @Get("/item/page/{page}/limit/{limit}/search", name="get_search_items", options={ "method_prefix" = false })
      */
-    public function searchAction(User $user, Request $request)
+    public function listAction($page, $limit)
     {
-        $searchParams = $this->decodeRequestData($request);
-
-        return new JsonResponse(
-            $this->itemManager->search($user, $searchParams->filters)
-        );
+        return json_encode($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            $page,
+            $limit,
+            $this->container->get('request')->query->all()
+        ));
     }
 
     /**

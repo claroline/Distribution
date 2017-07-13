@@ -23,6 +23,7 @@ use UJM\ExoBundle\Serializer\UserSerializer;
  * Serializer for item data.
  *
  * @DI\Service("ujm_exo.serializer.item")
+ * @DI\Tag("claroline.serializer")
  */
 class ItemSerializer extends AbstractSerializer
 {
