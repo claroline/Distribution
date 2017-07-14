@@ -1301,11 +1301,13 @@ class WorkspaceManager
                 $primRes = $this->resourceManager->getResourceFromNode($resourceNode)->getPrimaryResource();
                 $parameters = $this->resourceManager->getResourceFromNode($resourceNode)->getParameters();
                 if ($primRes) { 
+                    var_dump('unset ' . $primRes->getGuid() . ' ' . $primRes->getName());
                     unset($toCopy[$primRes->getGuid()]);
                 }
                 if ($parameters) {
                     foreach ($parameters->getSecondaryResources() as $secRes) {
-                        unset($topCopy[$secRes->getGuid()]);
+                        var_dump('unset ' . $secRes->getGuid() . ' ' . $secRes->getName());
+                        unset($toCopy[$secRes->getGuid()]);
                     }
                 }
                 unset($toCopy[$resourceNode->getGuid()]);
