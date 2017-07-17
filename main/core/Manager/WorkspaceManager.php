@@ -12,12 +12,17 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Entity\Home\HomeTab;
+use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Widget\WidgetDisplayConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetHomeTabConfig;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceFavourite;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceOptions;
@@ -1267,6 +1272,7 @@ class WorkspaceManager
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
         $user = null;
+        $resourceInfos = ['copies' => []];
 
         if ($token && $token->getUser() !== 'anon.') {
             $user = $workspace->getCreator() ?
@@ -1282,14 +1288,15 @@ class WorkspaceManager
         $this->om->startFlushSuite();
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
-        $this->duplicateOrderedTools($workspace, $newWorkspace);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
         $this->duplicateResources(
           $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray(),
           $this->getArrayRolesByWorkspace($newWorkspace),
           $user,
-          $baseRoot
+          $baseRoot,
+          $resourceInfos
         );
+        $this->duplicateOrderedTools($workspace, $newWorkspace, $resourceInfos);
         $this->om->endFlushSuite();
 
         return $newWorkspace;
@@ -1336,8 +1343,19 @@ class WorkspaceManager
         array $resourceNodes,
         array $workspaceRoles,
         User $user,
-        ResourceNode $rootNode
+        ResourceNode $rootNode,
+        &$resourceInfos
     ) {
+        $ids = [];
+        $resourceNodes = array_filter($resourceNodes, function ($node) use ($ids) {
+            if (!in_array($node->getId(), $ids)) {
+                $ids[] = $node->getId();
+
+                return true;
+            }
+
+            return false;
+        });
         $this->om->flush();
         $this->om->startFlushSuite();
         $copies = [];
@@ -1345,22 +1363,28 @@ class WorkspaceManager
         $this->log('Duplicating '.count($resourceNodes).' children...');
         foreach ($resourceNodes as $resourceNode) {
             try {
-                $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
-                $copy = $this->resourceManager->copy(
-                    $resourceNode,
-                    $rootNode,
-                    $user,
-                    false,
-                    false
-                );
-                $copy->getResourceNode()->setIndex($resourceNode->getIndex());
-                $this->om->persist($copy->getResourceNode());
-                /*** Copies rights ***/
-                $this->duplicateRights(
-                    $resourceNode,
-                    $copy->getResourceNode(),
-                    $workspaceRoles
-                );
+                $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
+                //activities will be removed anyway
+                if ($resourceNode->getResourceType()->getName() !== 'activity') {
+                    $copy = $this->resourceManager->copy(
+                      $resourceNode,
+                      $rootNode,
+                      $user,
+                      false,
+                      false
+                  );
+                    if ($copy) {
+                        $copy->getResourceNode()->setIndex($resourceNode->getIndex());
+                        $this->om->persist($copy->getResourceNode());
+                        $resourceInfos['copies'][] = ['original' => $resourceNode, 'copy' => $copy->getResourceNode()];
+                      /*** Copies rights ***/
+                      $this->duplicateRights(
+                          $resourceNode,
+                          $copy->getResourceNode(),
+                          $workspaceRoles
+                      );
+                    }
+                }
             } catch (NotPopulatedEventException $e) {
                 $resourcesErrors[] = [
                     'resourceName' => $resourceNode->getName(),
@@ -1399,6 +1423,7 @@ class WorkspaceManager
         ResourceNode $copy,
         array $workspaceRoles
     ) {
+        $this->log('Start duplicate');
         $rights = $resourceNode->getRights();
 
         foreach ($rights as $right) {
@@ -1410,20 +1435,17 @@ class WorkspaceManager
             $newRight->setCreatableResourceTypes(
                 $right->getCreatableResourceTypes()->toArray()
             );
-            if (
+            if ($role->getWorkspace()) {
+                if (
                 isset($workspaceRoles[$key]) &&
-                !empty($workspaceRoles[$key])) {
-                if (strpos($resourceNode->getWorkspace()->getGuid(), $role->getName())) {
+                !empty($workspaceRoles[$key])
+                ) {
                     $newRight->setRole($workspaceRoles[$key]);
+                    $this->log('Duplicating resource rights for '.$copy->getName().' - '.$copy->getId().' - '.$role->getName().'...');
+                    $this->om->persist($newRight);
                 } else {
-                    $newRight->setRole($role);
+                    $this->log('Dont do anything');
                 }
-
-                $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
-                $this->om->persist($newRight);
-            } else {
-                $newRight->setRole($role);
-                //TODO MODEL persist here aswell later
             }
         }
         $this->om->flush();
@@ -1433,7 +1455,7 @@ class WorkspaceManager
      * @param Workspace $source
      * @param Workspace $workspace
      */
-    public function duplicateOrderedTools(Workspace $source, Workspace $workspace)
+    public function duplicateOrderedTools(Workspace $source, Workspace $workspace, $resourceInfos = ['copies' => []])
     {
         $this->log('Duplicating tools...');
         $orderedTools = $source->getOrderedTools();
@@ -1446,7 +1468,9 @@ class WorkspaceManager
                 $orderedTool->getName(),
                 $workspace
             );
+            $workspaceOrderedTool->setOrder($orderedTool->getOrder());
             $rights = $orderedTool->getRights();
+
             foreach ($rights as $right) {
                 $role = $right->getRole();
 
@@ -1468,6 +1492,129 @@ class WorkspaceManager
                 }
             }
         }
+
+        $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($source);
+        //get home tabs from source
+
+        $this->duplicateHomeTabs($source, $workspace, $homeTabs, $resourceInfos);
+    }
+
+    /**
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $source
+     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
+     * @param array                                            $homeTabs
+     */
+    private function duplicateHomeTabs(
+        Workspace $source,
+        Workspace $workspace,
+        array $homeTabs,
+        &$resourceInfos,
+        &$tabInfos = []
+    ) {
+        $this->log('Duplicating home tabs...');
+        $this->om->startFlushSuite();
+        $homeTabConfigs = $this->homeTabManager
+            ->getHomeTabConfigsByWorkspaceAndHomeTabs($source, $homeTabs);
+        $order = 1;
+        $widgetCongigErrors = [];
+        $widgetDisplayConfigs = [];
+        $widgets = [];
+        $widgetManager = $this->container->get('claroline.manager.widget_manager');
+
+        foreach ($homeTabConfigs as $homeTabConfig) {
+            $homeTab = $homeTabConfig->getHomeTab();
+            $widgetHomeTabConfigs = $homeTab->getWidgetHomeTabConfigs();
+            $wdcs = $widgetManager->getWidgetDisplayConfigsByWorkspaceAndWidgetHTCs(
+                $source,
+                $widgetHomeTabConfigs->toArray()
+            );
+            foreach ($wdcs as $wdc) {
+                $widgetInstanceId = $wdc->getWidgetInstance()->getId();
+                $widgetDisplayConfigs[$widgetInstanceId] = $wdc;
+            }
+            $newHomeTab = new HomeTab();
+            $newHomeTab->setType('workspace');
+            $newHomeTab->setWorkspace($workspace);
+            $newHomeTab->setName($homeTab->getName());
+            $this->om->persist($newHomeTab);
+            $tabsInfos[] = ['original' => $homeTab, 'copy' => $newHomeTab];
+            $newHomeTabConfig = new HomeTabConfig();
+            $newHomeTabConfig->setHomeTab($newHomeTab);
+            $newHomeTabConfig->setWorkspace($workspace);
+            $newHomeTabConfig->setType('workspace');
+            $newHomeTabConfig->setVisible($homeTabConfig->isVisible());
+            $newHomeTabConfig->setLocked($homeTabConfig->isLocked());
+            $newHomeTabConfig->setTabOrder($order);
+            $this->om->persist($newHomeTabConfig);
+            ++$order;
+            foreach ($widgetHomeTabConfigs as $widgetConfig) {
+                $widgetInstance = $widgetConfig->getWidgetInstance();
+                $widgetInstanceId = $widgetInstance->getId();
+                $widget = $widgetInstance->getWidget();
+                $newWidgetInstance = new WidgetInstance();
+                $newWidgetInstance->setIsAdmin(false);
+                $newWidgetInstance->setIsDesktop(false);
+                $newWidgetInstance->setWorkspace($workspace);
+                $newWidgetInstance->setWidget($widget);
+                $newWidgetInstance->setName($widgetInstance->getName());
+                $this->om->persist($newWidgetInstance);
+                $newWidgetConfig = new WidgetHomeTabConfig();
+                $newWidgetConfig->setType('workspace');
+                $newWidgetConfig->setWorkspace($workspace);
+                $newWidgetConfig->setHomeTab($newHomeTab);
+                $newWidgetConfig->setWidgetInstance($newWidgetInstance);
+                $newWidgetConfig->setVisible($widgetConfig->isVisible());
+                $newWidgetConfig->setLocked($widgetConfig->isLocked());
+                $newWidgetConfig->setWidgetOrder($widgetConfig->getWidgetOrder());
+                $this->om->persist($newWidgetConfig);
+                $newWidgetDisplayConfig = new WidgetDisplayConfig();
+                $newWidgetDisplayConfig->setWorkspace($workspace);
+                $newWidgetDisplayConfig->setWidgetInstance($newWidgetInstance);
+                if (isset($widgetDisplayConfigs[$widgetInstanceId])) {
+                    $newWidgetDisplayConfig->setColor(
+                        $widgetDisplayConfigs[$widgetInstanceId]->getColor()
+                    );
+                    $newWidgetDisplayConfig->setRow(
+                        $widgetDisplayConfigs[$widgetInstanceId]->getRow()
+                    );
+                    $newWidgetDisplayConfig->setColumn(
+                        $widgetDisplayConfigs[$widgetInstanceId]->getColumn()
+                    );
+                    $newWidgetDisplayConfig->setWidth(
+                        $widgetDisplayConfigs[$widgetInstanceId]->getWidth()
+                    );
+                    $newWidgetDisplayConfig->setHeight(
+                        $widgetDisplayConfigs[$widgetInstanceId]->getHeight()
+                    );
+                } else {
+                    $newWidgetDisplayConfig->setWidth($widget->getDefaultWidth());
+                    $newWidgetDisplayConfig->setHeight($widget->getDefaultHeight());
+                }
+                $widgets[] = ['widget' => $widget, 'original' => $widgetInstance, 'copy' => $newWidgetInstance];
+                $this->om->persist($newWidgetDisplayConfig);
+            }
+        }
+        $this->om->endFlushSuite();
+        $this->om->forceFlush();
+        foreach ($widgets as $widget) {
+            if ($widget['widget']->isConfigurable()) {
+                try {
+                    $this->dispatcher->dispatch(
+                        'copy_widget_config_'.$widget['widget']->getName(),
+                        'CopyWidgetConfiguration',
+                        [$widget['original'], $widget['copy'], $resourceInfos, $tabsInfos]
+                    );
+                } catch (NotPopulatedEventException $e) {
+                    $widgetCongigErrors[] = [
+                        'widgetName' => $widget['widget']->getName(),
+                        'widgetInstanceName' => $widget['original']->getName(),
+                        'error' => $e->getMessage(),
+                    ];
+                }
+            }
+        }
+
+        return $widgetCongigErrors;
     }
 
     /**
