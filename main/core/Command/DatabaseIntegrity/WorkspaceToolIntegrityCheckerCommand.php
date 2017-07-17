@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Command\DatabaseIntegrity;
 
-use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,8 +25,6 @@ class WorkspaceToolIntegrityCheckerCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $consoleLogger = ConsoleLogger::get($output);
-
         $query = $this->getContainer()->get('doctrine.orm.entity_manager')->createQuery(
           '
             SELECT w from Claroline\CoreBundle\Entity\Workspace\Workspace w
