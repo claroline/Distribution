@@ -1289,8 +1289,33 @@ class WorkspaceManager
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
+        $resourceNodes = $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray();
+        $toCopy = [];
+
+        foreach ($resourceNodes as $resourceNode) {
+            $toCopy[$resourceNode->getGuid()] = $resourceNode;
+        }
+
+        foreach ($resourceNodes as $resourceNode) {
+            if ($resourceNode->getResourceType()->getName() === 'activity') {
+                $primRes = $this->resourceManager->getResourceFromNode($resourceNode)->getPrimaryResource();
+                $parameters = $this->resourceManager->getResourceFromNode($resourceNode)->getParameters();
+                if ($primRes) { 
+                    var_dump('unset ' . $primRes->getGuid() . ' ' . $primRes->getName());
+                    unset($toCopy[$primRes->getGuid()]);
+                }
+                if ($parameters) {
+                    foreach ($parameters->getSecondaryResources() as $secRes) {
+                        var_dump('unset ' . $secRes->getGuid() . ' ' . $secRes->getName());
+                        unset($toCopy[$secRes->getGuid()]);
+                    }
+                }
+                unset($toCopy[$resourceNode->getGuid()]);
+            }
+        }
+
         $this->duplicateResources(
-          $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray(),
+          $toCopy,
           $this->getArrayRolesByWorkspace($newWorkspace),
           $user,
           $baseRoot,
