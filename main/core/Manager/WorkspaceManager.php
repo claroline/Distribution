@@ -1413,7 +1413,11 @@ class WorkspaceManager
             if (
                 isset($workspaceRoles[$key]) &&
                 !empty($workspaceRoles[$key])) {
-                $newRight->setRole($workspaceRoles[$key]);
+                if (strpos($resourceNode->getWorkspace()->getGuid(), $role->getName())) {
+                    $newRight->setRole($workspaceRoles[$key]);
+                } else {
+                    $newRight->setRole($role);
+                }
 
                 $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
                 $this->om->persist($newRight);
