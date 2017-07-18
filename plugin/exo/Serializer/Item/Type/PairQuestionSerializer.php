@@ -208,6 +208,7 @@ class PairQuestionSerializer implements SerializerInterface
 
     private function deserializeRow(PairQuestion $pairQuestion, \stdClass $rowData, array &$existingRows)
     {
+        var_dump($rowData);
         $row = null;
         // Retrieve existing row to update
         foreach ($existingRows as $entityIndex => $entityRow) {
@@ -233,7 +234,9 @@ class PairQuestionSerializer implements SerializerInterface
         }
 
         foreach ($rowData->itemIds as $index => $itemId) {
-            $row->addItem($pairQuestion->getItem($itemId), $index);
+            if ($pairQuestion->getItem($itemId)) {
+                $row->addItem($pairQuestion->getItem($itemId), $index);
+            }
         }
 
         $pairQuestion->addRow($row);
