@@ -1,0 +1,10 @@
+{% extends 'ClarolineCoreBundle::form_theme.html.twig' %}
+
+{% block organizationPicker_widget %}
+    {% spaceless %}
+        {{ block('form_widget') }}
+        <div>
+            appli react goes here
+        </div>
+    {% endspaceless %}
+{% endblock %}
