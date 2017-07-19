@@ -48,7 +48,10 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         $questionData->image = $this->serializeImage($graphicQuestion);
         $questionData->pointers = $graphicQuestion->getAreas()->count();
-
+        
+        // the feature is not yet implemented, but the JSON schema already requires it
+        $questionData->pointerMode = 'pointer';
+        
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($graphicQuestion);
         }
