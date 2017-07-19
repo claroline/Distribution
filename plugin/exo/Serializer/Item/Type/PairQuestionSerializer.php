@@ -208,7 +208,6 @@ class PairQuestionSerializer implements SerializerInterface
 
     private function deserializeRow(PairQuestion $pairQuestion, \stdClass $rowData, array &$existingRows)
     {
-        var_dump($rowData);
         $row = null;
         // Retrieve existing row to update
         foreach ($existingRows as $entityIndex => $entityRow) {
