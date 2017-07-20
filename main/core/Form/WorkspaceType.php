@@ -98,7 +98,7 @@ class WorkspaceType extends AbstractType
                 );
         $builder->add(
           'orga2',
-          'organizationPicker'
+          'organizationpicker'
         );
 
         if (!$this->forApi) {

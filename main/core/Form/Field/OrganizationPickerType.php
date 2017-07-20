@@ -24,8 +24,8 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * @Service()
- * @FormType(alias = "organizationPicker")
+ * @Service("claroline.form.organization_picker")
+ * @FormType(alias = "organizationpicker")
  *
  * Required because the normalizer anonymous function screws up PHPMD
  * @SuppressWarnings(PHPMD)
@@ -50,7 +50,7 @@ class OrganizationPickerType extends AbstractType
 
     public function getName()
     {
-        return 'organizationPicker';
+        return 'organizationpicker';
     }
 
     public function getParent()
@@ -61,10 +61,6 @@ class OrganizationPickerType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addModelTransformer($this->transformer);
-    }
-
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
     }
 
     public function configureOptions(OptionsResolver $resolver)
