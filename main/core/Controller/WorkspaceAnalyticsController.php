@@ -186,7 +186,7 @@ class WorkspaceAnalyticsController extends Controller
             // It only allows to prevent 1 DB request per activity when getting
             // resourceNode linked to activity
             $resourceType = $this->resourceManager->getResourceTypeByName('activity');
-            $resourceNodes = $this->resourceManager
+            $this->resourceManager
                 ->getByWorkspaceAndResourceType($workspace, $resourceType);
 
             return new Response(
