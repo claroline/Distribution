@@ -330,7 +330,8 @@ class FileListener implements ContainerAwareInterface
         try {
             copy($filePath, $newPath);
         } catch (\Exception $e) {
-            var_dump('no file');
+            //do nothing yet
+            //maybe log an error
         }
 
         return $newFile;
