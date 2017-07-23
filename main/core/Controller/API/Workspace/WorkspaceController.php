@@ -181,10 +181,11 @@ class WorkspaceController extends FOSRestController
      * @View(serializerGroups={"api_workspace"})
      * @Put("workspace/{workspace}", name="put_workspace", options={ "method_prefix" = false })
      * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      */
-    public function putWorkspaceAction(Workspace $workspace)
+    public function putWorkspaceAction(Workspace $workspace, User $user)
     {
-        $workspaceType = new WorkspaceType();
+        $workspaceType = new WorkspaceType($user);
         $workspaceType->enableApi();
         $form = $this->formFactory->create($workspaceType, $workspace);
         $form->submit($this->request);
@@ -240,7 +241,7 @@ class WorkspaceController extends FOSRestController
     {
         $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
         $newWorkspaces = [];
-        $isModel = intval($isModel);
+        $isModel = $isModel === 'true' ? 1 : 0;
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
