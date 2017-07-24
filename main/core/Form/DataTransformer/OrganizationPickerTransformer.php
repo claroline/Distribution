@@ -12,11 +12,11 @@
 namespace Claroline\CoreBundle\Form\DataTransformer;
 
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\Form\DataTransformerInterface;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 
 /**
  * @Service("claroline.transformer.organization_picker")
@@ -24,39 +24,34 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class OrganizationPickerTransformer implements DataTransformerInterface
 {
     private $organizationManager;
+    private $om;
 
     /**
      * @InjectParams({
-     *     "persistence"         = @Inject("claroline.persistence.object_manager"),
+     *     "om"                  = @Inject("claroline.persistence.object_manager"),
      *     "organizationManager" = @Inject("claroline.manager.organization.organization_manager")
      * })
      */
-    public function __construct(OrganizationManager $organizationManager)
+    public function __construct(ObjectManager $om, OrganizationManager $organizationManager)
     {
+        $this->om = $om;
         $this->organizationManager = $organizationManager;
     }
 
-    public function transform($organization)
+    public function transform($organizations)
     {
-        if ($organization instanceof Organization) {
-            return $organization->getId();
-        }
-
-        return '';
+        return array_map(function ($organization) {
+            return [
+                'id' => $organization->getId(),
+                'name' => $organization->getName(),
+              ];
+        }, $organizations->toArray());
     }
 
-    public function reverseTransform($id)
+    public function reverseTransform($ids)
     {
-        if (!$id) {
-            return;
-        }
-
-        $organization = $this->organizationManager->getById($id);
-
-        if (null === $organization) {
-            throw new TransformationFailedException();
-        }
-
-        return $organization;
+        return empty($ids) ?
+            [] :
+            $this->om->findByIds('Claroline\CoreBundle\Entity\Organization\Organization', $ids);
     }
 }

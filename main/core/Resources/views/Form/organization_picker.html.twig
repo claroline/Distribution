@@ -1,7 +1,20 @@
 {% extends 'ClarolineCoreBundle::form_theme.html.twig' %}
 {% block organizationpicker_widget %}
     {% spaceless %}
-        <div id="organization-field-container"></div>
+        <div
+          id="organization-field-container"
+          data-organizations="{{
+            search(
+              'Claroline\\CoreBundle\\Entity\\Organization\\Organization',
+              0,
+              10,
+              {'filters': {'parent': null}},
+              {'recursive': true}
+            ) | json_encode | raw | escape
+          }}"
+          data-options="{{ {'name': full_name, 'selectable': true, 'selected': value} | json_encode | raw | escape }}"
+        >
+      </div>
     {% endspaceless %}
     <!-- dunno why I must do this include here-->
     <script src="{{ hotAsset('dist/angular_dll.js') }}"></script>

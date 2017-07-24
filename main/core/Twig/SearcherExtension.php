@@ -34,10 +34,10 @@ class SearcherExtension extends \Twig_Extension
         $this->container = $container;
     }
 
-    public function getFilters()
+    public function getFunctions()
     {
         return [
-            'search' => new \Twig_Filter_Method($this, 'search'),
+            'search' => new \Twig_Function_Method($this, 'search'),
         ];
     }
 
@@ -53,12 +53,12 @@ class SearcherExtension extends \Twig_Extension
      */
     public function search($class, $offset, $limit, $queryOptions, $serializerOptions)
     {
-        return $this->get('claroline.API.finder')->search(
+        return $this->container->get('claroline.API.finder')->search(
             $class,
             $offset,
             $limit,
             $queryOptions,
             $serializerOptions
-        );
+        )['results'];
     }
 }
