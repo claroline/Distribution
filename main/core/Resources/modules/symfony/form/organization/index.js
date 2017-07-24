@@ -7,8 +7,6 @@ import {createStore} from '#/main/core/utilities/redux'
 import {reducer} from '#/main/core/administration/workspace/reducer'
 import {OrganizationPicker} from '#/main/core/symfony/form/organization/organization_picker.jsx'
 
-
-alert('yo')
 class OrganizationField {
   constructor(initialData) {
 

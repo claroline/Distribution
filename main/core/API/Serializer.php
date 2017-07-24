@@ -39,8 +39,8 @@ class Serializer
         throw new \Exception('No serializer found for class '.get_class($object).'. Maybe you forgot to add the "claroline.serializer" tag to your serializer');
     }
 
-    public function serialize($object)
+    public function serialize($object, $options = [])
     {
-        return $this->getSerializer($object)->serialize($object);
+        return $this->getSerializer($object)->serialize($object, $options);
     }
 }

@@ -332,4 +332,9 @@ class Organization
     {
         return $this->default;
     }
+
+    public function getChildren()
+    {
+        return $this->children;
+    }
 }

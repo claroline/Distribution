@@ -6,7 +6,6 @@ import ReactDOM from 'react-dom'
 
 class OrganizationPicker extends Component {
   constructor(props) {
-    alert('go')
     super(props)
     this.state = {
       modal: {}
@@ -22,7 +21,7 @@ class OrganizationPicker extends Component {
   }
 }
 
-Workspaces.propTypes = {
+OrganizationPicker.propTypes = {
 }
 
 function mapStateToProps(state) {

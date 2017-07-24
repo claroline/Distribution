@@ -49,7 +49,7 @@ class Finder
         }
     }
 
-    public function search($class, $page, $limit, array $searches = [])
+    public function search($class, $page, $limit, array $searches = [], array $serializerOptions = [])
     {
         $serializer = $this->serializer;
         $filters = isset($searches['filters']) ? $searches['filters'] : [];
@@ -58,8 +58,8 @@ class Finder
         //maybe do only 1 request later
         $count = $this->fetch($class, $page, $limit, $searches, true);
 
-        $data = array_map(function ($el) use ($serializer) {
-            return $serializer->serialize($el);
+        $data = array_map(function ($el) use ($serializer, $serializerOptions) {
+            return $serializer->serialize($el, $serializerOptions);
         }, $data);
 
         $filterObjects = [];
@@ -84,6 +84,15 @@ class Finder
 
     private function fetch($class, $page = null, $limit = null, $searches = [], $count = false)
     {
+        //if no finder define, use the default doctrine methods
+        if (!$this->getFinder($class)) {
+            $data = $this->om->getRepository($class)
+              ->findBy($searches['filters'], null, $limit, $page);
+          //  var_dump(count($data));
+
+            return $count ? count($data) : $data;
+        }
+
         /** @var QueryBuilder $qb */
         $qb = $this->om->createQueryBuilder();
 
