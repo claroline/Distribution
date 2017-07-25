@@ -633,7 +633,7 @@ class ProgressManagerTest extends RepositoryTestCase
             $subNodes = array_keys($nodes);
 
             foreach ($subNodes as $nodeName) {
-                if (preg_match('#^(c\d+)$#', $nodeName, $matches)) {
+                if (preg_match('#^(c\d+)$#', $nodeName)) {
                     $this->testData['competencies'][$nodeName] = $this->persistCompetency($nodeName, $parent);
                     $walkNodes($this->testData['competencies'][$nodeName], $nodes[$nodeName]);
                 } else {
