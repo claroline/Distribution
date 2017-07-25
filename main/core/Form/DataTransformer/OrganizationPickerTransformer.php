@@ -40,6 +40,10 @@ class OrganizationPickerTransformer implements DataTransformerInterface
 
     public function transform($organizations)
     {
+        if (!$organizations) {
+            return [];
+        }
+
         return array_map(function ($organization) {
             return [
                 'id' => $organization->getId(),

@@ -5,6 +5,7 @@ import classes from 'classnames'
 import ReactDOM from 'react-dom'
 import {TreeView} from '#/main/core/layout/treeview/treeview.jsx'
 import {select} from './selectors'
+import {actions} from './actions'
 
 class OrganizationPicker extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class OrganizationPicker extends Component {
         data={this.props.organizations}
         renderers={this.renderers}
         options={this.props.options}
+        onChange={this.props.onChange}
       />
     )
   }
@@ -35,9 +37,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    options: {
-      onChange: (organization) => dispatch(actions.onChange(organization))
-    }
+    onChange: (organization) => dispatch(actions.onChange(organization))
   }
 }
 

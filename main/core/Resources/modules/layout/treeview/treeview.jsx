@@ -21,10 +21,10 @@ class TreeView extends Component {
               type="checkbox"
               checked={this.isChecked(el)}
               name={this.props.options.name + '[]'} value={el.id}
-              onChange={this.onChange}
+              onChange={() => this.props.onChange(el)}
             />
           } {el.name}
-            <TreeView data={el.children} options={this.props.options}/>
+            <TreeView data={el.children} options={this.props.options} onChange={this.props.onChange}/>
           </li>)
         )}
       </ul>
@@ -35,7 +35,8 @@ class TreeView extends Component {
 TreeView.propTypes = {
   data: T.arrayOf(T.object).isRequired,
   renderer: T.object,
-  options: T.object
+  options: T.object,
+  onChange: T.func
 }
 
 export {TreeView}
