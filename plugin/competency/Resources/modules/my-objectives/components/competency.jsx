@@ -1,13 +1,32 @@
+import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import {trans} from '#/main/core/translation'
+import {actions} from '../actions'
 
-export class Competency extends Component {
+class Competency extends Component {
   getProgressPercentage() {
     return this.props.competency.userLevelValue !== undefined ?
       ((this.props.competency.userLevelValue + 1) / (this.props.competency.requiredLevel + 1)) * 100 :
       0
+  }
+
+  getLevelsStars() {
+    return this.props.competency.userLevelValue === undefined ? 0 : this.props.competency.userLevelValue + 1
+  }
+
+  getRemainingLevelsStars() {
+    return this.props.competency.userLevelValue === undefined ?
+      this.props.competency.requiredLevel + 1 :
+      this.props.competency.requiredLevel > this.props.competency.userLevelValue ?
+        this.props.competency.requiredLevel - this.props.competency.userLevelValue :
+        0
+  }
+
+  startCompetency() {
+    this.props.getRelevantResource(this.props.competency.id, this.props.competency.nbLevels - 1)
+    //console.log(this.props.competency.nbLevels - 1)
   }
 
   render() {
@@ -19,15 +38,20 @@ export class Competency extends Component {
           </div>
         </div>
         <div className="box-content">
-          {!this.props.competency.userLevelValue &&
+          {!this.props.competency.userLevelValue && !this.props.competency.latestResource &&
             <div className="competency-box-content">
               <i className="fa fa-line-chart fa-5x" aria-hidden="true"></i>
-              <a href={`#${this.props.objective.id}/competency/${this.props.competency.id}`} className="btn btn-primary">
-                {trans('objective.evaluate', {}, 'competency')}
-              </a>
+              {this.props.competency.error ?
+                <div className="alert alert-danger">
+                  {this.props.competency.error}
+                </div> :
+                <a className="btn btn-primary" onClick={() => this.startCompetency()}>
+                  {trans('objective.evaluate', {}, 'competency')}
+                </a>
+              }
             </div>
           }
-          {this.props.competency.userLevelValue && this.props.competency.userLevelValue >= this.props.competency.requiredLevel &&
+          {this.props.competency.userLevelValue !== undefined && this.props.competency.userLevelValue >= this.props.competency.requiredLevel &&
             <div className="competency-box-content">
               <div className="acquired-content">
                 <i className="fa fa-check-square-o fa-5x" aria-hidden="true"></i>
@@ -38,16 +62,15 @@ export class Competency extends Component {
               </a>
             </div>
           }
-          {this.props.competency.userLevelValue && this.props.competency.userLevelValue < this.props.competency.requiredLevel &&
+          {((this.props.competency.userLevelValue && this.props.competency.userLevelValue < this.props.competency.requiredLevel) ||
+          (!this.props.competency.userLevelValue && this.props.competency.latestResource)) &&
             <div className="competency-box-content">
               <div className="level">
-                {[...Array(this.props.competency.userLevelValue + 1)].map((x, index) =>
+                {[...Array(this.getLevelsStars())].map((x, index) =>
                   <i key={index} className="fa fa-star fa-2x" aria-hidden="true"></i>
                 )}
-                {this.props.competency.nbLevels &&
-                  this.props.competency.nbLevels > this.props.competency.userLevelValue &&
-                  [...Array(this.props.competency.nbLevels - 1 - this.props.competency.userLevelValue)].map((x, index) =>
-                    <i key={index} className="fa fa-star-o fa-2x" aria-hidden="true"></i>
+                {[...Array(this.getRemainingLevelsStars())].map((x, index) =>
+                  <i key={index} className="fa fa-star-o fa-2x" aria-hidden="true"></i>
                 )}
               </div>
               <div className={`c100 p${this.getProgressPercentage()} small`}>
@@ -58,10 +81,7 @@ export class Competency extends Component {
                 </div>
               </div>
               <a href={`#${this.props.objective.id}/competency/${this.props.competency.id}`} className="btn btn-primary">
-                {this.getProgressPercentage() > 0 ?
-                  trans('objective.continue', {}, 'competency') :
-                  trans('objective.start', {}, 'competency')
-                }
+                {trans('objective.continue', {}, 'competency')}
               </a>
             </div>
           }
@@ -82,6 +102,23 @@ Competency.propTypes = {
     progress: T.number,
     userLevelValue: T.number,
     requiredLevel: T.number,
-    nbLevels: T.number
+    latestResource: T.number,
+    error: T.string
   }).isRequired
 }
+
+function mapStateToProps() {
+  return {}
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    getRelevantResource: (competencyId, level) => {
+      dispatch(actions.fetchRelevantResource(competencyId, level))
+    }
+  }
+}
+
+const ConnectedCompetency = connect(mapStateToProps, mapDispatchToProps)(Competency)
+
+export {ConnectedCompetency as Competency}

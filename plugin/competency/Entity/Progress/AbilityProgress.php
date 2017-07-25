@@ -42,6 +42,11 @@ class AbilityProgress
     private $passedResourceIds = [];
 
     /**
+     * @ORM\Column(name="failed_resource_ids", type="simple_array", nullable=true)
+     */
+    private $failedResourceIds = [];
+
+    /**
      * @ORM\Column(name="passed_resource_count", type="integer")
      */
     private $passedResourceCount = 0;
@@ -99,11 +104,19 @@ class AbilityProgress
     }
 
     /**
-     * @return int
+     * @return array
      */
     public function getPassedResourceIds()
     {
         return $this->passedResourceIds;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFailedResourceIds()
+    {
+        return $this->failedResourceIds;
     }
 
     /**
@@ -124,6 +137,44 @@ class AbilityProgress
         if (!$this->hasPassedResource($resource)) {
             $this->passedResourceIds[] = $resource->getId();
             ++$this->passedResourceCount;
+            $this->removeFailedResource($resource);
+        }
+    }
+
+    /**
+     * @param ResourceNode $resource
+     *
+     * @return bool
+     */
+    public function hasFailedResource(ResourceNode $resource)
+    {
+        return !is_null($this->failedResourceIds) && in_array($resource->getId(), $this->failedResourceIds);
+    }
+
+    /**
+     * @param ResourceNode $resource
+     */
+    public function addFailedResource(ResourceNode $resource)
+    {
+        if (!$this->hasPassedResource($resource) && !$this->hasFailedResource($resource)) {
+            if (is_null($this->failedResourceIds)) {
+                $this->failedResourceIds = [];
+            }
+            $this->failedResourceIds[] = $resource->getId();
+        }
+    }
+
+    /**
+     * @param ResourceNode $resource
+     */
+    public function removeFailedResource(ResourceNode $resource)
+    {
+        if (!is_null($this->failedResourceIds)) {
+            $key = array_search($resource->getId(), $this->failedResourceIds);
+
+            if ($key !== false) {
+                array_splice($this->failedResourceIds, $key, 1);
+            }
         }
     }
 

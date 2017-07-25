@@ -18,11 +18,32 @@ class CompetencyProgress extends AbstractCompetencyProgress implements \JsonSeri
     private $date;
 
     /**
+     * @ORM\Column(type="integer", name="resource_id", nullable=true)
+     */
+    protected $resourceId;
+
+    /**
      * @return \DateTime
      */
     public function getDate()
     {
         return $this->date;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResourceId()
+    {
+        return $this->resourceId;
+    }
+
+    /**
+     * @param int $resourceId
+     */
+    public function setResourceId($resourceId)
+    {
+        $this->resourceId = $resourceId;
     }
 
     /**
@@ -55,6 +76,7 @@ class CompetencyProgress extends AbstractCompetencyProgress implements \JsonSeri
             'levelName' => $this->levelName,
             'date' => $this->date,
             'level' => $this->level,
+            'resourceId' => $this->resourceId,
         ];
     }
 }

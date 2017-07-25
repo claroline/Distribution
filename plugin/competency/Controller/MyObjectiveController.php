@@ -114,7 +114,7 @@ class MyObjectiveController
      */
     public function objectiveCompetencyAction(Objective $objective, Competency $competency, User $user)
     {
-        $progress = $this->progressManager->getCompetencyProgress($competency, $user);
+        $progress = $this->progressManager->getCompetencyProgress($competency, $user, false);
         $rootComptency = empty($competency->getParent()) ?
             $competency :
             $this->competencyManager->getCompetencyById($competency->getRoot());
@@ -130,24 +130,7 @@ class MyObjectiveController
         } else {
             $currentLevel = is_null($nextLevel) ? $acquiredLevel : $acquiredLevel + 1;
         }
-        $levelEntity = null;
-        $nbPassed = 0;
-        $nbToPass = 0;
-        $levelEntity = $this->competencyManager->getLevelByScaleAndValue($scale, $currentLevel);
-        $caLinks = $this->competencyManager->getCompetencyAbilityLinksByCompetencyAndLevel($competency, $levelEntity);
-
-        foreach ($caLinks as $link) {
-            $ability = $link->getAbility();
-            $abilityProgress = $this->progressManager->getAbilityProgress($ability, $user);
-            $target = $ability->getMinResourceCount();
-            $passed = $abilityProgress->getPassedResourceCount();
-            $nbToPass += $target;
-            $nbPassed += $passed >= $target ? $target : $passed;
-        }
-        $challenge = [
-            'nbPassed' => $nbPassed,
-            'nbToPass' => $nbToPass,
-        ];
+        $challenge = $this->objectiveManager->getUserChallengeByLevel($user, $competency, $currentLevel);
 
         return new JsonResponse([
             'objective' => $objective,
@@ -176,34 +159,40 @@ class MyObjectiveController
      */
     public function objectiveCompetencyLevelAction(Competency $competency, $level, User $user)
     {
-        $rootComptency = empty($competency->getParent()) ?
-            $competency :
-            $this->competencyManager->getCompetencyById($competency->getRoot());
-        $scale = $rootComptency->getScale();
-        $levelEntity = null;
-        $nbPassed = 0;
-        $nbToPass = 0;
-        $levelEntity = $this->competencyManager->getLevelByScaleAndValue($scale, $level);
-        $caLinks = $this->competencyManager->getCompetencyAbilityLinksByCompetencyAndLevel($competency, $levelEntity);
-
-        foreach ($caLinks as $link) {
-            $ability = $link->getAbility();
-            $abilityProgress = $this->progressManager->getAbilityProgress($ability, $user);
-            $target = $ability->getMinResourceCount();
-            $passed = $abilityProgress->getPassedResourceCount();
-            $nbToPass += $target;
-            $nbPassed += $passed >= $target ? $target : $passed;
-        }
-
-        $challenge = [
-            'nbPassed' => $nbPassed,
-            'nbToPass' => $nbToPass,
-        ];
+        $challenge = $this->objectiveManager->getUserChallengeByLevel($user, $competency, $level);
 
         return new JsonResponse([
             'currentLevel' => intval($level),
             'challenge' => $challenge,
         ]);
+    }
+
+    /**
+     * Fetches a resource for a competency at the given level for My Objectives tool.
+     *
+     * @EXT\Route(
+     *     "/objective/competency/{competency}/level/{level}/resource/fetch",
+     *     name="hevinci_my_objectives_competency_resource_fetch"
+     * )
+     * @EXT\ParamConverter("user", options={"authenticatedUser"=true})
+     *
+     * @param Competency $competency
+     * @param int        $level
+     * @param User       $user
+     *
+     * @return JsonResponse
+     */
+    public function objectiveCompetencyResourceFetchAction(Competency $competency, $level, User $user)
+    {
+        $rootComptency = empty($competency->getParent()) ?
+            $competency :
+            $this->competencyManager->getCompetencyById($competency->getRoot());
+        $scale = $rootComptency->getScale();
+        $levelEntity = $this->competencyManager->getLevelByScaleAndValue($scale, $level);
+        $resource = $this->objectiveManager->getRelevantResourceForUserByLevel($user, $competency, $levelEntity);
+        $data = is_null($resource) ? null : ['resourceId' => $resource->getId()];
+
+        return new JsonResponse($data);
     }
 
     /**

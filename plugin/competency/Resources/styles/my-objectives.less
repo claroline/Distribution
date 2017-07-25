@@ -1,6 +1,9 @@
 // Claroline & bootstrap variables
 @import "../../../../main/core/Resources/less/themes/default/variables";
 
+@competency-color-info: #337AB7;
+@competency-color-success: green;
+
 .my-objectives-tool-panel-body {
   padding: 0px;
 }
@@ -72,7 +75,7 @@
     flex-wrap: wrap;
 
     .fa-line-chart {
-      color: #337AB7;
+      color: @competency-color-info;
       margin-top: 45px;
       margin-bottom: 35px
     }
@@ -100,7 +103,7 @@
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 20px;
-  color: #337AB7;
+  color: @competency-color-info;
   max-height: 60px;
   overflow: auto;
 }
@@ -114,11 +117,12 @@
   border-radius: 10px;
 
   .panel-heading {
-    height: 100px;
+    height: 70px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     border-radius: 10px 10px 0 0;
+    overflow: hidden;
   }
 
   .panel-body {
@@ -188,5 +192,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: green;
+  color: @competency-color-success;
+}
+
+.competency-extra-box {
+  background-color: @panel-default-heading-bg;
+  border-bottom:solid 1px @panel-default-border;
+
+  .competency-extra-content {
+    padding: 19px;
+  }
+}
+
+.extra-icons {
+  margin-left: 10px;
+}
+
+.competency-color-info {
+  color: @competency-color-info;
+}
+
+.competency-color-success {
+  color: @competency-color-success;
+}
+
+.challenge-error-alert {
+  width: 100%;
 }

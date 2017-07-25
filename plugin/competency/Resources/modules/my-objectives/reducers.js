@@ -1,8 +1,10 @@
+import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
 import {VIEW_MAIN} from './enums'
 
 import {
   UPDATE_VIEW_MODE,
+  COMPETENCIES_DATA_UPDATE,
   COMPETENCY_DATA_RESET,
   COMPETENCY_DATA_LOAD,
   COMPETENCY_DATA_UPDATE
@@ -36,6 +38,26 @@ const viewReducers = {
 const objectivesReducers = {
 }
 
+const competenciesReducers = {
+  [COMPETENCIES_DATA_UPDATE]: (state, action) => {
+    const copy = {}
+    Object.keys(state).forEach(key => {
+      copy[key] = {}
+      Object.keys(state[key]).forEach(k => {
+        if (parseInt(k) === parseInt(action.competencyId)) {
+          const competencyCopy = cloneDeep(state[key][k])
+          competencyCopy[action.property] = action.value
+          copy[key][k] = competencyCopy
+        } else {
+          copy[key][k] = state[key][k]
+        }
+      })
+    })
+
+    return copy
+  }
+}
+
 const competencyReducers = {
   [COMPETENCY_DATA_RESET]: () => initialState['competency'],
   [COMPETENCY_DATA_LOAD]: (state, action) => {
@@ -64,6 +86,6 @@ export const reducers = combineReducers({
   viewMode: makeReducer(initialState['viewMode'], viewReducers),
   objectives: makeReducer(initialState['objectives'], objectivesReducers),
   objectivesCompetencies: makeReducer(initialState['objectivesCompetencies'], objectivesReducers),
-  competencies: makeReducer(initialState['competencies'], objectivesReducers),
+  competencies: makeReducer(initialState['competencies'], competenciesReducers),
   competency: makeReducer(initialState['competency'], competencyReducers)
 })

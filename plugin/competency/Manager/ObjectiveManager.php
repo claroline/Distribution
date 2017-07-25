@@ -11,8 +11,10 @@ use HeVinci\CompetencyBundle\Entity\Competency;
 use HeVinci\CompetencyBundle\Entity\Level;
 use HeVinci\CompetencyBundle\Entity\Objective;
 use HeVinci\CompetencyBundle\Entity\ObjectiveCompetency;
+use HeVinci\CompetencyBundle\Entity\Progress\AbilityProgress;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("hevinci.competency.objective_manager")
@@ -27,6 +29,7 @@ class ObjectiveManager
     private $competencyRepo;
     private $objectiveCompetencyRepo;
     private $competencyProgressRepo;
+    private $translator;
 
     /**
      * @DI\InjectParams({
@@ -34,18 +37,21 @@ class ObjectiveManager
      *     "competencyManager"  = @DI\Inject("hevinci.competency.competency_manager"),
      *     "progressManager"    = @DI\Inject("hevinci.competency.progress_manager"),
      *     "pagerFactory"       = @DI\Inject("claroline.pager.pager_factory"),
+     *     "translator"         = @DI\Inject("translator")
      * })
      *
-     * @param ObjectManager     $om
-     * @param CompetencyManager $competencyManager
-     * @param ProgressManager   $progressManager
-     * @param PagerFactory      $pagerFactory
+     * @param ObjectManager       $om
+     * @param CompetencyManager   $competencyManager
+     * @param ProgressManager     $progressManager
+     * @param PagerFactory        $pagerFactory
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         ObjectManager $om,
         CompetencyManager $competencyManager,
         ProgressManager $progressManager,
-        PagerFactory $pagerFactory
+        PagerFactory $pagerFactory,
+        TranslatorInterface $translator
     ) {
         $this->om = $om;
         $this->competencyManager = $competencyManager;
@@ -55,6 +61,7 @@ class ObjectiveManager
         $this->competencyRepo = $om->getRepository('HeVinciCompetencyBundle:Competency');
         $this->objectiveCompetencyRepo = $om->getRepository('HeVinciCompetencyBundle:ObjectiveCompetency');
         $this->competencyProgressRepo = $om->getRepository('HeVinciCompetencyBundle:Progress\CompetencyProgress');
+        $this->translator = $translator;
     }
 
     /**
@@ -140,6 +147,7 @@ class ObjectiveManager
                         if (isset($competencyProgressesById[$id])) {
                             $progress = $competencyProgressesById[$id];
                             $collection['progress'] = $progress->getPercentage();
+                            $collection['latestResource'] = $progress->getResourceId();
 
                             if ($level = $progress->getLevel()) {
                                 $collection['userLevel'] = $level->getName();
@@ -426,5 +434,86 @@ class ObjectiveManager
         $adapter = new OrmArrayAdapter($countQuery, $resultQuery);
 
         return $this->pagerFactory->createPagerWithAdapter($adapter, $page);
+    }
+
+    public function getUserChallengeByLevel(User $user, Competency $competency, $level)
+    {
+        $rootComptency = empty($competency->getParent()) ?
+            $competency :
+            $this->competencyManager->getCompetencyById($competency->getRoot());
+        $scale = $rootComptency->getScale();
+        $nbPassed = 0;
+        $nbToPass = 0;
+        $challengeError = null;
+        $levelEntity = $this->competencyManager->getLevelByScaleAndValue($scale, $level);
+        $caLinks = $this->competencyManager->getCompetencyAbilityLinksByCompetencyAndLevel($competency, $levelEntity);
+
+        foreach ($caLinks as $link) {
+            $ability = $link->getAbility();
+            $abilityProgress = $this->progressManager->getAbilityProgress($ability, $user);
+            $target = $ability->getMinResourceCount();
+            $passed = $abilityProgress->getPassedResourceCount();
+            $nbToPass += $target;
+            $nbPassed += $passed >= $target ? $target : $passed;
+            $resources = $ability->getResources();
+            $nbValidResources = 0;
+
+            foreach ($resources as $resource) {
+                if ($resource->getResourceType()->getName() === 'ujm_exercise') {
+                    ++$nbValidResources;
+                }
+            }
+            if ($target === 0 || $nbValidResources < $target) {
+                $challengeError = $this->translator->trans('objective.invalid_challenge_msg', [], 'competency');
+            }
+        }
+
+        return [
+            'nbPassed' => $nbPassed,
+            'nbToPass' => $nbToPass,
+            'error' => $challengeError,
+        ];
+    }
+
+    public function getRelevantResourceForUserByLevel(User $user, Competency $competency, Level $level)
+    {
+        $allResources = [];
+        $passedResources = [];
+        $failedResources = [];
+        $toDoResources = [];
+        $resource = null;
+        $links = $this->competencyManager->getCompetencyAbilityLinksByCompetencyAndLevel($competency, $level);
+
+        foreach ($links as $link) {
+            $ability = $link->getAbility();
+            $abilityProgress = $this->progressManager->getAbilityProgress($ability, $user);
+            $resources = $ability->getResources();
+
+            foreach ($resources as $resource) {
+                $allResources[$resource->getId()] = $resource;
+
+                if ($abilityProgress->getStatus() === AbilityProgress::STATUS_ACQUIRED ||
+                    $abilityProgress->hasPassedResource($resource)
+                ) {
+                    $passedResources[$resource->getId()] = $resource;
+                } elseif ($abilityProgress->hasFailedResource($resource)) {
+                    $failedResources[$resource->getId()] = $resource;
+                } else {
+                    $toDoResources[$resource->getId()] = $resource;
+                }
+            }
+        }
+        if (count($toDoResources) > 0) {
+            $index = mt_rand(0, count($toDoResources) - 1);
+            $resource = array_values($toDoResources)[$index];
+        } elseif (count($failedResources) > 0) {
+            $index = mt_rand(0, count($failedResources) - 1);
+            $resource = array_values($failedResources)[$index];
+        } elseif (count($allResources) > 0) {
+            $index = mt_rand(0, count($allResources) - 1);
+            $resource = array_values($allResources)[$index];
+        }
+
+        return $resource;
     }
 }

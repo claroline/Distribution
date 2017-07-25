@@ -57,7 +57,9 @@ class Version20170703170705 extends AbstractMigration
             ON DELETE CASCADE
         ');
         $this->addSql("
-            ALTER TABLE hevinci_ability_progress CHANGE passed_activity_ids passed_resource_ids LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', 
+            ALTER TABLE hevinci_ability_progress
+            ADD failed_resource_ids LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)',
+            CHANGE passed_activity_ids passed_resource_ids LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)',
             CHANGE passed_activity_count passed_resource_count INT NOT NULL
         ");
         $this->addSql('
@@ -69,6 +71,10 @@ class Version20170703170705 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE hevinci_competency CHANGE activitycount resourceCount INT NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_competency_progress
+            ADD resource_id INT DEFAULT NULL
         ');
     }
 
@@ -88,11 +94,17 @@ class Version20170703170705 extends AbstractMigration
             DROP resourceCount
         ');
         $this->addSql("
-            ALTER TABLE hevinci_ability_progress CHANGE passed_resource_ids passed_activity_ids LONGTEXT DEFAULT NULL COLLATE utf8_unicode_ci COMMENT '(DC2Type:simple_array)', 
-            CHANGE passed_resource_count passed_activity_count INT NOT NULL
+            ALTER TABLE hevinci_ability_progress
+            CHANGE passed_resource_ids passed_activity_ids LONGTEXT DEFAULT NULL COLLATE utf8_unicode_ci COMMENT '(DC2Type:simple_array)',
+            CHANGE passed_resource_count passed_activity_count INT NOT NULL,
+            DROP failed_resource_ids
         ");
         $this->addSql('
             ALTER TABLE hevinci_competency CHANGE resourcecount activityCount INT NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE hevinci_competency_progress
+            DROP resource_id
         ');
     }
 }

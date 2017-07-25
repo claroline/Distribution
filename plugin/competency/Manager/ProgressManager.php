@@ -69,6 +69,7 @@ class ProgressManager
         $user = $evaluation->getUser();
 
         foreach ($abilities as $ability) {
+            $this->setCompetencyProgressResourceId($ability, $user, $resource->getId());
             $progress = $this->getAbilityProgress($ability, $user);
 
             if ($evaluation->isSuccessful() && !$progress->hasPassedResource($resource)) {
@@ -81,6 +82,8 @@ class ProgressManager
                 }
 
                 $this->computeCompetencyProgress($ability, $user);
+            } else {
+                $progress->addFailedResource($resource);
             }
         }
 
@@ -223,7 +226,7 @@ class ProgressManager
         }
     }
 
-    public function getCompetencyProgress(Competency $competency, User $user)
+    public function getCompetencyProgress(Competency $competency, User $user, $withLog = true)
     {
         if (!isset($this->cachedCompetencyProgresses[$competency->getId()])) {
             $progress = $this->competencyProgressRepo->findOneBy([
@@ -236,7 +239,7 @@ class ProgressManager
                 $progress->setCompetency($competency);
                 $progress->setUser($user);
                 $this->om->persist($progress);
-            } else {
+            } elseif ($withLog) {
                 $this->om->persist($progress->makeLog());
             }
             $this->om->flush();
@@ -446,5 +449,16 @@ class ProgressManager
         }
 
         return $this->cachedUserProgress;
+    }
+
+    private function setCompetencyProgressResourceId(Ability $ability, User $user, $resourceId)
+    {
+        $competencyLinks = $this->competencyAbilityRepo->findBy(['ability' => $ability]);
+
+        foreach ($competencyLinks as $link) {
+            $competency = $link->getCompetency();
+            $progress = $this->getCompetencyProgress($competency, $user);
+            $progress->setResourceId($resourceId);
+        }
     }
 }
