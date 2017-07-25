@@ -88,7 +88,6 @@ class Finder
         if (!$this->getFinder($class)) {
             $data = $this->om->getRepository($class)
               ->findBy($searches['filters'], null, $limit, $page);
-          //  var_dump(count($data));
 
             return $count ? count($data) : $data;
         }
