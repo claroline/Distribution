@@ -73,7 +73,7 @@ class WorkspaceType extends AbstractType
             ->add('selfRegistration', 'checkbox', ['required' => false, 'label' => 'public_registration'])
             ->add('registrationValidation', 'checkbox', ['required' => false, 'label' => 'registration_validation'])
             ->add('selfUnregistration', 'checkbox', ['required' => false, 'label' => 'public_unregistration'])
-            ->add('organizations', 'organizationpicker');
+            ->add('organizations', 'organizationpicker', ['label' => 'organizations']);
 
         if (!$this->forApi) {
             $options = [
