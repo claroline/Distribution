@@ -211,7 +211,8 @@ CompetencyView.propTypes = {
   }).isRequired,
   competencies: T.object,
   resetCompetency: T.func.isRequired,
-  getLevelData: T.func.isRequired
+  getLevelData: T.func.isRequired,
+  getRelevantResource: T.func.isRequired
 }
 
 function mapStateToProps(state) {

@@ -1,7 +1,6 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 import {trans} from '#/main/core/translation'
 import {actions} from '../actions'
 
@@ -26,7 +25,6 @@ class Competency extends Component {
 
   startCompetency() {
     this.props.getRelevantResource(this.props.competency.id, this.props.competency.nbLevels - 1)
-    //console.log(this.props.competency.nbLevels - 1)
   }
 
   render() {
@@ -102,9 +100,11 @@ Competency.propTypes = {
     progress: T.number,
     userLevelValue: T.number,
     requiredLevel: T.number,
+    nbLevels: T.number,
     latestResource: T.number,
     error: T.string
-  }).isRequired
+  }).isRequired,
+  getRelevantResource: T.func.isRequired
 }
 
 function mapStateToProps() {
