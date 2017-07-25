@@ -578,8 +578,11 @@ class UserManager
                 }
             }
 
-            if (!$isNew && $logger) {
-                $logger(" User $j ($username) being updated...");
+            if (!$isNew) {
+                if ($logger) {
+                    $logger(" User $j ($username) being updated...");
+                }
+                $userEntity->clearRoles();
                 $this->roleManager->associateRoles($userEntity, $additionalRoles);
             }
 
@@ -645,6 +648,7 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
+
         if ($logger) {
             $logger($countCreated.' users created.');
             $logger($countUpdated.' users updated.');
@@ -1035,17 +1039,9 @@ class UserManager
      * @return \Pagerfanta\Pagerfanta
      */
     public function getUsersByRolesIncludingGroups(
-        array $roles, $page = 1,
-        $max = 20,
-        $executeQuery = true
+        array $roles
     ) {
-        $users = $this->userRepo->findUsersByRolesIncludingGroups($roles, $executeQuery);
-
-        if (!$executeQuery) {
-            return $users;
-        }
-
-        return $this->pagerFactory->createPagerFromArray($users, $page, $max);
+        return $this->userRepo->findUsersByRolesIncludingGroups($roles);
     }
 
     /*
