@@ -41,7 +41,7 @@
     display: none;
 }
 
-//magic and unicorns for these classes
+//magic and unicorns for these classes. This is what handles the click on the hidden checkbox.
 .treeview label[for]::before,
 .treeview label span::before
 {
@@ -55,7 +55,8 @@
     color: #e74c3c;
     font-size: 8px;
     line-height: 13px;
-    transform: translatex(-26px);
+    transform: translatex(-30px);
+    position: absolute;
 }
 
 .treeview input[type="checkbox"][id]:checked ~ label[for]::before
@@ -66,4 +67,8 @@
 .treeview label:not([for])
 {
     margin: 0 8px 0 0;
+}
+
+.treeview-content {
+    padding-left: 10px;
 }

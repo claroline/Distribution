@@ -73,7 +73,7 @@ class TreeNode extends Component {
               {el.children.length > 0 &&
                 <label className="treeview-pointer" htmlFor={"node" + el.id}/>
               }
-              {this.props.render(el)}
+              <span className="treeview-content">{this.props.render(el)}</span>
               {el.children.length > 0 &&
                 <TreeNode
                   data={el.children}
