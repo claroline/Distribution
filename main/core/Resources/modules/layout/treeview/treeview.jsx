@@ -1,12 +1,10 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import cloneDeep from 'lodash/cloneDeep'
 
 class TreeNode extends Component {
   constructor(props) {
     super(props)
-    console.log(this.props)
   }
 
   isChecked(el) {
@@ -48,6 +46,12 @@ class TreeNode extends Component {
     return this.props.options.collapse ? false: this.hasChildChecked(el)
   }
 
+  onExpandNode(el, event) {
+    event.target.checked ?
+      this.props.onOpenNode(el):
+      this.props.onCloseNode(el)
+  }
+
   render() {
     return (
       <ul>
@@ -60,6 +64,7 @@ class TreeNode extends Component {
                   type="checkbox"
                   id={"node" + el.id}
                   defaultChecked={this.hasChildChecked(el)}
+                  onChange={(event) => this.onExpandNode(el, event)}
                 />
               }
               {this.hasChildChecked(el)}
@@ -79,6 +84,8 @@ class TreeNode extends Component {
                   data={el.children}
                   options={this.props.options}
                   onChange={this.props.onChange}
+                  onOpenNode={this.props.onOpenNode}
+                  onCloseNode={this.props.onCloseNode}
                   render={this.props.render}
                 />
               }
@@ -112,12 +119,14 @@ TreeView.propTypes = {
     selectable: T.bool, //allow checkbox selection
     collapse: T.bool, //collapse the datatree
     autoSelect: T.bool, //automatically select children
-    css: {
+    cssProperties: {
       open: T.string, //default css for open node
       close: T.string //default css for closed node
     }
   }),
-  onChange: T.func
+  onChange: T.func, //callback for when a node is changed (open or closed)
+  onOpenNode: T.func, //callback for when a node is opened
+  onCloseNode: T.func //callback for when a node is closed
 }
 
 TreeView.defaultProps = {
@@ -126,11 +135,14 @@ TreeView.defaultProps = {
     selectable: false,
     autoSelect: false,
     collapse: true,
-    css: {
+    cssProperties: {
       open: {},
       close: {}
     }
-  }
+  },
+  onChange: () => {},
+  onOpenNode: () => {},
+  onCloseNode: () => {}
 }
 
 export {TreeView}
