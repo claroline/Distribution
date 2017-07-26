@@ -12,7 +12,15 @@
               {'recursive': true}
             ) | json_encode | raw | escape
           }}"
-          data-options="{{ {'name': full_name, 'selectable': true, 'selected': value} | json_encode | raw | escape }}"
+          data-options="{{
+            {
+              'name': full_name,
+              'selectable': true,
+              'selected': value,
+              'collapse': false
+            }
+            | json_encode | raw | escape
+          }}"
         >
       </div>
     {% endspaceless %}

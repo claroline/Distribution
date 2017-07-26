@@ -46,11 +46,6 @@ class SearcherExtension extends \Twig_Extension
         return 'searcher_extension';
     }
 
-    /**
-     * Serializes data to JSON using the "api" serialization group.
-     *
-     * @param mixed $data
-     */
     public function search($class, $offset, $limit, $queryOptions, $serializerOptions)
     {
         return $this->container->get('claroline.API.finder')->search(
