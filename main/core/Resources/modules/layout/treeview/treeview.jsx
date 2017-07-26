@@ -34,16 +34,12 @@ class TreeNode extends Component {
   //this is not really optimized yet but I guess that's okay
   hasChildChecked(el) {
       //no child, no point looking
-      console.log('has child ' + el.id, this.props.options.selected)
       if (el.children.length === 0) return false
 
       return this.props.options.selected.find(select => {
-        const object = this.findById(select.id) //= el
         let found = false
-        if (object && object.children && object.children.length > 0) {
-
+        if (el.children && el.children.length > 0) {
           el.children.forEach(child => {
-
             if (child.id === select.id) found = true
             if (!found) found = this.hasChildChecked(child)
           })
