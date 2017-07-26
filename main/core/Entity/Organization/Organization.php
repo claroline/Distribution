@@ -182,6 +182,7 @@ class Organization
         $this->administrators = new ArrayCollection();
         $this->timeSlots = new ArrayCollection();
         $this->years = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     public function getId()

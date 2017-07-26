@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Form\DataTransformer;
 
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -44,12 +45,16 @@ class OrganizationPickerTransformer implements DataTransformerInterface
             return [];
         }
 
+        if ($organizations instanceof ArrayCollection) {
+            $organizations = $organizations->toArray();
+        }
+
         return array_map(function ($organization) {
             return [
                 'id' => $organization->getId(),
                 'name' => $organization->getName(),
               ];
-        }, $organizations->toArray());
+        }, $organizations);
     }
 
     public function reverseTransform($ids)

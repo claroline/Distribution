@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 
 class TreeNode extends Component {
   constructor(props) {
@@ -8,7 +7,7 @@ class TreeNode extends Component {
   }
 
   isChecked(el) {
-      return this.props.options.selected.find(select => select.id === el.id) ? true: false
+    return this.props.options.selected.find(select => select.id === el.id) ? true: false
   }
 
   //not used anymore, flatten everything in a single array. Kinda usefull for searches so I keep it as of now
@@ -28,18 +27,18 @@ class TreeNode extends Component {
   //this is not really optimized yet but I guess that's okay
   hasChildChecked(el) {
       //no child, no point looking
-      if (el.children.length === 0) return false
+    if (el.children.length === 0) return false
 
-      return this.props.options.selected.find(select => {
-        let found = false
-        if (el.children && el.children.length > 0) {
-          el.children.forEach(child => {
-            if (child.id === select.id) found = true
-            if (!found) found = this.hasChildChecked(child)
-          })
-        }
-        return found
-      }) ? true: false
+    return this.props.options.selected.find(select => {
+      let found = false
+      if (el.children && el.children.length > 0) {
+        el.children.forEach(child => {
+          if (child.id === select.id) found = true
+          if (!found) found = this.hasChildChecked(child)
+        })
+      }
+      return found
+    }) ? true: false
   }
 
   isNodeOpen(el) {
@@ -62,7 +61,7 @@ class TreeNode extends Component {
                 <input
                   className="treeview-hidden"
                   type="checkbox"
-                  id={"node" + el.id}
+                  id={'node' + el.id}
                   defaultChecked={this.hasChildChecked(el)}
                   onChange={(event) => this.onExpandNode(el, event)}
                 />
@@ -76,7 +75,7 @@ class TreeNode extends Component {
                 />
               }
               {el.children.length > 0 &&
-                <label className="treeview-pointer" htmlFor={"node" + el.id}/>
+                <label className="treeview-pointer" htmlFor={'node' + el.id}/>
               }
               <span className="treeview-content">{this.props.render(el)}</span>
               {el.children.length > 0 &&
@@ -129,7 +128,25 @@ TreeView.propTypes = {
   onCloseNode: T.func //callback for when a node is closed
 }
 
-TreeView.defaultProps = {
+TreeNode.propTypes = {
+  data: T.arrayOf(T.object).isRequired, //the datatree
+  render: T.func.isRequired, //custom renderer function
+  options: T.shape({
+    name: T.string, //checkbox base name
+    selectable: T.bool.isRequired, //allow checkbox selection
+    collapse: T.bool.isRequired, //collapse the datatree
+    autoSelect: T.bool.isRequired, //automatically select children
+    cssProperties: {
+      open: T.string, //default css for open node
+      close: T.string //default css for closed node
+    }
+  }).isRequired,
+  onChange: T.func.isRequired, //callback for when a node is changed (open or closed)
+  onOpenNode: T.func.isRequired, //callback for when a node is opened
+  onCloseNode: T.func.isRequired //callback for when a node is closed
+}
+
+TreeNode.defaultProps = {
   render: (el) => el.name,
   options: {
     selectable: false,
