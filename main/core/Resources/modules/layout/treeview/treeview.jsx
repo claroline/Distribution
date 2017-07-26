@@ -6,18 +6,14 @@ import cloneDeep from 'lodash/cloneDeep'
 class TreeNode extends Component {
   constructor(props) {
     super(props)
-    //we flatten here so we run the function only once
-    this.flatData = this.flatten(this.props.data)
+    console.log(this.props)
   }
 
   isChecked(el) {
       return this.props.options.selected.find(select => select.id === el.id) ? true: false
   }
 
-  findById(id) {
-    return this.flatData.find(el => el.id === id)
-  }
-
+  //not used anymore, flatten everything in a single array. Kinda usefull for searches so I keep it as of now
   flatten(array) {
     let flattened = []
 
@@ -60,30 +56,30 @@ class TreeNode extends Component {
             <li>
               {el.children.length > 0 &&
                 <input
+                  className="treeview-hidden"
                   type="checkbox"
                   id={"node" + el.id}
                   defaultChecked={this.hasChildChecked(el)}
                 />
               }
-              <label>
-                {this.hasChildChecked(el)}
-                {this.props.options.selectable &&
-                  <input type="checkbox"
-                    defaultChecked={this.isChecked(el)}
-                    name={this.props.options.name + '[]'} value={el.id}
-                    onChange={() => this.props.onChange(el)}
-                  />
-                }
-                <span></span>
-              </label>
-              <label htmlFor={"node" + el.id}>
-                {el.name}
-              </label>
+              {this.hasChildChecked(el)}
+              {this.props.options.selectable &&
+                <input type="checkbox"
+                  defaultChecked={this.isChecked(el)}
+                  name={this.props.options.name + '[]'} value={el.id}
+                  onChange={() => this.props.onChange(el)}
+                />
+              }
+              {el.children.length > 0 &&
+                <label className="treeview-pointer" htmlFor={"node" + el.id}/>
+              }
+              {this.props.render(el)}
               {el.children.length > 0 &&
                 <TreeNode
                   data={el.children}
                   options={this.props.options}
                   onChange={this.props.onChange}
+                  render={this.props.render}
                 />
               }
             </li>)
@@ -101,7 +97,7 @@ class TreeView extends Component {
 
   render() {
     return(
-      <div className="acidjs-css3-treeview">
+      <div className="treeview">
         <TreeNode {...this.props} />
       </div>
     )
@@ -110,7 +106,7 @@ class TreeView extends Component {
 
 TreeView.propTypes = {
   data: T.arrayOf(T.object).isRequired, //the datatree
-  renderer: T.object, //custom renderer function
+  render: T.func.isRequired, //custom renderer function
   options: T.shape({
     name: T.string, //checkbox base name
     selectable: T.bool, //allow checkbox selection
@@ -125,6 +121,7 @@ TreeView.propTypes = {
 }
 
 TreeView.defaultProps = {
+  render: (el) => el.name,
   options: {
     selectable: false,
     autoSelect: false,
