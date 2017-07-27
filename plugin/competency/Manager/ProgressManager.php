@@ -72,7 +72,6 @@ class ProgressManager
             $this->setCompetencyProgressResourceId($ability, $user, $resource->getId());
             $progress = $this->getAbilityProgress($ability, $user);
 
-//            if ($evaluation->isSuccessful() && !$progress->hasPassedResource($resource)) {
             if ($evaluation->isSuccessful()) {
                 $progress->addPassedResource($resource);
 
