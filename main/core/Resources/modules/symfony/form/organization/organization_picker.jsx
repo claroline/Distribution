@@ -1,8 +1,5 @@
 import {connect} from 'react-redux'
 import React, {Component, PropTypes as T} from 'react'
-import moment from 'moment'
-import classes from 'classnames'
-import ReactDOM from 'react-dom'
 import {TreeView} from '#/main/core/layout/treeview/treeview.jsx'
 import {select} from './selectors'
 import {actions} from './actions'
@@ -26,6 +23,19 @@ class OrganizationPicker extends Component {
 }
 
 OrganizationPicker.propTypes = {
+  data: T.arrayOf(T.object).isRequired,
+  options: T.shape({
+    name: T.string, //checkbox base name
+    selected: T.array,
+    selectable: T.bool, //allow checkbox selection
+    collapse: T.bool, //collapse the datatree
+    autoSelect: T.bool, //automatically select children
+    cssProperties: {
+      open: T.string, //default css for open node
+      close: T.string //default css for closed node
+    }
+  }),
+  onChange: T.func
 }
 
 function mapStateToProps(state) {

@@ -137,7 +137,6 @@ class OrganizationControllerTest extends TransactionalTestCase
         $this->persister->flush();
         $this->logIn($this->admin);
         $this->client->request('GET', "/api/organization/{$orga->getId()}/edit/form.json");
-        $data = $this->client->getResponse()->getContent();
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 
@@ -169,7 +168,6 @@ class OrganizationControllerTest extends TransactionalTestCase
         $form = ['organization_form' => $fields];
 
         $this->client->request('PUT', "/api/organizations/{$orga->getId()}.json", $form);
-        $data = $this->client->getResponse()->getContent();
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
     }
 

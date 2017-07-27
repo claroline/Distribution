@@ -107,7 +107,6 @@ class ProfileType extends AbstractType
 
         if ($this->isAdmin || $this->isGrantedUserAdministration) {
             $isAdmin = $this->isAdmin;
-            $currentUser = $this->currentUser;
             $builder
                 ->add('firstName', 'text', ['label' => 'first_name'])
                 ->add('lastName', 'text', ['label' => 'last_name'])

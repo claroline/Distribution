@@ -113,8 +113,6 @@ class ProfileCreationType extends AbstractType
                 ]
             );
 
-        $currentUser = $this->currentUser;
-
         $builder->add(
               'organizations',
               'organizationpicker',

@@ -115,6 +115,7 @@ TreeView.propTypes = {
   render: T.func.isRequired, //custom renderer function
   options: T.shape({
     name: T.string, //checkbox base name
+    selected: T.array,
     selectable: T.bool, //allow checkbox selection
     collapse: T.bool, //collapse the datatree
     autoSelect: T.bool, //automatically select children
@@ -134,6 +135,7 @@ TreeNode.propTypes = {
   options: T.shape({
     name: T.string, //checkbox base name
     selectable: T.bool.isRequired, //allow checkbox selection
+    selected: T.array,
     collapse: T.bool.isRequired, //collapse the datatree
     autoSelect: T.bool.isRequired, //automatically select children
     cssProperties: {
