@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Form\User;
 
 use Claroline\CoreBundle\Entity\Role;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -43,7 +44,7 @@ class GroupSettingsType extends GroupType
                 'multiple' => true,
                 'property' => 'translationKey',
                 'disabled' => false,
-                'query_builder' => function (\Doctrine\ORM\EntityRepository $er) use ($isAdmin) {
+                'query_builder' => function (EntityRepository $er) use ($isAdmin) {
                     $query = $er->createQueryBuilder('r')
                         ->where('r.type = '.Role::PLATFORM_ROLE)
                         ->andWhere("r.name != 'ROLE_ANONYMOUS'")

@@ -56,7 +56,7 @@ class TreeNode extends Component {
       <ul>
         {this.props.data.map(el =>
           (
-            <li>
+            <li key={el.id}>
               {el.children.length > 0 &&
                 <input
                   className="treeview-hidden"
@@ -112,13 +112,12 @@ class TreeView extends Component {
 
 TreeView.propTypes = {
   data: T.arrayOf(T.object).isRequired, //the datatree
-  render: T.func.isRequired, //custom renderer function
+  render: T.func, //custom renderer function
   options: T.shape({
     name: T.string, //checkbox base name
     selected: T.array,
     selectable: T.bool, //allow checkbox selection
     collapse: T.bool, //collapse the datatree
-    autoSelect: T.bool, //automatically select children
     cssProperties: {
       open: T.string, //default css for open node
       close: T.string //default css for closed node
@@ -137,7 +136,6 @@ TreeNode.propTypes = {
     selectable: T.bool.isRequired, //allow checkbox selection
     selected: T.array,
     collapse: T.bool.isRequired, //collapse the datatree
-    autoSelect: T.bool.isRequired, //automatically select children
     cssProperties: {
       open: T.string, //default css for open node
       close: T.string //default css for closed node
@@ -152,7 +150,6 @@ TreeNode.defaultProps = {
   render: (el) => el.name,
   options: {
     selectable: false,
-    autoSelect: false,
     collapse: true,
     cssProperties: {
       open: {},

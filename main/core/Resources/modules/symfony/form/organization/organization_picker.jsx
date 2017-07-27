@@ -23,7 +23,7 @@ class OrganizationPicker extends Component {
 }
 
 OrganizationPicker.propTypes = {
-  data: T.arrayOf(T.object).isRequired,
+  organizations: T.arrayOf(T.object).isRequired,
   options: T.shape({
     name: T.string, //checkbox base name
     selected: T.array,

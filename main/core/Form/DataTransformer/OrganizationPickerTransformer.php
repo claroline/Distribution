@@ -50,8 +50,6 @@ class OrganizationPickerTransformer implements DataTransformerInterface
             $organizations = $organizations->toArray();
         }
 
-      //  var_dump(get_class($organizations));
-
         return array_map(function ($organization) {
             return [
                 'id' => $organization->getId(),
