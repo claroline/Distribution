@@ -1,6 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 import {trans} from '#/main/core/translation'
 import {actions} from '../actions'
 
@@ -19,18 +20,12 @@ class CompetencyView extends Component {
     return competency.userLevelValue !== undefined && competency.userLevelValue >= competency.requiredLevel
   }
 
-  getNbLevelsByType(competency, passed = true) {
-    let nbLevels = 0
+  isRequiredLevel(competency, level) {
+    return level <= competency.requiredLevel
+  }
 
-    if (passed) {
-      nbLevels = competency.userLevelValue !== undefined ? competency.userLevelValue + 1 : 0
-    } else {
-      nbLevels = competency.userLevelValue !== undefined ?
-        competency.requiredLevel - competency.userLevelValue :
-        competency.requiredLevel + 1
-    }
-
-    return nbLevels
+  isAquiredLevel(competency, level) {
+    return competency.userLevelValue !== undefined && level <= competency.userLevelValue
   }
 
   render() {
@@ -77,11 +72,12 @@ class CompetencyView extends Component {
                         {this.isCompetencyAcquired(this.props.competencies[competencyId]) ?
                           <i className="fa fa-check-square-o competency-color-success"></i> :
                           <span className="competency-color-info">
-                            {[...Array(this.getNbLevelsByType(this.props.competencies[competencyId]))].map((x, index) =>
-                              <i key={index} className="fa fa-star"></i>
-                            )}
-                            {[...Array(this.getNbLevelsByType(this.props.competencies[competencyId], false))].map((x, index) =>
-                              <i key={index} className="fa fa-star-o"></i>
+                            {[...Array(this.props.competencies[competencyId].requiredLevel + 1)].map((x, index) =>
+                              <i
+                                key={index}
+                                className={`fa fa-star${this.isAquiredLevel(this.props.competencies[competencyId], index) ? '' : '-o'}`}
+                              >
+                              </i>
                             )}
                           </span>
                         }
@@ -98,23 +94,27 @@ class CompetencyView extends Component {
                 </div>
               }
               <div className="level">
-                {[...Array(this.props.currentLevel + 1)].map((x, index) =>
-                  <i
-                    key={index}
-                    className="fa fa-star fa-2x pointer-hand"
-                    aria-hidden="true"
-                    onClick={() => this.props.getLevelData(this.props.competency.id, index)}
+                {this.props.competencies && [...Array(this.props.competencies[this.props.competency.id].nbLevels)].map((x, index) =>
+                  <span
+                      key={index}
+                      className={classes(
+                        'level-icon',
+                        {
+                          'current-level-icon': this.props.currentLevel === index,
+                          'extra-level': !this.isRequiredLevel(this.props.competencies[this.props.competency.id], index)
+                        }
+                      )}
                   >
-                  </i>
-                )}
-                {this.props.nbLevels > 0 && [...Array(this.props.nbLevels - (this.props.currentLevel + 1))].map((x, index) =>
-                  <i
-                    key={index}
-                    className="fa fa-star-o fa-2x pointer-hand"
-                    aria-hidden="true"
-                    onClick={() => this.props.getLevelData(this.props.competency.id, this.props.currentLevel + 1 + index)}
-                  >
-                  </i>
+                    <i
+                      className={`
+                        fa fa-2x pointer-hand
+                        fa-star${this.isAquiredLevel(this.props.competencies[this.props.competency.id], index) ? '' : '-o'}
+                      `}
+                      aria-hidden="true"
+                      onClick={() => this.props.getLevelData(this.props.competency.id, index)}
+                    >
+                    </i>
+                  </span>
                 )}
               </div>
               <div className="current-level">

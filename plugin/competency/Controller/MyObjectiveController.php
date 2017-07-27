@@ -124,9 +124,23 @@ class MyObjectiveController
         $nextLevel = is_null($acquiredLevel) ?
             null :
             $this->competencyManager->getLevelByScaleAndValue($scale, $acquiredLevel + 1);
+        $requiredLevel = 0;
+        $objectiveComps = $objective->getObjectiveCompetencies();
+
+        foreach ($objectiveComps as $objectiveComp) {
+            $comp = $objectiveComp->getCompetency();
+
+            if ($comp->getRoot() === $competency->getRoot() &&
+                $comp->getLeft() <= $competency->getLeft() &&
+                $comp->getRight() >= $competency->getRight() &&
+                $objectiveComp->getLevel()->getValue() > $requiredLevel
+            ) {
+                $requiredLevel = $objectiveComp->getLevel()->getValue();
+            }
+        }
 
         if (is_null($acquiredLevel)) {
-            $currentLevel = floor(($nbLevels - 1) / 2);
+            $currentLevel = floor(($requiredLevel) / 2);
         } else {
             $currentLevel = is_null($nextLevel) ? $acquiredLevel : $acquiredLevel + 1;
         }

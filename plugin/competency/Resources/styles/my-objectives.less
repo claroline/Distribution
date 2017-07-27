@@ -98,14 +98,18 @@
   }
 }
 
-.level{
+.level {
   display:flex;
   justify-content: center;
   flex-wrap: wrap;
   margin-top: 20px;
-  color: @competency-color-info;
   max-height: 60px;
   overflow: auto;
+  color: @competency-color-info;
+}
+
+.extra-level {
+  color: darkgrey;
 }
 
 .fa-star,.fa-star-o{
@@ -218,4 +222,17 @@
 
 .challenge-error-alert {
   width: 100%;
+}
+
+.level-icon {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.current-level-icon {
+  border: 3px solid @competency-color-info;
+  border-radius: 20px;
 }
