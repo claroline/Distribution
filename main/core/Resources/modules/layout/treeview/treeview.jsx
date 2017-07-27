@@ -15,6 +15,11 @@ class TreeNode extends Component {
       }
     })
 
+    const cssClasses = this.props.options.cssClasses || {}
+    this.commonCss = cssClasses.common || 'treeview-button-common'
+    this.openCss = cssClasses.open || 'fa fa-chevron-circle-down'
+    this.closeCss = cssClasses.close || 'fa fa-chevron-circle-right'
+
     this.state = { opened }
   }
 
@@ -86,7 +91,7 @@ class TreeNode extends Component {
 
   onExpandNode(el, event) {
     //this or setState for the update
-    if (event.target.checked) {
+    if (!this.isNodeOpen(el)) {
       this.props.onOpenNode(el)
       const opened = this.state.opened
       opened.push(el.id)
@@ -107,26 +112,20 @@ class TreeNode extends Component {
           (
             <li key={el.id}>
               {el.children.length > 0 &&
-                <input
-                  className="treeview-hidden"
-                  type="checkbox"
-                  id={'node' + el.id}
-                  defaultChecked={this.hasChildChecked(el)}
-                  onChange={(event) => this.onExpandNode(el, event)}
+                <a
+                  onClick={() => this.onExpandNode(el)}
+                  className={classes({
+                    [this.commonCss]: true,
+                    [this.openCss]: this.isNodeOpen(el),
+                    [this.closeCss]: !this.isNodeOpen(el)}
+                  )}
                 />
               }
-              {this.hasChildChecked(el)}
               {this.props.options.selectable &&
                 <input type="checkbox"
                   defaultChecked={this.isChecked(el)}
                   name={this.props.options.name + '[]'} value={el.id}
                   onChange={() => this.props.onChange(el)}
-                />
-              }
-              {el.children.length > 0 &&
-                <label
-                  className="treeview-pointer"
-                  htmlFor={'node' + el.id}
                 />
               }
               <span className="treeview-content">{this.props.render(el)}</span>
@@ -142,7 +141,6 @@ class TreeNode extends Component {
 class TreeView extends Component {
   constructor(props) {
     super(props)
-    console.log(this.props)
   }
 
   render() {
@@ -164,8 +162,9 @@ TreeView.propTypes = {
     selectable: T.bool, //allow checkbox selection
     collapse: T.bool, //collapse the datatree
     cssProperties: {
-      open: T.object, //default css for open node
-      close: T.object //default css for closed node
+      open: T.string, //default css for open node
+      close: T.string, //default css for closed node
+      common: T.string  //common css for button node
     }
   }),
   onChange: T.func, //callback for when a node is changed (open or closed)
@@ -173,24 +172,7 @@ TreeView.propTypes = {
   onCloseNode: T.func //callback for when a node is closed
 }
 
-TreeNode.propTypes = {
-  anchorPrefix: T.string.isRequired,
-  data: T.arrayOf(T.object).isRequired, //the datatree
-  render: T.func.isRequired, //custom renderer function
-  options: T.shape({
-    name: T.string, //checkbox base name
-    selectable: T.bool.isRequired, //allow checkbox selection
-    selected: T.array,
-    collapse: T.bool.isRequired, //collapse the datatree
-    cssProperties: {
-      open: T.object, //default css for open node
-      close: T.object //default css for closed node
-    }
-  }).isRequired,
-  onChange: T.func.isRequired, //callback for when a node is changed (open or closed)
-  onOpenNode: T.func.isRequired, //callback for when a node is opened
-  onCloseNode: T.func.isRequired //callback for when a node is closed
-}
+TreeNode.propTypes = TreeView.propTypes
 
 TreeNode.defaultProps = {
   anchorPrefix: 'default',
