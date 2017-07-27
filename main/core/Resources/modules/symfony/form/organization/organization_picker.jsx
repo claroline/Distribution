@@ -28,12 +28,8 @@ OrganizationPicker.propTypes = {
     name: T.string, //checkbox base name
     selected: T.array,
     selectable: T.bool, //allow checkbox selection
-    collapse: T.bool, //collapse the datatree
-    autoSelect: T.bool, //automatically select children
-    cssProperties: {
-      open: T.string, //default css for open node
-      close: T.string //default css for closed node
-    }
+    collapse: T.bool //collapse the datatree
+
   }),
   onChange: T.func
 }
