@@ -1,16 +1,27 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import ReactDOM from 'react-dom'
+import classes from 'classnames'
 
 class TreeNode extends Component {
   constructor(props) {
     super(props)
+    const opened = []
+    const flattened= this.flatten(this.props.data)
+
+    flattened.forEach(el => {
+      if (this.hasChildChecked(el)) {
+        opened.push(el.id)
+      }
+    })
+
+    this.state = { opened }
   }
 
   isChecked(el) {
     return this.props.options.selected.find(select => select.id === el.id) ? true: false
   }
 
-  //not used anymore, flatten everything in a single array. Kinda usefull for searches so I keep it as of now
   flatten(array) {
     let flattened = []
 
@@ -41,14 +52,52 @@ class TreeNode extends Component {
     }) ? true: false
   }
 
+  componentDidMount() {
+    this.renderChildren()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.renderChildren()
+    }
+  }
+
+  renderChildren() {
+    this.props.data.map(el => {
+      if(this.isNodeOpen(el)) {
+        ReactDOM.render(
+          (<TreeNode
+            anchorPrefix={this.props.anchorPrefix}
+            data={el.children}
+            options={this.props.options}
+            onChange={this.props.onChange}
+            onOpenNode={this.props.onOpenNode}
+            onCloseNode={this.props.onCloseNode}
+            render={this.props.render}
+          />),
+          document.getElementById(`${this.props.anchorPrefix}-node-${el.id}`)
+        )}
+    })
+  }
+
   isNodeOpen(el) {
-    return this.props.options.collapse ? false: this.hasChildChecked(el)
+    return this.state.opened.find(openNode => openNode === el.id) ? true: false
   }
 
   onExpandNode(el, event) {
-    event.target.checked ?
-      this.props.onOpenNode(el):
+    //this or setState for the update
+    if (event.target.checked) {
+      this.props.onOpenNode(el)
+      const opened = this.state.opened
+      opened.push(el.id)
+      this.setState({opened})
+      this.renderChildren()
+    } else {
+      let opened = this.state.opened
+      opened.splice(opened.findIndex(openNode => openNode === el.id), 1)
+      this.setState({opened})
       this.props.onCloseNode(el)
+    }
   }
 
   render() {
@@ -75,19 +124,13 @@ class TreeNode extends Component {
                 />
               }
               {el.children.length > 0 &&
-                <label className="treeview-pointer" htmlFor={'node' + el.id}/>
-              }
-              <span className="treeview-content">{this.props.render(el)}</span>
-              {el.children.length > 0 &&
-                <TreeNode
-                  data={el.children}
-                  options={this.props.options}
-                  onChange={this.props.onChange}
-                  onOpenNode={this.props.onOpenNode}
-                  onCloseNode={this.props.onCloseNode}
-                  render={this.props.render}
+                <label
+                  className="treeview-pointer"
+                  htmlFor={'node' + el.id}
                 />
               }
+              <span className="treeview-content">{this.props.render(el)}</span>
+              <div className={classes({'treeview-hidden': !this.isNodeOpen(el)})} id={this.props.anchorPrefix + "-node-" + el.id}/>
             </li>)
           )
         }
@@ -99,6 +142,7 @@ class TreeNode extends Component {
 class TreeView extends Component {
   constructor(props) {
     super(props)
+    console.log(this.props)
   }
 
   render() {
@@ -111,6 +155,7 @@ class TreeView extends Component {
 }
 
 TreeView.propTypes = {
+  anchorPrefix: T.string,
   data: T.arrayOf(T.object).isRequired, //the datatree
   render: T.func, //custom renderer function
   options: T.shape({
@@ -119,8 +164,8 @@ TreeView.propTypes = {
     selectable: T.bool, //allow checkbox selection
     collapse: T.bool, //collapse the datatree
     cssProperties: {
-      open: T.string, //default css for open node
-      close: T.string //default css for closed node
+      open: T.object, //default css for open node
+      close: T.object //default css for closed node
     }
   }),
   onChange: T.func, //callback for when a node is changed (open or closed)
@@ -129,6 +174,7 @@ TreeView.propTypes = {
 }
 
 TreeNode.propTypes = {
+  anchorPrefix: T.string.isRequired,
   data: T.arrayOf(T.object).isRequired, //the datatree
   render: T.func.isRequired, //custom renderer function
   options: T.shape({
@@ -137,8 +183,8 @@ TreeNode.propTypes = {
     selected: T.array,
     collapse: T.bool.isRequired, //collapse the datatree
     cssProperties: {
-      open: T.string, //default css for open node
-      close: T.string //default css for closed node
+      open: T.object, //default css for open node
+      close: T.object //default css for closed node
     }
   }).isRequired,
   onChange: T.func.isRequired, //callback for when a node is changed (open or closed)
@@ -147,14 +193,11 @@ TreeNode.propTypes = {
 }
 
 TreeNode.defaultProps = {
+  anchorPrefix: 'default',
   render: (el) => el.name,
   options: {
     selectable: false,
     collapse: true,
-    cssProperties: {
-      open: {},
-      close: {}
-    }
   },
   onChange: () => {},
   onOpenNode: () => {},

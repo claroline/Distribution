@@ -17,7 +17,11 @@
               'name': full_name,
               'selectable': true,
               'selected': value,
-              'collapse': false
+              'collapse': false,
+              'cssProperties': {
+                'open': {"content": "\\25b6"},
+                'close': {"content": "\\25bc"}
+              }
             }
             | json_encode | raw | escape
           }}"
