@@ -161,7 +161,7 @@ TreeView.propTypes = {
     selected: T.array,
     selectable: T.bool, //allow checkbox selection
     collapse: T.bool, //collapse the datatree
-    cssProperties: {
+    cssClasses: {
       open: T.string, //default css for open node
       close: T.string, //default css for closed node
       common: T.string  //common css for button node
