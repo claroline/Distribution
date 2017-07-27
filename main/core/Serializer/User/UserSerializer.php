@@ -49,7 +49,8 @@ class UserSerializer
     public function serialize(User $user, $options = [])
     {
         $isPublic = isset($options['public']) ? $options['public'] : false;
-        if ($public) {
+
+        if ($isPublic) {
             return $this->serializePublic($user);
         }
     }

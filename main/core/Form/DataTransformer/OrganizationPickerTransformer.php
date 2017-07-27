@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Form\DataTransformer;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -45,9 +46,11 @@ class OrganizationPickerTransformer implements DataTransformerInterface
             return [];
         }
 
-        if ($organizations instanceof ArrayCollection) {
+        if ($organizations instanceof ArrayCollection || $organizations instanceof PersistentCollection) {
             $organizations = $organizations->toArray();
         }
+
+      //  var_dump(get_class($organizations));
 
         return array_map(function ($organization) {
             return [
