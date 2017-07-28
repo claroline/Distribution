@@ -89,7 +89,7 @@ class TreeNode extends Component {
     return this.state.opened.find(openNode => openNode === el.id) ? true: false
   }
 
-  onExpandNode(el, event) {
+  onExpandNode(el) {
     //this or setState for the update
     if (!this.isNodeOpen(el)) {
       this.props.onOpenNode(el)
@@ -128,7 +128,7 @@ class TreeNode extends Component {
                   onChange={() => this.props.onChange(el)}
                 />
               }
-              <span className="treeview-content">{this.props.render(el)}</span>
+              <span className='treeview-content'>{this.props.render(el)}</span>
               <div className={classes({'treeview-hidden': !this.isNodeOpen(el)})} id={this.props.anchorPrefix + "-node-" + el.id}/>
             </li>)
           )
@@ -179,7 +179,7 @@ TreeNode.defaultProps = {
   render: (el) => el.name,
   options: {
     selectable: false,
-    collapse: true,
+    collapse: true
   },
   onChange: () => {},
   onOpenNode: () => {},
