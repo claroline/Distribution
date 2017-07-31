@@ -1,34 +1,47 @@
+const fs = require('fs')
+const path = require('path')
+const paths = require('../../paths')
+
+const VARS_FILE = path.resolve(paths.root(), 'variables.json')
+
 module.exports = function (less) {
   function DumpVarsPlugin() {
     this._visitor = new less.visitors.Visitor(this)
   }
 
   DumpVarsPlugin.prototype = {
-    isPreVisitor: true,
-    run: function (root) {
-      return this._visitor.visit(root);
+    isReplacing: false,
+    //isPreVisitor: true,
+    run: (root) => {
+      this.vars = {}
+
+      const variables = root.variables()
+
+      /*const evalEnv = {}
+      evalEnv.frames = [
+        new less.tree.Ruleset(null, variables)
+      ]*/
+
+      /*console.log(Object.keys(less.data))*/
+
+      for (let variableName in variables) {
+        if (variables.hasOwnProperty(variableName)) {
+          let variable = variables[variableName]
+          this.vars[variableName] = variable.value.toCSS(root)
+        }
+      }
+
+      /*console.log(this.vars)*/
+
+
+      fs.writeFileSync(VARS_FILE, JSON.stringify(this.vars, null, 2))
+
+      /*this._visitor.visit(root)*/
     },
-    visit: function (node) {
+
+    visitVariable: (node) => {
       console.log(node)
     }
-    /*visitRule: function (ruleNode, visitArgs) {
-     this._inRule = true;
-     return ruleNode;
-     },*/
-    /*visitRuleOut: function (ruleNode, visitArgs) {
-     this._inRule = false;
-     },*/
-    /*visitUrl: function (URLNode, visitArgs) {
-     if (!this._inRule) {
-     return URLNode;
-     }
-     if (URLNode.value && URLNode.value.value && URLNode.value.value.indexOf('#') === 0) {
-     // Might be part of a VML url-node value like:
-     // ``behavior:url(#default#VML);``
-     return URLNode;
-     }
-     return new less.tree.Call("data-uri", [new ParamStringReplacementNode(URLNode.value)], URLNode.index || 0, URLNode.currentFileInfo);
-     }*/
   }
 
   return DumpVarsPlugin

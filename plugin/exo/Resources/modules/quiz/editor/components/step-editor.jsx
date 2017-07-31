@@ -387,7 +387,7 @@ class StepFooter extends Component {
         <div className="btn-group">
           <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
           <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span className="caret"></span>
+            <span className="caret" />
             <span className="sr-only">Toggle Dropdown</span>
           </button>
           { this.state.currentAction === MODAL_IMPORT_ITEMS ?
@@ -469,6 +469,11 @@ export const StepEditor = props =>
           {...props.step}
         />
       </Panel>
+
+      {props.step.items.length === 0 &&
+        <div className="no-item-info">{tex('no_item_info')}</div>
+      }
+
       {props.step.items.map((item, index) => isQuestionType(item.type) ?
         <ItemPanel
           id={item.id}
