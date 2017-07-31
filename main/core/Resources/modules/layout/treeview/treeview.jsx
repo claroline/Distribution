@@ -57,34 +57,6 @@ class TreeNode extends Component {
     }) ? true: false
   }
 
-  componentDidMount() {
-    this.renderChildren()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.renderChildren()
-    }
-  }
-
-  renderChildren() {
-    this.props.data.map(el => {
-      if(this.isNodeOpen(el)) {
-        ReactDOM.render(
-          (<TreeNode
-            anchorPrefix={this.props.anchorPrefix}
-            data={el.children}
-            options={this.props.options}
-            onChange={this.props.onChange}
-            onOpenNode={this.props.onOpenNode}
-            onCloseNode={this.props.onCloseNode}
-            render={this.props.render}
-          />),
-          document.getElementById(`${this.props.anchorPrefix}-node-${el.id}`)
-        )}
-    })
-  }
-
   isNodeOpen(el) {
     return this.state.opened.find(openNode => openNode === el.id) ? true: false
   }
@@ -96,7 +68,6 @@ class TreeNode extends Component {
       const opened = this.state.opened
       opened.push(el.id)
       this.setState({opened})
-      this.renderChildren()
     } else {
       let opened = this.state.opened
       opened.splice(opened.findIndex(openNode => openNode === el.id), 1)
@@ -129,7 +100,20 @@ class TreeNode extends Component {
                 />
               }
               <span className='treeview-content'>{this.props.render(el)}</span>
-              <div className={classes({'treeview-hidden': !this.isNodeOpen(el)})} id={this.props.anchorPrefix + '-node-' + el.id}/>
+              <div
+                className={classes({'treeview-hidden': !this.isNodeOpen(el)})}
+                id={this.props.anchorPrefix + '-node-' + el.id}
+              >
+                <TreeNode
+                  anchorPrefix={this.props.anchorPrefix}
+                  data={el.children}
+                  options={this.props.options}
+                  onChange={this.props.onChange}
+                  onOpenNode={this.props.onOpenNode}
+                  onCloseNode={this.props.onCloseNode}
+                  render={this.props.render}
+                />
+              </div>
             </li>)
           )
         }
