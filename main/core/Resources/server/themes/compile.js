@@ -6,11 +6,13 @@ const autoprefixer = require('autoprefixer')
 const cssnano = require('cssnano')
 
 const paths = require('../paths')
+const DumpVarsPlugin = require('./less/index')
 
 function compile(srcFile, outputFile, additionalVarsFiles) {
   const baseName = path.basename(outputFile, '.css')
 
   const compileOptions = {
+    plugins: [DumpVarsPlugin],
     filename: srcFile,
     sourceMap: {
       // directly embed the less files in the map instead of referencing them
