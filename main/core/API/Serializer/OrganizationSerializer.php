@@ -1,11 +1,10 @@
 <?php
 
-namespace Claroline\CoreBundle\Serializer\Organization;
+namespace Claroline\CoreBundle\API\Serializer;
 
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("claroline.serializer.organization")
@@ -16,21 +15,15 @@ class OrganizationSerializer
     private $om;
 
     /**
-     * ResourceNodeManager constructor.
-     *
      * @DI\InjectParams({
-     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *     "container"         = @DI\Inject("service_container")
+     *     "om" = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param ObjectManager $om
      */
-    public function __construct(
-        ObjectManager $om,
-        ContainerInterface $container
-    ) {
+    public function __construct(ObjectManager $om)
+    {
         $this->om = $om;
-        $this->container = $container;
     }
 
     /**

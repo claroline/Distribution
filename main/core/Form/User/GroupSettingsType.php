@@ -61,7 +61,7 @@ class GroupSettingsType extends GroupType
 
         $builder->add(
             'organizations',
-            'organizationpicker',
+            'organization_picker',
             [
                'label' => 'organizations',
             ]

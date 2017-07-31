@@ -99,7 +99,7 @@ class ProfileType extends AbstractType
             )
             ->add(
                 'organizations',
-                'organizationpicker',
+                'organization_picker',
                 [
                    'label' => 'organizations',
                 ]
@@ -182,7 +182,7 @@ class ProfileType extends AbstractType
                 )
                 ->add(
                     'organizations',
-                    'organizationpicker',
+                    'organization_picker',
                     [
                        'label' => 'organizations',
                     ]

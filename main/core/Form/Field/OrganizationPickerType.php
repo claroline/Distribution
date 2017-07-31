@@ -25,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @Service("claroline.form.organization_picker")
- * @FormType(alias = "organizationpicker")
+ * @FormType(alias = "organization_picker")
  *
  * Required because the normalizer anonymous function screws up PHPMD
  * @SuppressWarnings(PHPMD)
@@ -50,7 +50,7 @@ class OrganizationPickerType extends AbstractType
 
     public function getName()
     {
-        return 'organizationpicker';
+        return 'organization_picker';
     }
 
     public function getParent()

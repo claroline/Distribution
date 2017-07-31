@@ -17,8 +17,8 @@ class TreeNode extends Component {
 
     const cssClasses = this.props.options.cssClasses || {}
     this.commonCss = cssClasses.common || 'treeview-button-common'
-    this.openCss = cssClasses.open || 'fa fa-chevron-circle-down'
-    this.closeCss = cssClasses.close || 'fa fa-chevron-circle-right'
+    this.openCss = cssClasses.open || 'fa fa-fw fa-chevron-circle-down'
+    this.closeCss = cssClasses.close || 'fa fa-fw fa-chevron-circle-right'
 
     this.state = { opened }
   }
@@ -129,7 +129,7 @@ class TreeNode extends Component {
                 />
               }
               <span className='treeview-content'>{this.props.render(el)}</span>
-              <div className={classes({'treeview-hidden': !this.isNodeOpen(el)})} id={this.props.anchorPrefix + "-node-" + el.id}/>
+              <div className={classes({'treeview-hidden': !this.isNodeOpen(el)})} id={this.props.anchorPrefix + '-node-' + el.id}/>
             </li>)
           )
         }

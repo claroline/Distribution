@@ -7,14 +7,12 @@ import {actions} from './actions'
 class OrganizationPicker extends Component {
   constructor(props) {
     super(props)
-    this.renderers = {}
   }
 
   render() {
     return (
       <TreeView
         data={this.props.organizations}
-        renderers={this.renderers}
         options={this.props.options}
         onChange={this.props.onChange}
       />

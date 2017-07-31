@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Twig;
 
+use Claroline\CoreBundle\API\Finder;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -20,18 +21,18 @@ use JMS\DiExtraBundle\Annotation\Tag;
  * @Service
  * @Tag("twig.extension")
  */
-class SearcherExtension extends \Twig_Extension
+class FinderExtension extends \Twig_Extension
 {
     protected $container;
 
     /**
      * @InjectParams({
-     *     "container" = @Inject("service_container")
+     *     "finder" = @Inject("claroline.API.finder")
      * })
      */
-    public function __construct($container)
+    public function __construct(Finder $finder)
     {
-        $this->container = $container;
+        $this->finder = $finder;
     }
 
     public function getFunctions()
@@ -48,7 +49,7 @@ class SearcherExtension extends \Twig_Extension
 
     public function search($class, $offset, $limit, $queryOptions, $serializerOptions)
     {
-        return $this->container->get('claroline.API.finder')->search(
+        return $this->finder->search(
             $class,
             $offset,
             $limit,

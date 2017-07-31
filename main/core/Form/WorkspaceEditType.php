@@ -140,7 +140,7 @@ class WorkspaceEditType extends AbstractType
 
         $builder->add(
             'organizations',
-            'organizationpicker',
+            'organization_picker',
             [
                'label' => 'organizations',
             ]
