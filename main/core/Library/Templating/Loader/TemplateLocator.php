@@ -22,8 +22,6 @@ use Symfony\Component\Templating\TemplateReferenceInterface;
  */
 class TemplateLocator extends BaseTemplateLocator
 {
-    protected $locator;
-    protected $cache;
     private $themeManager;
 
     /**
@@ -39,6 +37,7 @@ class TemplateLocator extends BaseTemplateLocator
         $cacheDir = null
     ) {
         parent::__construct($locator, $cacheDir);
+
         $this->themeManager = $themeManager;
     }
 

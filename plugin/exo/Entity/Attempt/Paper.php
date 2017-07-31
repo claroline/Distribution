@@ -3,11 +3,10 @@
 namespace UJM\ExoBundle\Entity\Attempt;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\Exercise;
-use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * A paper represents a user attempt to a quiz.
@@ -117,7 +116,7 @@ class Paper
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
         $this->start = new \DateTime();
         $this->answers = new ArrayCollection();
     }

@@ -11,8 +11,7 @@
 
 namespace Claroline\CoreBundle\Twig;
 
-use Claroline\CoreBundle\Entity\Theme\Theme;
-use Claroline\CoreBundle\Manager\ThemeManager;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bridge\Twig\Extension\AssetExtension;
 
@@ -27,16 +26,7 @@ class ThemeExtension extends \Twig_Extension
      */
     private $assetExtension;
 
-    /**
-     * @var ThemeManager
-     */
-    private $themeManager;
-
-    /**
-     * @var Theme
-     */
-    private $currentTheme;
-
+    private $config;
     private $rootDir;
     private $assetCache;
 
@@ -44,22 +34,22 @@ class ThemeExtension extends \Twig_Extension
      * ThemeExtension constructor.
      *
      * @DI\InjectParams({
-     *     "extension"    = @DI\Inject("twig.extension.assets"),
-     *     "themeManager" = @DI\Inject("claroline.manager.theme_manager"),
-     *     "rootDir"      = @DI\Inject("%kernel.root_dir%")
+     *     "extension" = @DI\Inject("twig.extension.assets"),
+     *     "config"    = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "rootDir"   = @DI\Inject("%kernel.root_dir%")
      * })
      *
-     * @param AssetExtension $extension
-     * @param ThemeManager   $themeManager
-     * @param string         $rootDir
+     * @param AssetExtension               $extension
+     * @param PlatformConfigurationHandler $config
+     * @param string                       $rootDir
      */
     public function __construct(
-        AssetExtension $extension,
-        ThemeManager $themeManager,
+        AssetExtension               $extension,
+        PlatformConfigurationHandler $config,
         $rootDir)
     {
         $this->assetExtension = $extension;
-        $this->themeManager = $themeManager;
+        $this->config = $config;
         $this->rootDir = $rootDir;
     }
 
@@ -78,16 +68,10 @@ class ThemeExtension extends \Twig_Extension
     public function themeAsset($path, $themeName = null)
     {
         if (empty($themeName)) {
-            if (!$this->currentTheme) {
-                // Retrieve current theme
-                $this->currentTheme = $this->themeManager->getCurrentTheme();
-            }
-
-            $themeName = $this->currentTheme->getNormalizedName();
+            $themeName = $this->config->getParameter('theme');
         }
 
         $assets = $this->getThemeAssets();
-
         if (!isset($assets[$themeName]) || !isset($assets[$themeName][$path])) {
             $assetNames = implode("\n", array_keys($assets));
 

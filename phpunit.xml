@@ -23,7 +23,6 @@
             <!--
             <directory>main/*/Tests/</directory>
             <directory>plugin/*/Tests/</directory>
-            <directory>main/core/Tests/API/Admin</directory>
             -->
             <!-- Uncomment the following elements individually in the meantime -->
 
@@ -52,6 +51,7 @@
 
             <!-- Unit tests: uncomment when ready -->
             <directory>main/core/Tests/Unit/Converter/</directory>
+            <directory>main/core/Tests/Unit/Entity/</directory>
             <directory>main/core/Tests/Unit/Event/</directory>
             <directory>main/core/Tests/Unit/Form/</directory>
             <directory>main/core/Tests/Unit/Library/Configuration/</directory>

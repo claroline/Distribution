@@ -96,6 +96,7 @@ class ResourceType
     {
         $this->abstractResources = new ArrayCollection();
         $this->actions = new ArrayCollection();
+        $this->maskDecoders = new ArrayCollection();
     }
 
     /**
@@ -138,6 +139,9 @@ class ResourceType
         return $this->plugin;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getActions()
     {
         return $this->actions;
@@ -155,7 +159,7 @@ class ResourceType
 
     public function addAbstractResource($abstractResource)
     {
-        $this->abstractResource->add($abstractResource);
+        $this->abstractResources->add($abstractResource);
     }
 
     public function setExportable($isExportable)
@@ -168,6 +172,9 @@ class ResourceType
         return $this->isExportable;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getMaskDecoders()
     {
         return $this->maskDecoders;
