@@ -37,12 +37,14 @@ const Metadata = props =>
         onChange={text => props.onChange('description', text)}
       />
     </FormGroup>
-    <CheckGroup
-      checkId={`item-${props.item.id}-editable`}
-      label={tex('protect_update')}
-      checked={props.item.protectUpdate}
-      onChange={checked => props.onChange('protectUpdate', checked)}
-    />
+    {props.item.rights.edit &&
+      <CheckGroup
+        checkId={`item-${props.item.id}-editable`}
+        label={tex('protect_update')}
+        checked={props.item.protectUpdate}
+        onChange={checked => props.onChange('protectUpdate', checked)}
+      />
+    }
     <FormGroup
       controlId={`item-${props.item.id}-objects`}
       label={tex('question_objects')}
