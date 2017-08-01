@@ -128,9 +128,11 @@ class ItemSerializer extends AbstractSerializer
         $questionData = $this->serializeQuestionType($question, $options);
 
         if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $question->getMimeType())) {
+            $canEdit = $this->tokenStorage->getToken() && $this->tokenStorage->getToken()->getUser() instanceof User ?
+                $this->container->get('ujm_exo.manager.item')->canEdit($question, $this->tokenStorage->getToken()->getUser()) :
+                false;
             $rights = [
-              'edit' => $this->container->get('ujm_exo.manager.item')
-                ->canEdit($question, $this->tokenStorage->getToken()->getUser()),
+              'edit' => $canEdit,
             ];
             // Adds minimal information
             $this->mapEntityToObject([
