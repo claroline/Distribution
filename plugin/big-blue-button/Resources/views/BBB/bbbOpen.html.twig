@@ -1,0 +1,27 @@
+{% set layout = 'ClarolineCoreBundle:Workspace:layout.html.twig' %}
+
+{% if isDesktop() %}
+    {% set layout = 'ClarolineCoreBundle:Desktop:layout.html.twig' %}
+{% endif %}
+
+{% extends layout %}
+
+{% block content %}
+    <div
+      class="page-container bbb-container"
+      data-resource-node="{{ _resource | get_serialized_node | json_encode | raw | escape }}"
+      data-server-url="{{ serverUrl }}"
+      data-security-key="{{ securityKey }}"
+    >
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-plugin-big-blue-button-bbb.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-big-blue-button-resource.js') }}"></script>
+{% endblock %}

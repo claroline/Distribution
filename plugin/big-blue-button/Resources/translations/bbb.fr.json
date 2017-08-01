@@ -1,0 +1,9 @@
+{
+    "bbb_configuration": "Configuration de BigBlueButton",
+    "bbb_not_configured_msg": "BigBlueButton n'est pas configuré correctement. Veuillez contacter un gestionnaire.",
+    "bbb_server_url": "URL du serveur BigBlueButton",
+    "configuration_saved_error_msg": "Une erreur est survenue lors de l'enregistrement de la configuration.",
+    "configuration_saved_success_msg": "La configuration a été enregistrée.",
+    "save_configuration": "Enregistrer la configuration",
+    "security_key": "Clé de sécurité"
+}
