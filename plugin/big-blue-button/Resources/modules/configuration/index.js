@@ -6,12 +6,12 @@ import {reducers} from './reducers'
 import {BBBConfigForm} from './components/bbb-config-form.jsx'
 
 class BBBConfig {
-  constructor(serverUrl, securityKey) {
+  constructor(serverUrl, securitySalt) {
     this.store = createStore(
       reducers,
       {
         serverUrl: serverUrl,
-        securityKey: securityKey
+        securitySalt: securitySalt
       }
     )
   }
@@ -30,7 +30,7 @@ class BBBConfig {
 
 const container = document.querySelector('.bbb-config-container')
 const serverUrl = container.dataset.serverUrl
-const securityKey = container.dataset.securityKey
-const bbbConfig = new BBBConfig(serverUrl, securityKey)
+const securitySalt = container.dataset.securitySalt
+const bbbConfig = new BBBConfig(serverUrl, securitySalt)
 
 bbbConfig.render(container)

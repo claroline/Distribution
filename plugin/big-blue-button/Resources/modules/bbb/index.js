@@ -6,13 +6,15 @@ import {reducers} from './reducers'
 import {BBBResource} from './components/bbb-resource.jsx'
 
 class BBB {
-  constructor(resourceNode, serverUrl, securityKey) {
+  constructor(resourceNode, serverUrl, securitySalt) {
     this.store = createStore(
       reducers,
       {
         resourceNode: resourceNode,
-        serverUrl: serverUrl,
-        securityKey: securityKey
+        config: {
+          serverUrl: serverUrl,
+          securitySalt: securitySalt
+        }
       }
     )
   }
@@ -32,7 +34,7 @@ class BBB {
 const container = document.querySelector('.bbb-container')
 const resourceNode = JSON.parse(container.dataset.resourceNode)
 const serverUrl = container.dataset.serverUrl
-const securityKey = container.dataset.securityKey
-const bbb = new BBB(resourceNode, serverUrl, securityKey)
+const securitySalt = container.dataset.securitySalt
+const bbb = new BBB(resourceNode, serverUrl, securitySalt)
 
 bbb.render(container)

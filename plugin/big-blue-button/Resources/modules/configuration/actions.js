@@ -16,14 +16,14 @@ actions.updateConfigurationMessage = makeActionCreator(CONFIGURATION_MESSAGE_UPD
 actions.saveConfiguration = () => (dispatch, getState) => {
   const state = getState()
   const serverUrl = state.serverUrl
-  const securityKey = state.securityKey
+  const securitySalt = state.securitySalt
   const formData = new FormData()
 
   if (serverUrl) {
     formData.append('serverUrl', serverUrl)
   }
-  if (securityKey) {
-    formData.append('securityKey', securityKey)
+  if (securitySalt) {
+    formData.append('securitySalt', securitySalt)
   }
 
   dispatch({

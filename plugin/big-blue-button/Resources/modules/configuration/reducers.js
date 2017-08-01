@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   serverUrl: null,
-  securityKey: null,
+  securitySalt: null,
   message: {
     content: null,
     type: 'info'

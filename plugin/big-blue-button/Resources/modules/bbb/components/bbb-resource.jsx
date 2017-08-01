@@ -9,18 +9,18 @@ class BBBResource extends Component {
     return (
       <ResourceContainer
         edit="#"
-        editMode={true}
+        editMode={false}
         save={{
-          disabled: true,
+          disabled: false,
           action: () => {}
         }}
         customActions={[]}
       >
-        {this.props.serverUrl && this.props.securityKey ?
+        {this.props.serverUrl && this.props.securitySalt ?
           <div>
             {this.props.serverUrl}
             <hr/>
-            {this.props.securityKey}
+            {this.props.securitySalt}
           </div> :
           <div className="alert alert-danger">
             {trans('bbb_not_configured_msg', {}, 'bbb')}
@@ -33,13 +33,13 @@ class BBBResource extends Component {
 
 BBBResource.propTypes = {
   serverUrl: T.string,
-  securityKey: T.string
+  securitySalt: T.string
 }
 
 function mapStateToProps(state) {
   return {
-    serverUrl: state.serverUrl,
-    securityKey: state.securityKey
+    serverUrl: state.config.serverUrl,
+    securitySalt: state.config.securitySalt
   }
 }
 

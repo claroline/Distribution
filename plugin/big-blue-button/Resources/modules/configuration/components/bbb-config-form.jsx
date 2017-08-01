@@ -34,14 +34,14 @@ class BBBConfigForm extends Component {
 
         <div className="form-group row">
           <label className="control-label col-md-3">
-            {trans('security_key', {}, 'bbb')}
+            {trans('security_salt', {}, 'bbb')}
           </label>
           <div className="col-md-9">
             <input
               type="text"
               className="form-control"
-              value={this.props.securityKey}
-              onChange={e => this.props.updateConfig('securityKey', e.target.value)}
+              value={this.props.securitySalt}
+              onChange={e => this.props.updateConfig('securitySalt', e.target.value)}
             />
           </div>
         </div>
@@ -62,7 +62,7 @@ class BBBConfigForm extends Component {
 
 BBBConfigForm.propTypes = {
   serverUrl: T.string,
-  securityKey: T.string,
+  securitySalt: T.string,
   message: T.object,
   updateConfig: T.func,
   saveConfig: T.func,
@@ -72,7 +72,7 @@ BBBConfigForm.propTypes = {
 function mapStateToProps(state) {
   return {
     serverUrl: state.serverUrl,
-    securityKey: state.securityKey,
+    securitySalt: state.securitySalt,
     message: state.message
   }
 }

@@ -66,8 +66,8 @@ class BBBController extends Controller
         $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
             $this->platformConfigHandler->getParameter('bbb_server_url') :
             null;
-        $securityKey = $this->platformConfigHandler->hasParameter('bbb_security_key') ?
-            $this->platformConfigHandler->getParameter('bbb_security_key') :
+        $securitySalt = $this->platformConfigHandler->hasParameter('bbb_security_salt') ?
+            $this->platformConfigHandler->getParameter('bbb_security_salt') :
             null;
 
         return [
@@ -76,7 +76,7 @@ class BBBController extends Controller
             'canEdit' => $canEdit,
             '_resource' => $bbb,
             'serverUrl' => $serverUrl,
-            'securityKey' => $securityKey,
+            'securitySalt' => $securitySalt,
         ];
     }
 
@@ -94,13 +94,13 @@ class BBBController extends Controller
         $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
             $this->platformConfigHandler->getParameter('bbb_server_url') :
             null;
-        $securityKey = $this->platformConfigHandler->hasParameter('bbb_security_key') ?
-            $this->platformConfigHandler->getParameter('bbb_security_key') :
+        $securitySalt = $this->platformConfigHandler->hasParameter('bbb_security_salt') ?
+            $this->platformConfigHandler->getParameter('bbb_security_salt') :
             null;
 
         return [
             'serverUrl' => $serverUrl,
-            'securityKey' => $securityKey,
+            'securitySalt' => $securitySalt,
         ];
     }
 
@@ -115,15 +115,15 @@ class BBBController extends Controller
     public function pluginConfigurationSaveAction()
     {
         $serverUrl = $this->request->get('serverUrl', false) === false ? null : $this->request->get('serverUrl');
-        $securityKey = $this->request->get('securityKey', false) === false ? null : $this->request->get('securityKey');
+        $securitySalt = $this->request->get('securitySalt', false) === false ? null : $this->request->get('securitySalt');
         $this->platformConfigHandler->setParameters([
             'bbb_server_url' => $serverUrl,
-            'bbb_security_key' => $securityKey,
+            'bbb_security_salt' => $securitySalt,
         ]);
 
         return new JsonResponse([
             'serverUrl' => $serverUrl,
-            'securityKey' => $securityKey,
+            'securitySalt' => $securitySalt,
         ]);
     }
 }

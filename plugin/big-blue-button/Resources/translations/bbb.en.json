@@ -5,5 +5,5 @@
     "configuration_saved_error_msg": "An error occured while saving the configuration.",
     "configuration_saved_success_msg": "The configuration has been saved.",
     "save_configuration": "Save configuration",
-    "security_key": "Security key"
+    "security_salt": "Security salt"
 }

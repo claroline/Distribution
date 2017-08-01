@@ -11,7 +11,7 @@
       class="page-container bbb-container"
       data-resource-node="{{ _resource | get_serialized_node | json_encode | raw | escape }}"
       data-server-url="{{ serverUrl }}"
-      data-security-key="{{ securityKey }}"
+      data-security-salt="{{ securitySalt }}"
     >
     </div>
 {% endblock %}
