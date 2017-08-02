@@ -1,9 +1,14 @@
 {
     "bbb_configuration": "BigBlueButton configuration",
     "bbb_not_configured_msg": "BigBlueButton is not configured correctly. Please contact a manager.",
+    "bbb_running_in_new_tab": "BigBlueButton is running in another tab.",
     "bbb_server_url": "BigBlueButton server URL",
     "configuration_saved_error_msg": "An error occured while saving the configuration.",
     "configuration_saved_success_msg": "The configuration has been saved.",
+    "open_bbb_in_new_tab": "Open BigBlueButton in a new tab",
+    "record": "Record",
+    "room_name": "Room name",
     "save_configuration": "Save configuration",
-    "security_salt": "Security salt"
+    "security_salt": "Security salt",
+    "wait_for_moderator": "Wait for moderator"
 }

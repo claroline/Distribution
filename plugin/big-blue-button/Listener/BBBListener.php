@@ -12,6 +12,7 @@
 namespace Claroline\BigBlueButtonBundle\Listener;
 
 use Claroline\BigBlueButtonBundle\Entity\BBB;
+use Claroline\BigBlueButtonBundle\Form\BBBType;
 use Claroline\BigBlueButtonBundle\Manager\BBBManager;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
@@ -19,7 +20,6 @@ use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
-use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -92,9 +92,9 @@ class BBBListener
      */
     public function onCreationForm(CreateFormResourceEvent $event)
     {
-        $form = $this->formFactory->create(new ResourceNameType(true), new BBB());
+        $form = $this->formFactory->create(new BBBType(), new BBB());
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
+            'ClarolineBigBlueButtonBundle:BBB:createForm.html.twig',
             [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_big_blue_button',
@@ -112,7 +112,7 @@ class BBBListener
     public function onCreate(CreateResourceEvent $event)
     {
         $bbb = new BBB();
-        $form = $this->formFactory->create(new ResourceNameType(true), $bbb);
+        $form = $this->formFactory->create(new BBBType(), $bbb);
         $form->handleRequest($this->request);
 
         if ($form->isValid()) {
@@ -122,7 +122,7 @@ class BBBListener
             $event->stopPropagation();
         } else {
             $content = $this->templating->render(
-                'ClarolineCoreBundle:Resource:createForm.html.twig',
+                'ClarolineBigBlueButtonBundle:BBB:createForm.html.twig',
                 [
                     'form' => $form->createView(),
                     'resourceType' => 'claroline_big_blue_button',

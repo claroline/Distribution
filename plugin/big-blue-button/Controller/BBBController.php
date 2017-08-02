@@ -16,11 +16,13 @@ use Claroline\BigBlueButtonBundle\Manager\BBBManager;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
+use Ramsey\Uuid\Uuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 class BBBController extends Controller
 {
@@ -28,25 +30,29 @@ class BBBController extends Controller
     private $platformConfigHandler;
     private $request;
     private $tokenStorage;
+    private $translator;
 
     /**
      * @DI\InjectParams({
      *     "bbbManager"            = @DI\Inject("claroline.manager.bbb_manager"),
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
      *     "request"               = @DI\Inject("request"),
-     *     "tokenStorage"          = @DI\Inject("security.token_storage")
+     *     "tokenStorage"          = @DI\Inject("security.token_storage"),
+     *     "translator"            = @DI\Inject("translator")
      * })
      */
     public function __construct(
         BBBManager $bbbManager,
         PlatformConfigurationHandler $platformConfigHandler,
         Request $request,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        TranslatorInterface $translator
     ) {
         $this->bbbManager = $bbbManager;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->request = $request;
         $this->tokenStorage = $tokenStorage;
+        $this->translator = $translator;
     }
 
     /**
@@ -60,7 +66,6 @@ class BBBController extends Controller
     public function bbbOpenAction(BBB $bbb)
     {
         $this->bbbManager->checkRight($bbb, 'OPEN');
-        $canEdit = $this->bbbManager->hasRight($bbb, 'EDIT');
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
         $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
@@ -70,10 +75,17 @@ class BBBController extends Controller
             $this->platformConfigHandler->getParameter('bbb_security_salt') :
             null;
 
+        if ($isAnon) {
+            $uuid = Uuid::uuid4()->toString();
+            $anonymous = [
+                'id' => '-'.$uuid,
+                'fullName' => $this->translator->trans('anonymous', [], 'platform').'_'.$uuid,
+            ];
+        }
+
         return [
             'isAnon' => $isAnon,
-            'userId' => $isAnon ? null : $user->getId(),
-            'canEdit' => $canEdit,
+            'user' => $isAnon ? $anonymous : $user,
             '_resource' => $bbb,
             'serverUrl' => $serverUrl,
             'securitySalt' => $securitySalt,

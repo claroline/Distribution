@@ -9,6 +9,12 @@
 {% block content %}
     <div
       class="page-container bbb-container"
+      {% if isAnon %}
+        data-user="{{ user | json_encode | raw | escape }}"
+      {% else %}
+        data-user="{{ user | get_serialized_user | json_encode | raw | escape }}"
+      {% endif %}
+      data-resource="{{ _resource | json_encode | raw | escape }}"
       data-resource-node="{{ _resource | get_serialized_node | json_encode | raw | escape }}"
       data-server-url="{{ serverUrl }}"
       data-security-salt="{{ securitySalt }}"

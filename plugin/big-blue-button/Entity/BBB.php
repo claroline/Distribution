@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="claro_bigbluebuttonbundle_bbb")
  */
-class BBB extends AbstractResource
+class BBB extends AbstractResource implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -26,6 +26,26 @@ class BBB extends AbstractResource
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ORM\Column(name="room_name", nullable=true)
+     */
+    protected $roomName;
+
+    /**
+     * @ORM\Column(name="new_tab", type="boolean")
+     */
+    protected $newTab = false;
+
+    /**
+     * @ORM\Column(name="moderator_required", type="boolean")
+     */
+    protected $moderatorRequired = false;
+
+    /**
+     * @ORM\Column(name="record", type="boolean")
+     */
+    protected $record = false;
 
     public function setId($id)
     {
@@ -35,5 +55,56 @@ class BBB extends AbstractResource
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getRoomName()
+    {
+        return $this->roomName;
+    }
+
+    public function setRoomName($roomName)
+    {
+        $this->roomName = $roomName;
+    }
+
+    public function isNewTab()
+    {
+        return $this->newTab;
+    }
+
+    public function setNewTab($newTab)
+    {
+        $this->newTab = $newTab;
+    }
+
+    public function isModeratorRequired()
+    {
+        return $this->moderatorRequired;
+    }
+
+    public function setModeratorRequired($moderatorRequired)
+    {
+        $this->moderatorRequired = $moderatorRequired;
+    }
+
+    public function getRecord()
+    {
+        return $this->record;
+    }
+
+    public function setRecord($record)
+    {
+        $this->record = $record;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'roomName' => $this->name,
+            'newTab' => $this->newTab,
+            'moderatorRequired' => $this->moderatorRequired,
+            'record' => $this->record,
+        ];
     }
 }
