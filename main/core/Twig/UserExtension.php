@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Twig;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
