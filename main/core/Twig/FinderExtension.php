@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Twig;
 
-use Claroline\CoreBundle\API\Finder;
+use Claroline\CoreBundle\API\FinderProvider;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -30,7 +30,7 @@ class FinderExtension extends \Twig_Extension
      *     "finder" = @Inject("claroline.API.finder")
      * })
      */
-    public function __construct(Finder $finder)
+    public function __construct(FinderProvider $finder)
     {
         $this->finder = $finder;
     }
