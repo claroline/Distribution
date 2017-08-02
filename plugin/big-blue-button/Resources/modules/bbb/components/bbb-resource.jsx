@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import shajs from 'sha.js'
 import {trans} from '#/main/core/translation'
 import {Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 import {actions} from '../actions'
