@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import ReactDOM from 'react-dom'
 import classes from 'classnames'
 
 class TreeNode extends Component {
