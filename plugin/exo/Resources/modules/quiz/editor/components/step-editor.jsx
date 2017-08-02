@@ -147,14 +147,14 @@ class ItemPanel extends Component {
     super(props)
   }
 
-  isDisabled(status) {
+  isDisabled() {
     return this.props.item.protectUpdate && !this.props.item.rights.edit
   }
 
   render() {
     return this.props.connectDropTarget(
-      <div id={"panel-" + this.props.item.id} style={{opacity: this.props.isDragging ? 0 : 1}}>
-        <fieldset disabled={this.isDisabled() ? "disabled" : false}>
+      <div id={'panel-' + this.props.item.id} style={{opacity: this.props.isDragging ? 0 : 1}}>
+        <fieldset disabled={this.isDisabled() ? 'disabled' : false}>
           <Panel
             header={
               <ItemHeader
@@ -212,9 +212,11 @@ ItemPanel.propTypes = {
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
   handleItemDetailUpdate: T.func.isRequired,
+  handleItemHintsUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
+  connectDropTarget: T.func.isRequired,
   isDragging: T.bool.isRequired,
   onSort: T.func.isRequired,
   sortDirection: T.string.isRequired,
@@ -269,7 +271,6 @@ class ContentPanel extends Component {
   render() {
     return this.props.connectDropTarget(
       <div style={{opacity: this.props.isDragging ? 0 : 1}}>
-        sdfgsfdgsdfgsdfg
         <Panel
           header={
             <ContentHeader
@@ -324,6 +325,7 @@ ContentPanel.propTypes = {
   handleContentItemUpdate: T.func.isRequired,
   handleContentItemDetailUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
+  connectDropTarget: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   isDragging: T.bool.isRequired,
   onSort: T.func.isRequired,
@@ -331,12 +333,13 @@ ContentPanel.propTypes = {
   validating: T.bool.isRequired
 }
 
-ItemPanel = makeSortable(
+let SortableItemPanel = makeSortable(
   ItemPanel,
   'STEP_ITEM',
   ItemPanelDragPreview
 )
-ContentPanel = makeSortable(
+
+let SortableContentPanel = makeSortable(
   ContentPanel,
   'STEP_ITEM',
   ContentPanelDragPreview
@@ -481,7 +484,7 @@ export const StepEditor = props =>
         />
       </Panel>
       {props.step.items.map((item, index) => isQuestionType(item.type) ?
-        <ItemPanel
+        <SortableItemPanel
           id={item.id}
           index={index}
           item={item}
@@ -501,7 +504,7 @@ export const StepEditor = props =>
           closeModal={props.closeModal}
           {...props}
         /> :
-        <ContentPanel
+        <SortableContentPanel
           id={item.id}
           index={index}
           item={item}

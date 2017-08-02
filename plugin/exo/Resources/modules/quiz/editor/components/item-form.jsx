@@ -62,7 +62,9 @@ Metadata.propTypes = {
   item: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired,
-    description: T.string.isRequired
+    description: T.string.isRequired,
+    rights: T.object.isRequired,
+    protectUpdate: T.bool.isRequired
   }).isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
