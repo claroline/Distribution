@@ -11,6 +11,6 @@ export const FLAG_TYPE = 'flag'
 export const flagDefinition = merge({}, booleanDefinition, {
   render: (raw) => raw ? t('yes') : null,
   components: {
-    table: FlagCell,
+    table: FlagCell
   }
 })

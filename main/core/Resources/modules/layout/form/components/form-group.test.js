@@ -27,7 +27,7 @@ describe('<FormGroup/>', () => {
         label={123}
         warnOnly="456"
       >
-        {[]}
+        {{toto: true}}
       </FormGroup>
     )
     ensure.invalidProps('FormGroup', [
