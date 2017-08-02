@@ -16,6 +16,7 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
 import {MODAL_ADD_CONTENT} from './../components/add-content-modal.jsx'
+import {MODAL_MOVE_QUESTION} from './../components/move-question-modal.jsx'
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
@@ -74,6 +75,31 @@ const ItemActions = props =>
       </button>
     </OverlayTrigger>
 
+    <OverlayTrigger
+      placement="left"
+      overlay={
+        <Tooltip id={`item-panel-${props.itemId}-change-step`}>
+          {tex('change_step')}
+        </Tooltip>
+      }
+    >
+      <button
+        type="button"
+        className="btn btn-link-default"
+        onClick={e => {
+          e.stopPropagation()
+          props.showModal(MODAL_MOVE_QUESTION, {
+            title: tex('change_step'),
+            question: tex('change_step_confirm_message'),
+            itemId: props.itemId,
+            handleClick: props.handleMoveQuestionStepClick
+          })
+        }}
+      >
+        <span className="fa fa-fw fa-folder-o" />
+      </button>
+    </OverlayTrigger>
+
     {props.connectDragSource(
       <span>
         <OverlayTrigger
@@ -104,7 +130,8 @@ ItemActions.propTypes = {
   validating: T.bool.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   showModal: T.func.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired
 }
 
 const ItemHeader = props =>
@@ -125,6 +152,7 @@ const ItemHeader = props =>
       stepId={props.stepId}
       hasErrors={props.hasErrors}
       validating={props.validating}
+      handleMoveQuestionStepClick={props.handleMoveQuestionStepClick}
       handleItemDeleteClick={props.handleItemDeleteClick}
       showModal={props.showModal}
       connectDragSource={props.connectDragSource}
@@ -136,6 +164,7 @@ ItemHeader.propTypes = {
   stepId: T.string.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
@@ -154,6 +183,7 @@ let ItemPanel = props =>
               stepId={props.stepId}
               handlePanelClick={props.handlePanelClick}
               handleItemDeleteClick={props.handleItemDeleteClick}
+              handleMoveQuestionStepClick={props.handleMoveQuestionStepClick}
               showModal={props.showModal}
               connectDragSource={props.connectDragSource}
               hasErrors={!isEmpty(props.item._errors)}
@@ -200,6 +230,7 @@ ItemPanel.propTypes = {
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
   handleItemDetailUpdate: T.func.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
@@ -530,6 +561,7 @@ StepEditor.propTypes = {
   updateStep: T.func.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
   handleItemMove: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,

@@ -22,6 +22,7 @@ import {
   ITEM_DELETE,
   ITEM_UPDATE,
   ITEM_MOVE,
+  QUESTION_MOVE,
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
   ITEMS_IMPORT,
@@ -103,6 +104,12 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
+    case QUESTION_MOVE: {
+      let items = steps[action.stepId].items
+      items.push(action.itemId)
+
+      return steps
+    }
     case STEP_CREATE: {
       const newStep = {
         id: action.id,

@@ -60,6 +60,7 @@ function selectSubEditor(props) {
           handleItemDeleteClick={props.deleteStepItem}
           handleItemMove={props.moveItem}
           handleItemCreate={props.createItem}
+          handleMoveQuestionStepClick={props.moveQuestionStep}
           handleItemUpdate={props.updateItem}
           handleItemHintsUpdate={props.updateItemHints}
           handleItemDetailUpdate={props.updateItemDetail}
