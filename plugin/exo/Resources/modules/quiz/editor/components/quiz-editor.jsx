@@ -67,6 +67,17 @@ const Properties = props =>
         onChange={description => props.onChange('description', description)}
       />
     </FormGroup>
+  </fieldset>
+
+Properties.propTypes = {
+  title: T.string.isRequired,
+  description: T.string.isRequired,
+  validating: T.bool.isRequired,
+  onChange: T.func.isRequired
+}
+
+const Display = props =>
+  <fieldset>
     <CheckGroup
       checkId="quiz-show-overview"
       checked={props.parameters.showOverview}
@@ -100,12 +111,9 @@ const Properties = props =>
         />
       </FormGroup>
     }
-
   </fieldset>
 
-Properties.propTypes = {
-  title: T.string.isRequired,
-  description: T.string.isRequired,
+Display.propTypes = {
   parameters: T.shape({
     type: T.string.isRequired,
     showOverview: T.bool.isRequired,
@@ -444,6 +452,7 @@ export const QuizEditor = props => {
         activeKey={props.activePanelKey}
       >
         {makePanel(Properties, t('properties'), 'properties', props, ['title'])}
+        {makePanel(Display, t('display'), 'display', props)}
         {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
         {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}
