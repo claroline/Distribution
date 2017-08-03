@@ -140,7 +140,7 @@ class ItemSerializer extends AbstractSerializer
                 'type' => 'mimeType',
                 'content' => 'content',
                 'title' => 'title',
-                'protectUpdate' => 'protectUpdate',
+                'protectQuestion' => 'protectUpdate',
                 'meta' => function (Item $question) use ($options) {
                     return $this->serializeMetadata($question, $options);
                 },
@@ -234,7 +234,7 @@ class ItemSerializer extends AbstractSerializer
                 'title' => 'title',
                 'description' => 'description',
                 'feedback' => 'feedback',
-                'protectUpdate' => 'protectUpdate',
+                'protectQuestion' => 'protectUpdate',
                 'hints' => function (Item $item, \stdClass $data) use ($options) {
                     return $this->deserializeHints($item, $data->hints, $options);
                 },
