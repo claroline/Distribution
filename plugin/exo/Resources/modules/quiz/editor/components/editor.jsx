@@ -99,6 +99,7 @@ selectSubEditor.propTypes = {
   createContentItem: T.func.isRequired,
   updateContentItem: T.func.isRequired,
   updateContentItemDetail: T.func.isRequired,
+  moveQuestionStep: T.func.isRequired,
   saveContentItemFile: T.func,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired

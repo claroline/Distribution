@@ -125,12 +125,14 @@ Display.propTypes = {
   onChange: T.func.isRequired
 }
 
+/*
 const Access = () => {
   return (
     <fieldset>
     </fieldset>
   )
 }
+*/
 
 const shuffleOptions = () => {
   if (!shuffleOptions._options) {
@@ -459,11 +461,11 @@ export const QuizEditor = props => {
         activeKey={props.activePanelKey}
       >
         {makePanel(Properties, t('properties'), 'properties', props, ['title'])}
-        {makePanel(Display, t('display'), 'display', props)}
+        {makePanel(Display, t('display_mode'), 'display_mode', props)}
         {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
         {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}
-        {makePanel(Access, tex('access'), 'access', props)}
+        {/*makePanel(Access, tex('access'), 'access', props)*/}
       </PanelGroup>
     </form>
   )

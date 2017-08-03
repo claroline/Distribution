@@ -108,11 +108,11 @@ function reduceSteps(steps = {}, action = {}) {
       //remove the old one
       Object.keys(steps).forEach(stepId => {
         if (steps[stepId].items.find(item => item === action.itemId)) {
-           const updatedRemoveItems = update(
+          const updatedRemoveItems = update(
             steps[stepId],
             {['items']: {$set : steps[stepId].items.filter(item => item !== action.itemId)}}
-           )
-           steps = update(steps, {[stepId]: {$set: updatedRemoveItems}})
+          )
+          steps = update(steps, {[stepId]: {$set: updatedRemoveItems}})
         }
       })
 
