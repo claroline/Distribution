@@ -1,10 +1,13 @@
+import React from 'react'
+import {
+  hashHistory as history,
+  HashRouter as Router
+} from 'react-router-dom'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {routedApp} from '#/main/core/utilities/app/router'
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceNodeReducer} from '#/main/core/layout/resource/reducer'
 import {bbbReducers, resourceReducers, mainReducers} from './reducers'
 import {BBBResource} from './components/bbb-resource.jsx'
-import {BBBConfig} from './components/bbb-config.jsx'
 
 // mount the react application
 bootstrap(
@@ -12,10 +15,9 @@ bootstrap(
   '.bbb-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
-  routedApp([
-    {path: '/', component: BBBResource, exact: true},
-    {path: '/configure', component: BBBConfig, exact: true}
-  ]),
+  () => React.createElement(Router, {
+    history: history
+  }, React.createElement(BBBResource)),
 
   // app store configuration
   {
