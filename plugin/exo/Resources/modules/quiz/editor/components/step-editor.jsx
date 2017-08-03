@@ -177,7 +177,7 @@ class ItemPanel extends Component {
   }
 
   isDisabled() {
-    return this.props.item.protectUpdate && !this.props.item.rights.edit
+    return this.props.item.meta.protectQuestion && !this.props.item.rights.edit
   }
 
   render() {
