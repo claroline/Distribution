@@ -20,9 +20,20 @@ class MoveQuestionModal extends Component {
       <BaseModal {...this.props} className="step-move-item-modal">
         <Modal.Body>
           <table>
-            {Object.keys(this.props.steps).map((key, index) =>
-              <tr><td><a className="pointer" onClick={() => this.props.handleClick(this.props.itemId, key)}> {tex('step') + ' ' + index} </a></td></tr>
-            )}
+            <tbody>
+              {Object.keys(this.props.steps).map((key, index) =>
+                <tr
+                  key={index}>
+                  <td><a
+                    className="pointer"
+                    onClick={() => {
+                      this.props.handleClick(this.props.itemId, key)
+                    }}
+                  > {tex('step') + ' ' + (index + 1)}
+                  </a></td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </Modal.Body>
       </BaseModal>

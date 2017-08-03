@@ -105,8 +105,20 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
     case QUESTION_MOVE: {
-      let items = steps[action.stepId].items
-      items.push(action.itemId)
+      //remove the old one
+      Object.keys(steps).forEach(stepId => {
+        if (steps[stepId].items.find(item => item === action.itemId)) {
+           const updatedRemoveItems = update(
+            steps[stepId],
+            {['items']: {$set : steps[stepId].items.filter(item => item !== action.itemId)}}
+           )
+           steps = update(steps, {[stepId]: {$set: updatedRemoveItems}})
+        }
+      })
+
+      const items = steps[action.stepId].items.concat(action.itemId)
+      const updatedAddItems = update(steps[action.stepId], {['items']: {$set: items}})
+      steps = update(steps, {[action.stepId]: {$set: updatedAddItems}})
 
       return steps
     }
