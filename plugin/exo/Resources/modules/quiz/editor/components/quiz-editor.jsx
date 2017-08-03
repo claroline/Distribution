@@ -125,6 +125,13 @@ Display.propTypes = {
   onChange: T.func.isRequired
 }
 
+const Access = () => {
+  return (
+    <fieldset>
+    </fieldset>
+  )
+}
+
 const shuffleOptions = () => {
   if (!shuffleOptions._options) {
     shuffleOptions._options = shuffleModes.map(mode => {
@@ -304,21 +311,6 @@ class Correction extends Component {
         }
 
         <FormGroup
-          controlId="quiz-success-score"
-          label={tex('quiz_success_score')}
-        >
-          <input
-            id="quiz-success-score"
-            onChange={e => this.props.onChange('parameters.successScore', e.target.value)}
-            type="number"
-            min="0"
-            max="100"
-            className="form-control"
-            value={this.props.parameters.successScore}
-          />
-        </FormGroup>
-
-        <FormGroup
           controlId="quiz-showCorrectionAt"
           label={tex('availability_of_correction')}
         >
@@ -401,8 +393,7 @@ Correction.propTypes = {
     showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string,
-    totalScoreOn: T.number,
-    successScore: T.number
+    totalScoreOn: T.number
   }).isRequired,
   onChange: T.func.isRequired
 }
@@ -472,6 +463,7 @@ export const QuizEditor = props => {
         {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
         {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}
+        {makePanel(Access, tex('access'), 'access', props)}
       </PanelGroup>
     </form>
   )
