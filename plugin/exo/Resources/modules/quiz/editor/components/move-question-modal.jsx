@@ -7,6 +7,7 @@ import {trans} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import select from '../../selectors'
 import {tex} from '#/main/core/translation'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
 export const MODAL_MOVE_QUESTION = 'MODAL_MOVE_QUESTION'
 
@@ -28,6 +29,7 @@ class MoveQuestionModal extends Component {
                     className="pointer"
                     onClick={() => {
                       this.props.handleClick(this.props.itemId, key)
+                      this.props.fadeModal()
                     }}
                   > {tex('step') + ' ' + (index + 1)}
                   </a></td>
@@ -45,11 +47,20 @@ MoveQuestionModal.propTypes = {
   handleClick: T.func.isRequired,
   steps: T.object.isRequired,
   itemId: T.string.isRequired,
+  fadeModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     steps: select.steps(state)
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fadeModal() {
+      dispatch(modalActions.fadeModal())
+    }
   }
 }
 
