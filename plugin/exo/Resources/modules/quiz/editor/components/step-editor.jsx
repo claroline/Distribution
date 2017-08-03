@@ -96,7 +96,7 @@ const ItemActions = props =>
           })
         }}
       >
-        <span className="fa fa-fw fa-folder-o" />
+        <span className="fa fa-fw fa-exchange" />
       </button>
     </OverlayTrigger>
 

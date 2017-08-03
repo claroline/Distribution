@@ -647,5 +647,6 @@
     "no_try_left": "No try left",
     "correct_answer": "Correct answer",
     "try_used": "Try used",
-    "selection_missing_click": "Penalty for each wrong click"
+    "selection_missing_click": "Penalty for each wrong click",
+    "change_step": "Change step"
 }
