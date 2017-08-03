@@ -33,6 +33,11 @@ class BBB extends AbstractResource implements \JsonSerializable
     protected $roomName;
 
     /**
+     * @ORM\Column(name="welcome_message", nullable=true)
+     */
+    protected $welcomeMessage;
+
+    /**
      * @ORM\Column(name="new_tab", type="boolean")
      */
     protected $newTab = false;
@@ -46,6 +51,16 @@ class BBB extends AbstractResource implements \JsonSerializable
      * @ORM\Column(name="record", type="boolean")
      */
     protected $record = false;
+
+    /**
+     * @ORM\Column(name="start_date", type="datetime", nullable=true)
+     */
+    protected $startDate;
+
+    /**
+     * @ORM\Column(name="end_date", type="datetime", nullable=true)
+     */
+    protected $endDate;
 
     public function setId($id)
     {
@@ -65,6 +80,16 @@ class BBB extends AbstractResource implements \JsonSerializable
     public function setRoomName($roomName)
     {
         $this->roomName = $roomName;
+    }
+
+    public function getWelcomeMessage()
+    {
+        return $this->welcomeMessage;
+    }
+
+    public function setWelcomeMessage($welcomeMessage)
+    {
+        $this->welcomeMessage = $welcomeMessage;
     }
 
     public function isNewTab()
@@ -97,14 +122,37 @@ class BBB extends AbstractResource implements \JsonSerializable
         $this->record = $record;
     }
 
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(\DateTime $startDate = null)
+    {
+        $this->startDate = $startDate;
+    }
+
+    public function getEndDate()
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(\DateTime $endDate = null)
+    {
+        $this->endDate = $endDate;
+    }
+
     public function jsonSerialize()
     {
         return [
             'id' => $this->id,
             'roomName' => $this->name,
+            'welcomeMessage' => $this->welcomeMessage,
             'newTab' => $this->newTab,
             'moderatorRequired' => $this->moderatorRequired,
             'record' => $this->record,
+            'startDate' => $this->startDate,
+            'endDate' => $this->endDate,
         ];
     }
 }

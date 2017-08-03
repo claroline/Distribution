@@ -117,6 +117,15 @@ class BBBListener
 
         if ($form->isValid()) {
             $published = $form->get('published')->getData();
+            $startDate = $form->get('startDate')->getData();
+            $endDate = $form->get('endDate')->getData();
+
+            if ($startDate) {
+                $bbb->setStartDate(\DateTime::createFromFormat('d/m/Y H:i', $startDate));
+            }
+            if ($endDate) {
+                $bbb->setEndDate(\DateTime::createFromFormat('d/m/Y H:i', $endDate));
+            }
             $event->setPublished($published);
             $event->setResources([$bbb]);
             $event->stopPropagation();

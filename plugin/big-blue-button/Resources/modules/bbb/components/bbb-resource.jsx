@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import {withRouter} from 'react-router-dom'
 import {trans} from '#/main/core/translation'
 import {Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 import {actions} from '../actions'
@@ -27,7 +28,7 @@ class BBBResource extends Component {
   render() {
     return (
       <ResourceContainer
-        edit="#"
+        edit="#/configure"
         editMode={false}
         save={{
           disabled: false,
@@ -87,6 +88,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedBBBResource = connect(mapStateToProps, mapDispatchToProps)(BBBResource)
+const ConnectedBBBResource = withRouter(connect(mapStateToProps, mapDispatchToProps)(BBBResource))
 
 export {ConnectedBBBResource as BBBResource}

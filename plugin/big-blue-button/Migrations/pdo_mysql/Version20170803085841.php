@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/08/02 02:03:56
+ * Generation date: 2017/08/03 08:58:45
  */
-class Version20170802140355 extends AbstractMigration
+class Version20170803085841 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,9 +18,12 @@ class Version20170802140355 extends AbstractMigration
             CREATE TABLE claro_bigbluebuttonbundle_bbb (
                 id INT AUTO_INCREMENT NOT NULL, 
                 room_name VARCHAR(255) DEFAULT NULL, 
+                welcome_message VARCHAR(255) DEFAULT NULL, 
                 new_tab TINYINT(1) NOT NULL, 
                 moderator_required TINYINT(1) NOT NULL, 
                 record TINYINT(1) NOT NULL, 
+                start_date DATETIME DEFAULT NULL, 
+                end_date DATETIME DEFAULT NULL, 
                 resourceNode_id INT DEFAULT NULL, 
                 UNIQUE INDEX UNIQ_CCC5E62EB87FAB32 (resourceNode_id), 
                 PRIMARY KEY(id)

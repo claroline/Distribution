@@ -50,6 +50,14 @@ class BBBType extends AbstractType
             ]
         );
         $builder->add(
+            'welcomeMessage',
+            'text',
+            [
+                'label' => 'welcome_message',
+                'attr' => ['autofocus' => true],
+            ]
+        );
+        $builder->add(
             'newTab',
             'checkbox',
             [
@@ -69,8 +77,26 @@ class BBBType extends AbstractType
             'record',
             'checkbox',
             [
-                'label' => 'record',
+                'label' => 'allow_recording',
                 'mapped' => true,
+            ]
+        );
+        $builder->add(
+            'startDate',
+            'text',
+            [
+                'label' => 'start_date',
+                'mapped' => false,
+                'translation_domain' => 'platform',
+            ]
+        );
+        $builder->add(
+            'endDate',
+            'text',
+            [
+                'label' => 'end_date',
+                'mapped' => false,
+                'translation_domain' => 'platform',
             ]
         );
     }

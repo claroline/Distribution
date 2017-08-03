@@ -1,4 +1,5 @@
 {
+    "allow_recording": "Autoriser l'enregistrement",
     "bbb_configuration": "Configuration de BigBlueButton",
     "bbb_not_configured_msg": "BigBlueButton n'est pas configuré correctement. Veuillez contacter un gestionnaire.",
     "bbb_running_in_new_tab": "BigBlueButton s'exécute dans un autre onglet.",
@@ -6,9 +7,9 @@
     "configuration_saved_error_msg": "Une erreur est survenue lors de l'enregistrement de la configuration.",
     "configuration_saved_success_msg": "La configuration a été enregistrée.",
     "open_bbb_in_new_tab": "Ouvrir BigBlueButton dans un nouvel onglet",
-    "record": "Enregistrer",
     "room_name": "Nom de la salle",
     "save_configuration": "Enregistrer la configuration",
     "security_salt": "Sel de sécurité",
-    "wait_for_moderator": "Attendre un modérateur"
+    "wait_for_moderator": "Attendre un modérateur",
+    "welcome_message": "Message d'accueil"
 }

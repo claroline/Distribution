@@ -14,7 +14,8 @@ actions.connectToBBB = () => (dispatch, getState) => {
   const securitySalt = state.config.securitySalt
   let queryString = `meetingID=${resourceNode.id}&attendeePW=collaborator&moderatorPW=manager`
   queryString += params.record ? '&record=true' : '&record=false'
-  queryString += params.roomName ? `&name=${params.roomName}` : ''
+  queryString += params.roomName ? `&name=${encodeURIComponent(params.roomName)}` : ''
+  queryString += params.welcomeMessage ? `&welcome=${encodeURIComponent(params.welcomeMessage)}` : ''
   const checksum = shajs('sha1').update(`create${queryString}${securitySalt}`).digest('hex')
   const createUrl = `${serverUrl}/bigbluebutton/api/create?${queryString}&checksum=${checksum}`
 

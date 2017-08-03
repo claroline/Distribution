@@ -19,4 +19,9 @@ class ClarolineBigBlueButtonBundle extends DistributionPluginBundle
     {
         return true;
     }
+
+    public function isActiveByDefault()
+    {
+        return false;
+    }
 }

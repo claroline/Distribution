@@ -16,8 +16,8 @@
       {% endif %}
       data-resource="{{ _resource | json_encode | raw | escape }}"
       data-resource-node="{{ _resource | get_serialized_node | json_encode | raw | escape }}"
-      data-server-url="{{ serverUrl }}"
-      data-security-salt="{{ securitySalt }}"
+      data-server-url="{{ serverUrl | json_encode | raw | escape }}"
+      data-security-salt="{{ securitySalt | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}
