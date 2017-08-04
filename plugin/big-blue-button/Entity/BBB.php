@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\BigBlueButtonBundle\Repository\BBBRepository")
  * @ORM\Table(name="claro_bigbluebuttonbundle_bbb")
  */
 class BBB extends AbstractResource implements \JsonSerializable

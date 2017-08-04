@@ -12,6 +12,7 @@
 namespace Claroline\BigBlueButtonBundle\Manager;
 
 use Claroline\BigBlueButtonBundle\Entity\BBB;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -25,6 +26,7 @@ class BBBManager
 {
     private $authorization;
     private $om;
+    private $bbbRepo;
 
     /**
      * @DI\InjectParams({
@@ -38,6 +40,7 @@ class BBBManager
     ) {
         $this->authorization = $authorization;
         $this->om = $om;
+        $this->bbbRepo = $om->getRepository('Claroline\BigBlueButtonBundle\Entity\BBB');
     }
 
     public function updateBBB(
@@ -59,6 +62,11 @@ class BBBManager
         $bbb->setEndDate($endDate);
         $this->om->persist($bbb);
         $this->om->flush();
+    }
+
+    public function getBBBWithDatesByWorkspace(Workspace $workspace)
+    {
+        return $this->bbbRepo->findBBBWithDatesByWorkspace($workspace);
     }
 
     /******************

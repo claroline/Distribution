@@ -63,7 +63,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     validateForm: () => dispatch(actions.validateResourceForm()),
-    endBBB: () => dispatch(actions.endBBB()),
+    endBBB: () => dispatch(actions.endBBB())
   }
 }
 

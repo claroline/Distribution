@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -182,5 +183,41 @@ class BBBListener
     {
         $this->om->remove($event->getResource());
         $event->stopPropagation();
+    }
+
+    /**
+     * @DI\Observe("claroline_external_agenda_events")
+     *
+     * @param GenericDataEvent $event
+     */
+    public function onAgendaEventsRequest(GenericDataEvent $event)
+    {
+        $events = $event->getResponse() ? $event->getResponse() : [];
+        $data = $event->getData();
+        $type = $data['type'];
+
+        if ($type === 'workspace') {
+            $workspace = $data['workspace'];
+            $bbbList = $this->bbbManager->getBBBWithDatesByWorkspace($workspace);
+
+            foreach ($bbbList as $bbb) {
+                $events[] = [
+                    'title' => $bbb->getRoomName() ? $bbb->getRoomName() : $bbb->getResourceNode()->getName(),
+                    'start' => $bbb->getStartDate()->format(\DateTime::ISO8601),
+                    'end' => $bbb->getEndDate()->format(\DateTime::ISO8601),
+                    'description' => $bbb->getWelcomeMessage(),
+                    'color' => '#243973',
+                    'allDay' => false,
+                    'isTask' => false,
+                    'isTaskDone' => false,
+                    'isEditable' => false,
+                    'workspace_id' => $workspace->getId(),
+                    'workspace_name' => $workspace->getName(),
+                    'className' => 'pointer-hand bbb_event_'.$bbb->getId(),
+                    'durationEditable' => false,
+                ];
+            }
+        }
+        $event->setResponse($events);
     }
 }
