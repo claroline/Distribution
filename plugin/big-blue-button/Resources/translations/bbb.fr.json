@@ -1,7 +1,9 @@
 {
     "allow_recording": "Autoriser l'enregistrement",
     "bbb_configuration": "Configuration de BigBlueButton",
+    "bbb_end": "Forcer l'arrêt de BigBlueButton",
     "bbb_not_configured_msg": "BigBlueButton n'est pas configuré correctement. Veuillez contacter un gestionnaire.",
+    "bbb_params_saved_success_msg": "Les paramètres ont été enregistrés. Ils ne peuvent cependant pas être appliqués tant que la salle est active.",
     "bbb_running_in_new_tab": "BigBlueButton s'exécute dans un autre onglet.",
     "bbb_server_url": "URL du serveur BigBlueButton",
     "configuration_saved_error_msg": "Une erreur est survenue lors de l'enregistrement de la configuration.",

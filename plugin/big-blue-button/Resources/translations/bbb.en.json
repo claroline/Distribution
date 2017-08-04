@@ -1,7 +1,9 @@
 {
     "allow_record": "Allow recording",
     "bbb_configuration": "BigBlueButton configuration",
+    "bbb_end": "Forced end BigBlueButton",
     "bbb_not_configured_msg": "BigBlueButton is not configured correctly. Please contact a manager.",
+    "bbb_params_saved_success_msg": "The parameters have been saved. However they can not be applied while the room is active.",
     "bbb_running_in_new_tab": "BigBlueButton is running in another tab.",
     "bbb_server_url": "BigBlueButton server URL",
     "configuration_saved_error_msg": "An error occured while saving the configuration.",

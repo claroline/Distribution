@@ -40,6 +40,27 @@ class BBBManager
         $this->om = $om;
     }
 
+    public function updateBBB(
+        BBB $bbb,
+        $roomName = null,
+        $welcomeMessage = null,
+        $newTab = false,
+        $moderatorRequired = false,
+        $record = false,
+        $startDate = null,
+        $endDate = null
+    ) {
+        $bbb->setRoomName($roomName);
+        $bbb->setWelcomeMessage($welcomeMessage);
+        $bbb->setNewTab($newTab);
+        $bbb->setModeratorRequired($moderatorRequired);
+        $bbb->setRecord($record);
+        $bbb->setStartDate($startDate);
+        $bbb->setEndDate($endDate);
+        $this->om->persist($bbb);
+        $this->om->flush();
+    }
+
     /******************
      * Rights methods *
      ******************/

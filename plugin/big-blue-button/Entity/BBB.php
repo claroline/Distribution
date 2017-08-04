@@ -146,7 +146,7 @@ class BBB extends AbstractResource implements \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'roomName' => $this->name,
+            'roomName' => $this->roomName,
             'welcomeMessage' => $this->welcomeMessage,
             'newTab' => $this->newTab,
             'moderatorRequired' => $this->moderatorRequired,

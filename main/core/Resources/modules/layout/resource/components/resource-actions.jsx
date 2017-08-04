@@ -340,17 +340,19 @@ const ResourceActions = props =>
           {t_res(props.resourceNode.meta.type)}
         </MenuItem>
 
-        {props.customActions.map((customAction, index) =>
-          React.createElement(MenuItem, {
-            key: `resource-more-action-${index}`,
-            eventKey: `resource-action-${index}`,
-            children: [
-              <span className={customAction.icon} />,
-              customAction.label
-            ],
-            [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
-          })
-        )}
+        {props.customActions.map((customAction, index) => {
+          if (!customAction.disabled) {
+            return React.createElement(MenuItem, {
+              key: `resource-more-action-${index}`,
+              eventKey: `resource-action-${index}`,
+              children: [
+                <span className={customAction.icon}/>,
+                customAction.label
+              ],
+              [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
+            })
+          }
+        })}
 
         {getMoreActions(props.resourceNode, props)}
       </MoreAction>

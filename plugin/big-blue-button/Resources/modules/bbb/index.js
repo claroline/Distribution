@@ -1,4 +1,5 @@
 import React from 'react'
+import cloneDeep from 'lodash/cloneDeep'
 import {
   hashHistory as history,
   HashRouter as Router
@@ -6,7 +7,13 @@ import {
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceNodeReducer} from '#/main/core/layout/resource/reducer'
-import {bbbReducers, resourceReducers, mainReducers} from './reducers'
+import {
+  bbbReducers,
+  resourceFormReducers,
+  resourceReducers,
+  mainReducers,
+  messageReducers
+} from './reducers'
 import {BBBResource} from './components/bbb-resource.jsx'
 
 // mount the react application
@@ -23,10 +30,12 @@ bootstrap(
   {
     // app reducers
     user: mainReducers,
+    resourceForm: resourceFormReducers,
     resource: resourceReducers,
     bbbUrl: bbbReducers,
     config: mainReducers,
     canEdit: mainReducers,
+    message: messageReducers,
 
     // generic reducers
     resourceNode: resourceNodeReducer,
@@ -36,9 +45,13 @@ bootstrap(
   // transform data attributes for redux store
   (initialData) => {
     const resourceNode = initialData.resourceNode
+    const resourceForm = cloneDeep(initialData.resource)
+    resourceForm['startDate'] = resourceForm['startDate'] ? new Date(resourceForm['startDate'].date) : resourceForm['startDate']
+    resourceForm['endDate'] = resourceForm['endDate'] ? new Date(resourceForm['endDate'].date) : resourceForm['endDate']
 
     return {
       user: initialData.user,
+      resourceForm: resourceForm,
       resource: initialData.resource,
       resourceNode: resourceNode,
       config: {
