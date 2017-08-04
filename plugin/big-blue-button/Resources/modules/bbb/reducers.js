@@ -33,7 +33,7 @@ const messageReducers = makeReducer({}, {
   [MESSAGE_RESET]: () => {
     return {
       content: null,
-      status: null
+      type: null
     }
   },
   [MESSAGE_UPDATE]: (state, action) => {

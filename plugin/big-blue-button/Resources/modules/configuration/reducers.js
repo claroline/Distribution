@@ -3,40 +3,42 @@ import {makeReducer} from '#/main/core/utilities/redux'
 import {
   CONFIGURATION_UPDATE,
   CONFIGURATION_MESSAGE_RESET,
-  CONFIGURATION_MESSAGE_UPDATE
+  CONFIGURATION_MESSAGE_UPDATE,
+  MEETINGS_INIT
 } from './actions'
 
-const initialState = {
-  serverUrl: null,
-  securitySalt: null,
-  message: {
-    content: null,
-    type: 'info'
-  }
-}
-
-const mainReducers = {
+const mainReducers =  makeReducer({}, {
   [CONFIGURATION_UPDATE]: (state, action) => {
     const newState = cloneDeep(state)
     newState[action.property] = action.value
 
     return newState
-  },
-  [CONFIGURATION_MESSAGE_RESET]: (state) => {
-    const newState = cloneDeep(state)
-    newState.message = initialState.message
+  }
+})
 
-    return newState
+const messageReducers = makeReducer({}, {
+  [CONFIGURATION_MESSAGE_RESET]: () => {
+    return {
+      content: null,
+      type: null
+    }
   },
   [CONFIGURATION_MESSAGE_UPDATE]: (state, action) => {
-    const newState = cloneDeep(state)
-    newState.message = {
+    return {
       content: action.content,
       type: action.status
     }
-
-    return newState
   }
-}
+})
 
-export const reducers = makeReducer(initialState, mainReducers)
+const meetingsReducers =  makeReducer([], {
+  [MEETINGS_INIT]: (state, action) => {
+    return action.meetings
+  }
+})
+
+export {
+  mainReducers,
+  messageReducers,
+  meetingsReducers
+}

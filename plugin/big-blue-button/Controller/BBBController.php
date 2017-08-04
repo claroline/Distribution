@@ -184,6 +184,59 @@ class BBBController extends Controller
     }
 
     /**
+     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
+     * @EXT\Route(
+     *     "/plugin/configuration/meetings/list",
+     *     name="claro_bbb_plugin_configuration_meetings_list",
+     *     options={"expose"=true}
+     * )
+     */
+    public function pluginConfigurationMeetingsListAction()
+    {
+        $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
+            trim($this->platformConfigHandler->getParameter('bbb_server_url'), '/') :
+            null;
+        $securitySalt = $this->platformConfigHandler->hasParameter('bbb_security_salt') ?
+            $this->platformConfigHandler->getParameter('bbb_security_salt') :
+            null;
+        $meetings = [];
+
+        if ($serverUrl && $securitySalt) {
+            $checksum = sha1("getMeetings$securitySalt");
+            $url = "$serverUrl/bigbluebutton/api/getMeetings?checksum=$checksum";
+            $response = $this->curlManager->exec($url, null, 'GET', [], true, $ch);
+
+            $dom = new \DOMDocument();
+
+            if ($dom->loadXML($response)) {
+                $meetingsEl = $dom->getElementsByTagName('meeting');
+
+                for ($i = 0; $i < $meetingsEl->length; ++$i) {
+                    $meetingEl = $meetingsEl->item($i);
+                    $meetings[] = [
+                        'meetingID' => $meetingEl->getElementsByTagName('meetingID')->item(0)->textContent,
+                        'meetingName' => $meetingEl->getElementsByTagName('meetingName')->item(0)->textContent,
+                        'createTime' => $meetingEl->getElementsByTagName('createTime')->item(0)->textContent,
+                        'createDate' => $meetingEl->getElementsByTagName('createDate')->item(0)->textContent,
+                        'attendeePW' => $meetingEl->getElementsByTagName('attendeePW')->item(0)->textContent,
+                        'moderatorPW' => $meetingEl->getElementsByTagName('moderatorPW')->item(0)->textContent,
+                        'hasBeenForciblyEnded' => $meetingEl->getElementsByTagName('hasBeenForciblyEnded')->item(0)->textContent,
+                        'running' => $meetingEl->getElementsByTagName('running')->item(0)->textContent,
+                        'participantCount' => $meetingEl->getElementsByTagName('participantCount')->item(0)->textContent,
+                        'listenerCount' => $meetingEl->getElementsByTagName('listenerCount')->item(0)->textContent,
+                        'voiceParticipantCount' => $meetingEl->getElementsByTagName('voiceParticipantCount')->item(0)->textContent,
+                        'videoCount' => $meetingEl->getElementsByTagName('videoCount')->item(0)->textContent,
+                        'duration' => $meetingEl->getElementsByTagName('duration')->item(0)->textContent,
+                        'hasUserJoined' => $meetingEl->getElementsByTagName('hasUserJoined')->item(0)->textContent,
+                    ];
+                }
+            }
+        }
+
+        return new JsonResponse($meetings);
+    }
+
+    /**
      * @EXT\Route(
      *     "/bbb/{bbb}/create",
      *     name="claro_bbb_create",

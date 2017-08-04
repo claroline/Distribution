@@ -1,36 +1,31 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
-import {createStore} from '#/main/core/utilities/redux'
-import {reducers} from './reducers'
+import {bootstrap} from '#/main/core/utilities/app/bootstrap'
+import {mainReducers, messageReducers, meetingsReducers} from './reducers'
 import {BBBConfigForm} from './components/bbb-config-form.jsx'
 
-class BBBConfig {
-  constructor(serverUrl, securitySalt) {
-    this.store = createStore(
-      reducers,
-      {
-        serverUrl: serverUrl,
-        securitySalt: securitySalt
+// mount the react application
+bootstrap(
+  // app DOM container (also holds initial app data as data attributes)
+  '.bbb-config-container',
+
+  // app main component (accepts either a `routedApp` or a `ReactComponent`)
+  () =>  React.createElement(BBBConfigForm),
+
+  // app store configuration
+  {
+    // app reducers
+    config: mainReducers,
+    message: messageReducers,
+    meetings: meetingsReducers
+  },
+
+  // transform data attributes for redux store
+  (initialData) => {
+    return {
+      config: {
+        serverUrl: initialData.serverUrl,
+        securitySalt: initialData.securitySalt
       }
-    )
+    }
   }
-
-  render(element) {
-    ReactDOM.render(
-      React.createElement(
-        Provider,
-        {store: this.store},
-        React.createElement(BBBConfigForm)
-      ),
-      element
-    )
-  }
-}
-
-const container = document.querySelector('.bbb-config-container')
-const serverUrl = container.dataset.serverUrl
-const securitySalt = container.dataset.securitySalt
-const bbbConfig = new BBBConfig(serverUrl, securitySalt)
-
-bbbConfig.render(container)
+)

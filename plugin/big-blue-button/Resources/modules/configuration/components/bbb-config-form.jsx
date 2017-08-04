@@ -3,8 +3,17 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {actions} from '../actions'
+import {Meetings} from './meetings.jsx'
 
 class BBBConfigForm extends Component {
+  componentDidMount() {
+    this.props.getMeetings()
+  }
+
+  componentWillUnmount() {
+    this.props.resetMessage()
+  }
+
   render() {
     return (
       <div>
@@ -26,7 +35,7 @@ class BBBConfigForm extends Component {
             <input
               type="text"
               className="form-control"
-              value={this.props.serverUrl}
+              value={this.props.serverUrl ? this.props.serverUrl : undefined}
               onChange={e => this.props.updateConfig('serverUrl', e.target.value)}
             />
           </div>
@@ -40,7 +49,7 @@ class BBBConfigForm extends Component {
             <input
               type="text"
               className="form-control"
-              value={this.props.securitySalt}
+              value={this.props.securitySalt ? this.props.securitySalt : undefined}
               onChange={e => this.props.updateConfig('securitySalt', e.target.value)}
             />
           </div>
@@ -64,16 +73,34 @@ BBBConfigForm.propTypes = {
   serverUrl: T.string,
   securitySalt: T.string,
   message: T.object,
+  meetings: T.arrayOf(T.shape({
+    meetingID: T.string.isRequired,
+    meetingName: T.string,
+    createTime: T.string,
+    createDate: T.string,
+    attendeePW: T.string,
+    moderatorPW: T.string,
+    hasBeenForciblyEnded: T.string,
+    running: T.string,
+    participantCount: T.string,
+    listenerCount: T.string,
+    voiceParticipantCount: T.string,
+    videoCount: T.string,
+    duration: T.string,
+    hasUserJoined: T.string
+  })),
   updateConfig: T.func,
   saveConfig: T.func,
-  resetMessage: T.func
+  resetMessage: T.func,
+  getMeetings: T.func
 }
 
 function mapStateToProps(state) {
   return {
-    serverUrl: state.serverUrl,
-    securitySalt: state.securitySalt,
-    message: state.message
+    serverUrl: state.config.serverUrl,
+    securitySalt: state.config.securitySalt,
+    message: state.message,
+    meetings: state.meetings
   }
 }
 
@@ -81,7 +108,8 @@ function mapDispatchToProps(dispatch) {
   return {
     updateConfig: (property, value) => dispatch(actions.updateConfiguration(property, value)),
     saveConfig: () => dispatch(actions.saveConfiguration()),
-    resetMessage: () => dispatch(actions.resetConfigurationMessage())
+    resetMessage: () => dispatch(actions.resetConfigurationMessage()),
+    getMeetings: () => dispatch(actions.getMeetings())
   }
 }
 
