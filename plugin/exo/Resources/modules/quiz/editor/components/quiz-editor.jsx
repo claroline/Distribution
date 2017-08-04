@@ -25,7 +25,10 @@ import {
   SHUFFLE_NEVER,
   SHOW_CORRECTION_AT_DATE,
   TOTAL_SCORE_ON_CUSTOM,
-  TOTAL_SCORE_ON_DEFAULT
+  TOTAL_SCORE_ON_DEFAULT,
+  NUMBERING_LITTERAL,
+  NUMBERING_NONE,
+  NUMBERING_NUMERIC
 } from './../../enums'
 
 const TOTAL_SCORE_ON_DEFAULT_VALUE = 100
@@ -111,6 +114,17 @@ const Display = props =>
         />
       </FormGroup>
     }
+
+    <Radios
+      groupName="quiz-numbering"
+      options={[
+        {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},
+        {value: NUMBERING_NUMERIC, label: tex('quiz_numbering_numeric')},
+        {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
+      ]}
+      checkedValue={props.parameters.numbering}
+      onChange={numbering => props.onChange('parameters.numbering', numbering)}
+    />
   </fieldset>
 
 Display.propTypes = {
@@ -119,7 +133,8 @@ Display.propTypes = {
     showOverview: T.bool.isRequired,
     showMetadata: T.bool.isRequired,
     showEndPage: T.bool.isRequired,
-    endMessage: T.string
+    endMessage: T.string,
+    numbering: T.string
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired

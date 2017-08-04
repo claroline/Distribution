@@ -636,5 +636,8 @@
     "correct_answer": "Réponse correcte",
     "try_used": "Essais utilisés",
     "selection_missing_click": "Pénalité par erreur",
-    "change_step": "Changer l'étape"
+    "change_step": "Changer l'étape",
+    "quiz_numbering_none": "Aucune numérotation",
+    "quiz_numbering_litteral": "Numérotation littérale",
+    "quiz_numbering_numeric": "Numérotation numérique"
 }
