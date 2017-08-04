@@ -10,25 +10,15 @@ import {BBBConfig} from './bbb-config.jsx'
 
 const BBBResource = props =>
   <ResourceContainer
-    edit="#/edit"
-    editMode={'/edit' === props.location.pathname}
-    save={{
-      disabled: false,
-      action: props.validateForm
-    }}
-    customActions={[
-      {
-        icon: 'fa fa-fw fa-home',
-        label: trans('claroline_big_blue_button', {}, 'resource'),
-        action: '#/'
-      },
-      {
-        icon: 'fa fa-fw fa-stop-circle',
-        label: trans('bbb_end', {}, 'bbb'),
-        disabled: !props.canEdit,
-        action: props.endBBB
+    editor={{
+      opened: '/edit' === props.location.pathname,
+      open: '#/edit',
+      save: {
+        disabled: false,
+        action: props.validateForm
       }
-    ]}
+    }}
+    customActions={customActions(props)}
   >
     <Switch>
       <Route path="/" component={BBBContent} exact={true} />
@@ -42,6 +32,26 @@ BBBResource.propTypes = {
   }).isRequired,
   validateForm: T.func,
   endBBB: T.func
+}
+
+function customActions(props) {
+  const actions = []
+
+  actions.push({
+    icon: 'fa fa-fw fa-home',
+    label: trans('claroline_big_blue_button', {}, 'resource'),
+    action: '#/'
+  })
+
+  if (props.canEdit) {
+    actions.push({
+      icon: 'fa fa-fw fa-stop-circle',
+      label: trans('bbb_end', {}, 'bbb'),
+      action: props.endBBB
+    })
+  }
+
+  return actions
 }
 
 function mapStateToProps(state) {

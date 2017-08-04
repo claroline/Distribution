@@ -1,10 +1,4 @@
-{% set layout = 'ClarolineCoreBundle:Workspace:layout.html.twig' %}
-
-{% if isDesktop() %}
-    {% set layout = 'ClarolineCoreBundle:Desktop:layout.html.twig' %}
-{% endif %}
-
-{% extends layout %}
+{% extends "ClarolineCoreBundle:Resource:layout.html.twig" %}
 
 {% block content %}
     <div
@@ -12,10 +6,10 @@
       {% if isAnon %}
         data-user="{{ user | json_encode | raw | escape }}"
       {% else %}
-        data-user="{{ user | get_serialized_user | json_encode | raw | escape }}"
+        data-user="{{ user | api_serialize({'public': true}) | json_encode | raw | escape }}"
       {% endif %}
       data-resource="{{ _resource | json_encode | raw | escape }}"
-      data-resource-node="{{ _resource | get_serialized_node | json_encode | raw | escape }}"
+      data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
       data-server-url="{{ serverUrl | json_encode | raw | escape }}"
       data-security-salt="{{ securitySalt | json_encode | raw | escape }}"
     >

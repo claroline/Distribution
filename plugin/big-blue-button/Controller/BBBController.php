@@ -170,10 +170,10 @@ class BBBController extends Controller
      */
     public function pluginConfigurationSaveAction()
     {
-        $serverUrl = $this->request->get('serverUrl', false) === false ? null : $this->request->get('serverUrl');
-        $securitySalt = $this->request->get('securitySalt', false) === false ? null : $this->request->get('securitySalt');
+        $serverUrl = $this->request->get('serverUrl', false) ? $this->request->get('serverUrl') : null;
+        $securitySalt = $this->request->get('securitySalt', false) ? $this->request->get('securitySalt') : null;
         $this->platformConfigHandler->setParameters([
-            'bbb_server_url' => trim($serverUrl, '/'),
+            'bbb_server_url' => $serverUrl,
             'bbb_security_salt' => $securitySalt,
         ]);
 
