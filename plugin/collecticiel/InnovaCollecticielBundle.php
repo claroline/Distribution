@@ -26,5 +26,10 @@ class InnovaCollecticielBundle extends DistributionPluginBundle
     public function getAdditionalInstaller()
     {
         return new AdditionalInstaller();
+    }  
+    public function isActiveByDefault()
+    {
+        return false;
     }
+
 }
