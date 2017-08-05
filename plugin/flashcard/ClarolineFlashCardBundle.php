@@ -36,5 +36,4 @@ class ClarolineFlashCardBundle extends DistributionPluginBundle
     {
         return false;
     }
-
 }

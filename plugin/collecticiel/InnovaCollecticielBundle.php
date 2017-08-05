@@ -27,9 +27,9 @@ class InnovaCollecticielBundle extends DistributionPluginBundle
     {
         return new AdditionalInstaller();
     }  
+
     public function isActiveByDefault()
     {
         return false;
     }
-
 }
