@@ -191,7 +191,7 @@ export const Choice = props =>
         {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
       ]}
       checkedValue={props.item.numbering}
-      onChange={numbering => props.onChange('parameters.numbering', numbering)}
+      onChange={numbering => props.onChange(actions.updateProperty('numbering', numbering))}
     />
     <CheckGroup
       checkId={`item-${props.item.id}-fixedScore`}

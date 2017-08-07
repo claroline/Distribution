@@ -16,19 +16,7 @@ import {ItemFeedback} from './item-feedback.jsx'
 import {ContentItemPlayer} from './content-item-player.jsx'
 import {PlayerNav} from './nav-bar.jsx'
 import {CustomDragLayer} from './../../../utils/custom-drag-layer.jsx'
-
-import {
-  NUMBERING_LITTERAL,
-  NUMBERING_NUMERIC
-} from './../../enums'
-
-function getNumbering(numberingType, idx) {
-  switch (numberingType) {
-    case NUMBERING_NUMERIC: return idx + 1
-    case NUMBERING_LITTERAL: return 'abcdefghijklmnopqrstuvwxyz'[idx]
-    default: return null
-  }
-}
+import {getNumbering} from './../../../utils/numbering'
 
 const Player = props =>
   <div className="quiz-player">
