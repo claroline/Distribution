@@ -17,5 +17,6 @@
     "save_configuration": "Enregistrer la configuration",
     "security_salt": "Sel de sécurité",
     "wait_for_moderator": "Attendre un modérateur",
+    "waiting_for_moderator": "En attente d'un modérateur...",
     "welcome_message": "Message d'accueil"
 }

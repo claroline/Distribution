@@ -12,6 +12,7 @@ import {
   resourceFormReducers,
   resourceReducers,
   mainReducers,
+  canJoinReducers,
   messageReducers
 } from './reducers'
 import {BBBResource} from './components/bbb-resource.jsx'
@@ -35,6 +36,7 @@ bootstrap(
     bbbUrl: bbbReducers,
     config: mainReducers,
     canEdit: mainReducers,
+    canJoin: canJoinReducers,
     message: messageReducers,
 
     // generic reducers
@@ -45,20 +47,22 @@ bootstrap(
   // transform data attributes for redux store
   (initialData) => {
     const resourceNode = initialData.resourceNode
-    const resourceForm = cloneDeep(initialData.resource)
+    const resource = initialData.resource
+    const resourceForm = cloneDeep(resource)
     resourceForm['startDate'] = resourceForm['startDate'] ? new Date(resourceForm['startDate'].date) : resourceForm['startDate']
     resourceForm['endDate'] = resourceForm['endDate'] ? new Date(resourceForm['endDate'].date) : resourceForm['endDate']
 
     return {
       user: initialData.user,
       resourceForm: resourceForm,
-      resource: initialData.resource,
+      resource: resource,
       resourceNode: resourceNode,
       config: {
         serverUrl: initialData.serverUrl,
         securitySalt: initialData.securitySalt
       },
       canEdit: resourceNode.rights.current.edit,
+      canJoin: resourceNode.rights.current.edit || !resource.moderatorRequired,
       bbbUrl: null
     }
   }

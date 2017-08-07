@@ -17,5 +17,6 @@
     "save_configuration": "Save configuration",
     "security_salt": "Security salt",
     "wait_for_moderator": "Wait for moderator",
+    "waiting_for_moderator": "Waiting for moderator...",
     "welcome_message": "Welcome message"
 }

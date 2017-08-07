@@ -326,4 +326,43 @@ class BBBController extends Controller
 
         return new JsonResponse($url, $code);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/bbb/{bbb}/moderators/check",
+     *     name="claro_bbb_moderators_check",
+     *     options={"expose"=true}
+     * )
+     */
+    public function bbbModeratorsCheckAction(BBB $bbb)
+    {
+        $this->bbbManager->checkRight($bbb, 'OPEN');
+        $code = 403;
+        $hasModerators = false;
+        $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
+            trim($this->platformConfigHandler->getParameter('bbb_server_url'), '/') :
+            null;
+        $securitySalt = $this->platformConfigHandler->hasParameter('bbb_security_salt') ?
+            $this->platformConfigHandler->getParameter('bbb_security_salt') :
+            null;
+
+        if ($serverUrl && $securitySalt) {
+            $meetingId = $bbb->getResourceNode()->getGuid();
+            $queryString = "meetingID=$meetingId&password=manager";
+            $checksum = sha1("getMeetingInfo$queryString$securitySalt");
+            $url = "$serverUrl/bigbluebutton/api/getMeetingInfo?$queryString&checksum=$checksum";
+            $response = $this->curlManager->exec($url, null, 'GET', [], false, $ch);
+            $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $dom = new \DOMDocument();
+
+            if ($dom->loadXML($response)) {
+                $returnCodes = $dom->getElementsByTagName('moderatorCount');
+                $hasModerators = $returnCodes->length > 0 && intval($returnCodes->item(0)->textContent) > 0;
+            }
+        }
+
+        return new JsonResponse($hasModerators, $code);
+    }
 }

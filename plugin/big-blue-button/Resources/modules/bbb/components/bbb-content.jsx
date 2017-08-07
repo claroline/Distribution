@@ -12,12 +12,24 @@ class BBBContent extends Component {
       if (this.props.params.newTab) {
         const newTabInterval = setInterval(
           () => {
-            if (this.props.bbbUrl) {
+            if (this.props.bbbUrl && this.props.canJoin) {
               clearInterval(newTabInterval)
               window.open(this.props.bbbUrl, '_blank')
             }
           },
           2000
+        )
+      }
+      if (!this.props.canJoin) {
+        const canJoinInterval = setInterval(
+          () => {
+            if (this.props.canJoin) {
+              clearInterval(canJoinInterval)
+            } else {
+              this.props.checkForModerators()
+            }
+          },
+          60000
         )
       }
     }
@@ -31,12 +43,17 @@ class BBBContent extends Component {
             {trans('bbb_not_configured_msg', {}, 'bbb')}
           </div>
         }
-        {this.props.bbbUrl && !this.props.params.newTab &&
+        {this.props.bbbUrl && this.props.canJoin && !this.props.params.newTab &&
           <iframe className="bbb-iframe" src={this.props.bbbUrl}></iframe>
         }
-        {this.props.params.newTab &&
+        {this.props.params.newTab && this.props.canJoin &&
           <div className="alert alert-info">
             {trans('bbb_running_in_new_tab', {}, 'bbb')}
+          </div>
+        }
+        {!this.props.canJoin &&
+          <div className="alert alert-warning">
+            {trans('waiting_for_moderator', {}, 'bbb')}
           </div>
         }
       </div>
@@ -59,7 +76,9 @@ BBBContent.propTypes = {
   serverUrl: T.string,
   securitySalt: T.string,
   bbbUrl: T.string,
-  connectToBBB: T.func
+  canJoin: T.bool.isRequired,
+  connectToBBB: T.func.isRequired,
+  checkForModerators: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -68,13 +87,15 @@ function mapStateToProps(state) {
     resource: state.resourceNode,
     serverUrl: state.config.serverUrl,
     securitySalt: state.config.securitySalt,
-    bbbUrl: state.bbbUrl
+    bbbUrl: state.bbbUrl,
+    canJoin: state.canJoin
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    connectToBBB: () => dispatch(actions.connectToBBB())
+    connectToBBB: () => dispatch(actions.connectToBBB()),
+    checkForModerators: () => dispatch(actions.checkForModerators())
   }
 }
 

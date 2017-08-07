@@ -10,6 +10,7 @@ export const BBB_URL_UPDATE = 'BBB_URL_UPDATE'
 export const RESOURCE_FORM_INITIALIZE = 'RESOURCE_FORM_INITIALIZE'
 export const RESOURCE_FORM_UPDATE = 'RESOURCE_FORM_UPDATE'
 export const RESOURCE_INITIALIZE = 'RESOURCE_INITIALIZE'
+export const CAN_JOIN_UPDATE = 'CAN_JOIN_UPDATE'
 export const MESSAGE_RESET = 'MESSAGE_RESET'
 export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 
@@ -134,6 +135,7 @@ actions.saveConfig = () => (dispatch, getState) => {
   })
 }
 
+actions.updateCanJoin = makeActionCreator(CAN_JOIN_UPDATE, 'value')
 actions.resetMessage = makeActionCreator(MESSAGE_RESET)
 actions.updateMessage = makeActionCreator(MESSAGE_UPDATE, 'content', 'status')
 
@@ -145,6 +147,22 @@ actions.endBBB = () => (dispatch, getState) => {
       url: generateUrl('claro_bbb_end', {bbb: resourceId}),
       request: {
         method: 'POST'
+      }
+    }
+  })
+}
+
+actions.checkForModerators = () => (dispatch, getState) => {
+  const resourceId = getState().resource.id
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_bbb_moderators_check', {bbb: resourceId}),
+      request: {
+        method: 'GET'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.updateCanJoin(data))
       }
     }
   })

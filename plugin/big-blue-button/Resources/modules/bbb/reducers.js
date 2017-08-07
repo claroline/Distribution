@@ -5,6 +5,7 @@ import {
   RESOURCE_FORM_INITIALIZE,
   RESOURCE_FORM_UPDATE,
   RESOURCE_INITIALIZE,
+  CAN_JOIN_UPDATE,
   MESSAGE_RESET,
   MESSAGE_UPDATE
 } from './actions'
@@ -29,6 +30,10 @@ const resourceReducers = makeReducer({}, {
 
 const mainReducers = makeReducer({}, {})
 
+const canJoinReducers = makeReducer({}, {
+  [CAN_JOIN_UPDATE]: (state, action) => action.value
+})
+
 const messageReducers = makeReducer({}, {
   [MESSAGE_RESET]: () => {
     return {
@@ -49,5 +54,6 @@ export {
   resourceFormReducers,
   resourceReducers,
   mainReducers,
+  canJoinReducers,
   messageReducers
 }
