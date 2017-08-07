@@ -7,7 +7,9 @@ import {
   MEETINGS_INIT
 } from './actions'
 
-const mainReducers =  makeReducer({}, {
+const mainReducers =  makeReducer({}, {})
+
+const configReducers =  makeReducer({}, {
   [CONFIGURATION_UPDATE]: (state, action) => {
     const newState = cloneDeep(state)
     newState[action.property] = action.value
@@ -39,6 +41,7 @@ const meetingsReducers =  makeReducer([], {
 
 export {
   mainReducers,
+  configReducers,
   messageReducers,
   meetingsReducers
 }

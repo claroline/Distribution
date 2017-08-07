@@ -1,4 +1,5 @@
 {
+    "active_meetings": "Active meetings",
     "allow_record": "Allow recording",
     "bbb_configuration": "BigBlueButton configuration",
     "bbb_end": "Forced end BigBlueButton",
@@ -8,6 +9,9 @@
     "bbb_server_url": "BigBlueButton server URL",
     "configuration_saved_error_msg": "An error occured while saving the configuration.",
     "configuration_saved_success_msg": "The configuration has been saved.",
+    "meeting_id": "Meeting ID",
+    "meeting_name": "Meeting name",
+    "nb_participants": "Number of participants",
     "open_bbb_in_new_tab": "Open BigBlueButton in a new tab",
     "room_name": "Room name",
     "save_configuration": "Save configuration",

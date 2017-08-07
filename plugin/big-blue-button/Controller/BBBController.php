@@ -13,6 +13,7 @@ namespace Claroline\BigBlueButtonBundle\Controller;
 
 use Claroline\BigBlueButtonBundle\Entity\BBB;
 use Claroline\BigBlueButtonBundle\Manager\BBBManager;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\CurlManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -143,9 +144,10 @@ class BBBController extends Controller
      *     name="claro_bbb_plugin_configuration_form",
      *     options={"expose"=true}
      * )
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template()
      */
-    public function pluginConfigurationFormAction()
+    public function pluginConfigurationFormAction(User $user)
     {
         $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
             $this->platformConfigHandler->getParameter('bbb_server_url') :
@@ -155,6 +157,7 @@ class BBBController extends Controller
             null;
 
         return [
+            'user' => $user,
             'serverUrl' => $serverUrl,
             'securitySalt' => $securitySalt,
         ];
@@ -190,8 +193,9 @@ class BBBController extends Controller
      *     name="claro_bbb_plugin_configuration_meetings_list",
      *     options={"expose"=true}
      * )
+     * @EXT\ParamConverter("user", converter="current_user")
      */
-    public function pluginConfigurationMeetingsListAction()
+    public function pluginConfigurationMeetingsListAction(User $user)
     {
         $serverUrl = $this->platformConfigHandler->hasParameter('bbb_server_url') ?
             trim($this->platformConfigHandler->getParameter('bbb_server_url'), '/') :
@@ -204,7 +208,7 @@ class BBBController extends Controller
         if ($serverUrl && $securitySalt) {
             $checksum = sha1("getMeetings$securitySalt");
             $url = "$serverUrl/bigbluebutton/api/getMeetings?checksum=$checksum";
-            $response = $this->curlManager->exec($url, null, 'GET', [], true, $ch);
+            $response = $this->curlManager->exec($url, null, 'GET', [], true);
 
             $dom = new \DOMDocument();
 
@@ -213,13 +217,21 @@ class BBBController extends Controller
 
                 for ($i = 0; $i < $meetingsEl->length; ++$i) {
                     $meetingEl = $meetingsEl->item($i);
+                    $meetingId = $meetingEl->getElementsByTagName('meetingID')->item(0)->textContent;
+                    $moderatorPwd = $meetingEl->getElementsByTagName('moderatorPW')->item(0)->textContent;
+                    $userId = $user->getId();
+                    $userName = urlencode($user->getFirstName().' '.$user->getLastName());
+                    $queryString = "meetingID=$meetingId&password=$moderatorPwd&userId=$userId&fullName=$userName";
+                    $check = sha1("join$queryString$securitySalt");
+                    $url = "$serverUrl/bigbluebutton/api/join?$queryString&checksum=$check";
+
                     $meetings[] = [
-                        'meetingID' => $meetingEl->getElementsByTagName('meetingID')->item(0)->textContent,
+                        'meetingID' => $meetingId,
                         'meetingName' => $meetingEl->getElementsByTagName('meetingName')->item(0)->textContent,
                         'createTime' => $meetingEl->getElementsByTagName('createTime')->item(0)->textContent,
                         'createDate' => $meetingEl->getElementsByTagName('createDate')->item(0)->textContent,
                         'attendeePW' => $meetingEl->getElementsByTagName('attendeePW')->item(0)->textContent,
-                        'moderatorPW' => $meetingEl->getElementsByTagName('moderatorPW')->item(0)->textContent,
+                        'moderatorPW' => $moderatorPwd,
                         'hasBeenForciblyEnded' => $meetingEl->getElementsByTagName('hasBeenForciblyEnded')->item(0)->textContent,
                         'running' => $meetingEl->getElementsByTagName('running')->item(0)->textContent,
                         'participantCount' => $meetingEl->getElementsByTagName('participantCount')->item(0)->textContent,
@@ -228,6 +240,7 @@ class BBBController extends Controller
                         'videoCount' => $meetingEl->getElementsByTagName('videoCount')->item(0)->textContent,
                         'duration' => $meetingEl->getElementsByTagName('duration')->item(0)->textContent,
                         'hasUserJoined' => $meetingEl->getElementsByTagName('hasUserJoined')->item(0)->textContent,
+                        'url' => $url,
                     ];
                 }
             }

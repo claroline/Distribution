@@ -1,6 +1,11 @@
 import React from 'react'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {mainReducers, messageReducers, meetingsReducers} from './reducers'
+import {
+  mainReducers,
+  configReducers,
+  messageReducers,
+  meetingsReducers
+} from './reducers'
 import {BBBConfigForm} from './components/bbb-config-form.jsx'
 
 // mount the react application
@@ -14,7 +19,8 @@ bootstrap(
   // app store configuration
   {
     // app reducers
-    config: mainReducers,
+    user: mainReducers,
+    config: configReducers,
     message: messageReducers,
     meetings: meetingsReducers
   },
@@ -22,6 +28,7 @@ bootstrap(
   // transform data attributes for redux store
   (initialData) => {
     return {
+      user: initialData.user,
       config: {
         serverUrl: initialData.serverUrl,
         securitySalt: initialData.securitySalt

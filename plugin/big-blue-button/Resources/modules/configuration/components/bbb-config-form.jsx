@@ -64,6 +64,12 @@ class BBBConfigForm extends Component {
             {trans('save_configuration', {}, 'bbb')}
           </button>
         </div>
+        {this.props.meetings.length > 0 &&
+          <div>
+            <hr/>
+            <Meetings meetings={this.props.meetings}/>
+          </div>
+        }
       </div>
     )
   }
@@ -87,7 +93,8 @@ BBBConfigForm.propTypes = {
     voiceParticipantCount: T.string,
     videoCount: T.string,
     duration: T.string,
-    hasUserJoined: T.string
+    hasUserJoined: T.string,
+    url: T.string
   })),
   updateConfig: T.func,
   saveConfig: T.func,
