@@ -92,7 +92,7 @@ const Properties = props =>
     />
 
     {props.parameters.showEndPage &&
-      <FormGroup controlId="quiz-description" label={t('end_message')}>
+      <FormGroup controlId="quiz-description" label={tex('end_message')}>
         <Textarea
           id="quiz-end-message"
           content={props.parameters.endMessage}
