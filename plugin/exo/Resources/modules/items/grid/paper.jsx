@@ -449,7 +449,7 @@ class GridPaper extends Component {
     return (
         <PaperTabs
           id={this.props.item.id}
-          hideExpected={props.hideExpected}
+          hideExpected={this.props.hideExpected}
           yours={
             <div className="grid-paper">
               <div className="grid-body">
