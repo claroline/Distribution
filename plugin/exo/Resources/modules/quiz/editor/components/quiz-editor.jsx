@@ -140,14 +140,36 @@ Display.propTypes = {
   onChange: T.func.isRequired
 }
 
-/*
-const Access = () => {
+const Access = props => {
   return (
     <fieldset>
+      <FormGroup
+        controlId="quiz-maxPapers"
+        label={tex('maximum_papers')}
+        help={tex('maximum_papers_attempts_help')}
+        warnOnly={!props.validating}
+        error={get(props, 'errors.parameters.maxPapers')}
+      >
+        <input
+          id="quiz-maxPapers"
+          type="number"
+          min="0"
+          value={props.parameters.maxPapers}
+          className="form-control"
+          onChange={e => props.onChange('parameters.maxPapers', e.target.value)}
+        />
+      </FormGroup>
     </fieldset>
   )
 }
-*/
+
+Access.propTypes = {
+  parameters: T.shape({
+    maxPapers: T.number.isRequired
+  }).isRequired,
+  validating: T.bool.isRequired,
+  onChange: T.func.isRequired
+}
 
 const shuffleOptions = () => {
   if (!shuffleOptions._options) {
@@ -499,7 +521,7 @@ export const QuizEditor = props => {
         {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
         {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}
-        {/*makePanel(Access, tex('access'), 'access', props)*/}
+        {makePanel(Access, tex('access'), 'access', props)}
       </PanelGroup>
     </form>
   )

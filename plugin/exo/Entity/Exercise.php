@@ -192,6 +192,16 @@ class Exercise extends AbstractResource
     private $numbering = ExerciseNumbering::NONE;
 
     /**
+     * Number of papers allowed.
+     * If 0, infinite amount of papers.
+     *
+     * @ORM\Column(name="max_papers", type="integer")
+     *
+     * @var int
+     */
+    private $maxPapers = 0;
+
+    /**
      * Exercise constructor.
      */
     public function __construct()
@@ -615,5 +625,15 @@ class Exercise extends AbstractResource
     public function getNumbering()
     {
         return $this->numbering;
+    }
+
+    public function setMaxPapers($maxPapers)
+    {
+        $this->maxPapers = $maxPapers;
+    }
+
+    public function getMaxPapers()
+    {
+        return $this->maxPapers;
     }
 }

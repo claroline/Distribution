@@ -37,7 +37,7 @@ const Parameters = props =>
             props.parameters.correctionDate :
             tex(correctionModes.find(mode => mode[0] === props.parameters.showCorrectionAt)[1])
           }
-        </Parameter>maxAttemptsPerDay
+        </Parameter>
         <Parameter name="availability_of_score">
           {tex(markModes.find(mode => mode[0] === props.parameters.showScoreAt)[1])}
         </Parameter>
@@ -68,6 +68,9 @@ const Parameters = props =>
             <Parameter name="maximum_attempts_per_day">
               {props.parameters.maxAttemptsPerDay || '-'}
             </Parameter>
+            <Parameter name="maximum_papers">
+              {props.parameters.maxPapers || '-'}
+            </Parameter>
           </tbody>
         }
     </table>
@@ -93,6 +96,7 @@ Parameters.propTypes = {
     randomPick: T.string.isRequired,
     pick: T.number.isRequired,
     duration: T.number.isRequired,
+    maxPapers: T.number.isRequired,
     maxAttempts: T.number.isRequired,
     maxAttemptsPerDay: T.number.isRequired,
     interruptible: T.bool.isRequired,
@@ -125,9 +129,9 @@ const Layout = props =>
       (props.parameters.maxAttempts === 0 ||
         (
           props.meta.userPaperCount < props.parameters.maxAttempts &&
-          props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay
+          ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
         )
-      ) &&
+      ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.meta.paperCount === 0) &&
 
       <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
         {tex('exercise_start')}
@@ -144,11 +148,13 @@ Layout.propTypes = {
   parameters: T.shape({
     showMetadata: T.bool.isRequired,
     maxAttempts: T.number.isRequired,
-    maxAttemptsPerDay: T.number.isRequired
+    maxAttemptsPerDay: T.number.isRequired,
+    maxPapers: T.number.isRequired
   }).isRequired,
   meta: T.shape({
     userPaperCount: T.number.isRequired,
-    userPaperDayCount: T.number.isRequired
+    userPaperDayCount: T.number.isRequired,
+    paperCount: T.number.isRequired
   }).isRequired
 }
 

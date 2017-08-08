@@ -4,7 +4,8 @@ function sanitizeQuiz(propertyPath, value) {
   if (propertyPath === 'parameters.pick'
     || propertyPath === 'parameters.duration'
     || propertyPath === 'parameters.maxAttempts'
-    || propertyPath === 'parameters.maxAttemptsPerDay') {
+    || propertyPath === 'parameters.maxAttemptsPerDay'
+    || propertyPath === 'parameters.maxPapers') {
     value = parseInt(value)
   }
 

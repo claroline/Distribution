@@ -655,5 +655,9 @@
     "quiz_numbering_numeric": "Numeric numbering",
     "number_max_attempts_per_day_help": "Entrez 0 pour un nombre d'essais illimité",
     "maximum_attempts_per_day": "Type 0 for unlimited attempts",
-    "must_be_less_than_max_attempts": "Must be less than the maximum amount of attempts"
+    "must_be_less_than_max_attempts": "Must be less than the maximum amount of attempts",
+    "maximum_papers": "Maximum amount of papers",
+    "maximum_papers_attempts_help": "Type 0 for unlimited papers",
+    "access": "Access",
+    "must_be_more_than_max_attempts": "Must be more or equals than the maximum amount of attempts"
 }

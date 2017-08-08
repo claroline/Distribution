@@ -17,6 +17,7 @@ const quiz = {
     duration: 0,
     maxAttempts: 0,
     maxAttemptsPerDay: 0,
+    maxPapers: 0,
     interruptible: false,
     showCorrectionAt: SHOW_CORRECTION_AT_VALIDATION,
     correctionDate: '',

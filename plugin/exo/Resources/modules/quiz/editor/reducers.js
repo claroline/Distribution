@@ -95,7 +95,8 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
       return update(quiz, {
         meta: {
           userPaperCount: {$set: quiz.meta.userPaperCount + 1},
-          userPaperDayCount: {$set: quiz.meta.userPaperDayCount + 1}
+          userPaperDayCount: {$set: quiz.meta.userPaperDayCount + 1},
+          paperCount: {$set: quiz.meta.paperCount + 1}
         }
       })
 
