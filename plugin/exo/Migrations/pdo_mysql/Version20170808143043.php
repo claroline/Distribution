@@ -19,7 +19,7 @@ class Version20170808143043 extends AbstractMigration
             ADD uuid VARCHAR(36) NOT NULL
         ');
         $this->addSql('
-            UPDATE claro_badge
+            UPDATE ujm_cell_choice
             SET uuid = (SELECT UUID())
         ');
         $this->addSql('
