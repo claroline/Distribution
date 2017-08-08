@@ -45,6 +45,12 @@ const Metadata = props =>
         onChange={checked => props.onChange('meta.protectQuestion', checked)}
       />
     }
+    <CheckGroup
+      checkId={`item-${props.item.id}-mandatory`}
+      label={tex('mandatory')}
+      checked={props.item.meta.mandatory}
+      onChange={checked => props.onChange('meta.mandatory', checked)}
+    />
     <FormGroup
       controlId={`item-${props.item.id}-objects`}
       label={tex('question_objects')}
@@ -65,6 +71,7 @@ Metadata.propTypes = {
     description: T.string.isRequired,
     rights: T.object.isRequired,
     meta: T.shape({
+      mandatory: T.bool.isRequired,
       protectQuestion: T.bool.isRequired
     }).isRequired
   }).isRequired,
