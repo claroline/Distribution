@@ -13,6 +13,7 @@
     "meeting_name": "Meeting name",
     "nb_participants": "Number of participants",
     "open_bbb_in_new_tab": "Open BigBlueButton in a new tab",
+    "room_is_closed": "The room is closed.",
     "room_name": "Room name",
     "save_configuration": "Save configuration",
     "security_salt": "Security salt",

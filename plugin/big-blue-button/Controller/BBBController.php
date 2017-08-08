@@ -269,26 +269,41 @@ class BBBController extends Controller
             null;
 
         if ($serverUrl && $securitySalt) {
-            $meetingId = $bbb->getResourceNode()->getGuid();
-            $record = $bbb->getRecord();
-            $roomName = $bbb->getRoomName();
-            $welcomeMessage = $bbb->getWelcomeMessage();
-            $queryString = "meetingID=$meetingId&attendeePW=collaborator&moderatorPW=manager";
-            $queryString .= $record ? '&record=true' : '&record=false';
-            $queryString .= $roomName ? '&name='.urlencode($roomName) : '';
-            $queryString .= $welcomeMessage ? '&welcome='.urlencode($welcomeMessage) : '';
-            $checksum = sha1("create$queryString$securitySalt");
-            $url = "$serverUrl/bigbluebutton/api/create?$queryString&checksum=$checksum";
-            $response = $this->curlManager->exec($url, null, 'GET', [], false, $ch);
-            $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+            $now = new \DateTime();
+            $endDate = $bbb->getEndDate();
 
-            $dom = new \DOMDocument();
+            if ($endDate && $now > $endDate) {
+                $code = 200;
+            } else {
+                $duration = $endDate ?
+                    ceil(abs($now->getTimestamp() - $endDate->getTimestamp()) / 60) :
+                    null;
 
-            if ($dom->loadXML($response)) {
-                $returnCodes = $dom->getElementsByTagName('returncode');
-                $success = $returnCodes->length > 0 && $returnCodes->item(0)->textContent === 'SUCCESS';
-                $code = $success ? 200 : 404;
+                if ($duration === 0) {
+                    $duration = 1;
+                }
+                $meetingId = $bbb->getResourceNode()->getGuid();
+                $record = $bbb->getRecord();
+                $roomName = $bbb->getRoomName();
+                $welcomeMessage = $bbb->getWelcomeMessage();
+                $queryString = "meetingID=$meetingId&attendeePW=collaborator&moderatorPW=manager";
+                $queryString .= $record ? '&record=true' : '&record=false';
+                $queryString .= $duration ? "&duration=$duration" : '';
+                $queryString .= $roomName ? '&name='.urlencode($roomName) : '';
+                $queryString .= $welcomeMessage ? '&welcome='.urlencode($welcomeMessage) : '';
+                $checksum = sha1("create$queryString$securitySalt");
+                $url = "$serverUrl/bigbluebutton/api/create?$queryString&checksum=$checksum";
+                $response = $this->curlManager->exec($url, null, 'GET', [], false, $ch);
+                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                curl_close($ch);
+
+                $dom = new \DOMDocument();
+
+                if ($dom->loadXML($response)) {
+                    $returnCodes = $dom->getElementsByTagName('returncode');
+                    $success = $returnCodes->length > 0 && $returnCodes->item(0)->textContent === 'SUCCESS';
+                    $code = $success ? 200 : 404;
+                }
             }
         }
 

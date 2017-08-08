@@ -13,6 +13,7 @@
     "meeting_name": "Nom de la salle",
     "nb_participants": "Nombre de participants",
     "open_bbb_in_new_tab": "Ouvrir BigBlueButton dans un nouvel onglet",
+    "room_is_closed": "La salle est fermée.",
     "room_name": "Nom de la salle",
     "save_configuration": "Enregistrer la configuration",
     "security_salt": "Sel de sécurité",

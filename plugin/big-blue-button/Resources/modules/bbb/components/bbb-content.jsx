@@ -9,7 +9,7 @@ class BBBContent extends Component {
     if (this.props.serverUrl && this.props.securitySalt) {
       this.props.connectToBBB()
 
-      if (this.props.params.newTab) {
+      if (!this.hasEnded() && this.props.params.newTab) {
         const newTabInterval = setInterval(
           () => {
             if (this.props.bbbUrl && this.props.canJoin) {
@@ -20,7 +20,7 @@ class BBBContent extends Component {
           2000
         )
       }
-      if (!this.props.canJoin) {
+      if (!this.hasEnded() && !this.props.canJoin) {
         const canJoinInterval = setInterval(
           () => {
             if (this.props.canJoin) {
@@ -35,6 +35,12 @@ class BBBContent extends Component {
     }
   }
 
+  hasEnded() {
+    return this.props.params.endDate &&
+      this.props.params.endDate.date &&
+      new Date() > new Date(this.props.params.endDate.date)
+  }
+
   render() {
     return (
       <div>
@@ -43,15 +49,20 @@ class BBBContent extends Component {
             {trans('bbb_not_configured_msg', {}, 'bbb')}
           </div>
         }
-        {this.props.bbbUrl && this.props.canJoin && !this.props.params.newTab &&
+        {this.hasEnded() &&
+          <div className="alert alert-warning">
+            {trans('room_is_closed', {}, 'bbb')}
+          </div>
+        }
+        {!this.hasEnded() && this.props.bbbUrl && this.props.canJoin && !this.props.params.newTab &&
           <iframe className="bbb-iframe" src={this.props.bbbUrl}></iframe>
         }
-        {this.props.params.newTab && this.props.canJoin &&
+        {!this.hasEnded() && this.props.params.newTab && this.props.canJoin &&
           <div className="alert alert-info">
             {trans('bbb_running_in_new_tab', {}, 'bbb')}
           </div>
         }
-        {!this.props.canJoin &&
+        {!this.hasEnded() && !this.props.canJoin &&
           <div className="alert alert-warning">
             {trans('waiting_for_moderator', {}, 'bbb')}
           </div>
@@ -67,7 +78,9 @@ BBBContent.propTypes = {
     roomName: T.string,
     newTab: T.boolean,
     moderatorRequired: T.boolean,
-    record: T.boolean
+    record: T.boolean,
+    startDate: T.object,
+    endDate: T.object
   }),
   resource: T.shape({
     id: T.string,
