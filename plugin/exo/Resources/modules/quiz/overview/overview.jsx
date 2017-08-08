@@ -37,7 +37,7 @@ const Parameters = props =>
             props.parameters.correctionDate :
             tex(correctionModes.find(mode => mode[0] === props.parameters.showCorrectionAt)[1])
           }
-        </Parameter>
+        </Parameter>maxAttemptsPerDay
         <Parameter name="availability_of_score">
           {tex(markModes.find(mode => mode[0] === props.parameters.showScoreAt)[1])}
         </Parameter>
@@ -65,6 +65,9 @@ const Parameters = props =>
             <Parameter name="maximum_tries">
               {props.parameters.maxAttempts || '-'}
             </Parameter>
+            <Parameter name="maximum_attempts_per_day">
+              {props.parameters.maxAttemptsPerDay || '-'}
+            </Parameter>
           </tbody>
         }
     </table>
@@ -91,6 +94,7 @@ Parameters.propTypes = {
     pick: T.number.isRequired,
     duration: T.number.isRequired,
     maxAttempts: T.number.isRequired,
+    maxAttemptsPerDay: T.number.isRequired,
     interruptible: T.bool.isRequired,
     showCorrectionAt: T.string.isRequired,
     correctionDate: T.string,
@@ -118,8 +122,13 @@ const Layout = props =>
     }
 
     {!props.empty &&
-      (props.parameters.maxAttempts === 0
-        || props.meta.userPaperCount < props.parameters.maxAttempts) &&
+      (props.parameters.maxAttempts === 0 ||
+        (
+          props.meta.userPaperCount < props.parameters.maxAttempts &&
+          props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay
+        )
+      ) &&
+
       <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
         {tex('exercise_start')}
       </a>
@@ -134,10 +143,12 @@ Layout.propTypes = {
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
     showMetadata: T.bool.isRequired,
-    maxAttempts: T.number.isRequired
+    maxAttempts: T.number.isRequired,
+    maxAttemptsPerDay: T.number.isRequired
   }).isRequired,
   meta: T.shape({
-    userPaperCount: T.number.isRequired
+    userPaperCount: T.number.isRequired,
+    userPaperDayCount: T.number.isRequired
   }).isRequired
 }
 

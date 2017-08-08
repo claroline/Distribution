@@ -256,6 +256,24 @@ const Signing = props =>
         onChange={e => props.onChange('parameters.maxAttempts', e.target.value)}
       />
     </FormGroup>
+    {props.parameters.maxAttempts > 0 &&
+      <FormGroup
+        controlId="quiz-maxAttemptsPerDay"
+        label={tex('maximum_attempts_per_day')}
+        help={tex('number_max_attempts_per_day_help')}
+        warnOnly={!props.validating}
+        error={get(props, 'errors.parameters.maxAttemptsPerDay')}
+      >
+        <input
+          id="quiz-maxAttemptsPerDay"
+          type="number"
+          min="0"
+          value={props.parameters.maxAttemptsPerDay}
+          className="form-control"
+          onChange={e => props.onChange('parameters.maxAttemptsPerDay', e.target.value)}
+        />
+      </FormGroup>
+    }
     <CheckGroup
       checkId="quiz-interruptible"
       checked={props.parameters.interruptible}
@@ -268,6 +286,7 @@ Signing.propTypes = {
   parameters: T.shape({
     duration: T.number.isRequired,
     maxAttempts: T.number.isRequired,
+    maxAttemptsPerDay: T.number.isRequired,
     interruptible: T.bool.isRequired,
     showFeedback: T.bool.isRequired
   }).isRequired,

@@ -652,5 +652,8 @@
     "change_step": "Change step",
     "quiz_numbering_none": "No numbering",
     "quiz_numbering_litteral": "Litteral numbering",
-    "quiz_numbering_numeric": "Numeric numbering"
+    "quiz_numbering_numeric": "Numeric numbering",
+    "number_max_attempts_per_day_help": "Entrez 0 pour un nombre d'essais illimité",
+    "maximum_attempts_per_day": "Type 0 for unlimited attempts",
+    "must_be_less_than_max_attempts": "Must be less than the maximum amount of attempts"
 }

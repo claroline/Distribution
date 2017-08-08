@@ -87,6 +87,6 @@ describe('<Overview/>', () => {
 
     const toggle = overview.find('.toggle-exercise-info')
     toggle.simulate('click')
-    ensure.equal(overview.find('tr').length, 10)
+    ensure.equal(overview.find('tr').length, 11)
   })
 })

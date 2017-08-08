@@ -639,5 +639,8 @@
     "change_step": "Changer l'étape",
     "quiz_numbering_none": "Aucune numérotation",
     "quiz_numbering_litteral": "Numérotation littérale",
-    "quiz_numbering_numeric": "Numérotation numérique"
+    "quiz_numbering_numeric": "Numérotation numérique",
+    "number_max_attempts_per_day_help": "Entrez 0 pour un nombre d'essais illimité",
+    "maximum_attempts_per_day": "Nombre de tentatives maximum par jour",
+    "must_be_less_than_max_attempts": "Doit être plus petit que le nombre de d'essais maximum"
 }
