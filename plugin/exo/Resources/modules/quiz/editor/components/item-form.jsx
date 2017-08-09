@@ -47,7 +47,7 @@ const Metadata = props =>
     }
     <CheckGroup
       checkId={`item-${props.item.id}-mandatory`}
-      label={tex('mandatory')}
+      label={props.mandatoryQuestions ? tex('skip'): tex('mandatory')}
       checked={props.item.meta.mandatory}
       onChange={checked => props.onChange('meta.mandatory', checked)}
     />
@@ -75,6 +75,7 @@ Metadata.propTypes = {
       protectQuestion: T.bool.isRequired
     }).isRequired
   }).isRequired,
+  mandatoryQuestions: T.bool.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   onChange: T.func.isRequired,
@@ -194,6 +195,7 @@ export class ItemForm extends Component {
           toggle={() => this.setState({metaHidden: !this.state.metaHidden})}
         >
           <Metadata
+            mandatoryQuestions={this.props.mandatoryQuestions}
             item={this.props.item}
             showModal={this.props.showModal}
             closeModal={this.props.closeModal}
@@ -241,6 +243,7 @@ ItemForm.propTypes = {
     feedback: T.string.isRequired,
     _errors: T.object
   }).isRequired,
+  mandatoryQuestions: T.bool.isRequired,
   children: T.element.isRequired,
   validating: T.bool.isRequired,
   showModal: T.func.isRequired,
