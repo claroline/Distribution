@@ -71,6 +71,12 @@ const Parameters = props =>
             <Parameter name="maximum_papers">
               {props.parameters.maxPapers || '-'}
             </Parameter>
+            <Parameter name="maximum_papers">
+              {props.parameters.maxPapers || '-'}
+            </Parameter>
+            <Parameter name="mandatory_questions">
+              {props.parameters.mandatoryQuestions ? 'yes': 'no'}
+            </Parameter>
           </tbody>
         }
     </table>
@@ -99,6 +105,7 @@ Parameters.propTypes = {
     maxPapers: T.number.isRequired,
     maxAttempts: T.number.isRequired,
     maxAttemptsPerDay: T.number.isRequired,
+    mandatoryQuestions: T.bool.isRequired,
     interruptible: T.bool.isRequired,
     showCorrectionAt: T.string.isRequired,
     correctionDate: T.string,

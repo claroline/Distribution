@@ -305,7 +305,7 @@ const Signing = props =>
     <CheckGroup
       checkId="quiz-mandatoryQuestions"
       checked={props.parameters.mandatoryQuestions}
-      label={tex('mandatory_questinos')}
+      label={tex('mandatory_questions')}
       onChange={checked => props.onChange('parameters.mandatoryQuestions', checked)}
     />
 </fieldset>

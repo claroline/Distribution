@@ -47,7 +47,7 @@ const Metadata = props =>
     }
     <CheckGroup
       checkId={`item-${props.item.id}-mandatory`}
-      label={props.mandatoryQuestions ? tex('skip'): tex('mandatory')}
+      label={props.mandatoryQuestions ? tex('make_optional'): tex('mandatory_answer')}
       checked={props.item.meta.mandatory}
       onChange={checked => props.onChange('meta.mandatory', checked)}
     />

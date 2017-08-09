@@ -65,6 +65,7 @@ const Player = props =>
 
     <PlayerNav
       previous={props.previous}
+      mandatoryQuestions={props.mandatoryQuestions}
       next={props.next}
       step={props.step}
       answers = {props.answers}
@@ -89,6 +90,7 @@ Player.propTypes = {
     description: T.string
   }).isRequired,
   items: T.array.isRequired,
+  mandatoryQuestions: T.bool.isRequired,
   answers: T.object.isRequired,
   paper: T.shape({
     id: T.string.isRequired,
@@ -114,6 +116,7 @@ Player.defaultProps = {
 
 function mapStateToProps(state) {
   return {
+    mandatoryQuestions: selectQuiz.parameters(state).mandatoryQuestions,
     quizId: selectQuiz.id(state),
     number: select.currentStepNumber(state),
     step: select.currentStep(state),
