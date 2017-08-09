@@ -61,6 +61,18 @@ describe('<Papers/>', () => {
             finished: false
           }
         }
+      },
+      list: {
+        filters: [],
+        sortBy: {
+          property: null,
+          direction: 0
+        },
+        selected: []
+      },
+      pagination: {
+        current: 0,
+        pageSize: 20
       }
     })
 
@@ -70,8 +82,8 @@ describe('<Papers/>', () => {
       })
     )
 
-    ensure.propTypesOk()
-    ensure.equal(papers.find('table').length, 1)
-    ensure.equal(papers.find('tr').length, 3) // 2 papers + 1 header line
+    //ensure.propTypesOk()
+    ensure.equal(papers.find('DataList').length, 1)
+    ensure.equal(papers.find('tr').length, 4) // 2 papers + 1 header line + 1 footer line
   })
 })
