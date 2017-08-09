@@ -67,6 +67,7 @@ const Player = props =>
       previous={props.previous}
       next={props.next}
       step={props.step}
+      answers = {props.answers}
       showFeedback={props.showFeedback}
       feedbackEnabled={props.feedbackEnabled}
       navigateTo={(step) => props.navigateTo(props.quizId, props.paper.id, step, props.answers, false)}

@@ -53,26 +53,42 @@ FinishButton.propTypes = {
   onClick: T.func.isRequired
 }
 
+const canGoForward = (step, answers) => {
+  const items = step.items
+  let allowed = true
+
+  items.forEach(item => {
+    if (item.meta.mandatory && !(answers[item.id] && answers[item.id].data)) {
+      allowed = false
+    }
+  })
+
+  return allowed
+}
+
 const ForwardButton = props =>
-  (props.next) ?
-    <NotLastQuestionButton
-      openFeedbackAndValidate={props.openFeedbackAndValidate}
-      navigateToAndValidate={props.navigateToAndValidate}
-      step={props.step}
-      next={props.next}
-      currentStepSend={props.currentStepSend}
-      feedbackEnabled={props.feedbackEnabled}
-      showFeedback={props.showFeedback}
-    />:
-    //no next section
-    <LastQuestionButton
-      openFeedbackAndValidate={props.openFeedbackAndValidate}
-      finish={props.finish}
-      currentStepSend={props.currentStepSend}
-      feedbackEnabled={props.feedbackEnabled}
-      showFeedback={props.showFeedback}
-      step={props.step}
-    />
+(canGoForward(props.step, props.answers)) ?
+    (props.next) ?
+      <NotLastQuestionButton
+        openFeedbackAndValidate={props.openFeedbackAndValidate}
+        navigateToAndValidate={props.navigateToAndValidate}
+        step={props.step}
+        next={props.next}
+        currentStepSend={props.currentStepSend}
+        feedbackEnabled={props.feedbackEnabled}
+        showFeedback={props.showFeedback}
+      />:
+      //no next section
+      <LastQuestionButton
+        openFeedbackAndValidate={props.openFeedbackAndValidate}
+        finish={props.finish}
+        currentStepSend={props.currentStepSend}
+        feedbackEnabled={props.feedbackEnabled}
+        showFeedback={props.showFeedback}
+        step={props.step}
+      />
+    :
+  <span/>
 
 ForwardButton.propTypes = {
   next: T.object,
@@ -82,7 +98,8 @@ ForwardButton.propTypes = {
   openFeedbackAndValidate: T.func.isRequired,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
-  currentStepSend: T.bool.isRequired
+  currentStepSend: T.bool.isRequired,
+  answers: T.array
 }
 
 const LastQuestionButton = props =>
@@ -140,6 +157,7 @@ const PlayerNav = props =>
         currentStepSend={props.currentStepSend}
         feedbackEnabled={props.feedbackEnabled}
         showFeedback={props.showFeedback}
+        answers={props.answers}
       />
     </div>
   </nav>
@@ -155,7 +173,8 @@ PlayerNav.propTypes = {
   submit: T.func.isRequired,
   showFeedback: T.bool.isRequired,
   feedbackEnabled: T.bool.isRequired,
-  currentStepSend: T.bool.isRequired
+  currentStepSend: T.bool.isRequired,
+  answers: T.array.isRequired
 }
 
 PlayerNav.defaultProps = {

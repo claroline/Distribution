@@ -131,7 +131,7 @@ const Layout = props =>
           props.meta.userPaperCount < props.parameters.maxAttempts &&
           ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
         )
-      ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.meta.paperCount === 0) &&
+      ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) &&
 
       <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
         {tex('exercise_start')}
