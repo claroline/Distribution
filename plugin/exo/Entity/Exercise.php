@@ -202,6 +202,15 @@ class Exercise extends AbstractResource
     private $maxPapers = 0;
 
     /**
+     * Use all papers to compute stats.
+     *
+     * @var bool
+     *
+     * @ORM\Column(name="all_papers_stats", type="boolean", options={"default" = 1})
+     */
+    private $allPapersStatistics = true;
+
+    /**
      * Exercise constructor.
      */
     public function __construct()
@@ -635,5 +644,25 @@ class Exercise extends AbstractResource
     public function getMaxPapers()
     {
         return $this->maxPapers;
+    }
+
+    /**
+     * Gets allPapersStatistics
+     *
+     * @return boolean
+     */
+    public function isAllPapersStatistics()
+    {
+        return $this->allPapersStatistics;
+    }
+
+    /**
+     * Sets allPapersStatistics.
+     *
+     * @param boolean $allPapersStatistics
+     */
+    public function setAllPapersStatistics($allPapersStatistics)
+    {
+        $this->allPapersStatistics = $allPapersStatistics;
     }
 }
