@@ -647,9 +647,9 @@ class Exercise extends AbstractResource
     }
 
     /**
-     * Gets allPapersStatistics
+     * Gets allPapersStatistics.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAllPapersStatistics()
     {
@@ -659,7 +659,7 @@ class Exercise extends AbstractResource
     /**
      * Sets allPapersStatistics.
      *
-     * @param boolean $allPapersStatistics
+     * @param bool $allPapersStatistics
      */
     public function setAllPapersStatistics($allPapersStatistics)
     {

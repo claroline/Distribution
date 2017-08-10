@@ -466,6 +466,7 @@ Correction.propTypes = {
     showScoreAt: T.string.isRequired,
     showFullCorrection: T.bool.isRequired,
     showStatistics: T.bool.isRequired,
+    allPapersStatistics: T.bool.isRequired,
     showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string,
