@@ -73,13 +73,13 @@ function getDataListDefinition(props) {
     label: tex('paper_list_table_paper_number')
   })
   data.push({
-    name: 'startDate',
+    name: 'start',
     type: 'date',
     label: tex('paper_list_table_start_date'),
     renderer: (rowData) => moment(rowData.startDate).format('DD/MM/YYYY HH:mm')
   })
   data.push({
-    name: 'endDate',
+    name: 'end',
     type: 'date',
     label: tex('paper_list_table_end_date'),
     renderer: (rowData) => moment(rowData.endDate).format('DD/MM/YYYY HH:mm')
@@ -142,25 +142,25 @@ function mapDispatchToProps(dispatch) {
     // search
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))
-      //dispatch(actions.fetchFilteredPapers())
+      dispatch(actions.fetchFilteredPapers())
     },
     removeListFilter: (filter) => {
       dispatch(listActions.removeFilter(filter))
-      //dispatch(actions.fetchFilteredPapers())
+      dispatch(actions.fetchFilteredPapers())
     },
     // sorting
     updateSort: (property) => {
       dispatch(listActions.updateSort(property))
-      //dispatch(actions.fetchFilteredPapers())
+      dispatch(actions.fetchFilteredPapers())
     },
     // pagination
     handlePageSizeUpdate: (pageSize) => {
       dispatch(paginationActions.updatePageSize(pageSize))
-      //dispatch(actions.fetchFilteredPapers())
+      dispatch(actions.fetchFilteredPapers())
     },
     handlePageChange: (page) => {
       dispatch(paginationActions.changePage(page))
-      //dispatch(actions.fetchFilteredPapers())
+      dispatch(actions.fetchFilteredPapers())
     }
   }
 }

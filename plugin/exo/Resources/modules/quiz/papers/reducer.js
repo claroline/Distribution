@@ -1,4 +1,4 @@
-import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
+import {PAPERS_INIT, PAPERS_RELOAD, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
 import {update} from '../../utils/utils'
 import {utils} from './utils'
 
@@ -10,6 +10,12 @@ export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}
         papers: Object.assign({}, state.papers, action.papers)
       })
     }
+    case PAPERS_RELOAD:
+      return {
+        papers: action.papers,
+        total: action.total,
+        isFetched: true
+      }
     case PAPER_CURRENT:
       return Object.assign({}, state, {
         current: action.id

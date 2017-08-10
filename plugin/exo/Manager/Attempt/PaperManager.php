@@ -195,6 +195,94 @@ class PaperManager
     }
 
     /**
+     * Returns the papers for a given exercise, in a JSON format.
+     *
+     * @param Exercise $exercise
+     * @param User     $user
+     * @param array    $searches
+     * @param int      $page
+     * @param int      $limit
+     *
+     * @return array
+     */
+    public function serializeExerciseFilteredPapers(Exercise $exercise, User $user = null, array $searches, $page, $limit)
+    {
+        $data = [];
+        /** @var QueryBuilder $qb */
+        $qb = $this->om->createQueryBuilder();
+        $qb->select('p');
+        $qb->from('UJM\ExoBundle\Entity\Attempt\Paper', 'p');
+        $qb->join('p.exercise', 'e');
+        $qb->leftJoin('p.user', 'u');
+        $qb->andWhere('e = :exercise');
+        $qb->setParameter('exercise', $exercise);
+
+        if (!empty($user)) {
+            // Load papers for of a single user
+            $qb->andWhere('u = :user');
+            $qb->setParameter('user', $user);
+        }
+        if (!empty($searches['filters']) && is_array($searches['filters'])) {
+            foreach ($searches['filters'] as $filterName => $filterValue) {
+                if ($filterName === 'user') {
+                    $qb->andWhere("CONCAT(UPPER(u.firstName), CONCAT(' ', UPPER(u.lastName))) LIKE :{$filterName}");
+                    $qb->andWhere("CONCAT(UPPER(u.lastName), CONCAT(' ', UPPER(u.firstName))) LIKE :{$filterName}");
+                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                } elseif (in_array($filterName, ['start', 'end'])) {
+                    $qb->andWhere("p.{$filterName} LIKE :{$filterName}");
+                    $qb->setParameter($filterName, '%'.substr($filterValue, 0, 10).'%');
+                } elseif ($filterName === 'finished') {
+                    $filterValue = 'false' === $filterValue;
+
+                    $qb->andWhere("p.interrupted = :interrupted");
+                    $qb->setParameter('interrupted', $filterValue);
+                } else {
+                    // catch boolean
+                    if ('true' === $filterValue || 'false' === $filterValue) {
+                        $filterValue = 'true' === $filterValue;
+                    }
+
+                    $qb->andWhere("p.{$filterName} = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                }
+            }
+        }
+
+        if (!empty($searches['sortBy'])) {
+            if ($searches['sortBy'] === 'finished') {
+                $searches['sortBy'] = 'interrupted';
+            } elseif (substr($searches['sortBy'], 1) === 'finished') {
+                $searches['sortBy'] = '-interrupted';
+            }
+            // reverse order starts by a -
+            if ('-' === substr($searches['sortBy'], 0, 1)) {
+                $qb->orderBy('p.'.substr($searches['sortBy'], 1), 'ASC');
+            } else {
+                $qb->orderBy('p.'.$searches['sortBy'], 'DESC');
+            }
+        }
+
+        $query = $qb->getQuery();
+        $data['count'] = count($query->getResult());
+
+        if (!is_null($page) && !is_null($limit)) {
+            //react table all is -1
+            if ($limit > -1) {
+                $query->setMaxResults($limit);
+            }
+            $query->setFirstResult($page * $limit);
+        }
+        $papers = $query->getResult();
+
+        $data['papers'] = array_map(function (Paper $paper) {
+            return $this->serialize($paper);
+        }, $papers);
+
+        return $data;
+    }
+
+
+    /**
      * Deletes all the papers associated with an exercise.
      *
      * @param Exercise $exercise
