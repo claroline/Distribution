@@ -2,6 +2,8 @@
   "name": "claroline-distribution",
   "version": "1.0.0",
   "description": "Claroline distribution frontend dependencies",
+  "license": "GPL-3.0",
+  "repository": "https://github.com/claroline/Distribution",
   "dependencies": {
     "classnames": "^2.2.5",
     "checklist-model": "^0.10.0",

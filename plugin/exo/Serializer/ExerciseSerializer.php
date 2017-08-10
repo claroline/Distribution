@@ -165,10 +165,13 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->randomPick = $exercise->getRandomPick();
         $parameters->pick = $exercise->getPick();
         $parameters->maxAttempts = $exercise->getMaxAttempts();
+        $parameters->maxAttemptsPerDay = $exercise->getMaxAttemptsPerDay();
+        $parameters->maxPapers = $exercise->getMaxPapers();
         $parameters->showFeedback = $exercise->getShowFeedback();
         $parameters->duration = $exercise->getDuration();
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
+        $parameters->numbering = $exercise->getNumbering();
 
         // Visibility parameters
         $parameters->showOverview = $exercise->getShowOverview();
@@ -211,6 +214,8 @@ class ExerciseSerializer implements SerializerInterface
 
         // score of parameter
         $parameters->totalScoreOn = $exercise->getTotalScoreOn();
+        // success score
+        $parameters->successScore = $exercise->getSuccessScore();
 
         $correctionDate = $exercise->getDateCorrection();
         $parameters->correctionDate = !empty($correctionDate) ? $correctionDate->format('Y-m-d\TH:i:s') : null;
@@ -287,6 +292,18 @@ class ExerciseSerializer implements SerializerInterface
             $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
         }
 
+        if (isset($parameters->numbering)) {
+            $exercise->setNumbering($parameters->numbering);
+        }
+
+        if (isset($parameters->maxAttemptsPerDay)) {
+            $exercise->setMaxAttemptsPerDay($parameters->maxAttemptsPerDay);
+        }
+
+        if (isset($parameters->maxPapers)) {
+            $exercise->setMaxPapers($parameters->maxPapers);
+        }
+
         if (isset($parameters->showScoreAt)) {
             switch ($parameters->showScoreAt) {
                 case ShowScoreAt::AFTER_END:
@@ -304,6 +321,13 @@ class ExerciseSerializer implements SerializerInterface
         if (isset($parameters->totalScoreOn)) {
             $exercise->setTotalScoreOn($parameters->totalScoreOn);
         }
+        $success = isset($parameters->successScore) &&
+            $parameters->successScore !== '' &&
+            $parameters->successScore >= 0 &&
+            $parameters->successScore <= 100 ?
+            $parameters->successScore :
+            null;
+        $exercise->setSuccessScore($success);
 
         if (isset($parameters->showCorrectionAt)) {
             $correctionDate = null;

@@ -301,6 +301,11 @@ class ResourceNode
      */
     protected $closeTarget = 0;
 
+    /**
+     * @ORM\Column(type="json_array", nullable=true)
+     */
+    protected $allowedIps = [];
+
     public function __construct()
     {
         $this->guid = Uuid::uuid4()->toString();
@@ -927,5 +932,15 @@ class ResourceNode
     public function setCloseTarget($closeTarget)
     {
         $this->closeTarget = $closeTarget;
+    }
+
+    public function setAllowedIps($allowedIps)
+    {
+        $this->allowedIps = $allowedIps;
+    }
+
+    public function getAllowedIps()
+    {
+        return $this->allowedIps;
     }
 }

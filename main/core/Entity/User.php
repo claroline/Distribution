@@ -34,7 +34,8 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  *     name="claro_user",
  *     indexes={
  *         @Index(name="code_idx", columns={"administrative_code"}),
- *         @Index(name="enabled_idx", columns={"is_enabled"})
+ *         @Index(name="enabled_idx", columns={"is_enabled"}),
+ *         @Index(name="is_removed", columns={"is_removed"})
  * }
  *
  * )
@@ -617,7 +618,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @param bool $areGroupsIncluded
      *
-     * @return array[Role]
+     * @return Role[]
      */
     public function getEntityRoles($areGroupsIncluded = true)
     {
@@ -1269,5 +1270,14 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function removeGroup(Group $group)
     {
         $this->groups->remove($group);
+    }
+
+    public function clearRoles()
+    {
+        foreach ($this->roles as $role) {
+            if ($role->getName() !== 'ROLE_USER') {
+                $this->removeRole($role);
+            }
+        }
     }
 }

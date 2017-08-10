@@ -17,6 +17,7 @@ import {BaseModal}    from '#/main/core/layout/modal/components/base.jsx'
 import {FormGroup}    from '#/main/core/layout/form/components/form-group.jsx'
 import {Textarea}     from '#/main/core/layout/form/components/textarea.jsx'
 import {DatePicker}   from '#/main/core/layout/form/components/date-picker.jsx'
+import {IpSetter}     from '#/main/core/layout/form/components/ip-setter.jsx'
 import {validate}     from '#/main/core/layout/resource/validator'
 import {closeTargets} from '#/main/core/layout/resource/enums'
 
@@ -117,6 +118,11 @@ AccessibilityDatesPanel.propTypes = {
   validating: T.bool.isRequired,
   errors: T.object
 }
+
+const AccessesPanel = () =>
+  <fieldset>
+    <IpSetter/>
+  </fieldset>
 
 const DisplayPanel = props =>
   <fieldset>
@@ -341,6 +347,18 @@ class EditPropertiesModal extends Component {
             'Display parameters',
             <DisplayPanel
               parameters={this.state.resourceNode.parameters}
+              updateParameter={this.updateProperty.bind(this)}
+              validating={this.state.validating}
+              errors={this.state.errors}
+            />
+          )}
+
+          {this.makePanel(
+            'resource-ip-accesses',
+            'fa-laptop',
+            'Accesses',
+            <AccessesPanel
+              meta={this.state.resourceNode.meta}
               updateParameter={this.updateProperty.bind(this)}
               validating={this.state.validating}
               errors={this.state.errors}

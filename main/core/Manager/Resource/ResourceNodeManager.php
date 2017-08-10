@@ -2,14 +2,14 @@
 
 namespace Claroline\CoreBundle\Manager\Resource;
 
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Serializer\Resource\ResourceNodeSerializer;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -78,7 +78,7 @@ class ResourceNodeManager
         $this->authorization = $authorization;
         $this->eventDispatcher = $eventDispatcher;
         $this->om = $om;
-        $this->serializer = $resourceNodeSerializer;
+        $this->serializer = $resourceNodeSerializer; // todo : load from the SerializerProvider
         $this->rightsManager = $rightsManager;
         $this->resourceManager = $resourceManager;
     }
