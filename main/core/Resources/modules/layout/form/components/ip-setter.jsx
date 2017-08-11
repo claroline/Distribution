@@ -7,7 +7,8 @@ export class IpSetter extends Component {
   }
 
   addIpFilter() {
-    this.props.ips.push('0.0.0.0')
+    const ip = '0.0.0.0'
+    this.props.addIp(ip)
   }
 
   render() {
@@ -51,7 +52,7 @@ export class IpSetter extends Component {
             className="btn btn-primary"
             type="button"
             value={tex('add_filter')}
-            onClick={this.addIpFilter}
+            onClick={() => this.addIpFilter()}
           />
           {'\u00A0'}
           <input
@@ -68,14 +69,15 @@ export class IpSetter extends Component {
   }
 }
 
-const IPSpan = props => <div>{props}<i className="fa fa-times fa-fw"/></div>
+const IPSpan = () => <div>{'lalala'}<i className="fa fa-times fa-fw"/></div>
 
 IPSpan.proptype = {
   ip: T.string.isRequired
 }
 
 IpSetter.propTypes = {
-  ips: T.arrayOf(T.string).isRequired
+  ips: T.arrayOf(T.string).isRequired,
+  addIp: T.func.isRequired
 }
 
 IpSetter.defaultProps = {

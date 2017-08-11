@@ -119,10 +119,20 @@ AccessibilityDatesPanel.propTypes = {
   errors: T.object
 }
 
-const AccessesPanel = () =>
+const AccessesPanel = (props) =>
   <fieldset>
-    <IpSetter/>
+    <IpSetter
+      ips={props.meta.allowedIps}
+      addIp={ip => props.updateParameter('meta.ips', ip)}
+    />
   </fieldset>
+
+AccessesPanel.propTypes = {
+  meta: T.shape({
+    allowedIps: T.array
+  }).isRequired,
+  updateParameter: T.func.isRequired
+}
 
 const DisplayPanel = props =>
   <fieldset>
