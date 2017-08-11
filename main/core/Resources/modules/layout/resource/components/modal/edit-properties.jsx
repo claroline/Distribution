@@ -121,15 +121,46 @@ AccessibilityDatesPanel.propTypes = {
 
 const AccessesPanel = (props) =>
   <fieldset>
-    <IpSetter
-      ips={props.meta.allowedIps}
-      addIp={ip => props.updateParameter('meta.ips', ip)}
-    />
+    <FormGroup
+      controlId="access-code"
+      label={t_res('access_code')}
+    >
+      <input
+        id="access-code"
+        type="text"
+        className="form-control"
+        value={props.meta.accesses.code}
+        onChange={(e) => props.updateParameter('meta.accesses.code', e.target.value)}
+      />
+    </FormGroup>
+    <div className="checkbox">
+      <label htmlFor="allow-ip-filtering">
+        <input
+          id="allow-ip-filtering"
+          type="checkbox"
+          checked={props.meta.accesses.ip.activateFilters}
+          onChange={() => props.updateParameter('meta.accesses.ip.activateFilters', !props.meta.accesses.ip.activateFilters)}
+        />
+      {t_res('allow_ip_filtering')}
+      </label>
+    </div>
+    {props.meta.accesses.ip.activateFilters &&
+      <IpSetter
+        ips={props.meta.accesses.ip.ips}
+        onChange={(ips) => props.updateParameter('meta.accesses.ip.ips', ips)}
+      />
+    }
   </fieldset>
 
 AccessesPanel.propTypes = {
   meta: T.shape({
-    allowedIps: T.array
+    accesses: T.shape({
+      ip: T.shape({
+        ips: T.array,
+        activateFilters: T.bool
+      }),
+      code: T.string
+    })
   }).isRequired,
   updateParameter: T.func.isRequired
 }
@@ -254,7 +285,6 @@ class EditPropertiesModal extends Component {
     this.setState((prevState) => {
       const newNode = cloneDeep(prevState.resourceNode)
       set(newNode, parameter, value)
-
       return {
         resourceNode: newNode,
         pendingChanges: true,

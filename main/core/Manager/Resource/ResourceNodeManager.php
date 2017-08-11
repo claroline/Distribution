@@ -117,6 +117,9 @@ class ResourceNodeManager
             $this->resourceManager->rename($resourceNode, $data['name'], true);
         }
 
+        //why no unserialize from serializer ?
+        //@todo ask Axel
+
         $this->updateMeta($data['meta'], $resourceNode);
         $this->updateParameters($data['parameters'], $resourceNode);
         $this->updateRights($data['rights']['all']['permissions'], $resourceNode);
@@ -144,6 +147,10 @@ class ResourceNodeManager
 
         if (isset($meta['authors'])) {
             $resourceNode->setAuthor($meta['authors']);
+        }
+
+        if (isset($meta['accesses'])) {
+            $resourceNode->setAccesses($meta['accesses']);
         }
     }
 

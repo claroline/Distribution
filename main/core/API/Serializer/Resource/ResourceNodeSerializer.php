@@ -176,7 +176,7 @@ class ResourceNodeSerializer
                 'username' => $resourceNode->getCreator()->getUsername(),
             ],
             'actions' => $this->getActions($resourceNode),
-            'allowedIps' => $resourceNode->getAllowedIps(),
+            'accesses' => $resourceNode->getAccesses(),
         ];
 
         return $meta;

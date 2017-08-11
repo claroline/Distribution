@@ -304,7 +304,7 @@ class ResourceNode
     /**
      * @ORM\Column(type="json_array", nullable=true)
      */
-    protected $allowedIps = [];
+    protected $accesses = [];
 
     public function __construct()
     {
@@ -934,13 +934,34 @@ class ResourceNode
         $this->closeTarget = $closeTarget;
     }
 
-    public function setAllowedIps($allowedIps)
+    public function setAllowedIps($ips)
     {
-        $this->allowedIps = $allowedIps;
+        $this->accesses['ips'] = $ips;
     }
 
     public function getAllowedIps()
     {
-        return $this->allowedIps;
+        return $this->accesses['ips'];
+    }
+
+    public function getAccesses()
+    {
+        return array_merge_recursive($this->getDefaultAccesses(), $this->accesses);
+    }
+
+    public function setAccesses($accesses)
+    {
+        $this->accesses = $accesses;
+    }
+
+    public function getDefaultAccesses()
+    {
+        return [
+            'ip' => [
+                'ips' => [],
+                'activateFilters' => false,
+            ],
+            'code' => null,
+        ];
     }
 }

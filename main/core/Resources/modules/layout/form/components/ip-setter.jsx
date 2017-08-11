@@ -4,11 +4,40 @@ import {tex} from '#/main/core/translation'
 export class IpSetter extends Component {
   constructor(props) {
     super(props)
+
+    this.state = {
+      'ip-block-1': '',
+      'ip-block-2': '',
+      'ip-block-3': '',
+      'ip-block-4': ''
+    }
+  }
+
+  handleChange(event) {
+    this.setState({[event.target.id]: event.target.value.toString()})
   }
 
   addIpFilter() {
-    const ip = '0.0.0.0'
-    this.props.addIp(ip)
+    this.props.onChange(this.props.ips.concat([this.getCurrentIp()]))
+    this.setState({
+      'ip-block-1': '',
+      'ip-block-2': '',
+      'ip-block-3': '',
+      'ip-block-4': ''
+    })
+  }
+
+  removeAll() {
+    this.props.onChange([])
+  }
+
+  getCurrentIp() {
+    return `${this.state['ip-block-1']}.${this.state['ip-block-2']}.${this.state['ip-block-3']}.${this.state['ip-block-4']}`
+  }
+
+  onRemove(ip) {
+    this.props.ips.splice(this.props.ips.indexOf(ip), 1)
+    this.props.onChange(this.props.ips)
   }
 
   render() {
@@ -22,6 +51,8 @@ export class IpSetter extends Component {
             max="255"
             className="form-control mb-2 mr-sm-2 mb-sm-0"
             type="number"
+            value={this.state['ip-block-1']}
+            onChange={this.handleChange.bind(this)}
           />{'\u00A0'}.{'\u00A0'}
           <input
             min="0"
@@ -30,6 +61,8 @@ export class IpSetter extends Component {
             max="255"
             className="form-control mb-2 mr-sm-2 mb-sm-0"
             type="number"
+            value={this.state['ip-block-2']}
+            onChange={this.handleChange.bind(this)}
           />{'\u00A0'}.{'\u00A0'}
           <input
             min="0"
@@ -38,6 +71,8 @@ export class IpSetter extends Component {
             max="255"
             className="form-control mb-2 mr-sm-2 mb-sm-0"
             type="number"
+            value={this.state['ip-block-3']}
+            onChange={this.handleChange.bind(this)}
           />{'\u00A0'}.{'\u00A0'}
           <input
             min="0"
@@ -46,6 +81,8 @@ export class IpSetter extends Component {
             max="255"
             className="form-control mb-2 mr-sm-2 mb-sm-0"
             type="number"
+            value={this.state['ip-block-4']}
+            onChange={this.handleChange.bind(this)}
           />
           {'\u00A0'}
           <input
@@ -59,25 +96,29 @@ export class IpSetter extends Component {
             className="btn btn-danger"
             type="button"
             value={tex('remove_all_filter')}
+            onClick={() => this.removeAll()}
           />
         </form>
         <div>
-          {this.props.ips.map(ip => <IPSpan ip={ip}/>)}
+          {this.props.ips.map(ip => <IPSpan ip={ip} onRemove={this.onRemove.bind(this)} />)}
         </div>
       </div>
     )
   }
 }
 
-const IPSpan = () => <div>{'lalala'}<i className="fa fa-times fa-fw"/></div>
+const IPSpan = props => <div>
+  {props.ip}<i className="fa fa-times fa-fw pointer" onClick={() => props.onRemove(props.ip)}/>
+</div>
 
-IPSpan.proptype = {
-  ip: T.string.isRequired
+IPSpan.propTypes = {
+  ip: T.string.isRequired,
+  onRemove: T.func.isRequired
 }
 
 IpSetter.propTypes = {
   ips: T.arrayOf(T.string).isRequired,
-  addIp: T.func.isRequired
+  onChange: T.func.isRequired
 }
 
 IpSetter.defaultProps = {
