@@ -343,7 +343,7 @@ export class MatchPaper extends Component
                             </div>
                         )
                       )}
-                      <label key="unanswered" className='answer-item unanswered-item'>
+                      <div className='answer-item unanswered-item'>
                         <div className="match-item-content">
                           {tex('unanswered')}
                         </div>
@@ -352,7 +352,7 @@ export class MatchPaper extends Component
                           value: this.props.stats.unanswered ? this.props.stats.unanswered : 0,
                           total: this.props.stats.total
                         }} />
-                      </label>
+                      </div>
                     </div>
                   </div>
                 </Tab.Pane>

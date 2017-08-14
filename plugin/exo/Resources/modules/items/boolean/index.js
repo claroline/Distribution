@@ -21,8 +21,40 @@ function getCorrectedAnswer(item, answer = null) {
   return corrected
 }
 
-function generateStats() {
-  return {}
+function generateStats(item, papers, withAllParpers) {
+  const stats = {
+    choices: {},
+    unanswered: 0,
+    total: 0
+  }
+  Object.values(papers).forEach(p => {
+    if (withAllParpers || p.finished) {
+      let total = 0
+      let nbAnswered = 0
+      // compute the number of times the item is present in the structure of the paper
+      p.structure.steps.forEach(s => {
+        s.items.forEach(i => {
+          if (i.id === item.id) {
+            ++total
+            ++stats.total
+          }
+        })
+      })
+      // compute the number of times the item has been answered
+      p.answers.forEach(a => {
+        if (a.questionId === item.id && a.data) {
+          if (!stats.choices[a.data]) {
+            stats.choices[a.data] = 0
+          }
+          ++stats.choices[a.data]
+          ++nbAnswered
+        }
+      })
+      stats.unanswered += total - nbAnswered
+    }
+  })
+
+  return stats
 }
 
 export default {

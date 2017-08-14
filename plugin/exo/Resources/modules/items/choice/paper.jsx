@@ -125,7 +125,7 @@ export const ChoicePaper = props => {
               }} />
             </label>
           )}
-          <label key="unanswered" className='answer-item choice-item unanswered-item'>
+          <label className='answer-item choice-item unanswered-item'>
             <div className="choice-item-content">
               {tex('unanswered')}
             </div>

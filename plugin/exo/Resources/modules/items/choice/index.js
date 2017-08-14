@@ -47,10 +47,9 @@ function generateStats(item, papers, withAllParpers) {
           ++nbAnswered
           a.data.forEach(d => {
             if (!stats.choices[d]) {
-              stats.choices[d] = 1
-            } else {
-              ++stats.choices[d]
+              stats.choices[d] = 0
             }
+            ++stats.choices[d]
           })
         }
       })
