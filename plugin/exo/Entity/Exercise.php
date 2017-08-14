@@ -211,6 +211,15 @@ class Exercise extends AbstractResource
     private $allPapersStatistics = true;
 
     /**
+     * Sets the mandatory question flag.
+     *
+     * @var string
+     *
+     * @ORM\Column(name="mandatory_questions", type="boolean")
+     */
+    private $mandatoryQuestions = false;
+
+    /**
      * Exercise constructor.
      */
     public function __construct()
@@ -664,5 +673,15 @@ class Exercise extends AbstractResource
     public function setAllPapersStatistics($allPapersStatistics)
     {
         $this->allPapersStatistics = $allPapersStatistics;
+    }
+
+    public function setMandatoryQuestions($mandatoryQuestions)
+    {
+        $this->mandatoryQuestions = $mandatoryQuestions;
+    }
+
+    public function getMandatoryQuestions()
+    {
+        return $this->mandatoryQuestions;
     }
 }
