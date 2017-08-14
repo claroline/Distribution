@@ -158,6 +158,17 @@
     }
 }
 
+.unanswered-item {
+    color: @incorrect-answer-color;
+    border-color: @incorrect-answer-border;
+    background: @incorrect-answer-bg;
+
+    .answer-stats {
+        background: @incorrect-answer-color;
+        color: @incorrect-answer-bg;
+    }
+}
+
 .feedback-btn {
     padding: 0 !important; // important is needed to override bootstrap .btn
 }

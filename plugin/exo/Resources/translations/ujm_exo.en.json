@@ -602,6 +602,7 @@
     "type_exo": "Type of quiz",
     "type_qcm": "QCM type",
     "type_question": "Question type",
+    "unanswered": "Unanswered",
     "undo": "Undo",
     "unpublish": "Unpublish",
     "unsaved_changes_warning": "Some changes to the quiz have not been saved. If you leave this page now, they will be lost.",

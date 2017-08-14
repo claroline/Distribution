@@ -588,6 +588,7 @@
     "type_exo": "Type du questionnaire",
     "type_qcm": "Type du QCM",
     "type_question": "Type de la question",
+    "unanswered": "Sans réponse",
     "undo": "Annuler",
     "unpublish": "Dépublier",
     "unsaved_changes_warning": "Certaines modifications du questionnaire n'ont pas été enregistrées. Si vous quittez cette page maintenant, ces modifications seront perdues.",

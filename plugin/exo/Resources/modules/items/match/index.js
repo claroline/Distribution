@@ -32,6 +32,10 @@ function findAnswer(solution, answers) {
   return answers.find(answer => (answer.firstId === solution.firstId) && (answer.secondId === solution.secondId))
 }
 
+function generateStats() {
+  return {}
+}
+
 export default {
   type: 'application/x.match+json',
   name: 'match',
@@ -39,5 +43,6 @@ export default {
   player: MatchPlayer,
   feedback: MatchFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }

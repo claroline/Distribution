@@ -21,6 +21,10 @@ function getCorrectedAnswer(item, answer = null) {
   return corrected
 }
 
+function generateStats() {
+  return {}
+}
+
 export default {
   type: 'application/x.boolean+json',
   name: 'boolean',
@@ -28,5 +32,6 @@ export default {
   player: BooleanPlayer,
   feedback: BooleanFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }

@@ -20,14 +20,3 @@ utils.getAnswerClassForSolution = (solution, answers) => {
   return utils.isSolutionChecked(solution, answers) ?
     solution.score > 0 ? 'correct-answer' : 'incorrect-answer' : ''
 }
-
-utils.getStats = (choice, papers) => {
-  const stats = {
-    value: 0,
-    total: 0
-  }
-  console.log(choice)
-  console.log(papers)
-
-  return stats
-}

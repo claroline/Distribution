@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {tex} from '#/main/core/translation'
 import {SCORE_FIXED} from '../../quiz/enums'
 import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
@@ -103,8 +104,7 @@ export const ChoicePaper = props => {
         <div className="choice-paper">
           {props.item.solutions.map(solution =>
             <label
-              key={utils.expectedId(solution.id)}
-              htmlFor={utils.expectedId(solution.id)}
+              key={solution.id}
               className={classes(
                 'answer-item choice-item',
                 {
@@ -112,23 +112,29 @@ export const ChoicePaper = props => {
                 }
               )}
             >
-              <input
-                className="choice-item-tick"
-                checked={solution.score > 0}
-                id={utils.expectedId(solution.id)}
-                name={utils.expectedId(props.item.id)}
-                type={props.item.multiple ? 'checkbox': 'radio'}
-                disabled
-              />
-
               <div
                 className="choice-item-content"
                 dangerouslySetInnerHTML={{__html: utils.getChoiceById(props.item.choices, solution.id).data}}
               />
 
-              <AnswerStats stats={utils.getStats(utils.getChoiceById(props.item.choices, solution.id), props.papers)} />
+              <AnswerStats stats={{
+                value: props.stats.choices[solution.id] ?
+                  props.stats.choices[solution.id] :
+                  0,
+                total: props.stats.total
+              }} />
             </label>
           )}
+          <label key="unanswered" className='answer-item choice-item unanswered-item'>
+            <div className="choice-item-content">
+              {tex('unanswered')}
+            </div>
+
+            <AnswerStats stats={{
+              value: props.stats.unanswered ? props.stats.unanswered : 0,
+              total: props.stats.total
+            }} />
+          </label>
         </div> :
         <div></div>
       }
@@ -153,7 +159,11 @@ ChoicePaper.propTypes = {
   showScore: T.bool.isRequired,
   hideExpected: T.bool.isRequired,
   showStats: T.bool.isRequired,
-  papers: T.object.isRequired
+  stats: T.shape({
+    choices: T.object,
+    unanswered: T.number,
+    total: T.number
+  })
 }
 
 ChoicePaper.defaultProps = {

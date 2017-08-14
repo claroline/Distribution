@@ -27,6 +27,10 @@ function getCorrectedAnswer(item, answer = {data: []}) {
   return corrected
 }
 
+function generateStats() {
+  return {}
+}
+
 export default {
   type: 'application/x.set+json',
   name: 'set',
@@ -34,5 +38,6 @@ export default {
   player: SetPlayer,
   feedback: SetFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }

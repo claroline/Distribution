@@ -22,6 +22,82 @@ function getCorrectedAnswer(item, answers = null) {
   return corrected
 }
 
+function generateStats(item, papers, withAllParpers) {
+  const stats = {
+    choices: {},
+    unanswered: 0,
+    total: 0
+  }
+  Object.values(papers).forEach(p => {
+    if (withAllParpers || p.finished) {
+      let total = 0
+      let nbAnswered = 0
+      // compute the number of times the item is present in the structure of the paper
+      p.structure.steps.forEach(s => {
+        s.items.forEach(i => {
+          if (i.id === item.id) {
+            ++total
+            ++stats.total
+          }
+        })
+      })
+      // compute the number of times the item has been answered
+      p.answers.forEach(a => {
+        if (a.questionId === item.id && a.data) {
+          ++nbAnswered
+          a.data.forEach(d => {
+            if (!stats.choices[d]) {
+              stats.choices[d] = 1
+            } else {
+              ++stats.choices[d]
+            }
+          })
+        }
+      })
+      stats.unanswered += total - nbAnswered
+    }
+  })
+
+  return stats
+}
+
+
+//utils.computeItemTotal = (itemId, papers, allPapers) => {
+//  let total = 0
+//  papers.forEach(p => {
+//    if (allPapers || p.finished) {
+//    p.structure.steps.forEach(s => {
+//      s.items.forEach(i => {
+//      if (i.id === itemId) {
+//      ++total
+//    }
+//  })
+//  })
+//  }
+//})
+//
+//  return total
+//}
+//
+//utils.getStats = (item, choice, papers, allPapers) => {
+//  const stats = {
+//    value: 0,
+//    total: utils.computeItemTotal(item.id, Object.values(papers), allPapers)
+//  }
+//
+//  Object.values(papers).forEach(p => {
+//    if (allPapers || p.finished) {
+//    p.answers.forEach(a => {
+//      if (a.questionId === item.id && a.data.indexOf(choice.id) > -1) {
+//      ++stats.value
+//    }
+//  })
+//  }
+//})
+//
+//  return stats
+//}
+
 export default {
   type: 'application/x.choice+json',
   name: 'choice',
@@ -29,5 +105,6 @@ export default {
   player: ChoicePlayer,
   feedback: ChoiceFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }

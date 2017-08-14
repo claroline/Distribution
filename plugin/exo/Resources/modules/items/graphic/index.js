@@ -48,6 +48,10 @@ function isPointInArea(area, x, y) {
   }
 }
 
+function generateStats() {
+  return {}
+}
+
 export default {
   type: 'application/x.graphic+json',
   name: 'graphic',
@@ -55,5 +59,6 @@ export default {
   player: GraphicPlayer,
   feedback: GraphicFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }

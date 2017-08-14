@@ -37,6 +37,11 @@ function getCorrectedAnswer(item, answer = {data: []}) {
 function findUserAnswer(solution, answer) {
   return answer.data.find(answer =>  JSON.stringify(cloneDeep(solution.itemIds).sort()) === JSON.stringify(cloneDeep(answer).sort()))
 }
+
+function generateStats() {
+  return {}
+}
+
 export default {
   type: 'application/x.pair+json',
   name: 'pair',
@@ -44,5 +49,6 @@ export default {
   player: PairPlayer,
   feedback: PairFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }

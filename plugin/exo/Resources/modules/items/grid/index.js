@@ -124,6 +124,10 @@ function findSolutionExpectedAnswer(solution) {
   return best
 }
 
+function generateStats() {
+  return {}
+}
+
 export default {
   type: 'application/x.grid+json',
   name: 'grid',
@@ -131,5 +135,6 @@ export default {
   player: GridPlayer,
   feedback: GridFeedback,
   editor,
-  getCorrectedAnswer
+  getCorrectedAnswer,
+  generateStats
 }
