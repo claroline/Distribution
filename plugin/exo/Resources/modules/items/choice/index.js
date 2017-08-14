@@ -61,43 +61,6 @@ function generateStats(item, papers, withAllParpers) {
   return stats
 }
 
-
-//utils.computeItemTotal = (itemId, papers, allPapers) => {
-//  let total = 0
-//  papers.forEach(p => {
-//    if (allPapers || p.finished) {
-//    p.structure.steps.forEach(s => {
-//      s.items.forEach(i => {
-//      if (i.id === itemId) {
-//      ++total
-//    }
-//  })
-//  })
-//  }
-//})
-//
-//  return total
-//}
-//
-//utils.getStats = (item, choice, papers, allPapers) => {
-//  const stats = {
-//    value: 0,
-//    total: utils.computeItemTotal(item.id, Object.values(papers), allPapers)
-//  }
-//
-//  Object.values(papers).forEach(p => {
-//    if (allPapers || p.finished) {
-//    p.answers.forEach(a => {
-//      if (a.questionId === item.id && a.data.indexOf(choice.id) > -1) {
-//      ++stats.value
-//    }
-//  })
-//  }
-//})
-//
-//  return stats
-//}
-
 export default {
   type: 'application/x.choice+json',
   name: 'choice',

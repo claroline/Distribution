@@ -32,8 +32,45 @@ function findAnswer(solution, answers) {
   return answers.find(answer => (answer.firstId === solution.firstId) && (answer.secondId === solution.secondId))
 }
 
-function generateStats() {
-  return {}
+function generateStats(item, papers, withAllParpers) {
+  const stats = {
+    choices: {},
+    unanswered: 0,
+    total: 0
+  }
+  Object.values(papers).forEach(p => {
+    if (withAllParpers || p.finished) {
+      let total = 0
+      let nbAnswered = 0
+      // compute the number of times the item is present in the structure of the paper
+      p.structure.steps.forEach(s => {
+        s.items.forEach(i => {
+          if (i.id === item.id) {
+            ++total
+            ++stats.total
+          }
+        })
+      })
+      // compute the number of times the item has been answered
+      p.answers.forEach(a => {
+        if (a.questionId === item.id && a.data) {
+          ++nbAnswered
+          a.data.forEach(d => {
+            if (!stats.choices[d.firstId]) {
+              stats.choices[d.firstId] = {}
+            }
+            if (!stats.choices[d.firstId][d.secondId]) {
+              stats.choices[d.firstId][d.secondId] = 0
+            }
+            ++stats.choices[d.firstId][d.secondId]
+          })
+        }
+      })
+      stats.unanswered += total - nbAnswered
+    }
+  })
+
+  return stats
 }
 
 export default {
