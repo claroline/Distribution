@@ -964,4 +964,9 @@ class ResourceNode
             'code' => null,
         ];
     }
+
+    public function getIPData()
+    {
+        return $this->getDefaultAccesses()['ip'];
+    }
 }
