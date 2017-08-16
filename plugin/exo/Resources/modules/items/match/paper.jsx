@@ -321,8 +321,9 @@ export class MatchPaper extends Component
                       )}
                       {this.props.item.firstSet.map((first) =>
                         this.props.item.secondSet.map((second) =>
-                          utils.isPresentInSolutions(first.id, second.id, this.props.item.solutions) ?
-                            '' :
+                          this.props.stats.matches[first.id] &&
+                          this.props.stats.matches[first.id][second.id] &&
+                          !utils.isPresentInSolutions(first.id, second.id, this.props.item.solutions) ?
                             <div
                               key={`stats-${first.id}-${second.id}`}
                               className='answer-item'
@@ -340,7 +341,8 @@ export class MatchPaper extends Component
                                   0,
                                 total: this.props.stats.total
                               }} />
-                            </div>
+                            </div> :
+                            ''
                         )
                       )}
                       <div className='answer-item unanswered-item'>
