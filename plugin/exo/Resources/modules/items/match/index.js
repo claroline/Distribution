@@ -34,7 +34,7 @@ function findAnswer(solution, answers) {
 
 function generateStats(item, papers, withAllParpers) {
   const stats = {
-    choices: {},
+    matches: {},
     unanswered: 0,
     total: 0
   }
@@ -56,13 +56,13 @@ function generateStats(item, papers, withAllParpers) {
         if (a.questionId === item.id && a.data) {
           ++nbAnswered
           a.data.forEach(d => {
-            if (!stats.choices[d.firstId]) {
-              stats.choices[d.firstId] = {}
+            if (!stats.matches[d.firstId]) {
+              stats.matches[d.firstId] = {}
             }
-            if (!stats.choices[d.firstId][d.secondId]) {
-              stats.choices[d.firstId][d.secondId] = 0
+            if (!stats.matches[d.firstId][d.secondId]) {
+              stats.matches[d.firstId][d.secondId] = 0
             }
-            ++stats.choices[d.firstId][d.secondId]
+            ++stats.matches[d.firstId][d.secondId]
           })
         }
       })

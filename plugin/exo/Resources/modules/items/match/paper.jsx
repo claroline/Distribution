@@ -312,8 +312,8 @@ export class MatchPaper extends Component
                           </div>
 
                           <AnswerStats stats={{
-                            value: this.props.stats.choices[solution.firstId] && this.props.stats.choices[solution.firstId][solution.secondId] ?
-                              this.props.stats.choices[solution.firstId][solution.secondId] :
+                            value: this.props.stats.matches[solution.firstId] && this.props.stats.matches[solution.firstId][solution.secondId] ?
+                              this.props.stats.matches[solution.firstId][solution.secondId] :
                               0,
                             total: this.props.stats.total
                           }} />
@@ -335,8 +335,8 @@ export class MatchPaper extends Component
                               </div>
 
                               <AnswerStats stats={{
-                                value: this.props.stats.choices[first.id] && this.props.stats.choices[first.id][second.id] ?
-                                  this.props.stats.choices[first.id][second.id] :
+                                value: this.props.stats.matches[first.id] && this.props.stats.matches[first.id][second.id] ?
+                                  this.props.stats.matches[first.id][second.id] :
                                   0,
                                 total: this.props.stats.total
                               }} />
@@ -387,7 +387,7 @@ MatchPaper.propTypes = {
   hideExpected: T.bool.isRequired,
   showStats: T.bool.isRequired,
   stats: T.shape({
-    choices: T.object,
+    matches: T.object,
     unanswered: T.number,
     total: T.number
   })
