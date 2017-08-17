@@ -88,7 +88,8 @@ class AbilityRepository extends EntityRepository
      *
      * @return array
      */
-    public function findByCompetencyAndLevel(Competency $competency, Level $level) {
+    public function findByCompetencyAndLevel(Competency $competency, Level $level)
+    {
         return $this->createQueryBuilder('a')
             ->select('a')
             ->join('a.competencyAbilities', 'ca')
@@ -99,7 +100,7 @@ class AbilityRepository extends EntityRepository
             ->orderBy('l.value, a.id')
             ->setParameters([
                 ':competency' => $competency,
-                ':level' => $level
+                ':level' => $level,
             ])
             ->getQuery()
             ->getResult();
