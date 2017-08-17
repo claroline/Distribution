@@ -946,7 +946,13 @@ class ResourceNode
 
     public function getAccesses()
     {
-        return array_merge_recursive($this->getDefaultAccesses(), $this->accesses);
+        //todo
+        //maybe remove the code from the front end
+        if (!$this->accesses) {
+            return $this->getDefaultAccesses();
+        }
+
+        return $this->accesses;
     }
 
     public function setAccesses($accesses)

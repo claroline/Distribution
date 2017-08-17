@@ -22,9 +22,15 @@ const published = createSelector(
   (meta) => meta.published
 )
 
+const isLocked = createSelector(
+  [resourceNode],
+  (resourceNode) => !!resourceNode.meta.accesses.code && !resourceNode.isManager
+)
+
 export const select = {
   resourceNode,
   meta,
   editable,
-  published
+  published,
+  isLocked
 }

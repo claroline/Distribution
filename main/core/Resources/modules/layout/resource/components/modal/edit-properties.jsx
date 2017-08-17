@@ -127,7 +127,7 @@ const AccessesPanel = (props) =>
     >
       <input
         id="access-code"
-        type="text"
+        type="password"
         className="form-control"
         value={props.meta.accesses.code}
         onChange={(e) => props.updateParameter('meta.accesses.code', e.target.value)}
@@ -285,6 +285,8 @@ class EditPropertiesModal extends Component {
     this.setState((prevState) => {
       const newNode = cloneDeep(prevState.resourceNode)
       set(newNode, parameter, value)
+      //newNode = prevState.resourceNode
+
       return {
         resourceNode: newNode,
         pendingChanges: true,

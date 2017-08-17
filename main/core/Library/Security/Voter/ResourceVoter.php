@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\MaskManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
+use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -52,7 +53,8 @@ class ResourceVoter implements VoterInterface
      *     "ut"               = @DI\Inject("claroline.security.utilities"),
      *     "maskManager"      = @DI\Inject("claroline.manager.mask_manager"),
      *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager"),
      * })
      */
     public function __construct(
@@ -61,7 +63,8 @@ class ResourceVoter implements VoterInterface
         Utilities $ut,
         MaskManager $maskManager,
         ResourceManager $resourceManager,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        RightsManager $rightsManager
     ) {
         $this->em = $em;
         $this->repository = $em->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
@@ -71,12 +74,17 @@ class ResourceVoter implements VoterInterface
         $this->maskManager = $maskManager;
         $this->resourceManager = $resourceManager;
         $this->workspaceManager = $workspaceManager;
+        $this->rightsManager = $rightsManager;
     }
 
     public function vote(TokenInterface $token, $object, array $attributes)
     {
-        if (!$this->validateAccesses($object)) {
+        if ($this->isAdmin($object)) {
             return VoterInterface::ACCESS_GRANTED;
+        }
+
+        if (!$this->validateAccesses($object)) {
+            return VoterInterface::ACCESS_DENIED;
         }
 
         $object = $object instanceof AbstractResource ? $object->getResourceNode() : $object;
@@ -398,6 +406,19 @@ class ResourceVoter implements VoterInterface
             $data = $node->getIPData();
 
             if ($data['activateFilters'] && !$this->validateIP($data['ips'], $_SERVER['REMOTE_ADDR'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isAdmin($object)
+    {
+        $nodes = $object instanceof AbstractResource ? [$object->getResourceNode()] : $object->getResources();
+
+        foreach ($nodes as $node) {
+            if (!$this->rightsManager->isAdmin($node)) {
                 return false;
             }
         }
