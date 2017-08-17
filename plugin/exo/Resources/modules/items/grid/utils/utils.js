@@ -118,7 +118,7 @@ export const utils = {
     solutions.forEach(s => {
       if (s.cellId === cellId) {
         s.answers.forEach(a => {
-          if ((success && a.score >= 0) || (!success && a.score < 0)) {
+          if ((success && a.score > 0) || (!success && a.score <= 0)) {
             answers.push(a)
           }
         })
