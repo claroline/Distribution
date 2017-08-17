@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\RefreshCacheEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Mailing\Mailer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -35,7 +36,7 @@ class MailManager
     /**
      * @DI\InjectParams({
      *     "router"         = @DI\Inject("router"),
-     *     "mailer"         = @DI\Inject("mailer"),
+     *     "mailer"         = @DI\Inject("claroline.library.mailing.mailer"),
      *     "ch"             = @DI\Inject("claroline.config.platform_config_handler"),
      *     "container"      = @DI\Inject("service_container"),
      *     "cacheManager"   = @DI\Inject("claroline.manager.cache_manager"),
@@ -43,7 +44,7 @@ class MailManager
      * })
      */
     public function __construct(
-        \Swift_Mailer $mailer,
+        Mailer $mailer,
         UrlGeneratorInterface $router,
         TranslatorInterface $translator,
         PlatformConfigurationHandler $ch,
@@ -81,7 +82,8 @@ class MailManager
         $subject = $this->translator->trans('resetting_your_password', [], 'platform');
 
         $body = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Mail:forgotPassword.html.twig', ['user' => $user, 'link' => $link]
+            'ClarolineCoreBundle:Mail:forgotPassword.html.twig',
+            ['user' => $user, 'link' => $link]
         );
 
         return $this->send($subject, $body, [$user], null, [], true);
@@ -95,7 +97,8 @@ class MailManager
         $subject = $this->translator->trans('initialize_your_password', [], 'platform');
 
         $body = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Mail:initialize_password.html.twig', ['user' => $user, 'link' => $link]
+            'ClarolineCoreBundle:Mail:initialize_password.html.twig',
+            ['user' => $user, 'link' => $link]
         );
 
         return $this->send($subject, $body, [$user], null, [], true);
@@ -108,7 +111,8 @@ class MailManager
         $subject = $this->translator->trans('activate_account', [], 'platform');
 
         $body = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Mail:activateUser.html.twig', ['user' => $user, 'link' => $link]
+            'ClarolineCoreBundle:Mail:activateUser.html.twig',
+            ['user' => $user, 'link' => $link]
         );
 
         return $this->send($subject, $body, [$user], null, [], true);

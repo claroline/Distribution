@@ -63,6 +63,8 @@ class TransportFactory
             $transport->setPassword($this->configHandler->getParameter('mailer_password'));
 
             return $transport;
+        } elseif ($type === 'postal') {
+            //$transport =
         }
 
         throw new \Exception("Unsupported transport type '{$type}'");
@@ -72,15 +74,15 @@ class TransportFactory
     {
         return new \Swift_Transport_EsmtpTransport(
             new \Swift_Transport_StreamBuffer(new \Swift_StreamFilters_StringReplacementFilterFactory()),
-            array(
+            [
                 new \Swift_Transport_Esmtp_AuthHandler(
-                    array(
+                    [
                         new \Swift_Transport_Esmtp_Auth_CramMd5Authenticator(),
                         new \Swift_Transport_Esmtp_Auth_LoginAuthenticator(),
                         new \Swift_Transport_Esmtp_Auth_PlainAuthenticator(),
-                    )
+                    ]
                 ),
-            ),
+            ],
             new \Swift_Events_SimpleEventDispatcher()
         );
     }
