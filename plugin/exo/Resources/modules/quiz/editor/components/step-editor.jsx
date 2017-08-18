@@ -144,6 +144,7 @@ const ItemHeader = props =>
   >
     <span className="panel-title">
       <ItemIcon name={getDefinition(props.item.type).name}/>
+      tlolol{'\u0020'}
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
 
@@ -580,6 +581,7 @@ StepEditor.propTypes = {
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
   mandatoryQuestions: T.bool.isRequired,
+  numbering: T.string.isREquired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   validating: T.bool.isRequired,
   updateStep: T.func.isRequired,

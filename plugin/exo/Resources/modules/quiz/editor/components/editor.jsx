@@ -70,6 +70,7 @@ function selectSubEditor(props) {
           handleContentItemUpdate={props.updateContentItem}
           handleContentItemDetailUpdate={props.updateContentItemDetail}
           handleFileUpload={props.saveContentItemFile}
+          numbering={props.quizProperties.parameters.numbering}
           showModal={props.showModal}
           closeModal={props.fadeModal}
         />
