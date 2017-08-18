@@ -13,6 +13,7 @@ namespace Claroline\WebInstaller;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Installation\Settings\DatabaseChecker;
+use Claroline\CoreBundle\Library\Installation\Settings\MailingChecker;
 use Claroline\CoreBundle\Library\Installation\Settings\SettingChecker;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -215,6 +216,14 @@ class Controller
         $this->parameters->setMailingValidationErrors($errors);
 
         if (count($errors) > 0) {
+            return $this->redirect('/mailing');
+        }
+
+        $checker = new MailingChecker($mailingSettings);
+
+        if (true !== $status = $checker->testTransport()) {
+            $this->parameters->setMailingGlobalError($status);
+
             return $this->redirect('/mailing');
         }
 
