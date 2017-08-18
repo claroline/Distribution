@@ -190,7 +190,7 @@ const OrderingPaper = props => {
                 {'col-md-6': props.item.direction === DIRECTION_VERTICAL && props.item.mode === MODE_BESIDE}
               )}>
               {props.item.mode === MODE_INSIDE ?
-                <div className={classes("col-md-12 answer-zone",
+                <div className={classes('col-md-12 answer-zone',
                   {'horizontal': props.item.direction === DIRECTION_HORIZONTAL}
                 )}>
                   {props.item.solutions.map((solution) =>
@@ -226,7 +226,7 @@ const OrderingPaper = props => {
 
                   if (props.stats.orders[key] && !utils.isInSolutions(key, props.item.solutions)) {
                     return (
-                      <div key={`stats-unexpected-${key}`} className={classes("col-md-12 answer-zone",
+                      <div key={`stats-unexpected-${key}`} className={classes('col-md-12 answer-zone',
                         {'horizontal': props.item.direction === DIRECTION_HORIZONTAL}
                       )}>
                         {props.stats.orders[key].data.map((d) =>
