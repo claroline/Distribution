@@ -71,11 +71,12 @@ function generateStats(item, papers, withAllParpers) {
       p.answers.forEach(a => {
         if (a.questionId === item.id && a.data) {
           ++nbAnswered
+          const areasToInc = {}
           a.data.forEach(d => {
             let isInArea = false
             item.solutions.forEach(s => {
               if (isPointInArea(s.area, d.x, d.y)) {
-                stats.areas[s.area.id] = stats.areas[s.area.id] ? stats.areas[s.area.id] + 1 : 1
+                areasToInc[s.area.id] = true
                 isInArea = true
               }
             })
@@ -84,6 +85,9 @@ function generateStats(item, papers, withAllParpers) {
               stats.areas['_others'] = stats.areas['_others'] ? stats.areas['_others'] + 1 : 1
             }
           })
+          for (let areaId in areasToInc) {
+            stats.areas[areaId] = stats.areas[areaId] ? stats.areas[areaId] + 1 : 1
+          }
         }
       })
       stats.unanswered += total - nbAnswered
