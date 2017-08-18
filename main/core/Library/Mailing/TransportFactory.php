@@ -64,6 +64,9 @@ class TransportFactory
 
             return $transport;
         }
+
+        //default
+        return $this->getBaseSmtpTransport();
     }
 
     private function getBaseSmtpTransport()

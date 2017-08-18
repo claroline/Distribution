@@ -284,7 +284,7 @@ class MailManager
      */
     public function refreshCache(RefreshCacheEvent $event)
     {
-        $event->addCacheParameter('is_mailer_available', $this->mailer->test());
+        $event->addCacheParameter('is_mailer_available', $this->mailer->test($this->ch->getPlatformConfig()->getParameters()));
     }
 
     public function getMailerFrom()

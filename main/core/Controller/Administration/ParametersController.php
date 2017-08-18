@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Form\Administration as AdminForm;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use Claroline\CoreBundle\Library\Installation\Refresher;
-use Claroline\CoreBundle\Library\Installation\Settings\MailingSettings;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Claroline\CoreBundle\Library\Session\DatabaseSessionValidator;
 use Claroline\CoreBundle\Manager\CacheManager;
@@ -396,10 +395,7 @@ class ParametersController extends Controller
             'api_key' => $form['mailer_api_key']->getData(),
         ];
 
-        $settings = new MailingSettings();
-        $settings->setTransport($data['transport']);
-        $settings->setTransportOptions($data);
-        $errors = $settings->validate();
+        $errors = $this->container->get('claroline.library.mailing.mailer')->test($data);
 
         if (count($errors) > 0) {
             foreach ($errors as $field => $error) {

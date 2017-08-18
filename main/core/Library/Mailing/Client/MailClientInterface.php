@@ -8,5 +8,5 @@ interface MailClientInterface
 {
     public function getTransports();
     public function send(Message $message);
-    public function test();
+    public function test(array $data);
 }

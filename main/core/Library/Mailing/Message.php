@@ -15,22 +15,22 @@ class Message
 
     public function to($address)
     {
-        is_array($adress) ?
-            $this->attributes['to'] = $adress :
+        is_array($address) ?
+            $this->attributes['to'] = $address :
             $this->attributes['to'][] = $address;
     }
 
     public function cc($address)
     {
-        is_array($adress) ?
-          $this->attributes['cc'] = $adress :
+        is_array($address) ?
+          $this->attributes['cc'] = $address :
           $this->attributes['cc'][] = $address;
     }
 
     public function bcc($address)
     {
-        is_array($adress) ?
-          $this->attributes['bcc'] = $adress :
+        is_array($address) ?
+          $this->attributes['bcc'] = $address :
           $this->attributes['bcc'][] = $address;
     }
 

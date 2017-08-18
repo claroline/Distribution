@@ -5,6 +5,8 @@ namespace Claroline\CoreBundle\Library\Mailing\Client;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Mailing\Message;
 use JMS\DiExtraBundle\Annotation as DI;
+use Postal\Client;
+use Postal\SendMessage;
 
 /**
  * @DI\Service("claroline.mailing.postal")
@@ -27,10 +29,9 @@ class Postal implements MailClientInterface
         return['postal'];
     }
 
-    public function test()
+    public function test(array $data)
     {
-        //no test yet
-        return true;
+        return [];
     }
 
     public function send(Message $message)
