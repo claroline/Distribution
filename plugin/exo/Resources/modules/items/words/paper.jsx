@@ -8,7 +8,6 @@ import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
 import {AnswerStats} from '../components/stats.jsx'
 import {PaperTabs} from '../components/paper-tabs.jsx'
-import {utils} from './utils/utils'
 
 const AnswerTable = (props) => {
   return(
@@ -84,7 +83,8 @@ AnswerStatsTable.propTypes = {
     words: T.object,
     unanswered: T.number,
     total: T.number
-  })
+  }),
+  isCorrect: T.bool
 }
 
 export const WordsPaper = (props) => {
