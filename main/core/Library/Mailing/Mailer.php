@@ -12,9 +12,7 @@
 namespace Claroline\CoreBundle\Library\Mailing;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Library\Logger\FileLogger;
 use JMS\DiExtraBundle\Annotation as DI;
-use Postal\Client;
 
 /**
  * @DI\Service("claroline.library.mailing.mailer")
@@ -23,51 +21,47 @@ class Mailer
 {
     private $mailer;
     private $ch;
+    private $rootDir;
 
     /**
      * @DI\InjectParams({
-     *     "ch"     = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "mailer" = @DI\Inject("mailer")
+     *     "rootDir" = @DI\Inject("%kernel.root_dir%"),
+     *     "ch"      = @DI\Inject("claroline.config.platform_config_handler")
      * })
      */
-    public function __construct(\Swift_Mailer $mailer, PlatformConfigurationHandler $ch)
+    public function __construct(PlatformConfigurationHandler $ch, $rootDir)
     {
-        $this->mailer = $mailer;
         $this->ch = $ch;
+        $this->rootDir = $rootDir;
+        $this->clients = [];
     }
 
-    public function send(\Swift_Message $message)
+    public function send(Message $message)
     {
-        $emailLog = $this->container->getParameter('kernel.root_dir').'/logs/email.log';
-        $logger = FileLogger::get($emailLog);
+        $client = $this->getClient();
+        $client->send($message);
+    }
 
-        if ($this->ch->getParameter('mailer_transport') === 'postal') {
-            $client = new Client(
-              $this->ch->getParameter('mailer_host'),
-              $this->ch->getParameter('mailer_api_key')
-          );
+    public function add($client)
+    {
+        $this->clients[] = $client;
+    }
 
-            // Create a new message
-            $message = new Message($client);
-            $message->to($message->getTo());
-            $message->bcc($message->getBcc());
-            $message->from($message->getFrom());
-            $message->subject($message->getSubject());
-            $message->htmlBody($message->getBody());
+    public function test()
+    {
+        return $this->getClient()->test();
+    }
 
-            $message->send();
+    public function getClient()
+    {
+        $transport = $this->ch->getParameter('mailer_transport');
 
-            return true;
-        } else {
-            if ($this->mailer->send($message)) {
-                $logger->info('Mail sent');
-
-                return true;
-            } else {
-                $logger->error('Mail sent');
-
-                return false;
+        foreach ($this->clients as $client) {
+            if (in_array($transport, $client->getTransports())) {
+                return $client;
             }
         }
+
+        throw new \Exception('Transport '.$transport.' not found.');
     }
 }

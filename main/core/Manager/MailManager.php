@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\RefreshCacheEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Mailing\Mailer;
+use Claroline\CoreBundle\Library\Mailing\Message;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -222,24 +223,23 @@ class MailManager
                 }
             }
 
-            $message = \Swift_Message::newInstance()
-                ->setSubject($subject)
-                ->setFrom($fromEmail)
-                ->setReplyTo($replyToMail)
-                ->setBody($body, 'text/html');
+            $message = new Message();
+            $message->subject($subject);
+            $message->from($fromEmail);
+            $message->body($body);
 
-            if ($from !== null && filter_var($from->getMail(), FILTER_VALIDATE_EMAIL)) {
-                $message->setReplyTo($from->getMail());
-            }
+            ($from !== null && filter_var($from->getMail(), FILTER_VALIDATE_EMAIL)) ?
+                $message->replyTo($from->getMail()) :
+                $message->replyTo($replyToMail);
 
             if (count($to) > 1) {
-                $message->setBcc($to);
+                $message->bcc($to);
             } else {
-                $message->setTo($to);
+                $message->to($to);
             }
 
             if (isset($extra['attachment'])) {
-                $message->attach(\Swift_Attachment::fromPath($extra['attachment'], 'application/octet-stream'));
+                $message->attach($extra['attachment'], 'application/octet-stream');
             }
 
             return $this->mailer->send($message) ? true : false;
@@ -284,12 +284,7 @@ class MailManager
      */
     public function refreshCache(RefreshCacheEvent $event)
     {
-        try {
-            $this->mailer->getTransport()->start();
-            $event->addCacheParameter('is_mailer_available', true);
-        } catch (\Swift_TransportException $e) {
-            $event->addCacheParameter('is_mailer_available', false);
-        }
+        $event->addCacheParameter('is_mailer_available', $this->mailer->test());
     }
 
     public function getMailerFrom()

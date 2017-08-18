@@ -18,7 +18,6 @@ use Claroline\CoreBundle\Form\Administration as AdminForm;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use Claroline\CoreBundle\Library\Installation\Refresher;
-use Claroline\CoreBundle\Library\Installation\Settings\MailingChecker;
 use Claroline\CoreBundle\Library\Installation\Settings\MailingSettings;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Claroline\CoreBundle\Library\Session\DatabaseSessionValidator;
@@ -394,6 +393,7 @@ class ParametersController extends Controller
             'auth_mode' => $form['mailer_auth_mode']->getData(),
             'encryption' => $form['mailer_encryption']->getData(),
             'port' => $form['mailer_port']->getData(),
+            'api_key' => $form['mailer_api_key']->getData(),
         ];
 
         $settings = new MailingSettings();
@@ -410,16 +410,6 @@ class ParametersController extends Controller
             return ['form_mail' => $form->createView()];
         }
 
-        $checker = new MailingChecker($settings);
-        $error = $checker->testTransport();
-
-        if ($error !== true) {
-            $session = $this->request->getSession();
-            $session->getFlashBag()->add('error', $this->translator->trans($error, [], 'platform'));
-
-            return ['form_mail' => $form->createView()];
-        }
-
         $this->configHandler->setParameters(
             [
                 'mailer_transport' => $data['transport'],
@@ -429,6 +419,7 @@ class ParametersController extends Controller
                 'mailer_auth_mode' => $data['auth_mode'],
                 'mailer_encryption' => $data['encryption'],
                 'mailer_port' => $data['port'],
+                'mailer_api_key' => $data['api_key'],
             ]
         );
 

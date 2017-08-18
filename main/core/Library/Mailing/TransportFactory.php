@@ -63,11 +63,7 @@ class TransportFactory
             $transport->setPassword($this->configHandler->getParameter('mailer_password'));
 
             return $transport;
-        } elseif ($type === 'postal') {
-            //$transport =
         }
-
-        throw new \Exception("Unsupported transport type '{$type}'");
     }
 
     private function getBaseSmtpTransport()
