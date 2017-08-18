@@ -241,6 +241,7 @@ SetPaper.propTypes = {
   answer: T.array,
   showScore: T.bool.isRequired,
   hideExpected: T.bool.isRequired,
+  showStats: T.bool.isRequired,
   stats: T.shape({
     sets: T.object,
     unused: T.object,
