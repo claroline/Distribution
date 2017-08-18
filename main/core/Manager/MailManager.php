@@ -284,7 +284,21 @@ class MailManager
      */
     public function refreshCache(RefreshCacheEvent $event)
     {
-        $event->addCacheParameter('is_mailer_available', $this->mailer->test($this->ch->getPlatformConfig()->getParameters()));
+        $data = [
+          'transport' => $this->ch->getParameter('mailer_transport'),
+          'host' => $this->ch->getParameter('mailer_host'),
+          'username' => $this->ch->getParameter('mailer_username'),
+          'password' => $this->ch->getParameter('mailer_password'),
+          'auth_mode' => $this->ch->getParameter('mailer_auth_mode'),
+          'encryption' => $this->ch->getParameter('mailer_encryption'),
+          'port' => $this->ch->getParameter('mailer_port'),
+          'api_key' => $this->ch->getParameter('mailer_api_key'),
+        ];
+
+        $event->addCacheParameter(
+          'is_mailer_available',
+          $this->mailer->test($data)
+        );
     }
 
     public function getMailerFrom()
