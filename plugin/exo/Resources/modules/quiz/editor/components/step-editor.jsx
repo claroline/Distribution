@@ -146,7 +146,9 @@ const ItemHeader = props =>
   >
     <span className="panel-title">
       <ItemIcon name={getDefinition(props.item.type).name}/>
-      {props.numbering}{'\u00A0'}
+      {props.numbering &&
+        <span>{props.numbering}.{'\u00A0'}</span>
+      }
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
 

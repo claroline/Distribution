@@ -9,7 +9,7 @@ export const Metadata = props => {
 
         <div>
           {props.numbering &&
-            <span className='numbering'>{props.numbering}) {'\u0020'}</span>
+            <span className='numbering'>{props.numbering}. {'\u0020'}</span>
           }
 
           {props.item.content && !props.isContentItem &&
