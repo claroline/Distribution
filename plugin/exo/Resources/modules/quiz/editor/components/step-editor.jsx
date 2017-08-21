@@ -25,6 +25,7 @@ import {ContentItemForm} from './content-item-form.jsx'
 import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
 import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
 import {getNumbering} from './../../../utils/numbering'
+import {NUMBERING_NONE} from './../../../quiz/enums'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title editor-panel-title">
@@ -145,7 +146,7 @@ const ItemHeader = props =>
   >
     <span className="panel-title">
       <ItemIcon name={getDefinition(props.item.type).name}/>
-      {props.stepIndex + '.' + getNumbering(props.numbering, props.itemPosition)}){'\u0020'}
+      {props.numbering}{'\u00A0'}
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
 
@@ -163,9 +164,8 @@ const ItemHeader = props =>
 
 ItemHeader.propTypes = {
   item: T.object.isRequired,
-  numbering: T.string.isRequired,
-  position: T.number.isRequired,
-  stepId: T.string.isRequired,
+  stepId:  T.string.isRequired,
+  numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleMoveQuestionStepClick: T.func.isRequired,
@@ -193,6 +193,7 @@ class ItemPanel extends Component {
               <ItemHeader
                 item={this.props.item}
                 stepId={this.props.stepId}
+                numbering={this.props.numbering !== NUMBERING_NONE ? this.props.stepIndex + '.' + getNumbering(this.props.numbering, this.props.index): null}
                 handlePanelClick={this.props.handlePanelClick}
                 handleItemDeleteClick={this.props.handleItemDeleteClick}
                 handleMoveQuestionStepClick={this.props.handleMoveQuestionStepClick}
@@ -241,7 +242,9 @@ ItemPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
   index: T.number.isRequired,
+  stepIndex: T.number.isRequired,
   item: T.object.isRequired,
+  numbering: T.string.isRequired,
   expanded: T.bool.isRequired,
   mandatoryQuestions: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
@@ -352,9 +355,9 @@ class ContentPanel extends Component {
 ContentPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
-  index: T.number.isRequired,
   item: T.object.isRequired,
   expanded: T.bool.isRequired,
+  numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
@@ -584,8 +587,8 @@ StepEditor.propTypes = {
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
   mandatoryQuestions: T.bool.isRequired,
-  stepIndex: T.bool.isRequired,
-  numbering: T.string.isREquired,
+  numbering: T.string,
+  stepIndex: T.number,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   validating: T.bool.isRequired,
   updateStep: T.func.isRequired,
