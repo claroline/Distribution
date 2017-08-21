@@ -99,7 +99,11 @@ function fixture() {
       randomPick: SHUFFLE_ONCE,
       pick: 12,
       duration: 123,
+      numbering: 'none',
       maxAttempts: 4,
+      maxAttemptsPerDay: 4,
+      mandatoryQuestions: false,
+      maxPapers: 4,
       interruptible: true,
       showEndPage: false,
       showCorrectionAt: 'never',
@@ -108,6 +112,7 @@ function fixture() {
       showOverview: true,
       showScoreAt: 'never',
       showStatistics: true,
+      allPapersStatistics: true,
       showFullCorrection: false,
       showFeedback: false
     }

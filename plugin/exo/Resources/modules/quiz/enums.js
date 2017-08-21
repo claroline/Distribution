@@ -5,10 +5,20 @@ export const QUIZ_SUMMATIVE = 'summative'
 export const QUIZ_EVALUATIVE = 'evaluative'
 export const QUIZ_FORMATIVE = 'formative'
 
+export const NUMBERING_NONE = 'none'
+export const NUMBERING_LITTERAL = 'litteral'
+export const NUMBERING_NUMERIC = 'numeric'
+
 export const quizTypes = [
   [QUIZ_SUMMATIVE, 'summative'],
   [QUIZ_EVALUATIVE, 'evaluative'],
   [QUIZ_FORMATIVE, 'formative']
+]
+
+export const quizNumbering = [
+  [NUMBERING_NONE, 'none'],
+  [NUMBERING_LITTERAL, 'litteral'],
+  [NUMBERING_NUMERIC, 'numeric']
 ]
 
 export const VIEW_OVERVIEW = 'overview'
@@ -68,3 +78,11 @@ export const SCORE_MANUAL = 'manual'
 
 export const TOTAL_SCORE_ON_DEFAULT = 'default'
 export const TOTAL_SCORE_ON_CUSTOM = 'custom'
+
+export const STATICTICS_ALL_PAPERS = 'default'
+export const STATICTICS_FINISHED_PAPERS_ONLY = 'custom'
+
+export const statisticsModes = [
+  [STATICTICS_ALL_PAPERS, 'compute_from_all_papers'],
+  [STATICTICS_FINISHED_PAPERS_ONLY, 'compute_from_finished_papers_only']
+]

@@ -5,6 +5,7 @@ namespace UJM\ExoBundle\Serializer\Item;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Hint;
@@ -77,6 +78,7 @@ class ItemSerializer extends AbstractSerializer
      * @param HintSerializer            $hintSerializer
      * @param ResourceContentSerializer $resourceContentSerializer
      * @param ItemObjectSerializer      $itemObjectSerializer
+     * @param ContainerInterface        $container
      *
      * @DI\InjectParams({
      *     "om"                        = @DI\Inject("claroline.persistence.object_manager"),
@@ -86,7 +88,8 @@ class ItemSerializer extends AbstractSerializer
      *     "categorySerializer"        = @DI\Inject("ujm_exo.serializer.category"),
      *     "hintSerializer"            = @DI\Inject("ujm_exo.serializer.hint"),
      *     "resourceContentSerializer" = @DI\Inject("ujm_exo.serializer.resource_content"),
-     *     "itemObjectSerializer"      = @DI\Inject("ujm_exo.serializer.item_object")
+     *     "itemObjectSerializer"      = @DI\Inject("ujm_exo.serializer.item_object"),
+     *     "container"                 = @DI\Inject("service_container")
      * })
      */
     public function __construct(
@@ -97,8 +100,9 @@ class ItemSerializer extends AbstractSerializer
         CategorySerializer $categorySerializer,
         HintSerializer $hintSerializer,
         ResourceContentSerializer $resourceContentSerializer,
-        ItemObjectSerializer $itemObjectSerializer)
-    {
+        ItemObjectSerializer $itemObjectSerializer,
+        ContainerInterface $container
+    ) {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->itemDefinitions = $itemDefinitions;
@@ -107,6 +111,7 @@ class ItemSerializer extends AbstractSerializer
         $this->hintSerializer = $hintSerializer;
         $this->resourceContentSerializer = $resourceContentSerializer;
         $this->itemObjectSerializer = $itemObjectSerializer;
+        $this->container = $container;
     }
 
     /**
@@ -123,6 +128,12 @@ class ItemSerializer extends AbstractSerializer
         $questionData = $this->serializeQuestionType($question, $options);
 
         if (1 === preg_match('#^application\/x\.[^/]+\+json$#', $question->getMimeType())) {
+            $canEdit = $this->tokenStorage->getToken() && $this->tokenStorage->getToken()->getUser() instanceof User ?
+                $this->container->get('ujm_exo.manager.item')->canEdit($question, $this->tokenStorage->getToken()->getUser()) :
+                false;
+            $rights = [
+              'edit' => $canEdit,
+            ];
             // Adds minimal information
             $this->mapEntityToObject([
                 'id' => 'uuid',
@@ -134,6 +145,9 @@ class ItemSerializer extends AbstractSerializer
                 },
                 'score' => function (Item $question) {
                     return json_decode($question->getScoreRule());
+                },
+                'rights' => function (Item $question) use ($rights) {
+                    return $rights;
                 },
             ], $question, $questionData);
 
@@ -298,6 +312,10 @@ class ItemSerializer extends AbstractSerializer
         $metadata = new \stdClass();
 
         $creator = $question->getCreator();
+
+        $metadata->protectQuestion = $question->getProtectUpdate();
+        $metadata->mandatory = $question->isMandatory();
+
         if (!empty($creator)) {
             $metadata->authors = [
                 $this->userSerializer->serialize($creator, $options),
@@ -358,6 +376,14 @@ class ItemSerializer extends AbstractSerializer
         if (isset($metadata->category)) {
             $category = $this->categorySerializer->deserialize($metadata->category);
             $question->setCategory($category);
+        }
+
+        if (isset($metadata->protectQuestion)) {
+            $question->setProtectUpdate($metadata->protectQuestion);
+        }
+
+        if (isset($metadata->mandatory)) {
+            $question->setMandatory($metadata->mandatory);
         }
     }
 

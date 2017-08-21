@@ -1266,12 +1266,23 @@ class WorkspaceManager
         return false;
     }
 
+    //used for cli copy
+    public function copyFromCode(Workspace $workspace, $code)
+    {
+        $newWorkspace = new Workspace();
+        $newWorkspace->setCode($code);
+        $newWorkspace->setName($code);
+
+        return $this->copy($workspace, $newWorkspace);
+    }
+
     public function copy(Workspace $workspace, Workspace $newWorkspace)
     {
         $newWorkspace->setGuid(uniqid('', true));
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
         $user = null;
+        $resourceInfos = ['copies' => []];
 
         if ($token && $token->getUser() !== 'anon.') {
             $user = $workspace->getCreator() ?
@@ -1287,14 +1298,38 @@ class WorkspaceManager
         $this->om->startFlushSuite();
         $this->duplicateWorkspaceOptions($workspace, $newWorkspace);
         $this->duplicateWorkspaceRoles($workspace, $newWorkspace, $user);
-        $this->duplicateOrderedTools($workspace, $newWorkspace);
         $baseRoot = $this->duplicateRoot($workspace, $newWorkspace, $user);
+        $resourceNodes = $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray();
+        $toCopy = [];
+
+        foreach ($resourceNodes as $resourceNode) {
+            $toCopy[$resourceNode->getGuid()] = $resourceNode;
+        }
+
+        foreach ($resourceNodes as $resourceNode) {
+            if ($resourceNode->getResourceType()->getName() === 'activity' && $this->resourceManager->getResourceFromNode($resourceNode)) {
+                $primRes = $this->resourceManager->getResourceFromNode($resourceNode)->getPrimaryResource();
+                $parameters = $this->resourceManager->getResourceFromNode($resourceNode)->getParameters();
+                if ($primRes) {
+                    unset($toCopy[$primRes->getGuid()]);
+                }
+                if ($parameters) {
+                    foreach ($parameters->getSecondaryResources() as $secRes) {
+                        unset($toCopy[$secRes->getGuid()]);
+                    }
+                }
+                unset($toCopy[$resourceNode->getGuid()]);
+            }
+        }
+
         $this->duplicateResources(
-          $this->resourceManager->getWorkspaceRoot($workspace)->getChildren()->toArray(),
+          $toCopy,
           $this->getArrayRolesByWorkspace($newWorkspace),
           $user,
-          $baseRoot
+          $baseRoot,
+          $resourceInfos
         );
+        $this->duplicateOrderedTools($workspace, $newWorkspace, $resourceInfos);
         $this->om->endFlushSuite();
 
         return $newWorkspace;
@@ -1341,8 +1376,19 @@ class WorkspaceManager
         array $resourceNodes,
         array $workspaceRoles,
         User $user,
-        ResourceNode $rootNode
+        ResourceNode $rootNode,
+        &$resourceInfos
     ) {
+        $ids = [];
+        $resourceNodes = array_filter($resourceNodes, function ($node) use ($ids) {
+            if (!in_array($node->getId(), $ids)) {
+                $ids[] = $node->getId();
+
+                return true;
+            }
+
+            return false;
+        });
         $this->om->flush();
         $this->om->startFlushSuite();
         $copies = [];
@@ -1350,22 +1396,28 @@ class WorkspaceManager
         $this->log('Duplicating '.count($resourceNodes).' children...');
         foreach ($resourceNodes as $resourceNode) {
             try {
-                $this->log('Duplicating '.$resourceNode->getName().' from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
-                $copy = $this->resourceManager->copy(
-                    $resourceNode,
-                    $rootNode,
-                    $user,
-                    false,
-                    false
-                );
-                $copy->getResourceNode()->setIndex($resourceNode->getIndex());
-                $this->om->persist($copy->getResourceNode());
-                /*** Copies rights ***/
-                $this->duplicateRights(
-                    $resourceNode,
-                    $copy->getResourceNode(),
-                    $workspaceRoles
-                );
+                $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
+                //activities will be removed anyway
+                if ($resourceNode->getResourceType()->getName() !== 'activity') {
+                    $copy = $this->resourceManager->copy(
+                      $resourceNode,
+                      $rootNode,
+                      $user,
+                      false,
+                      false
+                  );
+                    if ($copy) {
+                        $copy->getResourceNode()->setIndex($resourceNode->getIndex());
+                        $this->om->persist($copy->getResourceNode());
+                        $resourceInfos['copies'][] = ['original' => $resourceNode, 'copy' => $copy->getResourceNode()];
+                        /*** Copies rights ***/
+                        $this->duplicateRights(
+                            $resourceNode,
+                            $copy->getResourceNode(),
+                            $workspaceRoles
+                        );
+                    }
+                }
             } catch (NotPopulatedEventException $e) {
                 $resourcesErrors[] = [
                     'resourceName' => $resourceNode->getName(),
@@ -1404,6 +1456,7 @@ class WorkspaceManager
         ResourceNode $copy,
         array $workspaceRoles
     ) {
+        $this->log('Start duplicate');
         $rights = $resourceNode->getRights();
 
         foreach ($rights as $right) {
@@ -1415,16 +1468,19 @@ class WorkspaceManager
             $newRight->setCreatableResourceTypes(
                 $right->getCreatableResourceTypes()->toArray()
             );
-            if (
+            if ($role->getWorkspace()) {
+                if (
                 isset($workspaceRoles[$key]) &&
-                !empty($workspaceRoles[$key])) {
-                $newRight->setRole($workspaceRoles[$key]);
-
-                $this->log('Duplicating resource rights for '.$copy->getName().' - '.$role->getName().'...');
-                $this->om->persist($newRight);
-            } else {
-                $newRight->setRole($role);
-                //TODO MODEL persist here aswell later
+                !empty($workspaceRoles[$key])
+                ) {
+                    $usedRole = $copy->getWorkspace()->getGuid() === $workspaceRoles[$key]->getWorkspace()->getGuid() ?
+                      $workspaceRoles[$key] : $role;
+                    $newRight->setRole($role);
+                    $this->log('Duplicating resource rights for '.$copy->getName().' - '.$copy->getId().' - '.$usedRole->getName().'...');
+                    $this->om->persist($newRight);
+                } else {
+                    $this->log('Dont do anything');
+                }
             }
         }
         $this->om->flush();
@@ -1434,7 +1490,7 @@ class WorkspaceManager
      * @param Workspace $source
      * @param Workspace $workspace
      */
-    public function duplicateOrderedTools(Workspace $source, Workspace $workspace)
+    public function duplicateOrderedTools(Workspace $source, Workspace $workspace, $resourceInfos = ['copies' => []])
     {
         $this->log('Duplicating tools...');
         $orderedTools = $source->getOrderedTools();
@@ -1475,7 +1531,7 @@ class WorkspaceManager
         $homeTabs = $this->container->get('claroline.manager.home_tab_manager')->getHomeTabByWorkspace($source);
         //get home tabs from source
 
-        $this->duplicateHomeTabs($source, $workspace, $homeTabs);
+        $this->duplicateHomeTabs($source, $workspace, $homeTabs, $resourceInfos);
     }
 
     /**
@@ -1486,7 +1542,9 @@ class WorkspaceManager
     private function duplicateHomeTabs(
         Workspace $source,
         Workspace $workspace,
-        array $homeTabs
+        array $homeTabs,
+        &$resourceInfos,
+        &$tabInfos = []
     ) {
         $this->log('Duplicating home tabs...');
         $this->om->startFlushSuite();
@@ -1579,7 +1637,7 @@ class WorkspaceManager
                     $this->dispatcher->dispatch(
                         'copy_widget_config_'.$widget['widget']->getName(),
                         'CopyWidgetConfiguration',
-                        [$widget['original'], $widget['copy'], [], $tabsInfos]
+                        [$widget['original'], $widget['copy'], $resourceInfos, $tabsInfos]
                     );
                 } catch (NotPopulatedEventException $e) {
                     $widgetCongigErrors[] = [

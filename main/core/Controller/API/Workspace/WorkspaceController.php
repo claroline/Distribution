@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\API\Workspace;
 
-use Claroline\CoreBundle\API\Finder;
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Form\WorkspaceType;
@@ -60,7 +60,7 @@ class WorkspaceController extends FOSRestController
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "utilities"        = @DI\Inject("claroline.utilities.misc"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "finder"           = @DI\Inject("claroline.API.finder")
+     *     "finder"           = @DI\Inject("claroline.api.finder")
      * })
      */
     public function __construct(
@@ -72,7 +72,7 @@ class WorkspaceController extends FOSRestController
         TokenStorageInterface $tokenStorage,
         ClaroUtilities $utilities,
         WorkspaceManager $workspaceManager,
-        Finder $finder
+        FinderProvider $finder
     ) {
         $this->formFactory = $formFactory;
         $this->om = $om;
@@ -181,10 +181,11 @@ class WorkspaceController extends FOSRestController
      * @View(serializerGroups={"api_workspace"})
      * @Put("workspace/{workspace}", name="put_workspace", options={ "method_prefix" = false })
      * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      */
-    public function putWorkspaceAction(Workspace $workspace)
+    public function putWorkspaceAction(Workspace $workspace, User $user)
     {
-        $workspaceType = new WorkspaceType();
+        $workspaceType = new WorkspaceType($user);
         $workspaceType->enableApi();
         $form = $this->formFactory->create($workspaceType, $workspace);
         $form->submit($this->request);
@@ -240,7 +241,7 @@ class WorkspaceController extends FOSRestController
     {
         $workspaces = $this->container->get('claroline.manager.api_manager')->getParameters('ids', 'Claroline\CoreBundle\Entity\Workspace\Workspace');
         $newWorkspaces = [];
-        $isModel = intval($isModel);
+        $isModel = $isModel === 'true' ? 1 : 0;
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
