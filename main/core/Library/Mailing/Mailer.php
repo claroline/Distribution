@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Library\Mailing;
 
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Logger\FileLogger;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -29,8 +30,10 @@ class Mailer
      *     "ch"      = @DI\Inject("claroline.config.platform_config_handler")
      * })
      */
-    public function __construct(PlatformConfigurationHandler $ch, $rootDir)
-    {
+    public function __construct(
+        PlatformConfigurationHandler $ch,
+        $rootDir
+    ) {
         $this->ch = $ch;
         $this->rootDir = $rootDir;
         $this->clients = [];
@@ -39,7 +42,15 @@ class Mailer
     public function send(Message $message)
     {
         $client = $this->getClient();
-        $client->send($message);
+        $rightsLog = $this->rootDir.'/logs/email.log';
+        $logger = FileLogger::get($rightsLog);
+
+        try {
+            $client->send($message);
+            $logger->info('Email sent to '.$message->getAttribute('to')[0]);
+        } catch (\Exception $e) {
+            $logger->error('Fail to send email to '.$message->getAttribute('to')[0]);
+        }
     }
 
     public function add($client)
