@@ -41,7 +41,7 @@ const Player = props =>
             item={item}
             showHint={(questionId, hint) => props.showHint(props.quizId, props.paper.id, questionId, hint)}
             usedHints={props.answers[item.id] ? props.answers[item.id].usedHints : []}
-            numbering={getNumbering(props.numbering, index)}
+            numbering={props.stepIndex + '.' + getNumbering(props.numbering, index)}
           >
             {React.createElement(getDefinition(item.type).player, {
               item: item,
@@ -128,7 +128,8 @@ function mapStateToProps(state) {
     showFeedback: select.showFeedback(state),
     feedbackEnabled: select.feedbackEnabled(state),
     currentStepSend: select.currentStepSend(state),
-    numbering: selectQuiz.quizNumbering(state)
+    numbering: selectQuiz.quizNumbering(state),
+    stepIndex: select.currentStepIndex(state)
   }
 }
 

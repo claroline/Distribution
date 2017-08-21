@@ -53,6 +53,7 @@ function selectSubEditor(props) {
       return (
         <StepEditor
           step={props.currentObject}
+          stepIndex={props.currentObjectIndex}
           mandatoryQuestions={props.quizProperties.parameters.mandatoryQuestions}
           validating={props.validating}
           updateStep={props.updateStep}
@@ -111,6 +112,7 @@ function mapStateToProps(state) {
   return {
     thumbnails: select.thumbnails(state),
     currentObject: select.currentObjectDeep(state),
+    currentObjectIndex: select.currentObjectIndex(state),
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
     quizProperties: select.quiz(state),

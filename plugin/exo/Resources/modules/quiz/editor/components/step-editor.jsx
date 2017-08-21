@@ -24,6 +24,7 @@ import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
 import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
 import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
+import {getNumbering} from './../../../utils/numbering'
 
 const ParametersHeader = props =>
   <div onClick={props.onClick} className="panel-title editor-panel-title">
@@ -144,7 +145,7 @@ const ItemHeader = props =>
   >
     <span className="panel-title">
       <ItemIcon name={getDefinition(props.item.type).name}/>
-      tlolol{'\u0020'}
+      {props.stepIndex + '.' + getNumbering(props.numbering, props.itemPosition)}){'\u0020'}
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
 
@@ -162,6 +163,8 @@ const ItemHeader = props =>
 
 ItemHeader.propTypes = {
   item: T.object.isRequired,
+  numbering: T.string.isRequired,
+  position: T.number.isRequired,
   stepId: T.string.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
@@ -581,6 +584,7 @@ StepEditor.propTypes = {
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
   mandatoryQuestions: T.bool.isRequired,
+  stepIndex: T.bool.isRequired,
   numbering: T.string.isREquired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   validating: T.bool.isRequired,
