@@ -85,6 +85,7 @@ selectSubEditor.propTypes = {
   selectQuizPanel: T.func.isRequired,
   updateQuiz: T.func.isRequired,
   quizProperties: T.object.isRequired,
+  currentObjectIndex: T.number.isRequired,
   currentObject: T.shape({
     type: T.string.isRequired
   }).isRequired,
