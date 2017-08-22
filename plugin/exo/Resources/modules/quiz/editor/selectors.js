@@ -84,7 +84,6 @@ const currentObjectIndex = createSelector(
       return null
     }
 
-    console.log(steps)
     return Object.keys(steps).indexOf(currentObject.id) + 1
   }
 )
