@@ -7,7 +7,6 @@ import {ResourceActions} from '#/main/core/layout/resource/components/resource-a
 
 import {MODAL_RESOURCE_PROPERTIES, EditPropertiesModal} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
 import {MODAL_RESOURCE_RIGHTS, EditRightsModal} from '#/main/core/layout/resource/rights/components/modal/edit-rights.jsx'
-import {MODAL_RESOURCE_PASSWORD, PasswordModal} from '#/main/core/layout/resource/components/modal/password.jsx'
 
 class Resource extends Component {
   constructor(props) {
@@ -16,8 +15,7 @@ class Resource extends Component {
     // register modals
     registerModalTypes([
       [MODAL_RESOURCE_PROPERTIES, EditPropertiesModal],
-      [MODAL_RESOURCE_RIGHTS, EditRightsModal],
-      [MODAL_RESOURCE_PASSWORD, PasswordModal]
+      [MODAL_RESOURCE_RIGHTS, EditRightsModal]
     ])
 
     // open resource in fullscreen if configured
