@@ -43,43 +43,36 @@ class Resource extends Component {
 
   render() {
     return (
-      this.props.isLocked ?
-        <div>
-          THIS CONTENT IS PROTECTED
-          <input type="text" value={this.state.code} onChange={e => this.handleCode(e.target.value)}/>
-          <button onClick={this.validateCode.bind(this)} type="submit" className="btn btn-primary"> validate </button>
-        </div>
-      :
-        <Page
-          className="resource-page"
-          embedded={this.props.embedded}
-          fullscreen={this.state.fullscreen}
+      <Page
+        className="resource-page"
+        embedded={this.props.embedded}
+        fullscreen={this.state.fullscreen}
 
-          modal={this.props.modal}
-          fadeModal={this.props.fadeModal}
-          hideModal={this.props.hideModal}
+        modal={this.props.modal}
+        fadeModal={this.props.fadeModal}
+        hideModal={this.props.hideModal}
+      >
+        <PageHeader
+          className="resource-header"
+          title={this.props.resourceNode.name}
         >
-          <PageHeader
-            className="resource-header"
-            title={this.props.resourceNode.name}
-          >
-            <ResourceActions
-              resourceNode={this.props.resourceNode}
-              editor={this.props.editor}
-              customActions={this.props.customActions}
-              fullscreen={this.state.fullscreen}
-              toggleFullscreen={this.toggleFullscreen}
-              togglePublication={this.props.togglePublication}
-              showModal={this.props.showModal}
-              fadeModal={this.props.fadeModal}
-              updateNode={this.props.updateNode}
-            />
-          </PageHeader>
+          <ResourceActions
+            resourceNode={this.props.resourceNode}
+            editor={this.props.editor}
+            customActions={this.props.customActions}
+            fullscreen={this.state.fullscreen}
+            toggleFullscreen={this.toggleFullscreen}
+            togglePublication={this.props.togglePublication}
+            showModal={this.props.showModal}
+            fadeModal={this.props.fadeModal}
+            updateNode={this.props.updateNode}
+          />
+        </PageHeader>
 
-          <PageContent>
-            {this.props.children}
-          </PageContent>
-        </Page>
+        <PageContent>
+          {this.props.children}
+        </PageContent>
+      </Page>
     )
   }
 }

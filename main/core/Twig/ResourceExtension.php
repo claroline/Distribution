@@ -50,6 +50,7 @@ class ResourceExtension extends \Twig_Extension
         return [
             'isMenuActionImplemented' => new \Twig_Function_Method($this, 'isMenuActionImplemented'),
             'getCurrentUrl' => new \Twig_Function_Method($this, 'getCurrentUrl'),
+            'isCodeProtected' => new \Twig_Function_Method($this, 'isCodeProtected'),
         ];
     }
 
