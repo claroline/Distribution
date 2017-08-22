@@ -69,7 +69,7 @@ class SwiftMailer implements MailClientInterface
               }
 
               if (!empty($data['port'])) {
-                  $error = $this->validator->checkIsPositiveNumber($data['port']);
+                  $error = $validator->checkIsPositiveNumber($data['port']);
                   if ($error) {
                       $errors['port'] = $error;
                   }
