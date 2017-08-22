@@ -202,6 +202,24 @@ class Exercise extends AbstractResource
     private $maxPapers = 0;
 
     /**
+     * Use all papers to compute stats.
+     *
+     * @var bool
+     *
+     * @ORM\Column(name="all_papers_stats", type="boolean", options={"default" = 1})
+     */
+    private $allPapersStatistics = true;
+
+    /**
+     * Sets the mandatory question flag.
+     *
+     * @var string
+     *
+     * @ORM\Column(name="mandatory_questions", type="boolean")
+     */
+    private $mandatoryQuestions = false;
+
+    /**
      * Exercise constructor.
      */
     public function __construct()
@@ -635,5 +653,35 @@ class Exercise extends AbstractResource
     public function getMaxPapers()
     {
         return $this->maxPapers;
+    }
+
+    /**
+     * Gets allPapersStatistics.
+     *
+     * @return bool
+     */
+    public function isAllPapersStatistics()
+    {
+        return $this->allPapersStatistics;
+    }
+
+    /**
+     * Sets allPapersStatistics.
+     *
+     * @param bool $allPapersStatistics
+     */
+    public function setAllPapersStatistics($allPapersStatistics)
+    {
+        $this->allPapersStatistics = $allPapersStatistics;
+    }
+
+    public function setMandatoryQuestions($mandatoryQuestions)
+    {
+        $this->mandatoryQuestions = $mandatoryQuestions;
+    }
+
+    public function getMandatoryQuestions()
+    {
+        return $this->mandatoryQuestions;
     }
 }

@@ -172,6 +172,7 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
         $parameters->numbering = $exercise->getNumbering();
+        $parameters->mandatoryQuestions = $exercise->getMandatoryQuestions();
 
         // Visibility parameters
         $parameters->showOverview = $exercise->getShowOverview();
@@ -183,6 +184,7 @@ class ExerciseSerializer implements SerializerInterface
 
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
+        $parameters->allPapersStatistics = $exercise->isAllPapersStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
 
         switch ($exercise->getMarkMode()) {
@@ -288,12 +290,20 @@ class ExerciseSerializer implements SerializerInterface
             $exercise->setStatistics($parameters->showStatistics);
         }
 
+        if (isset($parameters->allPapersStatistics)) {
+            $exercise->setAllPapersStatistics($parameters->allPapersStatistics);
+        }
+
         if (isset($parameters->showFullCorrection)) {
             $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
         }
 
         if (isset($parameters->numbering)) {
             $exercise->setNumbering($parameters->numbering);
+        }
+
+        if (isset($parameters->mandatoryQuestions)) {
+            $exercise->setMandatoryQuestions($parameters->mandatoryQuestions);
         }
 
         if (isset($parameters->maxAttemptsPerDay)) {

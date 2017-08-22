@@ -28,7 +28,9 @@ import {
   TOTAL_SCORE_ON_DEFAULT,
   NUMBERING_LITTERAL,
   NUMBERING_NONE,
-  NUMBERING_NUMERIC
+  NUMBERING_NUMERIC,
+  STATICTICS_ALL_PAPERS,
+  statisticsModes
 } from './../../enums'
 
 const TOTAL_SCORE_ON_DEFAULT_VALUE = 100
@@ -302,12 +304,19 @@ const Signing = props =>
       label={tex('allow_test_exit')}
       onChange={checked => props.onChange('parameters.interruptible', checked)}
     />
+    <CheckGroup
+      checkId="quiz-mandatoryQuestions"
+      checked={props.parameters.mandatoryQuestions}
+      label={tex('mandatory_questions')}
+      onChange={checked => props.onChange('parameters.mandatoryQuestions', checked)}
+    />
 </fieldset>
 
 Signing.propTypes = {
   parameters: T.shape({
     duration: T.number.isRequired,
     maxAttempts: T.number.isRequired,
+    mandatoryQuestions: T.bool.isRequired,
     maxAttemptsPerDay: T.number.isRequired,
     interruptible: T.bool.isRequired,
     showFeedback: T.bool.isRequired
@@ -367,6 +376,21 @@ class Correction extends Component {
             </FormGroup>
           </div>
         }
+
+        <FormGroup
+          controlId="quiz-success-score"
+          label={tex('quiz_success_score')}
+        >
+          <input
+            id="quiz-success-score"
+            onChange={e => this.props.onChange('parameters.successScore', e.target.value)}
+            type="number"
+            min="0"
+            max="100"
+            className="form-control"
+            value={this.props.parameters.successScore}
+          />
+        </FormGroup>
 
         <FormGroup
           controlId="quiz-showCorrectionAt"
@@ -437,6 +461,22 @@ class Correction extends Component {
           label={tex('statistics')}
           onChange={checked => this.props.onChange('parameters.showStatistics', checked)}
         />
+        {this.props.parameters.showStatistics &&
+          <FormGroup controlId="quiz-showScoreAt" label={tex('statistics_options')}>
+            <select
+              id="quiz-allPapersStatistics"
+              value={this.props.parameters.allPapersStatistics}
+              className="form-control"
+              onChange={e => this.props.onChange('parameters.allPapersStatistics', e.target.value === 'true')}
+            >
+              {statisticsModes.map(mode =>
+                <option key={mode[0]} value={mode[0] === STATICTICS_ALL_PAPERS}>
+                  {tex(mode[1])}
+                </option>
+              )}
+            </select>
+          </FormGroup>
+        }
       </fieldset>
     )
   }
@@ -448,10 +488,12 @@ Correction.propTypes = {
     showScoreAt: T.string.isRequired,
     showFullCorrection: T.bool.isRequired,
     showStatistics: T.bool.isRequired,
+    allPapersStatistics: T.bool.isRequired,
     showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string,
-    totalScoreOn: T.number
+    totalScoreOn: T.number,
+    successScore: T.number
   }).isRequired,
   onChange: T.func.isRequired
 }
