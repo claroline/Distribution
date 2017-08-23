@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
@@ -52,7 +52,7 @@ GeneralStats.propTypes = {
     nbQuestions: T.number.isRequired,
     nbRegisteredUsers: T.number.isRequired,
     nbAnonymousUsers: T.number.isRequired,
-    nbPapers: T.number.isRequired,
+    nbPapers: T.number.isRequired
   }).isRequired
 }
 
