@@ -95,13 +95,6 @@ class ExerciseController extends Controller
         ];
     }
 
-    private function isAdmin(Exercise $exercise)
-    {
-        $collection = new ResourceCollection([$exercise->getResourceNode()]);
-
-        return $this->get('security.authorization_checker')->isGranted('ADMINISTRATE', $collection);
-    }
-
     private function canEdit(Exercise $exercise)
     {
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
