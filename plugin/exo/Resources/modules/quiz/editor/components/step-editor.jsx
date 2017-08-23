@@ -328,7 +328,7 @@ class ContentPanel extends Component {
               connectDragSource={this.props.connectDragSource}
               hasErrors={!isEmpty(this.props.item._errors)}
               validating={this.props.validating}
-              expanded={props.expanded}
+              expanded={this.props.expanded}
             />
           }
           collapsible={true}
