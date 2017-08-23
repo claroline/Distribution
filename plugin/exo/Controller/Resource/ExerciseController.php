@@ -36,23 +36,26 @@ class ExerciseController extends Controller
         $this->assertHasPermission('OPEN', $exercise);
 
         $nbUserPapers = 0;
+        $nbUserPapersDayCount = 0;
 
         if ($user instanceof User) {
             $nbUserPapers = $this->container->get('ujm_exo.manager.paper')->countUserFinishedPapers($exercise, $user);
+            $nbUserPapersDayCount = $this->container->get('ujm_exo.manager.paper')->countUserFinishedDayPapers($exercise, $user);
         }
 
         // TODO : no need to count the $nbPapers for regular users as it's only for admins
         $nbPapers = $this->container->get('ujm_exo.manager.paper')->countExercisePapers($exercise);
-        $isAdmin = $this->isAdmin($exercise);
+        $canEdit = $this->canEdit($exercise);
         $exerciseData = $this->get('ujm_exo.manager.exercise')->serialize(
             $exercise,
-            $isAdmin ? [Transfer::INCLUDE_SOLUTIONS] : []
+            $canEdit ? [Transfer::INCLUDE_SOLUTIONS] : []
         );
 
         // TODO: the following data should be included directly by the manager/serializer
-        $exerciseData->meta->editable = $isAdmin;
+        $exerciseData->meta->editable = $canEdit;
         $exerciseData->meta->paperCount = (int) $nbPapers;
         $exerciseData->meta->userPaperCount = (int) $nbUserPapers;
+        $exerciseData->meta->userPaperDayCount = (int) $nbUserPapersDayCount;
         $exerciseData->meta->registered = $user instanceof User;
         $exerciseData->meta->canViewPapers = $this->canViewPapers($exercise);
         $exerciseData->meta->canViewDocimology = $this->canViewDocimology($exercise);
@@ -63,7 +66,7 @@ class ExerciseController extends Controller
             'workspace' => $exercise->getResourceNode()->getWorkspace(),
             '_resource' => $exercise,
             'exercise' => $exerciseData,
-            'editEnabled' => $isAdmin,
+            'editEnabled' => $canEdit,
         ];
     }
 
@@ -97,6 +100,13 @@ class ExerciseController extends Controller
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
 
         return $this->get('security.authorization_checker')->isGranted('ADMINISTRATE', $collection);
+    }
+
+    private function canEdit(Exercise $exercise)
+    {
+        $collection = new ResourceCollection([$exercise->getResourceNode()]);
+
+        return $this->get('security.authorization_checker')->isGranted('EDIT', $collection);
     }
 
     private function canViewPapers(Exercise $exercise)

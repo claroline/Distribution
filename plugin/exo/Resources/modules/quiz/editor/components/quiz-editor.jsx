@@ -25,7 +25,12 @@ import {
   SHUFFLE_NEVER,
   SHOW_CORRECTION_AT_DATE,
   TOTAL_SCORE_ON_CUSTOM,
-  TOTAL_SCORE_ON_DEFAULT
+  TOTAL_SCORE_ON_DEFAULT,
+  NUMBERING_LITTERAL,
+  NUMBERING_NONE,
+  NUMBERING_NUMERIC,
+  STATICTICS_ALL_PAPERS,
+  statisticsModes
 } from './../../enums'
 
 const TOTAL_SCORE_ON_DEFAULT_VALUE = 100
@@ -67,6 +72,17 @@ const Properties = props =>
         onChange={description => props.onChange('description', description)}
       />
     </FormGroup>
+  </fieldset>
+
+Properties.propTypes = {
+  title: T.string.isRequired,
+  description: T.string.isRequired,
+  validating: T.bool.isRequired,
+  onChange: T.func.isRequired
+}
+
+const Display = props =>
+  <fieldset>
     <CheckGroup
       checkId="quiz-show-overview"
       checked={props.parameters.showOverview}
@@ -92,7 +108,7 @@ const Properties = props =>
     />
 
     {props.parameters.showEndPage &&
-      <FormGroup controlId="quiz-description" label={t('end_message')}>
+      <FormGroup controlId="quiz-description" label={tex('end_message')}>
         <Textarea
           id="quiz-end-message"
           content={props.parameters.endMessage}
@@ -101,17 +117,57 @@ const Properties = props =>
       </FormGroup>
     }
 
+    <Radios
+      groupName="quiz-numbering"
+      options={[
+        {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},
+        {value: NUMBERING_NUMERIC, label: tex('quiz_numbering_numeric')},
+        {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
+      ]}
+      checkedValue={props.parameters.numbering}
+      onChange={numbering => props.onChange('parameters.numbering', numbering)}
+    />
   </fieldset>
 
-Properties.propTypes = {
-  title: T.string.isRequired,
-  description: T.string.isRequired,
+Display.propTypes = {
   parameters: T.shape({
     type: T.string.isRequired,
     showOverview: T.bool.isRequired,
     showMetadata: T.bool.isRequired,
     showEndPage: T.bool.isRequired,
-    endMessage: T.string
+    endMessage: T.string,
+    numbering: T.string
+  }).isRequired,
+  validating: T.bool.isRequired,
+  onChange: T.func.isRequired
+}
+
+const Access = props => {
+  return (
+    <fieldset>
+      <FormGroup
+        controlId="quiz-maxPapers"
+        label={tex('maximum_papers')}
+        help={tex('maximum_papers_attempts_help')}
+        warnOnly={!props.validating}
+        error={get(props, 'errors.parameters.maxPapers')}
+      >
+        <input
+          id="quiz-maxPapers"
+          type="number"
+          min="0"
+          value={props.parameters.maxPapers}
+          className="form-control"
+          onChange={e => props.onChange('parameters.maxPapers', e.target.value)}
+        />
+      </FormGroup>
+    </fieldset>
+  )
+}
+
+Access.propTypes = {
+  parameters: T.shape({
+    maxPapers: T.number.isRequired
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired
@@ -224,11 +280,35 @@ const Signing = props =>
         onChange={e => props.onChange('parameters.maxAttempts', e.target.value)}
       />
     </FormGroup>
+    {props.parameters.maxAttempts > 0 &&
+      <FormGroup
+        controlId="quiz-maxAttemptsPerDay"
+        label={tex('maximum_attempts_per_day')}
+        help={tex('number_max_attempts_per_day_help')}
+        warnOnly={!props.validating}
+        error={get(props, 'errors.parameters.maxAttemptsPerDay')}
+      >
+        <input
+          id="quiz-maxAttemptsPerDay"
+          type="number"
+          min="0"
+          value={props.parameters.maxAttemptsPerDay}
+          className="form-control"
+          onChange={e => props.onChange('parameters.maxAttemptsPerDay', e.target.value)}
+        />
+      </FormGroup>
+    }
     <CheckGroup
       checkId="quiz-interruptible"
       checked={props.parameters.interruptible}
       label={tex('allow_test_exit')}
       onChange={checked => props.onChange('parameters.interruptible', checked)}
+    />
+    <CheckGroup
+      checkId="quiz-mandatoryQuestions"
+      checked={props.parameters.mandatoryQuestions}
+      label={tex('mandatory_questions')}
+      onChange={checked => props.onChange('parameters.mandatoryQuestions', checked)}
     />
 </fieldset>
 
@@ -236,6 +316,8 @@ Signing.propTypes = {
   parameters: T.shape({
     duration: T.number.isRequired,
     maxAttempts: T.number.isRequired,
+    mandatoryQuestions: T.bool.isRequired,
+    maxAttemptsPerDay: T.number.isRequired,
     interruptible: T.bool.isRequired,
     showFeedback: T.bool.isRequired
   }).isRequired,
@@ -294,6 +376,21 @@ class Correction extends Component {
             </FormGroup>
           </div>
         }
+
+        <FormGroup
+          controlId="quiz-success-score"
+          label={tex('quiz_success_score')}
+        >
+          <input
+            id="quiz-success-score"
+            onChange={e => this.props.onChange('parameters.successScore', e.target.value)}
+            type="number"
+            min="0"
+            max="100"
+            className="form-control"
+            value={this.props.parameters.successScore}
+          />
+        </FormGroup>
 
         <FormGroup
           controlId="quiz-showCorrectionAt"
@@ -364,6 +461,22 @@ class Correction extends Component {
           label={tex('statistics')}
           onChange={checked => this.props.onChange('parameters.showStatistics', checked)}
         />
+        {this.props.parameters.showStatistics &&
+          <FormGroup controlId="quiz-showScoreAt" label={tex('statistics_options')}>
+            <select
+              id="quiz-allPapersStatistics"
+              value={this.props.parameters.allPapersStatistics}
+              className="form-control"
+              onChange={e => this.props.onChange('parameters.allPapersStatistics', e.target.value === 'true')}
+            >
+              {statisticsModes.map(mode =>
+                <option key={mode[0]} value={mode[0] === STATICTICS_ALL_PAPERS}>
+                  {tex(mode[1])}
+                </option>
+              )}
+            </select>
+          </FormGroup>
+        }
       </fieldset>
     )
   }
@@ -375,10 +488,12 @@ Correction.propTypes = {
     showScoreAt: T.string.isRequired,
     showFullCorrection: T.bool.isRequired,
     showStatistics: T.bool.isRequired,
+    allPapersStatistics: T.bool.isRequired,
     showFeedback: T.bool.isRequired,
     anonymizeAttempts: T.bool.isRequired,
     correctionDate: T.string,
-    totalScoreOn: T.number
+    totalScoreOn: T.number,
+    successScore: T.number
   }).isRequired,
   onChange: T.func.isRequired
 }
@@ -444,9 +559,11 @@ export const QuizEditor = props => {
         activeKey={props.activePanelKey}
       >
         {makePanel(Properties, t('properties'), 'properties', props, ['title'])}
+        {makePanel(Display, t('display_mode'), 'display_mode', props)}
         {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
         {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}
+        {makePanel(Access, tex('access'), 'access', props)}
       </PanelGroup>
     </form>
   )

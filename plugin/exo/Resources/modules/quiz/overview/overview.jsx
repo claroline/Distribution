@@ -65,6 +65,18 @@ const Parameters = props =>
             <Parameter name="maximum_tries">
               {props.parameters.maxAttempts || '-'}
             </Parameter>
+            <Parameter name="maximum_attempts_per_day">
+              {props.parameters.maxAttemptsPerDay || '-'}
+            </Parameter>
+            <Parameter name="maximum_papers">
+              {props.parameters.maxPapers || '-'}
+            </Parameter>
+            <Parameter name="maximum_papers">
+              {props.parameters.maxPapers || '-'}
+            </Parameter>
+            <Parameter name="mandatory_questions">
+              {props.parameters.mandatoryQuestions ? 'yes': 'no'}
+            </Parameter>
           </tbody>
         }
     </table>
@@ -90,7 +102,10 @@ Parameters.propTypes = {
     randomPick: T.string.isRequired,
     pick: T.number.isRequired,
     duration: T.number.isRequired,
+    maxPapers: T.number.isRequired,
     maxAttempts: T.number.isRequired,
+    maxAttemptsPerDay: T.number.isRequired,
+    mandatoryQuestions: T.bool.isRequired,
     interruptible: T.bool.isRequired,
     showCorrectionAt: T.string.isRequired,
     correctionDate: T.string,
@@ -118,8 +133,13 @@ const Layout = props =>
     }
 
     {!props.empty &&
-      (props.parameters.maxAttempts === 0
-        || props.meta.userPaperCount < props.parameters.maxAttempts) &&
+      (props.parameters.maxAttempts === 0 ||
+        (
+          props.meta.userPaperCount < props.parameters.maxAttempts &&
+          ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
+        )
+      ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) &&
+
       <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
         {tex('exercise_start')}
       </a>
@@ -134,10 +154,14 @@ Layout.propTypes = {
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
     showMetadata: T.bool.isRequired,
-    maxAttempts: T.number.isRequired
+    maxAttempts: T.number.isRequired,
+    maxAttemptsPerDay: T.number.isRequired,
+    maxPapers: T.number.isRequired
   }).isRequired,
   meta: T.shape({
-    userPaperCount: T.number.isRequired
+    userPaperCount: T.number.isRequired,
+    userPaperDayCount: T.number.isRequired,
+    paperCount: T.number.isRequired
   }).isRequired
 }
 

@@ -49,9 +49,11 @@ class UserSerializer
      *
      * @return array - the serialized representation of the workspace
      */
-    public function serialize(User $user, $public = true)
+    public function serialize(User $user, $options = [])
     {
-        if ($public) {
+        $isPublic = isset($options['public']) ? $options['public'] : false;
+
+        if ($isPublic) {
             return $this->serializePublic($user);
         }
 
@@ -69,6 +71,7 @@ class UserSerializer
                   case 'baseData':
                       $publicUser['lastName'] = $user->getLastName();
                       $publicUser['firstName'] = $user->getFirstName();
+                      $publicUser['fullName'] = $user->getFirstName().' '.$user->getLastName();
                       $publicUser['username'] = $user->getUsername();
                       $publicUser['picture'] = $user->getPicture();
                       $publicUser['description'] = $user->getAdministrativeCode();

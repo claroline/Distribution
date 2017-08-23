@@ -165,10 +165,14 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->randomPick = $exercise->getRandomPick();
         $parameters->pick = $exercise->getPick();
         $parameters->maxAttempts = $exercise->getMaxAttempts();
+        $parameters->maxAttemptsPerDay = $exercise->getMaxAttemptsPerDay();
+        $parameters->maxPapers = $exercise->getMaxPapers();
         $parameters->showFeedback = $exercise->getShowFeedback();
         $parameters->duration = $exercise->getDuration();
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
+        $parameters->numbering = $exercise->getNumbering();
+        $parameters->mandatoryQuestions = $exercise->getMandatoryQuestions();
 
         // Visibility parameters
         $parameters->showOverview = $exercise->getShowOverview();
@@ -180,6 +184,7 @@ class ExerciseSerializer implements SerializerInterface
 
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
+        $parameters->allPapersStatistics = $exercise->isAllPapersStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
 
         switch ($exercise->getMarkMode()) {
@@ -211,6 +216,8 @@ class ExerciseSerializer implements SerializerInterface
 
         // score of parameter
         $parameters->totalScoreOn = $exercise->getTotalScoreOn();
+        // success score
+        $parameters->successScore = $exercise->getSuccessScore();
 
         $correctionDate = $exercise->getDateCorrection();
         $parameters->correctionDate = !empty($correctionDate) ? $correctionDate->format('Y-m-d\TH:i:s') : null;
@@ -283,8 +290,28 @@ class ExerciseSerializer implements SerializerInterface
             $exercise->setStatistics($parameters->showStatistics);
         }
 
+        if (isset($parameters->allPapersStatistics)) {
+            $exercise->setAllPapersStatistics($parameters->allPapersStatistics);
+        }
+
         if (isset($parameters->showFullCorrection)) {
             $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
+        }
+
+        if (isset($parameters->numbering)) {
+            $exercise->setNumbering($parameters->numbering);
+        }
+
+        if (isset($parameters->mandatoryQuestions)) {
+            $exercise->setMandatoryQuestions($parameters->mandatoryQuestions);
+        }
+
+        if (isset($parameters->maxAttemptsPerDay)) {
+            $exercise->setMaxAttemptsPerDay($parameters->maxAttemptsPerDay);
+        }
+
+        if (isset($parameters->maxPapers)) {
+            $exercise->setMaxPapers($parameters->maxPapers);
         }
 
         if (isset($parameters->showScoreAt)) {
@@ -304,6 +331,13 @@ class ExerciseSerializer implements SerializerInterface
         if (isset($parameters->totalScoreOn)) {
             $exercise->setTotalScoreOn($parameters->totalScoreOn);
         }
+        $success = isset($parameters->successScore) &&
+            $parameters->successScore !== '' &&
+            $parameters->successScore >= 0 &&
+            $parameters->successScore <= 100 ?
+            $parameters->successScore :
+            null;
+        $exercise->setSuccessScore($success);
 
         if (isset($parameters->showCorrectionAt)) {
             $correctionDate = null;

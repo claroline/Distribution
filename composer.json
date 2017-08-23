@@ -74,7 +74,8 @@
         "innova/angular-ui-tinymce-bundle": "5.1.1",
         "claroline/front-end-bundle": "dev-7.x-test",
         "ocramius/proxy-manager": "1.0.2",
-        "ramsey/uuid": "~3.5"
+        "ramsey/uuid": "~3.5",
+        "postal/postal": "*"
     },
     "replace": {
         "claroline/distribution-bundle": "*",
@@ -186,7 +187,8 @@
             "UJM\\LtiBundle\\": "plugin/lti",
             "Claroline\\CasBundle\\": "plugin/cas",
             "Icap\\BibliographyBundle\\": "plugin/bibliography",
-            "Claroline\\ExternalSynchronizationBundle\\": "plugin/external-user-group-synchronization"
+            "Claroline\\ExternalSynchronizationBundle\\": "plugin/external-user-group-synchronization",
+            "Claroline\\BigBlueButtonBundle\\": "plugin/big-blue-button"
         }
     },
     "extra": {
@@ -246,7 +248,8 @@
             "UJM\\LtiBundle\\UJMLtiBundle",
             "Claroline\\CasBundle\\ClarolineCasBundle",
             "Icap\\BibliographyBundle\\IcapBibliographyBundle",
-            "Claroline\\ExternalSynchronizationBundle\\ClarolineExternalSynchronizationBundle"
+            "Claroline\\ExternalSynchronizationBundle\\ClarolineExternalSynchronizationBundle",
+            "Claroline\\BigBlueButtonBundle\\ClarolineBigBlueButtonBundle"
         ]
     }
 }

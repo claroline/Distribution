@@ -15,12 +15,14 @@ import {actions as quizActions} from './../actions'
 import {VIEW_EDITOR} from './../enums'
 
 let Quiz = props =>
-  <Resource
-    edit="#editor"
-    editMode={VIEW_EDITOR === props.viewMode}
-    save={{
-      disabled: !props.saveEnabled,
-      action: props.saveQuiz
+  <ResourceContainer
+    editor={{
+      opened: VIEW_EDITOR === props.viewMode,
+      open: '#editor',
+      save: {
+        disabled: !props.saveEnabled,
+        action: props.saveQuiz
+      }
     }}
     customActions={customActions(props)}
   >
