@@ -20,19 +20,10 @@ class Resource extends Component {
 
     // open resource in fullscreen if configured
     this.state = {
-      fullscreen: this.props.resourceNode.parameters.fullscreen,
-      code:'what am I'
+      fullscreen: this.props.resourceNode.parameters.fullscreen
     }
 
     this.toggleFullscreen = this.toggleFullscreen.bind(this)
-  }
-
-  validateCode() {
-    this.props.tryUnlock(this.props.resourceNode, this.state.code)
-  }
-
-  handleCode(code) {
-    this.setState({code})
   }
 
   toggleFullscreen() {
@@ -78,7 +69,6 @@ class Resource extends Component {
 }
 
 Resource.propTypes = {
-  isLocked: T.bool.isRequired,
   resourceNode: T.shape({
     name: T.string.isRequired,
     parameters: T.shape({
@@ -97,9 +87,8 @@ Resource.propTypes = {
   hideModal: T.func.isRequired,
 
   customActions: T.array,
-  tryUnlock: T.func.isRequired,
   /**
-   * If provided, this permits to maCODEnage the resource editor in the header (aka. open, save actions).
+   * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
    */
   editor: T.shape({
     opened: T.bool,
