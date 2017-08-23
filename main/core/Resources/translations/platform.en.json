@@ -1413,5 +1413,6 @@
     "access_code": "Access code",
     "allow_ip_filtering": "Allow IP filtering",
     "add_filter": "Add filter",
-    "remove_all_filter": "Remove all filters"
+    "remove_all_filter": "Remove all filters",
+    "unlock_resource_explanation": "This resource is password protected. You must enter it to access the resource."
 }

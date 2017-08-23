@@ -1433,5 +1433,6 @@
     "access_code": "Code d'accès",
     "allow_ip_filtering": "Activer le filtrage par IP",
     "add_filter": "Ajouter un filtre",
-    "remove_all_filter": "Retirer tous les filtres"
+    "remove_all_filter": "Retirer tous les filtres",
+    "unlock_resource_explanation": "Cette ressource est protégée par mot de passe. Veuillez entrer ce dernier pour la débloquer."
 }
