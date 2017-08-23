@@ -1,5 +1,5 @@
 import React, {PropTypes as T, Component} from 'react'
-import {tex} from '#/main/core/translation'
+import {t} from '#/main/core/translation'
 
 export class IpSetter extends Component {
   constructor(props) {
@@ -88,14 +88,14 @@ export class IpSetter extends Component {
           <input
             className="btn btn-primary"
             type="button"
-            value={tex('add_filter')}
+            value={t('add_filter')}
             onClick={() => this.addIpFilter()}
           />
           {'\u00A0'}
           <input
             className="btn btn-danger"
             type="button"
-            value={tex('remove_all_filter')}
+            value={t('remove_all_filter')}
             onClick={() => this.removeAll()}
           />
         </form>

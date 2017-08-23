@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\Listener\Exception;
 
-use Claroline\CoreBundle\Form\Resource\UnlockType;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,14 +47,12 @@ class OpenResourceListener
                 }
             }
 
-            throw new \Exception('no');
             //currently, only support one resource unlocking
             $node = $toUnlock[0];
-            $form = $this->container->get('form.factory')->create(new UnlockType());
 
             $content = $this->container->get('templating')->render(
-              'ClarolineCoreBundle:Resource:unlockCodeForm.html.twig',
-              ['node' => $node, 'form' => $form->createView()]
+              'ClarolineCoreBundle:Resource:unlockCodeFormWithLayout.html.twig',
+              ['node' => $node, '_resource' => $this->container->get('claroline.manager.resource_manager')->getResourceFromNode($node)]
             );
 
             $event->setResponse(new Response($content));

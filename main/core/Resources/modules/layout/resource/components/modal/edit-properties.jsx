@@ -123,7 +123,7 @@ const AccessesPanel = (props) =>
   <fieldset>
     <FormGroup
       controlId="access-code"
-      label={t_res('access_code')}
+      label={t('access_code')}
     >
       <input
         id="access-code"
@@ -141,7 +141,7 @@ const AccessesPanel = (props) =>
           checked={props.meta.accesses.ip.activateFilters}
           onChange={() => props.updateParameter('meta.accesses.ip.activateFilters', !props.meta.accesses.ip.activateFilters)}
         />
-      {t_res('allow_ip_filtering')}
+      {t('allow_ip_filtering')}
       </label>
     </div>
     {props.meta.accesses.ip.activateFilters &&
@@ -398,7 +398,7 @@ class EditPropertiesModal extends Component {
           {this.makePanel(
             'resource-ip-accesses',
             'fa-laptop',
-            'Accesses',
+            t('Accesses'),
             <AccessesPanel
               meta={this.state.resourceNode.meta}
               updateParameter={this.updateProperty.bind(this)}

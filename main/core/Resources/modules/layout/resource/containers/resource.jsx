@@ -35,15 +35,13 @@ ResourceContainer.propTypes = {
   children: T.node,
 
   modal: T.object.isRequired,
-  resourceNode: T.object.isRequired,
-  isLocked: T.object.isRequired
+  resourceNode: T.object.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     modal: modalSelect.modal(state),
-    resourceNode: resourceSelect.resourceNode(state),
-    isLocked: resourceSelect.isLocked(state)
+    resourceNode: resourceSelect.resourceNode(state)
   }
 }
 
