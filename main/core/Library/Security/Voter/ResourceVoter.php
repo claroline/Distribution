@@ -22,6 +22,7 @@ use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -45,6 +46,7 @@ class ResourceVoter implements VoterInterface
     private $maskManager;
     private $resourceManager;
     private $workspaceManager;
+    private $session;
 
     /**
      * @DI\InjectParams({
@@ -55,6 +57,7 @@ class ResourceVoter implements VoterInterface
      *     "resourceManager"  = @DI\Inject("claroline.manager.resource_manager"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "rightsManager"    = @DI\Inject("claroline.manager.rights_manager"),
+     *     "session"          = @DI\Inject("session")
      * })
      */
     public function __construct(
@@ -64,7 +67,8 @@ class ResourceVoter implements VoterInterface
         MaskManager $maskManager,
         ResourceManager $resourceManager,
         WorkspaceManager $workspaceManager,
-        RightsManager $rightsManager
+        RightsManager $rightsManager,
+        SessionInterface $session
     ) {
         $this->em = $em;
         $this->repository = $em->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
@@ -75,10 +79,15 @@ class ResourceVoter implements VoterInterface
         $this->resourceManager = $resourceManager;
         $this->workspaceManager = $workspaceManager;
         $this->rightsManager = $rightsManager;
+        $this->session = $session;
     }
 
     public function vote(TokenInterface $token, $object, array $attributes)
     {
+        if (!in_array(get_class($object), $this->supportsClass())) {
+            return false;
+        }
+
         if ($this->isAdmin($object)) {
             return VoterInterface::ACCESS_GRANTED;
         }
@@ -153,7 +162,10 @@ class ResourceVoter implements VoterInterface
 
     public function supportsClass($class)
     {
-        return true;
+        return [
+            'Claroline\CoreBundle\Entity\Resource\ResourceNode',
+            'Claroline\CoreBundle\Library\Security\Collection\ResourceCollection',
+        ];
     }
 
     /**
@@ -408,6 +420,10 @@ class ResourceVoter implements VoterInterface
             if ($data['activateFilters'] && !$this->validateIP($data['ips'], $_SERVER['REMOTE_ADDR'])) {
                 return false;
             }
+
+            if ($node->getAccessCode()) {
+                return $this->session->get($node->getGuid());
+            }
         }
 
         return true;
@@ -418,7 +434,7 @@ class ResourceVoter implements VoterInterface
         $nodes = $object instanceof AbstractResource ? [$object->getResourceNode()] : $object->getResources();
 
         foreach ($nodes as $node) {
-            if (!$this->rightsManager->isAdmin($node)) {
+            if (!$this->rightsManager->isManager($node)) {
                 return false;
             }
         }

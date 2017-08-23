@@ -973,6 +973,16 @@ class ResourceNode
 
     public function getIPData()
     {
-        return $this->getDefaultAccesses()['ip'];
+        return $this->getAccesses()['ip'];
+    }
+
+    public function getAccessCode()
+    {
+        if (
+          !empty($this->getAccesses()['code']) &&
+          trim($this->getAccesses()['code'], ' ') !== ''
+        ) {
+            return $this->getAccesses()['code'];
+        }
     }
 }

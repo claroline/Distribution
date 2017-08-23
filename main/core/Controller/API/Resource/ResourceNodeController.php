@@ -169,13 +169,7 @@ class ResourceNodeController
      */
     public function unlock(ResourceNode $resourceNode, $code)
     {
-        return
-          $resourceNode->getAccesses()['code'] &&
-          trim($resourceNode->getAccesses()['code'], ' ') !== '' &&
-          $resourceNode->getAccesses()['code'] === $code ?
-
-          new JsonResponse(true, 200) :
-          new JsonResponse(false, 200);
+        return new JsonResponse($this->resourceNodeManager->unlock($resourceNode, $code));
     }
 
     private function assertHasPermission($permission, ResourceNode $resourceNode)
