@@ -84,7 +84,7 @@ class ResourceVoter implements VoterInterface
 
     public function vote(TokenInterface $token, $object, array $attributes)
     {
-        if (!in_array(get_class($object), $this->supportsClass())) {
+        if (!in_array(get_class($object), $this->supportsClass($object))) {
             return false;
         }
 
