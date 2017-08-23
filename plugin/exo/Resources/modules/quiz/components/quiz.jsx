@@ -15,7 +15,7 @@ import {actions as quizActions} from './../actions'
 import {VIEW_EDITOR} from './../enums'
 
 let Quiz = props =>
-  <ResourceContainer
+  <Resource
     editor={{
       opened: VIEW_EDITOR === props.viewMode,
       open: '#editor',
