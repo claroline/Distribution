@@ -28,7 +28,7 @@ describe('<FormGroup/>', () => {
       React.createElement(FormGroup, {
         controlId: true,
         label: 123,
-        warnOnly: "456"
+        warnOnly: '456'
       }, {toto: true})
     )
 
