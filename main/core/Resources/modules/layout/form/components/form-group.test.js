@@ -42,8 +42,8 @@ describe('<FormGroup/>', () => {
 
   it('renders a label and a given field', () => {
     const group = shallow(
-      <FormGroup controlId="ID" label="LABEL" warnOnly={false}>
-        <input id="ID" name="NAME" type="text" value="VALUE"/>
+      <FormGroup controlId='ID' label='LABEL' warnOnly={false}>
+        <input id='ID' name='NAME' type='text' value='VALUE'/>
       </FormGroup>
     )
     ensure.propTypesOk()
@@ -63,8 +63,8 @@ describe('<FormGroup/>', () => {
 
   it('displays an help text if any', () => {
     const group = shallow(
-      <FormGroup controlId="ID" label="LABEL" help="HELP" warnOnly={false}>
-        <input id="ID" name="NAME" type="text" value="VALUE"/>
+      <FormGroup controlId='ID' label='LABEL' help='HELP' warnOnly={false}>
+        <input id='ID' name='NAME' type='text' value='VALUE'/>
       </FormGroup>
     )
     ensure.propTypesOk()
@@ -73,8 +73,8 @@ describe('<FormGroup/>', () => {
 
   it('displays an error if any', () => {
     const group = mount(
-      <FormGroup controlId="ID" label="LABEL" error="ERROR" warnOnly={false}>
-        <input id="ID" name="NAME" type="text" value="VALUE"/>
+      <FormGroup controlId='ID' label='LABEL' error='ERROR' warnOnly={false}>
+        <input id='ID' name='NAME' type='text' value='VALUE'/>
       </FormGroup>
     )
     ensure.propTypesOk()
