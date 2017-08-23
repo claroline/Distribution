@@ -12,7 +12,10 @@ describe('<FormGroup/>', () => {
   afterEach(spyConsole.restore)
 
   it('has required props', () => {
-    shallow(<FormGroup/>)
+    shallow(
+      React.createElement(FormGroup)
+    )
+
     ensure.missingProps('FormGroup', [
       'controlId',
       'label',
@@ -22,14 +25,13 @@ describe('<FormGroup/>', () => {
 
   it('has typed props', () => {
     shallow(
-      <FormGroup
-        controlId={true}
-        label={123}
-        warnOnly="456"
-      >
-        {{toto: true}}
-      </FormGroup>
+      React.createElement(FormGroup, {
+        controlId: true,
+        label: 123,
+        warnOnly: "456"
+      }, {toto: true})
     )
+
     ensure.invalidProps('FormGroup', [
       'controlId',
       'label',
@@ -66,7 +68,7 @@ describe('<FormGroup/>', () => {
       </FormGroup>
     )
     ensure.propTypesOk()
-    ensure.equal(group.find('span#help-ID.help-block').text(), 'HELP')
+    ensure.equal(group.find('.help-block').text(), 'HELP')
   })
 
   it('displays an error if any', () => {

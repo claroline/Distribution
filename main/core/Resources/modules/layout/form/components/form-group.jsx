@@ -35,7 +35,7 @@ FormGroup.propTypes = {
   hideLabel: T.bool,
   className: T.string,
   children: T.node.isRequired,
-  warnOnly: T.bool.isRequired,
+  warnOnly: T.bool,
   help: T.string,
   error: T.string,
   last: T.bool
