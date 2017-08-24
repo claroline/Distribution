@@ -51,19 +51,19 @@ class PlatformUpdateCommand extends ContainerAwareCommand
         );
         $this->addOption(
             'no_asset',
-            'na',
+            'a',
             InputOption::VALUE_NONE,
             'When set to true, assetic:dump and assets:install isn\'t execute'
         );
         $this->addOption(
             'create_database',
-            'cd',
+            'd',
             InputOption::VALUE_NONE,
             'When set to true, the create database is not executed'
         );
         $this->addOption(
             'clear_cache',
-            'cc',
+            'c',
             InputOption::VALUE_NONE,
             'When set to true, the cache is cleared at the end'
         );
