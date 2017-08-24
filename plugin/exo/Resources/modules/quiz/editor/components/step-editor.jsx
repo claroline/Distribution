@@ -24,9 +24,11 @@ import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
 import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
 import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
+import {getNumbering} from './../../../utils/numbering'
+import {NUMBERING_NONE} from './../../../quiz/enums'
 
 const ParametersHeader = props =>
-  <div onClick={props.onClick} className="panel-title editor-panel-title">
+  <div onClick={props.onClick} className="panel-title editor-panel-title" aria-expanded={props.active}>
     <span className={
       classes(
         'fa fa-fw',
@@ -142,8 +144,11 @@ const ItemHeader = props =>
       makeItemPanelKey(props.item.type, props.item.id)
     )}
   >
-    <span className="panel-title">
+    <span className="panel-title" aria-expanded={props.expanded}>
       <ItemIcon name={getDefinition(props.item.type).name}/>
+      {props.numbering &&
+        <span>{props.numbering}.{'\u00A0'}</span>
+      }
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
 
@@ -161,14 +166,16 @@ const ItemHeader = props =>
 
 ItemHeader.propTypes = {
   item: T.object.isRequired,
-  stepId: T.string.isRequired,
+  stepId:  T.string.isRequired,
+  numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleMoveQuestionStepClick: T.func.isRequired,
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  expanded: T.bool.isRequired
 }
 
 class ItemPanel extends Component {
@@ -189,6 +196,7 @@ class ItemPanel extends Component {
               <ItemHeader
                 item={this.props.item}
                 stepId={this.props.stepId}
+                numbering={this.props.numbering !== NUMBERING_NONE ? this.props.stepIndex + '.' + getNumbering(this.props.numbering, this.props.index): null}
                 handlePanelClick={this.props.handlePanelClick}
                 handleItemDeleteClick={this.props.handleItemDeleteClick}
                 handleMoveQuestionStepClick={this.props.handleMoveQuestionStepClick}
@@ -237,7 +245,9 @@ ItemPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
   index: T.number.isRequired,
+  stepIndex: T.number.isRequired,
   item: T.object.isRequired,
+  numbering: T.string.isRequired,
   expanded: T.bool.isRequired,
   mandatoryQuestions: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
@@ -264,8 +274,8 @@ const ContentHeader = props =>
       makeItemPanelKey(props.item.type, props.item.id)
     )}
   >
-    <span className="panel-title">
-      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)}></span>
+    <span className="panel-title" aria-expanded={props.expanded}>
+      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)} />
       {props.item.title || trans(getContentDefinition(props.item.type).type, {}, 'question_types')}
     </span>
 
@@ -281,6 +291,8 @@ const ContentHeader = props =>
       stepId={props.stepId}
       handleItemDeleteClick={props.handleItemDeleteClick}
       showModal={props.showModal}
+      hasErrors={props.hasErrors}
+      validating={props.validating}
       connectDragSource={props.connectDragSource}
     />
   </div>
@@ -293,7 +305,8 @@ ContentHeader.propTypes = {
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  expanded: T.bool.isRequired
 }
 
 class ContentPanel extends Component {
@@ -315,6 +328,7 @@ class ContentPanel extends Component {
               connectDragSource={this.props.connectDragSource}
               hasErrors={!isEmpty(this.props.item._errors)}
               validating={this.props.validating}
+              expanded={this.props.expanded}
             />
           }
           collapsible={true}
@@ -348,9 +362,9 @@ class ContentPanel extends Component {
 ContentPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
-  index: T.number.isRequired,
   item: T.object.isRequired,
   expanded: T.bool.isRequired,
+  numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
@@ -434,7 +448,7 @@ class StepFooter extends Component {
         <div className="btn-group">
           <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
           <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span className="caret"></span>
+            <span className="caret" />
             <span className="sr-only">Toggle Dropdown</span>
           </button>
           { this.state.currentAction === MODAL_IMPORT_ITEMS ?
@@ -516,6 +530,11 @@ export const StepEditor = props =>
           {...props.step}
         />
       </Panel>
+
+      {props.step.items.length === 0 &&
+        <div className="no-item-info">{tex('no_item_info')}</div>
+      }
+
       {props.step.items.map((item, index) => isQuestionType(item.type) ?
         <SortableItemPanel
           id={item.id}
@@ -580,6 +599,8 @@ StepEditor.propTypes = {
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
   mandatoryQuestions: T.bool.isRequired,
+  numbering: T.string,
+  stepIndex: T.number,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   validating: T.bool.isRequired,
   updateStep: T.func.isRequired,

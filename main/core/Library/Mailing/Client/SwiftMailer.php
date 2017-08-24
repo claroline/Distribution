@@ -55,21 +55,21 @@ class SwiftMailer implements MailClientInterface
               }
               break;
             case 'smtp':
-              $error = $validator = checkIsNotBlank($data['host']);
+              $error = $validator->checkIsNotBlank($data['host']);
               if ($error) {
                   $errors['host'] = $error;
               }
-              $error = $this->validator = checkIsValidMailEncryption($data['encryption']);
+              $error = $validator->checkIsValidMailEncryption($data['encryption']);
               if ($error) {
                   $errors['encrytion'] = $error;
               }
-              $error = $this->validator = checkIsValidMailAuthMode($data['auth_mode']);
+              $error = $validator->checkIsValidMailAuthMode($data['auth_mode']);
               if ($error) {
                   $errors['auth_mode'] = $error;
               }
 
               if (!empty($data['port'])) {
-                  $error = $this->validator->checkIsPositiveNumber($data['port']);
+                  $error = $validator->checkIsPositiveNumber($data['port']);
                   if ($error) {
                       $errors['port'] = $error;
                   }
@@ -138,7 +138,7 @@ class SwiftMailer implements MailClientInterface
             ->setUsername($data['username'])
             ->setPassword($data['password'])
             ->setAuthMode($data['auth_mode'])
-            ->setEncryption($data['encyption'])
+            ->setEncryption($data['encryption'])
             ->setPort($port)
             ->start();
         } catch (Swift_TransportException $ex) {

@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {tex} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {Resource as ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
+import {ResourceContainer as Resource} from '#/main/core/layout/resource/containers/resource.jsx'
 import {viewComponents} from './../views'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import select from './../selectors'
@@ -15,7 +15,7 @@ import {actions as quizActions} from './../actions'
 import {VIEW_EDITOR} from './../enums'
 
 let Quiz = props =>
-  <ResourceContainer
+  <Resource
     editor={{
       opened: VIEW_EDITOR === props.viewMode,
       open: '#editor',
@@ -27,7 +27,7 @@ let Quiz = props =>
     customActions={customActions(props)}
   >
     {React.createElement(viewComponents[props.viewMode], props)}
-  </ResourceContainer>
+  </Resource>
 
 Quiz.propTypes = {
   quiz: T.shape({
@@ -92,13 +92,15 @@ function customActions(props) {
     })
   }
 
-  // Manual correction
-  actions.push({
-    icon: 'fa fa-fw fa-check-square-o',
-    label: tex('manual_correction'),
-    disabled: !props.hasPapers,
-    action: '#correction/questions'
-  })
+  if (props.papersAdmin) {
+    // Manual correction
+    actions.push({
+      icon: 'fa fa-fw fa-check-square-o',
+      label: tex('manual_correction'),
+      disabled: !props.hasPapers,
+      action: '#correction/questions'
+    })
+  }
 
   return actions
 }
