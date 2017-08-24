@@ -84,7 +84,16 @@ class ResourceVoter implements VoterInterface
 
     public function vote(TokenInterface $token, $object, array $attributes)
     {
-        if (!in_array(get_class($object), $this->supportsClass($object))) {
+        $classes = $this->supportsClass($object);
+        $supports = false;
+
+        foreach ($classes as $class) {
+            if ($object instanceof $class) {
+                $supports = true;
+            }
+        }
+
+        if (!$supports) {
             return false;
         }
 
@@ -163,6 +172,7 @@ class ResourceVoter implements VoterInterface
     public function supportsClass($class)
     {
         return [
+            'Claroline\CoreBundle\Entity\Resource\AbstractResource',
             'Claroline\CoreBundle\Entity\Resource\ResourceNode',
             'Claroline\CoreBundle\Library\Security\Collection\ResourceCollection',
         ];
