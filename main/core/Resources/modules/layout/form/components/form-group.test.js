@@ -62,11 +62,12 @@ describe('<FormGroup/>', () => {
   })
 
   it('displays an help text if any', () => {
-    const group = shallow(
-      <FormGroup controlId="ID" label="LABEL" help="HELP" warnOnly={false}>
+    const group = mount(
+      <FormGroup controlId="ID" label="LABEL" help="HELP">
         <input id="ID" name="NAME" type="text" value="VALUE"/>
       </FormGroup>
     )
+
     ensure.propTypesOk()
     ensure.equal(group.find('.help-block').text(), 'HELP')
   })
@@ -77,6 +78,7 @@ describe('<FormGroup/>', () => {
         <input id="ID" name="NAME" type="text" value="VALUE"/>
       </FormGroup>
     )
+
     ensure.propTypesOk()
     ensure.equal(group.find('.help-block').text(), 'ERROR')
   })

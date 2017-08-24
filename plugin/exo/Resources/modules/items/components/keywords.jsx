@@ -185,7 +185,7 @@ const KeywordItems = props =>
 
     <button
       type="button"
-      className="btn btn-block btn-default"
+      className="add-keyword btn btn-block btn-default"
       onClick={props.addKeyword}
     >
       <span className="fa fa-fw fa-plus" />
