@@ -97,7 +97,7 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             $to = $input->getArgument('to_version');
         } else {
             try {
-                $from = $versionManager->getLatestUpgraded('ClarolineCoreBundle');
+                $from = $versionManager->getLatestUpgraded('ClarolineCoreBundle')->getVersion();
                 $to = $versionManager->getCurrent();
             } catch (Exception $e) {
                 $from = null;
