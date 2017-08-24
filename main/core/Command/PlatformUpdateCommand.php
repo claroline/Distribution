@@ -59,7 +59,13 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             'create_database',
             'cd',
             InputOption::VALUE_NONE,
-            'When set to true, create the database if not exist'
+            'When set to true, the create database is not executed'
+        );
+        $this->addOption(
+            'clear_cache',
+            'cc',
+            InputOption::VALUE_NONE,
+            'When set to true, the cache is cleared at the end'
         );
     }
 
@@ -98,6 +104,12 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             /** @var \Claroline\CoreBundle\Library\Installation\Refresher $refresher */
             $refresher = $this->getContainer()->get('claroline.installation.refresher');
             $refresher->dumpAssets($this->getContainer()->getParameter('kernel.environment'));
+        }
+
+        if ($input->getOption('clear_cache')) {
+            /** @var \Claroline\CoreBundle\Library\Installation\Refresher $refresher */
+            $refresher = $this->getContainer()->get('claroline.installation.refresher');
+            $refresher->clearCache($this->getContainer()->getParameter('kernel.environment'));
         }
 
         MaintenanceHandler::disableMaintenance();
