@@ -1,22 +1,21 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 import get from 'lodash/get'
 import set from 'lodash/set'
 import isEmpty from 'lodash/isEmpty'
 import cloneDeep from 'lodash/cloneDeep'
 
 import Modal      from 'react-bootstrap/lib/Modal'
-import Panel      from 'react-bootstrap/lib/Panel'
-import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {formatDate}   from '#/main/core/date'
 import {t}            from '#/main/core/translation'
 import {t_res}        from '#/main/core/layout/resource/translation'
 import {BaseModal}    from '#/main/core/layout/modal/components/base.jsx'
+import {FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormGroup}    from '#/main/core/layout/form/components/form-group.jsx'
 import {Textarea}     from '#/main/core/layout/form/components/textarea.jsx'
 import {DatePicker}   from '#/main/core/layout/form/components/date-picker.jsx'
+import {IpSetter}     from '#/main/core/layout/form/components/ip-setter.jsx'
 import {validate}     from '#/main/core/layout/resource/validator'
 import {closeTargets} from '#/main/core/layout/resource/enums'
 
@@ -116,6 +115,52 @@ AccessibilityDatesPanel.propTypes = {
   updateParameter: T.func.isRequired,
   validating: T.bool.isRequired,
   errors: T.object
+}
+
+const AccessesPanel = (props) =>
+  <fieldset>
+    <FormGroup
+      controlId="access-code"
+      label={t('access_code')}
+    >
+      <input
+        id="access-code"
+        type="password"
+        className="form-control"
+        value={props.meta.accesses.code}
+        onChange={(e) => props.updateParameter('meta.accesses.code', e.target.value)}
+      />
+    </FormGroup>
+    <div className="checkbox">
+      <label htmlFor="allow-ip-filtering">
+        <input
+          id="allow-ip-filtering"
+          type="checkbox"
+          checked={props.meta.accesses.ip.activateFilters}
+          onChange={() => props.updateParameter('meta.accesses.ip.activateFilters', !props.meta.accesses.ip.activateFilters)}
+        />
+      {t('allow_ip_filtering')}
+      </label>
+    </div>
+    {props.meta.accesses.ip.activateFilters &&
+      <IpSetter
+        ips={props.meta.accesses.ip.ips}
+        onChange={(ips) => props.updateParameter('meta.accesses.ip.ips', ips)}
+      />
+    }
+  </fieldset>
+
+AccessesPanel.propTypes = {
+  meta: T.shape({
+    accesses: T.shape({
+      ip: T.shape({
+        ips: T.array,
+        activateFilters: T.bool
+      }),
+      code: T.string
+    })
+  }).isRequired,
+  updateParameter: T.func.isRequired
 }
 
 const DisplayPanel = props =>
@@ -238,6 +283,7 @@ class EditPropertiesModal extends Component {
     this.setState((prevState) => {
       const newNode = cloneDeep(prevState.resourceNode)
       set(newNode, parameter, value)
+      //newNode = prevState.resourceNode
 
       return {
         resourceNode: newNode,
@@ -265,22 +311,6 @@ class EditPropertiesModal extends Component {
     }
   }
 
-  makePanel(id, icon, title, content) {
-    return (
-      <Panel
-        eventKey={id}
-        header={
-          <h5 className={classes('panel-title', {opened: id === this.state.openedPanel})}>
-            <span className={classes('fa fa-fw', icon)} style={{marginRight: 10}} />
-            {title}
-          </h5>
-        }
-      >
-        {content}
-      </Panel>
-    )
-  }
-
   render() {
     return (
       <BaseModal
@@ -305,61 +335,61 @@ class EditPropertiesModal extends Component {
             />
           </FormGroup>
         </Modal.Body>
-
-        <PanelGroup
-          accordion
-          activeKey={this.state.openedPanel}
-          onSelect={(activeKey) => this.setState({openedPanel: activeKey !== this.state.openedPanel ? activeKey : null})}
-        >
-          {this.makePanel(
-            'resource-meta',
-            'fa-info',
-            'Information',
-            <MetaPanel
-              meta={this.state.resourceNode.meta}
-              updateParameter={this.updateProperty.bind(this)}
-              validating={this.state.validating}
-              errors={this.state.errors}
-            />
-          )}
-
-          {this.makePanel(
-            'resource-dates',
-            'fa-calendar',
-            'Accessibility dates',
-            <AccessibilityDatesPanel
-              parameters={this.state.resourceNode.parameters}
-              updateParameter={this.updateProperty.bind(this)}
-              validating={this.state.validating}
-              errors={this.state.errors}
-            />
-          )}
-
-          {this.makePanel(
-            'resource-display',
-            'fa-desktop',
-            'Display parameters',
-            <DisplayPanel
-              parameters={this.state.resourceNode.parameters}
-              updateParameter={this.updateProperty.bind(this)}
-              validating={this.state.validating}
-              errors={this.state.errors}
-            />
-          )}
-
-          {this.makePanel(
-            'resource-license',
-            'fa-copyright',
-            'Authors & License',
-            <LicensePanel
-              meta={this.state.resourceNode.meta}
-              updateParameter={this.updateProperty.bind(this)}
-              validating={this.state.validating}
-              errors={this.state.errors}
-            />
-          )}
-        </PanelGroup>
-
+        <FormSections
+          sections={[
+            {
+              id: 'resource-meta',
+              icon: 'fa fa-fw fa-info',
+              label: 'Information',
+              children: <MetaPanel
+                meta={this.state.resourceNode.meta}
+                updateParameter={this.updateProperty.bind(this)}
+                validating={this.state.validating}
+                errors={this.state.errors}
+              />
+            }, {
+              id: 'resource-dates',
+              icon: 'fa fa-fw fa-calendar',
+              label: 'Accessibility dates',
+              children: <AccessibilityDatesPanel
+                parameters={this.state.resourceNode.parameters}
+                updateParameter={this.updateProperty.bind(this)}
+                validating={this.state.validating}
+                errors={this.state.errors}
+              />
+            }, {
+              id: 'resource-display',
+              icon: 'fa fa-fw fa-desktop',
+              label: 'Display parameters',
+              children: <DisplayPanel
+                parameters={this.state.resourceNode.parameters}
+                updateParameter={this.updateProperty.bind(this)}
+                validating={this.state.validating}
+                errors={this.state.errors}
+              />
+            }, {
+              id: 'resource-license',
+              icon: 'fa fa-fw fa-copyright',
+              label: 'Authors & License',
+              children: <LicensePanel
+                meta={this.state.resourceNode.meta}
+                updateParameter={this.updateProperty.bind(this)}
+                validating={this.state.validating}
+                errors={this.state.errors}
+              />
+            }, {
+              id: 'resource-ip-accesses',
+              icon: 'fa-laptop',
+              label: t('Accesses'),
+              children: <AccessesPanel
+                meta={this.state.resourceNode.meta}
+                updateParameter={this.updateProperty.bind(this)}
+                validating={this.state.validating}
+                errors={this.state.errors}
+              />
+            }
+          ]}
+        />
         <button
           className="modal-btn btn btn-primary"
           disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
