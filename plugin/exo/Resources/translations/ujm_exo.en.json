@@ -678,5 +678,7 @@
     "make_mandatory_questions": "Make questions mandatory",
     "mandatory_answer": "Mandatory answer",
     "make_optional": "Make optional",
-    "mandatory_questions": "Mandatory answers to questions"
+    "mandatory_questions": "Mandatory answers to questions",
+    "duplicate_question": "Duplicate a question",
+    "amount": "Quantity"
 }
