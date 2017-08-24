@@ -16,6 +16,8 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_ADD_ITEM} from './../components/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './../components/import-items-modal.jsx'
 import {MODAL_ADD_CONTENT} from './../components/add-content-modal.jsx'
+import {MODAL_MOVE_QUESTION} from './../components/move-question-modal.jsx'
+import {MODAL_DUPLICATE_QUESTION} from './../components/duplicate-question-modal.jsx'
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
 import {ValidationStatus} from './validation-status.jsx'
 import {StepForm} from './step-form.jsx'
@@ -23,9 +25,11 @@ import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
 import {ItemPanelDragPreview} from './item-panel-drag-preview.jsx'
 import {ContentPanelDragPreview} from './content-panel-drag-preview.jsx'
+import {getNumbering} from './../../../utils/numbering'
+import {NUMBERING_NONE} from './../../../quiz/enums'
 
 const ParametersHeader = props =>
-  <div onClick={props.onClick} className="panel-title editor-panel-title">
+  <div onClick={props.onClick} className="panel-title editor-panel-title" aria-expanded={props.active}>
     <span className={
       classes(
         'fa fa-fw',
@@ -74,6 +78,58 @@ const ItemActions = props =>
       </button>
     </OverlayTrigger>
 
+    <OverlayTrigger
+      placement="left"
+      overlay={
+        <Tooltip id={`item-panel-${props.itemId}-change-step`}>
+          {tex('change_step')}
+        </Tooltip>
+      }
+    >
+      <button
+        type="button"
+        className="btn btn-link-default"
+        onClick={e => {
+          e.stopPropagation()
+          props.showModal(MODAL_MOVE_QUESTION, {
+            title: tex('change_step'),
+            question: tex('change_step_confirm_message'),
+            itemId: props.itemId,
+            handleClick: props.handleMoveQuestionStepClick
+          })
+        }}
+      >
+        <span className="fa fa-fw fa-exchange" />
+      </button>
+    </OverlayTrigger>
+
+    <OverlayTrigger
+      placement="left"
+      overlay={
+        <Tooltip id={`item-panel-${props.itemId}-duplicate`}>
+          {tex('duplicate')}
+        </Tooltip>
+      }
+    >
+      <button
+        type="button"
+        className="btn btn-link-default"
+        onClick={e => {
+          e.stopPropagation()
+          props.showModal(MODAL_DUPLICATE_QUESTION, {
+            title: tex('duplicate_question'),
+            question: tex('blablabla'),
+            itemId: props.itemId,
+            stepId: props.stepId,
+            handleSubmit: props.handleDuplicateQuestionSubmit
+          })
+        }}
+      >
+        <span className="fa fa-fw fa-clone" />
+      </button>
+    </OverlayTrigger>
+
+
     {props.connectDragSource(
       <span>
         <OverlayTrigger
@@ -104,7 +160,9 @@ ItemActions.propTypes = {
   validating: T.bool.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   showModal: T.func.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
+  handleDuplicateQuestionSubmit: T.func.isRequired
 }
 
 const ItemHeader = props =>
@@ -115,8 +173,11 @@ const ItemHeader = props =>
       makeItemPanelKey(props.item.type, props.item.id)
     )}
   >
-    <span className="panel-title">
+    <span className="panel-title" aria-expanded={props.expanded}>
       <ItemIcon name={getDefinition(props.item.type).name}/>
+      {props.numbering &&
+        <span>{props.numbering}.{'\u00A0'}</span>
+      }
       {props.item.title || trans(getDefinition(props.item.type).name, {}, 'question_types')}
     </span>
 
@@ -125,7 +186,9 @@ const ItemHeader = props =>
       stepId={props.stepId}
       hasErrors={props.hasErrors}
       validating={props.validating}
+      handleMoveQuestionStepClick={props.handleMoveQuestionStepClick}
       handleItemDeleteClick={props.handleItemDeleteClick}
+      handleDuplicateQuestionSubmit={props.handleDuplicateQuestionSubmit}
       showModal={props.showModal}
       connectDragSource={props.connectDragSource}
     />
@@ -133,13 +196,17 @@ const ItemHeader = props =>
 
 ItemHeader.propTypes = {
   item: T.object.isRequired,
-  stepId: T.string.isRequired,
+  stepId:  T.string.isRequired,
+  numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
+  handleDuplicateQuestionSubmit: T.func.isRequired,
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  expanded: T.bool.isRequired
 }
 
 class ItemPanel extends Component {
@@ -148,7 +215,7 @@ class ItemPanel extends Component {
   }
 
   isDisabled() {
-    return this.props.item.protectUpdate && !this.props.item.rights.edit
+    return this.props.item.meta.protectQuestion && !this.props.item.rights.edit
   }
 
   render() {
@@ -160,8 +227,11 @@ class ItemPanel extends Component {
               <ItemHeader
                 item={this.props.item}
                 stepId={this.props.stepId}
+                numbering={this.props.numbering !== NUMBERING_NONE ? this.props.stepIndex + '.' + getNumbering(this.props.numbering, this.props.index): null}
                 handlePanelClick={this.props.handlePanelClick}
                 handleItemDeleteClick={this.props.handleItemDeleteClick}
+                handleMoveQuestionStepClick={this.props.handleMoveQuestionStepClick}
+                handleDuplicateQuestionSubmit={this.props.handleDuplicateQuestionSubmit}
                 showModal={this.props.showModal}
                 connectDragSource={this.props.connectDragSource}
                 hasErrors={!isEmpty(this.props.item._errors)}
@@ -176,6 +246,7 @@ class ItemPanel extends Component {
                 item={this.props.item}
                 validating={this.props.validating}
                 showModal={this.props.showModal}
+                mandatoryQuestions={this.props.mandatoryQuestions}
                 closeModal={this.props.closeModal}
                 onChange={(propertyPath, value) =>
                   this.props.handleItemUpdate(this.props.item.id, propertyPath, value)
@@ -206,13 +277,18 @@ ItemPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
   index: T.number.isRequired,
+  stepIndex: T.number.isRequired,
   item: T.object.isRequired,
+  numbering: T.string.isRequired,
   expanded: T.bool.isRequired,
+  mandatoryQuestions: T.bool.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
   handleItemDetailUpdate: T.func.isRequired,
   handleItemHintsUpdate: T.func.isRequired,
+  handleDuplicateQuestionSubmit: T.func.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
@@ -231,8 +307,8 @@ const ContentHeader = props =>
       makeItemPanelKey(props.item.type, props.item.id)
     )}
   >
-    <span className="panel-title">
-      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)}></span>
+    <span className="panel-title" aria-expanded={props.expanded}>
+      <span className={classes('item-icon', 'item-icon-sm', getContentDefinition(props.item.type).altIcon)} />
       {props.item.title || trans(getContentDefinition(props.item.type).type, {}, 'question_types')}
     </span>
 
@@ -248,6 +324,8 @@ const ContentHeader = props =>
       stepId={props.stepId}
       handleItemDeleteClick={props.handleItemDeleteClick}
       showModal={props.showModal}
+      hasErrors={props.hasErrors}
+      validating={props.validating}
       connectDragSource={props.connectDragSource}
     />
   </div>
@@ -260,7 +338,8 @@ ContentHeader.propTypes = {
   showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
-  connectDragSource: T.func.isRequired
+  connectDragSource: T.func.isRequired,
+  expanded: T.bool.isRequired
 }
 
 class ContentPanel extends Component {
@@ -282,6 +361,7 @@ class ContentPanel extends Component {
               connectDragSource={this.props.connectDragSource}
               hasErrors={!isEmpty(this.props.item._errors)}
               validating={this.props.validating}
+              expanded={this.props.expanded}
             />
           }
           collapsible={true}
@@ -315,9 +395,9 @@ class ContentPanel extends Component {
 ContentPanel.propTypes = {
   id: T.string.isRequired,
   stepId: T.string.isRequired,
-  index: T.number.isRequired,
   item: T.object.isRequired,
   expanded: T.bool.isRequired,
+  numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,
@@ -401,7 +481,7 @@ class StepFooter extends Component {
         <div className="btn-group">
           <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
           <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span className="caret"></span>
+            <span className="caret" />
             <span className="sr-only">Toggle Dropdown</span>
           </button>
           { this.state.currentAction === MODAL_IMPORT_ITEMS ?
@@ -483,11 +563,17 @@ export const StepEditor = props =>
           {...props.step}
         />
       </Panel>
+
+      {props.step.items.length === 0 &&
+        <div className="no-item-info">{tex('no_item_info')}</div>
+      }
+
       {props.step.items.map((item, index) => isQuestionType(item.type) ?
         <SortableItemPanel
           id={item.id}
           index={index}
           item={item}
+          mandatoryQuestions={props.mandatoryQuestions}
           stepId={props.step.id}
           key={item.type + item.id}
           eventKey={makeItemPanelKey(item.type, item.id)}
@@ -545,11 +631,16 @@ StepEditor.propTypes = {
     }).isRequired,
     items: T.arrayOf(T.object).isRequired
   }).isRequired,
+  mandatoryQuestions: T.bool.isRequired,
+  numbering: T.string,
+  stepIndex: T.number,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   validating: T.bool.isRequired,
   updateStep: T.func.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDeleteClick: T.func.isRequired,
+  handleMoveQuestionStepClick: T.func.isRequired,
+  handleDuplicateQuestionSubmit: T.func.isRequired,
   handleItemMove: T.func.isRequired,
   handleItemCreate: T.func.isRequired,
   handleItemUpdate: T.func.isRequired,

@@ -140,7 +140,6 @@ class ItemSerializer extends AbstractSerializer
                 'type' => 'mimeType',
                 'content' => 'content',
                 'title' => 'title',
-                'protectUpdate' => 'protectUpdate',
                 'meta' => function (Item $question) use ($options) {
                     return $this->serializeMetadata($question, $options);
                 },
@@ -234,7 +233,6 @@ class ItemSerializer extends AbstractSerializer
                 'title' => 'title',
                 'description' => 'description',
                 'feedback' => 'feedback',
-                'protectUpdate' => 'protectUpdate',
                 'hints' => function (Item $item, \stdClass $data) use ($options) {
                     return $this->deserializeHints($item, $data->hints, $options);
                 },
@@ -314,6 +312,10 @@ class ItemSerializer extends AbstractSerializer
         $metadata = new \stdClass();
 
         $creator = $question->getCreator();
+
+        $metadata->protectQuestion = $question->getProtectUpdate();
+        $metadata->mandatory = $question->isMandatory();
+
         if (!empty($creator)) {
             $metadata->authors = [
                 $this->userSerializer->serialize($creator, $options),
@@ -374,6 +376,14 @@ class ItemSerializer extends AbstractSerializer
         if (isset($metadata->category)) {
             $category = $this->categorySerializer->deserialize($metadata->category);
             $question->setCategory($category);
+        }
+
+        if (isset($metadata->protectQuestion)) {
+            $question->setProtectUpdate($metadata->protectQuestion);
+        }
+
+        if (isset($metadata->mandatory)) {
+            $question->setMandatory($metadata->mandatory);
         }
     }
 

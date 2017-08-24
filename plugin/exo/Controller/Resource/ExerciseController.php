@@ -36,9 +36,11 @@ class ExerciseController extends Controller
         $this->assertHasPermission('OPEN', $exercise);
 
         $nbUserPapers = 0;
+        $nbUserPapersDayCount = 0;
 
         if ($user instanceof User) {
             $nbUserPapers = $this->container->get('ujm_exo.manager.paper')->countUserFinishedPapers($exercise, $user);
+            $nbUserPapersDayCount = $this->container->get('ujm_exo.manager.paper')->countUserFinishedDayPapers($exercise, $user);
         }
 
         // TODO : no need to count the $nbPapers for regular users as it's only for admins
@@ -53,6 +55,7 @@ class ExerciseController extends Controller
         $exerciseData->meta->editable = $canEdit;
         $exerciseData->meta->paperCount = (int) $nbPapers;
         $exerciseData->meta->userPaperCount = (int) $nbUserPapers;
+        $exerciseData->meta->userPaperDayCount = (int) $nbUserPapersDayCount;
         $exerciseData->meta->registered = $user instanceof User;
         $exerciseData->meta->canViewPapers = $this->canViewPapers($exercise);
         $exerciseData->meta->canViewDocimology = $this->canViewDocimology($exercise);
@@ -92,13 +95,6 @@ class ExerciseController extends Controller
         ];
     }
 
-    private function isAdmin(Exercise $exercise)
-    {
-        $collection = new ResourceCollection([$exercise->getResourceNode()]);
-
-        return $this->get('security.authorization_checker')->isGranted('ADMINISTRATE', $collection);
-    }
-
     private function canEdit(Exercise $exercise)
     {
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
@@ -116,7 +112,7 @@ class ExerciseController extends Controller
     private function canViewDocimology(Exercise $exercise)
     {
         $collection = new ResourceCollection([$exercise->getResourceNode()]);
-        $isGranted = $this->get('security.authorization_checker')->isGranted('VIEW_DOCIMOLOGY', $collection) || $this->isAdmin($exercise);
+        $isGranted = $this->get('security.authorization_checker')->isGranted('VIEW_DOCIMOLOGY', $collection) || $this->canEdit($exercise);
 
         return $isGranted;
     }

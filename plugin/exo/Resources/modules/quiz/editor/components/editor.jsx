@@ -53,6 +53,8 @@ function selectSubEditor(props) {
       return (
         <StepEditor
           step={props.currentObject}
+          stepIndex={props.currentObjectIndex}
+          mandatoryQuestions={props.quizProperties.parameters.mandatoryQuestions}
           validating={props.validating}
           updateStep={props.updateStep}
           activePanelKey={props.activeStepPanel}
@@ -60,6 +62,8 @@ function selectSubEditor(props) {
           handleItemDeleteClick={props.deleteStepItem}
           handleItemMove={props.moveItem}
           handleItemCreate={props.createItem}
+          handleMoveQuestionStepClick={props.moveQuestionStep}
+          handleDuplicateQuestionSubmit={props.duplicateQuestion}
           handleItemUpdate={props.updateItem}
           handleItemHintsUpdate={props.updateItemHints}
           handleItemDetailUpdate={props.updateItemDetail}
@@ -68,6 +72,7 @@ function selectSubEditor(props) {
           handleContentItemUpdate={props.updateContentItem}
           handleContentItemDetailUpdate={props.updateContentItemDetail}
           handleFileUpload={props.saveContentItemFile}
+          numbering={props.quizProperties.parameters.numbering}
           showModal={props.showModal}
           closeModal={props.fadeModal}
         />
@@ -81,6 +86,7 @@ selectSubEditor.propTypes = {
   selectQuizPanel: T.func.isRequired,
   updateQuiz: T.func.isRequired,
   quizProperties: T.object.isRequired,
+  currentObjectIndex: T.number.isRequired,
   currentObject: T.shape({
     type: T.string.isRequired
   }).isRequired,
@@ -98,6 +104,8 @@ selectSubEditor.propTypes = {
   createContentItem: T.func.isRequired,
   updateContentItem: T.func.isRequired,
   updateContentItemDetail: T.func.isRequired,
+  moveQuestionStep: T.func.isRequired,
+  duplicateQuestion: T.func.isRequired,
   saveContentItemFile: T.func,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired
@@ -107,6 +115,7 @@ function mapStateToProps(state) {
   return {
     thumbnails: select.thumbnails(state),
     currentObject: select.currentObjectDeep(state),
+    currentObjectIndex: select.currentObjectIndex(state),
     activeQuizPanel: select.quizOpenPanel(state),
     activeStepPanel: select.stepOpenPanel(state),
     quizProperties: select.quiz(state),

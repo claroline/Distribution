@@ -22,11 +22,6 @@ use UJM\ExoBundle\Manager\Item\ItemManager;
 class ExerciseSerializer implements SerializerInterface
 {
     /**
-     * @var UserSerializer
-     */
-    private $userSerializer;
-
-    /**
      * @var StepSerializer
      */
     private $stepSerializer;
@@ -40,21 +35,17 @@ class ExerciseSerializer implements SerializerInterface
      * ExerciseSerializer constructor.
      *
      * @param StepSerializer $stepSerializer
-     * @param UserSerializer $userSerializer
      * @param ItemManager    $itemManager
      *
      * @DI\InjectParams({
-     *     "userSerializer" = @DI\Inject("ujm_exo.serializer.user"),
      *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
      *     "itemManager"    = @DI\Inject("ujm_exo.manager.item")
      * })
      */
     public function __construct(
-        UserSerializer $userSerializer,
         StepSerializer $stepSerializer,
         ItemManager $itemManager)
     {
-        $this->userSerializer = $userSerializer;
         $this->stepSerializer = $stepSerializer;
         $this->itemManager = $itemManager;
     }
@@ -72,7 +63,7 @@ class ExerciseSerializer implements SerializerInterface
         $exerciseData = new \stdClass();
         $exerciseData->id = $exercise->getUuid();
         $exerciseData->title = $exercise->getTitle();
-        $exerciseData->meta = $this->serializeMetadata($exercise, $options);
+        $exerciseData->meta = $this->serializeMetadata($exercise);
 
         if (!in_array(Transfer::MINIMAL, $options)) {
             if (!empty($exercise->getDescription())) {
@@ -120,29 +111,12 @@ class ExerciseSerializer implements SerializerInterface
      * Serializes Exercise metadata.
      *
      * @param Exercise $exercise
-     * @param array    $options
      *
      * @return \stdClass
      */
-    private function serializeMetadata(Exercise $exercise, array $options = [])
+    private function serializeMetadata(Exercise $exercise)
     {
         $metadata = new \stdClass();
-
-        $node = $exercise->getResourceNode();
-        if (!empty($node)) {
-            $creator = $node->getCreator();
-            if (!empty($creator)) {
-                $metadata->authors = [
-                    $this->userSerializer->serialize($creator, $options),
-                ];
-            }
-
-            $metadata->created = $node->getCreationDate()->format('Y-m-d\TH:i:s');
-            $metadata->updated = $node->getModificationDate()->format('Y-m-d\TH:i:s');
-        }
-
-        $metadata->published = !empty($node) ? $node->isPublished() : $exercise->wasPublishedOnce();
-        $metadata->publishedOnce = $exercise->wasPublishedOnce();
 
         return $metadata;
     }
@@ -165,10 +139,14 @@ class ExerciseSerializer implements SerializerInterface
         $parameters->randomPick = $exercise->getRandomPick();
         $parameters->pick = $exercise->getPick();
         $parameters->maxAttempts = $exercise->getMaxAttempts();
+        $parameters->maxAttemptsPerDay = $exercise->getMaxAttemptsPerDay();
+        $parameters->maxPapers = $exercise->getMaxPapers();
         $parameters->showFeedback = $exercise->getShowFeedback();
         $parameters->duration = $exercise->getDuration();
         $parameters->anonymizeAttempts = $exercise->getAnonymizeAttempts();
         $parameters->interruptible = $exercise->isInterruptible();
+        $parameters->numbering = $exercise->getNumbering();
+        $parameters->mandatoryQuestions = $exercise->getMandatoryQuestions();
 
         // Visibility parameters
         $parameters->showOverview = $exercise->getShowOverview();
@@ -180,6 +158,7 @@ class ExerciseSerializer implements SerializerInterface
 
         $parameters->showMetadata = $exercise->isMetadataVisible();
         $parameters->showStatistics = $exercise->hasStatistics();
+        $parameters->allPapersStatistics = $exercise->isAllPapersStatistics();
         $parameters->showFullCorrection = !$exercise->isMinimalCorrection();
 
         switch ($exercise->getMarkMode()) {
@@ -285,8 +264,28 @@ class ExerciseSerializer implements SerializerInterface
             $exercise->setStatistics($parameters->showStatistics);
         }
 
+        if (isset($parameters->allPapersStatistics)) {
+            $exercise->setAllPapersStatistics($parameters->allPapersStatistics);
+        }
+
         if (isset($parameters->showFullCorrection)) {
             $exercise->setMinimalCorrection(!$parameters->showFullCorrection);
+        }
+
+        if (isset($parameters->numbering)) {
+            $exercise->setNumbering($parameters->numbering);
+        }
+
+        if (isset($parameters->mandatoryQuestions)) {
+            $exercise->setMandatoryQuestions($parameters->mandatoryQuestions);
+        }
+
+        if (isset($parameters->maxAttemptsPerDay)) {
+            $exercise->setMaxAttemptsPerDay($parameters->maxAttemptsPerDay);
+        }
+
+        if (isset($parameters->maxPapers)) {
+            $exercise->setMaxPapers($parameters->maxPapers);
         }
 
         if (isset($parameters->showScoreAt)) {
@@ -323,7 +322,6 @@ class ExerciseSerializer implements SerializerInterface
                 case ShowCorrectionAt::AFTER_LAST_ATTEMPT:
                     $exercise->setCorrectionMode(CorrectionMode::AFTER_LAST_ATTEMPT);
                     break;
-                case ShowCorrectionAt::AFTER_DATE:
                 case ShowCorrectionAt::AFTER_DATE:
                     $exercise->setCorrectionMode(CorrectionMode::AFTER_DATE);
                     $correctionDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $parameters->correctionDate);

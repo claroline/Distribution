@@ -3,6 +3,7 @@ import merge from 'lodash/merge'
 import set from 'lodash/set'
 import sanitize from './sanitizers'
 import validate from './validators'
+import cloneDeep from 'lodash/cloneDeep'
 import {decorateItem} from './../decorators'
 import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
 import {getDefinition} from './../../items/item-types'
@@ -22,6 +23,8 @@ import {
   ITEM_DELETE,
   ITEM_UPDATE,
   ITEM_MOVE,
+  QUESTION_MOVE,
+  ITEM_DUPLICATE,
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
   ITEMS_IMPORT,
@@ -93,7 +96,9 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
     case ATTEMPT_FINISH:
       return update(quiz, {
         meta: {
-          userPaperCount: {$set: quiz.meta.userPaperCount + 1}
+          userPaperCount: {$set: quiz.meta.userPaperCount + 1},
+          userPaperDayCount: {$set: quiz.meta.userPaperDayCount + 1},
+          paperCount: {$set: quiz.meta.paperCount + 1}
         }
       })
 
@@ -103,10 +108,28 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
+    case QUESTION_MOVE: {
+      //remove the old one
+      Object.keys(steps).forEach(stepId => {
+        if (steps[stepId].items.find(item => item === action.itemId)) {
+          const updatedRemoveItems = update(
+            steps[stepId],
+            {['items']: {$set : steps[stepId].items.filter(item => item !== action.itemId)}}
+          )
+          steps = update(steps, {[stepId]: {$set: updatedRemoveItems}})
+        }
+      })
+
+      const items = steps[action.stepId].items.concat(action.itemId)
+      const updatedAddItems = update(steps[action.stepId], {['items']: {$set: items}})
+      steps = update(steps, {[action.stepId]: {$set: updatedAddItems}})
+
+      return steps
+    }
     case STEP_CREATE: {
       const newStep = {
         id: action.id,
-        title: '',
+        title: action.title,
         description: '',
         items: [],
         parameters: {
@@ -129,6 +152,13 @@ function reduceSteps(steps = {}, action = {}) {
     case STEP_ITEM_DELETE: {
       const index = getIndex(steps[action.stepId].items, action.id)
       return update(steps, {[action.stepId]: {items: {$splice: [[index, 1]]}}})
+    }
+    case ITEM_DUPLICATE: {
+      action.ids.forEach(id => {
+        steps = update(steps, {[action.stepId]: {items: {$push: [id]}}})
+      })
+
+      return steps
     }
     case ITEM_MOVE: {
       const index = getIndex(steps[action.stepId].items, action.id)
@@ -172,6 +202,16 @@ function reduceItems(items = {}, action = {}) {
       newItem = Object.assign({}, newItem, {_errors: errors})
 
       return update(items, {[action.id]: {$set: newItem}})
+    }
+    case ITEM_DUPLICATE: {
+      action.ids.forEach(id => {
+        let newItem = cloneDeep(items[action.itemId])
+        newItem.id = id
+        newItem._errors = validate.item(newItem)
+        items = update(items, {[id]: {$set: newItem}})
+      })
+
+      return items
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})

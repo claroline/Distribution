@@ -1,5 +1,6 @@
 import invariant from 'invariant'
 import select from './selectors'
+import times from 'lodash/times'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {makeId} from './../../utils/utils'
 import {REQUEST_SEND} from './../../api/actions'
@@ -16,6 +17,7 @@ export const ITEM_MOVE = 'ITEM_MOVE'
 export const ITEM_HINTS_UPDATE = 'ITEM_HINTS_UPDATE'
 export const ITEM_DETAIL_UPDATE = 'ITEM_DETAIL_UPDATE'
 export const ITEMS_IMPORT = 'ITEMS_IMPORT'
+export const ITEM_DUPLICATE = 'ITEM_DUPLICATE'
 export const OBJECT_NEXT = 'OBJECT_NEXT'
 export const OBJECT_SELECT = 'OBJECT_SELECT'
 export const PANEL_QUIZ_SELECT = 'PANEL_QUIZ_SELECT'
@@ -41,6 +43,7 @@ export const OBJECT_ADD = 'OBJECT_ADD'
 export const OBJECT_CHANGE = 'OBJECT_CHANGE'
 export const OBJECT_REMOVE = 'OBJECT_REMOVE'
 export const OBJECT_MOVE = 'OBJECT_MOVE'
+export const QUESTION_MOVE = 'QUESTION_MOVE'
 
 // the following action types lead to quiz data changes that need to be
 // properly saved (please maintain this list up-to-date)
@@ -51,6 +54,7 @@ export const quizChangeActions = [
   ITEM_MOVE,
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
+  ITEM_DUPLICATE,
   ITEMS_IMPORT,
   STEP_CREATE,
   STEP_MOVE,
@@ -68,7 +72,8 @@ export const quizChangeActions = [
   OBJECT_ADD,
   OBJECT_CHANGE,
   OBJECT_REMOVE,
-  OBJECT_MOVE
+  OBJECT_MOVE,
+  QUESTION_MOVE
 ]
 
 export const actions = {}
@@ -94,6 +99,7 @@ actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
 actions.updateContentItem = makeActionCreator(CONTENT_ITEM_UPDATE, 'id', 'propertyPath', 'value')
 actions.updateContentItemDetail = makeActionCreator(CONTENT_ITEM_DETAIL_UPDATE, 'id', 'subAction')
 actions.updateItemObjects = makeActionCreator(ITEM_OBJECTS_UPDATE, 'itemId', 'updateType', 'data')
+actions.moveQuestionStep = makeActionCreator(QUESTION_MOVE, 'itemId', 'stepId')
 
 actions.createItem = (stepId, type) => {
   invariant(stepId, 'stepId is mandatory')
@@ -106,10 +112,25 @@ actions.createItem = (stepId, type) => {
   }
 }
 
-actions.createStep = () => {
+actions.duplicateQuestion = (amount, itemId, stepId) => {
+  const ids = []
+
+  times(amount, () => ids.push(makeId()))
+
+  return {
+    type: ITEM_DUPLICATE,
+    ids,
+    itemId,
+    stepId
+  }
+}
+
+actions.createStep = (position) => {
+  invariant(position, 'position is mandatory')
   return {
     type: STEP_CREATE,
-    id: makeId()
+    id: makeId(),
+    title: `${tex('step')} ${position}`
   }
 }
 

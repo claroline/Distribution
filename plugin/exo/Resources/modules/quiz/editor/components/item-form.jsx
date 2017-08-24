@@ -41,10 +41,16 @@ const Metadata = props =>
       <CheckGroup
         checkId={`item-${props.item.id}-editable`}
         label={tex('protect_update')}
-        checked={props.item.protectUpdate}
-        onChange={checked => props.onChange('protectUpdate', checked)}
+        checked={props.item.meta.protectQuestion}
+        onChange={checked => props.onChange('meta.protectQuestion', checked)}
       />
     }
+    <CheckGroup
+      checkId={`item-${props.item.id}-mandatory`}
+      label={props.mandatoryQuestions ? tex('make_optional'): tex('mandatory_answer')}
+      checked={props.item.meta.mandatory}
+      onChange={checked => props.onChange('meta.mandatory', checked)}
+    />
     <FormGroup
       controlId={`item-${props.item.id}-objects`}
       label={tex('question_objects')}
@@ -64,8 +70,12 @@ Metadata.propTypes = {
     title: T.string.isRequired,
     description: T.string.isRequired,
     rights: T.object.isRequired,
-    protectUpdate: T.bool.isRequired
+    meta: T.shape({
+      mandatory: T.bool.isRequired,
+      protectQuestion: T.bool.isRequired
+    }).isRequired
   }).isRequired,
+  mandatoryQuestions: T.bool.isRequired,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   onChange: T.func.isRequired,
@@ -135,16 +145,14 @@ const Hints = props =>
       </ul>
     }
 
-    <div className="footer">
-      <button
-        type="button"
-        className="btn btn-default"
-        onClick={() => props.onChange(HINT_ADD, {})}
-      >
-        <span className="fa fa-fw fa-plus"/>
-        {tex('add_hint')}
-      </button>
-    </div>
+    <button
+      type="button"
+      className="btn btn-block btn-default"
+      onClick={() => props.onChange(HINT_ADD, {})}
+    >
+      <span className="fa fa-fw fa-plus"/>
+      {tex('add_hint')}
+    </button>
   </div>
 
 Hints.propTypes = {
@@ -185,6 +193,7 @@ export class ItemForm extends Component {
           toggle={() => this.setState({metaHidden: !this.state.metaHidden})}
         >
           <Metadata
+            mandatoryQuestions={this.props.mandatoryQuestions}
             item={this.props.item}
             showModal={this.props.showModal}
             closeModal={this.props.closeModal}
@@ -232,6 +241,7 @@ ItemForm.propTypes = {
     feedback: T.string.isRequired,
     _errors: T.object
   }).isRequired,
+  mandatoryQuestions: T.bool.isRequired,
   children: T.element.isRequired,
   validating: T.bool.isRequired,
   showModal: T.func.isRequired,

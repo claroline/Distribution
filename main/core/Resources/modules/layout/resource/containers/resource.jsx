@@ -6,7 +6,7 @@ import {select as modalSelect} from '#/main/core/layout/modal/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {select as resourceSelect} from './../selectors'
 import {actions as resourceActions} from './../actions'
-import {Resource} from '../components/resource.jsx'
+import {Resource as ResourceComponent} from '../components/resource.jsx'
 
 /**
  * Connected container for resources.
@@ -21,59 +21,21 @@ import {Resource} from '../components/resource.jsx'
  * @param props
  * @constructor
  */
-const ResourceContainer = props =>
-  <Resource
+const Resource = props =>
+  <ResourceComponent
     {...props}
   >
     {props.children}
-  </Resource>
+  </ResourceComponent>
 
-ResourceContainer.propTypes = {
+Resource.propTypes = {
   /**
    * Application of the resource.
    */
   children: T.node,
 
-  /**
-   * Current displayed modal if any.
-   */
-  modal: T.shape({
-    type: T.string,
-    fading: T.bool.isRequired,
-    props: T.object.isRequired
-  }),
-
-  /**
-   * Builds the current modal component.
-   */
-  createModal: T.func.isRequired,
-
-  /**
-   * Shows a modal.
-   */
-  showModal: T.func.isRequired,
-
-  /**
-   * Hides the current displayed modal.
-   */
-  fadeModal: T.func.isRequired,
-
-  customActions: T.array.isRequired,
-  editMode: T.bool,
-  edit: T.oneOfType([T.func, T.string]).isRequired,
-  save: T.object.isRequired,
-
-  /**
-   * Changes publication status of the resource.
-   */
-  togglePublication: T.func.isRequired,
-
-  /**
-   * Updates the resource node properties.
-   *
-   * @param {object} resourceNode - the new resourceNode properties
-   */
-  updateNode: T.func.isRequired
+  modal: T.object.isRequired,
+  resourceNode: T.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -84,7 +46,7 @@ function mapStateToProps(state) {
 }
 
 // connects the container to redux
-const ConnectedResource = connect(
+const ResourceContainer = connect(
   mapStateToProps,
   Object.assign(
     {},
@@ -93,4 +55,6 @@ const ConnectedResource = connect(
   )
 )(Resource)
 
-export {ConnectedResource as Resource}
+export {
+  ResourceContainer
+}
