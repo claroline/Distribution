@@ -92,19 +92,17 @@ class PlatformUpdateCommand extends ContainerAwareCommand
         $installer->setLogger($consoleLogger);
         $versionManager = $this->getContainer->get(claroline.manager.version_manager);
 
-        if ($input->getArgument('from_version')){
+        if ($input->getArgument('from_version') && $input->getArgument('to_version')){
             $from = $input->getArgument('from_version');
-        }
-        else{
-            $from = $versionManager->getLatestUpgraded('ClarolineCoreBundle');
-        }
-        if ($input->getArgument('to_version')){
             $to = $input->getArgument('to_version');
+        } else {
+            try {
+                $from = $versionManager->getLatestUpgraded('ClarolineCoreBundle');
+                $to = $versionManager->getCurrent();
+            } catch (Exception $e) {
+                $from = null;
+            }
         }
-        else {
-            $to = $versionManager->getCurrent();
-        }
-
         if ($from && $to) {
             $installer->updateAll($from, $to);
         } else {
