@@ -154,7 +154,6 @@ function reduceSteps(steps = {}, action = {}) {
       return update(steps, {[action.stepId]: {items: {$splice: [[index, 1]]}}})
     }
     case ITEM_DUPLICATE: {
-      alert('steps')
       action.ids.forEach(id => {
         steps = update(steps, {[action.stepId]: {items: {$push: [id]}}})
       })

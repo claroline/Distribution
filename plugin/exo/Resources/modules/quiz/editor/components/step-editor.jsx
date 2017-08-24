@@ -95,7 +95,7 @@ const ItemActions = props =>
             title: tex('change_step'),
             question: tex('change_step_confirm_message'),
             itemId: props.itemId,
-            handleSubmit: props.handleMoveQuestionStepClick
+            handleClick: props.handleMoveQuestionStepClick
           })
         }}
       >

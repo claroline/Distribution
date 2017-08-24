@@ -10,7 +10,9 @@ export const MODAL_DUPLICATE_QUESTION = 'MODAL_DUPLICATE_QUESTION'
 class DuplicateQuestionModal extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      value: 1
+    }
   }
 
   handleChange(value) {
@@ -25,27 +27,31 @@ class DuplicateQuestionModal extends Component {
   render() {
     return (
       <BaseModal {...this.props}>
-        <Modal.Body>
-          <FormGroup
-            controlId={`item-${this.props.itemId}-duplicate`}
-            label={tex('amount')}
+        <form>
+          <Modal.Body>
+            <FormGroup
+              controlId={`item-${this.props.itemId}-duplicate`}
+              label={tex('amount')}
+            >
+              <input
+                id={`item-${this.props.itemId}-duplicate`}
+                type="number"
+                min="1"
+                defaultValue="1"
+                autoFocus
+                className="form-control"
+                onChange={e => this.handleChange(parseInt(e.target.value))}
+              />
+            </FormGroup>
+          </Modal.Body>
+          <button
+            className="modal-btn btn btn-primary"
+            onClick={() => this.duplicate()}
+            type="submit"
           >
-            <input
-              id={`item-${this.props.itemId}-duplicate`}
-              type="number"
-              min="1"
-              value="1"
-              className="form-control"
-              onChange={e => this.handleChange(parseInt(e.target.value))}
-            />
-          </FormGroup>
-        </Modal.Body>
-        <button
-          className="modal-btn btn btn-primary"
-          onClick={() => this.duplicate()}
-        >
           {tex('duplicate')}
-        </button>
+          </button>
+        </form>
       </BaseModal>
     )
   }
