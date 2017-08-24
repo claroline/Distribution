@@ -67,7 +67,7 @@ class PlatformUpdateCommand extends ContainerAwareCommand
     {
         $output->writeln(sprintf('<comment>%s - Updating the platform...</comment>', date('H:i:s')));
 
-        if ($input->getOption('create_database')) {
+        if (!$input->getOption('create_database')) {
             $databaseCreator = new CreateDatabaseDoctrineCommand();
             $databaseCreator->setContainer($this->getContainer());
             $databaseCreator->run(new ArrayInput([]), $output);
