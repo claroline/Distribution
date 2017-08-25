@@ -13,6 +13,7 @@ import {t_res}        from '#/main/core/layout/resource/translation'
 import {BaseModal}    from '#/main/core/layout/modal/components/base.jsx'
 import {FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormGroup}    from '#/main/core/layout/form/components/form-group.jsx'
+import {CheckGroup}   from '#/main/core/layout/form/components/check-group.jsx'
 import {Textarea}     from '#/main/core/layout/form/components/textarea.jsx'
 import {DatePicker}   from '#/main/core/layout/form/components/date-picker.jsx'
 import {IpSetter}     from '#/main/core/layout/form/components/ip-setter.jsx'
@@ -34,39 +35,22 @@ const MetaPanel = props =>
       />
     </FormGroup>
 
-    <div className="checkbox">
-      <label htmlFor="resource-published">
-        <input
-          id="resource-published"
-          type="checkbox"
-          checked={props.meta.published}
-          onChange={() => props.updateParameter('meta.published', !props.meta.published)}
-        />
-        {props.meta.published ?
-          t_res('resource_published') :
-          t_res('resource_not_published')
-        }
-      </label>
-    </div>
+    <CheckGroup
+      checkId="resource-published"
+      label={t_res('resource_not_published')}
+      labelChecked={t_res('resource_published')}
+      checked={props.meta.published}
+      onChange={checked => props.updateParameter('meta.published', checked)}
+    />
 
-    <div className="checkbox">
-      <label htmlFor="resource-portal">
-        <input
-          id="resource-portal"
-          type="checkbox"
-          checked={props.meta.portal}
-          onChange={() => props.updateParameter('meta.portal', !props.meta.portal)}
-        />
-        {props.meta.portal ?
-          t_res('resource_portal_published') :
-          t_res('resource_portal_not_published')
-        }
-      </label>
-      <p className="help-block">
-        <span className="fa fa-info-circle" />
-        {t_res('resource_portal_help')}
-      </p>
-    </div>
+    <CheckGroup
+      checkId="resource-portal"
+      label={t_res('resource_portal_not_published')}
+      labelChecked={t_res('resource_portal_published')}
+      checked={props.meta.portal}
+      onChange={checked => props.updateParameter('meta.portal', checked)}
+      help={t_res('resource_portal_help')}
+    />
   </fieldset>
 
 MetaPanel.propTypes = {
@@ -127,21 +111,18 @@ const AccessesPanel = (props) =>
         id="access-code"
         type="password"
         className="form-control"
-        value={props.meta.accesses.code}
+        value={props.meta.accesses.code || ''}
         onChange={(e) => props.updateParameter('meta.accesses.code', e.target.value)}
       />
     </FormGroup>
-    <div className="checkbox">
-      <label htmlFor="allow-ip-filtering">
-        <input
-          id="allow-ip-filtering"
-          type="checkbox"
-          checked={props.meta.accesses.ip.activateFilters}
-          onChange={() => props.updateParameter('meta.accesses.ip.activateFilters', !props.meta.accesses.ip.activateFilters)}
-        />
-      {t('allow_ip_filtering')}
-      </label>
-    </div>
+
+    <CheckGroup
+      checkId="ip-filtering"
+      label={t('allow_ip_filtering')}
+      checked={props.meta.accesses.ip.activateFilters}
+      onChange={checked => props.updateParameter('meta.accesses.ip.activateFilters', checked)}
+    />
+
     {props.meta.accesses.ip.activateFilters &&
       <IpSetter
         ips={props.meta.accesses.ip.ips}
@@ -379,7 +360,7 @@ class EditPropertiesModal extends Component {
               />
             }, {
               id: 'resource-ip-accesses',
-              icon: 'fa-laptop',
+              icon: 'fa fa-fw fa-laptop',
               label: t('Accesses'),
               children: <AccessesPanel
                 meta={this.state.resourceNode.meta}

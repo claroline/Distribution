@@ -122,11 +122,13 @@ class ThemeManager
     /**
      * Returns the names of all the registered themes.
      *
+     * @param bool $onlyEnabled
+     *
      * @return string[]
      */
-    public function listThemeNames()
+    public function listThemeNames($onlyEnabled = false)
     {
-        $themes = $this->all();
+        $themes = $this->all($onlyEnabled);
         $themeNames = [];
 
         /** @var Theme $theme */
@@ -219,16 +221,19 @@ class ThemeManager
     public function getDefaultTheme()
     {
         return $this->om->getRepository('ClarolineCoreBundle:Theme\Theme')
-            ->findOneBy(['name' => static::$stockThemes[0]]);
+            ->findOneBy(['default' => true]);
     }
 
     /**
+     * @param bool $onlyEnabled
+     *
+     * @return Theme[]
      */
-    public function all()
+    public function all($onlyEnabled = false)
     {
         return $this->om
             ->getRepository('ClarolineCoreBundle:Theme\Theme')
-            ->findBy([]);
+            ->findBy($onlyEnabled ? ['enabled' => true] : []);
     }
 
     /**

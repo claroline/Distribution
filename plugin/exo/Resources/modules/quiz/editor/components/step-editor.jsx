@@ -236,6 +236,7 @@ class ItemPanel extends Component {
                 connectDragSource={this.props.connectDragSource}
                 hasErrors={!isEmpty(this.props.item._errors)}
                 validating={this.props.validating}
+                expanded={this.props.expanded}
               />
             }
             collapsible={true}
@@ -564,10 +565,6 @@ export const StepEditor = props =>
         />
       </Panel>
 
-      {props.step.items.length === 0 &&
-        <div className="no-item-info">{tex('no_item_info')}</div>
-      }
-
       {props.step.items.map((item, index) => isQuestionType(item.type) ?
         <SortableItemPanel
           id={item.id}
@@ -609,6 +606,11 @@ export const StepEditor = props =>
         />
       )}
     </PanelGroup>
+
+    {props.step.items.length === 0 &&
+      <div className="no-item-info">{tex('no_item_info')}</div>
+    }
+
     <StepFooter
       stepId={props.step.id}
       showModal={props.showModal}

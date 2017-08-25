@@ -16,12 +16,26 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
+ * Manages compilation of the platform's themes.
+ *
  * @DI\Service("claroline.manager.theme_builder")
  */
 class ThemeBuilderManager
 {
+    /**
+     * Path for theme installed through core and plugins.
+     * NB: the path is prefixed with the bundle path.
+     *
+     * @var string
+     */
     const INSTALLED_THEME_PATH = 'Resources'.DIRECTORY_SEPARATOR.'themes';
 
+    /**
+     * Path for theme created by users in the current platform.
+     * NB: the path is prefixed with the platform files directory path.
+     *
+     * @var string
+     */
     const CUSTOM_THEME_PATH    = 'themes-src';
 
     /** @var KernelInterface */
@@ -62,6 +76,8 @@ class ThemeBuilderManager
     }
 
     /**
+     * Rebuilds the list of themes passed as argument.
+     *
      * @param Theme[] $themes
      * @param bool    $cache
      *
@@ -129,7 +145,7 @@ class ThemeBuilderManager
 
     private function compileTheme($themeSrc, $cache = true)
     {
-        $compileCmd = 'npm run themes -- --theme='.$themeSrc;
+        $compileCmd = sprintf('npm run themes -- --theme="%s"', $themeSrc);
         if (!$cache) {
             $compileCmd .= ' --no-cache';
         }

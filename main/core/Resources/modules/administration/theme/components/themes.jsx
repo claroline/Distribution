@@ -90,7 +90,10 @@ class Themes extends Component {
                 name: 'name',
                 type: 'string',
                 label: trans('theme_name', {}, 'theme'),
-                renderer: (rowData) => <NavLink to={`/${rowData.id}`}>{rowData.name}</NavLink>
+                renderer: (rowData) => [
+                  <NavLink key={`link-${rowData.id}`} to={`/${rowData.id}`}>{rowData.name}</NavLink>,
+                  rowData.meta.default && <small key={`default-${rowData.id}`}>&nbsp;({trans('default_theme', {}, 'theme')})</small>
+                ]
               },
               {name: 'meta.description', type: 'string', label: trans('theme_description', {}, 'theme')},
               {name: 'meta.plugin',      type: 'string', label: trans('theme_plugin', {}, 'theme')},

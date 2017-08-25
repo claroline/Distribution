@@ -7,7 +7,7 @@ import Popover from 'react-bootstrap/lib/Popover'
 
 import {t, tex} from '#/main/core/translation'
 import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
-import {CheckGroup} from './../../components/form/check-group.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/check-group.jsx'
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'

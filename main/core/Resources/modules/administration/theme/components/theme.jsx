@@ -21,10 +21,12 @@ import {
   MoreAction
 } from '#/main/core/layout/page/index'
 
-import {HelpBlock} from '#/main/core/layout/form/components/help-block.jsx'
+import {HelpBlock}    from '#/main/core/layout/form/components/help-block.jsx'
 import {FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
+import {FormGroup}    from '#/main/core/layout/form/components/form-group.jsx'
+import {CheckGroup}   from '#/main/core/layout/form/components/check-group.jsx'
 import {TextGroup}    from '#/main/core/layout/form/components/text-group.jsx'
-import {FlagGroup}    from '#/main/core/layout/form/components/flag-group.jsx'
+import {SubSection}   from '#/main/core/layout/form/components/sub-section.jsx'
 
 import {Color}        from './fields/color.jsx'
 import {FontSize}     from './fields/font-size.jsx'
@@ -36,11 +38,20 @@ const GeneralSection = props =>
     <fieldset className="panel-body">
       <h2 className="sr-only">General properties</h2>
 
+      {props.theme.meta.plugin &&
+        <FormGroup
+          controlId="theme-plugin"
+          label={trans('theme_plugin', {}, 'theme')}
+        >
+          <div id="theme-plugin">{props.theme.meta.plugin}</div>
+        </FormGroup>
+      }
+
       <TextGroup
         controlId="theme-name"
         label={trans('theme_name', {}, 'theme')}
         value={props.theme.name}
-        onChange={(value) => true}
+        onChange={value => true}
       />
 
       <TextGroup
@@ -48,24 +59,30 @@ const GeneralSection = props =>
         label={trans('theme_description', {}, 'theme')}
         value={props.theme.meta.description}
         long={true}
-        onChange={(value) => true}
+        onChange={value => true}
       />
 
-      <FlagGroup
-        controlId="theme-extend-default"
-        label={trans('theme_extend_default', {}, 'theme')}
-        active={props.theme.parameters.extendDefault}
-        onChange={active => true}
-        help={trans('theme_extend_default_help', {}, 'theme')}
-      />
+      <SubSection
+        showText={t('show_advanced_options')}
+        hideText={t('hide_advanced_options')}
+      >
+        <CheckGroup
+          checkId="theme-extend-default"
+          label={trans('theme_extend_default', {}, 'theme')}
+          checked={props.theme.parameters.extendDefault}
+          onChange={active => true}
+          help={trans('theme_extend_default_help', {}, 'theme')}
+        />
 
-      <FlagGroup
-        controlId="theme-enabled"
-        label={trans('theme_enabled', {}, 'theme')}
-        active={props.theme.meta.enabled}
-        onChange={active => true}
-        help={trans('theme_enabled_help', {}, 'theme')}
-      />
+        <CheckGroup
+          checkId="theme-enabled"
+          label={trans('theme_enabled', {}, 'theme')}
+          checked={props.theme.meta.enabled}
+          onChange={active => true}
+          help={trans('theme_enabled_help', {}, 'theme')}
+        />
+      </SubSection>
+
     </fieldset>
   </div>
 
@@ -74,6 +91,7 @@ GeneralSection.propTypes = {
     name: T.string.isRequired,
     current: T.bool.isRequired,
     meta: T.shape({
+      plugin: T.string,
       description: T.string,
       enabled: T.bool,
     }).isRequired,
@@ -198,17 +216,17 @@ SizingSection.propTypes = {
 
 const ExtraSection = props =>
   <fieldset>
-    <FlagGroup
-      controlId="enable-shadows"
+    <CheckGroup
+      checkId="enable-shadows"
       label={trans('enable_shadows', {}, 'theme')}
-      active={true}
+      checked={true}
       onChange={active => true}
     />
 
-    <FlagGroup
-      controlId="enable-border-radius"
+    <CheckGroup
+      checkId="enable-border-radius"
       label={trans('enable_border_radius', {}, 'theme')}
-      active={true}
+      checked={true}
       onChange={active => true}
     />
   </fieldset>

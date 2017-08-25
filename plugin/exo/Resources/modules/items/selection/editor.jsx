@@ -15,7 +15,7 @@ import {actions} from './editor'
 import {TooltipButton} from './../../components/form/tooltip-button.jsx'
 import {utils} from './utils/utils'
 import {SCORE_SUM, SCORE_FIXED} from './../../quiz/enums'
-import {CheckGroup} from './../../components/form/check-group.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/check-group.jsx'
 
 function updateAnswer(value, parameter, selectionId, mode) {
   switch(mode) {

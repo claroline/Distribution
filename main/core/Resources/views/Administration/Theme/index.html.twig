@@ -2,6 +2,12 @@
 
 {% block title %}{{ parent() ~ ' - ' ~ 'themes_management' | trans({}, 'platform') | striptags | raw }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+
+    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-main-core-theme-management.css') }}" />
+{% endblock %}
+
 {% block breadcrumb %}
     {{ macros.breadcrumbs([
         {

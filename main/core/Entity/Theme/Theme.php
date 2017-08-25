@@ -22,6 +22,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Theme
 {
+    use UuidTrait;
+
     /**
      * Unique identifier of the theme.
      *
@@ -59,6 +61,15 @@ class Theme
      * @var bool
      */
     private $enabled = true;
+
+    /**
+     * Is it the default platform theme ?
+     *
+     * @ORM\Column(name="is_default", type="boolean")
+     *
+     * @var bool
+     */
+    private $default = false;
 
     /**
      * The plugin to which the theme belongs, if any.
@@ -164,6 +175,26 @@ class Theme
     public function isEnabled()
     {
         return $this->enabled;
+    }
+
+    /**
+     * Set default.
+     *
+     * @param bool $default
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+    }
+
+    /**
+     * Is default ?
+     *
+     * @return bool
+     */
+    public function isDefault()
+    {
+        return $this->default;
     }
 
     /**

@@ -18,6 +18,7 @@ class Version20170624000000 extends AbstractMigration
             ALTER TABLE claro_theme 
             ADD uuid VARCHAR(36) NOT NULL,
             ADD description LONGTEXT DEFAULT NULL,
+            ADD is_default TINYINT(1) NOT NULL,
             ADD enabled TINYINT(1) NOT NULL,
             ADD user_id INT DEFAULT NULL
         ');
@@ -34,7 +35,12 @@ class Version20170624000000 extends AbstractMigration
         ');
 
         $this->addSql('
-            UPDATE claro_theme SET enabled = true
+            UPDATE claro_theme SET enabled=true, is_default=false
+        ');
+
+        // Create the new default theme
+        $this->addSql('
+            UPDATE claro_theme SET is_default=true WHERE name="Claroline"
         ');
 
         $this->addSql('

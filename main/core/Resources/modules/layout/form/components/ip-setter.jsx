@@ -1,5 +1,17 @@
-import React, {PropTypes as T, Component} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
+
 import {t} from '#/main/core/translation'
+
+const IPSpan = props =>
+  <div>
+    {props.ip}<i className="fa fa-times fa-fw pointer" onClick={() => props.onRemove(props.ip)}/>
+  </div>
+
+IPSpan.propTypes = {
+  ip: T.string.isRequired,
+  onRemove: T.func.isRequired
+}
 
 export class IpSetter extends Component {
   constructor(props) {
@@ -107,15 +119,6 @@ export class IpSetter extends Component {
   }
 }
 
-const IPSpan = props => <div>
-  {props.ip}<i className="fa fa-times fa-fw pointer" onClick={() => props.onRemove(props.ip)}/>
-</div>
-
-IPSpan.propTypes = {
-  ip: T.string.isRequired,
-  onRemove: T.func.isRequired
-}
-
 IpSetter.propTypes = {
   ips: T.arrayOf(T.string).isRequired,
   onChange: T.func.isRequired
@@ -124,3 +127,11 @@ IpSetter.propTypes = {
 IpSetter.defaultProps = {
   ips: []
 }
+
+
+const IpList = props =>
+  <div>
+    <ul>
+
+    </ul>
+  </div>

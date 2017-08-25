@@ -79,6 +79,11 @@ class Plugin
         return strtolower($this->getVendorName().str_replace('Bundle', '', $this->getBundleName()));
     }
 
+    public function getDisplayName()
+    {
+        return $this->getVendorName().'/'.str_replace('Bundle', '', $this->getBundleName());
+    }
+
     public function getVendorName()
     {
         return $this->vendorName;

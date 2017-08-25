@@ -44,9 +44,10 @@ class ThemeSerializer
             'current' => $this->themeManager->isCurrentTheme($theme),
             'meta' => [
                 'description' => $theme->getDescription(),
+                'default' => $theme->isDefault(),
                 'enabled' => $theme->isEnabled(),
                 'custom' => $theme->isCustom(),
-                'plugin' => $theme->getPlugin() ? $theme->getPlugin()->getShortName() : null,
+                'plugin' => $theme->getPlugin() ? $theme->getPlugin()->getDisplayName() : null,
             ],
             'parameters' => [
                 'extendDefault' => $theme->isExtendingDefault(),

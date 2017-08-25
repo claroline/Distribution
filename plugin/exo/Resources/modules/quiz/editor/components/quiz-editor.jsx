@@ -12,7 +12,7 @@ import {formatDate} from '#/main/core/date'
 import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'
 import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/date-picker.jsx'
-import {CheckGroup} from './../../../components/form/check-group.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/check-group.jsx'
 import {Radios} from './../../../components/form/radios.jsx'
 import {ValidationStatus} from './validation-status.jsx'
 
