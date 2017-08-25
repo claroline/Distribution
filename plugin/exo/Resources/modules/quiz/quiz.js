@@ -35,6 +35,7 @@ export class Quiz {
     ])
 
     const quizData = decorate(normalize(rawQuizData), getDecorators(), rawResourceNodeData.rights.current.edit)
+    // todo : editable property has been lost and so the store is always configured for edition
     this.store = createStore(Object.assign({noServer: noServer, resourceNode: rawResourceNodeData}, quizData))
     this.dndQuiz = DragDropContext(TouchBackend({ enableMouseEvents: true }))(QuizComponent)
     makeRouter(this.store.dispatch.bind(this.store))

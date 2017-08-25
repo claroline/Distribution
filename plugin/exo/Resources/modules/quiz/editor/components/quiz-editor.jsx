@@ -117,16 +117,18 @@ const Display = props =>
       </FormGroup>
     }
 
-    <Radios
-      groupName="quiz-numbering"
-      options={[
-        {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},
-        {value: NUMBERING_NUMERIC, label: tex('quiz_numbering_numeric')},
-        {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
-      ]}
-      checkedValue={props.parameters.numbering}
-      onChange={numbering => props.onChange('parameters.numbering', numbering)}
-    />
+    <FormGroup controlId="quiz-numbering" label={tex('quiz_numbering')}>
+      <Radios
+        groupName="quiz-numbering"
+        options={[
+          {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},
+          {value: NUMBERING_NUMERIC, label: tex('quiz_numbering_numeric')},
+          {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
+        ]}
+        checkedValue={props.parameters.numbering}
+        onChange={numbering => props.onChange('parameters.numbering', numbering)}
+      />
+    </FormGroup>
   </fieldset>
 
 Display.propTypes = {
@@ -388,7 +390,7 @@ class Correction extends Component {
             min="0"
             max="100"
             className="form-control"
-            value={this.props.parameters.successScore}
+            value={this.props.parameters.successScore || ''}
           />
         </FormGroup>
 
@@ -559,7 +561,7 @@ export const QuizEditor = props => {
         activeKey={props.activePanelKey}
       >
         {makePanel(Properties, t('properties'), 'properties', props, ['title'])}
-        {makePanel(Display, t('display_mode'), 'display_mode', props)}
+        {makePanel(Display, tex('display_mode'), 'display_mode', props)}
         {makePanel(StepPicking, tex('step_picking'), 'step-picking', props, ['pick'])}
         {makePanel(Signing, tex('signing'), 'signing', props, ['duration', 'maxAttempts'])}
         {makePanel(Correction, tex('correction'), 'correction', props)}

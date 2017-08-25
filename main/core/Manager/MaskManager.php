@@ -31,7 +31,11 @@ class MaskManager
     /**
      * Constructor.
      *
-     * @DI\InjectParams({"om" = @DI\Inject("claroline.persistence.object_manager")})
+     * @DI\InjectParams({
+     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     * })
+     *
+     * @param ObjectManager $om
      */
     public function __construct(ObjectManager $om)
     {
@@ -88,6 +92,36 @@ class MaskManager
         }
 
         return $mask;
+    }
+
+    /**
+     * Retrieves and removes a mask decoder.
+     *
+     * @param ResourceType $resourceType
+     * @param string       $name
+     */
+    public function removeMask(ResourceType $resourceType, $name)
+    {
+        $toRemove = $this->getDecoder($resourceType, $name);
+        if (!empty($toRemove)) {
+            $this->om->remove($toRemove);
+        }
+    }
+
+    /**
+     * Retrieves and renames a mask decoder.
+     *
+     * @param ResourceType $resourceType
+     * @param string       $currentName
+     * @param string       $newName
+     */
+    public function renameMask(ResourceType $resourceType, $currentName, $newName)
+    {
+        $toRename = $this->getDecoder($resourceType, $currentName);
+        if (!empty($toRename)) {
+            $toRename->setName($newName);
+            $this->om->persist($toRename);
+        }
     }
 
     /**

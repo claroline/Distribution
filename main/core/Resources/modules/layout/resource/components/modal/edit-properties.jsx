@@ -321,7 +321,7 @@ class EditPropertiesModal extends Component {
             {
               id: 'resource-meta',
               icon: 'fa fa-fw fa-info',
-              label: 'Information',
+              label: t_res('resource_meta'),
               children: <MetaPanel
                 meta={this.state.resourceNode.meta}
                 updateParameter={this.updateProperty.bind(this)}
@@ -331,7 +331,7 @@ class EditPropertiesModal extends Component {
             }, {
               id: 'resource-dates',
               icon: 'fa fa-fw fa-calendar',
-              label: 'Accessibility dates',
+              label: t_res('resource_accessibility_dates'),
               children: <AccessibilityDatesPanel
                 parameters={this.state.resourceNode.parameters}
                 updateParameter={this.updateProperty.bind(this)}
@@ -341,7 +341,7 @@ class EditPropertiesModal extends Component {
             }, {
               id: 'resource-display',
               icon: 'fa fa-fw fa-desktop',
-              label: 'Display parameters',
+              label: t_res('resource_display_parameters'),
               children: <DisplayPanel
                 parameters={this.state.resourceNode.parameters}
                 updateParameter={this.updateProperty.bind(this)}
@@ -351,7 +351,7 @@ class EditPropertiesModal extends Component {
             }, {
               id: 'resource-license',
               icon: 'fa fa-fw fa-copyright',
-              label: 'Authors & License',
+              label: t_res('resource_authors_license'),
               children: <LicensePanel
                 meta={this.state.resourceNode.meta}
                 updateParameter={this.updateProperty.bind(this)}
