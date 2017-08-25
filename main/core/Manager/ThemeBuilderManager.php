@@ -22,7 +22,7 @@ class ThemeBuilderManager
 {
     const INSTALLED_THEME_PATH = 'Resources'.DIRECTORY_SEPARATOR.'themes';
 
-    const CUSTOM_THEME_PATH    = 'themes';
+    const CUSTOM_THEME_PATH    = 'themes-src';
 
     /** @var KernelInterface */
     private $kernel;

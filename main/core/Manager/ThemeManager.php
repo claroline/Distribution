@@ -13,10 +13,10 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * @DI\Service("claroline.manager.theme_manager")
@@ -36,9 +36,9 @@ class ThemeManager
      * ThemeManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "config"     = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "kernelDir"  = @DI\Inject("%kernel.root_dir%")
+     *     "om"        = @DI\Inject("claroline.persistence.object_manager"),
+     *     "config"    = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "kernelDir" = @DI\Inject("%kernel.root_dir%")
      * })
      *
      * @param ObjectManager                $om
@@ -67,6 +67,8 @@ class ThemeManager
      *
      * @return Theme
      */
+      public function create(array $data)
+      {
         /*$theme = new Theme();
         $theme->setName($name);
         $theme->setExtendingDefault($extendDefault);
@@ -206,6 +208,16 @@ class ThemeManager
         }
 
         return $this->currentTheme;
+    }
+
+    /**
+     * @return Theme[]
+     */
+    public function all()
+    {
+        return $this->om
+            ->getRepository('ClarolineCoreBundle:Theme\Theme')
+            ->findBy([]);
     }
 
     /**
