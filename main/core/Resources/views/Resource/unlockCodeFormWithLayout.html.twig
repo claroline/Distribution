@@ -1,0 +1,11 @@
+{% extends "ClarolineCoreBundle:Resource:layout.html.twig" %}
+
+{% block resource_content %}
+      {% render(controller('ClarolineCoreBundle:Resource:unlockCodeFormAction', {'node': node.getId()})) %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-image-player-image-resource.js') }}"></script>
+{% endblock %}
