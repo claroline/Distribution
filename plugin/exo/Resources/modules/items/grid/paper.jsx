@@ -451,8 +451,9 @@ class GridPaper extends Component {
     return (
       <PaperTabs
         id={this.props.item.id}
-        hideExpected={this.props.hideExpected}
+        showExpected={this.props.showExpected}
         showStats={this.props.showStats}
+        showYours={this.props.showYours}
         yours={
           <div className="grid-paper">
             <div className="grid-body">
@@ -726,8 +727,9 @@ GridPaper.propTypes = {
   }).isRequired,
   answer: T.array.isRequired,
   showScore: T.bool.isRequired,
-  hideExpected: T.bool.isRequired,
+  showExpected: T.bool.isRequired,
   showStats: T.bool.isRequired,
+  showYours: T.bool.isRequired,
   stats: T.shape({
     cells: T.object,
     unanswered: T.number,

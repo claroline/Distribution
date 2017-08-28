@@ -32,8 +32,10 @@ const Statistics = props =>
                 getDefinition(item.type).paper,
                 {
                   item,
-                  hideExpected: true,
+                  showYours: false,
+                  showExpected: false,
                   showStats: true,
+                  showScore: false,
                   stats: getDefinition(item.type).generateStats(item, props.papers, props.allPapersStatistics)
                 }
               )}

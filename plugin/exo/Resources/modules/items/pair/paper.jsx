@@ -16,8 +16,9 @@ export const PairPaper = props => {
   return (
     <PaperTabs
       id={props.item.id}
-      hideExpected={props.hideExpected}
+      showExpected={props.showExpected}
       showStats={props.showStats}
+      showYours={props.showYours}
       yours={
         <div className="row pair-paper">
           <div className="col-md-5 items-col">
@@ -200,7 +201,8 @@ PairPaper.propTypes = {
   }).isRequired,
   answer: T.array,
   showScore: T.bool.isRequired,
-  hideExpected: T.bool.isRequired,
+  showExpected: T.bool.isRequired,
+  showYours: T.bool.isRequired,
   showStats: T.bool.isRequired,
   stats: T.shape({
     unpaired: T.object,

@@ -11,9 +11,10 @@ export const SelectionPaper = (props) => {
   return (
     <PaperTabs
       item={props.item}
-      answer={props.answer}
+      showExpected={props.showExpected}
+      showStats={props.showStats}
+      showYours={props.showYours}
       id={props.item.id}
-      hideExpected={props.hideExpected}
       yours={
         (<div>
           {props.item.mode === 'find' &&
@@ -80,5 +81,7 @@ SelectionPaper.propTypes = {
       mode: T.string.isRequired
     })
   ]).isRequired,
-  hideExpected: T.bool.isRequired
+  showExpected: T.bool.isRequired,
+  showYours: T.bool.isRequired,
+  showStats: T.bool.isRequired
 }

@@ -63,7 +63,7 @@ let Paper = props => {
                     item, answer: getAnswer(item.id, props.paper.answers),
                     feedback: getAnswerFeedback(item.id, props.paper.answers),
                     showScore: showScore,
-                    hideExpected: !props.showExpectedAnswers,
+                    showExpected: !props.showExpectedAnswers,
                     showStats: props.showStatistics,
                     stats: props.showStatistics ?
                       getDefinition(item.type).generateStats(item, props.papers, props.allPapersStatistics) :

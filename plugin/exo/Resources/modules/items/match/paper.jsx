@@ -171,7 +171,7 @@ export class MatchPaper extends Component
             <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
                 <span className="fa fa-fw fa-user"></span> {tex('your_answer')}
             </NavItem>
-            {!this.props.hideExpected &&
+            {this.props.showExpected &&
               <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
                 <span className="fa fa-fw fa-check"></span> {tex('expected_answer')}
               </NavItem>
@@ -227,7 +227,7 @@ export class MatchPaper extends Component
                 </div>
               </Tab.Pane>
 
-              {!this.props.hideExpected &&
+              {this.props.showExpected &&
                 <Tab.Pane eventKey="second">
                   <span className="help-block" style={{visibility:'hidden'}} >
                     <span className="fa fa-info-circle"></span>{tex('match_player_click_link_help')}
@@ -386,8 +386,9 @@ MatchPaper.propTypes = {
   }).isRequired,
   answer: T.array,
   showScore: T.bool.isRequired,
-  hideExpected: T.bool.isRequired,
+  showExpected: T.bool.isRequired,
   showStats: T.bool.isRequired,
+  showYours: T.bool.isRequired,
   stats: T.shape({
     matches: T.object,
     unanswered: T.number,
