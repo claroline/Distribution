@@ -23,9 +23,11 @@ export class PaperTabs extends Component {
       <Tab.Container id={`${this.props.id}-paper`} defaultActiveKey="first">
         <div>
           <Nav bsStyle="tabs">
-            <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
-              <span className="fa fa-fw fa-user"></span> {tex('your_answer')}
-            </NavItem>
+            {!this.props.showYours &&
+              <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
+                <span className="fa fa-fw fa-user"></span> {tex('your_answer')}
+              </NavItem>
+            }
             {!this.props.hideExpected &&
               <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
                 <span className="fa fa-fw fa-check"></span> {tex('expected_answer')}
@@ -39,9 +41,11 @@ export class PaperTabs extends Component {
           </Nav>
 
           <Tab.Content animation>
-            <Tab.Pane eventKey="first">
-              {this.props.yours}
-            </Tab.Pane>
+            {!this.props.showYours &&
+              <Tab.Pane eventKey="first">
+                {this.props.yours}
+              </Tab.Pane>
+            }
             {!this.props.hideExpected &&
               <Tab.Pane eventKey="second">
                 {this.props.expected}
@@ -66,5 +70,10 @@ PaperTabs.propTypes = {
   stats: T.object,
   onTabChange: T.func,
   hideExpected: T.bool,
-  showStats: T.bool
+  showStats: T.bool,
+  showYours: T.bool
+}
+
+PaperTabs.defaultProps = {
+  showYours: false
 }
