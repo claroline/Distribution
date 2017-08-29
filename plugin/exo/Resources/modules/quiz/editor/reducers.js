@@ -204,11 +204,10 @@ function reduceItems(items = {}, action = {}) {
       return update(items, {[action.id]: {$set: newItem}})
     }
     case ITEM_DUPLICATE: {
-      let newItem = cloneDeep(items[action.itemId])
-      newItem = refreshIds(newItem)
       action.ids.forEach(id => {
         //now we replace the other
-        newItem = cloneDeep(newItem)
+        let newItem = cloneDeep(items[action.itemId])
+        newItem = refreshIds(newItem)
         newItem.id = id
         newItem._errors = validate.item(newItem)
         items = update(items, {[id]: {$set: newItem}})
