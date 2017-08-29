@@ -25,6 +25,49 @@ export function lastId() {
   return lastGeneratedIds[lastGeneratedIds.length - 1]
 }
 
+function isObject(item) {
+  return (typeof item === 'object' && !Array.isArray(item) && item !== null)
+}
+
+function isArray(item) {
+  return Array.isArray(item)
+}
+
+//refresh all the ids string in an object or an array of object recursively and all
+//the references it found
+//this is a pretty heavy operation so try to not do it too many times
+export function refreshIds(object, idMap = {}) {
+  if (isObject(object)) {
+    if (object.id) {
+      const oldId = object.id
+      if (!idMap[oldId]) {
+        const newId = makeId()
+        idMap[oldId] = newId
+      }
+    }
+
+    Object.keys(object).forEach(key => {
+      object[key] = refreshIds(object[key], idMap)
+    })
+  } else {
+    if (isArray(object)) {
+      object.forEach((element, idx) => {
+        object[idx] = refreshIds(element, idMap)
+      })
+    }
+  }
+
+
+  let serialized = JSON.stringify(object)
+  Object.keys(idMap).forEach(key => {
+    serialized = serialized.replace(key, idMap[key])
+  })
+
+  object = JSON.parse(serialized)
+
+  return object
+}
+
 // test purpose only
 export function lastIds(count) {
   if (count > lastGeneratedIds.length) {
