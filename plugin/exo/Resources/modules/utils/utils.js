@@ -1,5 +1,7 @@
 import update from 'immutability-helper'
 import uuid from 'uuid'
+import isArray from 'lodash/isArray'
+import isObject from 'lodash/isObject'
 
 // re-export immutability-helper with a custom delete command
 update.extend('$delete', (property, object) => {
@@ -25,47 +27,31 @@ export function lastId() {
   return lastGeneratedIds[lastGeneratedIds.length - 1]
 }
 
-function isObject(item) {
-  return (typeof item === 'object' && !Array.isArray(item) && item !== null)
-}
-
-function isArray(item) {
-  return Array.isArray(item)
-}
-
 //refresh all the ids string in an object or an array of object recursively and all
 //the references it found
 //this is a pretty heavy operation so try to not do it too many times
-export function refreshIds(object, idMap = {}) {
-  if (isObject(object)) {
-    if (object.id) {
-      const oldId = object.id
-      if (!idMap[oldId]) {
-        const newId = makeId()
-        idMap[oldId] = newId
-      }
-    }
+export function refreshIds(object) {
+  const idMap = {}
+  mapNewIds(idMap, object)
+  let serialized = JSON.stringify(object)
+  Object.keys(idMap).forEach(key => {
+    serialized = serialized.replace(new RegExp(key, 'g'), idMap[key])
+  })
+  object = JSON.parse(serialized)
+  return object
+}
 
-    Object.keys(object).forEach(key => {
-      object[key] = refreshIds(object[key], idMap)
-    })
+function mapNewIds(idMap, object) {
+  if (isArray(object)) {
+    object.forEach(element => mapNewIds(idMap, element))
   } else {
-    if (isArray(object)) {
-      object.forEach((element, idx) => {
-        object[idx] = refreshIds(element, idMap)
-      })
+    if (isObject(object)) {
+      if (object.id && !idMap[object.id] && !Number.isInteger(object.id)) idMap[object.id] = makeId()
+      Object.keys(object).forEach(key => mapNewIds(idMap, object[key]))
     }
   }
 
-
-  let serialized = JSON.stringify(object)
-  Object.keys(idMap).forEach(key => {
-    serialized = serialized.replace(key, idMap[key])
-  })
-
-  object = JSON.parse(serialized)
-
-  return object
+  return idMap
 }
 
 // test purpose only
