@@ -88,7 +88,9 @@ class JsonQuizImportCommand extends ContainerAwareCommand
             ++$i;
             $validator = $this->getContainer()->get('ujm_exo.validator.exercise');
             $errors = $validator->validate($question, [Validation::REQUIRE_SOLUTIONS]);
-            $output->writeln("Importing {$path}: {$i}/{$count}");
+            if (!$input->getOption('dry_run') && !$errors) {
+                $output->writeln("Importing {$path}: {$i}/{$count}");
+            }
 
             if ($errors) {
                 $output->writeln('<error>Errors were found in the json schema for :'.$path.'</error>');
