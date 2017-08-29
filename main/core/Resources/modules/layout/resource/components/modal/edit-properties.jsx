@@ -12,11 +12,14 @@ import {t}            from '#/main/core/translation'
 import {t_res}        from '#/main/core/layout/resource/translation'
 import {BaseModal}    from '#/main/core/layout/modal/components/base.jsx'
 import {FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
-import {FormGroup}    from '#/main/core/layout/form/components/form-group.jsx'
-import {CheckGroup}   from '#/main/core/layout/form/components/check-group.jsx'
-import {Textarea}     from '#/main/core/layout/form/components/textarea.jsx'
-import {DatePicker}   from '#/main/core/layout/form/components/date-picker.jsx'
-import {IpSetter}     from '#/main/core/layout/form/components/ip-setter.jsx'
+import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
+import {FormGroup}    from '#/main/core/layout/form/components/group/form-group.jsx'
+import {HtmlGroup}    from '#/main/core/layout/form/components/group/html-group.jsx'
+import {CheckGroup}   from '#/main/core/layout/form/components/group/check-group.jsx'
+import {TextGroup}    from '#/main/core/layout/form/components/group/text-group.jsx'
+import {Textarea}     from '#/main/core/layout/form/components/field/textarea.jsx'
+import {DatePicker}   from '#/main/core/layout/form/components/field/date-picker.jsx'
+import {IpList}       from '#/main/core/layout/form/components/field/ip-list.jsx'
 import {validate}     from '#/main/core/layout/resource/validator'
 import {closeTargets} from '#/main/core/layout/resource/enums'
 
@@ -24,16 +27,12 @@ export const MODAL_RESOURCE_PROPERTIES = 'MODAL_RESOURCE_PROPERTIES'
 
 const MetaPanel = props =>
   <fieldset>
-    <FormGroup
+    <HtmlGroup
       controlId="resource-description"
       label={t_res('resource_description')}
-    >
-      <Textarea
-        id="resource-description"
-        content={props.meta.description || ''}
-        onChange={description => props.updateParameter('meta.description', description)}
-      />
-    </FormGroup>
+      content={props.meta.description || ''}
+      onChange={description => props.updateParameter('meta.description', description)}
+    />
 
     <CheckGroup
       checkId="resource-published"
@@ -64,71 +63,72 @@ MetaPanel.propTypes = {
   errors: T.object
 }
 
-const AccessibilityDatesPanel = props =>
-  <fieldset>
-    <FormGroup
-      controlId="resource-accessible-from"
-      label={t_res('resource_accessible_from')}
-    >
-      <DatePicker
-        id="resource-accessible-from"
-        name="resource-accessible-from"
-        value={props.parameters.accessibleFrom || ''}
-        onChange={date => props.updateParameter('parameters.accessibleFrom', formatDate(date))}
-      />
-    </FormGroup>
-
-    <FormGroup
-      controlId="resource-accessible-until"
-      label={t_res('resource_accessible_until')}
-    >
-      <DatePicker
-        id="resource-accessible-until"
-        name="resource-accessible-until"
-        value={props.parameters.accessibleUntil || ''}
-        onChange={date => props.updateParameter('parameters.accessibleUntil', formatDate(date))}
-      />
-    </FormGroup>
-  </fieldset>
-
-AccessibilityDatesPanel.propTypes = {
-  parameters: T.shape({
-    accessibleFrom: T.string,
-    accessibleUntil: T.string
-  }).isRequired,
-  updateParameter: T.func.isRequired,
-  validating: T.bool.isRequired,
-  errors: T.object
-}
-
 const AccessesPanel = (props) =>
   <fieldset>
-    <FormGroup
-      controlId="access-code"
-      label={t('access_code')}
+    <ActivableSet
+      id="access-dates"
+      label={t_res('Restreindre par dates')}
     >
-      <input
-        id="access-code"
-        type="password"
-        className="form-control"
-        value={props.meta.accesses.code || ''}
-        onChange={(e) => props.updateParameter('meta.accesses.code', e.target.value)}
-      />
-    </FormGroup>
+      <div className="row">
+        <FormGroup
+          className="col-md-6 col-xs-6 form-last"
+          controlId="resource-accessible-from"
+          label={t_res('resource_accessible_from')}
+          validating={props.validating}
+        >
+          <DatePicker
+            id="resource-accessible-from"
+            value={props.parameters.accessibleFrom || ''}
+            onChange={date => props.updateParameter('parameters.accessibleFrom', formatDate(date))}
+          />
+        </FormGroup>
 
-    <CheckGroup
-      checkId="ip-filtering"
-      label={t('allow_ip_filtering')}
-      checked={props.meta.accesses.ip.activateFilters}
+        <FormGroup
+          className="col-md-6 col-xs-6 form-last"
+          controlId="resource-accessible-until"
+          label={t_res('resource_accessible_until')}
+          validating={props.validating}
+        >
+          <DatePicker
+            id="resource-accessible-until"
+            value={props.parameters.accessibleUntil || ''}
+            onChange={date => props.updateParameter('parameters.accessibleUntil', formatDate(date))}
+          />
+        </FormGroup>
+      </div>
+    </ActivableSet>
+
+    <ActivableSet
+      id="access-code"
+      label={t_res('Restreindre par code')}
+    >
+      <FormGroup
+        controlId="resource-access-code"
+        label={t('access_code')}
+        validating={props.validating}
+      >
+        <input
+          id="access-code"
+          type="password"
+          className="form-control"
+          value={props.meta.accesses.code || ''}
+          onChange={(e) => props.updateParameter('meta.accesses.code', e.target.value)}
+        />
+      </FormGroup>
+    </ActivableSet>
+
+    <ActivableSet
+      id="access-ips"
+      label={t_res('allow_ip_filtering')}
+      activated={props.meta.accesses.ip.activateFilters}
       onChange={checked => props.updateParameter('meta.accesses.ip.activateFilters', checked)}
-    />
-
-    {props.meta.accesses.ip.activateFilters &&
-      <IpSetter
-        ips={props.meta.accesses.ip.ips}
+    >
+      {/*props.meta.accesses.ip.ips*/}
+      <IpList
+        ips={['127.0.0.4']}
         onChange={(ips) => props.updateParameter('meta.accesses.ip.ips', ips)}
       />
-    }
+    </ActivableSet>
   </fieldset>
 
 AccessesPanel.propTypes = {
@@ -141,34 +141,30 @@ AccessesPanel.propTypes = {
       code: T.string
     })
   }).isRequired,
-  updateParameter: T.func.isRequired
+  parameters: T.shape({
+    accessibleFrom: T.string,
+    accessibleUntil: T.string
+  }).isRequired,
+  updateParameter: T.func.isRequired,
+  validating: T.bool.isRequired,
+  errors: T.object
 }
 
 const DisplayPanel = props =>
   <fieldset>
-    <div className="checkbox">
-      <label htmlFor="resource-fullscreen">
-        <input
-          id="resource-fullscreen"
-          type="checkbox"
-          checked={props.parameters.fullscreen}
-          onChange={() => props.updateParameter('parameters.fullscreen', !props.parameters.fullscreen)}
-        />
-        {t_res('resource_fullscreen')}
-      </label>
-    </div>
+    <CheckGroup
+      checkId="resource-fullscreen"
+      label={t_res('resource_fullscreen')}
+      checked={props.parameters.fullscreen}
+      onChange={checked => props.updateParameter('parameters.fullscreen', checked)}
+    />
 
-    <div className="checkbox">
-      <label htmlFor="resource-closable">
-        <input
-          id="resource-closable"
-          type="checkbox"
-          checked={props.parameters.closable}
-          onChange={() => props.updateParameter('parameters.closable', !props.parameters.closable)}
-        />
-        {t_res('resource_closable')}
-      </label>
-    </div>
+    <CheckGroup
+      checkId="resource-closable"
+      label={t_res('resource_closable')}
+      checked={props.parameters.closable}
+      onChange={checked => props.updateParameter('parameters.closable', checked)}
+    />
 
     <FormGroup
       controlId="resource-close-target"
@@ -202,31 +198,19 @@ DisplayPanel.propTypes = {
 
 const LicensePanel = props =>
   <fieldset>
-    <FormGroup
+    <TextGroup
       controlId="resource-authors"
       label={t_res('resource_authors')}
-    >
-      <input
-        id="resource-authors"
-        type="text"
-        className="form-control"
-        value={props.meta.authors || ''}
-        onChange={(e) => props.updateParameter('meta.authors', e.target.value)}
-      />
-    </FormGroup>
+      value={props.meta.authors}
+      onChange={text => props.updateParameter('meta.authors', text)}
+    />
 
-    <FormGroup
+    <TextGroup
       controlId="resource-license"
       label={t_res('resource_license')}
-    >
-      <input
-        id="resource-license"
-        type="text"
-        className="form-control"
-        value={props.meta.license || ''}
-        onChange={(e) => props.updateParameter('meta.license', e.target.value)}
-      />
-    </FormGroup>
+      value={props.meta.license}
+      onChange={text => props.updateParameter('meta.license', text)}
+    />
   </fieldset>
 
 LicensePanel.propTypes = {
@@ -264,7 +248,6 @@ class EditPropertiesModal extends Component {
     this.setState((prevState) => {
       const newNode = cloneDeep(prevState.resourceNode)
       set(newNode, parameter, value)
-      //newNode = prevState.resourceNode
 
       return {
         resourceNode: newNode,
@@ -301,21 +284,16 @@ class EditPropertiesModal extends Component {
         {...this.props}
       >
         <Modal.Body>
-          <FormGroup
+          <TextGroup
             controlId="resource-name"
             label={t_res('resource_name')}
+            value={this.state.resourceNode.name}
+            onChange={text => this.updateProperty('name', text)}
             warnOnly={!this.state.validating}
             error={get(this.state, 'errors.name')}
-          >
-            <input
-              id="resource-name"
-              type="text"
-              className="form-control"
-              value={this.state.resourceNode.name}
-              onChange={(e) => this.updateProperty('name', e.target.value)}
-            />
-          </FormGroup>
+          />
         </Modal.Body>
+
         <FormSections
           sections={[
             {
@@ -324,16 +302,6 @@ class EditPropertiesModal extends Component {
               label: t_res('resource_meta'),
               children: <MetaPanel
                 meta={this.state.resourceNode.meta}
-                updateParameter={this.updateProperty.bind(this)}
-                validating={this.state.validating}
-                errors={this.state.errors}
-              />
-            }, {
-              id: 'resource-dates',
-              icon: 'fa fa-fw fa-calendar',
-              label: t_res('resource_accessibility_dates'),
-              children: <AccessibilityDatesPanel
-                parameters={this.state.resourceNode.parameters}
                 updateParameter={this.updateProperty.bind(this)}
                 validating={this.state.validating}
                 errors={this.state.errors}
@@ -349,6 +317,17 @@ class EditPropertiesModal extends Component {
                 errors={this.state.errors}
               />
             }, {
+              id: 'resource-accesses',
+              icon: 'fa fa-fw fa-key',
+              label: t_res('resource_accesses'),
+              children: <AccessesPanel
+                meta={this.state.resourceNode.meta}
+                parameters={this.state.resourceNode.parameters}
+                updateParameter={this.updateProperty.bind(this)}
+                validating={this.state.validating}
+                errors={this.state.errors}
+              />
+            }, {
               id: 'resource-license',
               icon: 'fa fa-fw fa-copyright',
               label: t_res('resource_authors_license'),
@@ -358,19 +337,10 @@ class EditPropertiesModal extends Component {
                 validating={this.state.validating}
                 errors={this.state.errors}
               />
-            }, {
-              id: 'resource-ip-accesses',
-              icon: 'fa fa-fw fa-laptop',
-              label: t('Accesses'),
-              children: <AccessesPanel
-                meta={this.state.resourceNode.meta}
-                updateParameter={this.updateProperty.bind(this)}
-                validating={this.state.validating}
-                errors={this.state.errors}
-              />
             }
           ]}
         />
+
         <button
           className="modal-btn btn btn-primary"
           disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
@@ -393,4 +363,6 @@ EditPropertiesModal.propTypes = {
   save: T.func.isRequired
 }
 
-export {EditPropertiesModal}
+export {
+  EditPropertiesModal
+}

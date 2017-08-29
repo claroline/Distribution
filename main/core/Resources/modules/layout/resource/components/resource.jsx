@@ -6,7 +6,7 @@ import {Page, PageHeader, PageContent} from '#/main/core/layout/page/components/
 import {ResourceActions} from '#/main/core/layout/resource/components/resource-actions.jsx'
 
 import {MODAL_RESOURCE_PROPERTIES, EditPropertiesModal} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
-import {MODAL_RESOURCE_RIGHTS, EditRightsModal} from '#/main/core/layout/resource/rights/components/modal/edit-rights.jsx'
+import {MODAL_RESOURCE_RIGHTS,     EditRightsModal}     from '#/main/core/layout/resource/components/modal/edit-rights.jsx'
 
 class Resource extends Component {
   constructor(props) {

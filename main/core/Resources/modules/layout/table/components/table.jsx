@@ -1,8 +1,7 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 
 const TableCell = props =>
   <td className={classes(`text-${props.align}`, props.className)}>
@@ -22,14 +21,15 @@ TableCell.defaultProps = {
 
 const TableTooltipCell = props =>
   <TableCell {...props}>
-    <OverlayTrigger
-      placement={props.placement}
-      overlay={<Tooltip id={props.id}>{props.tooltip}</Tooltip>}
+    <TooltipElement
+      id={props.id}
+      tip={t('list_search_invalid_filter')}
+      position={props.placement}
     >
       <span>
         {props.children}
       </span>
-    </OverlayTrigger>
+    </TooltipElement>
   </TableCell>
 
 TableTooltipCell.propTypes = {

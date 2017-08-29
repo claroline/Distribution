@@ -23,10 +23,10 @@ import {
 
 import {HelpBlock}    from '#/main/core/layout/form/components/help-block.jsx'
 import {FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
-import {FormGroup}    from '#/main/core/layout/form/components/form-group.jsx'
-import {CheckGroup}   from '#/main/core/layout/form/components/check-group.jsx'
-import {TextGroup}    from '#/main/core/layout/form/components/text-group.jsx'
-import {SubSection}   from '#/main/core/layout/form/components/sub-section.jsx'
+import {FormGroup}    from '#/main/core/layout/form/components/group/form-group.jsx'
+import {CheckGroup}   from '#/main/core/layout/form/components/group/check-group.jsx'
+import {TextGroup}    from '#/main/core/layout/form/components/group/text-group.jsx'
+import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
 
 import {Color}        from './fields/color.jsx'
 import {FontSize}     from './fields/font-size.jsx'
@@ -62,7 +62,7 @@ const GeneralSection = props =>
         onChange={value => true}
       />
 
-      <SubSection
+      <ToggleableSet
         showText={t('show_advanced_options')}
         hideText={t('hide_advanced_options')}
       >
@@ -81,7 +81,7 @@ const GeneralSection = props =>
           onChange={active => true}
           help={trans('theme_enabled_help', {}, 'theme')}
         />
-      </SubSection>
+      </ToggleableSet>
 
     </fieldset>
   </div>

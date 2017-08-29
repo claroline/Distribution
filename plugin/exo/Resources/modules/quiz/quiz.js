@@ -12,12 +12,13 @@ import {makeSaveGuard} from './editor/save-guard'
 import {registerDefaultItemTypes, getDecorators} from './../items/item-types'
 import {registerDefaultContentItemTypes} from './../contents/content-types'
 import {registerModalTypes} from '#/main/core/layout/modal'
-import {MODAL_ADD_ITEM, AddItemModal} from './editor/components/add-item-modal.jsx'
-import {MODAL_IMPORT_ITEMS, ImportItemsModal} from './editor/components/import-items-modal.jsx'
-import {MODAL_ADD_CONTENT, AddContentModal} from './editor/components/add-content-modal.jsx'
+
+import {MODAL_ADD_ITEM, AddItemModal} from './editor/components/modal/add-item-modal.jsx'
+import {MODAL_IMPORT_ITEMS, ImportItemsModal} from './editor/components/modal/import-items-modal.jsx'
+import {MODAL_ADD_CONTENT, AddContentModal} from './editor/components/modal/add-content-modal.jsx'
 import {MODAL_CONTENT, ContentModal} from './../contents/components/content-modal.jsx'
-import {MODAL_MOVE_QUESTION, MoveQuestionModal} from './editor/components/move-question-modal.jsx'
-import {MODAL_DUPLICATE_QUESTION, DuplicateQuestionModal} from './editor/components/duplicate-question-modal.jsx'
+import {MODAL_MOVE_QUESTION, MoveQuestionModal} from './editor/components/modal/move-question-modal.jsx'
+import {MODAL_DUPLICATE_QUESTION, DuplicateQuestionModal} from './editor/components/modal/duplicate-question-modal.jsx'
 
 export class Quiz {
   constructor(rawQuizData, rawResourceNodeData, noServer = false) {

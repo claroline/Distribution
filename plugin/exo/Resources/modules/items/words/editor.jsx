@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {tex} from '#/main/core/translation'
-import {CheckGroup} from '#/main/core/layout/form/components/check-group.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {KeywordItems} from './../components/keywords.jsx'
 import {actions} from './editor.js'
 

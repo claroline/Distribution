@@ -4,12 +4,12 @@ import get from 'lodash/get'
 
 import {t, tex} from '#/main/core/translation'
 import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
-import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'
-import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
-import {SubSection} from '#/main/core/layout/form/components/sub-section.jsx'
-import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
+import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
+import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
+import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
+import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import ObjectsEditor from './item-objects-editor.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/check-group.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 
 // TODO: add categories, define-as-model
 
@@ -27,6 +27,7 @@ const Metadata = props =>
         onChange={e => props.onChange('title', e.target.value)}
       />
     </FormGroup>
+
     <FormGroup
       controlId={`item-${props.item.id}-description`}
       label={t('description')}
@@ -37,6 +38,7 @@ const Metadata = props =>
         onChange={text => props.onChange('description', text)}
       />
     </FormGroup>
+
     {props.item.rights.edit &&
       <CheckGroup
         checkId={`item-${props.item.id}-editable`}
@@ -45,12 +47,14 @@ const Metadata = props =>
         onChange={checked => props.onChange('meta.protectQuestion', checked)}
       />
     }
+
     <CheckGroup
       checkId={`item-${props.item.id}-mandatory`}
       label={props.mandatoryQuestions ? tex('make_optional'): tex('mandatory_answer')}
       checked={props.item.meta.mandatory}
       onChange={checked => props.onChange('meta.mandatory', checked)}
     />
+
     <FormGroup
       controlId={`item-${props.item.id}-objects`}
       label={tex('question_objects')}
@@ -108,10 +112,11 @@ const Hint = props =>
     <TooltipButton
       id={`hint-${props.id}-delete`}
       title={t('delete')}
-      label={<span className="fa fa-fw fa-trash-o"/>}
       className="btn-link-default"
       onClick={props.onRemove}
-    />
+    >
+      <span className="fa fa-fw fa-trash-o" />
+    </TooltipButton>
   </div>
 
 Hint.propTypes = {
@@ -178,7 +183,7 @@ const ItemForm = props =>
       />
     </FormGroup>
 
-    <SubSection
+    <ToggleableSet
       showText={tex('show_metadata_fields')}
       hideText={tex('hide_metadata_fields')}
     >
@@ -190,7 +195,7 @@ const ItemForm = props =>
         onChange={props.onChange}
         validating={props.validating}
       />
-    </SubSection>
+    </ToggleableSet>
 
     <hr className="item-content-separator" />
 
@@ -198,7 +203,7 @@ const ItemForm = props =>
 
     <hr className="item-content-separator" />
 
-    <SubSection
+    <ToggleableSet
       showText={tex('show_interact_fields')}
       hideText={tex('hide_interact_fields')}
     >
@@ -219,7 +224,7 @@ const ItemForm = props =>
           onChange={text => props.onChange('feedback', text)}
         />
       </FormGroup>
-    </SubSection>
+    </ToggleableSet>
   </form>
 
 ItemForm.propTypes = {
