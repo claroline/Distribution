@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use UJM\ExoBundle\Library\Options\Validation;
 
@@ -17,7 +18,7 @@ class JsonQuizImportCommand extends ContainerAwareCommand
     use BaseCommandTrait;
 
     protected $params = [
-        'file' => 'The file path: ',
+        'file' => 'The file (or directory) path: ',
         'owner' => 'The owner username: ',
         'workspace' => 'The workspace code: ',
     ];
@@ -31,6 +32,20 @@ class JsonQuizImportCommand extends ContainerAwareCommand
             new InputArgument('owner', InputArgument::REQUIRED, 'The owner username'),
             new InputArgument('workspace', InputArgument::REQUIRED, 'The workspace code'),
           ]
+        );
+
+        $this->addOption(
+            'dry_run',
+            'd',
+            InputOption::VALUE_NONE,
+            'When set to true, remove groups from the workspace'
+        );
+
+        $this->addOption(
+            'show_error_schema',
+            'o',
+            InputOption::VALUE_NONE,
+            'When set to true, remove groups from the workspace'
         );
     }
 
@@ -46,23 +61,41 @@ class JsonQuizImportCommand extends ContainerAwareCommand
         $owner = $this->getContainer()
             ->get('claroline.manager.user_manager')
             ->getUserByUsername($owner);
-        $data = json_decode(file_get_contents($file));
+        $data = [];
 
-        //validation
-        $validator = $this->getContainer()->get('ujm_exo.validator.exercise');
-        $errors = $validator->validate($data, [Validation::REQUIRE_SOLUTIONS]);
-
-        if ($errors) {
-            $output->writeln('<error>Errors were found in the json schema:</error>');
-            $output->writeln('<error>'.json_encode($errors).'</error>');
-
-            return;
+        if (is_file($file)) {
+            $data[$file] = json_decode(file_get_contents($file));
         }
 
-        $this->getContainer()->get('ujm_exo.manager.json_quiz')->import(
-            $data,
-            $workspace,
-            $owner
-        );
+        if (is_dir($file)) {
+            $iterator = new \DirectoryIterator($file);
+
+            foreach ($iterator as $file) {
+                if ($file->isFile()) {
+                    $data[$file->getPathname()] = json_decode(file_get_contents($file->getPathname()));
+                }
+            }
+        }
+
+        foreach ($data as $path => $question) {
+            //validation
+            $validator = $this->getContainer()->get('ujm_exo.validator.exercise');
+            $errors = $validator->validate($question, [Validation::REQUIRE_SOLUTIONS]);
+
+            if ($errors) {
+                $output->writeln('<error>Errors were found in the json schema for :'.$path.'</error>');
+                if ($input->getOption('show_error_schema')) {
+                    $output->writeln('<error>'.json_encode($errors).'</error>');
+                }
+            }
+
+            if (!$input->getOption('dry_run')) {
+                $this->getContainer()->get('ujm_exo.manager.json_quiz')->import(
+                $question,
+                $workspace,
+                $owner
+              );
+            }
+        }
     }
 }
