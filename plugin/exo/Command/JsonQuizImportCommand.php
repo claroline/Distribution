@@ -16,6 +16,7 @@ use UJM\ExoBundle\Library\Options\Validation;
 class JsonQuizImportCommand extends ContainerAwareCommand
 {
     use BaseCommandTrait;
+    const BATCH_SIZE = 5;
 
     protected $params = [
         'file' => 'The file (or directory) path: ',
@@ -62,6 +63,7 @@ class JsonQuizImportCommand extends ContainerAwareCommand
             ->get('claroline.manager.user_manager')
             ->getUserByUsername($owner);
         $data = [];
+        $om = $this->getContainer()->get('claroline.persistence.object_manager');
 
         if (is_file($file)) {
             $data[$file] = json_decode(file_get_contents($file));
@@ -77,10 +79,16 @@ class JsonQuizImportCommand extends ContainerAwareCommand
             }
         }
 
+        $i = 0;
+        $count = count($data);
+        $output->writeln("Start the import: {$i}/{$count}");
+
         foreach ($data as $path => $question) {
             //validation
+            ++$i;
             $validator = $this->getContainer()->get('ujm_exo.validator.exercise');
             $errors = $validator->validate($question, [Validation::REQUIRE_SOLUTIONS]);
+            $output->writeln("Importing {$path}: {$i}/{$count}");
 
             if ($errors) {
                 $output->writeln('<error>Errors were found in the json schema for :'.$path.'</error>');
@@ -89,12 +97,26 @@ class JsonQuizImportCommand extends ContainerAwareCommand
                 }
             }
 
-            if (!$input->getOption('dry_run')) {
+            if (!$input->getOption('dry_run') && !$errors) {
                 $this->getContainer()->get('ujm_exo.manager.json_quiz')->import(
                 $question,
                 $workspace,
                 $owner
               );
+            }
+
+            if ($i % self::BATCH_SIZE === 0) {
+                $om->clear();
+                $file = $input->getArgument('file');
+                $owner = $input->getArgument('owner');
+                $workspace = $input->getArgument('workspace');
+
+                $workspace = $this->getContainer()
+                  ->get('claroline.manager.workspace_manager')
+                  ->getOneByCode($workspace);
+                $owner = $this->getContainer()
+                  ->get('claroline.manager.user_manager')
+                  ->getUserByUsername($owner);
             }
         }
     }
