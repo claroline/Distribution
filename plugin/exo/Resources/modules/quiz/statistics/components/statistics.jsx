@@ -13,44 +13,49 @@ import {tex} from '#/main/core/translation'
 
 const Statistics = props =>
   <div>
-    {Object.keys(props.steps).map((key, idx) =>
-      <div key={idx} className="quiz-item item-statistics">
-        <h3 className="step-title">
-          {props.steps[key].title ? props.steps[key].title : tex('step') + ' ' + (idx + 1)}
-        </h3>
+    <div>
+      
+    </div>
+    <div>
+      {Object.keys(props.steps).map((key, idx) =>
+        <div key={idx} className="quiz-item item-statistics">
+          <h3 className="step-title">
+            {props.steps[key].title ? props.steps[key].title : tex('step') + ' ' + (idx + 1)}
+          </h3>
 
-        {props.steps[key].items.map((itemUid, idxItem) => {
-          let item = props.items[itemUid]
-          return isQuestionType(item.type) ?
+          {props.steps[key].items.map((itemUid, idxItem) => {
+            let item = props.items[itemUid]
+            return isQuestionType(item.type) ?
 
-              <Panel key={item.id}>
-              {item.title &&
-                <h4 className="item-title">{item.title}</h4>
-              }
-
-              {React.createElement(
-                getDefinition(item.type).paper,
-                {
-                  item,
-                  showYours: false,
-                  showExpected: false,
-                  showStats: true,
-                  showScore: false,
-                  stats: getDefinition(item.type).generateStats(item, props.papers, props.allPapersStatistics)
+                <Panel key={item.id}>
+                {item.title &&
+                  <h4 className="item-title">{item.title}</h4>
                 }
-              )}
 
-              <ItemMetadata
-                item={item}
-                numbering={props.numbering !== NUMBERING_NONE ? (idx + 1) + '.' + getNumbering(props.numbering, idxItem): null}
-              />
+                {React.createElement(
+                  getDefinition(item.type).paper,
+                  {
+                    item,
+                    showYours: false,
+                    showExpected: false,
+                    showStats: true,
+                    showScore: false,
+                    stats: getDefinition(item.type).generateStats(item, props.papers, props.allPapersStatistics)
+                  }
+                )}
 
-              </Panel>
-             :
-            ''
-        })}
-      </div>
-    )}
+                <ItemMetadata
+                  item={item}
+                  numbering={props.numbering !== NUMBERING_NONE ? (idx + 1) + '.' + getNumbering(props.numbering, idxItem): null}
+                />
+
+                </Panel>
+               :
+              ''
+          })}
+        </div>
+      )}
+    </div>
   </div>
 
 Statistics.propTypes = {

@@ -192,6 +192,45 @@ class PaperController extends AbstractController
     }
 
     /**
+     * Exports papers into a json file.
+     *
+     * @EXT\Route("/export/json", name="exercise_papers_export_json")
+     * @EXT\Method("GET")
+     *
+     * @param Exercise $exercise
+     *
+     * @return StreamedResponse
+     */
+    public function exportJsonAction(Exercise $exercise)
+    {
+        if (!$this->isAdmin($exercise)) {
+            // Only administrator or Paper Managers can export Papers
+            throw new AccessDeniedException();
+        }
+
+        return new StreamedResponse(function () use ($exercise) {
+            $this->paperManager->serializeExercisePapers($exercise, true);
+        }, 200, [
+          'Content-Type' => 'application/force-download',
+          'Content-Disposition' => 'attachment; filename="export.json"',
+      ]);
+    }
+
+    /**
+     * Exports papers into a csv file.
+     *
+     * @EXT\Route("/export/papers/csv", name="exercise_papers_export_csv")
+     * @EXT\Method("GET")
+     *
+     * @param Exercise $exercise
+     *
+     * @return StreamedResponse
+     */
+    public function exportCsvAnswersExport(Exercise $exercise)
+    {
+    }
+
+    /**
      * Checks whether the current User has the administration rights on the Exercise.
      *
      * @param Exercise $exercise
