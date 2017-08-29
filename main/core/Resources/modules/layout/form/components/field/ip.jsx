@@ -2,6 +2,17 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+const IpPart = props =>
+  <input
+    type="number"
+    placeholder={props}
+  />
+
+IpPart.propTypes = {
+  placeholder: T.oneOf
+  value: T.number
+}
+
 class Ip extends Component {
   constructor(props) {
     super(props)

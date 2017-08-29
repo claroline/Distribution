@@ -17,16 +17,22 @@ const IpList = props =>
 
       <TooltipButton
         id={`ipp-add`}
-        title={t('delete')}
-        onClick={() => true}
+        title={t('add')}
         className="btn-link"
+        onClick={() => true}
       >
         <span className="fa fa-fw fa-plus" />
       </TooltipButton>
     </div>
 
     {0 !== props.ips.length &&
-      <a className="btn btn-sm btn-link-danger">remove all</a>
+      <button
+        type="button"
+        className="btn btn-sm btn-link-danger"
+        onClick={() => true}
+      >
+        {t('delete_all')}
+      </button>
     }
 
     {0 !== props.ips.length &&
@@ -42,14 +48,18 @@ const IpList = props =>
             <TooltipButton
               id={`${ip}-btn-delete`}
               title={t('delete')}
-              onClick={() => true}
               className="btn-link-danger"
+              onClick={() => true}
             >
               <span className="fa fa-fw fa-trash-o" />
             </TooltipButton>
           </li>
         )}
       </ul>
+    }
+
+    {0 === props.ips.length &&
+      <div className="no-ip-info">{t('no_ip')}</div>
     }
   </div>
 
