@@ -22,7 +22,7 @@ import {
 } from '#/main/core/layout/page/index'
 
 import {HelpBlock}    from '#/main/core/layout/form/components/help-block.jsx'
-import {FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
+import {FormSection, FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormGroup}    from '#/main/core/layout/form/components/group/form-group.jsx'
 import {CheckGroup}   from '#/main/core/layout/form/components/group/check-group.jsx'
 import {TextGroup}    from '#/main/core/layout/form/components/group/text-group.jsx'
@@ -301,32 +301,20 @@ const Theme = props =>
     <PageContent>
       <GeneralSection theme={props.theme} />
 
-      <FormSections
-        level={2}
-        sections={[
-          {
-            id      : 'theme-colors',
-            label   : 'Color schemes',
-            icon    : 'fa fa-fw fa-tint',
-            children: <ColorsSection />
-          }, {
-            id      : 'theme-typo',
-            label   : 'Typo & fonts',
-            icon    : 'fa fa-fw fa-font',
-            children: <TypoSection />
-          }, {
-            id      : 'theme-sizing',
-            label   : 'Sizing',
-            icon    : 'fa fa-fw fa-arrows-h',
-            children: <SizingSection />
-          }, {
-            id      : 'theme-extra',
-            label   : 'Extra features',
-            icon    : 'fa fa-fw fa-ellipsis-h',
-            children: <ExtraSection />
-          }
-        ]}
-      />
+      <FormSections>
+        <FormSection id="theme-colors" icon="fa fa-fw fa-tint" title="Color schemes">
+          <ColorsSection />
+        </FormSection>
+        <FormSection id="theme-typo" icon="fa fa-fw fa-font" title="Typo & fonts">
+          <TypoSection />
+        </FormSection>
+        <FormSection id="theme-sizing" icon="fa fa-fw fa-arrows-h" title="Sizing">
+          <SizingSection />
+        </FormSection>
+        <FormSection id="theme-extra" icon="fa fa-fw fa-ellipsis-h" title="Extra features">
+          <ExtraSection />
+        </FormSection>
+      </FormSections>
     </PageContent>
   </Page>
 

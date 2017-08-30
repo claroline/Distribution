@@ -32,7 +32,6 @@ class DateSearch extends Component {
           }}
           minDate={moment.utc('1970')}
           name="filter-date"
-          onBlur={() => alert('blur')}
           open={this.state.open}
         >
         </DatePicker>
