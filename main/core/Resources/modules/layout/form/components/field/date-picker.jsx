@@ -24,6 +24,7 @@ class Date extends Component {
           ref={(c) => this._calendar = c}
           {...this.props}
         >
+          coucou
         </DatePicker>
       </span>
     )

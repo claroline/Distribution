@@ -37,9 +37,11 @@ form .global-error {
 }
 
 .help-block {
-    // Just expose a var as bootstrap doesn't do it
-    color: @help-block-color;
     text-align: justify;
+
+    // Just expose some vars as bootstrap doesn't do it
+    color: @help-block-color;
+    font-size: @help-block-font-size;
 
     .fa {
         margin-right: @form-icon-spacer-h;
@@ -156,6 +158,7 @@ form .global-error {
 
     .no-ip-info {
         font-style: italic;
+        text-align: center;
     }
 
     .ip-item {

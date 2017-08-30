@@ -67,7 +67,7 @@ const AccessesPanel = (props) =>
   <fieldset>
     <ActivableSet
       id="access-dates"
-      label={t_res('Restreindre par dates')}
+      label={t_res('resource_access_dates')}
     >
       <div className="row">
         <FormGroup
@@ -100,7 +100,7 @@ const AccessesPanel = (props) =>
 
     <ActivableSet
       id="access-code"
-      label={t_res('Restreindre par code')}
+      label={t_res('resource_access_code')}
     >
       <FormGroup
         controlId="resource-access-code"
@@ -108,7 +108,7 @@ const AccessesPanel = (props) =>
         validating={props.validating}
       >
         <input
-          id="access-code"
+          id="resource-access-code"
           type="password"
           className="form-control"
           value={props.meta.accesses.code || ''}
@@ -119,14 +119,15 @@ const AccessesPanel = (props) =>
 
     <ActivableSet
       id="access-ips"
-      label={t_res('allow_ip_filtering')}
+      label={t_res('resource_access_ips')}
       activated={props.meta.accesses.ip.activateFilters}
       onChange={checked => props.updateParameter('meta.accesses.ip.activateFilters', checked)}
     >
-      {/*props.meta.accesses.ip.ips*/}
       <IpList
-        ips={['127.0.0.4']}
+        id="resource-access-ips"
+        ips={props.meta.accesses.ip.ips}
         onChange={(ips) => props.updateParameter('meta.accesses.ip.ips', ips)}
+        emptyText={t_res('resource_no_allowed_ip')}
       />
     </ActivableSet>
   </fieldset>
@@ -300,43 +301,47 @@ class EditPropertiesModal extends Component {
               id: 'resource-meta',
               icon: 'fa fa-fw fa-info',
               label: t_res('resource_meta'),
-              children: <MetaPanel
-                meta={this.state.resourceNode.meta}
-                updateParameter={this.updateProperty.bind(this)}
-                validating={this.state.validating}
-                errors={this.state.errors}
-              />
+              children:
+                <MetaPanel
+                  meta={this.state.resourceNode.meta}
+                  updateParameter={this.updateProperty.bind(this)}
+                  validating={this.state.validating}
+                  errors={this.state.errors}
+                />
             }, {
               id: 'resource-display',
               icon: 'fa fa-fw fa-desktop',
               label: t_res('resource_display_parameters'),
-              children: <DisplayPanel
-                parameters={this.state.resourceNode.parameters}
-                updateParameter={this.updateProperty.bind(this)}
-                validating={this.state.validating}
-                errors={this.state.errors}
-              />
+              children:
+                <DisplayPanel
+                  parameters={this.state.resourceNode.parameters}
+                  updateParameter={this.updateProperty.bind(this)}
+                  validating={this.state.validating}
+                  errors={this.state.errors}
+                />
             }, {
               id: 'resource-accesses',
               icon: 'fa fa-fw fa-key',
               label: t_res('resource_accesses'),
-              children: <AccessesPanel
-                meta={this.state.resourceNode.meta}
-                parameters={this.state.resourceNode.parameters}
-                updateParameter={this.updateProperty.bind(this)}
-                validating={this.state.validating}
-                errors={this.state.errors}
-              />
+              children:
+                <AccessesPanel
+                  meta={this.state.resourceNode.meta}
+                  parameters={this.state.resourceNode.parameters}
+                  updateParameter={this.updateProperty.bind(this)}
+                  validating={this.state.validating}
+                  errors={this.state.errors}
+                />
             }, {
               id: 'resource-license',
               icon: 'fa fa-fw fa-copyright',
               label: t_res('resource_authors_license'),
-              children: <LicensePanel
-                meta={this.state.resourceNode.meta}
-                updateParameter={this.updateProperty.bind(this)}
-                validating={this.state.validating}
-                errors={this.state.errors}
-              />
+              children:
+                <LicensePanel
+                  meta={this.state.resourceNode.meta}
+                  updateParameter={this.updateProperty.bind(this)}
+                  validating={this.state.validating}
+                  errors={this.state.errors}
+                />
             }
           ]}
         />
