@@ -1,4 +1,4 @@
-import React from 'React'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'

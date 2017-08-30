@@ -102,6 +102,7 @@ class PlatformUpdateCommand extends ContainerAwareCommand
                 $to = $versionManager->getCurrent();
             } catch (\Exception $e) {
                 $from = null;
+                $to = null;
             }
         }
         if ($from && $to) {

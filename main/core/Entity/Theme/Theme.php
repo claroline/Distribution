@@ -17,6 +17,8 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * Theme.
+ *
  * @ORM\Entity()
  * @ORM\Table(name="claro_theme")
  */
@@ -103,6 +105,14 @@ class Theme
      * @var bool
      */
     private $extendingDefault = false;
+
+    /**
+     * Theme constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     /**
      * Theme constructor.
