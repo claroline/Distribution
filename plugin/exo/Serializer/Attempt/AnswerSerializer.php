@@ -35,6 +35,7 @@ class AnswerSerializer extends AbstractSerializer
                     return $options['hints'][$hintId];
                 }, $answer->getUsedHints());
             },
+            'zoneAnswer' => $answer->getZoneAnswer(),
         ], $answer, $answerData);
 
         if (!empty($answer->getData())) {
@@ -45,6 +46,7 @@ class AnswerSerializer extends AbstractSerializer
             $this->mapEntityToObject([
                 'score' => 'score',
                 'feedback' => 'feedback',
+                'zoneAnswer' => 'zoneAnswer',
             ], $answer, $answerData);
         }
 
@@ -65,6 +67,7 @@ class AnswerSerializer extends AbstractSerializer
         $answer = $answer ?: new Answer();
         $answer->setUuid($data->id);
         $answer->setQuestionId($data->questionId);
+        //$answer->setZoneAnswer('$data->zoneAnswer');
 
         $this->mapObjectToEntity([
             'questionId' => 'questionId',
@@ -83,6 +86,7 @@ class AnswerSerializer extends AbstractSerializer
                     $answer->setData(json_encode($data->data));
                 }
             },
+            'zoneAnswer' => 'zoneAnswer',
         ], $data, $answer);
 
         return $answer;

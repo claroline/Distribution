@@ -7,6 +7,7 @@ import {registerItemType, resetTypes} from './../../items/item-types'
 import {
   ITEM_CREATE,
   HINT_ADD,
+  HINT_ADD_PHOTO,
   HINT_CHANGE,
   HINT_REMOVE,
   actions

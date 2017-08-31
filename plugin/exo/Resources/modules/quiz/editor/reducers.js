@@ -40,6 +40,7 @@ import {
   QUIZ_SAVE_ERROR,
   QUIZ_VALIDATING,
   HINT_ADD,
+  HINT_ADD_PHOTO,
   HINT_CHANGE,
   HINT_REMOVE,
   quizChangeActions,
@@ -213,6 +214,20 @@ function reduceItems(items = {}, action = {}) {
     case ITEM_HINTS_UPDATE:
       switch (action.updateType) {
         case HINT_ADD:
+          console.log(action.itemId)
+          return update(items, {
+            [action.itemId]: {
+              hints: {
+                $push: [{
+                  id: makeId(),
+                  value: '',
+                  penalty: 0
+                }]
+              }
+            }
+          })
+        case HINT_ADD_PHOTO:
+          console.log(action.itemId)
           return update(items, {
             [action.itemId]: {
               hints: {

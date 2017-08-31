@@ -3,6 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import tinycolor from 'tinycolor2'
 import {Pointer} from './pointer.jsx'
 import {SHAPE_RECT} from './../enums'
+import {actions} from './../actions'
+import {tex} from '#/main/core/translation'
 
 export class PointableImage extends Component {
   constructor(props) {
@@ -41,9 +43,26 @@ export class PointableImage extends Component {
       <div className="pointable-img">
         <div style={{
           position: 'relative',
-          cursor: this.props.onClick ? 'crosshair' : 'auto',
+          cursor: this.props.pointerMode !== 'label' && this.props.onClick ? 'crosshair' : 'auto',
           userSelect: 'none'
         }}>
+          {this.props.pointerMode === 'label' &&
+            this.props.solutions.map((v,k) =>
+              <div key={k} style={{position: "absolute", left:v.area.coords[0].x/1.4, top:v.area.coords[0].y/1.4}}> {/*il faut calculer dynamiquement 1.4*/}
+                {tex('graphic_label_input_title')}:
+                <input
+                  key={k}
+                  type="text"
+                  className="form-control"
+                  style={{width: 100}}
+                  id="type-exo-graphic"
+                  onChange={e => this.props.onChange(
+                    actions.addZoneAnswer(e.target.value, k)
+                  )}
+                />
+              </div>
+            )
+          }
           <img
             ref={el => {
               this.img = el
@@ -52,7 +71,7 @@ export class PointableImage extends Component {
             src={this.props.src}
             draggable={false}
             onDragStart={e => e.stopPropagation()}
-            onClick={e => this.props.onClick && this.props.onClick(e)}
+            onClick={this.props.pointerMode !== 'label' ? e => this.props.onClick && this.props.onClick(e) : ''}
           />
           {this.props.pointers.map(pointer =>
             <Pointer

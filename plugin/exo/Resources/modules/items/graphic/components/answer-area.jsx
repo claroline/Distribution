@@ -19,8 +19,26 @@ import {
   DIR_S,
   DIR_SW,
   DIR_W,
-  DIR_NW
+  DIR_NW,
+  MODE_SELECT,
+  MAX_IMG_SIZE,
+  TYPE_AREA_RESIZER
 } from './../enums'
+
+
+import {ImageInput} from './../components/image-input.jsx'
+import {actions} from './../actions'
+import {ModeSelector} from './../components/mode-selector.jsx'
+
+////
+import get from 'lodash/get'
+
+import {asset} from '#/main/core/asset'
+import {makeDroppable} from './../../../utils/dragAndDrop'
+import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
+import {AreaPopover} from './../components/area-popover.jsx'
+import {ResizeDragLayer} from './../components/resize-drag-layer.jsx'
+////
 
 const FRAME_GUTTER = 6
 export const AREA_GUTTER = 8
@@ -28,10 +46,58 @@ const BORDER_WIDTH = 2
 const RESIZER_SIZE = 12
 
 export class AnswerArea extends Component {
-  render() {
-    if (this.props.isDragging) {
-      return null
+
+  constructor(props) {
+    super(props)
+    this.onSelectImageDND = this.onSelectImageDND.bind(this)
+    //this.onClickImage = this.onClickImage.bind(this)
+    //this.onResize = this.onResize.bind(this)
+  }
+
+  onSelectImageDND(file) {
+    if (file.type.indexOf('image') !== 0) {
+      return this.props.onChange(actions.selectImageDND({_type: file.type}))
     }
+
+    if (file.size > MAX_IMG_SIZE) {
+      return this.props.onChange(actions.selectImageDND({_size: file.size}))
+    }
+
+    const reader = new window.FileReader()
+    reader.onload = e => {
+      const img = this.createImage(e.target.result)
+
+      img.onload = () => {
+        this.props.onChange(actions.selectImageDND({
+          type: file.type,
+          data: e.target.result,
+          width: img.naturalWidth,
+          height: img.naturalHeight,
+          _clientWidth: img.width,
+          _clientHeight: img.height,
+          _size: file.size
+        }))
+      }
+    }
+
+    reader.readAsDataURL(file)
+  }
+
+  createImage(encodedString, url) {
+    const img = document.createElement('img')
+    img.src = encodedString || asset(url)
+    //img.className = this.props.item._mode !== MODE_SELECT ? 'point-mode' : ''
+    //img.addEventListener('click', this.onClickImage)
+    this.imgContainer.innerHTML = ''
+    this.imgContainer.appendChild(img)
+
+    return img
+  }
+
+  render() {
+    /*if (this.props.isDragging) {
+      return null
+    }*/
 
     const props = this.props
     const isRect = this.props.shape === SHAPE_RECT
@@ -68,13 +134,20 @@ export class AnswerArea extends Component {
       [innerFrameHeight / 2 - halfSizer, - halfSizer - halfBorder, DIR_W]
     ]
 
+    const iconFormBox = {
+      overflow: 'hidden',
+      width: 25,
+    }
+
+    const iconInputFile = {
+      opacity: 0,
+    }
 
     return props.connectDragSource(
       <div
         ref={el => this.el = el}
         className={classes('area-handle', {
           selected: props.selected,
-          undraggable: !props.canDrag
         })}
         onMouseDown={() => props.onSelect(props.id)}
         style={common({
@@ -105,7 +178,13 @@ export class AnswerArea extends Component {
               borderRadius: `${borderRadius}px`,
               border: `solid 2px ${props.color}`
             })}
-          />
+          >
+
+          {/*Photo ici*/}
+
+          <div className="img-container" ref={el => this.imgContainer = el}/>
+
+          </div>
 
           {resizers.map(makeResizer)}
         </div>
@@ -117,6 +196,10 @@ export class AnswerArea extends Component {
               top: FRAME_GUTTER + AREA_GUTTER
             }}
           >
+
+            <div style={{width: 23, overflow: 'hidden'}}>
+              <ImageInput onSelect={file => this.onSelectImageDND(file)}/>
+            </div>
             <TooltipButton
               id="area-edit"
               className="btn-default btn-sm"
@@ -140,6 +223,7 @@ export class AnswerArea extends Component {
               title={tex('delete')}
               onClick={() => props.onDelete(props.id)}
             />
+
           </div>
         }
       </div>
@@ -158,6 +242,7 @@ AnswerArea.propTypes = {
   connectDragSource: T.func.isRequired,
   togglePopover: T.func.isRequired,
   onDelete: T.func.isRequired,
+  onChange: T.func.isRequired,//
   resizable: T.bool.isRequired,
   geometry: T.oneOfType([
     T.shape({

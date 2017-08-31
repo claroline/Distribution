@@ -28,6 +28,8 @@ class ExportContentParser implements ContentParserInterface
         $dumpPath,
         RichTextFormatter $formatter)
     {
+        var_dump('test');
+        die();
         $this->dumpPath = $dumpPath;
         $this->formatter = $formatter;
     }

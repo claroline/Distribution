@@ -11,6 +11,7 @@ import {ModeSelector} from './components/mode-selector.jsx'
 import {AreaPopover} from './components/area-popover.jsx'
 import {ResizeDragLayer} from './components/resize-drag-layer.jsx'
 import {AnswerAreaDraggable} from './components/answer-area.jsx'
+import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx' //
 import {actions} from './actions'
 import {
   MODE_SELECT,
@@ -32,7 +33,10 @@ AnswerDropZone = makeDroppable(AnswerDropZone, [
   TYPE_AREA_RESIZER
 ])
 
+var activeDrag = 'Hello';
+
 export class Graphic extends Component {
+
   constructor(props) {
     super(props)
     this.onSelectImage = this.onSelectImage.bind(this)
@@ -92,6 +96,7 @@ export class Graphic extends Component {
     const reader = new window.FileReader()
     reader.onload = e => {
       const img = this.createImage(e.target.result)
+
       img.onload = () => {
         this.props.onChange(actions.selectImage({
           type: file.type,
@@ -162,6 +167,7 @@ export class Graphic extends Component {
   }
 
   render() {
+
     return (
       <div className="graphic-editor">
         {get(this.props.item, '_errors.image') &&
@@ -170,6 +176,23 @@ export class Graphic extends Component {
             warnOnly={!this.props.validating}
           />
         }
+        <FormGroup
+          controlId="type-exo-graphic"
+          label={tex('graphic_type')}
+        >
+          <select
+            onChange={e => this.props.onChange(
+              actions.selectpointerMode(e.target.value)
+            )}
+            id="type-exo-graphic"
+            className="form-control"
+            value={this.props.item.pointerMode}
+          >
+            <option value="pointer">{tex('graphic_type_pointer')}</option>
+            <option value="image">{tex('graphic_type_image')}</option>
+            <option value="label">{tex('graphic_type_label')}</option>
+          </select>
+        </FormGroup>
         <div className="top-controls">
           <ImageInput onSelect={file => this.onSelectImage(file)}/>
           <ModeSelector
@@ -184,6 +207,7 @@ export class Graphic extends Component {
             score={this.getCurrentArea().score}
             feedback={this.getCurrentArea().feedback}
             color={this.getCurrentArea().area.color}
+            label={this.getCurrentArea().data}
             onPickColor={color => this.props.onChange(
               actions.setAreaColor(this.props.item._popover.areaId, color)
             )}
@@ -198,6 +222,10 @@ export class Graphic extends Component {
             )}
             onDelete={() => this.props.onChange(
               actions.deleteArea(this.props.item._popover.areaId)
+            )}
+            pointerMode={this.props.item.pointerMode}
+            onChangeLabel={label => this.props.onChange(
+              actions.setSolutionProperty(this.props.item._popover.areaId, 'data', label)
             )}
           />
         }
@@ -229,6 +257,7 @@ export class Graphic extends Component {
                       shape={solution.area.shape}
                       selected={this.props.item._mode === MODE_SELECT && solution._selected}
                       onSelect={id => this.props.onChange(actions.selectArea(id))}
+                      onChange={id => this.props.onChange(actions.selectImageDND(id))}//ici
                       onDelete={id => this.props.onChange(actions.deleteArea(id))}
                       canDrag={!this.props.item._popover.open
                         || this.props.item._popover.areaId !== solution.area.id}
@@ -276,7 +305,8 @@ Graphic.propTypes = {
       open: T.bool.isRequired,
       top: T.number.isRequired,
       left: T.number.isRequired
-    }).isRequired
+    }).isRequired,
+    pointerMode: T.string.isRequired
   }).isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired

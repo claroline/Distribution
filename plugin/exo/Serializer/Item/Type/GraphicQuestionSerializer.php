@@ -48,6 +48,7 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         $questionData->image = $this->serializeImage($graphicQuestion);
         $questionData->pointers = $graphicQuestion->getAreas()->count();
+        $questionData->pointerMode = $graphicQuestion->getPointerMode();
 
         if (in_array(Transfer::INCLUDE_SOLUTIONS, $options)) {
             $questionData->solutions = $this->serializeSolutions($graphicQuestion);
@@ -73,6 +74,7 @@ class GraphicQuestionSerializer implements SerializerInterface
 
         $this->deserializeImage($graphicQuestion, $data->image);
         $this->deserializeAreas($graphicQuestion, $data->solutions);
+        $graphicQuestion->setPointerMode($data->pointerMode);
 
         return $graphicQuestion;
     }
@@ -163,6 +165,7 @@ class GraphicQuestionSerializer implements SerializerInterface
             $solutionData->area = $this->serializeArea($area);
             $solutionData->score = $area->getScore();
             $solutionData->feedback = $area->getFeedback();
+            $solutionData->data = $area->getData();
 
             return $solutionData;
         }, $graphicQuestion->getAreas()->toArray());
@@ -196,6 +199,7 @@ class GraphicQuestionSerializer implements SerializerInterface
 
             $area->setScore($solutionData->score);
             $area->setFeedback($solutionData->feedback);
+            $area->setData($solutionData->data);
 
             // Deserializes area definition
             $this->deserializeArea($area, $solutionData->area);

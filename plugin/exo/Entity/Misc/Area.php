@@ -69,6 +69,12 @@ class Area implements AnswerPartInterface
      */
     private $interactionGraphic;
 
+    /**
+    * @ORM\Column(nullable=true)
+    *
+    */
+    private $data;
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4()->toString();
@@ -160,5 +166,15 @@ class Area implements AnswerPartInterface
     public function setInteractionGraphic(GraphicQuestion $interactionGraphic)
     {
         $this->interactionGraphic = $interactionGraphic;
+    }
+
+    public function getData()
+    {
+      return $this->data;
+    }
+
+    public function setData($data)
+    {
+      $this->data = $data;
     }
 }

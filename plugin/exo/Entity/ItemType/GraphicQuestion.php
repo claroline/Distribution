@@ -43,6 +43,12 @@ class GraphicQuestion extends AbstractItem
     private $areas;
 
     /**
+    * @ORM\Column()
+    *
+    */
+    private $pointerMode;
+
+    /**
      * GraphicQuestion constructor.
      */
     public function __construct()
@@ -103,5 +109,15 @@ class GraphicQuestion extends AbstractItem
         if ($this->areas->contains($area)) {
             $this->areas->removeElement($area);
         }
+    }
+
+    public function getPointerMode()
+    {
+      return $this->pointerMode;
+    }
+
+    public function setPointerMode($pointerMode)
+    {
+      $this->pointerMode = $pointerMode;
     }
 }

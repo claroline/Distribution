@@ -47,6 +47,7 @@
     "questions": "Vragen",
     "active_filters": "{0} Er is geen actieve filter|{1} Er is 1 actieve filter|]1,Inf[ Er zijn %count% actieve filters",
     "add_hint": "Een aanwijzing voegen",
+    "add_hint_photo": "Een aanwijzing voegen",
     "add_label": "Een label voegen",
     "add_new_picture": "Een nieuwe afbeelding voegen",
     "add_proposal": "Een voorstel voegen",

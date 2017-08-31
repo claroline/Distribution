@@ -7,6 +7,7 @@ import {tex} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/form-group.jsx'
 import {ColorPicker} from './../../../components/form/color-picker.jsx'
 import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
+import {ImageInput} from './image-input.jsx'
 import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 
 export class AreaPopover extends Component {
@@ -49,6 +50,21 @@ export class AreaPopover extends Component {
           </div>
         }
       >
+        {this.props.pointerMode === 'label' &&
+          <FormGroup
+            controlId="label-input"
+            label={tex('graphic_label')}
+          >
+            <input
+              type="text"
+              id="label-input"
+              className="form-control"
+              onChange={e => this.props.onChangeLabel(e.target.value)}
+              value={this.props.label}
+            />
+          </FormGroup>
+        }
+
         <div className={classes('form-group', 'base-controls', {'form-last': !this.state.showFeedback})}>
           <div>
             <ColorPicker
@@ -104,9 +120,11 @@ AreaPopover.propTypes = {
   color: T.string.isRequired,
   score: T.number.isRequired,
   feedback: T.string.isRequired,
+  label: T.string,
   onChangeScore: T.func.isRequired,
   onChangeFeedback: T.func.isRequired,
   onPickColor: T.func.isRequired,
   onClose: T.func.isRequired,
-  onDelete: T.func.isRequired
+  onDelete: T.func.isRequired,
+  onChangeLabel: T.func.isRequired
 }

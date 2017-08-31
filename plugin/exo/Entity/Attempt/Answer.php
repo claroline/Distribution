@@ -93,6 +93,12 @@ class Answer
      */
     private $questionId;
 
+    /**
+     *
+     * @ORM\Column(nullable=true)
+     */
+    private $zoneAnswer;// = [];
+
     public function __construct()
     {
         $this->uuid = Uuid::uuid4()->toString();
@@ -267,5 +273,24 @@ class Answer
     public function setQuestionId($questionId)
     {
         $this->questionId = $questionId;
+    }
+
+    /**
+     * @return array
+     */
+    public function getZoneAnswer()
+    {
+        return $this->zoneAnswer;
+    }
+
+    /**
+     * @param string $questionId
+     */
+    public function setZoneAnswer($zoneAnswer)
+    {
+        //if (!in_array($zoneAnswer, $this->zoneAnswer)) {
+        //    $this->zoneAnswer[] = $zoneAnswer;
+        //}
+        $this->zoneAnswer = $zoneAnswer;
     }
 }

@@ -13,6 +13,10 @@ export const SET_AREA_COLOR = 'SET_AREA_COLOR'
 export const SET_SOLUTION_PROPERTY = 'SET_SOLUTION_PROPERTY'
 export const BLUR_AREAS = 'BLUR_AREAS'
 
+export const SELECT_IMAGE_DND = 'SELECT_IMAGE_DND'
+export const SELECT_POINTER_MODE = 'SELECT_POINTER_MODE'
+export const ADD_ZONE_ANSWER = 'ADD_ZONE_ANSWER'
+
 export const actions = {}
 
 actions.selectMode = makeActionCreator(SELECT_MODE, 'mode')
@@ -27,3 +31,7 @@ actions.togglePopover = makeActionCreator(TOGGLE_POPOVER, 'areaId', 'left', 'top
 actions.setAreaColor = makeActionCreator(SET_AREA_COLOR, 'id', 'color')
 actions.setSolutionProperty = makeActionCreator(SET_SOLUTION_PROPERTY, 'id', 'property', 'value')
 actions.blurAreas = makeActionCreator(BLUR_AREAS)
+
+actions.selectImageDND = makeActionCreator(SELECT_IMAGE_DND, 'image')
+actions.selectpointerMode = makeActionCreator(SELECT_POINTER_MODE, 'pointerMode')
+actions.addZoneAnswer = makeActionCreator(ADD_ZONE_ANSWER, 'zoneAnswer', 'id')

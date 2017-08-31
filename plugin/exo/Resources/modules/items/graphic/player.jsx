@@ -17,7 +17,8 @@ export class GraphicPlayer extends Component {
     }
   }
 
-  onClickImage(e) {
+  onClickImage(e, k, pMode) {
+
     if (this.state.pointersLeft > 0) {
       const factor = this.props.item.image.width / this.img.width
       const imgRect = this.img.getBoundingClientRect()
@@ -25,14 +26,28 @@ export class GraphicPlayer extends Component {
       const clientY = e.clientY - imgRect.top
       const absX = Math.round(clientX * factor)
       const absY = Math.round(clientY * factor)
-      const newPointer = {
-        x: absX,
-        y: absY
+
+      if(pMode === 'label') {
+        this.setState({
+          pointers: [...this.state.pointers, {
+            x: k,
+            y: k,
+            id: k,
+            zoneAnswer: e.target.value
+          }],
+          pointersLeft: this.state.pointersLeft - 1
+        }, () => this.props.onChange(this.state.pointers))
       }
-      this.setState({
-        pointers: [...this.state.pointers, newPointer],
-        pointersLeft: this.state.pointersLeft - 1
-      }, () => this.props.onChange(this.state.pointers))
+      else {
+        this.setState({
+          pointers: [...this.state.pointers, {
+            x: absX,
+            y: absY,
+          }],
+          pointersLeft: this.state.pointersLeft - 1
+        }, () => this.props.onChange(this.state.pointers))
+      }
+
     }
   }
 
@@ -51,6 +66,11 @@ export class GraphicPlayer extends Component {
       <div className="graphic-player">
         <div className="top-controls">
           <span>
+            {this.props.item.pointerMode &&
+              <div>
+                Mode : {this.props.item.pointerMode}
+              </div>
+            }
             {tex('graphic_pointers_left')}{this.state.pointersLeft}
           </span>
           {this.state.pointers.length > 0 &&
@@ -64,16 +84,54 @@ export class GraphicPlayer extends Component {
           }
         </div>
         <PointableImage
+          answer={this.props.answer} // A vérifier
+          solutions={this.props.item.solutions}
+          pointerMode={this.props.item.pointerMode}
           src={this.props.item.image.data || asset(this.props.item.image.url)}
           absWidth={this.props.item.image.width}
           onRef={el => this.img = el}
           onClick={this.onClickImage}
+          onChange={this.props.onChange}
           pointers={this.state.pointers.map(pointer => ({
             type: POINTER_PLACED,
             absX: pointer.x,
             absY: pointer.y
           }))}
         />
+        {this.props.item.pointerMode === 'image' &&
+          <div>{/*Exemple, il faut faire les images dynamiquement*/}
+            <img
+              src={this.props.item.image.data || asset(this.props.item.image.url)}
+              //onRef={el => this.img = el}
+              onClick={this.onClickImage}
+              style={{width: 152, margin: "5px 5px 5px 0px"}}
+            />
+            <img
+              src={this.props.item.image.data || asset(this.props.item.image.url)}
+              //onRef={el => this.img = el}
+              onClick={this.onClickImage}
+              style={{width: 152, margin: "5px 5px 5px 0px"}}
+            />
+            <img
+              src={this.props.item.image.data || asset(this.props.item.image.url)}
+              //onRef={el => this.img = el}
+              onClick={this.onClickImage}
+              style={{width: 152, margin: "5px 5px 5px 0px"}}
+            />
+            <img
+              src={this.props.item.image.data || asset(this.props.item.image.url)}
+              //onRef={el => this.img = el}
+              onClick={this.onClickImage}
+              style={{width: 152, margin: "5px 5px 5px 0px"}}
+            />
+            <img
+              src={this.props.item.image.data || asset(this.props.item.image.url)}
+              //onRef={el => this.img = el}
+              onClick={this.onClickImage}
+              style={{width: 152, margin: "5px 5px 5px 0px"}}
+            />
+          </div>
+        }
       </div>
     )
   }

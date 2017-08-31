@@ -27,6 +27,7 @@ export const STEP_MOVE = 'STEP_MOVE'
 export const STEP_ITEM_DELETE = 'STEP_ITEM_DELETE'
 export const QUIZ_UPDATE = 'QUIZ_UPDATE'
 export const HINT_ADD = 'HINT_ADD'
+export const HINT_ADD_PHOTO = 'HINT_ADD_PHOTO'
 export const HINT_CHANGE = 'HINT_CHANGE'
 export const HINT_REMOVE = 'HINT_REMOVE'
 export const QUIZ_SAVING = 'QUIZ_SAVING'
@@ -59,6 +60,7 @@ export const quizChangeActions = [
   STEP_ITEM_DELETE,
   QUIZ_UPDATE,
   HINT_ADD,
+  HINT_ADD_PHOTO,
   HINT_CHANGE,
   HINT_REMOVE,
   CONTENT_ITEM_CREATE,

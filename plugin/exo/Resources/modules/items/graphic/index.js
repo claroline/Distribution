@@ -8,7 +8,9 @@ function getCorrectedAnswer(item, answers) {
   const corrected = new CorrectedAnswer()
 
   item.solutions.forEach(solution => {
+
     if (answers && answers.data) {
+
       answers.data.forEach(coords => {
         if (isPointInArea(solution.area, coords.x, coords.y)) {
           solution.score > 0 ?
@@ -18,6 +20,7 @@ function getCorrectedAnswer(item, answers) {
           corrected.addMissing(new Answerable(solution.score))
         }
       })
+
     }
   })
 
