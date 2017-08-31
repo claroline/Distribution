@@ -52,8 +52,8 @@ class GraphicDefinition extends AbstractDefinition
     public function __construct(
         GraphicQuestionValidator $validator,
         GraphicAnswerValidator $answerValidator,
-        GraphicQuestionSerializer $serializer)
-    {
+        GraphicQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -219,5 +219,12 @@ class GraphicDefinition extends AbstractDefinition
             $x <= $coords[2] &&
             $y >= $coords[1] &&
             $y <= $coords[3];
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return array_map(function (Area $area) {
+            return 'area-'.$area->getUuid();
+        }, $item->getAreas()->toArray());
     }
 }

@@ -53,8 +53,8 @@ class ClozeDefinition extends AbstractDefinition
     public function __construct(
         ClozeQuestionValidator $validator,
         ClozeAnswerValidator $answerValidator,
-        ClozeQuestionSerializer $serializer)
-    {
+        ClozeQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -133,7 +133,7 @@ class ClozeDefinition extends AbstractDefinition
                         }
                     } else {
                         // Retrieve the best answer for the hole
-                    $corrected->addMissing($this->findHoleExpectedAnswer($hole));
+                        $corrected->addMissing($this->findHoleExpectedAnswer($hole));
                     }
                 }
             }
@@ -266,4 +266,27 @@ class ClozeDefinition extends AbstractDefinition
     {
         $item->text = $contentParser->parse($item->text);
     }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return array_map(function (Hole $hole) {
+            return 'hole-'.$hole->getUuid();
+        }, $item->getHoles()->toArray());
+    }
+    /*
+        public function getCsvAnswers(AbstractItem $item, Answer $answer)
+        {
+            $data = $answer->getData();
+            $answers = [];
+
+            foreach ($answer->getChoices() as $choice) {
+                if (in_array($choice->getUuid(), $data)) {
+                    $answers[] = $choice->getContent();
+                }
+            }
+
+            $compressor = new ArrayCompressor();
+
+            return $compressor->compress($answers);
+        }*/
 }

@@ -208,12 +208,17 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        return new StreamedResponse(function () use ($exercise) {
-            $this->paperManager->serializeExercisePapers($exercise, true);
-        }, 200, [
-          'Content-Type' => 'application/force-download',
-          'Content-Disposition' => 'attachment; filename="export.json"',
-      ]);
+        $response = new StreamedResponse(function () use ($exercise) {
+            $data = $this->paperManager->serializeExercisePapers($exercise);
+            $handle = fopen('php://output', 'w+');
+            fwrite($handle, json_encode($data, JSON_PRETTY_PRINT));
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'application/force-download');
+        $response->headers->set('Content-Disposition', 'attachment; filename="statistics.json"');
+
+        return $response;
     }
 
     /**
@@ -226,8 +231,19 @@ class PaperController extends AbstractController
      *
      * @return StreamedResponse
      */
-    public function exportCsvAnswersExport(Exercise $exercise)
+    public function exportCsvAnswersAction(Exercise $exercise)
     {
+        if (!$this->isAdmin($exercise)) {
+            // Only administrator or Paper Managers can export Papers
+            throw new AccessDeniedException();
+        }
+
+        return new StreamedResponse(function () use ($exercise) {
+            $this->exerciseManager->exportResultsToCsv($exercise);
+        }, 200, [
+            'Content-Type' => 'application/force-download',
+            'Content-Disposition' => 'attachment; filename="export.csv"',
+        ]);
     }
 
     /**

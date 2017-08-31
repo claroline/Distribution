@@ -3,10 +3,12 @@
 namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Entity\Misc\BooleanChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
+use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\BooleanQuestionSerializer;
 use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
@@ -52,8 +54,8 @@ class BooleanDefinition extends AbstractDefinition
     public function __construct(
         BooleanQuestionValidator $validator,
         BooleanAnswerValidator $answerValidator,
-        BooleanQuestionSerializer $serializer)
-    {
+        BooleanQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -179,5 +181,26 @@ class BooleanDefinition extends AbstractDefinition
         array_walk($item->choices, function (\stdClass $choice) use ($contentParser) {
             $choice->data = $contentParser->parse($choice->data);
         });
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return ['bool-'.$item->getQuestion()->getUuid()];
+    }
+
+    public function getCsvAnswers(AbstractItem $item, Answer $answer)
+    {
+        $data = json_decode($answer->getData());
+        $answers = [];
+
+        foreach ($item->getChoices() as $choice) {
+            if ($data === $choice->getUuid()) {
+                $answers[] = $choice->getData();
+            }
+        }
+
+        $compressor = new ArrayCompressor();
+
+        return [$compressor->compress($answers)];
     }
 }

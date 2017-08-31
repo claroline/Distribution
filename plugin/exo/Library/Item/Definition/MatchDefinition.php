@@ -55,8 +55,8 @@ class MatchDefinition extends AbstractDefinition
     public function __construct(
         MatchQuestionValidator $validator,
         MatchAnswerValidator $answerValidator,
-        MatchQuestionSerializer $serializer)
-    {
+        MatchQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -212,5 +212,10 @@ class MatchDefinition extends AbstractDefinition
         array_walk($item->secondSet, function (\stdClass $item) use ($contentParser) {
             $item->data = $contentParser->parse($item->data);
         });
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return ['match-'.$item->getQuestion()->getUuid()];
     }
 }

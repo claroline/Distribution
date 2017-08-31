@@ -53,8 +53,8 @@ class SelectionDefinition extends AbstractDefinition
     public function __construct(
         SelectionQuestionValidator $validator,
         SelectionAnswerValidator $answerValidator,
-        SelectionQuestionSerializer $serializer)
-    {
+        SelectionQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -293,5 +293,12 @@ class SelectionDefinition extends AbstractDefinition
     public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
     {
         $item->text = $contentParser->parse($item->text);
+    }
+
+    public function getCsvTitles(AbstractItem $question)
+    {
+        return array_map(function (Selection $selection) {
+            'selection-'.$selection->getUuid();
+        }, $question->getSelections()->toArray());
     }
 }

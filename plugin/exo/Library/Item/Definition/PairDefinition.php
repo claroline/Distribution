@@ -54,8 +54,8 @@ class PairDefinition extends AbstractDefinition
     public function __construct(
         PairQuestionValidator $validator,
         PairAnswerValidator $answerValidator,
-        PairQuestionSerializer $serializer)
-    {
+        PairQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -243,5 +243,10 @@ class PairDefinition extends AbstractDefinition
         }
 
         return $found;
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return ['pair-'.$item->getQuestion()->getUuid()];
     }
 }

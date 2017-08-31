@@ -53,8 +53,8 @@ class OrderingDefinition extends AbstractDefinition
     public function __construct(
         OrderingQuestionValidator $validator,
         OrderingAnswerValidator $answerValidator,
-        OrderingQuestionSerializer $serializer)
-    {
+        OrderingQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -178,5 +178,10 @@ class OrderingDefinition extends AbstractDefinition
         array_walk($item->items, function (\stdClass $item) use ($contentParser) {
             $item->data = $contentParser->parse($item->data);
         });
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return ['ordering-'.$item->getQuestion()->getUuid()];
     }
 }

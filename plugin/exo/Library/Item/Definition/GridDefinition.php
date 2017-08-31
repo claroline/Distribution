@@ -55,8 +55,8 @@ class GridDefinition extends AbstractDefinition
     public function __construct(
         GridQuestionValidator $validator,
         GridAnswerValidator $answerValidator,
-        GridQuestionSerializer $serializer)
-    {
+        GridQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -163,7 +163,7 @@ class GridDefinition extends AbstractDefinition
                     }
                 } else {
                     // Retrieve the best answer for the cell
-                  $corrected->addMissing($this->findCellExpectedAnswer($cell));
+                    $corrected->addMissing($this->findCellExpectedAnswer($cell));
                 }
             }
         } else {
@@ -199,7 +199,7 @@ class GridDefinition extends AbstractDefinition
                     }
                 } else {
                     // Retrieve the best answer for the cell
-                  $corrected->addMissing($this->findCellExpectedAnswer($cell));
+                    $corrected->addMissing($this->findCellExpectedAnswer($cell));
                 }
             }
         } else {
@@ -441,5 +441,12 @@ class GridDefinition extends AbstractDefinition
         }
 
         return $best;
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return array_map(function (CellChoice $choice) {
+            return 'choice-'.$choice->getUuid();
+        }, $item->getCells()->toArray());
     }
 }

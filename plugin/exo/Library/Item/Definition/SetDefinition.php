@@ -55,8 +55,8 @@ class SetDefinition extends AbstractDefinition
     public function __construct(
         SetQuestionValidator $validator,
         SetAnswerValidator $answerValidator,
-        SetQuestionSerializer $serializer)
-    {
+        SetQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -209,5 +209,12 @@ class SetDefinition extends AbstractDefinition
         array_walk($item->sets, function (\stdClass $set) use ($contentParser) {
             $set->data = $contentParser->parse($set->data);
         });
+    }
+
+    public function getCsvTitles(AbstractItem $question)
+    {
+        return array_map(function (Association $association) {
+            return 'set-'.$association->getId();
+        }, $question->getAssociations()->toArray());
     }
 }

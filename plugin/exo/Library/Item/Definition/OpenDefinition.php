@@ -49,8 +49,8 @@ class OpenDefinition extends AbstractDefinition
     public function __construct(
         OpenQuestionValidator $validator,
         OpenAnswerValidator $answerValidator,
-        OpenQuestionSerializer $serializer)
-    {
+        OpenQuestionSerializer $serializer
+    ) {
         $this->validator = $validator;
         $this->answerValidator = $answerValidator;
         $this->serializer = $serializer;
@@ -163,5 +163,10 @@ class OpenDefinition extends AbstractDefinition
     public function parseContents(ContentParserInterface $contentParser, \stdClass $item)
     {
         return;
+    }
+
+    public function getCsvTitles(AbstractItem $item)
+    {
+        return ['open-'.$item->getQuestion()->getUuid()];
     }
 }
