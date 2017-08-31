@@ -276,15 +276,23 @@ class ThumbnailCreator
     private function getImageExtensionFromUrl($url)
     {
         $mimeType = mime_content_type($url);
-
-        if ($mimeType === 'image/svg+xml') {
+        $fileExtension = pathinfo($url, PATHINFO_EXTENSION);
+        // If mimetype is svg or fileExtension is svg then return svg
+        if ($mimeType === 'image/svg+xml' || $fileExtension === 'svg') {
             return 'svg';
         }
+        // Try to guess image type
         try {
             $imageType = exif_imagetype($url);
         } catch (\Exception $e) {
             throw new ExtensionNotSupportedException();
         }
+        // If imageType is false throw exception
+        if (!$imageType) {
+            $exception = new ExtensionNotSupportedException();
+            $exception->setExtension($fileExtension);
+        }
+
         // Let php find about extension as sometimes files has no extension or have a fake extension
         $extension = str_replace('.', '', image_type_to_extension($imageType));
 
