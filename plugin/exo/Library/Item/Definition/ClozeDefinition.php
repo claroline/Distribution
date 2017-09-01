@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\ClozeQuestion;
 use UJM\ExoBundle\Entity\Misc\Hole;
@@ -273,20 +274,23 @@ class ClozeDefinition extends AbstractDefinition
             return 'hole-'.$hole->getUuid();
         }, $item->getHoles()->toArray());
     }
-    /*
-        public function getCsvAnswers(AbstractItem $item, Answer $answer)
-        {
-            $data = $answer->getData();
-            $answers = [];
 
-            foreach ($answer->getChoices() as $choice) {
-                if (in_array($choice->getUuid(), $data)) {
-                    $answers[] = $choice->getContent();
-                }
-            }
+    public function getCsvAnswers(AbstractItem $item, Answer $answer)
+    {
+        $data = json_decode($answer->getData());
+        $answers = [];
+        $answeredHoles = [];
 
-            $compressor = new ArrayCompressor();
+        foreach ($data as $answer) {
+            $answeredHoles[$answer->holeId] = $answer->answerText;
+        }
 
-            return $compressor->compress($answers);
-        }*/
+        foreach ($item->getHoles() as $hole) {
+            (array_key_exists($hole->getUuid(), $answeredHoles)) ?
+              $answers[] = $answeredHoles[$hole->getUuid()] :
+              $answers[] = null;
+        }
+
+        return $answers;
+    }
 }

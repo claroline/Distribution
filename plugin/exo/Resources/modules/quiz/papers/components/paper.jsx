@@ -65,6 +65,7 @@ let Paper = props => {
                     showScore: showScore,
                     showExpected: !props.showExpectedAnswers,
                     showStats: props.showStatistics,
+                    showYours: true,
                     stats: props.showStatistics ?
                       getDefinition(item.type).generateStats(item, props.papers, props.allPapersStatistics) :
                       {}
