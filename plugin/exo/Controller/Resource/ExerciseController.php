@@ -21,13 +21,13 @@ class ExerciseController extends Controller
     /**
      * Opens an exercise.
      *
-     * @param Exercise $exercise
-     * @param User     $user
-     *
      * @EXT\Route("", name="ujm_exercise_open")
      * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
      * @EXT\Template("UJMExoBundle:Exercise:open.html.twig")
+     *
+     * @param Exercise $exercise
+     * @param User     $user
      *
      * @return array
      */
