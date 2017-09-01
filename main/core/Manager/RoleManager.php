@@ -1157,13 +1157,18 @@ class RoleManager
             }
         }
 
-        $this->log('Flushing, this may be very long for large databases');
-        $this->om->endFlushSuite();
+        //if we changed something, flush
+        if ($j > 1) {
+            $this->log('Flushing, this may be very long for large databases');
+            $this->om->endFlushSuite();
+        }
+
         $this->log('Checking user role integrity.');
         $users = $this->container->get('claroline.manager.user_manager')->getAllEnabledUsers();
         $this->om->startFlushSuite();
         $j = 0;
         $totalUsers = count($users);
+        $i = 1;
 
         foreach ($users as $user) {
             ++$j;
@@ -1182,8 +1187,10 @@ class RoleManager
             }
         }
 
-        $this->log('Flushing, this may be very long for large databases');
-        $this->om->endFlushSuite();
+        if ($i > 1) {
+            $this->log('Flushing, this may be very long for large databases');
+            $this->om->endFlushSuite();
+        }
     }
 
     public function getUserRole($username)
