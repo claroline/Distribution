@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Command;
 
-use Claroline\CoreBundle\Command\Theme\BuildCommand;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -122,23 +121,22 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             $installer->updateFromComposerInfo();
         }
 
-        if (!$input->getOption('no_asset')) {
-            /** @var \Claroline\CoreBundle\Library\Installation\Refresher $refresher */
-            $refresher = $this->getContainer()->get('claroline.installation.refresher');
-            $refresher->dumpAssets($this->getContainer()->getParameter('kernel.environment'));
-        }
+        /** @var \Claroline\CoreBundle\Library\Installation\Refresher $refresher */
+        $refresher = $this->getContainer()->get('claroline.installation.refresher');
 
+        // clear cache
         if ($input->getOption('clear_cache')) {
-            /** @var \Claroline\CoreBundle\Library\Installation\Refresher $refresher */
-            $refresher = $this->getContainer()->get('claroline.installation.refresher');
             $refresher->clearCache($this->getContainer()->getParameter('kernel.environment'));
         }
 
-        // todo execute themes
+        // dump static assets
+        if (!$input->getOption('no_asset')) {
+            $refresher->dumpAssets($this->getContainer()->getParameter('kernel.environment'));
+        }
+
+        // build themes
         if (!$input->getOption('no_theme')) {
-            $themeBuilder = new BuildCommand();
-            $themeBuilder->setContainer($this->getContainer());
-            $themeBuilder->run(new ArrayInput([]), $output);
+            $refresher->buildThemes();
         }
 
         MaintenanceHandler::disableMaintenance();

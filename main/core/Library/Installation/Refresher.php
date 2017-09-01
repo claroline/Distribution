@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Library\Installation;
 
 use Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand as TranslationDumpCommand;
+use Claroline\CoreBundle\Command\Theme\BuildCommand;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Composer\Script\Event;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -82,6 +83,13 @@ class Refresher
             new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'Env', $environment)
         );
         $assetDumpCmd->run(new ArrayInput([]), $this->output ?: new NullOutput());
+    }
+
+    public function buildThemes()
+    {
+        $themeBuilder = new BuildCommand();
+        $themeBuilder->setContainer($this->container);
+        $themeBuilder->run(new ArrayInput([]), $this->output);
     }
 
     public function clearCache($environment = null)
