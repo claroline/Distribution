@@ -8,7 +8,6 @@ use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\BooleanQuestion;
 use UJM\ExoBundle\Entity\Misc\BooleanChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
-use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\BooleanQuestionSerializer;
 use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
@@ -191,16 +190,12 @@ class BooleanDefinition extends AbstractDefinition
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
         $data = json_decode($answer->getData());
-        $answers = [];
+        $answer = null;
 
         foreach ($item->getChoices() as $choice) {
             if ($data === $choice->getUuid()) {
-                $answers[] = $choice->getData();
+                return [$choice->getData()];
             }
         }
-
-        $compressor = new ArrayCompressor();
-
-        return [$compressor->compress($answers)];
     }
 }

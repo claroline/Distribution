@@ -237,6 +237,7 @@ class PaperController extends AbstractController
             // Only administrator or Paper Managers can export Papers
             throw new AccessDeniedException();
         }
+
         $this->exerciseManager->exportResultsToCsv($exercise);
 
         return new StreamedResponse(function () use ($exercise) {
