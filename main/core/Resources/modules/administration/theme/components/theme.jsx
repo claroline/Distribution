@@ -4,7 +4,9 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 
-import {t, trans} from '#/main/core/translation'
+import {t, trans, transChoice} from '#/main/core/translation'
+
+import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/main/core/administration/theme/actions'
@@ -67,22 +69,21 @@ const GeneralSection = props =>
         hideText={t('hide_advanced_options')}
       >
         <CheckGroup
-          checkId="theme-extend-default"
-          label={trans('theme_extend_default', {}, 'theme')}
-          checked={props.theme.parameters.extendDefault}
-          onChange={active => true}
-          help={trans('theme_extend_default_help', {}, 'theme')}
-        />
-
-        <CheckGroup
           checkId="theme-enabled"
           label={trans('theme_enabled', {}, 'theme')}
           checked={props.theme.meta.enabled}
           onChange={active => true}
           help={trans('theme_enabled_help', {}, 'theme')}
         />
-      </ToggleableSet>
 
+        <CheckGroup
+          checkId="theme-extend-default"
+          label={trans('theme_extend_default', {}, 'theme')}
+          checked={props.theme.parameters.extendDefault}
+          onChange={active => true}
+          help={trans('theme_extend_default_help', {}, 'theme')}
+        />
+      </ToggleableSet>
     </fieldset>
   </div>
 
@@ -102,7 +103,12 @@ GeneralSection.propTypes = {
 }
 
 const TypoSection = props =>
-  <div>
+  <FormSection
+    {...props}
+    id="theme-typo"
+    icon="fa fa-fw fa-font"
+    title="Typo & fonts"
+  >
     <fieldset>
       <legend>{trans('font_headings', {}, 'theme')}</legend>
       <div className="sub-fields">
@@ -126,14 +132,19 @@ const TypoSection = props =>
         <FontSize controlId="content-size" />
       </div>
     </fieldset>
-  </div>
+  </FormSection>
 
 TypoSection.propTypes = {
 
 }
 
 const ColorsSection = props =>
-  <fieldset>
+  <FormSection
+    {...props}
+    id="theme-colors"
+    icon="fa fa-fw fa-tint"
+    title="Color schemes"
+  >
     <div className="form-group">
       <label className="control-label">Primary & secondary</label>
       <div className="row primary-colors">
@@ -194,28 +205,38 @@ const ColorsSection = props =>
       <Color color="#FAFAFA" label={{text: 'content', color: '#333333'}} />
       <Color color="#F3F3F3" label={{text: 'footer',  color: '#777777'}} />
     </div>
-  </fieldset>
+  </FormSection>
 
 ColorsSection.propTypes = {
 
 }
 
 const SizingSection = props =>
-  <fieldset>
+  <FormSection
+    {...props}
+    id="theme-sizing"
+    icon="fa fa-fw fa-arrows-h"
+    title="Sizing"
+  >
     <Size
       controlId="app-width"
       label={trans('app_max_width', {}, 'theme')}
       value={1200}
       onChange={(value) => true}
     />
-  </fieldset>
+  </FormSection>
 
 SizingSection.propTypes = {
 
 }
 
 const ExtraSection = props =>
-  <fieldset>
+  <FormSection
+    {...props}
+    id="theme-extra"
+    icon="fa fa-fw fa-ellipsis-h"
+    title="Extra features"
+  >
     <CheckGroup
       checkId="enable-shadows"
       label={trans('enable_shadows', {}, 'theme')}
@@ -229,7 +250,7 @@ const ExtraSection = props =>
       checked={true}
       onChange={active => true}
     />
-  </fieldset>
+  </FormSection>
 
 ExtraSection.propTypes = {
 
@@ -244,7 +265,7 @@ const Theme = props =>
       <PageActions>
         <PageGroupActions>
           <PageAction
-            id="theme-add"
+            id="theme-save"
             title={trans('save_theme', {}, 'theme')}
             icon="fa fa-floppy-o"
             primary={true}
@@ -262,33 +283,16 @@ const Theme = props =>
           <MoreAction id="theme-more">
             <MenuItem header={true}>{t('more_actions')}</MenuItem>
 
-            <MenuItem href="#">
+            <MenuItem onClick={() => props.rebuildTheme(props.theme)}>
               <span className="fa fa-fw fa-refresh" />
               {trans('rebuild_theme', {}, 'theme')}
-            </MenuItem>
-
-            <MenuItem href="#">
-              <span className="fa fa-fw fa-copy" />
-              {trans('copy_theme', {}, 'theme')}
-            </MenuItem>
-
-            <MenuItem href="#">
-              <span className="fa fa-fw fa-upload" />
-              {trans('export_theme', {}, 'theme')}
             </MenuItem>
 
             <MenuItem divider={true} />
 
             <MenuItem
               className="dropdown-link-danger"
-              onClick={e => {
-                {/*e.stopPropagation()
-                props.showModal(MODAL_DELETE_CONFIRM, {
-                  title: trans('delete', {}, 'theme'),
-                  question: trans('delete_confirm_question', {}, 'theme'),
-                  handleConfirm: () => true
-                })*/}
-              }}
+              onClick={() => props.removeTheme(props.theme)}
             >
               <span className="fa fa-fw fa-trash" />
               {trans('delete_theme', {}, 'theme')}
@@ -302,24 +306,15 @@ const Theme = props =>
       <GeneralSection theme={props.theme} />
 
       <FormSections>
-        <FormSection id="theme-colors" icon="fa fa-fw fa-tint" title="Color schemes">
-          <ColorsSection />
-        </FormSection>
-        <FormSection id="theme-typo" icon="fa fa-fw fa-font" title="Typo & fonts">
-          <TypoSection />
-        </FormSection>
-        <FormSection id="theme-sizing" icon="fa fa-fw fa-arrows-h" title="Sizing">
-          <SizingSection />
-        </FormSection>
-        <FormSection id="theme-extra" icon="fa fa-fw fa-ellipsis-h" title="Extra features">
-          <ExtraSection />
-        </FormSection>
+        <ColorsSection />
+        <TypoSection />
+        <SizingSection />
+        <ExtraSection />
       </FormSections>
     </PageContent>
   </Page>
 
 Theme.propTypes = {
-  // themes
   theme: T.shape({
     name: T.string.isRequired,
     current: T.bool.isRequired,
@@ -331,12 +326,8 @@ Theme.propTypes = {
       extendDefault: T.bool
     }).isRequired
   }).isRequired,
-  copyTheme: T.func.isRequired,
-  rebuildThemes: T.func.isRequired,
-  removeThemes: T.func.isRequired,
-
-  // modals
-  showModal: T.func.isRequired
+  rebuildTheme: T.func.isRequired,
+  removeTheme: T.func.isRequired
 }
 
 function mapStateToProps(state, onwProps) {
@@ -347,26 +338,34 @@ function mapStateToProps(state, onwProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    // modals
-    showModal(modalType, modalProps) {
-      dispatch(modalActions.showModal(modalType, modalProps))
+    rebuildTheme: (theme) => {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: transChoice('rebuild_themes', 1, {count: 1}, 'theme'),
+          question: trans('rebuild_themes_confirm', {
+            theme_list: theme.name
+          }, 'theme'),
+          handleConfirm: () => dispatch(actions.rebuildThemes([theme]))
+        })
+      )
     },
 
-    // themes
-    copyTheme: () => {
-      dispatch(actions.copyTheme())
-    },
-
-    rebuildThemes: (themes) => {
-      dispatch(actions.rebuildThemes(themes))
-    },
-
-    removeThemes: (themes) => {
-      dispatch(actions.removeThemes(themes))
+    removeTheme: (theme) => {
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: transChoice('remove_themes', 1, {count: 1}, 'theme'),
+          question: trans('remove_themes_confirm', {
+            theme_list: theme.name
+          }, 'theme'),
+          handleConfirm: () => dispatch(actions.removeThemes([theme]))
+        })
+      )
     }
   }
 }
 
 const ConnectedTheme = withRouter(connect(mapStateToProps, mapDispatchToProps)(Theme))
 
-export {ConnectedTheme as Theme}
+export {
+  ConnectedTheme as Theme
+}

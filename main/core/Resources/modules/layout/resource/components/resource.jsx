@@ -27,9 +27,7 @@ class Resource extends Component {
   }
 
   toggleFullscreen() {
-    this.setState({
-      fullscreen: !this.state.fullscreen
-    })
+    this.setState({fullscreen: !this.state.fullscreen})
   }
 
   render() {
@@ -55,7 +53,6 @@ class Resource extends Component {
             toggleFullscreen={this.toggleFullscreen}
             togglePublication={this.props.togglePublication}
             showModal={this.props.showModal}
-            fadeModal={this.props.fadeModal}
             updateNode={this.props.updateNode}
           />
         </PageHeader>

@@ -28,58 +28,10 @@ class Themes extends Component {
     return themeIds.map(themeId => this.props.themes.find(theme => themeId === theme.id))
   }
 
-  getTheme(themeId) {
-    return this.props.themes.find(theme => themeId === theme.id)
-  }
-
-  rebuildThemes(themeIds) {
-    const themes = this.getThemes(themeIds)
-
-    this.props.showModal(MODAL_CONFIRM, {
-      title: transChoice('rebuild_themes', themes.length, {count: themes.length}, 'theme'),
-      question: trans('rebuild_themes_confirm', {
-        workspace_list: themes.map(theme => theme.name).join(', ')
-      }, 'theme'),
-      handleConfirm: () => this.props.rebuildThemes(themes)
-    })
-  }
-
-  removeThemes(themeIds) {
-    const themes = this.getThemes(themeIds)
-
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
-      title: transChoice('remove_themes', themes.length, {count: themes.length}, 'theme'),
-      question: trans('remove_themes_confirm', {
-        workspace_list: themes.map(theme => theme.name).join(', ')
-      }, 'theme'),
-      handleConfirm: () => this.props.removeThemes(themes)
-    })
-  }
-
   render() {
     return (
       <Page id="theme-management">
-        <PageHeader
-          title={t('themes_management')}
-        >
-          <PageActions>
-            <PageAction
-              id="theme-add"
-              title={trans('create_theme', {}, 'theme')}
-              icon="fa fa-plus"
-              primary={true}
-              action={this.props.createTheme}
-            />
-
-            <PageAction
-              id="theme-import"
-              title={trans('import_theme', {}, 'theme')}
-              icon="fa fa-download"
-              action="#"
-            />
-          </PageActions>
-        </PageHeader>
-
+        <PageHeader title={t('themes_management')} />
         <PageContent>
           <DataList
             data={this.props.themes}
@@ -98,44 +50,37 @@ class Themes extends Component {
               {name: 'meta.description', type: 'string', label: trans('theme_description', {}, 'theme')},
               {name: 'meta.plugin',      type: 'string', label: trans('theme_plugin', {}, 'theme')},
               {name: 'meta.enabled',     type: 'flag',   label: trans('theme_enabled', {}, 'theme')},
-              {name: 'current',          type: 'flag',   label: trans('theme_current', {}, 'theme')},
+              {name: 'current',          type: 'flag',   label: trans('theme_current', {}, 'theme')}
             ]}
 
             actions={[
               {
                 icon: 'fa fa-fw fa-refresh',
                 label: trans('rebuild_theme', {}, 'theme'),
-                action: (row) => this.rebuildThemes([row.id])
-              },
-              {
-                icon: 'fa fa-fw fa-copy',
-                label: trans('copy_theme', {}, 'theme'),
-                action: (row) => this.props.copyTheme(this.getTheme(row.id))
-              },
-              {
-                icon: 'fa fa-fw fa-upload',
-                label: trans('export_theme', {}, 'theme'),
-                action: (row) => true,
+                action: (row) => this.props.rebuildThemes(this.getThemes([row.id]))
               }, {
                 icon: 'fa fa-fw fa-trash-o',
                 label:trans('remove_theme', {}, 'theme'),
-                action: (row) => this.removeThemes([row.id]),
+                action: (row) => this.props.removeThemes(this.getThemes([row.id])),
                 isDangerous: true
               }
             ]}
-
-            sorting={{
-              current: this.props.sortBy,
-              updateSort: this.props.updateSort
-            }}
 
             selection={{
               current: this.props.selected,
               toggle: this.props.toggleSelect,
               toggleAll: this.props.toggleSelectAll,
               actions: [
-                {label: t('rebuild_themes'), icon: 'fa fa-fw fa-refresh', action: () => this.rebuildThemes(this.props.selected)},
-                {label: t('delete'), icon: 'fa fa-fw fa-trash-o', action: () => this.removeThemes(this.props.selected), isDangerous: true}
+                {
+                  icon: 'fa fa-fw fa-refresh',
+                  label: t('rebuild_themes'),
+                  action: () => this.props.rebuildThemes(this.getThemes(this.props.selected))
+                }, {
+                  icon: 'fa fa-fw fa-trash-o',
+                  label: t('delete'),
+                  action: () => this.props.removeThemes(this.getThemes(this.props.selected)),
+                  isDangerous: true
+                }
               ]
             }}
           />
@@ -149,20 +94,13 @@ Themes.propTypes = {
   // themes
   themes: T.arrayOf(T.object),
 
-  createTheme: T.func.isRequired,
-  copyTheme: T.func.isRequired,
   removeThemes: T.func.isRequired,
   rebuildThemes: T.func.isRequired,
 
   // list
-  sortBy: T.object.isRequired,
-  updateSort: T.func.isRequired,
   selected: T.array.isRequired,
   toggleSelect: T.func.isRequired,
-  toggleSelectAll: T.func.isRequired,
-
-  // modals
-  showModal: T.func.isRequired
+  toggleSelectAll: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -175,38 +113,38 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createTheme: () => {
-      dispatch(actions.createTheme())
-    },
-
-    copyTheme: () => {
-      dispatch(actions.copyTheme())
-    },
-
     rebuildThemes: (themes) => {
-      dispatch(actions.rebuildThemes(themes))
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: transChoice('rebuild_themes', themes.length, {count: themes.length}, 'theme'),
+          question: trans('rebuild_themes_confirm', {
+            theme_list: themes.map(theme => theme.name).join(', ')
+          }, 'theme'),
+          handleConfirm: () => dispatch(actions.rebuildThemes(themes))
+        })
+      )
     },
 
     removeThemes: (themes) => {
-      dispatch(actions.removeThemes(themes))
-    },
-
-    // sorting
-    updateSort: (property) => {
-      dispatch(listActions.updateSort(property))
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: transChoice('remove_themes', themes.length, {count: themes.length}, 'theme'),
+          question: trans('remove_themes_confirm', {
+            theme_list: themes.map(theme => theme.name).join(', ')
+          }, 'theme'),
+          handleConfirm: () => dispatch(actions.removeThemes(themes))
+        })
+      )
     },
 
     // selection
     toggleSelect: (id) => dispatch(listActions.toggleSelect(id)),
     toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items)),
-
-    // modals
-    showModal(modalType, modalProps) {
-      dispatch(modalActions.showModal(modalType, modalProps))
-    }
   }
 }
 
 const ConnectedThemes = withRouter(connect(mapStateToProps, mapDispatchToProps)(Themes))
 
-export {ConnectedThemes as Themes}
+export {
+  ConnectedThemes as Themes
+}
