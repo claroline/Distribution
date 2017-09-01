@@ -10,6 +10,10 @@ export class PaperTabs extends Component {
   constructor(props) {
     super(props)
     this.handleSelect = this.handleSelect.bind(this)
+    this.defaultKey = 'first'
+    if (!props.showExpected && !props.showYours && props.showStats) {
+      this.defaultKey = 'third'
+    }
   }
 
   handleSelect(key) {
@@ -20,7 +24,7 @@ export class PaperTabs extends Component {
 
   render() {
     return (
-      <Tab.Container id={`${this.props.id}-paper`} defaultActiveKey="first">
+      <Tab.Container id={`${this.props.id}-paper`} defaultActiveKey={this.defaultKey}>
         <div>
           <Nav bsStyle="tabs">
             {this.props.showYours &&

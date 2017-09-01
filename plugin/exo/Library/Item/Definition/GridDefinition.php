@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\GridQuestion;
 use UJM\ExoBundle\Entity\Misc\Cell;
@@ -445,8 +446,19 @@ class GridDefinition extends AbstractDefinition
 
     public function getCsvTitles(AbstractItem $item)
     {
-        return array_map(function (CellChoice $choice) {
-            return 'choice-'.$choice->getUuid();
+        return array_map(function (Cell $choice) {
+            return 'grid-'.$choice->getUuid();
         }, $item->getCells()->toArray());
+    }
+
+    public function getCsvAnswers(AbstractItem $item, Answer $answer)
+    {/*
+        $data = json_decode($answer->getData())
+
+        $compressor = new ArrayCompressor()
+
+        return [$compressor->compress($answers)]*/
+
+        return ['grid'];
     }
 }
