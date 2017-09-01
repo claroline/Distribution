@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Entity\Theme;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
