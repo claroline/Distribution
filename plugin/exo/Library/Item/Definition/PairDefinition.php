@@ -256,6 +256,7 @@ class PairDefinition extends AbstractDefinition
     {
         $data = json_decode($answer->getData());
         $items = $item->getItems();
+        $answers = [];
 
         foreach ($data as $pair) {
             $answerPair = '[';
