@@ -14,7 +14,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 
 const Statistics = props =>
   <div>
-    <div clasName="panel panel-heading">
+    <div className="panel panel-heading">
       <a className="btn btn-primary" href={generateUrl('exercise_papers_export_json', {'exerciseId': props.quiz.id})}> {tex('json_export')} </a>
       {' '}
       <a className="btn btn-primary" href={generateUrl('exercise_papers_export_csv', {'exerciseId': props.quiz.id})}> {tex('csv_export')} </a>
