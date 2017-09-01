@@ -11,17 +11,21 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Psr\Log\LoggerInterface;
 
 /**
  * @DI\Service("claroline.manager.mask_manager")
  */
 class MaskManager
 {
+    use LoggableTrait;
+
     private static $defaultActions = ['open', 'copy', 'export', 'delete', 'edit', 'administrate'];
 
     private $om;
@@ -188,14 +192,16 @@ class MaskManager
     public function addDefaultPerms(ResourceType $type)
     {
         $createdPerms = [];
+        // Add only non-existent default actions
+        $defaultActions = array_diff(self::$defaultActions, $this->getMaskDecoderActionNamesForResourceType($type));
 
-        for ($i = 0, $size = count(self::$defaultActions); $i < $size; ++$i) {
+        foreach ($defaultActions as $i => $action) {
             $maskDecoder = new MaskDecoder();
             $maskDecoder->setValue(pow(2, $i));
-            $maskDecoder->setName(self::$defaultActions[$i]);
+            $maskDecoder->setName($action);
             $maskDecoder->setResourceType($type);
             $this->om->persist($maskDecoder);
-            $createdPerms[self::$defaultActions[$i]] = $maskDecoder;
+            $createdPerms[$action] = $maskDecoder;
         }
 
         $this->om->flush();
@@ -218,5 +224,39 @@ class MaskManager
     public function getDefaultActions()
     {
         return self::$defaultActions;
+    }
+
+    public function checkIntegrity()
+    {
+        $this->log('Checking resource mask decoders integrity...');
+        $ids = $this->maskRepo->findDuplicateMasksIds();
+        $duplicates = count($ids);
+        if ($duplicates > 0) {
+            $this->log("Removing {$duplicates} mask decoder duplicates...");
+            $this->maskRepo->removeMasksByIds($ids);
+        }
+    }
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    private function getMaskDecoderActionNamesForResourceType(ResourceType $type)
+    {
+        $decoders = $this->maskRepo->findBy(
+            ['resourceType' => $type]
+        );
+        $actionNames = [];
+        foreach ($decoders as $decoder) {
+            $actionNames[] = $decoder->getName();
+        }
+
+        return $actionNames;
     }
 }
