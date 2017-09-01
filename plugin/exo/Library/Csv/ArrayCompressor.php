@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Library\Csv;
 
 class ArrayCompressor
 {
-    public function __construct($bracket = '[]', $separator = '|')
+    public function __construct($bracket = '  ', $separator = '|')
     {
         $this->bracket = $bracket;
         $this->separator = $separator;
@@ -14,10 +14,12 @@ class ArrayCompressor
     {
         $string = $this->bracket[0].array_shift($data);
 
-        foreach ($el as $data) {
+        foreach ($data as $el) {
             $string .= $this->separator.$el;
         }
 
-        return $string.$this->bracket[1];
+        $string = $string.$this->bracket[1];
+
+        return $string;
     }
 }
