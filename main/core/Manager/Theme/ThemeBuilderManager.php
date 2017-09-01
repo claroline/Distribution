@@ -150,7 +150,7 @@ class ThemeBuilderManager
             $compileCmd .= ' --no-cache';
         }
 
-        exec($compileCmd, $out, $err);
+        exec($compileCmd, $out);
 
         return $out;
     }

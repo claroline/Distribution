@@ -44,7 +44,7 @@ describe('<ActivableSet/>', () => {
     const section = mount(
       React.createElement(ActivableSet, {
         id: 'ID',
-        label: 'LABEL',
+        label: 'LABEL'
       }, 'Bar')
     )
 

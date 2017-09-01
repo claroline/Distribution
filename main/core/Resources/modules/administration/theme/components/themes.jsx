@@ -16,9 +16,7 @@ import {select} from '#/main/core/administration/theme/selectors'
 import {
   PageContainer as Page,
   PageHeader,
-  PageContent,
-  PageActions,
-  PageAction,
+  PageContent
 } from '#/main/core/layout/page/index'
 
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
@@ -139,7 +137,7 @@ function mapDispatchToProps(dispatch) {
 
     // selection
     toggleSelect: (id) => dispatch(listActions.toggleSelect(id)),
-    toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items)),
+    toggleSelectAll: (items) => dispatch(listActions.toggleSelectAll(items))
   }
 }
 

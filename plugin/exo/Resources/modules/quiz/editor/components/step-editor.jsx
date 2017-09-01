@@ -346,6 +346,7 @@ ContentPanel.propTypes = {
   numbering: T.string,
   handlePanelClick: T.func.isRequired,
   handleItemDelete: T.func.isRequired,
+  handleItemChangeStep: T.func.isRequired,
   /*handleItemUpdate: T.func.isRequired,*/
   handleItemDuplicate: T.func.isRequired,
   handleItemDetailUpdate: T.func.isRequired,

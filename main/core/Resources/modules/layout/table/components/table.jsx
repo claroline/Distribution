@@ -1,7 +1,10 @@
 import React, {PropTypes as T} from 'react'
 import classes from 'classnames'
 
+import {t} from '#/main/core/translation'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
+
+// deprecated. use DataTable instead
 
 const TableCell = props =>
   <td className={classes(`text-${props.align}`, props.className)}>

@@ -12,9 +12,7 @@ class DuplicateItemModal extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      value: 1
-    }
+    this.state = {value: 1}
   }
 
   handleChange(value) {
@@ -33,16 +31,16 @@ class DuplicateItemModal extends Component {
       >
         <Modal.Body>
           <FormGroup
-            controlId={`item-duplicate-amount`}
+            controlId="item-duplicate-amount"
             label={tex('amount')}
           >
             <input
-              id={`item-${this.props.itemId}-duplicate`}
+              id="item-duplicate-amount"
               type="number"
               min={1}
-              defaultValue={1}
               autoFocus={true}
               className="form-control"
+              value={this.state.value}
               onChange={e => this.handleChange(parseInt(e.target.value))}
             />
           </FormGroup>
