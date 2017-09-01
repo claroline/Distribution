@@ -32,6 +32,7 @@ class Updater100030 extends Updater
     public function postUpdate()
     {
         $this->maskManager->setLogger($this->logger);
+        $this->roleManager->setLogger($this->logger);
         $this->maskManager->checkIntegrity();
         $this->roleManager->checkIntegrity();
     }
