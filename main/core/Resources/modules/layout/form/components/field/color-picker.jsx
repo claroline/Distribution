@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+
 import {TwitterPicker} from 'react-color'
 import Overlay from 'react-bootstrap/lib/Overlay'
 
-export class ColorPicker extends Component {
+class ColorPicker extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -83,4 +84,8 @@ ColorPicker.propTypes = {
   forFontColor: T.bool,
   className: T.string,
   autoOpen: T.bool
+}
+
+export {
+  ColorPicker
 }

@@ -5,6 +5,8 @@ import get from 'lodash/get'
 import {t, tex} from '#/main/core/translation'
 import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
+import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
+import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
@@ -15,29 +17,19 @@ import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.j
 
 const Metadata = props =>
   <div>
-    <FormGroup
+    <TextGroup
       controlId={`item-${props.item.id}-title`}
       label={t('title')}
-    >
-      <input
-        id={`item-${props.item.id}-title`}
-        type="text"
-        value={props.item.title || ''}
-        className="form-control"
-        onChange={e => props.onChange('title', e.target.value)}
-      />
-    </FormGroup>
+      value={props.item.title || ''}
+      onChange={text => props.onChange('title', text)}
+    />
 
-    <FormGroup
+    <HtmlGroup
       controlId={`item-${props.item.id}-description`}
       label={t('description')}
-    >
-      <Textarea
-        id={`item-${props.item.id}-description`}
-        content={props.item.description || ''}
-        onChange={text => props.onChange('description', text)}
-      />
-    </FormGroup>
+      content={props.item.description || ''}
+      onChange={text => props.onChange('description', text)}
+    />
 
     {props.item.rights.edit &&
       <CheckGroup
@@ -96,6 +88,7 @@ const Hint = props =>
         onChange={value => props.onChange(HINT_CHANGE, {id: props.id, value})}
       />
     </div>
+
     <input
       id={`hint-${props.id}-penalty`}
       title={tex('penalty')}
@@ -109,6 +102,7 @@ const Hint = props =>
         {id: props.id, penalty: e.target.value}
       )}
     />
+
     <TooltipButton
       id={`hint-${props.id}-delete`}
       title={t('delete')}
@@ -170,18 +164,14 @@ Hints.propTypes = {
 
 const ItemForm = props =>
   <form>
-    <FormGroup
+    <HtmlGroup
       controlId={`item-${props.item.id}-content`}
       label={tex('question')}
+      content={props.item.content}
+      onChange={content => props.onChange('content', content)}
       warnOnly={!props.validating}
       error={get(props.item, '_errors.content')}
-    >
-      <Textarea
-        id={`item-${props.item.id}-content`}
-        content={props.item.content}
-        onChange={content => props.onChange('content', content)}
-      />
-    </FormGroup>
+    />
 
     <ToggleableSet
       showText={tex('show_metadata_fields')}

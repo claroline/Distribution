@@ -11,11 +11,10 @@
 
 namespace Claroline\CoreBundle\Command;
 
+use Claroline\CoreBundle\Command\Theme\BuildCommand;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
-use JMS\DiExtraBundle\Annotation\Inject;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LogLevel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -32,43 +31,55 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * by composer (vendor/composer/installed.json and
  * app/config/previous-installed.json).
  *
- * @Service("claroline.command.update_command")
+ * @DI\Service("claroline.command.update_command")
  */
 class PlatformUpdateCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         parent::configure();
-        $this->setName('claroline:update')
+
+        $this
+            ->setName('claroline:update')
             ->setDescription(
                 'Updates, installs or uninstalls the platform packages brought by composer.'
-            );
-        $this->setDefinition(
-            [
+            )
+            ->setDefinition([
                 new InputArgument('from_version', InputArgument::OPTIONAL, 'from version'),
                 new InputArgument('to_version', InputArgument::OPTIONAL, 'to version'),
-            ]
-        );
-        $this->addOption(
-            'no_asset',
-            'a',
-            InputOption::VALUE_NONE,
-            'When set to true, assetic:dump and assets:install isn\'t execute'
-        );
-        $this->addOption(
-            'create_database',
-            'd',
-            InputOption::VALUE_NONE,
-            'When set to true, the create database is not executed'
-        );
-        $this->addOption(
-            'clear_cache',
-            'c',
-            InputOption::VALUE_NONE,
-            'When set to true, the cache is cleared at the end'
-        );
+            ])
+            ->addOption(
+                'no_asset',
+                'a',
+                InputOption::VALUE_NONE,
+                'When set to true, assetic:dump and assets:install isn\'t execute'
+            )
+            ->addOption(
+                'no_theme',
+                'nt',
+                InputOption::VALUE_NONE,
+                'When set to true, themes won\'t be rebuild'
+            )
+            ->addOption(
+                'create_database',
+                'd',
+                InputOption::VALUE_NONE,
+                'When set to true, the create database is not executed'
+            )
+            ->addOption(
+                'clear_cache',
+                'c',
+                InputOption::VALUE_NONE,
+                'When set to true, the cache is cleared at the end'
+            );
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(sprintf('<comment>%s - Updating the platform...</comment>', date('H:i:s')));
@@ -123,6 +134,13 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             $refresher->clearCache($this->getContainer()->getParameter('kernel.environment'));
         }
 
+        // todo execute themes
+        if (!$input->getOption('no_theme')) {
+            $themeBuilder = new BuildCommand();
+            $themeBuilder->setContainer($this->getContainer());
+            $themeBuilder->run(new ArrayInput([]), $output);
+        }
+
         MaintenanceHandler::disableMaintenance();
 
         $output->writeln(sprintf('<comment>%s - Platform updated.</comment>', date('H:i:s')));
@@ -131,8 +149,8 @@ class PlatformUpdateCommand extends ContainerAwareCommand
     /**
      * {@inheritdoc}
      *
-     * @InjectParams({
-     *     "container" = @Inject("service_container")
+     * @DI\InjectParams({
+     *     "container" = @DI\Inject("service_container")
      * })
      */
     public function setContainer(ContainerInterface $container = null)

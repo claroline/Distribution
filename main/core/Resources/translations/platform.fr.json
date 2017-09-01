@@ -1437,5 +1437,6 @@
     "remove_all_filter": "Retirer tous les filtres",
     "unlock_resource_explanation": "Cette ressource est protégée par mot de passe. Veuillez entrer ce dernier pour la débloquer.",
     "delete_all": "tout supprimer",
-    "ip_input_help": "Chaque partie de l'adresse doit être un nombre entre 0 et 255 ou *."
+    "ip_input_help": "Chaque partie de l'adresse doit être un nombre entre 0 et 255 ou *.",
+    "duplicate": "Dupliquer"
 }

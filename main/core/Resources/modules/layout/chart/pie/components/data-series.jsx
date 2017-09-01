@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 import {pie} from 'd3-shape'
 
-import Arc from './arc.jsx'
+import {Arc} from './arc.jsx'
 
-export default class DataSeries extends Component {
+class DataSeries extends Component {
   render() {
     const pieInstance = pie().sort(null)
     const arcData = pieInstance(this.props.data)
@@ -36,5 +36,6 @@ DataSeries.propTypes = {
   showValue: T.bool.isRequired
 }
 
-DataSeries.defaultProps = {
+export {
+  DataSeries
 }

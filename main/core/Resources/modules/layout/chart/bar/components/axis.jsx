@@ -6,11 +6,11 @@ import {
   AXIS_TYPE_Y,
   AXIS_TYPE_LABEL_X,
   AXIS_TYPE_LABEL_Y
-} from './enums'
+} from './../enums'
 
 const T = React.PropTypes
 
-export default class Axis extends Component {
+class Axis extends Component {
 
   componentDidUpdate() {
     this.renderAxis()
@@ -66,4 +66,8 @@ Axis.propTypes = {
     bottom: T.number.isRequired,
     left: T.number.isRequired
   }).isRequired
+}
+
+export {
+  Axis
 }

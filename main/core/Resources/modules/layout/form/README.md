@@ -39,6 +39,9 @@
   #### Checkbox
   `import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'`
 
+   #### ColorPicker
+  `import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'`
+
   #### Radios
   `import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'`
 

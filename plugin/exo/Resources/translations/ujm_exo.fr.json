@@ -13,7 +13,7 @@
     "active_filters": "{0} Il n'y a aucun filtre actif|{1} Il y a 1 filtre actif|]1,Inf[ Il y a %count% filtres actifs",
     "add": "Ajouter",
     "add_choice": "Ajouter un choix",
-    "add_content": "Ajouter du contenu",
+    "add_content": "Créer un nouveau contenu",
     "add_hint": "Ajouter un indice",
     "add_label": "Ajouter un label",
     "add_new_picture": "Ajouter une nouvelle image",
@@ -682,6 +682,6 @@
     "mandatory_answer": "Réponse requise",
     "make_optional": "Rendre optionnel",
     "mandatory_questions": "Réponse aux questions obligatoires",
-    "duplicate_question": "Dupliquer une question",
+    "duplicate_item": "Dupliquer un item",
     "amount": "Quantité"
 }

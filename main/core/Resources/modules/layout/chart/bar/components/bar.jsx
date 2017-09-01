@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 /**
  * Draws a rectangle to represent a Bar on a chart.
  */
-export default class Bar extends Component {
+class Bar extends Component {
   render() {
     return (
       <rect
@@ -33,4 +33,8 @@ Bar.defaultProps = {
   height: 0,
   offsetX: 0,
   offsetY: 0
+}
+
+export {
+  Bar
 }

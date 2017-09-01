@@ -1416,5 +1416,6 @@
     "remove_all_filter": "Remove all filters",
     "unlock_resource_explanation": "This resource is password protected. You must enter it to access the resource.",
     "delete_all": "delete all",
-    "ip_input_help": "Each address part must be a number between 0 and 255 or *."
+    "ip_input_help": "Each address part must be a number between 0 and 255 or *.",
+    "duplicate": "Duplicate"
 }

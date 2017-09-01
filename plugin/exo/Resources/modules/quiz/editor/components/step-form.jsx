@@ -26,8 +26,7 @@ StepForm.propTypes = {
   id: T.string.isRequired,
   title: T.string.isRequired,
   description: T.string.isRequired,
-  onChange: T.func.isRequired,
-  _errors: T.object
+  onChange: T.func.isRequired
 }
 
 export {

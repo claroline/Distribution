@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
-export default class Chart extends Component {
-  render() {
-    return (
-      <svg className="chart" width={this.props.width} height={this.props.height}>{this.props.children}</svg>
-    )
-  }
-}
+const Chart = props =>
+  <svg className="chart" width={props.width} height={props.height}>
+    {props.children}
+  </svg>
 
 Chart.propTypes = {
   width: T.number,
@@ -18,4 +15,8 @@ Chart.propTypes = {
 Chart.defaultProps = {
   width: 400,
   height: 400
+}
+
+export {
+  Chart
 }

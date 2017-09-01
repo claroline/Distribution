@@ -13,7 +13,7 @@
     "active_filters": "{0} There is no active filter|{1} There is 1 active filter|]1,Inf[ There are %count% active filters",
     "add": "Add",
     "add_choice": "Add a choice",
-    "add_content": "Add content",
+    "add_content": "Create new content",
     "add_hint": "Add a hint",
     "add_label": "Add a label",
     "add_new_picture": "Add a new picture",
@@ -682,6 +682,6 @@
     "mandatory_answer": "Mandatory answer",
     "make_optional": "Make optional",
     "mandatory_questions": "Mandatory answers to questions",
-    "duplicate_question": "Duplicate a question",
+    "duplicate_item": "Duplicate an item",
     "amount": "Quantity"
 }

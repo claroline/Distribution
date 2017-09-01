@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import Chart from './../base/chart.jsx'
-import DataSeries from './../pie/data-series.jsx'
+import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
+import {DataSeries} from '#/main/core/layout/chart/pie/components/data-series.jsx'
 
 /**
  * Draws a Circular gauge
  */
-export default class CircularGauge extends Component {
+class CircularGauge extends Component {
   render() {
     const radius = this.props.width / 2
 
@@ -67,4 +67,8 @@ CircularGauge.defaultProps = {
   width: 200,
   size: 30,
   showValue: true
+}
+
+export {
+  CircularGauge
 }

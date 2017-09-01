@@ -10,7 +10,7 @@ import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'
-import {ColorPicker} from './../../components/form/color-picker.jsx'
+import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'
 import {actions} from './editor'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {utils} from './utils/utils'

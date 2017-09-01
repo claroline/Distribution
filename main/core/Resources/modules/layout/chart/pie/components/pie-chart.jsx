@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import Chart from './../base/chart.jsx'
-import DataSeries from './data-series.jsx'
+import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
+import {DataSeries} from './data-series.jsx'
 
 /**
  * Draws a Bar chart
  */
-export default class PieChart extends Component {
+class PieChart extends Component {
   render() {
     return (
       <Chart
@@ -36,4 +36,8 @@ PieChart.propTypes = {
 PieChart.defaultProps = {
   width: 550,
   showValue: true
+}
+
+export {
+  PieChart
 }

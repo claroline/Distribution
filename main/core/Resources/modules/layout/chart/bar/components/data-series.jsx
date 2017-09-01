@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
-import Bar from './bar.jsx'
+
+import {Bar} from './bar.jsx'
 
 /**
  * Represents data on a Bar chart.
  */
-export default class DataSeries extends Component {
-
+class DataSeries extends Component {
   render() {
     const hasNegativeValues = Object.keys(this.props.data).some(key => parseFloat(this.props.data[key].yData) < 0)
 
@@ -43,4 +43,8 @@ DataSeries.propTypes = {
 DataSeries.defaultProps = {
   color: '#337ab7', // Default bootstrap primary color
   altColor: 'brown'
+}
+
+export {
+  DataSeries
 }

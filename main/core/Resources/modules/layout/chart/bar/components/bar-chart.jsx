@@ -4,15 +4,15 @@ import {max, min} from 'd3-array'
 import {scaleLinear, scaleBand} from 'd3-scale'
 import {axisLeft, axisBottom} from 'd3-axis'
 
-import Chart from './../base/chart.jsx'
-import DataSeries from './data-series.jsx'
-import Axis from './axis.jsx'
+import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
+import {DataSeries} from './data-series.jsx'
+import {Axis} from './axis.jsx'
 import {
   AXIS_TYPE_X,
   AXIS_TYPE_Y,
   AXIS_TYPE_LABEL_X,
   AXIS_TYPE_LABEL_Y
-} from './enums'
+} from './../enums'
 
 /**
  * Draws a Bar chart
@@ -23,7 +23,7 @@ import {
  *   ...
  * }
  */
-export default class BarChart extends Component {
+class BarChart extends Component {
   render() {
     const yValues = Object.keys(this.props.data).map(key => { return this.props.data[key].yData })
     const xValues = Object.keys(this.props.data).map(key => { return this.props.data[key].xData })
@@ -122,4 +122,8 @@ BarChart.defaultProps = {
   }),
   ticksAsYValues: false,
   minMaxAsYDomain: false
+}
+
+export {
+  BarChart
 }
