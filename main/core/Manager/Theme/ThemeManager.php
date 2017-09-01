@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\CoreBundle\Manager\Theme;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -53,36 +53,6 @@ class ThemeManager
         $this->om = $om;
         $this->config = $config;
         $this->themeDir = $kernelDir.'/../web/themes';
-    }
-
-    /**
-     * Lists all themes installed in the current platform.
-     *
-     * @return array
-     */
-    /**
-     * Creates a new theme.
-     *
-     * @param array $data
-     *
-     * @return Theme
-     */
-      public function create(array $data)
-      {
-        /*$theme = new Theme();
-        $theme->setName($name);
-        $theme->setExtendingDefault($extendDefault);
-        $themeDir = "{$this->themeDir}/{$theme->getNormalizedName()}";
-
-        $fs = new Filesystem();
-        $fs->mkdir($themeDir);
-
-        $file->move($themeDir, 'bootstrap.css');
-
-        $this->om->persist($theme);
-        $this->om->flush();*/
-
-        return $this->update(new Theme(), $data);
     }
 
     /**
@@ -213,18 +183,8 @@ class ThemeManager
     }
 
     /**
-     * Returns the default platform theme
-     * (for now, the first stock theme defined).
+     * Lists all themes installed in the current platform.
      *
-     * @return Theme
-     */
-    public function getDefaultTheme()
-    {
-        return $this->om->getRepository('ClarolineCoreBundle:Theme\Theme')
-            ->findOneBy(['default' => true]);
-    }
-
-    /**
      * @param bool $onlyEnabled
      *
      * @return Theme[]
@@ -234,6 +194,17 @@ class ThemeManager
         return $this->om
             ->getRepository('ClarolineCoreBundle:Theme\Theme')
             ->findBy($onlyEnabled ? ['enabled' => true] : []);
+    }
+
+    /**
+     * Returns the default platform theme.
+     *
+     * @return Theme
+     */
+    public function getDefaultTheme()
+    {
+        return $this->om->getRepository('ClarolineCoreBundle:Theme\Theme')
+            ->findOneBy(['default' => true]);
     }
 
     /**

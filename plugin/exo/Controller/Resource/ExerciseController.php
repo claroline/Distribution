@@ -58,7 +58,7 @@ class ExerciseController extends Controller
 
         return [
             '_resource' => $exercise,
-            'exercise'  => $exerciseData,
+            'exercise' => $exerciseData,
         ];
     }
 

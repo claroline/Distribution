@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Controller\API;
 
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Theme\Theme;
-use Claroline\CoreBundle\Manager\ThemeManager;
+use Claroline\CoreBundle\Manager\Theme\ThemeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +39,7 @@ class ThemeController
      * })
      *
      * @param SerializerProvider $serializer
-     * @param ThemeManager $manager
+     * @param ThemeManager       $manager
      */
     public function __construct(
         SerializerProvider $serializer,
@@ -47,27 +47,6 @@ class ThemeController
     {
         $this->serializer = $serializer;
         $this->manager = $manager;
-    }
-
-    /**
-     * Creates a new theme.
-     *
-     * @EXT\Route("", name="claro_theme_create")
-     * @EXT\Method("POST")
-     *
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function createAction(Request $request)
-    {
-        try {
-            $created = $this->manager->create(json_decode($request->getContent(), true));
-
-            return new JsonResponse($created, 201);
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
     }
 
     /**
@@ -111,13 +90,5 @@ class ThemeController
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
-    }
-
-    public function importAction()
-    {
-    }
-
-    public function exportAction(Theme $theme)
-    {
     }
 }

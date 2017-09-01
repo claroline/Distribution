@@ -40,7 +40,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ResourceVoter implements VoterInterface
 {
     private $em;
-    /** @var ResourceRightsRepository  */
+    /** @var ResourceRightsRepository */
     private $repository;
     private $translator;
     private $specialActions;
@@ -65,14 +65,14 @@ class ResourceVoter implements VoterInterface
      *     "session"          = @DI\Inject("session")
      * })
      *
-     * @param EntityManager $em
+     * @param EntityManager       $em
      * @param TranslatorInterface $translator
-     * @param Utilities $ut
-     * @param MaskManager $maskManager
-     * @param ResourceManager $resourceManager
-     * @param WorkspaceManager $workspaceManager
-     * @param RightsManager $rightsManager
-     * @param SessionInterface $session
+     * @param Utilities           $ut
+     * @param MaskManager         $maskManager
+     * @param ResourceManager     $resourceManager
+     * @param WorkspaceManager    $workspaceManager
+     * @param RightsManager       $rightsManager
+     * @param SessionInterface    $session
      */
     public function __construct(
         EntityManager $em,

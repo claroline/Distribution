@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\CoreBundle\Manager\Theme;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -36,7 +36,7 @@ class ThemeBuilderManager
      *
      * @var string
      */
-    const CUSTOM_THEME_PATH    = 'themes-src';
+    const CUSTOM_THEME_PATH = 'themes-src';
 
     /** @var KernelInterface */
     private $kernel;
@@ -72,7 +72,7 @@ class ThemeBuilderManager
     {
         $this->kernel = $kernel;
         $this->filesDir = $filesDir;
-        $this->buildDir = join(DIRECTORY_SEPARATOR, [$kernelDir, '..', 'web', 'themes']);
+        $this->buildDir = implode(DIRECTORY_SEPARATOR, [$kernelDir, '..', 'web', 'themes']);
     }
 
     /**
@@ -109,13 +109,13 @@ class ThemeBuilderManager
             // load bundle instance from kernel if it's enabled
             try {
                 $bundle = $this->kernel->getBundle($plugin->getSfName());
-                $themeSrc = join(DIRECTORY_SEPARATOR, [$bundle->getPath(), static::INSTALLED_THEME_PATH]);
+                $themeSrc = implode(DIRECTORY_SEPARATOR, [$bundle->getPath(), static::INSTALLED_THEME_PATH]);
             } catch (\InvalidArgumentException $e) {
                 // the bundle is not enabled, just do nothing
             }
         } else {
             // custom themes are in the files directory of the platform
-            $themeSrc = join(DIRECTORY_SEPARATOR, [$this->filesDir, static::CUSTOM_THEME_PATH]);
+            $themeSrc = implode(DIRECTORY_SEPARATOR, [$this->filesDir, static::CUSTOM_THEME_PATH]);
         }
 
         if (!empty($themeSrc)) {

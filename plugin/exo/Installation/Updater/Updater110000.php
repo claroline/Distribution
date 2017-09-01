@@ -32,7 +32,6 @@ class Updater110000 extends Updater
             ->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceType')
             ->findOneBy(['name' => 'ujm_exercise']);
 
-
         $this->log('Renaming mask decoder `VIEW_DOCIMOLOGY` to `view_docimology`...');
         $maskManager->renameMask($quizType, 'VIEW_DOCIMOLOGY', 'view_docimology');
 

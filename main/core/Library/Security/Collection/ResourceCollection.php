@@ -116,7 +116,7 @@ class ResourceCollection
 
     /**
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function addAttribute($key, $value)
     {
