@@ -1182,6 +1182,7 @@ class RoleManager
                 ++$i;
 
                 if ($i % 300 === 0) {
+                    $this->log('Flushing, this may be very long for large databases');
                     $this->om->forceFlush();
                 }
             }
