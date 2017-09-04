@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-
+import has from 'lodash/has'
 import {tex} from '#/main/core/translation'
 import {Feedback} from './../components/feedback-btn.jsx'
 import {SolutionScore} from './../components/score.jsx'
@@ -624,7 +624,7 @@ class GridPaper extends Component {
                                     <div>{answer.text}</div>
 
                                     <AnswerStats stats={{
-                                      value: this.props.stats.cells[cell.id] && this.props.stats.cells[cell.id][key] ?
+                                      value: has(this.props.stats, ['cells', cell.id, key]) ?
                                         this.props.stats.cells[cell.id][key] :
                                         0,
                                       total: this.props.stats.total
@@ -643,7 +643,7 @@ class GridPaper extends Component {
                                     <div>{answer.text}</div>
 
                                     <AnswerStats stats={{
-                                      value: this.props.stats.cells[cell.id] && this.props.stats.cells[cell.id][key] ?
+                                      value: has(this.props.stats, ['cells', cell.id, key]) ?
                                         this.props.stats.cells[cell.id][key] :
                                         0,
                                       total: this.props.stats.total
@@ -651,7 +651,7 @@ class GridPaper extends Component {
                                   </div>
                                 )
                               })}
-                              {this.props.stats.cells[cell.id] && this.props.stats.cells[cell.id]['_others'] &&
+                              {has(this.props.stats, ['cells', cell.id, '_others']) &&
                                 <div
                                   key={`others-answer-${cell.id}-${i}`}
                                   className='answer-item stats-answer'
@@ -664,7 +664,7 @@ class GridPaper extends Component {
                                   }} />
                                 </div>
                               }
-                              {this.props.stats.cells[cell.id] && this.props.stats.cells[cell.id]['_unanswered'] &&
+                              {has(this.props.stats, ['cells', cell.id, '_unanswered']) &&
                                 <div
                                   key={`unanswered-answer-${cell.id}-${i}`}
                                   className='answer-item unanswered-item'

@@ -1,7 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-
+import has from 'lodash/has'
 import {tex} from '#/main/core/translation'
 import {Feedback} from '../components/feedback-btn.jsx'
 import {SolutionScore} from '../components/score.jsx'
@@ -201,7 +201,7 @@ const OrderingPaper = props => {
                   )}
                   <div className="item stats-item stats-success">
                     <AnswerStats stats={{
-                      value: props.stats.orders[utils.getKey(props.item.solutions.filter(solution => solution.score > 0))] ?
+                      value: has(props.stats, ['orders', utils.getKey(props.item.solutions.filter(solution => solution.score > 0))]) ?
                         props.stats.orders[utils.getKey(props.item.solutions.filter(solution => solution.score > 0))].count :
                         0,
                       total: props.stats.total
@@ -220,7 +220,7 @@ const OrderingPaper = props => {
                   </div>
                 )
               }
-              {props.item.mode === MODE_INSIDE &&
+              {props.item.mode === MODE_INSIDE && props.stats.orders &&
                 Object.values(props.stats.orders).map((o) => {
                   const data = o.data.slice()
                   const key = utils.getKey(data)
@@ -328,7 +328,7 @@ const OrderingPaper = props => {
               const data = o.data.slice()
               const key = utils.getKey(data)
 
-              if (props.stats.orders[key] && !utils.isInSolutions(key, props.item.solutions)) {
+              if (has(props.stats.orders, [key]) && !utils.isInSolutions(key, props.item.solutions)) {
                 return (
                   <div key={`stats-unexpected-${key}`} className="row">
                     <div className="col-md-12 answer-zone horizontal">
