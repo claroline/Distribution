@@ -11,6 +11,7 @@ use UJM\ExoBundle\Entity\Misc\CellChoice;
 use UJM\ExoBundle\Library\Attempt\CorrectedAnswer;
 use UJM\ExoBundle\Library\Attempt\GenericPenalty;
 use UJM\ExoBundle\Library\Attempt\GenericScore;
+use UJM\ExoBundle\Library\Csv\ArrayCompressor;
 use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Serializer\Item\Type\GridQuestionSerializer;
 use UJM\ExoBundle\Transfer\Parser\ContentParserInterface;
@@ -452,13 +453,13 @@ class GridDefinition extends AbstractDefinition
     }
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
-    {/*
-        $data = json_decode($answer->getData())
+    {
+        $data = json_decode($answer->getData());
+        $values = array_map(function ($el) {
+            return "[grid-{$el->cellId}: $el->text]";
+        }, $data);
+        $compressor = new ArrayCompressor();
 
-        $compressor = new ArrayCompressor()
-
-        return [$compressor->compress($answers)]*/
-
-        return ['grid'];
+        return [$compressor->compress($values)];
     }
 }
