@@ -13,6 +13,7 @@ namespace Inwicast\ClarolinePluginBundle;
 
 use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
+use Inwicast\ClarolinePluginBundle\Installation\AdditionalInstaller;
 
 class InwicastClarolinePluginBundle extends DistributionPluginBundle
 {
@@ -20,6 +21,11 @@ class InwicastClarolinePluginBundle extends DistributionPluginBundle
     {
         $config = new ConfigurationBuilder();
 
-        return $config->addRoutingResource(__DIR__ . '/Resources/config/routing.yml');
+        return $config->addRoutingResource(__DIR__ . '/Resources/config/routing.yml', null, 'inwicast_claroline_plugin');
+    }
+
+    public function getAdditionalInstaller()
+    {
+        return new AdditionalInstaller();
     }
 }
