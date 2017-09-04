@@ -32,6 +32,7 @@ function reduce(item = {}, action = {}) {
       return decorate(Object.assign({}, item, {
         image: blankImage(),
         pointers: 0,
+        pointerMode: 'pointer',
         solutions: []
       }))
     case SELECT_MODE:
