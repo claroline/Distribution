@@ -168,9 +168,11 @@ export class MatchPaper extends Component
       <Tab.Container id={`match-${this.props.item.id}-paper`} defaultActiveKey="first">
         <div className="match-paper">
           <Nav bsStyle="tabs">
-            <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
-                <span className="fa fa-fw fa-user"></span> {tex('your_answer')}
-            </NavItem>
+            {this.props.showYours &&
+              <NavItem eventKey="first" onSelect={() => this.handleSelect('first')}>
+                  <span className="fa fa-fw fa-user"></span> {tex('your_answer')}
+              </NavItem>
+            }
             {this.props.showExpected &&
               <NavItem eventKey="second" onSelect={() => this.handleSelect('second')}>
                 <span className="fa fa-fw fa-check"></span> {tex('expected_answer')}
