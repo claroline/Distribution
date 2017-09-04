@@ -23,7 +23,7 @@ import {
   MoreAction
 } from '#/main/core/layout/page/index'
 
-import {HelpBlock}    from '#/main/core/layout/form/components/help-block.jsx'
+/*import {HelpBlock}    from '#/main/core/layout/form/components/help-block.jsx'*/
 //import {FormSection, FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormGroup}    from '#/main/core/layout/form/components/group/form-group.jsx'
 import {CheckGroup}   from '#/main/core/layout/form/components/group/check-group.jsx'
@@ -53,7 +53,7 @@ const GeneralSection = props =>
         controlId="theme-name"
         label={trans('theme_name', {}, 'theme')}
         value={props.theme.name}
-        onChange={value => true}
+        onChange={() => true}
       />
 
       <TextGroup
@@ -61,7 +61,7 @@ const GeneralSection = props =>
         label={trans('theme_description', {}, 'theme')}
         value={props.theme.meta.description}
         long={true}
-        onChange={value => true}
+        onChange={() => true}
       />
 
       <ToggleableSet
@@ -72,7 +72,7 @@ const GeneralSection = props =>
           checkId="theme-enabled"
           label={trans('theme_enabled', {}, 'theme')}
           checked={props.theme.meta.enabled}
-          onChange={active => true}
+          onChange={() => true}
           help={trans('theme_enabled_help', {}, 'theme')}
         />
 
@@ -80,7 +80,7 @@ const GeneralSection = props =>
           checkId="theme-extend-default"
           label={trans('theme_extend_default', {}, 'theme')}
           checked={props.theme.parameters.extendDefault}
-          onChange={active => true}
+          onChange={() => true}
           help={trans('theme_extend_default_help', {}, 'theme')}
         />
       </ToggleableSet>
@@ -94,7 +94,7 @@ GeneralSection.propTypes = {
     meta: T.shape({
       plugin: T.string,
       description: T.string,
-      enabled: T.bool,
+      enabled: T.bool
     }).isRequired,
     parameters: T.shape({
       extendDefault: T.bool
@@ -320,7 +320,7 @@ Theme.propTypes = {
     current: T.bool.isRequired,
     meta: T.shape({
       description: T.string,
-      enabled: T.bool,
+      enabled: T.bool
     }).isRequired,
     parameters: T.shape({
       extendDefault: T.bool
