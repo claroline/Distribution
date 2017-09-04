@@ -1,4 +1,5 @@
-import React, {PropTypes as T, Component} from 'react'
+import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import 'react-datepicker/dist/react-datepicker.css'

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {PropTypes as T} from 'prop-types'
 import {select} from 'd3-selection'
 
 import {
@@ -7,8 +8,6 @@ import {
   AXIS_TYPE_LABEL_X,
   AXIS_TYPE_LABEL_Y
 } from './../enums'
-
-const T = React.PropTypes
 
 class Axis extends Component {
 
