@@ -298,15 +298,77 @@ class SelectionDefinition extends AbstractDefinition
 
     public function getCsvTitles(AbstractItem $question)
     {
-        return array_map(function (Selection $selection) {
-            'selection-'.$selection->getUuid();
-        }, $question->getSelections()->toArray());
+        return ['selection-'.$question->getQuestion()->getUuid()];
     }
 
     public function getCsvAnswers(AbstractItem $item, Answer $answer)
     {
         $data = json_decode($answer->getData());
+        $strcsv = '';
+        $answers = $this->correctAnswer($item, $data);
 
-        return [$data];
+        switch ($item->getMode()) {
+          case $item::MODE_FIND:
+
+            $expected = $answers->getExpected();
+
+            $strcsv = "[tries: {$data->tries}, answers: [";
+            $i = 0;
+
+            foreach ($expected as $expectedAnswer) {
+                if ($i !== 0) {
+                    $strcsv .= ',';
+                }
+                $strcsv .= $this->getSelectedText($item, $expectedAnswer);
+                ++$i;
+            }
+
+            $strcsv .= ']]';
+
+            break;
+          case $item::MODE_SELECT:
+            $expected = $answers->getExpected();
+
+            $strcsv = '[';
+            $i = 0;
+
+            foreach ($expected as $expectedAnswer) {
+                if ($i !== 0) {
+                    $strcsv .= ',';
+                }
+                $strcsv .= $this->getSelectedText($item, $expectedAnswer);
+                ++$i;
+            }
+
+            $strcsv .= ']';
+
+            break;
+          case $item::MODE_HIGHLIGHT:
+            $expected = $answers->getExpected();
+
+            $strcsv = '[';
+            $i = 0;
+
+            foreach ($expected as $expectedAnswer) {
+                if ($i !== 0) {
+                    $strcsv .= ',';
+                }
+                $strcsv .= '{';
+                $strcsv .= $this->getSelectedText($item, $expectedAnswer->getSelection()).': '.$expectedAnswer->getColor()->getColorCode();
+                ++$i;
+                $strcsv .= '}';
+            }
+
+            $strcsv .= ']';
+        }
+
+        return [$strcsv];
+    }
+
+    public function getSelectedText(AbstractItem $item, Selection $selection)
+    {
+        $text = $item->getText();
+
+        return substr($text, $selection->getBegin(), $selection->getEnd() - $selection->getBegin());
     }
 }

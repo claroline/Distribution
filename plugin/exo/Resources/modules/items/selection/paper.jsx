@@ -24,7 +24,7 @@ export const SelectionPaper = (props) => {
               </span>
               {'\u00a0'}
               <span className="btn btn-primary" style={{ cursor: 'default'}}>
-                {tex('try_used')} <span className="badge"> {props.answer.tries} </span>
+                {tex('try_used')} <span className="badge"> {props.answer ? props.answer.tries: 0} </span>
               </span>
             </div>
           }
@@ -41,6 +41,9 @@ export const SelectionPaper = (props) => {
           text={props.item.text}
           selections={getReactAnswerSelections(props.item, props.answer, true, true)}
         />
+      }
+      stats={
+        <div>No implementation</div>
       }
     />
   )
