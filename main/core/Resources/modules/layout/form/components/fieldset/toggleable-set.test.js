@@ -54,16 +54,14 @@ describe('<ToggleableSet/>', () => {
 
     showLink.simulate('click')
 
-    /*section.find('.other-class').exists()*/
-
     ensure.equal(section.find('.toggleable-set-group').hasClass('in'), true)
 
     // hide
-    /*const hideLink = section.find('.toggleable-set-toggle').at(0)
+    const hideLink = section.find('.toggleable-set-toggle').at(0)
     ensure.equal(hideLink.name(), 'a')
     ensure.equal(hideLink.text(), 'Hide section')
 
     hideLink.simulate('click')
-    ensure.equal(section.find('.toggleable-set-group').hasClass('in'), false)*/
+    ensure.equal(section.find('.toggleable-set-group').hasClass('in'), false)
   })
 })
