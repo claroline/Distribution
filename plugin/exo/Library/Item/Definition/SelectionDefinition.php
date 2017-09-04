@@ -3,6 +3,7 @@
 namespace UJM\ExoBundle\Library\Item\Definition;
 
 use JMS\DiExtraBundle\Annotation as DI;
+use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
 use UJM\ExoBundle\Entity\ItemType\SelectionQuestion;
 use UJM\ExoBundle\Entity\Misc\Color;
@@ -300,5 +301,12 @@ class SelectionDefinition extends AbstractDefinition
         return array_map(function (Selection $selection) {
             'selection-'.$selection->getUuid();
         }, $question->getSelections()->toArray());
+    }
+
+    public function getCsvAnswers(AbstractItem $item, Answer $answer)
+    {
+        $data = json_decode($answer->getData());
+
+        return [$data];
     }
 }

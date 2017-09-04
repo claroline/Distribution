@@ -83,7 +83,6 @@ export const GraphicPaper = props => {
           <AnswerStatsTable title={tex('stats')} areas={expectedAreas} stats={props.stats}/>
         </div>
       }
-      {...props}
     />
   )
 }
