@@ -47,16 +47,23 @@ describe('<ToggleableSet/>', () => {
 
     ensure.propTypesOk()
 
-    const showLink = section.childAt(0)
+    // show
+    const showLink = section.find('.toggleable-set-toggle').at(0)
     ensure.equal(showLink.name(), 'a')
     ensure.equal(showLink.text(), 'Show section')
 
-    // show
     showLink.simulate('click')
-    ensure.equal(section.find('.collapse').hasClass('in'), true)
+
+    /*section.find('.other-class').exists()*/
+
+    ensure.equal(section.find('.toggleable-set-group').hasClass('in'), true)
 
     // hide
-    showLink.simulate('click')
-    ensure.equal(section.find('.collapse').hasClass('in'), false)
+    /*const hideLink = section.find('.toggleable-set-toggle').at(0)
+    ensure.equal(hideLink.name(), 'a')
+    ensure.equal(hideLink.text(), 'Hide section')
+
+    hideLink.simulate('click')
+    ensure.equal(section.find('.toggleable-set-group').hasClass('in'), false)*/
   })
 })

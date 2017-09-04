@@ -24,16 +24,16 @@ import {
 } from '#/main/core/layout/page/index'
 
 import {HelpBlock}    from '#/main/core/layout/form/components/help-block.jsx'
-import {FormSection, FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
+//import {FormSection, FormSections} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormGroup}    from '#/main/core/layout/form/components/group/form-group.jsx'
 import {CheckGroup}   from '#/main/core/layout/form/components/group/check-group.jsx'
 import {TextGroup}    from '#/main/core/layout/form/components/group/text-group.jsx'
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
 
-import {Color}        from './fields/color.jsx'
+/*import {Color}        from './fields/color.jsx'
 import {FontSize}     from './fields/font-size.jsx'
 import {FontSelector} from './fields/font-selector.jsx'
-import {Size}         from './fields/size.jsx'
+import {Size}         from './fields/size.jsx'*/
 
 const GeneralSection = props =>
   <div className="panel panel-default">
@@ -102,7 +102,7 @@ GeneralSection.propTypes = {
   }).isRequired
 }
 
-const TypoSection = props =>
+/*const TypoSection = props =>
   <FormSection
     {...props}
     id="theme-typo"
@@ -254,7 +254,7 @@ const ExtraSection = props =>
 
 ExtraSection.propTypes = {
 
-}
+}*/
 
 const Theme = props =>
   <Page id="theme-form">
@@ -305,12 +305,12 @@ const Theme = props =>
     <PageContent>
       <GeneralSection theme={props.theme} />
 
-      <FormSections>
+      {/*<FormSections>
         <ColorsSection />
         <TypoSection />
         <SizingSection />
         <ExtraSection />
-      </FormSections>
+      </FormSections>*/}
     </PageContent>
   </Page>
 

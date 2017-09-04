@@ -31,7 +31,7 @@ class ToggleableSet extends Component {
         }
 
         <Collapse in={!this.state.hidden}>
-          <div>
+          <div className="toggleable-set-group">
             {this.props.children}
 
             <a role="button" className="toggleable-set-toggle" onClick={this.toggle}>
