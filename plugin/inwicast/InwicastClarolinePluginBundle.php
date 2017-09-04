@@ -11,10 +11,10 @@
 
 namespace Inwicast\ClarolinePluginBundle;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
-class InwicastClarolinePluginBundle extends PluginBundle
+class InwicastClarolinePluginBundle extends DistributionPluginBundle
 {
     public function getConfiguration($environment)
     {
