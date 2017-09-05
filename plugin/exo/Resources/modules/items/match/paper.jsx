@@ -132,7 +132,10 @@ export class MatchPaper extends Component
   }
 
   handleWindowResize() {
-    this.jsPlumbInstance.repaintEverything()
+    //this.jsPlumbInstance.repaintEverything()
+    //this fixes an issue I don't know where it come from.
+    //Feel free to uncomment it to see the paper no displaying the scores :p
+    utils.getJsPlumbInstance(false).repaintEverything()
   }
 
   // switch tab handler
