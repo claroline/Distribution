@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Theme.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Theme\ThemeRepository")
  * @ORM\Table(name="claro_theme")
  */
 class Theme

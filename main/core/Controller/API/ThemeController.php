@@ -13,11 +13,13 @@ namespace Claroline\CoreBundle\Controller\API;
 
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Theme\Theme;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\Theme\ThemeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @EXT\Route("/themes", name="claro_theme", options={"expose" = true})
@@ -57,11 +59,14 @@ class ThemeController
      *
      * @param Theme   $theme
      * @param Request $request
+     * @param User    $user
      *
      * @return JsonResponse
      */
-    public function updateAction(Theme $theme, Request $request)
+    public function updateAction(Theme $theme, Request $request, User $user)
     {
+        $this->assertCanEdit($theme, $user);
+
         try {
             $updated = $this->manager->update($theme, json_decode($request->getContent(), true));
 
@@ -74,21 +79,30 @@ class ThemeController
     /**
      * Deletes a theme.
      *
-     * @EXT\Route("/{uuid}", name="claro_theme_delete")
+     * @EXT\Route("/", name="claro_themes_delete")
+     * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Method("DELETE")
      *
-     * @param Theme $theme
+     * @param Request $request
+     * @param User    $user
      *
      * @return JsonResponse
      */
-    public function deleteAction(Theme $theme)
+    public function deleteBulkAction(Request $request, User $user)
     {
         try {
-            $this->manager->delete($theme);
+            $this->manager->deleteBulk(json_decode($request->getContent()), $user);
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    private function assertCanEdit(Theme $theme, User $user)
+    {
+        if (!$this->manager->canEdit($theme, $user)) {
+            throw new AccessDeniedException('Theme can not be edited or delete.');
         }
     }
 }

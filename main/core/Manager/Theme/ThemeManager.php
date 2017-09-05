@@ -12,11 +12,14 @@
 namespace Claroline\CoreBundle\Manager\Theme;
 
 use Claroline\CoreBundle\Entity\Theme\Theme;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\Theme\ThemeRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.manager.theme_manager")
@@ -25,6 +28,10 @@ class ThemeManager
 {
     /** @var ObjectManager */
     private $om;
+    /** @var ThemeRepository */
+    private $repository;
+    /** @var AuthorizationCheckerInterface  */
+    private $authorization;
     /** @var PlatformConfigurationHandler */
     private $config;
     /** @var string */
@@ -36,21 +43,26 @@ class ThemeManager
      * ThemeManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"        = @DI\Inject("claroline.persistence.object_manager"),
-     *     "config"    = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "kernelDir" = @DI\Inject("%kernel.root_dir%")
+     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "config"        = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "kernelDir"     = @DI\Inject("%kernel.root_dir%")
      * })
      *
-     * @param ObjectManager                $om
-     * @param PlatformConfigurationHandler $config
-     * @param string                       $kernelDir
+     * @param ObjectManager                 $om
+     * @param AuthorizationCheckerInterface $authorization
+     * @param PlatformConfigurationHandler  $config
+     * @param string                        $kernelDir
      */
     public function __construct(
         ObjectManager $om,
+        AuthorizationCheckerInterface $authorization,
         PlatformConfigurationHandler $config,
         $kernelDir
     ) {
         $this->om = $om;
+        $this->repository = $this->om->getRepository('ClarolineCoreBundle:Theme\Theme');
+        $this->authorization = $authorization;
         $this->config = $config;
         $this->themeDir = $kernelDir.'/../web/themes';
     }
@@ -85,6 +97,13 @@ class ThemeManager
     public function validate(array $data)
     {
         $errors = [];
+
+        if (empty($data['name'])) {
+            $errors[] = [
+                'path' => '/name',
+                'message' => 'name can not be empty.',
+            ];
+        }
 
         return $errors;
     }
@@ -130,16 +149,37 @@ class ThemeManager
     }
 
     /**
+     * @param Theme $theme
+     * @param User $user
+     *
+     * @return bool
+     */
+    public function canEdit(Theme $theme, User $user)
+    {
+        return !(
+            !empty($theme->getPlugin()) // plugin themes
+            || (empty($theme->getUser()) && !$this->authorization->isGranted('ROLE_ADMIN')) // custom platform themes
+            || (!empty($theme->getUser() && $user !== $theme->getUser())) // users themes
+        );
+    }
+
+    /**
      * Deletes a theme, including its css directory.
      *
      * @param Theme $theme
+     * @param User  $user
+     * @param bool  $skipErrors
      *
      * @throws \Exception if the theme is not a custom theme
      */
-    public function delete(Theme $theme)
+    public function delete(Theme $theme, User $user, $skipErrors = false)
     {
-        if (!empty($theme->getPlugin())) {
-            throw new \Exception("Stock and plugins theme '{$theme->getName()}' cannot be deleted");
+        if (!$this->canEdit($theme, $user)) {
+            if (!$skipErrors) {
+                throw new \Exception('You can not delete this theme.');
+            } else {
+                return;
+            }
         }
 
         $this->om->remove($theme);
@@ -148,6 +188,24 @@ class ThemeManager
         // todo : to remove and delete src-files instead
         $fs = new Filesystem();
         $fs->remove("{$this->themeDir}/{$theme->getNormalizedName()}");
+    }
+
+    /**
+     * Deletes a Item.
+     * It's only possible if the Item is not used in an Exercise.
+     *
+     * @param array $themes - the uuids of themes to delete
+     * @param User  $user
+     */
+    public function deleteBulk(array $themes, User $user)
+    {
+        // Reload the list of questions to delete
+        $toDelete = $this->repository->findByUuids($themes);
+        foreach ($toDelete as $theme) {
+            $this->delete($theme, $user, true);
+        }
+
+        $this->om->flush();
     }
 
     /**
@@ -191,9 +249,7 @@ class ThemeManager
      */
     public function all($onlyEnabled = false)
     {
-        return $this->om
-            ->getRepository('ClarolineCoreBundle:Theme\Theme')
-            ->findBy($onlyEnabled ? ['enabled' => true] : []);
+        return $this->repository->findBy($onlyEnabled ? ['enabled' => true] : []);
     }
 
     /**
@@ -203,8 +259,7 @@ class ThemeManager
      */
     public function getDefaultTheme()
     {
-        return $this->om->getRepository('ClarolineCoreBundle:Theme\Theme')
-            ->findOneBy(['default' => true]);
+        return $this->repository->findOneBy(['default' => true]);
     }
 
     /**
@@ -216,11 +271,7 @@ class ThemeManager
      */
     public function getThemeByName($name)
     {
-        return $this->om
-            ->getRepository('ClarolineCoreBundle:Theme\Theme')
-            ->findOneBy([
-                'name' => $name,
-            ]);
+        return $this->repository->findOneBy(['name' => $name]);
     }
 
     /**

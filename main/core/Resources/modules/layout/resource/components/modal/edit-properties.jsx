@@ -274,6 +274,7 @@ class EditPropertiesModal extends Component {
     }
 
     this.save = this.save.bind(this)
+    this.updateProperty = this.updateProperty.bind(this)
   }
 
   /**
@@ -336,14 +337,14 @@ class EditPropertiesModal extends Component {
         <FormSections>
           <MetaSection
             meta={this.state.resourceNode.meta}
-            updateParameter={this.updateProperty.bind(this)}
+            updateParameter={this.updateProperty}
             validating={this.state.validating}
             errors={this.state.errors}
           />
 
           <DisplaySection
             parameters={this.state.resourceNode.parameters}
-            updateParameter={this.updateProperty.bind(this)}
+            updateParameter={this.updateProperty}
             validating={this.state.validating}
             errors={this.state.errors}
           />
@@ -351,14 +352,14 @@ class EditPropertiesModal extends Component {
           <AccessesSection
             meta={this.state.resourceNode.meta}
             parameters={this.state.resourceNode.parameters}
-            updateParameter={this.updateProperty.bind(this)}
+            updateParameter={this.updateProperty}
             validating={this.state.validating}
             errors={this.state.errors}
           />
 
           <LicenseSection
             meta={this.state.resourceNode.meta}
-            updateParameter={this.updateProperty.bind(this)}
+            updateParameter={this.updateProperty}
             validating={this.state.validating}
             errors={this.state.errors}
           />

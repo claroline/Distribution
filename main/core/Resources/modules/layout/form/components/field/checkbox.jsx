@@ -8,6 +8,7 @@ const Checkbox = props =>
         id={props.id}
         type="checkbox"
         checked={props.checked}
+        disabled={props.disabled}
         onChange={e => props.onChange(e.target.checked)}
       />
 
@@ -20,7 +21,12 @@ Checkbox.propTypes = {
   label: T.string.isRequired,
   labelChecked: T.string,
   checked: T.bool.isRequired,
+  disabled: T.bool,
   onChange: T.func.isRequired
+}
+
+Checkbox.defaultProps = {
+  disabled: false
 }
 
 export {

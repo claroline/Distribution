@@ -58,7 +58,8 @@ class Themes extends Component {
                 action: (row) => this.props.rebuildThemes(this.getThemes([row.id]))
               }, {
                 icon: 'fa fa-fw fa-trash-o',
-                label:trans('remove_theme', {}, 'theme'),
+                label: trans('remove_theme', {}, 'theme'),
+                disabled: (row) => !row.meta.custom,
                 action: (row) => this.props.removeThemes(this.getThemes([row.id])),
                 isDangerous: true
               }
@@ -130,7 +131,7 @@ function mapDispatchToProps(dispatch) {
           question: trans('remove_themes_confirm', {
             theme_list: themes.map(theme => theme.name).join(', ')
           }, 'theme'),
-          handleConfirm: () => dispatch(actions.removeThemes(themes))
+          handleConfirm: () => dispatch(actions.deleteThemes(themes))
         })
       )
     },

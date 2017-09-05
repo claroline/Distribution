@@ -9,6 +9,7 @@ const CheckGroup = props =>
     <Checkbox
       id={props.checkId}
       checked={props.checked}
+      disabled={props.disabled}
       label={props.label}
       labelChecked={props.labelChecked}
       onChange={checked => props.onChange(checked)}
@@ -24,8 +25,13 @@ CheckGroup.propTypes = {
   label: T.string.isRequired,
   labelChecked: T.string,
   checked: T.bool.isRequired,
+  disabled: T.bool,
   onChange: T.func.isRequired,
   help: T.string
+}
+
+CheckGroup.defaultProps = {
+  disabled: false
 }
 
 export {
