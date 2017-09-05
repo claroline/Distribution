@@ -17,7 +17,7 @@ export function makeRouter(dispatch) {
       'papers': () => dispatch(paperActions.listPapers()),
       'correction/questions': () => dispatch(correctionActions.displayQuestions()),
       'correction/questions/:id': id => dispatch(correctionActions.displayQuestionAnswers(id)),
-      'correction/statistics': () => dispatch(statisticActions.displayStatistics()),
+      'statistics': () => dispatch(statisticActions.displayStatistics()),
       'test': () => dispatch(playerActions.play(null, true)),
       'play': () => dispatch(playerActions.play(null, false)),
       'play/end': () => dispatch(actions.updateViewMode(VIEW_ATTEMPT_END)),

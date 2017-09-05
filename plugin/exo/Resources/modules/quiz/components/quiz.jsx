@@ -104,7 +104,7 @@ function customActions(props) {
     actions.push({
       icon: 'fa fa-fw fa-bar-chart',
       label: tex('statistics'),
-      action: '#correction/statistics'
+      action: '#/statistics'
     })
   }
 
