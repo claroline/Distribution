@@ -355,12 +355,6 @@ class ExerciseManager
             }
         }
 
-        /*
-                $questionOrder = array_keys($titles)
-        uksort($data, function ($a, $b) use ($question0rder) {
-            array_search($a, $questionOrder) - array_search($b, $questionOrder);
-        })*/
-
         $flattenedData = [];
 
         foreach ($dataPapers as $paper) {
