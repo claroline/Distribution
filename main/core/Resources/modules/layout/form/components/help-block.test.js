@@ -2,6 +2,7 @@ import React from 'react'
 import {shallow} from 'enzyme'
 
 import {spyConsole, renew, ensure} from '#/main/core/tests'
+
 import {HelpBlock} from './help-block.jsx'
 
 describe('<HelpBlock/>', () => {
@@ -35,7 +36,7 @@ describe('<HelpBlock/>', () => {
 
   it('renders a help text', () => {
     const block = shallow(React.createElement(HelpBlock, {
-      text: 'HELP'
+      help: 'HELP'
     }))
 
     ensure.propTypesOk()

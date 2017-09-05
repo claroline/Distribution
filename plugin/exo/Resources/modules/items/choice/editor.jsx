@@ -245,7 +245,7 @@ const Choice = props =>
         {value: NUMBERING_NUMERIC, label: tex('quiz_numbering_numeric')},
         {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
       ]}
-      checkedValue={props.item.numbering}
+      checkedValue={props.item.numbering ? props.item.numbering : NUMBERING_NONE}
       onChange={numbering => props.onChange(actions.updateProperty('numbering', numbering))}
     />
 

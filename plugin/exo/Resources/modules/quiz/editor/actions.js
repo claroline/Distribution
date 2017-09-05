@@ -130,6 +130,7 @@ actions.duplicateItem = (stepId, itemId, amount) => {
 
 actions.createStep = (position) => {
   invariant(position, 'position is mandatory')
+
   return {
     type: STEP_CREATE,
     id: makeId(),
@@ -139,11 +140,12 @@ actions.createStep = (position) => {
 
 actions.deleteStepAndItems = id => {
   invariant(id, 'id is mandatory')
+
   return (dispatch, getState) => {
     dispatch(actions.nextObject(select.nextObject(getState())))
     //I'll gave to double check that
     getState().steps[id].items.forEach(item => {
-      dispatch(actions.deleteStepItem(item, id))
+      dispatch(actions.deleteStepItem(id, item))
     })
 
     dispatch(actions.deleteStep(id))
@@ -231,6 +233,7 @@ actions.saveContentItemFile = (itemId, file) => {
 actions.createContentItem = (stepId, type, data = '') => {
   invariant(stepId, 'stepId is mandatory')
   invariant(type, 'type is mandatory')
+
   return {
     type: CONTENT_ITEM_CREATE,
     id: makeId(),
@@ -243,6 +246,7 @@ actions.createContentItem = (stepId, type, data = '') => {
 actions.createItemObject = (itemId, type) => {
   invariant(itemId, 'itemId is mandatory')
   invariant(type, 'type is mandatory')
+
   return {
     type: ITEM_OBJECTS_UPDATE,
     id: makeId(),
