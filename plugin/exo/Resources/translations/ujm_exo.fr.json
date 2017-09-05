@@ -683,5 +683,7 @@
     "make_optional": "Rendre optionnel",
     "mandatory_questions": "Réponse aux questions obligatoires",
     "duplicate_item": "Dupliquer un item",
-    "amount": "Quantité"
+    "amount": "Quantité",
+    "json_export": "Export json",
+    "csv_export": "Export csv"
 }
