@@ -10,7 +10,7 @@ function getCorrectedAnswer(item, answers = null) {
 
   item.solutions.forEach(choice => {
     const score = choice.score
-    if (answers && answers.data.indexOf(choice.id) > -1) {
+    if (answers && answers.data && answers.data.indexOf(choice.id) > -1) {
       score > 0 ?
         corrected.addExpected(new Answerable(score)) :
         corrected.addUnexpected(new Answerable(score))
