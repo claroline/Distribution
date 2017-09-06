@@ -11,7 +11,10 @@
 
 namespace Claroline\CoreBundle\Command;
 
+use Claroline\CoreBundle\Library\Installation\PlatformInstaller;
+use Claroline\CoreBundle\Library\Installation\Refresher;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
+use Claroline\CoreBundle\Manager\VersionManager;
 use Doctrine\Bundle\DoctrineBundle\Command\CreateDatabaseDoctrineCommand;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LogLevel;
@@ -74,12 +77,16 @@ class PlatformUpdateCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
+     *
+     * @return
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(sprintf('<comment>%s - Updating the platform...</comment>', date('H:i:s')));
+        $output->writeln(
+            sprintf('<comment>%s - Updating the platform...</comment>', date('H:i:s'))
+        );
 
         if (!$input->getOption('create_database')) {
             $databaseCreator = new CreateDatabaseDoctrineCommand();
@@ -94,12 +101,13 @@ class PlatformUpdateCommand extends ContainerAwareCommand
         ];
         $consoleLogger = new ConsoleLogger($output, $verbosityLevelMap);
 
-        /** @var \Claroline\CoreBundle\Library\Installation\PlatformInstaller $installer */
+        /** @var PlatformInstaller $installer */
         $installer = $this->getContainer()->get('claroline.installation.platform_installer');
         $installer->setOutput($output);
         $installer->setLogger($consoleLogger);
-        $versionManager = $this->getContainer()->get('claroline.manager.version_manager');
 
+        /** @var VersionManager $versionManager */
+        $versionManager = $this->getContainer()->get('claroline.manager.version_manager');
         if ($input->getArgument('from_version') && $input->getArgument('to_version')) {
             $from = $input->getArgument('from_version');
             $to = $input->getArgument('to_version');
@@ -119,8 +127,9 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             $installer->updateFromComposerInfo();
         }
 
-        /** @var \Claroline\CoreBundle\Library\Installation\Refresher $refresher */
+        /** @var Refresher $refresher */
         $refresher = $this->getContainer()->get('claroline.installation.refresher');
+        $refresher->setOutput($output);
 
         // clear cache
         if ($input->getOption('clear_cache')) {
@@ -139,7 +148,9 @@ class PlatformUpdateCommand extends ContainerAwareCommand
 
         MaintenanceHandler::disableMaintenance();
 
-        $output->writeln(sprintf('<comment>%s - Platform updated.</comment>', date('H:i:s')));
+        $output->writeln(
+            sprintf('<comment>%s - Platform updated.</comment>', date('H:i:s'))
+        );
     }
 
     /**

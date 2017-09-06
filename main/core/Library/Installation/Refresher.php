@@ -29,13 +29,19 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Refresher
 {
+    /** @var ContainerInterface */
     private $container;
+    /** @var OutputInterface */
     private $output;
 
     /**
+     * Refresher constructor.
+     *
      * @DI\InjectParams({
      *     "container" = @DI\Inject("service_container")
      * })
+     *
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
