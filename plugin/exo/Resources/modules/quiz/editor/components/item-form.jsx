@@ -9,6 +9,7 @@ import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
 import {SubSection} from './../../../components/form/sub-section.jsx'
 import {TooltipButton} from './../../../components/form/tooltip-button.jsx'
 import ObjectsEditor from './item-objects-editor.jsx'
+import TagsEditor from './item-tags-editor.jsx'
 import {CheckGroup} from './../../../components/form/check-group.jsx'
 
 // TODO: add categories, objects, resources, define-as-model
@@ -59,6 +60,14 @@ const Metadata = props =>
         showModal={props.showModal}
         closeModal={props.closeModal}
         validating={props.validating}
+        item={props.item}
+      />
+    </FormGroup>
+    <FormGroup
+      controlId={`item-${props.item.id}-tags`}
+      label={t('tags')}
+    >
+      <TagsEditor
         item={props.item}
       />
     </FormGroup>

@@ -53,7 +53,8 @@ import {
   OBJECT_ADD,
   OBJECT_CHANGE,
   OBJECT_REMOVE,
-  OBJECT_MOVE
+  OBJECT_MOVE,
+  ITEM_UPDATE_TAGS
 } from './actions'
 
 function initialQuizState() {
@@ -395,6 +396,15 @@ function reduceItems(items = {}, action = {}) {
         default:
           return items
       }
+    case ITEM_UPDATE_TAGS: {
+      const updatedItem = Object.assign(
+        {},
+        items[action.id],
+        {tags: action.tags}
+      )
+
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
   }
   return items
 }
