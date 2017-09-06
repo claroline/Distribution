@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package.
+ * This file is part of the Claroline Connect package
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -18,7 +18,8 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- * Class MediacenterUserManager.
+ * Class MediacenterUserManager
+ * @package Inwicast\ClarolinePluginBundle\Manager
  *
  * @DI\Service("inwicast.plugin.manager.mediacenteruser")
  */
@@ -50,11 +51,11 @@ class MediacenterUserManager
 
     public function getMediacenterUserToken(User $user, Mediacenter $mediacenter)
     {
-        $hasInwicastToken = $this->session->get('has_inwicast_token');
+        $hasInwicastToken = $this->session->get("has_inwicast_token");
         $token = $this->session->getId();
         if (!$hasInwicastToken) {
             $this->mediacenterUserRepository->createInwicastUserIfNotExists($user, $token, $mediacenter);
-            $this->session->set('has_inwicast_token', true);
+            $this->session->set("has_inwicast_token", true);
         }
 
         return $token;

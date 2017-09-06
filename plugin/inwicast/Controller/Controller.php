@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of the Claroline Connect package.
+ * This file is part of the Claroline Connect package
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
  * Author: Panagiotis TSAVDARIS
- *
+ * 
  * Date: 3/20/15
  */
 
@@ -25,8 +25,9 @@ class Controller extends BaseController
 
     protected function checkUserGranted($action, $data)
     {
-        if (!$this->isUserGranted($action, $data)) {
-            throw new AccessDeniedException();
+        if (!$this->isUserGranted($action, $data))
+        {
+            throw new AccessDeniedException;
         }
     }
 
@@ -41,7 +42,7 @@ class Controller extends BaseController
 
     protected function getSecurityContext()
     {
-        return $this->get('security.context');
+        return $this->get("security.context");
     }
 
     /**
@@ -49,7 +50,7 @@ class Controller extends BaseController
      */
     protected function getMediacenterManager()
     {
-        return $this->get('inwicast.plugin.manager.mediacenter');
+        return $this->get("inwicast.plugin.manager.mediacenter");
     }
 
     /**
@@ -57,7 +58,7 @@ class Controller extends BaseController
      */
     protected function getMediaManager()
     {
-        return $this->get('inwicast.plugin.manager.media');
+        return $this->get("inwicast.plugin.manager.media");
     }
 
     /**
@@ -65,7 +66,7 @@ class Controller extends BaseController
      */
     protected function getMediacenterUserManager()
     {
-        return $this->get('inwicast.plugin.manager.mediacenteruser');
+        return $this->get("inwicast.plugin.manager.mediacenteruser");
     }
 
     protected function serializeObject($object)

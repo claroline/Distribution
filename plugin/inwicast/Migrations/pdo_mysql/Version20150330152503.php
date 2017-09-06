@@ -6,7 +6,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
- * Auto-generated migration based on mapping information: modify it with caution.
+ * Auto-generated migration based on mapping information: modify it with caution
  *
  * Generation date: 2015/03/30 03:25:05
  */
@@ -14,7 +14,7 @@ class Version20150330152503 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql('
+        $this->addSql("
             CREATE TABLE inwicast_plugin_mediacenter (
                 id INT AUTO_INCREMENT NOT NULL, 
                 url VARCHAR(255) NOT NULL, 
@@ -26,8 +26,8 @@ class Version20150330152503 extends AbstractMigration
                 password VARCHAR(255) NOT NULL, 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ');
-        $this->addSql('
+        ");
+        $this->addSql("
             CREATE TABLE inwicast_plugin_media (
                 id INT AUTO_INCREMENT NOT NULL, 
                 widgetinstance_id INT DEFAULT NULL, 
@@ -38,22 +38,22 @@ class Version20150330152503 extends AbstractMigration
                 UNIQUE INDEX UNIQ_ED925F022DE7D582 (widgetinstance_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ');
-        $this->addSql('
+        ");
+        $this->addSql("
             ALTER TABLE inwicast_plugin_media 
             ADD CONSTRAINT FK_ED925F022DE7D582 FOREIGN KEY (widgetinstance_id) 
             REFERENCES claro_widget_instance (id) 
             ON DELETE CASCADE
-        ');
+        ");
     }
 
     public function down(Schema $schema)
     {
-        $this->addSql('
+        $this->addSql("
             DROP TABLE inwicast_plugin_mediacenter
-        ');
-        $this->addSql('
+        ");
+        $this->addSql("
             DROP TABLE inwicast_plugin_media
-        ');
+        ");
     }
 }

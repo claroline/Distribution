@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package.
+ * This file is part of the Claroline Connect package
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -10,6 +10,7 @@
  */
 
 namespace Inwicast\ClarolinePluginBundle\Exception;
+
 
 class InvalidMediacenterFormException extends \RuntimeException
 {
@@ -28,4 +29,4 @@ class InvalidMediacenterFormException extends \RuntimeException
     {
         return $this->form;
     }
-}
+} 

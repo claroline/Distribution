@@ -2,12 +2,12 @@
 
 namespace Inwicast\ClarolinePluginBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Doctrine\ORM\Mapping as ORM;
+use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Media.
+ * Media
  *
  * @ORM\Table(name="inwicast_plugin_media")
  * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Repository\MediaRepository")
@@ -16,7 +16,7 @@ use JMS\Serializer\Annotation as JMS;
 class Media
 {
     /**
-     * @var int
+     * @var integer
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -36,12 +36,12 @@ class Media
     /**
      * @var string
      */
-    protected $title = '';
+    protected $title = "";
 
     /**
      * @var string
      */
-    protected $description = '';
+    protected $description = "";
 
     /**
      * @var \DateTime
@@ -76,6 +76,7 @@ class Media
      **/
     protected $widgetInstance;
 
+
     public function __construct(
         $mediaRef = null,
         $title = null,
@@ -97,9 +98,9 @@ class Media
     }
 
     /**
-     * Get id.
+     * Get id
      *
-     * @return int
+     * @return integer
      */
     public function getId()
     {
@@ -107,10 +108,9 @@ class Media
     }
 
     /**
-     * Set code.
+     * Set code
      *
      * @param string $mediaRef
-     *
      * @return Media
      */
     public function setMediaRef($mediaRef)
@@ -121,7 +121,7 @@ class Media
     }
 
     /**
-     * Get mediaRef.
+     * Get mediaRef
      *
      * @return string
      */
@@ -131,8 +131,8 @@ class Media
     }
 
     /**
-     * @param string $title
      *
+     * @param string $title
      * @return Media
      */
     public function setTitle($title)
@@ -143,7 +143,7 @@ class Media
     }
 
     /**
-     * Get title.
+     * Get title
      *
      * @return string
      */
@@ -153,10 +153,9 @@ class Media
     }
 
     /**
-     * Set description.
+     * Set description
      *
      * @param string $description
-     *
      * @return Media
      */
     public function setDescription($description)
@@ -167,7 +166,7 @@ class Media
     }
 
     /**
-     * Get description.
+     * Get description
      *
      * @return string
      */
@@ -177,10 +176,9 @@ class Media
     }
 
     /**
-     * Set date.
+     * Set date
      *
      * @param \DateTime $date
-     *
      * @return Media
      */
     public function setDate($date)
@@ -191,7 +189,7 @@ class Media
     }
 
     /**
-     * Get date.
+     * Get date
      *
      * @return \DateTime
      */
@@ -201,7 +199,7 @@ class Media
     }
 
     /**
-     * Get image.
+     * Get image
      *
      * @return string
      */
@@ -212,7 +210,6 @@ class Media
 
     /**
      * @param string $previewUrl
-     *
      * @return $this
      */
     public function setPreviewUrl($previewUrl)
@@ -232,7 +229,6 @@ class Media
 
     /**
      * @param int $views
-     *
      * @return $this
      */
     public function setViews($views)
@@ -252,7 +248,6 @@ class Media
 
     /**
      * @param int $width
-     *
      * @return $this
      */
     public function setWidth($width)
@@ -272,7 +267,6 @@ class Media
 
     /**
      * @param int $height
-     *
      * @return $this
      */
     public function setHeight($height)
@@ -283,7 +277,7 @@ class Media
     }
 
     /**
-     * Get widgetInstance.
+     * Get widgetInstance
      *
      * @return WidgetInstance
      */
@@ -293,10 +287,9 @@ class Media
     }
 
     /**
-     * Add widgetInstance.
+     * Add widgetInstance
      *
      * @param \Claroline\CoreBundle\Entity\Widget\WidgetInstance $widgetInstance
-     *
      * @return Media
      */
     public function setWidgetInstance(WidgetInstance $widgetInstance)

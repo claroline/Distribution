@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package.
+ * This file is part of the Claroline Connect package
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -11,13 +11,15 @@
 
 namespace Inwicast\ClarolinePluginBundle\Form;
 
+
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * Class MediacenterType.
+ * Class MediacenterType
+ * @package Inwicast\ClarolinePluginBundle\Form
  *
  * @DI\FormType;
  */
@@ -26,13 +28,13 @@ class MediacenterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('url', 'url', ['required' => true])
-            ->add('driver', 'text', ['required' => true])
-            ->add('host', 'text', ['required' => true])
-            ->add('port', 'text', ['required' => true])
-            ->add('dbname', 'text', ['required' => true])
-            ->add('user', 'text', ['required' => true])
-            ->add('password', 'password', ['required' => true]);
+            ->add('url', 'url', array('required' => true))
+            ->add('driver', 'text', array('required' => true))
+            ->add('host', 'text', array('required' => true))
+            ->add('port', 'text', array('required' => true))
+            ->add('dbname', 'text', array('required' => true))
+            ->add('user', 'text', array('required' => true))
+            ->add('password', 'password', array('required' => true));
     }
 
     /**
@@ -48,11 +50,11 @@ class MediacenterType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
-            [
+            array(
                 'translation_domain' => 'widget',
-                'data_class' => 'Inwicast\ClarolinePluginBundle\Entity\Mediacenter',
-                'csrf_protection' => true,
-            ]
+                'data_class'         => 'Inwicast\ClarolinePluginBundle\Entity\Mediacenter',
+                'csrf_protection'    => true
+            )
         );
     }
 }

@@ -1,17 +1,18 @@
 <?php
 /**
- * This file is part of the Claroline Connect package.
+ * This file is part of the Claroline Connect package
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
  * Author: Panagiotis TSAVDARIS
- *
+ * 
  * Date: 4/3/15
  */
 
 namespace Inwicast\ClarolinePluginBundle\Installation;
 
 use Claroline\InstallationBundle\Additional\AdditionalInstaller as BaseInstaller;
+use Inwicast\ClarolinePluginBundle\Installation\Updater;
 
 class AdditionalInstaller extends BaseInstaller
 {
@@ -22,4 +23,4 @@ class AdditionalInstaller extends BaseInstaller
             $updater->postUpdate();
         }
     }
-}
+} 
