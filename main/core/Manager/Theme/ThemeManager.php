@@ -68,6 +68,20 @@ class ThemeManager
     }
 
     /**
+     * Creates a new theme.
+     *
+     * @param array $data
+     *
+     * @return Theme
+     */
+    public function create(array $data)
+    {
+        // todo : create directory structure and files
+
+        return $this->update(new Theme(), $data);
+    }
+
+    /**
      * Updates an existing theme.
      *
      * @param Theme $theme
@@ -83,6 +97,14 @@ class ThemeManager
         if (count($errors) > 0) {
             throw new InvalidDataException('Theme is not valid', $errors);
         }
+
+        $theme->setName($data['name']);
+
+        // todo : update other themes props
+        // todo : move files if name change
+
+        $this->om->persist($theme);
+        $this->om->flush();
 
         return $theme;
     }

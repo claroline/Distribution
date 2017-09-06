@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Library\Installation;
 
 use Bazinga\Bundle\JsTranslationBundle\Command\DumpCommand as TranslationDumpCommand;
-use Claroline\CoreBundle\Command\Theme\BuildCommand;
+use Claroline\CoreBundle\Command\Theme\BuildThemesCommand;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Composer\Script\Event;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -93,7 +93,7 @@ class Refresher
 
     public function buildThemes()
     {
-        $themeBuilder = new BuildCommand();
+        $themeBuilder = new BuildThemesCommand();
         $themeBuilder->setContainer($this->container);
         $themeBuilder->run(new ArrayInput([]), $this->output);
     }
