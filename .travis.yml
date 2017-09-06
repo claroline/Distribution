@@ -64,7 +64,7 @@ before_script:
   # - composer build
   - php vendor/sensio/distribution-bundle/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php
   - rm -rf app/cache/*
-  - php app/console doctrine:database:create --env=test
+  - php app/console doctrine:database:create --env=test -vvv
   - npm run webpack
   # end replace
   - export NODE_ENV=development
