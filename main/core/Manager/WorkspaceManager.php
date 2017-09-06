@@ -1458,6 +1458,7 @@ class WorkspaceManager
     ) {
         $this->log('Start duplicate');
         $rights = $resourceNode->getRights();
+        $usedRoles = [];
 
         foreach ($rights as $right) {
             $role = $right->getRole();
@@ -1475,9 +1476,12 @@ class WorkspaceManager
                 ) {
                     $usedRole = $copy->getWorkspace()->getGuid() === $workspaceRoles[$key]->getWorkspace()->getGuid() ?
                       $workspaceRoles[$key] : $role;
-                    $newRight->setRole($usedRole);
-                    $this->log('Duplicating resource rights for '.$copy->getName().' - '.$copy->getId().' - '.$usedRole->getName().'...');
-                    $this->om->persist($newRight);
+                    if (!in_array($usedRole->getId(), $usedRoles)) {
+                        $usedRoles[] = $usedRole->getId();
+                        $newRight->setRole($usedRole);
+                        $this->log('Duplicating resource rights for '.$copy->getName().' - '.$copy->getId().' - '.$usedRole->getName().'...');
+                        $this->om->persist($newRight);
+                    }
                 } else {
                     $this->log('Dont do anything');
                 }
@@ -1568,6 +1572,25 @@ class WorkspaceManager
                 $widgetDisplayConfigs[$widgetInstanceId] = $wdc;
             }
             $newHomeTab = new HomeTab();
+            $workspaceRoles = $this->getArrayRolesByWorkspace($workspace);
+
+            //set the roles here. This may be buggy ?
+            foreach ($homeTab->getRoles() as $role) {
+                $key = $role->getTranslationKey();
+                if ($role->getWorkspace()) {
+                    if (
+                    isset($workspaceRoles[$key]) &&
+                    !empty($workspaceRoles[$key])
+                    ) {
+                        $usedRole = $workspace->getGuid() === $workspaceRoles[$key]->getWorkspace()->getGuid() ?
+                          $workspaceRoles[$key] : $role;
+                        $newHomeTab->addRole($usedRole);
+                    }
+                } else {
+                    $newHomeTab->addRole($role);
+                }
+            }
+
             $newHomeTab->setType('workspace');
             $newHomeTab->setWorkspace($workspace);
             $newHomeTab->setName($homeTab->getName());
