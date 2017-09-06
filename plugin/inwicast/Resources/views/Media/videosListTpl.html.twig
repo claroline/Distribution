@@ -32,10 +32,6 @@
 
     <div class="row">
         {% endif %}
-        {# Resizing:
-            - Default: 4 items a line
-            - If less than 4 items: make them take 1 complete line (12 columns / nb of items)
-        #}
         <div class="col-xs-6 auto-new-line">
             <div id="thumb-{{ media.mediaRef }}"class="thumbnail"
                  onclick="select('{{ media.title | convert_encoding('UTF-8', 'ISO-8859-1') }}', '{{ loop.index0 }}', '{{ media.mediaRef }}')">

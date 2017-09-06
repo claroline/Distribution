@@ -45,7 +45,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaCenterManager
      */
     protected function getMediacenterManager()
     {
@@ -61,7 +61,7 @@ class Controller extends BaseController
     }
 
     /**
-     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterUserManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaCenterUserManager
      */
     protected function getMediacenterUserManager()
     {

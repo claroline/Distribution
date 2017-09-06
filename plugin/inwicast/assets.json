@@ -3,5 +3,11 @@
     "entry": {
       "list":  "list/app"
     }
+  },
+
+  "styles": {
+    "entry": {
+      "media-list": "media/list.less"
+    }
   }
 }

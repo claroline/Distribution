@@ -20,10 +20,6 @@
     'href': path('claro_admin_index')
     },
     {
-    'name': 'packages'|trans({}, 'platform'),
-    'href': path('claro_admin_open_tool', {'toolName': 'platform_packages'})
-    },
-    {
     'name': 'inwicastclarolineplugin'|trans({}, 'plugin_description'),
     'href': ''
     }
@@ -108,7 +104,7 @@
         <div class="panel-footer">
             <input class="btn btn-primary" type="submit" id="inwicast_mediacenter_submit"
                    value="{{ 'validate'|trans({}, 'widget') }}"/>
-            <a href="{{ path('claro_admin_open_tool', {'toolName': 'platform_parameters'}) }}"
+            <a href="{{ path('claro_admin_index') }}"
                class="btn btn-default">{{ 'cancel'|trans({}, 'platform') }}</a>
         </div>
     </form>

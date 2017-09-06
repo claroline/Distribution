@@ -12,8 +12,8 @@
 namespace Inwicast\ClarolinePluginBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
-use Inwicast\ClarolinePluginBundle\Repository\MediacenterUserRepository;
+use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
+use Inwicast\ClarolinePluginBundle\Repository\MediaCenterUserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -22,10 +22,10 @@ use Symfony\Component\HttpFoundation\Session\Session;
  *
  * @DI\Service("inwicast.plugin.manager.mediacenteruser")
  */
-class MediacenterUserManager
+class MediaCenterUserManager
 {
     /**
-     * @var \Inwicast\ClarolinePluginBundle\Repository\MediacenterUserRepository
+     * @var \Inwicast\ClarolinePluginBundle\Repository\MediaCenterUserRepository
      */
     private $mediacenterUserRepository;
 
@@ -41,14 +41,14 @@ class MediacenterUserManager
      * })
      */
     public function __construct(
-        MediacenterUserRepository $mediacenterUserRepository,
+        MediaCenterUserRepository $mediacenterUserRepository,
         Session $session
     ) {
         $this->mediacenterUserRepository = $mediacenterUserRepository;
         $this->session = $session;
     }
 
-    public function getMediacenterUserToken(User $user, Mediacenter $mediacenter)
+    public function getMediacenterUserToken(User $user, MediaCenter $mediacenter)
     {
         $hasInwicastToken = $this->session->get('has_inwicast_token');
         $token = $this->session->getId();

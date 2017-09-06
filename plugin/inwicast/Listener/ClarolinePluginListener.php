@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Event\InjectJavascriptEvent;
 use Inwicast\ClarolinePluginBundle\Entity\Media;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
 use Inwicast\ClarolinePluginBundle\Entity\MediacenterUser;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -94,7 +94,7 @@ class ClarolinePluginListener extends ContainerAware
             } catch (NoMediacenterException $nme) {
                 $event->setContent(
                     $this->templating->render(
-                        'InwicastClarolinePluginBundle:Mediacenter:error.html.twig'
+                        'InwicastClarolinePluginBundle:MediaCenter:error.html.twig'
                     )
                 );
             }
@@ -133,7 +133,7 @@ class ClarolinePluginListener extends ContainerAware
                 ]
             );
         } catch (NoMediacenterException $nme) {
-            $content = $this->templating->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
+            $content = $this->templating->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
         }
 
         // Return view to event (Claroline specification)
@@ -155,7 +155,7 @@ class ClarolinePluginListener extends ContainerAware
             $mediacener_portal = $mediacenter->getUrl().'?userName='.$loggedUser->getUsername().'&token='.$token;
             $content = new RedirectResponse($mediacener_portal);
         } catch (NoMediacenterException $nme) {
-            $content = $this->templating->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
+            $content = $this->templating->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
         }
 
         // Return view to event (Claroline specification)
@@ -164,7 +164,7 @@ class ClarolinePluginListener extends ContainerAware
     }
 
     /**
-     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaCenterManager
      */
     private function getMediacenterManager()
     {
@@ -172,7 +172,7 @@ class ClarolinePluginListener extends ContainerAware
     }
 
     /**
-     * @return \Inwicast\ClarolinePluginBundle\Manager\MediacenterUserManager
+     * @return \Inwicast\ClarolinePluginBundle\Manager\MediaCenterUserManager
      */
     private function getMediacenterUserManager()
     {

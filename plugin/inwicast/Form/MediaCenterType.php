@@ -21,7 +21,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  *
  * @DI\FormType;
  */
-class MediacenterType extends AbstractType
+class MediaCenterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -50,7 +50,7 @@ class MediacenterType extends AbstractType
         $resolver->setDefaults(
             [
                 'translation_domain' => 'widget',
-                'data_class' => 'Inwicast\ClarolinePluginBundle\Entity\Mediacenter',
+                'data_class' => 'Inwicast\ClarolinePluginBundle\Entity\MediaCenter',
                 'csrf_protection' => true,
             ]
         );

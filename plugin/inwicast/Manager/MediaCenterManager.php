@@ -12,7 +12,7 @@
 namespace Inwicast\ClarolinePluginBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
 use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository;
@@ -23,16 +23,13 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @DI\Service("inwicast.plugin.manager.mediacenter")
  */
-class MediacenterManager
+class MediaCenterManager
 {
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
-    /**
-     * @var \Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository
-     */
     private $mediacenterRepository;
 
     /**
@@ -43,17 +40,15 @@ class MediacenterManager
     /**
      * @DI\InjectParams({
      *      "em"                    = @DI\Inject("doctrine.orm.entity_manager"),
-     *      "mediacenterRepository" = @DI\Inject("inwicast.plugin.repository.mediacenter"),
      *      "formFactory"           = @DI\Inject("form.factory")
      * })
      */
     public function __construct(
         EntityManager $em,
-        MediacenterRepository $mediacenterRepository,
         FormFactoryInterface $formFactory
     ) {
         $this->em = $em;
-        $this->mediacenterRepository = $mediacenterRepository;
+        $this->mediacenterRepository = $em->getRepository('InwicastClarolinePluginBundle:MediaCenter');
         $this->formFactory = $formFactory;
     }
 
@@ -78,10 +73,10 @@ class MediacenterManager
 
     public function getEmptyMediacenter()
     {
-        return new Mediacenter();
+        return new MediaCenter();
     }
 
-    public function getMediacenterForm(Mediacenter $mediacenter = null)
+    public function getMediacenterForm(MediaCenter $mediacenter = null)
     {
         if ($mediacenter === null) {
             $mediacenter = $this->getMediacenterOrEmpty();
@@ -94,7 +89,7 @@ class MediacenterManager
         return $form;
     }
 
-    public function processForm(Mediacenter $mediacenter, Request $request)
+    public function processForm(MediaCenter $mediacenter, Request $request)
     {
         $form = $this->getMediacenterForm($mediacenter);
         $form->handleRequest($request);

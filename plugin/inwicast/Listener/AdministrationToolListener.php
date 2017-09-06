@@ -29,6 +29,6 @@ class AdministrationToolListener extends BaseAdministrationToolListener
      */
     public function onOpenInwicastConfiguration(OpenAdministrationToolEvent $event)
     {
-        $this->redirect(['_controller' => 'InwicastClarolinePluginBundle:Mediacenter:configure'], $event);
+        $this->redirect(['_controller' => 'InwicastClarolinePluginBundle:MediaCenter:configure'], $event);
     }
 }

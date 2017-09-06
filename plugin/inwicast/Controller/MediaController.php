@@ -13,7 +13,7 @@ namespace Inwicast\ClarolinePluginBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -43,7 +43,7 @@ class MediaController extends Controller
 
             return new RedirectResponse($content);
         } catch (NoMediacenterException $nme) {
-            return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
+            return $this->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
         }
     }
     /**
@@ -57,7 +57,7 @@ class MediaController extends Controller
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
         } catch (NoMediacenterException $nme) {
-            return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
+            return $this->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
         }
 
         $mediaRef = $request->get('media_ref');
@@ -132,7 +132,7 @@ class MediaController extends Controller
                 'username' => $user->getUsername(),
             ];
         } catch (NoMediacenterException $nme) {
-            return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
+            return $this->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
         }
 
         // Return $result
@@ -141,7 +141,7 @@ class MediaController extends Controller
 
     private function getVideosList(
         User $user,
-        Mediacenter $mediacenter,
+        MediaCenter $mediacenter,
         $keywords = null
     ) {
         return $this->getMediaManager()->getMediaListForUser($user, $mediacenter, $keywords);

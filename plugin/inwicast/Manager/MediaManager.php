@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Doctrine\ORM\EntityManager;
 use Inwicast\ClarolinePluginBundle\Entity\Media;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
 use Inwicast\ClarolinePluginBundle\Repository\MediaRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -36,7 +36,7 @@ class MediaManager
     private $mediaRepository;
 
     /**
-     * @var MediacenterUserManager
+     * @var MediaCenterUserManager
      */
     private $mediacenterUserManager;
 
@@ -56,7 +56,7 @@ class MediaManager
     public function __construct(
         EntityManager $em,
         MediaRepository $mediaRepository,
-        MediacenterUserManager $mediacenterUserManager,
+        MediaCenterUserManager $mediacenterUserManager,
         FormFactoryInterface $formFactory
     ) {
         $this->em = $em;
@@ -88,7 +88,7 @@ class MediaManager
         return $media;
     }
 
-    public function processPost($mediaRef, WidgetInstance $widget, Mediacenter $mediacenter, User $user)
+    public function processPost($mediaRef, WidgetInstance $widget, MediaCenter $mediacenter, User $user)
     {
         $media = $this->getByWidgetOrEmpty($widget);
         $media->setMediaRef($mediaRef);
@@ -100,7 +100,7 @@ class MediaManager
         return $media;
     }
 
-    public function getMediaInfo(Media $media, Mediacenter $mediacenter, User $user)
+    public function getMediaInfo(Media $media, MediaCenter $mediacenter, User $user)
     {
         $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
         $mediacenterUrl = $mediacenter->getUrl();
@@ -124,7 +124,7 @@ class MediaManager
         return $media;
     }
 
-    public function getMediaListForUser(User $user, Mediacenter $mediacenter, $keywords = null)
+    public function getMediaListForUser(User $user, MediaCenter $mediacenter, $keywords = null)
     {
         $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
         $medialist = [];
@@ -157,7 +157,7 @@ class MediaManager
         return $medialist;
     }
 
-    public function getMediaUrl($mediaRef, Mediacenter $mediacenter, User $user = null)
+    public function getMediaUrl($mediaRef, MediaCenter $mediacenter, User $user = null)
     {
         $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
         $mediacenterUrl = $mediacenter->getUrl();

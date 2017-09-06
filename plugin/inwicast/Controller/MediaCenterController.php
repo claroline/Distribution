@@ -11,7 +11,7 @@
 
 namespace Inwicast\ClarolinePluginBundle\Controller;
 
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
 use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -20,14 +20,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @Route("/inwicast/mediacenter")
- * Class MediacenterController
+ * Class MediaCenterController
  */
-class MediacenterController extends Controller
+class MediaCenterController extends Controller
 {
     /**
      * @Route("/admin/configure", name="inwicast_mediacenter_configure")
      * @Method({"GET", "POST"})
-     * @Template("InwicastClarolinePluginBundle:Mediacenter:form.html.twig")
+     * @Template("InwicastClarolinePluginBundle:MediaCenter:form.html.twig")
      *
      * @param Request $request
      *
@@ -45,7 +45,7 @@ class MediacenterController extends Controller
         }
 
         $response = $this->forward(
-            'InwicastClarolinePluginBundle:Mediacenter:success',
+            'InwicastClarolinePluginBundle:MediaCenter:success',
             [
                 'mediacenter' => $mediacenter,
             ]
@@ -59,11 +59,11 @@ class MediacenterController extends Controller
      * @Method({"GET"})
      * @Template()
      *
-     * @param Mediacenter $mediacenter
+     * @param MediaCenter $mediacenter
      *
      * @return array
      */
-    public function successAction(Mediacenter $mediacenter = null)
+    public function successAction(MediaCenter $mediacenter = null)
     {
         $this->checkAdmin();
         if ($mediacenter === null) {

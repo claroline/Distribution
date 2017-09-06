@@ -8,9 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * Mediacenter.
  *
  * @ORM\Table(name="inwicast_plugin_mediacenter")
- * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository")
+ * @ORM\Entity()
  */
-class Mediacenter
+class MediaCenter
 {
     /**
      * @var int
@@ -84,7 +84,7 @@ class Mediacenter
      *
      * @param string $url
      *
-     * @return Mediacenter
+     * @return MediaCenter
      */
     public function setUrl($url)
     {
