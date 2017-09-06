@@ -106,10 +106,10 @@
             {{ form_rest(form) }}
         </div>
         <div class="panel-footer">
-            <input class="btn btn-success" type="submit" id="inwicast_mediacenter_submit"
+            <input class="btn btn-primary" type="submit" id="inwicast_mediacenter_submit"
                    value="{{ 'validate'|trans({}, 'widget') }}"/>
-            <a href="{{ path('claro_admin_open_tool', {'toolName': 'platform_packages'}) }}"
-               class="btn btn-default btn-danger">{{ 'cancel'|trans({}, 'platform') }}</a>
+            <a href="{{ path('claro_admin_open_tool', {'toolName': 'platform_parameters'}) }}"
+               class="btn btn-default">{{ 'cancel'|trans({}, 'platform') }}</a>
         </div>
     </form>
 {% endblock %}
