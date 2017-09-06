@@ -61,7 +61,12 @@ before_script:
   - export TRAVIS_REPO_SLUG REMOTE_HOST REMOTE_USER REMOTE_PASS CACHE_PATH
   - bash $TRAVIS_BUILD_DIR/main/dev/Resources/travis/fetch-deps.bash
   - export NODE_ENV=production
-  - composer build
+  # - composer build
+  - php vendor/sensio/distribution-bundle/Sensio/Bundle/DistributionBundle/Resources/bin/build_bootstrap.php
+  - rm -rf app/cache/*
+  - php app/console doctrine:database:create --env=test
+  - npm run webpack
+  # end replace
   - export NODE_ENV=development
   - php app/console claroline:install --env=test -vvv
   # move to distribution directory
