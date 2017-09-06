@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package
+ * This file is part of the Claroline Connect package.
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -14,7 +14,6 @@ namespace Inwicast\ClarolinePluginBundle\Manager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NoResultException;
 use Inwicast\ClarolinePluginBundle\Entity\Media;
 use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
 use Inwicast\ClarolinePluginBundle\Repository\MediaRepository;
@@ -105,9 +104,9 @@ class MediaManager
     {
         $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
         $mediacenterUrl = $mediacenter->getUrl();
-        $parameters = "op=get_media_info_json&userName=".$user->getUsername()."&token=".$token;
-        $parameters = $parameters."&mediaRef=".$media->getMediaRef();
-        $data = file_get_contents($mediacenterUrl."api/?".$parameters);
+        $parameters = 'op=get_media_info_json&userName='.$user->getUsername().'&token='.$token;
+        $parameters = $parameters.'&mediaRef='.$media->getMediaRef();
+        $data = file_get_contents($mediacenterUrl.'api/?'.$parameters);
 
         $data = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data);
         $video = json_decode($data);
@@ -128,13 +127,13 @@ class MediaManager
     public function getMediaListForUser(User $user, Mediacenter $mediacenter, $keywords = null)
     {
         $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
-        $medialist = array();
+        $medialist = [];
         $mediacenterUrl = $mediacenter->getUrl();
-        $parameters = "op=get_user_medias_json&userName=".$user->getUsername()."&token=".$token;
+        $parameters = 'op=get_user_medias_json&userName='.$user->getUsername().'&token='.$token;
         if ($keywords !== null) {
-            $parameters = $parameters."&keywords=".$keywords;
+            $parameters = $parameters.'&keywords='.$keywords;
         }
-        $data = file_get_contents($mediacenterUrl."api/?".$parameters);
+        $data = file_get_contents($mediacenterUrl.'api/?'.$parameters);
         $data = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $data);
         $jsonresult = json_decode($data);
         if ($jsonresult !== null) {
@@ -162,10 +161,9 @@ class MediaManager
     {
         $token = $this->mediacenterUserManager->getMediacenterUserToken($user, $mediacenter);
         $mediacenterUrl = $mediacenter->getUrl();
-        $parameters = "video=".$mediaRef."&userName=".$user->getUsername()."&token=".$token;
-        $mediaUrl = $mediacenterUrl."videos/?".$parameters;
+        $parameters = 'video='.$mediaRef.'&userName='.$user->getUsername().'&token='.$token;
+        $mediaUrl = $mediacenterUrl.'videos/?'.$parameters;
 
         return $mediaUrl;
     }
-
-} 
+}

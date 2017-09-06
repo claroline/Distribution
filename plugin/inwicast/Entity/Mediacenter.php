@@ -5,7 +5,7 @@ namespace Inwicast\ClarolinePluginBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Mediacenter
+ * Mediacenter.
  *
  * @ORM\Table(name="inwicast_plugin_mediacenter")
  * @ORM\Entity(repositoryClass="Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository")
@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Mediacenter
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -70,9 +70,9 @@ class Mediacenter
     protected $password;
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -80,9 +80,10 @@ class Mediacenter
     }
 
     /**
-     * Set url
+     * Set url.
      *
      * @param string $url
+     *
      * @return Mediacenter
      */
     public function setUrl($url)
@@ -93,15 +94,16 @@ class Mediacenter
     }
 
     /**
-     * Get url
+     * Get url.
      *
      * @return string
      */
     public function getUrl()
     {
         if ($this->url !== null) {
-            return preg_replace("~^https?://[^/]+$~", "$0/", $this->url);
+            return preg_replace('~^https?://[^/]+$~', '$0/', $this->url);
         }
+
         return $this->url;
     }
 
@@ -203,13 +205,13 @@ class Mediacenter
 
     public function getDatabaseParameters()
     {
-        return array(
-            'driver'    => $this->driver,
-            'host'      => $this->host,
-            'port'      => $this->port,
-            'dbname'    => $this->dbname,
-            'user'      => $this->user,
-            'password'  => $this->password
-        );
+        return [
+            'driver' => $this->driver,
+            'host' => $this->host,
+            'port' => $this->port,
+            'dbname' => $this->dbname,
+            'user' => $this->user,
+            'password' => $this->password,
+        ];
     }
 }

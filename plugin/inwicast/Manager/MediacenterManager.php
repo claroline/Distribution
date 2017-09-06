@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package
+ * This file is part of the Claroline Connect package.
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -60,7 +60,7 @@ class MediacenterManager
     public function getMediacenter()
     {
         $mediacenter = $this->mediacenterRepository->findAll();
-        if (sizeof($mediacenter) == 0) {
+        if (sizeof($mediacenter) === 0) {
             throw new NoMediacenterException();
         } else {
             return $mediacenter[0];
@@ -83,7 +83,9 @@ class MediacenterManager
 
     public function getMediacenterForm(Mediacenter $mediacenter = null)
     {
-        if ($mediacenter === null) $mediacenter = $this->getMediacenterOrEmpty();
+        if ($mediacenter === null) {
+            $mediacenter = $this->getMediacenterOrEmpty();
+        }
         $form = $this->formFactory->create(
             'inwicast_plugin_type_mediacenter',
             $mediacenter
@@ -106,4 +108,4 @@ class MediacenterManager
 
         throw new InvalidMediacenterFormException('invalid_url', $form);
     }
-} 
+}

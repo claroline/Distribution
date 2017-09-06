@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package
+ * This file is part of the Claroline Connect package.
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -15,8 +15,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
-use JMS\DiExtraBundle\Annotation as DI;
-use JMS\Serializer\SerializerBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,7 +27,6 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @Route("/inwicast/mediacenter/media")
  * Class MediaController
- * @package Inwicast\ClarolinePluginBundle\Controller
  */
 class MediaController extends Controller
 {
@@ -39,14 +36,14 @@ class MediaController extends Controller
      */
     public function viewAction(Request $request, $mediaRef)
     {
-        try{
+        try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $loggedUser = $this->getSecurityContext()->getToken()->getUser();
             $content = $this->getMediaManager()->getMediaUrl($mediaRef, $mediacenter, $loggedUser);
 
             return new RedirectResponse($content);
-        } catch(NoMediacenterException $nme) {
-            return $this->render("InwicastClarolinePluginBundle:Mediacenter:error.html.twig");
+        } catch (NoMediacenterException $nme) {
+            return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
         }
     }
     /**
@@ -57,13 +54,13 @@ class MediaController extends Controller
      */
     public function postAction(Request $request, WidgetInstance $widget, User $user)
     {
-        try{
+        try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
-        } catch(NoMediacenterException $nme) {
-            return $this->render("InwicastClarolinePluginBundle:Mediacenter:error.html.twig");
+        } catch (NoMediacenterException $nme) {
+            return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
         }
 
-        $mediaRef = $request->get("media_ref");
+        $mediaRef = $request->get('media_ref');
         $mediaManager = $this->getMediaManager();
         $mediaManager->processPost($mediaRef, $widget, $mediacenter, $user);
 
@@ -108,14 +105,14 @@ class MediaController extends Controller
     public function searchAction(Request $request, User $user)
     {
         $response = new JsonResponse();
-        try{
+        try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
-            $keywords = $request->get("keywords");
+            $keywords = $request->get('keywords');
             $mediaList = $this->getVideosList($user, $mediacenter, $keywords);
             $mediaListJson = $this->serializeObject($mediaList);
-            $data = array('videos' => $mediaListJson);
+            $data = ['videos' => $mediaListJson];
             $response->setData($data);
-        } catch(NoMediacenterException $nme) {
+        } catch (NoMediacenterException $nme) {
             $response->setStatusCode(Response::HTTP_EXPECTATION_FAILED);
         }
 
@@ -125,16 +122,16 @@ class MediaController extends Controller
     private function videosListForTemplate(
         User $user, WidgetInstance $widget = null
     ) {
-        try{
+        try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $medialist = $this->getVideosList($user, $mediacenter);
-            $result = array(
+            $result = [
                 'medialist' => $medialist,
-                'widget'    => $widget,
-                'mediacenter'   =>$mediacenter,
-                'username'  => $user->getUsername()
-            );
-        } catch(NoMediacenterException $nme) {
+                'widget' => $widget,
+                'mediacenter' => $mediacenter,
+                'username' => $user->getUsername(),
+            ];
+        } catch (NoMediacenterException $nme) {
             return $this->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
         }
 
@@ -149,4 +146,4 @@ class MediaController extends Controller
     ) {
         return $this->getMediaManager()->getMediaListForUser($user, $mediacenter, $keywords);
     }
-} 
+}

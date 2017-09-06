@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Claroline Connect package
+ * This file is part of the Claroline Connect package.
  *
  * (c) Claroline Consortium <consortium@claroline.net>
  *
@@ -13,7 +13,6 @@ namespace Inwicast\ClarolinePluginBundle\Controller;
 
 use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
 use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
-use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -22,7 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @Route("/inwicast/mediacenter")
  * Class MediacenterController
- * @package Inwicast\ClarolinePluginBundle\Controller
  */
 class MediacenterController extends Controller
 {
@@ -30,7 +28,9 @@ class MediacenterController extends Controller
      * @Route("/admin/configure", name="inwicast_mediacenter_configure")
      * @Method({"GET", "POST"})
      * @Template("InwicastClarolinePluginBundle:Mediacenter:form.html.twig")
+     *
      * @param Request $request
+     *
      * @return array
      */
     public function configureAction(Request $request)
@@ -41,14 +41,14 @@ class MediacenterController extends Controller
         try {
             $mediacenter = $mediacenterManager->processForm($mediacenter, $request);
         } catch (InvalidMediacenterFormException $imfe) {
-            return array('form' => $imfe->getForm()->createView());
+            return ['form' => $imfe->getForm()->createView()];
         }
 
         $response = $this->forward(
-            "InwicastClarolinePluginBundle:Mediacenter:success",
-            array(
-                'mediacenter' => $mediacenter
-            )
+            'InwicastClarolinePluginBundle:Mediacenter:success',
+            [
+                'mediacenter' => $mediacenter,
+            ]
         );
 
         return $response;
@@ -60,6 +60,7 @@ class MediacenterController extends Controller
      * @Template()
      *
      * @param Mediacenter $mediacenter
+     *
      * @return array
      */
     public function successAction(Mediacenter $mediacenter = null)
@@ -69,6 +70,6 @@ class MediacenterController extends Controller
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
         }
 
-        return array('mediacenter' => $mediacenter);
+        return ['mediacenter' => $mediacenter];
     }
-} 
+}

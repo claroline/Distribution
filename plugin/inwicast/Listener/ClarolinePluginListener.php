@@ -11,27 +11,18 @@
 
 namespace Inwicast\ClarolinePluginBundle\Listener;
 
+use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
-use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Event\InjectJavascriptEvent;
-use Claroline\CoreBundle\Listener\NoHttpRequestException;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
-use Doctrine\ORM\NoResultException;
+use Inwicast\ClarolinePluginBundle\Entity\Media;
+use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
+use Inwicast\ClarolinePluginBundle\Entity\MediacenterUser;
 use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
-use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterUserException;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\Extension\Templating\TemplatingExtension;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\TwigBundle\TwigEngine;
-use JMS\DiExtraBundle\Annotation as DI;
-use Inwicast\ClarolinePluginBundle\Entity\Media;
-use Inwicast\ClarolinePluginBundle\Entity\MediacenterUser;
-use Inwicast\ClarolinePluginBundle\Entity\Mediacenter;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\SecurityContext;
 
 /**
  * @DI\Service
@@ -48,13 +39,14 @@ class ClarolinePluginListener extends ContainerAware
      * @DI\Observe("inject_javascript_layout")
      *
      * @param InjectJavascriptEvent $event
+     *
      * @return string
      */
     public function onInjectJs(InjectJavascriptEvent $event)
     {
         $content = $this->templating->render(
             'InwicastClarolinePluginBundle:Inwicast:javascript_layout.html.twig',
-            array()
+            []
         );
 
         $event->addContent($content);
@@ -96,10 +88,10 @@ class ClarolinePluginListener extends ContainerAware
                 $event->setContent(
                     $this->templating->render(
                         'InwicastClarolinePluginBundle:Media:view.html.twig',
-                        array('media' => $media, 'mediacenter' => $mediacenter)
+                        ['media' => $media, 'mediacenter' => $mediacenter]
                     )
                 );
-            } catch(NoMediacenterException $nme) {
+            } catch (NoMediacenterException $nme) {
                 $event->setContent(
                     $this->templating->render(
                         'InwicastClarolinePluginBundle:Mediacenter:error.html.twig'
@@ -125,7 +117,7 @@ class ClarolinePluginListener extends ContainerAware
         // Get widget instance
         $widgetInstance = $event->getInstance();
         // Get mediacenter user from database
-        $loggedUser = $this->container->get("security.context")->getToken()->getUser();
+        $loggedUser = $this->container->get('security.context')->getToken()->getUser();
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $mediaManager = $this->getMediaManager();
@@ -133,12 +125,12 @@ class ClarolinePluginListener extends ContainerAware
             // Return form
             $content = $this->templating->render(
                 'InwicastClarolinePluginBundle:Media:videosList.html.twig',
-                array(
-                    'medialist'     => $medialist,
-                    'widget'        => $widgetInstance,
-                    'username'      => $loggedUser->getUsername(),
-                    'mediacenter'   => $mediacenter
-                )
+                [
+                    'medialist' => $medialist,
+                    'widget' => $widgetInstance,
+                    'username' => $loggedUser->getUsername(),
+                    'mediacenter' => $mediacenter,
+                ]
             );
         } catch (NoMediacenterException $nme) {
             $content = $this->templating->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
@@ -155,12 +147,12 @@ class ClarolinePluginListener extends ContainerAware
     public function onToolOpen(DisplayToolEvent $event)
     {
         // Get mediacenter user from database
-        $loggedUser = $this->container->get("security.context")->getToken()->getUser();
+        $loggedUser = $this->container->get('security.context')->getToken()->getUser();
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $mediacenterUserManager = $this->getMediacenterUserManager();
             $token = $mediacenterUserManager->getMediacenterUserToken($loggedUser, $mediacenter);
-            $mediacener_portal = $mediacenter->getUrl()."?userName=".$loggedUser->getUsername()."&token=".$token;
+            $mediacener_portal = $mediacenter->getUrl().'?userName='.$loggedUser->getUsername().'&token='.$token;
             $content = new RedirectResponse($mediacener_portal);
         } catch (NoMediacenterException $nme) {
             $content = $this->templating->render('InwicastClarolinePluginBundle:Mediacenter:error.html.twig');
@@ -176,7 +168,7 @@ class ClarolinePluginListener extends ContainerAware
      */
     private function getMediacenterManager()
     {
-        return $this->container->get("inwicast.plugin.manager.mediacenter");
+        return $this->container->get('inwicast.plugin.manager.mediacenter');
     }
 
     /**
@@ -184,7 +176,7 @@ class ClarolinePluginListener extends ContainerAware
      */
     private function getMediacenterUserManager()
     {
-        return $this->container->get("inwicast.plugin.manager.mediacenteruser");
+        return $this->container->get('inwicast.plugin.manager.mediacenteruser');
     }
 
     /**
@@ -192,6 +184,6 @@ class ClarolinePluginListener extends ContainerAware
      */
     private function getMediaManager()
     {
-        return $this->container->get("inwicast.plugin.manager.media");
+        return $this->container->get('inwicast.plugin.manager.media');
     }
 }
