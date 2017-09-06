@@ -11,6 +11,7 @@
 
 namespace Inwicast\ClarolinePluginBundle\Installation\Updater;
 
+use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\InstallationBundle\Updater\Updater;
 use Doctrine\ORM\EntityManager;
