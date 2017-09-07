@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import cloneDeep from 'lodash/cloneDeep'
 
 import {t} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
 import {actions} from './../actions.js'
 
 const ItemTagsList = props => {
@@ -41,18 +42,63 @@ ItemTag.propTypes = {
   removeTag: T.func.isRequired
 }
 
+const TagsTypeAhead = props => {
+  return (
+    <ul className="tags-dropdown-menu dropdown-menu">
+      {props.isFetching &&
+        <li className="tags-fetching text-center">
+          <span className="fa fa-fw fa-circle-o-notch fa-spin"></span>
+        </li>
+      }
+      {props.tags.map((tag, idx) =>
+        <li key={idx}>
+          <a
+            role="button"
+            href=""
+            onClick={(e) => {
+              e.preventDefault()
+              props.selectTag(tag)
+            }}
+          >
+            {tag}
+          </a>
+        </li>
+      )}
+    </ul>
+  )
+}
+
+TagsTypeAhead.propTypes = {
+  tags: T.arrayOf(T.string),
+  isFetching: T.bool.isRequired,
+  selectTag: T.func.isRequired
+}
+
 class TagsEditor extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      currentTag: ''
+      currentTag: '',
+      isFetching: false,
+      results: []
     }
   }
 
   updateCurrentTag(value) {
-    this.setState({
-      currentTag: value
-    })
+    this.setState({currentTag: value})
+
+    if (value) {
+      this.setState({isFetching: true})
+
+      fetch(generateUrl('item_tags_search') + '?search=' + value, {
+        method: 'GET' ,
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(results => this.setState({results: results, isFetching: false}))
+    } else {
+      this.setState({results: [], isFetching: false})
+    }
   }
 
   addCurrentTag() {
@@ -61,6 +107,15 @@ class TagsEditor extends Component {
     if (!this.isTagPresent(trimmedTag)) {
       const tags = cloneDeep(this.props.item.tags)
       tags.push(trimmedTag)
+      this.props.updateItemTags(this.props.item.id, tags)
+    }
+    this.updateCurrentTag('')
+  }
+
+  selectTag(tag) {
+    if (!this.isTagPresent(tag)) {
+      const tags = cloneDeep(this.props.item.tags)
+      tags.push(tag)
       this.props.updateItemTags(this.props.item.id, tags)
     }
     this.updateCurrentTag('')
@@ -104,6 +159,13 @@ class TagsEditor extends Component {
             </button>
           </span>
         </div>
+        {(this.state.isFetching || this.state.results.length > 0) &&
+          <TagsTypeAhead
+            isFetching={this.state.isFetching}
+            tags={this.state.results}
+            selectTag={(tag) => this.selectTag(tag)}
+          />
+        }
       </div>
     )
   }

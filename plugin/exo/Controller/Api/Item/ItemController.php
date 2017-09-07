@@ -3,8 +3,10 @@
 namespace UJM\ExoBundle\Controller\Api\Item;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use UJM\ExoBundle\Controller\Api\AbstractController;
@@ -26,17 +28,25 @@ class ItemController extends AbstractController
     private $itemManager;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * ItemController constructor.
      *
      * @DI\InjectParams({
-     *     "itemManager" = @DI\Inject("ujm_exo.manager.item")
+     *     "itemManager"     = @DI\Inject("ujm_exo.manager.item"),
+     *     "eventDispatcher" = @DI\Inject("event_dispatcher")
      * })
      *
-     * @param ItemManager $itemManager
+     * @param ItemManager              $itemManager
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(ItemManager $itemManager)
+    public function __construct(ItemManager $itemManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->itemManager = $itemManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -177,5 +187,30 @@ class ItemController extends AbstractController
         }
 
         return new JsonResponse(null, 204);
+    }
+
+    /**
+     * Searches list of tags.
+     *
+     * @EXT\Route("/item/tags", name="item_tags_search")
+     * @EXT\Method("GET")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function itemTagsSearchAction(Request $request)
+    {
+        $tags = [];
+        $query = $request->query->all();
+        $search = $query['search'] ? $query['search'] : '';
+
+        if ($search) {
+            $event = new GenericDataEvent(['search' => $search]);
+            $this->eventDispatcher->dispatch('claroline_retrieve_tags', $event);
+            $tags = $event->getResponse();
+        }
+
+        return new JsonResponse($tags, 200);
     }
 }
