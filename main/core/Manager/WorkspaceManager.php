@@ -1245,11 +1245,11 @@ class WorkspaceManager
     public function isManager(Workspace $workspace, TokenInterface $token)
     {
         $roles = array_map(
-          function ($role) {
-              return $role->getRole();
-          },
-          $token->getRoles()
-      );
+            function ($role) {
+                return $role->getRole();
+            },
+            $token->getRoles()
+        );
 
         $managerRole = $this->roleManager->getManagerRole($workspace);
 
@@ -1258,7 +1258,7 @@ class WorkspaceManager
         }
 
         foreach ($roles as $role) {
-            if (is_object($role) && $role->getName() === $managerRole) {
+            if ($managerRole && $role === $managerRole->getName()) {
                 return true;
             }
         }
@@ -1499,6 +1499,15 @@ class WorkspaceManager
                 }
             }
         }
+
+        foreach ($copy->getChildren() as $child) {
+            foreach ($resourceNode->getChildren() as $sourceChild) {
+                if ($child->getName() === $sourceChild->getName()) {
+                    $this->duplicateRights($sourceChild, $child, $workspaceRoles);
+                }
+            }
+        }
+
         $this->om->flush();
     }
 
