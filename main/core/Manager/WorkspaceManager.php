@@ -1389,6 +1389,7 @@ class WorkspaceManager
 
             return false;
         });
+
         $this->om->flush();
         $this->om->startFlushSuite();
         $copies = [];
@@ -1398,7 +1399,9 @@ class WorkspaceManager
             try {
                 $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
                 //activities will be removed anyway
-                if ($resourceNode->getResourceType()->getName() !== 'activity') {
+                $bypass = ['activity', 'innova_path'];
+                if (in_array($resourceNode->getResourceType()->getName(), $bypass)) {
+                    $this->log('Firing resourcemanager copy method for '. $resourceNode->getName());
                     $copy = $this->resourceManager->copy(
                       $resourceNode,
                       $rootNode,
