@@ -1258,7 +1258,7 @@ class WorkspaceManager
         }
 
         foreach ($roles as $role) {
-            if ($role === $managerRole->getName()) {
+            if ($managerRole && $role === $managerRole->getName()) {
                 return true;
             }
         }
