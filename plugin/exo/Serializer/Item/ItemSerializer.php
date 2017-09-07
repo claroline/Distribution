@@ -265,7 +265,10 @@ class ItemSerializer extends AbstractSerializer
                     $item->setScoreRule(json_encode($score));
                 },
             ], $data, $item);
-            $this->deserializeTags($item, $data->tags);
+
+            if (isset($data->tags)) {
+                $this->deserializeTags($item, $data->tags);
+            }
         } else {
             // content item
             $this->mapObjectToEntity([
