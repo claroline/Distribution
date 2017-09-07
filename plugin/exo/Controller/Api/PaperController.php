@@ -7,6 +7,7 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -41,26 +42,35 @@ class PaperController extends AbstractController
     private $exerciseManager;
 
     /**
+     * @var Request
+     */
+    private $request;
+
+    /**
      * PaperController constructor.
      *
      * @DI\InjectParams({
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
      *     "paperManager"    = @DI\Inject("ujm_exo.manager.paper"),
-     *     "exerciseManager" = @DI\Inject("ujm_exo.manager.exercise")
+     *     "exerciseManager" = @DI\Inject("ujm_exo.manager.exercise"),
+     *     "request"         = @DI\Inject("request")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
      * @param PaperManager                  $paperManager
-     * @param EntityManager                 $em
+     * @param ExerciseManager               $exerciseManager
+     * @param Request                       $request
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
         PaperManager $paperManager,
-        ExerciseManager $exerciseManager
+        ExerciseManager $exerciseManager,
+        Request $request
     ) {
         $this->authorization = $authorization;
         $this->paperManager = $paperManager;
         $this->exerciseManager = $exerciseManager;
+        $this->request = $request;
     }
 
     /**
@@ -82,6 +92,37 @@ class PaperController extends AbstractController
 
         return new JsonResponse(
             $this->paperManager->serializeExercisePapers($exercise, $this->isAdmin($exercise) ? null : $user)
+        );
+    }
+
+    /**
+     * Returns all the papers associated with an exercise.
+     * Administrators get the papers of all users, others get only theirs.
+     *
+     * @EXT\Route("/page/{page}/limit/{limit}", name="exercise_filtered_papers")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter("user", converter="current_user")
+     *
+     * @param Exercise $exercise
+     * @param int      $page
+     * @param int      $limit
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function filteredListAction(Exercise $exercise, $page, $limit, User $user)
+    {
+        $this->assertHasPermission('OPEN', $exercise);
+        $searches = $this->request->query->all();
+
+        return new JsonResponse(
+            $this->paperManager->serializeExerciseFilteredPapers(
+                $exercise,
+                $this->isAdmin($exercise) ? null : $user,
+                $searches,
+                $page,
+                $limit
+            )
         );
     }
 

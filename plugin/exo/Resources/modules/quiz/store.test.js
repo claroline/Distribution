@@ -45,7 +45,19 @@ describe('createStore', () => {
         papers: {},
         isFetched: false
       },
-      correction: {}
+      correction: {},
+      list: {
+        filters: [],
+        sortBy: {
+          property: null,
+          direction: 0
+        },
+        selected: []
+      },
+      pagination: {
+        current: 0,
+        pageSize: 20
+      }
     })
   })
 })

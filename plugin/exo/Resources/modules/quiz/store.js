@@ -10,6 +10,8 @@ import thunk from 'redux-thunk'
 
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
+import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
 
 import {apiMiddleware} from './../api/middleware'
 import {reducers as apiReducers} from './../api/reducers'
@@ -49,7 +51,10 @@ export function makeReducer(editable) {
 
     papers: reducePapers,
 
-    correction: reduceCorrection
+    correction: reduceCorrection,
+
+    list: makeListReducer(),
+    pagination: paginationReducer
   })
 }
 
