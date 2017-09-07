@@ -1306,8 +1306,6 @@ class WorkspaceManager
             $toCopy[$resourceNode->getId()] = $resourceNode;
         }
 
-        var_dump(count($toCopy));
-
         foreach ($resourceNodes as $resourceNode) {
             if ($resourceNode->getResourceType()->getName() === 'activity' && $this->resourceManager->getResourceFromNode($resourceNode)) {
                 $primRes = $this->resourceManager->getResourceFromNode($resourceNode)->getPrimaryResource();
@@ -1316,7 +1314,7 @@ class WorkspaceManager
                     unset($toCopy[$primRes->getId()]);
                     $ancestors = $this->resourceManager->getAncestors($primRes);
                     foreach ($ancestors as $ancestor) {
-                        unset ($toCopy[$ancestor['id']]);
+                        unset($toCopy[$ancestor['id']]);
                     }
                 }
                 if ($parameters) {
@@ -1324,17 +1322,14 @@ class WorkspaceManager
                         unset($toCopy[$secRes->getId()]);
                         $ancestors = $this->resourceManager->getAncestors($secRes);
                         foreach ($ancestors as $ancestor) {
-                            unset ($toCopy[$ancestor['id']]);
+                            unset($toCopy[$ancestor['id']]);
                         }
-
                     }
                 }
                 unset($toCopy[$resourceNode->getId()]);
             }
         }
 
-
-    var_dump(count($toCopy));
         $this->duplicateResources(
           $toCopy,
           $this->getArrayRolesByWorkspace($newWorkspace),
@@ -1415,7 +1410,7 @@ class WorkspaceManager
                 //$bypass = ['activity'];
                 $bypass = [];
                 if (!in_array($resourceNode->getResourceType()->getName(), $bypass)) {
-                    $this->log('Firing resourcemanager copy method for '. $resourceNode->getName());
+                    $this->log('Firing resourcemanager copy method for '.$resourceNode->getName());
                     $copy = $this->resourceManager->copy(
                       $resourceNode,
                       $rootNode,
