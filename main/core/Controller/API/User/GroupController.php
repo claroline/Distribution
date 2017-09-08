@@ -216,7 +216,7 @@ class GroupController extends FOSRestController
     public function getSearchGroupsAction($page, $limit)
     {
         return $this->finder->search(
-            'Claroline\CoreBundle\Entity\Groups',
+            'Claroline\CoreBundle\Entity\Group',
             $page,
             $limit,
             $this->container->get('request')->query->all()

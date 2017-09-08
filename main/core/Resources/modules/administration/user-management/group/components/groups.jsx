@@ -126,31 +126,31 @@ function mapDispatchToProps(dispatch) {
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))
       // grab updated user list
-      dispatch(actions.fetchUsers())
+      dispatch(actions.fetchGroups())
     },
     removeListFilter: (filter) => {
       dispatch(listActions.removeFilter(filter))
       // grab updated user list
-      dispatch(actions.fetchUsers())
+      dispatch(actions.fetchGroups())
     },
 
     // pagination
     handlePageSizeUpdate: (pageSize) => {
       dispatch(paginationActions.updatePageSize(pageSize))
       // grab updated user list
-      dispatch(actions.fetchUsers())
+      dispatch(actions.fetchGroups())
     },
     handlePageChange: (page) => {
       dispatch(paginationActions.changePage(page))
       // grab updated user list
-      dispatch(actions.fetchUsers())
+      dispatch(actions.fetchGroups())
     },
 
     // sorting
     updateSort: (property) => {
       dispatch(listActions.updateSort(property))
       // grab updated user list
-      dispatch(actions.fechtUsers())
+      dispatch(actions.fetchGroups())
     },
 
     // selection
