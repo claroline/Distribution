@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Form\User\GroupSettingsType;
@@ -41,7 +42,8 @@ class GroupController extends FOSRestController
      *     "roleManager"  = @DI\Inject("claroline.manager.role_manager"),
      *     "request"      = @DI\Inject("request"),
      *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "apiManager"   = @DI\Inject("claroline.manager.api_manager")
+     *     "apiManager"   = @DI\Inject("claroline.manager.api_manager"),
+     *     "finder"       = @DI\Inject("claroline.api.finder")
      * })
      */
     public function __construct(
@@ -50,7 +52,8 @@ class GroupController extends FOSRestController
         RoleManager   $roleManager,
         ObjectManager $om,
         Request       $request,
-        ApiManager    $apiManager
+        ApiManager    $apiManager,
+        FinderProvider $finder
     ) {
         $this->formFactory = $formFactory;
         $this->groupManager = $groupManager;
@@ -59,6 +62,7 @@ class GroupController extends FOSRestController
         $this->groupRepository = $this->om->getRepository('ClarolineCoreBundle:Group');
         $this->request = $request;
         $this->apiManager = $apiManager;
+        $this->finder = $finder;
     }
 
     /**
@@ -211,18 +215,12 @@ class GroupController extends FOSRestController
      */
     public function getSearchGroupsAction($page, $limit)
     {
-        $data = $this->request->query->all();
-        $groups = $this->groupManager->searchPartialList($data, $page, $limit);
-        $count = $this->groupManager->searchPartialList($data, $page, $limit, true);
-
-        return ['groups' => $groups, 'total' => $count];
-    }
-
-    public function getGroupSearchableFieldsAction()
-    {
-        $baseFields = Group::getSearchableFields();
-
-        return $baseFields;
+        return $this->finder->search(
+            'Claroline\CoreBundle\Entity\Groups',
+            $page,
+            $limit,
+            $this->container->get('request')->query->all()
+        );
     }
 
     /**

@@ -6,11 +6,11 @@ import {t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
-import {actions} from '#/main/core/administration/user/actions'
+import {actions} from '#/main/core/administration/user-management/user/actions'
 
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
-import {select} from '#/main/core/administration/user/selectors'
+import {select} from '#/main/core/administration/user-management/user/selectors'
 
 import {
   PageContainer as Page,
@@ -32,7 +32,7 @@ class Users extends Component {
     return (
       <Page id="user-management">
         <PageHeader
-          title={t('workspaces_management')}
+          title={t('user-management')}
         >
           <PageActions>
             <PageAction

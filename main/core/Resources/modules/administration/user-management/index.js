@@ -10,9 +10,10 @@ import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
-import {reducer as usersReducer} from '#/main/core/administration/user/reducer'
+import {reducer as usersReducer} from '#/main/core/administration/user-management/user/reducer'
 
-import {Users} from '#/main/core/administration/user/components/users.jsx'
+import {Users} from '#/main/core/administration/user-management/user/components/users.jsx'
+//import {Groups} from '#/main/core/administration/user-management/group/components/groups.jsx'
 
 // register custom modals for the app
 registerModalType('CONFIRM_MODAL', ConfirmModal)
