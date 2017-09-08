@@ -171,7 +171,8 @@ class UserManager
         $model = null,
         $publicUrl = null,
         $organizations = [],
-        $forcePersonalWorkspace = null
+        $forcePersonalWorkspace = null,
+        $addNotifications = true
     ) {
         $additionalRoles = [];
 
@@ -195,8 +196,11 @@ class UserManager
         $user->addRole($roleUser);
         $this->roleManager->createUserRole($user);
         $notifications = $this->platformConfigHandler->getParameter('auto_enable_notifications');
-        $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
-        $nManager->processUpdate($notifications, $user);
+
+        if ($addNotifications) {
+            $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
+            $nManager->processUpdate($notifications, $user);
+        }
 
         foreach ($additionalRoles as $role) {
             if ($role) {
@@ -1968,7 +1972,7 @@ class UserManager
             $user->setPlainPassword(uniqid('', true));
             $user->disable();
             $user->remove();
-            $this->createUser($user, false, [], null, null, [], false, false);
+            $this->createUser($user, false, [], null, null, [], false, false, false);
         }
 
         return $user;
