@@ -2,7 +2,6 @@ import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
 // modals
 import {registerModalType} from '#/main/core/layout/modal'
-import {ConfirmModal} from '#/main/core/layout/modal/components/confirm.jsx'
 import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
 
 // reducers
@@ -15,7 +14,6 @@ import {reducer as workspacesReducer} from '#/main/core/administration/workspace
 import {Workspaces} from '#/main/core/administration/workspace/components/workspaces.jsx'
 
 // register custom modals for the app
-registerModalType('CONFIRM_MODAL', ConfirmModal)
 registerModalType('MODAL_USER_PICKER', UserPickerModal)
 
 // mount the react application

@@ -1,9 +1,11 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import moment from 'moment'
+
 import {t} from '#/main/core/translation'
-import {makeModal} from '#/main/core/layout/modal'
+import {makeModal, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'
 import {actions} from '../actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
@@ -25,7 +27,7 @@ class ManagementView extends Component {
   deleteTask(task) {
     this.setState({
       modal: {
-        type: 'DELETE_MODAL',
+        type: MODAL_DELETE_CONFIRM,
         urlModal: null,
         props: {
           url: null,
@@ -49,7 +51,7 @@ class ManagementView extends Component {
 
     this.setState({
       modal: {
-        type: 'DELETE_MODAL',
+        type: MODAL_DELETE_CONFIRM,
         urlModal: null,
         props: {
           url: null,

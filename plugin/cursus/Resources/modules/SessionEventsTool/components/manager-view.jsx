@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
-import {makeModal} from '#/main/core/layout/modal'
+import {makeModal, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'
 import {actions} from '../actions'
 import {registrationTypes} from '../enums'
@@ -25,7 +25,7 @@ class ManagerView extends Component {
   deleteSessionEvent(sessionEvent) {
     this.setState({
       modal: {
-        type: 'DELETE_MODAL',
+        type: MODAL_DELETE_CONFIRM,
         urlModal: null,
         props: {
           url: null,
@@ -46,7 +46,7 @@ class ManagerView extends Component {
   deleteSessionEvents(sessionEvents) {
     this.setState({
       modal: {
-        type: 'DELETE_MODAL',
+        type: MODAL_DELETE_CONFIRM,
         urlModal: null,
         props: {
           url: null,

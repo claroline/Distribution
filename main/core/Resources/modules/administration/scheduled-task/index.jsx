@@ -14,10 +14,10 @@ import {MessageDetailsModal} from './components/message-details-modal.jsx'
 class AdminTaskTool {
   constructor(isCronConfigured, tasks, total) {
     registerModalTypes([
-      ['DELETE_MODAL', DeleteConfirmModal],
       ['MODAL_TASK_TYPE_FORM', TaskTypeFormModal],
       ['MODAL_DETAILS_TASK_MESSAGE', MessageDetailsModal]
     ])
+
     this.store = createStore(
       reducers,
       {
