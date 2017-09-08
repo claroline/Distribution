@@ -2,7 +2,7 @@
   "webpack": {
     "entry": {
       "organization-field": "symfony/form/organization/index",
-      "user-management": "users/module",
+      "user-management": "administration/user",
       "facet-management": "facets/module",
       "workspace-management": "administration/workspace",
       "theme-management": "administration/theme",

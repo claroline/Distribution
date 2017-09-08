@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Action\AdditionalAction;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
@@ -93,7 +94,8 @@ class UsersController extends Controller
      *     "translator"             = @DI\Inject("translator"),
      *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
      *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "groupManager"           = @DI\Inject("claroline.manager.group_manager")
+     *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
+     *     "finder"                 = @DI\Inject("claroline.api.finder")
      * })
      */
     public function __construct(
@@ -115,7 +117,8 @@ class UsersController extends Controller
         TranslatorInterface $translator,
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
-        GroupManager $groupManager
+        GroupManager $groupManager,
+        FinderProvider $finder
     ) {
         $this->authenticationManager = $authenticationManager;
         $this->configHandler = $configHandler;
@@ -137,6 +140,7 @@ class UsersController extends Controller
         $this->workspaceManager = $workspaceManager;
         $this->groupManager = $groupManager;
         $this->tokenStorage = $tokenStorage;
+        $this->finder = $finder;
     }
 
     /**
@@ -280,7 +284,12 @@ class UsersController extends Controller
      */
     public function indexAction()
     {
-        return [];
+        return $this->finder->search(
+            'Claroline\CoreBundle\Entity\User',
+            0,
+            20,
+            $this->container->get('request')->query->all()
+        );
     }
 
     /**

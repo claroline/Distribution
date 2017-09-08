@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -80,7 +81,8 @@ class UserController extends FOSRestController
      *     "profilePropertyManager" = @DI\Inject("claroline.manager.profile_property_manager"),
      *     "mailManager"            = @DI\Inject("claroline.manager.mail_manager"),
      *     "apiManager"             = @DI\Inject("claroline.manager.api_manager"),
-     *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager")
+     *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "finder"                 = @DI\Inject("claroline.api.finder")
      * })
      *
      * @param AuthenticationManager  $authenticationManager
@@ -112,7 +114,8 @@ class UserController extends FOSRestController
         ProfilePropertyManager $profilePropertyManager,
         MailManager $mailManager,
         ApiManager $apiManager,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        FinderProvider $finder
     ) {
         $this->authenticationManager = $authenticationManager;
         $this->eventDispatcher = $eventDispatcher;
@@ -131,6 +134,7 @@ class UserController extends FOSRestController
         $this->mailManager = $mailManager;
         $this->apiManager = $apiManager;
         $this->facetManager = $facetManager;
+        $this->finder = $finder;
     }
 
     /**
@@ -150,24 +154,12 @@ class UserController extends FOSRestController
      */
     public function getSearchUsersAction($page, $limit)
     {
-        $data = [];
-        $searches = $this->request->query->all();
-
-        //format search
-        foreach ($searches as $key => $search) {
-            switch ($key) {
-                case 'first_name': $data['firstName'] = $search; break;
-                case 'last_name': $data['lastName'] = $search; break;
-                case 'administrative_code': $data['administrativeCode'] = $search; break;
-                case 'email': $data['mail'] = $search; break;
-                default: $data[$key] = $search;
-            }
-        }
-
-        $users = $this->userManager->searchPartialList($data, $page, $limit);
-        $count = $this->userManager->searchPartialList($data, $page, $limit, true);
-
-        return ['users' => $users, 'total' => $count];
+        return $this->finder->search(
+            'Claroline\CoreBundle\Entity\User',
+            $page,
+            $limit,
+            $this->container->get('request')->query->all()
+        );
     }
 
     /**
@@ -455,16 +447,16 @@ class UserController extends FOSRestController
         return $this->userManager->enable($user);
     }
 
-     /**
-      * @View(serializerGroups={"api_user"})
-      * @Post("/users/csv/facets")
-      */
-     public function csvImportFacetsAction()
-     {
-         $this->throwsExceptionIfNotAdmin();
+    /**
+     * @View(serializerGroups={"api_user"})
+     * @Post("/users/csv/facets")
+     */
+    public function csvImportFacetsAction()
+    {
+        $this->throwsExceptionIfNotAdmin();
 
-         $this->userManager->csvFacets($this->request->files->get('csv'));
-     }
+        $this->userManager->csvFacets($this->request->files->get('csv'));
+    }
 
     private function isAdmin()
     {

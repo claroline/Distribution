@@ -5,11 +5,16 @@
 
 {% block section_content %}
     <div>{{ macros.flashBox() }}</div>
-    <div id="users-panel" class="panel panel-default" ng-app="UsersManager">
-        <div class="panel panel-body" ui-view>
-        </div>
+    <div
+      class="page-container user-administration-container"
+      data-users="{{ results | json_encode | raw | escape }}"
+      data-count="{{ total }}"
+      data-filters="{{ filters | json_encode | raw | escape }}"
+      data-sort-by="{{ sortBy | json_encode | raw | escape }}"
+      data-page="{{ page }}"
+      data-page-size="{{ pageSize }}"
+    >
     </div>
-
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
