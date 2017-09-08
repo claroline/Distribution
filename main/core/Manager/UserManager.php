@@ -604,7 +604,7 @@ class UserManager
                 if ($logger) {
                     $logger(" User $j ($username) being updated...");
                 }
-                $userEntity->clearRoles();
+                //$userEntity->clearRoles();
                 $this->roleManager->associateRoles($userEntity, $additionalRoles);
             }
 
