@@ -9,14 +9,14 @@
  * Date: 2/19/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Manager;
+namespace Icap\InwicastBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Doctrine\ORM\EntityManager;
-use Inwicast\ClarolinePluginBundle\Entity\Media;
-use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
-use Inwicast\ClarolinePluginBundle\Repository\MediaRepository;
+use Icap\InwicastBundle\Entity\Media;
+use Icap\InwicastBundle\Entity\MediaCenter;
+use Icap\InwicastBundle\Repository\MediaRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -31,7 +31,7 @@ class MediaManager
     private $em;
 
     /**
-     * @var \Inwicast\ClarolinePluginBundle\Repository\MediaRepository
+     * @var \Icap\InwicastBundle\Repository\MediaRepository
      */
     private $mediaRepository;
 

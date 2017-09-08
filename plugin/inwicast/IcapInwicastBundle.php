@@ -14,7 +14,7 @@ namespace Inwicast\ClarolinePluginBundle;
 use Claroline\CoreBundle\Library\DistributionPluginBundle;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 
-class InwicastClarolinePluginBundle extends DistributionPluginBundle
+class IcapInwicastBundle extends DistributionPluginBundle
 {
     public function getConfiguration($environment)
     {

@@ -1,7 +1,7 @@
 parameters:
-    inwicast.plugin.media.class:                      Inwicast\ClarolinePluginBundle\Entity\Media
-    inwicast.plugin.repository.media.class:           Inwicast\ClarolinePluginBundle\Repository\MediaRepository
-    inwicast.plugin.repository.mediacenteruser.class: Inwicast\ClarolinePluginBundle\Repository\MediaCenterUserRepository
+    inwicast.plugin.media.class:                      Icap\InwicastBundle\Entity\Media
+    inwicast.plugin.repository.media.class:           Icap\InwicastBundle\Repository\MediaRepository
+    inwicast.plugin.repository.mediacenteruser.class: Icap\InwicastBundle\Repository\MediaCenterUserRepository
 
 services:
     inwicast.plugin.repository.media:

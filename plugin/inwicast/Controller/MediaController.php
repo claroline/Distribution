@@ -9,12 +9,12 @@
  * Date: 2/19/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Controller;
+namespace Icap\InwicastBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
-use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
+use Icap\InwicastBundle\Entity\MediaCenter;
+use Icap\InwicastBundle\Exception\NoMediacenterException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -43,7 +43,7 @@ class MediaController extends Controller
 
             return new RedirectResponse($content);
         } catch (NoMediacenterException $nme) {
-            return $this->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
+            return $this->render('IcapInwicastBundle:MediaCenter:error.html.twig');
         }
     }
     /**
@@ -57,7 +57,7 @@ class MediaController extends Controller
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
         } catch (NoMediacenterException $nme) {
-            return $this->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
+            return $this->render('IcapInwicastBundle:MediaCenter:error.html.twig');
         }
 
         $mediaRef = $request->get('media_ref');
@@ -73,7 +73,7 @@ class MediaController extends Controller
      *      name="inwicast_mediacenter_user_videos"
      * )
      * @Method({"GET"})
-     * @Template("InwicastClarolinePluginBundle:Media:videosList.html.twig")
+     * @Template("IcapInwicastBundle:Media:videosList.html.twig")
      * @ParamConverter("user", options={"authenticatedUser" = true})
      * @ParamConverter("widget", class="ClarolineCoreBundle:Widget\WidgetInstance", options={"id" = "widgetId"})
      */
@@ -88,7 +88,7 @@ class MediaController extends Controller
      *      options={"expose"=true}
      * )
      * @Method({"GET"})
-     * @Template("InwicastClarolinePluginBundle:Media:videosListTinymce.html.twig")
+     * @Template("IcapInwicastBundle:Media:videosListTinymce.html.twig")
      * @ParamConverter("user", options={"authenticatedUser" = true})
      */
     public function listTinymceAction(User $user)
@@ -132,7 +132,7 @@ class MediaController extends Controller
                 'username' => $user->getUsername(),
             ];
         } catch (NoMediacenterException $nme) {
-            return $this->render('InwicastClarolinePluginBundle:MediaCenter:error.html.twig');
+            return $this->render('IcapInwicastBundle:MediaCenter:error.html.twig');
         }
 
         // Return $result

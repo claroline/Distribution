@@ -190,7 +190,7 @@
             "Icap\\BibliographyBundle\\": "plugin/bibliography",
             "Claroline\\ExternalSynchronizationBundle\\": "plugin/external-user-group-synchronization",
             "Claroline\\BigBlueButtonBundle\\": "plugin/big-blue-button",
-            "Inwicast\\ClarolinePluginBundle\\": "plugin/inwicast"
+            "Icap\\InwicastBundle\\": "plugin/inwicast"
         }
     },
     "extra": {
@@ -252,7 +252,7 @@
             "Icap\\BibliographyBundle\\IcapBibliographyBundle",
             "Claroline\\ExternalSynchronizationBundle\\ClarolineExternalSynchronizationBundle",
             "Claroline\\BigBlueButtonBundle\\ClarolineBigBlueButtonBundle",
-            "Inwicast\\ClarolinePluginBundle\\InwicastClarolinePluginBundle"
+            "Icap\\InwicastBundle\\IcapInwicastBundle"
         ]
     }
 }

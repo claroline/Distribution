@@ -9,10 +9,10 @@
  * Date: 2/19/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Controller;
+namespace Icap\InwicastBundle\Controller;
 
-use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
-use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
+use Icap\InwicastBundle\Entity\MediaCenter;
+use Icap\InwicastBundle\Exception\InvalidMediacenterFormException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -27,7 +27,7 @@ class MediaCenterController extends Controller
     /**
      * @Route("/admin/configure", name="inwicast_mediacenter_configure")
      * @Method({"GET", "POST"})
-     * @Template("InwicastClarolinePluginBundle:MediaCenter:form.html.twig")
+     * @Template("IcapInwicastBundle:MediaCenter:form.html.twig")
      *
      * @param Request $request
      *
@@ -45,7 +45,7 @@ class MediaCenterController extends Controller
         }
 
         $response = $this->forward(
-            'InwicastClarolinePluginBundle:MediaCenter:success',
+            'IcapInwicastBundle:MediaCenter:success',
             [
                 'mediacenter' => $mediacenter,
             ]

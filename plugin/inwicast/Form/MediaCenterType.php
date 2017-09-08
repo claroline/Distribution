@@ -9,7 +9,7 @@
  * Date: 2/20/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Form;
+namespace Icap\InwicastBundle\Form;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\AbstractType;
@@ -50,7 +50,7 @@ class MediaCenterType extends AbstractType
         $resolver->setDefaults(
             [
                 'translation_domain' => 'widget',
-                'data_class' => 'Inwicast\ClarolinePluginBundle\Entity\MediaCenter',
+                'data_class' => 'Icap\InwicastBundle\Entity\MediaCenter',
                 'csrf_protection' => true,
             ]
         );
