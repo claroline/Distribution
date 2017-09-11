@@ -12,6 +12,8 @@ import {select as paginationSelect} from '#/main/core/layout/pagination/selector
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select} from '#/main/core/administration/user-management/role/selectors'
 
+import {enumRole} from '#/main/core/enum/role'
+
 import {
   PageContainer as Page,
   PageHeader,
@@ -58,7 +60,7 @@ class Roles extends Component {
             definition={[
               {name: 'name', type: 'string', label: t('name')},
               {name: 'translation', type: 'string', label: t('translation')},
-              {name: 'type', type: 'number', label: t('type')}
+              {name: 'type', type: 'enum', label: t('type'), options: {enum: enumRole}}
             ]}
 
             pagination={Object.assign({}, this.props.pagination, {
