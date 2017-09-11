@@ -6,11 +6,11 @@ import {t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
-import {actions} from '#/main/core/administration/user-management/group/actions'
+import {actions} from '#/main/core/administration/user-management/role/actions'
 
 import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
-import {select} from '#/main/core/administration/user-management/group/selectors'
+import {select} from '#/main/core/administration/user-management/role/selectors'
 
 import {
   PageContainer as Page,
@@ -22,28 +22,28 @@ import {
 
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
-class Groups extends Component {
+class Roles extends Component {
   constructor(props) {
     super(props)
   }
 
   render() {
     return (
-      <Page id="group-management">
+      <Page id="role-management">
         <PageHeader
-          title={t('group_management')}
+          title={t('role_management')}
         >
           <PageActions>
             <PageAction
-              id="group-add"
-              title={t('group_add')}
+              id="role-add"
+              title={t('role_add')}
               icon="fa fa-plus"
               primary={true}
               action='#'
             />
 
             <PageAction
-              id="group-import"
+              id="role-import"
               title={t('import_csv')}
               icon="fa fa-download"
               action='#'
@@ -56,7 +56,9 @@ class Groups extends Component {
             data={this.props.data}
             totalResults={this.props.totalResults}
             definition={[
-              {name: 'name', type: 'string', label: t('name')}
+              {name: 'name', type: 'string', label: t('name')},
+              {name: 'translation', type: 'string', label: t('translation')},
+              {name: 'type', type: 'number', label: t('type')}
             ]}
 
             pagination={Object.assign({}, this.props.pagination, {
@@ -81,7 +83,7 @@ class Groups extends Component {
   }
 }
 
-Groups.propTypes = {
+Roles.propTypes = {
   data: T.arrayOf(T.object),
   totalResults: T.number.isRequired,
 
@@ -125,31 +127,31 @@ function mapDispatchToProps(dispatch) {
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))
       // grab updated user list
-      dispatch(actions.fetchGroups())
+      dispatch(actions.fetchRoles())
     },
     removeListFilter: (filter) => {
       dispatch(listActions.removeFilter(filter))
       // grab updated user list
-      dispatch(actions.fetchGroups())
+      dispatch(actions.fetchRoles())
     },
 
     // pagination
     handlePageSizeUpdate: (pageSize) => {
       dispatch(paginationActions.updatePageSize(pageSize))
       // grab updated user list
-      dispatch(actions.fetchGroups())
+      dispatch(actions.fetchRoles())
     },
     handlePageChange: (page) => {
       dispatch(paginationActions.changePage(page))
       // grab updated user list
-      dispatch(actions.fetchGroups())
+      dispatch(actions.fetchRoles())
     },
 
     // sorting
     updateSort: (property) => {
       dispatch(listActions.updateSort(property))
       // grab updated user list
-      dispatch(actions.fetchGroups())
+      dispatch(actions.fetchRoles())
     },
 
     // selection
@@ -163,6 +165,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedGroups = connect(mapStateToProps, mapDispatchToProps)(Groups)
+const ConnectedRoles = connect(mapStateToProps, mapDispatchToProps)(Roles)
 
-export {ConnectedGroups as Groups}
+export {ConnectedRoles as Roles}

@@ -7,18 +7,18 @@ import {select as paginationSelect} from '#/main/core/layout/pagination/selector
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
 
-export const GROUPS_LOAD = 'GROUPS_LOAD'
+export const ROLES_LOAD = 'ROLES_LOAD'
 
 export const actions = {}
 
-actions.loadGroups = makeActionCreator(GROUPS_LOAD, 'groups', 'total')
+actions.loadGroups = makeActionCreator(ROLES_LOAD, 'roles', 'total')
 
-actions.fetchGroups = () => (dispatch, getState) => {
+actions.fetchRoles = () => (dispatch, getState) => {
   const state = getState()
 
   const page = paginationSelect.current(state)
   const pageSize = paginationSelect.pageSize(state)
-  let url = generateUrl('api_get_search_groups', {page: page, limit: pageSize}) + '?'
+  let url = generateUrl('api_get_search_roles', {page: page, limit: pageSize}) + '?'
 
   // build queryString
   let queryString = ''

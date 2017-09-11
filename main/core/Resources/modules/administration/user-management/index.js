@@ -12,10 +12,12 @@ import {reducer as paginationReducer} from '#/main/core/layout/pagination/reduce
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {reducer as usersReducer} from '#/main/core/administration/user-management/user/reducer'
-import {reducer as groupsReducer} from '#/main/core/administration/user-management/user/reducer'
+import {reducer as groupsReducer} from '#/main/core/administration/user-management/group/reducer'
+import {reducer as rolesReducer} from '#/main/core/administration/user-management/role/reducer'
 
-import {Users} from '#/main/core/administration/user-management/user/components/users.jsx'
+//import {Users} from '#/main/core/administration/user-management/user/components/users.jsx'
 //import {Groups} from '#/main/core/administration/user-management/group/components/groups.jsx'
+import {Roles} from '#/main/core/administration/user-management/role/components/roles.jsx'
 
 // register custom modals for the app
 registerModalType('CONFIRM_MODAL', ConfirmModal)
@@ -27,13 +29,14 @@ bootstrap(
   '.user-administration-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
-  Users,
+  Roles,
 
   // app store configuration
   {
     // app reducers
     users: usersReducer,
     groups: groupsReducer,
+    roles: rolesReducer,
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer,
