@@ -15,7 +15,7 @@ class Version20150330152503 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql('
-            CREATE TABLE inwicast_plugin_mediacenter (
+            CREATE TABLE IF NOT EXISTS inwicast_plugin_mediacenter (
                 id INT AUTO_INCREMENT NOT NULL, 
                 url VARCHAR(255) NOT NULL, 
                 driver VARCHAR(255) NOT NULL, 
@@ -28,7 +28,7 @@ class Version20150330152503 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ');
         $this->addSql('
-            CREATE TABLE inwicast_plugin_media (
+            CREATE TABLE IF NOT EXISTS inwicast_plugin_media (
                 id INT AUTO_INCREMENT NOT NULL, 
                 widgetinstance_id INT DEFAULT NULL, 
                 mediaRef VARCHAR(255) NOT NULL, 
@@ -36,14 +36,10 @@ class Version20150330152503 extends AbstractMigration
                 width INT NOT NULL, 
                 height INT NOT NULL, 
                 UNIQUE INDEX UNIQ_ED925F022DE7D582 (widgetinstance_id), 
-                PRIMARY KEY(id)
+                PRIMARY KEY(id),
+                CONSTRAINT FK_ED925F022DE7D582 FOREIGN KEY (widgetinstance_id) REFERENCES claro_widget_instance (id) 
+                ON DELETE CASCADE
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ');
-        $this->addSql('
-            ALTER TABLE inwicast_plugin_media 
-            ADD CONSTRAINT FK_ED925F022DE7D582 FOREIGN KEY (widgetinstance_id) 
-            REFERENCES claro_widget_instance (id) 
-            ON DELETE CASCADE
         ');
     }
 
