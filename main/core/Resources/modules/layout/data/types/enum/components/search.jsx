@@ -1,28 +1,12 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 
-const EnumSearch = (props) => {
-  return (
-    <span className="enum-filter">
-      {props.isValid &&
-        <span className="available-filter-value">{props.search}</span>
-      }
-
-      {Object.keys(props.options.enum).forEach(key => {
-        return (
-          <button
-            type="button"
-            className={classes('btn btn-sm')}
-            onClick={() => props.updateSearch(props.options.enum[key])}
-          >
-            <span>{key}</span>
-          </button>
-        )
-      })}
-    </span>
-  )
-}
+const EnumSearch = (props) =>
+  <span className="enum-filter">
+    <select onChange={(e) => {props.updateSearch(props.options.enum[e.target.value])}}>
+      {Object.keys(props.options.enum).map(value => <option value={value}>{props.options.enum[value]}</option>)}
+    </select>
+  </span>
 
 EnumSearch.propTypes = {
   search: T.string.isRequired,

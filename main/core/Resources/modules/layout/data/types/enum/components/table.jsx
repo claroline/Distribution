@@ -1,11 +1,10 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-
 import {TableCell} from '#/main/core/layout/table/components/table.jsx'
 
 const EnumCell = props =>
   <TableCell align="center" className="enum-cell">
-    {props.data}
+    {props.options.enum[props.data]}
   </TableCell>
 
 EnumCell.propTypes = {
