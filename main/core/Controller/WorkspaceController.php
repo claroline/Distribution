@@ -520,6 +520,9 @@ class WorkspaceController extends Controller
         $event = $this->eventDispatcher->dispatch('open_tool_workspace_'.$toolName, new DisplayToolEvent($workspace));
         $this->eventDispatcher->dispatch('log', new LogWorkspaceToolReadEvent($workspace, $toolName));
         $this->eventDispatcher->dispatch('log', new LogWorkspaceEnterEvent($workspace));
+        // Add workspace to recent workspaces if user is not Usurped
+        // First find if user usurp then if not, add workspace to recent workspaces
+        $this->workspaceManager->addRecentWorkspaceForUser($this->tokenStorage->getToken()->getUser(), $workspace);
 
         if ($toolName === 'resource_manager') {
             $this->session->set('isDesktop', false);
