@@ -9,6 +9,7 @@
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Claroline\InstallationBundle\Updater\Updater;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Updater100200 extends Updater
 {
