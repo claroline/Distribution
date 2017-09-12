@@ -44,12 +44,12 @@ class UserSerializer
     /**
      * Serializes a Workspace entity for the JSON api.
      *
-     * @param User $user   - the user to serialize
-     * @param bool $public
+     * @param User  $user   - the user to serialize
+     * @param array $options
      *
      * @return array - the serialized representation of the workspace
      */
-    public function serialize(User $user, $options = [])
+    public function serialize(User $user, array $options = [])
     {
         $isPublic = isset($options['public']) ? $options['public'] : false;
 
@@ -57,7 +57,12 @@ class UserSerializer
             return $this->serializePublic($user);
         }
 
-        return [];
+        return [
+            'id' => $user->getId(),
+            'uuid' => $user->getGuid(),
+            'name' => $user->getFirstName().' '.$user->getLastName(),
+            'username' => $user->getUsername(),
+        ];
     }
 
     public function serializePublic(User $user)
