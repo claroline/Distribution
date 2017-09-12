@@ -67,8 +67,7 @@
     .search-filter {
         display: inline-block;
         font-size: @font-size-small;
-        margin: @padding-large-vertical 0;
-        margin-right: @padding-large-horizontal;
+        margin: @padding-large-vertical @padding-large-horizontal @padding-large-vertical 0;
         line-height: @line-height-large;
         white-space: nowrap;
         background: @state-info-bg;
@@ -194,29 +193,24 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: @table-cell-padding 0;
 
     border: 1px solid transparent;
     background: #ebebeb;
 
     .list-selected-label {
+        padding: @table-cell-padding 0;
         .fa {
-            width: 40px; // same as .checkbox-cell. TODO : use a var
+            width: 30px; // same as .checkbox-cell. TODO : use a var
             text-align: center;
             margin-right: @table-cell-padding;
         }
     }
 
     .list-selected-actions {
-        padding: 0 @table-cell-padding;
         // todo : merge with table actions btns
         white-space: nowrap; // avoids buttons to break on multi lines
         .btn {
-            padding: 2px;
-
-            & + .btn {
-                margin-left: @table-cell-padding;
-            }
+            padding: @table-cell-padding;
         }
     }
 }

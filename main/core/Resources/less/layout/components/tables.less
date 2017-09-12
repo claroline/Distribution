@@ -1,3 +1,7 @@
+/*
+ * Table component styles
+ */
+
 .table {
     th {
         // todo : this needs to be removed but I don't know where it's used
@@ -31,13 +35,53 @@
     > tbody {
         background: @panel-bg;
         .box-shadow(@box-shadow-base);
-        border: 1px solid @table-border-color;
+
+        th:first-child,
+        td:first-child {
+            border-left: 1px solid @table-border-color;
+        }
+
+        th:last-child,
+        td:last-child {
+            border-right: 1px solid @table-border-color;
+        }
+
+        > tr:last-child th,
+        > tr:last-child td {
+            border-bottom: 1px solid @table-border-color;
+        }
 
         > tr.selected {
             background-color: @state-info-bg;
+            border-color: #abcfe0; // todo : use a var
+
+            > th,
+            > td {
+                border-color: #abcfe0; // todo : use a var
+            }
+
+            + tr > th,
+            + tr > td {
+                border-top-color: #abcfe0; // todo : use a var
+            }
+        }
+
+        > tr.selected:hover {
+            background-color: #b5d9ea !important; // important is required to override strips color
         }
     }
 }
+
+.table-striped {
+    > tbody > tr.selected:nth-of-type(odd) {
+        background-color: #bfe3f4;
+    }
+}
+
+
+// -
+// Cells
+// ---
 
 .sorting-cell {
     padding-right: 24px !important; // arbitrary value to have the sorting indicator centered in the padding. FIXME
@@ -50,26 +94,28 @@
     }
 }
 
-.actions-cell, // because this cell should only contain a dropdown to gain horizontal space (no buttons bar)
 .checkbox-cell {
-    width: 40px;
-}
-
-.checkbox-cell {
+    width: 30px;
     text-align: center;
-}
-
-.table-cell-tooltip {
-    > * {
-        display: inline-block; // todo : but why ?
-        cursor: help;
-    }
 }
 
 .table-actions, // deprecated. for retro compatibility (questions bank)
 .actions-cell {
+    width: 36px; // because this cell should only contain a dropdown to gain horizontal space (no buttons bar)
+    padding: 0 !important; // move padding on btns
     white-space: nowrap; // avoids buttons to break on multi lines
+
     .btn {
-        padding: 2px;
+        padding: @table-cell-padding;
+    }
+
+    .dropdown-menu {
+        margin-top: 0;
+    }
+}
+
+.table-condensed {
+    .actions-cell .btn {
+        padding: @table-condensed-cell-padding;
     }
 }
