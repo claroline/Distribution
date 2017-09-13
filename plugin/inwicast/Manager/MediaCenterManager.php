@@ -9,13 +9,13 @@
  * Date: 2/19/15
  */
 
-namespace Inwicast\ClarolinePluginBundle\Manager;
+namespace Icap\InwicastBundle\Manager;
 
 use Doctrine\ORM\EntityManager;
-use Inwicast\ClarolinePluginBundle\Entity\MediaCenter;
-use Inwicast\ClarolinePluginBundle\Exception\InvalidMediacenterFormException;
-use Inwicast\ClarolinePluginBundle\Exception\NoMediacenterException;
-use Inwicast\ClarolinePluginBundle\Repository\MediacenterRepository;
+use Icap\InwicastBundle\Entity\MediaCenter;
+use Icap\InwicastBundle\Exception\InvalidMediacenterFormException;
+use Icap\InwicastBundle\Exception\NoMediacenterException;
+use Icap\InwicastBundle\Repository\MediacenterRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,7 +48,7 @@ class MediaCenterManager
         FormFactoryInterface $formFactory
     ) {
         $this->em = $em;
-        $this->mediacenterRepository = $em->getRepository('InwicastClarolinePluginBundle:MediaCenter');
+        $this->mediacenterRepository = $em->getRepository('IcapInwicastBundle:MediaCenter');
         $this->formFactory = $formFactory;
     }
 

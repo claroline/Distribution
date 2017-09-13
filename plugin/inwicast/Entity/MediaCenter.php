@@ -1,6 +1,6 @@
 <?php
 
-namespace Inwicast\ClarolinePluginBundle\Entity;
+namespace Icap\InwicastBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -188,7 +188,7 @@ class MediaCenter
     }
 
     /**
-     * @return \Inwicast\ClarolinePluginBundle\Entity\password
+     * @return \Icap\InwicastBundle\Entity\password
      */
     public function getPassword()
     {
@@ -196,7 +196,7 @@ class MediaCenter
     }
 
     /**
-     * @param \Inwicast\ClarolinePluginBundle\Entity\password $password
+     * @param \Icap\InwicastBundle\Entity\password $password
      */
     public function setPassword($password)
     {
