@@ -1110,10 +1110,10 @@ class RoleManager
                     $root = $this->container->get('claroline.manager.resource_manager')->getWorkspaceRoot($workspace);
 
                     if ($root) {
-			$roles = $workspace->getRoles();
+                        $roles = $workspace->getRoles();
 
-			foreach ($roles as $role) {
-			    $hasRole = false;
+                        foreach ($roles as $role) {
+                            $hasRole = false;
                             foreach ($root->getRights() as $perm) {
                                 if ($perm->getRole() === $role || $role->getTranslationKey() === 'manager') {
                                     $hasRole = true;
@@ -1131,7 +1131,7 @@ class RoleManager
                                     true
                                   );
                             }
-			}
+                        }
                     } else {
                         $this->log('No directory root for '.$workspace->getCode());
                     }
