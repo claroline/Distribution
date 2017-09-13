@@ -216,7 +216,7 @@ class OperationExecutor
         foreach ($bundles as $bundle) {
             $bundleFqcn = get_class($bundle['instance']);
             // If plugin is installed, update it. Otherwise, install it.
-            if ($this->isBundleAlreadyInstalled($bundleFqcn)) {
+            if ($this->isBundleAlreadyInstalled($bundleFqcn, false)) {
                 $operations[$bundleFqcn] = new Operation(Operation::UPDATE, $bundle['instance'], $bundleFqcn);
                 $operations[$bundleFqcn]->setFromVersion($fromVersion);
                 $operations[$bundleFqcn]->setToVersion($toVersion);
@@ -360,13 +360,13 @@ class OperationExecutor
         return new Operation($type, $package, $fqcn);
     }
 
-    private function isBundleAlreadyInstalled($bundleFqcn)
+    private function isBundleAlreadyInstalled($bundleFqcn, $checkCoreBundle = true)
     {
         //if the corebundle is already installed, we can do database checks to be sure a plugin is already installed
         //and not simply set to false in bundles.ini in previous versions.
         $foundBundle = false;
 
-        if ($this->findPreviousPackage('Claroline\CoreBundle\ClarolineCoreBundle')) {
+        if (!$checkCoreBundle || $this->findPreviousPackage('Claroline\CoreBundle\ClarolineCoreBundle')) {
             //do the bundle already exists ?
             $foundBundle = $bundleFqcn === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
                 true :
