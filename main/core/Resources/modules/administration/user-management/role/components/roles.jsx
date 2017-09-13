@@ -13,6 +13,8 @@ import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select} from '#/main/core/administration/user-management/role/selectors'
 
 import {enumRole} from '#/main/core/enum/role'
+import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {Form} from '#/main/core/layout/form/components/form.jsx'
 
 import {
   PageContainer as Page,
@@ -29,6 +31,23 @@ class Roles extends Component {
     super(props)
   }
 
+  renderModal() {
+    this.props.showModal(MODAL_CONFIRM, {
+      title: 'create',
+      question: React.createElement(Form, {
+        definition: [
+          ['translation', 'text', {label: 'name'}],
+          ['limit', 'number', {label: 'limit'}],
+          ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
+          ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
+        ],
+        item: {}, //l'objet a brancher ?
+        reducer: {} //une liste de reducer ?
+      }),
+      handleConfirm: () => alert('ok')
+    })
+  }
+
   render() {
     return (
       <Page id="role-management">
@@ -41,7 +60,7 @@ class Roles extends Component {
               title={t('role_add')}
               icon="fa fa-plus"
               primary={true}
-              action='#'
+              action={() => this.renderModal()}
             />
 
             <PageAction
