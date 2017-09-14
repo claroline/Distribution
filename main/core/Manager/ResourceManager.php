@@ -1504,15 +1504,19 @@ class ResourceManager
 
     /**
      * @param int[] $ids
+     * @param bool  $orderStrict, keep tha same order as ids array
      *
      * @return ResourceNode[]
      */
-    public function getByIds(array $ids)
+    public function getByIds(array $ids, $orderStrict = false)
     {
-        return $this->om->findByIds(
+        $nodes = $this->om->findByIds(
             'Claroline\CoreBundle\Entity\Resource\ResourceNode',
-            $ids
+            $ids,
+            $orderStrict
         );
+
+        return $nodes;
     }
 
     /**
