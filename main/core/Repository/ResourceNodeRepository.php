@@ -483,6 +483,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
             'dateTo' => 'whereDateTo',
             'name' => 'whereNameLike',
             'isExportable' => 'whereIsExportable',
+            'active' => 'whereActiveIs',
         ];
         $allowedFilters = array_keys($filterMethodMap);
 

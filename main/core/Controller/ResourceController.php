@@ -991,6 +991,8 @@ class ResourceController extends Controller
     {
         $criteria = $this->resourceManager->buildSearchArray($this->request->query->all());
         $criteria['roots'] = $node ? [$node->getPath()] : [];
+        // Display only active resources (omit soft deleted)
+        $criteria['active'] = true;
         $path = $node ? $this->resourceManager->getAncestors($node) : [];
         $userRoles = $this->roleManager->getStringRolesFromToken($this->tokenStorage->getToken());
 
