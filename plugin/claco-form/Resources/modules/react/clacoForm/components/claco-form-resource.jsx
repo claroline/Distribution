@@ -8,6 +8,7 @@ import {actions} from '../actions'
 import {ClacoFormMainMenu} from './claco-form-main-menu.jsx'
 import {ClacoFormConfig} from './claco-form-config.jsx'
 import {CategoriesList} from '../../category/components/categories-list.jsx'
+import {KeywordsList} from '../../keyword/components/keywords-list.jsx'
 
 const ClacoFormResource = props =>
   <ResourceContainer
@@ -25,6 +26,7 @@ const ClacoFormResource = props =>
       <Route path="/" component={ClacoFormMainMenu} exact={true} />
       <Route path="/edit" component={ClacoFormConfig} />
       <Route path="/categories" component={CategoriesList} />
+      <Route path="/keywords" component={KeywordsList} />
     </Switch>
   </ResourceContainer>
 
@@ -53,7 +55,7 @@ function customActions(props) {
     actions.push({
       icon: 'fa fa-fw fa-font',
       label: trans('keywords_management', {}, 'clacoform'),
-      action: '#/'
+      action: '#/keywords'
     })
   }
 

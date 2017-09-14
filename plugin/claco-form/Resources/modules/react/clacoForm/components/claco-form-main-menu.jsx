@@ -44,9 +44,8 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-  }
+function mapDispatchToProps() {
+  return {}
 }
 
 const ConnectedClacoFormMainMenu = connect(mapStateToProps, mapDispatchToProps)(ClacoFormMainMenu)

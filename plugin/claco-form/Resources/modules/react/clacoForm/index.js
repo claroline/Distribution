@@ -14,8 +14,10 @@ import {
 } from './reducers'
 import {messageReducers} from '../message/reducers'
 import {categoryReducers} from '../category/reducers'
+import {keywordReducers} from '../keyword/reducers'
 import {ClacoFormResource} from './components/claco-form-resource.jsx'
 import {CategoryFormModal} from '../category/components/category-form-modal.jsx'
+import {KeywordFormModal} from '../keyword/components/keyword-form-modal.jsx'
 
 // mount the react application
 bootstrap(
@@ -36,6 +38,7 @@ bootstrap(
     isAnon: mainReducers,
     parameters: parametersReducers,
     categories: categoryReducers,
+    keywords: keywordReducers,
     message: messageReducers,
 
     // generic reducers
@@ -55,11 +58,13 @@ bootstrap(
       canEdit: resourceNode.rights.current.edit,
       isAnon: !initialData.user,
       parameters: Object.assign({}, resource.details, {'activePanelKey': ''}),
-      categories: resource.categories
+      categories: resource.categories,
+      keywords: resource.keywords
     }
   }
 )
 
 registerModalTypes([
-  ['MODAL_CATEGORY_FORM', CategoryFormModal]
+  ['MODAL_CATEGORY_FORM', CategoryFormModal],
+  ['MODAL_KEYWORD_FORM', KeywordFormModal]
 ])

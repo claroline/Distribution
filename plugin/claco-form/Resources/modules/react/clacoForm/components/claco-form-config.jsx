@@ -7,7 +7,6 @@ import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
-import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
@@ -197,7 +196,7 @@ Random.propTypes = {
   }).isRequired,
   categories: T.arrayOf(T.shape({
     id: T.number.isRequired,
-    name: T.string.isRequired,
+    name: T.string.isRequired
   })),
   updateParameters: T.func.isRequired
 }
@@ -249,7 +248,7 @@ const Metadata = props =>
 
 Metadata.propTypes = {
   params: T.shape({
-    display_metadata: T.string,
+    display_metadata: T.string
   }).isRequired,
   updateParameters: T.func.isRequired
 }
@@ -271,7 +270,7 @@ const Locked = props =>
 
 Locked.propTypes = {
   params: T.shape({
-    locked_fields_for: T.string,
+    locked_fields_for: T.string
   }).isRequired,
   updateParameters: T.func.isRequired
 }
@@ -428,6 +427,49 @@ function makePanel(Section, title, key, props, withCategories = false) {
   )
 }
 
+makePanel.propTypes = {
+  params: T.shape({
+    max_entries: T.number,
+    creation_enabled: T.boolean,
+    edition_enabled: T.boolean,
+    moderated: T.boolean,
+    default_home: T.string,
+    display_nb_entries: T.string,
+    menu_position: T.string,
+    random_enabled: T.boolean,
+    random_categories: T.array,
+    random_start_date: T.string,
+    random_end_date: T.string,
+    search_enabled: T.boolean,
+    search_column_enabled: T.boolean,
+    search_columns: T.array,
+    display_metadata: T.string,
+    locked_fields_for: T.string,
+    display_categories: T.boolean,
+    open_categories: T.boolean,
+    comments_enabled: T.boolean,
+    anonymous_comments_enabled: T.boolean,
+    moderate_comments: T.string,
+    display_comments: T.boolean,
+    open_comments: T.boolean,
+    display_comment_author: T.boolean,
+    display_comment_date: T.boolean,
+    votes_enabled: T.boolean,
+    display_votes: T.boolean,
+    open_votes: T.boolean,
+    keywords_enabled: T.boolean,
+    new_keywords_enabled: T.boolean,
+    display_keywords: T.boolean,
+    open_keywords: T.boolean,
+    activePanelKey: T.string
+  }).isRequired,
+  categories: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired,
+  })),
+  updateParameters: T.func.isRequired
+}
+
 class ClacoFormConfig extends Component {
   componentDidMount() {
     this.props.initializeParameters()
@@ -501,8 +543,9 @@ ClacoFormConfig.propTypes = {
   }),
   categories: T.arrayOf(T.shape({
     id: T.number.isRequired,
-    name: T.string.isRequired,
+    name: T.string.isRequired
   })),
+  initializeParameters: T.func.isRequired,
   updateParameters: T.func.isRequired
 }
 

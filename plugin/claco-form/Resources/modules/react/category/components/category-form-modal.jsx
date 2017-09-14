@@ -1,5 +1,4 @@
 /*global UserPicker*/
-import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
@@ -8,7 +7,6 @@ import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'
 import {t, trans} from '#/main/core/translation'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
 export const MODAL_CATEGORY_FORM = 'MODAL_CATEGORY_FORM'
 

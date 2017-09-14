@@ -607,11 +607,15 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $keywordData = $this->request->request->get('keywordData', false);
+
+        if (!is_array($keywordData)) {
+            $keywordData = json_decode($keywordData, true);
+        }
         $keyword = $this->clacoFormManager->createKeyword($clacoForm, $keywordData['name']);
         $serializedKeyword = $this->serializer->serialize(
             $keyword,
             'json',
-            SerializationContext::create()->setGroups(['api_claco_form'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return new JsonResponse($serializedKeyword, 200);
@@ -633,11 +637,15 @@ class ClacoFormController extends Controller
         $clacoForm = $keyword->getClacoForm();
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $keywordData = $this->request->request->get('keywordData', false);
+
+        if (!is_array($keywordData)) {
+            $keywordData = json_decode($keywordData, true);
+        }
         $this->clacoFormManager->editKeyword($keyword, $keywordData['name']);
         $serializedKeyword = $this->serializer->serialize(
             $keyword,
             'json',
-            SerializationContext::create()->setGroups(['api_claco_form'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return new JsonResponse($serializedKeyword, 200);
@@ -661,7 +669,7 @@ class ClacoFormController extends Controller
         $serializedKeyword = $this->serializer->serialize(
             $keyword,
             'json',
-            SerializationContext::create()->setGroups(['api_claco_form'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
         $this->clacoFormManager->deleteKeyword($keyword);
 
@@ -686,7 +694,7 @@ class ClacoFormController extends Controller
         $serializedKeyword = $this->serializer->serialize(
             $keyword,
             'json',
-            SerializationContext::create()->setGroups(['api_claco_form'])
+            SerializationContext::create()->setGroups(['api_user_min'])
         );
 
         return new JsonResponse($serializedKeyword, 200);
