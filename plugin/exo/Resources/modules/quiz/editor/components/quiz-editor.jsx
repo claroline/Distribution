@@ -7,7 +7,7 @@ import get from 'lodash/get'
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
-import {tex} from '#/main/core/translation'
+import {tex, t} from '#/main/core/translation'
 import {formatDate} from '#/main/core/date'
 import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
@@ -153,45 +153,125 @@ const orderModes = pickMode => {
   return shuffleOptions().filter(mode => mode.value !== SHUFFLE_ONCE)
 }
 
-const StepPicking = props =>
-  <fieldset>
-    <RadioGroup
-      controlId="quiz-random-pick"
-      label={tex('random_picking')}
-      options={shuffleOptions()}
-      checkedValue={props.parameters.randomPick}
-      onChange={mode => props.onChange('parameters.randomPick', mode)}
-    />
+class StepPicking extends Component
+{
+  constructor(props) {
+    super(props)
+  }
 
-    {props.parameters.randomPick !== SHUFFLE_NEVER &&
-      <div className="sub-fields">
-        <FormGroup
-          controlId="quiz-pick"
-          label={tex('number_steps_draw')}
-          help={tex('number_steps_draw_help')}
-          warnOnly={!props.validating}
-          error={get(props, 'errors.parameters.pick')}
-        >
-          <input
-            id="quiz-pick"
-            type="number"
-            min="0"
-            value={props.parameters.pick}
-            className="form-control"
-            onChange={e => props.onChange('parameters.pick', e.target.value)}
-          />
-        </FormGroup>
+  handleTagSelect(value) {
+    this.setState({tag: value})
+  }
+
+  handleTagAmount(value) {
+    this.setState({amount: value})
+  }
+
+  render() {
+    const props = this.props
+    return (<fieldset>
+      <CheckGroup
+        checkId={'item-tag-picking'}
+        label={tex('pick-tag')}
+        onChange={checked => props.onChange('parameters.pickByTag', checked)}
+      />
+
+     {props.parameters.pickByTag &&
+       <div>
+         <div>
+           <select onChange={e => this.handleTagSelect(e.target.value)}>
+             {Object.keys(props.items).map(key => props.items[key]).reduce((tags, item) =>
+                [... new Set(tags.concat(item.tags))], []).map(tag => <option> {tag} </option>)
+             }
+           </select>
+         </div>
+         <div>
+           {props.parameters.randomTags.pick.map(el => {
+             return (<div> picked {el[0]} {el[1]} <i onClick={() => props.onChange('parameters.randomTags.pick', ['remove', [el[0], el[1]]])} className="fa fa-trash pointer"/></div>)
+           })}
+           <FormGroup
+             controlId="tag-amount"
+             label={tex('tag-amount')}
+             help={tex('tag-amount')}
+             warnOnly={!props.validating}
+
+           >
+             <input
+               id="tag-amount"
+               type="number"
+               min="0"
+               onChange={e => this.handleTagAmount(e.target.value)}
+               className="form-control"
+             />
+           </FormGroup>
+           <button
+             type="button"
+             onClick={() => props.onChange('parameters.randomTags.pick', ['add', [this.state.tag, this.state.amount]])}
+           >
+             {t('add')}
+           </button>
+         </div>
+         <FormGroup
+           controlId="quiz-pageSize"
+           label={tex('number_question_page')}
+           help={tex('number_question_page')}
+           warnOnly={!props.validating}
+           error={get(props, 'errors.parameters.randomTags.pageSize')}
+         >
+           <input
+             id="quiz-pageSize"
+             type="number"
+             min="0"
+             value={props.parameters.randomTags.pageSize}
+             className="form-control"
+             onChange={e => props.onChange('parameters.randomTags.pageSize', e.target.value)}
+           />
+         </FormGroup>
+       </div>
+     }
+     {!props.parameters.pickByTag &&
+       <div>
+        <RadioGroup
+          controlId="quiz-random-pick"
+          label={tex('random_picking')}
+          options={shuffleOptions()}
+          checkedValue={props.parameters.randomPick}
+          onChange={mode => props.onChange('parameters.randomPick', mode)}
+        />
+
+        {props.parameters.randomPick !== SHUFFLE_NEVER &&
+          <div className="sub-fields">
+            <FormGroup
+              controlId="quiz-pick"
+              label={tex('number_steps_draw')}
+              help={tex('number_steps_draw_help')}
+              warnOnly={!props.validating}
+              error={get(props, 'errors.parameters.pick')}
+            >
+              <input
+                id="quiz-pick"
+                type="number"
+                min="0"
+                value={props.parameters.pick}
+                className="form-control"
+                onChange={e => props.onChange('parameters.pick', e.target.value)}
+              />
+            </FormGroup>
+          </div>
+        }
+
+        <RadioGroup
+          controlId="quiz-random-order"
+          label={tex('random_order')}
+          options={orderModes(props.parameters.randomPick)}
+          checkedValue={props.parameters.randomOrder}
+          onChange={mode => props.onChange('parameters.randomOrder', mode)}
+        />
       </div>
     }
-
-    <RadioGroup
-      controlId="quiz-random-order"
-      label={tex('random_order')}
-      options={orderModes(props.parameters.randomPick)}
-      checkedValue={props.parameters.randomOrder}
-      onChange={mode => props.onChange('parameters.randomOrder', mode)}
-    />
-  </fieldset>
+    </fieldset>)
+  }
+}
 
 StepPicking.propTypes = {
   parameters: T.shape({
@@ -199,6 +279,8 @@ StepPicking.propTypes = {
     randomPick: T.string.isRequired,
     randomOrder: T.string.isRequired
   }).isRequired,
+  items: T.object.isRequired,
+  quiz: T.object.isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
@@ -482,7 +564,7 @@ function makePanel(Section, title, key, props, errorProps) {
       <Section
         onChange={props.updateProperties}
         errors={props.quiz._errors}
-        validating={props.validating}
+        items={props.items}
         {...props.quiz}
       />
     </Panel>
@@ -495,6 +577,7 @@ makePanel.propTypes = {
   handlePanelClick: T.func.isRequired,
   updateProperties: T.func.isRequired,
   quiz: T.object.isRequired,
+  items: T.array.isRequired,
   _errors: T.object
 }
 
@@ -549,6 +632,7 @@ QuizEditor.propTypes = {
       showFeedback: T.bool.isRequired
     }).isRequired
   }).isRequired,
+  items: T.array.isRequired,
   validating: T.bool.isRequired,
   updateProperties: T.func.isRequired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,

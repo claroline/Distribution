@@ -333,9 +333,13 @@ class ExerciseManager
             $answers = $paper->getAnswers();
             $csv = [];
             $user = $paper->getUser();
-            $csv['username'] = [$user->getUsername()];
-            $csv['firstname'] = [$user->getFirstName()];
-            $csv['lastname'] = [$user->getLastName()];
+            if ($user) {
+                $csv['username'] = [$user->getUsername()];
+                $csv['firstname'] = [$user->getFirstName()];
+                $csv['lastname'] = [$user->getLastName()];
+            } else {
+                $csv['username'] = $csv['firstname'] = $csv['lastname'] = 'none';
+            }
 
             foreach ($answers as $answer) {
                 $item = $items[$answer->getQuestionId()];
