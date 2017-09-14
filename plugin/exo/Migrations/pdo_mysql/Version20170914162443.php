@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/09/14 03:22:56
+ * Generation date: 2017/09/14 04:24:44
  */
-class Version20170914152255 extends AbstractMigration
+class Version20170914162443 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -22,12 +22,12 @@ class Version20170914152255 extends AbstractMigration
             ALTER TABLE ujm_exercise
             ADD random_tag LONGTEXT NOT NULL COMMENT '(DC2Type:array)'
         ");
-        $this->addSql('
-            UPDATE ujm_step set random_tag="a:0:{}"
-        ');
-        $this->addSql('
-            UPDATE ujm_exercise set random_tag="a:0:{}"
-        ');
+        $this->addSql(
+          'UPDATE ujm_step set random_tag="O:8:"stdClass":0:{}"'
+        );
+        $this->addSql(
+          'UPDATE ujm_exercise set random_tag="O:8:"stdClass":0:{}"'
+        );
     }
 
     public function down(Schema $schema)

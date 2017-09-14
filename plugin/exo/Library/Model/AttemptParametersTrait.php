@@ -64,11 +64,9 @@ trait AttemptParametersTrait
      * Number of attempts allowed.
      * If 0, the user can retry as many times a he wishes.
      *
-     * @ORM\Column(name="random_tag", type="array")
-     *
-     * @var int
+     * @ORM\Column(name="random_tag", type="json")
      */
-    private $randomTag = [];
+    private $randomTag;
 
     /**
      * Sets random order.
@@ -77,6 +75,7 @@ trait AttemptParametersTrait
      */
     public function setRandomOrder($randomOrder)
     {
+        $this->randomTag = new \stdClass();
         $this->randomOrder = $randomOrder;
     }
 

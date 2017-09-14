@@ -173,6 +173,7 @@ class StepPicking extends Component
       <CheckGroup
         checkId={'item-tag-picking'}
         label={tex('pick-tag')}
+        checked={this.props.parameters.pickByTag || false}
         onChange={checked => props.onChange('parameters.pickByTag', checked)}
       />
 
@@ -277,7 +278,8 @@ StepPicking.propTypes = {
   parameters: T.shape({
     pick: T.number.isRequired,
     randomPick: T.string.isRequired,
-    randomOrder: T.string.isRequired
+    randomOrder: T.string.isRequired,
+    pickByTag: T.string.isRequired
   }).isRequired,
   items: T.object.isRequired,
   quiz: T.object.isRequired,
