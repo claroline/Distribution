@@ -150,6 +150,83 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/claco/form/{clacoForm}/open/react",
+     *     name="claro_claco_form_open_react",
+     *     options={"expose"=true}
+     * )
+     * @EXT\Template()
+     */
+    public function clacoFormOpenReactAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
+//        $canEdit = $this->clacoFormManager->hasRight($clacoForm, 'EDIT');
+        $user = $this->tokenStorage->getToken()->getUser();
+        $isAnon = $user === 'anon.';
+        $fields = $this->clacoFormManager->getFieldsByClacoForm($clacoForm);
+//        $keywords = $clacoForm->getKeywords();
+//        $categories = $clacoForm->getCategories();
+        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
+        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
+        $nbEntries = count($allEntries);
+        $nbPublishedEntries = count($publishedEntries);
+        $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
+        $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
+        $isCategoryManager = count($myCategories) > 0;
+        $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
+        $serializedFields = $this->serializer->serialize(
+            $fields,
+            'json',
+            SerializationContext::create()->setGroups(['api_facet_admin'])
+        );
+//        $serializedKeywords = $this->serializer->serialize(
+//            $keywords,
+//            'json',
+//            SerializationContext::create()->setGroups(['api_claco_form'])
+//        );
+//        $serializedCategories = $this->serializer->serialize(
+//            $categories,
+//            'json',
+//            SerializationContext::create()->setGroups(['api_user_min'])
+//        );
+        $serializedMyEntries = $this->serializer->serialize(
+            $myEntries,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+        $serializedManagerEntries = $this->serializer->serialize(
+            $managerEntries,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+        $canGeneratePdf = !$isAnon &&
+            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
+            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
+        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
+        $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
+            $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
+            2;
+
+        return [
+            'user' => $user,
+            '_resource' => $clacoForm,
+            'isAnon' => $isAnon,
+            'isCategoryManager' => $isCategoryManager,
+            'clacoForm' => $clacoForm,
+            'fields' => $serializedFields,
+//            'keywords' => $serializedKeywords,
+//            'categories' => $serializedCategories,
+            'myEntries' => $serializedMyEntries,
+            'managerEntries' => $serializedManagerEntries,
+            'nbEntries' => $nbEntries,
+            'nbPublishedEntries' => $nbPublishedEntries,
+            'canGeneratePdf' => $canGeneratePdf,
+            'sharedEntries' => $sharedEntries,
+            'cascadeLevelMax' => $cascadeLevelMax,
+        ];
+    }
+
+    /**
+     * @EXT\Route(
      *     "/claco/form/{clacoForm}/config/edit",
      *     name="claro_claco_form_configuration_edit",
      *     options={"expose"=true}
@@ -159,7 +236,13 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $configData = $this->request->request->get('configData', false);
-        $details = $this->clacoFormManager->saveClacoFormConfig($clacoForm, $configData);
+
+        if (!is_array($configData)) {
+            $configData = json_decode($configData, true);
+        }
+        $details = $configData ?
+            $this->clacoFormManager->saveClacoFormConfig($clacoForm, $configData) :
+            $clacoForm->getDetails();
 
         return new JsonResponse($details, 200);
     }
@@ -392,6 +475,10 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $categoryData = $this->request->request->get('categoryData', false);
+
+        if (!is_array($categoryData)) {
+            $categoryData = json_decode($categoryData, true);
+        }
         $notifyAddition = is_bool($categoryData['notifyAddition']) ?
             $categoryData['notifyAddition'] :
             $categoryData['notifyAddition'] === 'true';
@@ -442,6 +529,10 @@ class ClacoFormController extends Controller
         $clacoForm = $category->getClacoForm();
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $categoryData = $this->request->request->get('categoryData', false);
+
+        if (!is_array($categoryData)) {
+            $categoryData = json_decode($categoryData, true);
+        }
         $notifyAddition = is_bool($categoryData['notifyAddition']) ?
             $categoryData['notifyAddition'] :
             $categoryData['notifyAddition'] === 'true';

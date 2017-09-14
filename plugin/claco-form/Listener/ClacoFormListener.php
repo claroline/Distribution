@@ -125,7 +125,7 @@ class ClacoFormListener
     public function onOpen(OpenResourceEvent $event)
     {
         $params = [];
-        $params['_controller'] = 'ClarolineClacoFormBundle:ClacoForm:clacoFormOpen';
+        $params['_controller'] = 'ClarolineClacoFormBundle:ClacoForm:clacoFormOpenReact';
         $params['clacoForm'] = $event->getResource()->getId();
         $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);

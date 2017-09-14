@@ -1,0 +1,65 @@
+import React from 'react'
+import {
+  hashHistory as history,
+  HashRouter as Router
+} from 'react-router-dom'
+import {bootstrap} from '#/main/core/utilities/app/bootstrap'
+import {registerModalTypes} from '#/main/core/layout/modal'
+import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
+import {reducer as resourceNodeReducer} from '#/main/core/layout/resource/reducer'
+import {
+  resourceReducers,
+  mainReducers,
+  parametersReducers
+} from './reducers'
+import {messageReducers} from '../message/reducers'
+import {categoryReducers} from '../category/reducers'
+import {ClacoFormResource} from './components/claco-form-resource.jsx'
+import {CategoryFormModal} from '../category/components/category-form-modal.jsx'
+
+// mount the react application
+bootstrap(
+  // app DOM container (also holds initial app data as data attributes)
+  '.claco-form-container',
+
+  // app main component (accepts either a `routedApp` or a `ReactComponent`)
+  () => React.createElement(Router, {
+    history: history
+  }, React.createElement(ClacoFormResource)),
+
+  // app store configuration
+  {
+    // app reducers
+    user: mainReducers,
+    resource: resourceReducers,
+    canEdit: mainReducers,
+    isAnon: mainReducers,
+    parameters: parametersReducers,
+    categories: categoryReducers,
+    message: messageReducers,
+
+    // generic reducers
+    resourceNode: resourceNodeReducer,
+    modal: modalReducer
+  },
+
+  // transform data attributes for redux store
+  (initialData) => {
+    const resourceNode = initialData.resourceNode
+    const resource = initialData.resource
+
+    return {
+      user: initialData.user,
+      resource: resource,
+      resourceNode: resourceNode,
+      canEdit: resourceNode.rights.current.edit,
+      isAnon: !initialData.user,
+      parameters: Object.assign({}, resource.details, {'activePanelKey': ''}),
+      categories: resource.categories
+    }
+  }
+)
+
+registerModalTypes([
+  ['MODAL_CATEGORY_FORM', CategoryFormModal]
+])
