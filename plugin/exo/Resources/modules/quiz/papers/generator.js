@@ -45,48 +45,57 @@ function generateStructure(quiz, steps, items, previousPaper = null) {
     previousStructure = Object.assign({}, quiz)
   }
 
-  // Generate the list of step ids for the paper
-  let pickedSteps
-  if (previousPaper && SHUFFLE_ONCE === parameters.randomPick) {
-    // Get picked steps from the last user paper
-    pickedSteps = previousStructure.steps.slice(0)
+  if (quiz.parameters.pickByTag) {
+    // Generate a structure by tags
+
+    //1) génerer des steps
+    //2) ajouter les questions (ptet juste ids, à voir)
+    //3) retourner le quizz avec les steps
+    //4) modifier Library/Attempts/PaperGenerator (pour les vrai)
   } else {
-    // Pick a new set of steps
-    pickedSteps = pick(quiz.steps, parameters.pick).map(stepId => steps[stepId])
-  }
+    // Generate the list of step ids for the paper
+    let pickedSteps
+    if (previousPaper && SHUFFLE_ONCE === parameters.randomPick) {
+      // Get picked steps from the last user paper
+      pickedSteps = previousStructure.steps.slice(0)
+    } else {
+      // Pick a new set of steps
+      pickedSteps = pick(quiz.steps, parameters.pick).map(stepId => steps[stepId])
+    }
 
-  // Shuffles steps if needed
-  if ( (!previousPaper && SHUFFLE_ONCE === parameters.randomOrder)
-    || SHUFFLE_ALWAYS === parameters.randomOrder) {
-    pickedSteps = shuffle(pickedSteps)
-  }
+    // Shuffles steps if needed
+    if ( (!previousPaper && SHUFFLE_ONCE === parameters.randomOrder)
+      || SHUFFLE_ALWAYS === parameters.randomOrder) {
+      pickedSteps = shuffle(pickedSteps)
+    }
 
-  // Pick questions for each steps and generate structure
-  return Object.assign({}, quiz, {
-    steps: pickedSteps.map((pickedStep) => {
-      let pickedItems = []
+    // Pick questions for each steps and generate structure
+    return Object.assign({}, quiz, {
+      steps: pickedSteps.map((pickedStep) => {
+        let pickedItems = []
 
-      const stepStructure = previousPaper ? previousStructure.find((step) => step.id === pickedStep.id) : null
-      if (stepStructure && SHUFFLE_ONCE === pickedStep.parameters.randomPick) {
-        // Get picked items from the last user paper
-        // Retrieves the list of items of the current step
-        pickedItems = stepStructure.items.slice(0)
-      } else {
-        // Pick a new set of questions
-        pickedItems = pick(pickedStep.items, pickedStep.parameters.pick).map(itemId => items[itemId])
-      }
+        const stepStructure = previousPaper ? previousStructure.find((step) => step.id === pickedStep.id) : null
+        if (stepStructure && SHUFFLE_ONCE === pickedStep.parameters.randomPick) {
+          // Get picked items from the last user paper
+          // Retrieves the list of items of the current step
+          pickedItems = stepStructure.items.slice(0)
+        } else {
+          // Pick a new set of questions
+          pickedItems = pick(pickedStep.items, pickedStep.parameters.pick).map(itemId => items[itemId])
+        }
 
-      // Shuffles items if needed
-      if ( (!previousPaper && SHUFFLE_ONCE === pickedStep.parameters.randomOrder)
-        || SHUFFLE_ALWAYS === pickedStep.parameters.randomOrder) {
-        pickedItems = shuffle(pickedItems)
-      }
+        // Shuffles items if needed
+        if ( (!previousPaper && SHUFFLE_ONCE === pickedStep.parameters.randomOrder)
+          || SHUFFLE_ALWAYS === pickedStep.parameters.randomOrder) {
+          pickedItems = shuffle(pickedItems)
+        }
 
-      return Object.assign({}, pickedStep, {
-        items: pickedItems
+        return Object.assign({}, pickedStep, {
+          items: pickedItems
+        })
       })
     })
-  })
+  }
 }
 
 /**

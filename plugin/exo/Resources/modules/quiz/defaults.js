@@ -36,7 +36,8 @@ const step = {
   parameters: {
     maxAttempts: 0,
     maxAttemptsPerDay: 0
-  }
+  },
+  items: []
 }
 
 const item = {
