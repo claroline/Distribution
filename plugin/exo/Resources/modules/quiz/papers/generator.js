@@ -1,8 +1,11 @@
 import {shuffle, sampleSize} from 'lodash/collection'
 import moment from 'moment'
+import times from 'lodash/times'
+import cloneDeep from 'lodash/cloneDeep'
 
 import {tex} from '#/main/core/translation'
 import {makeId} from './../../utils/utils'
+import defaults from './../defaults'
 
 import {
   SHUFFLE_ONCE,
@@ -46,17 +49,51 @@ function generateStructure(quiz, steps, items, previousPaper = null) {
   }
 
   if (quiz.parameters.pickByTag) {
-    // Generate a structure by tags
-    /*
     const pageSize = quiz.parameters.randomTags.pageSize
     const tags = quiz.parameters.randomTags.pick
-    const total = tags.reduce((sum, val) => sum + parseInt(pick[1]))
-    const countSteps = Math.trunc(total/pageSize)*/
+    const total = tags.reduce((sum, tag) => sum + parseInt(tag[1]), 0)
+    const countSteps = Math.ceil(total/pageSize)
+    const availableItems = Object.keys(items).map(key => items[key])
 
-    //1) génerer des steps
-    //2) ajouter les questions (ptet juste ids, à voir)
-    //3) retourner le quizz avec les steps
-    //4) modifier Library/Attempts/PaperGenerator (pour les vrai)
+    let pickedSteps = []
+    let pickedItems = []
+
+    //get the list of available items given the current options
+    tags.forEach(tag => {
+      let taggedItems = availableItems.filter(item => {
+        return item.tags.indexOf(tag[0]) >= 0
+      })
+      taggedItems = pick(taggedItems, tag[1])
+      taggedItems.forEach(item => {
+        availableItems.splice(availableItems.findIndex(availableItem => availableItem.id === item.id), 1)
+      })
+      pickedItems = pickedItems.concat(taggedItems)
+    })
+
+    pickedItems = shuffle(pickedItems)
+
+    //create the steps
+    times(countSteps, () => {
+      let step = cloneDeep(defaults.step)
+      step.id = makeId()
+      times(pageSize, () => {
+        let pickedItem = pick(pickedItems, 1)[0]
+        if (pickedItem) {
+          //remove it from the list now
+          pickedItems.splice(pickedItems.findIndex(availableItem => availableItem.id === pickedItem.id), 1)
+          step.items.push(pickedItem)
+        }
+      })
+
+      if (step.items.length > 0) {
+        pickedSteps.push(step)
+      }
+    })
+
+    return Object.assign({}, quiz, {
+      steps: pickedSteps
+    })
+
   } else {
     // Generate the list of step ids for the paper
     let pickedSteps
