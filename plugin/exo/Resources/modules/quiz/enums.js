@@ -29,6 +29,7 @@ export const VIEW_PAPER = 'paper'
 export const VIEW_CORRECTION_QUESTIONS = 'correction_questions'
 export const VIEW_CORRECTION_ANSWERS = 'correction_answers'
 export const VIEW_ATTEMPT_END = 'attempt_end'
+export const VIEW_STATISTICS = 'view_statistics'
 
 export const viewModes = [
   [VIEW_OVERVIEW, 'overview'],
@@ -41,13 +42,13 @@ export const viewModes = [
 ]
 
 export const SHUFFLE_NEVER = 'never'
-export const SHUFFLE_ONCE = 'once'
 export const SHUFFLE_ALWAYS = 'always'
+export const SHUFFLE_ONCE = 'once'
 
 export const shuffleModes = [
   [SHUFFLE_NEVER, 'never'],
-  [SHUFFLE_ONCE, 'at_first_attempt'],
-  [SHUFFLE_ALWAYS, 'at_each_attempt']
+  [SHUFFLE_ALWAYS, 'at_each_attempt'],
+  [SHUFFLE_ONCE, 'at_first_attempt']
 ]
 
 export const SHOW_CORRECTION_AT_VALIDATION = 'validation'
@@ -79,10 +80,10 @@ export const SCORE_MANUAL = 'manual'
 export const TOTAL_SCORE_ON_DEFAULT = 'default'
 export const TOTAL_SCORE_ON_CUSTOM = 'custom'
 
-export const STATICTICS_ALL_PAPERS = 'default'
-export const STATICTICS_FINISHED_PAPERS_ONLY = 'custom'
+export const STATISTICS_ALL_PAPERS = 'default'
+export const STATISTICS_FINISHED_PAPERS_ONLY = 'custom'
 
 export const statisticsModes = [
-  [STATICTICS_ALL_PAPERS, 'compute_from_all_papers'],
-  [STATICTICS_FINISHED_PAPERS_ONLY, 'compute_from_finished_papers_only']
+  [STATISTICS_ALL_PAPERS, 'compute_from_all_papers'],
+  [STATISTICS_FINISHED_PAPERS_ONLY, 'compute_from_finished_papers_only']
 ]
