@@ -47,6 +47,11 @@ function generateStructure(quiz, steps, items, previousPaper = null) {
 
   if (quiz.parameters.pickByTag) {
     // Generate a structure by tags
+    /*
+    const pageSize = quiz.parameters.randomTags.pageSize
+    const tags = quiz.parameters.randomTags.pick
+    const total = tags.reduce((sum, val) => sum + parseInt(pick[1]))
+    const countSteps = Math.trunc(total/pageSize)*/
 
     //1) génerer des steps
     //2) ajouter les questions (ptet juste ids, à voir)

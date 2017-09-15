@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import isObject from 'lodash/isObject'
 import get from 'lodash/get'
+import times from 'lodash/times'
 
 import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
@@ -159,12 +160,30 @@ class StepPicking extends Component
     super(props)
   }
 
+  componentDidMount() {
+    this.setState({tag: this.getTagList()[0]})
+  }
+
   handleTagSelect(value) {
     this.setState({tag: value})
   }
 
   handleTagAmount(value) {
     this.setState({amount: value})
+  }
+
+  getTagList() {
+    return Object.keys(this.props.items).map(key => this.props.items[key]).reduce((tags, item) => [... new Set(tags.concat(item.tags))], [])
+  }
+
+  getStateQuestionCount() {
+    if (this.state) {
+      return Object.keys(this.props.items).map(key => this.props.items[key]).reduce((total, item) => {
+        return item.tags.findIndex((tagData) => tagData == this.state.tag) >= 0 ? total + 1: total
+      }, 0)
+    }
+
+    return 0
   }
 
   render() {
@@ -181,9 +200,7 @@ class StepPicking extends Component
        <div>
          <div>
            <select onChange={e => this.handleTagSelect(e.target.value)}>
-             {Object.keys(props.items).map(key => props.items[key]).reduce((tags, item) =>
-                [... new Set(tags.concat(item.tags))], []).map(tag => <option> {tag} </option>)
-             }
+             {this.getTagList().map(tag => <option> {tag} </option>)}
            </select>
          </div>
          <div>
@@ -197,20 +214,19 @@ class StepPicking extends Component
              warnOnly={!props.validating}
 
            >
-             <input
+             <select
                id="tag-amount"
-               type="number"
-               min="0"
                onChange={e => this.handleTagAmount(e.target.value)}
-               className="form-control"
-             />
-           </FormGroup>
-           <button
-             type="button"
-             onClick={() => props.onChange('parameters.randomTags.pick', ['add', [this.state.tag, this.state.amount]])}
-           >
-             {t('add')}
-           </button>
+             >
+              {times(this.getStateQuestionCount(), i => <option>{i + 1}</option>)}
+             </select>
+             <button
+               type="button"
+               onClick={() => props.onChange('parameters.randomTags.pick', ['add', [this.state.tag, this.state.amount]])}
+             >
+               {t('add')}
+             </button>
+          </FormGroup>
          </div>
          <FormGroup
            controlId="quiz-pageSize"
