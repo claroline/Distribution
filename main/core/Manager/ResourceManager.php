@@ -1386,9 +1386,10 @@ class ResourceManager
         ResourceNode $node,
         array $roles,
         $user,
-        $withLastOpenDate = false
+        $withLastOpenDate = false,
+        $canAdministrate = false
     ) {
-        return $this->resourceNodeRepo->findChildren($node, $roles, $user, $withLastOpenDate);
+        return $this->resourceNodeRepo->findChildren($node, $roles, $user, $withLastOpenDate, $canAdministrate);
     }
 
     /**
