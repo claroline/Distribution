@@ -16,7 +16,7 @@ export class KeywordFormModal  extends Component {
       hasError: false,
       nameError: null,
       id: props.keyword.id,
-      name: props.keyword.name,
+      name: props.keyword.name
     }
   }
 

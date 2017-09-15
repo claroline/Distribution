@@ -9,6 +9,7 @@ import {ClacoFormMainMenu} from './claco-form-main-menu.jsx'
 import {ClacoFormConfig} from './claco-form-config.jsx'
 import {CategoriesList} from '../../category/components/categories-list.jsx'
 import {KeywordsList} from '../../keyword/components/keywords-list.jsx'
+import {FieldsList} from '../../field/components/fields-list.jsx'
 
 const ClacoFormResource = props =>
   <ResourceContainer
@@ -27,6 +28,7 @@ const ClacoFormResource = props =>
       <Route path="/edit" component={ClacoFormConfig} />
       <Route path="/categories" component={CategoriesList} />
       <Route path="/keywords" component={KeywordsList} />
+      <Route path="/fields" component={FieldsList} />
     </Switch>
   </ResourceContainer>
 
@@ -49,6 +51,16 @@ function customActions(props) {
   if (props.canEdit) {
     actions.push({
       icon: 'fa fa-fw fa-th-list',
+      label: trans('fields_management', {}, 'clacoform'),
+      action: '#/fields'
+    })
+    actions.push({
+      icon: 'fa fa-fw fa-file-text-o',
+      label: trans('template_management', {}, 'clacoform'),
+      action: '#/template'
+    })
+    actions.push({
+      icon: 'fa fa-fw fa-table',
       label: trans('categories_management', {}, 'clacoform'),
       action: '#/categories'
     })

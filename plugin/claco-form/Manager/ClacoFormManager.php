@@ -371,7 +371,7 @@ class ClacoFormManager
 
         if ($this->facetManager->isTypeWithChoices($type)) {
             foreach ($choices as $choice) {
-                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet, null, $choice['index']);
 
                 if (!empty($choice['categoryId'])) {
                     $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
@@ -433,7 +433,7 @@ class ClacoFormManager
 
             foreach ($choices as $choice) {
                 if ($choice['new']) {
-                    $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+                    $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet, null, $choice['index']);
 
                     if (!empty($choice['categoryId'])) {
                         $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
@@ -521,6 +521,7 @@ class ClacoFormManager
                 ++$index;
             }
             if (!$found) {
+                $fieldFacet->removeFieldChoice($choice);
                 $this->om->remove($choice);
             }
         }
@@ -546,7 +547,8 @@ class ClacoFormManager
                     $child = $this->facetManager->addFacetFieldChoice(
                         $childChoice['value'],
                         $parent->getFieldFacet(),
-                        $parent
+                        $parent,
+                        $childChoice['index']
                     );
 
                     if (!empty($childChoice['categoryId'])) {

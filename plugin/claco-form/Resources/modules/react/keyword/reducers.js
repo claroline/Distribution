@@ -15,7 +15,7 @@ const keywordReducers = makeReducer({}, {
   },
   [KEYWORD_UPDATE]: (state, action) => {
     const keywords = cloneDeep(state)
-    const index = keywords.findIndex(c => c.id === action.keyword.id)
+    const index = keywords.findIndex(k => k.id === action.keyword.id)
 
     if (index >= 0) {
       keywords[index] = action.keyword
@@ -25,7 +25,7 @@ const keywordReducers = makeReducer({}, {
   },
   [KEYWORD_REMOVE]: (state, action) => {
     const keywords = cloneDeep(state)
-    const index = keywords.findIndex(c => c.id === action.keywordId)
+    const index = keywords.findIndex(k => k.id === action.keywordId)
 
     if (index >= 0) {
       keywords.splice(index, 1)

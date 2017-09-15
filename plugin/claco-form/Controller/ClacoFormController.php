@@ -159,69 +159,54 @@ class ClacoFormController extends Controller
     public function clacoFormOpenReactAction(ClacoForm $clacoForm)
     {
         $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
-//        $canEdit = $this->clacoFormManager->hasRight($clacoForm, 'EDIT');
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
         $fields = $this->clacoFormManager->getFieldsByClacoForm($clacoForm);
-//        $keywords = $clacoForm->getKeywords();
-//        $categories = $clacoForm->getCategories();
-        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
-        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
-        $nbEntries = count($allEntries);
-        $nbPublishedEntries = count($publishedEntries);
-        $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
-        $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
-        $isCategoryManager = count($myCategories) > 0;
-        $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
-        $serializedFields = $this->serializer->serialize(
-            $fields,
-            'json',
-            SerializationContext::create()->setGroups(['api_facet_admin'])
-        );
-//        $serializedKeywords = $this->serializer->serialize(
-//            $keywords,
+//        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
+//        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
+//        $nbEntries = count($allEntries);
+//        $nbPublishedEntries = count($publishedEntries);
+//        $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
+//        $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
+//        $isCategoryManager = count($myCategories) > 0;
+//        $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
+//        $serializedFields = $this->serializer->serialize(
+//            $fields,
 //            'json',
-//            SerializationContext::create()->setGroups(['api_claco_form'])
+//            SerializationContext::create()->setGroups(['api_facet_admin'])
 //        );
-//        $serializedCategories = $this->serializer->serialize(
-//            $categories,
+//        $serializedMyEntries = $this->serializer->serialize(
+//            $myEntries,
 //            'json',
 //            SerializationContext::create()->setGroups(['api_user_min'])
 //        );
-        $serializedMyEntries = $this->serializer->serialize(
-            $myEntries,
-            'json',
-            SerializationContext::create()->setGroups(['api_user_min'])
-        );
-        $serializedManagerEntries = $this->serializer->serialize(
-            $managerEntries,
-            'json',
-            SerializationContext::create()->setGroups(['api_user_min'])
-        );
-        $canGeneratePdf = !$isAnon &&
-            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
-            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
-        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
-        $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
-            $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
-            2;
+//        $serializedManagerEntries = $this->serializer->serialize(
+//            $managerEntries,
+//            'json',
+//            SerializationContext::create()->setGroups(['api_user_min'])
+//        );
+//        $canGeneratePdf = !$isAnon &&
+//            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
+//            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
+//        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
+//        $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
+//            $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
+//            2;
 
         return [
             'user' => $user,
             '_resource' => $clacoForm,
             'isAnon' => $isAnon,
-            'isCategoryManager' => $isCategoryManager,
             'clacoForm' => $clacoForm,
-            'fields' => $serializedFields,
-//            'keywords' => $serializedKeywords,
-//            'categories' => $serializedCategories,
-            'myEntries' => $serializedMyEntries,
-            'managerEntries' => $serializedManagerEntries,
-            'nbEntries' => $nbEntries,
-            'nbPublishedEntries' => $nbPublishedEntries,
-            'canGeneratePdf' => $canGeneratePdf,
-            'sharedEntries' => $sharedEntries,
-            'cascadeLevelMax' => $cascadeLevelMax,
+            'fields' => $fields,
+//            'isCategoryManager' => $isCategoryManager,
+//            'myEntries' => $serializedMyEntries,
+//            'managerEntries' => $serializedManagerEntries,
+//            'nbEntries' => $nbEntries,
+//            'nbPublishedEntries' => $nbPublishedEntries,
+//            'canGeneratePdf' => $canGeneratePdf,
+//            'sharedEntries' => $sharedEntries,
+//            'cascadeLevelMax' => $cascadeLevelMax,
         ];
     }
 
@@ -279,10 +264,17 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $fieldData = $this->request->request->get('fieldData', false);
         $choicesData = $this->request->request->get('choicesData', false);
+
+        if (!is_array($fieldData)) {
+            $fieldData = json_decode($fieldData, true);
+        }
+        if ($choicesData && !is_array($choicesData)) {
+            $choicesData = json_decode($choicesData, true);
+        }
         $choices = $choicesData ? $choicesData : [];
 
         foreach ($choices as $key => $choice) {
-            $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+            $categoryId = isset($choice['category']) ? $choice['category'] : null;
             $choices[$key]['categoryId'] = $categoryId;
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';
@@ -341,10 +333,17 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $fieldData = $this->request->request->get('fieldData', false);
         $choicesData = $this->request->request->get('choicesData', false);
+
+        if (!is_array($fieldData)) {
+            $fieldData = json_decode($fieldData, true);
+        }
+        if ($choicesData && !is_array($choicesData)) {
+            $choicesData = json_decode($choicesData, true);
+        }
         $choices = $choicesData ? $choicesData : [];
 
         foreach ($choices as $key => $choice) {
-            $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+            $categoryId = isset($choice['category']) ? $choice['category'] : null;
             $choices[$key]['categoryId'] = $categoryId;
         }
         $required = is_bool($fieldData['required']) ? $fieldData['required'] : $fieldData['required'] === 'true';

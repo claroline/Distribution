@@ -465,7 +465,7 @@ makePanel.propTypes = {
   }).isRequired,
   categories: T.arrayOf(T.shape({
     id: T.number.isRequired,
-    name: T.string.isRequired,
+    name: T.string.isRequired
   })),
   updateParameters: T.func.isRequired
 }
