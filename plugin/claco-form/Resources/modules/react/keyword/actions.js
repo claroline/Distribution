@@ -13,8 +13,7 @@ actions.updateKeyword = makeActionCreator(KEYWORD_UPDATE, 'keyword')
 actions.removeKeyword = makeActionCreator(KEYWORD_REMOVE, 'keywordId')
 
 actions.createKeyword = (keyword) => (dispatch, getState) => {
-  const state = getState()
-  const resourceId = state.resource.id
+  const resourceId = getState().resource.id
   const formData = new FormData()
   formData.append('keywordData', JSON.stringify(keyword))
 

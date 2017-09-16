@@ -18,7 +18,7 @@ class Message extends Component {
               onClick={() => this.props.resetMessage()}
             >
             </i>
-            {this.props.message.content}
+            <div dangerouslySetInnerHTML={{ __html: this.props.message.content}}/>
           </div>
         }
       </div>

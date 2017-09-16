@@ -4,7 +4,7 @@ import {makeActionCreator} from '#/main/core/utilities/redux'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {actions as messageActions} from '../message/actions'
 
-export const RESOURCE_DETAILS_UPDATE = 'RESOURCE_DETAILS_UPDATE'
+export const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 export const PARAMETERS_INITIALIZE = 'PARAMETERS_INITIALIZE'
 export const PARAMETERS_UPDATE = 'PARAMETERS_UPDATE'
 export const MESSAGE_RESET = 'MESSAGE_RESET'
@@ -12,7 +12,7 @@ export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 
 export const actions = {}
 
-actions.updateResourceDetails = makeActionCreator(RESOURCE_DETAILS_UPDATE, 'details')
+actions.updateResourceProperty = makeActionCreator(RESOURCE_PROPERTY_UPDATE, 'property', 'value')
 actions.setParameters = makeActionCreator(PARAMETERS_INITIALIZE, 'params')
 actions.updateParameters = makeActionCreator(PARAMETERS_UPDATE, 'property', 'value')
 
@@ -36,7 +36,7 @@ actions.saveParameters = () => (dispatch, getState) => {
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.updateResourceDetails(data))
+        dispatch(actions.updateResourceProperty('details', data))
         dispatch(messageActions.updateMessage(trans('config_success_message', {}, 'clacoform'), 'success'))
       }
     }

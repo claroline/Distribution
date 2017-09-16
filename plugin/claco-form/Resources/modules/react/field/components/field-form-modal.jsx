@@ -7,7 +7,8 @@ import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {t, trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {fieldTypes, getFieldType} from '../enums'
+import {fieldTypes} from '../enums'
+import {getFieldType} from '../../clacoForm/utils'
 import {ChoiceField} from './choice-field.jsx'
 
 export const MODAL_FIELD_FORM = 'MODAL_FIELD_FORM'
@@ -15,6 +16,15 @@ export const MODAL_FIELD_FORM = 'MODAL_FIELD_FORM'
 export class FieldFormModal  extends Component {
   constructor(props) {
     super(props)
+    let choiceIndex = 2
+
+    if (props.field.fieldFacet && props.field.fieldFacet.field_facet_choices.length > 0) {
+      props.field.fieldFacet.field_facet_choices.forEach(ffc => {
+        if (ffc.id >= choiceIndex) {
+          choiceIndex = ffc.id + 1
+        }
+      })
+    }
     this.state = {
       isFetching : false,
       hasError: false,
@@ -44,18 +54,8 @@ export class FieldFormModal  extends Component {
           category: null,
           error: ''
         }],
-      choicesLoaded: !props.field.fieldFacet || props.field.fieldFacet.field_facet_choices.length === 0
-    }
-    if (props.field.fieldFacet && props.field.fieldFacet.field_facet_choices.length > 0) {
-      let choiceIndex = 1
-      props.field.fieldFacet.field_facet_choices.forEach(ffc => {
-        if (ffc.id >= choiceIndex) {
-          choiceIndex = ffc.id + 1
-        }
-      })
-      this.state.choiceIndex = choiceIndex
-    } else {
-      this.state.choiceIndex = 2
+      choicesLoaded: !props.field.fieldFacet || props.field.fieldFacet.field_facet_choices.length === 0,
+      choiceIndex: choiceIndex
     }
   }
 
@@ -350,6 +350,7 @@ FieldFormModal.propTypes = {
   field: T.shape({
     id: T.number,
     name: T.string.isRequired,
+    type: T.number.isRequired,
     required: T.boolean,
     isMetadata: T.boolean,
     locked: T.boolean,

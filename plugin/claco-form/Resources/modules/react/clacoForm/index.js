@@ -16,6 +16,7 @@ import {messageReducers} from '../message/reducers'
 import {categoryReducers} from '../category/reducers'
 import {keywordReducers} from '../keyword/reducers'
 import {fieldReducers} from '../field/reducers'
+import {templateReducers} from '../template/reducers'
 import {ClacoFormResource} from './components/claco-form-resource.jsx'
 import {CategoryFormModal} from '../category/components/category-form-modal.jsx'
 import {KeywordFormModal} from '../keyword/components/keyword-form-modal.jsx'
@@ -42,6 +43,7 @@ bootstrap(
     categories: categoryReducers,
     keywords: keywordReducers,
     fields: fieldReducers,
+    template: templateReducers,
     message: messageReducers,
 
     // generic reducers
@@ -63,7 +65,8 @@ bootstrap(
       parameters: Object.assign({}, resource.details, {'activePanelKey': ''}),
       categories: resource.categories,
       keywords: resource.keywords,
-      fields: initialData.fields
+      fields: initialData.fields,
+      template: resource.template || ''
     }
   }
 )

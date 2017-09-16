@@ -5,7 +5,7 @@ import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions} from '../actions'
-import {fieldTypes, getFieldType} from '../enums'
+import {getFieldType} from '../../clacoForm/utils'
 
 class FieldsList extends Component {
   showFieldCreationForm() {

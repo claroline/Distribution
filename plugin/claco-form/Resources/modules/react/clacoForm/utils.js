@@ -1,0 +1,73 @@
+import {fieldTypes, countries} from '../field/enums'
+
+export const formatText = (str) => {
+  let convertedStr = str
+  convertedStr = convertedStr.replace(/'/g, ' ')
+  convertedStr = convertedStr.replace(/\[/g, 'lbrack;')
+  convertedStr = convertedStr.replace(/\]/g, 'rbrack;')
+  convertedStr = convertedStr.replace(/\{/g, 'lbrace;')
+  convertedStr = convertedStr.replace(/\}/g, 'rbrace;')
+  convertedStr = convertedStr.replace(/Ç/g, 'C')
+  convertedStr = convertedStr.replace(/ç/g, 'c')
+  convertedStr = convertedStr.replace(/è/g, 'e')
+  convertedStr = convertedStr.replace(/é/g, 'e')
+  convertedStr = convertedStr.replace(/ê/g, 'e')
+  convertedStr = convertedStr.replace(/ë/g, 'e')
+  convertedStr = convertedStr.replace(/È/g, 'E')
+  convertedStr = convertedStr.replace(/É/g, 'E')
+  convertedStr = convertedStr.replace(/Ê/g, 'E')
+  convertedStr = convertedStr.replace(/Ë/g, 'E')
+  convertedStr = convertedStr.replace(/à/g, 'a')
+  convertedStr = convertedStr.replace(/á/g, 'a')
+  convertedStr = convertedStr.replace(/â/g, 'a')
+  convertedStr = convertedStr.replace(/ã/g, 'a')
+  convertedStr = convertedStr.replace(/ä/g, 'a')
+  convertedStr = convertedStr.replace(/ä/g, 'a')
+  convertedStr = convertedStr.replace(/@/g, 'A')
+  convertedStr = convertedStr.replace(/À/g, 'A')
+  convertedStr = convertedStr.replace(/Á/g, 'A')
+  convertedStr = convertedStr.replace(/Â/g, 'A')
+  convertedStr = convertedStr.replace(/Ã/g, 'A')
+  convertedStr = convertedStr.replace(/Ä/g, 'A')
+  convertedStr = convertedStr.replace(/Å/g, 'A')
+  convertedStr = convertedStr.replace(/ì/g, 'i')
+  convertedStr = convertedStr.replace(/í/g, 'i')
+  convertedStr = convertedStr.replace(/î/g, 'i')
+  convertedStr = convertedStr.replace(/ï/g, 'i')
+  convertedStr = convertedStr.replace(/Ì/g, 'I')
+  convertedStr = convertedStr.replace(/Í/g, 'I')
+  convertedStr = convertedStr.replace(/Î/g, 'I')
+  convertedStr = convertedStr.replace(/Ï/g, 'I')
+  convertedStr = convertedStr.replace(/ð/g, 'o')
+  convertedStr = convertedStr.replace(/ò/g, 'o')
+  convertedStr = convertedStr.replace(/ó/g, 'o')
+  convertedStr = convertedStr.replace(/ô/g, 'o')
+  convertedStr = convertedStr.replace(/õ/g, 'o')
+  convertedStr = convertedStr.replace(/ö/g, 'o')
+  convertedStr = convertedStr.replace(/Ò/g, 'O')
+  convertedStr = convertedStr.replace(/Ó/g, 'O')
+  convertedStr = convertedStr.replace(/Ô/g, 'O')
+  convertedStr = convertedStr.replace(/Õ/g, 'O')
+  convertedStr = convertedStr.replace(/Ö/g, 'O')
+  convertedStr = convertedStr.replace(/ù/g, 'u')
+  convertedStr = convertedStr.replace(/ú/g, 'u')
+  convertedStr = convertedStr.replace(/û/g, 'u')
+  convertedStr = convertedStr.replace(/ü/g, 'u')
+  convertedStr = convertedStr.replace(/Ù/g, 'U')
+  convertedStr = convertedStr.replace(/Ú/g, 'U')
+  convertedStr = convertedStr.replace(/Û/g, 'U')
+  convertedStr = convertedStr.replace(/Ü/g, 'U')
+  convertedStr = convertedStr.replace(/ý/g, 'y')
+  convertedStr = convertedStr.replace(/ÿ/g, 'y')
+  convertedStr = convertedStr.replace(/Ý/g, 'Y')
+
+  return convertedStr
+}
+
+export const getFieldType = (value) => {
+  return fieldTypes.find(f => f.value === value)
+}
+
+export const getCountry = (value) => {
+  return countries.find(c => c.value === value)
+}

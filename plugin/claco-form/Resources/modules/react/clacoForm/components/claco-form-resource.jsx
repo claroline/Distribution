@@ -10,6 +10,7 @@ import {ClacoFormConfig} from './claco-form-config.jsx'
 import {CategoriesList} from '../../category/components/categories-list.jsx'
 import {KeywordsList} from '../../keyword/components/keywords-list.jsx'
 import {FieldsList} from '../../field/components/fields-list.jsx'
+import {TemplateForm} from '../../template/components/template-form.jsx'
 
 const ClacoFormResource = props =>
   <ResourceContainer
@@ -29,6 +30,7 @@ const ClacoFormResource = props =>
       <Route path="/categories" component={CategoriesList} />
       <Route path="/keywords" component={KeywordsList} />
       <Route path="/fields" component={FieldsList} />
+      <Route path="/template" component={TemplateForm} />
     </Switch>
   </ResourceContainer>
 

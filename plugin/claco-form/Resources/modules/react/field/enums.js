@@ -257,11 +257,3 @@ export const countries = [
   {label: 'Zambia', value: 'ZM'},
   {label: 'Zimbabwe', value: 'ZW'}
 ]
-
-export const getFieldType = (value) => {
-  return fieldTypes.find(f => f.value === value)
-}
-
-export const getCountry = (value) => {
-  return countries.find(c => c.value === value)
-}

@@ -13,8 +13,7 @@ actions.updateCategory = makeActionCreator(CATEGORY_UPDATE, 'category')
 actions.removeCategory = makeActionCreator(CATEGORY_REMOVE, 'categoryId')
 
 actions.createCategory = (category) => (dispatch, getState) => {
-  const state = getState()
-  const resourceId = state.resource.id
+  const resourceId = getState().resource.id
   const managersIds = []
   category.managers.forEach(m => managersIds.push(m.id))
   category.managers = managersIds

@@ -13,8 +13,7 @@ actions.updateField = makeActionCreator(FIELD_UPDATE, 'field')
 actions.removeField = makeActionCreator(FIELD_REMOVE, 'fieldId')
 
 actions.createField = (fieldData) => (dispatch, getState) => {
-  const state = getState()
-  const resourceId = state.resource.id
+  const resourceId = getState().resource.id
   const formData = new FormData()
   formData.append('fieldData', JSON.stringify(fieldData.field))
   formData.append('choicesData', JSON.stringify(fieldData.choices))
