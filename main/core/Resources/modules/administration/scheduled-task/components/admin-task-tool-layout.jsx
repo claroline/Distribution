@@ -20,4 +20,6 @@ function mapStateToProps(state) {
 
 AdminTaskToolLayout = connect(mapStateToProps)(AdminTaskToolLayout)
 
-export {AdminTaskToolLayout}
+export {
+  AdminTaskToolLayout
+}

@@ -1,39 +1,50 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
+import {DropdownButton, MenuItem} from 'react-bootstrap'
 
-import {t} from '#/main/core/translation'
+import {t, transChoice} from '#/main/core/translation'
+import {constants} from '#/main/core/layout/pagination/constants'
 
-export const ResultsPerPage = props =>
+const ResultsPerPage = props =>
   <div className="results-per-page">
-    Results per page :&nbsp;
-
-    {props.availableSizes.map((size, index) => (
-      <button
-        key={index}
-        className={classes(
-          'btn',
-          'btn-sm',
-          size === props.pageSize ? 'btn-primary' : 'btn-link-default'
-        )}
-
-        onClick={e => {
-          e.stopPropagation()
-          props.handlePageSizeUpdate(size)
-        }}
-      >
-        { -1 !== size ? size : t('all')}
-      </button>
-    ))}
+    <DropdownButton
+      id="page-sizes-dropdown"
+      title={
+        <span>
+          {-1 !== props.pageSize ? props.pageSize: t('all')}
+          <span className="fa fa-sort" />
+        </span>
+      }
+      bsStyle="link"
+      noCaret={true}
+      dropup={true}
+      pullRight={true}
+    >
+      <MenuItem header>{t('results_per_page')}</MenuItem>
+      {props.availableSizes.map((size, index) =>
+        <MenuItem
+          key={index}
+          onClick={() => props.pageSize !== size ? props.updatePageSize(size) : false}
+          className={props.pageSize === size ? 'active' : ''}
+        >
+          {transChoice('list_results_count', size, {count: size}, 'platform')}
+        </MenuItem>
+      )}
+    </DropdownButton>
   </div>
 
 ResultsPerPage.propTypes = {
+  totalResults: T.number.isRequired,
   availableSizes: T.arrayOf(T.number),
   pageSize: T.number,
-  handlePageSizeUpdate: T.func.isRequired
+  updatePageSize: T.func.isRequired
 }
 
 ResultsPerPage.defaultProps = {
-  availableSizes: [10, 20, 50, 100, -1],
-  pageSize: 20
+  availableSizes: constants.AVAILABLE_PAGE_SIZES,
+  pageSize: constants.DEFAULT_PAGE_SIZE
+}
+
+export {
+  ResultsPerPage
 }

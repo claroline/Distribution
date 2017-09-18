@@ -8,14 +8,14 @@ import {makeRouter} from './router'
 import {reducers} from './reducers'
 import {VIEW_MANAGEMENT} from './enums'
 import {AdminTaskToolLayout} from './components/admin-task-tool-layout.jsx'
-import {TaskTypeFormModal} from './components/task-type-form-modal.jsx'
-import {MessageDetailsModal} from './components/message-details-modal.jsx'
+import {MODAL_TASK_TYPE_FORM, TaskTypeFormModal} from './components/modal/task-type-form-modal.jsx'
+import {MODAL_DETAILS_TASK_MESSAGE, MessageDetailsModal} from './components/modal/message-details-modal.jsx'
 
 class AdminTaskTool {
   constructor(isCronConfigured, tasks, total) {
     registerModalTypes([
-      ['MODAL_TASK_TYPE_FORM', TaskTypeFormModal],
-      ['MODAL_DETAILS_TASK_MESSAGE', MessageDetailsModal]
+      [MODAL_TASK_TYPE_FORM, TaskTypeFormModal],
+      [MODAL_DETAILS_TASK_MESSAGE, MessageDetailsModal]
     ])
 
     this.store = createStore(

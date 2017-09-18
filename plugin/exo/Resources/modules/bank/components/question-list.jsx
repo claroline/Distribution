@@ -116,7 +116,7 @@ const QuestionRow = props =>
     <TableTooltipCell
       align="center"
       id={props.question.id}
-      tooltip={trans(getDefinition(props.question.type).name, {}, 'question_types')}
+      tip={trans(getDefinition(props.question.type).name, {}, 'question_types')}
     >
       <ItemIcon name={getDefinition(props.question.type).name} />
     </TableTooltipCell>

@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\Task\ScheduledTask;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\GroupManager;
-use Claroline\CoreBundle\Manager\ScheduledTaskManager;
+use Claroline\CoreBundle\Manager\Task\ScheduledTaskManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -75,14 +75,11 @@ class ScheduledTaskController extends Controller
     }
 
     /**
-     * @EXT\Route(
-     *     "/management",
-     *     name="claro_admin_scheduled_tasks_management",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\Template()
+     * @EXT\Template
+     *
+     * @return array
      */
-    public function scheduledTasksManagementAction()
+    public function indexAction()
     {
         $isCronConfigured = $this->configHandler->hasParameter('is_cron_configured') ?
             $this->configHandler->getParameter('is_cron_configured') :

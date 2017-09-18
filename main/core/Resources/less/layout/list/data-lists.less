@@ -1,7 +1,9 @@
-@search-bg:    #ebebeb;
-@search-color: #262626;
-
 .data-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
     // Responsive table.
     //
     // I put it here to avoid possible side effects in other use of .table.
@@ -19,13 +21,16 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
+
+    .pagination-container {
+        margin-top: auto; // force align to the bottom if content doesn't fill the screen
+    }
 }
 
 .list-header {
     display: flex;
     align-items: stretch;
-    margin-bottom: @component-margin-bottom;
-    background: @search-bg;
+    background: @list-controls-bg;
 }
 
 .list-search {
@@ -33,12 +38,16 @@
     position: relative;
     font-size: @font-size-large;
 
+    &.open {
+        .box-shadow(0 1px 2px rgba(0,0,0,.5)); // todo : use a var
+    }
+
     .search-icon {
         position: absolute;
         left: 0;
         bottom: 0;
         padding: @padding-large-vertical;
-        color: @search-color;
+        color: @list-controls-color;
         height: @input-height-large;
         width: @input-height-large;
         line-height: @line-height-large;
@@ -106,18 +115,20 @@
 
     .search-available-filters {
         position: absolute;
-        z-index: 2;
+        z-index: @zindex-list-search;
         top: 100%;
         left: 0;
         right: 0;
         padding: 0;
         margin: -1px 0 0;
         font-size: @font-size-base;
-        background: @search-bg;
+        background: @list-controls-bg;
+        .box-shadow(0 2px 2px rgba(0,0,0,.5)); // todo use a var
+
 
         > li {
             list-style-type: none;
-            border-top: 1px solid #E1E1E1;
+            border-top: 1px solid @list-controls-border;
         }
 
         .available-filter {
@@ -125,7 +136,7 @@
             flex-wrap: wrap; // todo : enhance responsive. it's ugly on XS screen
             justify-content: space-between;
             padding: 0 @padding-large-horizontal;
-            color: #3A3A3A;
+            color: @list-controls-color;
 
             .btn + .btn {
                 margin-left: 5px;
@@ -144,16 +155,16 @@
         .available-filter-active {
             &:hover,
             &:focus {
-                background: #E4E4E4;
-                color: @search-color;
+                background: @list-controls-active-bg;
+                color: @list-controls-active-color;
             }
         }
 
         .available-filter-disabled {
-            background: #F4F4F4;
+            background: @list-controls-disabled-bg;
 
             .available-filter-prop {
-                color: @search-color;
+                color: @list-controls-disabled-color;
                 opacity: .5;
             }
         }
@@ -193,29 +204,20 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-
-    border: 1px solid transparent;
-    background: #ebebeb;
+    background: @list-controls-bg;
 
     .list-selected-label {
-        padding: @table-cell-padding 0;
         .fa {
-            width: 30px; // same as .checkbox-cell. TODO : use a var
             text-align: center;
-            margin-right: @table-cell-padding;
         }
     }
 
     .list-selected-actions {
-        // todo : merge with table actions btns
         white-space: nowrap; // avoids buttons to break on multi lines
-        .btn {
-            padding: @table-cell-padding;
-        }
     }
 }
 
-.list-actions {
+.list-options {
     display: flex;
     align-items: flex-end;
 
@@ -228,8 +230,8 @@
     .open {
         .btn {
             box-shadow: none;
-            background: #E4E4E4;
-            border-color: #E4E4E4;
+            background: @list-controls-active-bg;
+            color: @list-controls-active-color;
         }
     }
 }
@@ -240,4 +242,21 @@
     padding: @panel-body-padding;
     text-align: center;
     font-style: italic;
+}
+
+.list-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    .count {
+        padding: @padding-base-vertical @padding-base-horizontal;
+        color: @list-controls-color;
+        background: @list-controls-bg;
+        border: 1px solid transparent;
+        font-weight: bold;
+        border-radius: @border-radius-base;
+    }
 }

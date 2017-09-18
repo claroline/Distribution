@@ -62,7 +62,7 @@ const taskFormReducers = {
 }
 
 export const reducers = combineReducers({
-  isCronConfigured: makeReducer(initialState['isCronConfigured'], mainReducers),
+  /*isCronConfigured: makeReducer(initialState['isCronConfigured'], mainReducers),*/
   viewMode: makeReducer(initialState['viewMode'], viewReducers),
   tasks: makeReducer(initialState['tasks'], tasksReducers),
   taskForm: makeReducer(initialState['taskForm'], taskFormReducers),

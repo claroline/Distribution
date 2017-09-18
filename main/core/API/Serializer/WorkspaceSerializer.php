@@ -5,12 +5,8 @@ namespace Claroline\CoreBundle\API\Serializer;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Manager\RoleManager;
-use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.serializer.workspace")
@@ -18,47 +14,29 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  */
 class WorkspaceSerializer
 {
-    private $om;
+    /** @var UserSerializer */
+    private $userSerializer;
+
+    /** @var WorkspaceManager */
+    private $workspaceManager;
 
     /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorization;
-
-    /**
-     * @var StrictDispatcher
-     */
-    private $eventDispatcher;
-
-    /**
-     * ResourceNodeManager constructor.
+     * WorkspaceSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *     "authorization"     = @DI\Inject("security.authorization_checker"),
-     *     "eventDispatcher"   = @DI\Inject("claroline.event.event_dispatcher"),
-     *     "userManager"       = @DI\Inject("claroline.manager.user_manager"),
-     *     "roleManager"       = @DI\Inject("claroline.manager.role_manager")
+     *     "userSerializer"   = @DI\Inject("claroline.serializer.user"),
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
      * })
      *
-     * @param ObjectManager                 $om
-     * @param AuthorizationCheckerInterface $authorization
-     * @param StrictDispatcher              $eventDispatcher
-     * @param UserManager                   $userManager
-     * @param RoleManager                   $roleManager
+     * @param UserSerializer   $userSerializer
+     * @param WorkspaceManager $workspaceManager
      */
     public function __construct(
-        ObjectManager $om,
-        AuthorizationCheckerInterface $authorization,
-        StrictDispatcher $eventDispatcher,
-        UserManager $userManager,
-        RoleManager $roleManager
+        UserSerializer $userSerializer,
+        WorkspaceManager $workspaceManager
     ) {
-        $this->om = $om;
-        $this->authorization = $authorization;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->userManager = $userManager;
-        $this->roleManager = $roleManager;
+        $this->userSerializer = $userSerializer;
+        $this->workspaceManager = $workspaceManager;
     }
 
     /**
@@ -70,40 +48,61 @@ class WorkspaceSerializer
      */
     public function serialize(Workspace $workspace)
     {
-        $roleManager = $this->roleManager->getManagerRole($workspace);
-        $managers = $this->userManager->getUsersByRolesIncludingGroups([$roleManager]);
-        $creator = $workspace->getCreator();
-
-        $serializedWorkspace = [
-          'id' => $workspace->getId(),
-          'uuid' => $workspace->getGuid(),
-          'name' => $workspace->getName(),
-          'code' => $workspace->getCode(),
-          //moment timestamp
-          'dateCreation' => $workspace->getCreationDate()->format('Y-m-d\TH:i:s'),
-          'creator' => [
-            'id' => $creator ? $creator->getId() : 0,
-            'uuid' => $creator ? $creator->getId() : 0,
-            'username' => $creator ? $creator->getUsername() : 'undefined',
-          ],
-          'isModel' => $workspace->isModel(),
-          'roles' => array_map(function (Role $role) {
-              return [
-                'id' => $role->getId(),
-                'name' => $role->getName(),
-              ];
-          }, $workspace->getRoles()->toArray()),
-          'managers' => array_map(function (User $manager) {
-              return [
-              'id' => $manager->getId(),
-              'uuid' => $manager->getGuid(),
-              'username' => $manager->getUsername(),
-              'lastName' => $manager->getLastName(),
-              'firstName' => $manager->getFirstName(),
-            ];
-          }, $managers),
+        return [
+            'id' => $workspace->getId(),
+            'uuid' => $workspace->getGuid(),
+            'name' => $workspace->getName(),
+            'code' => $workspace->getCode(),
+            'poster' => null, // todo : add as Workspace prop
+            'thumbnail' => null, // todo : add as Workspace prop
+            'meta' => $this->getMeta($workspace),
+            'display' => $this->getDisplay($workspace),
+            'restrictions' => $this->getRestrictions($workspace),
+            'registration' => $this->getRegistration($workspace),
+            'roles' => array_map(function (Role $role) {
+                return ['id' => $role->getId(), 'name' => $role->getName()];
+            }, $workspace->getRoles()->toArray()),
+            'managers' => array_map(function (User $manager) {
+                return $this->userSerializer->serialize($manager);
+            }, $this->workspaceManager->getManagers($workspace)),
         ];
+    }
 
-        return $serializedWorkspace;
+    private function getMeta(Workspace $workspace)
+    {
+        return [
+            'model' => $workspace->isModel(),
+            'personal' => $workspace->isPersonal(),
+            'description' => $workspace->getDescription(),
+            'created' => $workspace->getCreationDate()->format('Y-m-d\TH:i:s'),
+            'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator()) : null,
+        ];
+    }
+
+    private function getDisplay(Workspace $workspace)
+    {
+        return [
+            'displayable' => $workspace->isDisplayable(),
+        ];
+    }
+
+    private function getRestrictions(Workspace $workspace)
+    {
+        return [
+            'accessibleFrom' => $workspace->getStartDate() ? $workspace->getStartDate()->format('Y-m-d\TH:i:s') : null,
+            'accessibleUntil' => $workspace->getEndDate() ? $workspace->getEndDate()->format('Y-m-d\TH:i:s') : null,
+            'maxUsers' => $workspace->getMaxUsers(),
+            'maxStorage' => $workspace->getMaxStorageSize(),
+            'maxResources' => $workspace->getMaxUploadResources(),
+        ];
+    }
+
+    private function getRegistration(Workspace $workspace)
+    {
+        return [
+            'validation' => $workspace->getRegistrationValidation(),
+            'selfRegistration' => $workspace->getSelfRegistration(),
+            'selfUnregistration' => $workspace->getSelfUnregistration()
+        ];
     }
 }

@@ -2,18 +2,17 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {TableCell} from '#/main/core/layout/table/components/table.jsx'
+import {getPlainText} from '#/main/core/layout/data/types/html/utils'
 
-const FlagCell = props =>
-  <TableCell align="center" className="boolean-cell">
-    {props.data &&
-      <span className="fa fa-fw fa-check" />
-    }
+const HtmlCell = props =>
+  <TableCell className="html-cell">
+    {getPlainText(props.data)}
   </TableCell>
 
-FlagCell.propTypes = {
+HtmlCell.propTypes = {
   data: T.bool.isRequired
 }
 
 export {
-  FlagCell
+  HtmlCell
 }

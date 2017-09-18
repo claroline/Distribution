@@ -86,10 +86,13 @@ class FinderProvider
         return $this->finders[$class];
     }
 
-    public function search($class, $page = 0, $limit = null, array $searches = [], array $serializerOptions = [])
+    public function search($class, array $queryParams = [], array $serializerOptions = [])
     {
-        $filters = isset($searches['filters']) ? $searches['filters'] : [];
-        $sortBy = $this->decodeSortBy(isset($searches['sortBy']) ? $searches['sortBy'] : null);
+        // get search params
+        $filters = isset($queryParams['filters']) ? $queryParams['filters'] : [];
+        $sortBy = isset($queryParams['sortBy']) ? $this->decodeSortBy($queryParams['sortBy']) : [];
+        $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 0;
+        $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : -1;
 
         $data = $this->fetch($class, $page, $limit, $filters, $sortBy);
         $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true);
@@ -97,8 +100,8 @@ class FinderProvider
         return [
             'class' => $class,
             'total' => $count,
-            'results' => array_map(function ($el) use ($serializerOptions) {
-                return $this->serializer->serialize($el, $serializerOptions);
+            'results' => array_map(function ($result) use ($serializerOptions) {
+                return $this->serializer->serialize($result, $serializerOptions);
             }, $data),
             'page' => $page,
             'pageSize' => $limit,
@@ -121,7 +124,7 @@ class FinderProvider
 
             // order query
             if (!empty($sortBy['property']) && 0 !== $sortBy['direction']) {
-                $qb->orderBy('obj.'.$sortBy['property'], 1 === $sortBy['property'] ? 'ASC' : 'DESC');
+                $qb->orderBy('obj.'.$sortBy['property'], 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
             }
 
             if (!$count && 0 < $limit) {
@@ -133,7 +136,7 @@ class FinderProvider
 
             return $count ? (int) $query->getSingleScalarResult() : $query->getResult();
         } catch (FinderException $e) {
-            $data = $this->om->getRepository($class)->findBy($filters, null, $limit, $page);
+            $data = $this->om->getRepository($class)->findBy($filters, null, 0 < $limit ? $limit : null, $page);
 
             return $count ? count($data) : $data;
         }
@@ -154,7 +157,7 @@ class FinderProvider
 
         if (!empty($sortBy)) {
             if ('-' === substr($sortBy, 0, 1)) {
-                $property = substr($sortBy, 0, 1);
+                $property = substr($sortBy, 1);
                 $direction = -1;
             } else {
                 $property = $sortBy;

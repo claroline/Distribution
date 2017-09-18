@@ -30,51 +30,46 @@ class ScheduledTask
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("id")
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(name="task_type")
      * @Assert\NotBlank()
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("type")
+     *
+     * @var string
      */
     protected $type;
 
     /**
      * @ORM\Column(name="task_name", nullable=true)
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("name")
+     *
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(name="scheduled_date", type="datetime")
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("scheduledDate")
+     *
+     * @var \DateTime
      */
     protected $scheduledDate;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("executed")
-     */
-    protected $executed = false;
-
-    /**
      * @ORM\Column(name="execution_date", type="datetime", nullable=true)
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("executionDate")
+     *
+     * @var \DateTime
      */
-    protected $executionDate;
+    protected $executionDate = null;
 
     /**
      * @ORM\Column(name="execution_status", nullable=true)
      * @Groups({"api_task", "api_user_min"})
      * @SerializedName("executionStatus")
+     *
+     * @var string
      */
     protected $executionStatus;
 
@@ -82,6 +77,8 @@ class ScheduledTask
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinTable(name="claro_scheduled_task_users")
      * @Groups({"api_user_min"})
+     *
+     * @var User[]
      */
     protected $users;
 
@@ -154,14 +151,14 @@ class ScheduledTask
 
     public function isExecuted()
     {
-        return $this->executed;
+        return !empty($this->executionDate);
     }
 
-    public function setExecuted($executed)
-    {
-        $this->executed = $executed;
-    }
-
+    /**
+     * Get the last execution date.
+     *
+     * @return \DateTime
+     */
     public function getExecutionDate()
     {
         return $this->executionDate;

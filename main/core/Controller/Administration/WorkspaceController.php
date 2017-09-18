@@ -25,7 +25,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  * @DI\Tag("security.secure_service")
  * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
  */
-class WorkspacesController extends Controller
+class WorkspaceController extends Controller
 {
     private $om;
     private $eventDispatcher;
@@ -33,7 +33,7 @@ class WorkspacesController extends Controller
     private $workspaceManager;
 
     /**
-     * WorkspacesController constructor.
+     * WorkspaceController constructor.
      *
      * @DI\InjectParams({
      *     "om"               = @DI\Inject("claroline.persistence.object_manager"),
@@ -67,10 +67,11 @@ class WorkspacesController extends Controller
     public function indexAction()
     {
         return $this->finder->search(
-          'Claroline\CoreBundle\Entity\Workspace\Workspace',
-          0,
-          20,
-          ['filters' => ['isModel' => false, 'isPersonal' => false]]
+            'Claroline\CoreBundle\Entity\Workspace\Workspace', [
+                'limit' => 20,
+                'filters' => ['model' => false, 'personal' => false],
+                'sortBy' => 'name'
+            ]
         );
     }
 

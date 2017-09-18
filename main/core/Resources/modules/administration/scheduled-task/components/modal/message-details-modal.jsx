@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import moment from 'moment'
 import Modal from 'react-bootstrap/lib/Modal'
-import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+
 import {t} from '#/main/core/translation'
+import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 
 export const MODAL_DETAILS_TASK_MESSAGE = 'MODAL_DETAILS_TASK_MESSAGE'
 

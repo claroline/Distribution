@@ -1,3 +1,4 @@
+import {HtmlCell} from '#/main/core/layout/data/types/html/components/table.jsx'
 
 export const HTML_TYPE = 'html'
 
@@ -8,7 +9,6 @@ export const htmlDefinition = {
   render: (raw) => raw,
   validate: (value) => typeof value === 'string',
   components: {
-    form: null,
-    table: null
+    table: HtmlCell
   }
 }

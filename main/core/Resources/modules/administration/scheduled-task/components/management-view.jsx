@@ -6,7 +6,7 @@ import moment from 'moment'
 
 import {t} from '#/main/core/translation'
 import {makeModal, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {selectors} from '../selectors'
+import {selectors as select} from '../selectors'
 import {actions} from '../actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
@@ -71,6 +71,7 @@ class ManagementView extends Component {
 
   showTaskEditionForm(task) {
     this.props.loadTaskForm(task)
+
     navigate(task.type, true)
   }
 
@@ -108,7 +109,7 @@ class ManagementView extends Component {
   }
 
   render() {
-    if (this.props.isCronConfigured) {
+    if (!this.props.isCronConfigured) {
       return (
         <div>
           <DataList

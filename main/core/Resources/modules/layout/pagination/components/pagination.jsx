@@ -1,68 +1,53 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
+import {DropdownButton, MenuItem} from 'react-bootstrap'
 
-import {DEFAULT_PAGE_SIZE} from '#/main/core/layout/pagination/selectors'
+import {t} from '#/main/core/translation'
 import {countPages} from '#/main/core/layout/pagination/utils'
 import {ResultsPerPage} from '#/main/core/layout/pagination/components/results-per-page.jsx'
 
 const PaginationLink = props =>
-  <li className={props.className}>
-    <a
-      href="#"
-      onClick={props.handleClick}
-    >
-      {props.children}
-    </a>
-  </li>
+  <button
+    type="button"
+    className={classes('btn btn-link', props.className, {
+      disabled: props.disabled
+    })}
+    onClick={(e) => {
+      e.stopPropagation()
+      if (!props.disabled) {
+        props.handleClick()
+      }
+    }}
+  >
+    {props.children}
+  </button>
 
 PaginationLink.propTypes = {
+  disabled: T.bool,
   handleClick: T.func.isRequired,
   className: T.node,
   children: T.node.isRequired
 }
 
 PaginationLink.defaultProps = {
+  disabled: false,
   className: ''
-}
-
-const PageLink = props =>
-  <PaginationLink
-    className={props.current ? 'active' : ''}
-    handleClick={e => {
-      e.stopPropagation()
-      props.handlePageChange(props.page)
-    }}
-  >
-    {props.page + 1}
-  </PaginationLink>
-
-PageLink.propTypes = {
-  page: T.number.isRequired,
-  handlePageChange: T.func.isRequired,
-  current: T.bool
-}
-
-PageLink.defaultProps = {
-  current: false
 }
 
 const PreviousLink = props =>
   <PaginationLink
-    className={props.disabled ? 'disabled' : ''}
-    handleClick={e => {
-      e.stopPropagation()
-      if (!props.disabled) {
-        props.handlePagePrevious()
-      }
-    }}
+    className="previous-btn"
+    disabled={props.disabled}
+    handleClick={props.previousPage}
   >
-    <span aria-hidden="true">&laquo;</span>
-    <span className="sr-only">Previous</span>
+    <span className="fa fa-angle-double-left" aria-hidden="true" />
+    <span className="sr-only">{t('previous')}</span>
   </PaginationLink>
 
 PreviousLink.propTypes = {
   disabled: T.bool,
-  handlePagePrevious: T.func.isRequired
+  previousPage: T.func.isRequired
 }
 
 PreviousLink.defaultProps = {
@@ -71,21 +56,17 @@ PreviousLink.defaultProps = {
 
 const NextLink = props =>
   <PaginationLink
-    className={props.disabled ? 'disabled' : ''}
-    handleClick={e => {
-      e.stopPropagation()
-      if (!props.disabled) {
-        props.handlePageNext()
-      }
-    }}
+    className="next-btn"
+    disabled={props.disabled}
+    handleClick={props.nextPage}
   >
-    <span aria-hidden="true">&raquo;</span>
-    <span className="sr-only">Next</span>
+    {t('next')}
+    <span className="fa fa-angle-double-right" aria-hidden="true" />
   </PaginationLink>
 
 NextLink.propTypes = {
   disabled: T.bool,
-  handlePageNext: T.func.isRequired
+  nextPage: T.func.isRequired
 }
 
 NextLink.defaultProps = {
@@ -95,56 +76,61 @@ NextLink.defaultProps = {
 const Pagination = props => {
   const pages = countPages(props.totalResults, props.pageSize)
 
-  const PageLinks = []
-  for (let i = 0; i < pages; i++) {
-    PageLinks.push(
-      <PageLink
-        key={i}
-        page={i}
-        current={i === props.current}
-        handlePageChange={props.handlePageChange}
-      />
-    )
-  }
-
   return (
-    <nav className="pagination-container page-nav" aria-label="Page navigation">
+    <nav className="pagination-container page-nav">
+      <div className="pagination-condensed btn-group">
+        <PreviousLink
+          disabled={0 === props.current}
+          previousPage={() => props.changePage(props.current - 1)}
+        />
+
+        <DropdownButton
+          id="pagination-pages-dropdown"
+          title={t('current_page', {current: props.current + 1, pages: pages})}
+          bsStyle="link"
+          noCaret={true}
+          dropup={true}
+          disabled={1 === pages}
+        >
+          <MenuItem header>{t('pages')}</MenuItem>
+          {[...Array(pages)].map((u, page) =>
+            <MenuItem
+              key={`page-${page}`}
+              onClick={() => page !== props.current ? props.changePage(page) : false}
+              className={classes({
+                active: page === props.current
+              })}
+            >
+              Page {page + 1}
+            </MenuItem>
+          )}
+        </DropdownButton>
+
+        <NextLink
+          disabled={pages - 1 === props.current}
+          nextPage={() => props.changePage(props.current + 1)}
+        />
+      </div>
+
       <ResultsPerPage
         pageSize={props.pageSize}
-        handlePageSizeUpdate={props.handlePageSizeUpdate}
+        totalResults={props.totalResults}
+        updatePageSize={props.updatePageSize}
       />
-
-      {1 !== pages &&
-        <ul className="pagination">
-          <PreviousLink
-            disabled={0 === props.current}
-            handlePagePrevious={() => props.handlePageChange(props.current - 1)}
-          />
-
-          {PageLinks}
-
-          <NextLink
-            disabled={pages - 1 === props.current}
-            handlePageNext={() => props.handlePageChange(props.current + 1)}
-          />
-        </ul>
-      }
     </nav>
   )
 }
 
 Pagination.propTypes = {
   current: T.number,
-  pageSize: T.number.isRequired,
+  pageSize: T.number,
   totalResults: T.number.isRequired,
-  //pages: T.number.isRequired,
-  handlePageChange: T.func.isRequired,
-  handlePageSizeUpdate: T.func.isRequired
+  changePage: T.func.isRequired,
+  updatePageSize: T.func.isRequired
 }
 
 Pagination.defaultProps = {
-  current: 0,
-  pageSize: DEFAULT_PAGE_SIZE
+  current: 0
 }
 
 export {

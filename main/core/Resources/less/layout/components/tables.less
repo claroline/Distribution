@@ -70,6 +70,25 @@
             background-color: #b5d9ea !important; // important is required to override strips color
         }
     }
+
+    .selected-actions-row > td {
+        padding: 0;
+        border-top: none;
+    }
+
+    .list-selected {
+        .list-selected-label {
+            padding: @table-cell-padding 0;
+            .fa {
+                width: 30px; // same as .checkbox-cell. TODO : use a var
+                margin-right: @table-cell-padding;
+            }
+        }
+
+        .btn {
+            padding: @table-cell-padding;
+        }
+    }
 }
 
 .table-striped {
@@ -94,6 +113,17 @@
     }
 }
 
+.html-cell {
+    font-size: @font-size-small;
+    color: @text-muted;
+}
+
+.boolean-cell {
+    .false {
+        opacity: 0.3;
+    }
+}
+
 .checkbox-cell {
     width: 30px;
     text-align: center;
@@ -115,6 +145,19 @@
 }
 
 .table-condensed {
+    .list-selected {
+        .list-selected-label {
+            padding: @table-condensed-cell-padding 0;
+            .fa {
+                margin-right: @table-condensed-cell-padding;
+            }
+        }
+
+        .btn {
+            padding: @table-condensed-cell-padding;
+        }
+    }
+
     .actions-cell .btn {
         padding: @table-condensed-cell-padding;
     }

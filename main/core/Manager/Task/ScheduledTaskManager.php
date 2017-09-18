@@ -9,12 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\CoreBundle\Manager\Task;
 
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Task\ScheduledTask;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\Task\ScheduledTaskRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -23,6 +24,8 @@ use JMS\DiExtraBundle\Annotation as DI;
 class ScheduledTaskManager
 {
     private $om;
+
+    /** @var ScheduledTaskRepository */
     private $scheduledTaskRepo;
 
     /**
@@ -159,7 +162,7 @@ class ScheduledTaskManager
         if (empty($executionDate)) {
             $executionDate = new \DateTime();
         }
-        $task->setExecuted(true);
+
         $task->setExecutionDate($executionDate);
         $this->persistScheduledTask($task);
     }

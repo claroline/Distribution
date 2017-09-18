@@ -1,26 +1,23 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
+
+import Modal from 'react-bootstrap/lib/Modal'
+
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {taskTypes} from '../enums'
-import {navigate} from '../router'
+import {taskTypes} from '../../enums'
+import {navigate} from '../../router'
 
 export const MODAL_TASK_TYPE_FORM = 'MODAL_TASK_TYPE_FORM'
 
-class TaskTypeChoice extends Component {
-  render() {
-    return (
-      <div
-        className={classes('task-type-container', {'selected': this.props.selected})}
-        onMouseOver={() => this.props.handleTypeMouseOver(this.props.type)}
-        onClick={() => navigate(this.props.type.type, true)}
-      >
-        <span className={classes('task-type-icon', this.props.type.icon)}></span>
-      </div>
-    )
-  }
-}
+const TaskTypeChoice = props =>
+  <div
+    className={classes('task-type-container', {'selected': props.selected})}
+    onMouseOver={() => props.handleTypeMouseOver(props.type)}
+    onClick={() => navigate(props.type.type, true)}
+  >
+    <span className={classes('task-type-icon', props.type.icon)} />
+  </div>
 
 TaskTypeChoice.propTypes = {
   type: T.shape({
@@ -32,7 +29,7 @@ TaskTypeChoice.propTypes = {
   handleTypeMouseOver: T.func.isRequired
 }
 
-export class TaskTypeFormModal  extends Component {
+class TaskTypeFormModal extends Component {
   constructor(props) {
     super(props)
 
@@ -63,6 +60,7 @@ export class TaskTypeFormModal  extends Component {
               />
             )}
           </div>
+
           <div className="task-type-desc">
             <span className="task-type-name">
               {this.state.currentTypeName}
@@ -76,4 +74,8 @@ export class TaskTypeFormModal  extends Component {
 
 TaskTypeFormModal.propTypes = {
   fadeModal: T.func.isRequired
+}
+
+export {
+  TaskTypeFormModal
 }
