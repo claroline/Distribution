@@ -3,7 +3,9 @@
 namespace UJM\ExoBundle\Library\Attempt;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Item;
@@ -42,8 +44,9 @@ class PaperGenerator
      *
      * @DI\InjectParams({
      *     "exerciseSerializer" = @DI\Inject("ujm_exo.serializer.exercise"),
-     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
-     *     "itemSerializer" = @DI\Inject("ujm_exo.serializer.item")
+     *     "stepSerializer"     = @DI\Inject("ujm_exo.serializer.step"),
+     *     "itemSerializer"     = @DI\Inject("ujm_exo.serializer.item"),
+     *     "eventDispatcher"    = @DI\Inject("event_dispatcher")
      * })
      *
      * @param ExerciseSerializer $exerciseSerializer
@@ -53,11 +56,13 @@ class PaperGenerator
     public function __construct(
         ExerciseSerializer $exerciseSerializer,
         StepSerializer $stepSerializer,
-        ItemSerializer $itemSerializer)
-    {
+        ItemSerializer $itemSerializer,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->exerciseSerializer = $exerciseSerializer;
         $this->stepSerializer = $stepSerializer;
         $this->itemSerializer = $itemSerializer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -115,43 +120,113 @@ class PaperGenerator
 
     private function pickSteps(Exercise $exercise, \stdClass $previousExercise = null)
     {
-        if (!empty($previousExercise) && Recurrence::ALWAYS !== $exercise->getRandomPick()) {
-            // Just get the list of steps from the previous paper
-            $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
-                return $exercise->getStep($pickedStep->id);
-            }, $previousExercise->steps);
-        } else {
-            // Pick a new set of steps
-            $steps = static::pick(
-                $exercise->getSteps()->toArray(),
-                $exercise->getPick()
-            );
-        }
+        if ($exercise->getRandomTag()->pageSize > 0) {
+            $pageSize = $exercise->getRandomTag()->pageSize;
+            $tags = $exercise->getRandomTag()->pick;
+            $total = array_reduce($tags, function ($sum, $tag) {
+                return $sum + (int) $tag[1];
+            }, 0);
+            $countSteps = ceil($total / (int) $pageSize);
+            $steps = $exercise->getSteps();
+            $questions = [];
 
-        $pickedSteps = [];
-        foreach ($steps as $step) {
-            $previousStructure = null;
-            if ($previousExercise) {
-                foreach ($previousExercise->steps as $stepStructure) {
-                    if ($stepStructure->id === $step->getUuid()) {
-                        $previousStructure = $stepStructure;
-                        break;
+            foreach ($steps as $step) {
+                $questions = array_merge($questions, array_map(function ($stepItem) {
+                    return $stepItem->getQuestion();
+                }, $step->getStepQuestions()->toArray()));
+            }
+
+            $pickedSteps = [];
+            $pickedItems = [];
+            $availableItems = [];
+
+            foreach ($questions as $question) {
+                $availableItems[$question->getId()] = $question;
+            }
+
+            foreach ($tags as $tag) {
+                $taggedItems = array_filter($availableItems, function ($item) use ($tag) {
+                    $itemTags = [];
+                    $data = ['class' => 'UJM\ExoBundle\Entity\Item', 'ids' => [$item->getId()]];
+                    $event = new GenericDataEvent($data);
+                    $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
+                    $itemTags = $event->getResponse();
+
+                    return is_int(array_search($tag[0], $itemTags));
+                });
+
+                $tagged = static::pick($taggedItems, $tag[1], true);
+                $taggedItems = [];
+
+                foreach ($tagged as $taggedItem) {
+                    $taggedItems[$taggedItem->getId()] = $taggedItem;
+                }
+
+                $availableItems = array_diff_key($availableItems, $taggedItems);
+                $pickedItems = array_merge($pickedItems, $taggedItems);
+            }
+
+            shuffle($pickedItems);
+
+            for ($i = 0; $i < $countSteps; ++$i) {
+                $step = new Step();
+                $step->setExercise($exercise);
+                $step->setTitle('step '.($i + 1));
+                $step->refreshUuid();
+                $pickedStep = $this->stepSerializer->serialize($step);
+
+                for ($j = 0; $j < $pageSize; ++$j) {
+                    $pickedItem = static::pick($pickedItems, 1, true)[0];
+                    if ($pickedItem) {
+                        $pickedStep->items[] = $this->itemSerializer->serialize($pickedItem);
                     }
+                }
+
+                if (count($pickedStep->items) > 0) {
+                    $pickedSteps[] = $pickedStep;
                 }
             }
 
-            $pickedStep = $this->stepSerializer->serialize($step);
-            $pickedStep->items = $this->pickItems($step, $previousStructure);
-            $pickedSteps[] = $pickedStep;
-        }
+            return $pickedSteps;
+        } else {
+            if (!empty($previousExercise) && Recurrence::ALWAYS !== $exercise->getRandomPick()) {
+                // Just get the list of steps from the previous paper
+                $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
+                    return $exercise->getStep($pickedStep->id);
+                }, $previousExercise->steps);
+            } else {
+                // Pick a new set of steps
+                $steps = static::pick(
+                  $exercise->getSteps()->toArray(),
+                  $exercise->getPick()
+              );
+            }
 
-        // Shuffle steps according to config
-        if ((empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomOrder())
-            || Recurrence::ALWAYS === $exercise->getRandomOrder()) {
-            shuffle($pickedSteps);
-        }
+            $pickedSteps = [];
+            foreach ($steps as $step) {
+                $previousStructure = null;
+                if ($previousExercise) {
+                    foreach ($previousExercise->steps as $stepStructure) {
+                        if ($stepStructure->id === $step->getUuid()) {
+                            $previousStructure = $stepStructure;
+                            break;
+                        }
+                    }
+                }
 
-        return $pickedSteps;
+                $pickedStep = $this->stepSerializer->serialize($step);
+                $pickedStep->items = $this->pickItems($step, $previousStructure);
+                $pickedSteps[] = $pickedStep;
+            }
+
+            // Shuffle steps according to config
+            if ((empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomOrder())
+              || Recurrence::ALWAYS === $exercise->getRandomOrder()) {
+                shuffle($pickedSteps);
+            }
+
+            return $pickedSteps;
+        }
     }
 
     /**
@@ -204,15 +279,21 @@ class PaperGenerator
      *
      * @return array - the truncated collection
      */
-    private static function pick(array $collection, $count = 0)
+    private static function pick(array $collection, $count = 0, $force = false)
     {
         if (count($collection) < $count) {
+            if ($force) {
+                return $collection;
+            }
             throw new \LogicException("Cannot pick more elements ({$count}) than there are in the collection.");
         }
 
         $picked = [];
         if (0 !== $count) {
             $randomSelect = array_rand($collection, $count);
+            if (is_int($randomSelect)) {
+                $randomSelect = [$randomSelect];
+            }
             foreach ($randomSelect as $randomIndex) {
                 $picked[] = $collection[$randomIndex];
             }
