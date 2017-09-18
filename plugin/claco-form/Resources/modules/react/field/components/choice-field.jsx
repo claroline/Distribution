@@ -4,12 +4,14 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import {trans} from '#/main/core/translation'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
+import {ChoicesChildren} from './choices-children.jsx'
 
 class ChoiceField  extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      categoryEnabled: props.choice.category > 0
+      categoryEnabled: props.choice.category > 0,
+      childrenEnabled: false
     }
   }
 
@@ -30,6 +32,10 @@ class ChoiceField  extends Component {
     }
   }
 
+  switchChildrenManagement() {
+    this.updateProps('childrenEnabled', !this.state.childrenEnabled)
+  }
+
   render() {
     return (
       <div className={classes('clacoform-field-choice', {'has-error': this.props.choice.error})}>
@@ -41,8 +47,24 @@ class ChoiceField  extends Component {
             onChange={e => this.updateChoiceProps('value', e.target.value)}
           />
           <span className="input-group-btn">
+            {this.props.hasCascade &&
+              <TooltipButton
+                id={`tooltip-children-button-${this.props.choice.index}`}
+                className={classes(
+                  'btn btn-default',
+                  {
+                    'text-muted': !this.props.choicesChildren[this.props.choice.index] ||
+                      this.props.choicesChildren[this.props.choice.index].length === 0
+                  }
+                )}
+                title={trans('sub_list_management', {}, 'clacoform')}
+                onClick={() => this.switchChildrenManagement()}
+              >
+                <span className="fa fa-w fa-list-ul"></span>
+              </TooltipButton>
+            }
             <TooltipButton
-              id={`tooltip-button-${this.props.choice.index}`}
+              id={`tooltip-category-button-${this.props.choice.index}`}
               className={`btn btn-${this.state.categoryEnabled ? 'warning' : 'default'}`}
               title={this.state.categoryEnabled ?
                 trans('remove_category', {}, 'clacoform') :
@@ -84,12 +106,25 @@ class ChoiceField  extends Component {
             )}
           </select>
         }
+        {this.props.hasCascade && this.state.childrenEnabled &&
+          <ChoicesChildren
+            fieldId={this.props.fieldId}
+            parent={this.props.choice}
+            choicesChildren={this.props.choicesChildren}
+            cascadeLevel={this.props.cascadeLevel + 1}
+            addChoice={this.props.addChoiceChild}
+            updateChoice={this.props.updateChoiceChild}
+            deleteChoice={this.props.deleteChoiceChild}
+            addChoicesFromField={this.props.addChoicesChildrenFromField}
+          />
+        }
       </div>
     )
   }
 }
 
 ChoiceField.propTypes = {
+  fieldId: T.number.isRequired,
   choice: T.shape({
     index: T.number.isRequired,
     value: T.string,
@@ -97,12 +132,19 @@ ChoiceField.propTypes = {
     category: T.number,
     error: T.string
   }).isRequired,
+  choicesChildren: T.object,
   categories: T.arrayOf(T.shape({
     id: T.number.isRequired,
     name: T.string.isRequired
   })).isRequired,
+  hasCascade: T.bool.isRequired,
+  cascadeLevel: T.number.isRequired,
   updateChoice: T.func.isRequired,
-  deleteChoice: T.func.isRequired
+  deleteChoice: T.func.isRequired,
+  addChoiceChild: T.func,
+  updateChoiceChild: T.func,
+  deleteChoiceChild: T.func,
+  addChoicesChildrenFromField: T.func
 }
 
 function mapStateToProps(state) {

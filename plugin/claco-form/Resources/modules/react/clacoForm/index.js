@@ -44,6 +44,7 @@ bootstrap(
     keywords: keywordReducers,
     fields: fieldReducers,
     template: templateReducers,
+    cascadeLevelMax: mainReducers,
     message: messageReducers,
 
     // generic reducers
@@ -66,7 +67,8 @@ bootstrap(
       categories: resource.categories,
       keywords: resource.keywords,
       fields: initialData.fields,
-      template: resource.template || ''
+      template: resource.template || '',
+      cascadeLevelMax: initialData.cascadeLevelMax
     }
   }
 )

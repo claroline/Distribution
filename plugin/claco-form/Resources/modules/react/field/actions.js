@@ -17,6 +17,7 @@ actions.createField = (fieldData) => (dispatch, getState) => {
   const formData = new FormData()
   formData.append('fieldData', JSON.stringify(fieldData.field))
   formData.append('choicesData', JSON.stringify(fieldData.choices))
+  formData.append('choicesChildrenData', JSON.stringify(fieldData.choicesChildren))
 
   dispatch({
     [REQUEST_SEND]: {
@@ -36,6 +37,7 @@ actions.editField = (fieldData) => (dispatch) => {
   const formData = new FormData()
   formData.append('fieldData', JSON.stringify(fieldData.field))
   formData.append('choicesData', JSON.stringify(fieldData.choices))
+  formData.append('choicesChildrenData', JSON.stringify(fieldData.choicesChildren))
 
   dispatch({
     [REQUEST_SEND]: {

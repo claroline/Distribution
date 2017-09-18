@@ -189,9 +189,9 @@ class ClacoFormController extends Controller
 //            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
 //            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
 //        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
-//        $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
-//            $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
-//            2;
+        $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
+            $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
+            2;
 
         return [
             'user' => $user,
@@ -206,7 +206,7 @@ class ClacoFormController extends Controller
 //            'nbPublishedEntries' => $nbPublishedEntries,
 //            'canGeneratePdf' => $canGeneratePdf,
 //            'sharedEntries' => $sharedEntries,
-//            'cascadeLevelMax' => $cascadeLevelMax,
+            'cascadeLevelMax' => $cascadeLevelMax,
         ];
     }
 
@@ -264,6 +264,7 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $fieldData = $this->request->request->get('fieldData', false);
         $choicesData = $this->request->request->get('choicesData', false);
+        $choiceChildrenData = $this->request->request->get('choicesChildrenData', false);
 
         if (!is_array($fieldData)) {
             $fieldData = json_decode($fieldData, true);
@@ -271,7 +272,13 @@ class ClacoFormController extends Controller
         if ($choicesData && !is_array($choicesData)) {
             $choicesData = json_decode($choicesData, true);
         }
+        if ($choiceChildrenData && !is_array($choiceChildrenData)) {
+            $choiceChildrenData = json_decode($choiceChildrenData, true);
+        }
         $choices = $choicesData ? $choicesData : [];
+        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE && $choiceChildrenData ?
+            $choiceChildrenData :
+            [];
 
         foreach ($choices as $key => $choice) {
             $categoryId = isset($choice['category']) ? $choice['category'] : null;
@@ -284,14 +291,10 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
-        $choiceChildrenData = $this->request->request->get('choicesChildrenData', false);
-        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE && $choiceChildrenData ?
-            $choiceChildrenData :
-            [];
 
         foreach ($choicesChildren as $parentId => $choicesList) {
             foreach ($choicesList as $key => $choice) {
-                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+                $categoryId = isset($choice['category']) ? $choice['category'] : null;
                 $choicesChildren[$parentId][$key]['categoryId'] = $categoryId;
             }
         }
@@ -333,6 +336,7 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $fieldData = $this->request->request->get('fieldData', false);
         $choicesData = $this->request->request->get('choicesData', false);
+        $choiceChildrenData = $this->request->request->get('choicesChildrenData', false);
 
         if (!is_array($fieldData)) {
             $fieldData = json_decode($fieldData, true);
@@ -340,7 +344,13 @@ class ClacoFormController extends Controller
         if ($choicesData && !is_array($choicesData)) {
             $choicesData = json_decode($choicesData, true);
         }
+        if ($choiceChildrenData && !is_array($choiceChildrenData)) {
+            $choiceChildrenData = json_decode($choiceChildrenData, true);
+        }
         $choices = $choicesData ? $choicesData : [];
+        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE && $choiceChildrenData ?
+            $choiceChildrenData :
+            [];
 
         foreach ($choices as $key => $choice) {
             $categoryId = isset($choice['category']) ? $choice['category'] : null;
@@ -353,14 +363,10 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
-        $choiceChildrenData = $this->request->request->get('choicesChildrenData', false);
-        $choicesChildren = $fieldData['type'] === FieldFacet::SELECT_TYPE && $choiceChildrenData ?
-            $choiceChildrenData :
-            [];
 
         foreach ($choicesChildren as $parentId => $choicesList) {
             foreach ($choicesList as $key => $choice) {
-                $categoryId = isset($choice['category']['id']) ? $choice['category']['id'] : null;
+                $categoryId = isset($choice['category']) ? $choice['category'] : null;
                 $choicesChildren[$parentId][$key]['categoryId'] = $categoryId;
             }
         }

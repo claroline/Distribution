@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
@@ -13,7 +14,7 @@ import {ChoiceField} from './choice-field.jsx'
 
 export const MODAL_FIELD_FORM = 'MODAL_FIELD_FORM'
 
-export class FieldFormModal  extends Component {
+class FieldFormModal  extends Component {
   constructor(props) {
     super(props)
     let choiceIndex = 2
@@ -40,7 +41,7 @@ export class FieldFormModal  extends Component {
         hidden: props.field.hidden
       },
       choices: props.field.fieldFacet && props.field.fieldFacet.field_facet_choices.length > 0 ?
-        props.field.fieldFacet.field_facet_choices.map(ffc => {return {
+        props.field.fieldFacet.field_facet_choices.filter(ffc => !ffc.parent).map(ffc => {return {
           index: ffc.id,
           value: ffc.label,
           new: false,
@@ -54,13 +55,35 @@ export class FieldFormModal  extends Component {
           category: null,
           error: ''
         }],
+      choicesChildren: {},
       choicesLoaded: !props.field.fieldFacet || props.field.fieldFacet.field_facet_choices.length === 0,
       choiceIndex: choiceIndex
     }
   }
 
   componentDidMount() {
-    this.loadChoicesCategories()
+    this.generateChoicesChildren()
+  }
+
+  generateChoicesChildren() {
+    if (this.props.field.fieldFacet && this.props.field.fieldFacet.field_facet_choices.length > 0 ) {
+      const choicesChildren = {}
+      this.props.field.fieldFacet.field_facet_choices.filter(ffc => ffc.parent).forEach(ffc => {
+        const parentId = ffc.parent.id
+
+        if (!choicesChildren[parentId]) {
+          choicesChildren[parentId] = []
+        }
+        choicesChildren[parentId].push({
+          index: ffc.id,
+          value: ffc.label,
+          new: false,
+          category: null,
+          error: ''
+        })
+      })
+      this.setState({choicesChildren: choicesChildren}, this.loadChoicesCategories)
+    }
   }
 
   loadChoicesCategories() {
@@ -76,14 +99,27 @@ export class FieldFormModal  extends Component {
       .then(results => {
         if (results) {
           const choices = cloneDeep(this.state.choices)
+          const choicesChildren = cloneDeep(this.state.choicesChildren)
           JSON.parse(results).forEach(data => {
             const idx = choices.findIndex(c => c.index === data.fieldFacetChoice.id)
 
             if (idx >= 0) {
               choices[idx] = Object.assign({}, choices[idx], {category: data.category.id})
+            } else {
+              for (let key in choicesChildren) {
+                const childIdx = choicesChildren[key].findIndex(c => c.index === data.fieldFacetChoice.id)
+
+                if (childIdx >= 0) {
+                  choicesChildren[key][childIdx] = Object.assign({}, choicesChildren[key][childIdx], {category: data.category.id})
+                  break
+                }
+              }
             }
           })
-          this.setState({choices: choices}, () => this.setState({choicesLoaded: true}))
+          this.setState(
+            {choices: choices, choicesChildren: choicesChildren},
+            () => this.setState({choicesLoaded: true})
+          )
         } else {
           this.setState({choicesLoaded: true})
         }
@@ -166,6 +202,72 @@ export class FieldFormModal  extends Component {
     }
   }
 
+  addChoiceChild(parentIndex) {
+    const choicesChildren = cloneDeep(this.state.choicesChildren)
+
+    if (!choicesChildren[parentIndex]) {
+      choicesChildren[parentIndex] = []
+    }
+    choicesChildren[parentIndex].push({
+      index: this.state.choiceIndex,
+      value: '',
+      new: true,
+      category: null,
+      error: ''
+    })
+    this.setState({choicesChildren: choicesChildren, choiceIndex: this.state.choiceIndex + 1})
+  }
+
+  updateChoiceChild(parentIndex, index, property, value) {
+    const choicesChildren = cloneDeep(this.state.choicesChildren)
+
+    if (choicesChildren[parentIndex]) {
+      const idx = choicesChildren[parentIndex].findIndex(c => c.index === index)
+
+      if (idx >= 0) {
+        choicesChildren[parentIndex][idx] = Object.assign({}, choicesChildren[parentIndex][idx], {[property]: value})
+        this.setState({choicesChildren: choicesChildren})
+      }
+    }
+  }
+
+  deleteChoiceChild(parentIndex, index) {
+    const choicesChildren = cloneDeep(this.state.choicesChildren)
+
+    if (choicesChildren[parentIndex]) {
+      const idx = choicesChildren[parentIndex].findIndex(c => c.index === index)
+
+      if (idx >= 0) {
+        choicesChildren[parentIndex].splice(idx, 1)
+        this.setState({choicesChildren: choicesChildren})
+      }
+    }
+  }
+
+  addChoicesChildrenFromField(fieldId, parentIndex) {
+    const field = this.props.fields.find(f => f.id === fieldId)
+
+    if (field && field.fieldFacet && field.fieldFacet.field_facet_choices.length > 0) {
+      let choiceIndex = this.state.choiceIndex
+      const choicesChildren = cloneDeep(this.state.choicesChildren)
+
+      field.fieldFacet.field_facet_choices.filter(c => !c.parent).forEach(c => {
+        if (!choicesChildren[parentIndex]) {
+          choicesChildren[parentIndex] = []
+        }
+        choicesChildren[parentIndex].push({
+          index: choiceIndex,
+          value: c.label,
+          new: true,
+          category: null,
+          error: ''
+        })
+        ++choiceIndex
+      })
+      this.setState({choicesChildren: choicesChildren, choiceIndex: choiceIndex})
+    }
+  }
+
   registerField() {
     if (!this.state['hasError']) {
       this.props.confirmAction(this.state)
@@ -192,6 +294,7 @@ export class FieldFormModal  extends Component {
   validateChoices() {
     let valid = true
     const choices = cloneDeep(this.state.choices)
+    const choicesChildren = cloneDeep(this.state.choicesChildren)
     choices.forEach(c => c.error = '')
     choices.forEach(c => {
       if (!c.value) {
@@ -207,7 +310,27 @@ export class FieldFormModal  extends Component {
         })
       }
     })
-    this.setState({choices: choices})
+
+    if (getFieldType(this.state.field.type).hasCascade && choicesChildren) {
+      for (let key in choicesChildren) {
+        choicesChildren[key].forEach(c => c.error = '')
+        choicesChildren[key].forEach(c => {
+          if (!c.value) {
+            c.error = trans('form_not_blank_error', {}, 'clacoform')
+            valid = false
+          } else {
+            choicesChildren[key].forEach(nc => {
+              if ((nc.index !== c.index) && (nc.value === c.value)) {
+                c.error = trans('form_not_unique_error', {}, 'clacoform')
+                nc.error = trans('form_not_unique_error', {}, 'clacoform')
+                valid = false
+              }
+            })
+          }
+        })
+      }
+    }
+    this.setState({choices: choices, choicesChildren: choicesChildren})
 
     return valid
   }
@@ -267,9 +390,17 @@ export class FieldFormModal  extends Component {
                   {this.state.choices.map(choice =>
                     <ChoiceField
                       key={`choice-${choice.index}-${choice.new ? 'new' : 'old'}`}
+                      fieldId={this.state.field.id}
                       choice={choice}
+                      choicesChildren={this.state.choicesChildren}
+                      hasCascade={getFieldType(this.state.field.type).hasCascade && this.props.cascadeLevelMax > 0}
+                      cascadeLevel={0}
                       updateChoice={(index, property, value) => this.updateChoice(index, property, value)}
                       deleteChoice={(index) => this.deleteChoice(index)}
+                      addChoiceChild={(parentIndex) => this.addChoiceChild(parentIndex)}
+                      updateChoiceChild={(parentIndex, index, property, value) => this.updateChoiceChild(parentIndex, index, property, value)}
+                      deleteChoiceChild={(parentIndex, index) => this.deleteChoiceChild(parentIndex, index)}
+                      addChoicesChildrenFromField={(fieldId, parentIndex) => this.addChoicesChildrenFromField(fieldId, parentIndex)}
                     />
                   )}
                   <br/>
@@ -360,9 +491,46 @@ FieldFormModal.propTypes = {
       id: T.number.isRequired,
       name: T.string.isRequired,
       type: T.number.isRequired,
-      field_facet_choices: T.array
+      field_facet_choices: T.arrayOf(T.shape({
+        id: T.number.isRequired,
+        label: T.string.isRequired,
+        parent: T.shape({
+          id: T.number.isRequired,
+          label: T.string.isRequired
+        })
+      }))
     })
   }).isRequired,
+  cascadeLevelMax: T.number.isRequired,
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired,
+    fieldFacet: T.shape({
+      field_facet_choices: T.arrayOf(T.shape({
+        id: T.number.isRequired,
+        label: T.string.isRequired,
+        parent: T.shape({
+          id: T.number.isRequired,
+          label: T.string.isRequired
+        })
+      }))
+    })
+  })),
   confirmAction: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
+
+function mapStateToProps(state) {
+  return {
+    cascadeLevelMax: state.cascadeLevelMax,
+    fields: state.fields
+  }
+}
+
+function mapDispatchToProps() {
+  return {}
+}
+
+const ConnectedFieldFormModal = connect(mapStateToProps, mapDispatchToProps)(FieldFormModal)
+
+export {ConnectedFieldFormModal as FieldFormModal}
