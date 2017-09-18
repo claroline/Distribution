@@ -1225,7 +1225,7 @@ class WorkspaceManager
     public function getNonPersonalByCodeAndName($code, $name, $offset = null, $limit = null)
     {
         return !$code && !$name ?
-            $this->workspaceRepo->findBy(['isPersonal' => false]) :
+            $this->workspaceRepo->findBy(['personal' => false]) :
             $this->workspaceRepo->findNonPersonalByCodeAndName($code, $name, $offset, $limit);
     }
 
@@ -1829,7 +1829,7 @@ class WorkspaceManager
     public function getDefaultModel($isPersonal = false)
     {
         $name = $isPersonal ? 'default_personal' : 'default_workspace';
-        $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'isPersonal' => $isPersonal, 'isModel' => true]);
+        $workspace = $this->workspaceRepo->findOneBy(['code' => $name, 'personal' => $isPersonal, 'model' => true]);
         if (!$workspace) {
             //don't log this or it'll crash everything during the platform installation
             //(some database tables aren't already created because they come from plugins)

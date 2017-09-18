@@ -1791,7 +1791,7 @@ class AdminManagementController extends Controller
         $data = $this->get('claroline.API.finder')->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace', [
                 'limit' => 100,
-                'filters' => ['isModel' => true],
+                'filters' => ['model' => true],
             ]
         );
 
