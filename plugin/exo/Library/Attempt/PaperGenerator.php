@@ -159,7 +159,14 @@ class PaperGenerator
                 $taggedItems = [];
 
                 foreach ($tagged as $taggedItem) {
-                    $taggedItems[$taggedItem->getId()] = $taggedItem;
+                    $taggedItem = $this->itemSerializer->serialize(
+                        $taggedItem,
+                        [
+                            Transfer::SHUFFLE_ANSWERS,
+                            Transfer::INCLUDE_SOLUTIONS,
+                        ]
+                    );
+                    $taggedItems[$taggedItem->id] = $taggedItem;
                 }
 
                 $availableItems = array_diff_key($availableItems, $taggedItems);
@@ -177,13 +184,7 @@ class PaperGenerator
                 for ($j = 0; $j < $pageSize; ++$j) {
                     $pickedItem = static::pick($pickedItems, 1, true)[0];
                     if ($pickedItem) {
-                        $pickedStep->items[] = $this->itemSerializer->serialize(
-                          $pickedItem,
-                          [
-                              Transfer::SHUFFLE_ANSWERS,
-                              Transfer::INCLUDE_SOLUTIONS,
-                          ]
-                        );
+                        $pickedStep->items[] = $pickedItem;
                     }
                 }
 
