@@ -57,7 +57,8 @@ const item = {
     type: SCORE_SUM,
     success: 1,
     failure: 0
-  }
+  },
+  tags: []
 }
 
 const hint = {

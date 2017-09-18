@@ -267,7 +267,7 @@ class ItemSerializer extends AbstractSerializer
             ], $data, $item);
 
             if (isset($data->tags)) {
-                $this->deserializeTags($item, $data->tags);
+                $this->deserializeTags($item, $data->tags, $options);
             }
         } else {
             // content item
@@ -621,7 +621,7 @@ class ItemSerializer extends AbstractSerializer
      */
     private function serializeTags(Item $question)
     {
-        $data = ['class' => 'UJM\ExoBundle\Entity\Item', 'ids' => [$question->getId()]];
+        $data = ['class' => 'UJM\ExoBundle\Entity\Item\Item', 'ids' => [$question->getId()]];
         $event = new GenericDataEvent($data);
         $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
 
@@ -634,20 +634,25 @@ class ItemSerializer extends AbstractSerializer
      * @param Item  $question
      * @param array $tags
      */
-    private function deserializeTags(Item $question, array $tags = [])
+    private function deserializeTags(Item $question, array $tags = [], array $options = [])
     {
-        $data = [
-            'tags' => $tags,
-            'data' => [
-                [
-                    'class' => 'UJM\ExoBundle\Entity\Item',
-                    'id' => $question->getId(),
-                    'name' => $question->getTitle(),
-                ],
-            ],
-            'replace' => true,
-        ];
-        $event = new GenericDataEvent($data);
-        $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+        if ($this->hasOption(Transfer::PERSIST_TAG)) {
+            $data = [
+              'tags' => $tags,
+              'data' => [
+                  [
+                      'class' => 'UJM\ExoBundle\Entity\Item\Item',
+                      'id' => $question->getId(),
+                      'name' => $question->getTitle(),
+                  ],
+              ],
+              'replace' => true,
+          ];
+            $event = new GenericDataEvent($data);
+
+            if ($question->getUuid()) {
+                $this->eventDispatcher->dispatch('claroline_tag_multiple_data', $event);
+            }
+        }
     }
 }
