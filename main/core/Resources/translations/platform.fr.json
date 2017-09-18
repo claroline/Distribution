@@ -581,7 +581,7 @@
     "import_facets": "Importer des facettes",
     "import_profile_pics": "Importer des photos d'utilisateur",
     "import_profile_pics_explanation": "Veuillez sélectionner une archive au format .zip. Cette archive doit contenir une liste d'images dont les noms sont structurés de cette manière: identifiant.extension",
-    "import_resources_explanation": "L'import de ressources demande un fichier .zip généré par Claroline contenant le fichier manifest.yml. Si vous désirez importer un autre fichier zip, veuillez créer une ressource de type 'Fichier' et sélectionnez 'décompresser'.",
+    "import_resources_explanation": "Le bouton <b>\"importer\"</b> n'est la que pour importer un espace de Claroline Connect après l'avoir exporté. L'import de ressources demande un fichier .zip généré par Claroline contenant le fichier manifest.yml.<br/><br/>Si vous souhaitez ajouter un fichier, ceci n’est PAS la fonctionnalité que vous cherchez. Pour faire ceci cliquez sur <b>\"Ajouter\"</b> puis <b>\"Fichier\"</b>. Si vous désirez importer un autre fichier zip, veuillez créer une ressource de type 'Fichier' et sélectionnez <b>'Décompresser'</b> sur la fenêtre qui apparaît.",
     "import_roles": "Importer des rôles",
     "import_user_file_file": "Importer depuis un fichier csv",
     "import_users": "Importer des utilisateurs",
