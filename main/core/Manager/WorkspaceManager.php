@@ -1306,9 +1306,9 @@ class WorkspaceManager
     /**
      * Copies a Workspace.
      *
-     * @param Workspace $workspace    - the original workspace to copy.
-     * @param Workspace $newWorkspace - the copy.
-     * @param bool      $model        - if true, the new workspace will be a model.
+     * @param Workspace $workspace    - the original workspace to copy
+     * @param Workspace $newWorkspace - the copy
+     * @param bool      $model        - if true, the new workspace will be a model
      *
      * @return Workspace
      */

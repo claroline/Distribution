@@ -3,8 +3,6 @@
 namespace Claroline\CoreBundle\API\Serializer\Task;
 
 use Claroline\CoreBundle\Entity\Task\ScheduledTask;
-use Claroline\CoreBundle\Entity\Theme\Theme;
-use Claroline\CoreBundle\Manager\Theme\ThemeManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -30,7 +28,7 @@ class ScheduledTaskSerializer
             'data' => $scheduledTask->getData(),
             'meta' => [
                 'lastExecution' => $scheduledTask->getExecutionDate() ? $scheduledTask->getExecutionDate()->format('Y-m-d\TH:i:s') : null,
-            ]
+            ],
         ];
     }
 }

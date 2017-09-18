@@ -69,7 +69,7 @@ class WorkspaceController extends FOSRestController
 
     /**
      * Gets the list of workspaces of a User.
-     * (used by user admin tool)
+     * (used by user admin tool).
      *
      * @View(serializerGroups={"api_workspace"})
      * @Get("/user/{user}/workspaces", name="get_user_workspaces", options={ "method_prefix" = false })
@@ -86,7 +86,7 @@ class WorkspaceController extends FOSRestController
 
     /**
      * Gets the list of online users in workspaces of a User.
-     * (used by dashboard tool)
+     * (used by dashboard tool).
      *
      * @View(serializerGroups={"api_workspace"})
      * @Get("/workspaces", name="get_connected_user_workspaces", options={ "method_prefix" = false })

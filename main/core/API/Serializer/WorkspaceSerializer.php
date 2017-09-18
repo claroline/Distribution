@@ -102,7 +102,7 @@ class WorkspaceSerializer
         return [
             'validation' => $workspace->getRegistrationValidation(),
             'selfRegistration' => $workspace->getSelfRegistration(),
-            'selfUnregistration' => $workspace->getSelfUnregistration()
+            'selfUnregistration' => $workspace->getSelfUnregistration(),
         ];
     }
 }

@@ -577,14 +577,14 @@ class Workspace
     /**
      * @param $creationDate
      *
-     * @deprecated use `setCreated()` instead.
+     * @deprecated use `setCreated()` instead
      */
     public function setCreationDate($creationDate)
     {
         $this->setCreated($creationDate);
     }
 
-    public function setCreated(\DateTime $created)
+    public function setCreated($created)
     {
         $this->created = $created;
     }
@@ -592,7 +592,7 @@ class Workspace
     /**
      * @return \Datetime
      *
-     * @deprecated use `getCreated()` instead.
+     * @deprecated use `getCreated()` instead
      */
     public function getCreationDate()
     {
@@ -600,7 +600,7 @@ class Workspace
     }
 
     /**
-     * @todo internal implementation should only return the prop. I don't know why it works like this.
+     * @todo internal implementation should only return the prop. I don't know why it works like this
      *
      * @return \Datetime
      */
@@ -644,7 +644,7 @@ class Workspace
     /**
      * @param $isPersonal
      *
-     * @deprecated use `setPersonal()` instead.
+     * @deprecated use `setPersonal()` instead
      */
     public function setIsPersonal($isPersonal)
     {
