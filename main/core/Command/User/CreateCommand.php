@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Command;
+namespace Claroline\CoreBundle\Command\User;
 
-use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\User as UserEntity;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Library\Security\PlatformRoles;
+use Claroline\CoreBundle\Manager\UserManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,9 +22,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Creates an user, optionaly with a specific role (default to simple user).
+ * Creates an user, optionally with a specific role (default to simple user).
  */
-class CreateUserCommand extends ContainerAwareCommand
+class CreateCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
@@ -90,7 +91,7 @@ class CreateUserCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = new User();
+        $user = new UserEntity();
         $user->setFirstName($input->getArgument('user_first_name'));
         $user->setLastName($input->getArgument('user_last_name'));
         $user->setUsername($input->getArgument('user_username'));
@@ -108,6 +109,7 @@ class CreateUserCommand extends ContainerAwareCommand
             $roleName = PlatformRoles::USER;
         }
 
+        /** @var UserManager $userManager */
         $userManager = $this->getContainer()->get('claroline.manager.user_manager');
         $consoleLogger = ConsoleLogger::get($output);
         $userManager->setLogger($consoleLogger);
