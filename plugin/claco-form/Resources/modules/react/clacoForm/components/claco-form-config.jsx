@@ -141,10 +141,7 @@ const Random = props =>
           multiple
         >
           {props.categories.map(category =>
-            <option
-              key={category.id}
-              value={category.id}
-            >
+            <option key={category.id} value={category.id}>
               {category.name}
             </option>
           )}
@@ -215,10 +212,43 @@ const List = props =>
       label={trans('label_search_column_enabled', {}, 'clacoform')}
       onChange={checked => props.updateParameters('search_column_enabled', checked)}
     />
-
-    <hr/>
-    <div>
-      !!! TODO : Select box for columns
+    <div className="form-group row">
+      <span className="control-label col-md-3">
+        {trans('label_search_columns', {}, 'clacoform')}
+      </span>
+      <div className="col-md-5">
+        <select
+          className="form-control"
+          name="params-search-colums[]"
+          defaultValue={props.params.search_columns}
+          onChange={e => props.updateParameters('search_columns', getMultipleSelectValues(e))}
+          multiple
+        >
+          <option value="title">
+            {t('title')}
+          </option>
+          <option value="creationDateString">
+            {t('date')}
+          </option>
+          <option value="userString">
+            {t('user')}
+          </option>
+          <option value="categoriesString">
+            {t('categories')}
+          </option>
+          <option value="keywordsString">
+            {trans('keywords', {}, 'clacoform')}
+          </option>
+          <option value="actions">
+            {t('actions')}
+          </option>
+          {props.fields.map(field =>
+            <option key={field.id} value={field.id}>
+              {field.name}
+            </option>
+          )}
+        </select>
+      </div>
     </div>
   </fieldset>
 
@@ -228,6 +258,10 @@ List.propTypes = {
     search_column_enabled: T.boolean,
     search_columns: T.array
   }).isRequired,
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
   updateParameters: T.func.isRequired
 }
 
@@ -401,7 +435,7 @@ Keywords.propTypes = {
   updateParameters: T.func.isRequired
 }
 
-function makePanel(Section, title, key, props, withCategories = false) {
+function makePanel(Section, title, key, props, withCategories = false, withFields = false) {
   const caretIcon = key === props.params.activePanelKey ? 'fa-caret-down' : 'fa-caret-right'
   const keyValue = key === props.params.activePanelKey ? '' : key
 
@@ -422,6 +456,7 @@ function makePanel(Section, title, key, props, withCategories = false) {
         updateParameters={props.updateParameters}
         params={props.params}
         categories={withCategories ? props.categories : []}
+        fields={withFields ? props.fields : []}
       />
     </Panel>
   )
@@ -487,7 +522,7 @@ class ClacoFormConfig extends Component {
               {makePanel(General, t('general'), 'general', this.props)}
               {makePanel(Display, trans('display', {}, 'clacoform'), 'display', this.props)}
               {makePanel(Random, trans('random_entries', {}, 'clacoform'), 'random_entries', this.props, true)}
-              {makePanel(List, trans('entries_list_search', {}, 'clacoform'), 'entries_list_search', this.props)}
+              {makePanel(List, trans('entries_list_search', {}, 'clacoform'), 'entries_list_search', this.props, false, true)}
               {makePanel(Metadata, trans('metadata', {}, 'clacoform'), 'metadata', this.props)}
               {makePanel(Locked, trans('locked_fields', {}, 'clacoform'), 'locked_fields', this.props)}
               {makePanel(Categories, t('categories'), 'categories', this.props)}
@@ -545,6 +580,10 @@ ClacoFormConfig.propTypes = {
     id: T.number.isRequired,
     name: T.string.isRequired
   })),
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
   initializeParameters: T.func.isRequired,
   updateParameters: T.func.isRequired
 }
@@ -553,7 +592,8 @@ function mapStateToProps(state) {
   return {
     canEdit: state.canEdit,
     params: state.parameters,
-    categories: state.categories
+    categories: state.categories,
+    fields: state.fields
   }
 }
 

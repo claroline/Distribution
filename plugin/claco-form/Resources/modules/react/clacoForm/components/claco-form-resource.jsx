@@ -11,6 +11,8 @@ import {CategoriesList} from '../../category/components/categories-list.jsx'
 import {KeywordsList} from '../../keyword/components/keywords-list.jsx'
 import {FieldsList} from '../../field/components/fields-list.jsx'
 import {TemplateForm} from '../../template/components/template-form.jsx'
+import {EntriesList} from '../../entry/components/entries-list.jsx'
+import {selectors} from '../selectors'
 
 const ClacoFormResource = props =>
   <ResourceContainer
@@ -31,6 +33,7 @@ const ClacoFormResource = props =>
       <Route path="/keywords" component={KeywordsList} />
       <Route path="/fields" component={FieldsList} />
       <Route path="/template" component={TemplateForm} />
+      <Route path="/entries" component={EntriesList} />
     </Switch>
   </ResourceContainer>
 
@@ -38,7 +41,9 @@ ClacoFormResource.propTypes = {
   location: T.shape({
     pathname: T.string.isRequired
   }).isRequired,
-  saveParameters: T.func.isRequired
+  saveParameters: T.func.isRequired,
+  canEdit: T.bool,
+  canSearchEntry: T.bool
 }
 
 function customActions(props) {
@@ -50,6 +55,13 @@ function customActions(props) {
     action: '#/'
   })
 
+  if (props.canSearchEntry) {
+    actions.push({
+      icon: 'fa fa-fw fa-search',
+      label: trans('entries_list', {}, 'clacoform'),
+      action: '#/entries'
+    })
+  }
   if (props.canEdit) {
     actions.push({
       icon: 'fa fa-fw fa-th-list',
@@ -78,7 +90,8 @@ function customActions(props) {
 
 function mapStateToProps(state) {
   return {
-    canEdit: state.canEdit
+    canEdit: state.canEdit,
+    canSearchEntry: selectors.canSearchEntry(state)
   }
 }
 

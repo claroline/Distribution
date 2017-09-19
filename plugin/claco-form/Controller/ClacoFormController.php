@@ -185,10 +185,10 @@ class ClacoFormController extends Controller
 //            'json',
 //            SerializationContext::create()->setGroups(['api_user_min'])
 //        );
-//        $canGeneratePdf = !$isAnon &&
-//            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
-//            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
 //        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
+        $canGeneratePdf = !$isAnon &&
+            $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
+            file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
         $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
             $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
             2;
@@ -202,10 +202,10 @@ class ClacoFormController extends Controller
 //            'isCategoryManager' => $isCategoryManager,
 //            'myEntries' => $serializedMyEntries,
 //            'managerEntries' => $serializedManagerEntries,
+//            'sharedEntries' => $sharedEntries,
 //            'nbEntries' => $nbEntries,
 //            'nbPublishedEntries' => $nbPublishedEntries,
-//            'canGeneratePdf' => $canGeneratePdf,
-//            'sharedEntries' => $sharedEntries,
+            'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,
         ];
     }

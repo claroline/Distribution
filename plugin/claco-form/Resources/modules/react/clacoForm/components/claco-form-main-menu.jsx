@@ -14,7 +14,10 @@ class ClacoFormMainMenu extends Component {
           <h4>{trans('add_entry', {}, 'clacoform')}</h4>
         </a>
         {this.props.canSearchEntry &&
-          <a className="btn btn-default claco-form-menu-btn">
+          <a
+            className="btn btn-default claco-form-menu-btn"
+            href="#/entries"
+          >
             <span className="fa fa-w fa-search fa-5x"></span>
             <h4>{trans('find_entry', {}, 'clacoform')}</h4>
           </a>
