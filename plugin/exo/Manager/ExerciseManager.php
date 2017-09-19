@@ -124,7 +124,7 @@ class ExerciseManager
         }
 
         // Update Exercise with new data
-        $this->serializer->deserialize($data, $exercise, Transfer::PERSIST_TAG);
+        $this->serializer->deserialize($data, $exercise, [Transfer::PERSIST_TAG]);
 
         // Save to DB
         $this->om->persist($exercise);

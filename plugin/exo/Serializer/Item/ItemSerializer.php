@@ -149,6 +149,7 @@ class ItemSerializer extends AbstractSerializer
             // Adds minimal information
             $this->mapEntityToObject([
                 'id' => 'uuid',
+                'autoId' => 'id',
                 'type' => 'mimeType',
                 'content' => 'content',
                 'title' => 'title',

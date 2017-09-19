@@ -64,7 +64,7 @@ trait AttemptParametersTrait
      * Number of attempts allowed.
      * If 0, the user can retry as many times a he wishes.
      *
-     * @ORM\Column(name="random_tag", type="json")
+     * @ORM\Column(name="random_tag", type="array")
      */
     private $randomTag;
 

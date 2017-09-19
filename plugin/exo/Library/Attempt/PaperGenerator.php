@@ -139,9 +139,10 @@ class PaperGenerator
             $pickedSteps = [];
             $pickedItems = [];
             $availableItems = [];
+            $preShuffledPicked = [];
 
             foreach ($questions as $question) {
-                $availableItems[$question->getId()] = $this->itemSerializer->serialize(
+                $availableItems[$question->getUuid()] = $this->itemSerializer->serialize(
                     $question,
                     [
                         Transfer::SHUFFLE_ANSWERS,
@@ -153,7 +154,7 @@ class PaperGenerator
             foreach ($tags as $tag) {
                 $taggedItems = array_filter($availableItems, function ($item) use ($tag) {
                     $itemTags = [];
-                    $data = ['class' => 'UJM\ExoBundle\Entity\Item\Item', 'ids' => [$item->id]];
+                    $data = ['class' => 'UJM\ExoBundle\Entity\Item\Item', 'ids' => [$item->autoId]];
                     $event = new GenericDataEvent($data);
                     $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
                     $itemTags = $event->getResponse();
@@ -162,17 +163,21 @@ class PaperGenerator
                 });
 
                 $tagged = static::pick($taggedItems, $tag[1], true);
-                $taggedItems = [];
+                $pickTagged = [];
 
                 foreach ($tagged as $taggedItem) {
-                    $taggedItems[$taggedItem->id] = $taggedItem;
+                    $pickTagged[$taggedItem->id] = $taggedItem;
                 }
 
-                $availableItems = array_diff_key($availableItems, $taggedItems);
-                $pickedItems = array_merge($pickedItems, $taggedItems);
+                $availableItems = array_diff_key($availableItems, $pickTagged);
+                $preShuffledPicked = array_merge($preShuffledPicked, $taggedItems);
             }
 
-            shuffle($pickedItems);
+            shuffle($preShuffledPicked);
+
+            foreach ($preShuffledPicked as $picked) {
+                $pickedItems[$picked->id] = $picked;
+            }
 
             for ($i = 0; $i < $countSteps; ++$i) {
                 $step = new Step();
@@ -190,9 +195,11 @@ class PaperGenerator
                 $pickedStep->items = $stepItems;
                 $pickedItems = array_diff_key($pickedItems, $indexedStepItems);
 
-                if (count($pickedStep->items) > 0) {
-                    $pickedSteps[] = $pickedStep;
+                if (count($pickedStep->items) === 0) {
+                    break;
                 }
+
+                $pickedSteps[] = $pickedStep;
             }
 
             return $pickedSteps;
