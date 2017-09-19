@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 import {trans} from '#/main/core/translation'
 import {ChoiceField} from './choice-field.jsx'
 import {getFieldType} from '../../clacoForm/utils'
