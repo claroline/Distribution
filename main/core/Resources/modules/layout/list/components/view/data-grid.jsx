@@ -136,7 +136,7 @@ const DataGridSort = props =>
       <span className={classes('fa fa-fw', {
         'fa-sort'     :  0 === props.current.direction,
         'fa-sort-asc' :  1 === props.current.direction,
-        'fa-sort-desc': -1 === props.current.direction,
+        'fa-sort-desc': -1 === props.current.direction
       })} />
     </button>
   </div>

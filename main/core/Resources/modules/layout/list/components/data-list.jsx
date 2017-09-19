@@ -14,10 +14,8 @@ import {
   getFilterableProps
 } from '#/main/core/layout/list/utils'
 
-import {Pagination} from '#/main/core/layout/pagination/components/pagination.jsx'
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
-import {DataTable} from '#/main/core/layout/list/components/view/data-table.jsx'
-import {DataGrid} from '#/main/core/layout/list/components/view/data-grid.jsx'
+import {Pagination} from '#/main/core/layout/pagination/components/pagination.jsx'
 
 const EmptyList = props =>
   <div className="list-empty">
@@ -185,7 +183,7 @@ DataList.propTypes = {
    */
   data: T.arrayOf(T.shape({
     // because some features (like selection) requires to retrieves some data rows
-    id: T.oneOfType([T.string, T.number]).isRequired,
+    id: T.oneOfType([T.string, T.number]).isRequired
   })).isRequired,
 
   /**

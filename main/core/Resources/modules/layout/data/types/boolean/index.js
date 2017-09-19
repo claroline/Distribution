@@ -1,5 +1,3 @@
-import {t} from '#/main/core/translation'
-
 import {parseBool, translateBool} from '#/main/core/layout/data/types/boolean/utils'
 import {BooleanSearch} from '#/main/core/layout/data/types/boolean/components/search.jsx'
 import {BooleanCell} from '#/main/core/layout/data/types/boolean/components/table.jsx'

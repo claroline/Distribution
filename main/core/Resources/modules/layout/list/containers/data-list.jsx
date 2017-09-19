@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {constants} from '#/main/core/layout/list/constants'
-
 import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 
@@ -93,19 +91,23 @@ function mapStateToProps(state, ownProps) {
   }
 
   // grab data for optional features
-  if (newProps.filterable = listSelect.isFilterable(listState)) {
+  newProps.filterable = listSelect.isFilterable(listState)
+  if (newProps.filterable) {
     newProps.filters = listSelect.filters(listState)
   }
 
-  if (newProps.sortable = listSelect.isSortable(listState)) {
+  newProps.sortable = listSelect.isSortable(listState)
+  if (newProps.sortable) {
     newProps.sortBy = listSelect.sortBy(listState)
   }
 
-  if (newProps.selectable = listSelect.isSelectable(listState)) {
+  newProps.selectable = listSelect.isSelectable(listState)
+  if (newProps.selectable) {
     newProps.selected = listSelect.selected(listState)
   }
 
-  if (newProps.paginated = listSelect.isPaginated(listState)) {
+  newProps.paginated = listSelect.isPaginated(listState)
+  if (newProps.paginated) {
     newProps.pageSize    = paginationSelect.pageSize(listState)
     newProps.currentPage = paginationSelect.current(listState)
   }

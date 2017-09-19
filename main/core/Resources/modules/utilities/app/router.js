@@ -1,7 +1,6 @@
 import React from 'react'
 import {
   hashHistory,
-  routeLocationDidUpdate,
   HashRouter as Router,
   Route,
   Switch
@@ -52,9 +51,6 @@ function getRouteComponent(route) {
  * @param {string} basePath
  */
 function routedApp(routesConfig, basePath = '') {
-  console.log(hashHistory)
-  //hashHistory.addChangeListener(() => store.dispatch(routeLocationDidUpdate(location)))
-
   return () => {
     const RoutedApp = React.createElement(Router, {
       history: hashHistory

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
@@ -116,21 +116,19 @@ const WorkspacesPage = props =>
         ]}
 
         actions={[
-          ...Configuration.getWorkspacesAdministrationActions().map(action => action.options.modal ?
-            {
-              icon: action.icon,
-              label: action.name(ClarolineTranslator),
-              action: (rows) => props.showModal(MODAL_URL, {
-                url: action.url(rows[0].id)
-              }),
-              context: 'row'
-            } : {
-              icon: action.icon,
-              label: action.name(ClarolineTranslator),
-              action: (rows) => action.url(rows[0].id),
-              context: 'row'
-            }
-          ), {
+          ...Configuration.getWorkspacesAdministrationActions().map(action => action.options.modal ? {
+            icon: action.icon,
+            label: action.name(ClarolineTranslator),
+            action: (rows) => props.showModal(MODAL_URL, {
+              url: action.url(rows[0].id)
+            }),
+            context: 'row'
+          } : {
+            icon: action.icon,
+            label: action.name(ClarolineTranslator),
+            action: (rows) => action.url(rows[0].id),
+            context: 'row'
+          }), {
             icon: 'fa fa-fw fa-copy',
             label: t('copy_workspace'),
             action: (rows) => props.copyWorkspaces(rows, false)

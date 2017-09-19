@@ -31,17 +31,15 @@ const DataActions = props =>
       <MenuItem header>{t('actions')}</MenuItem>
 
       {props.actions.filter(action => !action.isDangerous).map((action, actionIndex) => React.createElement(
-        MenuItem,
-        typeof action.action === 'function' ? {
-            key: `data-row-${props.index}-action-${actionIndex}`,
-            disabled: action.disabled ? action.disabled([props.item]) : false,
-            onClick: () => action.action([props.item])
-          } : {
-            key: `data-row-${props.index}-action-${actionIndex}`,
-            disabled: action.disabled ? action.disabled([props.item]) : false,
-            href: action.action
-          },
-        ([
+        MenuItem, typeof action.action === 'function' ? {
+          key: `data-row-${props.index}-action-${actionIndex}`,
+          disabled: action.disabled ? action.disabled([props.item]) : false,
+          onClick: () => action.action([props.item])
+        } : {
+          key: `data-row-${props.index}-action-${actionIndex}`,
+          disabled: action.disabled ? action.disabled([props.item]) : false,
+          href: action.action
+        }, ([
           <span key={`data-row-${props.index}-action-${actionIndex}-icon`} className={action.icon} />,
           action.label
         ]))
@@ -52,18 +50,17 @@ const DataActions = props =>
       }
 
       {props.actions.filter(action => action.isDangerous).map((action, actionIndex) => React.createElement(
-        MenuItem,
-        typeof action.action === 'function' ? {
-            key: `data-row-${props.index}-action-dangerous-${actionIndex}`,
-            disabled: action.disabled ? action.disabled([props.item]) : false,
-            className: 'dropdown-link-danger',
-            onClick: () => action.action([props.item])
-          } : {
-            key: `data-row-${props.index}-action-${actionIndex}`,
-            disabled: action.disabled ? action.disabled([props.item]) : false,
-            className: 'dropdown-link-danger',
-            href: action.action
-          }, ([
+        MenuItem, typeof action.action === 'function' ? {
+          key: `data-row-${props.index}-action-dangerous-${actionIndex}`,
+          disabled: action.disabled ? action.disabled([props.item]) : false,
+          className: 'dropdown-link-danger',
+          onClick: () => action.action([props.item])
+        } : {
+          key: `data-row-${props.index}-action-${actionIndex}`,
+          disabled: action.disabled ? action.disabled([props.item]) : false,
+          className: 'dropdown-link-danger',
+          href: action.action
+        }, ([
           <span key={`data-row-${props.index}-action-${actionIndex}-dangerous-icon`} className={action.icon} />,
           action.label
         ]))

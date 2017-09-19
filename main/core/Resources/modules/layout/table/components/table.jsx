@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {t} from '#/main/core/translation'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 
 const TableCell = props =>
@@ -76,7 +75,8 @@ const TableSortingCell = props =>
       classes(
         'fa',
         0 === props.direction ? 'fa-sort' : (1 === props.direction ? 'fa-sort-asc' : 'fa-sort-desc')
-      )} aria-hidden="true"
+      )}
+      aria-hidden="true"
     />
   </th>
 

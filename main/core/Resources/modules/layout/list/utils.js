@@ -98,7 +98,7 @@ function getSortableProps(dataProps) {
  * @param {Array}  selection - the list of current selected IDs.
  */
 function isRowSelected(row, selection) {
-  return selection && -1 !== selection.indexOf(row.id);
+  return selection && -1 !== selection.indexOf(row.id)
 }
 
 export {
