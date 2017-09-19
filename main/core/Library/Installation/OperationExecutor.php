@@ -366,6 +366,11 @@ class OperationExecutor
         //and not simply set to false in bundles.ini in previous versions.
         $foundBundle = false;
 
+
+        if (!$checkCoreBundle && $bundleFqcn === 'Claroline\CoreBundle\ClarolineCoreBundle') {
+            return true;
+        }
+        var_dump($bundleFqcn);
         if (!$checkCoreBundle || $this->findPreviousPackage('Claroline\CoreBundle\ClarolineCoreBundle')) {
             //do the bundle already exists ?
             $foundBundle = $bundleFqcn === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
@@ -376,6 +381,7 @@ class OperationExecutor
                     $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundleFqcn)
             ;
         }
+        var_dump($foundBundle);
 
         return $foundBundle;
     }

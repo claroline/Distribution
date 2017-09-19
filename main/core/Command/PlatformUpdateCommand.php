@@ -122,6 +122,7 @@ class PlatformUpdateCommand extends ContainerAwareCommand
             }
         }
         if ($from && $to) {
+            var_dump('updateall');
             $installer->updateAll($from, $to);
         } else {
             $installer->updateFromComposerInfo();
