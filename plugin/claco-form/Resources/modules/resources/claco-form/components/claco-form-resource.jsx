@@ -4,14 +4,14 @@ import {PropTypes as T} from 'prop-types'
 import {Route, Switch, withRouter} from 'react-router-dom'
 import {ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 import {trans} from '#/main/core/translation'
-import {actions} from '../actions'
-import {ClacoFormMainMenu} from './claco-form-main-menu.jsx'
-import {ClacoFormConfig} from './claco-form-config.jsx'
-import {CategoriesList} from '../../category/components/categories-list.jsx'
-import {KeywordsList} from '../../keyword/components/keywords-list.jsx'
-import {FieldsList} from '../../field/components/fields-list.jsx'
-import {TemplateForm} from '../../template/components/template-form.jsx'
-import {EntriesList} from '../../entry/components/entries-list.jsx'
+import {actions as editorActions} from '../editor/actions'
+import {ClacoFormMainMenu} from '../player/components/claco-form-main-menu.jsx'
+import {ClacoFormConfig} from '../editor/components/claco-form-config.jsx'
+import {CategoriesList} from '../editor/category/components/categories-list.jsx'
+import {KeywordsList} from '../editor/keyword/components/keywords-list.jsx'
+import {FieldsList} from '../editor/field/components/fields-list.jsx'
+import {TemplateForm} from '../editor/template/components/template-form.jsx'
+import {EntriesList} from '../player/components/entries-list.jsx'
 import {selectors} from '../selectors'
 
 const ClacoFormResource = props =>
@@ -97,7 +97,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    saveParameters: () => dispatch(actions.saveParameters())
+    saveParameters: () => dispatch(editorActions.saveParameters())
   }
 }
 

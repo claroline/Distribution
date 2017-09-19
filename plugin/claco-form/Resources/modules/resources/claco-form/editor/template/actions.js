@@ -2,8 +2,8 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {trans} from '#/main/core/translation'
-import {actions as messageActions} from '../message/actions'
-import {actions as clacoFormActions} from '../clacoForm/actions'
+import {actions as clacoFormActions} from '../../actions'
+import {actions as editorActions} from '../actions'
 
 export const TEMPLATE_UPDATE = 'TEMPLATE_UPDATE'
 
@@ -31,8 +31,8 @@ actions.saveTemplate = () => (dispatch, getState) => {
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(clacoFormActions.updateResourceProperty('template', data.template))
-        dispatch(messageActions.updateMessage(trans('template_success_message', {}, 'clacoform'), 'success'))
+        dispatch(editorActions.updateResourceProperty('template', data.template))
+        dispatch(clacoFormActions.updateMessage(trans('template_success_message', {}, 'clacoform'), 'success'))
       }
     }
   })

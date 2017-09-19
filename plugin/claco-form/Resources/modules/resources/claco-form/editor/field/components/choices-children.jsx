@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {ChoiceField} from './choice-field.jsx'
-import {getFieldType} from '../../clacoForm/utils'
+import {getFieldType} from '../../../utils'
 
 class ChoicesChildren  extends Component {
   constructor(props) {

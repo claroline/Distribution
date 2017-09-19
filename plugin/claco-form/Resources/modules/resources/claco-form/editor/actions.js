@@ -2,13 +2,11 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {trans} from '#/main/core/translation'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {REQUEST_SEND} from '#/main/core/api/actions'
-import {actions as messageActions} from '../message/actions'
+import {actions as clacoFormActions} from '../actions'
 
 export const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 export const PARAMETERS_INITIALIZE = 'PARAMETERS_INITIALIZE'
 export const PARAMETERS_UPDATE = 'PARAMETERS_UPDATE'
-export const MESSAGE_RESET = 'MESSAGE_RESET'
-export const MESSAGE_UPDATE = 'MESSAGE_UPDATE'
 
 export const actions = {}
 
@@ -37,7 +35,7 @@ actions.saveParameters = () => (dispatch, getState) => {
       },
       success: (data, dispatch) => {
         dispatch(actions.updateResourceProperty('details', data))
-        dispatch(messageActions.updateMessage(trans('config_success_message', {}, 'clacoform'), 'success'))
+        dispatch(clacoFormActions.updateMessage(trans('config_success_message', {}, 'clacoform'), 'success'))
       }
     }
   })

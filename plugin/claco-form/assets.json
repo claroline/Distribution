@@ -2,7 +2,7 @@
   "webpack": {
     "entry": {
       "resource": "ClacoForm/clacoForm",
-      "resource-react": "react/clacoForm/index"
+      "resource-react": "resources/claco-form/index"
     }
   },
 

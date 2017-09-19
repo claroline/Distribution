@@ -4,6 +4,10 @@ import {
   RESOURCE_PROPERTY_UPDATE,
   PARAMETERS_INITIALIZE,
   PARAMETERS_UPDATE
+} from './editor/actions'
+import {
+  MESSAGE_RESET,
+  MESSAGE_UPDATE
 } from './actions'
 
 const mainReducers = makeReducer({}, {})
@@ -22,8 +26,24 @@ const parametersReducers = makeReducer({}, {
   }
 })
 
+const messageReducers = makeReducer({}, {
+  [MESSAGE_RESET]: () => {
+    return {
+      content: null,
+      type: null
+    }
+  },
+  [MESSAGE_UPDATE]: (state, action) => {
+    return {
+      content: action.content,
+      type: action.status
+    }
+  }
+})
+
 export {
   mainReducers,
   resourceReducers,
-  parametersReducers
+  parametersReducers,
+  messageReducers
 }

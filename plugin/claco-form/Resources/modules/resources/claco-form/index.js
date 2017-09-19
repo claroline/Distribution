@@ -10,17 +10,17 @@ import {reducer as resourceNodeReducer} from '#/main/core/layout/resource/reduce
 import {
   resourceReducers,
   mainReducers,
-  parametersReducers
+  parametersReducers,
+  messageReducers
 } from './reducers'
-import {messageReducers} from '../message/reducers'
-import {categoryReducers} from '../category/reducers'
-import {keywordReducers} from '../keyword/reducers'
-import {fieldReducers} from '../field/reducers'
-import {templateReducers} from '../template/reducers'
+import {categoryReducers} from './editor/category/reducers'
+import {keywordReducers} from './editor/keyword/reducers'
+import {fieldReducers} from './editor/field/reducers'
+import {templateReducers} from './editor/template/reducers'
 import {ClacoFormResource} from './components/claco-form-resource.jsx'
-import {CategoryFormModal} from '../category/components/category-form-modal.jsx'
-import {KeywordFormModal} from '../keyword/components/keyword-form-modal.jsx'
-import {FieldFormModal} from '../field/components/field-form-modal.jsx'
+import {CategoryFormModal} from './editor/category/components/category-form-modal.jsx'
+import {KeywordFormModal} from './editor/keyword/components/keyword-form-modal.jsx'
+import {FieldFormModal} from './editor/field/components/field-form-modal.jsx'
 
 // mount the react application
 bootstrap(

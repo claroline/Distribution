@@ -3,10 +3,10 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
-import {Message} from '../../message/components/message.jsx'
+import {Message} from '../../../components/message.jsx'
 import {actions} from '../actions'
-import {actions as messageActions} from '../../message/actions'
-import {formatText, getFieldType} from '../../clacoForm/utils'
+import {actions as clacoFormActions} from '../../../actions'
+import {formatText, getFieldType} from '../../../utils'
 
 class TemplateForm extends Component {
   componentDidMount() {
@@ -180,7 +180,7 @@ function mapDispatchToProps(dispatch) {
     initializeTemplate: () => dispatch(actions.initializeTemplate()),
     updateTemplate: (template) => dispatch(actions.updateTemplate(template)),
     saveTemplate: () => dispatch(actions.saveTemplate()),
-    updateMessage: (message, status) => dispatch(messageActions.updateMessage(message, status))
+    updateMessage: (message, status) => dispatch(clacoFormActions.updateMessage(message, status))
   }
 }
 

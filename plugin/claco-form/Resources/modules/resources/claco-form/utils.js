@@ -1,4 +1,4 @@
-import {fieldTypes, countries} from '../field/enums'
+import {fieldTypes, countries} from './enums'
 
 export const formatText = (str) => {
   let convertedStr = str

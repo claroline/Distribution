@@ -13,8 +13,7 @@ import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.j
 import {formatDate} from '#/main/core/date'
 import {trans, t} from '#/main/core/translation'
 import {actions} from '../actions'
-
-import {Message} from '../../message/components/message.jsx'
+import {Message} from '../../components/message.jsx'
 
 const getMultipleSelectValues = (e) => {
   const values = []

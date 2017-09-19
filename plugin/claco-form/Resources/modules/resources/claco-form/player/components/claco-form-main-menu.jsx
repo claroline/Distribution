@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
-import {selectors} from '../selectors'
-//import {actions} from '../actions'
+import {selectors} from '../../selectors'
 
 class ClacoFormMainMenu extends Component {
   render() {
