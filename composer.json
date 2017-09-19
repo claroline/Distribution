@@ -23,7 +23,7 @@
         "composer/composer": "1.1.0",
         "ddeboer/data-import": "0.20.0",
         "doctrine/data-fixtures": "1.1.1",
-        "doctrine/dbal": "2.5.5",
+        "doctrine/dbal": "2.6.0",
         "doctrine/doctrine-bundle": "1.6.4",
         "doctrine/migrations": "1.4.1",
         "doctrine/orm": "2.5.5",

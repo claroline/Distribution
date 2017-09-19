@@ -141,13 +141,19 @@ class PaperGenerator
             $availableItems = [];
 
             foreach ($questions as $question) {
-                $availableItems[$question->getId()] = $question;
+                $availableItems[$question->getId()] = $this->itemSerializer->serialize(
+                    $question,
+                    [
+                        Transfer::SHUFFLE_ANSWERS,
+                        Transfer::INCLUDE_SOLUTIONS,
+                    ]
+                );
             }
 
             foreach ($tags as $tag) {
                 $taggedItems = array_filter($availableItems, function ($item) use ($tag) {
                     $itemTags = [];
-                    $data = ['class' => 'UJM\ExoBundle\Entity\Item\Item', 'ids' => [$item->getId()]];
+                    $data = ['class' => 'UJM\ExoBundle\Entity\Item\Item', 'ids' => [$item->id]];
                     $event = new GenericDataEvent($data);
                     $this->eventDispatcher->dispatch('claroline_retrieve_used_tags_by_class_and_ids', $event);
                     $itemTags = $event->getResponse();
@@ -159,13 +165,6 @@ class PaperGenerator
                 $taggedItems = [];
 
                 foreach ($tagged as $taggedItem) {
-                    $taggedItem = $this->itemSerializer->serialize(
-                        $taggedItem,
-                        [
-                            Transfer::SHUFFLE_ANSWERS,
-                            Transfer::INCLUDE_SOLUTIONS,
-                        ]
-                    );
                     $taggedItems[$taggedItem->id] = $taggedItem;
                 }
 
@@ -181,12 +180,15 @@ class PaperGenerator
                 $step->setTitle('step '.($i + 1));
                 $pickedStep = $this->stepSerializer->serialize($step);
 
-                for ($j = 0; $j < $pageSize; ++$j) {
-                    $pickedItem = static::pick($pickedItems, 1, true)[0];
-                    if ($pickedItem) {
-                        $pickedStep->items[] = $pickedItem;
-                    }
+                $stepItems = static::pick($pickedItems, $pageSize, true);
+                $indexedStepItems = [];
+
+                foreach ($stepItems as $stepItem) {
+                    $indexedStepItems[$stepItem->id] = $stepItem;
                 }
+
+                $pickedStep->items = $stepItems;
+                $pickedItems = array_diff_key($pickedItems, $indexedStepItems);
 
                 if (count($pickedStep->items) > 0) {
                     $pickedSteps[] = $pickedStep;
