@@ -17,13 +17,8 @@
 
 {% block content %}
     <div
-        class="page-container workspace-administration-container"
-        data-workspaces="{{ results | json_encode | raw | escape }}"
-        data-count="{{ total }}"
-        data-filters="{{ filters | json_encode | raw | escape }}"
-        data-sort-by="{{ sortBy | json_encode | raw | escape }}"
-        data-page="{{ page }}"
-        data-page-size="{{ pageSize }}"
+        class="page-container workspaces-container"
+        data-workspaces="{{ workspaces | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

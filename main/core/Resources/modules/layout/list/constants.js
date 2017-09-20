@@ -25,6 +25,11 @@ const DISPLAY_LIST     = 'list'
 
 const DEFAULT_DISPLAY_MODE = DISPLAY_TABLE
 
+/**
+ * List of implemented display modes for lists.
+ *
+ * @type {object}
+ */
 const DISPLAY_MODES = {
   [DISPLAY_TABLE_SM]: {
     icon: 'fa fa-fw fa-list',
@@ -60,7 +65,12 @@ const DISPLAY_MODES = {
   }
 }
 
+const AVAILABLE_PAGE_SIZES = [10, 20, 50, 100, -1] // -1 is for all
+const DEFAULT_PAGE_SIZE    = AVAILABLE_PAGE_SIZES[1]
+
 export const constants = {
+  AVAILABLE_PAGE_SIZES,
+  DEFAULT_PAGE_SIZE,
   DEFAULT_FEATURES,
   DISPLAY_MODES,
   DEFAULT_DISPLAY_MODE,

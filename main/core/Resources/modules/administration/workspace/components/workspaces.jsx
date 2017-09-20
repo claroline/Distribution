@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {t, transChoice, ClarolineTranslator} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
+import {localeDate} from '#/main/core/layout/data/types/date/utils'
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
 
 import Configuration from '#/main/core/library/Configuration/Configuration'
@@ -148,6 +149,29 @@ const WorkspacesPage = props =>
             isDangerous: true
           }
         ]}
+
+        card={(row) => ({
+          poster: null,
+          icon: 'fa fa-book',
+          title: row.name,
+          subtitle: row.code,
+          contentText: row.meta.description,
+          flags: [
+            ['fa fa-user',         t('personal_workspace')],
+            ['fa fa-object-group', t('model')],
+            ['fa fa-eye',          t('displayable_in_workspace_list')],
+            ['fa fa-globe',        t('public_registration')]
+          ],
+          footer:
+            <span>
+              created by <b>{row.meta.creator ? row.meta.creator.name : t('unknown')}</b>
+            </span>,
+          footerLong:
+            <span>
+              created at <b>{localeDate(row.meta.created)}</b>,
+              by <b>{row.meta.creator ? row.meta.creator.name: t('unknown')}</b>
+            </span>
+        })}
       />
     </PageContent>
   </Page>

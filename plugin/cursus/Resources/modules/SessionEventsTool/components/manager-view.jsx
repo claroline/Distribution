@@ -8,9 +8,7 @@ import {selectors} from '../selectors'
 import {actions} from '../actions'
 import {registrationTypes} from '../enums'
 import {actions as listActions} from '#/main/core/layout/list/actions'
-import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
-import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {DataList} from '#/main/core/layout/list/components/data-list.jsx'
 
 class ManagerView extends Component {
@@ -314,8 +312,8 @@ function mapStateToProps(state) {
     filters: listSelect.filters(state),
     sortBy: listSelect.sortBy(state),
     pagination: {
-      pageSize: paginationSelect.pageSize(state),
-      current:  paginationSelect.current(state)
+      pageSize: listSelect.pageSize(state),
+      current:  listSelect.currentPage(state)
     }
   }
 }
@@ -354,11 +352,11 @@ function mapDispatchToProps(dispatch) {
     },
     // pagination
     handlePageSizeUpdate: (pageSize) => {
-      dispatch(paginationActions.updatePageSize(pageSize))
+      dispatch(listActions.updatePageSize(pageSize))
       dispatch(actions.fetchSessionEvents())
     },
     handlePageChange: (page) => {
-      dispatch(paginationActions.changePage(page))
+      dispatch(listActions.changePage(page))
       dispatch(actions.fetchSessionEvents())
     },
     // selection

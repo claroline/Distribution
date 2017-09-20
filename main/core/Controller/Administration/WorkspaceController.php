@@ -66,13 +66,15 @@ class WorkspaceController extends Controller
      */
     public function indexAction()
     {
-        return $this->finder->search(
-            'Claroline\CoreBundle\Entity\Workspace\Workspace', [
-                'limit' => 20,
-                'filters' => ['model' => false, 'personal' => false],
-                'sortBy' => 'name'
-            ]
-        );
+        return [
+            'workspaces' => $this->finder->search(
+                'Claroline\CoreBundle\Entity\Workspace\Workspace', [
+                    'limit' => 20,
+                    'filters' => ['model' => false, 'personal' => false],
+                    'sortBy' => 'name'
+                ]
+            )
+        ];
     }
 
     /**

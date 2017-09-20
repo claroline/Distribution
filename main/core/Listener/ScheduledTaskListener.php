@@ -61,7 +61,7 @@ class ScheduledTaskListener
 
         if (count($users) > 0 && !empty($object) && !empty($content)) {
             $this->mailManager->send($object, $content, $users);
-            $this->taskManager->markTaskAsExecuted($task);
+            $this->taskManager->markAsExecuted($task);
         }
 
         $event->stopPropagation();

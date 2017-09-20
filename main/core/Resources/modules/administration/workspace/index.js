@@ -1,3 +1,5 @@
+import merge from 'lodash/merge'
+
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {generateUrl} from '#/main/core/fos-js-router'
 
@@ -11,7 +13,7 @@ import {Workspaces} from '#/main/core/administration/workspace/components/worksp
 // mount the react application
 bootstrap(
   // app DOM container (also holds initial app data as data attributes)
-  '.workspace-administration-container',
+  '.workspaces-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
   Workspaces,
@@ -29,17 +31,9 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => {
     return {
-      workspaces: {
-        fetchUrl: generateUrl('api_get_search_workspaces'),
-        data: initialData.workspaces,
-        totalResults: initialData.count,
-        filters: initialData.filters,
-        sortBy: initialData.sortBy ? initialData.sortBy : undefined,
-        pagination: {
-          pageSize: initialData.pageSize,
-          current: initialData.page
-        }
-      }
+      workspaces: merge({}, initialData.workspaces, {
+        fetchUrl: generateUrl('api_get_search_workspaces')
+      })
     }
   }
 )

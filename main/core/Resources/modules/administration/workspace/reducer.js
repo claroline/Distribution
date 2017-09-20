@@ -8,7 +8,7 @@ import {
   WORKSPACE_REMOVE_MANAGER
 } from './actions'
 
-const handlers = {
+const workspaceReducer = makeReducer([], {
   [WORKSPACE_ADD_MANAGER]: (state, action) => {
     state = cloneDeep(state)
     const workspace = state.find(workspace => workspace.id === action.workspace.id)
@@ -24,10 +24,10 @@ const handlers = {
 
     return state
   }
-}
+})
 
 const reducer = makeListReducer({
-  data: makeReducer([], handlers)
+  data: workspaceReducer
 })
 
 export {

@@ -31,4 +31,37 @@ class ScheduledTaskSerializer
             ],
         ];
     }
+
+    /**
+     * Deserializes JSON api data into a ScheduledTask entity.
+     *
+     * @param array         $data          - the data to deserialize
+     * @param ScheduledTask $scheduledTask - the task entity to update
+     *
+     * @return ScheduledTask - the updated task entity
+     */
+    public function deserialize(array $data, ScheduledTask $scheduledTask = null)
+    {
+        $scheduledTask = $scheduledTask ?: new ScheduledTask();
+
+        $scheduledTask->setName($data['name']);
+        $scheduledTask->setType($data['type']);
+
+        $scheduledDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $data['scheduledDate']);
+        $scheduledTask->setScheduledDate($scheduledDate);
+
+        if (isset($data['data'])) {
+            $scheduledTask->setData($data['data']);
+        }
+
+        // todo users, workspaces, groups
+
+        /*foreach ($users as $user) {
+            $task->addUser($user);
+        }
+        $task->setGroup($group);
+        $task->setWorkspace($workspace);*/
+
+        return $scheduledTask;
+    }
 }

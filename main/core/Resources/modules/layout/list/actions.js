@@ -42,10 +42,18 @@ actions.fetchData = (name) => (dispatch, getState) => {
       request: {
         method: 'GET'
       },
-      success: (data, dispatch) => {
+      success: (response, dispatch) => {
         dispatch(actions.resetSelect())
-        dispatch(actions.loadData(data.results, data.total))
+        dispatch(actions.loadData(response.data, response.totalResults))
       }
     }
   })
 }
+
+
+// pagination
+export const LIST_PAGE_SIZE_UPDATE = 'LIST_PAGE_SIZE_UPDATE'
+export const LIST_PAGE_CHANGE      = 'LIST_PAGE_CHANGE'
+
+actions.changePage     = makeActionCreator(LIST_PAGE_CHANGE, 'page')
+actions.updatePageSize = makeActionCreator(LIST_PAGE_SIZE_UPDATE, 'pageSize')

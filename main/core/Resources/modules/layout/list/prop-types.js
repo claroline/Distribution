@@ -27,6 +27,12 @@ const DataAction = {
     icon: T.string,
 
     /**
+     * A function to calculate if the action should be disabled.
+     * It receives the list of data objects as param.
+     */
+    disabled: T.func,
+
+    /**
      * Defines if the action is available as row action or bulk action.
      * If not set, action will be available in both context
      *
@@ -163,7 +169,15 @@ const DataListView = {
     }),
     actions: T.arrayOf(
       T.shape(DataAction.propTypes)
-    )
+    ),
+    /**
+     * A function to normalize data for card display.
+     * - the data row is passed as argument
+     * - the func MUST return an object respecting `DataCard.propTypes`.
+     *
+     * It's required to enable cards based display modes.
+     */
+    card: T.func.isRequired
   },
 
   defaultProps: {
@@ -171,8 +185,30 @@ const DataListView = {
   }
 }
 
+/**
+ * Definition of grid card data.
+ *
+ * @type {object}
+ */
+const DataCard = {
+  propTypes: {
+    className: T.string,
+    poster: T.string,
+    icon: T.string.isRequired, // todo : allow components for custom icons
+    title: T.string.isRequired,
+    subtitle: T.string,
+    contentText: T.string,
+    flags: T.arrayOf(
+      T.arrayOf(T.string)
+    ),
+    footer: T.node,
+    footerLong: T.node
+  }
+}
+
 export {
   DataAction,
   DataProperty,
+  DataCard,
   DataListView
 }

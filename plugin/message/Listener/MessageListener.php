@@ -11,6 +11,7 @@
 
 namespace Claroline\MessageBundle\Listener;
 
+use Claroline\CoreBundle\Entity\Task\ScheduledTask;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\SendMessageEvent;
@@ -202,6 +203,7 @@ class MessageListener
      */
     public function onExecuteMessageTask(GenericDataEvent $event)
     {
+        /** @var ScheduledTask $task */
         $task = $event->getData();
         $data = $task->getData();
         $users = $task->getUsers();
@@ -211,7 +213,7 @@ class MessageListener
         if (count($users) > 0 && !empty($object) && !empty($content)) {
             $message = $this->messageManager->create($content, $object, $users);
             $this->messageManager->send($message);
-            $this->taskManager->markTaskAsExecuted($task);
+            $this->taskManager->markAsExecuted($task);
         }
         $event->stopPropagation();
     }

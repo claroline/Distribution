@@ -101,6 +101,19 @@ function isRowSelected(row, selection) {
   return selection && -1 !== selection.indexOf(row.id)
 }
 
+
+function countPages(totalResults, pageSize) {
+  if (-1 === pageSize) {
+    return 1
+  }
+
+  const rest = totalResults % pageSize
+  const nbPages = (totalResults - rest) / pageSize
+
+  return nbPages + (rest > 0 ? 1 : 0)
+}
+
+
 export {
   createListDefinition,
   getPropDefinition,
@@ -110,5 +123,6 @@ export {
   getDisplayedProps,
   getFilterableProps,
   getSortableProps,
-  isRowSelected
+  isRowSelected,
+  countPages
 }

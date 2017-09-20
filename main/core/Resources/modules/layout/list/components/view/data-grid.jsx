@@ -4,16 +4,15 @@ import classes from 'classnames'
 import {DropdownButton, MenuItem} from 'react-bootstrap'
 
 import {t} from '#/main/core/translation'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
 import {getPlainText} from '#/main/core/layout/data/types/html/utils'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
-import {DataProperty, DataListView} from '#/main/core/layout/list/prop-types'
+import {DataAction, DataCard, DataProperty, DataListView} from '#/main/core/layout/list/prop-types'
 import {getBulkActions, getRowActions, getPropDefinition, getSortableProps, isRowSelected} from '#/main/core/layout/list/utils'
 import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 
 const DataGridItem = props =>
-  <div className={classes('data-grid-item', {selected: props.selected})}>
+  <div className={classes('data-grid-item', props.data.className, {selected: props.selected})}>
     {props.onSelect &&
       <input
         type="checkbox"
@@ -24,66 +23,49 @@ const DataGridItem = props =>
     }
 
     <div className="item-header">
-      <span className="item-icon fa fa-book" />
+      <span className={classes('item-icon', props.data.icon)} />
 
-      <div className="item-flags">
-        <TooltipElement
-          id={`item-${props.index}-flag-personal`}
-          tip="Personal workspace"
-        >
-          <span className="item-flag fa fa-user" />
-        </TooltipElement>
-
-        <TooltipElement
-          id={`item-${props.index}-model`}
-          tip="Model"
-        >
-          <span className="item-flag fa fa-object-group" />
-        </TooltipElement>
-
-        <TooltipElement
-          id={`item-${props.index}-visible`}
-          tip="Visible dans la liste"
-        >
-          <span className="item-flag fa fa-eye" />
-        </TooltipElement>
-
-        <TooltipElement
-          id={`item-${props.index}-visible`}
-          tip="Inscription publique"
-        >
-          <span className="item-flag fa fa-globe" />
-        </TooltipElement>
-      </div>
+      {props.data.flags &&
+        <div className="item-flags">
+          {props.data.flags.map((flag, flagIndex) =>
+            <TooltipElement
+              key={flagIndex}
+              id={`item-${props.index}-flag-${flagIndex}`}
+              tip={flag[1]}
+            >
+              <span className={classes('item-flag', flag[0])} />
+            </TooltipElement>
+          )}
+        </div>
+      }
     </div>
 
     <div className="item-content">
       <h2 className="item-title">
-        {props.row.name}
-        <small>{props.row.code}</small>
+        {props.data.title}
+        {props.data.subtitle &&
+          <small>{props.data.subtitle}</small>
+        }
       </h2>
 
-      {'sm' !== props.size &&
+      {'sm' !== props.size && props.data.contentText &&
         <div className="item-description">
-          {getPlainText(props.row.meta.description)}
+          {getPlainText(props.data.contentText)}
         </div>
       }
 
-      {props.row.meta.creator &&
-      ('sm' === props.size ?
-          <div className="item-footer">
-            created by <b>{props.row.meta.creator.name}</b>
-          </div>
-          :
-          <div className="item-footer">
-            created at <b>{localeDate(props.row.meta.created)}</b>, by <b>{props.row.meta.creator.name}</b>
-          </div>
-      )}
+      {props.data.footer &&
+        <div className="item-footer">
+          {'sm' !== props.size && props.data.footerLong ?
+            props.data.footerLong : props.data.footer
+          }
+        </div>
+      }
     </div>
 
     {props.actions &&
       <DataActions
-        index={props.index}
+        id={`data-grid-item-${props.index}-actions`}
         item={props.row}
         actions={props.actions}
       />
@@ -94,11 +76,17 @@ DataGridItem.propTypes = {
   index: T.number.isRequired,
   size: T.string.isRequired,
   row: T.object.isRequired,
-  actions: T.arrayOf(T.shape({
-    label: T.string,
-    icon: T.string,
-    action: T.oneOfType([T.string, T.func]).isRequired
-  })),
+
+  /**
+   * Computed card data from row.
+   */
+  data: T.shape(
+    DataCard.propTypes
+  ).isRequired,
+
+  actions: T.arrayOf(
+    T.shape(DataAction.propTypes)
+  ),
   selected: T.bool,
   onSelect: T.func
 }
@@ -188,6 +176,7 @@ const DataGrid = props =>
             index={rowIndex}
             size={props.size}
             row={row}
+            data={props.card(row)}
             actions={getRowActions(props.actions)}
             selected={isRowSelected(row, props.selection ? props.selection.current : [])}
             onSelect={1 < props.count && props.selection ? () => props.selection.toggle(row) : null}

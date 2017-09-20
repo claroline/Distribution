@@ -15,6 +15,10 @@ function getRouteComponent(route) {
     exact: !!route.exact
   }
 
+  if (route.onEnter) {
+
+  }
+
   if (route.routes) {
     routeProps.children = React.createElement(Switch, {}, route.routes.map(routeConfig => getRouteComponent(routeConfig)))
   } else {

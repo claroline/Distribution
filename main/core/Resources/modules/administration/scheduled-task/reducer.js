@@ -2,7 +2,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
 import {VIEW_MANAGEMENT} from './enums'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
-import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
 
 import {
   UPDATE_VIEW_MODE,
@@ -67,5 +66,5 @@ export const reducers = combineReducers({
   tasks: makeReducer(initialState['tasks'], tasksReducers),
   taskForm: makeReducer(initialState['taskForm'], taskFormReducers),
   list: makeListReducer(),
-  pagination: paginationReducer
+  /*pagination: paginationReducer*/
 })

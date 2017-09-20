@@ -76,13 +76,12 @@ class WorkspaceFinder implements FinderInterface
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 default:
-                    if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
-                        $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    } else {
+                    if (is_string($filterValue)) {
                         $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                         $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    } else {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
                     }
             }
         }

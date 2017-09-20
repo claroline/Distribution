@@ -2,10 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
-
-import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 
 import {DataAction, DataProperty} from '#/main/core/layout/list/prop-types'
@@ -20,28 +17,8 @@ import {DataList as DataListComponent} from '#/main/core/layout/list/components/
  * @param props
  * @constructor
  */
-class DataList extends Component {
-  constructor(props) {
-    super(props)
-
-    console.log(window.location)
-  }
-
-  render() {
-    return (
-      <DataListComponent
-        data={this.props.data}
-        totalResults={this.props.totalResults}
-        definition={this.props.definition}
-        actions={this.props.actions}
-        filters={this.props.filters}
-        sorting={this.props.sorting}
-        selection={this.props.selection}
-        pagination={this.props.pagination}
-      />
-    )
-  }
-}
+const DataList = props =>
+  <DataListComponent {...props} />
 
 DataList.propTypes = {
   /**
@@ -52,18 +29,32 @@ DataList.propTypes = {
    */
   name: T.string.isRequired,
 
-  // from DataList
-  data: T.array.isRequired,
-  totalResults: T.number.isRequired,
+  /**
+   * The definition of the list rows data.
+   */
   definition: T.arrayOf(
     T.shape(DataProperty.propTypes)
   ).isRequired,
 
+  /**
+   * A list of data related actions.
+   */
   actions: T.arrayOf(
     T.shape(DataAction.propTypes)
   ),
 
-  // list features
+  /**
+   * A function to normalize data for card display.
+   * - the data row is passed as argument
+   * - the func MUST return an object respecting `DataCard.propTypes`.
+   *
+   * It's required to enable cards based display modes.
+   */
+  card: T.func.isRequired,
+
+  // calculated from redux store
+  data: T.array.isRequired,
+  totalResults: T.number.isRequired,
   filters: T.object,
   sorting: T.object,
   pagination: T.object,
@@ -71,8 +62,9 @@ DataList.propTypes = {
 }
 
 /**
- * Injects store values inside component based on the list config.
- * Only data for enabled features are injected.
+ * Gets list data and config from redux store.
+ *
+ * NB. we will enable list features based on what we find in the store.
  *
  * @param {object} state
  * @param {object} ownProps
@@ -108,8 +100,8 @@ function mapStateToProps(state, ownProps) {
 
   newProps.paginated = listSelect.isPaginated(listState)
   if (newProps.paginated) {
-    newProps.pageSize    = paginationSelect.pageSize(listState)
-    newProps.currentPage = paginationSelect.current(listState)
+    newProps.pageSize    = listSelect.pageSize(listState)
+    newProps.currentPage = listSelect.currentPage(listState)
   }
 
   return newProps
@@ -117,7 +109,7 @@ function mapStateToProps(state, ownProps) {
 
 /**
  * Injects store actions based on the list config.
- * Only actions for enabled features are injected.
+ * NB. we inject all list actions, `mergeProps` will only pick the one for enabled features.
  *
  * @param {function} dispatch
  * @param {object}   ownProps
@@ -152,14 +144,24 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     // pagination
     updatePageSize(pageSize) {
-      dispatch(paginationActions.updatePageSize(pageSize))
+      dispatch(listActions.updatePageSize(pageSize))
     },
     changePage(page) {
-      dispatch(paginationActions.changePage(page))
+      dispatch(listActions.changePage(page))
     }
   }
 }
 
+/**
+ * Generates the final container props based on store available data.
+ * For async lists, It also adds async calls to list actions that require data refresh.
+ *
+ * @param {object} stateProps    - the injected store data
+ * @param {object} dispatchProps - the injected store actions
+ * @param {object} ownProps      - the props passed to the react components
+ *
+ * @returns {object} - the final props object that will be passed to DataList container
+ */
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const asyncDecorator = (func) => {
     if (stateProps.async) {
@@ -181,6 +183,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     data: stateProps.data,
     totalResults: stateProps.totalResults,
     actions: ownProps.actions,
+    card: ownProps.card,
     queryString: stateProps.queryString
   }
 
@@ -219,6 +222,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   return props
 }
 
+// connect list to redux
 const DataListContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(DataList)
 
 export {

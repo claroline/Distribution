@@ -56,7 +56,11 @@ const DataTableRow = props =>
 
     {0 < props.actions.length &&
       <TableCell align="right" className="actions-cell">
-        <DataActions index={props.index} item={props.row} actions={props.actions} />
+        <DataActions
+          id={`data-table-item-${props.index}-actions`}
+          item={props.row}
+          actions={props.actions}
+        />
       </TableCell>
     }
   </TableRow>

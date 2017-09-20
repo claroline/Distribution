@@ -4,7 +4,6 @@ import {PropTypes as T} from 'prop-types'
 import {transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/layout/list/constants'
-import {constants as paginationConst} from '#/main/core/layout/pagination/constants'
 
 import {DataAction, DataProperty} from '#/main/core/layout/list/prop-types'
 import {
@@ -15,7 +14,7 @@ import {
 } from '#/main/core/layout/list/utils'
 
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
-import {Pagination} from '#/main/core/layout/pagination/components/pagination.jsx'
+import {Pagination} from '#/main/core/layout/list/components/pagination.jsx'
 
 const EmptyList = props =>
   <div className="list-empty">
@@ -57,7 +56,7 @@ class DataList extends Component {
    * Changes the list display.
    *
    * @param {string}  displayMode - the new display mode
-   * @param {boolean} init        - a flag to know how we need to update state
+   * @param {boolean} init        - a flag to know how to update the state
    */
   setDisplayMode(displayMode, init = false) {
     let currentColumns
@@ -152,7 +151,8 @@ class DataList extends Component {
             columns:   this.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name)),
             sorting:   this.props.sorting,
             selection: this.props.selection,
-            actions:   this.props.actions
+            actions:   this.props.actions,
+            card:      this.props.card
           })
         }
 
@@ -165,7 +165,7 @@ class DataList extends Component {
             {transChoice('list_results_count', this.props.totalResults, {count: this.props.totalResults}, 'platform')}
           </div>
 
-          {(this.props.pagination && paginationConst.AVAILABLE_PAGE_SIZES[0] < this.props.totalResults) &&
+          {(this.props.pagination && listConst.AVAILABLE_PAGE_SIZES[0] < this.props.totalResults) &&
             <Pagination
               {...this.props.pagination}
               totalResults={this.props.totalResults}
@@ -289,7 +289,16 @@ DataList.propTypes = {
    */
   actions: T.arrayOf(
     T.shape(DataAction.propTypes)
-  )
+  ),
+
+  /**
+   * A function to normalize data for card display.
+   * - the data row is passed as argument
+   * - the func MUST return an object respecting `DataCard.propTypes`.
+   *
+   * It's required to enable cards based display modes.
+   */
+  card: T.func.isRequired
 }
 
 DataList.defaultProps = {

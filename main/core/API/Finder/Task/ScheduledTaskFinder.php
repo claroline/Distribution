@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder;
+namespace Claroline\CoreBundle\API\Finder\Task;
 
 use Claroline\CoreBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -18,10 +18,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @DI\Service("claroline.api.finder.resource_node")
+ * @DI\Service("claroline.api.finder.scheduled_task")
  * @DI\Tag("claroline.finder")
  */
-class ResourceNodeFinder implements FinderInterface
+class ScheduledTaskFinder implements FinderInterface
 {
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
@@ -30,7 +30,7 @@ class ResourceNodeFinder implements FinderInterface
     private $tokenStorage;
 
     /**
-     * WorkspaceFinder constructor.
+     * ScheduledTaskFinder constructor.
      *
      * @DI\InjectParams({
      *     "authChecker"  = @DI\Inject("security.authorization_checker"),
@@ -50,28 +50,18 @@ class ResourceNodeFinder implements FinderInterface
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Resource\ResourceNode';
+        return 'Claroline\CoreBundle\Entity\Task\ScheduledTask';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
     {
-        $qb->join('obj.resourceType', 'ort');
-
         foreach ($searches as $filterName => $filterValue) {
-            switch ($filterName) {
-                case 'resourceType':
-                    $qb->andWhere("ort.name LIKE :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                    break;
-                default:
-                    if (is_string($filterValue)) {
-                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                    } else {
-                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                        $qb->setParameter($filterName, $filterValue);
-                    }
-                    break;
+            if (is_string($filterValue)) {
+                $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+            } else {
+                $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                $qb->setParameter($filterName, $filterValue);
             }
         }
 

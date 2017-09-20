@@ -2,7 +2,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
 
 import {makeReducer, reduceReducers, combineReducers} from '#/main/core/utilities/redux'
-import {reducer as paginationReducer} from '#/main/core/layout/pagination/reducer'
 
 import {constants} from '#/main/core/layout/list/constants'
 import {
@@ -12,19 +11,36 @@ import {
   LIST_RESET_SELECT,
   LIST_TOGGLE_SELECT,
   LIST_TOGGLE_SELECT_ALL,
-  LIST_DATA_LOAD
+  LIST_DATA_LOAD,
+  LIST_PAGE_CHANGE,
+  LIST_PAGE_SIZE_UPDATE
 } from '#/main/core/layout/list/actions'
 
+/**
+ * Reduces the API url from where the data come from.
+ * It's used to refresh async data lists.
+ *
+ * This is not supposed to change at runtime. We store it in redux for the skae of simplicity.
+ */
 const fetchUrlReducer = (state = null) => state
 
+/**
+ * Reduces list data items.
+ */
 const dataReducer = makeReducer([], {
   [LIST_DATA_LOAD]: (state, action = {}) => action.data
 })
 
+/**
+ * Reduces list total results.
+ */
 const totalResultsReducer = makeReducer(0, {
   [LIST_DATA_LOAD]: (state, action = {}) => action.total
 })
 
+/**
+ * Reduces list filters.
+ */
 const filterReducer = makeReducer([], {
   [LIST_FILTER_ADD]: (state, action = {}) => {
     const newFilters = cloneDeep(state)
@@ -53,6 +69,9 @@ const filterReducer = makeReducer([], {
   }
 })
 
+/**
+ * Reduces list sort.
+ */
 const sortReducer = makeReducer({property: null, direction: 0}, {
   [LIST_SORT_UPDATE]: (state, action = {}) => {
     let direction = 1
@@ -74,7 +93,11 @@ const sortReducer = makeReducer({property: null, direction: 0}, {
   }
 })
 
-// ATTENTION: we assume all data rows have an unique prop `id`.
+/**
+ * Reduces data selection.
+ *
+ * ATTENTION: we assume all data rows have an unique prop `id`.
+ */
 const selectReducer = makeReducer([], {
   [LIST_RESET_SELECT]: () => {
     return []
@@ -98,6 +121,45 @@ const selectReducer = makeReducer([], {
   [LIST_TOGGLE_SELECT_ALL]: (state, action = {}) => {
     return 0 < state.length ? [] : action.rows.map(row => row.id)
   }
+})
+
+/**
+ * Reduces list current page.
+ */
+const pageReducer = makeReducer(0, {
+  /**
+   * Changes the current page.
+   *
+   * @param {Object} state
+   * @param {Object} action
+   *
+   * @returns {Object}
+   */
+  [LIST_PAGE_CHANGE]: (state, action = {}) => action.page,
+
+  /**
+   * Resets current page on page size changes.
+   *
+   * @todo find a better way to handle this
+   *
+   * @returns {Object}
+   */
+  [LIST_PAGE_SIZE_UPDATE]: () => 0
+})
+
+/**
+ * Reduces list page size.
+ */
+const pageSizeReducer = makeReducer(constants.DEFAULT_PAGE_SIZE, {
+  /**
+   * Changes the page size.
+   *
+   * @param {Object} state
+   * @param {Object} action
+   *
+   * @returns {Object}
+   */
+  [LIST_PAGE_SIZE_UPDATE]: (state, action = {}) => action.pageSize
 })
 
 /**
@@ -147,7 +209,8 @@ function makeListReducer(customReducers = {}, options = {}) {
   }
 
   if (listOptions.paginated) {
-    reducer.pagination = paginationReducer
+    reducer.page = pageReducer
+    reducer.pageSize = pageSizeReducer
   }
 
   return combineReducers(reducer)

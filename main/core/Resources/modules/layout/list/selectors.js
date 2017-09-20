@@ -1,13 +1,11 @@
 import {createSelector} from 'reselect'
 
-import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
-
 // check enabled list features
 const isAsync      = (listState) => typeof listState.fetchUrl !== 'undefined'
 const isFilterable = (listState) => typeof listState.filters !== 'undefined'
 const isSortable   = (listState) => typeof listState.sortBy !== 'undefined'
 const isSelectable = (listState) => typeof listState.selected !== 'undefined'
-const isPaginated  = (listState) => typeof paginationSelect.pagination(listState) !== 'undefined'
+const isPaginated  = (listState) => typeof listState.page !== 'undefined' && listState.pageSize !== 'undefined'
 
 // access list data
 const fetchUrl     = (listState) => listState.fetchUrl
@@ -16,6 +14,8 @@ const totalResults = (listState) => listState.totalResults
 const filters      = (listState) => listState.filters || []
 const sortBy       = (listState) => listState.sortBy || {}
 const selected     = (listState) => listState.selected || []
+const pageSize     = (listState) => listState.pageSize || -1
+const currentPage  = (listState) => listState.page || 0
 
 // ATTENTION : we assume all data object have an unique `id` prop
 // maybe one day we will decorate data on load with ids if missing...
@@ -51,7 +51,9 @@ function queryString(listState) {
   }
 
   // add pagination
-  queryParams.push(paginationSelect.queryString(listState))
+  const page = currentPage(listState)
+  const limit = pageSize(listState)
+  queryParams.push(`page=${page}&limit=${limit}`)
 
   return '?' + queryParams.join('&')
 }
@@ -68,6 +70,8 @@ export const select = {
   filters,
   sortBy,
   selected,
+  currentPage,
+  pageSize,
   selectedRows,
   queryString
 }

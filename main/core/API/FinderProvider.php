@@ -89,8 +89,8 @@ class FinderProvider
     public function search($class, array $queryParams = [], array $serializerOptions = [])
     {
         // get search params
-        $filters = isset($queryParams['filters']) ? $queryParams['filters'] : [];
-        $sortBy = isset($queryParams['sortBy']) ? $this->decodeSortBy($queryParams['sortBy']) : [];
+        $filters = isset($queryParams['filters']) ? $this->parseFilters($queryParams['filters']) : [];
+        $sortBy = isset($queryParams['sortBy']) ? $this->parseSortBy($queryParams['sortBy']) : [];
         $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 0;
         $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : -1;
 
@@ -98,11 +98,10 @@ class FinderProvider
         $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true);
 
         return [
-            'class' => $class,
-            'total' => $count,
-            'results' => array_map(function ($result) use ($serializerOptions) {
+            'data' => array_map(function ($result) use ($serializerOptions) {
                 return $this->serializer->serialize($result, $serializerOptions);
             }, $data),
+            'totalResults' => $count,
             'page' => $page,
             'pageSize' => $limit,
             'filters' => $this->decodeFilters($filters),
@@ -149,7 +148,7 @@ class FinderProvider
      *
      * @return array
      */
-    private function decodeSortBy($sortBy)
+    private function parseSortBy($sortBy)
     {
         // default values
         $property = null;
@@ -171,6 +170,31 @@ class FinderProvider
         ];
     }
 
+    private function parseFilters(array $filters)
+    {
+        $parsed = [];
+        foreach ($filters as $property => $value) {
+            // don't keep empty filters
+            if ('' !== $value) {
+                // parse filter value
+                if (is_numeric($value)) {
+                    // convert numbers
+                    $value = floatval($value);
+                } else {
+                    // convert booleans
+                    $booleanValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                    if (null !== $booleanValue) {
+                        $value = $booleanValue;
+                    }
+                }
+
+                $parsed[$property] = $value;
+            }
+        }
+
+        return $parsed;
+    }
+
     /**
      * @param array $filters
      *
@@ -181,11 +205,8 @@ class FinderProvider
     private function decodeFilters(array $filters)
     {
         $decodedFilters = [];
-
-        if (!empty($filters)) {
-            foreach ($filters as $property => $value) {
-                $decodedFilters[] = ['value' => $value, 'property' => $property];
-            }
+        foreach ($filters as $property => $value) {
+            $decodedFilters[] = ['value' => $value, 'property' => $property];
         }
 
         return $decodedFilters;

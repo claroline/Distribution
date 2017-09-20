@@ -53,6 +53,6 @@ class FinderExtension extends \Twig_Extension
             $class,
             $queryOptions,
             $serializerOptions
-        )['results'];
+        )['data'];
     }
 }

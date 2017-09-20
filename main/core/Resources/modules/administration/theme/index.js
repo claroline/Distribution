@@ -1,10 +1,10 @@
+import merge  from 'lodash/merge'
+
+import {generateUrl} from '#/main/core/fos-js-router'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {routedApp} from '#/main/core/utilities/app/router'
 
-import {reducer as apiReducer} from '#/main/core/api/reducer'
-import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
-import {makeListReducer} from '#/main/core/layout/list/reducer'
-import {reducer as themesReducer} from '#/main/core/administration/theme/reducer'
+import {reducer} from '#/main/core/administration/theme/reducer'
 
 import {Themes} from '#/main/core/administration/theme/components/themes.jsx'
 import {Theme} from '#/main/core/administration/theme/components/theme.jsx'
@@ -21,13 +21,14 @@ bootstrap(
   ]),
 
   // app store configuration
-  {
-    // app reducers
-    themes: themesReducer,
+  reducer,
 
-    // generic reducers
-    currentRequests: apiReducer,
-    modal: modalReducer,
-    list: makeListReducer(false) // disable filters
+  // remap data-attributes set on the app DOM container
+  (initialData) => {
+    return {
+      themes: merge({}, initialData.themes, {
+        fetchUrl: generateUrl('claro_theme_list')
+      })
+    }
   }
 )

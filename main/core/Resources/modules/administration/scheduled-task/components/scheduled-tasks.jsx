@@ -2,6 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {t} from '#/main/core/translation'
+
 import {
   PageContainer as Page,
   PageHeader,
@@ -30,12 +32,46 @@ const ScheduledTasks = props =>
     </PageHeader>
 
     <PageContent>
+      <DataList
+        name="tasks"
+        definition={[
+          {
+            name: 'name',
+            label: t('name'),
+            displayed: true
+          }, {
+            name: 'type',
+            label: t('type'),
+            renderer: (rowData) => t(rowData.type),
+            displayed: true
+          }, {
+            name: 'scheduledDate',
+            type: 'date',
+            label: t('scheduled_date'),
+            displayed: true
+          }, {
+            name: 'meta.lastExecution',
+            type: 'date',
+            label: t('lastExecution'),
+            displayed: true
+          }
+        ]}
 
+        actions={[
+          {
+            icon: 'fa fa-fw fa-trash-o',
+            label: t('delete'),
+            action: (rows) => props.removeTasks(rows),
+            isDangerous: true
+          }
+        ]}
+      />
     </PageContent>
   </Page>
 
 ScheduledTasks.propTypes = {
-  isCronConfigured: T.bool.isRequired
+  isCronConfigured: T.bool.isRequired,
+  removeTasks: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -46,7 +82,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    removeTasks() {
 
+    }
   }
 }
 

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager\Theme;
 
+use Claroline\CoreBundle\API\Serializer\ThemeSerializer;
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -34,6 +35,8 @@ class ThemeManager
     private $authorization;
     /** @var PlatformConfigurationHandler */
     private $config;
+    /** @var ThemeSerializer */
+    private $serializer;
     /** @var string */
     private $themeDir;
     /** @var Theme */
@@ -46,25 +49,41 @@ class ThemeManager
      *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
      *     "authorization" = @DI\Inject("security.authorization_checker"),
      *     "config"        = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "kernelDir"     = @DI\Inject("%kernel.root_dir%")
+     *     "kernelDir"     = @DI\Inject("%kernel.root_dir%"),
+     *     "serializer"    = @DI\Inject("claroline.serializer.theme")
      * })
      *
      * @param ObjectManager                 $om
      * @param AuthorizationCheckerInterface $authorization
      * @param PlatformConfigurationHandler  $config
      * @param string                        $kernelDir
+     * @param ThemeSerializer               $serializer
      */
     public function __construct(
         ObjectManager $om,
         AuthorizationCheckerInterface $authorization,
         PlatformConfigurationHandler $config,
-        $kernelDir
+        $kernelDir,
+        ThemeSerializer $serializer
     ) {
         $this->om = $om;
         $this->repository = $this->om->getRepository('ClarolineCoreBundle:Theme\Theme');
         $this->authorization = $authorization;
         $this->config = $config;
         $this->themeDir = $kernelDir.'/../web/themes';
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * Serializes a ScheduledTask entity for the JSON api.
+     *
+     * @param Theme $theme - the task to serialize
+     *
+     * @return array - the serialized representation of the task
+     */
+    public function serialize(Theme $theme)
+    {
+        return $this->serializer->serialize($theme);
     }
 
     /**
@@ -76,8 +95,6 @@ class ThemeManager
      */
     public function create(array $data)
     {
-        // todo : create directory structure and files
-
         return $this->update(new Theme(), $data);
     }
 
@@ -98,9 +115,9 @@ class ThemeManager
             throw new InvalidDataException('Theme is not valid', $errors);
         }
 
-        $theme->setName($data['name']);
+        $this->serializer->deserialize($data, $theme);
 
-        // todo : update other themes props
+        // todo : create directory structure and files
         // todo : move files if name change
 
         $this->om->persist($theme);
@@ -121,10 +138,7 @@ class ThemeManager
         $errors = [];
 
         if (empty($data['name'])) {
-            $errors[] = [
-                'path' => '/name',
-                'message' => 'name can not be empty.',
-            ];
+            $errors[] = ['path' => '/name', 'message' => 'name can not be empty.'];
         }
 
         return $errors;
@@ -228,18 +242,6 @@ class ThemeManager
         }
 
         $this->om->flush();
-    }
-
-    /**
-     * Checks whether a theme is the current one.
-     *
-     * @param Theme $theme
-     *
-     * @return bool
-     */
-    public function isCurrentTheme(Theme $theme)
-    {
-        return $theme->getNormalizedName() === $this->config->getParameter('theme');
     }
 
     /**

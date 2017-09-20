@@ -25,8 +25,7 @@
     <div
         class="page-container scheduled-tasks-container"
         data-is-cron-configured="{{ isCronConfigured }}"
-        data-tasks="{{ tasks | json_serialize('api_user_min') | raw | escape }}"
-        data-count="{{ total }}"
+        data-tasks="{{ tasks | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

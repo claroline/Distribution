@@ -3,8 +3,6 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
-import {actions as paginationActions} from '#/main/core/layout/pagination/actions'
-import {select as paginationSelect} from '#/main/core/layout/pagination/selectors'
 import {
   VIEW_MANAGEMENT,
   VIEW_MAIL_FORM,
@@ -20,44 +18,9 @@ export const TASK_FORM_TYPE_UPDATE = 'TASK_FORM_TYPE_UPDATE'
 
 export const actions = {}
 
-actions.loadTasks = makeActionCreator(TASKS_LOAD, 'tasks', 'total')
-
-actions.fetchTasks = () => (dispatch, getState) => {
-  const state = getState()
-  const page = paginationSelect.current(state)
-  const pageSize = paginationSelect.pageSize(state)
-  const url = generateUrl('claro_admin_scheduled_tasks_search', {page: page, limit: pageSize}) + '?'
-
-  // build queryString
-  let queryString = ''
-
-  // add filters
-  const filters = listSelect.filters(state)
-  if (0 < filters.length) {
-    queryString += filters.map(filter => `filters[${filter.property}]=${filter.value}`).join('&')
-  }
-
-  // add sort by
-  const sortBy = listSelect.sortBy(state)
-  if (sortBy.property && 0 !== sortBy.direction) {
-    queryString += `${0 < queryString.length ? '&':''}sortBy=${-1 === sortBy.direction ? '-':''}${sortBy.property}`
-  }
-
-  dispatch({
-    [REQUEST_SEND]: {
-      url: url + queryString,
-      request: {
-        method: 'GET'
-      },
-      success: (data, dispatch) => {
-        dispatch(listActions.resetSelect())
-        dispatch(actions.loadTasks(JSON.parse(data.tasks), data.total))
-      }
-    }
-  })
-}
-
 actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
+
+/*actions.editTask = makeActionCreator(UPDATE_VIEW_MODE, 'mode')*/
 
 actions.displayManagementView = () => {
   return (dispatch) => {
@@ -148,7 +111,7 @@ actions.deleteTasks = (tasks) => ({
       method: 'DELETE'
     },
     success: (data, dispatch) => {
-      dispatch(paginationActions.changePage(0))
+      dispatch(listActions.changePage(0))
       dispatch(actions.fetchTasks())
     }
   }
