@@ -196,7 +196,7 @@ class ResourceOwnerFactory
 
         $paths = [
             'email' => $config->getPathsEmail(),
-            'nickname' => $config->getPathsLogin()
+            'nickname' => $config->getPathsLogin(),
         ];
 
         $owner = new GenericResourceOwner(

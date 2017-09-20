@@ -77,8 +77,7 @@ class OauthController extends Controller
                 $data[$service.'_client_domain'] = $clientTenandDomain === null ? '' : $clientTenandDomain;
             }
 
-            if ($service === 'generic')
-            {
+            if ($service === 'generic') {
                 $data[$service.'_authorization_url'] = $form['authorization_url']->getData();
                 $data[$service.'_access_token_url'] = $form['access_token_url']->getData();
                 $data[$service.'_infos_url'] = $form['infos_url']->getData();

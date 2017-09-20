@@ -179,8 +179,7 @@ class OauthManager
             $clientTenantDomain
         );
 
-        if ($service === 'generic')
-        {
+        if ($service === 'generic') {
             $config->setAuthorizationUrl($this->platformConfigHandler->getParameter($service.'_authorization_url'));
             $config->setAccessTokenUrl($this->platformConfigHandler->getParameter($service.'_access_token_url'));
             $config->setInfosUrl($this->platformConfigHandler->getParameter($service.'_infos_url'));
