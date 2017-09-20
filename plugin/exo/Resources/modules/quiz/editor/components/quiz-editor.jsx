@@ -199,7 +199,7 @@ class StepPicking extends Component
      {props.parameters.pickByTag &&
        <div>
          <div>
-           <select onChange={e => this.handleTagSelect(e.target.value)}>
+           <select className="form-control input-sm" onChange={e => this.handleTagSelect(e.target.value)}>
              {this.getTagList().map(tag => <option> {tag} </option>)}
            </select>
          </div>
@@ -216,12 +216,14 @@ class StepPicking extends Component
            >
              <select
                id="tag-amount"
+               className="form-control input-sm"
                onChange={e => this.handleTagAmount(e.target.value)}
              >
               {times(this.getStateQuestionCount(), i => <option>{i + 1}</option>)}
              </select>
              <button
                type="button"
+               className="btn btn-primary"
                onClick={() => props.onChange('parameters.randomTags.pick', ['add', [this.state.tag, this.state.amount]])}
              >
                {t('add')}
