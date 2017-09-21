@@ -69,7 +69,7 @@ class WorkspaceControllerTest extends TransactionalTestCase
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
 
-        $this->assertEquals(1, count($data['results']));
+        $this->assertEquals(1, count($data['data']));
     }
 
     private function createAdmin()

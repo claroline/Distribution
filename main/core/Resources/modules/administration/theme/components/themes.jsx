@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {NavLink, withRouter} from 'react-router-dom'
@@ -8,7 +8,6 @@ import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/main/core/administration/theme/actions'
-import {select} from '#/main/core/administration/theme/selectors'
 
 import {
   PageContainer as Page,
