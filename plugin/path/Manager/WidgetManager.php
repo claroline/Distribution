@@ -85,8 +85,8 @@ class WidgetManager
         Utilities $utils,
         ResourceManager $resourceManager,
         PathManager $pathManager,
-        UserProgressionManager $userProgressionManager)
-    {
+        UserProgressionManager $userProgressionManager
+    ) {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
         $this->utils = $utils;
