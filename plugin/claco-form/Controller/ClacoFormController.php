@@ -243,9 +243,11 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $template = $this->request->request->get('template', false);
-        $clacoFormTemplate = $this->clacoFormManager->saveClacoFormTemplate($clacoForm, $template);
+        $useTemplate = $this->request->request->get('useTemplate', false);
+        $useTemplate = $useTemplate && intval($useTemplate) === 1;
+        $clacoFormTemplate = $this->clacoFormManager->saveClacoFormTemplate($clacoForm, $template, $useTemplate);
 
-        return new JsonResponse(['template' => $clacoFormTemplate], 200);
+        return new JsonResponse(['template' => $clacoFormTemplate, 'useTemplate' => $clacoForm->getUseTemplate()], 200);
     }
 
     /**

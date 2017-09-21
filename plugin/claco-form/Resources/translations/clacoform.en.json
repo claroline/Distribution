@@ -156,6 +156,7 @@
     "template_missing_mandatory_variables_message": "Some mandatory fields are missing.",
     "template_success_message": "The template has been successfully edited.",
     "template_variables_message": "You can use the following variables. They will be replaced by the corresponding field.",
+    "use_template": "Use template",
     "validate": "Validate",
     "view_entry": "View entry",
     "votes": "Votes",

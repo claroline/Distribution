@@ -5,12 +5,14 @@ import {REQUEST_SEND} from '#/main/core/api/actions'
 import {actions as clacoFormActions} from '../actions'
 
 export const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
+export const RESOURCE_PARAMS_PROPERTY_UPDATE = 'RESOURCE_PARAMS_PROPERTY_UPDATE'
 export const PARAMETERS_INITIALIZE = 'PARAMETERS_INITIALIZE'
 export const PARAMETERS_UPDATE = 'PARAMETERS_UPDATE'
 
 export const actions = {}
 
 actions.updateResourceProperty = makeActionCreator(RESOURCE_PROPERTY_UPDATE, 'property', 'value')
+actions.updateResourceParamsProperty = makeActionCreator(RESOURCE_PARAMS_PROPERTY_UPDATE, 'property', 'value')
 actions.setParameters = makeActionCreator(PARAMETERS_INITIALIZE, 'params')
 actions.updateParameters = makeActionCreator(PARAMETERS_UPDATE, 'property', 'value')
 

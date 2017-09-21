@@ -571,4 +571,17 @@ class ClacoForm extends AbstractResource
         }
         $this->details['open_keywords'] = $openKeywords;
     }
+
+    public function getUseTemplate()
+    {
+        return !is_null($this->details) && isset($this->details['use_template']) ? $this->details['use_template'] : false;
+    }
+
+    public function setUseTemplate($useTemplate)
+    {
+        if (is_null($this->details)) {
+            $this->details = [];
+        }
+        $this->details['use_template'] = $useTemplate;
+    }
 }

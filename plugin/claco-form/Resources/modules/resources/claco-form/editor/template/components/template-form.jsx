@@ -3,23 +3,38 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {Message} from '../../../components/message.jsx'
 import {actions} from '../actions'
 import {actions as clacoFormActions} from '../../../actions'
+import {selectors} from '../../../selectors'
 import {formatText, getFieldType} from '../../../utils'
 
 class TemplateForm extends Component {
-  componentDidMount() {
-    this.props.initializeTemplate()
+  constructor(props) {
+    super(props)
+    this.state = {
+      template: props.template || '',
+      useTemplate: props.useTemplate !== undefined ? props.useTemplate : false
+    }
+  }
+
+  updateTemplate(value) {
+    const useTemplate = value ? this.state.useTemplate : false
+    this.setState({template: value, useTemplate: useTemplate})
+  }
+
+  updateUseTemplate(value) {
+    this.setState({useTemplate: value})
   }
 
   validateTemplate() {
     const requiredErrors = []
     const duplicatedErrors = []
 
-    if (this.props.template) {
+    if (this.state.template) {
       const titleRegex = new RegExp('%clacoform_entry_title%', 'g')
-      const titleMatches = this.props.template.match(titleRegex)
+      const titleMatches = this.state.template.match(titleRegex)
 
       if (titleMatches === null) {
         requiredErrors.push({name: 'clacoform_entry_title'})
@@ -29,7 +44,7 @@ class TemplateForm extends Component {
       this.props.fields.forEach(f => {
         if (!f.hidden) {
           const regex = new RegExp(`%${formatText(f.name)}%`, 'g')
-          const matches = this.props.template.match(regex)
+          const matches = this.state.template.match(regex)
 
           if (f.required && matches === null) {
             requiredErrors.push(f)
@@ -42,7 +57,7 @@ class TemplateForm extends Component {
     if (requiredErrors.length > 0 || duplicatedErrors.length > 0) {
       this.generateErrorMessage(requiredErrors, duplicatedErrors)
     } else {
-      this.props.saveTemplate()
+      this.props.saveTemplate(this.state.template, this.state.useTemplate)
     }
   }
 
@@ -111,28 +126,37 @@ class TemplateForm extends Component {
                   })}
                 </ul>
               </div>
-              <div>
-                <hr/>
-                <h4>{trans('optional', {}, 'clacoform')}</h4>
-                <ul>
-                  {this.props.fields.map(f => {
-                    if (!f.required && !f.hidden) {
-                      return (
-                        <li key={`optional-${f.id}`}>
-                          <b>%{formatText(f.name)}%</b> : {getFieldType(f.type).label}
-                        </li>
-                      )
-                    }
-                  })}
-                </ul>
-              </div>
+              {this.props.fields.filter(f => !f.required && !f.hidden).length > 0 &&
+                <div>
+                  <hr/>
+                  <h4>{trans('optional', {}, 'clacoform')}</h4>
+                  <ul>
+                    {this.props.fields.map(f => {
+                      if (!f.required && !f.hidden) {
+                        return (
+                          <li key={`optional-${f.id}`}>
+                            <b>%{formatText(f.name)}%</b> : {getFieldType(f.type).label}
+                          </li>
+                        )
+                      }
+                    })}
+                  </ul>
+                </div>
+              }
             </div>
             <Message/>
             <Textarea
               id="clacoform-template"
-              title=""
-              content={this.props.template}
-              onChange={value => this.props.updateTemplate(value)}
+              title="clacoform-template"
+              content={this.state.template}
+              onChange={value => this.updateTemplate(value)}
+            />
+            <CheckGroup
+              checkId="use-template"
+              disabled={!this.state.template}
+              checked={this.state.useTemplate}
+              label={trans('use_template', {}, 'clacoform')}
+              onChange={checked => this.updateUseTemplate(checked)}
             />
             <div className="template-buttons">
               <button className="btn btn-primary" onClick={() => this.validateTemplate()}>
@@ -161,8 +185,7 @@ TemplateForm.propTypes = {
     type: T.number.isRequired,
     required: T.bool.isRequired
   })),
-  initializeTemplate: T.func.isRequired,
-  updateTemplate: T.func.isRequired,
+  useTemplate: T.bool,
   saveTemplate: T.func.isRequired,
   updateMessage: T.func.isRequired
 }
@@ -170,16 +193,15 @@ TemplateForm.propTypes = {
 function mapStateToProps(state) {
   return {
     canEdit: state.canEdit,
-    template: state.template,
-    fields: state.fields
+    template: selectors.template(state),
+    fields: state.fields,
+    useTemplate: selectors.useTemplate(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    initializeTemplate: () => dispatch(actions.initializeTemplate()),
-    updateTemplate: (template) => dispatch(actions.updateTemplate(template)),
-    saveTemplate: () => dispatch(actions.saveTemplate()),
+    saveTemplate: (template, useTemplate) => dispatch(actions.saveTemplate(template, useTemplate)),
     updateMessage: (message, status) => dispatch(clacoFormActions.updateMessage(message, status))
   }
 }

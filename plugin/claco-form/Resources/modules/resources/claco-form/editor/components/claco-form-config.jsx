@@ -501,6 +501,10 @@ makePanel.propTypes = {
     id: T.number.isRequired,
     name: T.string.isRequired
   })),
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
   updateParameters: T.func.isRequired
 }
 
@@ -573,6 +577,7 @@ ClacoFormConfig.propTypes = {
     new_keywords_enabled: T.boolean,
     display_keywords: T.boolean,
     open_keywords: T.boolean,
+    use_template: T.boolean,
     activePanelKey: T.string
   }),
   categories: T.arrayOf(T.shape({

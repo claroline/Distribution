@@ -16,7 +16,6 @@ import {
 import {categoryReducers} from './editor/category/reducers'
 import {keywordReducers} from './editor/keyword/reducers'
 import {fieldReducers} from './editor/field/reducers'
-import {templateReducers} from './editor/template/reducers'
 import {ClacoFormResource} from './components/claco-form-resource.jsx'
 import {CategoryFormModal} from './editor/category/components/category-form-modal.jsx'
 import {KeywordFormModal} from './editor/keyword/components/keyword-form-modal.jsx'
@@ -44,7 +43,6 @@ bootstrap(
     categories: categoryReducers,
     keywords: keywordReducers,
     fields: fieldReducers,
-    template: templateReducers,
     cascadeLevelMax: mainReducers,
     message: messageReducers,
 
@@ -69,7 +67,6 @@ bootstrap(
       categories: resource.categories,
       keywords: resource.keywords,
       fields: initialData.fields,
-      template: resource.template || '',
       cascadeLevelMax: initialData.cascadeLevelMax
     }
   }

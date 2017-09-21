@@ -5,23 +5,13 @@ import {trans} from '#/main/core/translation'
 import {actions as clacoFormActions} from '../../actions'
 import {actions as editorActions} from '../actions'
 
-export const TEMPLATE_UPDATE = 'TEMPLATE_UPDATE'
-
 export const actions = {}
 
-actions.updateTemplate = makeActionCreator(TEMPLATE_UPDATE, 'template')
-
-actions.initializeTemplate = () => (dispatch, getState) => {
-  const template = getState().resource.template || ''
-  dispatch(actions.updateTemplate(template))
-}
-
-actions.saveTemplate = () => (dispatch, getState) => {
-  const state = getState()
-  const resourceId = state.resource.id
-  const template = state.template
+actions.saveTemplate = (template, useTemplate) => (dispatch, getState) => {
+  const resourceId = getState().resource.id
   const formData = new FormData()
   formData.append('template', template)
+  formData.append('useTemplate', useTemplate ? 1 : 0)
 
   dispatch({
     [REQUEST_SEND]: {
@@ -32,6 +22,7 @@ actions.saveTemplate = () => (dispatch, getState) => {
       },
       success: (data, dispatch) => {
         dispatch(editorActions.updateResourceProperty('template', data.template))
+        dispatch(editorActions.updateResourceParamsProperty('use_template', data.useTemplate))
         dispatch(clacoFormActions.updateMessage(trans('template_success_message', {}, 'clacoform'), 'success'))
       }
     }
