@@ -8,7 +8,7 @@ import {Message} from '../../../components/message.jsx'
 import {actions} from '../actions'
 import {actions as clacoFormActions} from '../../../actions'
 import {selectors} from '../../../selectors'
-import {formatText, getFieldType} from '../../../utils'
+import {generateFieldKey, getFieldType} from '../../../utils'
 
 class TemplateForm extends Component {
   constructor(props) {
@@ -43,7 +43,7 @@ class TemplateForm extends Component {
       }
       this.props.fields.forEach(f => {
         if (!f.hidden) {
-          const regex = new RegExp(`%${formatText(f.name)}%`, 'g')
+          const regex = new RegExp(generateFieldKey(f.id), 'g')
           const matches = this.state.template.match(regex)
 
           if (f.required && matches === null) {
@@ -71,7 +71,7 @@ class TemplateForm extends Component {
       `
       requiredErrors.forEach(e => {
         message += `
-          <li>%${formatText(e.name)}%</li>
+          <li>${generateFieldKey(e.id)}</li>
         `
       })
       message += '</ul>'
@@ -83,7 +83,7 @@ class TemplateForm extends Component {
       `
       duplicatedErrors.forEach(e => {
         message += `
-          <li>%${formatText(e.name)}%</li>
+          <li>${generateFieldKey(e.id)}</li>
         `
       })
       message += '</ul>'
@@ -119,7 +119,7 @@ class TemplateForm extends Component {
                     if (f.required && !f.hidden) {
                       return (
                         <li key={`required-${f.id}`}>
-                          <b>%{formatText(f.name)}%</b> : {getFieldType(f.type).label}
+                          <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
                         </li>
                       )
                     }
@@ -135,7 +135,7 @@ class TemplateForm extends Component {
                       if (!f.required && !f.hidden) {
                         return (
                           <li key={`optional-${f.id}`}>
-                            <b>%{formatText(f.name)}%</b> : {getFieldType(f.type).label}
+                            <b>{generateFieldKey(f.id)}</b> : {getFieldType(f.type).label}
                           </li>
                         )
                       }

@@ -1539,7 +1539,7 @@ class ClacoFormManager
                 } else {
                     $value = '';
                 }
-                $name = $this->removeAccent($this->removeQuote($field->getName()));
+                $name = 'field_'.$field->getId();
                 $template = str_replace("%$name%", $value, $template);
             }
         }

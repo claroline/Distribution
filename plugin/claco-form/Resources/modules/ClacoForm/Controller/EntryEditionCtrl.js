@@ -111,7 +111,7 @@ export default class EntryEditionCtrl {
               >
               </form-field>
             `
-            this.template = this.template.replace(`%${this.ClacoFormService.removeAccent(name)}%`, replacedField)
+            this.template = this.template.replace(`%field_${id}%`, replacedField)
           }
         }
       })
