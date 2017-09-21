@@ -31,7 +31,7 @@ class ThemeManager
     private $om;
     /** @var ThemeRepository */
     private $repository;
-    /** @var AuthorizationCheckerInterface  */
+    /** @var AuthorizationCheckerInterface */
     private $authorization;
     /** @var PlatformConfigurationHandler */
     private $config;
@@ -186,7 +186,7 @@ class ThemeManager
 
     /**
      * @param Theme $theme
-     * @param User $user
+     * @param User  $user
      *
      * @return bool
      */

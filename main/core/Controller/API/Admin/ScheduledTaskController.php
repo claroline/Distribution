@@ -118,7 +118,6 @@ class ScheduledTaskController
      * @EXT\Route("", name="claro_scheduled_tasks_delete")
      * @EXT\Method("DELETE")
      *
-     *
      * @return JsonResponse
      */
     public function deleteBulkAction()

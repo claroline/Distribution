@@ -42,8 +42,8 @@ class ThemeController
      *     "manager"    = @DI\Inject("claroline.manager.theme_manager")
      * })
      *
-     * @param FinderProvider     $finder
-     * @param ThemeManager       $manager
+     * @param FinderProvider $finder
+     * @param ThemeManager   $manager
      */
     public function __construct(
         FinderProvider $finder,

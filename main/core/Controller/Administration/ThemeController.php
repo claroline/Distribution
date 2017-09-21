@@ -65,7 +65,7 @@ class ThemeController
             'themes' => $this->finder->search(
                 'Claroline\CoreBundle\Entity\Theme\Theme', [
                     'limit' => 20,
-                    'sortBy' => 'name'
+                    'sortBy' => 'name',
                 ]
             ),
         ];

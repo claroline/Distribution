@@ -56,7 +56,7 @@ class ScheduledTaskController extends Controller
             'tasks' => $this->finder->search(
                 'Claroline\CoreBundle\Entity\Task\ScheduledTask', [
                     'limit' => 20,
-                    'sortBy' => 'name'
+                    'sortBy' => 'name',
                 ]
             ),
         ];
