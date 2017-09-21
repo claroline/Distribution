@@ -26,6 +26,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -41,6 +42,10 @@ class TagController extends Controller
     private $router;
     private $tagManager;
     private $tokenStorage;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * @DI\InjectParams({
@@ -56,13 +61,15 @@ class TagController extends Controller
         RequestStack $requestStack,
         RouterInterface $router,
         TagManager $tagManager,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->formFactory = $formFactory;
         $this->request = $requestStack->getCurrentRequest();
         $this->router = $router;
         $this->tagManager = $tagManager;
         $this->tokenStorage = $tokenStorage;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -476,5 +483,29 @@ class TagController extends Controller
         $this->tagManager->removeTaggedObjectsByResourceAndTag($resourceNode, $tag);
 
         return new JsonResponse('success', 200);
+    }
+
+    /**
+     * Searches list of tags.
+     *
+     * @EXT\Route("/item/tags", name="item_tags_search")
+     * @EXT\Method("GET")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function itemTagsSearchAction(Request $request)
+    {
+        $tags = [];
+        $query = $request->query->all();
+        $search = $query['search'] ? $query['search'] : '';
+        if ($search) {
+            $event = new GenericDataEvent(['search' => $search]);
+            $this->eventDispatcher->dispatch('claroline_retrieve_tags', $event);
+            $tags = $event->getResponse();
+        }
+
+        return new JsonResponse($tags, 200);
     }
 }
