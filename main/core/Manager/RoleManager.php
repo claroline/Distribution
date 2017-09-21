@@ -1081,55 +1081,77 @@ class RoleManager
 
     public function checkIntegrity()
     {
+        // Define load batch size, and flush size
+        $batchSize = 1000;
+        $flushSize = 250;
+        // Check workspaces roles
         $this->log('Checking workspace roles integrity... This may take a while.');
         $totalWs = $this->workspaceRepo->countWorkspaces();
         $this->log("Checking {$totalWs} workspaces role integrity!");
-        $batchSize = 300;
         $i = 0;
         $this->om->startFlushSuite();
         for ($batch = 0; $batch < ceil($totalWs / $batchSize); ++$batch) {
             $workspaces = $this->workspaceRepo->findAllPaginated($batch * $batchSize, $batchSize);
-            $this->log("Fetched {$batchSize} workspaces for checking");
+            $nb = count($workspaces);
+            $this->log("Fetched {$nb} workspaces for checking");
             $j = 1;
             foreach ($workspaces as $workspace) {
                 ++$i;
-
                 $operationExecuted = $this->checkWorkspaceIntegrity($workspace, $i, $totalWs);
 
                 if ($operationExecuted) {
                     ++$j;
                 }
+
+                if ($j % $flushSize === 0) {
+                    $this->log('Flushing, this may be very long for large databases');
+                    $this->om->forceFlush();
+                    $j = 1;
+                }
             }
             if ($j > 1) {
                 $this->log('Flushing, this may be very long for large databases');
                 $this->om->forceFlush();
-                $this->om->clear();
             }
+            $this->om->clear();
         }
 
+        // Check users' roles
         $this->log('Checking user role integrity.');
-        $users = $this->container->get('claroline.manager.user_manager')->getAllEnabledUsers();
-        $this->om->startFlushSuite();
-        $j = 0;
-        $totalUsers = count($users);
+        $userManager = $this->container->get('claroline.manager.user_manager');
+        $totalUsers = $userManager->getCountAllEnabledUsers();
         $i = 1;
+        $this->om->startFlushSuite();
+        for ($batch = 0; $batch < ceil($totalUsers / $batchSize); ++$batch) {
+            $users = $userManager
+                ->getAllEnabledUsers(false)
+                ->setMaxResults($batchSize)
+                ->setFirstResult($batch * $batchSize)
+                ->getResult();
+            $nb = count($users);
+            $this->log("Fetched {$nb} users for checking");
+            $j = 1;
 
-        foreach ($users as $user) {
-            ++$j;
-            $operationExecuted = $this->checkUserIntegrity($user, $j, $totalUsers);
-            if ($operationExecuted) {
+            foreach ($users as $user) {
                 ++$i;
+                $operationExecuted = $this->checkUserIntegrity($user, $j, $totalUsers);
+
+                if ($operationExecuted) {
+                    ++$j;
+                }
+
+                if ($j % $flushSize === 0) {
+                    $this->log('Flushing, this may be very long for large databases');
+                    $this->om->forceFlush();
+                    $j = 1;
+                }
             }
 
-            if ($i % 300 === 0) {
+            if ($j > 1) {
                 $this->log('Flushing, this may be very long for large databases');
-                $this->om->forceFlush();
+                $this->om->endFlushSuite();
             }
-        }
-
-        if ($i > 1) {
-            $this->log('Flushing, this may be very long for large databases');
-            $this->om->endFlushSuite();
+            $this->om->clear();
         }
     }
 
