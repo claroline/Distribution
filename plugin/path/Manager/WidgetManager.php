@@ -124,6 +124,7 @@ class WidgetManager
     {
         $workspace = $widgetInstance->getWorkspace();
         $roots = [];
+
         if (!empty($workspace)) {
             $root = $this->resourceManager->getWorkspaceRoot($workspace);
             $roots[] = $root->getPath();

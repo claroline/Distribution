@@ -49,7 +49,7 @@ class PathRepository extends EntityRepository
                 }
 
                 if (!empty($whereStatus)) {
-                    $builder->addWhereClause(implode($whereStatus, ' OR '));
+                    $builder->addWhereClause('('.implode($whereStatus, ' OR ').')');
                 }
             }
 
