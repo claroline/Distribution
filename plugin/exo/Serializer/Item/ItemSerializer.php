@@ -637,7 +637,7 @@ class ItemSerializer extends AbstractSerializer
      */
     private function deserializeTags(Item $question, array $tags = [], array $options = [])
     {
-        if ($this->hasOption(Transfer::PERSIST_TAG)) {
+        if ($this->hasOption(Transfer::PERSIST_TAG, $options)) {
             $data = [
               'tags' => $tags,
               'data' => [
