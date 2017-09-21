@@ -1082,89 +1082,29 @@ class RoleManager
     public function checkIntegrity()
     {
         $this->log('Checking workspace roles integrity... This may take a while.');
-        $workspaces = $this->workspaceRepo->findAll();
-        $totalWs = count($workspaces);
-        $this->log("All workspaces fetched {$totalWs}!");
+        $totalWs = $this->workspaceRepo->countWorkspaces();
+        $this->log("Checking {$totalWs} workspaces role integrity!");
+        $batchSize = 300;
         $i = 0;
-        $j = 1;
         $this->om->startFlushSuite();
+        for ($batch = 0; $batch < ceil($totalWs / $batchSize); ++$batch) {
+            $workspaces = $this->workspaceRepo->findAllPaginated($batch * $batchSize, $batchSize);
+            $this->log("Fetched {$batchSize} workspaces for checking");
+            $j = 1;
+            foreach ($workspaces as $workspace) {
+                ++$i;
 
-        foreach ($workspaces as $workspace) {
-            ++$i;
-            $this->log('Checking roles integrity for workspace '.$workspace->getCode()." ($i/$totalWs)");
-            $collaborator = $this->getCollaboratorRole($workspace);
-            $manager = $this->getManagerRole($workspace);
-            $operationExecuted = false;
+                $operationExecuted = $this->checkWorkspaceIntegrity($workspace, $i, $totalWs);
 
-            if (!$collaborator) {
-                $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
-                $this->createWorkspaceRole(
-                    'ROLE_WS_COLLABORATOR_'.$workspace->getGuid(),
-                    'collaborator',
-                    $workspace,
-                    true
-                );
-                $operationExecuted = true;
-            } else {
-                try {
-                    $root = $this->container->get('claroline.manager.resource_manager')->getWorkspaceRoot($workspace);
-
-                    if ($root) {
-                        $roles = $workspace->getRoles();
-
-                        foreach ($roles as $role) {
-                            $hasRole = false;
-                            foreach ($root->getRights() as $perm) {
-                                if ($perm->getRole() === $role || $role->getTranslationKey() === 'manager') {
-                                    $hasRole = true;
-                                }
-                            }
-
-                            if (!$hasRole) {
-                                $operationExecuted = true;
-                                $this->log('Restoring '.$role->getTranslationKey().' role for root resource of '.$workspace->getCode(), LogLevel::ERROR);
-                                $this->container->get('claroline.manager.rights_manager')
-                                  ->create(
-                                    ['open' => true, 'export' => true],
-                                    $role,
-                                    $root,
-                                    true
-                                  );
-                            }
-                        }
-                    } else {
-                        $this->log('No directory root for '.$workspace->getCode());
-                    }
-                } catch (NonUniqueResultException $e) {
-                    $this->log('Multiple roots for '.$workspace->getCode(), LogLevel::ERROR);
+                if ($operationExecuted) {
+                    ++$j;
                 }
             }
-
-            if (!$manager) {
-                $this->log('Adding manager role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
-                $this->createWorkspaceRole(
-                    'ROLE_WS_MANAGER_'.$workspace->getGuid(),
-                    'manager',
-                    $workspace,
-                    true
-                );
-                $operationExecuted = true;
-            }
-
-            if ($operationExecuted) {
-                ++$j;
-            }
-
-            if ($j % 300 === 0) {
+            if ($j > 1) {
                 $this->log('Flushing, this may be very long for large databases');
                 $this->om->forceFlush();
+                $this->om->clear();
             }
-        }
-
-        //if we changed something, flush
-        if ($j > 1) {
-            $this->log('Flushing, this may be very long for large databases');
-            $this->om->endFlushSuite();
         }
 
         $this->log('Checking user role integrity.');
@@ -1176,19 +1116,14 @@ class RoleManager
 
         foreach ($users as $user) {
             ++$j;
-            $this->log('Checking personal role for '.$user->getUsername()." ($j/$totalUsers)");
-            $roleName = 'ROLE_USER_'.strtoupper($user->getUsername());
-            $role = $this->roleRepo->findOneByName($roleName);
-
-            if (!$role) {
-                $this->log('Adding user role for '.$user->getUsername(), LogLevel::DEBUG);
-                $this->createUserRole($user);
+            $operationExecuted = $this->checkUserIntegrity($user, $j, $totalUsers);
+            if ($operationExecuted) {
                 ++$i;
+            }
 
-                if ($i % 300 === 0) {
-                    $this->log('Flushing, this may be very long for large databases');
-                    $this->om->forceFlush();
-                }
+            if ($i % 300 === 0) {
+                $this->log('Flushing, this may be very long for large databases');
+                $this->om->forceFlush();
             }
         }
 
@@ -1196,6 +1131,59 @@ class RoleManager
             $this->log('Flushing, this may be very long for large databases');
             $this->om->endFlushSuite();
         }
+    }
+
+    public function checkUserIntegrity(User $user, $i = 1, $totalUsers = 1)
+    {
+        $this->log('Checking personal role for '.$user->getUsername()." ($i/$totalUsers)");
+        $roleName = 'ROLE_USER_'.strtoupper($user->getUsername());
+        $role = $this->roleRepo->findOneByName($roleName);
+
+        if (!$role) {
+            $this->log('Adding user role for '.$user->getUsername(), LogLevel::DEBUG);
+            $this->createUserRole($user);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function checkWorkspaceIntegrity(Workspace $workspace, $i = 1, $totalWs = 1)
+    {
+        $this->log('Checking roles integrity for workspace '.$workspace->getCode()." ($i/$totalWs)");
+        $collaborator = $this->getCollaboratorRole($workspace);
+        $manager = $this->getManagerRole($workspace);
+        $operationExecuted = false;
+
+        if (!$collaborator) {
+            // Create collaborator role
+            $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
+            $role = $this->createWorkspaceRole(
+                'ROLE_WS_COLLABORATOR_'.$workspace->getGuid(),
+                'collaborator',
+                $workspace,
+                true
+            );
+            // And restore role for root resource
+            $this->restoreRolesForRootResource($workspace, [$role]);
+            $operationExecuted = true;
+        } else {
+            $operationExecuted = $this->restoreRolesForRootResource($workspace);
+        }
+
+        if (!$manager) {
+            $this->log('Adding manager role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
+            $this->createWorkspaceRole(
+                'ROLE_WS_MANAGER_'.$workspace->getGuid(),
+                'manager',
+                $workspace,
+                true
+            );
+            $operationExecuted = true;
+        }
+
+        return $operationExecuted;
     }
 
     public function getUserRole($username)
@@ -1224,5 +1212,46 @@ class RoleManager
 
         $this->om->persist($role);
         $this->om->flush();
+    }
+
+    private function restoreRolesForRootResource(Workspace $workspace, array $roles = [])
+    {
+        $operationExecuted = false;
+        try {
+            $root = $this->container->get('claroline.manager.resource_manager')->getWorkspaceRoot($workspace);
+
+            if ($root) {
+                if (empty($roles)) {
+                    $roles = $workspace->getRoles();
+                }
+
+                foreach ($roles as $role) {
+                    $hasRole = false;
+                    foreach ($root->getRights() as $perm) {
+                        if ($perm->getRole() === $role || $role->getTranslationKey() === 'manager') {
+                            $hasRole = true;
+                        }
+                    }
+
+                    if (!$hasRole) {
+                        $operationExecuted = true;
+                        $this->log('Restoring '.$role->getTranslationKey().' role for root resource of '.$workspace->getCode(), LogLevel::ERROR);
+                        $this->container->get('claroline.manager.rights_manager')
+                            ->create(
+                                ['open' => true, 'export' => true],
+                                $role,
+                                $root,
+                                true
+                            );
+                    }
+                }
+            } else {
+                $this->log('No directory root for '.$workspace->getCode());
+            }
+        } catch (NonUniqueResultException $e) {
+            $this->log('Multiple roots for '.$workspace->getCode(), LogLevel::ERROR);
+        }
+
+        return $operationExecuted;
     }
 }
