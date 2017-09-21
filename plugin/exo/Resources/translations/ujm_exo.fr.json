@@ -685,5 +685,9 @@
     "duplicate_item": "Dupliquer un item",
     "amount": "Quantité",
     "json_export": "Export json",
-    "csv_export": "Export csv"
+    "csv_export": "Export csv",
+    "pick-tag": "Tag",
+    "tag-amount": "Quantité",
+    "add": "Ajouter",
+    "number_question_page": "Nombre de question par page"
 }

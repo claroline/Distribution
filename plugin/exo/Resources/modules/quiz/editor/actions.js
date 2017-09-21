@@ -44,7 +44,6 @@ export const OBJECT_ADD = 'OBJECT_ADD'
 export const OBJECT_CHANGE = 'OBJECT_CHANGE'
 export const OBJECT_REMOVE = 'OBJECT_REMOVE'
 export const OBJECT_MOVE = 'OBJECT_MOVE'
-export const ITEM_UPDATE_TAGS = 'ITEM_UPDATE_TAGS'
 
 // the following action types lead to quiz data changes that need to be
 // properly saved (please maintain this list up-to-date)
@@ -74,8 +73,7 @@ export const quizChangeActions = [
   OBJECT_ADD,
   OBJECT_CHANGE,
   OBJECT_REMOVE,
-  OBJECT_MOVE,
-  ITEM_UPDATE_TAGS
+  OBJECT_MOVE
 ]
 
 export const actions = {}
@@ -281,5 +279,3 @@ actions.saveItemObjectFile = (itemId, objectId, file) => {
     })
   }
 }
-
-actions.updateItemTags = makeActionCreator(ITEM_UPDATE_TAGS, 'id', 'tags')

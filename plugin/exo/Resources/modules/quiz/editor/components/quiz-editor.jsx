@@ -198,14 +198,23 @@ class StepPicking extends Component
 
      {props.parameters.pickByTag &&
        <div>
-         <div>
-           <select className="form-control input-sm" onChange={e => this.handleTagSelect(e.target.value)}>
+        <div>
+           <select className="form-control" onChange={e => this.handleTagSelect(e.target.value)}>
              {this.getTagList().map(tag => <option> {tag} </option>)}
            </select>
-         </div>
-         <div>
            {props.parameters.randomTags.pick.map(el => {
-             return (<div> picked {el[0]} {el[1]} <i onClick={() => props.onChange('parameters.randomTags.pick', ['remove', [el[0], el[1]]])} className="fa fa-trash pointer"/></div>)
+             return (
+               <div className="item-tag label label-default">
+                 <span className="tag-title">
+                   {el[1]} {el[0]}
+                 </span>
+                 <span
+                   className="tag-remove-btn fa fa-fw fa-times pointer-hand"
+                   onClick={() => props.onChange('parameters.randomTags.pick', ['remove', [el[0], el[1]]])}
+                 >
+                 </span>
+               </div>
+             )
            })}
            <FormGroup
              controlId="tag-amount"
@@ -221,14 +230,14 @@ class StepPicking extends Component
              >
               {times(this.getStateQuestionCount(), i => <option>{i + 1}</option>)}
              </select>
-             <button
-               type="button"
-               className="btn btn-primary"
-               onClick={() => props.onChange('parameters.randomTags.pick', ['add', [this.state.tag, this.state.amount]])}
-             >
-               {t('add')}
-             </button>
           </FormGroup>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => props.onChange('parameters.randomTags.pick', ['add', [this.state.tag, this.state.amount]])}
+          >
+            {t('add')}
+          </button>
          </div>
          <FormGroup
            controlId="quiz-pageSize"

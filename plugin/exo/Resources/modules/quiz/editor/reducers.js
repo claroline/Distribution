@@ -55,9 +55,12 @@ import {
   OBJECT_ADD,
   OBJECT_CHANGE,
   OBJECT_REMOVE,
-  OBJECT_MOVE,
-  ITEM_UPDATE_TAGS
+  OBJECT_MOVE
 } from './actions'
+
+import {
+  ITEM_UPDATE_TAGS
+} from '#/plugin/tag/actions.js'
 
 function initialQuizState() {
   return {

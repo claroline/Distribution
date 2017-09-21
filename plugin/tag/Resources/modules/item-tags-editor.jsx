@@ -5,7 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {actions} from './../actions.js'
+import {actions} from './actions.js'
 
 const ItemTagsList = props => {
   return (
