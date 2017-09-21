@@ -72,6 +72,30 @@ class ThemeController
     }
 
     /**
+     * Creates a new theme.
+     *
+     * @EXT\Route("", name="claro_theme_create")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function createAction(Request $request)
+    {
+        try {
+            $theme = $this->manager->create(json_decode($request->getContent(), true));
+
+            return new JsonResponse(
+                $this->manager->serialize($theme),
+                201
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
      * Updates an existing theme.
      *
      * @EXT\Route("/{uuid}", name="claro_theme_update")

@@ -27,7 +27,7 @@ const DataGridItem = props =>
 
       {props.data.flags &&
         <div className="item-flags">
-          {props.data.flags.map((flag, flagIndex) =>
+          {props.data.flags.map((flag, flagIndex) => flag &&
             <TooltipElement
               key={flagIndex}
               id={`item-${props.index}-flag-${flagIndex}`}

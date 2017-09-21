@@ -60,11 +60,9 @@ const ThemesPage = props =>
           subtitle: row.meta.plugin || (row.meta.creator ? row.meta.creator.name : t('unknown')),
           contentText: row.meta.description,
           flags: [
-            ['fa fa-user',         t('personal_workspace')],
-            ['fa fa-object-group', t('model')],
-            ['fa fa-eye',          t('displayable_in_workspace_list')],
-            ['fa fa-globe',        t('public_registration')]
-          ]
+            row.current      && ['fa fa-check', t('theme_current')],
+            row.meta.enabled && ['fa fa-eye',   t('theme_enabled')]
+          ].filter(flag => !!flag)
         })}
       />
     </PageContent>

@@ -157,11 +157,11 @@ const WorkspacesPage = props =>
           subtitle: row.code,
           contentText: row.meta.description,
           flags: [
-            ['fa fa-user',         t('personal_workspace')],
-            ['fa fa-object-group', t('model')],
-            ['fa fa-eye',          t('displayable_in_workspace_list')],
-            ['fa fa-globe',        t('public_registration')]
-          ],
+            row.meta.personal                 && ['fa fa-user',         t('personal_workspace')],
+            row.meta.model                    && ['fa fa-object-group', t('model')],
+            row.display.displayable           && ['fa fa-eye',          t('displayable_in_workspace_list')],
+            row.registration.selfRegistration && ['fa fa-globe',        t('public_registration')]
+          ].filter(flag => !!flag),
           footer:
             <span>
               created by <b>{row.meta.creator ? row.meta.creator.name : t('unknown')}</b>
