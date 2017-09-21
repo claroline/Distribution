@@ -319,8 +319,11 @@ class ExerciseManager
                 $item = $stepQ->getQuestion();
                 $items[$item->getUuid()] = $item;
                 $itemType = $item->getInteraction();
-                $definition = $this->definitions->get($item->getMimeType());
-                $titles[$item->getUuid()] = $definition->getCsvTitles($itemType);
+
+                if ($this->definitions->has($item->getMimeType())) {
+                    $definition = $this->definitions->get($item->getMimeType());
+                    $titles[$item->getUuid()] = $definition->getCsvTitles($itemType);
+                }
             }
         }
 
@@ -343,8 +346,11 @@ class ExerciseManager
 
             foreach ($answers as $answer) {
                 $item = $items[$answer->getQuestionId()];
-                $definition = $this->definitions->get($item->getMimeType());
-                $csv[$answer->getQuestionId()] = $definition->getCsvAnswers($item->getInteraction(), $answer);
+
+                if ($this->definitions->has($item->getMimeType())) {
+                    $definition = $this->definitions->get($item->getMimeType());
+                    $csv[$answer->getQuestionId()] = $definition->getCsvAnswers($item->getInteraction(), $answer);
+                }
             }
 
             $dataPapers[] = $csv;
@@ -364,8 +370,10 @@ class ExerciseManager
         foreach ($dataPapers as $paper) {
             $flattenedAnswers = [];
             foreach ($paper as $paperItem) {
-                foreach ($paperItem as $paperEl) {
-                    $flattenedAnswers[] = $paperEl;
+                if ($paperItem) {
+                    foreach ($paperItem as $paperEl) {
+                        $flattenedAnswers[] = $paperEl;
+                    }
                 }
             }
             $flattenedData[] = $flattenedAnswers;
