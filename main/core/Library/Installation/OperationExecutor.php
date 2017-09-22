@@ -369,8 +369,8 @@ class OperationExecutor
         if ($bundleFqcn === 'Claroline\CoreBundle\ClarolineCoreBundle' && !$checkCoreBundle) {
            return true;
         }
-                // Is Inwicast bundle? If so verify with previous Namespace
-        $bundle = $bundleFqcn === 'Icap\InwicastBundle\IcapInwicastBundle' ?
+
+        return $bundleFqcn === 'Icap\InwicastBundle\IcapInwicastBundle' ?
             $this->verifyInwicastBundleInstallation() :
             $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundleFqcn);
     }
