@@ -1149,7 +1149,7 @@ class RoleManager
 
             if ($j > 1) {
                 $this->log('Flushing, this may be very long for large databases');
-                $this->om->endFlushSuite();
+                $this->om->forceFlush();
             }
             $this->om->clear();
         }
