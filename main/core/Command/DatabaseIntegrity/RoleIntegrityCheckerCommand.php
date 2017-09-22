@@ -24,7 +24,9 @@ class RoleIntegrityCheckerCommand extends ContainerAwareCommand
         $this->setName('claroline:roles:check')
             ->setDescription('Checks the role integrity of the platform.')
             ->addOption('user', 'u', InputOption::VALUE_OPTIONAL, 'User login or email. Restore roles only for this user.')
-            ->addOption('workspace', 'w', InputOption::VALUE_OPTIONAL, 'Workspace code. Restore roles only for this workspace.');
+            ->addOption('user_index', 'i', InputOption::VALUE_OPTIONAL, 'Restore roles for users after given index.', 0)
+            ->addOption('workspace', 'w', InputOption::VALUE_OPTIONAL, 'Workspace code. Restore roles only for this workspace.')
+            ->addOption('workspace_index', 'j', InputOption::VALUE_OPTIONAL, 'Restore roles for workspaces after given index.', 0);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -61,6 +63,8 @@ class RoleIntegrityCheckerCommand extends ContainerAwareCommand
 
             return;
         }
-        $roleManager->checkIntegrity();
+        $userIdx = $input->getOption('user_index');
+        $workspaceIdx = $input->getOption('workspace_index');
+        $roleManager->checkIntegrity($workspaceIdx, $userIdx);
     }
 }

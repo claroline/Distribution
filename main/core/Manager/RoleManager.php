@@ -1079,7 +1079,7 @@ class RoleManager
         $this->logger = $logger;
     }
 
-    public function checkIntegrity()
+    public function checkIntegrity($workspaceIdx = 0, $userIdx = 0)
     {
         // Define load batch size, and flush size
         $batchSize = 1000;
@@ -1088,10 +1088,10 @@ class RoleManager
         $this->log('Checking workspace roles integrity... This may take a while.');
         $totalWs = $this->workspaceRepo->countWorkspaces();
         $this->log("Checking {$totalWs} workspaces role integrity!");
-        $i = 0;
+        $i = $workspaceIdx;
         $this->om->startFlushSuite();
-        for ($batch = 0; $batch < ceil($totalWs / $batchSize); ++$batch) {
-            $workspaces = $this->workspaceRepo->findAllPaginated($batch * $batchSize, $batchSize);
+        for ($batch = 0; $batch < ceil(($totalWs - $workspaceIdx) / $batchSize); ++$batch) {
+            $workspaces = $this->workspaceRepo->findAllPaginated($batch * $batchSize + $workspaceIdx, $batchSize);
             $nb = count($workspaces);
             $this->log("Fetched {$nb} workspaces for checking");
             $j = 1;
@@ -1120,13 +1120,13 @@ class RoleManager
         $this->log('Checking user role integrity.');
         $userManager = $this->container->get('claroline.manager.user_manager');
         $totalUsers = $userManager->getCountAllEnabledUsers();
-        $i = 1;
+        $i = $userIdx;
         $this->om->startFlushSuite();
-        for ($batch = 0; $batch < ceil($totalUsers / $batchSize); ++$batch) {
+        for ($batch = 0; $batch < ceil(($totalUsers - $userIdx) / $batchSize); ++$batch) {
             $users = $userManager
                 ->getAllEnabledUsers(false)
                 ->setMaxResults($batchSize)
-                ->setFirstResult($batch * $batchSize)
+                ->setFirstResult($batch * $batchSize + $userIdx)
                 ->getResult();
             $nb = count($users);
             $this->log("Fetched {$nb} users for checking");
@@ -1134,7 +1134,7 @@ class RoleManager
 
             foreach ($users as $user) {
                 ++$i;
-                $operationExecuted = $this->checkUserIntegrity($user, $j, $totalUsers);
+                $operationExecuted = $this->checkUserIntegrity($user, $i, $totalUsers);
 
                 if ($operationExecuted) {
                     ++$j;
