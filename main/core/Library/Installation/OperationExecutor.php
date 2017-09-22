@@ -366,18 +366,13 @@ class OperationExecutor
         //and not simply set to false in bundles.ini in previous versions.
         $foundBundle = false;
 
-        if (!$checkCoreBundle || $this->findPreviousPackage('Claroline\CoreBundle\ClarolineCoreBundle')) {
-            //do the bundle already exists ?
-            $foundBundle = $bundleFqcn === 'Claroline\CoreBundle\ClarolineCoreBundle' ?
-                true :
-                // Is Inwicast bundle? If so verify with previous Namespace
-                $bundleFqcn === 'Icap\InwicastBundle\IcapInwicastBundle' ?
-                    $this->verifyInwicastBundleInstallation() :
-                    $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundleFqcn)
-            ;
+        if ($bundleFqcn === 'Claroline\CoreBundle\ClarolineCoreBundle' && !$checkCoreBundle) {
+           return true;
         }
-
-        return $foundBundle;
+                // Is Inwicast bundle? If so verify with previous Namespace
+        $bundle = $bundleFqcn === 'Icap\InwicastBundle\IcapInwicastBundle' ?
+            $this->verifyInwicastBundleInstallation() :
+            $this->om->getRepository('ClarolineCoreBundle:Plugin')->findOneByBundleFQCN($bundleFqcn);
     }
 
     private function verifyInwicastBundleInstallation()
