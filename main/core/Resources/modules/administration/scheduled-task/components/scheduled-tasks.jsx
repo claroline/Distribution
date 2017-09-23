@@ -1,8 +1,10 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import {NavLink} from 'react-router-dom'
 
-import {t} from '#/main/core/translation'
+import {t, trans, transChoice} from '#/main/core/translation'
+import {localeDate} from '#/main/core/layout/data/types/date/utils'
 
 import {
   PageContainer as Page,
@@ -10,14 +12,35 @@ import {
   PageContent,
   PageActions,
   PageAction
-} from '#/main/core/layout/page/index'
+} from '#/main/core/layout/page'
+import {MODAL_DELETE_CONFIRM, MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
+import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-import {select} from '../selectors'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions} from '#/main/core/administration/scheduled-task/actions'
+import {select} from '#/main/core/administration/scheduled-task/selectors'
+import {constants} from '#/main/core/administration/scheduled-task/constants'
 
-const ScheduledTasks = props =>
+/*showTaskDetails(task) {
+  const type = task.type === 'mail' ? 'MESSAGE' : task.type.toUpperCase()
+
+  this.setState({
+    modal: {
+      type: `MODAL_DETAILS_TASK_${type}`,
+      urlModal: null,
+      props: {
+        title: task.name ? task.name : t(task.type),
+        task: task
+      },
+      fading: false
+    }
+  })
+}*/
+
+const ScheduledTasksPage = props =>
   <Page id="scheduled-task-management">
     <PageHeader
-      title={t('tasks_scheduling')}
+      title={trans('tasks_scheduling', {}, 'tools')}
     >
       <PageActions>
         <PageAction
@@ -26,7 +49,7 @@ const ScheduledTasks = props =>
           icon="fa fa-plus"
           primary={true}
           disabled={!props.isCronConfigured}
-          action={() => true}
+          action={props.createTask}
         />
       </PageActions>
     </PageHeader>
@@ -38,7 +61,8 @@ const ScheduledTasks = props =>
           {
             name: 'name',
             label: t('name'),
-            displayed: true
+            displayed: true,
+            renderer: (rowData) => <NavLink to={`/${rowData.id}`}>{rowData.name}</NavLink>
           }, {
             name: 'type',
             label: t('type'),
@@ -59,18 +83,35 @@ const ScheduledTasks = props =>
 
         actions={[
           {
+            icon: 'fa fa-fw fa-pencil',
+            label: t('edit'),
+            action: (rows) => props.editTask(rows[0]),
+            context: 'row'
+          }, {
             icon: 'fa fa-fw fa-trash-o',
             label: t('delete'),
             action: (rows) => props.removeTasks(rows),
             isDangerous: true
           }
         ]}
+
+        card={(row) => ({
+          icon: 'fa fa-clock',
+          title: row.name,
+          subtitle: row.type,
+          footer:
+            row.meta.lastExecution &&
+            <span>
+              executed at <b>{localeDate(row.meta.lastExecution)}</b>
+            </span>
+        })}
       />
     </PageContent>
   </Page>
 
-ScheduledTasks.propTypes = {
+ScheduledTasksPage.propTypes = {
   isCronConfigured: T.bool.isRequired,
+  createTask: T.func.isRequired,
   removeTasks: T.func.isRequired
 }
 
@@ -82,14 +123,36 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    removeTasks() {
+    createTask() {
+      dispatch(
+        modalActions.showModal(MODAL_GENERIC_TYPE_PICKER, {
+          title: t('task_type_selection_title'),
+          types: constants.taskTypes,
+          handleSelect: (type) => true
+        })
+      )
+    },
 
+    editTask(task) {
+
+    },
+
+    removeTasks(tasks) {
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: transChoice('remove_scheduled_tasks', tasks.length, {count: tasks.length}, 'platform'),
+          question: t('remove_scheduled_tasks_confirm', {
+            task_list: tasks.map(task => task.name).join(', ')
+          }),
+          handleConfirm: () => dispatch(actions.removeTasks(tasks))
+        })
+      )
     }
   }
 }
 
-const ConnectedScheduledTasks = connect(mapStateToProps, mapDispatchToProps)(ScheduledTasks)
+const ScheduledTasks = connect(mapStateToProps, mapDispatchToProps)(ScheduledTasksPage)
 
 export {
-  ConnectedScheduledTasks as ScheduledTasks
+  ScheduledTasks
 }

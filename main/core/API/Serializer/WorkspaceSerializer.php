@@ -14,6 +14,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class WorkspaceSerializer
 {
+    const OPTION_MINIMAL = 'minimal';
+
     /** @var UserSerializer */
     private $userSerializer;
 
@@ -43,29 +45,37 @@ class WorkspaceSerializer
      * Serializes a Workspace entity for the JSON api.
      *
      * @param Workspace $workspace - the workspace to serialize
+     * @param array     $options   - a list of serialization options
      *
      * @return array - the serialized representation of the workspace
      */
-    public function serialize(Workspace $workspace)
+    public function serialize(Workspace $workspace, array $options = [])
     {
-        return [
+        $serialized = [
             'id' => $workspace->getId(),
-            'uuid' => $workspace->getGuid(),
+            'uuid' => $workspace->getGuid(), // todo: should be merged with `id`
             'name' => $workspace->getName(),
             'code' => $workspace->getCode(),
-            'poster' => null, // todo : add as Workspace prop
             'thumbnail' => null, // todo : add as Workspace prop
-            'meta' => $this->getMeta($workspace),
-            'display' => $this->getDisplay($workspace),
-            'restrictions' => $this->getRestrictions($workspace),
-            'registration' => $this->getRegistration($workspace),
-            'roles' => array_map(function (Role $role) {
-                return ['id' => $role->getId(), 'name' => $role->getName()];
-            }, $workspace->getRoles()->toArray()),
-            'managers' => array_map(function (User $manager) {
-                return $this->userSerializer->serialize($manager);
-            }, $this->workspaceManager->getManagers($workspace)),
         ];
+
+        if (!in_array(static::OPTION_MINIMAL, $options)) {
+            $serialized = array_merge($serialized, [
+                'poster' => null, // todo : add as Workspace prop
+                'meta' => $this->getMeta($workspace),
+                'display' => $this->getDisplay($workspace),
+                'restrictions' => $this->getRestrictions($workspace),
+                'registration' => $this->getRegistration($workspace),
+                'roles' => array_map(function (Role $role) {
+                    return ['id' => $role->getId(), 'name' => $role->getName()];
+                }, $workspace->getRoles()->toArray()),
+                'managers' => array_map(function (User $manager) {
+                    return $this->userSerializer->serialize($manager);
+                }, $this->workspaceManager->getManagers($workspace)),
+            ]);
+        }
+
+        return $serialized;
     }
 
     private function getMeta(Workspace $workspace)
@@ -74,7 +84,7 @@ class WorkspaceSerializer
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),
-            'created' => $workspace->getCreationDate()->format('Y-m-d\TH:i:s'),
+            'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator()) : null,
         ];
     }

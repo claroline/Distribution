@@ -213,8 +213,9 @@ class ListSearch extends Component {
             ref={(input) => this.searchInput = input}
             type="text"
             className="form-control search-control"
-            placeholder="Search in the list"
+            placeholder={t('list_search_placeholder')}
             value={this.state.currentSearch}
+            disabled={this.props.disabled}
             onChange={(e) => this.updateSearch(e.target.value)}
           />
         </div>
@@ -236,6 +237,7 @@ class ListSearch extends Component {
 }
 
 ListSearch.propTypes = {
+  disabled: T.bool,
   available: T.arrayOf(T.shape({
     name: T.string.isRequired,
     options: T.object
@@ -248,4 +250,10 @@ ListSearch.propTypes = {
   removeFilter: T.func.isRequired
 }
 
-export {ListSearch}
+ListSearch.defaultProps = {
+  disabled: false
+}
+
+export {
+  ListSearch
+}

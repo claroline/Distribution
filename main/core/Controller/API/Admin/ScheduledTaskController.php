@@ -15,8 +15,8 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * JSON API for scheduled task management.
  *
- * @SEC\PreAuthorize("canOpenAdminTool('tasks_scheduling')")
  * @EXT\Route("/scheduled-tasks", options={"expose"=true})
+ * @SEC\PreAuthorize("canOpenAdminTool('tasks_scheduling')")
  */
 class ScheduledTaskController
 {

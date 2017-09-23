@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {transChoice} from '#/main/core/translation'
+import {t, transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/layout/list/constants'
 
@@ -18,10 +18,7 @@ import {Pagination} from '#/main/core/layout/list/components/pagination.jsx'
 
 const EmptyList = props =>
   <div className="list-empty">
-    {props.hasFilters ?
-      'No results found. Try to change your filters' :
-      'No results found.'
-    }
+    {t(props.hasFilters ? 'list_search_no_results' : 'list_no_results')}
   </div>
 
 EmptyList.propTypes = {
@@ -74,6 +71,7 @@ class DataList extends Component {
     }
 
     if (init) {
+      // call to `setState` is not authorized during component mounting
       this.state = newState
     } else {
       this.setState(newState)
@@ -138,6 +136,7 @@ class DataList extends Component {
     return (
       <div className="data-list">
         <ListHeader
+          disabled={0 === this.props.totalResults}
           display={displayTool}
           columns={columnsTool}
           filters={filtersTool}
@@ -156,22 +155,24 @@ class DataList extends Component {
           })
         }
 
+        {0 < this.props.totalResults &&
+          <div className="list-footer">
+            <div className="count">
+              {transChoice('list_results_count', this.props.totalResults, {count: this.props.totalResults}, 'platform')}
+            </div>
+
+            {(this.props.pagination && listConst.AVAILABLE_PAGE_SIZES[0] < this.props.totalResults) &&
+              <Pagination
+                {...this.props.pagination}
+                totalResults={this.props.totalResults}
+              />
+            }
+          </div>
+        }
+
         {0 === this.props.totalResults &&
           <EmptyList hasFilters={this.props.filters && 0 < this.props.filters.current.length} />
         }
-
-        <div className="list-footer">
-          <div className="count">
-            {transChoice('list_results_count', this.props.totalResults, {count: this.props.totalResults}, 'platform')}
-          </div>
-
-          {(this.props.pagination && listConst.AVAILABLE_PAGE_SIZES[0] < this.props.totalResults) &&
-            <Pagination
-              {...this.props.pagination}
-              totalResults={this.props.totalResults}
-            />
-          }
-        </div>
       </div>
     )
   }

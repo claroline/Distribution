@@ -472,3 +472,7 @@ claro_admin_scheduled_task:
     resource: "@ClarolineCoreBundle/Controller/Administration/ScheduledTaskController.php"
     prefix: admin/scheduled/task
     type: annotation
+
+claro_admin_scheduled_task_api:
+    resource: "@ClarolineCoreBundle/Controller/API/Admin/ScheduledTaskController.php"
+    type: annotation

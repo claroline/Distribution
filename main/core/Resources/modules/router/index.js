@@ -1,32 +1,6 @@
 import React from 'react'
-import {
-  hashHistory,
-  HashRouter as Router,
-  Route,
-  Switch
-} from 'react-router-dom'
 
-function getRouteComponent(route) {
-  // todo validate route config
-
-  const routeProps = {
-    key: route.path,
-    path: route.path,
-    exact: !!route.exact
-  }
-
-  if (route.onEnter) {
-
-  }
-
-  if (route.routes) {
-    routeProps.children = React.createElement(Switch, {}, route.routes.map(routeConfig => getRouteComponent(routeConfig)))
-  } else {
-    routeProps.component = route.component
-  }
-
-  return React.createElement(Route, routeProps)
-}
+import {RouterContainer} from '#/main/core/router/containers/router.jsx'
 
 /**
  * Creates react router components based on config.
@@ -56,11 +30,10 @@ function getRouteComponent(route) {
  */
 function routedApp(routesConfig, basePath = '') {
   return () => {
-    const RoutedApp = React.createElement(Router, {
-      history: hashHistory
-    }, React.createElement(Route, {
-      path: basePath
-    }, React.createElement(Switch, {}, routesConfig.map(route => getRouteComponent(route)))))
+    const RoutedApp = React.createElement(RouterContainer, {
+      basePath: basePath,
+      routes: routesConfig
+    })
 
     return RoutedApp
   }

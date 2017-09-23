@@ -26,7 +26,6 @@
 
   "styles": {
     "entry": {
-      "scheduled-task-management": "tools/scheduled-task-management.less",
       "theme-management": "tools/theme-management.less"
     }
   }

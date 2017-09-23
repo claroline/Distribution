@@ -9,7 +9,6 @@ import 'react-datetime/css/react-datetime.css'
 import {t} from '#/main/core/translation'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {actions} from '../actions'
-import {navigate} from '../router'
 
 class MessageFormView extends Component {
   constructor(props) {

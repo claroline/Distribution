@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer, combineReducers} from '#/main/core/utilities/redux'
-import {VIEW_MANAGEMENT} from './enums'
+import {VIEW_MANAGEMENT} from './constants'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {
@@ -60,11 +60,14 @@ const taskFormReducers = {
   [TASK_FORM_TYPE_UPDATE]: (state, action) => Object.assign({}, state, {type: action.value})
 }
 
-export const reducers = combineReducers({
+export const reducer = {
   /*isCronConfigured: makeReducer(initialState['isCronConfigured'], mainReducers),*/
-  viewMode: makeReducer(initialState['viewMode'], viewReducers),
-  tasks: makeReducer(initialState['tasks'], tasksReducers),
+  /*viewMode: makeReducer(initialState['viewMode'], viewReducers),*/
+  /*tasks: makeReducer(initialState['tasks'], tasksReducers),*/
+
+  tasks: makeListReducer(),
+
   taskForm: makeReducer(initialState['taskForm'], taskFormReducers),
-  list: makeListReducer(),
+  /*list: makeListReducer(),*/
   /*pagination: paginationReducer*/
-})
+}

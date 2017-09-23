@@ -1,16 +1,18 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+
 import {actions as listActions} from '#/main/core/layout/list/actions'
-import {select as listSelect} from '#/main/core/layout/list/selectors'
+import {utils as listUtils} from '#/main/core/layout/list/utils'
+
+import {REQUEST_SEND} from '#/main/core/api/actions'
 import {
   VIEW_MANAGEMENT,
   VIEW_MAIL_FORM,
   VIEW_MESSAGE_FORM
-} from './enums'
+} from './constants'
 
-export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
-export const TASKS_LOAD = 'TASKS_LOAD'
+/*export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'*/
+/*export const TASKS_LOAD = 'TASKS_LOAD'*/
 export const TASK_ADD = 'TASK_ADD'
 export const TASK_FORM_RESET = 'TASK_FORM_RESET'
 export const TASK_FORM_LOAD = 'TASK_FORM_LOAD'
@@ -18,7 +20,11 @@ export const TASK_FORM_TYPE_UPDATE = 'TASK_FORM_TYPE_UPDATE'
 
 export const actions = {}
 
-actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
+/*actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')*/
+actions.addTask = makeActionCreator(TASK_ADD, 'task')
+actions.resetTaskForm = makeActionCreator(TASK_FORM_RESET)
+actions.loadTaskForm = makeActionCreator(TASK_FORM_LOAD, 'task')
+actions.updateTaskFormType = makeActionCreator(TASK_FORM_TYPE_UPDATE, 'value')
 
 /*actions.editTask = makeActionCreator(UPDATE_VIEW_MODE, 'mode')*/
 
@@ -104,25 +110,15 @@ actions.editMessageTask = (taskId, data) => {
   }
 }
 
-actions.deleteTasks = (tasks) => ({
+actions.removeTasks = (tasks) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('claro_admin_scheduled_tasks_delete') + getQueryString(tasks),
+    url: generateUrl('claro_admin_scheduled_tasks_delete') + listUtils.getDataQueryString(tasks),
     request: {
       method: 'DELETE'
     },
     success: (data, dispatch) => {
       dispatch(listActions.changePage(0))
-      dispatch(actions.fetchTasks())
+      dispatch(listActions.fetchData('tasks'))
     }
   }
 })
-
-actions.addTask = makeActionCreator(TASK_ADD, 'task')
-
-actions.resetTaskForm = makeActionCreator(TASK_FORM_RESET)
-
-actions.loadTaskForm = makeActionCreator(TASK_FORM_LOAD, 'task')
-
-actions.updateTaskFormType = makeActionCreator(TASK_FORM_TYPE_UPDATE, 'value')
-
-const getQueryString = (idsList) => '?' + idsList.map(id => 'ids[]='+id).join('&')

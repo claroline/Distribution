@@ -18,7 +18,7 @@ import {
   PageContent,
   PageActions,
   PageAction
-} from '#/main/core/layout/page/index'
+} from '#/main/core/layout/page'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 

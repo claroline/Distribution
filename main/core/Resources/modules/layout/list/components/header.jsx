@@ -139,10 +139,11 @@ const ListHeader = props =>
     {props.filters &&
       <ListSearch
         {...props.filters}
+        disabled={props.disabled}
       />
     }
 
-    {(props.columns || props.display) &&
+    {!props.disabled && (props.columns || props.display) &&
       <ListActions
         display={props.display}
         columns={props.columns}
@@ -151,6 +152,7 @@ const ListHeader = props =>
   </div>
 
 ListHeader.propTypes = {
+  disabled: T.bool,
   display: T.shape({
     current: T.oneOf(Object.keys(constants.DISPLAY_MODES)).isRequired,
     available: T.arrayOf(
@@ -178,6 +180,10 @@ ListHeader.propTypes = {
     addFilter: T.func.isRequired,
     removeFilter: T.func.isRequired
   })
+}
+
+ListHeader.defaultProps = {
+  disabled: false
 }
 
 export {

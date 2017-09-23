@@ -45,6 +45,8 @@ class ScheduledTaskController extends Controller
     }
 
     /**
+     * Displays scheduled tasks management.
+     *
      * @EXT\Template
      *
      * @return array

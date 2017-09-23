@@ -16,8 +16,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -27,13 +25,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ScheduledTask
 {
     /**
-     * @ORM\Column(type="integer")
      * @ORM\Id
+     * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      *
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
      * @ORM\Column(name="task_type")
@@ -41,69 +39,68 @@ class ScheduledTask
      *
      * @var string
      */
-    protected $type;
+    private $type;
 
     /**
      * @ORM\Column(name="task_name", nullable=true)
      *
      * @var string
      */
-    protected $name;
+    private $name;
 
     /**
      * @ORM\Column(name="scheduled_date", type="datetime")
      *
      * @var \DateTime
      */
-    protected $scheduledDate;
+    private $scheduledDate;
 
     /**
      * @ORM\Column(name="execution_date", type="datetime", nullable=true)
      *
      * @var \DateTime
      */
-    protected $executionDate = null;
+    private $executionDate = null;
 
     /**
      * @ORM\Column(name="execution_status", nullable=true)
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("executionStatus")
      *
      * @var string
      */
-    protected $executionStatus;
+    private $executionStatus;
+
+    /**
+     * @ORM\Column(name="task_data", type="json_array", nullable=true)
+     */
+    private $data;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinTable(name="claro_scheduled_task_users")
-     * @Groups({"api_user_min"})
      *
      * @var User[]
      */
-    protected $users;
+    private $users;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Group")
      * @ORM\JoinColumn(name="group_id", nullable=true, onDelete="SET NULL")
-     * @Groups({"api_user_min"})
-     * @SerializedName("group")
+     *
+     * @var Group
      */
-    protected $group;
+    private $group;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
      * @ORM\JoinColumn(name="workspace_id", nullable=true, onDelete="SET NULL")
-     * @Groups({"api_user_min"})
+     *
+     * @var Workspace
      */
-    protected $workspace;
+    private $workspace;
 
     /**
-     * @ORM\Column(name="task_data", type="json_array", nullable=true)
-     * @Groups({"api_task", "api_user_min"})
-     * @SerializedName("data")
+     * ScheduledTask constructor.
      */
-    protected $data;
-
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -207,6 +204,11 @@ class ScheduledTask
         $this->users->clear();
     }
 
+    /**
+     * Get group.
+     *
+     * @return Group
+     */
     public function getGroup()
     {
         return $this->group;
@@ -217,6 +219,11 @@ class ScheduledTask
         $this->group = $group;
     }
 
+    /**
+     * Get workspace.
+     *
+     * @return Workspace
+     */
     public function getWorkspace()
     {
         return $this->workspace;
@@ -235,10 +242,5 @@ class ScheduledTask
     public function setData($data)
     {
         $this->data = $data;
-    }
-
-    public static function getSearchableFields()
-    {
-        return ['type', 'name'];
     }
 }

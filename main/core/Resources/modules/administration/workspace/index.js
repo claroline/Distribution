@@ -29,11 +29,9 @@ bootstrap(
   },
 
   // remap data-attributes set on the app DOM container
-  (initialData) => {
-    return {
-      workspaces: merge({}, initialData.workspaces, {
-        fetchUrl: generateUrl('api_get_search_workspaces')
-      })
-    }
-  }
+  (initialData) => ({
+    workspaces: merge({}, initialData.workspaces, {
+      fetchUrl: generateUrl('api_get_search_workspaces')
+    })
+  })
 )

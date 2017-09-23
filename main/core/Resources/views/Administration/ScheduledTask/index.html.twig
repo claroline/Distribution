@@ -2,12 +2,6 @@
 
 {% block title %}{{ parent() ~ ' - ' ~ 'tasks_scheduling'|trans({}, 'tools') | striptags | raw }}{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-
-    <link rel="stylesheet" type="text/css" href="{{ themeAsset('claroline-distribution-main-core-scheduled-task-management.css') }}" />
-{% endblock %}
-
 {% block breadcrumb %}
     {{ macros.breadcrumbs([
         {

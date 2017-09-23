@@ -102,6 +102,14 @@ function isRowSelected(row, selection) {
 }
 
 
+/**
+ * Counts the number of pages of the list.
+ *
+ * @param {number} totalResults
+ * @param {number} pageSize
+ *
+ * @returns {number}
+ */
 function countPages(totalResults, pageSize) {
   if (-1 === pageSize) {
     return 1
@@ -113,6 +121,9 @@ function countPages(totalResults, pageSize) {
   return nbPages + (rest > 0 ? 1 : 0)
 }
 
+function getDataQueryString(dataObjects) {
+  return '?' + dataObjects.map(object => 'ids[]='+object.id).join('&')
+}
 
 export {
   createListDefinition,
@@ -124,5 +135,6 @@ export {
   getFilterableProps,
   getSortableProps,
   isRowSelected,
-  countPages
+  countPages,
+  getDataQueryString
 }

@@ -8,11 +8,15 @@ export const taskTypes = [
   {
     type: 'mail',
     name: t('mail'),
-    icon: 'fa fa-envelope'
+    icon: 'fa fa-at'
   },
   {
     type: 'message',
     name: t('message'),
-    icon: 'fa fa-envelope-o'
+    icon: 'fa fa-envelope'
   }
 ]
+
+export const constants = {
+  taskTypes
+}
