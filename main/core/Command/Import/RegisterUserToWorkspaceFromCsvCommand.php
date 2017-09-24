@@ -119,7 +119,9 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
             $om->endFlushSuite();
         }
 
+	$om->clear();
         $i = 1;
+	$om->startFlushSuite();
 
         foreach ($lines as $line) {
             $datas = str_getcsv($line, ';');
@@ -141,7 +143,7 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
 
                     if (count($roles) === 1) {
                         if ($action === 'register') {
-                            $roleManager->associateRole($ars, $roles[0]);
+                            $roleManager->associateRole($ars, $roles[0], false, false);
                             $output->writeln(
                                 "<info> Line $i: {User [$name] has been registered to workspace [$workspaceCode] with role [$roleKey].} </info>"
                             );
@@ -151,7 +153,7 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                                 "<info> Line $i: {User [$name] has been unregistered from role [$roleKey] of workspace [$workspaceCode].} </info>"
                             );
                         } elseif ($action === 'register_group') {
-                            $roleManager->associateRole($ars, $roles[0]);
+                            $roleManager->associateRole($ars, $roles[0], false, false);
                             $output->writeln(
                                 "<info> Line $i: {Group [$name] has been registered to workspace [$workspaceCode] with role [$roleKey].} </info>"
                             );
@@ -191,7 +193,9 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 $output->writeln("<error> Line $i: {Each row must have 4 parameters. Required format is [Username|Group name];[Workspace code];[Role translation key];[register|unregister|register_group|unregister_group]} </error>");
             }
 
-            if ($i % 2000 === 0) {
+		
+            if ($i % 250 === 0) {
+		$output->writeln('Flushing...');
                 $om->forceFlush();
                 $om->clear();
             }
