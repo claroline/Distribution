@@ -12,9 +12,11 @@
 namespace Claroline\CoreBundle\Command\Import;
 
 use Claroline\CoreBundle\Command\Traits\BaseCommandTrait;
+use Claroline\CoreBundle\Entity\Role;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
@@ -36,6 +38,18 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 ),
             ]
         );
+        $this->addOption(
+            'clean',
+            'c',
+            InputOption::VALUE_NONE,
+            'When set to true, cleans the current permissions'
+        );
+        $this->addOption(
+            'ignore',
+            'i',
+            InputOption::VALUE_OPTIONAL,
+            'A workspace code string to ignore'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -51,6 +65,51 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
         $lines = str_getcsv(file_get_contents($file), PHP_EOL);
 
         $om->startFlushSuite();
+
+        $clean = $input->getOption('clean');
+        $ignore = $input->getOption('ignore');
+
+        if ($clean) {
+            foreach ($lines as $line) {
+                $datas = str_getcsv($line, ';');
+                $users[] = $datas[0];
+            }
+
+            $users = array_unique($users);
+
+            $ignore = $this->getContainer()->get('claroline.api.finder')
+              ->fetch('Claroline\CoreBundle\Entity\Workspace\Workspace', null, null, ['code' => $ignore, 'isPersonal' => false], []);
+
+            $ignoreIds = array_map(function ($el) {
+                return $el->getId();
+            }, $ignore);
+
+            $i = 1;
+
+            $om->startFlushSuite();
+
+            foreach ($users as $user) {
+                //clean user roles except those in workspace matching $ignore
+                $roles = $this->getContainer()->get('claroline.api.finder')
+                  ->fetch('Claroline\CoreBundle\Entity\Role', null, null, ['user' => $user, 'type' => Role::WS_ROLE], []);
+
+                foreach ($roles as $role) {
+                    if (!in_array($role->getWorkspace()->getId(), $ignoreIds)) {
+                        $output->writeln(
+                          "<info> Removing role {$role->getName()} from workspace {$role->getWorkspace()->getId()} from user {$user} </info>"
+                        );
+                        $roleManager->dissociateRole($user, $role);
+                        ++$i;
+
+                        if ($i % 2000 === 0) {
+                            $om->forceFlush();
+                        }
+                    }
+                }
+            }
+
+            $om->endFlushSuite();
+        }
 
         $i = 1;
 
@@ -124,7 +183,7 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 $output->writeln("<error> Line $i: {Each row must have 4 parameters. Required format is [Username|Group name];[Workspace code];[Role translation key];[register|unregister|register_group|unregister_group]} </error>");
             }
 
-            if ($i % 100 === 0) {
+            if ($i % 2000 === 0) {
                 $om->forceFlush();
                 $om->clear();
             }
