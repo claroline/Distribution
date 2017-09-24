@@ -88,18 +88,26 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
 
             $om->startFlushSuite();
 
-            foreach ($users as $user) {
+            foreach ($users as $username) {
                 //clean user roles except those in workspace matching $ignore
                 $roles = $this->getContainer()->get('claroline.api.finder')
-                  ->fetch('Claroline\CoreBundle\Entity\Role', null, null, ['user' => $user, 'type' => Role::WS_ROLE], []);
+                  ->fetch('Claroline\CoreBundle\Entity\Role', null, null, ['user' => $username, 'type' => Role::WS_ROLE], []);
 
                 foreach ($roles as $role) {
                     if (!in_array($role->getWorkspace()->getId(), $ignoreIds)) {
                         $output->writeln(
-                          "<info> Removing role {$role->getName()} from workspace {$role->getWorkspace()->getId()} from user {$user} </info>"
+	               		"<info> Removing role {$role->getName()} from workspace {$role->getWorkspace()->getName()} from user {$username} </info>"
                         );
+                        $user =  $userRepo->findOneBy(['username' => $username]);
+
+			if ($user) {
                         $roleManager->dissociateRole($user, $role);
                         ++$i;
+                        } else {
+                       $output->writeln(
+                                "<error> {$username} not found </error>"
+                        );
+			} 
 
                         if ($i % 2000 === 0) {
                             $om->forceFlush();
