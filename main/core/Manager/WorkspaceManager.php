@@ -871,12 +871,12 @@ class WorkspaceManager
                     'code' => $workspace[7],
                 ]);
             }
-
+/*
             if (isset($workspace[8])) {
                 $endDate = new \DateTime();
                 $endDate->setTimestamp($workspace[8]);
             }
-
+*/
             if ($update) {
                 $workspace = $this->getOneByCode($code);
                 $this->rename($workspace, $name);

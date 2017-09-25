@@ -141,6 +141,7 @@ class FunctionsCsvCommand extends ContainerAwareCommand
         $lines = str_getcsv(file_get_contents($file), PHP_EOL);
         $parsedDatas = $importCsvManager->parseCSVLines($lines);
 
+var_dump('start');
         $om->startFlushSuite();
 
         if (isset($parsedDatas['claro_delete_user'])) {
