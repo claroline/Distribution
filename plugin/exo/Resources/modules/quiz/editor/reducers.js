@@ -76,8 +76,7 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
       if (action.propertyPath === 'parameters.pickByTag') {
         if (action.value === true) {
-          updatedQuiz = merge({}, updatedQuiz, {parameters: {randomTags: {pick: [], pageSize: 0}}})
-          //updatedQuiz = merge({}, quiz, sanitize.quiz(action.propertyPath, 0))
+          updatedQuiz = merge({}, updatedQuiz, {parameters: {randomTags: {pick: [], pageSize: 1}}})
           unset(updatedQuiz, 'props.parameters.randomPick')
           unset(updatedQuiz, 'props.parameters.pick')
           unset(updatedQuiz, 'props.parameters.randomOrder')

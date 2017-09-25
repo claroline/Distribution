@@ -219,7 +219,7 @@ class StepPicking extends Component
            <FormGroup
              controlId="tag-amount"
              label={tex('tag-amount')}
-             help={tex('tag-amount')}
+             help={tex('tag-amount-help')}
              warnOnly={!props.validating}
 
            >
@@ -242,7 +242,7 @@ class StepPicking extends Component
          <FormGroup
            controlId="quiz-pageSize"
            label={tex('number_question_page')}
-           help={tex('number_question_page')}
+           help={tex('number_question_page-help')}
            warnOnly={!props.validating}
            error={get(props, 'errors.parameters.randomTags.pageSize')}
          >

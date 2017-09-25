@@ -23,10 +23,10 @@ class Version20170914162443 extends AbstractMigration
             ADD random_tag LONGTEXT NOT NULL COMMENT '(DC2Type:array)'
         ");
         $this->addSql(
-          'UPDATE ujm_step set random_tag="O:8:"stdClass":0:{}"'
+          "UPDATE ujm_step set random_tag='O:8:\"stdClass\":0:{}'"
         );
         $this->addSql(
-          'UPDATE ujm_exercise set random_tag="O:8:"stdClass":0:{}"'
+          "UPDATE ujm_exercise set random_tag='O:8:\"stdClass\":0:{}'"
         );
     }
 

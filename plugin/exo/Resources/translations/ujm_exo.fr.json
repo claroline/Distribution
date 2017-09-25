@@ -688,6 +688,7 @@
     "csv_export": "Export csv",
     "pick-tag": "Tag",
     "tag-amount": "Quantité",
+    "tag-amount-help": "Nombre de question provenant devant être utilisé au total",
     "add": "Ajouter",
     "number_question_page": "Nombre de question par page"
 }
