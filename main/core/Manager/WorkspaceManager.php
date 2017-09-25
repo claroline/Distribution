@@ -171,6 +171,7 @@ class WorkspaceManager
     public function rename(Workspace $workspace, $name)
     {
         $workspace->setName($name);
+	$root = $this->resourceManager->getWorkspaceRoot($workspace);
         if ($root) {
             $root = $this->resourceManager->getWorkspaceRoot($workspace);
             $root->setName($name);
@@ -881,7 +882,6 @@ class WorkspaceManager
             }
             if ($update) {
                 $workspace = $this->getOneByCode($code);
-                $this->rename($workspace, $name);
                 if (!$workspace) {
                     //if the workspace doesn't exists, create it...
                     $workspace = new Workspace();
@@ -957,13 +957,12 @@ class WorkspaceManager
             }
         }
 
-        if ($logger) {
-            $logger('Final flush...');
+        $this->om->endFlushSuite();
+
+	if ($logger) {
             $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
             $logger(count($created).' workspace created ('.implode(',', $created).')');
         }
-
-        $this->om->endFlushSuite();
     }
 
     public function getDisplayableNonPersonalWorkspaces(
