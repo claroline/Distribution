@@ -75,7 +75,6 @@ trait AttemptParametersTrait
      */
     public function setRandomOrder($randomOrder)
     {
-        $this->randomTag = new \stdClass();
         $this->randomOrder = $randomOrder;
     }
 
