@@ -96,18 +96,18 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 foreach ($roles as $role) {
                     if (!in_array($role->getWorkspace()->getId(), $ignoreIds)) {
                         $output->writeln(
-	               		"<info> Removing role {$role->getName()} from workspace {$role->getWorkspace()->getName()} from user {$username} </info>"
+                           "<info> Removing role {$role->getName()} from workspace {$role->getWorkspace()->getName()} from user {$username} </info>"
                         );
-                        $user =  $userRepo->findOneBy(['username' => $username]);
+                        $user = $userRepo->findOneBy(['username' => $username]);
 
-			if ($user) {
-                        $roleManager->dissociateRole($user, $role);
-                        ++$i;
+                        if ($user) {
+                            $roleManager->dissociateRole($user, $role);
+                            ++$i;
                         } else {
-                       $output->writeln(
+                            $output->writeln(
                                 "<error> {$username} not found </error>"
                         );
-			} 
+                        }
 
                         if ($i % 2000 === 0) {
                             $om->forceFlush();
@@ -119,9 +119,9 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
             $om->endFlushSuite();
         }
 
-	$om->clear();
+        $om->clear();
         $i = 1;
-	$om->startFlushSuite();
+        $om->startFlushSuite();
 
         foreach ($lines as $line) {
             $datas = str_getcsv($line, ';');
@@ -193,9 +193,8 @@ class RegisterUserToWorkspaceFromCsvCommand extends ContainerAwareCommand
                 $output->writeln("<error> Line $i: {Each row must have 4 parameters. Required format is [Username|Group name];[Workspace code];[Role translation key];[register|unregister|register_group|unregister_group]} </error>");
             }
 
-		
             if ($i % 250 === 0) {
-		$output->writeln('Flushing...');
+                $output->writeln('Flushing...');
                 $om->forceFlush();
                 $om->clear();
             }

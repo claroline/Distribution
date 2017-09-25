@@ -171,7 +171,7 @@ class WorkspaceManager
     public function rename(Workspace $workspace, $name)
     {
         $workspace->setName($name);
-	$root = $this->resourceManager->getWorkspaceRoot($workspace);
+        $root = $this->resourceManager->getWorkspaceRoot($workspace);
         if ($root) {
             $root = $this->resourceManager->getWorkspaceRoot($workspace);
             $root->setName($name);
@@ -933,7 +933,7 @@ class WorkspaceManager
                     $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
                 }
             } else {
-		if ($create) {
+                if ($create) {
                     $template = new File($this->container->getParameter('claroline.param.default_template'));
                     $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
                 }
@@ -959,7 +959,7 @@ class WorkspaceManager
 
         $this->om->endFlushSuite();
 
-	if ($logger) {
+        if ($logger) {
             $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
             $logger(count($created).' workspace created ('.implode(',', $created).')');
         }
