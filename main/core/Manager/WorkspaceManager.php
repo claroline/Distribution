@@ -171,11 +171,13 @@ class WorkspaceManager
     public function rename(Workspace $workspace, $name)
     {
         $workspace->setName($name);
-        $root = $this->resourceManager->getWorkspaceRoot($workspace);
-        $root->setName($name);
+        if ($root) {
+            $root = $this->resourceManager->getWorkspaceRoot($workspace);
+            $root->setName($name);
+            $this->om->persist($root);
+        }
 
         $this->om->persist($workspace);
-        $this->om->persist($root);
 
         $this->om->flush();
     }
@@ -846,6 +848,7 @@ class WorkspaceManager
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
+            $create = false;
             ++$i;
             $endDate = null;
             $model = null;
@@ -872,11 +875,10 @@ class WorkspaceManager
                 ]);
             }
 
-            if (isset($workspace[8])) {
+            if (isset($workspace[8]) && is_int($workspace[8])) {
                 $endDate = new \DateTime();
                 $endDate->setTimestamp($workspace[8]);
             }
-
             if ($update) {
                 $workspace = $this->getOneByCode($code);
                 $this->rename($workspace, $name);
@@ -884,6 +886,8 @@ class WorkspaceManager
                     //if the workspace doesn't exists, create it...
                     $workspace = new Workspace();
                     $workspace->setName($name);
+                    $workspace->setGuid(uniqid('', true));
+                    $create = true;
                 }
                 if ($logger) {
                     $logger('Updating '.$code.' ('.$i.'/'.count($workspaces).') ...');
@@ -891,6 +895,15 @@ class WorkspaceManager
             } else {
                 $workspace = new Workspace();
                 $workspace->setName($name);
+                $created[] = $name;
+                $workspace->setGuid(uniqid('', true));
+                $create = true;
+            }
+
+            if ($create) {
+                $created[] = $code;
+            } else {
+                $updated[] = $code;
             }
 
             $workspace->setCode($code);
@@ -940,6 +953,8 @@ class WorkspaceManager
 
         if ($logger) {
             $logger('Final flush...');
+            $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
+            $logger(count($created).' workspace created ('.implode(',', $created).')');
         }
 
         $this->om->endFlushSuite();
