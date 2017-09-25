@@ -889,6 +889,7 @@ class WorkspaceManager
                     $workspace->setGuid(uniqid('', true));
                     $create = true;
                 }
+                $this->rename($workspace, $name);
                 if ($logger) {
                     $logger('Updating '.$code.' ('.$i.'/'.count($workspaces).') ...');
                 }
@@ -932,6 +933,11 @@ class WorkspaceManager
                     $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
                 }
             } else {
+		if ($create) {
+                    $template = new File($this->container->getParameter('claroline.param.default_template'));
+                    $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
+                }
+
                 if ($model) {
                     $this->duplicateOrderedTools($model, $workspace);
                 }
