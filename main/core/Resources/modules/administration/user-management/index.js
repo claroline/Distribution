@@ -4,6 +4,7 @@ import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {registerModalType} from '#/main/core/layout/modal'
 import {ConfirmModal} from '#/main/core/layout/modal/components/confirm.jsx'
 import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
+import {FormModal} from '#/main/core/layout/modal/components/form.jsx'
 
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
@@ -21,7 +22,7 @@ import {Roles} from '#/main/core/administration/user-management/role/components/
 
 // register custom modals for the app
 registerModalType('CONFIRM_MODAL', ConfirmModal)
-registerModalType('MODAL_USER_PICKER', UserPickerModal)
+registerModalType('MODAL_FORM', FormModal)
 
 // mount the react application
 bootstrap(

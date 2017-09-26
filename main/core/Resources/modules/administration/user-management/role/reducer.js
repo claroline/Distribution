@@ -18,10 +18,9 @@ const handlers = {
     }
   },
   [ROLE_EDIT]: (state, action) => {
-    const idx = state.data.findIndex(el => el.id === action.id)
-    const el = merge({}, state.data[idx], {[action.parameter]: action.value})
-    const data = updateArray(state.data, idx, el)
-    console.log(data)
+    const idx = state.data.findIndex(el => el.id === action.role.id)
+    const data = updateArray(state.data, idx, action.role)
+
     return update(state, {'data': {$set: data}})
   }
 }

@@ -14,7 +14,7 @@ export const ROLE_SAVE = 'ROLE_SAVE'
 export const actions = {}
 
 actions.loadRoles = makeActionCreator(ROLES_LOAD, 'roles', 'total')
-actions.editRole = makeActionCreator(ROLE_EDIT, 'id', 'parameter', 'value')
+actions.editRole = makeActionCreator(ROLE_EDIT, 'role')
 actions.saveRole = makeActionCreator(ROLE_SAVE)
 
 actions.fetchRoles = () => (dispatch, getState) => {

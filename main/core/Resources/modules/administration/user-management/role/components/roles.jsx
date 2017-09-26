@@ -13,8 +13,7 @@ import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select} from '#/main/core/administration/user-management/role/selectors'
 
 import {enumRole} from '#/main/core/enum/role'
-import {MODAL_CONFIRM} from '#/main/core/layout/modal'
-import {Form} from '#/main/core/layout/form/components/form.jsx'
+import {MODAL_CONFIRM, MODAL_FORM} from '#/main/core/layout/modal'
 
 import {
   PageContainer as Page,
@@ -32,26 +31,23 @@ class Roles extends Component {
   }
 
   renderModal(item = {}, onChange = {}) {
-    this.props.showModal(MODAL_CONFIRM, {
+    this.props.showModal(MODAL_FORM, {
       title: 'create',
-      question: React.createElement(Form, {
-        definition: [
-          ['translation', 'text', {label: 'name'}],
-  //        ['limit', 'number', {label: 'limit'}],
-  //        ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
-  //        ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
-        ],
-        item,
-        onChange: (property, value) => this.props.editRole(item.id, property, value)
-      }),
-      handleConfirm: () => {
-        alert('ok')
+      definition: [
+        ['translation', 'text', {label: 'name'}],
+        ['limit', 'number', {label: 'limit'}],
+//        ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
+//        ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
+      ],
+      item,
+      onSubmit: (role) => {
+        console.log(role)
+        this.props.editRole(role)
       }
     })
   }
 
   render() {
-    console.log(this.props.data)
     return (
       <Page id="role-management">
         <PageHeader
@@ -81,8 +77,8 @@ class Roles extends Component {
             totalResults={this.props.totalResults}
             definition={[
               {name: 'name', type: 'string', label: t('name')},
-              {name: 'translation', type: 'string', label: t('translation')},
-              {name: 'type', type: 'enum', label: t('type'), options: {enum: enumRole}}
+              {name: 'type', type: 'enum', label: t('type'), options: {enum: enumRole}},
+              {name: 'translation', type: 'string', label: t('translation')}
             ]}
 
             pagination={Object.assign({}, this.props.pagination, {
@@ -106,7 +102,6 @@ class Roles extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: t('edit'),
                 action: (row) => {
-                  console.log(row)
                   this.renderModal(row)
                 }
               }
@@ -121,24 +116,20 @@ class Roles extends Component {
 Roles.propTypes = {
   data: T.arrayOf(T.object),
   totalResults: T.number.isRequired,
-
   sortBy: T.object.isRequired,
   updateSort: T.func.isRequired,
-
   pagination: T.shape({
     pageSize: T.number.isRequired,
     current: T.number.isRequired
   }).isRequired,
   handlePageChange: T.func.isRequired,
   handlePageSizeUpdate: T.func.isRequired,
-
   filters: T.array.isRequired,
   addListFilter: T.func.isRequired,
   removeListFilter: T.func.isRequired,
   selected: T.array.isRequired,
   toggleSelect: T.func.isRequired,
   toggleSelectAll: T.func.isRequired,
-
   showModal: T.func.isRequired
 }
 
