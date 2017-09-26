@@ -58,6 +58,7 @@ class RoleFinder implements FinderInterface
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+
               case 'type':
                 switch ($filterValue) {
                   case 'workspace':
@@ -72,8 +73,15 @@ class RoleFinder implements FinderInterface
                   case 'platform':
                     $filterValue = Role::PLATFORM_ROLE;
                     break;
+
                 }
                 // no break
+              case 'user':
+                  $qb->leftJoin('obj.users', 'ru');
+                  $qb->andWhere("ru.username = :{$filterName}");
+                  $qb->setParameter($filterName, $filterValue);
+                  break;
+
               default:
                 if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
                     $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;

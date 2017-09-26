@@ -31,7 +31,7 @@ class Roles extends Component {
     super(props)
   }
 
-  renderModal() {
+  renderModal(item = {}, reducer = {}) {
     this.props.showModal(MODAL_CONFIRM, {
       title: 'create',
       question: React.createElement(Form, {
@@ -41,10 +41,11 @@ class Roles extends Component {
           ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
           ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
         ],
-        item: {}, //l'objet a brancher ?
-        reducer: {} //une liste de reducer ?
+        item, reducer
       }),
-      handleConfirm: () => alert('ok')
+      handleConfirm: () => {
+        alert('ok')
+      }
     })
   }
 
@@ -97,6 +98,16 @@ class Roles extends Component {
               current: this.props.sortBy,
               updateSort: this.props.updateSort
             }}
+
+            actions={[
+              {
+                icon: 'fa fa-fw fa-pencil',
+                label: t('edit'),
+                action: (row) => {
+                  this.renderModal(row)
+                }
+              }
+            ]}
           />
         </PageContent>
       </Page>

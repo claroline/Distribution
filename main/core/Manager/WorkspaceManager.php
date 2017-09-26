@@ -172,10 +172,13 @@ class WorkspaceManager
     {
         $workspace->setName($name);
         $root = $this->resourceManager->getWorkspaceRoot($workspace);
-        $root->setName($name);
+        if ($root) {
+            $root = $this->resourceManager->getWorkspaceRoot($workspace);
+            $root->setName($name);
+            $this->om->persist($root);
+        }
 
         $this->om->persist($workspace);
-        $this->om->persist($root);
 
         $this->om->flush();
     }
@@ -846,6 +849,7 @@ class WorkspaceManager
         $this->om->startFlushSuite();
 
         foreach ($workspaces as $workspace) {
+            $create = false;
             ++$i;
             $endDate = null;
             $model = null;
@@ -872,25 +876,37 @@ class WorkspaceManager
                 ]);
             }
 
-            if (isset($workspace[8])) {
+            if (isset($workspace[8]) && is_int($workspace[8])) {
                 $endDate = new \DateTime();
                 $endDate->setTimestamp($workspace[8]);
             }
-
             if ($update) {
                 $workspace = $this->getOneByCode($code);
                 if (!$workspace) {
-                    //if the workspace doesn't exists, just keep going...
-                    continue;
+                    //if the workspace doesn't exists, create it...
+                    $workspace = new Workspace();
+                    $workspace->setName($name);
+                    $workspace->setGuid(uniqid('', true));
+                    $create = true;
                 }
+                $this->rename($workspace, $name);
                 if ($logger) {
                     $logger('Updating '.$code.' ('.$i.'/'.count($workspaces).') ...');
                 }
             } else {
                 $workspace = new Workspace();
+                $workspace->setName($name);
+                $created[] = $name;
+                $workspace->setGuid(uniqid('', true));
+                $create = true;
             }
 
-            $workspace->setName($name);
+            if ($create) {
+                $created[] = $code;
+            } else {
+                $updated[] = $code;
+            }
+
             $workspace->setCode($code);
             $workspace->setDisplayable($isVisible);
             $workspace->setSelfRegistration($selfRegistration);
@@ -917,6 +933,11 @@ class WorkspaceManager
                     $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
                 }
             } else {
+                if ($create) {
+                    $template = new File($this->container->getParameter('claroline.param.default_template'));
+                    $this->container->get('claroline.manager.transfer_manager')->createWorkspace($workspace, $template, true);
+                }
+
                 if ($model) {
                     $this->duplicateOrderedTools($model, $workspace);
                 }
@@ -936,11 +957,12 @@ class WorkspaceManager
             }
         }
 
-        if ($logger) {
-            $logger('Final flush...');
-        }
-
         $this->om->endFlushSuite();
+
+        if ($logger) {
+            $logger(count($updated).' workspace updated ('.implode(',', $updated).')');
+            $logger(count($created).' workspace created ('.implode(',', $created).')');
+        }
     }
 
     public function getDisplayableNonPersonalWorkspaces(
@@ -1245,20 +1267,20 @@ class WorkspaceManager
     public function isManager(Workspace $workspace, TokenInterface $token)
     {
         $roles = array_map(
-          function ($role) {
-              return $role->getRole();
-          },
-          $token->getRoles()
-      );
+            function ($role) {
+                return $role->getRole();
+            },
+            $token->getRoles()
+        );
 
         $managerRole = $this->roleManager->getManagerRole($workspace);
 
-        if ($workspace->getCreator() === $token->getUser()) {
+        if (!in_array('ROLE_USURPATE_WORKSPACE_ROLE', $roles) && $workspace->getCreator() === $token->getUser()) {
             return true;
         }
 
         foreach ($roles as $role) {
-            if (is_object($role) && $role->getName() === $managerRole) {
+            if ($managerRole && $role === $managerRole->getName()) {
                 return true;
             }
         }
@@ -1303,7 +1325,7 @@ class WorkspaceManager
         $toCopy = [];
 
         foreach ($resourceNodes as $resourceNode) {
-            $toCopy[$resourceNode->getGuid()] = $resourceNode;
+            $toCopy[$resourceNode->getId()] = $resourceNode;
         }
 
         foreach ($resourceNodes as $resourceNode) {
@@ -1311,14 +1333,22 @@ class WorkspaceManager
                 $primRes = $this->resourceManager->getResourceFromNode($resourceNode)->getPrimaryResource();
                 $parameters = $this->resourceManager->getResourceFromNode($resourceNode)->getParameters();
                 if ($primRes) {
-                    unset($toCopy[$primRes->getGuid()]);
+                    unset($toCopy[$primRes->getId()]);
+                    $ancestors = $this->resourceManager->getAncestors($primRes);
+                    foreach ($ancestors as $ancestor) {
+                        unset($toCopy[$ancestor['id']]);
+                    }
                 }
                 if ($parameters) {
                     foreach ($parameters->getSecondaryResources() as $secRes) {
-                        unset($toCopy[$secRes->getGuid()]);
+                        unset($toCopy[$secRes->getId()]);
+                        $ancestors = $this->resourceManager->getAncestors($secRes);
+                        foreach ($ancestors as $ancestor) {
+                            unset($toCopy[$ancestor['id']]);
+                        }
                     }
                 }
-                unset($toCopy[$resourceNode->getGuid()]);
+                unset($toCopy[$resourceNode->getId()]);
             }
         }
 
@@ -1389,6 +1419,7 @@ class WorkspaceManager
 
             return false;
         });
+
         $this->om->flush();
         $this->om->startFlushSuite();
         $copies = [];
@@ -1398,7 +1429,10 @@ class WorkspaceManager
             try {
                 $this->log('Duplicating '.$resourceNode->getName().' - '.$resourceNode->getId().' - from type '.$resourceNode->getResourceType()->getName().' into '.$rootNode->getName());
                 //activities will be removed anyway
-                if ($resourceNode->getResourceType()->getName() !== 'activity') {
+                //$bypass = ['activity'];
+                $bypass = [];
+                if (!in_array($resourceNode->getResourceType()->getName(), $bypass)) {
+                    $this->log('Firing resourcemanager copy method for '.$resourceNode->getName());
                     $copy = $this->resourceManager->copy(
                       $resourceNode,
                       $rootNode,
@@ -1476,17 +1510,28 @@ class WorkspaceManager
                 ) {
                     $usedRole = $copy->getWorkspace()->getGuid() === $workspaceRoles[$key]->getWorkspace()->getGuid() ?
                       $workspaceRoles[$key] : $role;
-                    if (!in_array($usedRole->getId(), $usedRoles)) {
-                        $usedRoles[] = $usedRole->getId();
+                    if (!in_array($usedRole->getTranslationKey(), $usedRoles)) {
+                        $usedRoles[] = $usedRole->getTranslationKey();
                         $newRight->setRole($usedRole);
                         $this->log('Duplicating resource rights for '.$copy->getName().' - '.$copy->getId().' - '.$usedRole->getName().'...');
                         $this->om->persist($newRight);
+                    } else {
+                        $this->log('Already in array resource rights for '.$copy->getName().' - '.$copy->getId().' - '.$usedRole->getName().'...');
                     }
                 } else {
                     $this->log('Dont do anything');
                 }
             }
         }
+
+        foreach ($copy->getChildren() as $child) {
+            foreach ($resourceNode->getChildren() as $sourceChild) {
+                if ($child->getName() === $sourceChild->getName()) {
+                    $this->duplicateRights($sourceChild, $child, $workspaceRoles);
+                }
+            }
+        }
+
         $this->om->flush();
     }
 
