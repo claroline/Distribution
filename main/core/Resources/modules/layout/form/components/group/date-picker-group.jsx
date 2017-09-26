@@ -14,6 +14,7 @@ const DatePickerGroup = props =>
       minDate={props.minDate}
       value={props.value || ''}
       showCalendarButton={props.showCalendarButton}
+      disabled={props.disabled}
       onChange={props.onChange}
     />
   </FormGroup>
@@ -24,6 +25,7 @@ DatePickerGroup.propTypes = {
   minDate: T.object,
   showCalendarButton: T.bool,
   value: T.string,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 

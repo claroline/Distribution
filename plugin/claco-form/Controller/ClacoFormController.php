@@ -162,11 +162,11 @@ class ClacoFormController extends Controller
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
         $fields = $this->clacoFormManager->getFieldsByClacoForm($clacoForm);
-//        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
+        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
 //        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
 //        $nbEntries = count($allEntries);
 //        $nbPublishedEntries = count($publishedEntries);
-//        $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
+        $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
 //        $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
 //        $isCategoryManager = count($myCategories) > 0;
 //        $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
@@ -207,6 +207,8 @@ class ClacoFormController extends Controller
 //            'nbPublishedEntries' => $nbPublishedEntries,
             'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,
+            'allEntries' => $allEntries,
+            'myEntries' => $myEntries,
         ];
     }
 
@@ -772,6 +774,16 @@ class ClacoFormController extends Controller
         $title = $this->request->request->get('titleData', false);
         $keywordsData = $this->request->request->get('keywordsData', false);
 
+        if (!is_array($entryData)) {
+            $entryData = json_decode($entryData, true);
+        }
+        if (!is_array($keywordsData)) {
+            $keywordsData = json_decode($keywordsData, true);
+        }
+        if (!$title) {
+            $title = $entryData['entry_title'];
+        }
+
         if ($this->clacoFormManager->canCreateEntry($clacoForm, $entryUser)) {
             $entry = $this->clacoFormManager->createEntry($clacoForm, $entryData, $title, $keywordsData, $entryUser);
         } else {
@@ -804,6 +816,19 @@ class ClacoFormController extends Controller
         $title = $this->request->request->get('titleData', false);
         $categoriesIds = $this->request->request->get('categoriesData', false);
         $keywordsData = $this->request->request->get('keywordsData', false);
+
+        if (!is_array($entryData)) {
+            $entryData = json_decode($entryData, true);
+        }
+        if (!is_array($keywordsData)) {
+            $keywordsData = json_decode($keywordsData, true);
+        }
+        if (!is_array($categoriesIds)) {
+            $categoriesIds = json_decode($categoriesIds, true);
+        }
+        if (!$title) {
+            $title = $entryData['entry_title'];
+        }
         $updatedEntry = $this->clacoFormManager->editEntry($entry, $entryData, $title, $categoriesIds, $keywordsData);
         $serializedEntry = $this->serializer->serialize(
             $updatedEntry,

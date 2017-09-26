@@ -10,6 +10,7 @@ const NumberGroup = props =>
       type="number"
       className="form-control"
       value={props.value || ''}
+      disabled={props.disabled}
       min={props.min}
       max={props.max}
       onChange={(e) => props.onChange(e.target.value)}
@@ -21,6 +22,7 @@ NumberGroup.propTypes = {
   value: T.number,
   min: T.number,
   max: T.number,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 

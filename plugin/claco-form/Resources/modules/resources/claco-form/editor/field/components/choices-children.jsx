@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {ChoiceField} from './choice-field.jsx'
 import {getFieldType} from '../../../utils'
+import {SelectInput} from '#/main/core/layout/form/components/field/select-input.jsx'
 
 class ChoicesChildren  extends Component {
   constructor(props) {
@@ -48,51 +49,31 @@ class ChoicesChildren  extends Component {
             />
           )}
           {this.state.showFieldsWithChoices ?
-            <div className="input-group">
-              <select
-                className="form-control"
-                name="fieds-list"
-                onChange={e => this.updateStateProps('selectedField', parseInt(e.target.value))}
-              >
-                <option value={0}></option>
-                {this.props.fields
-                  .filter(f =>
-                    f.id !== this.props.fieldId &&
-                    getFieldType(f.type).hasCascade &&
-                    f.fieldFacet &&
-                    f.fieldFacet.field_facet_choices.length > 0
-                  )
-                  .map(f =>
-                    <option
-                      key={`field-${f.id}`}
-                      value={f.id}
-                    >
-                      {f.name}
-                    </option>
-                  )
-                }
-              </select>
-              <span className="input-group-btn">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  disabled={!this.state.selectedField}
-                  onClick={() => this.addChoicesFromSelectedField()}
-                >
-                  <span className="fa fa-w fa-plus-circle"></span>
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={() => {
-                    this.updateStateProps('showFieldsWithChoices', !this.state.showFieldsWithChoices)
-                    this.updateStateProps('selectedField', 0)
-                  }}
-                >
-                  <span className="fa fa-w fa-times-circle"></span>
-                </button>
-              </span>
-            </div> :
+            <SelectInput
+              selectMode={true}
+              options={this.props.fields
+                .filter(f =>
+                  f.id !== this.props.fieldId &&
+                  getFieldType(f.type).hasCascade &&
+                  f.fieldFacet &&
+                  f.fieldFacet.field_facet_choices.length > 0
+                )
+                .map(f => {
+                  return {value: f.id, label: f.name}
+                })
+              }
+              primaryLabel={`<span class="fa fa-w fa-plus-circle"></span>`}
+              secondaryLabel={`<span class="fa fa-w fa-times-circle"></span>`}
+              disablePrimary={!this.state.selectedField}
+              typeAhead={false}
+              value={this.state.selectedField}
+              onChange={value => this.updateStateProps('selectedField', parseInt(value))}
+              onPrimary={() => this.addChoicesFromSelectedField()}
+              onSecondary={() => {
+                this.updateStateProps('showFieldsWithChoices', !this.state.showFieldsWithChoices)
+                this.updateStateProps('selectedField', 0)
+              }}
+            /> :
             <div className="input-group choices-management-buttons">
               <button
                 className="btn btn-default btn-sm choices-management-btn"

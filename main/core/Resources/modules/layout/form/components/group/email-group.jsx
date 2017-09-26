@@ -12,6 +12,7 @@ const EmailGroup = props =>
       type="email"
       className="form-control"
       value={props.value || ''}
+      disabled={props.disabled}
       onChange={(e) => props.onChange(e.target.value)}
     />
   </FormGroup>
@@ -21,6 +22,7 @@ EmailGroup.propTypes = {
   value: T.string,
   min: T.number,
   max: T.number,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 

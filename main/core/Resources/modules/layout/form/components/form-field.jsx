@@ -32,6 +32,7 @@ export const FormField = props => {
             inline={true}
             options={props.choices || []}
             checkedValues={props.value || []}
+            disabled={props.disabled}
             error={props.error}
             onChange={value => props.onChange(value)}
           />
@@ -44,6 +45,7 @@ export const FormField = props => {
           label={props.label}
           options={props.choices || []}
           checkedValues={props.value || []}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -56,6 +58,7 @@ export const FormField = props => {
             inline={true}
             options={props.choices || []}
             checkedValue={props.value}
+            disabled={props.disabled}
             onChange={value => props.onChange(value)}
           />
           {props.error &&
@@ -67,6 +70,7 @@ export const FormField = props => {
           label={props.label}
           options={props.choices || []}
           checkedValue={props.value}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -77,6 +81,7 @@ export const FormField = props => {
           <Select
             options={props.choices || []}
             selectedValue={props.value || ''}
+            disabled={props.disabled}
             onChange={value => props.onChange(value)}
           />
           {props.error &&
@@ -88,6 +93,7 @@ export const FormField = props => {
           label={props.label}
           options={props.choices || []}
           selectedValue={props.value || ''}
+          disabled={props.disabled}
           error={props.error}
           multiple={false}
           onChange={value => props.onChange(value)}
@@ -99,6 +105,7 @@ export const FormField = props => {
           <Select
             options={countries}
             selectedValue={props.value || ''}
+            disabled={props.disabled}
             onChange={value => props.onChange(value)}
           />
           {props.error &&
@@ -110,6 +117,7 @@ export const FormField = props => {
           label={props.label}
           options={countries}
           selectedValue={props.value || ''}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -122,6 +130,7 @@ export const FormField = props => {
             type="text"
             className="form-control"
             value={props.value || ''}
+            disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
           />
           {props.error &&
@@ -132,6 +141,7 @@ export const FormField = props => {
           controlId={props.controlId}
           label={props.label}
           value={props.value || ''}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -144,6 +154,7 @@ export const FormField = props => {
             type="number"
             className="form-control"
             value={props.value || ''}
+            disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
           />
           {props.error &&
@@ -154,6 +165,7 @@ export const FormField = props => {
           controlId={props.controlId}
           label={props.label}
           value={props.value || undefined}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -166,6 +178,7 @@ export const FormField = props => {
             type="email"
             className="form-control"
             value={props.value || ''}
+            disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
           />
           {props.error &&
@@ -176,6 +189,7 @@ export const FormField = props => {
           controlId={props.controlId}
           label={props.label}
           value={props.value || undefined}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -187,6 +201,7 @@ export const FormField = props => {
             id={props.controlId}
             content={props.value || ''}
             minRows={2}
+            disabled={props.disabled}
             onChange={value => props.onChange(value)}
             onClick={() => {}}
             onSelect={() => {}}
@@ -200,6 +215,7 @@ export const FormField = props => {
           controlId={props.controlId}
           label={props.label}
           content={props.value || ''}
+          disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -212,6 +228,7 @@ export const FormField = props => {
             dateFormat="DD/MM/YYYY"
             minDate={moment.utc('1900-01-01T12:00:00')}
             value={props.value || ''}
+            disabled={props.disabled}
             onChange={date => {
               const value = moment(date).isValid() ? formatDate(date) : null
               props.onChange(value)
@@ -227,6 +244,7 @@ export const FormField = props => {
           dateFormat="DD/MM/YYYY"
           minDate={moment.utc('1900-01-01T12:00:00')}
           value={props.value || ''}
+          disabled={props.disabled}
           error={props.error}
           onChange={date => {
             const value = moment(date).isValid() ? formatDate(date) : null
@@ -242,11 +260,13 @@ export const FormField = props => {
 FormField.propTypes = {
   controlId: T.string.isRequired,
   label: T.string.isRequired,
-  value: T.oneOfType([T.string, T.array]),
+  value: T.oneOfType([T.string, T.number, T.array]),
   noLabel: T.bool.isRequired,
+  disabled: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
 FormField.defaultProps = {
-  noLabel: false
+  noLabel: false,
+  disabled: false
 }

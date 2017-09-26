@@ -15,6 +15,7 @@ const CheckboxesGroup = props =>
       inline={props.inline}
       options={props.options}
       checkedValues={props.checkedValues || []}
+      disabled={props.disabled}
       onChange={props.onChange}
     />
   </FormGroup>
@@ -23,11 +24,13 @@ CheckboxesGroup.propTypes = {
   controlId: T.string.isRequired,
   options: T.array.isRequired,
   checkedValues: T.array.isRequired,
+  disabled: T.bool.isRequired,
   onChange: T.func.isRequired
 }
 
 CheckboxesGroup.defaultProps = {
-  inline: true
+  inline: true,
+  disabled: false
 }
 
 export {

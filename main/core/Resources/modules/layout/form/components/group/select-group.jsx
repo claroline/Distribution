@@ -11,6 +11,7 @@ const SelectGroup = props =>
     <Select
       options={props.options}
       selectedValue={props.selectedValue}
+      disabled={props.disabled}
       onChange={props.onChange}
       multiple={props.multiple}
     />
@@ -20,6 +21,7 @@ SelectGroup.propTypes = {
   controlId: T.string.isRequired,
   options: T.array.isRequired,
   selectedValue: T.oneOfType([T.string, T.array]).isRequired,
+  disabled: T.bool,
   multiple: T.bool,
   onChange: T.func.isRequired
 }

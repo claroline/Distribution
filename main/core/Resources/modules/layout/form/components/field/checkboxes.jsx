@@ -22,6 +22,7 @@ const Checkboxes = props =>
             name={`${props.groupName}[]`}
             value={option.value}
             checked={option.value === props.checkedValues.find(cv => cv === option.value)}
+            disabled={props.disabled}
           />
 
           {option.label}
@@ -38,6 +39,7 @@ Checkboxes.propTypes = {
   })).isRequired,
   checkedValues: T.array.isRequired,
   inline: T.bool,
+  disabled: T.bool,
   onChange: T.func.isRequired
 }
 

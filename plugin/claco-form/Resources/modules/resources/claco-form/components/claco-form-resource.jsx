@@ -11,7 +11,10 @@ import {CategoriesList} from '../editor/category/components/categories-list.jsx'
 import {KeywordsList} from '../editor/keyword/components/keywords-list.jsx'
 import {FieldsList} from '../editor/field/components/fields-list.jsx'
 import {TemplateForm} from '../editor/template/components/template-form.jsx'
-import {EntriesList} from '../player/components/entries-list.jsx'
+import {EntriesList} from '../player/entry/components/entries-list.jsx'
+import {EntryCreateForm} from '../player/entry/components/entry-create-form.jsx'
+import {EntryEditForm} from '../player/entry/components/entry-edit-form.jsx'
+import {EntryView} from '../player/entry/components/entry-view.jsx'
 import {selectors} from '../selectors'
 
 const ClacoFormResource = props =>
@@ -34,6 +37,9 @@ const ClacoFormResource = props =>
       <Route path="/fields" component={FieldsList} />
       <Route path="/template" component={TemplateForm} />
       <Route path="/entries" component={EntriesList} />
+      <Route path="/entry/create" component={EntryCreateForm} />
+      <Route path="/entry/:id/edit" component={EntryEditForm} />
+      <Route path="/entry/:id/view" component={EntryView} />
     </Switch>
   </ResourceContainer>
 
@@ -53,6 +59,11 @@ function customActions(props) {
     icon: 'fa fa-fw fa-home',
     label: trans('main_menu', {}, 'clacoform'),
     action: '#/'
+  })
+  actions.push({
+    icon: 'fa fa-fw fa-edit',
+    label: trans('add_entry', {}, 'clacoform'),
+    action: '#/entry/create'
   })
 
   if (props.canSearchEntry) {

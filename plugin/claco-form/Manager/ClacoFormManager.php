@@ -874,10 +874,13 @@ class ClacoFormManager
             foreach ($values as $val) {
                 $parent = $choice;
                 $choice = $this->facetManager->getChoiceByFieldFacetAndValueAndParent($fieldFacet, $val, $parent);
-                $fcc = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
 
-                if (!empty($fcc)) {
-                    $choiceCategories[] = $fcc;
+                if ($choice) {
+                    $fcc = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
+
+                    if (!empty($fcc)) {
+                        $choiceCategories[] = $fcc;
+                    }
                 }
             }
         } else {
@@ -1137,7 +1140,7 @@ class ClacoFormManager
 
         switch ($fieldFacet->getType()) {
             case FieldFacet::DATE_TYPE:
-                $date = is_string($value) ? new \DateTime($value) : $value;
+                $date = $value ? new \DateTime($value) : null;
                 $fieldFacetValue->setDateValue($date);
                 break;
             case FieldFacet::FLOAT_TYPE:
@@ -1145,7 +1148,7 @@ class ClacoFormManager
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
             case FieldFacet::CASCADE_SELECT_TYPE:
-                $fieldFacetValue->setArrayValue($value);
+                $fieldFacetValue->setArrayValue(is_array($value) ? $value : [$value]);
                 break;
             default:
                 $fieldFacetValue->setStringValue($value);
@@ -1170,7 +1173,7 @@ class ClacoFormManager
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
             case FieldFacet::CASCADE_SELECT_TYPE:
-                $fieldFacetValue->setArrayValue($value);
+                $fieldFacetValue->setArrayValue(is_array($value) ? $value : [$value]);
                 break;
             default:
                 $fieldFacetValue->setStringValue($value);

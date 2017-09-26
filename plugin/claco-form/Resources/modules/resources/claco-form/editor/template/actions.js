@@ -1,5 +1,4 @@
 import {generateUrl} from '#/main/core/fos-js-router'
-import {makeActionCreator} from '#/main/core/utilities/redux'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {trans} from '#/main/core/translation'
 import {actions as clacoFormActions} from '../../actions'

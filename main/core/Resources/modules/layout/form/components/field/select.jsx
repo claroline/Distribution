@@ -17,7 +17,8 @@ const Select = props =>
   <fieldset>
     <select
       className="form-control"
-      defaultValue={props.selectedValue}
+      value={props.selectedValue}
+      disabled={props.disabled}
       onChange={e => props.multiple ? props.onChange(getSelectedValues(e)) : props.onChange(e.target.value)}
       multiple={props.multiple}
     >
@@ -38,6 +39,7 @@ Select.propTypes = {
     label: T.string.isRequired
   })).isRequired,
   selectedValue: T.oneOfType([T.string, T.array]).isRequired,
+  disabled: T.bool,
   multiple: T.bool,
   onChange: T.func.isRequired
 }
