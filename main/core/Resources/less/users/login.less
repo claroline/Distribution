@@ -2,11 +2,33 @@
  * Login page
  */
 
+.app-login {
+    background-color: @body-bg; // fallback to body color if theme has no image
+
+    // styles for bg image
+    background-image: url(@login-bg-image);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
 
 .login-page {
     // vertically center the login form in the page
     // if there is lots of space
     justify-content: center;
+    margin: auto;
+    max-width: floor(@login-max-width / 2);
+
+    &.login-with-sso {
+        max-width: @login-max-width;
+    }
+}
+
+.login-logo {
+    align-self: center; // avoid image to be stretched
+    margin-bottom: @component-margin-bottom;
+    max-width: 100%;
 }
 
 .login-title {
@@ -14,11 +36,18 @@
     margin-bottom: @component-margin-bottom;
 }
 
+.login-info {
+    text-align: justify;
+    max-width: @login-max-width;
+    align-self: center;
+    margin-bottom: @component-margin-bottom;
+}
+
 .login_form_container, // for retro compatibility
 .login-container {
-    max-width: 740px;
-    margin: 0 auto;
     width: 100%;
+    max-width: @login-max-width; // for cases when the auth block is not displayed in the login page
+    margin: 0 auto @component-margin-bottom;
 
     form {
         .btn-primary {
@@ -51,11 +80,18 @@
     .authentication-column {
         position: relative;
         flex: 1;
+        max-width: floor(@login-max-width / 2);
         padding: 30px 45px;
     }
 
+    .primary-external-authentication-column {
+        margin-bottom: 30px;
+    }
+
     .account-authentication-column {
-        border-right: 1px solid @panel-default-border;
+        + .external-authentication-column {
+            border-left: 1px solid @panel-default-border;
+        }
     }
 
     .authentication-or {
@@ -88,8 +124,8 @@
 
             height: @auth-or-size;
             width: floor(@auth-or-size / 2);
-            border-radius: 0 floor(@auth-or-size / 2) floor(@auth-or-size / 2) 0;
             border: 1px solid @panel-default-border;
+            border-radius: 0 floor(@auth-or-size / 2) floor(@auth-or-size / 2) 0;
         }
 
         background-color: @panel-footer-bg;
@@ -100,7 +136,6 @@
 
         .external_authentication {
             flex: 1;
-            text-align: center;
         }
     }
 }
@@ -113,9 +148,12 @@
         flex-direction: column;
 
         .account-authentication-column {
-            border-right: none;
-            border-bottom: 1px solid @panel-default-border;
             padding-bottom: 45px;
+
+            + .external-authentication-column {
+                border-left: none;
+                border-top: 1px solid @panel-default-border;
+            }
         }
 
         .authentication-or {
@@ -141,15 +179,22 @@
     }
 }
 
+.btn-registration {
+    max-width: @login-max-width;
+    align-self: center;
+}
+
 .btn-third-party-login {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin: @sso-btn-spacing;
-    height: @sso-btn-size;
-    width: @sso-btn-size;
+    width: 100%;
+    text-align: left;
+    padding: @padding-large-vertical @padding-large-horizontal;
     border-radius: @sso-btn-border-radius;
     color: @sso-btn-color;
+    font-size: @sso-btn-font-size;
+
+    + .btn-third-party-login {
+        margin-top: @sso-btn-spacer-v;
+    }
 
     &:hover,
     &:focus {
@@ -157,8 +202,13 @@
     }
 
     &::before {
+        width: @sso-btn-icon-width;
+        text-align: center;
+        display: inline-block;
         font-family: @sso-btn-font-family, sans-serif;
         font-size: @sso-btn-font-size;
+        margin-right: @padding-large-horizontal;
+        line-height: 1;
     }
 
     .sso-connect-btn(@sso-default-icon, @sso-default-primary, @sso-default-secondary);
