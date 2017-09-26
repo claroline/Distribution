@@ -12,4 +12,14 @@ use Doctrine\ORM\EntityRepository;
 
 class WorkspaceRecentRepository extends EntityRepository
 {
+    public function removeAllEntriesBefore($date)
+    {
+        $qb = $this
+            ->createQueryBuilder('rw')
+            ->delete()
+            ->andWhere('rw.entryDate <= :date')
+            ->setParameter('date', $date);
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -56,6 +56,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -521,8 +522,9 @@ class WorkspaceController extends Controller
         $this->eventDispatcher->dispatch('log', new LogWorkspaceToolReadEvent($workspace, $toolName));
         $this->eventDispatcher->dispatch('log', new LogWorkspaceEnterEvent($workspace));
         // Add workspace to recent workspaces if user is not Usurped
-        // First find if user usurp then if not, add workspace to recent workspaces
-        $this->workspaceManager->addRecentWorkspaceForUser($this->tokenStorage->getToken()->getUser(), $workspace);
+        if (!$this->isUsurpator($this->tokenStorage->getToken())) {
+            $this->workspaceManager->addRecentWorkspaceForUser($this->tokenStorage->getToken()->getUser(), $workspace);
+        }
 
         if ($toolName === 'resource_manager') {
             $this->session->set('isDesktop', false);
@@ -1508,6 +1510,18 @@ class WorkspaceController extends Controller
             'workspaceRoles' => $workspaceRoles,
             'resource' => $resource,
         ];
+    }
+
+    private function isUsurpator($token)
+    {
+        return false;
+        foreach ($token->getRoles() as $role) {
+            if ($role->getRole() === 'ROLE_USURPATE_WORKSPACE_ROLE' || $role instanceof SwitchUserRole) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function throwWorkspaceDeniedException(Workspace $workspace)
