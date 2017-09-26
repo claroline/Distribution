@@ -665,6 +665,7 @@
     "login_failure": "Login has failed. Check if your username and password are correct.",
     "login_target_route_option": "Default login action",
     "login_with_third_party": "Connect with %name%",
+    "login_with_third_party_btn": "%name%",
     "logout": "Logout",
     "logs": "tracking",
     "logs_error_location": "The log files are located in app/logs/update-xxx.log.",
@@ -1174,6 +1175,7 @@
     "tag_children_list": "Tag children list",
     "tag_potential_children_list": "Tag potential children list",
     "tags_add_remove_children_to": "Add/Remove children to",
+    "tags": "Tags",
     "tags_hierarchy": "Tags hierarchy",
     "tags_list": "Tags list",
     "tags_management": "Tags management",
@@ -1421,5 +1423,8 @@
     "unlock_resource_explanation": "This resource is password protected. You must enter it to access the resource.",
     "delete_all": "delete all",
     "ip_input_help": "Each address part must be a number between 0 and 255 or *.",
-    "duplicate": "Duplicate"
+    "duplicate": "Duplicate",
+    "login_auth_or": "OR",
+    "login_auth_claro_account": "Connect with your Claroline account:",
+    "login_auth_sso": "Connect with one of your other account:"
 }

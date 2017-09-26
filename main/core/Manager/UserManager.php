@@ -32,6 +32,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -171,7 +172,8 @@ class UserManager
         $model = null,
         $publicUrl = null,
         $organizations = [],
-        $forcePersonalWorkspace = null
+        $forcePersonalWorkspace = null,
+        $addNotifications = true
     ) {
         $additionalRoles = [];
 
@@ -194,6 +196,12 @@ class UserManager
         $roleUser = $this->roleManager->getRoleByName(PlatformRoles::USER);
         $user->addRole($roleUser);
         $this->roleManager->createUserRole($user);
+        $notifications = $this->platformConfigHandler->getParameter('auto_enable_notifications');
+
+        if ($addNotifications) {
+            $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
+            $nManager->processUpdate($notifications, $user);
+        }
 
         foreach ($additionalRoles as $role) {
             if ($role) {
@@ -670,13 +678,8 @@ class UserManager
         $this->objectManager->endFlushSuite();
 
         if ($logger) {
-            $logger($countCreated.' users created.');
-            $logger($countUpdated.' users updated.');
-        }
-
-        if ($logger) {
-            $logger($countCreated.' users created.');
-            $logger($countUpdated.' users updated.');
+            $logger($countCreated.' users updated ('.implode(',', $updated).')');
+            $logger($countCreated.' users created ('.implode(',', $created).')');
         }
 
         foreach ($skippedUsers as $key => $user) {
@@ -1964,9 +1967,95 @@ class UserManager
             $user->setPlainPassword(uniqid('', true));
             $user->disable();
             $user->remove();
-            $this->createUser($user, false, [], null, null, [], false, false);
+            $this->createUser($user, false, [], null, null, [], false, false, false);
         }
 
         return $user;
+    }
+
+    public function restoreUsersMailParameter()
+    {
+        $users = $this->getAll();
+        $i = 0;
+        $this->objectManager->startFlushSuite();
+        $count = (count($users));
+        $this->log("{$count} users to update...");
+
+        foreach ($users as $user) {
+            ++$i;
+
+            $this->restoreUserMailParameter($user);
+            $this->log("{$i}/{$count} user done...");
+
+            if ($i % 500 === 0) {
+                $this->objectManager->forceFlush();
+                $this->log('Flushing...');
+            }
+        }
+
+        $this->log('Flushing...');
+        $this->objectManager->endFlushSuite();
+    }
+
+    public function restoreUserMailParameter(User $user)
+    {
+        $emailValidted = $this->platformConfigHandler->getParameter('auto_validate_email');
+        $emailRedirect = $this->platformConfigHandler->getParameter('auto_enable_email_redirect');
+        $notifications = $this->platformConfigHandler->getParameter('auto_enable_notifications');
+
+        $user->setIsMailValidated($emailValidted);
+        $user->setIsMailNotified($emailRedirect);
+        $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
+        $nManager->processUpdate($notifications, $user);
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
+    }
+
+    public function checkPersonalWorkspaceIntegrity()
+    {
+        // Get all users having problem seeing their personal workspace
+        $cntUsers = $this->userRepo->countUsersNotManagersOfPersonalWorkspace();
+        $this->log("Found $cntUsers users whose personal workspace needs to get fixed");
+        $batchSize = 1000;
+        $flushSize = 250;
+        $i = 0;
+        $flushed = true;
+        $this->objectManager->startFlushSuite();
+        for ($batch = 0; $batch < ceil($cntUsers / $batchSize); ++$batch) {
+            $users = $this->userRepo->findUsersNotManagersOfPersonalWorkspace(0, $batchSize);
+            $nb = count($users);
+            $this->log("Fetched {$nb} users for checking");
+            foreach ($users as $user) {
+                ++$i;
+                $flushed = false;
+                $this->checkPersonalWorkspaceIntegrityForUser($user, $i, $cntUsers);
+
+                if ($i % $flushSize === 0) {
+                    $this->log('Flushing, this may be very long for large databases');
+                    $this->objectManager->forceFlush();
+                    $flushed = true;
+                }
+            }
+            if (!$flushed) {
+                $this->log('Flushing, this may be very long for large databases');
+                $this->objectManager->forceFlush();
+            }
+            $this->objectManager->clear();
+        }
+        $this->objectManager->endFlushSuite();
+    }
+
+    public function checkPersonalWorkspaceIntegrityForUser(User $user, $i = 1, $totalUsers = 1)
+    {
+        $this->log('Checking personal workspace for '.$user->getUsername()." ($i/$totalUsers)");
+        $ws = $user->getPersonalWorkspace();
+        $managerRole = $ws->getManagerRole();
+        if (!$user->hasRole($managerRole->getRole())) {
+            $this->log('Adding user as manager to his personal workspace', LogLevel::DEBUG);
+            $this->objectManager->startFlushSuite();
+            $user->addRole($managerRole);
+            $this->objectManager->persist($user);
+            $this->objectManager->endFlushSuite();
+        }
     }
 }
