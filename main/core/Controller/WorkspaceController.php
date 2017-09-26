@@ -1514,7 +1514,6 @@ class WorkspaceController extends Controller
 
     private function isUsurpator($token)
     {
-        return false;
         foreach ($token->getRoles() as $role) {
             if ($role->getRole() === 'ROLE_USURPATE_WORKSPACE_ROLE' || $role instanceof SwitchUserRole) {
                 return true;
