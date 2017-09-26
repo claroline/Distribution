@@ -10,11 +10,13 @@ import {REQUEST_SEND} from '#/main/core/api/actions'
 export const ROLES_LOAD = 'ROLES_LOAD'
 export const ROLE_EDIT = 'ROLE_EDIT'
 export const ROLE_SAVE = 'ROLE_SAVE'
+export const ROLE_ADD = 'ROLE_ADD'
 
 export const actions = {}
 
 actions.loadRoles = makeActionCreator(ROLES_LOAD, 'roles', 'total')
 actions.editRole = makeActionCreator(ROLE_EDIT, 'role')
+actions.addRole = makeActionCreator(ROLE_ADD, 'role')
 actions.saveRole = makeActionCreator(ROLE_SAVE)
 
 actions.fetchRoles = () => (dispatch, getState) => {

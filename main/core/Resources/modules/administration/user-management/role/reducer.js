@@ -7,7 +7,8 @@ import {updateArray} from '#/main/core/administration/user-management/utils/redu
 
 import {
   ROLES_LOAD,
-  ROLE_EDIT
+  ROLE_EDIT,
+  ROLE_ADD
 } from './actions'
 
 const handlers = {
@@ -20,6 +21,12 @@ const handlers = {
   [ROLE_EDIT]: (state, action) => {
     const idx = state.data.findIndex(el => el.id === action.role.id)
     const data = updateArray(state.data, idx, action.role)
+
+    return update(state, {'data': {$set: data}})
+  },
+  [ROLE_ADD]: (state, action) => {
+    console.log(action)
+    return update(state, {'data': {$push: [action.role]}})
 
     return update(state, {'data': {$set: data}})
   }

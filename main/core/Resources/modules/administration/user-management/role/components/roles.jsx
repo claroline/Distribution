@@ -30,7 +30,7 @@ class Roles extends Component {
     super(props)
   }
 
-  renderModal(item = {}, onChange = {}) {
+  renderModal(item = {}, onSubmit = () => {}) {
     this.props.showModal(MODAL_FORM, {
       title: 'create',
       definition: [
@@ -41,8 +41,7 @@ class Roles extends Component {
       ],
       item,
       onSubmit: (role) => {
-        console.log(role)
-        this.props.editRole(role)
+        onSubmit(role)
       }
     })
   }
@@ -59,7 +58,7 @@ class Roles extends Component {
               title={t('role_add')}
               icon="fa fa-plus"
               primary={true}
-              action={() => this.renderModal()}
+              action={() => this.renderModal({type: 1, id: 123}, this.props.addRole)}
             />
 
             <PageAction
@@ -102,7 +101,7 @@ class Roles extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: t('edit'),
                 action: (row) => {
-                  this.renderModal(row)
+                  this.renderModal(row, this.props.editRole)
                 }
               }
             ]}
@@ -150,8 +149,12 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     //modal
-    editRole: (id, property, value) => {
-      dispatch(actions.editRole(id, property, value))
+    editRole: (role) => {
+      dispatch(actions.editRole(role))
+    },
+    addRole: (role) => {
+      console.log(role)
+      dispatch(actions.addRole(role))
     },
     // search
     addListFilter: (property, value) => {
