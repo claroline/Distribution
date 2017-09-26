@@ -32,6 +32,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -677,13 +678,8 @@ class UserManager
         $this->objectManager->endFlushSuite();
 
         if ($logger) {
-            $logger($countCreated.' users created.');
-            $logger($countUpdated.' users updated.');
-        }
-
-        if ($logger) {
-            $logger($countCreated.' users created.');
-            $logger($countUpdated.' users updated.');
+            $logger($countCreated.' users updated ('.implode(',', $updated).')');
+            $logger($countCreated.' users created ('.implode(',', $created).')');
         }
 
         foreach ($skippedUsers as $key => $user) {
@@ -2013,5 +2009,53 @@ class UserManager
         $nManager->processUpdate($notifications, $user);
         $this->objectManager->persist($user);
         $this->objectManager->flush();
+    }
+
+    public function checkPersonalWorkspaceIntegrity()
+    {
+        // Get all users having problem seeing their personal workspace
+        $cntUsers = $this->userRepo->countUsersNotManagersOfPersonalWorkspace();
+        $this->log("Found $cntUsers users whose personal workspace needs to get fixed");
+        $batchSize = 1000;
+        $flushSize = 250;
+        $i = 0;
+        $flushed = true;
+        $this->objectManager->startFlushSuite();
+        for ($batch = 0; $batch < ceil($cntUsers / $batchSize); ++$batch) {
+            $users = $this->userRepo->findUsersNotManagersOfPersonalWorkspace(0, $batchSize);
+            $nb = count($users);
+            $this->log("Fetched {$nb} users for checking");
+            foreach ($users as $user) {
+                ++$i;
+                $flushed = false;
+                $this->checkPersonalWorkspaceIntegrityForUser($user, $i, $cntUsers);
+
+                if ($i % $flushSize === 0) {
+                    $this->log('Flushing, this may be very long for large databases');
+                    $this->objectManager->forceFlush();
+                    $flushed = true;
+                }
+            }
+            if (!$flushed) {
+                $this->log('Flushing, this may be very long for large databases');
+                $this->objectManager->forceFlush();
+            }
+            $this->objectManager->clear();
+        }
+        $this->objectManager->endFlushSuite();
+    }
+
+    public function checkPersonalWorkspaceIntegrityForUser(User $user, $i = 1, $totalUsers = 1)
+    {
+        $this->log('Checking personal workspace for '.$user->getUsername()." ($i/$totalUsers)");
+        $ws = $user->getPersonalWorkspace();
+        $managerRole = $ws->getManagerRole();
+        if (!$user->hasRole($managerRole->getRole())) {
+            $this->log('Adding user as manager to his personal workspace', LogLevel::DEBUG);
+            $this->objectManager->startFlushSuite();
+            $user->addRole($managerRole);
+            $this->objectManager->persist($user);
+            $this->objectManager->endFlushSuite();
+        }
     }
 }
