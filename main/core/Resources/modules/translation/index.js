@@ -96,6 +96,7 @@ export function tex(message, domain = 'ujm_exo') {
  * @returns {boolean}
  */
 export function isLoaded(message, domain) {
+  return true
   return getTranslator().hasMessage(message, domain, getLocale())
 }
 

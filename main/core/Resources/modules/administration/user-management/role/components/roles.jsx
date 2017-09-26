@@ -31,17 +31,18 @@ class Roles extends Component {
     super(props)
   }
 
-  renderModal(item = {}, reducer = {}) {
+  renderModal(item = {}, onChange = {}) {
     this.props.showModal(MODAL_CONFIRM, {
       title: 'create',
       question: React.createElement(Form, {
         definition: [
           ['translation', 'text', {label: 'name'}],
-          ['limit', 'number', {label: 'limit'}],
-          ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
-          ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
+  //        ['limit', 'number', {label: 'limit'}],
+  //        ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
+  //        ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
         ],
-        item, reducer
+        item,
+        onChange: (property, value) => this.props.editRole(item.id, property, value)
       }),
       handleConfirm: () => {
         alert('ok')
@@ -50,6 +51,7 @@ class Roles extends Component {
   }
 
   render() {
+    console.log(this.props.data)
     return (
       <Page id="role-management">
         <PageHeader
@@ -104,6 +106,7 @@ class Roles extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: t('edit'),
                 action: (row) => {
+                  console.log(row)
                   this.renderModal(row)
                 }
               }
@@ -155,6 +158,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    //modal
+    editRole: (id, property, value) => {
+      dispatch(actions.editRole(id, property, value))
+    },
     // search
     addListFilter: (property, value) => {
       dispatch(listActions.addFilter(property, value))

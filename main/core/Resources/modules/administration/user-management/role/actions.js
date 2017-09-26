@@ -8,10 +8,14 @@ import {select as paginationSelect} from '#/main/core/layout/pagination/selector
 import {REQUEST_SEND} from '#/main/core/api/actions'
 
 export const ROLES_LOAD = 'ROLES_LOAD'
+export const ROLE_EDIT = 'ROLE_EDIT'
+export const ROLE_SAVE = 'ROLE_SAVE'
 
 export const actions = {}
 
-actions.loadGroups = makeActionCreator(ROLES_LOAD, 'roles', 'total')
+actions.loadRoles = makeActionCreator(ROLES_LOAD, 'roles', 'total')
+actions.editRole = makeActionCreator(ROLE_EDIT, 'id', 'parameter', 'value')
+actions.saveRole = makeActionCreator(ROLE_SAVE)
 
 actions.fetchRoles = () => (dispatch, getState) => {
   const state = getState()
@@ -46,7 +50,7 @@ actions.fetchRoles = () => (dispatch, getState) => {
       },
       success: (data, dispatch) => {
         dispatch(listActions.resetSelect())
-        dispatch(actions.loadGroups(data.results, data.total))
+        dispatch(actions.loadRoles(data.results, data.total))
       }
     }
   })
