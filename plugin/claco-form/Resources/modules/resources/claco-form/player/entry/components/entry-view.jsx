@@ -197,6 +197,7 @@ EntryView.propTypes = {
   isAnon: T.bool.isRequired,
   isOwner: T.bool,
   isManager: T.bool,
+  canViewEntry: T.bool,
   displayMetadata: T.string.isRequired,
   displayCategories: T.bool.isRequired,
   openCategories: T.bool.isRequired,

@@ -62,8 +62,8 @@ class ChoicesChildren  extends Component {
                   return {value: f.id, label: f.name}
                 })
               }
-              primaryLabel={`<span class='fa fa-w fa-plus-circle'></span>`}
-              secondaryLabel={`<span class='fa fa-w fa-times-circle'></span>`}
+              primaryLabel="<span class='fa fa-w fa-plus-circle'></span>"
+              secondaryLabel="<span class='fa fa-w fa-times-circle'></span>"
               disablePrimary={!this.state.selectedField}
               typeAhead={false}
               value={this.state.selectedField}

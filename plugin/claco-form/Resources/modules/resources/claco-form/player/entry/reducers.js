@@ -8,7 +8,8 @@ import {
   CURRENT_ENTRY_UPDATE,
   ENTRY_COMMENT_ADD,
   ENTRY_COMMENT_UPDATE,
-  ENTRY_COMMENT_REMOVE
+  ENTRY_COMMENT_REMOVE,
+  ALL_ENTRIES_REMOVE
 } from './actions'
 
 const entriesReducers = makeReducer({}, {
@@ -31,6 +32,9 @@ const entriesReducers = makeReducer({}, {
     }
 
     return entries
+  },
+  [ALL_ENTRIES_REMOVE]: () => {
+    return []
   },
   [ENTRY_COMMENT_ADD]: (state, action) => {
     const entries = cloneDeep(state)
@@ -110,6 +114,9 @@ const myEntriesReducers = makeReducer({}, {
 
     return myEntries
   },
+  [ALL_ENTRIES_REMOVE]: () => {
+    return []
+  },
   [ENTRY_COMMENT_ADD]: (state, action) => {
     const entries = cloneDeep(state)
     const entryIndex = entries.findIndex(e => e.id === action.entryId)
@@ -167,6 +174,9 @@ const currentEntryReducers = makeReducer({}, {
   },
   [CURRENT_ENTRY_UPDATE]: (state, action) => {
     return Object.assign({}, state, {[action.property]: action.value})
+  },
+  [ALL_ENTRIES_REMOVE]: () => {
+    return {}
   },
   [ENTRY_COMMENT_ADD]: (state, action) => {
     if (state.id === action.entryId) {

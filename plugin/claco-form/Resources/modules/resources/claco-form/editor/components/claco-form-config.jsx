@@ -10,8 +10,11 @@ import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
+import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {formatDate} from '#/main/core/date'
 import {trans, t} from '#/main/core/translation'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions} from '../actions'
 import {Message} from '../../components/message.jsx'
 
@@ -513,10 +516,38 @@ class ClacoFormConfig extends Component {
     this.props.initializeParameters()
   }
 
+  showAllEntriesDeletion() {
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: trans('delete_all_entries', {}, 'clacoform'),
+      question: trans('delete_all_entries_confirm_msg', {}, 'clacoform'),
+      handleConfirm: () => this.props.deleteAllEntries()
+    })
+  }
+
   render() {
     return (
       <div>
-        <h2>{trans('general_configuration', {}, 'clacoform')}</h2>
+        <h2>
+          {trans('general_configuration', {}, 'clacoform')}
+          <span className="pull-right">
+            <button
+              className="btn btn-danger btn-sm margin-right-sm"
+              onClick={() => this.showAllEntriesDeletion()}
+            >
+              <span className="fa fa-w fa-trash"></span>
+              &nbsp;
+              {trans('delete_all_entries', {}, 'clacoform')}
+            </button>
+            <TooltipButton
+              id="tooltip-button-export-all"
+              className="btn btn-default btn-sm"
+              title={trans('export_all_entries', {}, 'clacoform')}
+              onClick={() => this.props.exportAllEntries()}
+            >
+              <span className="fa fa-w fa-sign-out"></span>
+            </TooltipButton>
+          </span>
+        </h2>
         <br/>
         {this.props.canEdit ?
           <form>
@@ -589,7 +620,8 @@ ClacoFormConfig.propTypes = {
     name: T.string.isRequired
   })),
   initializeParameters: T.func.isRequired,
-  updateParameters: T.func.isRequired
+  updateParameters: T.func.isRequired,
+  showModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -604,7 +636,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     initializeParameters: () => dispatch(actions.initializeParameters()),
-    updateParameters: (property, value) => dispatch(actions.updateParameters(property, value))
+    updateParameters: (property, value) => dispatch(actions.updateParameters(property, value)),
+    exportAllEntries: () => dispatch(actions.exportAllEntries()),
+    deleteAllEntries: () => dispatch(actions.deleteAllEntries()),
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }
 

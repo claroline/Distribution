@@ -12,6 +12,7 @@ export const CURRENT_ENTRY_UPDATE = 'CURRENT_ENTRY_UPDATE'
 export const ENTRY_COMMENT_ADD = 'ENTRY_COMMENT_ADD'
 export const ENTRY_COMMENT_UPDATE = 'ENTRY_COMMENT_UPDATE'
 export const ENTRY_COMMENT_REMOVE = 'ENTRY_COMMENT_REMOVE'
+export const ALL_ENTRIES_REMOVE = 'ALL_ENTRIES_REMOVE'
 
 actions.addEntry = makeActionCreator(ENTRY_ADD, 'entry')
 actions.updateEntry = makeActionCreator(ENTRY_UPDATE, 'entry')
@@ -21,6 +22,7 @@ actions.updateCurrentEntry = makeActionCreator(CURRENT_ENTRY_UPDATE, 'property',
 actions.addEntryComment = makeActionCreator(ENTRY_COMMENT_ADD, 'entryId', 'comment')
 actions.updateEntryComment = makeActionCreator(ENTRY_COMMENT_UPDATE, 'entryId', 'comment')
 actions.removeEntryComment = makeActionCreator(ENTRY_COMMENT_REMOVE, 'entryId', 'commentId')
+actions.removeAllEntries = makeActionCreator(ALL_ENTRIES_REMOVE)
 
 actions.createEntry = (entry, keywords) => (dispatch, getState) => {
   const resourceId = getState().resource.id

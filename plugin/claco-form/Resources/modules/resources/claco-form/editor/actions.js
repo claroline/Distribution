@@ -3,6 +3,7 @@ import {trans} from '#/main/core/translation'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {actions as clacoFormActions} from '../actions'
+import {actions as entryActions} from '../player/entry/actions'
 
 export const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 export const RESOURCE_PARAMS_PROPERTY_UPDATE = 'RESOURCE_PARAMS_PROPERTY_UPDATE'
@@ -38,6 +39,27 @@ actions.saveParameters = () => (dispatch, getState) => {
       success: (data, dispatch) => {
         dispatch(actions.updateResourceProperty('details', data))
         dispatch(clacoFormActions.updateMessage(trans('config_success_message', {}, 'clacoform'), 'success'))
+      }
+    }
+  })
+}
+
+actions.exportAllEntries = () => (dispatch, getState) => {
+  const resourceId = getState().resource.id
+  window.location.href = generateUrl('claro_claco_form_entries_export', {clacoForm: resourceId})
+}
+
+actions.deleteAllEntries = () => (dispatch, getState) => {
+  const resourceId = getState().resource.id
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_all_entries_delete', {clacoForm: resourceId}),
+      request: {
+        method: 'DELETE'
+      },
+      success: (data, dispatch) => {
+        dispatch(entryActions.removeAllEntries())
       }
     }
   })
