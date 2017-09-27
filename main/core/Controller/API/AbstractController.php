@@ -3,13 +3,20 @@
 namespace Claroline\CoreBundle\Controller\API;
 
 use Claroline\CoreBundle\API\Crud;
+use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\CoreBundle\API\SerializerProvider;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractController
+class AbstractController extends Controller
 {
     /** @var FinderProvider */
     private $finder;
+
+    /** @var SerializerProvider */
+    private $serializer;
 
     /** @var Crud */
     private $crud;
@@ -18,48 +25,35 @@ class AbstractController
      * ThemeController constructor.
      *
      * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder"),
-     *     "crud"   = @DI\Inject("claroline.api.crud")
+     *     "finder"     = @DI\Inject("claroline.api.finder"),
+     *     "crud"       = @DI\Inject("claroline.api.crud"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
      * })
-     *
-     * @param FinderProvider $finder
-     * @param ThemeManager   $manager
      */
     public function __construct(
         FinderProvider $finder,
+        SerializerProvider $serializer,
         Crud $crud
     ) {
         $this->finder = $finder;
         $this->crud = $crud;
+        $this->serializer = $serializer;
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function listAction(Request $request)
+    public function list(Request $request, $class, $page, $limit)
     {
         return new JsonResponse(
-          $this->finder->search(
-              'Claroline\CoreBundle\Entity\Theme\Theme',
-              $request->query->all()
-          )
+            $this->finder->search($class, $page, $limit, $request->query->all())
         );
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    public function createAction(Request $request)
+    public function create(Request $request, $class)
     {
         try {
-            $object = $this->crud->create->create(json_decode($request->getContent(), true));
+            $object = $this->crud->create($class, json_decode($request->getContent(), true));
 
             return new JsonResponse(
-              $this->manager->serialize($object),
+              $this->serializer->serialize($object),
               201
             );
         } catch (\Exception $e) {
@@ -67,49 +61,27 @@ class AbstractController
         }
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function updateAction(Request $request)
+    public function update($object, Request $request, $class)
     {
         try {
-            $this->manager->update($theme, json_decode($request->getContent(), true));
+            $object = $this->crud->update($class, json_decode($request->getContent(), true));
 
             return new JsonResponse(
-                $this->manager->serialize($theme)
+                $this->serializer->serialize($object)
             );
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
     }
 
-    public function deleteBulkAction(Request $request)
+    public function deleteBulk(Request $request, $class)
     {
         try {
-            $this->manager->deleteBulk(json_decode($request->getContent()));
+            $this->crud->deleteBulk(json_decode($request->getContent()));
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
-    }
-
-    /**
-     * Gets and Deserializes JSON data from Request.
-     *
-     * @param Request $request
-     *
-     * @return mixed $data
-     */
-    protected function decodeRequestData(Request $request)
-    {
-        $dataRaw = $request->getContent();
-
-        $data = null;
-        if (!empty($dataRaw)) {
-            $data = json_decode($dataRaw);
-        }
-
-        return $data;
     }
 }

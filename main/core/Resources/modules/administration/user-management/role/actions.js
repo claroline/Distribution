@@ -20,7 +20,7 @@ actions.saveRole = makeActionCreator(ROLE_SAVE)
 
 actions.addRole = (role) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('api_add_role', {role}),
+    url: generateUrl('api_role_add', {role}),
     request: { method: 'PUT' },
     success: (data, dispatch) => dispatch(actions.fetchRoles())
   }
@@ -31,7 +31,7 @@ actions.fetchRoles = () => (dispatch, getState) => {
 
   const page = paginationSelect.current(state)
   const pageSize = paginationSelect.pageSize(state)
-  let url = generateUrl('api_get_search_roles', {page: page, limit: pageSize}) + '?'
+  let url = generateUrl('api_role_list', {page: page, limit: pageSize}) + '?'
 
   // build queryString
   let queryString = ''
