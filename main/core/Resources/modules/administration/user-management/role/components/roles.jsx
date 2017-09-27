@@ -58,7 +58,7 @@ class Roles extends Component {
               title={t('role_add')}
               icon="fa fa-plus"
               primary={true}
-              action={() => this.renderModal({type: 1, id: 123}, this.props.addRole)}
+              action={() => this.renderModal({type: 1}, this.props.addRole)}
             />
 
             <PageAction

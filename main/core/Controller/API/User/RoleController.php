@@ -11,7 +11,9 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
+use Claroline\CoreBundle\API\AbstractController;
 use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\CoreBundle\API\SerializerProvider;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\View;
@@ -21,20 +23,23 @@ use JMS\DiExtraBundle\Annotation as DI;
 /**
  * @NamePrefix("api_")
  */
-class RoleController extends FOSRestController
+class RoleController extends AbstractController
 {
     /**
      * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder")
+     *     "finder" = @DI\Inject("claroline.api.finder"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      */
-    public function __construct(FinderProvider $finder)
-    {
+    public function __construct(
+      FinderProvider $finder,
+      SerializerProvider $serializer
+    ) {
         $this->finder = $finder;
+        $this->serializer = $serializer;
     }
 
     /**
-     * @View(serializerGroups={"api_group"})
      * @Get("/roles/page/{page}/limit/{limit}/search", name="get_search_roles", options={ "method_prefix" = false })
      */
     public function getSearchRolesAction($page, $limit)
@@ -45,5 +50,14 @@ class RoleController extends FOSRestController
             $limit,
             $this->container->get('request')->query->all()
         );
+    }
+
+    /**
+     * @Get("/roles/add", name="api_add_role", options={ "method_prefix" = false })
+     */
+    public function addRoleAction()
+    {
+        $data = $this->decodeRequestData($request);
+        $role = $this->serializer->unserialize();
     }
 }

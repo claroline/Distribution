@@ -351,4 +351,15 @@ class ObjectManager extends ObjectManagerDecorator
 
         $this->log('Flush level: '.$this->flushSuiteLevel.'.');
     }
+
+    public function save($object, $options = [], $log = true)
+    {
+        $this->persist($object);
+
+        if ($log) {
+            //maybe log some stuff according to the options
+        }
+        
+        $this->flush($object);
+    }
 }

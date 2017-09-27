@@ -16,8 +16,15 @@ export const actions = {}
 
 actions.loadRoles = makeActionCreator(ROLES_LOAD, 'roles', 'total')
 actions.editRole = makeActionCreator(ROLE_EDIT, 'role')
-actions.addRole = makeActionCreator(ROLE_ADD, 'role')
 actions.saveRole = makeActionCreator(ROLE_SAVE)
+
+actions.addRole = (role) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('api_add_role', {role}),
+    request: { method: 'PUT' },
+    success: (data, dispatch) => dispatch(actions.fetchRoles())
+  }
+})
 
 actions.fetchRoles = () => (dispatch, getState) => {
   const state = getState()

@@ -9,14 +9,10 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service("claroline.serializer.role")
  * @DI\Tag("claroline.serializer")
  */
-class RoleSerializer
+class RoleSerializer extends AbstractSerializer
 {
-    public function __construct()
-    {
-    }
-
     /**
-     * Serializes a Workspace entity for the JSON api.
+     * Serializes a Role entity for the JSON api.
      *
      * @param Group $group  - the group to serialize
      * @param bool  $public
@@ -31,5 +27,15 @@ class RoleSerializer
           'translation' => $role->getTranslationKey(),
           'type' => $role->getType(),
         ];
+    }
+
+    public function deserialize($role)
+    {
+        $role = $this->om->getRepository('ClarolineCoreBundle:Role')->find($role->id);
+
+        if (!$role) {
+            $role = new Role();
+            //do more stuff
+        }
     }
 }

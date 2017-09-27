@@ -23,13 +23,10 @@ const handlers = {
     const data = updateArray(state.data, idx, action.role)
 
     return update(state, {'data': {$set: data}})
-  },
+  }/*,
   [ROLE_ADD]: (state, action) => {
-    console.log(action)
     return update(state, {'data': {$push: [action.role]}})
-
-    return update(state, {'data': {$set: data}})
-  }
+  }*/
 }
 
 const reducer = makeReducer({
