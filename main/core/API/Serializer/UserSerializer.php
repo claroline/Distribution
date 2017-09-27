@@ -51,7 +51,7 @@ class UserSerializer
      */
     public function serialize(User $user, array $options = [])
     {
-        if ($options['public'] ) {
+        if (isset($options['public']) && $options['public']) {
             return $this->serializePublic($user);
         }
 

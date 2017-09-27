@@ -131,11 +131,11 @@ const WorkspacesPage = props =>
             context: 'row'
           }), {
             icon: 'fa fa-fw fa-copy',
-            label: t('copy_workspace'),
+            label: t('duplicate'),
             action: (rows) => props.copyWorkspaces(rows, false)
           }, {
             icon: 'fa fa-fw fa-clone',
-            label: t('copy_model_workspace'),
+            label: t('duplicate_model'),
             action: (rows) => props.copyWorkspaces(rows, true)
           }, {
             icon: 'fa fa-fw fa-user',

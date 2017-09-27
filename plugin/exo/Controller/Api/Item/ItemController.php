@@ -24,7 +24,7 @@ class ItemController extends AbstractController
     /**
      * @var ItemManager
      */
-    private $itemManager;
+    private $manager;
 
     /**
      * @var EventDispatcherInterface
@@ -35,24 +35,26 @@ class ItemController extends AbstractController
      * ItemController constructor.
      *
      * @DI\InjectParams({
-     *     "itemManager"     = @DI\Inject("ujm_exo.manager.item"),
+     *     "finder"  = @DI\Inject("claroline.api.finder"),
+     *     "manager" = @DI\Inject("ujm_exo.manager.item"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher")
      * })
      *
-     * @param ItemManager              $itemManager
+     * @param Finder                   $finder
+     * @param ItemManager              $manager
      * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(ItemManager $itemManager, EventDispatcherInterface $eventDispatcher)
+    public function __construct(Finder $finder, ItemManager $manager, EventDispatcherInterface $eventDispatcher)
     {
-        $this->itemManager = $itemManager;
+        $this->manager = $manager;
         $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
      * Searches for questions.
      *
-     * @EXT\Route("/search", name="question_search")
-     * @EXT\Method("POST")
+     * @EXT\Route("", name="question_list")
+     * @EXT\Method("GET")
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * @param User    $user
@@ -60,12 +62,12 @@ class ItemController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function searchAction(User $user, Request $request)
+    public function listAction(User $user, Request $request)
     {
         $searchParams = $this->decodeRequestData($request);
 
         return new JsonResponse(
-            $this->itemManager->search($user, $searchParams->filters)
+            $this->manager->search($user, $searchParams->filters)
         );
     }
 
@@ -94,7 +96,7 @@ class ItemController extends AbstractController
         } else {
             // Try to update question with data
             try {
-                $question = $this->itemManager->create($data);
+                $question = $this->manager->create($data);
             } catch (ValidationException $e) {
                 $errors = $e->getErrors();
             }
@@ -103,7 +105,7 @@ class ItemController extends AbstractController
         if (empty($errors)) {
             // Item updated
             return new JsonResponse(
-                $this->itemManager->serialize($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
+                $this->manager->serialize($question, [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_ADMIN_META])
             );
         } else {
             // Invalid data received
@@ -155,9 +157,22 @@ class ItemController extends AbstractController
     }
 
     /**
-     * Deletes a Item.
+     * Duplicates a list of items.
      *
-     * @EXT\Route("/{id}", name="question_delete")
+     * @EXT\Route("/{id}", name="questions_duplicate")
+     * @EXT\Method("POST")
+     *
+     * @param Request $request
+     */
+    public function duplicateBulkAction(Request $request)
+    {
+
+    }
+
+    /**
+     * Deletes a list of Items.
+     *
+     * @EXT\Route("/{id}", name="questions_delete")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter("user", converter="current_user")
      *
@@ -166,7 +181,7 @@ class ItemController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function deleteAction(Request $request, User $user)
+    public function deleteBulkAction(Request $request, User $user)
     {
         $errors = [];
 
@@ -179,9 +194,9 @@ class ItemController extends AbstractController
             ];
         } else {
             try {
-                $this->itemManager->delete($data, $user);
-            } catch (ValidationException $e) {
-                $errors = $e->getErrors();
+                $this->itemManager->deleteBulk(json_decode($request->getContent()), $user);
+            } catch (\Exception $e) {
+                return new JsonResponse($e->getMessage(), 422);
             }
         }
 

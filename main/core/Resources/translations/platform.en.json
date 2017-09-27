@@ -206,7 +206,6 @@
     "copiable": "Copiable",
     "copies": "Copies",
     "copy": "Copy",
-    "copy_model_workspace": "Duplicate as model",
     "copy_model_workspaces": "{1} Duplicate workspace as model|[2,Inf[ Duplicate %count% workspaces as models",
     "copy_model_workspaces_confirm": "Are you sure you want to duplicate the following workspaces [ %workspace_list% ]?",
     "copy_permalink_to_clipboard": "Copy permalink to clipboard",
@@ -1447,6 +1446,7 @@
     "list_search_no_results": "No results found. Try to change your search.",
     "remove_scheduled_tasks": "{1} Delete scheduled task|[2,Inf[ Delete %count% scheduled tasks",
     "remove_scheduled_tasks_confirm": "Are you sure you want to delete the following scheduled tasks [ %task_list% ]?",
+    "duplicate_model": "Duplicate as model",
     "login_auth_or": "OR",
     "login_auth_claro_account": "Connect with your Claroline account:",
     "login_auth_sso": "Connect with one of your other account:"

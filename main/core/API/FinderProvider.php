@@ -90,7 +90,7 @@ class FinderProvider
     {
         // get search params
         $filters = isset($queryParams['filters']) ? $this->parseFilters($queryParams['filters']) : [];
-        $sortBy = isset($queryParams['sortBy']) ? $this->parseSortBy($queryParams['sortBy']) : [];
+        $sortBy = isset($queryParams['sortBy']) ? $this->parseSortBy($queryParams['sortBy']) : null;
         $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 0;
         $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : -1;
 
@@ -109,7 +109,7 @@ class FinderProvider
         ];
     }
 
-    public function fetch($class, $page, $limit, array $filters, array $sortBy, $count = false)
+    public function fetch($class, $page, $limit, array $filters, array $sortBy = null, $count = false)
     {
         try {
             /** @var QueryBuilder $qb */
@@ -122,7 +122,7 @@ class FinderProvider
             $this->get($class)->configureQueryBuilder($qb, $filters);
 
             // order query
-            if (!empty($sortBy['property']) && 0 !== $sortBy['direction']) {
+            if (!empty($sortBy) && !empty($sortBy['property']) && 0 !== $sortBy['direction']) {
                 $qb->orderBy('obj.'.$sortBy['property'], 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
             }
 

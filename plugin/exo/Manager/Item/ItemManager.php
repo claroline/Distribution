@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Manager\Item;
 
 use Claroline\CoreBundle\Entity\User;
-use Doctrine\Common\Persistence\ObjectManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Exercise;
@@ -125,6 +125,8 @@ class ItemManager
     /**
      * Searches questions for a User.
      *
+     * @deprecated use Finder instead
+     *
      * @param User      $user
      * @param \stdClass $filters
      * @param array     $orderBy
@@ -211,24 +213,45 @@ class ItemManager
     }
 
     /**
-     * Deletes a Item.
+     * Deletes an Item.
      * It's only possible if the Item is not used in an Exercise.
+     *
+     * @param Item $item
+     * @param $user
+     * @param bool $skipErrors
+     *
+     * @throws \Exception
+     */
+    public function delete(Item $item, $user, $skipErrors = false)
+    {
+        if (!$this->canEdit($item, $user)) {
+            if (!$skipErrors) {
+                throw new \Exception('You can not delete this item.');
+            } else {
+                return;
+            }
+        }
+
+        $this->om->remove($item);
+        $this->om->flush();
+    }
+
+    /**
+     * Deletes a list of Items.
      *
      * @param array $questions - the uuids of questions to delete
      * @param User  $user
      */
-    public function delete(array $questions, User $user)
+    public function deleteBulk(array $questions, User $user)
     {
-        // Reload the list of questions to delete
+        // Load the list of questions to delete
         $toDelete = $this->repository->findByUuids($questions);
-        foreach ($toDelete as $question) {
-            if ($this->canEdit($question, $user)) {
-                // User has admin rights so he can delete question
-                $this->om->remove($question);
-            }
-        }
 
-        $this->om->flush();
+        $this->om->startFlushSuite();
+        foreach ($toDelete as $question) {
+            $this->delete($question, $user, true);
+        }
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -269,7 +292,8 @@ class ItemManager
     /**
      * Get all scores for an Answerable Item.
      *
-     * @param Item $question
+     * @param Exercise $exercise
+     * @param Item     $question
      *
      * @return array
      */

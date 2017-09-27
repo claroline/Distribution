@@ -227,8 +227,8 @@ class ThemeManager
     }
 
     /**
-     * Deletes a Item.
-     * It's only possible if the Item is not used in an Exercise.
+     * Deletes a Theme.
+     * It's only possible if the User owns it.
      *
      * @param array $themes - the uuids of themes to delete
      * @param User  $user
@@ -237,11 +237,12 @@ class ThemeManager
     {
         // Reload the list of questions to delete
         $toDelete = $this->repository->findByUuids($themes);
+
+        $this->om->startFlushSuite();
         foreach ($toDelete as $theme) {
             $this->delete($theme, $user, true);
         }
-
-        $this->om->flush();
+        $this->om->endFlushSuite();
     }
 
     /**

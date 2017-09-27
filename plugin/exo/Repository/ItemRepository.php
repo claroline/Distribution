@@ -16,6 +16,8 @@ class ItemRepository extends EntityRepository
     /**
      * Search questions.
      *
+     * @deprecated use Finder instead
+     *
      * @todo add date filters
      * @todo add user filters
      * @todo order query
