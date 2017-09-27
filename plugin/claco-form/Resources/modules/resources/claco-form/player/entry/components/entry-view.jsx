@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
@@ -74,20 +75,15 @@ class EntryView extends Component {
   deleteEntry() {
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_entry', {}, 'clacoform'),
-      question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
-      handleConfirm: () => this.props.deleteEntry(entry.id)
+      question: trans('delete_entry_confirm_message', {title: this.props.entry.title}, 'clacoform'),
+      handleConfirm: () => {
+        this.props.deleteEntry(this.props.entry.id)
+        this.props.history.push('/entries')
+      }
     })
   }
 
-  switchEntryStatus() {
-
-  }
-
   shareEntry() {
-
-  }
-
-  downloadPdf() {
 
   }
 
@@ -100,12 +96,14 @@ class EntryView extends Component {
               <b>{this.props.entry.title}</b>
               <span className="entry-view-control">
                 {this.props.canGeneratePdf &&
-                  <button
+                  <TooltipButton
+                    id="tooltip-button-print"
                     className="btn btn-default btn-sm margin-right-sm"
-                    onClick={() => this.downloadPdf()}
+                    title={trans('print_entry', {}, 'clacoform')}
+                    onClick={() => this.props.downloadEntryPdf(this.props.entry.id)}
                   >
                     <span className="fa fa-w fa-print"></span>
-                  </button>
+                  </TooltipButton>
                 }
                 {this.props.isOwner && /* isSharedWith && */
                   <TooltipButton
@@ -121,11 +119,8 @@ class EntryView extends Component {
                   <TooltipButton
                     id="tooltip-button-status"
                     className="btn btn-default btn-sm margin-right-sm"
-                    title={this.props.entry.status === 1 ?
-                      t('unpublish') :
-                      t('publish')
-                    }
-                    onClick={() => this.switchEntryStatus()}
+                    title={this.props.entry.status === 1 ? t('unpublish') : t('publish')}
+                    onClick={() => this.props.switchEntryStatus(this.props.entry.id)}
                   >
                     <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
                   </TooltipButton>
@@ -284,6 +279,7 @@ EntryView.propTypes = {
   entry: T.shape({
     id: T.number,
     title: T.string,
+    status: T.number,
     creationDate: T.string,
     publicationDate: T.string,
     editionDate: T.string,
@@ -345,6 +341,8 @@ EntryView.propTypes = {
   })),
   loadEntry: T.func.isRequired,
   deleteEntry: T.func.isRequired,
+  switchEntryStatus: T.func.isRequired,
+  downloadEntryPdf: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
@@ -376,10 +374,12 @@ function mapDispatchToProps(dispatch) {
   return {
     loadEntry: (entryId) => dispatch(actions.loadEntry(entryId)),
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
+    switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
+    downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }
 
-const ConnectedEntryView = connect(mapStateToProps, mapDispatchToProps)(EntryView)
+const ConnectedEntryView = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryView))
 
 export {ConnectedEntryView as EntryView}

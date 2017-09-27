@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {actions} from '../actions'
 import {selectors} from '../../../selectors'
 
@@ -67,6 +68,16 @@ class EntriesList extends Component {
                       <a href={`#/entry/${entry.id}/view`}>{entry.title}</a>
                     </td>
                     <td>
+                      {this.props.canGeneratePdf &&
+                        <TooltipButton
+                          id={`tooltip-button-print-${entry.id}`}
+                          className="btn btn-default btn-sm margin-right-sm"
+                          title={trans('print_entry', {}, 'clacoform')}
+                          onClick={() => this.props.downloadEntryPdf(entry.id)}
+                        >
+                          <span className="fa fa-w fa-print"></span>
+                        </TooltipButton>
+                      }
                       {this.canEditEntry(entry) &&
                         <a
                           className="btn btn-default btn-sm margin-right-sm"
@@ -76,12 +87,22 @@ class EntriesList extends Component {
                         </a>
                       }
                       {this.canManageEntry(entry) &&
-                        <button
-                          className="btn btn-danger btn-sm margin-right-sm"
-                          onClick={() => this.deleteEntry(entry)}
-                        >
-                          <span className="fa fa-w fa-trash"></span>
-                        </button>
+                        <span>
+                          <TooltipButton
+                            id={`tooltip-button-status-${entry.id}`}
+                            className="btn btn-default btn-sm margin-right-sm"
+                            title={entry.status === 1 ? t('unpublish') : t('publish')}
+                            onClick={() => this.props.switchEntryStatus(entry.id)}
+                          >
+                            <span className={`fa fa-w fa-${entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
+                          </TooltipButton>
+                          <button
+                            className="btn btn-danger btn-sm margin-right-sm"
+                            onClick={() => this.deleteEntry(entry)}
+                          >
+                            <span className="fa fa-w fa-trash"></span>
+                          </button>
+                        </span>
                       }
                     </td>
                   </tr>
@@ -109,6 +130,8 @@ EntriesList.propTypes = {
   })),
   canSearchEntry: T.bool.isRequired,
   editionEnabled: T.bool.isRequired,
+  downloadEntryPdf: T.func.isRequired,
+  switchEntryStatus: T.func.isRequired,
   deleteEntry: T.func.isRequired,
   showModal: T.func.isRequired
 }
@@ -127,6 +150,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
+    switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }

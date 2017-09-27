@@ -104,8 +104,28 @@ actions.loadEntry = (entryId) => (dispatch, getState) => {
   }
 }
 
-actions.switchStatus = (entryId) => (dispatch, getState) => {
+actions.switchEntryStatus = (entryId) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
 
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entry_status_change', {entry: entryId}),
+      request: {
+        method: 'PUT'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.updateEntry(JSON.parse(data)))
+
+        if (currentEntry && currentEntry.id === entryId) {
+          dispatch(actions.loadCurrentEntry(JSON.parse(data)))
+        }
+      }
+    }
+  })
+}
+
+actions.downloadEntryPdf = (entryId) => () => {
+  window.location.href = generateUrl('claro_claco_form_entry_pdf_download', {entry: entryId})
 }
 
 actions.createComment = (entryId, content) => (dispatch) => {
