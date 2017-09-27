@@ -90,6 +90,8 @@ class ApiLoader extends Loader
         //fallback to the legitimate Annotation Loader
 
         //no idea how to do it yet
+        $imported = $this->import($resource, 'annotation');
+        $routes->addCollection($imported);
 
         return $routes;
     }
