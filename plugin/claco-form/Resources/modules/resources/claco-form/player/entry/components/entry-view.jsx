@@ -3,6 +3,9 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {getFieldType, getCountry} from '../../../utils'
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
@@ -37,8 +40,8 @@ class EntryView extends Component {
     return this.props.commentsEnabled && (!this.props.isAnon || this.props.anonymousCommentsEnabled)
   }
 
-  canManageComments() {
-    return this.props.canEdit /*|| this.props.isCategoryManager*/
+  canManageEntry() {
+    return this.props.canEdit || this.props.isManager
   }
 
   isFieldDisplayable(field) {
@@ -68,13 +71,82 @@ class EntryView extends Component {
     }
   }
 
+  deleteEntry() {
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: trans('delete_entry', {}, 'clacoform'),
+      question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
+      handleConfirm: () => this.props.deleteEntry(entry.id)
+    })
+  }
+
+  switchEntryStatus() {
+
+  }
+
+  shareEntry() {
+
+  }
+
+  downloadPdf() {
+
+  }
+
   render() {
     return (
       this.props.canViewEntry ?
         <div className="panel panel-default">
           <div className="panel-heading">
-            <h2 className="panel-title">
-              {this.props.entry.title}
+            <h2 className="panel-title entry-view-title">
+              <b>{this.props.entry.title}</b>
+              <span className="entry-view-control">
+                {this.props.canGeneratePdf &&
+                  <button
+                    className="btn btn-default btn-sm margin-right-sm"
+                    onClick={() => this.downloadPdf()}
+                  >
+                    <span className="fa fa-w fa-print"></span>
+                  </button>
+                }
+                {this.props.isOwner && /* isSharedWith && */
+                  <TooltipButton
+                    id="tooltip-button-share"
+                    className="btn btn-default btn-sm margin-right-sm"
+                    title={trans('share_entry', {}, 'clacoform')}
+                    onClick={() => this.shareEntry()}
+                  >
+                    <span className="fa fa-w fa-share-alt"></span>
+                  </TooltipButton>
+                }
+                {this.canManageEntry &&
+                  <TooltipButton
+                    id="tooltip-button-status"
+                    className="btn btn-default btn-sm margin-right-sm"
+                    title={this.props.entry.status === 1 ?
+                      t('unpublish') :
+                      t('publish')
+                    }
+                    onClick={() => this.switchEntryStatus()}
+                  >
+                    <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
+                  </TooltipButton>
+                }
+                {this.props.canEditEntry &&
+                  <a
+                    className="btn btn-default btn-sm margin-right-sm"
+                    href={`#/entry/${this.props.entry.id}/edit`}
+                  >
+                    <span className="fa fa-w fa-pencil"></span>
+                  </a>
+                }
+                {this.canManageEntry &&
+                  <button
+                    className="btn btn-danger btn-sm margin-right-sm"
+                    onClick={() => this.deleteEntry()}
+                  >
+                    <span className="fa fa-w fa-trash"></span>
+                  </button>
+                }
+              </span>
             </h2>
           </div>
           <div className="panel-body">
@@ -179,7 +251,7 @@ class EntryView extends Component {
                 entry={this.props.entry}
                 displayComments={this.props.displayComments}
                 canComment={this.canComment()}
-                canManage={this.canManageComments()}
+                canManage={this.canManageEntry()}
               />
             </div>
           }
@@ -195,8 +267,10 @@ EntryView.propTypes = {
   entryId: T.number,
   canEdit: T.bool.isRequired,
   isAnon: T.bool.isRequired,
+  canGeneratePdf: T.bool.isRequired,
   isOwner: T.bool,
   isManager: T.bool,
+  canEditEntry: T.bool,
   canViewEntry: T.bool,
   displayMetadata: T.string.isRequired,
   displayCategories: T.bool.isRequired,
@@ -269,7 +343,9 @@ EntryView.propTypes = {
       }))
     })
   })),
-  loadEntry: T.func.isRequired
+  loadEntry: T.func.isRequired,
+  deleteEntry: T.func.isRequired,
+  showModal: T.func.isRequired
 }
 
 function mapStateToProps(state, ownProps) {
@@ -277,6 +353,7 @@ function mapStateToProps(state, ownProps) {
     entryId: parseInt(ownProps.match.params.id),
     canEdit: state.canEdit,
     isAnon: state.isAnon,
+    canGeneratePdf: state.canGeneratePdf,
     entry: state.currentEntry,
     fields: selectors.visibleFields(state),
     displayMetadata: selectors.getParam(state, 'display_metadata'),
@@ -290,13 +367,16 @@ function mapStateToProps(state, ownProps) {
     openComments: selectors.getParam(state, 'open_comments'),
     isOwner: selectors.isCurrentEntryOwner(state),
     isManager: selectors.isCurrentEntryManager(state),
+    canEditEntry: selectors.canEditCurrentEntry(state),
     canViewEntry: selectors.canOpenCurrentEntry(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadEntry: (entryId) => dispatch(actions.loadEntry(entryId))
+    loadEntry: (entryId) => dispatch(actions.loadEntry(entryId)),
+    deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }
 

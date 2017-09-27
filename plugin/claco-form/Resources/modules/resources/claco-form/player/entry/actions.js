@@ -104,6 +104,10 @@ actions.loadEntry = (entryId) => (dispatch, getState) => {
   }
 }
 
+actions.switchStatus = (entryId) => (dispatch, getState) => {
+
+}
+
 actions.createComment = (entryId, content) => (dispatch) => {
   const formData = new FormData()
   formData.append('commentData', content)

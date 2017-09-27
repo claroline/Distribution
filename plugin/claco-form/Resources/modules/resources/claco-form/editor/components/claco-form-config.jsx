@@ -621,6 +621,8 @@ ClacoFormConfig.propTypes = {
   })),
   initializeParameters: T.func.isRequired,
   updateParameters: T.func.isRequired,
+  exportAllEntries: T.func.isRequired,
+  deleteAllEntries: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
