@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: panos
- * Date: 9/25/17
- * Time: 2:55 PM.
- */
 
 namespace Claroline\CoreBundle\Command;
 
