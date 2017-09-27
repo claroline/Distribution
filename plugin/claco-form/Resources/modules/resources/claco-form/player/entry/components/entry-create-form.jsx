@@ -78,7 +78,7 @@ class EntryCreateForm extends Component {
   }
 
   isFieldLocked(field) {
-    return (!this.state.id && field.locked && !field.lockedEditionOnly) || (this.state.id && field.locked) ? true : false
+    return field.locked && !field.lockedEditionOnly
   }
 
   updateEntryValue(property, value) {
@@ -86,8 +86,6 @@ class EntryCreateForm extends Component {
   }
 
   registerEntry() {
-    console.log(this.state)
-
     if (!this.state['hasError']) {
       this.props.createEntry(this.state.entry, this.state.keywords)
     }
@@ -115,7 +113,7 @@ class EntryCreateForm extends Component {
       <div>
         <h2>{trans('entry_addition', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.canEdit ?
+        {this.props.canAddEntry ?
           <div>
             <FormField
               controlId="field-title"
@@ -198,8 +196,36 @@ class EntryCreateForm extends Component {
 
 EntryCreateForm.propTypes = {
   canEdit: T.bool.isRequired,
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    type: T.number.isRequired,
+    name: T.string.isRequired,
+    locked: T.bool.isRequired,
+    lockedEditionOnly: T.bool.isRequired,
+    required: T.bool,
+    isMetadata: T.bool,
+    hidden: T.bool,
+    fieldFacet: T.shape({
+      id: T.number.isRequired,
+      name: T.string.isRequired,
+      type: T.number.isRequired,
+      field_facet_choices: T.arrayOf(T.shape({
+        id: T.number.isRequired,
+        label: T.string.isRequired,
+        parent: T.shape({
+          id: T.number.isRequired,
+          label: T.string.isRequired
+        })
+      }))
+    })
+  })),
+  keywords: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
   isKeywordsEnabled: T.bool.isRequired,
   isNewKeywordsEnabled: T.bool.isRequired,
+  canAddEntry: T.bool.isRequired,
   createEntry: T.func.isRequired
 }
 
@@ -209,7 +235,8 @@ function mapStateToProps(state) {
     fields: selectors.visibleFields(state),
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
     isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
-    keywords: selectors.getParam(state, 'keywords_enabled') ? state.keywords : []
+    keywords: selectors.getParam(state, 'keywords_enabled') ? state.keywords : [],
+    canAddEntry: selectors.canAddEntry(state)
   }
 }
 

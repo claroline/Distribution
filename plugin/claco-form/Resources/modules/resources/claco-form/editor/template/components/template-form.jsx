@@ -135,7 +135,7 @@ class TemplateForm extends Component {
                       if (!f.required && !f.hidden) {
                         return (
                           <li key={`optional-${f.id}`}>
-                            <b>{generateFieldKey(f.id)}</b> : {getFieldType(f.type).label}
+                            <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
                           </li>
                         )
                       }

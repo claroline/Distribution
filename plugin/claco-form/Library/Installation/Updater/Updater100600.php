@@ -14,7 +14,7 @@ namespace Claroline\ClacoFormBundle\Library\Installation\Updater;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater100001 extends Updater
+class Updater100600 extends Updater
 {
     private $manager;
     private $om;

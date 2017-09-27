@@ -60,6 +60,7 @@ class EntryEditForm extends Component {
   }
 
   componentDidMount() {
+    this.props.loadEntry(this.props.entryId)
     let entry = this.props.entries.find(e => e.id === this.props.entryId)
 
     if (entry) {
@@ -136,7 +137,10 @@ class EntryEditForm extends Component {
   }
 
   isFieldLocked(field) {
-    return (!this.state.id && field.locked && !field.lockedEditionOnly) || (this.state.id && field.locked) ? true : false
+    return !this.props.canEdit && field.locked && (
+      (['user', 'all'].indexOf(this.props.lockedFieldsFor) > -1 && !this.props.isManager) ||
+      (['manager', 'all'].indexOf(this.props.lockedFieldsFor) > -1 && !this.props.isOwner)
+    )
   }
 
   updateEntryValue(property, value) {
@@ -144,8 +148,6 @@ class EntryEditForm extends Component {
   }
 
   registerEntry() {
-    console.log(this.state)
-
     if (!this.state['hasError']) {
       this.props.editEntry(
         this.state.id,
@@ -178,7 +180,7 @@ class EntryEditForm extends Component {
       <div>
         <h2>{trans('entry_edition', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.canEdit ?
+        {this.props.canEditEntry ?
           <div>
             <FormField
               controlId="field-title"
@@ -240,7 +242,7 @@ class EntryEditForm extends Component {
                 }
               </div>
             }
-            {this.state.id && this.props.canEdit &&
+            {(this.props.canEdit || this.props.isManager) &&
               <div>
                 <hr/>
                 <h3>{t('categories')}</h3>
@@ -294,10 +296,50 @@ class EntryEditForm extends Component {
 }
 
 EntryEditForm.propTypes = {
+  entryId: T.number,
   canEdit: T.bool.isRequired,
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    type: T.number.isRequired,
+    name: T.string.isRequired,
+    locked: T.bool.isRequired,
+    lockedEditionOnly: T.bool.isRequired,
+    required: T.bool,
+    isMetadata: T.bool,
+    hidden: T.bool,
+    fieldFacet: T.shape({
+      id: T.number.isRequired,
+      name: T.string.isRequired,
+      type: T.number.isRequired,
+      field_facet_choices: T.arrayOf(T.shape({
+        id: T.number.isRequired,
+        label: T.string.isRequired,
+        parent: T.shape({
+          id: T.number.isRequired,
+          label: T.string.isRequired
+        })
+      }))
+    })
+  })),
+  keywords: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
+  categories: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
+  entries: T.arrayOf(T.shape({
+    id: T.number.isRequired
+  })),
   isKeywordsEnabled: T.bool.isRequired,
   isNewKeywordsEnabled: T.bool.isRequired,
-  editEntry: T.func.isRequired
+  lockedFieldsFor: T.string.isRequired,
+  canEditEntry: T.bool.isRequired,
+  isManager: T.bool,
+  isOwner: T.bool,
+  editEntry: T.func.isRequired,
+  loadEntry: T.func.isRequired
 }
 
 function mapStateToProps(state, ownProps) {
@@ -308,13 +350,18 @@ function mapStateToProps(state, ownProps) {
     entries: state.entries,
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
     isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
+    lockedFieldsFor: selectors.getParam(state, 'locked_fields_for'),
     keywords: selectors.getParam(state, 'keywords_enabled') ? state.keywords : [],
-    categories: state.canEdit ? state.categories : []
+    categories: state.canEdit ? state.categories : [],
+    canEditEntry: selectors.canEditCurrentEntry(state),
+    isManager: selectors.isCurrentEntryManager(state),
+    isOwner: selectors.isCurrentEntryOwner(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    loadEntry: (entryId) => dispatch(actions.loadEntry(entryId)),
     editEntry: (entryId, entry, keywords, categories) => dispatch(actions.editEntry(entryId, entry, keywords, categories))
   }
 }

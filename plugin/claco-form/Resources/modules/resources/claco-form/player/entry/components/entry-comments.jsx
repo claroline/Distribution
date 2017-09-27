@@ -4,8 +4,6 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import moment from 'moment'
 import {trans, t} from '#/main/core/translation'
-import {FormField} from '#/main/core/layout/form/components/form-field.jsx'
-import {getFieldType, getCountry} from '../../../utils'
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -241,10 +239,22 @@ class EntryComments extends Component {
 }
 
 EntryComments.propTypes = {
+  user: T.shape({
+    id: T.number.isRequired,
+    firstName: T.string.isRequired,
+    lastName: T.string.isRequired
+  }),
   entry: T.object.isRequired,
   displayComments: T.bool.isRequired,
   canComment: T.bool.isRequired,
   canManage: T.bool.isRequired,
+  displayCommentAuthor: T.bool.isRequired,
+  displayCommentDate: T.bool.isRequired,
+  createComment: T.func.isRequired,
+  editComment: T.func.isRequired,
+  deleteComment: T.func.isRequired,
+  activateComment: T.func.isRequired,
+  blockComment: T.func.isRequired,
   showModal: T.func.isRequired
 }
 

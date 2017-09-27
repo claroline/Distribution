@@ -4,7 +4,6 @@ import classes from 'classnames'
 import moment from 'moment'
 import {formatDate} from '#/main/core/date'
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {CheckboxesGroup} from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
@@ -259,10 +258,13 @@ export const FormField = props => {
 
 FormField.propTypes = {
   controlId: T.string.isRequired,
+  type: T.string.isRequired,
   label: T.string.isRequired,
   value: T.oneOfType([T.string, T.number, T.array]),
+  choices: T.array,
   noLabel: T.bool.isRequired,
   disabled: T.bool.isRequired,
+  error: T.string,
   onChange: T.func.isRequired
 }
 

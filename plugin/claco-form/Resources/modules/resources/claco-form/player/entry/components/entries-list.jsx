@@ -16,6 +16,36 @@ class EntriesList extends Component {
     })
   }
 
+  isEntryManager(entry) {
+    let isManager = false
+
+    if (entry.categories && this.props.user) {
+      entry.categories.forEach(c => {
+        if (!isManager && c.managers) {
+          c.managers.forEach(m => {
+            if (m.id === this.props.user.id) {
+              isManager = true
+            }
+          })
+        }
+      })
+    }
+
+    return isManager
+  }
+
+  isEntryOwner(entry) {
+    return this.props.user && entry.user && entry.user.id === this.props.user.id
+  }
+
+  canEditEntry(entry) {
+    return this.canManageEntry(entry) || (this.props.editionEnabled && this.isEntryOwner(entry))
+  }
+
+  canManageEntry(entry) {
+    return this.props.canEdit || this.isEntryManager(entry)
+  }
+
   render() {
     return (
       <div>
@@ -37,19 +67,22 @@ class EntriesList extends Component {
                       <a href={`#/entry/${entry.id}/view`}>{entry.title}</a>
                     </td>
                     <td>
-                      <a
-                        className="btn btn-default btn-sm"
-                        href={`#/entry/${entry.id}/edit`}
-                      >
-                        <span className="fa fa-w fa-pencil"></span>
-                      </a>
-                      &nbsp;
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => this.deleteEntry(entry)}
-                      >
-                        <span className="fa fa-w fa-trash"></span>
-                      </button>
+                      {this.canEditEntry(entry) &&
+                        <a
+                          className="btn btn-default btn-sm margin-right-sm"
+                          href={`#/entry/${entry.id}/edit`}
+                        >
+                          <span className="fa fa-w fa-pencil"></span>
+                        </a>
+                      }
+                      {this.canManageEntry(entry) &&
+                        <button
+                          className="btn btn-danger btn-sm margin-right-sm"
+                          onClick={() => this.deleteEntry(entry)}
+                        >
+                          <span className="fa fa-w fa-trash"></span>
+                        </button>
+                      }
                     </td>
                   </tr>
                 )}
@@ -67,9 +100,15 @@ class EntriesList extends Component {
 
 EntriesList.propTypes = {
   canEdit: T.bool.isRequired,
+  user: T.object,
   canGeneratePdf: T.bool.isRequired,
   resourceId: T.number.isRequired,
+  entries: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    title: T.string.isRequired
+  })),
   canSearchEntry: T.bool.isRequired,
+  editionEnabled: T.bool.isRequired,
   deleteEntry: T.func.isRequired,
   showModal: T.func.isRequired
 }
@@ -77,9 +116,11 @@ EntriesList.propTypes = {
 function mapStateToProps(state) {
   return {
     canEdit: state.canEdit,
+    user: state.user,
     canGeneratePdf: state.canGeneratePdf,
     resourceId: state.resource.id,
     canSearchEntry: selectors.canSearchEntry(state),
+    editionEnabled: selectors.getParam(state, 'edition_enabled'),
     entries: state.entries
   }
 }

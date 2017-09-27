@@ -24,6 +24,7 @@ CheckboxesGroup.propTypes = {
   controlId: T.string.isRequired,
   options: T.array.isRequired,
   checkedValues: T.array.isRequired,
+  inline: T.bool.isRequired,
   disabled: T.bool.isRequired,
   onChange: T.func.isRequired
 }

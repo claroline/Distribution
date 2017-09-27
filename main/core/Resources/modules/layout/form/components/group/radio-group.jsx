@@ -28,6 +28,7 @@ RadioGroup.propTypes = {
   controlId: T.string.isRequired,
   options: T.array.isRequired,
   checkedValue: T.string,
+  inline: T.bool.isRequired,
   disabled: T.bool.isRequired,
   onChange: T.func.isRequired
 }

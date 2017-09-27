@@ -8,10 +8,15 @@ class ClacoFormMainMenu extends Component {
   render() {
     return (
       <div className="claco-form-main-menu">
-        <a className="btn btn-default claco-form-menu-btn">
-          <span className="fa fa-w fa-pencil-square-o fa-5x"></span>
-          <h4>{trans('add_entry', {}, 'clacoform')}</h4>
-        </a>
+        {this.props.canAddEntry &&
+          <a
+            className="btn btn-default claco-form-menu-btn"
+            href="#/entry/create"
+          >
+            <span className="fa fa-w fa-pencil-square-o fa-5x"></span>
+            <h4>{trans('add_entry', {}, 'clacoform')}</h4>
+          </a>
+        }
         {this.props.canSearchEntry &&
           <a
             className="btn btn-default claco-form-menu-btn"
@@ -36,13 +41,15 @@ ClacoFormMainMenu.propTypes = {
   params: T.shape({
     random_enabled: T.boolean
   }).isRequired,
-  canSearchEntry: T.bool.isRequired
+  canSearchEntry: T.bool.isRequired,
+  canAddEntry: T.bool.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     params: selectors.params(state),
-    canSearchEntry: selectors.canSearchEntry(state)
+    canSearchEntry: selectors.canSearchEntry(state),
+    canAddEntry: selectors.canAddEntry(state)
   }
 }
 
