@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: panos
- * Date: 9/8/17
- * Time: 3:34 PM.
- */
 
 namespace Claroline\CoreBundle\Entity\Workspace;
 
