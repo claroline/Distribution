@@ -205,3 +205,18 @@ actions.blockComment = (entryId, commentId) => (dispatch) => {
     }
   })
 }
+
+actions.saveEntryUser = (entryId, entryUser) => (dispatch) => {
+  const formData = new FormData()
+  formData.append('entryUserData', JSON.stringify(entryUser))
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entry_user_save', {entry: entryId}),
+      request: {
+        method: 'POST',
+        body: formData
+      }
+    }
+  })
+}

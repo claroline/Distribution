@@ -1113,6 +1113,10 @@ class ClacoFormController extends Controller
         $entryUser = $this->clacoFormManager->getEntryUser($entry, $user);
         $entryUserData = $this->request->request->get('entryUserData', false);
 
+        if (!is_array($entryUserData)) {
+            $entryUserData = json_decode($entryUserData, true);
+        }
+
         if (isset($entryUserData['shared'])) {
             $entryUser->setShared($entryUserData['shared']);
         }

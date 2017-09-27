@@ -7,6 +7,8 @@ import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
+import {generateUrl} from '#/main/core/fos-js-router'
 import {getFieldType, getCountry} from '../../../utils'
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
@@ -18,12 +20,22 @@ class EntryView extends Component {
     this.state = {
       isKeywordsPanelOpen: props.openKeywords,
       isCategoriesPanelOpen: props.openCategories,
-      isCommentsPanelOpen: props.openComments
+      isCommentsPanelOpen: props.openComments,
+      entryUser: {}
     }
   }
 
   componentDidMount() {
     this.props.loadEntry(this.props.entryId)
+
+    if (!this.props.isAnon) {
+      fetch(generateUrl('claro_claco_form_entry_user_retrieve', {entry: this.props.entryId}), {
+        method: 'GET' ,
+        credentials: 'include'
+      })
+      .then(response => response.json())
+      .then(entryUser => this.setState({entryUser: JSON.parse(entryUser)}))
+    }
   }
 
   updateState(property, value) {
@@ -87,6 +99,21 @@ class EntryView extends Component {
 
   }
 
+  switchEntryNotification() {
+    const enabled = !this.isNotificationsEnabled()
+    const entryUser = Object.assign({}, this.state.entryUser, {notifyEdition: enabled, notifyComment: enabled})
+    this.setState({entryUser: entryUser}, () => this.props.saveEntryUser(this.props.entryId, this.state.entryUser))
+  }
+
+  isNotificationsEnabled() {
+    return this.state.entryUser.notifyEdition || (this.props.displayComments && this.state.entryUser.notifyComment)
+  }
+
+  updateNotification(property, value) {
+    const entryUser = Object.assign({}, this.state.entryUser, {[property]: value})
+    this.setState({entryUser: entryUser}, () => this.props.saveEntryUser(this.props.entryId, this.state.entryUser))
+  }
+
   render() {
     return (
       this.props.canViewEntry ?
@@ -94,54 +121,94 @@ class EntryView extends Component {
           <div className="panel-heading">
             <h2 className="panel-title entry-view-title">
               <b>{this.props.entry.title}</b>
-              <span className="entry-view-control">
-                {this.props.canGeneratePdf &&
-                  <TooltipButton
-                    id="tooltip-button-print"
-                    className="btn btn-default btn-sm margin-right-sm"
-                    title={trans('print_entry', {}, 'clacoform')}
-                    onClick={() => this.props.downloadEntryPdf(this.props.entry.id)}
-                  >
-                    <span className="fa fa-w fa-print"></span>
-                  </TooltipButton>
-                }
-                {this.props.isOwner && /* isSharedWith && */
-                  <TooltipButton
-                    id="tooltip-button-share"
-                    className="btn btn-default btn-sm margin-right-sm"
-                    title={trans('share_entry', {}, 'clacoform')}
-                    onClick={() => this.shareEntry()}
-                  >
-                    <span className="fa fa-w fa-share-alt"></span>
-                  </TooltipButton>
-                }
-                {this.canManageEntry &&
-                  <TooltipButton
-                    id="tooltip-button-status"
-                    className="btn btn-default btn-sm margin-right-sm"
-                    title={this.props.entry.status === 1 ? t('unpublish') : t('publish')}
-                    onClick={() => this.props.switchEntryStatus(this.props.entry.id)}
-                  >
-                    <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
-                  </TooltipButton>
-                }
-                {this.props.canEditEntry &&
-                  <a
-                    className="btn btn-default btn-sm margin-right-sm"
-                    href={`#/entry/${this.props.entry.id}/edit`}
-                  >
-                    <span className="fa fa-w fa-pencil"></span>
-                  </a>
-                }
-                {this.canManageEntry &&
-                  <button
-                    className="btn btn-danger btn-sm margin-right-sm"
-                    onClick={() => this.deleteEntry()}
-                  >
-                    <span className="fa fa-w fa-trash"></span>
-                  </button>
-                }
-              </span>
+              {this.state.entryUser.id &&
+                <span className="entry-view-control">
+                  <div className="btn-group margin-right-sm" role="group">
+                    <TooltipButton
+                      id="tooltip-button-notifications"
+                      className="btn btn-default btn-sm"
+                      title={this.isNotificationsEnabled() ?
+                        trans('deactivate_notifications', {}, 'clacoform') :
+                        trans('activate_notifications', {}, 'clacoform')
+                      }
+                      onClick={() => this.switchEntryNotification()}
+                    >
+                      <span className={`fa fa-w fa-${this.isNotificationsEnabled() ? 'bell-slash-o' : 'bell-o'}`}></span>
+                    </TooltipButton>
+                    {this.props.displayComments &&
+                      <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <span className="fa fa-caret-down"></span>
+                      </button>
+                    }
+                    {this.props.displayComments &&
+                      <ul className="dropdown-menu dropdown-menu-right notifications-buttons">
+                        <li>
+                          <CheckGroup
+                            checkId="notify-edition-chk"
+                            checked={this.state.entryUser.notifyEdition}
+                            label={trans('editions', {}, 'clacoform')}
+                            onChange={checked => this.updateNotification('notifyEdition', checked)}
+                          />
+                        </li>
+                        <li>
+                          <CheckGroup
+                            checkId="notify-comment-chk"
+                            checked={this.state.entryUser.notifyComment}
+                            label={trans('comments', {}, 'clacoform')}
+                            onChange={checked => this.updateNotification('notifyComment', checked)}
+                          />
+                        </li>
+                      </ul>
+                    }
+                  </div>
+                  {this.props.canGeneratePdf &&
+                    <TooltipButton
+                      id="tooltip-button-print"
+                      className="btn btn-default btn-sm margin-right-sm"
+                      title={trans('print_entry', {}, 'clacoform')}
+                      onClick={() => this.props.downloadEntryPdf(this.props.entry.id)}
+                    >
+                      <span className="fa fa-w fa-print"></span>
+                    </TooltipButton>
+                  }
+                  {this.props.isOwner && /* isSharedWith && */
+                    <TooltipButton
+                      id="tooltip-button-share"
+                      className="btn btn-default btn-sm margin-right-sm"
+                      title={trans('share_entry', {}, 'clacoform')}
+                      onClick={() => this.shareEntry()}
+                    >
+                      <span className="fa fa-w fa-share-alt"></span>
+                    </TooltipButton>
+                  }
+                  {this.canManageEntry &&
+                    <TooltipButton
+                      id="tooltip-button-status"
+                      className="btn btn-default btn-sm margin-right-sm"
+                      title={this.props.entry.status === 1 ? t('unpublish') : t('publish')}
+                      onClick={() => this.props.switchEntryStatus(this.props.entry.id)}
+                    >
+                      <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
+                    </TooltipButton>
+                  }
+                  {this.props.canEditEntry &&
+                    <a
+                      className="btn btn-default btn-sm margin-right-sm"
+                      href={`#/entry/${this.props.entry.id}/edit`}
+                    >
+                      <span className="fa fa-w fa-pencil"></span>
+                    </a>
+                  }
+                  {this.canManageEntry &&
+                    <button
+                      className="btn btn-danger btn-sm margin-right-sm"
+                      onClick={() => this.deleteEntry()}
+                    >
+                      <span className="fa fa-w fa-trash"></span>
+                    </button>
+                  }
+                </span>
+              }
             </h2>
           </div>
           <div className="panel-body">
@@ -343,6 +410,7 @@ EntryView.propTypes = {
   deleteEntry: T.func.isRequired,
   switchEntryStatus: T.func.isRequired,
   downloadEntryPdf: T.func.isRequired,
+  saveEntryUser: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
@@ -376,6 +444,7 @@ function mapDispatchToProps(dispatch) {
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
     switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
+    saveEntryUser: (entryId, entryUser) => dispatch(actions.saveEntryUser(entryId, entryUser)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }
