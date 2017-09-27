@@ -1,7 +1,11 @@
-{% if services|length > 0 %}
-{% for service in services %}
-    <a href="{{ url("hwi_oauth_service_redirect", {service: service}) }}" type="button" id="{{ service }}-connect-btn" class='btn {{ service }}-connect btn-third-party-login btn-block'>
-        {{ 'login_with_third_party'|trans({'%name%':service|trans({}, 'icap_oauth')}, 'platform') }}
+{% if buttons|length > 0 %}
+{% for button in buttons %}
+    <a href="{{ url("hwi_oauth_service_redirect", {service: button['service']}) }}" type="button" id="{{ button['service'] }}-connect-btn" class='btn {{ button['service'] }}-connect btn-third-party-login btn-block'>
+        {% if button['display_name'] is not empty %}
+            {{ button['display_name'] }}
+        {% else %}
+            {{ 'login_with_third_party'|trans({'%name%':service|trans({}, 'icap_oauth')}, 'platform') }}
+        {% endif %}
     </a>
 {% endfor %}
 {% endif %}
