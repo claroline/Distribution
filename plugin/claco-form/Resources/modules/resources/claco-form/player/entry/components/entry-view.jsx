@@ -425,6 +425,17 @@ class EntryView extends Component {
                   >
                     {trans('comments', {}, 'clacoform')}
                     &nbsp;
+                    <span className="badge">
+                      {this.props.entry.comments &&
+                        this.props.entry.comments.filter(c => {
+                          return this.props.canEdit ||
+                            this.props.isManager ||
+                            c.status === 1 ||
+                            (c.user && this.props.user && c.user.id === this.props.user.id)
+                        }).length
+                      }
+                    </span>
+                    &nbsp;
                     <span className={`fa fa-w ${this.state.isCommentsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
                     </span>
                   </span>
@@ -455,6 +466,11 @@ class EntryView extends Component {
 
 EntryView.propTypes = {
   resourceId: T.number.isRequired,
+  user: T.shape({
+    id: T.number.isRequired,
+    firstName: T.string.isRequired,
+    lastName: T.string.isRequired
+  }),
   entryId: T.number,
   canEdit: T.bool.isRequired,
   canAdministrate: T.bool.isRequired,
@@ -556,6 +572,7 @@ EntryView.propTypes = {
 function mapStateToProps(state, ownProps) {
   return {
     resourceId: selectors.resource(state).id,
+    user: state.user,
     entryId: parseInt(ownProps.match.params.id),
     canEdit: state.canEdit,
     isAnon: state.isAnon,
