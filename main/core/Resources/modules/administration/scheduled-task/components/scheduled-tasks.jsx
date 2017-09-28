@@ -128,7 +128,7 @@ function mapDispatchToProps(dispatch) {
         modalActions.showModal(MODAL_GENERIC_TYPE_PICKER, {
           title: t('task_type_selection_title'),
           types: constants.taskTypes,
-          handleSelect: (type) => true
+          handleSelect: (type) => type
         })
       )
     },

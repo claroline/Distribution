@@ -15,11 +15,6 @@ const Route = props =>
     path={props.path}
     exact={props.exact}
     component={props.component}
-    onEnter={() => {
-      console.log('enter route')
-      props.onEnter(...args)
-    }}
-    onLeave={props.onLeave}
   />
 
 Route.propTypes = RouteTypes.propTypes
@@ -77,10 +72,12 @@ class CustomRouter extends Component {
 }
 
 CustomRouter.propTypes = {
+  history: T.shape({
+    listen: T.func.isRequired
+  }).isRequired,
   basePath: T.string,
   routes: T.array.isRequired,
-  dispatchRouteAction: T.func.isRequired,
-  routeChange: T.func.isRequired
+  dispatchRouteAction: T.func.isRequired
 }
 
 CustomRouter.defaultProps = {
@@ -89,13 +86,7 @@ CustomRouter.defaultProps = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    routeChange(newLocation, action) {
-      console.log('mapDispatchToProps:routeChange')
-      /*dispatch(routeLocationDidUpdate(location, action))*/
-    },
-
     dispatchRouteAction(action) {
-      console.log('mapDispatchToProps:dispatchRouteAction')
       dispatch(action)
     }
   }

@@ -2,7 +2,6 @@
 
 namespace UJM\ExoBundle\Repository;
 
-use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use UJM\ExoBundle\Entity\Exercise;

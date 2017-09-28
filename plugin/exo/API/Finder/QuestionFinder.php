@@ -63,7 +63,6 @@ class QuestionFinder implements FinderInterface
                 ->setParameter('questionPrefix', 'application%');
         }
 
-
         // get questions visible by the current user
         if ($searches['selfOnly']) {
             // only get questions created by the User

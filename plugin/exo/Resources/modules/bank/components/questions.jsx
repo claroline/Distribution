@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 import {localeDate} from '#/main/core/layout/data/types/date/utils'
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
