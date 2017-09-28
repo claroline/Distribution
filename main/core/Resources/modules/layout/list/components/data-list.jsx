@@ -199,28 +199,6 @@ DataList.propTypes = {
     T.shape(DataProperty.propTypes)
   ).isRequired,
 
-    /**
-     * Label of the property
-     */
-    label: T.string.isRequired,
-
-    /**
-     * Configuration flags (default: LIST_PROP_DEFAULT).
-     * Permits to define if the prop is sortable, filterable, displayable, etc.
-     */
-    flags: T.number,
-
-    /**
-     * A custom renderer if the default one from `type` does not fit your needs.
-     */
-    renderer: T.func,
-
-    /**
-     * An option object in case this is much more complex than anticipated
-     */
-    options: T.object
-  })).isRequired,
-
   /**
    * Display formats of the list.
    * Providing this object automatically display the display formats component.
