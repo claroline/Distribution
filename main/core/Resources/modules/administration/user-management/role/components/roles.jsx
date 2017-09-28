@@ -13,7 +13,7 @@ import {select as listSelect} from '#/main/core/layout/list/selectors'
 import {select} from '#/main/core/administration/user-management/role/selectors'
 
 import {enumRole} from '#/main/core/enum/role'
-import {MODAL_CONFIRM, MODAL_FORM} from '#/main/core/layout/modal'
+import {MODAL_FORM} from '#/main/core/layout/modal'
 
 import {
   PageContainer as Page,
@@ -34,8 +34,8 @@ class Roles extends Component {
     this.props.showModal(MODAL_FORM, {
       title: 'create',
       definition: [
-        ['translation', 'text', {label: 'name'}],
-        ['limit', 'number', {label: 'limit'}],
+        ['translationKey', 'text', {label: 'name'}],
+        ['limit', 'number', {label: 'limit'}]
 //        ['hasWorkspace', 'checkbox', {label: 'has_workspace'}],
 //        ['organizations', 'checkboxes', {options: [['hey', 1],['how are you', 2]]}]
       ],
@@ -77,7 +77,7 @@ class Roles extends Component {
             definition={[
               {name: 'name', type: 'string', label: t('name')},
               {name: 'type', type: 'enum', label: t('type'), options: {enum: enumRole}},
-              {name: 'translation', type: 'string', label: t('translation')}
+              {name: 'translationKey', type: 'string', label: t('translation')}
             ]}
 
             pagination={Object.assign({}, this.props.pagination, {
@@ -129,7 +129,9 @@ Roles.propTypes = {
   selected: T.array.isRequired,
   toggleSelect: T.func.isRequired,
   toggleSelectAll: T.func.isRequired,
-  showModal: T.func.isRequired
+  showModal: T.func.isRequired,
+  editRole: T.func.isRequired,
+  addRole: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -153,7 +155,6 @@ function mapDispatchToProps(dispatch) {
       dispatch(actions.editRole(role))
     },
     addRole: (role) => {
-      console.log(role)
       dispatch(actions.addRole(role))
     },
     // search

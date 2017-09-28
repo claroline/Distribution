@@ -40,48 +40,62 @@ class AbstractController extends Controller
         $this->serializer = $serializer;
     }
 
-    public function list(Request $request, $class, $page, $limit)
+    public function list(Request $request, $class, $page, $limit, $env)
     {
         return new JsonResponse(
             $this->finder->search($class, $page, $limit, $request->query->all())
         );
     }
 
-    public function create(Request $request, $class)
+    public function create(Request $request, $class, $env)
     {
         try {
-            $object = $this->crud->create($class, json_decode($request->getContent(), true));
+            $object = $this->crud->create($class, $this->decodeRequest($request));
 
             return new JsonResponse(
               $this->serializer->serialize($object),
               201
             );
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
+            if ($env === 'prod') {
+                return new JsonResponse($e->getMessage(), 422);
+            }
+            throw $e;
         }
     }
 
-    public function update($object, Request $request, $class)
+    public function update($object, Request $request, $class, $env)
     {
         try {
-            $object = $this->crud->update($class, json_decode($request->getContent(), true));
+            $object = $this->crud->update($class, $this->decodeRequest($request));
 
             return new JsonResponse(
                 $this->serializer->serialize($object)
             );
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
+            if ($env === 'prod') {
+                return new JsonResponse($e->getMessage(), 422);
+            }
+            throw $e;
         }
     }
 
-    public function deleteBulk(Request $request, $class)
+    public function deleteBulk(Request $request, $class, $env)
     {
         try {
-            $this->crud->deleteBulk(json_decode($request->getContent()));
+            $this->crud->deleteBulk($this->decodeRequest($request));
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
+            if ($env === 'prod') {
+                return new JsonResponse($e->getMessage(), 422);
+            }
+            throw $e;
         }
+    }
+
+    private function decodeRequest(Request $request)
+    {
+        return json_decode($request->getContent());
     }
 }

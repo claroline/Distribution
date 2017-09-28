@@ -86,8 +86,8 @@ class SerializerProvider
      *
      * @return mixed - a json serializable structure
      */
-    public function deserialize($data, $class, $options = [])
+    public function deserialize($class, $data, $options = [])
     {
-        return $this->get($class)->deserialize($data, $options);
+        return $this->get($class)->deserialize($class, $data);
     }
 }

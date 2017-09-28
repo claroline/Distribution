@@ -75,8 +75,8 @@ class ApiLoader extends Loader
             $pattern = '/'.$prefix.'/'.$options[0];
             $routeDefaults = [
               '_controller' => $controller.'::'.$name,
-              //'request' => $this->container->get('request'),
               'class' => $class,
+              'env' => $this->container->getParameter('kernel.environment'),
             ];
 
             $route = new Route($pattern, $routeDefaults, []);
@@ -87,9 +87,6 @@ class ApiLoader extends Loader
             $routes->add($routeName, $route);
         }
 
-        //fallback to the legitimate Annotation Loader
-
-        //no idea how to do it yet
         $imported = $this->import($resource, 'annotation');
         $routes->addCollection($imported);
 

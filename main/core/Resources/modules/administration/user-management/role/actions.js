@@ -20,8 +20,11 @@ actions.saveRole = makeActionCreator(ROLE_SAVE)
 
 actions.addRole = (role) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('api_role_add', {role}),
-    request: { method: 'PUT' },
+    url: generateUrl('api_role_create'),
+    request: {
+      method: 'POST',
+      body: JSON.stringify(role)
+    },
     success: (data, dispatch) => dispatch(actions.fetchRoles())
   }
 })

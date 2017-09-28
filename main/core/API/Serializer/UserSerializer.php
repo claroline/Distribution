@@ -75,7 +75,7 @@ class UserSerializer
                       $publicUser['fullName'] = $user->getFirstName().' '.$user->getLastName();
                       $publicUser['username'] = $user->getUsername();
                       $publicUser['picture'] = $user->getPicture();
-                      $publicUser['description'] = $user->getAdministrativeCode();
+                      $publicUser['description'] = $user->getDescription();
                       break;
                   case 'email':
                       $publicUser['mail'] = $user->getMail();
