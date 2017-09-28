@@ -72,7 +72,7 @@ class ScheduledTaskSerializer
             'group' => $scheduledTask->getGroup() ? [ // todo : use GroupSerializer when available
                 'id' => $scheduledTask->getGroup()->getId(),
                 'name' => $scheduledTask->getGroup()->getName(),
-            ]: null,
+            ] : null,
         ];
     }
 

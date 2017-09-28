@@ -8,8 +8,6 @@ use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use UJM\ExoBundle\Library\Options\Transfer;
-use UJM\ExoBundle\Manager\Item\ItemManager;
-use UJM\ExoBundle\Serializer\UserSerializer;
 
 /**
  * QuestionBankController
@@ -68,9 +66,9 @@ class QuestionBankController
                 'UJM\ExoBundle\Entity\Item\Item', [
                     'limit' => 20,
                     'sortBy' => 'content',
-                    'filters' => ['selfOnly' => true]
+                    'filters' => ['selfOnly' => true],
                 ], [
-                    Transfer::INCLUDE_ADMIN_META
+                    Transfer::INCLUDE_ADMIN_META,
                 ]
             ),
         ];

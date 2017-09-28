@@ -36,7 +36,7 @@ SelectedUsers.propTypes = {
   deselect: T.func.isRequired
 }
 
-export class ShareModal extends Component {
+class ShareModal extends Component {
   constructor(props) {
     super(props)
 
@@ -94,18 +94,13 @@ export class ShareModal extends Component {
           }
         </Modal.Body>
 
-        <Modal.Footer>
-          <button className="btn btn-default" onClick={this.props.fadeModal}>
-            {t('cancel')}
-          </button>
-          <button
-            className="btn btn-primary"
-            disabled={0 === this.state.users.length}
-            onClick={() => this.props.handleShare(this.state.users, this.state.adminRights)}
-          >
-            {tex('share')}
-          </button>
-        </Modal.Footer>
+        <button
+          className="modal-btn btn btn-primary"
+          disabled={0 === this.state.users.length}
+          onClick={() => this.props.handleShare(this.state.users, this.state.adminRights)}
+        >
+          {tex('share')}
+        </button>
       </BaseModal>
     )
   }
@@ -114,4 +109,8 @@ export class ShareModal extends Component {
 ShareModal.propTypes = {
   fadeModal: T.func.isRequired,
   handleShare: T.func.isRequired
+}
+
+export {
+  ShareModal
 }

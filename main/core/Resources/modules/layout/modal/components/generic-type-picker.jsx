@@ -12,7 +12,7 @@ class GenericTypePicker extends Component {
     this.state = {
       currentType: props.types[0],
       currentName: props.types[0].name,
-      currentDesc: props.types[0].desc
+      currentDesc: props.types[0].description
     }
   }
 
@@ -20,7 +20,7 @@ class GenericTypePicker extends Component {
     this.setState({
       currentType: type,
       currentName: type.name,
-      currentDesc: type.desc
+      currentDesc: type.description
     })
   }
 

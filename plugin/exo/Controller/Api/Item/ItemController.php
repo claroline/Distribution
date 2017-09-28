@@ -170,7 +170,6 @@ class ItemController extends AbstractController
      */
     public function duplicateBulkAction(Request $request)
     {
-
     }
 
     /**

@@ -50,7 +50,12 @@ const WorkspacesPage = props =>
           {
             name: 'name',
             label: t('name'),
-            renderer: (rowData) => <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.id})}>{rowData.name}</a>,
+            renderer: (rowData) => {
+              // variables is used because React will use it has component display name (eslint requirement)
+              const wsLink = <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.id})}>{rowData.name}</a>
+
+              return wsLink
+            },
             displayed: true
           }, {
             name: 'code',

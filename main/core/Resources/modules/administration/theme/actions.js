@@ -37,7 +37,7 @@ actions.deleteThemes = (themes) => {
         method: 'DELETE',
         body: JSON.stringify(themeIds)
       },
-      success: (data) => actions.removeThemes(themeIds)
+      success: () => actions.removeThemes(themeIds)
     }
   }
 }
