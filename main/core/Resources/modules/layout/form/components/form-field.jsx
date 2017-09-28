@@ -152,7 +152,7 @@ export const FormField = props => {
             id={props.controlId}
             type="number"
             className="form-control"
-            value={props.value || ''}
+            value={isNaN(props.value) ? undefined : props.value}
             disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
           />
@@ -163,7 +163,7 @@ export const FormField = props => {
         <NumberGroup
           controlId={props.controlId}
           label={props.label}
-          value={props.value || undefined}
+          value={isNaN(props.value) ? undefined : props.value}
           disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}

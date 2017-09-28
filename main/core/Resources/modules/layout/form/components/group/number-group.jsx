@@ -9,7 +9,7 @@ const NumberGroup = props =>
       id={props.controlId}
       type="number"
       className="form-control"
-      value={props.value || ''}
+      value={isNaN(props.value) ? undefined : props.value}
       disabled={props.disabled}
       min={props.min}
       max={props.max}
@@ -19,7 +19,7 @@ const NumberGroup = props =>
 
 NumberGroup.propTypes = {
   controlId: T.string.isRequired,
-  value: T.number,
+  value: T.oneOfType([T.number, T.string]),
   min: T.number,
   max: T.number,
   disabled: T.bool,
