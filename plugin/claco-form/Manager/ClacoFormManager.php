@@ -1524,16 +1524,17 @@ class ClacoFormManager
         }
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
         $template = $clacoForm->getTemplate();
+        $useTemplate = $clacoForm->getUseTemplate();
         $displayMeta = $clacoForm->getDisplayMetadata();
         $isEntryManager = $user !== 'anon.' && $this->isEntryManager($entry, $user);
         $withMeta = $canEdit || $displayMeta === 'all' || ($displayMeta === 'manager' && $isEntryManager);
-        $countries = empty($template) ? $this->locationManager->getCountries() : [];
+        $countries = $this->locationManager->getCountries();
 
-        if (!empty($template)) {
+        if (!empty($template) && $useTemplate) {
             $template = str_replace('%clacoform_entry_title%', $entry->getTitle(), $template);
 
             foreach ($fields as $field) {
-                if ($withMeta || !$field->getIsMetadata()) {
+                if (($withMeta || !$field->getIsMetadata()) && isset($fieldValues[$field->getId()])) {
                     $fieldFacet = $field->getFieldFacet();
 
                     switch ($fieldFacet->getType()) {
@@ -1562,6 +1563,7 @@ class ClacoFormManager
             [
                 'entry' => $entry,
                 'template' => $template,
+                'useTemplate' => $useTemplate,
                 'withMeta' => $withMeta,
                 'fields' => $fields,
                 'fieldValues' => $fieldValues,

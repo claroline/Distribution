@@ -37,19 +37,20 @@ class TemplateForm extends Component {
       const titleMatches = this.state.template.match(titleRegex)
 
       if (titleMatches === null) {
-        requiredErrors.push({name: 'clacoform_entry_title'})
+        requiredErrors.push('%clacoform_entry_title%')
       } else if (titleMatches.length > 1) {
-        duplicatedErrors.push({name: 'clacoform_entry_title'})
+        duplicatedErrors.push('%clacoform_entry_title%')
       }
       this.props.fields.forEach(f => {
         if (!f.hidden) {
-          const regex = new RegExp(generateFieldKey(f.id), 'g')
+          const fieldKey = generateFieldKey(f.id)
+          const regex = new RegExp(fieldKey, 'g')
           const matches = this.state.template.match(regex)
 
           if (f.required && matches === null) {
-            requiredErrors.push(f)
+            requiredErrors.push(fieldKey)
           } else if (matches !== null && matches.length > 1) {
-            duplicatedErrors.push(f)
+            duplicatedErrors.push(fieldKey)
           }
         }
       })
@@ -71,7 +72,7 @@ class TemplateForm extends Component {
       `
       requiredErrors.forEach(e => {
         message += `
-          <li>${generateFieldKey(e.id)}</li>
+          <li>${e}</li>
         `
       })
       message += '</ul>'
@@ -83,7 +84,7 @@ class TemplateForm extends Component {
       `
       duplicatedErrors.forEach(e => {
         message += `
-          <li>${generateFieldKey(e.id)}</li>
+          <li>${e}</li>
         `
       })
       message += '</ul>'

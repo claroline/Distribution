@@ -528,7 +528,7 @@ function mapStateToProps(state, ownProps) {
     canEditEntry: selectors.canEditCurrentEntry(state),
     canViewEntry: selectors.canOpenCurrentEntry(state),
     canAdministrate: selectors.canAdministrate(state),
-    randomEnabled: selectors.getParam(state, 'random_enabled'),
+    randomEnabled: selectors.getParam(state, 'random_enabled')
   }
 }
 
