@@ -19,10 +19,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @DI\Service("claroline.api.finder.workspace")
+ * @DI\Service("claroline.api.finder.user")
  * @DI\Tag("claroline.finder")
  */
-class WorkspaceFinder implements FinderInterface
+class UserFinder implements FinderInterface
 {
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
@@ -51,12 +51,12 @@ class WorkspaceFinder implements FinderInterface
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Workspace\Workspace';
+        return 'Claroline\CoreBundle\Entity\User';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
     {
-        if (php_sapi_name() !== 'cli' && !$this->authChecker->isGranted('ROLE_ADMIN')) {
+        if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('obj.organizations', 'uo');
@@ -67,14 +67,6 @@ class WorkspaceFinder implements FinderInterface
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'createdAfter':
-                  $qb->andWhere("obj.creationDate >= :{$filterName}");
-                  $qb->setParameter($filterName, $filterValue);
-                  break;
-              case 'createdBefore':
-                  $qb->andWhere("obj.creationDate <= :{$filterName}");
-                  $qb->setParameter($filterName, $filterValue);
-                  break;
               default:
                 if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
                     $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;

@@ -148,7 +148,8 @@ class ResourceNodeSerializer
         /** @var DecorateResourceNodeEvent $event */
         $event = $this->eventDispatcher->dispatch(
             'serialize_resource_node',
-            'Resource\DecorateResourceNode', [
+            'Resource\DecorateResourceNode',
+            [
                 $resourceNode,
                 array_keys($serializedNode),
             ]
@@ -172,12 +173,14 @@ class ResourceNodeSerializer
             'authors' => $resourceNode->getAuthor(),
             'published' => $resourceNode->isPublished(),
             'portal' => $resourceNode->isPublishedToPortal(),
+            'isManager' => $this->rightsManager->isManager($resourceNode),
             'creator' => [
                 'id' => $resourceNode->getCreator()->getGuid(),
                 'name' => $resourceNode->getCreator()->getFullName(),
                 'username' => $resourceNode->getCreator()->getUsername(),
             ],
             'actions' => $this->getActions($resourceNode),
+            'accesses' => $resourceNode->getAccesses(),
         ];
 
         return $meta;

@@ -43,6 +43,8 @@ class Role implements RoleInterface
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"api_user", "api_facet_admin", "api_role"})
+     *
+     * @var int
      */
     protected $id;
 
@@ -50,6 +52,8 @@ class Role implements RoleInterface
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
      * @Groups({"api_user", "api_facet_admin", "api_role"})
+     *
+     * @var string
      */
     protected $name;
 
@@ -57,11 +61,15 @@ class Role implements RoleInterface
      * @ORM\Column(name="translation_key")
      * @Assert\NotBlank()
      * @Groups({"api_role", "api_user", "api_facet_admin"})
+     *
+     * @var string
      */
     protected $translationKey;
 
     /**
      * @ORM\Column(name="is_read_only", type="boolean")
+     *
+     * @var bool
      */
     protected $isReadOnly = false;
 
@@ -116,6 +124,8 @@ class Role implements RoleInterface
     /**
      * @ORM\Column(type="integer")
      * @Groups({"api_user", "api_role"})
+     *
+     * @var int
      */
     protected $type = self::PLATFORM_ROLE;
 
@@ -138,6 +148,8 @@ class Role implements RoleInterface
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     *
+     * @var int
      */
     protected $maxUsers;
 
@@ -167,6 +179,8 @@ class Role implements RoleInterface
 
     /**
      * @ORM\Column(name="personal_workspace_creation_enabled", type="boolean")
+     *
+     * @var bool
      */
     protected $personalWorkspaceCreationEnabled = false;
 
@@ -389,5 +403,10 @@ class Role implements RoleInterface
     public function addPanelFacetRole(PanelFacetRole $pfr)
     {
         $this->panelFacetsRole->add($pfr);
+    }
+
+    public function getIsReadOnly()
+    {
+        return $this->isReadOnly;
     }
 }

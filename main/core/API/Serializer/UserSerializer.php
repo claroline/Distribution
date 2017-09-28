@@ -34,8 +34,8 @@ class UserSerializer
     public function __construct(
         ObjectManager $om,
         FacetManager $facetManager,
-        TokenStorageInterface $tokenStorage)
-    {
+        TokenStorageInterface $tokenStorage
+    ) {
         $this->om = $om;
         $this->facetManager = $facetManager;
         $this->tokenStorage = $tokenStorage;
@@ -52,12 +52,13 @@ class UserSerializer
     public function serialize(User $user, $options = [])
     {
         $isPublic = isset($options['public']) ? $options['public'] : false;
+        $data = $this->serializePublic($user);
 
         if ($isPublic) {
-            return $this->serializePublic($user);
+            return $data;
         }
 
-        return [];
+        return $data;
     }
 
     public function serializePublic(User $user)
@@ -74,7 +75,7 @@ class UserSerializer
                       $publicUser['fullName'] = $user->getFirstName().' '.$user->getLastName();
                       $publicUser['username'] = $user->getUsername();
                       $publicUser['picture'] = $user->getPicture();
-                      $publicUser['description'] = $user->getAdministrativeCode();
+                      $publicUser['description'] = $user->getDescription();
                       break;
                   case 'email':
                       $publicUser['mail'] = $user->getMail();
