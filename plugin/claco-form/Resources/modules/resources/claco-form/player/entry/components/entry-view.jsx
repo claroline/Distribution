@@ -75,6 +75,7 @@ class EntryView extends Component {
   }
 
   canViewMetadata() {
+    /* TODO: Allow for shared users */
     return this.props.canEdit||
       this.props.isOwner ||
       this.props.displayMetadata === 'all' ||
@@ -175,6 +176,49 @@ class EntryView extends Component {
   updateNotification(property, value) {
     const entryUser = Object.assign({}, this.state.entryUser, {[property]: value})
     this.setState({entryUser: entryUser}, () => this.props.saveEntryUser(this.props.entryId, this.state.entryUser))
+  }
+
+  getFieldValue(fieldId) {
+    let value = ''
+    const fieldValue = this.props.entry.fieldValues &&  this.props.entry.fieldValues.find(fv => fv.field.id === fieldId)
+
+    if (fieldValue && fieldValue.fieldFacetValue) {
+      value = fieldValue.fieldFacetValue.value
+    }
+
+    return value
+  }
+
+  generateTemplate() {
+    let template = this.props.template
+    template = template.replace('%clacoform_entry_title%', this.props.entry.title)
+    this.props.fields.forEach(f => {
+      let replacedField = ''
+      const fieldValue = this.getFieldValue(f.id)
+
+      if (this.canViewMetadata() || !f.isMetadata) {
+        switch (getFieldType(f.type).name) {
+          case 'checkboxes':
+            replacedField = fieldValue ? fieldValue.join(', ') : ''
+            break
+          case 'date':
+            replacedField = fieldValue ? moment(fieldValue).format('DD/MM/YYYY') : ''
+            break
+          case 'country':
+            replacedField = fieldValue && getCountry(fieldValue) ? getCountry(fieldValue).label : ''
+            break
+          default:
+            replacedField = fieldValue
+        }
+        if (replacedField === undefined) {
+          replacedField = ''
+        }
+      }
+      template = template.replace(`%field_${f.id}%`, replacedField)
+    })
+    template += '<br/>'
+
+    return template
   }
 
   render() {
@@ -289,20 +333,23 @@ class EntryView extends Component {
               </h2>
             </div>
             <div className="panel-body">
-              {this.props.fields.map(f => this.isFieldDisplayable(f) ?
-                <div key={`field-${f.id}`}>
-                  <div className="row">
-                    <label className="col-md-3">
-                      {f.name}
-                    </label>
-                    <div className="col-md-9">
-                      {this.displayFieldContent(f)}
+              {this.props.template && this.props.useTemplate ?
+                <div dangerouslySetInnerHTML={{ __html: this.generateTemplate()}}></div> :
+                this.props.fields.map(f => this.isFieldDisplayable(f) ?
+                  <div key={`field-${f.id}`}>
+                    <div className="row">
+                      <label className="col-md-3">
+                        {f.name}
+                      </label>
+                      <div className="col-md-9">
+                        {this.displayFieldContent(f)}
+                      </div>
                     </div>
-                  </div>
-                  <hr/>
-                </div> :
-                ''
-              )}
+                    <hr/>
+                  </div> :
+                  ''
+                )
+              }
               {this.canViewMetadata() &&
                 <div>
                   {this.props.entry.publicationDate &&
@@ -428,6 +475,8 @@ EntryView.propTypes = {
   displayComments: T.bool.isRequired,
   openComments: T.bool.isRequired,
   menuPosition: T.string.isRequired,
+  template: T.string,
+  useTemplate: T.bool.isRequired,
   entry: T.shape({
     id: T.number,
     title: T.string,
@@ -528,7 +577,9 @@ function mapStateToProps(state, ownProps) {
     canEditEntry: selectors.canEditCurrentEntry(state),
     canViewEntry: selectors.canOpenCurrentEntry(state),
     canAdministrate: selectors.canAdministrate(state),
-    randomEnabled: selectors.getParam(state, 'random_enabled')
+    randomEnabled: selectors.getParam(state, 'random_enabled'),
+    useTemplate: selectors.getParam(state, 'use_template'),
+    template: selectors.template(state)
   }
 }
 
