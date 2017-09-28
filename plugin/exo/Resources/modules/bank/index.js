@@ -3,25 +3,21 @@ import merge  from 'lodash/merge'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
-import {registerDefaultItemTypes} from './../items/item-types'
+import {registerDefaultItemTypes} from '#/plugin/exo/items/item-types'
 import {registerModalType} from '#/main/core/layout/modal'
-import {MODAL_ADD_ITEM, AddItemModal} from './../quiz/editor/components/modal/add-item-modal.jsx'
-import {MODAL_SEARCH, SearchModal} from './components/modal/search.jsx'
-import {MODAL_SHARE, ShareModal} from './components/modal/share.jsx'
 
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer} from '#/plugin/exo/bank/reducer'
 
-import {Questions} from './components/questions.jsx'
+import {Questions} from '#/plugin/exo/bank/components/questions.jsx'
+import {MODAL_SHARE, ShareModal} from '#/plugin/exo/bank/components/modal/share.jsx'
 
 // Load question types
 registerDefaultItemTypes()
 
 // Register needed modals
-registerModalType(MODAL_SEARCH, SearchModal)
-registerModalType(MODAL_ADD_ITEM, AddItemModal)
 registerModalType(MODAL_SHARE, ShareModal)
 
 // mount the react application

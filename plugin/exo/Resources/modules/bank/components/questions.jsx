@@ -6,6 +6,7 @@ import {t, tex, trans, transChoice} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {localeDate} from '#/main/core/layout/data/types/date/utils'
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/plugin/exo/bank/actions'
@@ -20,7 +21,7 @@ import {
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-import {getDefinition} from '#/plugin/exo/items/item-types'
+import {getDefinition, listItemNames} from '#/plugin/exo/items/item-types'
 import {Icon as ItemIcon} from '#/plugin/exo/items/components/icon.jsx'
 
 const QuestionsPage = props =>
@@ -35,13 +36,40 @@ const QuestionsPage = props =>
             name: 'type',
             label: tex('type'),
             displayed: true,
+            alias: 'mimeType',
             renderer: (rowData) => <ItemIcon name={getDefinition(rowData.type).name} />,
-            //type: 'enum' // todo get the one from Nico
+            type: 'enum',
+            options: {
+              enum: listItemNames().reduce(
+                (selectObj, itemType) => Object.assign(
+                  selectObj, {
+                    [itemType.type]: trans(itemType.name, {}, 'question_types')
+                  }
+                )
+              , {})
+            }
           }, {
-            name: 'title',
+            name: 'content',
             label: tex('question'),
             type: 'html',
             renderer: (rowData) => rowData.title || rowData.content,
+            displayed: true
+          }, {
+            name: 'meta.model',
+            label: t('model'),
+            type: 'boolean',
+            alias: 'model',
+            displayed: true
+          }, {
+            name: 'meta.created',
+            label: t('creation_date'),
+            type: 'date',
+            alias: 'created'
+          }, {
+            name: 'meta.updated',
+            label: t('last_modification'),
+            type: 'date',
+            alias: 'updated',
             displayed: true
           }, {
             name: 'selfOnly',
@@ -52,7 +80,7 @@ const QuestionsPage = props =>
         ]}
 
         actions={[
-          {
+          /*{
             icon: 'fa fa-fw fa-copy',
             label: t('duplicate'),
             action: (rows) => props.duplicateQuestions(rows, false)
@@ -60,7 +88,8 @@ const QuestionsPage = props =>
             icon: 'fa fa-fw fa-clone',
             label: t('duplicate_model'),
             action: (rows) => props.duplicateQuestions(rows, true)
-          }, {
+          },*/ {
+            // TODO : checks if the current user has the rights to share to enable the action
             icon: 'fa fa-fw fa-share',
             label: tex('question_share'),
             action: (rows) => props.shareQuestions(rows),
@@ -78,9 +107,9 @@ const QuestionsPage = props =>
           title: row.title,
           subtitle: trans(getDefinition(row.type).name, {}, 'question_types'),
 //          contentText: row.meta.description,
-//          flags: [
-//            row.meta.model && ['fa fa-object-group', t('model')]
-//          ].filter(flag => !!flag),
+          flags: [
+            row.meta.model && ['fa fa-object-group', t('model')]
+          ].filter(flag => !!flag),
           footer:
             <span>
               created by <b>{row.meta.creator ? row.meta.creator.name : t('unknown')}</b>
@@ -106,8 +135,8 @@ function mapDispatchToProps(dispatch) {
     removeQuestions(questions) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title: transChoice('remove_questions', questions.length, {count: questions.length}, 'ujm_exo'),
-          question: tex('remove_questions_confirm', {
+          title: transChoice('delete_items', questions.length, {count: questions.length}, 'ujm_exo'),
+          question: tex('remove_question_confirm_message', {
             workspace_list: questions.map(question => question.title || question.content.substr(0, 40)).join(', ')
           }),
           handleConfirm: () => dispatch(actions.removeQuestions(questions))
@@ -128,11 +157,13 @@ function mapDispatchToProps(dispatch) {
     },
 
     shareQuestions(questions) {
-      dispatch(
-        modalActions.showModal(MODAL_CONFIRM, {
-
-        })
-      )
+      dispatch(modalActions.showModal(MODAL_SHARE, {
+        title: transChoice('share_items', questions.length, {count: questions.length}, 'ujm_exo'),
+        handleShare: (users, adminRights) => {
+          dispatch(modalActions.fadeModal())
+          dispatch(actions.shareQuestions(questions, users, adminRights))
+        }
+      }))
     }
   }
 }

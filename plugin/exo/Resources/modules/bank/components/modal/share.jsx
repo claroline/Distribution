@@ -10,6 +10,8 @@ import {UserTypeahead} from './../../../users/components/typeahead.jsx'
 
 export const MODAL_SHARE = 'MODAL_SHARE'
 
+// TODO : use core UserTypeahead
+
 const SelectedUsers = props =>
   <ul className="list-group">
     {props.users.map((user) =>
@@ -20,7 +22,7 @@ const SelectedUsers = props =>
           className="btn btn-link btn-sm"
           onClick={() => props.deselect(user)}
         >
-          <span className="fa fa-fw fa-times"></span>
+          <span className="fa fa-fw fa-times" />
         </button>
       </li>
     )}

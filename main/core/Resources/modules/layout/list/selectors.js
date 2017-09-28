@@ -40,7 +40,7 @@ function queryString(listState) {
   if (0 < currentFilters.length) {
     currentFilters.map(filter => {
       let value = filter.value.constructor.name === 'Moment' ? filter.value.unix(): filter.value
-      queryParams.push(`filters[${filter.property}]=${value}`)
+      queryParams.push(`filters[${filter.property}]=${encodeURIComponent(value)}`)
     }).join('&')
   }
 
