@@ -9,12 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\API\User;
+namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\CoreBundle\Controller\API\AbstractController;
 use FOS\RestBundle\Controller\Annotations\View;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(
@@ -24,14 +22,4 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class RoleController extends AbstractController
 {
-    /**
-     * Render the home page of the platform.
-     *
-     * @Route("/test/custom", name="claro_test_custom")
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function testCustom($type)
-    {
-    }
 }
