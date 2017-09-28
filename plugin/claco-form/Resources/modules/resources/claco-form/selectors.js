@@ -11,6 +11,7 @@ const useTemplate = state => state.resource.details['use_template']
 const getParam = (state, property) => state.resource.details[property]
 const currentEntry = state => state.currentEntry
 const myEntries = state => state.myEntries
+const canAdministrate = state => state.resourceNode.rights.current.administrate
 
 const canSearchEntry = createSelector(
   canEdit,
@@ -131,5 +132,6 @@ export const selectors = {
   canManageCurrentEntry,
   canEditCurrentEntry,
   canAddEntry,
-  canOpenCurrentEntry
+  canOpenCurrentEntry,
+  canAdministrate
 }

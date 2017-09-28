@@ -1273,4 +1273,28 @@ class ClacoFormController extends Controller
 
         return new JsonResponse('success', 200);
     }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/entry/{entry}/user/{user}/change",
+     *     name="claro_claco_form_entry_user_change",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Changes status of an entry
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryOwnerChangeAction(Entry $entry, User $user)
+    {
+        $this->clacoFormManager->checkRight($entry->getClacoForm(), 'ADMINISTRATE');
+        $updatedEntry = $this->clacoFormManager->changeEntryOwner($entry, $user);
+        $serializedEntry = $this->serializer->serialize(
+            $updatedEntry,
+            'json',
+            SerializationContext::create()->setGroups(['api_user_min'])
+        );
+
+        return new JsonResponse($serializedEntry, 200);
+    }
 }

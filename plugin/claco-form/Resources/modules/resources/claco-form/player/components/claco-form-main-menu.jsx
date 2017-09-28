@@ -56,6 +56,7 @@ class ClacoFormMainMenu extends Component {
 }
 
 ClacoFormMainMenu.propTypes = {
+  resourceId: T.number.isRequired,
   canSearchEntry: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   randomEnabled: T.bool.isRequired,

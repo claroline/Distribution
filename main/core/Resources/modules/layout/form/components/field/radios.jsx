@@ -30,7 +30,7 @@ Radios.propTypes = {
     value: T.string.isRequired,
     label: T.string.isRequired
   })).isRequired,
-  checkedValue: T.string,
+  checkedValue: T.string.isRequired,
   inline: T.bool,
   disabled: T.bool,
   onChange: T.func.isRequired

@@ -56,7 +56,7 @@ export const FormField = props => {
             groupName={props.controlId}
             inline={true}
             options={props.choices || []}
-            checkedValue={props.value}
+            checkedValue={props.value || ''}
             disabled={props.disabled}
             onChange={value => props.onChange(value)}
           />
@@ -68,7 +68,7 @@ export const FormField = props => {
           controlId={props.controlId}
           label={props.label}
           options={props.choices || []}
-          checkedValue={props.value}
+          checkedValue={props.value || ''}
           disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}

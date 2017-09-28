@@ -60,6 +60,7 @@ class EntryMenu extends Component {
 }
 
 EntryMenu.propTypes = {
+  resourceId: T.number.isRequired,
   canSearchEntry: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   randomEnabled: T.bool.isRequired,

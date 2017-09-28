@@ -220,3 +220,23 @@ actions.saveEntryUser = (entryId, entryUser) => (dispatch) => {
     }
   })
 }
+
+actions.changeEntryOwner = (entryId, userId) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entry_user_change', {entry: entryId, user: userId}),
+      request: {
+        method: 'PUT'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.updateEntry(JSON.parse(data)))
+
+        if (currentEntry && currentEntry.id === entryId) {
+          dispatch(actions.loadCurrentEntry(JSON.parse(data)))
+        }
+      }
+    }
+  })
+}

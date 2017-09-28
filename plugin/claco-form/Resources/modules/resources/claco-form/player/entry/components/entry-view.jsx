@@ -110,6 +110,21 @@ class EntryView extends Component {
 
   }
 
+  showOwnerForm() {
+    this.props.showModal(
+      'MODAL_USER_PICKER',
+      {
+        title: trans('change_entry_owner', {}, 'clacoform'),
+        handleRemove: () => {},
+        handleSelect: (user) => {
+          this.props.changeEntryOwner(this.props.entryId, user.id)
+          this.props.fadeModal()
+        },
+        showFooter: false
+      }
+    )
+  }
+
   switchEntryNotification() {
     const enabled = !this.isNotificationsEnabled()
     const entryUser = Object.assign({}, this.state.entryUser, {notifyEdition: enabled, notifyComment: enabled})
@@ -176,6 +191,16 @@ class EntryView extends Component {
                         </ul>
                       }
                     </div>
+                    {this.props.canAdministrate &&
+                      <TooltipButton
+                        id="tooltip-button-owner"
+                        className="btn btn-default btn-sm margin-right-sm"
+                        title={trans('change_entry_owner', {}, 'clacoform')}
+                        onClick={() => this.showOwnerForm()}
+                      >
+                        <span className="fa fa-w fa-user"></span>
+                      </TooltipButton>
+                    }
                     {this.props.canGeneratePdf &&
                       <TooltipButton
                         id="tooltip-button-print"
@@ -347,6 +372,7 @@ class EntryView extends Component {
 EntryView.propTypes = {
   entryId: T.number,
   canEdit: T.bool.isRequired,
+  canAdministrate: T.bool.isRequired,
   isAnon: T.bool.isRequired,
   canGeneratePdf: T.bool.isRequired,
   isOwner: T.bool,
@@ -431,7 +457,9 @@ EntryView.propTypes = {
   switchEntryStatus: T.func.isRequired,
   downloadEntryPdf: T.func.isRequired,
   saveEntryUser: T.func.isRequired,
+  changeEntryOwner: T.func.isRequired,
   showModal: T.func.isRequired,
+  fadeModal: T.func.isRequired,
   history: T.object.isRequired
 }
 
@@ -456,7 +484,8 @@ function mapStateToProps(state, ownProps) {
     isOwner: selectors.isCurrentEntryOwner(state),
     isManager: selectors.isCurrentEntryManager(state),
     canEditEntry: selectors.canEditCurrentEntry(state),
-    canViewEntry: selectors.canOpenCurrentEntry(state)
+    canViewEntry: selectors.canOpenCurrentEntry(state),
+    canAdministrate: selectors.canAdministrate(state)
   }
 }
 
@@ -467,7 +496,9 @@ function mapDispatchToProps(dispatch) {
     switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
     saveEntryUser: (entryId, entryUser) => dispatch(actions.saveEntryUser(entryId, entryUser)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    changeEntryOwner: (entryId, userId) => dispatch(actions.changeEntryOwner(entryId, userId)),
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
+    fadeModal: () => dispatch(modalActions.fadeModal())
   }
 }
 

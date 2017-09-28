@@ -34,6 +34,7 @@ use Claroline\ClacoFormBundle\Event\Log\LogEntryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryStatusChangeEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryUserChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldEditEvent;
@@ -989,6 +990,16 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
         $categories = $entry->getCategories();
         $this->notifyCategoriesManagers($entry, $categories, $categories);
+
+        return $entry;
+    }
+
+    public function changeEntryOwner(Entry $entry, User $user)
+    {
+        $entry->setUser($user);
+        $this->persistEntry($entry);
+        $event = new LogEntryUserChangeEvent($entry);
+        $this->eventDispatcher->dispatch('log', $event);
 
         return $entry;
     }
