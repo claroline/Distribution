@@ -34,7 +34,7 @@ class AbstractSerializer
     /**
      * Default deserialize method.
      */
-    public function deserialize($class, $data)
+    public function deserialize($class, $data, array $options = [])
     {
         $object = null;
 

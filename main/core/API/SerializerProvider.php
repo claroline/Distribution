@@ -88,6 +88,6 @@ class SerializerProvider
      */
     public function deserialize($class, $data, $options = [])
     {
-        return $this->get($class)->deserialize($class, $data);
+        return $this->get($class)->deserialize($class, $data, $options);
     }
 }

@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service("claroline.crud.role")
  * @DI\Tag("claroline.crud")
  */
-class CrudRole
+class RoleCrud
 {
     /**
      * @DI\Observe("crud_pre_create_object")

@@ -83,8 +83,7 @@ class RoleFinder implements FinderInterface
                   break;
 
               default:
-                if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
-                    $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;
+                if (true === $filterValue || false === $filterValue) {
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                 } else {
