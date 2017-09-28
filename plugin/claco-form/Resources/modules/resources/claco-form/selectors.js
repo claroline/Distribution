@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect'
 
+const resource = state => state.resource
 const isAnon = state => state.isAnon
 const user = state => state.user
 const canEdit = state => state.canEdit
@@ -116,6 +117,7 @@ const canOpenCurrentEntry = createSelector(
 )
 
 export const selectors = {
+  resource,
   canEdit,
   isAnon,
   params,

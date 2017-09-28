@@ -3,10 +3,11 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
-import {selectors} from '../../selectors'
+import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
+import {selectors} from '../../../selectors'
 import {generateUrl} from '#/main/core/fos-js-router'
 
-class ClacoFormMainMenu extends Component {
+class EntryMenu extends Component {
   goToRandomEntry() {
     fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.resourceId}), {
       method: 'GET' ,
@@ -22,40 +23,43 @@ class ClacoFormMainMenu extends Component {
 
   render() {
     return (
-      <div className="claco-form-main-menu">
+      <div className="entry-menu">
         {this.props.canAddEntry &&
-          <a
-            className="btn btn-default claco-form-menu-btn"
-            href="#/entry/create"
+          <TooltipButton
+            id="tooltip-button-add"
+            className="btn btn-default entry-menu-button"
+            title={trans('add_entry', {}, 'clacoform')}
+            onClick={() => this.props.history.push('/entry/create')}
           >
-            <span className="fa fa-w fa-pencil-square-o fa-5x"></span>
-            <h4>{trans('add_entry', {}, 'clacoform')}</h4>
-          </a>
+            <span className="fa fa-w fa-pencil-square-o"></span>
+          </TooltipButton>
         }
         {this.props.canSearchEntry &&
-          <a
-            className="btn btn-default claco-form-menu-btn"
-            href="#/entries"
+          <TooltipButton
+            id="tooltip-button-list"
+            className="btn btn-default entry-menu-button"
+            title={trans('entries_list', {}, 'clacoform')}
+            onClick={() => this.props.history.push('/entries')}
           >
-            <span className="fa fa-w fa-search fa-5x"></span>
-            <h4>{trans('find_entry', {}, 'clacoform')}</h4>
-          </a>
+            <span className="fa fa-w fa-table"></span>
+          </TooltipButton>
         }
         {this.props.randomEnabled &&
-          <button
-            className="btn btn-default claco-form-menu-btn"
+          <TooltipButton
+            id="tooltip-button-random"
+            className="btn btn-default entry-menu-button"
+            title={trans('random_entry', {}, 'clacoform')}
             onClick={() => this.goToRandomEntry()}
           >
-            <span className="fa fa-w fa-random fa-5x"></span>
-            <h4>{trans('random_entry', {}, 'clacoform')}</h4>
-          </button>
+            <span className="fa fa-w fa-random"></span>
+          </TooltipButton>
         }
       </div>
     )
   }
 }
 
-ClacoFormMainMenu.propTypes = {
+EntryMenu.propTypes = {
   canSearchEntry: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   randomEnabled: T.bool.isRequired,
@@ -75,6 +79,6 @@ function mapDispatchToProps() {
   return {}
 }
 
-const ConnectedClacoFormMainMenu = withRouter(connect(mapStateToProps, mapDispatchToProps)(ClacoFormMainMenu))
+const ConnectedEntryMenu = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryMenu))
 
-export {ConnectedClacoFormMainMenu as ClacoFormMainMenu}
+export {ConnectedEntryMenu as EntryMenu}

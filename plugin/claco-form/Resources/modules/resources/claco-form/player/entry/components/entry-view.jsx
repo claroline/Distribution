@@ -13,6 +13,7 @@ import {getFieldType, getCountry} from '../../../utils'
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
 import {EntryComments} from './entry-comments.jsx'
+import {EntryMenu} from './entry-menu.jsx'
 
 class EntryView extends Component {
   constructor(props) {
@@ -26,6 +27,16 @@ class EntryView extends Component {
   }
 
   componentDidMount() {
+    this.initializeEntry()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.entryId !== this.props.entryId) {
+      this.initializeEntry()
+    }
+  }
+
+  initializeEntry() {
     this.props.loadEntry(this.props.entryId)
 
     if (!this.props.isAnon) {
@@ -117,205 +128,213 @@ class EntryView extends Component {
   render() {
     return (
       this.props.canViewEntry ?
-        <div className="panel panel-default">
-          <div className="panel-heading">
-            <h2 className="panel-title entry-view-title">
-              <b>{this.props.entry.title}</b>
-              {this.state.entryUser.id &&
-                <span className="entry-view-control">
-                  <div className="btn-group margin-right-sm" role="group">
-                    <TooltipButton
-                      id="tooltip-button-notifications"
-                      className="btn btn-default btn-sm"
-                      title={this.isNotificationsEnabled() ?
-                        trans('deactivate_notifications', {}, 'clacoform') :
-                        trans('activate_notifications', {}, 'clacoform')
+        <div>
+          {['up', 'both'].indexOf(this.props.menuPosition) > -1 &&
+            <EntryMenu/>
+          }
+          <div className="panel panel-default">
+            <div className="panel-heading">
+              <h2 className="panel-title entry-view-title">
+                <b>{this.props.entry.title}</b>
+                {this.state.entryUser.id &&
+                  <span className="entry-view-control">
+                    <div className="btn-group margin-right-sm" role="group">
+                      <TooltipButton
+                        id="tooltip-button-notifications"
+                        className="btn btn-default btn-sm"
+                        title={this.isNotificationsEnabled() ?
+                          trans('deactivate_notifications', {}, 'clacoform') :
+                          trans('activate_notifications', {}, 'clacoform')
+                        }
+                        onClick={() => this.switchEntryNotification()}
+                      >
+                        <span className={`fa fa-w fa-${this.isNotificationsEnabled() ? 'bell-slash-o' : 'bell-o'}`}></span>
+                      </TooltipButton>
+                      {this.props.displayComments &&
+                        <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                          <span className="fa fa-caret-down"></span>
+                        </button>
                       }
-                      onClick={() => this.switchEntryNotification()}
-                    >
-                      <span className={`fa fa-w fa-${this.isNotificationsEnabled() ? 'bell-slash-o' : 'bell-o'}`}></span>
-                    </TooltipButton>
-                    {this.props.displayComments &&
-                      <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-                        <span className="fa fa-caret-down"></span>
+                      {this.props.displayComments &&
+                        <ul className="dropdown-menu dropdown-menu-right notifications-buttons">
+                          <li>
+                            <CheckGroup
+                              checkId="notify-edition-chk"
+                              checked={this.state.entryUser.notifyEdition}
+                              label={trans('editions', {}, 'clacoform')}
+                              onChange={checked => this.updateNotification('notifyEdition', checked)}
+                            />
+                          </li>
+                          <li>
+                            <CheckGroup
+                              checkId="notify-comment-chk"
+                              checked={this.state.entryUser.notifyComment}
+                              label={trans('comments', {}, 'clacoform')}
+                              onChange={checked => this.updateNotification('notifyComment', checked)}
+                            />
+                          </li>
+                        </ul>
+                      }
+                    </div>
+                    {this.props.canGeneratePdf &&
+                      <TooltipButton
+                        id="tooltip-button-print"
+                        className="btn btn-default btn-sm margin-right-sm"
+                        title={trans('print_entry', {}, 'clacoform')}
+                        onClick={() => this.props.downloadEntryPdf(this.props.entry.id)}
+                      >
+                        <span className="fa fa-w fa-print"></span>
+                      </TooltipButton>
+                    }
+                    {this.props.isOwner && /* isSharedWith && */
+                      <TooltipButton
+                        id="tooltip-button-share"
+                        className="btn btn-default btn-sm margin-right-sm"
+                        title={trans('share_entry', {}, 'clacoform')}
+                        onClick={() => this.shareEntry()}
+                      >
+                        <span className="fa fa-w fa-share-alt"></span>
+                      </TooltipButton>
+                    }
+                    {this.canManageEntry &&
+                      <TooltipButton
+                        id="tooltip-button-status"
+                        className="btn btn-default btn-sm margin-right-sm"
+                        title={this.props.entry.status === 1 ? t('unpublish') : t('publish')}
+                        onClick={() => this.props.switchEntryStatus(this.props.entry.id)}
+                      >
+                        <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
+                      </TooltipButton>
+                    }
+                    {this.props.canEditEntry &&
+                      <a
+                        className="btn btn-default btn-sm margin-right-sm"
+                        href={`#/entry/${this.props.entry.id}/edit`}
+                      >
+                        <span className="fa fa-w fa-pencil"></span>
+                      </a>
+                    }
+                    {this.canManageEntry &&
+                      <button
+                        className="btn btn-danger btn-sm margin-right-sm"
+                        onClick={() => this.deleteEntry()}
+                      >
+                        <span className="fa fa-w fa-trash"></span>
                       </button>
                     }
-                    {this.props.displayComments &&
-                      <ul className="dropdown-menu dropdown-menu-right notifications-buttons">
-                        <li>
-                          <CheckGroup
-                            checkId="notify-edition-chk"
-                            checked={this.state.entryUser.notifyEdition}
-                            label={trans('editions', {}, 'clacoform')}
-                            onChange={checked => this.updateNotification('notifyEdition', checked)}
-                          />
-                        </li>
-                        <li>
-                          <CheckGroup
-                            checkId="notify-comment-chk"
-                            checked={this.state.entryUser.notifyComment}
-                            label={trans('comments', {}, 'clacoform')}
-                            onChange={checked => this.updateNotification('notifyComment', checked)}
-                          />
-                        </li>
-                      </ul>
-                    }
+                  </span>
+                }
+              </h2>
+            </div>
+            <div className="panel-body">
+              {this.props.fields.map(f => this.isFieldDisplayable(f) ?
+                <div key={`field-${f.id}`}>
+                  <div className="row">
+                    <label className="col-md-3">
+                      {f.name}
+                    </label>
+                    <div className="col-md-9">
+                      {this.displayFieldContent(f)}
+                    </div>
                   </div>
-                  {this.props.canGeneratePdf &&
-                    <TooltipButton
-                      id="tooltip-button-print"
-                      className="btn btn-default btn-sm margin-right-sm"
-                      title={trans('print_entry', {}, 'clacoform')}
-                      onClick={() => this.props.downloadEntryPdf(this.props.entry.id)}
-                    >
-                      <span className="fa fa-w fa-print"></span>
-                    </TooltipButton>
+                  <hr/>
+                </div> :
+                ''
+              )}
+              {this.canViewMetadata() &&
+                <div>
+                  {this.props.entry.publicationDate &&
+                    <span>{trans('publication_date', {}, 'clacoform')} : {moment(this.props.entry.publicationDate).format('DD/MM/YYYY')} - </span>
                   }
-                  {this.props.isOwner && /* isSharedWith && */
-                    <TooltipButton
-                      id="tooltip-button-share"
-                      className="btn btn-default btn-sm margin-right-sm"
-                      title={trans('share_entry', {}, 'clacoform')}
-                      onClick={() => this.shareEntry()}
-                    >
-                      <span className="fa fa-w fa-share-alt"></span>
-                    </TooltipButton>
+                  {this.props.entry.editionDate &&
+                    <span>{trans('edition_date', {}, 'clacoform')} : {moment(this.props.entry.editionDate).format('DD/MM/YYYY')} - </span>
                   }
-                  {this.canManageEntry &&
-                    <TooltipButton
-                      id="tooltip-button-status"
-                      className="btn btn-default btn-sm margin-right-sm"
-                      title={this.props.entry.status === 1 ? t('unpublish') : t('publish')}
-                      onClick={() => this.props.switchEntryStatus(this.props.entry.id)}
-                    >
-                      <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
-                    </TooltipButton>
-                  }
-                  {this.props.canEditEntry &&
-                    <a
-                      className="btn btn-default btn-sm margin-right-sm"
-                      href={`#/entry/${this.props.entry.id}/edit`}
-                    >
-                      <span className="fa fa-w fa-pencil"></span>
-                    </a>
-                  }
-                  {this.canManageEntry &&
-                    <button
-                      className="btn btn-danger btn-sm margin-right-sm"
-                      onClick={() => this.deleteEntry()}
-                    >
-                      <span className="fa fa-w fa-trash"></span>
-                    </button>
-                  }
-                </span>
-              }
-            </h2>
-          </div>
-          <div className="panel-body">
-            {this.props.fields.map(f => this.isFieldDisplayable(f) ?
-              <div key={`field-${f.id}`}>
-                <div className="row">
-                  <label className="col-md-3">
-                    {f.name}
-                  </label>
-                  <div className="col-md-9">
-                    {this.displayFieldContent(f)}
-                  </div>
+                  {t('author')} : {this.props.entry.user ? `${this.props.entry.user.firstName} ${this.props.entry.user.lastName}` : t('anonymous')}
                 </div>
-                <hr/>
-              </div> :
-              ''
-            )}
-            {this.canViewMetadata() &&
-              <div>
-                {this.props.entry.publicationDate &&
-                  <span>{trans('publication_date', {}, 'clacoform')} : {moment(this.props.entry.publicationDate).format('DD/MM/YYYY')} - </span>
-                }
-                {this.props.entry.editionDate &&
-                  <span>{trans('edition_date', {}, 'clacoform')} : {moment(this.props.entry.editionDate).format('DD/MM/YYYY')} - </span>
-                }
-                {t('author')} : {this.props.entry.user ? `${this.props.entry.user.firstName} ${this.props.entry.user.lastName}` : t('anonymous')}
+              }
+            </div>
+            {this.props.displayKeywords &&
+              <div className="panel-heading">
+                <div className="panel-title">
+                  <span
+                    className="pointer-hand"
+                    onClick={() => this.updateState('isKeywordsPanelOpen', !this.state.isKeywordsPanelOpen)}
+                  >
+                    {trans('keywords', {}, 'clacoform')}
+                    &nbsp;
+                    <span className={`fa fa-w ${this.state.isKeywordsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            }
+            {this.props.displayKeywords &&
+              <div className={`panel-body collapse ${this.state.isKeywordsPanelOpen ? 'in' : ''}`}>
+                {this.props.entry.keywords && this.props.entry.keywords.map(k =>
+                  <button
+                    key={`keyword-${k.id}`}
+                    className="btn btn-default margin-right-sm margin-bottom-sm"
+                  >
+                    {k.name}
+                  </button>
+                )}
+              </div>
+            }
+            {this.props.displayCategories &&
+              <div className="panel-heading">
+                <div className="panel-title">
+                  <span
+                    className="pointer-hand"
+                    onClick={() => this.updateState('isCategoriesPanelOpen', !this.state.isCategoriesPanelOpen)}
+                  >
+                    {t('categories')}
+                    &nbsp;
+                    <span className={`fa fa-w ${this.state.isCategoriesPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            }
+            {this.props.displayCategories &&
+              <div className={`panel-body collapse ${this.state.isCategoriesPanelOpen ? 'in' : ''}`}>
+                {this.props.entry.categories && this.props.entry.categories.map(c =>
+                  <button
+                    key={`category-${c.id}`}
+                    className="btn btn-default margin-right-sm margin-bottom-sm"
+                  >
+                    {c.name}
+                  </button>
+                )}
+              </div>
+            }
+            {(this.props.displayComments || this.canComment()) &&
+              <div className="panel-heading">
+                <div className="panel-title">
+                  <span
+                    className="pointer-hand"
+                    onClick={() => this.updateState('isCommentsPanelOpen', !this.state.isCommentsPanelOpen)}
+                  >
+                    {trans('comments', {}, 'clacoform')}
+                    &nbsp;
+                    <span className={`fa fa-w ${this.state.isCommentsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
+                    </span>
+                  </span>
+                </div>
+              </div>
+            }
+            {(this.props.displayComments || this.canComment()) &&
+              <div className={`panel-body collapse ${this.state.isCommentsPanelOpen ? 'in' : ''}`}>
+                <EntryComments
+                  entry={this.props.entry}
+                  displayComments={this.props.displayComments}
+                  canComment={this.canComment()}
+                  canManage={this.canManageEntry()}
+                />
               </div>
             }
           </div>
-          {this.props.displayKeywords &&
-            <div className="panel-heading">
-              <div className="panel-title">
-                <span
-                  className="pointer-hand"
-                  onClick={() => this.updateState('isKeywordsPanelOpen', !this.state.isKeywordsPanelOpen)}
-                >
-                  {trans('keywords', {}, 'clacoform')}
-                  &nbsp;
-                  <span className={`fa fa-w ${this.state.isKeywordsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
-                  </span>
-                </span>
-              </div>
-            </div>
-          }
-          {this.props.displayKeywords &&
-            <div className={`panel-body collapse ${this.state.isKeywordsPanelOpen ? 'in' : ''}`}>
-              {this.props.entry.keywords && this.props.entry.keywords.map(k =>
-                <button
-                  key={`keyword-${k.id}`}
-                  className="btn btn-default margin-right-sm margin-bottom-sm"
-                >
-                  {k.name}
-                </button>
-              )}
-            </div>
-          }
-          {this.props.displayCategories &&
-            <div className="panel-heading">
-              <div className="panel-title">
-                <span
-                  className="pointer-hand"
-                  onClick={() => this.updateState('isCategoriesPanelOpen', !this.state.isCategoriesPanelOpen)}
-                >
-                  {t('categories')}
-                  &nbsp;
-                  <span className={`fa fa-w ${this.state.isCategoriesPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
-                  </span>
-                </span>
-              </div>
-            </div>
-          }
-          {this.props.displayCategories &&
-            <div className={`panel-body collapse ${this.state.isCategoriesPanelOpen ? 'in' : ''}`}>
-              {this.props.entry.categories && this.props.entry.categories.map(c =>
-                <button
-                  key={`category-${c.id}`}
-                  className="btn btn-default margin-right-sm margin-bottom-sm"
-                >
-                  {c.name}
-                </button>
-              )}
-            </div>
-          }
-          {(this.props.displayComments || this.canComment()) &&
-            <div className="panel-heading">
-              <div className="panel-title">
-                <span
-                  className="pointer-hand"
-                  onClick={() => this.updateState('isCommentsPanelOpen', !this.state.isCommentsPanelOpen)}
-                >
-                  {trans('comments', {}, 'clacoform')}
-                  &nbsp;
-                  <span className={`fa fa-w ${this.state.isCommentsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
-                  </span>
-                </span>
-              </div>
-            </div>
-          }
-          {(this.props.displayComments || this.canComment()) &&
-            <div className={`panel-body collapse ${this.state.isCommentsPanelOpen ? 'in' : ''}`}>
-              <EntryComments
-                entry={this.props.entry}
-                displayComments={this.props.displayComments}
-                canComment={this.canComment()}
-                canManage={this.canManageEntry()}
-              />
-            </div>
+          {['down', 'both'].indexOf(this.props.menuPosition) > -1 &&
+            <EntryMenu/>
           }
         </div> :
         <div className="alert alert-danger">
@@ -343,6 +362,7 @@ EntryView.propTypes = {
   anonymousCommentsEnabled: T.bool.isRequired,
   displayComments: T.bool.isRequired,
   openComments: T.bool.isRequired,
+  menuPosition: T.string.isRequired,
   entry: T.shape({
     id: T.number,
     title: T.string,
@@ -411,7 +431,8 @@ EntryView.propTypes = {
   switchEntryStatus: T.func.isRequired,
   downloadEntryPdf: T.func.isRequired,
   saveEntryUser: T.func.isRequired,
-  showModal: T.func.isRequired
+  showModal: T.func.isRequired,
+  history: T.object.isRequired
 }
 
 function mapStateToProps(state, ownProps) {
@@ -431,6 +452,7 @@ function mapStateToProps(state, ownProps) {
     anonymousCommentsEnabled: selectors.getParam(state, 'anonymous_comments_enabled'),
     displayComments: selectors.getParam(state, 'display_comments'),
     openComments: selectors.getParam(state, 'open_comments'),
+    menuPosition: selectors.getParam(state, 'menu_position'),
     isOwner: selectors.isCurrentEntryOwner(state),
     isManager: selectors.isCurrentEntryManager(state),
     canEditEntry: selectors.canEditCurrentEntry(state),
