@@ -43,52 +43,55 @@ class ApiLoader extends Loader
             throw new \RuntimeException('Do not add the "api" loader twice');
         }
 
-        $file = $this->locator->locate($resource);
-
+        $path = $this->locator->locate($resource);
         $routes = new RouteCollection();
 
-        $defaults = [
-          'create' => ['', 'POST'],
-          'update' => ['{uuid}', 'PUT'],
-          'deleteBulk' => ['', 'DELETE'],
-          'list' => ['{page}/{limit}', 'GET'],
-        ];
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if (!$fileInfo->isDot()) {
+                $file = $fileInfo->getPathname();
 
-        //find prefix from annotations
-        $controller = $this->findClass($file);
-        $refClass = new \ReflectionClass($controller);
-        $found = false;
+                $defaults = [
+                  'create' => ['', 'POST'],
+                  'update' => ['{uuid}', 'PUT'],
+                  'deleteBulk' => ['', 'DELETE'],
+                  'list' => ['{page}/{limit}', 'GET'],
+                ];
 
-        foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
-            if ($annotation instanceof ApiMeta) {
-                $found = true;
-                $prefix = $annotation->prefix;
-                $class = $annotation->class;
+                //find prefix from annotations
+                $controller = $this->findClass($file);
+                $refClass = new \ReflectionClass($controller);
+                $found = false;
+
+                foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
+                    if ($annotation instanceof ApiMeta) {
+                        $found = true;
+                        $prefix = $annotation->prefix;
+                        $class = $annotation->class;
+                    }
+                }
+
+                if ($found) {
+                    foreach ($defaults as $name => $options) {
+                        $pattern = '/'.$prefix.'/'.$options[0];
+                        $routeDefaults = [
+                          '_controller' => $controller.'::'.$name,
+                          'class' => $class,
+                          'env' => $this->container->getParameter('kernel.environment'),
+                        ];
+
+                        $route = new Route($pattern, $routeDefaults, []);
+                        $route->setMethods([$options[1]]);
+
+                        // add the new route to the route collection:
+                        $routeName = 'api_'.$prefix.'_'.$name;
+                        $routes->add($routeName, $route);
+                    }
+
+                    $imported = $this->import($resource, 'annotation');
+                    $routes->addCollection($imported);
+                }
             }
         }
-
-        if (!$found) {
-            throw new \Exception('No controller definition found (did you forgot the ApiMeta annotation ?)');
-        }
-
-        foreach ($defaults as $name => $options) {
-            $pattern = '/'.$prefix.'/'.$options[0];
-            $routeDefaults = [
-              '_controller' => $controller.'::'.$name,
-              'class' => $class,
-              'env' => $this->container->getParameter('kernel.environment'),
-            ];
-
-            $route = new Route($pattern, $routeDefaults, []);
-            $route->setMethods([$options[1]]);
-
-            // add the new route to the route collection:
-            $routeName = 'api_'.$prefix.'_'.$name;
-            $routes->add($routeName, $route);
-        }
-
-        $imported = $this->import($resource, 'annotation');
-        $routes->addCollection($imported);
 
         return $routes;
     }
