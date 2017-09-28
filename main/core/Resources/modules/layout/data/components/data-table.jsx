@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {DropdownButton, MenuItem} from 'react-bootstrap'
+import get from 'lodash/get'
 
 import {t, transChoice} from '#/main/core/translation'
 import {getTypeOrDefault} from '#/main/core/layout/data/index'
@@ -23,11 +24,11 @@ const DataCell = props => {
   return (typeof props.column.renderer === 'function') || !typeDef.components || !typeDef.components.table ?
     <TableCell className={`${props.column.type}-cell`}>
       {typeof props.column.renderer === 'function' ?
-        props.column.renderer(props.rowData) : typeDef.render(props.rowData[props.column.name])
+        props.column.renderer(props.rowData) : typeDef.render(get(props.rowData, props.column.name))
       }
     </TableCell>
     :
-    React.createElement(typeDef.components.table, {data: props.rowData[props.column.name]})
+    React.createElement(typeDef.components.table, {data: get(props.rowData, props.column.name), options: props.column.options})
 }
 
 DataCell.propTypes = {
@@ -35,7 +36,8 @@ DataCell.propTypes = {
   column: T.shape({
     name: T.string.isRequired,
     type: T.string.isRequired,
-    renderer: T.func
+    renderer: T.func,
+    options: T.object
   }).isRequired
 }
 
@@ -69,7 +71,8 @@ const DataTableRow = props =>
           <DropdownButton
             id={`data-row-${props.index}-actions`}
             title={<span className="fa fa-fw fa-ellipsis-v" />}
-            bsStyle="link-default"
+            className="btn-link-default"
+            bsStyle="link"
             noCaret={true}
             pullRight={true}
           >
@@ -79,9 +82,11 @@ const DataTableRow = props =>
               MenuItem,
               typeof action.action === 'function' ? {
                 key: `data-row-${props.index}-action-${actionIndex}`,
+                disabled: action.disabled ? action.disabled(props.row) : false,
                 onClick: () => action.action(props.row)
               } : {
                 key: `data-row-${props.index}-action-${actionIndex}`,
+                disabled: action.disabled ? action.disabled(props.row) : false,
                 href: action.action
               },
               ([
@@ -98,10 +103,12 @@ const DataTableRow = props =>
               MenuItem,
               typeof action.action === 'function' ? {
                 key: `data-row-${props.index}-action-dangerous-${actionIndex}`,
+                disabled: action.disabled ? action.disabled(props.row) : false,
                 className: 'dropdown-link-danger',
                 onClick: () => action.action(props.row)
               } : {
                 key: `data-row-${props.index}-action-${actionIndex}`,
+                disabled: action.disabled ? action.disabled(props.row) : false,
                 className: 'dropdown-link-danger',
                 href: action.action
               }, ([
@@ -127,7 +134,8 @@ DataTableRow.propTypes = {
   actions: T.arrayOf(T.shape({
     label: T.string,
     icon: T.string,
-    action: T.oneOfType([T.string, T.func]).isRequired
+    action: T.oneOfType([T.string, T.func]).isRequired,
+    isDangerous: T.bool
   })),
   selected: T.bool.isRequired,
   onSelect: T.func.isRequired

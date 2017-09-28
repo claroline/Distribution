@@ -49,6 +49,7 @@ const SelectedData = props =>
             'btn-link-default': !action.isDangerous,
             'btn-link-danger': action.isDangerous
           })}
+          disabled={action.disabled}
           onClick={action.action}
         >
           <span className={action.icon} />
@@ -61,6 +62,7 @@ const SelectedData = props =>
             'btn-link-default': !action.isDangerous,
             'btn-link-danger': action.isDangerous
           })}
+          disabled={action.disabled}
           href={action.action}
         >
           <span className={action.icon} />
@@ -147,10 +149,11 @@ class DataList extends Component {
             available: getDisplayableProps(this.props.definition),
             toggle: this.toggleColumn.bind(this)
           }}
-          filters={Object.assign({
+          filters={this.props.filters ? Object.assign({
             available: getFilterableProps(this.props.definition)
-          }, this.props.filters)}
+          }, this.props.filters) : undefined}
         />
+
 
         {0 === this.props.totalResults &&
           <EmptyList hasFilters={this.props.filters && 0 < this.props.filters.current.length} />
@@ -217,7 +220,12 @@ DataList.propTypes = {
     /**
      * A custom renderer if the default one from `type` does not fit your needs.
      */
-    renderer: T.func
+    renderer: T.func,
+
+    /**
+     * An option object in case this is much more complex than anticipated
+     */
+    options: T.object
   })).isRequired,
 
   /**

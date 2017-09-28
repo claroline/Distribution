@@ -860,17 +860,17 @@ class ResourceManager
      * @param ResourceNode[] $nodes
      * @param bool           $arePublished
      */
-    public function setPublishedStatus(array $nodes, $arePublished)
+    public function setPublishedStatus(array $nodes, $arePublished, $isRecursive = false)
     {
+        $this->om->startFlushSuite();
         foreach ($nodes as $node) {
-            $children = $this->getAllChildren($node, true);
             $node->setPublished($arePublished);
             $this->om->persist($node);
 
             //do it on every children aswell
-            foreach ($children as $child) {
-                $child->setPublished($arePublished);
-                $this->om->persist($child);
+            if ($isRecursive) {
+                $descendants = $this->resourceNodeRepo->findDescendants($node, true);
+                $this->setPublishedStatus($descendants, $arePublished, false);
             }
 
             //only warn for the roots
@@ -885,7 +885,7 @@ class ResourceManager
             $this->dispatcher->dispatch('log', 'Log\LogResourcePublish', [$node, $usersToNotify]);
         }
 
-        $this->om->flush();
+        $this->om->endFlushSuite();
     }
 
     /**
@@ -996,51 +996,53 @@ class ResourceManager
              */
             if ($resource !== null) {
                 if ($node->getClass() !== 'Claroline\CoreBundle\Entity\Resource\ResourceShortcut') {
-                    $event = $this->dispatcher->dispatch(
-                        "delete_{$node->getResourceType()->getName()}",
-                        'DeleteResource',
-                        [$resource]
-                    );
+                    // Dispatch DeleteResourceEvent only when soft delete is not enabled
+                    if (!$softDelete) {
+                        $event = $this->dispatcher->dispatch(
+                            "delete_{$node->getResourceType()->getName()}",
+                            'DeleteResource',
+                            [$resource, $softDelete]
+                        );
+                        $eventSoftDelete = $event->isSoftDelete();
 
-                    $eventSoftDelete = $event->isSoftDelete();
+                        foreach ($event->getFiles() as $file) {
+                            if ($softDelete) {
+                                $parts = explode(
+                                    $this->filesDirectory.DIRECTORY_SEPARATOR,
+                                    $file
+                                );
 
-                    foreach ($event->getFiles() as $file) {
-                        if ($softDelete) {
-                            $parts = explode(
-                                $this->filesDirectory.DIRECTORY_SEPARATOR,
-                                $file
-                            );
+                                if (count($parts) === 2) {
+                                    $deleteDir = $this->filesDirectory.
+                                        DIRECTORY_SEPARATOR.
+                                        'DELETED_FILES';
+                                    $dest = $deleteDir.
+                                        DIRECTORY_SEPARATOR.
+                                        $parts[1];
+                                    $additionalDirs = explode(DIRECTORY_SEPARATOR, $parts[1]);
 
-                            if (count($parts) === 2) {
-                                $deleteDir = $this->filesDirectory.
-                                    DIRECTORY_SEPARATOR.
-                                    'DELETED_FILES';
-                                $dest = $deleteDir.
-                                    DIRECTORY_SEPARATOR.
-                                    $parts[1];
-                                $additionalDirs = explode(DIRECTORY_SEPARATOR, $parts[1]);
+                                    for ($i = 0; $i < count($additionalDirs) - 1; ++$i) {
+                                        $deleteDir .= DIRECTORY_SEPARATOR.$additionalDirs[$i];
+                                    }
 
-                                for ($i = 0; $i < count($additionalDirs) - 1; ++$i) {
-                                    $deleteDir .= DIRECTORY_SEPARATOR.$additionalDirs[$i];
+                                    if (!is_dir($deleteDir)) {
+                                        mkdir($deleteDir, 0777, true);
+                                    }
+                                    rename($file, $dest);
                                 }
-
-                                if (!is_dir($deleteDir)) {
-                                    mkdir($deleteDir, 0777, true);
-                                }
-                                rename($file, $dest);
+                            } else {
+                                unlink($file);
                             }
-                        } else {
-                            unlink($file);
-                        }
 
-                        //It won't work if a resource has no workspace for a reason or an other. This could be a source of bug.
-                        $dir = $this->filesDirectory.
-                            DIRECTORY_SEPARATOR.
-                            'WORKSPACE_'.
-                            $workspace->getId();
+                            //It won't work if a resource has no workspace for a reason or an other. This could be a source of bug.
+                            $dir = $this->filesDirectory.
+                                DIRECTORY_SEPARATOR.
+                                'WORKSPACE_'.
+                                $workspace->getId();
 
-                        if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
-                            rmdir($dir);
+                            if (is_dir($dir) && $this->isDirectoryEmpty($dir)) {
+                                rmdir($dir);
+                            }
                         }
                     }
                 }
@@ -1050,6 +1052,8 @@ class ResourceManager
 
                 if ($softDelete || $eventSoftDelete) {
                     $node->setActive(false);
+                    // Rename node to allow future nodes have the same name
+                    $node->setName($node->getName().uniqid('_'));
                     $this->om->persist($node);
                 } else {
                     //what is it ?
@@ -1382,9 +1386,10 @@ class ResourceManager
         ResourceNode $node,
         array $roles,
         $user,
-        $withLastOpenDate = false
+        $withLastOpenDate = false,
+        $canAdministrate = false
     ) {
-        return $this->resourceNodeRepo->findChildren($node, $roles, $user, $withLastOpenDate);
+        return $this->resourceNodeRepo->findChildren($node, $roles, $user, $withLastOpenDate, $canAdministrate);
     }
 
     /**
@@ -1502,15 +1507,19 @@ class ResourceManager
 
     /**
      * @param int[] $ids
+     * @param bool  $orderStrict, keep tha same order as ids array
      *
      * @return ResourceNode[]
      */
-    public function getByIds(array $ids)
+    public function getByIds(array $ids, $orderStrict = false)
     {
-        return $this->om->findByIds(
+        $nodes = $this->om->findByIds(
             'Claroline\CoreBundle\Entity\Resource\ResourceNode',
-            $ids
+            $ids,
+            $orderStrict
         );
+
+        return $nodes;
     }
 
     /**

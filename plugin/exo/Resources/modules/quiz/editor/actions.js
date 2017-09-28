@@ -1,8 +1,9 @@
 import invariant from 'invariant'
 import select from './selectors'
+import times from 'lodash/times'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {makeId} from './../../utils/utils'
-import {REQUEST_SEND} from './../../api/actions'
+import {REQUEST_SEND} from '#/main/core/api/actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {tex} from '#/main/core/translation'
 import {MODAL_MESSAGE} from '#/main/core/layout/modal'
@@ -13,9 +14,11 @@ export const ITEM_CREATE = 'ITEM_CREATE'
 export const ITEM_UPDATE = 'ITEM_UPDATE'
 export const ITEM_DELETE = 'ITEM_DELETE'
 export const ITEM_MOVE = 'ITEM_MOVE'
+export const ITEM_CHANGE_STEP = 'ITEM_CHANGE_STEP'
 export const ITEM_HINTS_UPDATE = 'ITEM_HINTS_UPDATE'
 export const ITEM_DETAIL_UPDATE = 'ITEM_DETAIL_UPDATE'
 export const ITEMS_IMPORT = 'ITEMS_IMPORT'
+export const ITEM_DUPLICATE = 'ITEM_DUPLICATE'
 export const OBJECT_NEXT = 'OBJECT_NEXT'
 export const OBJECT_SELECT = 'OBJECT_SELECT'
 export const PANEL_QUIZ_SELECT = 'PANEL_QUIZ_SELECT'
@@ -41,7 +44,6 @@ export const OBJECT_ADD = 'OBJECT_ADD'
 export const OBJECT_CHANGE = 'OBJECT_CHANGE'
 export const OBJECT_REMOVE = 'OBJECT_REMOVE'
 export const OBJECT_MOVE = 'OBJECT_MOVE'
-export const QUESTION_MOVE = 'QUESTION_MOVE'
 
 // the following action types lead to quiz data changes that need to be
 // properly saved (please maintain this list up-to-date)
@@ -50,8 +52,10 @@ export const quizChangeActions = [
   ITEM_DELETE,
   ITEM_UPDATE,
   ITEM_MOVE,
+  ITEM_CHANGE_STEP,
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
+  ITEM_DUPLICATE,
   ITEMS_IMPORT,
   STEP_CREATE,
   STEP_MOVE,
@@ -69,8 +73,7 @@ export const quizChangeActions = [
   OBJECT_ADD,
   OBJECT_CHANGE,
   OBJECT_REMOVE,
-  OBJECT_MOVE,
-  QUESTION_MOVE
+  OBJECT_MOVE
 ]
 
 export const actions = {}
@@ -96,11 +99,12 @@ actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
 actions.updateContentItem = makeActionCreator(CONTENT_ITEM_UPDATE, 'id', 'propertyPath', 'value')
 actions.updateContentItemDetail = makeActionCreator(CONTENT_ITEM_DETAIL_UPDATE, 'id', 'subAction')
 actions.updateItemObjects = makeActionCreator(ITEM_OBJECTS_UPDATE, 'itemId', 'updateType', 'data')
-actions.moveQuestionStep = makeActionCreator(QUESTION_MOVE, 'itemId', 'stepId')
+actions.changeItemStep = makeActionCreator(ITEM_CHANGE_STEP, 'itemId', 'stepId')
 
 actions.createItem = (stepId, type) => {
   invariant(stepId, 'stepId is mandatory')
   invariant(type, 'type is mandatory')
+
   return {
     type: ITEM_CREATE,
     id: makeId(),
@@ -109,27 +113,46 @@ actions.createItem = (stepId, type) => {
   }
 }
 
-actions.createStep = () => {
+actions.duplicateItem = (stepId, itemId, amount) => {
+  invariant(stepId, 'stepId is mandatory')
+  invariant(itemId, 'itemId is mandatory')
+
+  const ids = []
+  times(amount, () => ids.push(makeId()))
+
+  return {
+    type: ITEM_DUPLICATE,
+    ids,
+    itemId,
+    stepId
+  }
+}
+
+actions.createStep = (position) => {
+  invariant(position, 'position is mandatory')
+
   return {
     type: STEP_CREATE,
-    id: makeId()
+    id: makeId(),
+    title: `${tex('step')} ${position}`
   }
 }
 
 actions.deleteStepAndItems = id => {
   invariant(id, 'id is mandatory')
+
   return (dispatch, getState) => {
     dispatch(actions.nextObject(select.nextObject(getState())))
     //I'll gave to double check that
     getState().steps[id].items.forEach(item => {
-      dispatch(actions.deleteStepItem(item, id))
+      dispatch(actions.deleteStepItem(id, item))
     })
 
     dispatch(actions.deleteStep(id))
   }
 }
 
-actions.deleteStepItem = (id, stepId) => {
+actions.deleteStepItem = (stepId, id) => {
   invariant(id, 'id is mandatory')
   invariant(stepId, 'stepId is mandatory')
 
@@ -210,6 +233,7 @@ actions.saveContentItemFile = (itemId, file) => {
 actions.createContentItem = (stepId, type, data = '') => {
   invariant(stepId, 'stepId is mandatory')
   invariant(type, 'type is mandatory')
+
   return {
     type: CONTENT_ITEM_CREATE,
     id: makeId(),
@@ -222,6 +246,7 @@ actions.createContentItem = (stepId, type, data = '') => {
 actions.createItemObject = (itemId, type) => {
   invariant(itemId, 'itemId is mandatory')
   invariant(type, 'type is mandatory')
+
   return {
     type: ITEM_OBJECTS_UPDATE,
     id: makeId(),

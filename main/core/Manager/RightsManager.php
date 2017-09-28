@@ -723,8 +723,24 @@ class RightsManager
         $this->om->endFlushSuite();
     }
 
-    public function isManager(ResourceNode $resourceNode, TokenInterface $token)
+    public function isManager(ResourceNode $resourceNode)
     {
+        $token = $this->container->get('security.token_storage')->getToken();
+
+        // if user is anonymous return false
+        if ($token === 'anon.') {
+            return false;
+        }
+
+        $roleNames = array_map(
+            function ($role) {
+                return $role->getRole();
+            },
+            $token->getRoles()
+        );
+
+        $isWorkspaceUsurp = in_array('ROLE_USURPATE_WORKSPACE_ROLE', $roleNames);
+
         $workspace = $resourceNode->getWorkspace();
 
         //if we manage the workspace
@@ -732,14 +748,13 @@ class RightsManager
             return true;
         }
 
-        if ($token->getUser() === $resourceNode->getCreator()) {
+        // If not workspace usurper
+        if (!$isWorkspaceUsurp && $token->getUser() === $resourceNode->getCreator()) {
             return true;
         }
 
-        foreach ($token->getRoles() as $role) {
-            if ($role->getRole() === 'ROLE_ADMIN') {
-                return true;
-            }
+        if (in_array('ROLE_ADMIN', $roleNames)) {
+            return true;
         }
 
         return false;
@@ -753,24 +768,25 @@ class RightsManager
         $roleNames = array_map(function ($roleName) {
             return $roleName->getRole();
         }, $currentRoles);
+
         //si manager, retourne tout
 
-      if ($this->isManager($resourceNode,  $this->container->get('security.token_storage')->getToken())) {
-          $resourceTypes = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
+        if ($this->isManager($resourceNode, $this->container->get('security.token_storage')->getToken())) {
+            $resourceTypes = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
 
-          foreach ($resourceTypes as $resourceType) {
-              $creatables[$resourceType->getName()] = $this->translator->trans($resourceType->getName(), [], 'resource');
-          }
+            foreach ($resourceTypes as $resourceType) {
+                $creatables[$resourceType->getName()] = $this->translator->trans($resourceType->getName(), [], 'resource');
+            }
 
-          $perms = array_fill_keys(array_values($this->maskManager->getPermissionMap($resourceNode->getResourceType())), true);
-      } else {
-          $creatables = $this->getCreatableTypes($roleNames, $resourceNode);
+            $perms = array_fill_keys(array_values($this->maskManager->getPermissionMap($resourceNode->getResourceType())), true);
+        } else {
+            $creatables = $this->getCreatableTypes($roleNames, $resourceNode);
 
-          $perms = $this->maskManager->decodeMask(
+            $perms = $this->maskManager->decodeMask(
             $this->rightsRepo->findMaximumRights($roleNames, $resourceNode),
             $resourceNode->getResourceType()
           );
-      }
+        }
 
         return array_merge(['create' => $creatables], $perms);
     }
