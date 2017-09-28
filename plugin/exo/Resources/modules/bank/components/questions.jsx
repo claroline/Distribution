@@ -14,9 +14,7 @@ import {actions} from '#/plugin/exo/bank/actions'
 import {
   PageContainer as Page,
   PageHeader,
-  PageContent,
-  PageActions,
-  PageAction
+  PageContent
 } from '#/main/core/layout/page'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
@@ -37,7 +35,12 @@ const QuestionsPage = props =>
             label: tex('type'),
             displayed: true,
             alias: 'mimeType',
-            renderer: (rowData) => <ItemIcon name={getDefinition(rowData.type).name} />,
+            renderer: (rowData) => {
+              // variable is for eslint rule "Component definition is missing display name  react/display-name"
+              const itemIcon = <ItemIcon name={getDefinition(rowData.type).name} />
+
+              return itemIcon
+            },
             type: 'enum',
             options: {
               enum: listItemNames().reduce(
@@ -92,7 +95,7 @@ const QuestionsPage = props =>
             // TODO : checks if the current user has the rights to share to enable the action
             icon: 'fa fa-fw fa-share',
             label: tex('question_share'),
-            action: (rows) => props.shareQuestions(rows),
+            action: (rows) => props.shareQuestions(rows)
           }, {
             icon: 'fa fa-fw fa-trash-o',
             label: t('delete'),

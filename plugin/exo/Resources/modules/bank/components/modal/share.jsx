@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 
 import {update} from './../../../utils/utils'
-import {t, tex} from '#/main/core/translation'
+import {tex} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {UserTypeahead} from './../../../users/components/typeahead.jsx'
@@ -107,7 +107,6 @@ class ShareModal extends Component {
 }
 
 ShareModal.propTypes = {
-  fadeModal: T.func.isRequired,
   handleShare: T.func.isRequired
 }
 

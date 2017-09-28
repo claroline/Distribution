@@ -1,6 +1,8 @@
 import {makeReducer} from '#/main/core/utilities/redux'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 
+import {update} from '#/plugin/exo/utils/utils'
+
 import {
   QUESTIONS_SHARE
 } from './actions'

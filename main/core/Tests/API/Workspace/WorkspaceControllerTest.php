@@ -64,7 +64,7 @@ class WorkspaceControllerTest extends TransactionalTestCase
 
         $this->logIn($admin);
 
-        $url = '/api/workspace/search.json';
+        $url = '/api/workspace.json';
         $this->client->request('GET', $url.'?filters[name]=abc');
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
