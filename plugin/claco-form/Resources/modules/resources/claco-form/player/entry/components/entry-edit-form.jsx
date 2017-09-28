@@ -338,6 +338,8 @@ EntryEditForm.propTypes = {
   canEditEntry: T.bool.isRequired,
   isManager: T.bool,
   isOwner: T.bool,
+  template: T.string,
+  useTemplate: T.bool.isRequired,
   editEntry: T.func.isRequired,
   loadEntry: T.func.isRequired
 }
@@ -355,7 +357,9 @@ function mapStateToProps(state, ownProps) {
     categories: state.canEdit ? state.categories : [],
     canEditEntry: selectors.canEditCurrentEntry(state),
     isManager: selectors.isCurrentEntryManager(state),
-    isOwner: selectors.isCurrentEntryOwner(state)
+    isOwner: selectors.isCurrentEntryOwner(state),
+    useTemplate: selectors.getParam(state, 'use_template'),
+    template: selectors.template(state)
   }
 }
 
