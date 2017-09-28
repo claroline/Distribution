@@ -9,6 +9,9 @@ import {UserTypeahead} from '#/main/core/layout/typeahead/users/typeahead.jsx'
 const UserPickerModal = props =>
   <BaseModal {...props}>
     <Modal.Body>
+      {props.content &&
+        <div dangerouslySetInnerHTML={{__html: props.content}}></div>
+      }
       <UserTypeahead {...props}/>
     </Modal.Body>
     {props.showFooter &&
@@ -29,7 +32,8 @@ UserPickerModal.propTypes = {
   handleRemove: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.array.isRequired,
-  showFooter: T.bool.isRequired
+  showFooter: T.bool.isRequired,
+  content: T.string
 }
 
 UserPickerModal.defaultProps = {

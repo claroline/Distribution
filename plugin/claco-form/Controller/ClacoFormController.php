@@ -1214,12 +1214,31 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
+     *     "/claco/form/entry/{entry}/user/{user}/share",
+     *     name="claro_claco_form_entry_user_share",
+     *     options = {"expose"=true}
+     * )
+     *
+     * Shares entry ownership to user
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function entryUserShareAction(Entry $entry, User $user)
+    {
+        $this->clacoFormManager->checkEntryShareRight($entry);
+        $this->clacoFormManager->switchEntryUserShared($entry, $user, true);
+
+        return new JsonResponse('success', 200);
+    }
+
+    /**
+     * @EXT\Route(
      *     "/claco/form/entry/{entry}/user/{user}/unshare",
      *     name="claro_claco_form_entry_user_unshare",
      *     options = {"expose"=true}
      * )
      *
-     * Shares entry ownership to users
+     * Unshares entry ownership from user
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */

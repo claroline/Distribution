@@ -240,3 +240,25 @@ actions.changeEntryOwner = (entryId, userId) => (dispatch, getState) => {
     }
   })
 }
+
+actions.shareEntry = (entryId, userId) => (dispatch) => {
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entry_user_share', {entry: entryId, user: userId}),
+      request: {
+        method: 'PUT'
+      }
+    }
+  })
+}
+
+actions.unshareEntry = (entryId, userId) => (dispatch) => {
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entry_user_unshare', {entry: entryId, user: userId}),
+      request: {
+        method: 'PUT'
+      }
+    }
+  })
+}

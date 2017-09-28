@@ -127,8 +127,24 @@ class EntryView extends Component {
     })
   }
 
-  shareEntry() {
-
+  showSharingForm() {
+    fetch(generateUrl('claro_claco_form_entry_shared_users_list', {entry: this.props.entryId}), {
+      method: 'GET' ,
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(data => {
+      this.props.showModal(
+        'MODAL_USER_PICKER',
+        {
+          title: trans('select_users_to_share', {}, 'clacoform'),
+          content: `<div class="alert alert-info">${trans('share_entry_msg', {}, 'clacoform')}</div>`,
+          handleRemove: (user) => this.props.unshareEntry(this.props.entryId, user.id),
+          handleSelect: (user) => this.props.shareEntry(this.props.entryId, user.id),
+          selected: JSON.parse(data.users)
+        }
+      )
+    })
   }
 
   showOwnerForm() {
@@ -237,7 +253,7 @@ class EntryView extends Component {
                         id="tooltip-button-share"
                         className="btn btn-default btn-sm margin-right-sm"
                         title={trans('share_entry', {}, 'clacoform')}
-                        onClick={() => this.shareEntry()}
+                        onClick={() => this.showSharingForm()}
                       >
                         <span className="fa fa-w fa-share-alt"></span>
                       </TooltipButton>
@@ -481,6 +497,8 @@ EntryView.propTypes = {
   downloadEntryPdf: T.func.isRequired,
   saveEntryUser: T.func.isRequired,
   changeEntryOwner: T.func.isRequired,
+  shareEntry: T.func.isRequired,
+  unshareEntry: T.func.isRequired,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired,
   history: T.object.isRequired
@@ -522,6 +540,8 @@ function mapDispatchToProps(dispatch) {
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
     saveEntryUser: (entryId, entryUser) => dispatch(actions.saveEntryUser(entryId, entryUser)),
     changeEntryOwner: (entryId, userId) => dispatch(actions.changeEntryOwner(entryId, userId)),
+    shareEntry: (entryId, userId) => dispatch(actions.shareEntry(entryId, userId)),
+    unshareEntry: (entryId, userId) => dispatch(actions.unshareEntry(entryId, userId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
     fadeModal: () => dispatch(modalActions.fadeModal())
   }
