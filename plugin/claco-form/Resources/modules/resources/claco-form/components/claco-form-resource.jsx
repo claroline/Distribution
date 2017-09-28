@@ -30,7 +30,21 @@ const ClacoFormResource = props =>
     customActions={customActions(props)}
   >
     <Switch>
-      <Route path="/" component={ClacoFormMainMenu} exact={true} />
+      <Route
+        path="/"
+        component={
+          props.defaultHome === 'menu' ?
+            ClacoFormMainMenu :
+            props.defaultHome === 'search' ?
+              EntriesList :
+              props.defaultHome === 'add' ?
+                EntryCreateForm :
+                props.defaultHome === 'random' ?
+                  EntryView :
+                  ClacoFormMainMenu
+        }
+        exact={true} />
+      <Route path="/menu" component={ClacoFormMainMenu} exact={true} />
       <Route path="/edit" component={ClacoFormConfig} />
       <Route path="/categories" component={CategoriesList} />
       <Route path="/keywords" component={KeywordsList} />
@@ -48,8 +62,9 @@ ClacoFormResource.propTypes = {
     pathname: T.string.isRequired
   }).isRequired,
   saveParameters: T.func.isRequired,
-  canEdit: T.bool,
-  canSearchEntry: T.bool
+  canEdit: T.bool.isRequired,
+  canSearchEntry: T.bool.isRequired,
+  defaultHome: T.string.isRequired
 }
 
 function customActions(props) {
@@ -58,7 +73,7 @@ function customActions(props) {
   actions.push({
     icon: 'fa fa-fw fa-home',
     label: trans('main_menu', {}, 'clacoform'),
-    action: '#/'
+    action: '#/menu'
   })
   actions.push({
     icon: 'fa fa-fw fa-edit',
@@ -102,7 +117,8 @@ function customActions(props) {
 function mapStateToProps(state) {
   return {
     canEdit: state.canEdit,
-    canSearchEntry: selectors.canSearchEntry(state)
+    canSearchEntry: selectors.canSearchEntry(state),
+    defaultHome: selectors.getParam(state, 'default_home')
   }
 }
 

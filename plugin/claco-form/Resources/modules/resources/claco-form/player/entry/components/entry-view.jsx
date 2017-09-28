@@ -37,16 +37,37 @@ class EntryView extends Component {
   }
 
   initializeEntry() {
-    this.props.loadEntry(this.props.entryId)
+    if (this.props.entryId) {
+      this.props.loadEntry(this.props.entryId)
 
-    if (!this.props.isAnon) {
-      fetch(generateUrl('claro_claco_form_entry_user_retrieve', {entry: this.props.entryId}), {
-        method: 'GET' ,
-        credentials: 'include'
-      })
-      .then(response => response.json())
-      .then(entryUser => this.setState({entryUser: JSON.parse(entryUser)}))
+      if (!this.props.isAnon) {
+        fetch(generateUrl('claro_claco_form_entry_user_retrieve', {entry: this.props.entryId}), {
+          method: 'GET' ,
+          credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(entryUser => this.setState({entryUser: JSON.parse(entryUser)}))
+      }
+    } else if (this.props.randomEnabled) {
+      this.goToRandomEntry()
+    } else {
+      this.props.history.push('/menu')
     }
+  }
+
+  goToRandomEntry() {
+    fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.resourceId}), {
+      method: 'GET' ,
+      credentials: 'include'
+    })
+    .then(response => response.json())
+    .then(entryId => {
+      if (entryId > 0) {
+        this.props.history.push(`/entry/${entryId}/view`)
+      } else {
+        this.props.history.push('/menu')
+      }
+    })
   }
 
   updateState(property, value) {
@@ -370,6 +391,7 @@ class EntryView extends Component {
 }
 
 EntryView.propTypes = {
+  resourceId: T.number.isRequired,
   entryId: T.number,
   canEdit: T.bool.isRequired,
   canAdministrate: T.bool.isRequired,
@@ -386,6 +408,7 @@ EntryView.propTypes = {
   openKeywords: T.bool.isRequired,
   commentsEnabled: T.bool.isRequired,
   anonymousCommentsEnabled: T.bool.isRequired,
+  randomEnabled: T.bool.isRequired,
   displayComments: T.bool.isRequired,
   openComments: T.bool.isRequired,
   menuPosition: T.string.isRequired,
@@ -465,6 +488,7 @@ EntryView.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
+    resourceId: selectors.resource(state).id,
     entryId: parseInt(ownProps.match.params.id),
     canEdit: state.canEdit,
     isAnon: state.isAnon,
@@ -485,7 +509,8 @@ function mapStateToProps(state, ownProps) {
     isManager: selectors.isCurrentEntryManager(state),
     canEditEntry: selectors.canEditCurrentEntry(state),
     canViewEntry: selectors.canOpenCurrentEntry(state),
-    canAdministrate: selectors.canAdministrate(state)
+    canAdministrate: selectors.canAdministrate(state),
+    randomEnabled: selectors.getParam(state, 'random_enabled'),
   }
 }
 
