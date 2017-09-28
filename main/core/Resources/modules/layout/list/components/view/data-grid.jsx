@@ -23,7 +23,13 @@ const DataGridItem = props =>
     }
 
     <div className="item-header">
-      <span className={classes('item-icon', props.data.icon)} />
+      <span className="item-icon-container">
+        {typeof props.data.icon === 'string' ?
+          <span className={props.data.icon} />
+         :
+          props.data.icon
+        }
+      </span>
 
       {props.data.flags &&
         <div className="item-flags">

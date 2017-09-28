@@ -194,7 +194,7 @@ const DataCard = {
   propTypes: {
     className: T.string,
     poster: T.string,
-    icon: T.string.isRequired, // todo : allow components for custom icons
+    icon: T.oneOfType([T.string, T.element]).isRequired,
     title: T.string.isRequired,
     subtitle: T.string,
     contentText: T.string,

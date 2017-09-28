@@ -52,7 +52,7 @@ const QuestionsPage = props =>
             name: 'content',
             label: tex('question'),
             type: 'html',
-            renderer: (rowData) => rowData.title || rowData.content,
+            renderer: (rowData) => rowData.title || rowData.content.substr(0, 50),
             displayed: true
           }, {
             name: 'meta.model',
@@ -103,21 +103,15 @@ const QuestionsPage = props =>
 
         card={(row) => ({
           poster: null,
-          icon: 'fa fa-book',
+          icon: <ItemIcon name={getDefinition(row.type).name} size="lg"/>,
           title: row.title,
           subtitle: trans(getDefinition(row.type).name, {}, 'question_types'),
-//          contentText: row.meta.description,
           flags: [
             row.meta.model && ['fa fa-object-group', t('model')]
           ].filter(flag => !!flag),
           footer:
             <span>
-              created by <b>{row.meta.creator ? row.meta.creator.name : t('unknown')}</b>
-            </span>,
-          footerLong:
-            <span>
-              created at <b>{localeDate(row.meta.created)}</b>,
-              by <b>{row.meta.creator ? row.meta.creator.name: t('unknown')}</b>
+              last updated at <b>{localeDate(row.meta.updated)}</b>,
             </span>
         })}
       />
@@ -136,8 +130,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title: transChoice('delete_items', questions.length, {count: questions.length}, 'ujm_exo'),
-          question: tex('remove_question_confirm_message', {
-            workspace_list: questions.map(question => question.title || question.content.substr(0, 40)).join(', ')
+          question: tex('remove_questions_confirm', {
+            question_list: questions.map(question => question.title || question.content.substr(0, 40)).join(', ')
           }),
           handleConfirm: () => dispatch(actions.removeQuestions(questions))
         })
