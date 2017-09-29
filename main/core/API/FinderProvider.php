@@ -176,15 +176,17 @@ class FinderProvider
         foreach ($filters as $property => $value) {
             // don't keep empty filters
             if ('' !== $value) {
-                // parse filter value
-                if (is_numeric($value)) {
-                    // convert numbers
-                    $value = floatval($value);
-                } else {
-                    // convert booleans
-                    $booleanValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-                    if (null !== $booleanValue) {
-                        $value = $booleanValue;
+                if (null !== $value) {
+                    // parse filter value
+                    if (is_numeric($value)) {
+                        // convert numbers
+                        $value = floatval($value);
+                    } else {
+                        // convert booleans
+                        $booleanValue = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+                        if (null !== $booleanValue) {
+                            $value = $booleanValue;
+                        }
                     }
                 }
 

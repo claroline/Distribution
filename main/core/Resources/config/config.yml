@@ -114,7 +114,7 @@ plugin:
         - name: organization_management
           class: building
         - name: tasks_scheduling
-          class: clock-o
+          class: tasks
 
     widgets:
         - name: core_resource_logger
