@@ -61,8 +61,10 @@ class MediaController extends Controller
         }
 
         $mediaRef = $request->get('media_ref');
-        $mediaManager = $this->getMediaManager();
-        $mediaManager->processPost($mediaRef, $widget, $mediacenter, $user);
+        if (!empty($mediaRef)) {
+            $mediaManager = $this->getMediaManager();
+            $mediaManager->processPost($mediaRef, $widget, $mediacenter, $user);
+        }
 
         return new Response('success', 204);
     }
@@ -125,11 +127,13 @@ class MediaController extends Controller
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $medialist = $this->getVideosList($user, $mediacenter);
+            $media = $this->getMediaManager()->getByWidget($widget);
             $result = [
                 'medialist' => $medialist,
                 'widget' => $widget,
                 'mediacenter' => $mediacenter,
                 'username' => $user->getUsername(),
+                'mediaRef' => (!empty($media)) ? $media->getMediaRef() : null,
             ];
         } catch (NoMediacenterException $nme) {
             return $this->render('IcapInwicastBundle:MediaCenter:error.html.twig');
