@@ -159,8 +159,7 @@ class EntryView extends Component {
         handleSelect: (user) => {
           this.props.changeEntryOwner(this.props.entryId, user.id)
           this.props.fadeModal()
-        },
-        showFooter: false
+        }
       }
     )
   }

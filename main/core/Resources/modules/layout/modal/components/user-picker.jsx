@@ -14,16 +14,6 @@ const UserPickerModal = props =>
       }
       <UserTypeahead {...props}/>
     </Modal.Body>
-    {props.showFooter &&
-      <Modal.Footer>
-        <button
-          className="btn btn-primary"
-          onClick={() => props.fadeModal()}
-        >
-          {t('Ok')}
-        </button>
-      </Modal.Footer>
-    }
   </BaseModal>
 
 UserPickerModal.propTypes = {
@@ -32,15 +22,15 @@ UserPickerModal.propTypes = {
   handleRemove: T.func.isRequired,
   fadeModal: T.func.isRequired,
   selected: T.array.isRequired,
-  showFooter: T.bool.isRequired,
   content: T.string
 }
 
 UserPickerModal.defaultProps = {
   bsStyle: 'info',
   title: t('add_user'),
-  selected: [],
-  showFooter: true
+  selected: []
 }
 
-export {UserPickerModal}
+export {
+  UserPickerModal
+}

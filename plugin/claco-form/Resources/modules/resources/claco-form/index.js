@@ -25,7 +25,6 @@ import {ClacoFormResource} from './components/claco-form-resource.jsx'
 import {CategoryFormModal} from './editor/category/components/category-form-modal.jsx'
 import {KeywordFormModal} from './editor/keyword/components/keyword-form-modal.jsx'
 import {FieldFormModal} from './editor/field/components/field-form-modal.jsx'
-import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
 
 // mount the react application
 bootstrap(
@@ -86,6 +85,5 @@ bootstrap(
 registerModalTypes([
   ['MODAL_CATEGORY_FORM', CategoryFormModal],
   ['MODAL_KEYWORD_FORM', KeywordFormModal],
-  ['MODAL_FIELD_FORM', FieldFormModal],
-  ['MODAL_USER_PICKER', UserPickerModal]
+  ['MODAL_FIELD_FORM', FieldFormModal]
 ])
