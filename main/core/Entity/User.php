@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -49,6 +50,8 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  */
 class User extends AbstractRoleSubject implements Serializable, AdvancedUserInterface, EquatableInterface, OrderableInterface
 {
+    use UuidTrait;
+
     /**
      * @var int
      *
@@ -74,7 +77,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @ORM\Column(name="last_name", length=50)
      * @Assert\NotBlank()
-     * @Groups({"api_user","api_message", "api_user_min"})
+     * @Groups({"api_user", "api_message", "api_user_min"})
      * @SerializedName("lastName")
      */
     protected $lastName;
@@ -140,13 +143,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @SerializedName("mail")
      */
     protected $mail;
-
-    /**
-     * @ORM\Column()
-     * @Groups({"api_user", "api_user_min"})
-     * @SerializedName("guid")
-     */
-    protected $guid;
 
     /**
      * @var string
@@ -422,6 +418,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->organizations = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->administratedOrganizations = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     /**

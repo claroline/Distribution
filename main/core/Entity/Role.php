@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Tool\PwsToolConfig;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
@@ -33,6 +34,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Role implements RoleInterface
 {
+    use UuidTrait;
+
     const PLATFORM_ROLE = 1;
     const WS_ROLE = 2;
     const CUSTOM_ROLE = 3;
@@ -202,6 +205,7 @@ class Role implements RoleInterface
         $this->toolRights = new ArrayCollection();
         $this->pwsToolConfig = new ArrayCollection();
         $this->profileProperties = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()
