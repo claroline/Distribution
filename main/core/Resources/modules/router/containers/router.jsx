@@ -35,8 +35,8 @@ const Routes = props =>
         <Route
           {...routeConfig}
           key={props.path}
-          onEnter={routeConfig.onEnterAction ? () => props.dispatchRouteAction(routeConfig.onEnterAction(...args)) : undefined}
-          onLeave={routeConfig.onLeaveAction ? () => props.dispatchRouteAction(routeConfig.onLeaveAction(...args)) : undefined}
+          onEnter={routeConfig.onEnterAction ? () => props.dispatchRouteAction(routeConfig.onEnterAction()) : undefined}
+          onLeave={routeConfig.onLeaveAction ? () => props.dispatchRouteAction(routeConfig.onLeaveAction()) : undefined}
         />
       )}
     </Switch>
@@ -57,7 +57,7 @@ class CustomRouter extends Component {
     super(props)
 
     // register to history changes to dispatch correct actions
-    this.props.history.listen(this.props.routeChange);
+    //this.props.history.listen(this.props.routeChange)
   }
 
   render() {

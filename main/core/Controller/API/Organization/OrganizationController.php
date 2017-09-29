@@ -97,7 +97,7 @@ class OrganizationController extends FOSRestController
             'Claroline\CoreBundle\Entity\Organization\Organization',
             ['filters' => ['parent' => null]],
             ['recursive' => true]
-        )['results'];
+        )['data'];
     }
 
     /**

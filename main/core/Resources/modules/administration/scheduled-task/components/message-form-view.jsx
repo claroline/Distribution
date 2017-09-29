@@ -2,6 +2,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import {withRouter} from 'react-router-dom'
 import classes from 'classnames'
 import moment from 'moment'
 import Datetime from 'react-datetime'
@@ -83,7 +84,7 @@ class MessageFormView extends Component {
       } else {
         this.props.createTask(this.state)
       }
-      navigate('', true)
+      //navigate('', true)
     }
   }
 

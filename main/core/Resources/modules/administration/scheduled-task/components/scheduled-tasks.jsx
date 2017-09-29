@@ -138,7 +138,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
     },
 
-    editTask(task) {
+    editTask() {
 
     },
 

@@ -41,6 +41,10 @@ class OrganizationControllerTest extends TransactionalTestCase
         //let's check now
         $this->client->request('GET', '/api/organizations.json');
         $data = $this->client->getResponse()->getContent();
+
+
+        var_dump($data);
+
         //there is a default organization
         $this->assertEquals(2, count(json_decode($data, true)));
     }
