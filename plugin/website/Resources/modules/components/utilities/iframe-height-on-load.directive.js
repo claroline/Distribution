@@ -23,7 +23,7 @@ export default class iframeHeightOnLoadDirective {
   resizeElement(element, $scope) {
     let iFrameHeight = '100vh'
     try {
-      iFrameHeight = element[ 0 ].contentWindow.document.body.scrollHeight + 20 + 'px'
+      iFrameHeight = element[ 0 ].contentWindow.document.body.scrollHeight + 'px'
     } catch (err) {
       alert('an error occured')
     }
