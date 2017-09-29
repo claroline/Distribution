@@ -11,21 +11,19 @@
 
 namespace Claroline\CoreBundle\Security;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\CoreBundle\Security\VoterInterface as ClarolineVoterInterface;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
 {
     const CREATE = 'CREATE';
-    const EDIT   = 'EDIT';
+    const EDIT = 'EDIT';
     const DELETE = 'DELETE';
-    const VIEW   = 'VIEW';
-    const OPEN   = 'OPEN';
+    const VIEW = 'VIEW';
+    const OPEN = 'OPEN';
 
     /**
      * @DI\InjectParams({
@@ -40,7 +38,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     public function vote(TokenInterface $token, $object, array $attributes)
     {
         //attributes[0] contains the permission (ie create, edit, open, ...)
-        $attributes[0] = strtoupper($attributes);
+        $attributes[0] = strtoupper($attributes[0]);
 
         if (!$this->supports($object) && !in_array($attributes[0], $this->getSupportedActions())) {
             return VoterInterface::ACCESS_ABSTAIN;
@@ -83,7 +81,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     private function supports($object)
     {
         return $object instanceof ObjectCollection ?
-            $object->getClass() === $this->getClass():
+            $object->getClass() === $this->getClass() :
             get_class($object) === $this->getClass();
     }
 
@@ -125,7 +123,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
         return false;
     }
 
-    private function isOrganizationManager(TokenInterface $token, $object)
+    protected function isOrganizationManager(TokenInterface $token, $object)
     {
         $adminOrganizations = $token->getUser()->getAdministratedOrganizations();
         $objectOrganizations = $object->getOrganizations();
