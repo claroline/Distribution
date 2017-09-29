@@ -31,10 +31,10 @@ use Symfony\Component\HttpFoundation\Response;
 class MediaController extends Controller
 {
     /**
-     * @Route("/{mediaRef}", name="inwicast_mediacenter_media_view")
+     * @Route("/view/{mediaRef}", name="inwicast_mediacenter_media_view")
      * @Method({"GET"})
      */
-    public function viewAction(Request $request, $mediaRef)
+    public function viewAction($mediaRef)
     {
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
@@ -97,7 +97,7 @@ class MediaController extends Controller
     }
 
     /**
-     * @Route("/search", name="inwicast_mediacenter_user_videos_search")
+     * @Route("/search", options= {"expose" = true}, name="inwicast_mediacenter_user_videos_search")
      * @Method({"GET"})
      * @Template()
      * @ParamConverter("user", options={"authenticatedUser" = true})
