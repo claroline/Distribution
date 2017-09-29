@@ -11,11 +11,6 @@
 
 namespace Claroline\CoreBundle\Security;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class ObjectCollection extends ArrayCollection
@@ -25,9 +20,10 @@ class ObjectCollection extends ArrayCollection
 
     public function __construct(array $objects, array $options = [])
     {
-        $this->class   = get_class($objects[0]);
+        $this->class = get_class($objects[0]);
+
         foreach ($objects as $object) {
-            if (!get_class($object) !== $this->class) {
+            if (get_class($object) !== $this->class) {
                 throw new \Exception('Classes of objects are varying.');
             }
         }

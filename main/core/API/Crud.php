@@ -39,7 +39,7 @@ class Crud
         $this->security = $security;
     }
 
-    public function create($class, $data, array $options)
+    public function create($class, $data, array $options = [])
     {
         $this->validate($class, $data);
         $object = $this->serializer->deserialize($class, $data);
@@ -51,7 +51,7 @@ class Crud
         return $object;
     }
 
-    public function update($class, $data, array $options)
+    public function update($class, $data, array $options = [])
     {
         $this->validate($class, $data);
         $object = $this->serializer->deserialize($class, $data);
@@ -63,7 +63,7 @@ class Crud
         return $object;
     }
 
-    public function delete($object, $class, array $options)
+    public function delete($object, $class, array $options = [])
     {
         $this->checkPermission('DELETE', $object);
         $this->dispatcher->dispatch('crud_pre_delete_object', 'Crud', [$object]);
@@ -72,7 +72,7 @@ class Crud
         $this->dispatcher->dispatch('crud_post_delete_object', 'Crud', [$object]);
     }
 
-    public function deleteBulk($class, array $data, array $options)
+    public function deleteBulk($class, array $data, array $options = [])
     {
         foreach ($data as $el) {
             //get the element

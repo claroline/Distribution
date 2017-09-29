@@ -53,6 +53,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
             }
         }
 
+        //maybe abstain if sometimes
         return VoterInterface::ACCESS_GRANTED;
     }
 
