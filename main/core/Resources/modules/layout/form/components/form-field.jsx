@@ -6,6 +6,7 @@ import {formatDate} from '#/main/core/date'
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {CheckboxesGroup} from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
+import {CascadeSelectGroup} from '#/main/core/layout/form/components/group/cascade-select-group.jsx'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
@@ -16,10 +17,15 @@ import {DatePickerGroup} from '#/main/core/layout/form/components/group/date-pic
 import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'
 import {Checkboxes} from '#/main/core/layout/form/components/field/checkboxes.jsx'
 import {Select} from '#/main/core/layout/form/components/field/select.jsx'
+import {CascadeSelect} from '#/main/core/layout/form/components/field/cascade-select.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
 
 import {countries} from '#/main/core/layout/form/enums'
+
+const isCascadeSelect = choices => {
+  return choices.filter(c => c.parent).length > 0
+}
 
 export const FormField = props => {
   switch (props.type) {
@@ -75,29 +81,54 @@ export const FormField = props => {
         />
       )
     case 'select':
-      return (props.noLabel ?
-        <div className={classes({'has-error': props.error})}>
-          <Select
+      if (props.choices && isCascadeSelect(props.choices)) {
+        return (props.noLabel ?
+          <div className={classes({'has-error': props.error})}>
+            <CascadeSelect
+              options={props.choices || []}
+              selectedValue={props.value || []}
+              disabled={props.disabled}
+              onChange={value => props.onChange(value)}
+            />
+            {props.error &&
+              <ErrorBlock text={props.error}/>
+            }
+          </div> :
+          <CascadeSelectGroup
+            controlId={props.controlId}
+            label={props.label}
+            options={props.choices || []}
+            selectedValue={props.value || []}
+            disabled={props.disabled}
+            error={props.error}
+            onChange={value => props.onChange(value)}
+          />
+        )
+      } else {
+        return (props.noLabel ?
+          <div className={classes({'has-error': props.error})}>
+            <Select
+              options={props.choices || []}
+              selectedValue={props.value || ''}
+              disabled={props.disabled}
+              onChange={value => props.onChange(value)}
+            />
+            {props.error &&
+              <ErrorBlock text={props.error}/>
+            }
+          </div> :
+          <SelectGroup
+            controlId={props.controlId}
+            label={props.label}
             options={props.choices || []}
             selectedValue={props.value || ''}
             disabled={props.disabled}
+            error={props.error}
+            multiple={false}
             onChange={value => props.onChange(value)}
           />
-          {props.error &&
-            <ErrorBlock text={props.error}/>
-          }
-        </div> :
-        <SelectGroup
-          controlId={props.controlId}
-          label={props.label}
-          options={props.choices || []}
-          selectedValue={props.value || ''}
-          disabled={props.disabled}
-          error={props.error}
-          multiple={false}
-          onChange={value => props.onChange(value)}
-        />
-      )
+        )
+      }
     case 'country':
       return (props.noLabel ?
         <div className={classes({'has-error': props.error})}>

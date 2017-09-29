@@ -81,6 +81,20 @@ class EntryCreateForm extends Component {
     return field.locked && !field.lockedEditionOnly
   }
 
+  isValidCascade(value) {
+    let isValid = true
+
+    if (Array.isArray(value)) {
+      value.forEach(v => {
+        if (v === '') {
+          isValid = false
+        }
+      })
+    }
+
+    return isValid
+  }
+
   updateEntryValue(property, value) {
     this.setState({entry: Object.assign({}, this.state.entry, {[property]: value})})
   }
@@ -96,7 +110,7 @@ class EntryCreateForm extends Component {
     const errors = cloneDeep(this.state.errors)
     errors['entry_title'] = this.state.entry.entry_title === '' ? trans('form_not_blank_error', {}, 'clacoform') : ''
     this.props.fields.forEach(f => {
-      errors[f.id] = f.required && (this.state.entry[f.id] === '' || this.state.entry[f.id].length === 0) ?
+      errors[f.id] = f.required && (this.state.entry[f.id] === '' || this.state.entry[f.id].length === 0 || !this.isValidCascade(this.state.entry[f.id])) ?
         trans('form_not_blank_error', {}, 'clacoform') :
         ''
     })
@@ -132,7 +146,7 @@ class EntryCreateForm extends Component {
                 disabled={this.isFieldLocked(f)}
                 noLabel={false}
                 choices={f.fieldFacet ?
-                  f.fieldFacet.field_facet_choices.filter(ffc => !ffc.parent).map(ffc => Object.assign({}, ffc, {value: ffc.label})) :
+                  f.fieldFacet.field_facet_choices.map(ffc => Object.assign({}, ffc, {value: ffc.label})) :
                   []
                 }
                 value={this.state.entry[f.id]}
@@ -225,6 +239,8 @@ EntryCreateForm.propTypes = {
   })),
   isKeywordsEnabled: T.bool.isRequired,
   isNewKeywordsEnabled: T.bool.isRequired,
+  template: T.string,
+  useTemplate: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   createEntry: T.func.isRequired
 }
@@ -236,7 +252,9 @@ function mapStateToProps(state) {
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
     isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
     keywords: selectors.getParam(state, 'keywords_enabled') ? state.keywords : [],
-    canAddEntry: selectors.canAddEntry(state)
+    canAddEntry: selectors.canAddEntry(state),
+    useTemplate: selectors.getParam(state, 'use_template'),
+    template: selectors.template(state)
   }
 }
 

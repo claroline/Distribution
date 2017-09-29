@@ -13,6 +13,12 @@ import {
 } from './actions'
 
 const entriesReducers = makeReducer({}, {
+  [ENTRY_ADD]: (state, action) => {
+    const entries = cloneDeep(state)
+    entries.push(action.entry)
+
+    return entries
+  },
   [ENTRY_UPDATE]: (state, action) => {
     const entries = cloneDeep(state)
     const index = entries.findIndex(c => c.id === action.entry.id)

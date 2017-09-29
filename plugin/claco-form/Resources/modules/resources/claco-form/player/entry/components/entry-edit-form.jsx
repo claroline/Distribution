@@ -143,6 +143,20 @@ class EntryEditForm extends Component {
     )
   }
 
+  isValidCascade(value) {
+    let isValid = true
+
+    if (Array.isArray(value)) {
+      value.forEach(v => {
+        if (v === '') {
+          isValid = false
+        }
+      })
+    }
+
+    return isValid
+  }
+
   updateEntryValue(property, value) {
     this.setState({entry: Object.assign({}, this.state.entry, {[property]: value})})
   }
@@ -163,7 +177,7 @@ class EntryEditForm extends Component {
     const errors = cloneDeep(this.state.errors)
     errors['entry_title'] = this.state.entry.entry_title === '' ? trans('form_not_blank_error', {}, 'clacoform') : ''
     this.props.fields.forEach(f => {
-      errors[f.id] = f.required && (this.state.entry[f.id] === '' || this.state.entry[f.id].length === 0) ?
+      errors[f.id] = f.required && (this.state.entry[f.id] === '' || this.state.entry[f.id].length === 0 || !this.isValidCascade(this.state.entry[f.id])) ?
         trans('form_not_blank_error', {}, 'clacoform') :
         ''
     })
@@ -180,7 +194,7 @@ class EntryEditForm extends Component {
       <div>
         <h2>{trans('entry_edition', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.canEditEntry ?
+        {this.props.entry && this.props.entry.id > 0 && this.props.canEditEntry ?
           <div>
             <FormField
               controlId="field-title"
@@ -199,7 +213,7 @@ class EntryEditForm extends Component {
                 disabled={this.isFieldLocked(f)}
                 noLabel={false}
                 choices={f.fieldFacet ?
-                  f.fieldFacet.field_facet_choices.filter(ffc => !ffc.parent).map(ffc => Object.assign({}, ffc, {value: ffc.label})) :
+                  f.fieldFacet.field_facet_choices.map(ffc => Object.assign({}, ffc, {value: ffc.label})) :
                   []
                 }
                 value={this.state.entry[f.id]}
@@ -298,6 +312,9 @@ class EntryEditForm extends Component {
 EntryEditForm.propTypes = {
   entryId: T.number,
   canEdit: T.bool.isRequired,
+  entry: T.shape({
+    id: T.number
+  }),
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,
     type: T.number.isRequired,
@@ -348,6 +365,7 @@ function mapStateToProps(state, ownProps) {
   return {
     entryId: ownProps.match.params.id ? parseInt(ownProps.match.params.id) : null,
     canEdit: state.canEdit,
+    entry: state.currentEntry,
     fields: selectors.visibleFields(state),
     entries: state.entries,
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),

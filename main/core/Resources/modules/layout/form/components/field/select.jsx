@@ -35,10 +35,10 @@ const Select = props =>
 
 Select.propTypes = {
   options: T.arrayOf(T.shape({
-    value: T.string.isRequired,
+    value: T.oneOfType([T.string, T.number]).isRequired,
     label: T.string.isRequired
   })).isRequired,
-  selectedValue: T.oneOfType([T.string, T.array]).isRequired,
+  selectedValue: T.oneOfType([T.string, T.number, T.array]).isRequired,
   disabled: T.bool,
   multiple: T.bool,
   onChange: T.func.isRequired
