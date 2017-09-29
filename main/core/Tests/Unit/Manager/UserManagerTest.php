@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
-use Claroline\CoreBundle\Library\Security\PlatformRoles;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class UserManagerTest extends MockeryTestCase

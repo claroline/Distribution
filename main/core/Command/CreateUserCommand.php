@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Command;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
-use Claroline\CoreBundle\Library\Security\PlatformRoles;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

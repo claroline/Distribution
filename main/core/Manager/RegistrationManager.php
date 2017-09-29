@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Form\BaseProfileType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Library\Security\PlatformRoles;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Claroline\CoreBundle\Listener\AuthenticationSuccessListener;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;

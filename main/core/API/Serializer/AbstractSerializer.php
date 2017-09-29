@@ -5,7 +5,7 @@ namespace Claroline\CoreBundle\API\Serializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
-class AbstractSerializer
+abstract class AbstractSerializer
 {
     /**
      * @DI\InjectParams({
@@ -53,9 +53,9 @@ class AbstractSerializer
         }
 
         return $this->mapObjectToEntity(
-          $this->getSerializableProperties($object),
-          $data,
-          $object
+            $this->getSerializableProperties($object),
+            $data,
+            $object
         );
     }
 

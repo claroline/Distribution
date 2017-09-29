@@ -68,7 +68,7 @@ class UserFinder implements FinderInterface
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
               default:
-                if (true === $filterValue || false === $filterValue) {
+                if (is_bool($filterValue)) {
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                 } else {
