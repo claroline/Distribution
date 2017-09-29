@@ -22,6 +22,7 @@ const Checkboxes = props =>
             value={option.value}
             checked={option.value === props.checkedValues.find(cv => cv === option.value)}
             disabled={props.disabled}
+            onChange={() => {}}
           />
 
           {option.label}

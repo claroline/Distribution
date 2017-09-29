@@ -182,9 +182,16 @@ class EntryEditForm extends Component {
     const errors = cloneDeep(this.state.errors)
     errors['entry_title'] = this.state.entry.entry_title === '' ? trans('form_not_blank_error', {}, 'clacoform') : ''
     this.props.fields.forEach(f => {
-      errors[f.id] = f.required && (this.state.entry[f.id] === '' || this.state.entry[f.id].length === 0 || !this.isValidCascade(this.state.entry[f.id])) ?
-        trans('form_not_blank_error', {}, 'clacoform') :
-        ''
+      errors[f.id] = f.required &&
+        (
+          this.state.entry[f.id] === undefined ||
+          this.state.entry[f.id] === null ||
+          this.state.entry[f.id] === '' ||
+          (Array.isArray(this.state.entry[f.id]) && this.state.entry[f.id].length === 0)  ||
+          !this.isValidCascade(this.state.entry[f.id])
+        ) ?
+          trans('form_not_blank_error', {}, 'clacoform') :
+          ''
     })
     Object.values(errors).forEach(e => {
       if (e) {

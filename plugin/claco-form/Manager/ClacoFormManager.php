@@ -734,7 +734,7 @@ class ClacoFormManager
         foreach ($entryData as $key => $value) {
             $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
 
-            if (!is_null($field)) {
+            if (!is_null($field) && $value !== '') {
                 $fieldValue = $this->createFieldValue($entry, $field, $value, $user);
                 $entry->addFieldValue($fieldValue);
                 $type = $field->getType();
@@ -795,18 +795,20 @@ class ClacoFormManager
             $fieldValue = $this->getFieldValueByEntryAndFieldId($entry, $key);
 
             if (is_null($fieldValue)) {
-                $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
+                if ($value !== '') {
+                    $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
 
-                if (!is_null($field)) {
-                    $fieldValue = $this->createFieldValue($entry, $field, $value, $entry->getUser());
-                    $entry->addFieldValue($fieldValue);
-                    $type = $field->getType();
+                    if (!is_null($field)) {
+                        $fieldValue = $this->createFieldValue($entry, $field, $value, $entry->getUser());
+                        $entry->addFieldValue($fieldValue);
+                        $type = $field->getType();
 
-                    if ($this->facetManager->isTypeWithChoices($type)) {
-                        $categoriesToAdd = $this->getCategoriesFromFieldAndValue($field, $value);
+                        if ($this->facetManager->isTypeWithChoices($type)) {
+                            $categoriesToAdd = $this->getCategoriesFromFieldAndValue($field, $value);
 
-                        foreach ($categoriesToAdd as $catId => $cat) {
-                            $toAdd[$catId] = $cat;
+                            foreach ($categoriesToAdd as $catId => $cat) {
+                                $toAdd[$catId] = $cat;
+                            }
                         }
                     }
                 }
@@ -1180,7 +1182,8 @@ class ClacoFormManager
                 $fieldFacetValue->setDateValue($date);
                 break;
             case FieldFacet::FLOAT_TYPE:
-                $fieldFacetValue->setFloatValue($value);
+                $floatValue = $value === '' ? null : $value;
+                $fieldFacetValue->setFloatValue($floatValue);
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
             case FieldFacet::CASCADE_SELECT_TYPE:
