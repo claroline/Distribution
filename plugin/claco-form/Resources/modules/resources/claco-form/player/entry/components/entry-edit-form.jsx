@@ -381,7 +381,7 @@ function mapStateToProps(state, ownProps) {
     canEdit: state.canEdit,
     entry: state.currentEntry,
     fields: selectors.visibleFields(state),
-    entries: state.entries,
+    entries: state.entries.data,
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
     isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
     lockedFieldsFor: selectors.getParam(state, 'locked_fields_for'),

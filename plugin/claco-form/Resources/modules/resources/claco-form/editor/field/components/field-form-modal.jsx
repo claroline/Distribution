@@ -8,7 +8,7 @@ import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {t, trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {fieldTypes} from '../../../enums'
+import {constants} from '../../../constants'
 import {getFieldType} from '../../../utils'
 import {ChoiceField} from './choice-field.jsx'
 
@@ -368,7 +368,7 @@ class FieldFormModal  extends Component {
                 defaultValue={this.state.field.type}
                 onChange={e => this.updateFieldProps('type', parseInt(e.target.value))}
               >
-                {fieldTypes.map(ft =>
+                {constants.FIELD_TYPES.map(ft =>
                   <option
                     key={`field-type-${ft.value}`}
                     value={ft.value}

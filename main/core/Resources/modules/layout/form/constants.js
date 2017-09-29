@@ -1,4 +1,4 @@
-export const countries = [
+const COUNTRIES = [
   {label: 'Afghanistan', value: 'AF'},
   {label: 'Åland Islands', value: 'AX'},
   {label: 'Albania', value: 'AL'},
@@ -243,3 +243,7 @@ export const countries = [
   {label: 'Zambia', value: 'ZM'},
   {label: 'Zimbabwe', value: 'ZW'}
 ]
+
+export const constants = {
+  COUNTRIES
+}

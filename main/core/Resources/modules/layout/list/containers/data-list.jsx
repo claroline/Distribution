@@ -184,7 +184,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     totalResults: stateProps.totalResults,
     actions: ownProps.actions,
     card: ownProps.card,
-    queryString: stateProps.queryString
+    queryString: stateProps.queryString,
+    display: ownProps.display
   }
 
   if (stateProps.filterable) {

@@ -21,7 +21,7 @@ import {CascadeSelect} from '#/main/core/layout/form/components/field/cascade-se
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
 
-import {countries} from '#/main/core/layout/form/enums'
+import {constants} from '#/main/core/layout/form/constants'
 
 const isCascadeSelect = choices => {
   return choices.filter(c => c.parent).length > 0
@@ -133,7 +133,7 @@ export const FormField = props => {
       return (props.noLabel ?
         <div className={classes({'has-error': props.error})}>
           <Select
-            options={countries}
+            options={constants.COUNTRIES}
             selectedValue={props.value || ''}
             disabled={props.disabled}
             onChange={value => props.onChange(value)}
@@ -145,7 +145,7 @@ export const FormField = props => {
         <SelectGroup
           controlId={props.controlId}
           label={props.label}
-          options={countries}
+          options={constants.COUNTRIES}
           selectedValue={props.value || ''}
           disabled={props.disabled}
           error={props.error}

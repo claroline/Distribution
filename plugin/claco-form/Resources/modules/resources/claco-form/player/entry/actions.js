@@ -87,7 +87,7 @@ actions.loadEntry = (entryId) => (dispatch, getState) => {
   const currentEntry = state.currentEntry
 
   if (!currentEntry || currentEntry.id !== entryId) {
-    const entries = state.entries
+    const entries = state.entries.data
     let entry = entries.find(e => e.id === entryId)
 
     if (!entry) {

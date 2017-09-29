@@ -3,12 +3,14 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {constants} from '#/main/core/layout/list/constants'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {actions} from '../actions'
 import {selectors} from '../../../selectors'
 
-class EntriesList extends Component {
+class Entries extends Component {
   deleteEntry(entry) {
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_entry', {}, 'clacoform'),
@@ -54,61 +56,29 @@ class EntriesList extends Component {
         <br/>
         {this.props.canSearchEntry ?
           <div>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>{t('title')}</th>
-                  <th>{t('actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.props.entries.map(entry =>
-                  <tr key={`entry-${entry.id}`}>
-                    <td>
-                      <a href={`#/entry/${entry.id}/view`}>{entry.title}</a>
-                    </td>
-                    <td>
-                      {this.props.canGeneratePdf &&
-                        <TooltipButton
-                          id={`tooltip-button-print-${entry.id}`}
-                          className="btn btn-default btn-sm margin-right-sm"
-                          title={trans('print_entry', {}, 'clacoform')}
-                          onClick={() => this.props.downloadEntryPdf(entry.id)}
-                        >
-                          <span className="fa fa-w fa-print"></span>
-                        </TooltipButton>
-                      }
-                      {this.canEditEntry(entry) &&
-                        <a
-                          className="btn btn-default btn-sm margin-right-sm"
-                          href={`#/entry/${entry.id}/edit`}
-                        >
-                          <span className="fa fa-w fa-pencil"></span>
-                        </a>
-                      }
-                      {this.canManageEntry(entry) &&
-                        <span>
-                          <TooltipButton
-                            id={`tooltip-button-status-${entry.id}`}
-                            className="btn btn-default btn-sm margin-right-sm"
-                            title={entry.status === 1 ? t('unpublish') : t('publish')}
-                            onClick={() => this.props.switchEntryStatus(entry.id)}
-                          >
-                            <span className={`fa fa-w fa-${entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
-                          </TooltipButton>
-                          <button
-                            className="btn btn-danger btn-sm margin-right-sm"
-                            onClick={() => this.deleteEntry(entry)}
-                          >
-                            <span className="fa fa-w fa-trash"></span>
-                          </button>
-                        </span>
-                      }
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <DataList
+              display={{current: constants.DISPLAY_TABLE, available: Object.keys(constants.DISPLAY_MODES)}}
+              name="entries"
+              definition={[
+                {
+                  name: 'title',
+                  label: t('title'),
+                  displayed: true
+                }
+              ]}
+              card={(row) => ({
+                poster: null,
+                icon: 'fa fa-book',
+                title: row.title,
+                subtitle: row.title,
+                contentText: row.title,
+                flags: [].filter(flag => !!flag),
+                footer:
+                  <span></span>,
+                footerLong:
+                  <span></span>
+              })}
+            />
           </div> :
           <div className="alert alert-danger">
             {t('unauthorized')}
@@ -119,15 +89,11 @@ class EntriesList extends Component {
   }
 }
 
-EntriesList.propTypes = {
+Entries.propTypes = {
   canEdit: T.bool.isRequired,
   user: T.object,
   canGeneratePdf: T.bool.isRequired,
   resourceId: T.number.isRequired,
-  entries: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    title: T.string.isRequired
-  })),
   canSearchEntry: T.bool.isRequired,
   editionEnabled: T.bool.isRequired,
   downloadEntryPdf: T.func.isRequired,
@@ -157,6 +123,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedEntriesList = connect(mapStateToProps, mapDispatchToProps)(EntriesList)
+const ConnectedEntries = connect(mapStateToProps, mapDispatchToProps)(Entries)
 
-export {ConnectedEntriesList as EntriesList}
+export {ConnectedEntries as Entries}

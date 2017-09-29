@@ -7,11 +7,11 @@ import {trans} from '#/main/core/translation'
 import {actions as editorActions} from '../editor/actions'
 import {ClacoFormMainMenu} from '../player/components/claco-form-main-menu.jsx'
 import {ClacoFormConfig} from '../editor/components/claco-form-config.jsx'
-import {CategoriesList} from '../editor/category/components/categories-list.jsx'
-import {KeywordsList} from '../editor/keyword/components/keywords-list.jsx'
-import {FieldsList} from '../editor/field/components/fields-list.jsx'
+import {Categories} from '../editor/category/components/categories.jsx'
+import {Keywords} from '../editor/keyword/components/keywords.jsx'
+import {Fields} from '../editor/field/components/fields.jsx'
 import {TemplateForm} from '../editor/template/components/template-form.jsx'
-import {EntriesList} from '../player/entry/components/entries-list.jsx'
+import {Entries} from '../player/entry/components/entries.jsx'
 import {EntryCreateForm} from '../player/entry/components/entry-create-form.jsx'
 import {EntryEditForm} from '../player/entry/components/entry-edit-form.jsx'
 import {EntryView} from '../player/entry/components/entry-view.jsx'
@@ -46,11 +46,11 @@ const ClacoFormResource = props =>
         exact={true} />
       <Route path="/menu" component={ClacoFormMainMenu} exact={true} />
       <Route path="/edit" component={ClacoFormConfig} />
-      <Route path="/categories" component={CategoriesList} />
-      <Route path="/keywords" component={KeywordsList} />
-      <Route path="/fields" component={FieldsList} />
+      <Route path="/categories" component={Categories} />
+      <Route path="/keywords" component={Keywords} />
+      <Route path="/fields" component={Fields} />
       <Route path="/template" component={TemplateForm} />
-      <Route path="/entries" component={EntriesList} />
+      <Route path="/entries" component={Entries} />
       <Route path="/entry/create" component={EntryCreateForm} />
       <Route path="/entry/:id/edit" component={EntryEditForm} />
       <Route path="/entry/:id/view" component={EntryView} />

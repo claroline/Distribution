@@ -6,7 +6,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions} from '../actions'
 
-class KeywordsList extends Component {
+class Keywords extends Component {
   showKeywordCreationForm() {
     this.props.showModal(
       'MODAL_KEYWORD_FORM',
@@ -100,7 +100,7 @@ class KeywordsList extends Component {
   }
 }
 
-KeywordsList.propTypes = {
+Keywords.propTypes = {
   canEdit: T.bool.isRequired,
   resourceId: T.number.isRequired,
   keywords: T.arrayOf(T.shape({
@@ -130,6 +130,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedKeywordsList = connect(mapStateToProps, mapDispatchToProps)(KeywordsList)
+const ConnectedKeywords = connect(mapStateToProps, mapDispatchToProps)(Keywords)
 
-export {ConnectedKeywordsList as KeywordsList}
+export {ConnectedKeywords as Keywords}

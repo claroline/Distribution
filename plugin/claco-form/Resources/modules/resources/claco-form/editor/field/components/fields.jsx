@@ -7,7 +7,7 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions} from '../actions'
 import {getFieldType} from '../../../utils'
 
-class FieldsList extends Component {
+class Fields extends Component {
   showFieldCreationForm() {
     this.props.showModal(
       'MODAL_FIELD_FORM',
@@ -155,7 +155,7 @@ class FieldsList extends Component {
   }
 }
 
-FieldsList.propTypes = {
+Fields.propTypes = {
   canEdit: T.bool.isRequired,
   resourceId: T.number.isRequired,
   fields: T.arrayOf(T.shape({
@@ -185,6 +185,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedFieldsList = connect(mapStateToProps, mapDispatchToProps)(FieldsList)
+const ConnectedFields = connect(mapStateToProps, mapDispatchToProps)(Fields)
 
-export {ConnectedFieldsList as FieldsList}
+export {ConnectedFields as Fields}

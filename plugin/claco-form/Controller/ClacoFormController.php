@@ -18,6 +18,7 @@ use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\Keyword;
 use Claroline\ClacoFormBundle\Manager\ClacoFormManager;
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -36,6 +37,7 @@ class ClacoFormController extends Controller
 {
     private $clacoFormManager;
     private $filesDir;
+    private $finder;
     private $platformConfigHandler;
     private $request;
     private $serializer;
@@ -46,6 +48,7 @@ class ClacoFormController extends Controller
      * @DI\InjectParams({
      *     "clacoFormManager"      = @DI\Inject("claroline.manager.claco_form_manager"),
      *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
+     *     "finder"                = @DI\Inject("claroline.api.finder"),
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
      *     "request"               = @DI\Inject("request"),
      *     "serializer"            = @DI\Inject("jms_serializer"),
@@ -56,6 +59,7 @@ class ClacoFormController extends Controller
     public function __construct(
         ClacoFormManager $clacoFormManager,
         $filesDir,
+        FinderProvider $finder,
         PlatformConfigurationHandler $platformConfigHandler,
         Request $request,
         Serializer $serializer,
@@ -64,6 +68,7 @@ class ClacoFormController extends Controller
     ) {
         $this->clacoFormManager = $clacoFormManager;
         $this->filesDir = $filesDir;
+        $this->finder = $finder;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->request = $request;
         $this->serializer = $serializer;
@@ -162,7 +167,7 @@ class ClacoFormController extends Controller
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
         $fields = $this->clacoFormManager->getFieldsByClacoForm($clacoForm);
-        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
+//        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
 //        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
 //        $nbEntries = count($allEntries);
 //        $nbPublishedEntries = count($publishedEntries);
@@ -192,6 +197,13 @@ class ClacoFormController extends Controller
         $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
             $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
             2;
+        $entries = $this->finder->search(
+            'Claroline\ClacoFormBundle\Entity\Entry', [
+                'limit' => 20,
+                'filters' => [],
+                'sortBy' => 'title'
+            ]
+        );
 
         return [
             'user' => $user,
@@ -207,9 +219,35 @@ class ClacoFormController extends Controller
 //            'nbPublishedEntries' => $nbPublishedEntries,
             'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,
-            'allEntries' => $allEntries,
+            'entries' => $entries,
+//            'allEntries' => $allEntries,
             'myEntries' => $myEntries,
         ];
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/entries/search",
+     *     name="claro_claco_form_entries_search",
+     *     options={"expose"=true}
+     * )
+     */
+    public function entriesSearchAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
+        $params = $this->request->query->all();
+
+        if (!$params['filters']) {
+            $params['filters'] = [];
+        }
+        $params['filters']['clacoForm'] = $clacoForm->getId();
+
+        $data = $this->finder->search(
+            'Claroline\ClacoFormBundle\Entity\Entry',
+            $params
+        );
+
+        return new JsonResponse($data, 200);
     }
 
     /**

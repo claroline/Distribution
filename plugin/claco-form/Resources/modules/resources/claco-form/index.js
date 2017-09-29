@@ -1,12 +1,15 @@
+import merge from 'lodash/merge'
 import React from 'react'
 import {
   hashHistory as history,
   HashRouter as Router
 } from 'react-router-dom'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
+import {generateUrl} from '#/main/core/fos-js-router'
 import {registerModalTypes} from '#/main/core/layout/modal'
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceNodeReducer} from '#/main/core/layout/resource/reducer'
+import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {
   resourceReducers,
   mainReducers,
@@ -17,6 +20,7 @@ import {categoryReducers} from './editor/category/reducers'
 import {keywordReducers} from './editor/keyword/reducers'
 import {fieldReducers} from './editor/field/reducers'
 import {
+  reducer,
   entriesReducers,
   myEntriesReducers,
   currentEntryReducers
@@ -48,7 +52,7 @@ bootstrap(
     categories: categoryReducers,
     keywords: keywordReducers,
     fields: fieldReducers,
-    entries: entriesReducers,
+    entries: reducer,
     myEntries: myEntriesReducers,
     currentEntry: currentEntryReducers,
     cascadeLevelMax: mainReducers,
@@ -56,7 +60,8 @@ bootstrap(
 
     // generic reducers
     resourceNode: resourceNodeReducer,
-    modal: modalReducer
+    modal: modalReducer,
+    currentRequests: apiReducer
   },
 
   // transform data attributes for redux store
@@ -75,7 +80,9 @@ bootstrap(
       categories: resource.categories,
       keywords: resource.keywords,
       fields: initialData.fields,
-      entries: initialData.entries,
+      entries: merge({}, initialData.entries, {
+        fetchUrl: generateUrl('claro_claco_form_entries_search', {clacoForm: resource.id})
+      }),
       myEntries: initialData.myEntries,
       cascadeLevelMax: initialData.cascadeLevelMax
     }

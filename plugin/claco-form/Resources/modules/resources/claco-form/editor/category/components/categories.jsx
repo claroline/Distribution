@@ -6,7 +6,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions} from '../actions'
 
-class CategoriesList extends Component {
+class Categories extends Component {
   showCategoryCreationForm() {
     this.props.showModal(
       'MODAL_CATEGORY_FORM',
@@ -149,7 +149,7 @@ class CategoriesList extends Component {
   }
 }
 
-CategoriesList.propTypes = {
+Categories.propTypes = {
   canEdit: T.bool.isRequired,
   categories: T.arrayOf(T.shape({
     id: T.number.isRequired,
@@ -192,6 +192,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedCategoriesList = connect(mapStateToProps, mapDispatchToProps)(CategoriesList)
+const ConnectedCategories = connect(mapStateToProps, mapDispatchToProps)(Categories)
 
-export {ConnectedCategoriesList as CategoriesList}
+export {ConnectedCategories as Categories}

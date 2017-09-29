@@ -1,14 +1,14 @@
-import {fieldTypes} from './enums'
-import {countries} from '#/main/core/layout/form/enums'
+import {constants as clacoFormConstants} from './constants'
+import {constants as formConstants} from '#/main/core/layout/form/constants'
 
 export const generateFieldKey = (id) => {
   return  `%field_${id}%`
 }
 
 export const getFieldType = (value) => {
-  return fieldTypes.find(f => f.value === value)
+  return clacoFormConstants.FIELD_TYPES.find(f => f.value === value)
 }
 
 export const getCountry = (value) => {
-  return countries.find(c => c.value === value)
+  return formConstants.COUNTRIES.find(c => c.value === value)
 }
