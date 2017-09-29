@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
@@ -35,19 +36,13 @@ InfosList.propTypes = {
 class EntryEditForm extends Component {
   constructor(props) {
     super(props)
-    const fieldsValues = {
-      entry_title: ''
-    }
     const errors = {
       entry_title: ''
     }
     props.fields.map(f => {
-      fieldsValues[f.id] = getFieldType(f.type).answerType === 'array' ? [] : ''
       errors[f.id] = ''
     })
     this.state = {
-      id: props.entryId,
-      entry: fieldsValues,
       categories: [],
       keywords: [],
       hasError: false,
@@ -60,7 +55,16 @@ class EntryEditForm extends Component {
   }
 
   componentDidMount() {
-    this.props.loadEntry(this.props.entryId)
+    this.loadEntry()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.entryId !== this.props.entryId) {
+      this.loadEntry()
+    }
+  }
+
+  loadEntry() {
     let entry = this.props.entries.find(e => e.id === this.props.entryId)
 
     if (entry) {
@@ -89,7 +93,8 @@ class EntryEditForm extends Component {
       }
     })
 
-    this.setState({entry: values, keywords: keywords, categories: categories})
+    this.setState({id: this.props.entryId, entry: values, keywords: keywords, categories: categories})
+    this.props.setCurrentEntry(entry)
   }
 
   addCategory() {
@@ -194,7 +199,7 @@ class EntryEditForm extends Component {
       <div>
         <h2>{trans('entry_edition', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.entry && this.props.entry.id > 0 && this.props.canEditEntry ?
+        {this.props.entry && this.props.entry.id > 0 && this.state.id > 0 && this.props.canEditEntry ?
           <div>
             <FormField
               controlId="field-title"
@@ -358,7 +363,8 @@ EntryEditForm.propTypes = {
   template: T.string,
   useTemplate: T.bool.isRequired,
   editEntry: T.func.isRequired,
-  loadEntry: T.func.isRequired
+  setCurrentEntry: T.func.isRequired,
+  history: T.object.isRequired
 }
 
 function mapStateToProps(state, ownProps) {
@@ -383,11 +389,11 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadEntry: (entryId) => dispatch(actions.loadEntry(entryId)),
+    setCurrentEntry: (entry) => dispatch(actions.loadCurrentEntry(entry)),
     editEntry: (entryId, entry, keywords, categories) => dispatch(actions.editEntry(entryId, entry, keywords, categories))
   }
 }
 
-const ConnectedEntryEditForm = connect(mapStateToProps, mapDispatchToProps)(EntryEditForm)
+const ConnectedEntryEditForm = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryEditForm))
 
 export {ConnectedEntryEditForm as EntryEditForm}

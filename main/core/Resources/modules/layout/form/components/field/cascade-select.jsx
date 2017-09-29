@@ -16,6 +16,12 @@ class CascadeSelect  extends Component {
     this.initializeChoices()
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedValue !== this.props.selectedValue) {
+      this.initializeChoices()
+    }
+  }
+
   getLevel(option) {
     let level = 0
 
