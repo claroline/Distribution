@@ -40,11 +40,9 @@ class AbstractController extends Controller
         $this->serializer = $serializer;
     }
 
-    public function list(Request $request, $class, $page, $limit, $env)
+    public function list(Request $request, $class, $env)
     {
-        return new JsonResponse(
-            $this->finder->search($class, $page, $limit, $request->query->all())
-        );
+        return new JsonResponse($this->finder->search($class, $request->query->all()));
     }
 
     public function create(Request $request, $class, $env)

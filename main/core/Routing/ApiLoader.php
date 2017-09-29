@@ -54,7 +54,7 @@ class ApiLoader extends Loader
                   'create' => ['', 'POST'],
                   'update' => ['{uuid}', 'PUT'],
                   'deleteBulk' => ['', 'DELETE'],
-                  'list' => ['{page}/{limit}', 'GET'],
+                  'list' => ['', 'GET'],
                 ];
 
                 //find prefix from annotations
@@ -83,7 +83,7 @@ class ApiLoader extends Loader
                         $route->setMethods([$options[1]]);
 
                         // add the new route to the route collection:
-                        $routeName = 'api_'.$prefix.'_'.$name;
+                        $routeName = 'apiv2_'.$prefix.'_'.$name;
                         $routes->add($routeName, $route);
                     }
 
