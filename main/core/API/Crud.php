@@ -4,9 +4,9 @@ namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Security\ObjectCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Claroline\CoreBundle\Security\ObjectCollection;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -36,7 +36,7 @@ class Crud
         $this->om = $om;
         $this->serializer = $serializer;
         $this->dispatcher = $dispatcher;
-        $this->security   = $security;
+        $this->security = $security;
     }
 
     public function create($class, $data, array $options)
@@ -90,7 +90,7 @@ class Crud
 
         if (!$this->security->isGranted($permission, $collection)) {
             throw new AccessDeniedException(
-              'operation ' . $permission . ' couldn\'t be done on object ' . get_class($object)
+              'operation '.$permission.' couldn\'t be done on object '.get_class($object)
             );
         }
     }
