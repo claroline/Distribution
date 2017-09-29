@@ -21,13 +21,13 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
-use Claroline\CoreBundle\Security\PlatformRoles;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Exception\AddRoleException;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
@@ -713,18 +713,20 @@ class UserManager
 
         $personalWorkspaceName = $this->translator->trans('personal_workspace', [], 'platform').' - '.$user->getUsername();
         $workspace = new Workspace();
-        $workspace->setCode($code);
-        $workspace->setName($personalWorkspaceName);
-        $workspace->setCreator($user);
         $workspace = !$model ?
             $this->workspaceManager->copy($this->workspaceManager->getDefaultModel(true), $workspace) :
             $this->workspaceManager->copy($model, $workspace);
+
+        $workspace->setCode($code);
+        $workspace->setName($personalWorkspaceName);
+        $workspace->setCreator($user);
+        $workspace->setPersonal(true);
 
         //add "my public documents" folder
         $resourceManager = $this->container->get('claroline.manager.resource_manager');
         //TODO MODEL
         $resourceManager->addPublicFileDirectory($workspace);
-        $workspace->setIsPersonal(true);
+
         $user->setPersonalWorkspace($workspace);
         $this->objectManager->persist($user);
         $this->objectManager->flush();
