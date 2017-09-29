@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {FormField} from '#/main/core/layout/form/components/form-field.jsx'
@@ -102,6 +103,7 @@ class EntryCreateForm extends Component {
   registerEntry() {
     if (!this.state['hasError']) {
       this.props.createEntry(this.state.entry, this.state.keywords)
+      this.props.history.push('/menu')
     }
   }
 
@@ -194,7 +196,7 @@ class EntryCreateForm extends Component {
               <button className="btn btn-primary" onClick={() => this.validateEntry()}>
                 <span>{t('ok')}</span>
               </button>
-              <a href="#/" className="btn btn-default">
+              <a href="#/menu" className="btn btn-default">
                 {t('cancel')}
               </a>
             </div>
@@ -242,7 +244,8 @@ EntryCreateForm.propTypes = {
   template: T.string,
   useTemplate: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
-  createEntry: T.func.isRequired
+  createEntry: T.func.isRequired,
+  history: T.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -264,6 +267,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedEntryCreateForm = connect(mapStateToProps, mapDispatchToProps)(EntryCreateForm)
+const ConnectedEntryCreateForm = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryCreateForm))
 
 export {ConnectedEntryCreateForm as EntryCreateForm}

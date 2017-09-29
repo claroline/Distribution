@@ -38,7 +38,9 @@ actions.createEntry = (entry, keywords) => (dispatch, getState) => {
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.addEntry(JSON.parse(data)))
+        const parsedData = JSON.parse(data)
+        dispatch(actions.addEntry(parsedData))
+        dispatch(actions.loadCurrentEntry(parsedData))
       }
     }
   })
@@ -58,7 +60,9 @@ actions.editEntry = (entryId, entry, keywords, categories) => (dispatch) => {
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.updateEntry(JSON.parse(data)))
+        const parsedData = JSON.parse(data)
+        dispatch(actions.updateEntry(parsedData))
+        dispatch(actions.loadCurrentEntry(parsedData))
       }
     }
   })
@@ -80,27 +84,31 @@ actions.deleteEntry = (entryId) => (dispatch) => {
 
 actions.loadEntry = (entryId) => (dispatch, getState) => {
   const state = getState()
-  const entries = state.entries
-  let entry = entries.find(e => e.id === entryId)
+  const currentEntry = state.currentEntry
 
-  if (!entry) {
-    const myEntries = state.myEntries
-    entry = myEntries.find(e => e.id === entryId)
-  }
-  if (entry) {
-    dispatch(actions.loadCurrentEntry(entry))
-  } else {
-    dispatch({
-      [REQUEST_SEND]: {
-        url: generateUrl('claro_claco_form_entry_retrieve', {entry: entryId}),
-        request: {
-          method: 'GET'
-        },
-        success: (data, dispatch) => {
-          dispatch(actions.loadCurrentEntry(JSON.parse(data)))
+  if (!currentEntry || currentEntry.id !== entryId) {
+    const entries = state.entries
+    let entry = entries.find(e => e.id === entryId)
+
+    if (!entry) {
+      const myEntries = state.myEntries
+      entry = myEntries.find(e => e.id === entryId)
+    }
+    if (entry) {
+      dispatch(actions.loadCurrentEntry(entry))
+    } else {
+      dispatch({
+        [REQUEST_SEND]: {
+          url: generateUrl('claro_claco_form_entry_retrieve', {entry: entryId}),
+          request: {
+            method: 'GET'
+          },
+          success: (data, dispatch) => {
+            dispatch(actions.loadCurrentEntry(JSON.parse(data)))
+          }
         }
-      }
-    })
+      })
+    }
   }
 }
 

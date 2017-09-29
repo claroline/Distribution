@@ -174,6 +174,7 @@ class EntryEditForm extends Component {
         this.state.keywords,
         this.state.categories.map(categoryName => this.props.categories.find(c => c.name === categoryName).id)
       )
+      this.props.history.push(`/entry/${this.state.id}/view`)
     }
   }
 
@@ -307,7 +308,7 @@ class EntryEditForm extends Component {
               <button className="btn btn-primary" onClick={() => this.validateEntry()}>
                 <span>{t('ok')}</span>
               </button>
-              <a href="#/" className="btn btn-default">
+              <a href={`#/entry/${this.props.entryId}/view`} className="btn btn-default">
                 {t('cancel')}
               </a>
             </div>
