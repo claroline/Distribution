@@ -73,13 +73,13 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/{clacoForm}/open",
-     *     name="claro_claco_form_open",
+     *     "/claco/form/{clacoForm}/open/old",
+     *     name="claro_claco_form_open_old",
      *     options={"expose"=true}
      * )
      * @EXT\Template()
      */
-    public function clacoFormOpenAction(ClacoForm $clacoForm)
+    public function clacoFormOpenOldAction(ClacoForm $clacoForm)
     {
         $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
         $canEdit = $this->clacoFormManager->hasRight($clacoForm, 'EDIT');
@@ -150,13 +150,13 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/{clacoForm}/open/react",
-     *     name="claro_claco_form_open_react",
+     *     "/claco/form/{clacoForm}/open",
+     *     name="claro_claco_form_open",
      *     options={"expose"=true}
      * )
      * @EXT\Template()
      */
-    public function clacoFormOpenReactAction(ClacoForm $clacoForm)
+    public function clacoFormOpenAction(ClacoForm $clacoForm)
     {
         $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
         $user = $this->tokenStorage->getToken()->getUser();

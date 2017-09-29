@@ -105,6 +105,8 @@ class EntryView extends Component {
       switch (getFieldType(field.type).name) {
         case 'checkboxes':
           return value.join(', ')
+        case 'select':
+          return Array.isArray(value) ? value.join(', ') : value
         case 'country':
           return getCountry(value) ? getCountry(value).label : ''
         case 'date' :
@@ -200,6 +202,13 @@ class EntryView extends Component {
         switch (getFieldType(f.type).name) {
           case 'checkboxes':
             replacedField = fieldValue ? fieldValue.join(', ') : ''
+            break
+          case 'select':
+            replacedField = fieldValue ?
+              Array.isArray(fieldValue) ?
+                fieldValue.join(', ') :
+                fieldValue :
+              ''
             break
           case 'date':
             replacedField = fieldValue ? moment(fieldValue).format('DD/MM/YYYY') : ''
