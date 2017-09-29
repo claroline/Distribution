@@ -43,14 +43,14 @@ class OrganizationSerializer
           'default' => $organization->getDefault(),
           'administrators' => array_map(function ($administrator) {
               return [
-              'id' => $administrator->getId(),
-              'username' => $administrator->getUsername(),
-            ];
+                  'id' => $administrator->getId(),
+                  'username' => $administrator->getUsername(),
+              ];
           }, $organization->getAdministrators()->toArray()),
           'locations' => array_map(function ($location) {
               return [
-              'id' => $location->getId(),
-              'name' => $location->getName(),
+                  'id' => $location->getId(),
+                  'name' => $location->getName(),
             ];
           }, $organization->getLocations()->toArray()),
         ];
