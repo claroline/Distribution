@@ -55,7 +55,7 @@ class Crud
     {
         $this->validate($class, $data);
         $object = $this->serializer->deserialize($class, $data);
-        $this->checkPermission('UPDATE', $object);
+        $this->checkPermission('EDIT', $object);
         $this->dispatcher->dispatch('crud_pre_update_object', 'Crud', [$object]);
         $this->om->save($object);
         $this->dispatcher->dispatch('crud_post_update_object', 'Crud', [$object]);

@@ -22,10 +22,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
 {
     const CREATE = 'CREATE';
-    const EDIT = 'EDIT';
+    const EDIT   = 'EDIT';
     const DELETE = 'DELETE';
-    const VIEW = 'VIEW';
-    const OPEN = 'OPEN';
+    const VIEW   = 'VIEW';
+    const OPEN   = 'OPEN';
 
     /**
      * @DI\InjectParams({
@@ -104,7 +104,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     /***************************/
     /* COMMON UTILITIES METHOD */
     /***************************/
-    
+
     protected function hasAdminToolAccess(TokenInterface $token, $name)
     {
         $tool = $this->getObjectManager()
