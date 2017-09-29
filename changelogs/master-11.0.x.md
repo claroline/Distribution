@@ -1,4 +1,4 @@
-# Version 10.0.1  
+# Version 11.0.1  
 
 [d01f375](https://github.com/claroline/Distribution/commit/d01f375) - [CoreBundle] Fixing workspace import/creation. [#2579](https://github.com/claroline/Distribution/pull/2579)  
 [46d9256](https://github.com/claroline/Distribution/commit/46d9256) - Fixing object error in js [#2578](https://github.com/claroline/Distribution/pull/2578)  
@@ -34,4 +34,9 @@
 [9bbe959](https://github.com/claroline/Distribution/commit/9bbe959) - Upgrade refactoring [#2512](https://github.com/claroline/Distribution/pull/2512)  
 [812ceb9](https://github.com/claroline/Distribution/commit/812ceb9) - [CoreBundle] Missing use and stuff for v10 upgrade [#2510](https://github.com/claroline/Distribution/pull/2510)  
 [654a919](https://github.com/claroline/Distribution/commit/654a919) - [CoreBundle] Simplify user registration form. [#2509](https://github.com/claroline/Distribution/pull/2509)  
+
+# Version 11.0.1-alpha1  
+
+[1630d88](https://github.com/claroline/Distribution/commit/1630d88) - [CoreBundle] adds react router and utilities [#2614](https://github.com/claroline/Distribution/pull/2614)  
+[6150310](https://github.com/claroline/Distribution/commit/6150310) - Update distribution version [#2587](https://github.com/claroline/Distribution/pull/2587)  
 
