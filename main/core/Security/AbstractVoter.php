@@ -42,7 +42,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
         //attributes[0] contains the permission (ie create, edit, open, ...)
         $attributes[0] = strtoupper($attributes);
 
-        if (!$this->supports($object) || !in_array($attributes[0], $this->getSupportedActions())) {
+        if (!$this->supports($object) && !in_array($attributes[0], $this->getSupportedActions())) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
