@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ScheduledTask = props =>
+const ScheduledTask = () =>
   <div>
 
   </div>

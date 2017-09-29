@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {NavLink} from 'react-router-dom'
 
@@ -62,7 +63,11 @@ const ScheduledTasksPage = props =>
             name: 'name',
             label: t('name'),
             displayed: true,
-            renderer: (rowData) => <NavLink to={`/${rowData.id}`}>{rowData.name}</NavLink>
+            renderer: (rowData) => {
+              const link = <NavLink to={`/${rowData.id}`}>{rowData.name}</NavLink>
+
+              return link
+            }
           }, {
             name: 'type',
             label: t('type'),
@@ -121,14 +126,14 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     createTask() {
       dispatch(
         modalActions.showModal(MODAL_GENERIC_TYPE_PICKER, {
           title: t('task_type_selection_title'),
           types: constants.taskTypes,
-          handleSelect: (type) => type
+          handleSelect: (type) => ownProps.history.push(type)
         })
       )
     },
@@ -151,7 +156,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ScheduledTasks = connect(mapStateToProps, mapDispatchToProps)(ScheduledTasksPage)
+const ScheduledTasks = withRouter(connect(mapStateToProps, mapDispatchToProps)(ScheduledTasksPage))
 
 export {
   ScheduledTasks

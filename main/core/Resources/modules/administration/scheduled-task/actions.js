@@ -11,7 +11,7 @@ import {
   VIEW_MESSAGE_FORM
 } from './constants'
 
-/*export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'*/
+export const UPDATE_VIEW_MODE = 'UPDATE_VIEW_MODE'
 /*export const TASKS_LOAD = 'TASKS_LOAD'*/
 export const TASK_ADD = 'TASK_ADD'
 export const TASK_FORM_RESET = 'TASK_FORM_RESET'
@@ -20,13 +20,13 @@ export const TASK_FORM_TYPE_UPDATE = 'TASK_FORM_TYPE_UPDATE'
 
 export const actions = {}
 
-/*actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')*/
+actions.updateViewMode = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
 actions.addTask = makeActionCreator(TASK_ADD, 'task')
 actions.resetTaskForm = makeActionCreator(TASK_FORM_RESET)
 actions.loadTaskForm = makeActionCreator(TASK_FORM_LOAD, 'task')
 actions.updateTaskFormType = makeActionCreator(TASK_FORM_TYPE_UPDATE, 'value')
 
-/*actions.editTask = makeActionCreator(UPDATE_VIEW_MODE, 'mode')*/
+actions.editTask = makeActionCreator(UPDATE_VIEW_MODE, 'mode')
 
 actions.displayManagementView = () => {
   return (dispatch) => {

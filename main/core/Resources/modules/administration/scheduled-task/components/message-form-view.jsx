@@ -225,7 +225,7 @@ class MessageFormView extends Component {
             {t('ok')}
           </button>
           &nbsp;
-          <a className="btn btn-default" href={'#'}>
+          <a className="btn btn-default" href="#">
             {t('cancel')}
           </a>
         </div>
@@ -255,6 +255,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedMessageFormView = connect(mapStateToProps, mapDispatchToProps)(MessageFormView)
+const ConnectedMessageFormView = withRouter(connect(mapStateToProps, mapDispatchToProps)(MessageFormView))
 
 export {ConnectedMessageFormView as MessageFormView}
