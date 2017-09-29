@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -30,6 +31,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Group extends AbstractRoleSubject implements OrderableInterface
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -45,7 +48,7 @@ class Group extends AbstractRoleSubject implements OrderableInterface
      * @Assert\NotBlank()
      * @Groups({"api_group", "api_group_min"})
      *
-     * @var name
+     * @var string
      */
     protected $name;
 
@@ -57,14 +60,6 @@ class Group extends AbstractRoleSubject implements OrderableInterface
      * )
      */
     protected $users;
-
-    /**
-     * @ORM\Column()
-     * @Groups({"api_group", "api_group_min"})
-     *
-     * @var string
-     */
-    protected $guid;
 
     /**
      * @ORM\ManyToMany(
@@ -91,6 +86,7 @@ class Group extends AbstractRoleSubject implements OrderableInterface
         parent::__construct();
         $this->users = new ArrayCollection();
         $this->organizations = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()
