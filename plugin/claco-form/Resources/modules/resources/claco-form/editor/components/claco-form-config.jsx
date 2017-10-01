@@ -8,6 +8,7 @@ import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
+import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
@@ -15,6 +16,7 @@ import {formatDate} from '#/main/core/date'
 import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {constants as listConstants} from '#/main/core/layout/list/constants'
 import {actions} from '../actions'
 import {Message} from '../../components/message.jsx'
 
@@ -241,10 +243,7 @@ const List = props =>
           <option value="keywordsString">
             {trans('keywords', {}, 'clacoform')}
           </option>
-          <option value="actions">
-            {t('actions')}
-          </option>
-          {props.fields.map(field =>
+          {props.fields.filter(f => !f.hidden).map(field =>
             <option key={field.id} value={field.id}>
               {field.name}
             </option>
@@ -252,13 +251,55 @@ const List = props =>
         </select>
       </div>
     </div>
+    <RadioGroup
+      controlId="params-default-display-mode"
+      label={trans('default_display_mode', {}, 'clacoform')}
+      options={
+        Object.keys(listConstants.DISPLAY_MODES).map(key => {
+          return {
+            value: key,
+            label: listConstants.DISPLAY_MODES[key].label
+          }
+        })
+      }
+      checkedValue={props.params.default_display_mode || listConstants.DISPLAY_TABLE}
+      onChange={value => props.updateParameters('default_display_mode', value)}
+    />
+    <SelectGroup
+      controlId="params-display-title"
+      label={trans('field_for_title', {}, 'clacoform')}
+      options={generateDisplayList(props)}
+      noEmpty={true}
+      selectedValue={props.params.display_title || 'title'}
+      onChange={value => props.updateParameters('display_title', value)}
+    />
+    <SelectGroup
+      controlId="params-display-subtitle"
+      label={trans('field_for_subtitle', {}, 'clacoform')}
+      options={generateDisplayList(props)}
+      noEmpty={true}
+      selectedValue={props.params.display_subtitle || 'title'}
+      onChange={value => props.updateParameters('display_subtitle', value)}
+    />
+    <SelectGroup
+      controlId="params-display-content"
+      label={trans('field_for_content', {}, 'clacoform')}
+      options={generateDisplayList(props)}
+      noEmpty={true}
+      selectedValue={props.params.display_content || 'title'}
+      onChange={value => props.updateParameters('display_content', value)}
+    />
   </fieldset>
 
 List.propTypes = {
   params: T.shape({
     search_enabled: T.boolean,
     search_column_enabled: T.boolean,
-    search_columns: T.array
+    search_columns: T.array,
+    default_display_mode: T.string,
+    display_title: T.string,
+    display_subtitle: T.string,
+    display_content: T.string,
   }).isRequired,
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,
@@ -437,6 +478,26 @@ Keywords.propTypes = {
   updateParameters: T.func.isRequired
 }
 
+const generateDisplayList = (props) => {
+  return [
+    {value: 'title', label: t('title')},
+    {value: 'date', label: t('date')},
+    {value: 'user', label: t('user')},
+    {value: 'categories', label: t('categories')},
+    {value: 'keywords', label: trans('keywords', {}, 'clacoform')}
+  ].concat(props.fields.filter(f => !f.hidden).map(field => {
+    return {value: field.id, label: field.name}
+  }))
+}
+
+generateDisplayList.propTypes = {
+  fields: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired,
+    hidden: T.bool
+  }))
+}
+
 function makePanel(Section, title, key, props, withCategories = false, withFields = false) {
   const caretIcon = key === props.params.activePanelKey ? 'fa-caret-down' : 'fa-caret-right'
   const keyValue = key === props.params.activePanelKey ? '' : key
@@ -506,7 +567,8 @@ makePanel.propTypes = {
   })),
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,
-    name: T.string.isRequired
+    name: T.string.isRequired,
+    hidden: T.bool
   })),
   updateParameters: T.func.isRequired
 }
@@ -617,7 +679,8 @@ ClacoFormConfig.propTypes = {
   })),
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,
-    name: T.string.isRequired
+    name: T.string.isRequired,
+    hidden: T.bool
   })),
   initializeParameters: T.func.isRequired,
   updateParameters: T.func.isRequired,

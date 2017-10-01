@@ -94,84 +94,9 @@ const entriesReducers = makeReducer({}, {
   }
 })
 
-const myEntriesReducers = makeReducer({}, {
-  [ENTRY_ADD]: (state, action) => {
-    const myEntries = cloneDeep(state)
-    myEntries.push(action.entry)
-
-    return myEntries
-  },
-  [ENTRY_UPDATE]: (state, action) => {
-    const myEntries = cloneDeep(state)
-    const index = myEntries.findIndex(c => c.id === action.entry.id)
-
-    if (index >= 0) {
-      myEntries[index] = action.entry
-    }
-
-    return myEntries
-  },
-  [ENTRY_REMOVE]: (state, action) => {
-    const myEntries = cloneDeep(state)
-    const index = myEntries.findIndex(c => c.id === action.entryId)
-
-    if (index >= 0) {
-      myEntries.splice(index, 1)
-    }
-
-    return myEntries
-  },
-  [ALL_ENTRIES_REMOVE]: () => {
-    return []
-  },
-  [ENTRY_COMMENT_ADD]: (state, action) => {
-    const entries = cloneDeep(state)
-    const entryIndex = entries.findIndex(e => e.id === action.entryId)
-
-    if (entryIndex >= 0) {
-      const comments = [action.comment, ...entries[entryIndex].comments]
-      entries[entryIndex] = Object.assign({}, entries[entryIndex], {comments: comments})
-
-      return entries
-    } else {
-      return state
-    }
-  },
-  [ENTRY_COMMENT_UPDATE]: (state, action) => {
-    const entries = cloneDeep(state)
-    const entryIndex = entries.findIndex(e => e.id === action.entryId)
-
-    if (entryIndex >= 0) {
-      const comments = cloneDeep(entries[entryIndex].comments)
-      const commentIndex = comments.findIndex(c => c.id === action.comment.id)
-
-      if (commentIndex >= 0) {
-        comments[commentIndex] = action.comment
-        entries[entryIndex] = Object.assign({}, entries[entryIndex], {comments: comments})
-      }
-
-      return entries
-    } else {
-      return state
-    }
-  },
-  [ENTRY_COMMENT_REMOVE]: (state, action) => {
-    const entries = cloneDeep(state)
-    const entryIndex = entries.findIndex(e => e.id === action.entryId)
-
-    if (entryIndex >= 0) {
-      const comments = cloneDeep(entries[entryIndex].comments)
-      const commentIndex = comments.findIndex(c => c.id === action.commentId)
-
-      if (commentIndex >= 0) {
-        comments.splice(commentIndex, 1)
-        entries[entryIndex] = Object.assign({}, entries[entryIndex], {comments: comments})
-      }
-
-      return entries
-    } else {
-      return state
-    }
+const myEntriesCountReducers = makeReducer({}, {
+  [ENTRY_ADD]: (state) => {
+    return state + 1
   }
 })
 
@@ -231,6 +156,6 @@ const reducer = makeListReducer({
 export {
   reducer,
   entriesReducers,
-  myEntriesReducers,
+  myEntriesCountReducers,
   currentEntryReducers
 }

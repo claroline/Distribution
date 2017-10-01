@@ -14,6 +14,7 @@ const SelectGroup = props =>
       disabled={props.disabled}
       onChange={props.onChange}
       multiple={props.multiple}
+      noEmpty={props.noEmpty}
     />
   </FormGroup>
 
@@ -23,6 +24,7 @@ SelectGroup.propTypes = {
   selectedValue: T.oneOfType([T.string, T.number, T.array]).isRequired,
   disabled: T.bool,
   multiple: T.bool,
+  noEmpty: T.bool,
   onChange: T.func.isRequired
 }
 

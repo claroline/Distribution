@@ -36,7 +36,7 @@ const ClacoFormResource = props =>
           props.defaultHome === 'menu' ?
             ClacoFormMainMenu :
             props.defaultHome === 'search' ?
-              EntriesList :
+              Entries :
               props.defaultHome === 'add' ?
                 EntryCreateForm :
                 props.defaultHome === 'random' ?
@@ -63,6 +63,7 @@ ClacoFormResource.propTypes = {
   }).isRequired,
   saveParameters: T.func.isRequired,
   canEdit: T.bool.isRequired,
+  canAddEntry: T.bool.isRequired,
   canSearchEntry: T.bool.isRequired,
   defaultHome: T.string.isRequired
 }
@@ -75,12 +76,13 @@ function customActions(props) {
     label: trans('main_menu', {}, 'clacoform'),
     action: '#/menu'
   })
-  actions.push({
-    icon: 'fa fa-fw fa-edit',
-    label: trans('add_entry', {}, 'clacoform'),
-    action: '#/entry/create'
-  })
-
+  if (props.canAddEntry) {
+    actions.push({
+      icon: 'fa fa-fw fa-edit',
+      label: trans('add_entry', {}, 'clacoform'),
+      action: '#/entry/create'
+    })
+  }
   if (props.canSearchEntry) {
     actions.push({
       icon: 'fa fa-fw fa-search',
@@ -117,6 +119,7 @@ function customActions(props) {
 function mapStateToProps(state) {
   return {
     canEdit: state.canEdit,
+    canAddEntry: selectors.canAddEntry(state),
     canSearchEntry: selectors.canSearchEntry(state),
     defaultHome: selectors.getParam(state, 'default_home')
   }

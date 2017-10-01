@@ -48,7 +48,7 @@ const DataGridItem = props =>
 
     <div className="item-content">
       <h2 className="item-title">
-        {props.data.title}
+        <div dangerouslySetInnerHTML={{ __html: props.data.title}}></div>
         {props.data.subtitle &&
           <small>{props.data.subtitle}</small>
         }

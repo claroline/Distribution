@@ -86,7 +86,7 @@ class FinderProvider
         return $this->finders[$class];
     }
 
-    public function search($class, array $queryParams = [], array $serializerOptions = [])
+    public function search($class, array $queryParams = [], array $serializerOptions = [], array $extraData = [])
     {
         // get search params
         $filters = isset($queryParams['filters']) ? $this->parseFilters($queryParams['filters']) : [];
@@ -94,8 +94,8 @@ class FinderProvider
         $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 0;
         $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : -1;
 
-        $data = $this->fetch($class, $page, $limit, $filters, $sortBy);
-        $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true);
+        $data = $this->fetch($class, $page, $limit, $filters, $sortBy, false, $extraData);
+        $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true, $extraData);
 
         return [
             'data' => array_map(function ($result) use ($serializerOptions) {
@@ -109,7 +109,7 @@ class FinderProvider
         ];
     }
 
-    public function fetch($class, $page, $limit, array $filters, array $sortBy = null, $count = false)
+    public function fetch($class, $page, $limit, array $filters, array $sortBy = null, $count = false, array $extraData = [])
     {
         try {
             /** @var QueryBuilder $qb */
@@ -119,7 +119,7 @@ class FinderProvider
                ->from($class, 'obj');
 
             // filter query - let's the finder implementation process the filters to configure query
-            $this->get($class)->configureQueryBuilder($qb, $filters);
+            $this->get($class)->configureQueryBuilder($qb, $filters, $extraData);
 
             // order query
             if (!empty($sortBy) && !empty($sortBy['property']) && 0 !== $sortBy['direction']) {

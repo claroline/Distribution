@@ -160,7 +160,13 @@ Fields.propTypes = {
   resourceId: T.number.isRequired,
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,
-    name: T.string.isRequired
+    name: T.string.isRequired,
+    type: T.number.isRequired,
+    required: T.bool.isRequired,
+    isMetadata: T.bool.isRequired,
+    locked: T.bool.isRequired,
+    lockedEditionOnly: T.bool.isRequired,
+    hidden: T.bool,
   })).isRequired,
   createField: T.func.isRequired,
   editField: T.func.isRequired,

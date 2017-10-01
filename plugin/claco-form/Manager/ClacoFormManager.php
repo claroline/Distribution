@@ -168,7 +168,6 @@ class ClacoFormManager
             'userString',
             'categoriesString',
             'keywordsString',
-            'actions',
         ]);
 
         $clacoForm->setDisplayMetadata('none');
@@ -198,6 +197,10 @@ class ClacoFormManager
         $clacoForm->setOpenKeywords(false);
 
         $clacoForm->setUseTemplate(false);
+        $clacoForm->setDefaultDisplayMode('table');
+        $clacoForm->setDisplayTitle('title');
+        $clacoForm->setDisplaySubtitle('title');
+        $clacoForm->setDisplayContent('title');
 
         return $clacoForm;
     }
@@ -1969,6 +1972,11 @@ class ClacoFormManager
         return $this->clacoFormRepo->findClacoFormByResourceNodeId($resourceNodeId);
     }
 
+    public function getClacoFormById($id)
+    {
+        return $this->clacoFormRepo->findOneById($id);
+    }
+
     /****************************************
      * Access to CategoryRepository methods *
      ****************************************/
@@ -2142,6 +2150,23 @@ class ClacoFormManager
         return $this->authorization->isGranted($right, $collection);
     }
 
+    public function isCategoryManager(ClacoForm $clacoForm, User $user)
+    {
+        $categories = $clacoForm->getCategories();
+
+        foreach ($categories as $category) {
+            $managers = $category->getManagers();
+
+            foreach ($managers as $manager) {
+                if ($manager->getId() === $user->getId()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function isEntryManager(Entry $entry, User $user)
     {
         $categories = $entry->getCategories();
@@ -2163,14 +2188,16 @@ class ClacoFormManager
     {
         $clacoForm = $entry->getClacoForm();
         $user = $this->tokenStorage->getToken()->getUser();
+        $isAnon = $user === 'anon.';
         $canOpen = $this->hasRight($clacoForm, 'OPEN');
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
 
         return $canEdit || (
             $canOpen && (
                ($entry->getUser() === $user) ||
-               (($user !== 'anon.') && $this->isEntryManager($entry, $user)) ||
-               (($entry->getStatus() === Entry::PUBLISHED) && $clacoForm->getSearchEnabled())
+               (!$isAnon && $this->isEntryManager($entry, $user)) ||
+               (($entry->getStatus() === Entry::PUBLISHED) && $clacoForm->getSearchEnabled()) ||
+               (!$isAnon && $this->isEntryShared($entry, $user))
             )
         );
     }

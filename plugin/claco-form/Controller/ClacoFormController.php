@@ -167,30 +167,7 @@ class ClacoFormController extends Controller
         $user = $this->tokenStorage->getToken()->getUser();
         $isAnon = $user === 'anon.';
         $fields = $this->clacoFormManager->getFieldsByClacoForm($clacoForm);
-//        $allEntries = $this->clacoFormManager->getAllEntries($clacoForm);
-//        $publishedEntries = $this->clacoFormManager->getPublishedEntries($clacoForm);
-//        $nbEntries = count($allEntries);
-//        $nbPublishedEntries = count($publishedEntries);
         $myEntries = $isAnon ? [] : $this->clacoFormManager->getUserEntries($clacoForm, $user);
-//        $myCategories = $isAnon ? [] : $this->clacoFormManager->getCategoriesByManager($clacoForm, $user);
-//        $isCategoryManager = count($myCategories) > 0;
-//        $managerEntries = $isAnon ? [] : $this->clacoFormManager->getEntriesByCategories($clacoForm, $myCategories);
-//        $serializedFields = $this->serializer->serialize(
-//            $fields,
-//            'json',
-//            SerializationContext::create()->setGroups(['api_facet_admin'])
-//        );
-//        $serializedMyEntries = $this->serializer->serialize(
-//            $myEntries,
-//            'json',
-//            SerializationContext::create()->setGroups(['api_user_min'])
-//        );
-//        $serializedManagerEntries = $this->serializer->serialize(
-//            $managerEntries,
-//            'json',
-//            SerializationContext::create()->setGroups(['api_user_min'])
-//        );
-//        $sharedEntries = $this->clacoFormManager->generateSharedEntriesData($clacoForm);
         $canGeneratePdf = !$isAnon &&
             $this->platformConfigHandler->hasParameter('knp_pdf_binary_path') &&
             file_exists($this->platformConfigHandler->getParameter('knp_pdf_binary_path'));
@@ -198,11 +175,14 @@ class ClacoFormController extends Controller
             $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
             2;
         $entries = $this->finder->search(
-            'Claroline\ClacoFormBundle\Entity\Entry', [
+            'Claroline\ClacoFormBundle\Entity\Entry',
+            [
                 'limit' => 20,
                 'filters' => [],
                 'sortBy' => 'title'
-            ]
+            ],
+            [],
+            ['clacoForm' => $clacoForm->getId()]
         );
 
         return [
@@ -211,17 +191,10 @@ class ClacoFormController extends Controller
             'isAnon' => $isAnon,
             'clacoForm' => $clacoForm,
             'fields' => $fields,
-//            'isCategoryManager' => $isCategoryManager,
-//            'myEntries' => $serializedMyEntries,
-//            'managerEntries' => $serializedManagerEntries,
-//            'sharedEntries' => $sharedEntries,
-//            'nbEntries' => $nbEntries,
-//            'nbPublishedEntries' => $nbPublishedEntries,
             'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,
             'entries' => $entries,
-//            'allEntries' => $allEntries,
-            'myEntries' => $myEntries,
+            'myEntriesCount' => count($myEntries),
         ];
     }
 
@@ -237,14 +210,11 @@ class ClacoFormController extends Controller
         $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
         $params = $this->request->query->all();
 
-        if (!$params['filters']) {
-            $params['filters'] = [];
-        }
-        $params['filters']['clacoForm'] = $clacoForm->getId();
-
         $data = $this->finder->search(
             'Claroline\ClacoFormBundle\Entity\Entry',
-            $params
+            $params,
+            [],
+            ['clacoForm' => $clacoForm->getId()]
         );
 
         return new JsonResponse($data, 200);

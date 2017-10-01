@@ -75,9 +75,7 @@ class EntryView extends Component {
   }
 
   canViewMetadata() {
-    /* TODO: Allow for shared users */
-    return this.props.canEdit||
-      this.props.isOwner ||
+      this.canShare() ||
       this.props.displayMetadata === 'all' ||
       (this.props.displayMetadata === 'manager' && this.props.isManager)
   }
@@ -88,6 +86,10 @@ class EntryView extends Component {
 
   canManageEntry() {
     return this.props.canEdit || this.props.isManager
+  }
+
+  canShare() {
+    return this.props.canEdit || this.props.isOwner || this.state.entryUser.shared
   }
 
   isFieldDisplayable(field) {
@@ -110,7 +112,7 @@ class EntryView extends Component {
         case 'country':
           return getCountry(value) ? getCountry(value).label : ''
         case 'date' :
-          return moment(value).format('DD/MM/YYYY')
+          return value ? moment(value).format('DD/MM/YYYY') : ''
         case 'rich_text':
           return (<div dangerouslySetInnerHTML={{ __html: value}}/>)
         default:
@@ -231,7 +233,7 @@ class EntryView extends Component {
 
   render() {
     return (
-      this.props.canViewEntry ?
+      this.props.canViewEntry || this.canShare() ?
         <div>
           {['up', 'both'].indexOf(this.props.menuPosition) > -1 &&
             <EntryMenu/>
@@ -300,7 +302,7 @@ class EntryView extends Component {
                         <span className="fa fa-w fa-print"></span>
                       </TooltipButton>
                     }
-                    {this.props.isOwner && /* isSharedWith && */
+                    {this.canShare() &&
                       <TooltipButton
                         id="tooltip-button-share"
                         className="btn btn-default btn-sm margin-right-sm"

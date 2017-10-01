@@ -12,7 +12,7 @@
       data-cascade-level-max={{ cascadeLevelMax }}
       data-can-generate-pdf={{ canGeneratePdf }}
       data-entries="{{ entries | json_encode | raw | escape }}"
-      data-my-entries="{{ myEntries | json_serialize('api_user_min') | raw | escape }}"
+      data-my-entries-count={{ myEntriesCount }}
     >
     </div>
 {% endblock %}

@@ -10,8 +10,9 @@ const template = state => state.resource.template
 const useTemplate = state => state.resource.details['use_template']
 const getParam = (state, property) => state.resource.details[property]
 const currentEntry = state => state.currentEntry
-const myEntries = state => state.myEntries
+const myEntriesCount = state => state.myEntriesCount
 const canAdministrate = state => state.resourceNode.rights.current.administrate
+const categories = state => state.categories
 
 const canSearchEntry = createSelector(
   canEdit,
@@ -90,12 +91,12 @@ const canAddEntry = createSelector(
   canEdit,
   isAnon,
   params,
-  myEntries,
-  (canEdit, isAnon, params, myEntries) => {
+  myEntriesCount,
+  (canEdit, isAnon, params, myEntriesCount) => {
     return canEdit || (
       params['creation_enabled'] &&
       !(isAnon && params['max_entries'] > 0) &&
-      !(params['max_entries'] > 0 && myEntries.length >= params['max_entries'])
+      !(params['max_entries'] > 0 && myEntriesCount >= params['max_entries'])
     )
   }
 )
@@ -117,6 +118,14 @@ const canOpenCurrentEntry = createSelector(
   }
 )
 
+const isCategoryManager = createSelector(
+  user,
+  categories,
+  (user, categories) => {
+    return user.id && categories.filter(c => c.managers.find(m => m.id === user.id)).length > 0
+  }
+)
+
 export const selectors = {
   resource,
   canEdit,
@@ -133,5 +142,6 @@ export const selectors = {
   canEditCurrentEntry,
   canAddEntry,
   canOpenCurrentEntry,
-  canAdministrate
+  canAdministrate,
+  isCategoryManager
 }

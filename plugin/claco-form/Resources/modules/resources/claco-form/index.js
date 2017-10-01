@@ -22,7 +22,7 @@ import {fieldReducers} from './editor/field/reducers'
 import {
   reducer,
   entriesReducers,
-  myEntriesReducers,
+  myEntriesCountReducers,
   currentEntryReducers
 } from './player/entry/reducers'
 import {ClacoFormResource} from './components/claco-form-resource.jsx'
@@ -53,7 +53,7 @@ bootstrap(
     keywords: keywordReducers,
     fields: fieldReducers,
     entries: reducer,
-    myEntries: myEntriesReducers,
+    myEntriesCount: myEntriesCountReducers,
     currentEntry: currentEntryReducers,
     cascadeLevelMax: mainReducers,
     message: messageReducers,
@@ -83,7 +83,7 @@ bootstrap(
       entries: merge({}, initialData.entries, {
         fetchUrl: generateUrl('claro_claco_form_entries_search', {clacoForm: resource.id})
       }),
-      myEntries: initialData.myEntries,
+      myEntriesCount: initialData.myEntries,
       cascadeLevelMax: initialData.cascadeLevelMax
     }
   }

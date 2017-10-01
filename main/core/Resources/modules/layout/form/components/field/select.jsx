@@ -22,7 +22,7 @@ const Select = props =>
       onChange={e => props.multiple ? props.onChange(getSelectedValues(e)) : props.onChange(e.target.value)}
       multiple={props.multiple}
     >
-      {!props.multiple &&
+      {!props.multiple && !props.noEmpty &&
         <option value=""/>
       }
       {props.options.map(option =>
@@ -41,6 +41,7 @@ Select.propTypes = {
   selectedValue: T.oneOfType([T.string, T.number, T.array]).isRequired,
   disabled: T.bool,
   multiple: T.bool,
+  noEmpty: T.bool,
   onChange: T.func.isRequired
 }
 
