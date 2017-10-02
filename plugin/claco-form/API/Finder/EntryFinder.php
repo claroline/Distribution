@@ -68,10 +68,6 @@ class EntryFinder implements FinderInterface
         $qb->andWhere('cf.id = :clacoFormId');
         $qb->setParameter('clacoFormId', $extraData['clacoForm']);
 
-        $qb->join('obj.fieldValues', 'fv');
-        $qb->join('fv.field', 'fvf');
-        $qb->join('fv.fieldFacetValue', 'fvffv');
-
         $type = isset($searches['type']) ? $searches['type'] : null;
 
         if ($type) {
@@ -199,12 +195,15 @@ class EntryFinder implements FinderInterface
     private function filterField(&$qb, $filterName, $filterValue, $field)
     {
         if ($field) {
-            $qb->andWhere("fvf.id = :field{$filterName}");
+            $qb->join('obj.fieldValues', "fv{$filterValue}");
+            $qb->join("fv{$filterValue}.field", "fvf{$filterValue}");
+            $qb->join("fv{$filterValue}.fieldFacetValue", "fvffv{$filterValue}");
+            $qb->andWhere("fvf{$filterValue}.id = :field{$filterName}");
             $qb->setParameter("field{$filterName}", $filterName);
 
             switch ($field->getFieldFacet()->getType()) {
                 case FieldFacet::FLOAT_TYPE:
-                    $qb->andWhere("fvffv.floatValue = :value{$filterName}");
+                    $qb->andWhere("fvffv{$filterValue}.floatValue = :value{$filterName}");
                     $qb->setParameter("value{$filterName}", $filterValue);
                     break;
                 case FieldFacet::DATE_TYPE:
@@ -219,16 +218,16 @@ class EntryFinder implements FinderInterface
                             $keys[] = $key;
                         }
                     }
-                    $qb->andWhere("fvffv.stringValue IN (:value{$filterName})");
+                    $qb->andWhere("fvffv{$filterValue}.stringValue IN (:value{$filterName})");
                     $qb->setParameter("value{$filterName}", $keys);
                     break;
                 case FieldFacet::CHECKBOXES_TYPE:
                 case FieldFacet::CASCADE_SELECT_TYPE:
-                    $qb->andWhere("UPPER(fvffv.arrayValue) LIKE :value{$filterName}");
+                    $qb->andWhere("UPPER(fvffv{$filterValue}.arrayValue) LIKE :value{$filterName}");
                     $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
                     break;
                 default:
-                    $qb->andWhere("UPPER(fvffv.stringValue) LIKE :value{$filterName}");
+                    $qb->andWhere("UPPER(fvffv{$filterValue}.stringValue) LIKE :value{$filterName}");
                     $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
             }
         }
