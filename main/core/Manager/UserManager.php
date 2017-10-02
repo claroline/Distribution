@@ -1409,7 +1409,7 @@ class UserManager
     /**
      * Checks if a user will have a personal workspace at his creation.
      */
-    private function personalWorkspaceAllowed($roles)
+    public function personalWorkspaceAllowed($roles)
     {
         $roles[] = $this->roleManager->getRoleByName('ROLE_USER');
 

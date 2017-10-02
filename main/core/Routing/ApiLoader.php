@@ -59,36 +59,41 @@ class ApiLoader extends Loader
 
                 //find prefix from annotations
                 $controller = $this->findClass($file);
-                $refClass = new \ReflectionClass($controller);
-                $found = false;
 
-                foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
-                    if ($annotation instanceof ApiMeta) {
-                        $found = true;
-                        $prefix = $annotation->prefix;
-                        $class = $annotation->class;
-                    }
-                }
+                if ($controller) {
+                    $refClass = new \ReflectionClass($controller);
+                    $found = false;
 
-                if ($found) {
-                    foreach ($defaults as $name => $options) {
-                        $pattern = '/'.$prefix.'/'.$options[0];
-                        $routeDefaults = [
-                          '_controller' => $controller.'::'.$name,
-                          'class' => $class,
-                          'env' => $this->container->getParameter('kernel.environment'),
-                        ];
-
-                        $route = new Route($pattern, $routeDefaults, []);
-                        $route->setMethods([$options[1]]);
-
-                        // add the new route to the route collection:
-                        $routeName = 'apiv2_'.$prefix.'_'.$name;
-                        $routes->add($routeName, $route);
+                    foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
+                        if ($annotation instanceof ApiMeta) {
+                            $found = true;
+                            $prefix = $annotation->prefix;
+                            $class = $annotation->class;
+                        }
                     }
 
-                    $imported = $this->import($resource, 'annotation');
-                    $routes->addCollection($imported);
+                    if ($found) {
+                        foreach ($defaults as $name => $options) {
+                            $pattern = '/'.$prefix.'/'.$options[0];
+                            $routeDefaults = [
+                              '_controller' => $controller.'::'.$name,
+                              'class' => $class,
+                              'env' => $this->container->getParameter('kernel.environment'),
+                            ];
+
+                            $route = new Route($pattern, $routeDefaults, []);
+                            $route->setMethods([$options[1]]);
+
+                            // add the new route to the route collection:
+                            $routeName = 'apiv2_'.$prefix.'_'.$name;
+                            $routes->add($routeName, $route);
+                        }
+
+                        //add Traits here
+
+                        $imported = $this->import($resource, 'annotation');
+                        $routes->addCollection($imported);
+                    }
                 }
             }
         }
