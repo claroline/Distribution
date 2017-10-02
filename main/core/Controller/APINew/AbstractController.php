@@ -62,7 +62,7 @@ class AbstractController extends Controller
         }
     }
 
-    public function update($object, Request $request, $class, $env)
+    public function update($uuid, Request $request, $class, $env)
     {
         try {
             $object = $this->crud->update($class, $this->decodeRequest($request));
