@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
+use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
@@ -51,6 +52,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 class User extends AbstractRoleSubject implements Serializable, AdvancedUserInterface, EquatableInterface, OrderableInterface
 {
     use UuidTrait;
+    use OrganizationsTrait;
 
     /**
      * @var int
@@ -1168,21 +1170,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         return array_merge($organizations, $this->organizations->toArray());
     }
 
-    public function addOrganization(Organization $organization)
-    {
-        if (!$this->organizations->contains($organization)) {
-            $this->organizations->add($organization);
-        }
-    }
-
-    // todo: remove this method
-    public function setOrganizations($organizations)
-    {
-        $this->organizations = $organizations instanceof ArrayCollection ?
-            $organizations :
-            new ArrayCollection($organizations);
-    }
-
     public static function getUserSearchableFields()
     {
         return [
@@ -1248,16 +1235,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function disable()
     {
         $this->isEnabled = false;
-    }
-
-    public function addGroup(Group $group)
-    {
-        $this->groups->add($group);
-    }
-
-    public function removeGroup(Group $group)
-    {
-        $this->groups->remove($group);
     }
 
     public function clearRoles()

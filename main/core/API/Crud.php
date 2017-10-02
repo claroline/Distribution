@@ -14,6 +14,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class Crud
 {
+    const ADD_ARRAY_ELEMENT = 'add';
+    const REMOVE_ARRAY_ELEMENT = 'remove';
     /**
      * Finder constructor.
      *
@@ -80,11 +82,26 @@ class Crud
         }
     }
 
+    public function patch($object, $property, $action, $arrayElement)
+    {
+        //add the options to pass on here
+        $this->checkPermission('PATCH', $object);
+        $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
+        $methodName = $action.ucfirst(strtolower($property));
+
+        foreach ($arrayElement as $element) {
+            $object->$methodName($element);
+        }
+
+        $this->om->save($object);
+        $this->dispatcher->dispatch('crud_post_patch_object', 'Crud', [$object]);
+    }
+
     public function validate($class, $data)
     {
     }
 
-    private function checkPermission($permission, $object)
+    private function checkPermission($permission, $object, $options = [])
     {
         $collection = new ObjectCollection([$object]);
 

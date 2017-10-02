@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -32,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Group extends AbstractRoleSubject implements OrderableInterface
 {
     use UuidTrait;
+    use OrganizationsTrait;
 
     /**
      * @ORM\Id
@@ -212,20 +214,5 @@ class Group extends AbstractRoleSubject implements OrderableInterface
     public function __toString()
     {
         return $this->name;
-    }
-
-    public function getOrganizations()
-    {
-        return $this->organizations;
-    }
-
-    public function setOrganizations(ArrayCollection $organizations)
-    {
-        $this->organizations = $organizations;
-    }
-
-    public function addOrganization(Organization $organization)
-    {
-        $this->organizations->add($organization);
     }
 }

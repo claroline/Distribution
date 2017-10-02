@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Entity\Organization;
 use Claroline\CoreBundle\Entity\Calendar\TimeSlot;
 use Claroline\CoreBundle\Entity\Calendar\Year;
 use Claroline\CoreBundle\Entity\Model\CodeTrait;
+use Claroline\CoreBundle\Entity\Model\GroupsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -34,6 +35,7 @@ class Organization
 {
     use UuidTrait;
     use CodeTrait;
+    use GroupsTrait;
 
     /**
      * @ORM\Id
