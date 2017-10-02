@@ -132,12 +132,44 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
         $params = $this->request->query->all();
+        $sortBy = null;
+        $direction = null;
+
+        if (isset($params['sortBy'])) {
+            switch ($params['sortBy']) {
+                case 'title':
+                case '-title':
+                case 'status':
+                case '-status':
+                case 'creationDate':
+                case '-creationDate':
+                case 'user':
+                case '-user':
+                    break;
+                case 'categories':
+                case 'keywords':
+                    $sortBy = $params['sortBy'];
+                    $direction = 'ASC';
+                    unset($params['sortBy']);
+                    break;
+                case '-categories':
+                case '-keywords':
+                    $sortBy = substr($params['sortBy'], 1);
+                    $direction = 'DESC';
+                    unset($params['sortBy']);
+                    break;
+                default:
+                    $sortBy = substr($params['sortBy'], 0, 1) === '-' ? substr($params['sortBy'], 1) : $params['sortBy'];
+                    $direction = substr($params['sortBy'], 0, 1) === '-' ? 'DESC' : 'ASC';
+                    unset($params['sortBy']);
+            }
+        }
 
         $data = $this->finder->search(
             'Claroline\ClacoFormBundle\Entity\Entry',
             $params,
             [],
-            ['clacoForm' => $clacoForm->getId(), 'distinct' => true]
+            ['clacoForm' => $clacoForm->getId(), 'distinct' => true, 'sortBy' => $sortBy, 'direction' => $direction]
         );
 
         return new JsonResponse($data, 200);

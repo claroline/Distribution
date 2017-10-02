@@ -31,6 +31,8 @@ class EntryFinder implements FinderInterface
     /** @var LocationManager */
     private $locationManager;
 
+    private $usedJoin = [];
+
     /**
      * EntryFinder constructor.
      *
@@ -63,6 +65,8 @@ class EntryFinder implements FinderInterface
         $canEdit = $clacoFormManager->hasRight($clacoForm, 'EDIT');
         $isCategoryManager = !$isAnon && $clacoFormManager->isCategoryManager($clacoForm, $currentUser);
         $searchEnabled = $clacoForm->getSearchEnabled();
+        $sortBy = isset($extraData['sortBy']) ? $extraData['sortBy'] : null;
+        $direction = isset($extraData['direction']) ? $extraData['direction'] : null;
 
         $qb->join('obj.clacoForm', 'cf');
         $qb->andWhere('cf.id = :clacoFormId');
@@ -95,9 +99,6 @@ class EntryFinder implements FinderInterface
         if (is_null($type)) {
             throw new AccessDeniedException();
         }
-        $userJoined = false;
-        $categoriesJoined = false;
-
         switch ($type) {
             case 'all':
                 if (!$canEdit) {
@@ -111,15 +112,15 @@ class EntryFinder implements FinderInterface
                             $qb->andWhere('obj.status = 1 OR u.id = :userId OR cm.id = :userId') :
                             $qb->andWhere('u.id = :userId OR cm.id = :userId');
                         $qb->setParameter('userId', $currentUser->getId());
-                        $userJoined = true;
-                        $categoriesJoined = true;
+                        $this->usedJoin['user'] = true;
+                        $this->usedJoin['categories'] = true;
                     } else {
                         $qb->leftJoin('obj.user', 'u');
                         $searchEnabled ?
                             $qb->andWhere('obj.status = 1 OR u.id = :userId') :
                             $qb->andWhere('u.id = :userId');
                         $qb->setParameter('userId', $currentUser->getId());
-                        $userJoined = true;
+                        $this->usedJoin['user'] = true;
                     }
                 }
                 break;
@@ -128,7 +129,7 @@ class EntryFinder implements FinderInterface
                 $qb->join('c.managers', 'cm');
                 $qb->andWhere('cm.id = :managerId');
                 $qb->setParameter('managerId', $currentUser->getId());
-                $categoriesJoined = true;
+                $this->usedJoin['categories'] = true;
                 break;
             case 'my':
                 $qb->join('obj.user', 'u');
@@ -137,7 +138,7 @@ class EntryFinder implements FinderInterface
                 $qb->andWhere('u.id = :userId');
                 $qb->orWhere('(euu.id = :userId AND eu.shared = true)');
                 $qb->setParameter('userId', $currentUser->getId());
-                $userJoined = true;
+                $this->usedJoin['user'] = true;
                 break;
         }
         foreach ($searches as $filterName => $filterValue) {
@@ -151,7 +152,7 @@ class EntryFinder implements FinderInterface
                     $qb->setParameter('status', $filterValue ? 1 : 0);
                     break;
                 case 'user':
-                    if (!$userJoined) {
+                    if (!isset($this->usedJoin['user'])) {
                         $qb->join('obj.user', 'u');
                     }
                     $qb->andWhere("
@@ -172,7 +173,7 @@ class EntryFinder implements FinderInterface
                     $qb->setParameter($filterName, new \DateTime(date('Y-m-d', $filterValue)));
                     break;
                 case 'categories':
-                    if (!$categoriesJoined) {
+                    if (!isset($this->usedJoin['categories'])) {
                         $qb->join('obj.categories', 'c');
                     }
                     $qb->andWhere('UPPER(c.name) LIKE :categoryName');
@@ -182,10 +183,30 @@ class EntryFinder implements FinderInterface
                     $qb->join('obj.keywords', 'k');
                     $qb->andWhere('UPPER(k.name) LIKE :keywordName');
                     $qb->setParameter('keywordName', '%'.strtoupper($filterValue).'%');
+                    $this->usedJoin['keywords'] = true;
                     break;
                 default:
                     $field = $clacoFormManager->getFieldByClacoFormAndId($clacoForm, $filterName);
                     $this->filterField($qb, $filterName, $filterValue, $field);
+            }
+        }
+        if ($sortBy && $direction) {
+            switch ($sortBy) {
+                case 'categories':
+                    if (!isset($this->usedJoin['categories'])) {
+                        $qb->leftJoin('obj.categories', 'c');
+                    }
+                    $qb->orderBy('c.name', $direction);
+                    break;
+                case 'keywords':
+                    if (!isset($this->usedJoin['keywords'])) {
+                        $qb->leftJoin('obj.keywords', 'k');
+                    }
+                    $qb->orderBy('k.name', $direction);
+                    break;
+                default:
+                    $field = $clacoFormManager->getFieldByClacoFormAndId($clacoForm, $sortBy);
+                    $this->sortField($qb, $sortBy, $direction, $field);
             }
         }
 
@@ -195,15 +216,16 @@ class EntryFinder implements FinderInterface
     private function filterField(&$qb, $filterName, $filterValue, $field)
     {
         if ($field) {
-            $qb->join('obj.fieldValues', "fv{$filterValue}");
-            $qb->join("fv{$filterValue}.field", "fvf{$filterValue}");
-            $qb->join("fv{$filterValue}.fieldFacetValue", "fvffv{$filterValue}");
-            $qb->andWhere("fvf{$filterValue}.id = :field{$filterName}");
+            $qb->join('obj.fieldValues', "fv{$filterName}");
+            $qb->join("fv{$filterName}.field", "fvf{$filterName}");
+            $qb->join("fv{$filterName}.fieldFacetValue", "fvffv{$filterName}");
+            $qb->andWhere("fvf{$filterName}.id = :field{$filterName}");
             $qb->setParameter("field{$filterName}", $filterName);
+            $this->usedJoin[$filterName] = true;
 
             switch ($field->getFieldFacet()->getType()) {
                 case FieldFacet::FLOAT_TYPE:
-                    $qb->andWhere("fvffv{$filterValue}.floatValue = :value{$filterName}");
+                    $qb->andWhere("fvffv{$filterName}.floatValue = :value{$filterName}");
                     $qb->setParameter("value{$filterName}", $filterValue);
                     break;
                 case FieldFacet::DATE_TYPE:
@@ -218,17 +240,46 @@ class EntryFinder implements FinderInterface
                             $keys[] = $key;
                         }
                     }
-                    $qb->andWhere("fvffv{$filterValue}.stringValue IN (:value{$filterName})");
+                    $qb->andWhere("fvffv{$filterName}.stringValue IN (:value{$filterName})");
                     $qb->setParameter("value{$filterName}", $keys);
                     break;
                 case FieldFacet::CHECKBOXES_TYPE:
                 case FieldFacet::CASCADE_SELECT_TYPE:
-                    $qb->andWhere("UPPER(fvffv{$filterValue}.arrayValue) LIKE :value{$filterName}");
+                    $qb->andWhere("UPPER(fvffv{$filterName}.arrayValue) LIKE :value{$filterName}");
                     $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
                     break;
                 default:
-                    $qb->andWhere("UPPER(fvffv{$filterValue}.stringValue) LIKE :value{$filterName}");
+                    $qb->andWhere("UPPER(fvffv{$filterName}.stringValue) LIKE :value{$filterName}");
                     $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
+            }
+        }
+    }
+
+    private function sortField(&$qb, $sortBy, $direction, $field)
+    {
+        if ($field) {
+            if (!isset($this->usedJoin[$sortBy])) {
+                $qb->leftJoin('obj.fieldValues', "fv{$sortBy}");
+                $qb->leftJoin("fv{$sortBy}.field", "fvf{$sortBy}");
+                $qb->leftJoin("fv{$sortBy}.fieldFacetValue", "fvffv{$sortBy}");
+                $qb->andWhere("fvf{$sortBy}.id = :field{$sortBy} OR fvf{$sortBy} = :nullValue");
+                $qb->setParameter("field{$sortBy}", $sortBy);
+                $qb->setParameter('nullValue', null);
+            }
+
+            switch ($field->getFieldFacet()->getType()) {
+                case FieldFacet::FLOAT_TYPE:
+                    $qb->orderBy("fvffv{$sortBy}.floatValue", $direction);
+                    break;
+                case FieldFacet::DATE_TYPE:
+                    $qb->orderBy("fvffv{$sortBy}.dateValue", $direction);
+                    break;
+                case FieldFacet::CHECKBOXES_TYPE:
+                case FieldFacet::CASCADE_SELECT_TYPE:
+                    $qb->orderBy("fvffv{$sortBy}.arrayValue", $direction);
+                    break;
+                default:
+                    $qb->orderBy("fvffv{$sortBy}.stringValue", $direction);
             }
         }
     }
