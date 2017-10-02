@@ -55,6 +55,8 @@ class EntryFinder implements FinderInterface
 
         $isAnon = $currentUser === 'anon.';
         $clacoForm = $clacoFormManager->getClacoFormById($extraData['clacoForm']);
+        $canEdit = $clacoFormManager->hasRight($clacoForm, 'EDIT');
+        $isCategoryManager = !$isAnon && $clacoFormManager->isCategoryManager($clacoForm, $currentUser);
         $searchEnabled = $clacoForm->getSearchEnabled();
 
         $qb->join('obj.clacoForm', 'cf');
@@ -82,7 +84,7 @@ class EntryFinder implements FinderInterface
             if ($searchEnabled || $clacoFormManager->hasRight($clacoForm, 'EDIT')) {
                 $type = 'all';
             } elseif (!$isAnon) {
-                $type = $clacoFormManager->isCategoryManager($clacoForm, $currentUser) ? 'manager' : 'my';
+                $type = $isCategoryManager ? 'manager' : 'my';
             }
         }
         if (is_null($type)) {
@@ -93,6 +95,28 @@ class EntryFinder implements FinderInterface
 
         switch ($type) {
             case 'all':
+                if (!$canEdit) {
+                    if ($isAnon) {
+                        $qb->andWhere('obj.status = 1');
+                    } elseif ($isCategoryManager) {
+                        $qb->leftJoin('obj.user', 'u');
+                        $qb->leftJoin('obj.categories', 'c');
+                        $qb->leftJoin('c.managers', 'cm');
+                        $searchEnabled ?
+                            $qb->andWhere('obj.status = 1 OR u.id = :userId OR cm.id = :userId') :
+                             $qb->andWhere('u.id = :userId OR cm.id = :userId');
+                        $qb->setParameter('userId', $currentUser->getId());
+                        $userJoined = true;
+                        $categoriesJoined = true;
+                    } else {
+                        $qb->leftJoin('obj.user', 'u');
+                        $searchEnabled ?
+                            $qb->andWhere('obj.status = 1 OR u.id = :userId'):
+                            $qb->andWhere('u.id = :userId');
+                        $qb->setParameter('userId', $currentUser->getId());
+                        $userJoined = true;
+                    }
+                }
                 break;
             case 'manager':
                 $qb->join('obj.categories', 'c');

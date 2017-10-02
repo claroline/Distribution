@@ -105,7 +105,7 @@ class ClacoFormController extends Controller
                 'sortBy' => 'creationDate',
             ],
             [],
-            ['clacoForm' => $clacoForm->getId()]
+            ['clacoForm' => $clacoForm->getId(), 'distinct' => true]
         );
 
         return [
@@ -137,7 +137,7 @@ class ClacoFormController extends Controller
             'Claroline\ClacoFormBundle\Entity\Entry',
             $params,
             [],
-            ['clacoForm' => $clacoForm->getId()]
+            ['clacoForm' => $clacoForm->getId(), 'distinct' => true]
         );
 
         return new JsonResponse($data, 200);
