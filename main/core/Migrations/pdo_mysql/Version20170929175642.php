@@ -29,6 +29,9 @@ class Version20170929175642 extends AbstractMigration
             ADD uuid VARCHAR(36) NOT NULL
         ');
         $this->addSql('
+            UPDATE claro_role SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
             CREATE UNIQUE INDEX UNIQ_EB8D2852D17F50A6 ON claro_user (uuid)
         ');
         $this->addSql('

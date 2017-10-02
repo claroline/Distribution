@@ -20,6 +20,12 @@ class Version20171002102034 extends AbstractMigration
             ADD code VARCHAR(36) NOT NULL
         ');
         $this->addSql('
+            UPDATE claro__organization SET uuid = (SELECT UUID())
+        ');
+        $this->addSql('
+            UPDATE claro__organization SET code = (SELECT UUID())
+        ');
+        $this->addSql('
             CREATE UNIQUE INDEX UNIQ_B68DD0D5D17F50A6 ON claro__organization (uuid)
         ');
         $this->addSql('
