@@ -12,6 +12,8 @@
 namespace Claroline\ClacoFormBundle\API\Finder;
 
 use Claroline\CoreBundle\API\FinderInterface;
+use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,6 +28,9 @@ class EntryFinder implements FinderInterface
     /** @var ContainerInterface */
     private $container;
 
+    /** @var LocationManager */
+    private $locationManager;
+
     /**
      * EntryFinder constructor.
      *
@@ -38,6 +43,7 @@ class EntryFinder implements FinderInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->locationManager = $this->container->get('claroline.manager.organization.location_manager');
     }
 
     public function getClass()
@@ -48,9 +54,8 @@ class EntryFinder implements FinderInterface
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $extraData = [])
     {
         $clacoFormManager = $this->container->get('claroline.manager.claco_form_manager');
-        $translator = $this->container->get('translator');
         $tokenStorage = $this->container->get('security.token_storage');
-
+        $translator = $this->container->get('translator');
         $currentUser = $tokenStorage->getToken()->getUser();
 
         $isAnon = $currentUser === 'anon.';
@@ -62,6 +67,10 @@ class EntryFinder implements FinderInterface
         $qb->join('obj.clacoForm', 'cf');
         $qb->andWhere('cf.id = :clacoFormId');
         $qb->setParameter('clacoFormId', $extraData['clacoForm']);
+
+        $qb->join('obj.fieldValues', 'fv');
+        $qb->join('fv.field', 'fvf');
+        $qb->join('fv.fieldFacetValue', 'fvffv');
 
         $type = isset($searches['type']) ? $searches['type'] : null;
 
@@ -104,14 +113,14 @@ class EntryFinder implements FinderInterface
                         $qb->leftJoin('c.managers', 'cm');
                         $searchEnabled ?
                             $qb->andWhere('obj.status = 1 OR u.id = :userId OR cm.id = :userId') :
-                             $qb->andWhere('u.id = :userId OR cm.id = :userId');
+                            $qb->andWhere('u.id = :userId OR cm.id = :userId');
                         $qb->setParameter('userId', $currentUser->getId());
                         $userJoined = true;
                         $categoriesJoined = true;
                     } else {
                         $qb->leftJoin('obj.user', 'u');
                         $searchEnabled ?
-                            $qb->andWhere('obj.status = 1 OR u.id = :userId'):
+                            $qb->andWhere('obj.status = 1 OR u.id = :userId') :
                             $qb->andWhere('u.id = :userId');
                         $qb->setParameter('userId', $currentUser->getId());
                         $userJoined = true;
@@ -179,16 +188,50 @@ class EntryFinder implements FinderInterface
                     $qb->setParameter('keywordName', '%'.strtoupper($filterValue).'%');
                     break;
                 default:
-//                    if (is_string($filterValue)) {
-//                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-//                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-//                    } else {
-//                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
-//                        $qb->setParameter($filterName, $filterValue);
-//                    }
+                    $field = $clacoFormManager->getFieldByClacoFormAndId($clacoForm, $filterName);
+                    $this->filterField($qb, $filterName, $filterValue, $field);
             }
         }
 
         return $qb;
+    }
+
+    private function filterField(&$qb, $filterName, $filterValue, $field)
+    {
+        if ($field) {
+            $qb->andWhere("fvf.id = :field{$filterName}");
+            $qb->setParameter("field{$filterName}", $filterName);
+
+            switch ($field->getFieldFacet()->getType()) {
+                case FieldFacet::FLOAT_TYPE:
+                    $qb->andWhere("fvffv.floatValue = :value{$filterName}");
+                    $qb->setParameter("value{$filterName}", $filterValue);
+                    break;
+                case FieldFacet::DATE_TYPE:
+                    break;
+                case FieldFacet::COUNTRY_TYPE:
+                    $countries = $this->locationManager->getCountries();
+                    $pattern = "/$filterValue/i";
+                    $keys = [];
+
+                    foreach ($countries as $key => $country) {
+
+                        if (preg_match($pattern, $country)) {
+                            $keys[] = $key;
+                        }
+                    }
+                    $qb->andWhere("fvffv.stringValue IN (:value{$filterName})");
+                    $qb->setParameter("value{$filterName}", $keys);
+                    break;
+                case FieldFacet::CHECKBOXES_TYPE:
+                case FieldFacet::CASCADE_SELECT_TYPE:
+                    $qb->andWhere("UPPER(fvffv.arrayValue) LIKE :value{$filterName}");
+                    $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
+                    break;
+                default:
+                    $qb->andWhere("UPPER(fvffv.stringValue) LIKE :value{$filterName}");
+                    $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
+            }
+        }
     }
 }

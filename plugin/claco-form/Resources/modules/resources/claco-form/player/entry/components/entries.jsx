@@ -263,6 +263,9 @@ class Entries extends Component {
       case 'date':
         type = 'date'
         break
+      case 'number':
+        type = 'number'
+        break
       case 'rich_text':
         type = 'html'
         break
@@ -278,7 +281,7 @@ class Entries extends Component {
   formatFieldValue(entry, field, value) {
     let formattedValue = ''
 
-    if (!field.isMetadata || !this.canViewEntryMetadata(entry)) {
+    if (field.isMetadata && !this.canViewEntryMetadata(entry)) {
       formattedValue = '-'
     } else {
       formattedValue = value
