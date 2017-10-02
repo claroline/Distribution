@@ -182,6 +182,7 @@ class Entries extends Component {
         type: this.getDataType(f),
         displayed: this.isDisplayedField(`${f.id}`),
         sortable: false,
+        filterable: getFieldType(f.type).name !== 'date',
         renderer: (rowData) => {
           const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
 
