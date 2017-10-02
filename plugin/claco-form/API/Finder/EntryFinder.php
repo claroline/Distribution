@@ -215,7 +215,6 @@ class EntryFinder implements FinderInterface
                     $keys = [];
 
                     foreach ($countries as $key => $country) {
-
                         if (preg_match($pattern, $country)) {
                             $keys[] = $key;
                         }
