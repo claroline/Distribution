@@ -112,7 +112,9 @@ class EntryView extends Component {
         case 'country':
           return getCountry(value) ? getCountry(value).label : ''
         case 'date' :
-          return value ? moment(value).format('DD/MM/YYYY') : ''
+          return value.date ?
+            moment(value.date).format('DD/MM/YYYY') :
+            value ? moment(value).format('DD/MM/YYYY') : ''
         case 'rich_text':
           return (<div dangerouslySetInnerHTML={{ __html: value}}/>)
         default:
@@ -212,7 +214,9 @@ class EntryView extends Component {
               ''
             break
           case 'date':
-            replacedField = fieldValue ? moment(fieldValue).format('DD/MM/YYYY') : ''
+            replacedField = fieldValue.date ?
+              moment(fieldValue.date).format('DD/MM/YYYY') :
+              fieldValue ? moment(fieldValue).format('DD/MM/YYYY') : ''
             break
           case 'country':
             replacedField = fieldValue && getCountry(fieldValue) ? getCountry(fieldValue).label : ''

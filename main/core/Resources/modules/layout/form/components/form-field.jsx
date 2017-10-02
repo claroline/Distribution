@@ -257,7 +257,7 @@ export const FormField = props => {
             controlId={props.controlId}
             dateFormat="DD/MM/YYYY"
             minDate={moment.utc('1900-01-01T12:00:00')}
-            value={props.value || ''}
+            value={props.value.date || props.value || ''}
             disabled={props.disabled}
             onChange={date => {
               const value = moment(date).isValid() ? formatDate(date) : null
@@ -273,7 +273,7 @@ export const FormField = props => {
           label={props.label}
           dateFormat="DD/MM/YYYY"
           minDate={moment.utc('1900-01-01T12:00:00')}
-          value={props.value || ''}
+          value={props.value.date || props.value || ''}
           disabled={props.disabled}
           error={props.error}
           onChange={date => {
@@ -291,7 +291,7 @@ FormField.propTypes = {
   controlId: T.string.isRequired,
   type: T.string.isRequired,
   label: T.string.isRequired,
-  value: T.oneOfType([T.string, T.number, T.array]),
+  value: T.any,
   choices: T.array,
   noLabel: T.bool.isRequired,
   disabled: T.bool.isRequired,

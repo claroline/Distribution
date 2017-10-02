@@ -162,7 +162,6 @@ class Entries extends Component {
         name: 'categories',
         label: t('categories'),
         displayed: this.isDisplayedField('categoriesString'),
-        sortable: false,
         renderer: (rowData) => rowData.categories ? rowData.categories.map(c => c.name).join(', ') : ''
       })
     }
@@ -171,7 +170,6 @@ class Entries extends Component {
         name: 'keywords',
         label: trans('keywords', {}, 'clacoform'),
         displayed: this.isDisplayedField('keywordsString'),
-        sortable: false,
         renderer: (rowData) => rowData.keywords ? rowData.keywords.map(k => k.name).join(', ') : ''
       })
     }
@@ -181,7 +179,6 @@ class Entries extends Component {
         label: f.name,
         type: this.getDataType(f),
         displayed: this.isDisplayedField(`${f.id}`),
-        sortable: false,
         filterable: getFieldType(f.type).name !== 'date',
         renderer: (rowData) => {
           const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
