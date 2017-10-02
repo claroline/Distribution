@@ -16,27 +16,53 @@ class Version20170929175642 extends AbstractMigration
     {
         $this->addSql('
             ALTER TABLE claro_group
-            ADD uuid VARCHAR(36) NOT NULL,
-            DROP guid
+            CHANGE `guid` `uuid`
+            VARCHAR(36) NOT NULL
         ');
         $this->addSql('
-            UPDATE claro_group
-            SET uuid = (SELECT UUID())
-         ');
+            ALTER TABLE claro_user
+            CHANGE `guid` `uuid`
+            VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE claro_role
+            ADD uuid VARCHAR(36) NOT NULL
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_EB8D2852D17F50A6 ON claro_user (uuid)
+        ');
         $this->addSql('
             CREATE UNIQUE INDEX UNIQ_E7C393D7D17F50A6 ON claro_group (uuid)
+        ');
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_31777471D17F50A6 ON claro_role (uuid)
         ');
     }
 
     public function down(Schema $schema)
     {
         $this->addSql('
+            ALTER TABLE claro_group
+            CHANGE `uuid` `guid`
+            VARCHAR(255) NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE claro_user
+            CHANGE `uuid` `guid`
+            VARCHAR(255) NOT NULL
+        ');
+        $this->addSql('
+            ALTER TABLE claro_role
+            DROP uuid
+        ');
+        $this->addSql('
             DROP INDEX UNIQ_E7C393D7D17F50A6 ON claro_group
         ');
         $this->addSql('
-            ALTER TABLE claro_group
-            ADD guid VARCHAR(255) NOT NULL COLLATE utf8_unicode_ci,
-            DROP uuid
+            DROP INDEX UNIQ_31777471D17F50A6 ON claro_role
+        ');
+        $this->addSql('
+            DROP INDEX UNIQ_EB8D2852D17F50A6 ON claro_user
         ');
     }
 }

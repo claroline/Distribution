@@ -13,6 +13,8 @@ namespace Claroline\CoreBundle\Entity\Organization;
 
 use Claroline\CoreBundle\Entity\Calendar\TimeSlot;
 use Claroline\CoreBundle\Entity\Calendar\Year;
+use Claroline\CoreBundle\Entity\Model\CodeTrait;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +32,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Organization
 {
+    use UuidTrait;
+    use CodeTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -183,6 +188,8 @@ class Organization
         $this->timeSlots = new ArrayCollection();
         $this->years = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->refreshUuid();
+        $this->refreshCode();
     }
 
     public function getId()
