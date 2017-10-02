@@ -4,11 +4,11 @@ namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 trait HasOrganizationsTrait
 {
-    public function addOrganization($uuid, $class, Group $group)
+    public function addOrganizations($uuid, $class, Group $group)
     {
     }
 
-    public function removeOrganization($uuid, $class, Group $group)
+    public function removeOrganizations($uuid, $class, Group $group)
     {
     }
 }

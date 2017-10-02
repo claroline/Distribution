@@ -40,6 +40,7 @@ class ApiConfigPass implements CompilerPassInterface
         }
     }
 
+    //maybe do this in a more generic config pass (like ContainerAwareInterface)
     private function setObjectManager($container, $tag)
     {
         $taggedServices = $container->findTaggedServiceIds($tag);

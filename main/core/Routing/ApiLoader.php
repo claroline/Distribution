@@ -50,13 +50,6 @@ class ApiLoader extends Loader
             if (!$fileInfo->isDot()) {
                 $file = $fileInfo->getPathname();
 
-                $defaults = [
-                  'create' => ['', 'POST'],
-                  'update' => ['{uuid}', 'PUT'],
-                  'deleteBulk' => ['', 'DELETE'],
-                  'list' => ['', 'GET'],
-                ];
-
                 //find prefix from annotations
                 $controller = $this->findClass($file);
 
@@ -73,7 +66,7 @@ class ApiLoader extends Loader
                     }
 
                     if ($found) {
-                        foreach ($defaults as $name => $options) {
+                        foreach ($this->makeRouteMap($controller) as $name => $options) {
                             $pattern = '/'.$prefix.'/'.$options[0];
                             $routeDefaults = [
                               '_controller' => $controller.'::'.$name,
@@ -89,8 +82,6 @@ class ApiLoader extends Loader
                             $routes->add($routeName, $route);
                         }
 
-                        //add Traits here
-
                         $imported = $this->import($resource, 'annotation');
                         $routes->addCollection($imported);
                     }
@@ -99,6 +90,41 @@ class ApiLoader extends Loader
         }
 
         return $routes;
+    }
+
+    private function makeRouteMap($controller)
+    {
+        $defaults = [
+          'create' => ['', 'POST'],
+          'update' => ['{uuid}', 'PUT'],
+          'deleteBulk' => ['', 'DELETE'],
+          'list' => ['', 'GET'],
+        ];
+
+        $custom = [
+            'Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait' => [
+                'addGroups' => ['{uuid}/group/add', 'PATCH'],
+                'removeGroups' => ['{uuid}/group/remove', 'PATCH'],
+            ],
+            'Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait' => [
+                'addOrganizations' => ['{uuid}/organization/add', 'PATCH'],
+                'removeOrganizations' => ['{uuid}/organization/remove', 'PATCH'],
+            ],
+            'Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait' => [
+                'addRoles' => ['{uuid}/role/add', 'PATCH'],
+                'removeRoles' => ['{uuid}/role/remove', 'PATCH'],
+            ],
+        ];
+
+        $traits = class_uses($controller);
+
+        foreach ($traits as $trait) {
+            if (in_array($trait, array_keys($custom))) {
+                $defaults = array_merge($defaults, $custom[$trait]);
+            }
+        }
+
+        return $defaults;
     }
 
     /**
