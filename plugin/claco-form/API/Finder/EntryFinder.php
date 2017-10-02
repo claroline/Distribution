@@ -88,6 +88,9 @@ class EntryFinder implements FinderInterface
         if (is_null($type)) {
             throw new AccessDeniedException();
         }
+        $userJoined = false;
+        $categoriesJoined = false;
+
         switch ($type) {
             case 'all':
                 break;
@@ -96,25 +99,56 @@ class EntryFinder implements FinderInterface
                 $qb->join('c.managers', 'cm');
                 $qb->andWhere('cm.id = :managerId');
                 $qb->setParameter('managerId', $currentUser->getId());
+                $categoriesJoined = true;
                 break;
             case 'my':
                 $qb->join('obj.user', 'u');
                 $qb->leftJoin('obj.entryUsers', 'eu');
                 $qb->leftJoin('eu.user', 'euu');
                 $qb->andWhere('u.id = :userId');
-                $qb->orWhere('(euu.id = :userId and eu.shared = true)');
+                $qb->orWhere('(euu.id = :userId AND eu.shared = true)');
                 $qb->setParameter('userId', $currentUser->getId());
+                $userJoined = true;
                 break;
         }
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'title':
+                    $qb->andWhere("UPPER(obj.title) LIKE :title");
+                    $qb->setParameter('title', '%'.strtoupper($filterValue).'%');
+                    break;
+                case 'user':
+                    if (!$userJoined) {
+                        $qb->join('obj.user', 'u');
+                    }
+                    $qb->andWhere("
+                        UPPER(u.firstName) LIKE :name
+                        OR UPPER(u.lastName) LIKE :name
+                        OR UPPER(u.username) LIKE :name
+                        OR CONCAT(UPPER(u.firstName), CONCAT(' ', UPPER(u.lastName))) LIKE :name
+                        OR CONCAT(UPPER(u.lastName), CONCAT(' ', UPPER(u.firstName))) LIKE :name
+                    ");
+                    $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
+                    break;
                 case 'createdAfter':
                     $qb->andWhere("obj.creationDate >= :{$filterName}");
-                    $qb->setParameter($filterName, new \DateTime('@'.$filterValue));
+                    $qb->setParameter($filterName, new \DateTime(date('Y-m-d', $filterValue)));
                     break;
                 case 'createdBefore':
                     $qb->andWhere("obj.creationDate <= :{$filterName}");
-                    $qb->setParameter($filterName, new \DateTime('@'.$filterValue));
+                    $qb->setParameter($filterName, new \DateTime(date('Y-m-d', $filterValue)));
+                    break;
+                case 'categories':
+                    if (!$categoriesJoined) {
+                        $qb->join('obj.categories', 'c');
+                    }
+                    $qb->andWhere('UPPER(c.name) LIKE :categoryName');
+                    $qb->setParameter('categoryName', '%'.strtoupper($filterValue).'%');
+                    break;
+                case 'keywords':
+                    $qb->join('obj.keywords', 'k');
+                    $qb->andWhere('UPPER(k.name) LIKE :keywordName');
+                    $qb->setParameter('keywordName', '%'.strtoupper($filterValue).'%');
                     break;
                 default:
 //                    if (is_string($filterValue)) {
