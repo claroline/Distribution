@@ -179,7 +179,7 @@ class ClacoFormController extends Controller
             [
                 'limit' => 20,
                 'filters' => [],
-                'sortBy' => 'title'
+                'sortBy' => 'title',
             ],
             [],
             ['clacoForm' => $clacoForm->getId()]

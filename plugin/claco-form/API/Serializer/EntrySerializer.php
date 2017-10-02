@@ -4,10 +4,9 @@ namespace Claroline\ClacoFormBundle\API\Serializer;
 
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\Comment;
+use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Entity\Keyword;
-use Claroline\ClacoFormBundle\Entity\Entry;
-
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -40,7 +39,7 @@ class EntrySerializer
      *     "keywordSerializer"    = @DI\Inject("claroline.serializer.clacoform.keyword")
      * })
      *
-     * @param UserSerializer   $userSerializer
+     * @param UserSerializer $userSerializer
      */
     public function __construct(
         CategorySerializer $categorySerializer,
@@ -90,7 +89,8 @@ class EntrySerializer
         return $serialized;
     }
 
-    private function getCategories(Entry $entry) {
+    private function getCategories(Entry $entry)
+    {
         return array_map(
             function (Category $category) {
                 return $this->categorySerializer->serialize($category);
@@ -99,7 +99,8 @@ class EntrySerializer
         );
     }
 
-    private function getKeywords(Entry $entry) {
+    private function getKeywords(Entry $entry)
+    {
         return $entry->getClacoForm()->isKeywordsEnabled() ?
             array_map(
                 function (Keyword $keyword) {
@@ -110,7 +111,8 @@ class EntrySerializer
             [];
     }
 
-    private function getComments(Entry $entry) {
+    private function getComments(Entry $entry)
+    {
         return $entry->getClacoForm()->isCommentsEnabled() ?
             array_map(
                 function (Comment $comment) {
@@ -121,7 +123,8 @@ class EntrySerializer
             [];
     }
 
-    private function getFieldValues(Entry $entry) {
+    private function getFieldValues(Entry $entry)
+    {
         return array_map(
             function (FieldValue $fieldValue) {
                 return $this->fieldValueSerializer->serialize($fieldValue);

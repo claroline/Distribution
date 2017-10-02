@@ -75,7 +75,7 @@ class EntryView extends Component {
   }
 
   canViewMetadata() {
-      this.canShare() ||
+    return this.canShare() ||
       this.props.displayMetadata === 'all' ||
       (this.props.displayMetadata === 'manager' && this.props.isManager)
   }

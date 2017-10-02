@@ -16,7 +16,6 @@ use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * @DI\Service("claroline.api.finder.clacoform.entry")
@@ -66,14 +65,14 @@ class EntryFinder implements FinderInterface
 
         if ($type) {
             switch ($type) {
-                case $translator->trans('all_entries', [], 'clacoform') :
+                case $translator->trans('all_entries', [], 'clacoform'):
                     $type = 'all';
                     break;
-                case $translator->trans('my_entries', [], 'clacoform') :
+                case $translator->trans('my_entries', [], 'clacoform'):
                     $type = 'my';
                     break;
-                case $translator->trans('manager_entries', [], 'clacoform') :
-                    $type = "manager";
+                case $translator->trans('manager_entries', [], 'clacoform'):
+                    $type = 'manager';
                     break;
                 default:
                     $type = null;

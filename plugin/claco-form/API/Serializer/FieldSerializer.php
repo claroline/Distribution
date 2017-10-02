@@ -34,7 +34,7 @@ class FieldSerializer
     /**
      * Serializes a Field entity for the JSON api.
      *
-     * @param Field $field - the field to serialize
+     * @param Field $field   - the field to serialize
      * @param array $options - a list of serialization options
      *
      * @return array - the serialized representation of the field

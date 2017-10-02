@@ -166,7 +166,7 @@ Fields.propTypes = {
     isMetadata: T.bool.isRequired,
     locked: T.bool.isRequired,
     lockedEditionOnly: T.bool.isRequired,
-    hidden: T.bool,
+    hidden: T.bool
   })).isRequired,
   createField: T.func.isRequired,
   editField: T.func.isRequired,

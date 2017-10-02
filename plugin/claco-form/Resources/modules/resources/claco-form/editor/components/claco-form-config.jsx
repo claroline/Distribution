@@ -299,7 +299,7 @@ List.propTypes = {
     default_display_mode: T.string,
     display_title: T.string,
     display_subtitle: T.string,
-    display_content: T.string,
+    display_content: T.string
   }).isRequired,
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,

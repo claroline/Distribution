@@ -21,7 +21,6 @@ import {keywordReducers} from './editor/keyword/reducers'
 import {fieldReducers} from './editor/field/reducers'
 import {
   reducer,
-  entriesReducers,
   myEntriesCountReducers,
   currentEntryReducers
 } from './player/entry/reducers'
