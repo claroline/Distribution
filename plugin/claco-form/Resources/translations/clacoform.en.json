@@ -45,6 +45,7 @@
     "delete_keyword_confirm_message": "Are you sure you want to remove this keyword [%name%] ?",
     "display": "Display",
     "edit_category": "Edit category",
+    "edit_entry": "Edit entry",
     "edit_field": "Edit field",
     "edit_keyword": "Edit keyword",
     "edition": "Edition",

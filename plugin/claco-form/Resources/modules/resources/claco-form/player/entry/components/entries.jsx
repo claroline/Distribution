@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {withRouter} from 'react-router-dom'
 import moment from 'moment'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
@@ -63,6 +64,10 @@ class Entries extends Component {
       (this.props.displayMetadata === 'manager' && this.isEntryManager(entry))
   }
 
+  navigateTo(url) {
+    this.props.history.push(url)
+  }
+
   generateColumns() {
     const columns = []
 
@@ -90,6 +95,25 @@ class Entries extends Component {
         })
       }
     }
+
+    columns.push({
+      name: 'status',
+      label: t('published'),
+      displayed: true,
+      type: 'boolean',
+      renderer: (rowData) => {
+        const status = rowData.status !== 1 ?
+          <span
+            className="fa fa-w fa-info-circle"
+            data-toggle="tooltip"
+            title={t('pending')}
+          >
+          </span> :
+          ''
+
+        return status
+      }
+    })
     columns.push({
       name: 'title',
       label: t('title'),
@@ -138,6 +162,7 @@ class Entries extends Component {
         name: 'categories',
         label: t('categories'),
         displayed: this.isDisplayedField('categoriesString'),
+        sortable: false,
         renderer: (rowData) => rowData.categories ? rowData.categories.map(c => c.name).join(', ') : ''
       })
     }
@@ -146,6 +171,7 @@ class Entries extends Component {
         name: 'keywords',
         label: trans('keywords', {}, 'clacoform'),
         displayed: this.isDisplayedField('keywordsString'),
+        sortable: false,
         renderer: (rowData) => rowData.keywords ? rowData.keywords.map(k => k.name).join(', ') : ''
       })
     }
@@ -155,6 +181,7 @@ class Entries extends Component {
         label: f.name,
         type: this.getDataType(f),
         displayed: this.isDisplayedField(`${f.id}`),
+        sortable: false,
         renderer: (rowData) => {
           const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
 
@@ -178,6 +205,55 @@ class Entries extends Component {
     })
 
     return columns
+  }
+
+  generateActions() {
+    const dataListActions = [{
+      icon: 'fa fa-w fa-eye',
+      label: trans('view_entry', {}, 'clacoform'),
+      action: (rows) => this.navigateTo(`/entry/${rows[0].id}/view`),
+      context: 'row'
+    }]
+
+    if (this.props.canGeneratePdf) {
+      dataListActions.push({
+        icon: 'fa fa-w fa-print',
+        label: trans('print_entry', {}, 'clacoform'),
+        action: (rows) => this.props.downloadEntryPdf(rows[0].id),
+        context: 'row'
+      })
+    }
+    dataListActions.push({
+      icon: 'fa fa-w fa-pencil',
+      label: trans('edit_entry', {}, 'clacoform'),
+      action: (rows) => this.navigateTo(`/entry/${rows[0].id}/edit`),
+      displayed: (rows) => this.canEditEntry(rows[0]),
+      context: 'row'
+    })
+    dataListActions.push({
+      icon: 'fa fa-w fa-eye',
+      label: t('publish'),
+      action: (rows) => this.props.switchEntryStatus(rows[0].id),
+      displayed: (rows) => this.canManageEntry(rows[0]) && rows[0].status !== 1,
+      context: 'row'
+    })
+    dataListActions.push({
+      icon: 'fa fa-w fa-eye-slash',
+      label: t('unpublish'),
+      action: (rows) => this.props.switchEntryStatus(rows[0].id),
+      displayed: (rows) => this.canManageEntry(rows[0]) && rows[0].status === 1,
+      context: 'row'
+    })
+    dataListActions.push({
+      icon: 'fa fa-w fa-trash',
+      label: trans('delete_entry', {}, 'clacoform'),
+      action: (rows) => this.deleteEntry(rows[0]),
+      displayed: (rows) => this.canManageEntry(rows[0]),
+      isDangerous: true,
+      context: 'row'
+    })
+
+    return dataListActions
   }
 
   getDataType(field) {
@@ -287,11 +363,13 @@ class Entries extends Component {
               }}
               name="entries"
               definition={this.generateColumns()}
-              hideColumnsButton={true}
+              filterColumns={this.props.searchColumnEnabled}
+              actions={this.generateActions()}
               card={(row) => ({
+                onClick: `#/entry/${row.id}/view`,
                 poster: null,
                 icon: 'fa fa-user',
-                title: `<a href="#/entry/${row.id}/view">${this.getCardValue(row, 'title')}</a>`,
+                title: this.getCardValue(row, 'title'),
                 subtitle: this.getCardValue(row, 'subtitle'),
                 contentText: this.getCardValue(row, 'content'),
                 flags: [].filter(flag => !!flag),
@@ -326,6 +404,7 @@ Entries.propTypes = {
   resourceId: T.number.isRequired,
   canSearchEntry: T.bool.isRequired,
   searchEnabled: T.bool.isRequired,
+  searchColumnEnabled: T.bool.isRequired,
   editionEnabled: T.bool.isRequired,
   defaultDisplayMode: T.string,
   displayTitle: T.string,
@@ -339,7 +418,19 @@ Entries.propTypes = {
   downloadEntryPdf: T.func.isRequired,
   switchEntryStatus: T.func.isRequired,
   deleteEntry: T.func.isRequired,
-  showModal: T.func.isRequired
+  showModal: T.func.isRequired,
+  entries: T.shape({
+    data: T.array,
+    totalResults: T.number,
+    page: T.number,
+    pageSize: T.number,
+    filters: T.arrayOf(T.shape({
+      property: T.string,
+      value: T.any
+    })),
+    sortBy: T.object
+  }).isRequired,
+  history: T.object.isRequired
 }
 
 function mapStateToProps(state) {
@@ -352,6 +443,7 @@ function mapStateToProps(state) {
     resourceId: state.resource.id,
     canSearchEntry: selectors.canSearchEntry(state),
     searchEnabled: selectors.getParam(state, 'search_enabled'),
+    searchColumnEnabled: selectors.getParam(state, 'search_column_enabled'),
     editionEnabled: selectors.getParam(state, 'edition_enabled'),
     defaultDisplayMode: selectors.getParam(state, 'default_display_mode'),
     displayTitle: selectors.getParam(state, 'display_title'),
@@ -375,6 +467,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedEntries = connect(mapStateToProps, mapDispatchToProps)(Entries)
+const ConnectedEntries = withRouter(connect(mapStateToProps, mapDispatchToProps)(Entries))
 
 export {ConnectedEntries as Entries}

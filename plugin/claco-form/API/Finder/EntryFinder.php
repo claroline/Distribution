@@ -114,8 +114,12 @@ class EntryFinder implements FinderInterface
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'title':
-                    $qb->andWhere("UPPER(obj.title) LIKE :title");
+                    $qb->andWhere('UPPER(obj.title) LIKE :title');
                     $qb->setParameter('title', '%'.strtoupper($filterValue).'%');
+                    break;
+                case 'status':
+                    $qb->andWhere('obj.status = :status');
+                    $qb->setParameter('status', $filterValue ? 1 : 0);
                     break;
                 case 'user':
                     if (!$userJoined) {

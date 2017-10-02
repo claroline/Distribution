@@ -45,6 +45,7 @@
     "delete_keyword_confirm_message": "Êtes-vous sûr de vouloir retirer ce mot-clé [%name%] ?",
     "display": "Afficher",
     "edit_category": "Modifier la catégorie",
+    "edit_entry": "Modifier la fiche",
     "edit_field": "Modifier le champ",
     "edit_keyword": "Modifier le mot-clé",
     "edition": "Modification",
