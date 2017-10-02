@@ -1181,7 +1181,11 @@ class ClacoFormManager
 
         switch ($fieldFacet->getType()) {
             case FieldFacet::DATE_TYPE:
-                $date = is_string($value) ? new \DateTime($value) : $value;
+                if (is_array($value)) {
+                    $date = new \DateTime($value['date']);
+                } else {
+                    $date = is_string($value) ? new \DateTime($value) : $value;
+                }
                 $fieldFacetValue->setDateValue($date);
                 break;
             case FieldFacet::FLOAT_TYPE:
