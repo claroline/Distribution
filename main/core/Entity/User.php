@@ -1125,16 +1125,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         return $this->firstName.' '.$this->lastName;
     }
 
-    public function setGuid($guid)
-    {
-        $this->guid = $guid;
-    }
-
-    public function getGuid()
-    {
-        return $this->guid;
-    }
-
     public function setIsMailValidated($isMailValidated)
     {
         $this->isMailValidated = $isMailValidated;

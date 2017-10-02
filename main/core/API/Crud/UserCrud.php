@@ -4,6 +4,8 @@ namespace Claroline\CoreBundle\API\Crud;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\CrudEvent;
+use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

@@ -204,16 +204,6 @@ class Group extends AbstractRoleSubject implements OrderableInterface
         return ['name', 'id'];
     }
 
-    public function setGuid($guid)
-    {
-        $this->guid = $guid;
-    }
-
-    public function getGuid()
-    {
-        return $this->guid;
-    }
-
     public static function getSearchableFields()
     {
         return ['name'];

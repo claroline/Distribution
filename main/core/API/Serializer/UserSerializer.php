@@ -12,9 +12,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * @DI\Service("claroline.serializer.user")
  * @DI\Tag("claroline.serializer")
  */
-class UserSerializer
+class UserSerializer extends AbstractSerializer
 {
-    private $om;
     private $facetManager;
     private $tokenStorage;
 
@@ -22,7 +21,6 @@ class UserSerializer
      * UserManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "facetManager" = @DI\Inject("claroline.manager.facet_manager"),
      *     "tokenStorage" = @DI\Inject("security.token_storage")
      * })
@@ -32,11 +30,9 @@ class UserSerializer
      * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
-        ObjectManager $om,
         FacetManager $facetManager,
         TokenStorageInterface $tokenStorage
     ) {
-        $this->om = $om;
         $this->facetManager = $facetManager;
         $this->tokenStorage = $tokenStorage;
     }
@@ -49,7 +45,7 @@ class UserSerializer
      *
      * @return array - the serialized representation of the user
      */
-    public function serialize(User $user, array $options = [])
+    public function serialize($user, array $options = [])
     {
         if (isset($options['public']) && $options['public']) {
             return $this->serializePublic($user);
@@ -57,7 +53,7 @@ class UserSerializer
 
         return [
             'id' => $user->getId(),
-            'uuid' => $user->getGuid(),
+            'uuid' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
             'username' => $user->getUsername(),
         ];
@@ -104,5 +100,18 @@ class UserSerializer
         }
 
         return $publicUser;
+    }
+
+    /**
+     * Default deserialize method.
+     */
+    public function deserialize($class, $data, array $options = [])
+    {
+        return parent::deserialize($class, $data, $options);
+    }
+
+    public function getClass()
+    {
+        return 'Claroline\CoreBundle\Entity\User';
     }
 }

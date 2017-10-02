@@ -22,6 +22,7 @@ class ApiConfigPass implements CompilerPassInterface
         $this->register($container, 'claroline.api.finder', 'claroline.finder');
         $this->register($container, 'claroline.api.serializer', 'claroline.serializer');
         $this->register($container, 'claroline.api.validator', 'claroline.validator');
+        $this->setObjectManager($container, 'claroline.serializer');
     }
 
     private function register(ContainerBuilder $container, $provider, $registerTag)
@@ -36,6 +37,20 @@ class ApiConfigPass implements CompilerPassInterface
 
         foreach (array_keys($taggedServices) as $id) {
             $providerDef->addMethodCall('add', [new Reference($id)]);
+        }
+    }
+
+    private function setObjectManager($container, $tag)
+    {
+        $taggedServices = $container->findTaggedServiceIds($tag);
+
+        foreach (array_keys($taggedServices) as $id) {
+            $definition = $container->getDefinition($id);
+            $class = $definition->getClass();
+
+            if (in_array('Claroline\CoreBundle\Persistence\ObjectManagerAwareInterface', class_implements($class))) {
+                $definition->addMethodCall('setObjectManager', [new Reference('claroline.persistence.object_manager')]);
+            }
         }
     }
 }

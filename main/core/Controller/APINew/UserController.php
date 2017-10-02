@@ -12,6 +12,9 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use FOS\RestBundle\Controller\Annotations\View;
 
 /**
@@ -22,4 +25,7 @@ use FOS\RestBundle\Controller\Annotations\View;
  */
 class UserController extends AbstractController
 {
+    use HasRolesTrait;
+    use HasOrganizationsTrait;
+    use HasGroupsTrait;
 }

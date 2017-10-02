@@ -3,18 +3,13 @@
 namespace Claroline\CoreBundle\API\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\Persistence\ObjectManagerAwareInterface;
 
-abstract class AbstractSerializer
+abstract class AbstractSerializer implements ObjectManagerAwareInterface
 {
-    /**
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     *
-     * @param ObjectManager $om
-     */
-    public function __construct(ObjectManager $om)
+    protected $om;
+
+    public function setObjectManager(ObjectManager $om)
     {
         $this->om = $om;
     }

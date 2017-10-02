@@ -11,13 +11,10 @@
 
 namespace Claroline\CoreBundle\Security\Voter;
 
-use Claroline\CoreBundle\Security\PlatformRoles;
+use Claroline\CoreBundle\Security\AbstractVoter;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Claroline\CoreBundle\Security\ObjectCollection;
-use Claroline\CoreBundle\Security\AbstractVoter;
-use Claroline\CoreBundle\Entity\Role;
 
 /**
  * @DI\Service
@@ -27,9 +24,9 @@ class RoleVoter extends AbstractVoter
 {
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
     {
-        if (!$role->getWorkspace()) {
+        if (!$object->getWorkspace()) {
             return $this->hasAdminToolAccess($token, 'user_management') ?
-            VoterInterface::ACCESS_GRANTED: VoterInterface::ACCESS_DENIED;
+            VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
         }
 
         //not used in workspaces yet so no implementation
