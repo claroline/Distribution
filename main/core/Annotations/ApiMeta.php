@@ -23,6 +23,7 @@ final class ApiMeta extends Annotation
      * @var string
      */
     public $prefix;
+
     public $ignore = [];
 
     /**

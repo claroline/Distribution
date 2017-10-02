@@ -5,6 +5,9 @@ namespace Claroline\CoreBundle\Controller\APINew;
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -13,6 +16,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AbstractController extends Controller
 {
+    //required by symfony2 controller instantiation
+    //@todo: find a way to remove this
+    use HasRolesTrait;
+    use HasOrganizationsTrait;
+    use HasGroupsTrait;
+
     /** @var FinderProvider */
     private $finder;
 
