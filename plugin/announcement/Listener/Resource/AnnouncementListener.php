@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\AnnouncementBundle\Listener;
+namespace Claroline\AnnouncementBundle\Listener\Resource;
 
 use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
@@ -25,8 +25,10 @@ use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -35,16 +37,25 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class AnnouncementListener
 {
+    /** @var FormFactory */
     private $formFactory;
+    /** @var HttpKernelInterface */
     private $httpKernel;
+    /** @var ObjectManager */
     private $om;
+    /** @var Request */
     private $request;
+    /** @var ResourceManager */
     private $resourceManager;
+    /** @var UrlGeneratorInterface */
     private $router;
+    /** @var TwigEngine */
     private $templating;
     private $manager;
 
     /**
+     * AnnouncementListener constructor.
+     *
      * @DI\InjectParams({
      *     "formFactory"        = @DI\Inject("form.factory"),
      *     "httpKernel"         = @DI\Inject("http_kernel"),
@@ -55,6 +66,14 @@ class AnnouncementListener
      *     "templating"         = @DI\Inject("templating"),
      *     "manager"            = @DI\Inject("claroline.announcement.manager.announcement_manager")
      * })
+     *
+     * @param FormFactory $formFactory
+     * @param HttpKernelInterface $httpKernel
+     * @param ObjectManager $om
+     * @param RequestStack $requestStack
+     * @param ResourceManager $resourceManager
+     * @param TwigEngine $templating
+     * @param UrlGeneratorInterface $router
      */
     public function __construct(
         FormFactory $formFactory,
@@ -85,8 +104,7 @@ class AnnouncementListener
     {
         $form = $this->formFactory->create(new ResourceNameType(), new AnnouncementAggregate());
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
-            [
+            'ClarolineCoreBundle:Resource:createForm.html.twig', [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_announcement_aggregate',
             ]
@@ -100,7 +118,7 @@ class AnnouncementListener
      *
      * @param CreateResourceEvent $event
      *
-     * @throws \Claroline\CoreBundle\Listener\NoHttpRequestException
+     * @throws NoHttpRequestException
      */
     public function onCreate(CreateResourceEvent $event)
     {
@@ -120,8 +138,7 @@ class AnnouncementListener
         }
 
         $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
-            [
+            'ClarolineCoreBundle:Resource:createForm.html.twig', [
                 'form' => $form->createView(),
                 'resourceType' => 'claroline_announcement_aggregate',
             ]
@@ -155,13 +172,13 @@ class AnnouncementListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        $params = [];
-        $params['_controller'] = 'ClarolineAnnouncementBundle:Announcement:announcementsList';
-        $params['aggregateId'] = $event->getResource()->getId();
-        $subRequest = $this->request->duplicate([], null, $params);
-        $response = $this->httpKernel
-            ->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setResponse($response);
+        $content = $this->templating->render(
+            'ClarolineAnnouncementBundle:Announcement:open.html.twig', [
+                '_resource' => $event->getResource(),
+            ]
+        );
+
+        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 
@@ -172,11 +189,14 @@ class AnnouncementListener
      */
     public function onCopy(CopyResourceEvent $event)
     {
+        /** @var AnnouncementAggregate $aggregate */
         $aggregate = $event->getResource();
         $copy = new AnnouncementAggregate();
         $this->om->persist($copy);
+
         $announcements = $aggregate->getAnnouncements();
 
+        /** @var Announcement $announcement */
         foreach ($announcements as $announcement) {
             $newAnnouncement = new Announcement();
             $newAnnouncement->setAggregate($copy);

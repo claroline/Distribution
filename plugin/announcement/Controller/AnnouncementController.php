@@ -22,7 +22,6 @@ use Claroline\AnnouncementBundle\Form\AnnouncementType;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -34,6 +33,7 @@ use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -69,6 +69,18 @@ class AnnouncementController extends Controller
      *     "utils"               = @DI\Inject("claroline.security.utilities"),
      *     "workspaceManager"    = @DI\Inject("claroline.manager.workspace_manager")
      * })
+     *
+     * @param AnnouncementManager $announcementManager
+     * @param AuthorizationCheckerInterface $authorization
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param FormFactoryInterface $formFactory
+     * @param PagerFactory $pagerFactory
+     * @param RequestStack $requestStack
+     * @param TwigEngine $templating
+     * @param TokenStorageInterface $tokenStorage
+     * @param TranslatorInterface $translator
+     * @param Utilities $utils
+     * @param WorkspaceManager $workspaceManager
      */
     public function __construct(
         AnnouncementManager $announcementManager,
@@ -113,7 +125,7 @@ class AnnouncementController extends Controller
      * @param AnnouncementAggregate $aggregate
      * @param $page
      *
-     * @return Response
+     * @return array
      */
     public function announcementsListAction(AnnouncementAggregate $aggregate, $page = 1)
     {
@@ -151,7 +163,7 @@ class AnnouncementController extends Controller
      *
      * @param AnnouncementAggregate $aggregate
      *
-     * @return Response
+     * @return array
      */
     public function createFormAction(AnnouncementAggregate $aggregate)
     {
@@ -183,7 +195,7 @@ class AnnouncementController extends Controller
      *
      * @param AnnouncementAggregate $aggregate
      *
-     * @return Response
+     * @return array|RedirectResponse
      */
     public function createAction(AnnouncementAggregate $aggregate)
     {
@@ -270,7 +282,7 @@ class AnnouncementController extends Controller
      *
      * @param Announcement $announcement
      *
-     * @return Response
+     * @return array
      */
     public function announcementEditFormAction(Announcement $announcement)
     {
@@ -302,7 +314,7 @@ class AnnouncementController extends Controller
      *
      * @param Announcement $announcement
      *
-     * @return Response
+     * @return array|RedirectResponse
      */
     public function announcementEditAction(Announcement $announcement)
     {
@@ -406,6 +418,8 @@ class AnnouncementController extends Controller
     }
 
     /**
+     * Renders announcement widget.
+     *
      * @EXT\Route(
      *     "/announcement/widget/{widgetInstance}",
      *     name="claro_announcement_widget",
@@ -414,7 +428,9 @@ class AnnouncementController extends Controller
      * @EXT\Method("GET")
      * @EXT\Template("ClarolineAnnouncementBundle::announcementsWidget.html.twig")
      *
-     * Renders announcement widget.
+     * @param WidgetInstance $widgetInstance
+     *
+     * @return array
      */
     public function announcementsWidgetAction(WidgetInstance $widgetInstance)
     {
@@ -422,6 +438,8 @@ class AnnouncementController extends Controller
     }
 
     /**
+     * Renders announcements in a pager.
+     *
      * @EXT\Route(
      *     "/announcement/widget/{widgetInstance}/page/{page}",
      *     name="claro_announcement_widget_pager",
@@ -429,8 +447,6 @@ class AnnouncementController extends Controller
      *     options={"expose"=true}
      * )
      * @EXT\Method("GET")
-     *
-     * Renders announcements in a pager.
      *
      * @param WidgetInstance $widgetInstance
      * @param int            $page
@@ -477,6 +493,10 @@ class AnnouncementController extends Controller
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineAnnouncementBundle::announcementsWidgetConfigureForm.html.twig")
+     *
+     * @param WidgetInstance $widgetInstance
+     *
+     * @return array
      */
     public function announcementsWidgetConfigureFormAction(WidgetInstance $widgetInstance)
     {
@@ -495,6 +515,10 @@ class AnnouncementController extends Controller
      * )
      * @EXT\ParamConverter("user", converter="current_user")
      * @EXT\Template("ClarolineAnnouncementBundle::announcementsWidgetConfigureForm.html.twig")
+     *
+     * @param AnnouncementsWidgetConfig $config
+     *
+     * @return array|JsonResponse
      */
     public function announcementsWidgetConfigureAction(AnnouncementsWidgetConfig $config)
     {
@@ -517,6 +541,8 @@ class AnnouncementController extends Controller
     }
 
     /**
+     * Sends announcement by mail.
+     *
      * @EXT\Route(
      *     "/announcement/{announcement}/send/mail",
      *     name="claro_announcement_send_mail",
@@ -529,9 +555,10 @@ class AnnouncementController extends Controller
      *      options={"multipleIds" = true, "name" = "usersIds"}
      * )
      *
-     * Sends announcement by mail
+     * @param Announcement $announcement
+     * @param array $users
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function announcementSendMailAction(Announcement $announcement, array $users)
     {
@@ -547,17 +574,17 @@ class AnnouncementController extends Controller
 
     /**
      * Checks if the current user has the right to perform an action on a ResourceCollection.
-     * Be careful, ResourceCollection may need some aditionnal parameters.
+     * Be careful, ResourceCollection may need some additional parameters.
      *
      * - for CREATE: $collection->setAttributes(array('type' => $resourceType))
      *  where $resourceType is the name of the resource type.
      * - for MOVE / COPY $collection->setAttributes(array('parent' => $parent))
      *  where $parent is the new parent entity.
      *
-     * @param string                                                 $permission
-     * @param \Claroline\CoreBundle\Entity\Resource\AbstractResource $resource
+     * @param string $permission
+     * @param AbstractResource $resource
      *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @throws AccessDeniedException
      */
     private function checkAccess($permission, AbstractResource $resource)
     {

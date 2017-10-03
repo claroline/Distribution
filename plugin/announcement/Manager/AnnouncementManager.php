@@ -41,7 +41,7 @@ class AnnouncementManager
     private $userRepo;
 
     /**
-     * Constructor.
+     * AnnouncementManager constructor.
      *
      * @DI\InjectParams({
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
