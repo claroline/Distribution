@@ -240,9 +240,9 @@ class EntryComments extends Component {
 
 EntryComments.propTypes = {
   user: T.shape({
-    id: T.number.isRequired,
-    firstName: T.string.isRequired,
-    lastName: T.string.isRequired
+    id: T.number,
+    firstName: T.string,
+    lastName: T.string
   }),
   entry: T.object.isRequired,
   displayComments: T.bool.isRequired,

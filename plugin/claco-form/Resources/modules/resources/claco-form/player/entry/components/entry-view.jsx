@@ -481,9 +481,9 @@ class EntryView extends Component {
 EntryView.propTypes = {
   resourceId: T.number.isRequired,
   user: T.shape({
-    id: T.number.isRequired,
-    firstName: T.string.isRequired,
-    lastName: T.string.isRequired
+    id: T.number,
+    firstName: T.string,
+    lastName: T.string
   }),
   entryId: T.number,
   canEdit: T.bool.isRequired,
@@ -526,15 +526,15 @@ EntryView.propTypes = {
       id: T.number.isRequired,
       content: T.string.isRequired,
       user: T.shape({
-        id: T.number.isRequired,
-        firstName: T.string.isRequired,
-        lastName: T.string.isRequired
+        id: T.number,
+        firstName: T.string,
+        lastName: T.string
       })
     })),
     user: T.shape({
-      id: T.number.isRequired,
-      firstName: T.string.isRequired,
-      lastName: T.string.isRequired
+      id: T.number,
+      firstName: T.string,
+      lastName: T.string
     }),
     fieldValues: T.arrayOf(T.shape({
       id: T.number.isRequired,

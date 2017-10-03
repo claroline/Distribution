@@ -82,7 +82,7 @@ bootstrap(
       entries: merge({}, initialData.entries, {
         fetchUrl: generateUrl('claro_claco_form_entries_search', {clacoForm: resource.id})
       }),
-      myEntriesCount: initialData.myEntries,
+      myEntriesCount: initialData.myEntriesCount,
       cascadeLevelMax: initialData.cascadeLevelMax
     }
   }

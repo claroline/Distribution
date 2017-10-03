@@ -122,7 +122,7 @@ const isCategoryManager = createSelector(
   user,
   categories,
   (user, categories) => {
-    return user.id && categories.filter(c => c.managers.find(m => m.id === user.id)).length > 0
+    return user.id > 0 && categories.filter(c => c.managers.find(m => m.id === user.id)).length > 0
   }
 )
 

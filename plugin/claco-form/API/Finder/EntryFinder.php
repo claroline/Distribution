@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @DI\Service("claroline.api.finder.clacoform.entry")
@@ -97,7 +96,7 @@ class EntryFinder implements FinderInterface
             }
         }
         if (is_null($type)) {
-            throw new AccessDeniedException();
+            return null;
         }
         switch ($type) {
             case 'all':

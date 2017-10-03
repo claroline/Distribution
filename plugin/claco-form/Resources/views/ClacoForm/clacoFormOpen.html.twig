@@ -6,11 +6,11 @@
       {% if not isAnon %}
         data-user="{{ user | api_serialize({'public': true}) | json_encode | raw | escape }}"
       {% endif %}
-      data-resource="{{ _resource | json_serialize('api_user_min') | raw | escape }}"
+      data-resource="{{ _resource | api_serialize | json_encode | raw | escape }}"
       data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
       data-fields="{{ fields | json_serialize('api_facet_admin') | raw | escape }}"
       data-cascade-level-max={{ cascadeLevelMax }}
-      data-can-generate-pdf={{ canGeneratePdf }}
+      data-can-generate-pdf="{{ canGeneratePdf }}"
       data-entries="{{ entries | json_encode | raw | escape }}"
       data-my-entries-count={{ myEntriesCount }}
     >
