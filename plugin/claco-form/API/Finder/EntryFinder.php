@@ -11,12 +11,18 @@
 
 namespace Claroline\ClacoFormBundle\API\Finder;
 
+use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\CoreBundle\API\FinderInterface;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.api.finder.clacoform.entry")
@@ -24,11 +30,23 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class EntryFinder implements FinderInterface
 {
-    /** @var ContainerInterface */
-    private $container;
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
 
     /** @var LocationManager */
     private $locationManager;
+
+    /** @var ObjectManager */
+    private $om;
+
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    private $clacoFormRepo;
+    private $fieldRepo;
 
     private $usedJoin = [];
 
@@ -36,15 +54,33 @@ class EntryFinder implements FinderInterface
      * EntryFinder constructor.
      *
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
+     *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "locationManager" = @DI\Inject("claroline.manager.organization.location_manager"),
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
+     *     "translator"      = @DI\Inject("translator")
      * })
      *
-     * @param ContainerInterface $container
+     * @param AuthorizationCheckerInterface $authorization
+     * @param LocationManager               $locationManager
+     * @param ObjectManager                 $om
+     * @param TokenStorageInterface         $tokenStorage
+     * @param TranslatorInterface           $translator
      */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->locationManager = $this->container->get('claroline.manager.organization.location_manager');
+    public function __construct(
+        AuthorizationCheckerInterface $authorization,
+        LocationManager $locationManager,
+        ObjectManager $om,
+        TokenStorageInterface $tokenStorage,
+        TranslatorInterface $translator
+    ) {
+        $this->authorization = $authorization;
+        $this->locationManager = $locationManager;
+        $this->om = $om;
+        $this->tokenStorage = $tokenStorage;
+        $this->translator = $translator;
+        $this->clacoFormRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoForm');
+        $this->fieldRepo = $om->getRepository('ClarolineClacoFormBundle:Field');
     }
 
     public function getClass()
@@ -54,15 +90,12 @@ class EntryFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = [])
     {
-        $clacoFormManager = $this->container->get('claroline.manager.claco_form_manager');
-        $tokenStorage = $this->container->get('security.token_storage');
-        $translator = $this->container->get('translator');
-        $currentUser = $tokenStorage->getToken()->getUser();
+        $currentUser = $this->tokenStorage->getToken()->getUser();
 
         $isAnon = $currentUser === 'anon.';
-        $clacoForm = $clacoFormManager->getClacoFormById($searches['clacoForm']);
-        $canEdit = $clacoFormManager->hasRight($clacoForm, 'EDIT');
-        $isCategoryManager = !$isAnon && $clacoFormManager->isCategoryManager($clacoForm, $currentUser);
+        $clacoForm = $this->clacoFormRepo->findOneById($searches['clacoForm']);
+        $canEdit = $this->hasRight($clacoForm, 'EDIT');
+        $isCategoryManager = !$isAnon && $this->isCategoryManager($clacoForm, $currentUser);
         $searchEnabled = $clacoForm->getSearchEnabled();
 
         $qb->join('obj.clacoForm', 'cf');
@@ -73,13 +106,13 @@ class EntryFinder implements FinderInterface
 
         if ($type) {
             switch ($type) {
-                case $translator->trans('all_entries', [], 'clacoform'):
+                case $this->translator->trans('all_entries', [], 'clacoform'):
                     $type = 'all';
                     break;
-                case $translator->trans('my_entries', [], 'clacoform'):
+                case $this->translator->trans('my_entries', [], 'clacoform'):
                     $type = 'my';
                     break;
-                case $translator->trans('manager_entries', [], 'clacoform'):
+                case $this->translator->trans('manager_entries', [], 'clacoform'):
                     $type = 'manager';
                     break;
                 default:
@@ -87,7 +120,7 @@ class EntryFinder implements FinderInterface
             }
         }
         if (is_null($type)) {
-            if ($searchEnabled || $clacoFormManager->hasRight($clacoForm, 'EDIT')) {
+            if ($searchEnabled || $this->hasRight($clacoForm, 'EDIT')) {
                 $type = 'all';
             } elseif (!$isAnon) {
                 $type = $isCategoryManager ? 'manager' : 'my';
@@ -183,7 +216,7 @@ class EntryFinder implements FinderInterface
                     $this->usedJoin['keywords'] = true;
                     break;
                 default:
-                    $field = $clacoFormManager->getFieldByClacoFormAndId($clacoForm, $filterName);
+                    $field = $this->fieldRepo->findOneBy(['clacoForm' => $clacoForm, 'id' => $filterName]);
                     $this->filterField($qb, $filterName, $filterValue, $field);
             }
         }
@@ -206,7 +239,7 @@ class EntryFinder implements FinderInterface
                     $qb->orderBy('k.name', $sortByDirection);
                     break;
                 default:
-                    $field = $clacoFormManager->getFieldByClacoFormAndId($clacoForm, $sortBy);
+                    $field = $this->fieldRepo->findOneBy(['clacoForm' => $clacoForm, 'id' => $sortBy]);
                     $this->sortField($qb, $sortByProperty, $sortByDirection, $field);
             }
         }
@@ -283,5 +316,29 @@ class EntryFinder implements FinderInterface
                     $qb->orderBy("fvffv{$sortBy}.stringValue", $direction);
             }
         }
+    }
+
+    private function hasRight(ClacoForm $clacoForm, $right)
+    {
+        $collection = new ResourceCollection([$clacoForm->getResourceNode()]);
+
+        return $this->authorization->isGranted($right, $collection);
+    }
+
+    private function isCategoryManager(ClacoForm $clacoForm, User $user)
+    {
+        $categories = $clacoForm->getCategories();
+
+        foreach ($categories as $category) {
+            $managers = $category->getManagers();
+
+            foreach ($managers as $manager) {
+                if ($manager->getId() === $user->getId()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
