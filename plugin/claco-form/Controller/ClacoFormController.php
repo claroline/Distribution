@@ -130,8 +130,6 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
         $params = $this->request->query->all();
-        $sortBy = null;
-        $direction = null;
 
         if (!isset($params['filters'])) {
             $params['filters'] = [];
