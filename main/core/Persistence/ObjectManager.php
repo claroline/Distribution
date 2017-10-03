@@ -288,7 +288,7 @@ class ObjectManager extends ObjectManagerDecorator
             // Sort objects to have the same order as given $ids array
             $sortIds = array_flip($list);
             usort($objects, function ($a, $b) use ($sortIds) {
-                return $sortIds[$a->getId()] - $sortIds[$b->$a->getId()];
+                return $sortIds[$a->getId()] - $sortIds[$b->getId()];
             });
         }
 
