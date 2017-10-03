@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {actions} from '../actions'
 
 class Message extends Component {
@@ -18,7 +19,9 @@ class Message extends Component {
               onClick={() => this.props.resetMessage()}
             >
             </i>
-            <div dangerouslySetInnerHTML={{ __html: this.props.message.content}}/>
+            <HtmlText>
+              {this.props.message.content}
+            </HtmlText>
           </div>
         }
       </div>

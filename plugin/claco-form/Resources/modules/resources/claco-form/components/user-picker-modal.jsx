@@ -5,12 +5,15 @@ import Modal from 'react-bootstrap/lib/Modal'
 import {t} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {UserTypeahead} from '#/main/core/layout/typeahead/users/typeahead.jsx'
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 const UserPickerModal = props =>
   <BaseModal {...props}>
     <Modal.Body>
       {props.content &&
-        <div dangerouslySetInnerHTML={{__html: props.content}}></div>
+        <HtmlText>
+          {props.content}
+        </HtmlText>
       }
       <UserTypeahead {...props}/>
     </Modal.Body>

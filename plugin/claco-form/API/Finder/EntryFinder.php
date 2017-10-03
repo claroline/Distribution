@@ -64,10 +64,8 @@ class EntryFinder implements FinderInterface
         $canEdit = $clacoFormManager->hasRight($clacoForm, 'EDIT');
         $isCategoryManager = !$isAnon && $clacoFormManager->isCategoryManager($clacoForm, $currentUser);
         $searchEnabled = $clacoForm->getSearchEnabled();
-//        $sortBy = isset($extraData['sortBy']) ? $extraData['sortBy'] : null;
-//        $direction = isset($extraData['direction']) ? $extraData['direction'] : null;
 
-        $qb->leftJoin('obj.clacoForm', 'cf');
+        $qb->join('obj.clacoForm', 'cf');
         $qb->andWhere('cf.id = :clacoFormId');
         $qb->setParameter('clacoFormId', $searches['clacoForm']);
 
@@ -173,13 +171,13 @@ class EntryFinder implements FinderInterface
                     break;
                 case 'categories':
                     if (!isset($this->usedJoin['categories'])) {
-                        $qb->leftJoin('obj.categories', 'c');
+                        $qb->join('obj.categories', 'c');
                     }
                     $qb->andWhere('UPPER(c.name) LIKE :categoryName');
                     $qb->setParameter('categoryName', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'keywords':
-                    $qb->leftJoin('obj.keywords', 'k');
+                    $qb->join('obj.keywords', 'k');
                     $qb->andWhere('UPPER(k.name) LIKE :keywordName');
                     $qb->setParameter('keywordName', '%'.strtoupper($filterValue).'%');
                     $this->usedJoin['keywords'] = true;
@@ -189,23 +187,27 @@ class EntryFinder implements FinderInterface
                     $this->filterField($qb, $filterName, $filterValue, $field);
             }
         }
-        if ($sortBy && $direction) {
-            switch ($sortBy) {
+
+        if (isset($sortBy['property']) && isset($sortBy['direction'])) {
+            $sortByProperty = $sortBy['property'];
+            $sortByDirection = $sortBy['direction'] === 1 ? 'ASC' : 'DESC';
+
+            switch ($sortByProperty) {
                 case 'categories':
                     if (!isset($this->usedJoin['categories'])) {
                         $qb->leftJoin('obj.categories', 'c');
                     }
-                    $qb->orderBy('c.name', $direction);
+                    $qb->orderBy('c.name', $sortByDirection);
                     break;
                 case 'keywords':
                     if (!isset($this->usedJoin['keywords'])) {
                         $qb->leftJoin('obj.keywords', 'k');
                     }
-                    $qb->orderBy('k.name', $direction);
+                    $qb->orderBy('k.name', $sortByDirection);
                     break;
                 default:
                     $field = $clacoFormManager->getFieldByClacoFormAndId($clacoForm, $sortBy);
-                    $this->sortField($qb, $sortBy, $direction, $field);
+                    $this->sortField($qb, $sortByProperty, $sortByDirection, $field);
             }
         }
 

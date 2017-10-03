@@ -9,6 +9,7 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {generateUrl} from '#/main/core/fos-js-router'
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {getFieldType, getCountry} from '../../../utils'
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
@@ -348,7 +349,9 @@ class EntryView extends Component {
             </div>
             <div className="panel-body">
               {this.props.template && this.props.useTemplate ?
-                <div dangerouslySetInnerHTML={{ __html: this.generateTemplate()}}></div> :
+                <HtmlText>
+                  {this.generateTemplate()}
+                </HtmlText> :
                 this.props.fields.map(f => this.isFieldDisplayable(f) ?
                   <div key={`field-${f.id}`}>
                     <div className="row">

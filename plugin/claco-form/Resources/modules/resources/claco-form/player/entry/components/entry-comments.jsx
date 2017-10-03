@@ -10,6 +10,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 class EntryComments extends Component {
   constructor(props) {
@@ -220,7 +221,9 @@ class EntryComments extends Component {
                               </button>
                             </div>
                           </div> :
-                          <div dangerouslySetInnerHTML={{ __html: c.content}}/>
+                          <HtmlText>
+                            {c.content}
+                          </HtmlText>
                         }
                       </td>
                     </tr>
