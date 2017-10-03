@@ -53,7 +53,7 @@ class ResourceNodeFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\Resource\ResourceNode';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         $qb->join('obj.resourceType', 'ort');
 

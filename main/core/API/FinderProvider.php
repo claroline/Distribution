@@ -139,7 +139,7 @@ class FinderProvider
         }
     }
 
-    private function sortResults(QueryBuilder $qb, array $sortBy = [])
+    private function sortResults(QueryBuilder $qb, array $sortBy = null)
     {
         if (!empty($sortBy) && !empty($sortBy['property']) && 0 !== $sortBy['direction']) {
             // query needs to be sorted, check if the Finder implementation has a custom sort system
