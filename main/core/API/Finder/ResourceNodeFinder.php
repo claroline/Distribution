@@ -53,25 +53,25 @@ class ResourceNodeFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\Resource\ResourceNode';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         $qb->join('obj.resourceType', 'ort');
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'resourceType':
-                  $qb->andWhere("ort.name LIKE :{$filterName}");
-                  $qb->setParameter($filterName, $filterValue);
-                  break;
-              default:
-                if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
-                    $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;
-                    $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                case 'resourceType':
+                    $qb->andWhere("ort.name LIKE :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
-                } else {
-                    $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                }
+                    break;
+                default:
+                    if (is_string($filterValue)) {
+                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    } else {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    }
+                    break;
             }
         }
 
