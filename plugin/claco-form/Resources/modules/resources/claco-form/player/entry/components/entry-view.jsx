@@ -143,10 +143,10 @@ class EntryView extends Component {
     .then(response => response.json())
     .then(data => {
       this.props.showModal(
-        'MODAL_CLACOFORM_USER_PICKER',
+        'MODAL_USER_PICKER',
         {
           title: trans('select_users_to_share', {}, 'clacoform'),
-          content: `<div class="alert alert-info">${trans('share_entry_msg', {}, 'clacoform')}</div>`,
+          help: trans('share_entry_msg', {}, 'clacoform'),
           handleRemove: (user) => this.props.unshareEntry(this.props.entryId, user.id),
           handleSelect: (user) => this.props.shareEntry(this.props.entryId, user.id),
           selected: JSON.parse(data.users)
