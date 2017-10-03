@@ -3,12 +3,18 @@
 namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 use Claroline\CoreBundle\API\Crud;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 trait HasGroupsTrait
 {
-    public function addGroups($uuid, $class, Request $request, $env)
+    /**
+     * @Route("/{uuid}/group/add")
+     * @Method("GET")
+     */
+    public function addGroupsAction($uuid, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $uuid);
@@ -23,7 +29,11 @@ trait HasGroupsTrait
         }
     }
 
-    public function removeGroups($uuid, $class, Request $request, $env)
+    /**
+     * @Route("/{uuid}/group/remove")
+     * @Method("GET")
+     */
+    public function removeGroupsAction($uuid, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $uuid);

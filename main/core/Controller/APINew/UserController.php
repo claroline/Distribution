@@ -16,12 +16,11 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use FOS\RestBundle\Controller\Annotations\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @ApiMeta(
- *     class="Claroline\CoreBundle\Entity\User",
- *     prefix="user"
- * )
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\User")
+ * @Route("user")
  */
 class UserController extends AbstractController
 {

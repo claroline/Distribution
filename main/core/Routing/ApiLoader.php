@@ -6,6 +6,7 @@ namespace Claroline\CoreBundle\Routing;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route as RouteConfig;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -56,18 +57,27 @@ class ApiLoader extends Loader
                 if ($controller) {
                     $refClass = new \ReflectionClass($controller);
                     $found = false;
+                    $prefix = '';
 
                     foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
                         if ($annotation instanceof ApiMeta) {
                             $found = true;
-                            $prefix = $annotation->prefix;
                             $class = $annotation->class;
+                        }
+
+                        if ($annotation instanceof RouteConfig) {
+                            $prefix = $annotation->getPath();
                         }
                     }
 
                     if ($found) {
                         foreach ($this->makeRouteMap($controller) as $name => $options) {
-                            $pattern = '/'.$prefix.'/'.$options[0];
+                            $pattern = '/'.$options[0];
+
+                            if ($prefix) {
+                                $pattern = '/'.$prefix.$pattern;
+                            }
+
                             $routeDefaults = [
                               '_controller' => $controller.'::'.$name,
                               'class' => $class,
@@ -94,37 +104,12 @@ class ApiLoader extends Loader
 
     private function makeRouteMap($controller)
     {
-        $defaults = [
-          'create' => ['', 'POST'],
-          'update' => ['{uuid}', 'PUT'],
-          'deleteBulk' => ['', 'DELETE'],
-          'list' => ['', 'GET'],
+        return [
+          'createAction' => ['', 'POST'],
+          'updateAction' => ['{uuid}', 'PUT'],
+          'deleteBulkAction' => ['', 'DELETE'],
+          'listAction' => ['', 'GET'],
         ];
-
-        $custom = [
-            'Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait' => [
-                'addGroups' => ['{uuid}/group/add', 'PATCH'],
-                'removeGroups' => ['{uuid}/group/remove', 'PATCH'],
-            ],
-            'Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait' => [
-                'addOrganizations' => ['{uuid}/organization/add', 'PATCH'],
-                'removeOrganizations' => ['{uuid}/organization/remove', 'PATCH'],
-            ],
-            'Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait' => [
-                'addRoles' => ['{uuid}/role/add', 'PATCH'],
-                'removeRoles' => ['{uuid}/role/remove', 'PATCH'],
-            ],
-        ];
-
-        $traits = class_uses($controller);
-
-        foreach ($traits as $trait) {
-            if (in_array($trait, array_keys($custom))) {
-                $defaults = array_merge($defaults, $custom[$trait]);
-            }
-        }
-
-        return $defaults;
     }
 
     /**

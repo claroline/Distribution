@@ -13,18 +13,17 @@ namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use FOS\RestBundle\Controller\Annotations\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @ApiMeta(
- *     class="Claroline\CoreBundle\Entity\Organization\Organization",
- *     prefix="organization"
- * )
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Organization\Organization")
+ * @Route("organization")
  */
 class OrganizationController extends AbstractController
 {
-    public function list(Request $request, $class, $env)
+    public function listAction(Request $request, $class, $env)
     {
         return new JsonResponse($this->finder->search($class, $request->query->all(), ['recursive' => true]));
     }

@@ -13,12 +13,11 @@ namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use FOS\RestBundle\Controller\Annotations\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @ApiMeta(
- *     class="Claroline\CoreBundle\Entity\Role",
- *     prefix="role"
- * )
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Role")
+ * @Route("role")
  */
 class RoleController extends AbstractController
 {

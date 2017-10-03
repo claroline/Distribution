@@ -3,12 +3,18 @@
 namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 use Claroline\CoreBundle\API\Crud;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 trait HasRolesTrait
 {
-    public function addRoles($uuid, $class, Request $request, $env)
+    /**
+     * @Route("/{uuid}/role/add")
+     * @Method("PATCH")
+     */
+    public function addRolesAction($uuid, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $uuid);
@@ -23,7 +29,11 @@ trait HasRolesTrait
         }
     }
 
-    public function removeRoles($uuid, $class, Request $request, $env)
+    /**
+     * @Route("/{uuid}/role/remove")
+     * @Method("PATCH")
+     */
+    public function removeRolesAction($uuid, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $uuid);

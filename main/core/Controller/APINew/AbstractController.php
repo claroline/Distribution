@@ -5,23 +5,13 @@ namespace Claroline\CoreBundle\Controller\APINew;
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
-use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
-use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractController extends Controller
+class AbstractController
 {
-    //required by symfony2 controller instantiation
-    //@todo: find a way to remove this
-    use HasRolesTrait;
-    use HasOrganizationsTrait;
-    use HasGroupsTrait;
-
     /** @var FinderProvider */
     private $finder;
 
@@ -56,12 +46,12 @@ class AbstractController extends Controller
         $this->om = $om;
     }
 
-    public function list(Request $request, $class, $env)
+    public function listAction(Request $request, $class, $env)
     {
         return new JsonResponse($this->finder->search($class, $request->query->all()));
     }
 
-    public function create(Request $request, $class, $env)
+    public function createAction(Request $request, $class, $env)
     {
         try {
             $object = $this->crud->create($class, $this->decodeRequest($request));
@@ -75,7 +65,7 @@ class AbstractController extends Controller
         }
     }
 
-    public function update($uuid, Request $request, $class, $env)
+    public function updateAction($uuid, Request $request, $class, $env)
     {
         try {
             $object = $this->crud->update($class, $this->decodeRequest($request));
@@ -88,7 +78,7 @@ class AbstractController extends Controller
         }
     }
 
-    public function deleteBulk(Request $request, $class, $env)
+    public function deleteBulkAction(Request $request, $class, $env)
     {
         try {
             $this->crud->deleteBulk($this->decodeRequest($request));

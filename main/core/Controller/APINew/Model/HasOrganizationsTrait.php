@@ -3,12 +3,18 @@
 namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 use Claroline\CoreBundle\API\Crud;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 trait HasOrganizationsTrait
 {
-    public function addOrganizations($uuid, $class, Request $request, $env)
+    /**
+     * @Route("/{uuid}/organization/add")
+     * @Method("PATCH")
+     */
+    public function addOrganizationsAction($uuid, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $uuid);
@@ -23,7 +29,11 @@ trait HasOrganizationsTrait
         }
     }
 
-    public function removeOrganizations($uuid, $class, Request $request, $env)
+    /**
+     * @Route("/{uuid}/organization/remove")
+     * @Method("PATCH")
+     */
+    public function removeOrganizationsAction($uuid, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $uuid);
