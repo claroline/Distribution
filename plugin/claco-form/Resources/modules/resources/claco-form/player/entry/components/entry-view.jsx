@@ -112,7 +112,7 @@ class EntryView extends Component {
         case 'country':
           return getCountry(value) ? getCountry(value).label : ''
         case 'date' :
-          return value.date ?
+          return value != undefined && value !== null && value.date ?
             moment(value.date).format('DD/MM/YYYY') :
             value ? moment(value).format('DD/MM/YYYY') : ''
         case 'rich_text':

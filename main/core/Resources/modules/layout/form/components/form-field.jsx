@@ -183,7 +183,7 @@ export const FormField = props => {
             id={props.controlId}
             type="number"
             className="form-control"
-            value={isNaN(props.value) ? undefined : props.value}
+            value={props.value === null || isNaN(props.value) ? undefined : props.value}
             disabled={props.disabled}
             onChange={(e) => props.onChange(e.target.value)}
           />
@@ -194,7 +194,7 @@ export const FormField = props => {
         <NumberGroup
           controlId={props.controlId}
           label={props.label}
-          value={isNaN(props.value) ? undefined : props.value}
+          value={props.value === null || isNaN(props.value) ? undefined : props.value}
           disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
@@ -257,7 +257,7 @@ export const FormField = props => {
             controlId={props.controlId}
             dateFormat="DD/MM/YYYY"
             minDate={moment.utc('1900-01-01T12:00:00')}
-            value={props.value.date || props.value || ''}
+            value={props.value !== undefined && props.value !== null ? props.value.date || props.value || '' : ''}
             disabled={props.disabled}
             onChange={date => {
               const value = moment(date).isValid() ? formatDate(date) : null
@@ -273,7 +273,7 @@ export const FormField = props => {
           label={props.label}
           dateFormat="DD/MM/YYYY"
           minDate={moment.utc('1900-01-01T12:00:00')}
-          value={props.value.date || props.value || ''}
+          value={props.value !== undefined && props.value !== null ? props.value.date || props.value || '' : ''}
           disabled={props.disabled}
           error={props.error}
           onChange={date => {
