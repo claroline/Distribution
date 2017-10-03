@@ -27,7 +27,7 @@ class RoleFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\Role';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = [])
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
