@@ -52,7 +52,7 @@ class EntryFinder implements FinderInterface
         return 'Claroline\ClacoFormBundle\Entity\Entry';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $extraData = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = [])
     {
         $clacoFormManager = $this->container->get('claroline.manager.claco_form_manager');
         $tokenStorage = $this->container->get('security.token_storage');
@@ -60,16 +60,16 @@ class EntryFinder implements FinderInterface
         $currentUser = $tokenStorage->getToken()->getUser();
 
         $isAnon = $currentUser === 'anon.';
-        $clacoForm = $clacoFormManager->getClacoFormById($extraData['clacoForm']);
+        $clacoForm = $clacoFormManager->getClacoFormById($searches['clacoForm']);
         $canEdit = $clacoFormManager->hasRight($clacoForm, 'EDIT');
         $isCategoryManager = !$isAnon && $clacoFormManager->isCategoryManager($clacoForm, $currentUser);
         $searchEnabled = $clacoForm->getSearchEnabled();
-        $sortBy = isset($extraData['sortBy']) ? $extraData['sortBy'] : null;
-        $direction = isset($extraData['direction']) ? $extraData['direction'] : null;
+//        $sortBy = isset($extraData['sortBy']) ? $extraData['sortBy'] : null;
+//        $direction = isset($extraData['direction']) ? $extraData['direction'] : null;
 
-        $qb->join('obj.clacoForm', 'cf');
+        $qb->leftJoin('obj.clacoForm', 'cf');
         $qb->andWhere('cf.id = :clacoFormId');
-        $qb->setParameter('clacoFormId', $extraData['clacoForm']);
+        $qb->setParameter('clacoFormId', $searches['clacoForm']);
 
         $type = isset($searches['type']) ? $searches['type'] : null;
 
@@ -131,7 +131,7 @@ class EntryFinder implements FinderInterface
                 $this->usedJoin['categories'] = true;
                 break;
             case 'my':
-                $qb->join('obj.user', 'u');
+                $qb->leftJoin('obj.user', 'u');
                 $qb->leftJoin('obj.entryUsers', 'eu');
                 $qb->leftJoin('eu.user', 'euu');
                 $qb->andWhere('u.id = :userId');
@@ -173,13 +173,13 @@ class EntryFinder implements FinderInterface
                     break;
                 case 'categories':
                     if (!isset($this->usedJoin['categories'])) {
-                        $qb->join('obj.categories', 'c');
+                        $qb->leftJoin('obj.categories', 'c');
                     }
                     $qb->andWhere('UPPER(c.name) LIKE :categoryName');
                     $qb->setParameter('categoryName', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'keywords':
-                    $qb->join('obj.keywords', 'k');
+                    $qb->leftJoin('obj.keywords', 'k');
                     $qb->andWhere('UPPER(k.name) LIKE :keywordName');
                     $qb->setParameter('keywordName', '%'.strtoupper($filterValue).'%');
                     $this->usedJoin['keywords'] = true;

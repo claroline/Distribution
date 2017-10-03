@@ -86,7 +86,7 @@ class FinderProvider
         return $this->finders[$class];
     }
 
-    public function search($class, array $queryParams = [], array $serializerOptions = [], array $extraData = [])
+    public function search($class, array $queryParams = [], array $serializerOptions = [])
     {
         // get search params
         $filters = isset($queryParams['filters']) ? $this->parseFilters($queryParams['filters']) : [];
@@ -94,8 +94,8 @@ class FinderProvider
         $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 0;
         $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : -1;
 
-        $data = $this->fetch($class, $page, $limit, $filters, $sortBy, false, $extraData);
-        $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true, $extraData);
+        $data = $this->fetch($class, $page, $limit, $filters, $sortBy);
+        $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true);
 
         return [
             'data' => array_map(function ($result) use ($serializerOptions) {
@@ -109,18 +109,17 @@ class FinderProvider
         ];
     }
 
-    public function fetch($class, $page, $limit, array $filters, array $sortBy = null, $count = false, array $extraData = [])
+    public function fetch($class, $page, $limit, array $filters, array $sortBy = null, $count = false)
     {
         try {
             /** @var QueryBuilder $qb */
             $qb = $this->om->createQueryBuilder();
-            $objName = isset($extraData['distinct']) && $extraData['distinct'] ? 'DISTINCT obj' : 'obj';
 
-            $qb->select($count ? "count($objName)" : $objName)
+            $qb->select($count ? 'count(distinct obj)' : 'distinct obj')
                ->from($class, 'obj');
 
             // filter query - let's the finder implementation process the filters to configure query
-            $this->get($class)->configureQueryBuilder($qb, $filters, $extraData);
+            $this->get($class)->configureQueryBuilder($qb, $filters);
 
             // order query
             if (!empty($sortBy) && !empty($sortBy['property']) && 0 !== $sortBy['direction']) {

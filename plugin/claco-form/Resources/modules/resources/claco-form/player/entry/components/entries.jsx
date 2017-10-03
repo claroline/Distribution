@@ -96,6 +96,14 @@ class Entries extends Component {
         })
       }
     }
+    columns.push({
+      name: 'clacoForm',
+      label: t('resource'),
+      displayed: false,
+      displayable: false,
+      filterable: true,
+      type: 'number'
+    })
 
     columns.push({
       name: 'status',

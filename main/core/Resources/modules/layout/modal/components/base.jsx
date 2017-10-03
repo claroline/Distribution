@@ -19,7 +19,7 @@ const BaseModal = props =>
             <span className={classes('modal-icon', props.icon)} />
           }
 
-          <div dangerouslySetInnerHTML={{__html: props.title}}></div>
+          {props.title}
         </Modal.Title>
       </Modal.Header>
     }

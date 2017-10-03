@@ -101,11 +101,9 @@ class ClacoFormController extends Controller
             'Claroline\ClacoFormBundle\Entity\Entry',
             [
                 'limit' => 20,
-                'filters' => [],
+                'filters' => ['clacoForm' => $clacoForm->getId()],
                 'sortBy' => 'creationDate',
-            ],
-            [],
-            ['clacoForm' => $clacoForm->getId(), 'distinct' => true]
+            ]
         );
 
         return [
@@ -134,6 +132,11 @@ class ClacoFormController extends Controller
         $params = $this->request->query->all();
         $sortBy = null;
         $direction = null;
+
+        if (!isset($params['filters'])) {
+            $params['filters'] = [];
+        }
+        $params['filters']['clacoForm'] = $clacoForm->getId();
 
         if (isset($params['sortBy'])) {
             switch ($params['sortBy']) {
@@ -167,9 +170,7 @@ class ClacoFormController extends Controller
 
         $data = $this->finder->search(
             'Claroline\ClacoFormBundle\Entity\Entry',
-            $params,
-            [],
-            ['clacoForm' => $clacoForm->getId(), 'distinct' => true, 'sortBy' => $sortBy, 'direction' => $direction]
+            $params
         );
 
         return new JsonResponse($data, 200);
