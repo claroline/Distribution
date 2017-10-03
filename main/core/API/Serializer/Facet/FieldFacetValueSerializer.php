@@ -56,7 +56,7 @@ class FieldFacetValueSerializer
 
         if (!in_array(static::OPTION_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
-                'user' => $fieldFacetValue->getUser() ? $this->userSerializer->serializePublic($fieldFacetValue->getUser()) : null,
+                'user' => $fieldFacetValue->getUser() ? $this->userSerializer->serialize($fieldFacetValue->getUser()) : null,
                 'fieldFacet' => $this->fieldFacetSerializer->serialize($fieldFacetValue->getFieldFacet()),
             ]);
         }

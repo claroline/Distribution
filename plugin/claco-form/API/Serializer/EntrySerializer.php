@@ -7,6 +7,7 @@ use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Entity\Keyword;
+use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -29,6 +30,9 @@ class EntrySerializer
     /** @var KeywordSerializer */
     private $keywordSerializer;
 
+    /** @var UserSerializer */
+    private $userSerializer;
+
     /**
      * EntrySerializer constructor.
      *
@@ -36,21 +40,28 @@ class EntrySerializer
      *     "categorySerializer"   = @DI\Inject("claroline.serializer.clacoform.category"),
      *     "commentSerializer"    = @DI\Inject("claroline.serializer.clacoform.comment"),
      *     "fieldValueSerializer" = @DI\Inject("claroline.serializer.clacoform.field_value"),
-     *     "keywordSerializer"    = @DI\Inject("claroline.serializer.clacoform.keyword")
+     *     "keywordSerializer"    = @DI\Inject("claroline.serializer.clacoform.keyword"),
+     *     "userSerializer"       = @DI\Inject("claroline.serializer.user")
      * })
      *
-     * @param UserSerializer $userSerializer
+     * @param CategorySerializer   $categorySerializer
+     * @param CommentSerializer    $commentSerializer
+     * @param FieldValueSerializer $fieldValueSerializer
+     * @param KeywordSerializer    $keywordSerializer
+     * @param UserSerializer       $userSerializer
      */
     public function __construct(
         CategorySerializer $categorySerializer,
         CommentSerializer $commentSerializer,
         FieldValueSerializer $fieldValueSerializer,
-        KeywordSerializer $keywordSerializer
+        KeywordSerializer $keywordSerializer,
+        UserSerializer $userSerializer
     ) {
         $this->categorySerializer = $categorySerializer;
         $this->commentSerializer = $commentSerializer;
         $this->fieldValueSerializer = $fieldValueSerializer;
         $this->keywordSerializer = $keywordSerializer;
+        $this->userSerializer = $userSerializer;
     }
 
     /**
@@ -72,9 +83,7 @@ class EntrySerializer
             'creationDate' => $entry->getCreationDate() ? $entry->getCreationDate()->format('Y-m-d H:i:s') : null,
             'editionDate' => $entry->getEditionDate() ? $entry->getEditionDate()->format('Y-m-d H:i:s') : null,
             'publicationDate' => $entry->getPublicationDate() ? $entry->getPublicationDate()->format('Y-m-d H:i:s') : null,
-            'user' => $user ?
-                ['id' => $user->getId(), 'firstName' => $user->getFirstName(), 'lastName' => $user->getLastName()] :
-                null,
+            'user' => $user ? $this->userSerializer->serialize($user) : null,
         ];
 
         if (!in_array(static::OPTION_MINIMAL, $options)) {

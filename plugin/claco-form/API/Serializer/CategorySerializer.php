@@ -3,6 +3,7 @@
 namespace Claroline\ClacoFormBundle\API\Serializer;
 
 use Claroline\ClacoFormBundle\Entity\Category;
+use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -13,6 +14,23 @@ use JMS\DiExtraBundle\Annotation as DI;
 class CategorySerializer
 {
     const OPTION_MINIMAL = 'minimal';
+
+    /** @var UserSerializer */
+    private $userSerializer;
+
+    /**
+     * CategorySerializer constructor.
+     *
+     * @DI\InjectParams({
+     *     "userSerializer" = @DI\Inject("claroline.serializer.user")
+     * })
+     *
+     * @param UserSerializer $userSerializer
+     */
+    public function __construct(UserSerializer $userSerializer)
+    {
+        $this->userSerializer = $userSerializer;
+    }
 
     /**
      * Serializes a Category entity for the JSON api.
@@ -33,7 +51,7 @@ class CategorySerializer
         if (!in_array(static::OPTION_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'managers' => array_map(function (User $manager) {
-                    return ['id' => $manager->getId(), 'firstName' => $manager->getFirstName(), 'lastName' => $manager->getLastName()];
+                    return $this->userSerializer->serialize($manager);
                 }, $category->getManagers()),
             ]);
         }
