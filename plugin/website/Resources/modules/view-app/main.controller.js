@@ -1,7 +1,6 @@
 /**
  * Created by ptsavdar on 15/03/16.
  */
-import $ from 'jquery'
 
 export default class MainController {
   constructor(websiteData) {
@@ -11,7 +10,7 @@ export default class MainController {
     this.basePath = websiteData.path
     if (websiteData.options.menuOrientation == 'vertical') {
       this.pushMenuOptions = {
-        containersToPush: [ $('.website-page-content') ],
+        containersToPush: [],
         wrapperClass: 'multilevelpushmenu_wrapper',
         menuInactiveClass: 'multilevelpushmenu_inactive',
         menuWidth: this.options.menuWidth,

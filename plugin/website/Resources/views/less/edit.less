@@ -324,6 +324,14 @@ div.website-container {
   z-index:5;
   .container-content {
     margin-bottom:3px;
+    &.vertical-menu {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      .content {
+        flex-grow: 1;
+      }
+    }
   }
   & > div.content {
     min-height:300px;
