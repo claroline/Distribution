@@ -7,14 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 trait OrganizationsTrait
 {
-    use HasPropertyTrait;
-
     /**
      * Add an organization.
      */
     public function addOrganization(Organization $organization)
     {
-        $this->propertyExists('organizations');
+        $this->hasOrganizationsProperty();
 
         if (!$this->organizations->contains($organization)) {
             $this->organizations->add($organization);
@@ -26,7 +24,7 @@ trait OrganizationsTrait
      */
     public function removeOrganization()
     {
-        $this->propertyExists('organizations');
+        $this->hasOrganizationsProperty();
 
         if ($this->organizations->contains($organization)) {
             $this->organizations->remove($organization);
@@ -38,7 +36,7 @@ trait OrganizationsTrait
      */
     public function setOrganizations($organizations)
     {
-        $this->propertyExists('organizations');
+        $this->hasOrganizationsProperty();
 
         $this->organizations = $organizations instanceof ArrayCollection ?
             $organizations :
@@ -50,8 +48,16 @@ trait OrganizationsTrait
      */
     public function getOrganizations()
     {
-        $this->propertyExists('organizations');
+        $this->hasOrganizationsProperty();
 
         return $this->organizations;
+    }
+
+    public function hasOrganizationsProperty()
+    {
+        if (!property_exists($this, 'organizations')) {
+            $error = 'Property organizations does not exists in class '.get_class($this).'. This property is required if you want to patch it.';
+            throw new \Exception($error);
+        }
     }
 }

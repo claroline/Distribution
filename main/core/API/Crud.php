@@ -87,7 +87,7 @@ class Crud
         //add the options to pass on here
         $this->checkPermission('PATCH', $object);
         $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
-        $methodName = $action.ucfirst(strtolower($property));
+        $methodName = $action.substr(ucfirst(strtolower($property)), 0, -1);
 
         foreach ($arrayElement as $element) {
             $object->$methodName($element);

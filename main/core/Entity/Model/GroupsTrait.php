@@ -7,14 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 trait GroupsTrait
 {
-    use HasPropertyTrait;
-
     /**
      * Add an group.
      */
     public function addGroup(Group $group)
     {
-        $this->propertyExists('groups');
+        $this->hasGroupsProperty();
 
         if (!$this->groups->contains($group)) {
             $this->groups->add($group);
@@ -26,7 +24,7 @@ trait GroupsTrait
      */
     public function removeGroup(Group $group)
     {
-        $this->propertyExists('groups');
+        $this->hasGroupsProperty();
 
         if ($this->groups->contains($group)) {
             $this->groups->remove($group);
@@ -38,7 +36,7 @@ trait GroupsTrait
      */
     public function setGroups($groups)
     {
-        $this->propertyExists('organizations');
+        $this->hasGroupsProperty();
 
         $this->groups = $groups instanceof ArrayCollection ?
             $groups :
@@ -50,8 +48,16 @@ trait GroupsTrait
      */
     public function getGroups()
     {
-        $this->propertyExists('groups');
+        $this->hasGroupsProperty();
 
         return $this->groups;
+    }
+
+    public function hasGroupsProperty()
+    {
+        if (!property_exists($this, 'groups')) {
+            $error = 'Property groups does not exists in class '.get_class($this).'. This property is required if you want to patch it.';
+            throw new \Exception($error);
+        }
     }
 }

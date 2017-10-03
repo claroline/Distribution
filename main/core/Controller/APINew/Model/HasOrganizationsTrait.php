@@ -3,6 +3,8 @@
 namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 use Claroline\CoreBundle\API\Crud;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 trait HasOrganizationsTrait
 {
@@ -10,7 +12,7 @@ trait HasOrganizationsTrait
     {
         try {
             $object = $this->find($class, $uuid);
-            $organizations = $this->decodeIdsString($request, $class);
+            $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
             $this->crud->patch($object, 'organizations', Crud::ADD_ARRAY_ELEMENT, $organizations);
 
             return new JsonResponse(
@@ -25,7 +27,7 @@ trait HasOrganizationsTrait
     {
         try {
             $object = $this->find($class, $uuid);
-            $organizations = $this->decodeIdsString($request, $class);
+            $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
             $this->crud->patch($object, 'organizations', Crud::REMOVE_ARRAY_ELEMENT, $organizations);
 
             return new JsonResponse(

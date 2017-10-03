@@ -95,9 +95,10 @@ abstract class AbstractSerializer implements ObjectManagerAwareInterface
                 if (is_string($map)) {
                     // Retrieve the entity setter
                     $setter = $this->getEntitySetter($entity, $map);
-
-                    // Inject data into entity
-                    call_user_func([$entity, $setter], $data->{$dataProperty});
+                    if ($data->{$dataProperty}) {
+                        // Inject data into entity
+                        call_user_func([$entity, $setter], $data->{$dataProperty});
+                    }
                 } elseif (is_callable($map)) {
                     // Call the defined function
                     // TODO : do not pass the whole data object to the callback

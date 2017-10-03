@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\Model;
 
 use Claroline\CoreBundle\API\Crud;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 trait HasGroupsTrait
@@ -11,7 +12,7 @@ trait HasGroupsTrait
     {
         try {
             $object = $this->find($class, $uuid);
-            $groups = $this->decodeIdsString($request, $class);
+            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
             $this->crud->patch($object, 'groups', Crud::ADD_ARRAY_ELEMENT, $groups);
 
             return new JsonResponse(
@@ -26,7 +27,7 @@ trait HasGroupsTrait
     {
         try {
             $object = $this->find($class, $uuid);
-            $groups = $this->decodeIdsString($request, $class);
+            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
             $this->crud->patch($object, 'groups', Crud::REMOVE_ARRAY_ELEMENT, $groups);
 
             return new JsonResponse(

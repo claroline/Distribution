@@ -114,16 +114,17 @@ class AbstractController extends Controller
 
     protected function decodeIdsString(Request $request, $class)
     {
-        //get the id list
-        $ids = [];
+        $ids = $request->query->get('ids');
+        $property = is_numeric($ids[0]) ? 'id' : 'uuid';
 
-        return $this->om->findByIds($class, $ids);
+        return $this->om->findList($class, $property, $ids);
     }
 
     protected function find($class, $id)
     {
         $object = new \stdClass();
-        $object->id = $id;
+        $property = is_numeric($id) ? 'id' : 'uuid';
+        $object->{$property} = $property === 'uuid' ? $id : (int) $id;
 
         return $this->serializer->deserialize($class, $object);
     }

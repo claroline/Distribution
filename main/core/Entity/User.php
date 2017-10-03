@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
+use Claroline\CoreBundle\Entity\Model\GroupsTrait;
 use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
@@ -52,6 +53,7 @@ use Symfony\Component\Validator\ExecutionContextInterface;
 class User extends AbstractRoleSubject implements Serializable, AdvancedUserInterface, EquatableInterface, OrderableInterface
 {
     use UuidTrait;
+    use GroupsTrait;
     use OrganizationsTrait;
 
     /**
@@ -580,14 +582,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->password = null;
 
         return $this;
-    }
-
-    /**
-     * @return Group[]|ArrayCollection
-     */
-    public function getGroups()
-    {
-        return $this->groups;
     }
 
     /**
