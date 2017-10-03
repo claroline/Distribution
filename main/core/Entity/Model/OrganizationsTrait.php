@@ -27,7 +27,7 @@ trait OrganizationsTrait
         $this->hasOrganizationsProperty();
 
         if ($this->organizations->contains($organization)) {
-            $this->organizations->remove($organization);
+            $this->organizations->removeElement($organization);
         }
     }
 

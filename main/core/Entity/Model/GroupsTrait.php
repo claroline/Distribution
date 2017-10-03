@@ -27,7 +27,7 @@ trait GroupsTrait
         $this->hasGroupsProperty();
 
         if ($this->groups->contains($group)) {
-            $this->groups->remove($group);
+            $this->groups->removeElement($group);
         }
     }
 
