@@ -42,24 +42,30 @@ class Organization
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"api_user", "api_user_min", "api_workspace_min", "api_group_min", "api_organization_tree", "api_organization_list"})
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      * @Groups({"api_organization_tree", "api_organization_list"})
+     *
+     * @var int
      */
     protected $position;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(type="string")
      * @Assert\NotBlank()
      * @Groups({"api_user", "api_user_min", "api_workspace_min", "api_group_min", "api_organization_tree", "api_organization_list"})
+     *
+     * @var string
      */
     protected $name;
 
     /**
-     * @ORM\Column(nullable=true)
+     * @ORM\Column(nullable=true, type="string")
      * @Assert\Email()
      * @Groups({"api_organization_tree", "api_organization_list"})
      */

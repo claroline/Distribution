@@ -54,6 +54,7 @@ abstract class AbstractSerializer implements ObjectManagerAwareInterface
         );
     }
 
+    //look at doctrine annotations instead. It's more reliable
     private function getSerializableProperties($object)
     {
         $class = get_class($object);
@@ -94,10 +95,14 @@ abstract class AbstractSerializer implements ObjectManagerAwareInterface
             if (property_exists($data, $dataProperty)) {
                 if (is_string($map)) {
                     // Retrieve the entity setter
-                    $setter = $this->getEntitySetter($entity, $map);
-                    if ($data->{$dataProperty}) {
-                        // Inject data into entity
-                        call_user_func([$entity, $setter], $data->{$dataProperty});
+                    try {
+                        $setter = $this->getEntitySetter($entity, $map);
+                        if ($data->{$dataProperty}) {
+                            // Inject data into entity
+                            call_user_func([$entity, $setter], $data->{$dataProperty});
+                        }
+                    } catch (\LogicException $e) {
+                        //no stter
                     }
                 } elseif (is_callable($map)) {
                     // Call the defined function
