@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -40,7 +41,7 @@ class OrganizationSerializer extends AbstractSerializer
           }, $organization->getLocations()->toArray()),
         ];
 
-        if (isset($options['recursive']) && $options['recursive']) {
+        if (in_array(Options::IS_RECURSIVE, $options)) {
             $children = [];
             foreach ($organization->getChildren() as $child) {
                 $children[] = $this->serialize($child, $options);

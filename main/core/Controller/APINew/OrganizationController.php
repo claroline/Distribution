@@ -25,6 +25,6 @@ class OrganizationController extends AbstractController
 {
     public function listAction(Request $request, $class, $env)
     {
-        return new JsonResponse($this->finder->search($class, $request->query->all(), ['recursive' => true]));
+        return new JsonResponse($this->finder->search($class, $request->query->all(), []));
     }
 }
