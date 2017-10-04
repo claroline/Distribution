@@ -11,7 +11,10 @@
 
 namespace Claroline\CoreBundle\Security;
 
+use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Allows the target class to checks the current user permissions on a ResourceNode.
@@ -39,7 +42,13 @@ trait PermissionCheckerTrait
 
     private function checkPermission($permission, $object, $options = [], $throwException = false)
     {
-        $collection = new ObjectCollection([$object]);
+        switch ($object) {
+            case $object instanceof ResourceNode:
+              $collection = new ResourceCollection($object);
+              break;
+            default:
+              $collection = new ObjectCollection([$object], $options);
+        }
 
         if (!$this->authorization->isGranted($permission, $collection)) {
             if ($throwException) {
