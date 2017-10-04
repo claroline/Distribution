@@ -2,17 +2,24 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Persistence\ObjectManagerAwareInterface;
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\Mapping\Column;
+use JMS\DiExtraBundle\Annotation as DI;
 
-abstract class AbstractSerializer implements ObjectManagerAwareInterface
+/**
+ * @DI\Service("claroline.abstract_serializer", abstract=true)
+ */
+abstract class AbstractSerializer
 {
-    protected $om;
+    /**
+     * @DI\Inject("claroline.persistence.object_manager")
+     */
+    public $om;
 
-    public function setObjectManager(ObjectManager $om)
-    {
-        $this->om = $om;
-    }
+    /**
+     * @DI\Inject("annotation_reader")
+     */
+    public $reader;
 
     /**
      * Default serialize method.
@@ -54,24 +61,21 @@ abstract class AbstractSerializer implements ObjectManagerAwareInterface
         );
     }
 
-    //look at doctrine annotations instead. It's more reliable
     private function getSerializableProperties($object)
     {
-        $class = get_class($object);
-        $usableVarType = ['string', 'integer', '\DateTime', 'boolean'];
-        $refClass = new \ReflectionClass($class);
-        $fields = [];
+        $refClass = new \ReflectionClass(get_class($object));
+        $dontBeDumbAndShowThis = ['password', 'salt'];
+        $seralizableProperties = [];
 
-        foreach ($refClass->getProperties() as $refProperty) {
-            if (preg_match('/@var\s+([^\s]+)/', $refProperty->getDocComment(), $matches)) {
-                list(, $type) = $matches;
-                if (in_array($type, $usableVarType)) {
-                    $fields[$refProperty->getName()] = $refProperty->getName();
+        foreach ($refClass->getProperties() as $property) {
+            foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
+                if ($annotation instanceof Column && !in_array($property->getName(), $dontBeDumbAndShowThis)) {
+                    $seralizableProperties[$property->getName()] = $property->getName();
                 }
             }
         }
 
-        return array_unique($fields);
+        return $seralizableProperties;
     }
 
     /**
@@ -163,7 +167,8 @@ abstract class AbstractSerializer implements ObjectManagerAwareInterface
     {
         $getter = null;
 
-        $prefixes = ['get', 'is', 'has'];
+        $prefixes = ['get', 'is', 'has', ''];
+
         foreach ($prefixes as $prefix) {
             $test = $prefix.ucfirst($property);
             if (method_exists($entity, $test)) {
