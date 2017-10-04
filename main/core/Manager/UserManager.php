@@ -187,8 +187,7 @@ class UserManager
         }
 
         $this->objectManager->startFlushSuite();
-        $user->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
-        $user->setEmailValidationHash($this->container->get('claroline.utilities.misc')->generateGuid());
+
         $user->setOrganizations($organizations);
         $publicUrl ? $user->setPublicUrl($publicUrl) : $user->setPublicUrl($this->generatePublicUrl($user));
         $this->toolManager->addRequiredToolsToUser($user, 0);
