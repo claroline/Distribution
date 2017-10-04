@@ -19,19 +19,21 @@ const Image = props =>
     ]}
   >
     <div className="text-center">
-      <img src={props.url} alt={props.hashName} />
+      <img src={props.url} alt={props.hashName} className={props.canDownload?'download':'not-download'}/>
     </div>
   </ResourceContainer>
 
 Image.propTypes = {
   url: T.string.isRequired,
-  hashName: T.string.isRequired
+  hashName: T.string.isRequired,
+  canDownload: T.bool.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     url: select.url(state),
-    hashName: select.hashName(state)
+    hashName: select.hashName(state),
+    canDownload: select.canDownload(state)
   }
 }
 
