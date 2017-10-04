@@ -19,5 +19,11 @@
     "published_on": "Publiée le",
     "send_email_to_users": "Envoyer un courriel aux utilisateurs",
     "send_mail_user_picker_title": "Veuillez sélectionner les utilisateurs à qui vous voulez envoyer l'annonce.",
-    "visible_from_until_condition": "La date de fin doit se situer après la date de début."
+    "visible_from_until_condition": "La date de fin doit se situer après la date de début.",
+
+    "from_older_to_newer": "Des plus anciennes aux plus récentes",
+    "from_newer_to_older": "Des plus récentes aux plus anciennes",
+    "newer": "Plus récentes",
+    "older": "Plus anciennes",
+    "add_announce": "Créer une nouvelle annonce"
 }

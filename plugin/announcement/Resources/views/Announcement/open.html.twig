@@ -9,7 +9,7 @@
 {% block content %}
     <div
         class="page-container announcement-container"
-        data-announce="{{ _resource | api_serialize | json_encode | raw | escape }}"
+        data-announcement="{{ _resource | api_serialize | json_encode | raw | escape }}"
         data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
     >
     </div>
@@ -18,5 +18,6 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'announcement' }) }}"></script>
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-announcement-announcement-resource.js') }}"></script>
 {% endblock %}

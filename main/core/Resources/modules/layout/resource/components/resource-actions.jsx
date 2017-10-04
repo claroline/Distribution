@@ -233,8 +233,8 @@ const ManagementGroupActions = props =>
     {(props.editor && !props.editor.opened && props.resourceNode.rights.current.edit) &&
       <PageAction
         id="resource-edit"
-        title={t_res('edit')}
-        icon="fa fa-pencil"
+        title={props.editor.label || t_res('edit')}
+        icon={props.editor.icon || 'fa fa-pencil'}
         primary={true}
         action={props.editor.open}
       />
@@ -292,6 +292,8 @@ ManagementGroupActions.propTypes = {
    * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
    */
   editor: T.shape({
+    icon: T.string,
+    label: T.string,
     opened: T.bool,
     open: T.oneOfType([T.func, T.string]).isRequired,
     save: T.shape({
@@ -395,6 +397,8 @@ ResourceActions.propTypes = {
    * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
    */
   editor: T.shape({
+    icon: T.string,
+    label: T.string,
     opened: T.bool,
     open: T.oneOfType([T.func, T.string]).isRequired,
     save: T.shape({

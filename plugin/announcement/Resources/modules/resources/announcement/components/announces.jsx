@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import classes from 'classnames'
 
-import {t} from '#/main/core/translation'
+import {t, trans} from '#/main/core/translation'
 import {localeDate} from '#/main/core/layout/data/types/date/utils'
 import {User as UserTypes} from '#/main/core/layout/user/prop-types'
 
@@ -55,20 +55,20 @@ const AnnouncePost = props =>
           <TooltipButton
             id={`${props.id}-send`}
             title={t('send_mail')}
-            onClick={() => true}
+            onClick={props.sendMail}
             className="btn-link-default"
           >
             <span className="fa fa-fw fa-at" />
           </TooltipButton>
 
-          <TooltipButton
+          <TooltipLink
             id={`${props.id}-edit`}
             title={t('edit')}
-            onClick={() => true}
+            target={`#/${props.id}/edit`}
             className="btn-link-default"
           >
             <span className="fa fa-fw fa-pencil" />
-          </TooltipButton>
+          </TooltipLink>
 
           <TooltipButton
             id={`${props.id}-delete`}
@@ -101,7 +101,6 @@ AnnouncePost.propTypes = {
   restrictions: T.shape({
     visible: T.bool.isRequired
   }).isRequired,
-  editPost: T.func.isRequired,
   removePost: T.func.isRequired,
   sendMail: T.func.isRequired
 }
@@ -112,67 +111,87 @@ AnnouncePost.defaultProps = {
 
 const AnnouncesResource = props =>
   <div>
-    <div className="announces-sort">
-      Trier :
-      <button type="button" className="btn btn-link">
-        Des plus récentes aux plus anciennes
-      </button>
-    </div>
+    {1 < props.posts.length &&
+      <div className="announces-sort">
+        {t('list_sort_by')}
+        <button
+          type="button"
+          className="btn btn-link"
+          onClick={props.toggleSort}
+        >
+          {trans(1 === props.sortOrder ? 'from_older_to_newer':'from_newer_to_older', {}, 'announcement')}
+        </button>
+      </div>
+    }
 
     {props.posts.map((post, index) =>
       <AnnouncePost
         {...post}
 
         key={post.id}
-        editPost={props.editPost}
         removePost={() => props.removePost(post)}
         sendMail={() => props.sendMail(post)}
       />
     )}
 
-    <nav className="text-right">
-      <div className="pagination-condensed btn-group">
-        <button type="button" className="btn btn-pagination btn-previous" disabled={true}>
-          <span className="fa fa-angle-double-left" aria-hidden="true" />
-          <span className="sr-only">Newer</span>
-        </button>
-        <button type="button" className="btn btn-pagination btn-next">
-          Older
-          <span className="fa fa-angle-double-right" aria-hidden="true" />
-        </button>
-      </div>
-    </nav>
+    {1 !== props.pages &&
+      <nav className="text-right">
+        <div className="pagination-condensed btn-group">
+          <button
+            type="button"
+            className="btn btn-pagination btn-previous"
+            disabled={0 === props.currentPage}
+            onClick={() => props.changePage(props.pages - 1)}
+          >
+            <span className="fa fa-angle-double-left" aria-hidden="true" />
+            <span className="sr-only">
+              {trans(1 === props.sortOrder ? 'older':'newer', {}, 'announcement')}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-pagination btn-next"
+            disabled={(props.pages - 1) === props.currentPage}
+            onClick={() => props.changePage(props.pages + 1)}
+          >
+            {trans(1 === props.sortOrder ? 'newer':'older', {}, 'announcement')}
+            <span className="fa fa-angle-double-right" aria-hidden="true" />
+          </button>
+        </div>
+      </nav>
+    }
   </div>
 
 AnnouncesResource.propTypes = {
+  sortOrder: T.number.isRequired,
+  currentPage: T.number.isRequired,
+  pages: T.number.isRequired,
   posts: T.arrayOf(T.shape({
     id: T.string.isRequired
   })).isRequired,
-  createPost: T.func.isRequired,
-  editPost: T.func.isRequired,
+  toggleSort: T.func.isRequired,
+  changePage: T.func.isRequired,
   removePost: T.func.isRequired,
   sendMail: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
-    posts: select.posts(state)
+    sortOrder: select.sortOrder(state),
+    currentPage: select.currentPage(state),
+    pages: select.pages(state),
+    posts: select.visibleSortedPosts(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    createPost() {
-
-    },
-    editPost() {
-
-    },
     removePost(announcePost) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title: t('remove_announce'),
-          question: t('remove_announce_confirm'),
+          title: trans('remove_announce', {}, 'announcement'),
+          question: trans('remove_announce_confirm', {}, 'announcement'),
           handleConfirm: () => dispatch(actions.removeAnnounce(announcePost))
         })
       )
@@ -181,11 +200,17 @@ function mapDispatchToProps(dispatch) {
       // todo open UserPicker
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {
-          title: t('send_announce'),
-          question: t('send_announce_confirm'),
+          title: trans('send_announce', {}, 'announcement'),
+          question: trans('send_announce_confirm', {}, 'announcement'),
           handleConfirm: () => dispatch(actions.sendMail(announcePost))
         })
       )
+    },
+    toggleSort() {
+      dispatch(actions.toggleAnnouncesSort())
+    },
+    changePage(page) {
+      dispatch(actions.changeAnnouncesPage(page))
     }
   }
 }

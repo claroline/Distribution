@@ -2,13 +2,18 @@
 
 namespace Claroline\AnnouncementBundle\Controller\API;
 
+use Buzz\Message\Request;
+use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
+
 class AnnouncementController
 {
-    public function createAction()
+    // POST /aggredateId
+    public function createAction(AnnouncementAggregate $aggregate, Request $request)
     {
 
     }
 
+    // POST /aggredateId
     public function updateAction()
     {
 
