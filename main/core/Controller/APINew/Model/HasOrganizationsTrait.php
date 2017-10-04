@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasOrganizationsTrait
 {
     /**
-     * @Route("{uuid}/organization/add")
+     * @Route("{uuid}/organization")
      * @Method("PATCH")
      */
     public function addOrganizationsAction($uuid, $class, Request $request, $env)
@@ -30,8 +30,8 @@ trait HasOrganizationsTrait
     }
 
     /**
-     * @Route("{uuid}/organization/remove")
-     * @Method("PATCH")
+     * @Route("{uuid}/organization")
+     * @Method("DELETE")
      */
     public function removeOrganizationsAction($uuid, $class, Request $request, $env)
     {

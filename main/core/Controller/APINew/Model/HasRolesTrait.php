@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasRolesTrait
 {
     /**
-     * @Route("{uuid}/role/add")
+     * @Route("{uuid}/role")
      * @Method("PATCH")
      */
     public function addRolesAction($uuid, $class, Request $request, $env)
@@ -30,8 +30,8 @@ trait HasRolesTrait
     }
 
     /**
-     * @Route("{uuid}/role/remove")
-     * @Method("PATCH")
+     * @Route("{uuid}/role")
+     * @Method("DELETE")
      */
     public function removeRolesAction($uuid, $class, Request $request, $env)
     {

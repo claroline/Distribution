@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasGroupsTrait
 {
     /**
-     * @Route("{uuid}/group/add")
-     * @Method("GET")
+     * @Route("{uuid}/group")
+     * @Method("PATCH")
      */
     public function addGroupsAction($uuid, $class, Request $request, $env)
     {
@@ -30,8 +30,8 @@ trait HasGroupsTrait
     }
 
     /**
-     * @Route("{uuid}/group/remove")
-     * @Method("GET")
+     * @Route("{uuid}/group")
+     * @Method("DELETE")
      */
     public function removeGroupsAction($uuid, $class, Request $request, $env)
     {
