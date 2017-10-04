@@ -54,7 +54,7 @@ class UserFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\User';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = [])
     {
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
