@@ -130,7 +130,6 @@ class AnnouncementControllerTest extends MockeryTestCase
     {
         $controller = $this->getController(['checkAccess']);
         $aggregate = new AnnouncementAggregate();
-        $announcement = new Announcement();
         $form = $this->mock('Symfony\Component\Form\Form');
 
         $this->securityContext
