@@ -88,7 +88,7 @@ class EntryFinder implements FinderInterface
         return 'Claroline\ClacoFormBundle\Entity\Entry';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         $currentUser = $this->tokenStorage->getToken()->getUser();
 
@@ -223,7 +223,7 @@ class EntryFinder implements FinderInterface
             }
         }
 
-        if (isset($sortBy['property']) && isset($sortBy['direction'])) {
+        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
             $sortByProperty = $sortBy['property'];
             $sortByDirection = $sortBy['direction'] === 1 ? 'ASC' : 'DESC';
 
