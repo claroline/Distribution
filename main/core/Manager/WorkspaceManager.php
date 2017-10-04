@@ -1317,11 +1317,14 @@ class WorkspaceManager
         $newWorkspace->setGuid(uniqid('', true));
 
         $newWorkspace->setModel($model);
-
         // create new name and code
         $prefix = $model ? '[MODEL]' : '[COPY]';
-        $newWorkspace->setName($prefix.' '.$workspace->getName());
-        $newWorkspace->setCode($prefix.' '.$workspace->getCode());
+        $ws = $this->getOneByCode($newWorkspace->getCode());
+
+        if ($ws) {
+            $newWorkspace->setName($prefix.' '.$newWorkspace->getName());
+            $newWorkspace->setCode($prefix.' '.$newWorkspace->getCode());
+        }
 
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
