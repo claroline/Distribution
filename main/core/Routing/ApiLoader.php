@@ -48,6 +48,9 @@ class ApiLoader extends Loader
         $path = $this->locator->locate($resource);
         $routes = new RouteCollection();
 
+        $imported = $this->import($resource, 'annotation');
+        $routes->addCollection($imported);
+
         foreach (new \DirectoryIterator($path) as $fileInfo) {
             if (!$fileInfo->isDot()) {
                 $file = $fileInfo->getPathname();
@@ -92,9 +95,6 @@ class ApiLoader extends Loader
                             $routeName = 'apiv2_'.$prefix.'_'.$this->toUnderscore($name);
                             $routes->add($routeName, $route);
                         }
-
-                        $imported = $this->import($resource, 'annotation');
-                        $routes->addCollection($imported);
                     }
                 }
             }
