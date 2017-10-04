@@ -20,6 +20,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class FinderProvider
 {
+    const IS_RECURSIVE = 'is_recursive';
+
     /**
      * @var ObjectManager
      */
