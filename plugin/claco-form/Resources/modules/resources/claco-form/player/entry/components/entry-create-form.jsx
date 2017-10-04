@@ -155,13 +155,15 @@ class EntryCreateForm extends Component {
   }
 
   updateEntryValue(property, value) {
-    this.setState({entry: Object.assign({}, this.state.entry, {[property]: value})})
+    this.setState({entry: Object.assign({}, this.state.entry, {[property]: value})}, this.renderTemplateFields)
   }
 
   registerEntry() {
     if (!this.state['hasError']) {
       this.props.createEntry(this.state.entry, this.state.keywords)
       this.props.history.push('/menu')
+    } else {
+      this.renderTemplateFields()
     }
   }
 

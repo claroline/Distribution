@@ -55,8 +55,6 @@ class EntryEditForm extends Component {
       currentCategory: '',
       currentKeyword: ''
     }
-    //this.isFieldLocked = this.isFieldLocked.bind(this)
-    //this.updateEntryValue = this.updateEntryValue.bind(this)
   }
 
   componentDidMount() {
@@ -85,11 +83,11 @@ class EntryEditForm extends Component {
   }
 
   initializeEntry(entry) {
-    const categories = entry.categories.map(c => c.name)
-    const keywords = entry.keywords.map(k => k.name)
+    const categories = entry.categories ? entry.categories.map(c => c.name) : []
+    const keywords = entry.keywords ? entry.keywords.map(k => k.name) : []
     const values = {entry_title: entry.title}
     this.props.fields.map(f => {
-      const fieldValue = entry.fieldValues.find(fv => fv.field.id === f.id)
+      const fieldValue = entry.fieldValues ? entry.fieldValues.find(fv => fv.field.id === f.id) : null
 
       if (fieldValue && fieldValue.fieldFacetValue) {
         values[f.id] = fieldValue.fieldFacetValue.value
@@ -100,7 +98,7 @@ class EntryEditForm extends Component {
 
     this.setState(
       {id: this.props.entryId, entry: values, keywords: keywords, categories: categories},
-      //this.renderTemplateFields()
+      //() => this.renderTemplateFields()
       () => setTimeout(() => this.renderTemplateFields(), 1000)
     )
     this.props.setCurrentEntry(entry)
@@ -224,7 +222,7 @@ class EntryEditForm extends Component {
   }
 
   updateEntryValue(property, value) {
-    this.setState({entry: Object.assign({}, this.state.entry, {[property]: value})})
+    this.setState({entry: Object.assign({}, this.state.entry, {[property]: value})}, this.renderTemplateFields)
   }
 
   registerEntry() {
@@ -236,6 +234,8 @@ class EntryEditForm extends Component {
         this.state.categories.map(categoryName => this.props.categories.find(c => c.name === categoryName).id)
       )
       this.props.history.push(`/entry/${this.state.id}/view`)
+    } else {
+      this.renderTemplateFields()
     }
   }
 
