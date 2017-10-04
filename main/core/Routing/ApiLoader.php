@@ -6,6 +6,7 @@ namespace Claroline\CoreBundle\Routing;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method as MethodConfig;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route as RouteConfig;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
@@ -79,7 +80,7 @@ class ApiLoader extends Loader
                             }
 
                             $routeDefaults = [
-                              '_controller' => $controller.'::'.$name,
+                              '_controller' => $controller.'::'.$name.'Action',
                               'class' => $class,
                               'env' => $this->container->getParameter('kernel.environment'),
                             ];
@@ -88,7 +89,7 @@ class ApiLoader extends Loader
                             $route->setMethods([$options[1]]);
 
                             // add the new route to the route collection:
-                            $routeName = 'apiv2_'.$prefix.'_'.$name;
+                            $routeName = 'apiv2_'.$prefix.'_'.$this->toUnderscore($name);
                             $routes->add($routeName, $route);
                         }
 
@@ -104,12 +105,43 @@ class ApiLoader extends Loader
 
     private function makeRouteMap($controller)
     {
-        return [
-          'createAction' => ['', 'POST'],
-          'updateAction' => ['{uuid}', 'PUT'],
-          'deleteBulkAction' => ['', 'DELETE'],
-          'listAction' => ['', 'GET'],
+        $defaults = [
+          'create' => ['', 'POST'],
+          'update' => ['{uuid}', 'PUT'],
+          'deleteBulk' => ['', 'DELETE'],
+          'list' => ['', 'GET'],
         ];
+
+        $traits = class_uses($controller);
+
+        foreach ($traits as $trait) {
+            $refClass = new \ReflectionClass($trait);
+            $methods = $refClass->getMethods();
+
+            foreach ($methods as $method) {
+                foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
+                    $actionName = preg_replace('/Action/', '', $method->getName());
+
+                    if ($annotation instanceof RouteConfig) {
+                        $defaults[$actionName] = [$annotation->getPath()];
+                    }
+
+                    if ($annotation instanceof MethodConfig) {
+                        $defaults[$actionName][] = $annotation->getMethods();
+                    } else {
+                        $defaults[$actionName][] = 'GET';
+                    }
+                }
+            }
+        }
+
+        return $defaults;
+    }
+
+    //@see http://stackoverflow.com/questions/1589468/convert-camelcase-to-under-score-case-in-php-autoload
+    public function toUnderscore($string)
+    {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $string));
     }
 
     /**

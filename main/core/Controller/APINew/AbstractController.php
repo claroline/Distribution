@@ -6,44 +6,35 @@ use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractController
+class AbstractController extends ContainerAware
 {
     /** @var FinderProvider */
-    private $finder;
+    protected $finder;
 
     /** @var SerializerProvider */
-    private $serializer;
+    protected $serializer;
 
     /** @var Crud */
-    private $crud;
+    protected $crud;
 
     /** @var ObjectManager */
-    private $om;
+    protected $om;
 
-    /**
-     * ThemeController constructor.
-     *
-     * @DI\InjectParams({
-     *     "finder"     = @DI\Inject("claroline.api.finder"),
-     *     "crud"       = @DI\Inject("claroline.api.crud"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     */
-    public function __construct(
-        FinderProvider $finder,
-        SerializerProvider $serializer,
-        Crud $crud,
-        ObjectManager $om
-    ) {
-        $this->finder = $finder;
-        $this->crud = $crud;
-        $this->serializer = $serializer;
-        $this->om = $om;
+    /** @var ContainerInterface */
+    protected $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+        $this->finder = $container->get('claroline.api.finder');
+        $this->serializer = $container->get('claroline.api.serializer');
+        $this->crud = $container->get('claroline.api.crud');
+        $this->om = $container->get('claroline.persistence.object_manager');
     }
 
     public function listAction(Request $request, $class, $env)
