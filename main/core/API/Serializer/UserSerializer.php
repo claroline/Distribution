@@ -55,7 +55,10 @@ class UserSerializer extends AbstractSerializer
             'id' => $user->getId(),
             'uuid' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
             'username' => $user->getUsername(),
+            'picture' => $user->getPicture(),
         ];
     }
 
