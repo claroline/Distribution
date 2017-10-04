@@ -1322,9 +1322,15 @@ class WorkspaceManager
         $ws = $this->getOneByCode($newWorkspace->getCode());
 
         if ($ws) {
-            $newWorkspace->setName($prefix.' '.$newWorkspace->getName());
-            $newWorkspace->setCode($prefix.' '.$newWorkspace->getCode());
+            $name = $prefix.' '.$newWorkspace->getName();
+            $code = $prefix.' '.$newWorkspace->getCode();
+        } else {
+            $name = $newWorkspace->getName();
+            $code = $newWorkspace->getCode();
         }
+
+        $newWorkspace->setName($name);
+        $newWorkspace->setCode($code);
 
         $this->createWorkspace($newWorkspace);
         $token = $this->container->get('security.token_storage')->getToken();
@@ -1396,7 +1402,6 @@ class WorkspaceManager
         $rootDirectory = new Directory();
         $rootDirectory->setName($workspace->getName());
         $directoryType = $this->resourceManager->getResourceTypeByName('directory');
-
         $rootCopy = $this->resourceManager->create(
             $rootDirectory,
             $directoryType,
