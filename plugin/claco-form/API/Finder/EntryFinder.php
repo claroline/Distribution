@@ -173,6 +173,8 @@ class EntryFinder implements FinderInterface
         }
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'clacoForm':
+                    break;
                 case 'title':
                     $qb->andWhere('UPPER(obj.title) LIKE :title');
                     $qb->setParameter('title', '%'.strtoupper($filterValue).'%');
@@ -226,6 +228,12 @@ class EntryFinder implements FinderInterface
             $sortByDirection = $sortBy['direction'] === 1 ? 'ASC' : 'DESC';
 
             switch ($sortByProperty) {
+                case 'creationDate':
+                case 'title':
+                case 'user':
+                case 'status':
+                    $qb->orderBy("obj.{$sortByProperty}", $sortByDirection);
+                    break;
                 case 'categories':
                     if (!isset($this->usedJoin['categories'])) {
                         $qb->leftJoin('obj.categories', 'c');
