@@ -45,10 +45,13 @@ class AnnouncementAggregateSerializer
         if (!$this->checkPermission('EDIT', $announcements->getResourceNode())) {
             // filter embed announces to only get visible ones
             $now = new \DateTime('now');
-            $announcePosts = array_filter($announcePosts, function (Announcement $announcement) use ($now) {
-                return (empty($announcement->getVisibleFrom()) || $announcement->getVisibleFrom() <= $now)
-                    && (empty($announcement->getVisibleUntil()) || $announcement->getVisibleUntil() > $now);
-            });
+            $announcePosts = array_values( // reindex array for correct serialization
+                array_filter($announcePosts, function (Announcement $announcement) use ($now) {
+                    return $announcement->isVisible()
+                        && (empty($announcement->getVisibleFrom()) || $announcement->getVisibleFrom() <= $now)
+                        && (empty($announcement->getVisibleUntil()) || $announcement->getVisibleUntil() > $now);
+                })
+            );
         }
 
         return [

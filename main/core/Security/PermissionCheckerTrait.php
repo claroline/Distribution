@@ -44,13 +44,13 @@ trait PermissionCheckerTrait
     {
         switch ($object) {
             case $object instanceof ResourceNode:
-              $collection = new ResourceCollection($object);
+              $collection = new ResourceCollection([$object]);
               break;
             default:
               $collection = new ObjectCollection([$object], $options);
         }
 
-        $granted = !$this->authorization->isGranted($permission, $collection);
+        $granted = $this->authorization->isGranted($permission, $collection);
         if (!$granted && $throwException) {
             throw new AccessDeniedException(
                 sprintf('Operation "%s" cannot be done on object %s', $permission, get_class($object))
