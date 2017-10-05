@@ -153,6 +153,8 @@ class EntryCreateForm extends Component {
                 }
                 value={this.state.entry[f.id]}
                 error={this.state.errors[f.id]}
+                max={f.details && !isNaN(f.details.nb_files_max) ? parseInt(f.details.nb_files_max) : undefined}
+                types={f.details && f.details.file_types ? f.details.file_types : []}
                 onChange={value => this.updateEntryValue(f.id, value)}
               />
             )}

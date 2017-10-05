@@ -227,6 +227,9 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
+        $details = isset($fieldData['details']) && is_array($fieldData['details']) ?
+            $fieldData['details'] :
+            ['file_types' => [], 'nb_files_max' => 1];
 
         foreach ($choicesChildren as $parentId => $choicesList) {
             foreach ($choicesList as $key => $choice) {
@@ -244,7 +247,8 @@ class ClacoFormController extends Controller
             $lockedEditionOnly,
             $hidden,
             $choices,
-            $choicesChildren
+            $choicesChildren,
+            $details
         );
         $serializedField = $this->serializer->serialize(
             $field,
@@ -299,6 +303,9 @@ class ClacoFormController extends Controller
             $fieldData['lockedEditionOnly'] :
             $fieldData['lockedEditionOnly'] === 'true';
         $hidden = is_bool($fieldData['hidden']) ? $fieldData['hidden'] : $fieldData['hidden'] === 'true';
+        $details = isset($fieldData['details']) && is_array($fieldData['details']) ?
+            $fieldData['details'] :
+            ['file_types' => [], 'nb_files_max' => 1];
 
         foreach ($choicesChildren as $parentId => $choicesList) {
             foreach ($choicesList as $key => $choice) {
@@ -316,7 +323,8 @@ class ClacoFormController extends Controller
             $lockedEditionOnly,
             $hidden,
             $choices,
-            $choicesChildren
+            $choicesChildren,
+            $details
         );
         $serializedField = $this->serializer->serialize(
             $field,

@@ -9,9 +9,17 @@ const FIELD_TYPES = [
   {name: 'checkboxes', value: 6, label: t('checkboxes'), hasChoice: true, hasCascade: false, answerType: 'array'},
   {name: 'country', value: 7, label: t('country'), hasChoice: false, hasCascade: false, answerType: 'string'},
   {name: 'email', value: 8, label: t('email'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'rich_text', value: 9, label: t('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'}
+  {name: 'rich_text', value: 9, label: t('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'},
+  {name: 'file', value: 11, label: t('file'), hasChoice: false, hasCascade: false, answerType: 'array'}
+]
+
+const FILE_TYPES = [
+  {value: 'audio/*', label: t('audio')},
+  {value: 'image/*', label: t('image')},
+  {value: 'video/*', label: t('video')}
 ]
 
 export const constants = {
-  FIELD_TYPES
+  FIELD_TYPES,
+  FILE_TYPES
 }

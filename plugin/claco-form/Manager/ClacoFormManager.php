@@ -360,7 +360,8 @@ class ClacoFormManager
         $lockedEditionOnly = false,
         $hidden = false,
         array $choices = [],
-        array $choicesChildren = []
+        array $choicesChildren = [],
+        array $details = []
     ) {
         $this->om->startFlushSuite();
         $field = new Field();
@@ -372,6 +373,7 @@ class ClacoFormManager
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
         $field->setHidden($hidden);
+        $field->setDetails($details);
         $facetType = $type === FieldFacet::SELECT_TYPE && count($choicesChildren) > 0 ?
             FieldFacet::CASCADE_SELECT_TYPE :
             $type;
@@ -406,7 +408,8 @@ class ClacoFormManager
         $lockedEditionOnly = false,
         $hidden = false,
         array $choices = [],
-        array $choicesChildren = []
+        array $choicesChildren = [],
+        array $details = []
     ) {
         $oldChoices = [];
 
@@ -430,6 +433,7 @@ class ClacoFormManager
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
         $field->setHidden($hidden);
+        $field->setDetails($details);
         $fieldFacet = $field->getFieldFacet();
         $facetType = $type === FieldFacet::SELECT_TYPE && count($choicesChildren) > 0 ?
             FieldFacet::CASCADE_SELECT_TYPE :
