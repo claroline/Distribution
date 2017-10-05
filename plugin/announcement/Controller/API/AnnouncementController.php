@@ -10,22 +10,18 @@ class AnnouncementController
     // POST /aggredateId
     public function createAction(AnnouncementAggregate $aggregate, Request $request)
     {
-
     }
 
     // POST /aggredateId
     public function updateAction()
     {
-
     }
 
     public function deleteAction()
     {
-
     }
 
     public function sendAction()
     {
-
     }
 }

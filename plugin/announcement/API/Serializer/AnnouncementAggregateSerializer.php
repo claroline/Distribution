@@ -5,7 +5,7 @@ namespace Claroline\AnnouncementBundle\API\Serializer;
 use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\CoreBundle\API\Serializer\UserSerializer;
-//use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -14,7 +14,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class AnnouncementAggregateSerializer
 {
-    //use PermissionCheckerTrait;
+    use PermissionCheckerTrait;
 
     /** @var UserSerializer */
     private $userSerializer;
@@ -42,14 +42,14 @@ class AnnouncementAggregateSerializer
     public function serialize(AnnouncementAggregate $announcements)
     {
         $announcePosts = $announcements->getAnnouncements()->toArray();
-        /*if (!$this->checkPermission('EDIT', $announcements->getResourceNode())) {
+        if (!$this->checkPermission('EDIT', $announcements->getResourceNode())) {
             // filter embed announces to only get visible ones
             $now = new \DateTime('now');
             $announcePosts = array_filter($announcePosts, function (Announcement $announcement) use ($now) {
                 return (empty($announcement->getVisibleFrom()) || $announcement->getVisibleFrom() <= $now)
                     && (empty($announcement->getVisibleUntil()) || $announcement->getVisibleUntil() > $now);
             });
-        }*/
+        }
 
         return [
             'id' => $announcements->getUuid(),
@@ -77,10 +77,10 @@ class AnnouncementAggregateSerializer
                 'publishedAt' => $announce->getPublicationDate() ? $announce->getPublicationDate()->format('Y-m-d\TH:i:s') : null,
             ],
             'restrictions' => [
-                'visible'      => $announce->isVisible(),
-                'visibleFrom'  => $announce->getVisibleFrom() ? $announce->getVisibleFrom()->format('Y-m-d\TH:i:s') : null,
+                'visible' => $announce->isVisible(),
+                'visibleFrom' => $announce->getVisibleFrom() ? $announce->getVisibleFrom()->format('Y-m-d\TH:i:s') : null,
                 'visibleUntil' => $announce->getVisibleUntil() ? $announce->getVisibleUntil()->format('Y-m-d\TH:i:s') : null,
-            ]
+            ],
         ];
     }
 }

@@ -50,12 +50,13 @@ trait PermissionCheckerTrait
               $collection = new ObjectCollection([$object], $options);
         }
 
-        if (!$this->authorization->isGranted($permission, $collection)) {
-            if ($throwException) {
-                throw new AccessDeniedException(
-                'operation '.$permission.' couldn\'t be done on object '.get_class($object)
-              );
-            }
+        $granted = !$this->authorization->isGranted($permission, $collection);
+        if (!$granted && $throwException) {
+            throw new AccessDeniedException(
+                sprintf('Operation "%s" cannot be done on object %s', $permission, get_class($object))
+            );
         }
+
+        return $granted;
     }
 }

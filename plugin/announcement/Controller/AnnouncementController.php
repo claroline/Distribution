@@ -70,17 +70,17 @@ class AnnouncementController extends Controller
      *     "workspaceManager"    = @DI\Inject("claroline.manager.workspace_manager")
      * })
      *
-     * @param AnnouncementManager $announcementManager
+     * @param AnnouncementManager           $announcementManager
      * @param AuthorizationCheckerInterface $authorization
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param FormFactoryInterface $formFactory
-     * @param PagerFactory $pagerFactory
-     * @param RequestStack $requestStack
-     * @param TwigEngine $templating
-     * @param TokenStorageInterface $tokenStorage
-     * @param TranslatorInterface $translator
-     * @param Utilities $utils
-     * @param WorkspaceManager $workspaceManager
+     * @param EventDispatcherInterface      $eventDispatcher
+     * @param FormFactoryInterface          $formFactory
+     * @param PagerFactory                  $pagerFactory
+     * @param RequestStack                  $requestStack
+     * @param TwigEngine                    $templating
+     * @param TokenStorageInterface         $tokenStorage
+     * @param TranslatorInterface           $translator
+     * @param Utilities                     $utils
+     * @param WorkspaceManager              $workspaceManager
      */
     public function __construct(
         AnnouncementManager $announcementManager,
@@ -556,7 +556,7 @@ class AnnouncementController extends Controller
      * )
      *
      * @param Announcement $announcement
-     * @param array $users
+     * @param array        $users
      *
      * @return JsonResponse
      */
@@ -581,7 +581,7 @@ class AnnouncementController extends Controller
      * - for MOVE / COPY $collection->setAttributes(array('parent' => $parent))
      *  where $parent is the new parent entity.
      *
-     * @param string $permission
+     * @param string           $permission
      * @param AbstractResource $resource
      *
      * @throws AccessDeniedException

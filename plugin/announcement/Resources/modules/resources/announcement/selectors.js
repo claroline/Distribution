@@ -26,8 +26,8 @@ const sortedPosts = createSelector(
 )
 
 const visibleSortedPosts = createSelector(
-  [posts, pageSize, currentPage, sortOrder],
-  (posts, pageSize, currentPage, sortOrder) => posts
+  [sortedPosts, pageSize, currentPage, sortOrder],
+  (sortedPosts, pageSize, currentPage) => sortedPosts.slice(currentPage*pageSize, currentPage*pageSize+pageSize)
 )
 
 export const select = {

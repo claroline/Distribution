@@ -27,9 +27,10 @@ actions.createAnnounce = (announce) => ({
 
 actions.updateAnnounce = (announce) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('api_update_announce'),
+    url: generateUrl('api_update_announce', {id: announce.id}),
     request: {
-      method: 'PUT'
+      method: 'PUT',
+      body: JSON.stringify(announce)
     },
     success: (data, dispatch) => {
 
@@ -40,17 +41,17 @@ actions.updateAnnounce = (announce) => ({
 actions.deleteAnnounce = makeActionCreator(ANNOUNCE_ADD, 'announce')
 actions.removeAnnounce = (announce) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('api_delete_announce'),
+    url: generateUrl('api_delete_announce', {id: announce.id}),
     request: {
       method: 'DELETE'
     },
-    success: (data, dispatch) => dispatch(actions.deleteAnnounce(announce))
+    success: (data, dispatch) => dispatch(actions.deleteAnnounce(announce ))
   }
 })
 
 actions.sendMail = (announce, users) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('api_send_announce'),
+    url: generateUrl('api_send_announce', {id: announce.id}),
     request: {
       method: 'POST'
     },
