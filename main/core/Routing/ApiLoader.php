@@ -122,13 +122,13 @@ class ApiLoader extends Loader
                     $actionName = preg_replace('/Action/', '', $method->getName());
 
                     if ($annotation instanceof RouteConfig) {
-                        $defaults[$actionName] = [$annotation->getPath()];
+                        $defaults[$actionName][0] = $annotation->getPath();
                     }
 
                     if ($annotation instanceof MethodConfig) {
-                        $defaults[$actionName][] = $annotation->getMethods();
+                        $defaults[$actionName][1] = $annotation->getMethods()[0];
                     } else {
-                        $defaults[$actionName][] = 'GET';
+                        $defaults[$actionName][1] = 'GET';
                     }
                 }
             }
