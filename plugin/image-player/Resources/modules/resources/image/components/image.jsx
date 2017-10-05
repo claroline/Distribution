@@ -19,7 +19,7 @@ const Image = props =>
     ]}
   >
     <div className="text-center">
-      <img src={props.url} alt={props.hashName} className={props.canDownload?'download':'not-download'}/>
+      <img src={props.url} alt={props.hashName} onContextMenu={(e)=>{checkDownload(e, props.canDownload)}}/>
     </div>
   </ResourceContainer>
 
@@ -34,6 +34,12 @@ function mapStateToProps(state) {
     url: select.url(state),
     hashName: select.hashName(state),
     canDownload: select.canDownload(state)
+  }
+}
+
+function checkDownload(e, canDownload) {
+  if (!canDownload) {
+    e.preventDefault()
   }
 }
 
