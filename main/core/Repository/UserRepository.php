@@ -48,6 +48,39 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $this->platformConfigHandler = $platformConfigHandler;
     }
 
+    //here we try to find a user by any identifier possible. Dunno how to name it properly
+    public function lookFor($username)
+    {
+        $isUserAdminCodeUnique = $this->platformConfigHandler->getParameter('is_user_admin_code_unique');
+
+        $dql = '
+          SELECT u FROM Claroline\CoreBundle\Entity\User u
+          WHERE u.username LIKE :username
+          OR u.mail LIKE :username
+          OR u.id = :username
+          OR u.uuid = :username
+      ';
+
+        if ($isUserAdminCodeUnique) {
+            $dql .= '
+              OR u.administrativeCode LIKE :username';
+        }
+        $dql .= '
+          AND u.isEnabled = true';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('username', $username);
+
+        try {
+            $user = $query->getSingleResult();
+        } catch (NoResultException $e) {
+            throw new UsernameNotFoundException(
+              sprintf('Unable to find an active user identified by "%s".', $username)
+          );
+        }
+
+        return $user;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -58,7 +91,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $dql = '
             SELECT u FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username LIKE :username
-            OR u.mail LIKE :username';
+            OR u.mail LIKE :username
+        ';
 
         if ($isUserAdminCodeUnique) {
             $dql .= '

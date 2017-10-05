@@ -44,14 +44,15 @@ abstract class AbstractSerializer
             if (isset($data->uuid)) {
                 $object = $this->om->getRepository($class)->findOneByUuid($data->uuid);
             } else {
-                $object = is_int($data->id) ?
-                $this->om->getRepository($class)->findOneById($data->id) :
-                $this->om->getRepository($class)->findOneByUuid($data->id);
+                $object = !is_numeric($data->id) && property_exists($class, 'uuid') ?
+                  $this->om->getRepository($class)->findOneByUuid($data->id) :
+                  $this->om->getRepository($class)->findOneById($data->id);
             }
         }
 
         if (!$object) {
-            $object = new $class();
+            $rc = new \ReflectionClass($class);
+            $object = $rc->newInstanceWithoutConstructor();
         }
 
         return $this->mapObjectToEntity(
