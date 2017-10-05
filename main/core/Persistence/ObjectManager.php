@@ -380,6 +380,6 @@ class ObjectManager extends ObjectManagerDecorator
             //maybe log some stuff according to the options
         }
 
-        $this->flush($object);
+        $this->flush();
     }
 }

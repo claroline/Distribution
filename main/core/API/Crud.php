@@ -37,7 +37,7 @@ class Crud
      *
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
-     *     "dispatcher" = @DI\Inject("claroline.event.event_dispatcher")
+     *     "dispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
      *     "validator" = @DI\Inject("claroline.api.validator")
      * })
@@ -164,7 +164,7 @@ class Crud
                 sprintf('You have requested a non implemented action %s on %s', $action, get_class($object))
             );
         }
-        
+
         //add the options to pass on here
         $this->checkPermission('PATCH', $object, [], true);
         $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
