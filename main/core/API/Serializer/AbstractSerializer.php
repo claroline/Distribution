@@ -132,12 +132,7 @@ abstract class AbstractSerializer
     {
         foreach ($mapping as $dataProperty => $map) {
             if (property_exists($data, $dataProperty)) {
-                if (is_callable($map)) {
-                    // Call the defined function
-                    // TODO : do not pass the whole data object to the callback
-                    call_user_func($map, $entity, $data);
-                } else {
-                    // Retrieve the entity setter
+                if (is_string($map) || is_object($map) || is_int($map)) {
                     try {
                         $setter = $this->getEntitySetter($entity, $map);
                         if ($data->{$dataProperty}) {
@@ -147,6 +142,10 @@ abstract class AbstractSerializer
                     } catch (\LogicException $e) {
                         //no stter
                     }
+                } else {
+                    // Retrieve the entity setter
+
+                    call_user_func($map, $entity, $data);
                 }
             }
         }
