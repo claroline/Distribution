@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer;
 
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\ManyToOne;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -11,6 +12,9 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 abstract class AbstractSerializer
 {
+    const INCLUDE_MANY_TO_ONE = 'many_to_one';
+    //maybe later include many to many
+
     /**
      * @DI\Inject("claroline.persistence.object_manager")
      */
@@ -50,21 +54,28 @@ abstract class AbstractSerializer
             }
         }
 
+        $this->resolveData(
+            $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
+            $data,
+            $class
+        );
+
         if (!$object) {
             $rc = new \ReflectionClass($class);
             $object = $rc->newInstanceWithoutConstructor();
+            call_user_func_array([$object, '__construct'], $this->toArray($data));
         }
 
         return $this->mapObjectToEntity(
-            $this->getSerializableProperties($object),
+            $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
             $data,
             $object
         );
     }
 
-    private function getSerializableProperties($object)
+    private function getSerializableProperties($class, $options = [])
     {
-        $refClass = new \ReflectionClass(get_class($object));
+        $refClass = new \ReflectionClass($class);
         $dontBeDumbAndShowThis = ['password', 'salt'];
         $seralizableProperties = [];
 
@@ -73,10 +84,33 @@ abstract class AbstractSerializer
                 if ($annotation instanceof Column && !in_array($property->getName(), $dontBeDumbAndShowThis)) {
                     $seralizableProperties[$property->getName()] = $property->getName();
                 }
+                if (in_array(self::INCLUDE_MANY_TO_ONE, $options) && $annotation instanceof ManyToOne) {
+                    $seralizableProperties[$property->getName()] = $property->getName();
+                }
             }
         }
 
         return $seralizableProperties;
+    }
+
+    protected function resolveData($mapping, \stdClass $data, $class)
+    {
+        $refClass = new \ReflectionClass($class);
+
+        foreach ($mapping as $dataProperty => $map) {
+            foreach ($refClass->getProperties() as $property) {
+                if ($property->getName() === $dataProperty) {
+                    foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
+                        if ($annotation instanceof ManyToOne) {
+                            //basic search by fields here... later create the object aswell
+                            $data->{$dataProperty} = $this->om
+                              ->getRepository($annotation->targetEntity)
+                              ->findOneBy($this->toArray($data->{$map}));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -98,7 +132,11 @@ abstract class AbstractSerializer
     {
         foreach ($mapping as $dataProperty => $map) {
             if (property_exists($data, $dataProperty)) {
-                if (is_string($map)) {
+                if (is_callable($map)) {
+                    // Call the defined function
+                    // TODO : do not pass the whole data object to the callback
+                    call_user_func($map, $entity, $data);
+                } else {
                     // Retrieve the entity setter
                     try {
                         $setter = $this->getEntitySetter($entity, $map);
@@ -109,10 +147,6 @@ abstract class AbstractSerializer
                     } catch (\LogicException $e) {
                         //no stter
                     }
-                } elseif (is_callable($map)) {
-                    // Call the defined function
-                    // TODO : do not pass the whole data object to the callback
-                    call_user_func($map, $entity, $data);
                 }
             }
         }
@@ -203,5 +237,16 @@ abstract class AbstractSerializer
         }
 
         return $setter;
+    }
+
+    private function toArray(\stdClass $data)
+    {
+        $asArray = [];
+
+        foreach (array_keys(get_object_vars($data)) as $var) {
+            $asArray[$var] = $data->{$var};
+        }
+
+        return $asArray;
     }
 }
