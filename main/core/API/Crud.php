@@ -41,15 +41,6 @@ class Crud
     public function create($class, $data, array $options = [])
     {
         $this->validate($class, $data);
-        //destroy id & uui if we try to create. They shouldnt be here and will cause issues
-        if (isset($data->id)) {
-            unset($data->id);
-        }
-
-        if (isset($data->uuid)) {
-            unset($data->uuid);
-        }
-
         $object = $this->serializer->deserialize($class, $data);
         $this->checkPermission('CREATE', $object, [], true);
         $this->dispatcher->dispatch('crud_pre_create_object', 'Crud', [$object]);
