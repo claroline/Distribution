@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {RouterContainer} from '#/main/core/router/containers/router.jsx'
+import {Router} from '#/main/core/router/components/router.jsx'
 
 /**
  * Creates react router components based on config.
@@ -30,7 +30,7 @@ import {RouterContainer} from '#/main/core/router/containers/router.jsx'
  */
 function routedApp(routesConfig, basePath = '') {
   return () => {
-    const RoutedApp = React.createElement(RouterContainer, {
+    const RoutedApp = React.createElement(Router, {
       basePath: basePath,
       routes: routesConfig
     })

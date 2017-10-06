@@ -2,8 +2,22 @@ import {createSelector} from 'reselect'
 
 const pageSize = () => 5
 const currentPage = state => state.currentPage
-
 const sortOrder = state => state.sortOrder
+
+const announcementForm = state => state.announcementForm
+const formHasPendingChanges = createSelector(
+  [announcementForm],
+  (announcementForm) => announcementForm.pendingChanges
+)
+const formIsOpened = createSelector(
+  [announcementForm],
+  (announcementForm) => !!announcementForm.data
+)
+const formData = createSelector(
+  [announcementForm],
+  (announcementForm) => announcementForm.data
+)
+
 const announcement = state => state.announcement
 
 const posts = createSelector(
@@ -18,10 +32,14 @@ const pages = createSelector(
 
 const sortedPosts = createSelector(
   [sortOrder, posts],
-  (sortOrder, posts) => posts.sort((a, b) => {
-    const sort = a.meta.publishedAt < b.meta.publishedAt ? -1 : 1
+  (sortOrder, posts) => posts.slice().sort((a, b) => {
+    if (null === a.meta.publishedAt || a.meta.publishedAt < b.meta.publishedAt) {
+      return -1*sortOrder
+    } else if (null === b.meta.publishedAt || a.meta.publishedAt > b.meta.publishedAt) {
+      return 1*sortOrder
+    }
 
-    return sort * sortOrder
+    return 0
   })
 )
 
@@ -31,10 +49,14 @@ const visibleSortedPosts = createSelector(
 )
 
 export const select = {
+  posts,
   pageSize,
   currentPage,
   pages,
   sortOrder,
   announcement,
-  visibleSortedPosts
+  visibleSortedPosts,
+  formHasPendingChanges,
+  formIsOpened,
+  formData
 }

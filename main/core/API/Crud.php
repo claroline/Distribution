@@ -116,9 +116,9 @@ class Crud
     /**
      * Deletes an entry `object` of `class`.
      *
-     * @param object $object - the entity to delete
-     * @param string $class  - the class of the entity to delete
-     * @param array $options - additional delete options
+     * @param object $object  - the entity to delete
+     * @param string $class   - the class of the entity to delete
+     * @param array  $options - additional delete options
      */
     public function delete($object, $class, array $options = [])
     {
@@ -182,7 +182,7 @@ class Crud
      * Validates `data` with the available validator for `class`.
      *
      * @param string $class - the class of the entity used for validation
-     * @param mixed  $data  - the serialized data to validate.
+     * @param mixed  $data  - the serialized data to validate
      */
     public function validate($class, $data)
     {

@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import {withRouter} from 'react-router-dom'
 import classes from 'classnames'
 
 import {t, trans} from '#/main/core/translation'
@@ -30,8 +29,8 @@ const AnnouncePost = props =>
 
       <div className="announce-meta">
         <div className="announce-info">
-          {props.announcer ?
-            <UserMicro name={props.announcer} /> :
+          {props.meta.author ?
+            <UserMicro name={props.meta.author} /> :
             <UserMicro {...props.meta.creator} />
           }
 
@@ -92,10 +91,10 @@ AnnouncePost.propTypes = {
   active: T.bool,
   title: T.string,
   content: T.string.isRequired,
-  announcer: T.string,
   meta: T.shape({
     created: T.string.isRequired,
     creator: T.shape(UserTypes.propTypes).isRequired,
+    author: T.string,
     publishedAt: T.string
   }).isRequired,
   restrictions: T.shape({
@@ -111,18 +110,16 @@ AnnouncePost.defaultProps = {
 
 const AnnouncesResource = props =>
   <div>
-    {1 < props.posts.length &&
-      <div className="announces-sort">
-        {t('list_sort_by')}
-        <button
-          type="button"
-          className="btn btn-link"
-          onClick={props.toggleSort}
-        >
-          {trans(1 === props.sortOrder ? 'from_older_to_newer':'from_newer_to_older', {}, 'announcement')}
-        </button>
-      </div>
-    }
+    <div className="announces-sort">
+      {t('list_sort_by')}
+      <button
+        type="button"
+        className="btn btn-link"
+        onClick={props.toggleSort}
+      >
+        {trans(1 === props.sortOrder ? 'from_older_to_newer':'from_newer_to_older', {}, 'announcement')}
+      </button>
+    </div>
 
     {props.posts.map((post, index) =>
       <AnnouncePost
@@ -141,7 +138,7 @@ const AnnouncesResource = props =>
             type="button"
             className="btn btn-pagination btn-previous"
             disabled={0 === props.currentPage}
-            onClick={() => props.changePage(props.pages - 1)}
+            onClick={() => props.changePage(props.currentPage - 1)}
           >
             <span className="fa fa-angle-double-left" aria-hidden="true" />
             <span className="sr-only">
@@ -153,7 +150,7 @@ const AnnouncesResource = props =>
             type="button"
             className="btn btn-pagination btn-next"
             disabled={(props.pages - 1) === props.currentPage}
-            onClick={() => props.changePage(props.pages + 1)}
+            onClick={() => props.changePage(props.currentPage + 1)}
           >
             {trans(1 === props.sortOrder ? 'newer':'older', {}, 'announcement')}
             <span className="fa fa-angle-double-right" aria-hidden="true" />
@@ -215,7 +212,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const Announces = withRouter(connect(mapStateToProps, mapDispatchToProps)(AnnouncesResource))
+const Announces = connect(mapStateToProps, mapDispatchToProps)(AnnouncesResource)
 
 export {
   Announces

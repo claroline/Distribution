@@ -4,34 +4,33 @@ namespace Claroline\AnnouncementBundle\API\Serializer;
 
 use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
-use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.serializer.announcement")
+ * @DI\Service("claroline.serializer.announcement_aggregate")
  * @DI\Tag("claroline.serializer")
  */
 class AnnouncementAggregateSerializer
 {
     use PermissionCheckerTrait;
 
-    /** @var UserSerializer */
-    private $userSerializer;
+    /** @var AnnouncementSerializer */
+    private $announcementSerializer;
 
     /**
      * AnnouncementAggregateSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "userSerializer" = @DI\Inject("claroline.serializer.user")
+     *     "announcementSerializer" = @DI\Inject("claroline.serializer.announcement")
      * })
      *
-     * @param UserSerializer $userSerializer
+     * @param AnnouncementSerializer $announcementSerializer
      */
     public function __construct(
-        UserSerializer $userSerializer
+        AnnouncementSerializer $announcementSerializer
     ) {
-        $this->userSerializer = $userSerializer;
+        $this->announcementSerializer = $announcementSerializer;
     }
 
     /**
@@ -45,7 +44,7 @@ class AnnouncementAggregateSerializer
         if (!$this->checkPermission('EDIT', $announcements->getResourceNode())) {
             // filter embed announces to only get visible ones
             $now = new \DateTime('now');
-            $announcePosts = array_values( // reindex array for correct serialization
+            $announcePosts = array_values(// reindex array for correct serialization
                 array_filter($announcePosts, function (Announcement $announcement) use ($now) {
                     return $announcement->isVisible()
                         && (empty($announcement->getVisibleFrom()) || $announcement->getVisibleFrom() <= $now)
@@ -57,33 +56,8 @@ class AnnouncementAggregateSerializer
         return [
             'id' => $announcements->getUuid(),
             'posts' => array_map(function (Announcement $announcement) {
-                return $this->serializeAnnounce($announcement);
+                return $this->announcementSerializer->serialize($announcement);
             }, $announcePosts),
-        ];
-    }
-
-    /**
-     * @param Announcement $announce
-     *
-     * @return array
-     */
-    private function serializeAnnounce(Announcement $announce)
-    {
-        return [
-            'id' => $announce->getUuid(),
-            'title' => $announce->getTitle(),
-            'content' => $announce->getContent(),
-            'announcer' => $announce->getAnnouncer(),
-            'meta' => [
-                'created' => $announce->getCreationDate()->format('Y-m-d\TH:i:s'),
-                'creator' => $announce->getCreator() ? $this->userSerializer->serialize($announce->getCreator()) : null,
-                'publishedAt' => $announce->getPublicationDate() ? $announce->getPublicationDate()->format('Y-m-d\TH:i:s') : null,
-            ],
-            'restrictions' => [
-                'visible' => $announce->isVisible(),
-                'visibleFrom' => $announce->getVisibleFrom() ? $announce->getVisibleFrom()->format('Y-m-d\TH:i:s') : null,
-                'visibleUntil' => $announce->getVisibleUntil() ? $announce->getVisibleUntil()->format('Y-m-d\TH:i:s') : null,
-            ],
         ];
     }
 }

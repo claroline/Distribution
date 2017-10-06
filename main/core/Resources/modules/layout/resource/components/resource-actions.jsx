@@ -320,6 +320,8 @@ CustomGroupActions.propTypes = {
 /**
  * @param props
  * @constructor
+ *
+ * @todo hide more menu if empty
  */
 const ResourceActions = props =>
   <PageActions className="resource-actions">
@@ -337,32 +339,32 @@ const ResourceActions = props =>
 
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
-        <MoreAction id="resource-more">
-          {props.customActions && 0 !== props.customActions.length &&
-            <MenuItem
-              key="resource-group-type"
-              header={true}
-            >
-              {t_res(props.resourceNode.meta.type)}
-            </MenuItem>
-          }
+      <MoreAction id="resource-more">
+        {props.customActions && 0 !== props.customActions.length &&
+          <MenuItem
+            key="resource-group-type"
+            header={true}
+          >
+            {t_res(props.resourceNode.meta.type)}
+          </MenuItem>
+        }
 
-          {props.customActions && 0 !== props.customActions.length &&
-            props.customActions.map((customAction, index) =>
-              React.createElement(MenuItem, {
-                key: `resource-more-action-${index}`,
-                eventKey: `resource-action-${index}`,
-                children: [
-                  <span className={customAction.icon} />,
-                  customAction.label
-                ],
-                [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
-              })
-            )
-          }
+        {props.customActions && 0 !== props.customActions.length &&
+          props.customActions.map((customAction, index) =>
+            React.createElement(MenuItem, {
+              key: `resource-more-action-${index}`,
+              eventKey: `resource-action-${index}`,
+              children: [
+                <span className={customAction.icon} />,
+                customAction.label
+              ],
+              [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
+            })
+          )
+        }
 
-          {getMoreActions(props.resourceNode, props)}
-        </MoreAction>
+        {getMoreActions(props.resourceNode, props)}
+      </MoreAction>
     </PageGroupActions>
   </PageActions>
 

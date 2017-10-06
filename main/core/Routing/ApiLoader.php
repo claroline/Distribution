@@ -39,8 +39,8 @@ class ApiLoader extends Loader
      * })
      *
      * @param FileLocatorInterface $locator
-     * @param Reader $reader
-     * @param ContainerInterface $container
+     * @param Reader               $reader
+     * @param ContainerInterface   $container
      */
     public function __construct(
         FileLocatorInterface $locator,

@@ -66,7 +66,7 @@ class ValidatorProvider
      * @param mixed  $data           - the data to validate
      * @param bool   $throwException - if true an InvalidDataException is thrown instead of returning the errors
      *
-     * @return array - the list of validation errors.
+     * @return array - the list of validation errors
      *
      * @throws InvalidDataException
      */
