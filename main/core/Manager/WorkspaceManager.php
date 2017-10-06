@@ -1339,8 +1339,8 @@ class WorkspaceManager
 
         if ($token && $token->getUser() !== 'anon.') {
             $user = $workspace->getCreator() ?
-            $workspace->getCreator() :
-            $this->container->get('security.token_storage')->getToken()->getUser();
+              $workspace->getCreator() :
+              $this->container->get('security.token_storage')->getToken()->getUser();
         }
 
         //last fool proof check in case something weird happens
