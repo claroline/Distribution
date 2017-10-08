@@ -51,6 +51,7 @@ class EntryCreateForm extends Component {
       id: null,
       entry: fieldsValues,
       keywords: [],
+      files: {},
       hasError: false,
       errors: errors,
       showKeywordForm: false,
@@ -65,7 +66,7 @@ class EntryCreateForm extends Component {
   generateTemplate() {
     let template = this.props.template
     template = template.replace('%clacoform_entry_title%', '<span id="clacoform-entry-title"></span>')
-    this.props.fields.forEach(f => {
+    this.props.fields.filter(f => f.type !== 11).forEach(f => {
       template = template.replace(`%field_${f.id}%`, `<span id="clacoform-field-${f.id}"></span>`)
     })
 
@@ -88,7 +89,7 @@ class EntryCreateForm extends Component {
       if (element) {
         ReactDOM.render(title, element)
       }
-      this.props.fields.forEach(f => {
+      this.props.fields.filter(f => f.type !== 11).forEach(f => {
         const fieldEl = document.getElementById(`clacoform-field-${f.id}`)
 
         if (fieldEl) {
@@ -160,7 +161,7 @@ class EntryCreateForm extends Component {
 
   registerEntry() {
     if (!this.state['hasError']) {
-      this.props.createEntry(this.state.entry, this.state.keywords)
+      this.props.createEntry(this.state.entry, this.state.keywords, this.state.files)
       this.props.history.push('/menu')
     } else {
       this.renderTemplateFields()
@@ -181,7 +182,24 @@ class EntryCreateForm extends Component {
         hasError = true
       }
     })
-    this.setState({errors: errors, hasError: hasError}, this.registerEntry)
+    const files = {}
+
+    this.props.fields.forEach(f => {
+      if (getFieldType(f.type).name === 'file') {
+        if (this.state.entry[f.id]) {
+          if (!files[f.id]) {
+            files[f.id] = []
+          }
+
+          this.state.entry[f.id].forEach(file => {
+            if (!file.url) {
+              files[f.id].push(file)
+            }
+          })
+        }
+      }
+    })
+    this.setState({errors: errors, hasError: hasError, files: files}, this.registerEntry)
   }
 
   render() {
@@ -333,7 +351,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    createEntry: (entry, keywords) => dispatch(actions.createEntry(entry, keywords))
+    createEntry: (entry, keywords, files) => dispatch(actions.createEntry(entry, keywords, files))
   }
 }
 

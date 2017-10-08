@@ -7,7 +7,7 @@ export class File extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      files: props.values || []
+      files: props.value || []
     }
   }
 
@@ -25,6 +25,14 @@ export class File extends Component {
     this.setState({files: files}, () => this.props.onChange(this.state.files))
   }
 
+
+  getFileType(mimeType) {
+    const typeParts = mimeType.split('/')
+    const type = typeParts.length > 0 ? typeParts[0] : 'file'
+
+    return type
+  }
+
   render() {
     return (
       <fieldset>
@@ -40,10 +48,11 @@ export class File extends Component {
           {this.state.files.map((f, idx) =>
             <FileThumbnail
               key={`file-thumbnail-${idx}`}
-              type="file"
+              type={!f.mimeType ? 'file' : this.getFileType(f.mimeType)}
               data={f}
               canEdit={false}
               canExpand={false}
+              canDownload={false}
               handleDelete={() => this.removeFile(idx)}
             />
           )}

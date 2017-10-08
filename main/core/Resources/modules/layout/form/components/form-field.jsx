@@ -288,7 +288,7 @@ export const FormField = props => {
       return (props.noLabel ?
         <div className={classes({'has-error': props.error})}>
           <File
-            id={props.controlId}
+            controlId={props.controlId}
             value={props.value || []}
             types={props.types || []}
             max={props.max}

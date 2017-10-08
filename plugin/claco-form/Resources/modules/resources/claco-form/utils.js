@@ -12,3 +12,10 @@ export const getFieldType = (value) => {
 export const getCountry = (value) => {
   return formConstants.COUNTRIES.find(c => c.value === value)
 }
+
+export const getFileType = (mimeType) => {
+  const typeParts = mimeType.split('/')
+  const type = typeParts.length > 0 ? typeParts[0] : 'file'
+
+  return type
+}

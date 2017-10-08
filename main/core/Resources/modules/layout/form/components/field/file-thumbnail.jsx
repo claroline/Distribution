@@ -5,53 +5,49 @@ import classes from 'classnames'
 
 import {asset} from '#/main/core/asset'
 import {t} from '#/main/core/translation'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
 const AudioThumbnail = props =>
   <div className="audio-file-thumbnail">
-    {props.data &&
+    {props.data && props.data.url &&
       <audio
         onClick={e => e.stopPropagation()}
         controls
       >
-        <source src={asset(props.data)} type={props.type}/>
+        <source src={asset(props.data.url)} type={props.data.mimeType}/>
       </audio>
     }
   </div>
 
 AudioThumbnail.propTypes = {
-  data: T.object,
-  type: T.string.isRequired
+  data: T.object.isRequired
 }
 
 const VideoThumbnail = props =>
   <div className="video-file-thumbnail">
-    {props.data &&
+    {props.data && props.data.url &&
       <video
         className="not-video-js vjs-big-play-centered vjs-default-skin vjs-16-9"
         onClick={e => e.stopPropagation()}
         controls
       >
-        <source src={asset(props.data)} type={props.type}/>
+        <source src={asset(props.data.url)} type={props.type}/>
       </video>
     }
   </div>
 
 VideoThumbnail.propTypes = {
-  data: T.object,
-  type: T.string.isRequired
+  data: T.object.isRequired
 }
 
 const ImageThumbnail = props =>
   <div className="image-file-thumbnail">
-    {props.data &&
-      <img src={asset(props.data)}/>
+    {props.data && props.data.url &&
+      <img src={asset(props.data.url)}/>
     }
   </div>
 
 ImageThumbnail.propTypes = {
-  data: T.object,
-  type: T.string.isRequired
+  data: T.object.isRequired
 }
 
 const DefaultThumbnail = props =>
@@ -63,8 +59,7 @@ const DefaultThumbnail = props =>
   </div>
 
 DefaultThumbnail.propTypes = {
-  data: T.object,
-  type: T.string.isRequired
+  data: T.object.isRequired
 }
 
 const FileThumbnailContent = props => {
@@ -91,18 +86,30 @@ const Actions = props =>
       <span
         role="button"
         title={t('watch_at_the_original_size')}
-        className="action-button fa fa-external-link"
+        className="action-button fa fa-w fa-external-link"
         onClick={e => {
           e.stopPropagation()
           props.handleExpand(e)
         }}
       />
     }
+    {props.hasDownloadBtn &&
+      <a href={asset(props.data.url)} download={props.data.name}>
+        <span
+          role="button"
+          title={t('download')}
+          className="action-button fa fa-w fa-download"
+          onClick={e => {
+            props.handleDownload(e, props.data)
+          }}
+        />
+      </a>
+    }
     {props.hasEditBtn &&
       <span
         role="button"
         title={t('edit')}
-        className="action-button fa fa-pencil"
+        className="action-button fa fa-w fa-pencil"
         onClick={e => props.handleEdit(e)}
       />
     }
@@ -110,22 +117,25 @@ const Actions = props =>
       <span
         role="button"
         title={t('delete')}
-        className="action-button fa fa-trash-o"
+        className="action-button fa fa-w fa-trash-o"
         onClick={e => props.handleDelete(e)}
       />
     }
   </span>
 
 Actions.propTypes = {
+  data: T.object,
   hasDeleteBtn: T.bool,
   hasEditBtn: T.bool,
   hasExpandBtn: T.bool,
+  hasDownloadBtn: T.bool,
   handleEdit: T.func,
   handleDelete: T.func,
-  handleExpand: T.func
+  handleExpand: T.func,
+  handleDownload: T.func
 }
 
-const FileThumbnail = props =>
+export const FileThumbnail = props =>
   <span
     className="file-thumbnail"
     onClick={() => {}}
@@ -135,9 +145,11 @@ const FileThumbnail = props =>
         hasDeleteBtn={props.canDelete}
         hasEditBtn={props.canEdit}
         hasExpandBtn={props.canExpand}
+        hasDownloadBtn={props.canDownload}
         handleEdit={props.handleEdit}
         handleDelete={props.handleDelete}
-        handleExpand={props.expand}
+        handleExpand={props.handleExpand}
+        handleDownload={props.handleDownload}
         {...props}
       />
     </span>
@@ -155,10 +167,11 @@ FileThumbnail.propTypes = {
   canEdit: T.bool.isRequired,
   canDelete: T.bool.isRequired,
   canExpand: T.bool.isRequired,
+  canDownload: T.bool.isRequired,
   handleEdit: T.func.isRequired,
   handleDelete: T.func.isRequired,
   handleExpand: T.func.isRequired,
-  showModal: T.func.isRequired
+  handleDownload: T.func.isRequired
 }
 
 FileThumbnail.defaultProps = {
@@ -166,17 +179,9 @@ FileThumbnail.defaultProps = {
   canEdit: true,
   canDelete: true,
   canExpand: true,
+  canDownload: true,
   handleEdit: () => {},
   handleDelete: () => {},
-  handleExpand: () => {}
+  handleExpand: () => {},
+  handleDownload: () => {}
 }
-
-function mapDispatchToProps(dispatch) {
-  return {
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
-}
-
-const ConnectedFileThumbnail = connect(null, mapDispatchToProps)(FileThumbnail)
-
-export {ConnectedFileThumbnail as FileThumbnail}
