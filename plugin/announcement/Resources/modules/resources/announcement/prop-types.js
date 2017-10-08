@@ -6,12 +6,12 @@ const Announcement = {
     content: T.string.isRequired,
     meta: T.shape({
       author: T.string,
-      sendMail: T.bool.isRequired
+      notifyUsers: T.bool.isRequired
     }).isRequired,
     restrictions: T.shape({
       visible: T.bool.isRequired,
       visibleFrom: T.string,
-      visibleUntil: T.string,
+      visibleUntil: T.string
     }).isRequired
   },
   defaultProps: {
@@ -19,12 +19,12 @@ const Announcement = {
     content: '',
     meta: {
       author: null,
-      sendMail: false
+      notifyUsers: false
     },
     restrictions: {
       visible: true,
       visibleFrom: null,
-      visibleUntil: null,
+      visibleUntil: null
     }
   }
 }

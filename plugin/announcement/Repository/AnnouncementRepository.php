@@ -11,7 +11,6 @@
 
 namespace Claroline\AnnouncementBundle\Repository;
 
-use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Doctrine\ORM\EntityRepository;
 
@@ -108,40 +107,6 @@ class AnnouncementRepository extends EntityRepository
                 'workspaces' => $workspaces,
                 'managerWorkspaces' => $managerWorkspaces,
                 'roles' => $roles,
-                'now' => new \DateTime(),
-            ])
-            ->getResult();
-    }
-
-    public function findAllAnnouncementsByAggregate(AnnouncementAggregate $aggregate)
-    {
-        return $this->_em
-            ->createQuery('
-                SELECT a
-                FROM Claroline\AnnouncementBundle\Entity\Announcement a
-                JOIN a.aggregate aa
-                WHERE aa = :aggregate
-                ORDER BY a.creationDate DESC
-            ')
-            ->setParameter('aggregate', $aggregate)
-            ->getResult();
-    }
-
-    public function findVisibleAnnouncementsByAggregate(AnnouncementAggregate $aggregate)
-    {
-        return $this->_em
-            ->createQuery('
-                SELECT a
-                FROM Claroline\AnnouncementBundle\Entity\Announcement a
-                JOIN a.aggregate aa
-                WHERE aa = :aggregate
-                AND a.visible = true
-                AND ( ( a.visibleFrom IS NULL ) OR ( a.visibleFrom <= :now ) )
-                AND ( ( a.visibleUntil IS NULL ) OR ( a.visibleUntil >= :now ) )
-                ORDER BY a.creationDate DESC
-            ')
-            ->setParameters([
-                'aggregate' => $aggregate,
                 'now' => new \DateTime(),
             ])
             ->getResult();

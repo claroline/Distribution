@@ -8,8 +8,10 @@ import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
+import {validate} from './validator'
 import {
   ANNOUNCE_DETAIL_OPEN,
+  ANNOUNCE_DETAIL_RESET,
   ANNOUNCE_FORM_OPEN,
   ANNOUNCE_FORM_RESET,
   ANNOUNCE_FORM_UPDATE,
@@ -51,7 +53,7 @@ const announcementReducer = makeReducer({posts: []}, {
     const newState = cloneDeep(state)
 
     // update announce in the list
-    const announcePos = newState.posts.findIndex(post => post.id === action.post.id)
+    const announcePos = newState.posts.findIndex(post => post.id === action.announce.id)
     newState[announcePos] = action.announce
 
     return newState
@@ -61,7 +63,7 @@ const announcementReducer = makeReducer({posts: []}, {
 
     // delete announce form the list
     newState.posts.splice(
-      newState.posts.findIndex(post => post.id === action.post.id),
+      newState.posts.findIndex(post => post.id === action.announce.id),
       1
     )
 
@@ -70,15 +72,22 @@ const announcementReducer = makeReducer({posts: []}, {
 })
 
 const announcementFormReducer = makeReducer({
+  validating: false,
   pendingChanges: false,
+  errors: {},
   data: null
 }, {
+  /*[ANNOUNCE_FORM_VALIDATE]*/
   [ANNOUNCE_FORM_RESET]: () => ({
+    validating: false,
     pendingChanges: false,
+    errors: {},
     data: null
   }),
   [ANNOUNCE_FORM_OPEN]: (state, action) => ({
+    validating: false,
     pendingChanges: false,
+    errors: validate(action.announce),
     data: action.announce
   }),
   [ANNOUNCE_FORM_UPDATE]: (state, action) => {
@@ -86,14 +95,17 @@ const announcementFormReducer = makeReducer({
     set(newData, action.prop, action.value)
 
     return {
+      validating: false,
       pendingChanges: true,
+      errors: validate(newData),
       data: newData
     }
   }
 })
 
 const announcementDetailReducer = makeReducer(null, {
-  [ANNOUNCE_DETAIL_OPEN]: (state, action) => action.announceId
+  [ANNOUNCE_DETAIL_OPEN]: (state, action) => action.announceId,
+  [ANNOUNCE_DETAIL_RESET]: (state, action) => null
 })
 
 const reducer = {

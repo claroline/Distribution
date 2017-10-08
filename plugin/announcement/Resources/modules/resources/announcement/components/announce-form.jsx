@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
 import {t, trans} from '#/main/core/translation'
 
@@ -9,7 +10,6 @@ import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activabl
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {DateGroup}  from '#/main/core/layout/form/components/group/date-group.jsx'
-import {FormGroup}  from '#/main/core/layout/form/components/group/form-group.jsx'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'
 
@@ -28,6 +28,7 @@ const AnnounceForm = props =>
           label={t('title')}
           value={props.announcement.title || ''}
           onChange={value => props.updateProperty('title', value)}
+          warnOnly={!props.validating}
         />
 
         <HtmlGroup
@@ -36,6 +37,8 @@ const AnnounceForm = props =>
           content={props.announcement.content}
           onChange={value => props.updateProperty('content', value)}
           minRows={10}
+          warnOnly={!props.validating}
+          error={get(props.errors, 'content')}
         />
 
         <TextGroup
@@ -43,13 +46,15 @@ const AnnounceForm = props =>
           label={t('author')}
           value={props.announcement.meta.author || ''}
           onChange={value => props.updateProperty('meta.author', value)}
+          warnOnly={!props.validating}
         />
 
         <CheckGroup
-          checkId="announcement-sendMail"
-          label={trans('announcement_send_mail', {}, 'announcement')}
-          checked={props.announcement.meta.sendMail}
-          onChange={value => props.updateProperty('meta.sendMail', !props.announcement.meta.sendMail)}
+          checkId="announcement-notifyUsers"
+          label={trans('announcement_notify_users', {}, 'announcement')}
+          checked={props.announcement.meta.notifyUsers}
+          onChange={() => props.updateProperty('meta.notifyUsers', !props.announcement.meta.notifyUsers)}
+          warnOnly={!props.validating}
         />
       </fieldset>
     </div>
@@ -65,7 +70,8 @@ const AnnounceForm = props =>
           label={trans('announcement_is_not_visible', {}, 'announcement')}
           labelChecked={trans('announcement_is_visible', {}, 'announcement')}
           checked={props.announcement.restrictions.visible}
-          onChange={value => props.updateProperty('restrictions.visible', !props.announcement.restrictions.visible)}
+          onChange={() => props.updateProperty('restrictions.visible', !props.announcement.restrictions.visible)}
+          warnOnly={!props.validating}
         />
 
         <ActivableSet
@@ -86,6 +92,7 @@ const AnnounceForm = props =>
               label={trans('announcement_visible_from', {}, 'announcement')}
               value={props.announcement.restrictions.visibleFrom || ''}
               onChange={(date) => props.updateProperty('restrictions.visibleFrom', date)}
+              warnOnly={!props.validating}
             />
 
             <DateGroup
@@ -94,6 +101,7 @@ const AnnounceForm = props =>
               label={trans('announcement_visible_until', {}, 'announcement')}
               value={props.announcement.restrictions.visibleUntil || ''}
               onChange={(date) => props.updateProperty('restrictions.visibleUntil', date)}
+              warnOnly={!props.validating}
             />
           </div>
         </ActivableSet>
@@ -102,6 +110,8 @@ const AnnounceForm = props =>
   </form>
 
 AnnounceForm.propTypes = {
+  errors: T.object,
+  validating: T.bool,
   announcement: T.shape(
     AnnouncementTypes.propTypes
   ).isRequired,
@@ -114,16 +124,16 @@ AnnounceForm.defaultProps = {
 
 function mapStateToProps(state) {
   return {
-    announcement: select.formData(state)
+    announcement: select.formData(state),
+    errors: select.formErrors(state),
+    validating: select.formValidating(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     updateProperty(prop, value) {
-      dispatch(
-        actions.updateForm(prop, value)
-      )
+      dispatch(actions.updateForm(prop, value))
     }
   }
 }

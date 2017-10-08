@@ -63,7 +63,7 @@ class AnnouncementWidgetListener
         }
 
         $subRequest = $this->request->duplicate([], null, [
-            '_controller' => 'ClarolineAnnouncementBundle:Announcement:announcementsWidget',
+            '_controller' => 'ClarolineAnnouncementBundle:Widget\AnnouncementWidget:announcementsWidget',
             'widgetInstance' => $event->getInstance()->getId(),
         ]);
 
@@ -87,7 +87,7 @@ class AnnouncementWidgetListener
         }
 
         $subRequest = $this->request->duplicate([], null, [
-            '_controller' => 'ClarolineAnnouncementBundle:Announcement:announcementsWidgetConfigureForm',
+            '_controller' => 'ClarolineAnnouncementBundle:Widget\AnnouncementWidget:configureForm',
             'widgetInstance' => $event->getInstance()->getId(),
         ]);
 

@@ -11,7 +11,6 @@
 
 namespace Claroline\AnnouncementBundle\Listener\Resource;
 
-use Claroline\AnnouncementBundle\Entity\Announcement;
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
@@ -21,7 +20,6 @@ use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -30,7 +28,6 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * @DI\Service()
@@ -45,52 +42,42 @@ class AnnouncementListener
     private $om;
     /** @var Request */
     private $request;
-    /** @var ResourceManager */
-    private $resourceManager;
-    /** @var UrlGeneratorInterface */
-    private $router;
     /** @var TwigEngine */
     private $templating;
+    /** @var AnnouncementManager */
     private $manager;
 
     /**
      * AnnouncementListener constructor.
      *
      * @DI\InjectParams({
-     *     "formFactory"        = @DI\Inject("form.factory"),
-     *     "httpKernel"         = @DI\Inject("http_kernel"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
-     *     "requestStack"       = @DI\Inject("request_stack"),
-     *     "resourceManager"    = @DI\Inject("claroline.manager.resource_manager"),
-     *     "router"             = @DI\Inject("router"),
-     *     "templating"         = @DI\Inject("templating"),
-     *     "manager"            = @DI\Inject("claroline.announcement.manager.announcement_manager")
+     *     "formFactory"  = @DI\Inject("form.factory"),
+     *     "httpKernel"   = @DI\Inject("http_kernel"),
+     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
+     *     "requestStack" = @DI\Inject("request_stack"),
+     *     "templating"   = @DI\Inject("templating"),
+     *     "manager"      = @DI\Inject("claroline.manager.announcement_manager")
      * })
      *
      * @param FormFactory $formFactory
      * @param HttpKernelInterface $httpKernel
      * @param ObjectManager $om
      * @param RequestStack $requestStack
-     * @param ResourceManager $resourceManager
      * @param TwigEngine $templating
-     * @param UrlGeneratorInterface $router
+     * @param AnnouncementManager $manager
      */
     public function __construct(
         FormFactory $formFactory,
         HttpKernelInterface $httpKernel,
         ObjectManager $om,
         RequestStack $requestStack,
-        ResourceManager $resourceManager,
         TwigEngine $templating,
-        UrlGeneratorInterface $router,
         AnnouncementManager $manager
     ) {
         $this->formFactory = $formFactory;
         $this->httpKernel = $httpKernel;
         $this->om = $om;
         $this->request = $requestStack->getCurrentRequest();
-        $this->resourceManager = $resourceManager;
-        $this->router = $router;
         $this->templating = $templating;
         $this->manager = $manager;
     }
@@ -154,12 +141,13 @@ class AnnouncementListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
+        /** @var AnnouncementAggregate $aggregate */
         $aggregate = $event->getResource();
         $announcements = $aggregate->getAnnouncements();
 
         if ($announcements) {
             foreach ($announcements as $announcement) {
-                $this->manager->deleteAnnouncement($announcement);
+                $this->manager->delete($announcement);
             }
         }
         $event->stopPropagation();
@@ -191,26 +179,17 @@ class AnnouncementListener
     {
         /** @var AnnouncementAggregate $aggregate */
         $aggregate = $event->getResource();
+
+        $this->om->startFlushSuite();
         $copy = new AnnouncementAggregate();
         $this->om->persist($copy);
 
         $announcements = $aggregate->getAnnouncements();
-
-        /** @var Announcement $announcement */
         foreach ($announcements as $announcement) {
-            $newAnnouncement = new Announcement();
-            $newAnnouncement->setAggregate($copy);
-            $newAnnouncement->setAnnouncer($announcement->getAnnouncer());
-            $newAnnouncement->setContent($announcement->getContent());
-            $newAnnouncement->setCreationDate($announcement->getCreationDate());
-            $newAnnouncement->setCreator($announcement->getCreator());
-            $newAnnouncement->setPublicationDate($announcement->getPublicationDate());
-            $newAnnouncement->setTitle($announcement->getTitle());
-            $newAnnouncement->setVisible($announcement->isVisible());
-            $newAnnouncement->setVisibleFrom($announcement->getVisibleFrom());
-            $newAnnouncement->setVisibleUntil($announcement->getVisibleUntil());
-            $this->om->persist($newAnnouncement);
+            $newAnnouncement = $this->manager->serialize($announcement);
+            $this->manager->create($copy, $newAnnouncement);
         }
+        $this->om->endFlushSuite();
 
         $event->setCopy($copy);
         $event->stopPropagation();

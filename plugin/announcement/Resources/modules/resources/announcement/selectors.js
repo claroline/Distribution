@@ -1,3 +1,4 @@
+import isEmpty from 'lodash/isEmpty'
 import {createSelector} from 'reselect'
 
 const pageSize = () => 5
@@ -17,8 +18,25 @@ const formData = createSelector(
   [announcementForm],
   (announcementForm) => announcementForm.data
 )
+const formErrors = createSelector(
+  [announcementForm],
+  (announcementForm) => announcementForm.errors
+)
+const formValidating = createSelector(
+  [announcementForm],
+  (announcementForm) => announcementForm.validating
+)
+const formValid = createSelector(
+  [formErrors],
+  (formErrors) => isEmpty(formErrors)
+)
 
 const announcement = state => state.announcement
+
+const aggregateId = createSelector(
+  [announcement],
+  (announcement) => announcement.id
+)
 
 const posts = createSelector(
   [announcement],
@@ -48,7 +66,14 @@ const visibleSortedPosts = createSelector(
   (sortedPosts, pageSize, currentPage) => sortedPosts.slice(currentPage*pageSize, currentPage*pageSize+pageSize)
 )
 
+const announcementDetail = state => state.announcementDetail
+const detail = createSelector(
+  [posts, announcementDetail],
+  (posts, announcementDetail) => posts.find(post => post.id === announcementDetail)
+)
+
 export const select = {
+  aggregateId,
   posts,
   pageSize,
   currentPage,
@@ -56,7 +81,13 @@ export const select = {
   sortOrder,
   announcement,
   visibleSortedPosts,
+  detail,
+
+  // form (should be generic)
   formHasPendingChanges,
   formIsOpened,
-  formData
+  formData,
+  formErrors,
+  formValidating,
+  formValid
 }

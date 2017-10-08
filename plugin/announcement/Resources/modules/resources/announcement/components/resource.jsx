@@ -23,8 +23,8 @@ const AnnouncementResource = props =>
       icon: 'fa fa-plus',
       label: trans('add_announce', {}, 'announcement'),
       save: {
-        disabled: !props.formPendingChanges,
-        action: () => props.save(props.formData)
+        disabled: !props.formPendingChanges || (props.formValidating && !props.formValid),
+        action: () => props.save(props.aggregateId, props.formData)
       }
     }}
     customActions={[
@@ -48,7 +48,8 @@ const AnnouncementResource = props =>
         }, {
           path: '/:id',
           component: Announce,
-          onEnter: (params) => props.openDetail(params.id)
+          onEnter: (params) => props.openDetail(params.id),
+          onLeave: props.resetDetail
         }, {
           path: '/:id/edit',
           component: AnnounceForm,
@@ -60,11 +61,18 @@ const AnnouncementResource = props =>
   </ResourceContainer>
 
 AnnouncementResource.propTypes = {
+  aggregateId: T.string.isRequired,
   posts: T.arrayOf(
     T.shape(AnnouncementTypes.propTypes)
   ).isRequired,
+
+  openDetail: T.func.isRequired,
+  resetDetail: T.func.isRequired,
+
   formOpened: T.bool.isRequired,
   formPendingChanges: T.bool.isRequired,
+  formValidating: T.bool.isRequired,
+  formValid: T.bool.isRequired,
 
   save: T.func.isRequired,
   openForm: T.func.isRequired,
@@ -73,26 +81,35 @@ AnnouncementResource.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    aggregateId: select.aggregateId(state),
     posts: select.posts(state),
     formPendingChanges: select.formHasPendingChanges(state),
     formOpened: select.formIsOpened(state),
-    formData: select.formData(state)
+    formData: select.formData(state),
+    formValid: select.formValid(state),
+    formValidating: select.formValidating(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    openDetail(id) {
+      dispatch(actions.openDetail(id))
+    },
+    resetDetail() {
+      dispatch(actions.resetDetail())
+    },
     openForm(announce) {
       dispatch(actions.openForm(announce))
     },
     resetForm() {
       dispatch(actions.resetForm())
     },
-    save(announce) {
+    save(aggregateId, announce) {
       if (announce.id) {
-        dispatch(actions.updateAnnounce(announce))
+        dispatch(actions.updateAnnounce(aggregateId, announce))
       } else {
-        dispatch(actions.createAnnounce(announce))
+        dispatch(actions.createAnnounce(aggregateId, announce))
       }
     }
   }

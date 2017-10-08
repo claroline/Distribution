@@ -126,6 +126,12 @@ class Announcement
      */
     protected $task;
 
+    public function __construct()
+    {
+        $this->refreshUuid();
+        $this->creationDate = new \DateTime();
+    }
+
     public function getId()
     {
         return $this->id;
@@ -236,7 +242,7 @@ class Announcement
      *
      * @param \DateTime $publicationDate
      */
-    public function setPublicationDate(\DateTime $publicationDate)
+    public function setPublicationDate(\DateTime $publicationDate = null)
     {
         $this->publicationDate = $publicationDate;
     }
@@ -276,7 +282,7 @@ class Announcement
      *
      * @param \DateTime $visibleFrom
      */
-    public function setVisibleFrom(\DateTime $visibleFrom)
+    public function setVisibleFrom(\DateTime $visibleFrom = null)
     {
         $this->visibleFrom = $visibleFrom;
     }
@@ -296,7 +302,7 @@ class Announcement
      *
      * @param \DateTime $visibleUntil
      */
-    public function setVisibleUntil(\DateTime $visibleUntil)
+    public function setVisibleUntil(\DateTime $visibleUntil = null)
     {
         $this->visibleUntil = $visibleUntil;
     }

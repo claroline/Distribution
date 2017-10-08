@@ -41,6 +41,7 @@ class AnnouncementAggregate extends AbstractResource
      */
     public function __construct()
     {
+        $this->refreshUuid();
         $this->announcements = new ArrayCollection();
     }
 

@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {
-  HashRouter as Router,
+  Router,
   Route as BaseRoute,
   Switch
 } from 'react-router-dom'
 
+import {history} from '#/main/core/router/history'
 import {Route as RouteTypes} from '#/main/core/router/prop-types'
 
 /**
@@ -89,7 +90,7 @@ Routes.propTypes = {
 Routes.defaultProps = RouteTypes.defaultProps
 
 const CustomRouter = props =>
-  <Router>
+  <Router history={history}>
     <Routes
       path={props.basePath}
       routes={props.routes}
