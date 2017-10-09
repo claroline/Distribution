@@ -22,17 +22,30 @@ class ApiLoader extends Loader
 {
     private $loaded = false;
 
+    /** @var FileLocatorInterface */
+    private $locator;
+    /** @var ContainerInterface */
+    private $container;
+    /** @var Reader */
+    private $reader;
+
     /**
+     * ApiLoader constructor.
+     *
      * @DI\InjectParams({
      *     "locator"   = @DI\Inject("file_locator"),
      *     "reader"    = @DI\Inject("annotation_reader"),
      *     "container" = @DI\Inject("service_container")
      * })
+     *
+     * @param FileLocatorInterface $locator
+     * @param Reader               $reader
+     * @param ContainerInterface   $container
      */
     public function __construct(
-      FileLocatorInterface $locator,
-      Reader $reader,
-      ContainerInterface $container
+        FileLocatorInterface $locator,
+        Reader $reader,
+        ContainerInterface $container
     ) {
         $this->locator = $locator;
         $this->container = $container;
@@ -51,7 +64,7 @@ class ApiLoader extends Loader
         $routes->addCollection($imported);
 
         foreach (new \DirectoryIterator($path) as $fileInfo) {
-            if (!$fileInfo->isDot()) {
+            if (!$fileInfo->isDot() && $fileInfo->isFile()) {
                 $file = $fileInfo->getPathname();
 
                 //find prefix from annotations
@@ -59,6 +72,7 @@ class ApiLoader extends Loader
 
                 if ($controller) {
                     $refClass = new \ReflectionClass($controller);
+                    $class = null;
                     $found = false;
                     $prefix = '';
 
@@ -74,7 +88,7 @@ class ApiLoader extends Loader
                     }
 
                     if ($found) {
-                        foreach ($this->makeRouteMap($controller, $routes) as $name => $options) {
+                        foreach ($this->makeRouteMap($controller, $routes, $prefix) as $name => $options) {
                             $pattern = '/'.$options[0];
 
                             if ($prefix) {
@@ -102,7 +116,7 @@ class ApiLoader extends Loader
         return $routes;
     }
 
-    private function makeRouteMap($controller, RouteCollection $routes)
+    private function makeRouteMap($controller, RouteCollection $routes, $prefix)
     {
         $defaults = [
           'create' => ['', 'POST'],
@@ -122,13 +136,17 @@ class ApiLoader extends Loader
                     $actionName = preg_replace('/Action/', '', $method->getName());
 
                     if ($annotation instanceof RouteConfig) {
-                        $defaults[$actionName] = [$annotation->getPath()];
+                        $defaults[$actionName][0] = $annotation->getPath();
+                        $toRemove = $prefix.'_'.strtolower($actionName);
+                        $autoName = 'claroline_core_apinew_';
+                        //todo remove route from plugins but it doesn't exists yet
+                        $routes->remove($autoName.$toRemove);
                     }
 
                     if ($annotation instanceof MethodConfig) {
-                        $defaults[$actionName][] = $annotation->getMethods();
+                        $defaults[$actionName][1] = $annotation->getMethods()[0];
                     } else {
-                        $defaults[$actionName][] = 'GET';
+                        $defaults[$actionName][1] = 'GET';
                     }
                 }
             }
