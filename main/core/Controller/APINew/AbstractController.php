@@ -72,7 +72,7 @@ class AbstractController extends ContainerAware
     public function deleteBulkAction(Request $request, $class, $env)
     {
         try {
-            $this->crud->deleteBulk($class, $this->decodeRequest($request));
+            $this->crud->deleteBulk($class, $this->decodeIdsString($request, $class));
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
