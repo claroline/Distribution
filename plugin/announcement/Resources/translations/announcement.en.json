@@ -25,5 +25,10 @@
     "from_newer_to_older": "From newer to older",
     "newer": "Newer",
     "older": "Older",
-    "add_announce": "Create a new announce"
+    "add_announce": "Create a new announce",
+    "announcement_visible_from": "From",
+    "announcement_visible_until": "Until",
+    "announcement_is_visible": "The announce is visible",
+    "announcement_is_not_visible": "The announce is not visible",
+    "announcement_notify_users": "Send by message to users"
 }
