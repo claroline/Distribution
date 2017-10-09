@@ -24,7 +24,9 @@ const AnnouncementResource = props =>
       label: trans('add_announce', {}, 'announcement'),
       save: {
         disabled: !props.formPendingChanges || (props.formValidating && !props.formValid),
-        action: () => props.save(props.aggregateId, props.formData)
+        action: () => {
+          props.save(props.aggregateId, props.formData)
+        }
       }
     }}
     customActions={[
@@ -105,12 +107,11 @@ function mapDispatchToProps(dispatch) {
     resetForm() {
       dispatch(actions.resetForm())
     },
+    validate() {
+      dispatch(actions.validateForm())
+    },
     save(aggregateId, announce) {
-      if (announce.id) {
-        dispatch(actions.updateAnnounce(aggregateId, announce))
-      } else {
-        dispatch(actions.createAnnounce(aggregateId, announce))
-      }
+      dispatch(actions.saveAnnounce(aggregateId, announce))
     }
   }
 }

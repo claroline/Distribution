@@ -15,6 +15,7 @@ import {
   ANNOUNCE_FORM_OPEN,
   ANNOUNCE_FORM_RESET,
   ANNOUNCE_FORM_UPDATE,
+  ANNOUNCE_FORM_VALIDATE,
   ANNOUNCE_ADD,
   ANNOUNCE_DELETE,
   ANNOUNCE_CHANGE,
@@ -77,7 +78,12 @@ const announcementFormReducer = makeReducer({
   errors: {},
   data: null
 }, {
-  /*[ANNOUNCE_FORM_VALIDATE]*/
+  [ANNOUNCE_FORM_VALIDATE]: (state) => ({
+    validating: true,
+    pendingChanges: state.pendingChanges,
+    errors: validate(state.data),
+    data: state.data
+  }),
   [ANNOUNCE_FORM_RESET]: () => ({
     validating: false,
     pendingChanges: false,

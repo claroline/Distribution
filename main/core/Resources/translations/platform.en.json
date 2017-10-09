@@ -1453,5 +1453,7 @@
     "published_at": "published on %date%",
     "not_published": "not published",
     "access_restrictions": "Access Restrictions",
-    "access_dates": "Restrict by dates"
+    "access_dates": "Restrict by dates",
+    "rich_text_tools": "Rich text tools",
+    "minimize": "Minimize"
 }

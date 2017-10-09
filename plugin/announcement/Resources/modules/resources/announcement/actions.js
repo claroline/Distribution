@@ -4,6 +4,8 @@ import {navigate} from '#/main/core/router'
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
 
+import {isValid} from './validator'
+
 export const ANNOUNCE_ADD    = 'ANNOUNCE_ADD'
 export const ANNOUNCE_CHANGE = 'ANNOUNCE_CHANGE'
 export const ANNOUNCE_DELETE = 'ANNOUNCE_DELETE'
@@ -13,6 +15,7 @@ export const ANNOUNCES_PAGE_CHANGE = 'ANNOUNCES_PAGE_CHANGE'
 
 export const ANNOUNCE_FORM_OPEN  = 'ANNOUNCE_FORM_OPEN'
 export const ANNOUNCE_FORM_RESET = 'ANNOUNCE_FORM_RESET'
+export const ANNOUNCE_FORM_VALIDATE  = 'ANNOUNCE_FORM_VALIDATE'
 export const ANNOUNCE_FORM_UPDATE = 'ANNOUNCE_FORM_UPDATE'
 
 export const ANNOUNCE_DETAIL_OPEN = 'ANNOUNCE_DETAIL_OPEN'
@@ -29,6 +32,21 @@ actions.resetDetail = makeActionCreator(ANNOUNCE_DETAIL_RESET)
 actions.openForm = makeActionCreator(ANNOUNCE_FORM_OPEN, 'announce')
 actions.resetForm = makeActionCreator(ANNOUNCE_FORM_RESET)
 actions.updateForm = makeActionCreator(ANNOUNCE_FORM_UPDATE, 'prop', 'value')
+actions.validateForm = makeActionCreator(ANNOUNCE_FORM_VALIDATE)
+
+actions.saveAnnounce = (aggregateId, announce) => {
+  return (dispatch) => {
+    dispatch(actions.validateForm())
+
+    if (isValid(announce)) {
+      if (announce.id) {
+        dispatch(actions.updateAnnounce(aggregateId, announce))
+      } else {
+        dispatch(actions.createAnnounce(aggregateId, announce))
+      }
+    }
+  }
+}
 
 actions.addAnnounce = makeActionCreator(ANNOUNCE_ADD, 'announce')
 actions.createAnnounce = (aggregateId, announce) => ({
