@@ -1,4 +1,4 @@
-import {t} from '#/main/core/translation'
+import {t, trans} from '#/main/core/translation'
 
 const FIELD_TYPES = [
   {name: 'text', value: 1, label: t('text'), hasChoice: false, hasCascade: false, answerType: 'string'},
@@ -14,9 +14,10 @@ const FIELD_TYPES = [
 ]
 
 const FILE_TYPES = [
-  {value: 'audio/*', label: t('audio')},
-  {value: 'image/*', label: t('image')},
-  {value: 'video/*', label: t('video')}
+  {value: 'audio/*', label: trans('audio', {}, 'clacoform')},
+  {value: 'image/*', label: trans('image', {}, 'clacoform')},
+  {value: 'video/*', label: trans('video', {}, 'clacoform')},
+  {value: 'application/pdf', label: 'PDF'}
 ]
 
 export const constants = {

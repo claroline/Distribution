@@ -15,7 +15,13 @@ export const getCountry = (value) => {
 
 export const getFileType = (mimeType) => {
   const typeParts = mimeType.split('/')
-  const type = typeParts.length > 0 ? typeParts[0] : 'file'
+  let type = 'file'
+
+  if (typeParts[0] && ['image', 'audio', 'video'].indexOf(typeParts[0]) > -1) {
+    type = typeParts[0]
+  } else if (typeParts[1]) {
+    type = typeParts[1]
+  }
 
   return type
 }

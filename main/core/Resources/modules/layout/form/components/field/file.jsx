@@ -11,11 +11,30 @@ export class File extends Component {
     }
   }
 
+  isTypeAllowed(type) {
+    let isAllowed = this.props.types.length === 0
+
+    if (!isAllowed) {
+      const regex = new RegExp(type, 'gi')
+      this.props.types.forEach(t => {
+        if (t.match(regex)) {
+          isAllowed = true
+        }
+      })
+    }
+
+    return isAllowed
+  }
+
   addFile(file) {
     if (file && (!this.props.max || this.state.files.length < this.props.max)) {
-      const files = cloneDeep(this.state.files)
-      files.push(file)
-      this.setState({files: files}, () => this.props.onChange(this.state.files))
+      const type = this.getFileType(file.type)
+
+      if (this.isTypeAllowed(type)) {
+        const files = cloneDeep(this.state.files)
+        files.push(file)
+        this.setState({files: files}, () => this.props.onChange(this.state.files))
+      }
     }
   }
 
@@ -28,7 +47,13 @@ export class File extends Component {
 
   getFileType(mimeType) {
     const typeParts = mimeType.split('/')
-    const type = typeParts.length > 0 ? typeParts[0] : 'file'
+    let type = 'file'
+
+    if (typeParts[0] && ['image', 'audio', 'video'].indexOf(typeParts[0]) > -1) {
+      type = typeParts[0]
+    } else if (typeParts[1]) {
+      type = typeParts[1]
+    }
 
     return type
   }
