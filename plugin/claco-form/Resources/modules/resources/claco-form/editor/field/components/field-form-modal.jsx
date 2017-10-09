@@ -518,6 +518,7 @@ FieldFormModal.propTypes = {
     locked: T.boolean,
     lockedEditionOnly: T.boolean,
     hidden: T.boolean,
+    details: T.oneOfType([T.object, T.array]),
     fieldFacet: T.shape({
       id: T.number.isRequired,
       name: T.string.isRequired,

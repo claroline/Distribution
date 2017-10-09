@@ -1,7 +1,5 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
-import classes from 'classnames'
 
 import {asset} from '#/main/core/asset'
 import {t} from '#/main/core/translation'
@@ -30,7 +28,7 @@ const VideoThumbnail = props =>
         onClick={e => e.stopPropagation()}
         controls
       >
-        <source src={asset(props.data.url)} type={props.type}/>
+        <source src={asset(props.data.url)} type={props.data.mimeType}/>
       </video>
     }
   </div>
