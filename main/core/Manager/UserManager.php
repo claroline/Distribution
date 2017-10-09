@@ -21,13 +21,13 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
-use Claroline\CoreBundle\Library\Security\PlatformRoles;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Exception\AddRoleException;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
@@ -187,8 +187,7 @@ class UserManager
         }
 
         $this->objectManager->startFlushSuite();
-        $user->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
-        $user->setEmailValidationHash($this->container->get('claroline.utilities.misc')->generateGuid());
+
         $user->setOrganizations($organizations);
         $publicUrl ? $user->setPublicUrl($publicUrl) : $user->setPublicUrl($this->generatePublicUrl($user));
         $this->toolManager->addRequiredToolsToUser($user, 0);
@@ -327,6 +326,7 @@ class UserManager
         if ($user->getUsername() !== $previousUsername) {
             // Rename user role
             $userRole = $this->roleManager->getUserRole($previousUsername);
+
             if ($userRole) {
                 $this->roleManager->renameUserRole($userRole, $user->getUsername());
             }
@@ -713,12 +713,13 @@ class UserManager
 
         $personalWorkspaceName = $this->translator->trans('personal_workspace', [], 'platform').' - '.$user->getUsername();
         $workspace = new Workspace();
+        $workspace->setCode($code);
+        $workspace->setName($personalWorkspaceName);
+
         $workspace = !$model ?
             $this->workspaceManager->copy($this->workspaceManager->getDefaultModel(true), $workspace) :
             $this->workspaceManager->copy($model, $workspace);
 
-        $workspace->setCode($code);
-        $workspace->setName($personalWorkspaceName);
         $workspace->setCreator($user);
         $workspace->setPersonal(true);
 
@@ -1170,7 +1171,7 @@ class UserManager
         if ($user->getPictureFile()) {
             $file = $user->getPictureFile();
             $publicFile = $this->fu->createFile($file, $file->getBasename());
-            $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+            $this->fu->createFileUse($publicFile, get_class($user), $user->getUuid());
             //../.. for legacy compatibility
             $user->setPicture('../../'.$publicFile->getUrl());
             $this->objectManager->persist($user);
@@ -1396,7 +1397,7 @@ class UserManager
                 $file = new File($element->getPathName());
 
                 $publicFile = $this->fu->createFile($file, $file->getBasename());
-                $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+                $this->fu->createFileUse($publicFile, get_class($user), $user->getUuid());
                 //../.. for legacy compatibility
                 $user->setPicture('../../'.$publicFile->getUrl());
                 $this->objectManager->persist($user);
@@ -1409,7 +1410,7 @@ class UserManager
     /**
      * Checks if a user will have a personal workspace at his creation.
      */
-    private function personalWorkspaceAllowed($roles)
+    public function personalWorkspaceAllowed($roles)
     {
         $roles[] = $this->roleManager->getRoleByName('ROLE_USER');
 
