@@ -12,17 +12,15 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * @DI\Service("claroline.serializer.user")
  * @DI\Tag("claroline.serializer")
  */
-class UserSerializer
+class UserSerializer extends AbstractSerializer
 {
-    private $om;
     private $facetManager;
     private $tokenStorage;
 
     /**
-     * ResourceNodeManager constructor.
+     * UserManager constructor.
      *
      * @DI\InjectParams({
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
      *     "facetManager" = @DI\Inject("claroline.manager.facet_manager"),
      *     "tokenStorage" = @DI\Inject("security.token_storage")
      * })
@@ -32,11 +30,9 @@ class UserSerializer
      * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(
-        ObjectManager $om,
         FacetManager $facetManager,
         TokenStorageInterface $tokenStorage
     ) {
-        $this->om = $om;
         $this->facetManager = $facetManager;
         $this->tokenStorage = $tokenStorage;
     }
@@ -44,21 +40,26 @@ class UserSerializer
     /**
      * Serializes a Workspace entity for the JSON api.
      *
-     * @param User $user   - the user to serialize
-     * @param bool $public
+     * @param User  $user    - the user to serialize
+     * @param array $options
      *
-     * @return array - the serialized representation of the workspace
+     * @return array - the serialized representation of the user
      */
-    public function serialize(User $user, $options = [])
+    public function serialize($user, array $options = [])
     {
-        $isPublic = isset($options['public']) ? $options['public'] : false;
-        $data = $this->serializePublic($user);
-
-        if ($isPublic) {
-            return $data;
+        if (isset($options['public']) && $options['public']) {
+            return $this->serializePublic($user);
         }
 
-        return $data;
+        return [
+            'id' => $user->getId(),
+            'uuid' => $user->getUuid(),
+            'name' => $user->getFirstName().' '.$user->getLastName(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'username' => $user->getUsername(),
+            'picture' => $user->getPicture(),
+        ];
     }
 
     public function serializePublic(User $user)
@@ -102,5 +103,21 @@ class UserSerializer
         }
 
         return $publicUser;
+    }
+
+    /**
+     * Default deserialize method.
+     */
+    public function deserialize($class, $data, array $options = [])
+    {
+        $object = parent::deserialize($class, $data, $options);
+        $object->setPlainPassword($data->plainPassword);
+
+        return $object;
+    }
+
+    public function getClass()
+    {
+        return 'Claroline\CoreBundle\Entity\User';
     }
 }

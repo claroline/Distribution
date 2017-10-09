@@ -1,53 +1,48 @@
 <?php
 
-namespace Claroline\CoreBundle\Controller\API;
+namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
-use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractController extends Controller
+class AbstractController extends ContainerAware
 {
     /** @var FinderProvider */
-    private $finder;
+    protected $finder;
 
     /** @var SerializerProvider */
-    private $serializer;
+    protected $serializer;
 
     /** @var Crud */
-    private $crud;
+    protected $crud;
 
-    /**
-     * ThemeController constructor.
-     *
-     * @DI\InjectParams({
-     *     "finder"     = @DI\Inject("claroline.api.finder"),
-     *     "crud"       = @DI\Inject("claroline.api.crud"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     * })
-     */
-    public function __construct(
-        FinderProvider $finder,
-        SerializerProvider $serializer,
-        Crud $crud
-    ) {
-        $this->finder = $finder;
-        $this->crud = $crud;
-        $this->serializer = $serializer;
-    }
+    /** @var ObjectManager */
+    protected $om;
 
-    public function list(Request $request, $class, $page, $limit, $env)
+    /** @var ContainerInterface */
+    protected $container;
+
+    public function setContainer(ContainerInterface $container = null)
     {
-        return new JsonResponse(
-            $this->finder->search($class, $page, $limit, $request->query->all())
-        );
+        $this->container = $container;
+        $this->finder = $container->get('claroline.api.finder');
+        $this->serializer = $container->get('claroline.api.serializer');
+        $this->crud = $container->get('claroline.api.crud');
+        $this->om = $container->get('claroline.persistence.object_manager');
     }
 
-    public function create(Request $request, $class, $env)
+    public function listAction(Request $request, $class, $env)
+    {
+        return new JsonResponse($this->finder->search($class, $request->query->all()));
+    }
+
+    public function createAction(Request $request, $class, $env)
     {
         try {
             $object = $this->crud->create($class, $this->decodeRequest($request));
@@ -57,14 +52,11 @@ class AbstractController extends Controller
               201
             );
         } catch (\Exception $e) {
-            if ($env === 'prod') {
-                return new JsonResponse($e->getMessage(), 422);
-            }
-            throw $e;
+            $this->handleException($e, $env);
         }
     }
 
-    public function update($object, Request $request, $class, $env)
+    public function updateAction($uuid, Request $request, $class, $env)
     {
         try {
             $object = $this->crud->update($class, $this->decodeRequest($request));
@@ -73,29 +65,49 @@ class AbstractController extends Controller
                 $this->serializer->serialize($object)
             );
         } catch (\Exception $e) {
-            if ($env === 'prod') {
-                return new JsonResponse($e->getMessage(), 422);
-            }
-            throw $e;
+            $this->handleException($e, $env);
         }
     }
 
-    public function deleteBulk(Request $request, $class, $env)
+    public function deleteBulkAction(Request $request, $class, $env)
     {
         try {
-            $this->crud->deleteBulk($this->decodeRequest($request));
+            $this->crud->deleteBulk($class, $this->decodeRequest($request));
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
-            if ($env === 'prod') {
-                return new JsonResponse($e->getMessage(), 422);
-            }
-            throw $e;
+            $this->handleException($e, $env);
         }
     }
 
-    private function decodeRequest(Request $request)
+    protected function handleException(\Exception $e, $env)
+    {
+        if ($env === 'prod') {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+
+        throw $e;
+    }
+
+    protected function decodeRequest(Request $request)
     {
         return json_decode($request->getContent());
+    }
+
+    protected function decodeIdsString(Request $request, $class)
+    {
+        $ids = $request->query->get('ids');
+        $property = is_numeric($ids[0]) ? 'id' : 'uuid';
+
+        return $this->om->findList($class, $property, $ids);
+    }
+
+    protected function find($class, $id)
+    {
+        $object = new \stdClass();
+        $property = is_numeric($id) ? 'id' : 'uuid';
+        $object->{$property} = $property === 'uuid' ? $id : (int) $id;
+
+        return $this->serializer->deserialize($class, $object);
     }
 }

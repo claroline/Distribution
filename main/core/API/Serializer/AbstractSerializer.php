@@ -2,22 +2,30 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\ManyToOne;
 use JMS\DiExtraBundle\Annotation as DI;
 
-class AbstractSerializer
+/**
+ * @DI\Service("claroline.abstract_serializer", abstract=true)
+ */
+abstract class AbstractSerializer
 {
+    const INCLUDE_MANY_TO_ONE = 'many_to_one';
+    //maybe later include many to many
+
     /**
-     * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
-     * })
-     *
-     * @param ObjectManager $om
+     * @DI\Inject("claroline.persistence.object_manager")
      */
-    public function __construct(ObjectManager $om)
-    {
-        $this->om = $om;
-    }
+    public $om;
+
+    /**
+     * @DI\Inject("annotation_reader")
+     *
+     * @var Reader
+     */
+    public $reader;
 
     /**
      * Default serialize method.
@@ -34,7 +42,7 @@ class AbstractSerializer
     /**
      * Default deserialize method.
      */
-    public function deserialize($class, $data)
+    public function deserialize($class, $data, array $options = [])
     {
         $object = null;
 
@@ -42,40 +50,69 @@ class AbstractSerializer
             if (isset($data->uuid)) {
                 $object = $this->om->getRepository($class)->findOneByUuid($data->uuid);
             } else {
-                $object = is_int($data->id) ?
-                $this->om->getRepository($class)->findOneById($data->id) :
-                $this->om->getRepository($class)->findOneByUuid($data->id);
+                $object = !is_numeric($data->id) && property_exists($class, 'uuid') ?
+                  $this->om->getRepository($class)->findOneByUuid($data->id) :
+                  $this->om->getRepository($class)->findOneById($data->id);
             }
         }
 
+        $this->resolveData(
+            $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
+            $data,
+            $class
+        );
+
         if (!$object) {
-            $object = new $class();
+            $rc = new \ReflectionClass($class);
+            $object = $rc->newInstanceWithoutConstructor();
+            call_user_func_array([$object, '__construct'], $this->toArray($data));
         }
 
         return $this->mapObjectToEntity(
-          $this->getSerializableProperties($object),
-          $data,
-          $object
+            $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
+            $data,
+            $object
         );
     }
 
-    private function getSerializableProperties($object)
+    private function getSerializableProperties($class, $options = [])
     {
-        $class = get_class($object);
-        $usableVarType = ['string', 'integer', '\DateTime', 'boolean'];
         $refClass = new \ReflectionClass($class);
-        $fields = [];
+        $dontBeDumbAndShowThis = ['password', 'salt'];
+        $seralizableProperties = [];
 
-        foreach ($refClass->getProperties() as $refProperty) {
-            if (preg_match('/@var\s+([^\s]+)/', $refProperty->getDocComment(), $matches)) {
-                list(, $type) = $matches;
-                if (in_array($type, $usableVarType)) {
-                    $fields[$refProperty->getName()] = $refProperty->getName();
+        foreach ($refClass->getProperties() as $property) {
+            foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
+                if ($annotation instanceof Column && !in_array($property->getName(), $dontBeDumbAndShowThis)) {
+                    $seralizableProperties[$property->getName()] = $property->getName();
+                }
+                if (in_array(self::INCLUDE_MANY_TO_ONE, $options) && $annotation instanceof ManyToOne) {
+                    $seralizableProperties[$property->getName()] = $property->getName();
                 }
             }
         }
 
-        return array_unique($fields);
+        return $seralizableProperties;
+    }
+
+    protected function resolveData($mapping, \stdClass $data, $class)
+    {
+        $refClass = new \ReflectionClass($class);
+
+        foreach ($mapping as $dataProperty => $map) {
+            foreach ($refClass->getProperties() as $property) {
+                if ($property->getName() === $dataProperty) {
+                    foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
+                        if ($annotation instanceof ManyToOne) {
+                            //basic search by fields here... later create the object aswell
+                            $data->{$dataProperty} = $this->om
+                              ->getRepository($annotation->targetEntity)
+                              ->findOneBy($this->toArray($data->{$map}));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -97,15 +134,19 @@ class AbstractSerializer
     {
         foreach ($mapping as $dataProperty => $map) {
             if (property_exists($data, $dataProperty)) {
-                if (is_string($map)) {
+                if (is_string($map) || is_object($map) || is_int($map)) {
+                    try {
+                        $setter = $this->getEntitySetter($entity, $map);
+                        if ($data->{$dataProperty}) {
+                            // Inject data into entity
+                            call_user_func([$entity, $setter], $data->{$dataProperty});
+                        }
+                    } catch (\LogicException $e) {
+                        //no stter
+                    }
+                } else {
                     // Retrieve the entity setter
-                    $setter = $this->getEntitySetter($entity, $map);
 
-                    // Inject data into entity
-                    call_user_func([$entity, $setter], $data->{$dataProperty});
-                } elseif (is_callable($map)) {
-                    // Call the defined function
-                    // TODO : do not pass the whole data object to the callback
                     call_user_func($map, $entity, $data);
                 }
             }
@@ -162,7 +203,8 @@ class AbstractSerializer
     {
         $getter = null;
 
-        $prefixes = ['get', 'is', 'has'];
+        $prefixes = ['get', 'is', 'has', ''];
+
         foreach ($prefixes as $prefix) {
             $test = $prefix.ucfirst($property);
             if (method_exists($entity, $test)) {
@@ -196,5 +238,16 @@ class AbstractSerializer
         }
 
         return $setter;
+    }
+
+    private function toArray(\stdClass $data)
+    {
+        $asArray = [];
+
+        foreach (array_keys(get_object_vars($data)) as $var) {
+            $asArray[$var] = $data->{$var};
+        }
+
+        return $asArray;
     }
 }

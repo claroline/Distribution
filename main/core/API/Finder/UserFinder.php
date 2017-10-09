@@ -54,7 +54,7 @@ class UserFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\User';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
@@ -68,8 +68,7 @@ class UserFinder implements FinderInterface
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
               default:
-                if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
-                    $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;
+                if (is_bool($filterValue)) {
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                 } else {

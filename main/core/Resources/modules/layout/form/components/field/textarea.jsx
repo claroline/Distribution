@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {tex} from '#/main/core/translation'
+import {t} from '#/main/core/translation'
 import {getOffsets} from '#/main/core/utilities/text/selection'
 
 // see https://github.com/lovasoa/react-contenteditable
@@ -56,7 +56,7 @@ export class ContentEditable extends Component {
         onInput={this.emitChange}
         onBlur={this.emitChange}
         dangerouslySetInnerHTML={{__html: this.props.content}}
-        contentEditable={true}
+        contentEditable={!this.props.disabled}
         title={this.props.title}
         role="textbox"
         className="form-control"
@@ -110,14 +110,16 @@ ContentEditable.propTypes = {
   onChange: T.func.isRequired,
   onSelect: T.func,
   onClick: T.func,
-  title: T.string
+  title: T.string,
+  disabled: T.bool.isRequired
 }
 
 ContentEditable.defaultProps = {
   title: 'editable-content',
   onClick: () => {},
   onSelect: () => {},
-  minRows: 1
+  minRows: 1,
+  disabled: false
 }
 
 export class Tinymce extends Component {
@@ -200,7 +202,8 @@ Tinymce.propTypes = {
   onChange: T.func.isRequired,
   onSelect: T.func,
   onClick: T.func,
-  title: T.string
+  title: T.string,
+  disabled: T.bool
 }
 
 export class Textarea extends Component {
@@ -216,6 +219,7 @@ export class Textarea extends Component {
         title={this.props.title}
         minRows={this.props.minRows}
         content={this.props.content}
+        disabled={this.props.disabled}
         onChange={this.props.onChange}
         onSelect={this.props.onSelect}
         onClick={this.props.onClick}
@@ -229,6 +233,7 @@ export class Textarea extends Component {
         id={this.props.id}
         title={this.props.title}
         content={this.props.content}
+        disabled={this.props.disabled}
         onChange={this.props.onChange}
         onSelect={this.props.onSelect}
         onClick={this.props.onClick}
@@ -241,7 +246,7 @@ export class Textarea extends Component {
       <div className={classes('text-editor', this.props.className, {'minimal': this.state.minimal === true})}>
         <span
           role="button"
-          title={tex(this.state.minimal ? 'rich_text_tools' : 'minimize')}
+          title={t(this.state.minimal ? 'rich_text_tools' : 'minimize')}
           className={classes(
             'toolbar-toggle',
             'fa',
@@ -270,11 +275,13 @@ Textarea.propTypes = {
   onSelect: T.func,
   onClick: T.func,
   onChangeMode: T.func,
-  className: T.string
+  className: T.string,
+  disabled: T.bool.isRequired
 }
 
 Textarea.defaultProps = {
   minRows: 2,
+  disabled: false,
   onClick: () => {},
   onSelect: () => {},
   onChangeMode: () => {}

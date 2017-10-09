@@ -6,6 +6,8 @@ namespace Claroline\CoreBundle\Routing;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method as MethodConfig;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route as RouteConfig;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -20,17 +22,30 @@ class ApiLoader extends Loader
 {
     private $loaded = false;
 
+    /** @var FileLocatorInterface */
+    private $locator;
+    /** @var ContainerInterface */
+    private $container;
+    /** @var Reader */
+    private $reader;
+
     /**
+     * ApiLoader constructor.
+     *
      * @DI\InjectParams({
      *     "locator"   = @DI\Inject("file_locator"),
      *     "reader"    = @DI\Inject("annotation_reader"),
      *     "container" = @DI\Inject("service_container")
      * })
+     *
+     * @param FileLocatorInterface $locator
+     * @param Reader               $reader
+     * @param ContainerInterface   $container
      */
     public function __construct(
-      FileLocatorInterface $locator,
-      Reader $reader,
-      ContainerInterface $container
+        FileLocatorInterface $locator,
+        Reader $reader,
+        ContainerInterface $container
     ) {
         $this->locator = $locator;
         $this->container = $container;
@@ -43,54 +58,107 @@ class ApiLoader extends Loader
             throw new \RuntimeException('Do not add the "api" loader twice');
         }
 
-        $file = $this->locator->locate($resource);
-
+        $path = $this->locator->locate($resource);
         $routes = new RouteCollection();
+        $imported = $this->import($resource, 'annotation');
+        $routes->addCollection($imported);
 
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if (!$fileInfo->isDot() && $fileInfo->isFile()) {
+                $file = $fileInfo->getPathname();
+
+                //find prefix from annotations
+                $controller = $this->findClass($file);
+
+                if ($controller) {
+                    $refClass = new \ReflectionClass($controller);
+                    $class = null;
+                    $found = false;
+                    $prefix = '';
+
+                    foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
+                        if ($annotation instanceof ApiMeta) {
+                            $found = true;
+                            $class = $annotation->class;
+                        }
+
+                        if ($annotation instanceof RouteConfig) {
+                            $prefix = $annotation->getPath();
+                        }
+                    }
+
+                    if ($found) {
+                        foreach ($this->makeRouteMap($controller, $routes, $prefix) as $name => $options) {
+                            $pattern = '/'.$options[0];
+
+                            if ($prefix) {
+                                $pattern = '/'.$prefix.$pattern;
+                            }
+
+                            $routeDefaults = [
+                              '_controller' => $controller.'::'.$name.'Action',
+                              'class' => $class,
+                              'env' => $this->container->getParameter('kernel.environment'),
+                            ];
+
+                            $route = new Route($pattern, $routeDefaults, []);
+                            $route->setMethods([$options[1]]);
+
+                            // add the new route to the route collection:
+                            $routeName = 'apiv2_'.$prefix.'_'.$this->toUnderscore($name);
+                            $routes->add($routeName, $route);
+                        }
+                    }
+                }
+            }
+        }
+
+        return $routes;
+    }
+
+    private function makeRouteMap($controller, RouteCollection $routes, $prefix)
+    {
         $defaults = [
           'create' => ['', 'POST'],
           'update' => ['{uuid}', 'PUT'],
           'deleteBulk' => ['', 'DELETE'],
-          'list' => ['{page}/{limit}', 'GET'],
+          'list' => ['', 'GET'],
         ];
 
-        //find prefix from annotations
-        $controller = $this->findClass($file);
-        $refClass = new \ReflectionClass($controller);
-        $found = false;
+        $traits = class_uses($controller);
 
-        foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
-            if ($annotation instanceof ApiMeta) {
-                $found = true;
-                $prefix = $annotation->prefix;
-                $class = $annotation->class;
+        foreach ($traits as $trait) {
+            $refClass = new \ReflectionClass($trait);
+            $methods = $refClass->getMethods();
+
+            foreach ($methods as $method) {
+                foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
+                    $actionName = preg_replace('/Action/', '', $method->getName());
+
+                    if ($annotation instanceof RouteConfig) {
+                        $defaults[$actionName][0] = $annotation->getPath();
+                        $toRemove = $prefix.'_'.strtolower($actionName);
+                        $autoName = 'claroline_core_apinew_';
+                        //todo remove route from plugins but it doesn't exists yet
+                        $routes->remove($autoName.$toRemove);
+                    }
+
+                    if ($annotation instanceof MethodConfig) {
+                        $defaults[$actionName][1] = $annotation->getMethods()[0];
+                    } else {
+                        $defaults[$actionName][1] = 'GET';
+                    }
+                }
             }
         }
 
-        if (!$found) {
-            throw new \Exception('No controller definition found (did you forgot the ApiMeta annotation ?)');
-        }
+        return $defaults;
+    }
 
-        foreach ($defaults as $name => $options) {
-            $pattern = '/'.$prefix.'/'.$options[0];
-            $routeDefaults = [
-              '_controller' => $controller.'::'.$name,
-              'class' => $class,
-              'env' => $this->container->getParameter('kernel.environment'),
-            ];
-
-            $route = new Route($pattern, $routeDefaults, []);
-            $route->setMethods([$options[1]]);
-
-            // add the new route to the route collection:
-            $routeName = 'api_'.$prefix.'_'.$name;
-            $routes->add($routeName, $route);
-        }
-
-        $imported = $this->import($resource, 'annotation');
-        $routes->addCollection($imported);
-
-        return $routes;
+    //@see http://stackoverflow.com/questions/1589468/convert-camelcase-to-under-score-case-in-php-autoload
+    public function toUnderscore($string)
+    {
+        return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $string));
     }
 
     /**

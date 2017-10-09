@@ -54,7 +54,7 @@ class RoleFinder implements FinderInterface
         return 'Claroline\CoreBundle\Entity\Role';
     }
 
-    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [])
+    public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
@@ -83,8 +83,7 @@ class RoleFinder implements FinderInterface
                   break;
 
               default:
-                if ('true' === $filterValue || 'false' === $filterValue || true === $filterValue || false === $filterValue) {
-                    $filterValue = is_string($filterValue) ? 'true' === $filterValue : $filterValue;
+                if (is_bool($filterValue)) {
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                 } else {

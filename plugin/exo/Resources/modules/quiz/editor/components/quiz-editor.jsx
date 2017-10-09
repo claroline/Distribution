@@ -9,7 +9,6 @@ import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {tex, t} from '#/main/core/translation'
-import {formatDate} from '#/main/core/date'
 import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
@@ -257,6 +256,7 @@ class StepPicking extends Component
          </FormGroup>
        </div>
      }
+
      {!props.parameters.pickByTag &&
        <div>
         <RadioGroup
@@ -306,10 +306,9 @@ StepPicking.propTypes = {
     pick: T.number.isRequired,
     randomPick: T.string.isRequired,
     randomOrder: T.string.isRequired,
-    pickByTag: T.string.isRequired
+    pickByTag: T.bool.isRequired
   }).isRequired,
   items: T.object.isRequired,
-  quiz: T.object.isRequired,
   validating: T.bool.isRequired,
   onChange: T.func.isRequired
 }
@@ -486,7 +485,7 @@ class Correction extends Component {
                 id="quiz-correctionDate"
                 name="quiz-correctionDate"
                 value={this.props.parameters.correctionDate || ''}
-                onChange={date => this.props.onChange('parameters.correctionDate', formatDate(date))}
+                onChange={date => this.props.onChange('parameters.correctionDate', date)}
               />
             </FormGroup>
           </div>
@@ -593,6 +592,7 @@ function makePanel(Section, title, key, props, errorProps) {
       <Section
         onChange={props.updateProperties}
         errors={props.quiz._errors}
+        validating={props.validating}
         items={props.items}
         {...props.quiz}
       />
@@ -661,7 +661,7 @@ QuizEditor.propTypes = {
       showFeedback: T.bool.isRequired
     }).isRequired
   }).isRequired,
-  items: T.array.isRequired,
+  items: T.object.isRequired,
   validating: T.bool.isRequired,
   updateProperties: T.func.isRequired,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
