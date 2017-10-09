@@ -1279,9 +1279,9 @@ class RoleManager
 
     public function restoreTeamRoles()
     {
-        $workspaces = $this->container->get('claroline.manager.workspace_manager')->findAll();
+        $workspaces = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findBy(['personal' => false]);
 
-        foreach ($workspace as $workspaces) {
+        foreach ($workspaces as $workspace) {
             $roles = $workspace->getRoles();
             $root = $this->container->get('claroline.manager.resource_manager')
               ->getWorkspaceRoot($workspace);
