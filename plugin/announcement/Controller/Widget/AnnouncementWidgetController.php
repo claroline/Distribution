@@ -48,13 +48,13 @@ class AnnouncementWidgetController extends Controller
      *     "workspaceManager"    = @DI\Inject("claroline.manager.workspace_manager")
      * })
      *
-     * @param AnnouncementManager           $announcementManager
-     * @param FormFactoryInterface          $formFactory
-     * @param PagerFactory                  $pagerFactory
-     * @param TwigEngine                    $templating
-     * @param TokenStorageInterface         $tokenStorage
-     * @param Utilities                     $utils
-     * @param WorkspaceManager              $workspaceManager
+     * @param AnnouncementManager   $announcementManager
+     * @param FormFactoryInterface  $formFactory
+     * @param PagerFactory          $pagerFactory
+     * @param TwigEngine            $templating
+     * @param TokenStorageInterface $tokenStorage
+     * @param Utilities             $utils
+     * @param WorkspaceManager      $workspaceManager
      */
     public function __construct(
         AnnouncementManager $announcementManager,
@@ -141,7 +141,7 @@ class AnnouncementWidgetController extends Controller
         return [
             'widgetInstance' => $widgetInstance,
             'isDesktop' => $isDesktop,
-            'datas' => $this->pagerFactory->createPagerFromArray($announcements, $page, 5)
+            'datas' => $this->pagerFactory->createPagerFromArray($announcements, $page, 5),
         ];
     }
 

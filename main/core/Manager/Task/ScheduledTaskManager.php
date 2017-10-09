@@ -45,9 +45,9 @@ class ScheduledTaskManager
      *     "serializer"    = @DI\Inject("claroline.serializer.scheduled_task")
      * })
      *
-     * @param ObjectManager           $om
+     * @param ObjectManager                $om
      * @param PlatformConfigurationHandler $configHandler
-     * @param ScheduledTaskSerializer $serializer
+     * @param ScheduledTaskSerializer      $serializer
      */
     public function __construct(
         ObjectManager $om,

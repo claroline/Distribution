@@ -109,7 +109,7 @@ class AnnouncementManager
      * Creates a new Announcement.
      *
      * @param AnnouncementAggregate $aggregate
-     * @param array $data
+     * @param array                 $data
      *
      * @return Announcement
      */
@@ -131,15 +131,15 @@ class AnnouncementManager
      * Updates an Announcement.
      *
      * @param Announcement $announcement
-     * @param array $data
-     * @param string $logEvent
+     * @param array        $data
+     * @param string       $logEvent
      *
      * @return Announcement
      */
     public function update(Announcement $announcement, array $data, $logEvent = 'LogAnnouncementEdit')
     {
         $this->om->startFlushSuite();
-        
+
         // deserialize data
         $this->serializer->deserialize($data, $announcement);
         $this->om->persist($announcement);

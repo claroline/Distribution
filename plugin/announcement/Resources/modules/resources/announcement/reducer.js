@@ -105,7 +105,7 @@ const announcementFormReducer = makeReducer({
 
 const announcementDetailReducer = makeReducer(null, {
   [ANNOUNCE_DETAIL_OPEN]: (state, action) => action.announceId,
-  [ANNOUNCE_DETAIL_RESET]: (state, action) => null
+  [ANNOUNCE_DETAIL_RESET]: () => null
 })
 
 const reducer = {
