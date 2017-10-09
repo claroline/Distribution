@@ -32,6 +32,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ClacoFormController extends Controller
@@ -1192,13 +1193,33 @@ class ClacoFormController extends Controller
     {
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
         $content = $this->clacoFormManager->exportEntries($clacoForm);
-        $headers = [
-            'Content-Transfer-Encoding' => 'octet-stream',
-            'Content-Type' => 'application/vnd.ms-excel; charset=utf-8',
-            'Content-Disposition' => 'attachment; filename="'.$clacoForm->getResourceNode()->getName().'.xls"',
-        ];
 
-        return new Response($content, 200, $headers);
+        if ($this->clacoFormManager->hasFiles($clacoForm)) {
+            $file = $this->clacoFormManager->zipEntries($content, $clacoForm);
+
+            $response = new StreamedResponse();
+            $response->setCallBack(
+                function () use ($file) {
+                    readfile($file);
+                }
+            );
+            $response->headers->set('Content-Transfer-Encoding', 'octet-stream');
+            $response->headers->set('Content-Type', 'application/force-download');
+            $response->headers->set('Content-Disposition', 'attachment; filename='.urlencode($clacoForm->getResourceNode()->getName().'.zip'));
+            $response->headers->set('Content-Type', 'application/zip; charset=utf-8');
+            $response->headers->set('Connection', 'close');
+            $response->send();
+
+            return new Response();
+        } else {
+            $headers = [
+                'Content-Transfer-Encoding' => 'octet-stream',
+                'Content-Type' => 'application/vnd.ms-excel; charset=utf-8',
+                'Content-Disposition' => 'attachment; filename="'.$clacoForm->getResourceNode()->getName().'.xls"',
+            ];
+
+            return new Response($content, 200, $headers);
+        }
     }
 
     /**

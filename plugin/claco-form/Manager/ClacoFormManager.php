@@ -47,6 +47,7 @@ use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\FacetManager;
@@ -71,7 +72,9 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ClacoFormManager
 {
+    private $archiveDir;
     private $authorization;
+    private $configHandler;
     private $eventDispatcher;
     private $facetManager;
     private $fileSystem;
@@ -98,7 +101,9 @@ class ClacoFormManager
 
     /**
      * @DI\InjectParams({
+     *     "archiveDir"      = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "configHandler"   = @DI\Inject("claroline.config.platform_config_handler"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
      *     "fileSystem"      = @DI\Inject("filesystem"),
@@ -116,7 +121,9 @@ class ClacoFormManager
      * })
      */
     public function __construct(
+        $archiveDir,
         AuthorizationCheckerInterface $authorization,
+        PlatformConfigurationHandler $configHandler,
         EventDispatcherInterface $eventDispatcher,
         FacetManager $facetManager,
         Filesystem $fileSystem,
@@ -132,7 +139,9 @@ class ClacoFormManager
         UserManager $userManager,
         ClaroUtilities $utils
     ) {
+        $this->archiveDir = $archiveDir;
         $this->authorization = $authorization;
+        $this->configHandler = $configHandler;
         $this->eventDispatcher = $eventDispatcher;
         $this->facetManager = $facetManager;
         $this->fileSystem = $fileSystem;
@@ -1537,6 +1546,21 @@ class ClacoFormManager
         }
     }
 
+    public function hasFiles(ClacoForm $clacoForm)
+    {
+        $hasFiles = false;
+        $fields = $clacoForm->getFields();
+
+        foreach ($fields as $field) {
+            if ($field->getType() === FieldFacet::FILE_TYPE) {
+                $hasFiles = true;
+                break;
+            }
+        }
+
+        return $hasFiles;
+    }
+
     public function exportEntries(ClacoForm $clacoForm)
     {
         $entriesData = [];
@@ -1549,6 +1573,7 @@ class ClacoFormManager
             $editionDate = $entry->getEditionDate();
             $fieldValues = $entry->getFieldValues();
             $data = [];
+            $data['id'] = $entry->getId();
             $data['title'] = $entry->getTitle();
             $data['author'] = empty($user) ?
                 $this->translator->trans('anonymous', [], 'platform') :
@@ -1574,6 +1599,12 @@ class ClacoFormManager
                         $value = $this->locationManager->getCountryByCode($val);
                         break;
                     case FieldFacet::FILE_TYPE:
+                        $values = [];
+
+                        foreach ($val as $fileValue) {
+                            $values[] = '['.implode(', ', $fileValue).']';
+                        }
+                        $value = implode(', ', $values);
                         break;
                     default:
                         $value = $val;
@@ -1591,6 +1622,42 @@ class ClacoFormManager
                 'entries' => $entriesData,
             ]
         );
+    }
+
+    public function zipEntries($content, ClacoForm $clacoForm)
+    {
+        $archive = new \ZipArchive();
+        $pathArch = $this->configHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.$this->utils->generateGuid().'.zip';
+        $archive->open($pathArch, \ZipArchive::CREATE);
+        $archive->addFromString($clacoForm->getResourceNode()->getName().'.xls', $content);
+
+        $entries = $this->getAllEntries($clacoForm);
+
+        foreach ($entries as $entry) {
+            $fieldValues = $entry->getFieldValues();
+
+            foreach ($fieldValues as $fiedValue) {
+                $field = $fiedValue->getField();
+                $fieldFacetValue = $fiedValue->getFieldFacetValue();
+
+                if ($field->getType() === FieldFacet::FILE_TYPE) {
+                    $files = $fieldFacetValue->getValue();
+                    foreach ($files as $file) {
+                        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
+                        $fileParts = explode('/', $file['url']);
+                        $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
+                        $archive->addFile(
+                            $filePath,
+                            'files'.DIRECTORY_SEPARATOR.$entry->getId().DIRECTORY_SEPARATOR.$fileName
+                        );
+                    }
+                }
+            }
+        }
+        $archive->close();
+        file_put_contents($this->archiveDir, $pathArch."\n", FILE_APPEND);
+
+        return $pathArch;
     }
 
     public function generatePdfForEntry(Entry $entry, User $user)
