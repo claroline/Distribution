@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Options;
-use Claroline\CoreBundle\Controller\APINew\Model\IsRecursiveTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasParent;
 use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class OrganizationController extends AbstractController
 {
-    use IsRecursiveTrait;
+    use HasParent;
 
     /**
      * @Route("/list/recursive", name="apiv2_organization_list_recursive")

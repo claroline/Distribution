@@ -8,10 +8,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-trait IsRecursiveTrait
+trait HasParent
 {
     /**
-     * @Route("{child}/move/{parent}")
+     * @Route("{parent}/move/{child}")
      * @Method("PATCH")
      */
     public function moveAction($child, $parent, $class, Request $request, $env)
@@ -19,7 +19,7 @@ trait IsRecursiveTrait
         try {
             $child = $this->find($class, $child);
             $parent = $this->find($class, $parent);
-            $this->crud->patch($child, 'parent', Crud::PROPERTY_SET, $parent);
+            $this->crud->replace($child, 'parent', $parent);
 
             return new JsonResponse($this->serializer->serialize($child));
         } catch (\Exception $e) {

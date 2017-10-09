@@ -18,7 +18,6 @@ class Crud
 
     const COLLECTION_ADD = 'add';
     const COLLECTION_REMOVE = 'remove';
-    const PROPERTY_SET = 'set';
 
     /** @var ObjectManager */
     private $om;
@@ -79,9 +78,12 @@ class Crud
         // creates the entity if allowed
         $this->checkPermission('CREATE', $object, [], true);
 
-        $this->dispatcher->dispatch('crud_pre_create_object', 'Crud', [$object]);
-        $this->om->save($object);
-        $this->dispatcher->dispatch('crud_post_create_object', 'Crud', [$object]);
+        $event = $this->dispatcher->dispatch('crud_pre_create_object', 'Crud', [$object]);
+
+        if ($event->isAllowed()) {
+            $this->om->save($object);
+            $this->dispatcher->dispatch('crud_post_create_object', 'Crud', [$object]);
+        }
 
         return $object;
     }
@@ -105,10 +107,12 @@ class Crud
 
         // updates the entity if allowed
         $this->checkPermission('EDIT', $object, [], true);
+        $event = $this->dispatcher->dispatch('crud_pre_update_object', 'Crud', [$object]);
 
-        $this->dispatcher->dispatch('crud_pre_update_object', 'Crud', [$object]);
-        $this->om->save($object);
-        $this->dispatcher->dispatch('crud_post_update_object', 'Crud', [$object]);
+        if ($event->isAllowed()) {
+            $this->om->save($object);
+            $this->dispatcher->dispatch('crud_post_update_object', 'Crud', [$object]);
+        }
 
         return $object;
     }
@@ -153,24 +157,16 @@ class Crud
     }
 
     /**
-     * Patches a property in `object`. It will also work for collection with the add/delete method.
+     * Patches a collection in `object`. It will also work for collection with the add/delete method.
      *
      * @param object $object   - the entity to update
      * @param string $property - the name of the property which holds the collection
      * @param string $action   - the action to execute on the collection (aka. add/remove/set)
-     * @param mixed  $data     - the datas that must be set
+     * @param mixed  $elements - the collection to patch
      */
-    public function patch($object, $property, $action, $data)
+    public function patch($object, $property, $action, array $elements)
     {
-        // remove the 's' at the end of the property name is it exists.
-        // it's relevant for collection and stuff like that but it's probably going
-        // to be a little more complex than that.
-
-        if (substr($property, -1) === 's') {
-            $methodName = $action.substr(ucfirst(strtolower($property)), 0, -1);
-        } else {
-            $methodName = $action.ucfirst(strtolower($property));
-        }
+        $methodName = $action.ucfirst(strtolower($property));
 
         if (!method_exists($object, $methodName)) {
             throw new \LogicException(
@@ -183,13 +179,36 @@ class Crud
         //we'll need to pass the $action and $data here aswell later
         $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
 
-        if (is_array($data)) {
-            foreach ($data as $element) {
-                $object->$methodName($element);
-            }
-        } else {
-            $object->$methodName($data);
+        foreach ($elements as $element) {
+            $object->$methodName($element);
         }
+
+        $this->om->save($object);
+        $this->dispatcher->dispatch('crud_post_patch_object', 'Crud', [$object]);
+    }
+
+    /**
+     * Patches a property in `object`.
+     *
+     * @param object $object - the entity to update
+     * @param string $action - the action to execute on the collection (aka. add/remove/set)
+     * @param mixed  $data   - the datas that must be set
+     */
+    public function replace($object, $property, $data)
+    {
+        $methodName = 'set'.ucfirst(strtolower($property));
+
+        if (!method_exists($object, $methodName)) {
+            throw new \LogicException(
+                sprintf('You have requested a non implemented action \'set\' on %s', get_class($object))
+            );
+        }
+
+        //add the options to pass on here
+        $this->checkPermission('PATCH', $object, [], true);
+        //we'll need to pass the $action and $data here aswell later
+        $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
+        $object->$methodName($data);
 
         $this->om->save($object);
         $this->dispatcher->dispatch('crud_post_patch_object', 'Crud', [$object]);
