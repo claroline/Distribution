@@ -18,7 +18,7 @@ class Crud
 
     const COLLECTION_ADD = 'add';
     const COLLECTION_REMOVE = 'remove';
-    const COLLECTION_REPLACE = 'set';
+    const PROPERTY_SET = 'set';
 
     /** @var ObjectManager */
     private $om;
@@ -124,10 +124,13 @@ class Crud
     {
         $this->checkPermission('DELETE', $object, [], true);
 
-        $this->dispatcher->dispatch('crud_pre_delete_object', 'Crud', [$object]);
-        $this->om->remove($object);
-        $this->om->flush();
-        $this->dispatcher->dispatch('crud_post_delete_object', 'Crud', [$object]);
+        $event = $this->dispatcher->dispatch('crud_pre_delete_object', 'Crud', [$object]);
+
+        if ($event->isAllowed()) {
+            $this->om->remove($object);
+            $this->om->flush();
+            $this->dispatcher->dispatch('crud_post_delete_object', 'Crud', [$object]);
+        }
     }
 
     /**
@@ -140,25 +143,35 @@ class Crud
     public function deleteBulk($class, array $data, array $options = [])
     {
         $this->om->startFlushSuite();
+
         foreach ($data as $el) {
             //get the element
             $this->delete($el, $class, $options);
         }
+
         $this->om->endFlushSuite();
     }
 
     /**
-     * Patches a collection in `object` allowing to add or remove elements in it.
+     * Patches a property in `object`. It will also work for collection with the add/delete method.
      *
      * @param object $object   - the entity to update
      * @param string $property - the name of the property which holds the collection
-     * @param string $action   - the action to execute on the collection (aka. add/remove)
-     * @param array  $elements - the list of elements on which to execute `action`
+     * @param string $action   - the action to execute on the collection (aka. add/remove/set)
+     * @param mixed  $data     - the datas that must be set
      */
-    public function patch($object, $property, $action, array $elements)
+    public function patch($object, $property, $action, $data)
     {
-        // retrieves correct method to call on entity
-        $methodName = $action.substr(ucfirst(strtolower($property)), 0, -1);
+        // remove the 's' at the end of the property name is it exists.
+        // it's relevant for collection and stuff like that but it's probably going
+        // to be a little more complex than that.
+
+        if (substr($property, -1) === 's') {
+            $methodName = $action.substr(ucfirst(strtolower($property)), 0, -1);
+        } else {
+            $methodName = $action.ucfirst(strtolower($property));
+        }
+
         if (!method_exists($object, $methodName)) {
             throw new \LogicException(
                 sprintf('You have requested a non implemented action %s on %s', $action, get_class($object))
@@ -167,11 +180,15 @@ class Crud
 
         //add the options to pass on here
         $this->checkPermission('PATCH', $object, [], true);
+        //we'll need to pass the $action and $data here aswell later
         $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
-        $methodName = $action.substr(ucfirst(strtolower($property)), 0, -1);
 
-        foreach ($elements as $element) {
-            $object->$methodName($element);
+        if (is_array($data)) {
+            foreach ($data as $element) {
+                $object->$methodName($element);
+            }
+        } else {
+            $object->$methodName($data);
         }
 
         $this->om->save($object);

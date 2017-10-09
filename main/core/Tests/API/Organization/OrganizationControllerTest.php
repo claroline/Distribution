@@ -108,28 +108,6 @@ class OrganizationControllerTest extends TransactionalTestCase
         $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
     }
 
-    //@route: api_get_organization_list
-    //@url: /api/organization/list.{_format}
-    public function testGetOrganizationListAction()
-    {
-        $this->persister->organization('orga1');
-        $this->persister->organization('orga2');
-        $this->persister->flush();
-        $this->logIn($this->admin);
-        $this->client->request('GET', '/api/organization/list.json');
-        $data = $this->client->getResponse()->getContent();
-        $this->assertEquals(3, count(json_decode($data, true)));
-    }
-
-    //@route: api_get_organization_list
-    //@url: /api/organization/list.{_format}
-    public function testGetOrganizationListActionIsProtected()
-    {
-        $this->logIn($this->john);
-        $this->client->request('GET', '/api/organization/list.json');
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
     //@route: api_get_edit_organization_form
     //@url: /api/organization/{organization}/edit/form.json
     public function testGetEditOrganizationFormAction()
