@@ -1276,4 +1276,26 @@ class RoleManager
 
         return $operationExecuted;
     }
+
+    public function restoreTeamRoles()
+    {
+        $workspaces = $this->container->get('claroline.manager.workspace_manager')->findAll();
+
+        foreach ($workspace as $workspaces) {
+            $roles = $workspace->getRoles();
+            $root = $this->container->get('claroline.manager.resource_manager')
+              ->getWorkspaceRoot($workspace);
+            $resources = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')
+              ->findBy(['parent' => $root]);
+
+            foreach ($roles as $role) {
+                foreach ($resources as $resource) {
+                    if ($resource->getName() === $role->getName()) {
+                        $this->log('Restore team permissions on '.$resource->getName());
+                        $this->container->get('claroline.manager.rights_manager')->editPerms(['open' => true], $role, $resource);
+                    }
+                }
+            }
+        }
+    }
 }
