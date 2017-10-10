@@ -57,8 +57,8 @@ class DocimologyManager
     public function __construct(
           ObjectManager $om,
           ItemManager $itemManager,
-          PaperManager $paperManager)
-    {
+          PaperManager $paperManager
+    ) {
         $this->om = $om;
         $this->exerciseRepository = $this->om->getRepository('UJMExoBundle:Exercise');
         $this->paperRepository = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
@@ -342,7 +342,7 @@ class DocimologyManager
 
             $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
             // since totalScoreOn might have change through papers report all scores on a define value
-            if ($scoreOn) {
+            if ($scoreOn && $totalScoreOn > 0) {
                 $score = floatval(($scoreOn * $score) / $totalScoreOn);
             }
             $scores[] = $score !== floor($score) ? floatval(number_format($score, 2)) : $score;
