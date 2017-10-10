@@ -1,7 +1,7 @@
 import {createSelector} from 'reselect'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 
 const image = state => state.image
-const resourceNode = state => state.resourceNode
 
 const url = createSelector(
   [image],
@@ -14,7 +14,7 @@ const hashName = createSelector(
 )
 
 const canDownload = createSelector(
-  [resourceNode],
+  [resourceSelect.resourceNode],
   (resourceNode) => resourceNode.rights.current.export
 )
 
