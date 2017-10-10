@@ -127,8 +127,9 @@
     }
 
     .item-icon-container {
-        display: inline-block;
-        padding: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         font-size: 48px;
         margin: 30px;
         background: rgba(255, 255, 255, .5);
@@ -144,6 +145,8 @@
 
         img {
             border-radius: 50%;
+            max-width: 100%;
+            max-height: 100%;
         }
     }
 
@@ -240,6 +243,11 @@
         max-width: 100% / @data-grid-cols-sm;
     }
 
+    .item-icon-container {
+        width: 60px;
+        height: 60px;
+    }
+
     .data-grid-item {
         .grid-item-vertical-variant();
     }
@@ -249,6 +257,11 @@
     .data-grid-item-container {
         flex: 0 0 (100% / @data-grid-cols-md);
         max-width: 100% / @data-grid-cols-md;
+    }
+
+    .item-icon-container {
+        width: 100px;
+        height: 100px;
     }
 
     .data-grid-item {
@@ -262,6 +275,11 @@
 
 // in this case we will put header and content on the same line
 .data-grid-lg {
+    .item-icon-container {
+        width: 100px;
+        height: 100px;
+    }
+
     .data-grid-item-container {
         flex: 0 0 (100% / @data-grid-cols-lg);
         max-width: 100% / @data-grid-cols-lg;
