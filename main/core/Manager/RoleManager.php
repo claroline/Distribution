@@ -97,8 +97,12 @@ class RoleManager
      *
      * @return \Claroline\CoreBundle\Entity\Role
      */
-    public function createWorkspaceRole($name, $translationKey, Workspace $workspace, $isReadOnly = false)
-    {
+    public function createWorkspaceRole(
+        $name,
+        $translationKey,
+        Workspace $workspace,
+        $isReadOnly = false
+    ) {
         $role = new Role();
         $role->setName($name);
         $role->setTranslationKey($translationKey);
@@ -1275,27 +1279,5 @@ class RoleManager
         }
 
         return $operationExecuted;
-    }
-
-    public function restoreTeamRoles()
-    {
-        $workspaces = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findBy(['personal' => false]);
-
-        foreach ($workspaces as $workspace) {
-            $roles = $workspace->getRoles();
-            $root = $this->container->get('claroline.manager.resource_manager')
-              ->getWorkspaceRoot($workspace);
-            $resources = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceNode')
-              ->findBy(['parent' => $root]);
-
-            foreach ($roles as $role) {
-                foreach ($resources as $resource) {
-                    if ($resource->getName() === $role->getName()) {
-                        $this->log('Restore team permissions on '.$resource->getName());
-                        $this->container->get('claroline.manager.rights_manager')->editPerms(['open' => true], $role, $resource);
-                    }
-                }
-            }
-        }
     }
 }
