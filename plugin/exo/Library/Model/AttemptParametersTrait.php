@@ -51,6 +51,21 @@ trait AttemptParametersTrait
     private $maxAttempts = 0;
 
     /**
+     * Number of attempts allowed per day.
+     * If 0, the user can retry as many times a he wishes.
+     *
+     * @ORM\Column(name="max_day_attempts", type="integer")
+     *
+     * @var int
+     */
+    private $maxAttemptsPerDay = 0;
+
+    /**
+     * @ORM\Column(name="random_tag", type="array")
+     */
+    private $randomTag;
+
+    /**
      * Sets random order.
      *
      * @param string $randomOrder
@@ -148,5 +163,40 @@ trait AttemptParametersTrait
     public function getMaxAttempts()
     {
         return $this->maxAttempts;
+    }
+
+    /**
+     * Sets max attempts.
+     *
+     * @param int $maxAttemptsPerDay
+     */
+    public function setMaxAttemptsPerDay($maxAttemptsPerDay)
+    {
+        if ($maxAttemptsPerDay > $this->maxAttempts) {
+            //we can't try more times per day than the maximum allowed attemps defined
+            $this->maxAttemptsPerDay = $this->maxAttempts;
+        }
+
+        $this->maxAttemptsPerDay = $maxAttemptsPerDay;
+    }
+
+    /**
+     * Gets max attempts.
+     *
+     * @return int
+     */
+    public function getMaxAttemptsPerDay()
+    {
+        return $this->maxAttemptsPerDay;
+    }
+
+    public function setRandomTag($randomTag)
+    {
+        $this->randomTag = $randomTag;
+    }
+
+    public function getRandomTag()
+    {
+        return $this->randomTag;
     }
 }

@@ -18,15 +18,12 @@ claro_locale:
     type: annotation
 
 claro_theme:
-    resource: "@ClarolineCoreBundle/Controller/ThemeController.php"
+    resource: "@ClarolineCoreBundle/Controller/Administration/ThemeController.php"
     type: annotation
 
-claro_theme_confirm:
-    pattern: /admin/theme/confirm
-    options: { expose: true }
-    defaults:
-        _controller: FrameworkBundle:Template:template
-        template: 'ClarolineCoreBundle:Theme:confirm.html.twig'
+claro_theme_api:
+    resource: "@ClarolineCoreBundle/Controller/API/ThemeController.php"
+    type: annotation
 
 claro_content_typeerror:
     pattern: /content/typeerror
@@ -222,7 +219,7 @@ claro_admin_parameters:
 
 claro_admin_workspaces:
     prefix: admin/workspaces
-    resource: "@ClarolineCoreBundle/Controller/Administration/WorkspacesController.php"
+    resource: "@ClarolineCoreBundle/Controller/Administration/WorkspaceController.php"
     type: annotation
 
 claro_admin_roles:
@@ -474,4 +471,15 @@ claro_admin_resource_icons:
 claro_admin_scheduled_task:
     resource: "@ClarolineCoreBundle/Controller/Administration/ScheduledTaskController.php"
     prefix: admin/scheduled/task
+    type: annotation
+
+claro_new_api:
+    resource: "@ClarolineCoreBundle/Controller/APINew"
+    prefix: apiv2
+    type: api
+    options:
+        expose: true
+
+claro_admin_scheduled_task_api:
+    resource: "@ClarolineCoreBundle/Controller/API/Admin/ScheduledTaskController.php"
     type: annotation

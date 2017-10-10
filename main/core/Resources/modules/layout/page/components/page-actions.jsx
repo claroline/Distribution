@@ -26,7 +26,8 @@ const PageAction = props =>
           'btn page-action-btn',
           {
             'disabled': props.disabled,
-            'page-action-primary': props.primary
+            'page-action-primary': props.primary,
+            'page-action-default': !props.primary
           },
           props.className
         )}
@@ -43,7 +44,8 @@ const PageAction = props =>
           'btn page-action-btn',
           {
             'disabled': props.disabled,
-            'page-action-primary': props.primary
+            'page-action-primary': props.primary,
+            'page-action-default': !props.primary
           },
           props.className
         )}
@@ -111,8 +113,7 @@ const MoreAction = props =>
     <DropdownButton
       id="page-more"
       title={<span className="page-action-icon fa fa-ellipsis-v" />}
-      bsStyle=""
-      className="btn page-action-btn"
+      className="btn page-action-btn page-action-default"
       noCaret={true}
       pullRight={true}
     >
@@ -121,7 +122,16 @@ const MoreAction = props =>
   </TooltipElement>
 
 MoreAction.propTypes = {
-  children: T.node.isRequired
+  children: T.node.isRequired/*,
+  actionGroups: T.arrayOf(T.shape({
+    name: T.string.isRequired,
+    actions: T.arrayOf(T.shape({
+      icon: T.string,
+      label: T.string.isRequired,
+      action: T.oneOfType([T.string, T.func]).isRequired,
+      isDangerous: T.bool
+    })).isRequired
+  })).isRequired*/
 }
 
 /**

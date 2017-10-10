@@ -6,11 +6,11 @@ import MenuItem from 'react-bootstrap/lib/MenuItem'
 /*import {generateUrl} from '#/main/core/fos-js-router'*/
 import {t_res} from '#/main/core/layout/resource/translation'
 
-import {getSimpleAccessRule, hasCustomRules} from '#/main/core/layout/resource/rights/utils'
+import {getSimpleAccessRule, hasCustomRules} from '#/main/core/layout/resource/rights'
 
 /*import {MODAL_DELETE_CONFIRM}      from '#/main/core/layout/modal'*/
 import {MODAL_RESOURCE_PROPERTIES} from '#/main/core/layout/resource/components/modal/edit-properties.jsx'
-import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/layout/resource/rights/components/modal/edit-rights.jsx'
+import {MODAL_RESOURCE_RIGHTS}     from '#/main/core/layout/resource/components/modal/edit-rights.jsx'
 
 import {
   PageActions,
@@ -230,24 +230,24 @@ function getMoreActions(resourceNode, props) {
 
 const ManagementGroupActions = props =>
   <PageGroupActions>
-    {(props.resourceNode.rights.current.edit && !props.editMode) &&
+    {(props.editor && !props.editor.opened && props.resourceNode.rights.current.edit) &&
       <PageAction
         id="resource-edit"
-        title={t_res('edit')}
-        icon="fa fa-pencil"
+        title={props.editor.label || t_res('edit')}
+        icon={props.editor.icon || 'fa fa-pencil'}
         primary={true}
-        action={props.edit}
+        action={props.editor.open}
       />
     }
 
-    {(props.resourceNode.rights.current.edit && props.editMode) &&
+    {(props.editor && props.editor.opened && props.resourceNode.rights.current.edit) &&
       <PageAction
         id="resource-save"
         title={t_res('save')}
         icon="fa fa-floppy-o"
         primary={true}
-        disabled={props.save.disabled}
-        action={props.save.action}
+        disabled={props.editor.save.disabled}
+        action={props.editor.save.action}
       />
     }
 
@@ -288,15 +288,22 @@ ManagementGroupActions.propTypes = {
       }).isRequired
     })
   }).isRequired,
-  save: T.shape({
-    disabled: T.bool.isRequired,
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }).isRequired,
-  edit: T.oneOfType([T.func, T.string]).isRequired,
-  editMode: T.bool,
+  /**
+   * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
+   */
+  editor: T.shape({
+    icon: T.string,
+    label: T.string,
+    opened: T.bool,
+    open: T.oneOfType([T.func, T.string]).isRequired,
+    save: T.shape({
+      disabled: T.bool.isRequired,
+      action: T.oneOfType([T.string, T.func]).isRequired
+    }).isRequired
+  }),
   togglePublication: T.func.isRequired,
-  showModal: T.func.isRequired,
-  updateNode: T.func.isRequired
+  updateNode: T.func.isRequired,
+  showModal: T.func.isRequired
 }
 
 const CustomGroupActions = () =>
@@ -313,18 +320,18 @@ CustomGroupActions.propTypes = {
 /**
  * @param props
  * @constructor
+ *
+ * @todo hide more menu if empty
  */
 const ResourceActions = props =>
   <PageActions className="resource-actions">
     {(props.resourceNode.rights.current.edit || props.resourceNode.rights.current.administrate) &&
       <ManagementGroupActions
         resourceNode={props.resourceNode}
-        save={props.save}
-        edit={props.edit}
-        editMode={props.editMode}
+        editor={props.editor}
         togglePublication={props.togglePublication}
-        showModal={props.showModal}
         updateNode={props.updateNode}
+        showModal={props.showModal}
       />
     }
 
@@ -333,24 +340,28 @@ const ResourceActions = props =>
     <PageGroupActions>
       <FullScreenAction fullscreen={props.fullscreen} toggleFullscreen={props.toggleFullscreen} />
       <MoreAction id="resource-more">
-        <MenuItem
-          key="resource-group-type"
-          header={true}
-        >
-          {t_res(props.resourceNode.meta.type)}
-        </MenuItem>
+        {props.customActions && 0 !== props.customActions.length &&
+          <MenuItem
+            key="resource-group-type"
+            header={true}
+          >
+            {t_res(props.resourceNode.meta.type)}
+          </MenuItem>
+        }
 
-        {props.customActions.map((customAction, index) =>
-          React.createElement(MenuItem, {
-            key: `resource-more-action-${index}`,
-            eventKey: `resource-action-${index}`,
-            children: [
-              <span className={customAction.icon} />,
-              customAction.label
-            ],
-            [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
-          })
-        )}
+        {props.customActions && 0 !== props.customActions.length &&
+          props.customActions.map((customAction, index) =>
+            React.createElement(MenuItem, {
+              key: `resource-more-action-${index}`,
+              eventKey: `resource-action-${index}`,
+              children: [
+                <span className={customAction.icon} />,
+                customAction.label
+              ],
+              [typeof customAction.action === 'function' ? 'onClick' : 'href']: customAction.action
+            })
+          )
+        }
 
         {getMoreActions(props.resourceNode, props)}
       </MoreAction>
@@ -373,7 +384,7 @@ ResourceActions.propTypes = {
         export: T.bool,
         delete: T.bool
       }),
-      all: T.object.isRequired
+      all: T.object
     })
   }).isRequired,
 
@@ -384,19 +395,29 @@ ResourceActions.propTypes = {
   togglePublication: T.func.isRequired,
   updateNode: T.func.isRequired,
 
-  editMode: T.bool,
-  edit: T.oneOfType([T.func, T.string]).isRequired,
-  save: T.shape({
-    disabled: T.bool.isRequired,
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }).isRequired,
+  /**
+   * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
+   */
+  editor: T.shape({
+    icon: T.string,
+    label: T.string,
+    opened: T.bool,
+    open: T.oneOfType([T.func, T.string]).isRequired,
+    save: T.shape({
+      disabled: T.bool.isRequired,
+      action: T.oneOfType([T.string, T.func]).isRequired
+    }).isRequired
+  }),
 
+  /**
+   * Custom actions for the resources added by the UI.
+   */
   customActions: T.arrayOf(T.shape({
     icon: T.string.isRequired,
     label: T.string.isRequired,
     disabled: T.bool,
     action: T.oneOfType([T.string, T.func]).isRequired
-  })).isRequired
+  }))
 }
 
 export {

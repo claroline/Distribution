@@ -16,6 +16,9 @@ const quiz = {
     pick: 0,
     duration: 0,
     maxAttempts: 0,
+    maxAttemptsPerDay: 0,
+    mandatoryQuestions: false,
+    maxPapers: 0,
     interruptible: false,
     showCorrectionAt: SHOW_CORRECTION_AT_VALIDATION,
     correctionDate: '',
@@ -31,13 +34,22 @@ const step = {
   title: '',
   description: '',
   parameters: {
-    maxAttempts: 0
-  }
+    maxAttempts: 0,
+    maxAttemptsPerDay: 0
+  },
+  items: []
 }
 
 const item = {
   title: '',
   description: '',
+  meta: {
+    protectQuestion: false,
+    mandatory: false
+  },
+  rights: {
+    edit: true
+  },
   hints: [],
   feedback: '',
   objects: [],
@@ -45,7 +57,8 @@ const item = {
     type: SCORE_SUM,
     success: 1,
     failure: 0
-  }
+  },
+  tags: []
 }
 
 const hint = {

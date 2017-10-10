@@ -2,12 +2,11 @@
 
 namespace UJM\ExoBundle\Entity\Item;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
 use UJM\ExoBundle\Entity\ItemType\AbstractItem;
-use UJM\ExoBundle\Library\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="UJM\ExoBundle\Repository\ItemRepository")
@@ -151,11 +150,29 @@ class Item
     private $interaction = null;
 
     /**
+     * Allows other user to edit a question.
+     *
+     * @var string
+     *
+     * @ORM\Column(name="protect_update", type="boolean")
+     */
+    private $protectUpdate = false;
+
+    /**
+     * The is answer mandatory to continue the quizz.
+     *
+     * @var string
+     *
+     * @ORM\Column(name="mandatory", type="boolean")
+     */
+    private $mandatory = false;
+
+    /**
      * Item constructor.
      */
     public function __construct()
     {
-        $this->uuid = Uuid::uuid4()->toString();
+        $this->refreshUuid();
         $this->hints = new ArrayCollection();
         $this->objects = new ArrayCollection();
         $this->resources = new ArrayCollection();
@@ -464,5 +481,30 @@ class Item
         $this->scoreRule = $scoreRule;
 
         return $this->scoreRule;
+    }
+
+    public function setProtectUpdate($protectUpdate)
+    {
+        $this->protectUpdate = $protectUpdate;
+    }
+
+    public function getProtectUpdate()
+    {
+        return $this->protectUpdate;
+    }
+
+    public function setMandatory($mandatory)
+    {
+        $this->mandatory = $mandatory;
+    }
+
+    public function isMandatory()
+    {
+        return $this->mandatory;
+    }
+
+    public function getMandatory()
+    {
+        return $this->isMandatory();
     }
 }

@@ -12,6 +12,9 @@
 namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
+use Claroline\CoreBundle\Entity\Model\GroupsTrait;
+use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -34,7 +37,8 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  *     name="claro_user",
  *     indexes={
  *         @Index(name="code_idx", columns={"administrative_code"}),
- *         @Index(name="enabled_idx", columns={"is_enabled"})
+ *         @Index(name="enabled_idx", columns={"is_enabled"}),
+ *         @Index(name="is_removed", columns={"is_removed"})
  * }
  *
  * )
@@ -48,6 +52,10 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  */
 class User extends AbstractRoleSubject implements Serializable, AdvancedUserInterface, EquatableInterface, OrderableInterface
 {
+    use UuidTrait;
+    use GroupsTrait;
+    use OrganizationsTrait;
+
     /**
      * @var int
      *
@@ -73,7 +81,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @ORM\Column(name="last_name", length=50)
      * @Assert\NotBlank()
-     * @Groups({"api_user","api_message", "api_user_min"})
+     * @Groups({"api_user", "api_message", "api_user_min"})
      * @SerializedName("lastName")
      */
     protected $lastName;
@@ -139,13 +147,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @SerializedName("mail")
      */
     protected $mail;
-
-    /**
-     * @ORM\Column()
-     * @Groups({"api_user", "api_user_min"})
-     * @SerializedName("guid")
-     */
-    protected $guid;
 
     /**
      * @var string
@@ -421,6 +422,8 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->organizations = new ArrayCollection();
         $this->events = new ArrayCollection();
         $this->administratedOrganizations = new ArrayCollection();
+        $this->refreshUuid();
+        $this->setEmailValidationHash(uniqid('', true));
     }
 
     /**
@@ -582,14 +585,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     }
 
     /**
-     * @return Group[]|ArrayCollection
-     */
-    public function getGroups()
-    {
-        return $this->groups;
-    }
-
-    /**
      * Returns the user's roles as an array of string values (needed for
      * Symfony security checks). The roles owned by groups the user is a
      * member are included by default.
@@ -617,7 +612,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @param bool $areGroupsIncluded
      *
-     * @return array[Role]
+     * @return Role[]
      */
     public function getEntityRoles($areGroupsIncluded = true)
     {
@@ -1126,16 +1121,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         return $this->firstName.' '.$this->lastName;
     }
 
-    public function setGuid($guid)
-    {
-        $this->guid = $guid;
-    }
-
-    public function getGuid()
-    {
-        return $this->guid;
-    }
-
     public function setIsMailValidated($isMailValidated)
     {
         $this->isMailValidated = $isMailValidated;
@@ -1177,21 +1162,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         }
 
         return array_merge($organizations, $this->organizations->toArray());
-    }
-
-    public function addOrganization(Organization $organization)
-    {
-        if (!$this->organizations->contains($organization)) {
-            $this->organizations->add($organization);
-        }
-    }
-
-    // todo: remove this method
-    public function setOrganizations($organizations)
-    {
-        $this->organizations = $organizations instanceof ArrayCollection ?
-            $organizations :
-            new ArrayCollection($organizations);
     }
 
     public static function getUserSearchableFields()
@@ -1261,13 +1231,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->isEnabled = false;
     }
 
-    public function addGroup(Group $group)
+    public function clearRoles()
     {
-        $this->groups->add($group);
-    }
-
-    public function removeGroup(Group $group)
-    {
-        $this->groups->remove($group);
+        foreach ($this->roles as $role) {
+            if ($role->getName() !== 'ROLE_USER') {
+                $this->removeRole($role);
+            }
+        }
     }
 }

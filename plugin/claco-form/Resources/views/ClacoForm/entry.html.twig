@@ -26,7 +26,7 @@
                 </div>
             {% endif %}
             <div class="panel-body">
-                {% if template is empty %}
+                {% if template is empty or not useTemplate %}
                     {% for field in fields %}
                         {% if withMeta or not field.getIsMetadata() %}
                             <div class="row entry-row">
@@ -47,6 +47,12 @@
                                             {{ fieldValues[field.getId()]|raw }}
                                         {% elseif field.getFieldFacet().getType() == constant('Claroline\\CoreBundle\\Entity\\Facet\\FieldFacet::CASCADE_SELECT_TYPE') %}
                                             {{ fieldValues[field.getId()]|join(', ') }}
+                                        {% elseif field.getFieldFacet().getType() == constant('Claroline\\CoreBundle\\Entity\\Facet\\FieldFacet::FILE_TYPE') %}
+                                            {% set values = [] %}
+                                            {% for fileValue in fieldValues[field.getId()] %}
+                                                {% set values = values|merge(['['~fileValue|join(', ')~']']) %}
+                                            {% endfor %}
+                                            {{ values|join(', ') }}
                                         {% else %}
                                             {{ fieldValues[field.getId()] }}
                                         {% endif %}

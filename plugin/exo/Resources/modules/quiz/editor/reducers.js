@@ -1,10 +1,13 @@
 import {combineReducers} from 'redux'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
+import unset from 'lodash/unset'
+
 import sanitize from './sanitizers'
 import validate from './validators'
+import cloneDeep from 'lodash/cloneDeep'
 import {decorateItem} from './../decorators'
-import {getIndex, makeId, makeItemPanelKey, update} from './../../utils/utils'
+import {getIndex, makeId, makeItemPanelKey, update, refreshIds} from './../../utils/utils'
 import {getDefinition} from './../../items/item-types'
 import {getContentDefinition} from './../../contents/content-types'
 import {ATTEMPT_FINISH} from './../player/actions'
@@ -22,6 +25,8 @@ import {
   ITEM_DELETE,
   ITEM_UPDATE,
   ITEM_MOVE,
+  ITEM_CHANGE_STEP,
+  ITEM_DUPLICATE,
   ITEM_HINTS_UPDATE,
   ITEM_DETAIL_UPDATE,
   ITEMS_IMPORT,
@@ -53,6 +58,10 @@ import {
   OBJECT_MOVE
 } from './actions'
 
+import {
+  ITEM_UPDATE_TAGS
+} from '#/plugin/tag/actions.js'
+
 function initialQuizState() {
   return {
     id: makeId(),
@@ -63,16 +72,48 @@ function initialQuizState() {
 function reduceQuiz(quiz = initialQuizState(), action = {}) {
   switch (action.type) {
     case QUIZ_UPDATE: {
+      let updatedQuiz = quiz
+
+      if (action.propertyPath === 'parameters.pickByTag') {
+        if (action.value === true) {
+          updatedQuiz = merge({}, updatedQuiz, {parameters: {randomTags: {pick: [], pageSize: 1}}})
+          unset(updatedQuiz, 'props.parameters.randomPick')
+          unset(updatedQuiz, 'props.parameters.pick')
+          unset(updatedQuiz, 'props.parameters.randomOrder')
+        } else {
+          updatedQuiz = merge({}, updatedQuiz, sanitize.quiz('props.parameters.randomPick', SHUFFLE_NEVER))
+          updatedQuiz = merge({}, updatedQuiz, sanitize.quiz('props.parameters.pick', 0))
+          updatedQuiz = merge({}, updatedQuiz, sanitize.quiz('props.parameters.randomOrder', SHUFFLE_NEVER))
+          unset(updatedQuiz, 'props.parameters.randomTags')
+        }
+      }
+
+      if (action.propertyPath === 'parameters.randomTags.pick') {
+        if (action.value[0] === 'add') {
+          updatedQuiz = cloneDeep(updatedQuiz)
+          updatedQuiz.parameters.randomTags.pick.push(action.value[1])
+
+          return updatedQuiz
+        } else {
+          updatedQuiz = cloneDeep(updatedQuiz)
+          updatedQuiz.parameters.randomTags.pick.splice(
+            updatedQuiz.parameters.randomTags.pick.indexOf(action.value),
+            1
+          )
+
+          return updatedQuiz
+        }
+      }
+
       const sanitizedProps = sanitize.quiz(action.propertyPath, action.value)
-      const updatedQuiz = merge({}, quiz, sanitizedProps)
+      updatedQuiz = merge({}, updatedQuiz, sanitizedProps)
 
       if (updatedQuiz.parameters.randomPick === SHUFFLE_ALWAYS
         && updatedQuiz.parameters.randomOrder === SHUFFLE_ONCE) {
         updatedQuiz.parameters.randomOrder = SHUFFLE_NEVER
       }
 
-      const errors = validate.quiz(updatedQuiz)
-      updatedQuiz._errors = errors
+      updatedQuiz._errors = validate.quiz(updatedQuiz)
 
       return updatedQuiz
     }
@@ -93,7 +134,9 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
     case ATTEMPT_FINISH:
       return update(quiz, {
         meta: {
-          userPaperCount: {$set: quiz.meta.userPaperCount + 1}
+          userPaperCount: {$set: quiz.meta.userPaperCount + 1},
+          userPaperDayCount: {$set: quiz.meta.userPaperDayCount + 1},
+          paperCount: {$set: quiz.meta.paperCount + 1}
         }
       })
 
@@ -103,10 +146,28 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
 
 function reduceSteps(steps = {}, action = {}) {
   switch (action.type) {
+    case ITEM_CHANGE_STEP: {
+      //remove the old one
+      Object.keys(steps).forEach(stepId => {
+        if (steps[stepId].items.find(item => item === action.itemId)) {
+          const updatedRemoveItems = update(
+            steps[stepId],
+            {['items']: {$set : steps[stepId].items.filter(item => item !== action.itemId)}}
+          )
+          steps = update(steps, {[stepId]: {$set: updatedRemoveItems}})
+        }
+      })
+
+      const items = steps[action.stepId].items.concat(action.itemId)
+      const updatedAddItems = update(steps[action.stepId], {['items']: {$set: items}})
+      steps = update(steps, {[action.stepId]: {$set: updatedAddItems}})
+
+      return steps
+    }
     case STEP_CREATE: {
       const newStep = {
         id: action.id,
-        title: '',
+        title: action.title,
         description: '',
         items: [],
         parameters: {
@@ -129,6 +190,13 @@ function reduceSteps(steps = {}, action = {}) {
     case STEP_ITEM_DELETE: {
       const index = getIndex(steps[action.stepId].items, action.id)
       return update(steps, {[action.stepId]: {items: {$splice: [[index, 1]]}}})
+    }
+    case ITEM_DUPLICATE: {
+      action.ids.forEach(id => {
+        steps = update(steps, {[action.stepId]: {items: {$push: [id]}}})
+      })
+
+      return steps
     }
     case ITEM_MOVE: {
       const index = getIndex(steps[action.stepId].items, action.id)
@@ -172,6 +240,18 @@ function reduceItems(items = {}, action = {}) {
       newItem = Object.assign({}, newItem, {_errors: errors})
 
       return update(items, {[action.id]: {$set: newItem}})
+    }
+    case ITEM_DUPLICATE: {
+      action.ids.forEach(id => {
+        //now we replace the other
+        let newItem = cloneDeep(items[action.itemId])
+        newItem = refreshIds(newItem)
+        newItem.id = id
+        newItem._errors = validate.item(newItem)
+        items = update(items, {[id]: {$set: newItem}})
+      })
+
+      return items
     }
     case ITEM_DELETE:
       return update(items, {$delete: action.id})
@@ -353,6 +433,15 @@ function reduceItems(items = {}, action = {}) {
         default:
           return items
       }
+    case ITEM_UPDATE_TAGS: {
+      const updatedItem = Object.assign(
+        {},
+        items[action.id],
+        {tags: action.tags}
+      )
+
+      return update(items, {[action.id]: {$set: updatedItem}})
+    }
   }
   return items
 }

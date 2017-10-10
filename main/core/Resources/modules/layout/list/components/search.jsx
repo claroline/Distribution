@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 
 import {t} from '#/main/core/translation'
 import {getTypeOrDefault} from '#/main/core/layout/data'
@@ -100,7 +101,8 @@ const AvailableFilter = props => {
               React.createElement(typeDef.components.search, {
                 search: props.currentSearch,
                 isValid: isValidSearch,
-                updateSearch: props.onSelect
+                updateSearch: props.onSelect,
+                options: props.options
               })
             }
           </span>
@@ -115,7 +117,8 @@ AvailableFilter.propTypes = {
   label: T.string.isRequired,
   type: T.string.isRequired,
   currentSearch: T.string,
-  onSelect: T.func.isRequired
+  onSelect: T.func.isRequired,
+  options: T.object
 }
 
 const FiltersList = props =>
@@ -126,8 +129,9 @@ const FiltersList = props =>
         name={filter.name}
         label={filter.label}
         type={filter.type}
+        options={filter.options}
         currentSearch={props.currentSearch}
-        onSelect={(filterValue) => props.onSelect(filter.name, filterValue)}
+        onSelect={(filterValue) => props.onSelect(filter.alias ? filter.alias : filter.name, filterValue)}
       />
     )}
   </menu>
@@ -135,8 +139,10 @@ const FiltersList = props =>
 FiltersList.propTypes = {
   available: T.arrayOf(T.shape({
     name: T.string.isRequired,
+    alias: T.string,
     type: T.string.isRequired,
-    label: T.string.isRequired
+    label: T.string.isRequired,
+    options: T.object
   })).isRequired,
   currentSearch: T.string,
   onSelect: T.func.isRequired
@@ -185,24 +191,31 @@ class ListSearch extends Component {
 
   render() {
     return (
-      <div className="list-search">
+      <div className={classes('list-search', {
+        open: this.state.currentSearch
+      })}>
         <div className="search-filters">
-          {this.props.current.map(activeFilter =>
-            <CurrentFilter
-              key={`current-filter-${activeFilter.property}`}
-              type={getPropDefinition(activeFilter.property, this.props.available).type}
-              label={getPropDefinition(activeFilter.property, this.props.available).label}
-              value={activeFilter.value}
-              remove={() => this.props.removeFilter(activeFilter)}
-            />
-          )}
+          {this.props.current.map(activeFilter => {
+            const propDef = getPropDefinition(activeFilter.property, this.props.available)
+
+            return (
+              <CurrentFilter
+                key={`current-filter-${activeFilter.property}`}
+                type={propDef.type}
+                label={propDef.label}
+                value={activeFilter.value}
+                remove={() => this.props.removeFilter(activeFilter)}
+              />
+            )
+          })}
 
           <input
             ref={(input) => this.searchInput = input}
             type="text"
             className="form-control search-control"
-            placeholder="Search in the list"
+            placeholder={t('list_search_placeholder')}
             value={this.state.currentSearch}
+            disabled={this.props.disabled}
             onChange={(e) => this.updateSearch(e.target.value)}
           />
         </div>
@@ -224,8 +237,10 @@ class ListSearch extends Component {
 }
 
 ListSearch.propTypes = {
+  disabled: T.bool,
   available: T.arrayOf(T.shape({
-    name: T.string.isRequired
+    name: T.string.isRequired,
+    options: T.object
   })).isRequired,
   current: T.arrayOf(T.shape({
     property: T.string.isRequired,
@@ -235,4 +250,10 @@ ListSearch.propTypes = {
   removeFilter: T.func.isRequired
 }
 
-export {ListSearch}
+ListSearch.defaultProps = {
+  disabled: false
+}
+
+export {
+  ListSearch
+}
