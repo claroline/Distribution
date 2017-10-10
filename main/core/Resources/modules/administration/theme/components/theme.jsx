@@ -108,6 +108,8 @@ GeneralSection.propTypes = {
     name: T.string.isRequired,
     current: T.bool.isRequired,
     meta: T.shape({
+      default: T.bool,
+      custom: T.bool,
       plugin: T.string,
       description: T.string,
       enabled: T.bool
@@ -402,7 +404,8 @@ Theme.propTypes = {
     }).isRequired
   }).isRequired,
   rebuildTheme: T.func.isRequired,
-  removeTheme: T.func.isRequired
+  removeTheme: T.func.isRequired,
+  save: T.func.isRequired
 }
 
 function mapStateToProps(state, onwProps) {
