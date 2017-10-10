@@ -6,6 +6,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
+use UJM\ExoBundle\Library\Item\ItemType;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\Item\ItemManager;
 use UJM\ExoBundle\Repository\ExerciseRepository;
@@ -258,7 +259,9 @@ class DocimologyManager
             // base success compution on paper structure
             $structure = json_decode($paper->getStructure());
             foreach ($structure->steps as $step) {
-                foreach ($step->items as $item) {
+                foreach (array_filter($step->items, function ($item) {
+                    return ItemType::isSupported($item->type);
+                }) as $item) {
                     // since the compution is based on the structure the same item can come several times
                     if (!array_key_exists($item->id, $discriminationCoef)) {
                         $itemEntity = $itemRepository->findOneBy(['uuid' => $item->id]);
