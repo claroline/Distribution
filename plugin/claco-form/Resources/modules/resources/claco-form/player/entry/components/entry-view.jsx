@@ -26,6 +26,7 @@ import {selectors} from '../../../selectors'
 import {actions} from '../actions'
 import {EntryComments} from './entry-comments.jsx'
 import {EntryMenu} from './entry-menu.jsx'
+
 const FilesThumbnails = props =>
   <div className="file-thumbnails">
     {props.files.map((f, idx) =>
@@ -538,7 +539,7 @@ class EntryView extends Component {
             </div>
           </div>
 
-          <Sections level={3}>
+          <Sections level={3} accordion={false}>
             {this.props.displayKeywords &&
               <EntryKeywordsSection keywords={this.props.entry.keywords} expanded={this.props.openKeywords} />
             }
@@ -553,7 +554,7 @@ class EntryView extends Component {
           </Sections>
 
           {['down', 'both'].indexOf(this.props.menuPosition) > -1 &&
-            <EntryMenu/>
+            <EntryMenu />
           }
         </div> :
         <div className="alert alert-danger">

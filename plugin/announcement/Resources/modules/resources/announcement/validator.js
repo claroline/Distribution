@@ -1,4 +1,4 @@
-import isEmpty from "lodash/isEmpty"
+import isEmpty from 'lodash/isEmpty'
 
 import {setIfError, notBlank} from '#/main/core/validation'
 

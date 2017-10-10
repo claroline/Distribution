@@ -1,10 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 import omit from 'lodash/omit'
-
-import Panel      from 'react-bootstrap/lib/Panel'
-import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {Section, Sections} from '#/main/core/layout/components/sections.jsx'
 
@@ -22,11 +18,6 @@ const FormSection = props =>
   </Section>
 
 FormSection.propTypes = {
-  /*id: T.string.isRequired,
-  level: T.number,
-  icon: T.string,
-  title: T.string.isRequired,
-  expanded: T.bool,*/
   children: T.node.isRequired,
   validating: T.bool,
   errors: T.object
@@ -35,6 +26,7 @@ FormSection.propTypes = {
 const FormSections = props =>
   <Sections
     accordion={props.accordion}
+    defaultOpened={props.defaultOpened}
     defaultActiveKey={props.defaultOpened}
   >
     {props.children}

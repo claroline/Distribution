@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {asset} from '#/main/core/asset'
 import {t} from '#/main/core/translation'
 
 import {Avatar} from './avatar.jsx'
