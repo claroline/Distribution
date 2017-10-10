@@ -21,15 +21,18 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
-use Claroline\CoreBundle\Library\Security\PlatformRoles;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Exception\AddRoleException;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Repository\UserRepository;
+use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
+use Pagerfanta\Pagerfanta;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -54,7 +57,6 @@ class UserManager
     private $objectManager;
     private $organizationManager;
     private $pagerFactory;
-    private $personalWsTemplateFile;
     private $platformConfigHandler;
     private $roleManager;
     private $strictEventDispatcher;
@@ -65,10 +67,12 @@ class UserManager
     private $uploadsDirectory;
     private $validator;
     private $workspaceManager;
+    /** @var UserRepository */
     private $userRepo;
+    private $fu;
 
     /**
-     * Constructor.
+     * UserManager Constructor.
      *
      * @DI\InjectParams({
      *     "container"              = @DI\Inject("service_container"),
@@ -77,7 +81,6 @@ class UserManager
      *     "objectManager"          = @DI\Inject("claroline.persistence.object_manager"),
      *     "organizationManager"    = @DI\Inject("claroline.manager.organization.organization_manager"),
      *     "pagerFactory"           = @DI\Inject("claroline.pager.pager_factory"),
-     *     "personalTemplate"       = @DI\Inject("%claroline.param.personal_template%"),
      *     "platformConfigHandler"  = @DI\Inject("claroline.config.platform_config_handler"),
      *     "roleManager"            = @DI\Inject("claroline.manager.role_manager"),
      *     "strictEventDispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
@@ -90,6 +93,24 @@ class UserManager
      *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
      *     "fu"                     = @DI\Inject("claroline.utilities.file")
      * })
+     *
+     * @param ContainerInterface           $container
+     * @param GroupManager                 $groupManager
+     * @param MailManager                  $mailManager
+     * @param ObjectManager                $objectManager
+     * @param OrganizationManager          $organizationManager
+     * @param PagerFactory                 $pagerFactory
+     * @param PlatformConfigurationHandler $platformConfigHandler
+     * @param RoleManager                  $roleManager
+     * @param StrictDispatcher             $strictEventDispatcher
+     * @param TokenStorageInterface        $tokenStorage
+     * @param ToolManager                  $toolManager
+     * @param TransferManager              $transferManager
+     * @param TranslatorInterface          $translator
+     * @param string                       $uploadsDirectory
+     * @param ValidatorInterface           $validator
+     * @param WorkspaceManager             $workspaceManager
+     * @param FileUtilities                $fu
      */
     public function __construct(
         ContainerInterface $container,
@@ -98,7 +119,6 @@ class UserManager
         ObjectManager $objectManager,
         OrganizationManager $organizationManager,
         PagerFactory $pagerFactory,
-        $personalTemplate,
         PlatformConfigurationHandler $platformConfigHandler,
         RoleManager $roleManager,
         StrictDispatcher $strictEventDispatcher,
@@ -117,7 +137,6 @@ class UserManager
         $this->objectManager = $objectManager;
         $this->organizationManager = $organizationManager;
         $this->pagerFactory = $pagerFactory;
-        $this->personalWsTemplateFile = $personalTemplate;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->roleManager = $roleManager;
         $this->strictEventDispatcher = $strictEventDispatcher;
@@ -136,12 +155,15 @@ class UserManager
      * Create a user.
      * Its basic properties (name, username,... ) must already be set.
      *
-     * @param \Claroline\CoreBundle\Entity\User $user
-     * @param bool                              $sendMail         do we need to mail the new user ?
-     * @param array                             $additionnalRoles a list of additionalRoles
-     * @param Model                             $model            a model to create workspace
+     * @param User      $user
+     * @param bool      $sendMail               do we need to mail the new user ?
+     * @param array     $rolesToAdd
+     * @param Workspace $model                  a model to create workspace
+     * @param string    $publicUrl
+     * @param array     $organizations
+     * @param null      $forcePersonalWorkspace
      *
-     * @return \Claroline\CoreBundle\Entity\User
+     * @return User
      */
     public function createUser(
         User $user,
@@ -151,12 +173,12 @@ class UserManager
         $publicUrl = null,
         $organizations = [],
         $forcePersonalWorkspace = null,
-        $forceRoleValidation = true
+        $addNotifications = true
     ) {
-        $additionnalRoles = [];
+        $additionalRoles = [];
 
         foreach ($rolesToAdd as $roleToAdd) {
-            $additionnalRoles[] = is_string($roleToAdd) ? $this->roleManager->getRoleByName($roleToAdd) : $roleToAdd;
+            $additionalRoles[] = is_string($roleToAdd) ? $this->roleManager->getRoleByName($roleToAdd) : $roleToAdd;
         }
 
         if (count($organizations) === 0 && count($user->getOrganizations()) === 0) {
@@ -165,8 +187,7 @@ class UserManager
         }
 
         $this->objectManager->startFlushSuite();
-        $user->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
-        $user->setEmailValidationHash($this->container->get('claroline.utilities.misc')->generateGuid());
+
         $user->setOrganizations($organizations);
         $publicUrl ? $user->setPublicUrl($publicUrl) : $user->setPublicUrl($this->generatePublicUrl($user));
         $this->toolManager->addRequiredToolsToUser($user, 0);
@@ -174,8 +195,14 @@ class UserManager
         $roleUser = $this->roleManager->getRoleByName(PlatformRoles::USER);
         $user->addRole($roleUser);
         $this->roleManager->createUserRole($user);
+        $notifications = $this->platformConfigHandler->getParameter('auto_enable_notifications');
 
-        foreach ($additionnalRoles as $role) {
+        if ($addNotifications) {
+            $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
+            $nManager->processUpdate($notifications, $user);
+        }
+
+        foreach ($additionalRoles as $role) {
             if ($role) {
                 $this->roleManager->associateRole($user, $role);
             }
@@ -200,7 +227,7 @@ class UserManager
                 $this->setPersonalWorkspace($user, $model);
             }
         } else {
-            if ($this->personalWorkspaceAllowed($additionnalRoles)) {
+            if ($this->personalWorkspaceAllowed($additionalRoles)) {
                 $this->setPersonalWorkspace($user, $model);
             }
         }
@@ -235,11 +262,11 @@ class UserManager
     {
         $data = file_get_contents($file);
         $data = $this->container->get('claroline.utilities.misc')->formatCsvOutput($data);
-        $usernames = str_getcsv($data, PHP_EOL);
+        $userNames = str_getcsv($data, PHP_EOL);
         $this->objectManager->startFlushSuite();
         $i = 0;
 
-        foreach ($usernames as $username) {
+        foreach ($userNames as $username) {
             $user = $this->getUserByUsername($username);
 
             if ($user) {
@@ -299,6 +326,7 @@ class UserManager
         if ($user->getUsername() !== $previousUsername) {
             // Rename user role
             $userRole = $this->roleManager->getUserRole($previousUsername);
+
             if ($userRole) {
                 $this->roleManager->renameUserRole($userRole, $user->getUsername());
             }
@@ -504,15 +532,17 @@ class UserManager
                 //TODO MODEL TEST
                 $model = $this->objectManager
                     ->getRepository('Claroline\CoreBundle\Entity\Workspace\Workspace')
-                    ->findOneByCode($modelName);
+                    ->findOneBy(['code' => $modelName]);
             } else {
                 $model = null;
             }
 
             if ($organizationName) {
-                $organizations = [$this->objectManager
-                    ->getRepository('Claroline\CoreBundle\Entity\Organization\Organization')
-                    ->findOneByName($organizationName), ];
+                $organizations = [
+                    $this->objectManager
+                        ->getRepository('Claroline\CoreBundle\Entity\Organization\Organization')
+                        ->findOneBy(['name' => $organizationName]),
+                ];
             } else {
                 $organizations = [];
             }
@@ -578,8 +608,10 @@ class UserManager
                 }
             }
 
-            if (!$isNew && $logger) {
-                $logger(" User $j ($username) being updated...");
+            if (!$isNew) {
+                if ($logger) {
+                    $logger(" User $j ($username) being updated...");
+                }
                 $this->roleManager->associateRoles($userEntity, $additionalRoles);
             }
 
@@ -595,8 +627,7 @@ class UserManager
                     $model,
                     $username.uniqid(),
                     $organizations,
-                    $hasPersonalWorkspace,
-                    false
+                    $hasPersonalWorkspace
                 );
             }
 
@@ -645,14 +676,10 @@ class UserManager
         }
 
         $this->objectManager->endFlushSuite();
-        if ($logger) {
-            $logger($countCreated.' users created.');
-            $logger($countUpdated.' users updated.');
-        }
 
         if ($logger) {
-            $logger($countCreated.' users created.');
-            $logger($countUpdated.' users updated.');
+            $logger($countCreated.' users updated ('.implode(',', $updated).')');
+            $logger($countCreated.' users created ('.implode(',', $created).')');
         }
 
         foreach ($skippedUsers as $key => $user) {
@@ -669,8 +696,8 @@ class UserManager
     /**
      * Creates the personal workspace of a user.
      *
-     * @param \Claroline\CoreBundle\Entity\User                $user
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $model
+     * @param User      $user
+     * @param Workspace $model
      */
     public function setPersonalWorkspace(User $user, Workspace $model = null)
     {
@@ -688,16 +715,19 @@ class UserManager
         $workspace = new Workspace();
         $workspace->setCode($code);
         $workspace->setName($personalWorkspaceName);
-        $workspace->setCreator($user);
+
         $workspace = !$model ?
             $this->workspaceManager->copy($this->workspaceManager->getDefaultModel(true), $workspace) :
             $this->workspaceManager->copy($model, $workspace);
+
+        $workspace->setCreator($user);
+        $workspace->setPersonal(true);
 
         //add "my public documents" folder
         $resourceManager = $this->container->get('claroline.manager.resource_manager');
         //TODO MODEL
         $resourceManager->addPublicFileDirectory($workspace);
-        $workspace->setIsPersonal(true);
+
         $user->setPersonalWorkspace($workspace);
         $this->objectManager->persist($user);
         $this->objectManager->flush();
@@ -726,8 +756,8 @@ class UserManager
     /**
      * Sets an array of platform role to a user.
      *
-     * @param \Claroline\CoreBundle\Entity\User $user
-     * @param ArrayCollection                   $roles
+     * @param User            $user
+     * @param ArrayCollection $roles
      */
     public function setPlatformRoles(User $user, $roles)
     {
@@ -738,7 +768,7 @@ class UserManager
     /**
      * Serialize a user. Use JMS serializer from entities instead.
      *
-     * @param array $users
+     * @param User[] $users
      *
      * @return array
      *
@@ -777,7 +807,7 @@ class UserManager
     }
 
     /**
-     * @param type $username
+     * @param string $username
      *
      * @return User
      */
@@ -808,7 +838,7 @@ class UserManager
      * @param string $orderedBy
      * @param string $order
      *
-     * @return \Pagerfanta\Pagerfanta;
+     * @return Pagerfanta
      */
     public function getAllUsers($page, $max = 20, $orderedBy = 'id', $order = null)
     {
@@ -828,7 +858,7 @@ class UserManager
      * @param int    $max
      * @param string $orderedBy
      *
-     * @return \Pagerfanta\Pagerfanta;
+     * @return Pagerfanta
      */
     public function getUsersByName($search, $page, $max = 20, $orderedBy = 'id')
     {
@@ -852,12 +882,13 @@ class UserManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Group $group
-     * @param int                                $page
-     * @param int                                $max
-     * @param string                             $orderedBy
+     * @param Group  $group
+     * @param int    $page
+     * @param int    $max
+     * @param string $orderedBy
+     * @param string $order
      *
-     * @return \Pagerfanta\Pagerfanta;
+     * @return Pagerfanta
      */
     public function getUsersByGroup(
         Group $group,
@@ -872,13 +903,14 @@ class UserManager
     }
 
     /**
-     * @param string                             $search
-     * @param \Claroline\CoreBundle\Entity\Group $group
-     * @param int                                $page
-     * @param int                                $max
-     * @param string                             $orderedBy
+     * @param string $search
+     * @param Group  $group
+     * @param int    $page
+     * @param int    $max
+     * @param string $orderedBy
+     * @param string $order
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return Pagerfanta
      */
     public function getUsersByNameAndGroup(
         $search,
@@ -900,11 +932,12 @@ class UserManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace[] $workspaces
-     * @param int                                                $page
-     * @param int                                                $max
+     * @param Workspace[] $workspaces
+     * @param int         $page
+     * @param int         $max
+     * @param bool        $withPager
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return User[]|Pagerfanta
      */
     public function getUsersByWorkspaces(array $workspaces, $page = 1, $max = 20, $withPager = true)
     {
@@ -918,12 +951,12 @@ class UserManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     * @param string                                           $search
-     * @param int                                              $page
-     * @param int                                              $max
+     * @param Workspace $workspace
+     * @param string    $search
+     * @param int       $page
+     * @param int       $max
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return Pagerfanta
      */
     public function getAllUsersByWorkspaceAndName(Workspace $workspace, $search, $page, $max = 20)
     {
@@ -974,11 +1007,11 @@ class UserManager
     /**
      * @param string $guid
      *
-     * @return \Claroline\CoreBundle\Entity\Workspace\Workspace
+     * @return Workspace
      */
     public function getOneByGuid($guid)
     {
-        return $this->userRepo->findOneByGuid($guid);
+        return $this->userRepo->findOneBy(['guid' => $guid]);
     }
 
     /**
@@ -1029,36 +1062,26 @@ class UserManager
 
     /**
      * @param Role[] $roles
-     * @param int    $page
-     * @param int    $max
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return array
      */
     public function getUsersByRolesIncludingGroups(
-        array $roles, $page = 1,
-        $max = 20,
-        $executeQuery = true
+        array $roles
     ) {
-        $users = $this->userRepo->findUsersByRolesIncludingGroups($roles, $executeQuery);
-
-        if (!$executeQuery) {
-            return $users;
-        }
-
-        return $this->pagerFactory->createPagerFromArray($users, $page, $max);
+        return $this->userRepo->findUsersByRolesIncludingGroups($roles);
     }
 
     /*
-     * I don't want to break the old pager wich is oddly written
+     * I don't want to break the old pager which is oddly written
      */
     public function getUsersByRolesWithGroups(array $roles)
     {
-        return $this->userRepo->findUsersByRolesIncludingGroups($roles, true);
+        return $this->userRepo->findUsersByRolesIncludingGroups($roles);
     }
 
-    public function getUsersExcudingRoles(array $roles, $offet = null, $limit = null)
+    public function getUsersExcludingRoles(array $roles, $offset = null, $limit = null)
     {
-        return $this->userRepo->findUsersExcludingRoles($roles, $offet, $limit);
+        return $this->userRepo->findUsersExcludingRoles($roles, $offset, $limit);
     }
 
     /**
@@ -1098,7 +1121,7 @@ class UserManager
      */
     public function getUserByEmail($email)
     {
-        return $this->userRepo->findOneByMail($email);
+        return $this->userRepo->findOneBy(['mail' => $email]);
     }
 
     /**
@@ -1148,7 +1171,7 @@ class UserManager
         if ($user->getPictureFile()) {
             $file = $user->getPictureFile();
             $publicFile = $this->fu->createFile($file, $file->getBasename());
-            $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+            $this->fu->createFileUse($publicFile, get_class($user), $user->getUuid());
             //../.. for legacy compatibility
             $user->setPicture('../../'.$publicFile->getUrl());
             $this->objectManager->persist($user);
@@ -1190,7 +1213,6 @@ class UserManager
 
     /**
      * @param User $user
-     * @param int  $try
      *
      * @return string
      */
@@ -1375,7 +1397,7 @@ class UserManager
                 $file = new File($element->getPathName());
 
                 $publicFile = $this->fu->createFile($file, $file->getBasename());
-                $this->fu->createFileUse($publicFile, get_class($user), $user->getGuid());
+                $this->fu->createFileUse($publicFile, get_class($user), $user->getUuid());
                 //../.. for legacy compatibility
                 $user->setPicture('../../'.$publicFile->getUrl());
                 $this->objectManager->persist($user);
@@ -1388,7 +1410,7 @@ class UserManager
     /**
      * Checks if a user will have a personal workspace at his creation.
      */
-    private function personalWorkspaceAllowed($roles)
+    public function personalWorkspaceAllowed($roles)
     {
         $roles[] = $this->roleManager->getRoleByName('ROLE_USER');
 
@@ -1948,9 +1970,95 @@ class UserManager
             $user->setPlainPassword(uniqid('', true));
             $user->disable();
             $user->remove();
-            $this->createUser($user, false, [], null, null, [], false, false);
+            $this->createUser($user, false, [], null, null, [], false, false, false);
         }
 
         return $user;
+    }
+
+    public function restoreUsersMailParameter()
+    {
+        $users = $this->getAll();
+        $i = 0;
+        $this->objectManager->startFlushSuite();
+        $count = (count($users));
+        $this->log("{$count} users to update...");
+
+        foreach ($users as $user) {
+            ++$i;
+
+            $this->restoreUserMailParameter($user);
+            $this->log("{$i}/{$count} user done...");
+
+            if ($i % 500 === 0) {
+                $this->objectManager->forceFlush();
+                $this->log('Flushing...');
+            }
+        }
+
+        $this->log('Flushing...');
+        $this->objectManager->endFlushSuite();
+    }
+
+    public function restoreUserMailParameter(User $user)
+    {
+        $emailValidted = $this->platformConfigHandler->getParameter('auto_validate_email');
+        $emailRedirect = $this->platformConfigHandler->getParameter('auto_enable_email_redirect');
+        $notifications = $this->platformConfigHandler->getParameter('auto_enable_notifications');
+
+        $user->setIsMailValidated($emailValidted);
+        $user->setIsMailNotified($emailRedirect);
+        $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
+        $nManager->processUpdate($notifications, $user);
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
+    }
+
+    public function checkPersonalWorkspaceIntegrity()
+    {
+        // Get all users having problem seeing their personal workspace
+        $cntUsers = $this->userRepo->countUsersNotManagersOfPersonalWorkspace();
+        $this->log("Found $cntUsers users whose personal workspace needs to get fixed");
+        $batchSize = 1000;
+        $flushSize = 250;
+        $i = 0;
+        $flushed = true;
+        $this->objectManager->startFlushSuite();
+        for ($batch = 0; $batch < ceil($cntUsers / $batchSize); ++$batch) {
+            $users = $this->userRepo->findUsersNotManagersOfPersonalWorkspace(0, $batchSize);
+            $nb = count($users);
+            $this->log("Fetched {$nb} users for checking");
+            foreach ($users as $user) {
+                ++$i;
+                $flushed = false;
+                $this->checkPersonalWorkspaceIntegrityForUser($user, $i, $cntUsers);
+
+                if ($i % $flushSize === 0) {
+                    $this->log('Flushing, this may be very long for large databases');
+                    $this->objectManager->forceFlush();
+                    $flushed = true;
+                }
+            }
+            if (!$flushed) {
+                $this->log('Flushing, this may be very long for large databases');
+                $this->objectManager->forceFlush();
+            }
+            $this->objectManager->clear();
+        }
+        $this->objectManager->endFlushSuite();
+    }
+
+    public function checkPersonalWorkspaceIntegrityForUser(User $user, $i = 1, $totalUsers = 1)
+    {
+        $this->log('Checking personal workspace for '.$user->getUsername()." ($i/$totalUsers)");
+        $ws = $user->getPersonalWorkspace();
+        $managerRole = $ws->getManagerRole();
+        if (!$user->hasRole($managerRole->getRole())) {
+            $this->log('Adding user as manager to his personal workspace', LogLevel::DEBUG);
+            $this->objectManager->startFlushSuite();
+            $user->addRole($managerRole);
+            $this->objectManager->persist($user);
+            $this->objectManager->endFlushSuite();
+        }
     }
 }

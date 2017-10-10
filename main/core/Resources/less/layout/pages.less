@@ -48,6 +48,11 @@
     }
 }
 
+.page-title {
+    font-size: @page-header-font-size;
+    font-weight: @page-header-weight;
+}
+
 .page-actions {
     margin-left: -0.25em; // absorb first btn margin
 
@@ -72,20 +77,16 @@
 
 // Current styles permit to have 7 buttons in one line on 360px screens (without btn groups)
 .page-action-btn {
-    color: #333;
-    background: #ebebeb;
     position: relative; // for buttons with labels
     border-radius: 50%;
     padding: .65em;
 
-    &.page-action-primary {
-        color: @btn-primary-color;
-        background: @btn-primary-bg;
+    &.page-action-default {
+        .button-variant(#333333; #EBEBEB; transparent);
+    }
 
-        &:hover {
-            color: @btn-primary-color;
-            background-color: darken(@btn-primary-bg, 10%);
-        }
+    &.page-action-primary {
+        .button-variant(@btn-primary-color; @btn-primary-bg; transparent);
     }
 
     // displays icon as a square
@@ -109,18 +110,6 @@
         position: absolute;
         bottom: -5px;
         right: 0;
-    }
-
-    // states
-    &[disabled],
-    &.disabled {
-
-    }
-    &:hover {
-        color: #333; // body color
-    }
-    &:focus {
-
     }
 }
 

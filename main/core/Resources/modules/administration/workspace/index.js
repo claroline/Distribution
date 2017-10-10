@@ -1,56 +1,37 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
+import merge from 'lodash/merge'
 
-import {createStore} from '#/main/core/utilities/redux'
-import {registerModalType} from '#/main/core/layout/modal'
-import {ConfirmModal} from '#/main/core/layout/modal/components/confirm.jsx'
-import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
+import {bootstrap} from '#/main/core/utilities/app/bootstrap'
+import {generateUrl} from '#/main/core/fos-js-router'
 
+// reducers
+import {reducer as apiReducer} from '#/main/core/api/reducer'
+import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer} from '#/main/core/administration/workspace/reducer'
+
 import {Workspaces} from '#/main/core/administration/workspace/components/workspaces.jsx'
 
-class WorkspaceAdministration {
-  constructor(initialData) {
-    registerModalType('CONFIRM_MODAL', ConfirmModal)
-    registerModalType('MODAL_USER_PICKER', UserPickerModal)
+// mount the react application
+bootstrap(
+  // app DOM container (also holds initial app data as data attributes)
+  '.workspaces-container',
 
-    this.store = createStore(reducer, initialData)
-  }
+  // app main component (accepts either a `routedApp` or a `ReactComponent`)
+  Workspaces,
 
-  render(element) {
-    ReactDOM.render(
-      React.createElement(
-        Provider,
-        {store: this.store},
-        React.createElement(Workspaces)
-      ),
-      element
-    )
-  }
-}
+  // app store configuration
+  {
+    // app reducers
+    workspaces: reducer,
 
-const container = document.querySelector('.workspace-administration-container')
-const workspaces = JSON.parse(container.dataset.workspaces)
-const count = parseInt(container.dataset.count)
-const page = parseInt(container.dataset.page)
-const pageSize = parseInt(container.dataset.pagesize)
-const filters = JSON.parse(container.dataset.filters)
-const sortBy = JSON.parse(container.dataset.orderby)
-
-const adminTool = new WorkspaceAdministration({
-  workspaces: {
-    data: workspaces,
-    totalResults: count
+    // generic reducers
+    currentRequests: apiReducer,
+    modal: modalReducer
   },
-  pagination: {
-    pageSize,
-    current: page
-  },
-  list: {
-    filters,
-    sortBy
-  }
-})
 
-adminTool.render(container)
+  // remap data-attributes set on the app DOM container
+  (initialData) => ({
+    workspaces: merge({}, initialData.workspaces, {
+      fetchUrl: generateUrl('apiv2_workspace_list')
+    })
+  })
+)

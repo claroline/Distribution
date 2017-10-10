@@ -6,36 +6,11 @@ import classes from 'classnames'
 import {makeModal} from '#/main/core/layout/modal'
 
 /**
- * Container for the current page.
- *
- * Its only purpose is to initialize the flex layout to auto fill the available space.
- * As most of the time we use SPA for building UI it's a common practice to just add
- * the class `.page-container` to the mount element of the SPA.
- *
- * @param props
- * @constructor
- */
-const PageContainer = props =>
-  <div className="page-container">
-    {props.children}
-  </div>
-
-PageContainer.propTypes = {
-  /**
-   * The root of the current page
-   *
-   * You may experience display issue (because of the flex layout)
-   * if you don't use the <Page> component or an HTML container with the `.page` class.
-   * For now we don't constrain it for more flexibility.
-   */
-  children: T.node.isRequired
-}
-
-/**
  * Root of the current page.
  *
- * We manage full screen feature here and not in the container
- * because container component may not exist (@see PageContainer doc block for more info).
+ * For now, modals are managed here.
+ * In future version, when the layout will be in React,
+ * it'll be moved in higher level.
  *
  * @param props
  * @constructor
@@ -69,8 +44,8 @@ Page.propTypes = {
     fading: T.bool.isRequired,
     props: T.object.isRequired
   }),
-  fadeModal: T.func.isRequired,
-  hideModal: T.func.isRequired
+  fadeModal: T.func,
+  hideModal: T.func
 }
 
 Page.defaultTypes = {
@@ -161,7 +136,6 @@ PageContent.propTypes = {
 }
 
 export {
-  PageContainer,
   Page,
   PageHeader,
   PageContent

@@ -1,9 +1,12 @@
 {
   "webpack": {
     "entry": {
+      "translator": "translation/browser",
+      "organization-field": "symfony/form/organization/index",
       "user-management": "users/module",
       "facet-management": "facets/module",
       "workspace-management": "administration/workspace",
+      "theme-management": "administration/theme",
       "private-profile": "profile/module",
       "organization-management": "organization/module",
       "plugin-management": "plugins/module",
@@ -18,13 +21,14 @@
       "resource-icon-set-list": "icon/resource-icon-set-list/module",
       "resource-icon-item-list": "icon/resource-icon-item-list/module",
       "copy-text-to-clipboard": "copy-text-to-clipboard/copy-text-to-clipboard",
-      "admin-task-tool": "administration/scheduled-task/index.jsx"
+      "scheduled-task-management": "administration/scheduled-task/index"
     }
   },
 
   "styles": {
     "entry": {
-      "admin-task-tool": "task/admin-task-tool.less"
+      "home": "tools/home.less",
+      "theme-management": "tools/theme-management.less"
     }
   }
 }

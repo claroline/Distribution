@@ -58,7 +58,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $dql = '
             SELECT u FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username LIKE :username
-            OR u.mail LIKE :username';
+            OR u.mail LIKE :username
+        ';
 
         if ($isUserAdminCodeUnique) {
             $dql .= '
@@ -575,25 +576,44 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      * @return Query|User[]
      */
     public function findUsersByRolesIncludingGroups(
-        array $roles,
-        $executeQuery = true
+        array $roles
     ) {
-        $dql = "
-            SELECT u, r1, g, r2, ws
-            From Claroline\CoreBundle\Entity\User u
+        //very slow otherwise. If we want to do it properly, the OR clause won't do it.
+        //we must use UNION wich is not supported by Doctrine
+        $dql = '
+            SELECT u, r1, ws
+            From Claroline\\CoreBundle\\Entity\\User u
             LEFT JOIN u.roles r1
             LEFT JOIN u.personalWorkspace ws
-            LEFT JOIN u.groups g
-            LEFT JOIN g.roles r2
-            WHERE (r1 in (:roles)
-            OR r2 in (:roles))
+            WHERE r1 in (:roles)
             AND u.isRemoved = false
-            ORDER BY u.lastName, u.firstName ASC";
+            ORDER BY u.lastName, u.firstName ASC
+        ';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('roles', $roles);
 
-        return ($executeQuery) ? $query->getResult() : $query;
+        $resA = $query->getResult();
+        $resA = $resA ? $resA : [];
+
+        $dql = '
+            SELECT u, g, r2, ws
+            From Claroline\\CoreBundle\\Entity\\User u
+            LEFT JOIN u.personalWorkspace ws
+            LEFT JOIN u.groups g
+            LEFT JOIN g.roles r2
+            WHERE r2 in (:roles)
+            AND u.isRemoved = false
+            ORDER BY u.lastName, u.firstName ASC
+        ';
+
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('roles', $roles);
+
+        $resB = $query->getResult();
+        $resB = $resB ? $resB : [];
+
+        return array_merge($resA, $resB);
     }
 
     /**
@@ -1637,5 +1657,61 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ')
             ->setParameter('ids', $ids)
             ->getResult();
+    }
+
+    public function countUsersNotManagersOfPersonalWorkspace()
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT COUNT(u.id) AS cnt FROM Claroline\CoreBundle\Entity\User u
+                INNER JOIN u.personalWorkspace ws
+                WHERE u.isRemoved = :notRemoved
+                AND ws.isPersonal = :personal
+                AND u.id NOT IN ('.$this->findUsersManagersOfPersonalWorkspace(false)->getDQL().')
+            ')
+            ->setParameter('notRemoved', false)
+            ->setParameter('personal', true);
+
+        return intval($query->getResult()[0]['cnt']);
+    }
+
+    public function findUsersNotManagersOfPersonalWorkspace($offset = null, $limit = null)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT u, ws FROM Claroline\CoreBundle\Entity\User u
+                INNER JOIN u.personalWorkspace ws
+                WHERE u.isRemoved = :notRemoved
+                AND ws.isPersonal = :personal
+                AND u.id NOT IN ('.$this->findUsersManagersOfPersonalWorkspace(false)->getDQL().')
+            ')
+            ->setParameter('notRemoved', false)
+            ->setParameter('personal', true)
+            ->setMaxResults($limit);
+
+        if ($offset) {
+            $query->setFirstResult($offset);
+        }
+
+        return $query->getResult();
+    }
+
+    public function findUsersManagersOfPersonalWorkspace($execute = true)
+    {
+        $query = $this->getEntityManager()
+            ->createQuery('
+                SELECT u1.id FROM Claroline\CoreBundle\Entity\User u1
+                INNER JOIN u1.personalWorkspace ws1
+                INNER JOIN ws1.roles r1
+                INNER JOIN r1.users us1
+                WHERE us1.id = u1.id
+                AND u1.isRemoved = :notRemoved
+                AND ws1.isPersonal = :personal
+                AND r1.name LIKE \'%ROLE_WS_MANAGER_%\'
+            ')
+            ->setParameter('notRemoved', false)
+            ->setParameter('personal', true);
+
+        return $execute ? $query->getResult() : $query;
     }
 }

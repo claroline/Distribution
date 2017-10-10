@@ -6,11 +6,11 @@ import classes from 'classnames'
 import Popover from 'react-bootstrap/lib/Popover'
 
 import {t, tex} from '#/main/core/translation'
-import {Textarea} from '#/main/core/layout/form/components/textarea.jsx'
-import {CheckGroup} from './../../components/form/check-group.jsx'
+import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
-import {TooltipButton} from './../../components/form/tooltip-button.jsx'
+import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 
 /**
  * Edits a Keyword.
@@ -106,19 +106,21 @@ class KeywordItem extends Component {
           <TooltipButton
             id={`keyword-${this.props.keyword._id}-feedback-toggle`}
             className="btn-link-default"
-            label={<span className="fa fa-fw fa-comments-o"/>}
             title={tex('words_feedback_info')}
             onClick={() => this.setState({showFeedback: !this.state.showFeedback})}
-          />
+          >
+            <span className="fa fa-fw fa-comments-o" />
+          </TooltipButton>
 
           <TooltipButton
             id={`keyword-${this.props.keyword._id}-delete`}
             className="btn-link-default"
-            enabled={this.props.keyword._deletable}
+            disabled={!this.props.keyword._deletable}
             title={t('delete')}
-            label={<span className="fa fa-fw fa-trash-o"/>}
             onClick={() => this.props.keyword._deletable && this.props.removeKeyword()}
-          />
+          >
+            <span className="fa fa-fw fa-trash-o" />
+          </TooltipButton>
         </div>
       </li>
     )
@@ -183,16 +185,14 @@ const KeywordItems = props =>
       )}
     </ul>
 
-    <div className="footer">
-      <button
-        type="button"
-        className="btn btn-default"
-        onClick={props.addKeyword}
-      >
-        <span className="fa fa-fw fa-plus" />
-        {tex('words_add_word')}
-      </button>
-    </div>
+    <button
+      type="button"
+      className="add-keyword btn btn-block btn-default"
+      onClick={props.addKeyword}
+    >
+      <span className="fa fa-fw fa-plus" />
+      {tex('words_add_word')}
+    </button>
   </div>
 
 KeywordItems.propTypes = {
@@ -281,18 +281,21 @@ const KeywordsPopover = props =>
               id={`keywords-popover-${props.id}-remove`}
               title={tex('delete')}
               className="btn-link-default"
-              label={<span className="fa fa-fw fa-trash-o" />}
               onClick={props.remove}
-            />
+            >
+              <span className="fa fa-fw fa-trash-o" />
+            </TooltipButton>
           }
+
           <TooltipButton
             id={`keywords-popover-${props.id}-close`}
             title={tex('close')}
             className="btn-link-default"
-            label={<span className="fa fa-fw fa-times" />}
-            enabled={isEmpty(props._errors)}
+            disabled={!isEmpty(props._errors)}
             onClick={props.close}
-          />
+          >
+            <span className="fa fa-fw fa-times" />
+          </TooltipButton>
         </div>
       </div>
     }

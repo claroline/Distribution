@@ -34,6 +34,7 @@ use Claroline\ClacoFormBundle\Event\Log\LogEntryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryStatusChangeEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryUserChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldEditEvent;
@@ -46,7 +47,9 @@ use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
+use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -56,6 +59,8 @@ use Claroline\PdfGeneratorBundle\Manager\PdfManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -67,9 +72,13 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ClacoFormManager
 {
+    private $archiveDir;
     private $authorization;
+    private $configHandler;
     private $eventDispatcher;
     private $facetManager;
+    private $fileSystem;
+    private $filesDir;
     private $locationManager;
     private $messageManager;
     private $om;
@@ -79,6 +88,7 @@ class ClacoFormManager
     private $tokenStorage;
     private $translator;
     private $userManager;
+    private $utils;
 
     private $categoryRepo;
     private $commentRepo;
@@ -91,9 +101,13 @@ class ClacoFormManager
 
     /**
      * @DI\InjectParams({
+     *     "archiveDir"      = @DI\Inject("%claroline.param.platform_generated_archive_path%"),
      *     "authorization"   = @DI\Inject("security.authorization_checker"),
+     *     "configHandler"   = @DI\Inject("claroline.config.platform_config_handler"),
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
      *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
+     *     "fileSystem"      = @DI\Inject("filesystem"),
+     *     "filesDir"        = @DI\Inject("%claroline.param.files_directory%"),
      *     "locationManager" = @DI\Inject("claroline.manager.organization.location_manager"),
      *     "messageManager"  = @DI\Inject("claroline.manager.message_manager"),
      *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
@@ -103,12 +117,17 @@ class ClacoFormManager
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "translator"      = @DI\Inject("translator"),
      *     "userManager"     = @DI\Inject("claroline.manager.user_manager"),
+     *     "utils"           = @DI\Inject("claroline.utilities.misc")
      * })
      */
     public function __construct(
+        $archiveDir,
         AuthorizationCheckerInterface $authorization,
+        PlatformConfigurationHandler $configHandler,
         EventDispatcherInterface $eventDispatcher,
         FacetManager $facetManager,
+        Filesystem $fileSystem,
+        $filesDir,
         LocationManager $locationManager,
         MessageManager $messageManager,
         ObjectManager $om,
@@ -117,11 +136,16 @@ class ClacoFormManager
         TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        UserManager $userManager
+        UserManager $userManager,
+        ClaroUtilities $utils
     ) {
+        $this->archiveDir = $archiveDir;
         $this->authorization = $authorization;
+        $this->configHandler = $configHandler;
         $this->eventDispatcher = $eventDispatcher;
         $this->facetManager = $facetManager;
+        $this->fileSystem = $fileSystem;
+        $this->filesDir = $filesDir;
         $this->locationManager = $locationManager;
         $this->messageManager = $messageManager;
         $this->om = $om;
@@ -131,6 +155,7 @@ class ClacoFormManager
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->userManager = $userManager;
+        $this->utils = $utils;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->clacoFormRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoForm');
         $this->clacoFormWidgetConfigRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoFormWidgetConfig');
@@ -167,7 +192,6 @@ class ClacoFormManager
             'userString',
             'categoriesString',
             'keywordsString',
-            'actions',
         ]);
 
         $clacoForm->setDisplayMetadata('none');
@@ -195,6 +219,12 @@ class ClacoFormManager
         $clacoForm->setNewKeywordsEnabled(false);
         $clacoForm->setDisplayKeywords(false);
         $clacoForm->setOpenKeywords(false);
+
+        $clacoForm->setUseTemplate(false);
+        $clacoForm->setDefaultDisplayMode('table');
+        $clacoForm->setDisplayTitle('title');
+        $clacoForm->setDisplaySubtitle('title');
+        $clacoForm->setDisplayContent('title');
 
         return $clacoForm;
     }
@@ -224,10 +254,12 @@ class ClacoFormManager
         return $details;
     }
 
-    public function saveClacoFormTemplate(ClacoForm $clacoForm, $template)
+    public function saveClacoFormTemplate(ClacoForm $clacoForm, $template, $useTemplate)
     {
         $clacoFormTemplate = empty($template) ? null : $template;
+        $clacoFormUseTemplate = $clacoFormTemplate ? $useTemplate : false;
         $clacoForm->setTemplate($clacoFormTemplate);
+        $clacoForm->setUseTemplate($clacoFormUseTemplate);
         $this->persistClacoForm($clacoForm);
         $event = new LogClacoFormTemplateEditEvent($clacoForm, $clacoFormTemplate);
         $this->eventDispatcher->dispatch('log', $event);
@@ -352,7 +384,8 @@ class ClacoFormManager
         $lockedEditionOnly = false,
         $hidden = false,
         array $choices = [],
-        array $choicesChildren = []
+        array $choicesChildren = [],
+        array $details = []
     ) {
         $this->om->startFlushSuite();
         $field = new Field();
@@ -364,6 +397,7 @@ class ClacoFormManager
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
         $field->setHidden($hidden);
+        $field->setDetails($details);
         $facetType = $type === FieldFacet::SELECT_TYPE && count($choicesChildren) > 0 ?
             FieldFacet::CASCADE_SELECT_TYPE :
             $type;
@@ -371,7 +405,7 @@ class ClacoFormManager
 
         if ($this->facetManager->isTypeWithChoices($type)) {
             foreach ($choices as $choice) {
-                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+                $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet, null, $choice['index']);
 
                 if (!empty($choice['categoryId'])) {
                     $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
@@ -398,7 +432,8 @@ class ClacoFormManager
         $lockedEditionOnly = false,
         $hidden = false,
         array $choices = [],
-        array $choicesChildren = []
+        array $choicesChildren = [],
+        array $details = []
     ) {
         $oldChoices = [];
 
@@ -422,6 +457,7 @@ class ClacoFormManager
         $field->setLocked($locked);
         $field->setLockedEditionOnly($lockedEditionOnly);
         $field->setHidden($hidden);
+        $field->setDetails($details);
         $fieldFacet = $field->getFieldFacet();
         $facetType = $type === FieldFacet::SELECT_TYPE && count($choicesChildren) > 0 ?
             FieldFacet::CASCADE_SELECT_TYPE :
@@ -433,7 +469,7 @@ class ClacoFormManager
 
             foreach ($choices as $choice) {
                 if ($choice['new']) {
-                    $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet);
+                    $fieldFacetChoice = $this->facetManager->addFacetFieldChoice($choice['value'], $fieldFacet, null, $choice['index']);
 
                     if (!empty($choice['categoryId'])) {
                         $this->createFieldChoiceCategory($field, $choice['categoryId'], $choice['value'], $fieldFacetChoice);
@@ -521,6 +557,7 @@ class ClacoFormManager
                 ++$index;
             }
             if (!$found) {
+                $fieldFacet->removeFieldChoice($choice);
                 $this->om->remove($choice);
             }
         }
@@ -546,7 +583,8 @@ class ClacoFormManager
                     $child = $this->facetManager->addFacetFieldChoice(
                         $childChoice['value'],
                         $parent->getFieldFacet(),
-                        $parent
+                        $parent,
+                        $childChoice['index']
                     );
 
                     if (!empty($childChoice['categoryId'])) {
@@ -708,8 +746,14 @@ class ClacoFormManager
             $this->getPublishedEntriesByDates($clacoForm);
     }
 
-    public function createEntry(ClacoForm $clacoForm, array $entryData, $title, array $keywordsData = [], User $user = null)
-    {
+    public function createEntry(
+        ClacoForm $clacoForm,
+        array $entryData,
+        $title,
+        array $keywordsData = [],
+        User $user = null,
+        array $files = []
+    ) {
         $this->om->startFlushSuite();
         $now = new \DateTime();
         $status = $clacoForm->isModerated() ? Entry::PENDING : Entry::PUBLISHED;
@@ -727,10 +771,19 @@ class ClacoFormManager
         foreach ($entryData as $key => $value) {
             $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
 
-            if (!is_null($field)) {
+            if (!is_null($field) && $value !== '') {
+                $type = $field->getType();
+
+                if ($this->facetManager->isFileType($type)) {
+                    $values = [];
+
+                    foreach ($this->filterFieldFiles($field->getId(), $files) as $file) {
+                        $values[] = $this->registerFile($clacoForm, $file);
+                    }
+                    $value = $values;
+                }
                 $fieldValue = $this->createFieldValue($entry, $field, $value, $user);
                 $entry->addFieldValue($fieldValue);
-                $type = $field->getType();
 
                 if ($this->facetManager->isTypeWithChoices($type)) {
                     $choiceCategories = $this->getCategoriesFromFieldAndValue($field, $value);
@@ -765,8 +818,14 @@ class ClacoFormManager
         return $entry;
     }
 
-    public function editEntry(Entry $entry, array $entryData, $title, array $categoriesIds = [], array $keywordsData = [])
-    {
+    public function editEntry(
+        Entry $entry,
+        array $entryData,
+        $title,
+        array $categoriesIds = [],
+        array $keywordsData = [],
+        array $files = []
+    ) {
         $this->om->startFlushSuite();
         $clacoForm = $entry->getClacoForm();
         $entry->setTitle($title);
@@ -788,18 +847,29 @@ class ClacoFormManager
             $fieldValue = $this->getFieldValueByEntryAndFieldId($entry, $key);
 
             if (is_null($fieldValue)) {
-                $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
+                if ($value !== '') {
+                    $field = $this->getFieldByClacoFormAndId($clacoForm, $key);
 
-                if (!is_null($field)) {
-                    $fieldValue = $this->createFieldValue($entry, $field, $value, $entry->getUser());
-                    $entry->addFieldValue($fieldValue);
-                    $type = $field->getType();
+                    if (!is_null($field)) {
+                        $type = $field->getType();
 
-                    if ($this->facetManager->isTypeWithChoices($type)) {
-                        $categoriesToAdd = $this->getCategoriesFromFieldAndValue($field, $value);
+                        if ($this->facetManager->isFileType($type)) {
+                            $values = [];
 
-                        foreach ($categoriesToAdd as $catId => $cat) {
-                            $toAdd[$catId] = $cat;
+                            foreach ($this->filterFieldFiles($field->getId(), $files) as $file) {
+                                $values[] = $this->registerFile($clacoForm, $file);
+                            }
+                            $value = $values;
+                        }
+                        $fieldValue = $this->createFieldValue($entry, $field, $value, $entry->getUser());
+                        $entry->addFieldValue($fieldValue);
+
+                        if ($this->facetManager->isTypeWithChoices($type)) {
+                            $categoriesToAdd = $this->getCategoriesFromFieldAndValue($field, $value);
+
+                            foreach ($categoriesToAdd as $catId => $cat) {
+                                $toAdd[$catId] = $cat;
+                            }
                         }
                     }
                 }
@@ -819,6 +889,20 @@ class ClacoFormManager
                     foreach ($categoriesToAdd as $catId => $cat) {
                         $toAdd[$catId] = $cat;
                     }
+                }
+                if ($this->facetManager->isFileType($type)) {
+                    $values = [];
+
+                    foreach ($value as $v) {
+                        if (isset($v['url'])) {
+                            $values[] = $v;
+                        }
+                    }
+                    $this->removeOldFiles($fieldFacetValue->getValue(), $values);
+                    foreach ($this->filterFieldFiles($field->getId(), $files) as $file) {
+                        $values[] = $this->registerFile($clacoForm, $file);
+                    }
+                    $value = $values;
                 }
                 $this->editFieldFacetValue($fieldFacetValue, $value);
             }
@@ -868,10 +952,13 @@ class ClacoFormManager
             foreach ($values as $val) {
                 $parent = $choice;
                 $choice = $this->facetManager->getChoiceByFieldFacetAndValueAndParent($fieldFacet, $val, $parent);
-                $fcc = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
 
-                if (!empty($fcc)) {
-                    $choiceCategories[] = $fcc;
+                if ($choice) {
+                    $fcc = $this->getFieldChoiceCategoryByFieldAndChoice($field, $choice);
+
+                    if (!empty($fcc)) {
+                        $choiceCategories[] = $fcc;
+                    }
                 }
             }
         } else {
@@ -980,6 +1067,16 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
         $categories = $entry->getCategories();
         $this->notifyCategoriesManagers($entry, $categories, $categories);
+
+        return $entry;
+    }
+
+    public function changeEntryOwner(Entry $entry, User $user)
+    {
+        $entry->setUser($user);
+        $this->persistEntry($entry);
+        $event = new LogEntryUserChangeEvent($entry);
+        $this->eventDispatcher->dispatch('log', $event);
 
         return $entry;
     }
@@ -1131,7 +1228,7 @@ class ClacoFormManager
 
         switch ($fieldFacet->getType()) {
             case FieldFacet::DATE_TYPE:
-                $date = is_string($value) ? new \DateTime($value) : $value;
+                $date = $value ? new \DateTime($value) : null;
                 $fieldFacetValue->setDateValue($date);
                 break;
             case FieldFacet::FLOAT_TYPE:
@@ -1139,6 +1236,9 @@ class ClacoFormManager
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
             case FieldFacet::CASCADE_SELECT_TYPE:
+                $fieldFacetValue->setArrayValue(is_array($value) ? $value : [$value]);
+                break;
+            case FieldFacet::FILE_TYPE:
                 $fieldFacetValue->setArrayValue($value);
                 break;
             default:
@@ -1156,14 +1256,22 @@ class ClacoFormManager
 
         switch ($fieldFacet->getType()) {
             case FieldFacet::DATE_TYPE:
-                $date = is_string($value) ? new \DateTime($value) : $value;
+                if (is_array($value)) {
+                    $date = new \DateTime($value['date']);
+                } else {
+                    $date = is_string($value) ? new \DateTime($value) : $value;
+                }
                 $fieldFacetValue->setDateValue($date);
                 break;
             case FieldFacet::FLOAT_TYPE:
-                $fieldFacetValue->setFloatValue($value);
+                $floatValue = $value === '' ? null : $value;
+                $fieldFacetValue->setFloatValue($floatValue);
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
             case FieldFacet::CASCADE_SELECT_TYPE:
+                $fieldFacetValue->setArrayValue(is_array($value) ? $value : [$value]);
+                break;
+            case FieldFacet::FILE_TYPE:
                 $fieldFacetValue->setArrayValue($value);
                 break;
             default:
@@ -1438,6 +1546,21 @@ class ClacoFormManager
         }
     }
 
+    public function hasFiles(ClacoForm $clacoForm)
+    {
+        $hasFiles = false;
+        $fields = $clacoForm->getFields();
+
+        foreach ($fields as $field) {
+            if ($field->getType() === FieldFacet::FILE_TYPE) {
+                $hasFiles = true;
+                break;
+            }
+        }
+
+        return $hasFiles;
+    }
+
     public function exportEntries(ClacoForm $clacoForm)
     {
         $entriesData = [];
@@ -1450,6 +1573,7 @@ class ClacoFormManager
             $editionDate = $entry->getEditionDate();
             $fieldValues = $entry->getFieldValues();
             $data = [];
+            $data['id'] = $entry->getId();
             $data['title'] = $entry->getTitle();
             $data['author'] = empty($user) ?
                 $this->translator->trans('anonymous', [], 'platform') :
@@ -1474,6 +1598,14 @@ class ClacoFormManager
                     case FieldFacet::COUNTRY_TYPE:
                         $value = $this->locationManager->getCountryByCode($val);
                         break;
+                    case FieldFacet::FILE_TYPE:
+                        $values = [];
+
+                        foreach ($val as $fileValue) {
+                            $values[] = '['.implode(', ', $fileValue).']';
+                        }
+                        $value = implode(', ', $values);
+                        break;
                     default:
                         $value = $val;
 
@@ -1492,6 +1624,42 @@ class ClacoFormManager
         );
     }
 
+    public function zipEntries($content, ClacoForm $clacoForm)
+    {
+        $archive = new \ZipArchive();
+        $pathArch = $this->configHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.$this->utils->generateGuid().'.zip';
+        $archive->open($pathArch, \ZipArchive::CREATE);
+        $archive->addFromString($clacoForm->getResourceNode()->getName().'.xls', $content);
+
+        $entries = $this->getAllEntries($clacoForm);
+
+        foreach ($entries as $entry) {
+            $fieldValues = $entry->getFieldValues();
+
+            foreach ($fieldValues as $fiedValue) {
+                $field = $fiedValue->getField();
+                $fieldFacetValue = $fiedValue->getFieldFacetValue();
+
+                if ($field->getType() === FieldFacet::FILE_TYPE) {
+                    $files = $fieldFacetValue->getValue();
+                    foreach ($files as $file) {
+                        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
+                        $fileParts = explode('/', $file['url']);
+                        $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
+                        $archive->addFile(
+                            $filePath,
+                            'files'.DIRECTORY_SEPARATOR.$entry->getId().DIRECTORY_SEPARATOR.$fileName
+                        );
+                    }
+                }
+            }
+        }
+        $archive->close();
+        file_put_contents($this->archiveDir, $pathArch."\n", FILE_APPEND);
+
+        return $pathArch;
+    }
+
     public function generatePdfForEntry(Entry $entry, User $user)
     {
         $clacoForm = $entry->getClacoForm();
@@ -1504,16 +1672,17 @@ class ClacoFormManager
         }
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
         $template = $clacoForm->getTemplate();
+        $useTemplate = $clacoForm->getUseTemplate();
         $displayMeta = $clacoForm->getDisplayMetadata();
         $isEntryManager = $user !== 'anon.' && $this->isEntryManager($entry, $user);
         $withMeta = $canEdit || $displayMeta === 'all' || ($displayMeta === 'manager' && $isEntryManager);
-        $countries = empty($template) ? $this->locationManager->getCountries() : [];
+        $countries = $this->locationManager->getCountries();
 
-        if (!empty($template)) {
+        if (!empty($template) && $useTemplate) {
             $template = str_replace('%clacoform_entry_title%', $entry->getTitle(), $template);
 
             foreach ($fields as $field) {
-                if ($withMeta || !$field->getIsMetadata()) {
+                if (!$field->isHidden() && ($withMeta || !$field->getIsMetadata()) && isset($fieldValues[$field->getId()])) {
                     $fieldFacet = $field->getFieldFacet();
 
                     switch ($fieldFacet->getType()) {
@@ -1527,13 +1696,21 @@ class ClacoFormManager
                         case FieldFacet::COUNTRY_TYPE:
                             $value = $this->locationManager->getCountryByCode($fieldValues[$field->getId()]);
                             break;
+                        case FieldFacet::FILE_TYPE:
+                            $values = [];
+
+                            foreach ($fieldValues[$field->getId()] as $fileValue) {
+                                $values[] = '['.implode(', ', $fileValue).']';
+                            }
+                            $value = implode(', ', $values);
+                            break;
                         default:
                             $value = $fieldValues[$field->getId()];
                     }
                 } else {
                     $value = '';
                 }
-                $name = $this->removeAccent($this->removeQuote($field->getName()));
+                $name = 'field_'.$field->getId();
                 $template = str_replace("%$name%", $value, $template);
             }
         }
@@ -1542,6 +1719,7 @@ class ClacoFormManager
             [
                 'entry' => $entry,
                 'template' => $template,
+                'useTemplate' => $useTemplate,
                 'withMeta' => $withMeta,
                 'fields' => $fields,
                 'fieldValues' => $fieldValues,
@@ -1944,6 +2122,11 @@ class ClacoFormManager
         return $this->clacoFormRepo->findClacoFormByResourceNodeId($resourceNodeId);
     }
 
+    public function getClacoFormById($id)
+    {
+        return $this->clacoFormRepo->findOneById($id);
+    }
+
     /****************************************
      * Access to CategoryRepository methods *
      ****************************************/
@@ -2117,6 +2300,23 @@ class ClacoFormManager
         return $this->authorization->isGranted($right, $collection);
     }
 
+    public function isCategoryManager(ClacoForm $clacoForm, User $user)
+    {
+        $categories = $clacoForm->getCategories();
+
+        foreach ($categories as $category) {
+            $managers = $category->getManagers();
+
+            foreach ($managers as $manager) {
+                if ($manager->getId() === $user->getId()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public function isEntryManager(Entry $entry, User $user)
     {
         $categories = $entry->getCategories();
@@ -2138,14 +2338,16 @@ class ClacoFormManager
     {
         $clacoForm = $entry->getClacoForm();
         $user = $this->tokenStorage->getToken()->getUser();
+        $isAnon = $user === 'anon.';
         $canOpen = $this->hasRight($clacoForm, 'OPEN');
         $canEdit = $this->hasRight($clacoForm, 'EDIT');
 
         return $canEdit || (
             $canOpen && (
                ($entry->getUser() === $user) ||
-               (($user !== 'anon.') && $this->isEntryManager($entry, $user)) ||
-               (($entry->getStatus() === Entry::PUBLISHED) && $clacoForm->getSearchEnabled())
+               (!$isAnon && $this->isEntryManager($entry, $user)) ||
+               (($entry->getStatus() === Entry::PUBLISHED) && $clacoForm->getSearchEnabled()) ||
+               (!$isAnon && $this->isEntryShared($entry, $user))
             )
         );
     }
@@ -2242,6 +2444,54 @@ class ClacoFormManager
     {
         if (!$this->hasRight($entry->getClacoForm(), 'EDIT') && !$this->hasEntryOwnership($entry)) {
             throw new AccessDeniedException();
+        }
+    }
+
+    private function registerFile(ClacoForm $clacoForm, UploadedFile $file)
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $hashName = $this->utils->generateGuid();
+        $dir = $this->filesDir.$ds.'clacoform'.$ds.$clacoForm->getId();
+        $fileName = $hashName.'.'.$file->getClientOriginalExtension();
+
+        $file->move($dir, $fileName);
+
+        return [
+            'name' => $file->getClientOriginalName(),
+            'mimeType' => $file->getClientMimeType(),
+            'url' => '../files/clacoform'.$ds.$clacoForm->getId().$ds.$fileName,
+        ];
+    }
+
+    private function filterFieldFiles($filedId, array $files = [])
+    {
+        $filteredFiles = [];
+
+        foreach ($files as $key => $value) {
+            $keyParts = explode('-', $key);
+
+            if (count($keyParts) > 0 && intval($keyParts[0]) === intval($filedId)) {
+                $filteredFiles[] = $value;
+            }
+        }
+
+        return $filteredFiles;
+    }
+
+    private function removeOldFiles(array $oldFiles, array $newFiles)
+    {
+        foreach ($oldFiles as $oldFile) {
+            $isPresent = false;
+
+            foreach ($newFiles as $newFile) {
+                if ($newFile['url'] === $oldFile['url']) {
+                    $isPresent = true;
+                    break;
+                }
+            }
+            if (!$isPresent) {
+                $this->fileSystem->remove($this->filesDir.DIRECTORY_SEPARATOR.$oldFile['url']);
+            }
         }
     }
 }
