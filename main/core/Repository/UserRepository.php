@@ -816,19 +816,32 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
     public function countUsersByRoleIncludingGroup(Role $role)
     {
-        $dql = '
-            SELECT count(distinct u)
-            FROM Claroline\CoreBundle\Entity\User u
-            JOIN u.roles r1
-            LEFT JOIN  u.groups g
-            LEFT JOIN g.roles r2
-            WHERE r1.id = :roleId OR r2.id = :roleId
+        $sql = '
+            SELECT count(distinct usr.id) AS total
+            FROM (
+              SELECT u1.id AS id
+              FROM claro_user u1
+              INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
+              INNER JOIN claro_role r1 ON r1.id = ur1.role_id
+              WHERE r1.id = :roleId
+              UNION
+              SELECT u2.id AS id
+              FROM claro_user u2
+              INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
+              INNER JOIN claro_group g2 ON g2.id = ug2.group_id
+              INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
+              INNER JOIN claro_role r2 ON r2.id = gr2.role_id
+              WHERE r2.id = :roleId
+            ) AS usr
         ';
 
-        $query = $this->_em->createQuery($dql);
+        $rsm = new Query\ResultSetMapping();
+        $rsm->addScalarResult('total', 'total', 'integer');
+
+        $query = $this->_em->createNativeQuery($sql, $rsm);
         $query->setParameter('roleId', $role->getId());
 
-        return $query->getSingleScalarResult();
+        return (int) $query->getSingleScalarResult();
     }
 
     public function countUsersOfGroup(Group $group)
