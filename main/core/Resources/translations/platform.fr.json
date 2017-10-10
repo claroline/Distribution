@@ -1473,6 +1473,7 @@
     "login_auth_claro_account": "Me connecter avec mon compte Claroline :",
     "login_auth_sso": "Me connecter avec un de mes autres comptes :",
     "published_at": "publié le %date%",
+    "last_modified_at": "modifié le %date%",
     "not_published": "non publié",
     "access_restrictions": "Restrictions d'accès",
     "access_dates": "Restreindre par dates",

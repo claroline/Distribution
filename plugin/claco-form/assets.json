@@ -7,7 +7,7 @@
 
   "styles": {
     "entry": {
-      "clacoform": "clacoform.less"
+      "clacoform": "claco-form.less"
     }
   }
 }

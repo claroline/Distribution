@@ -387,7 +387,7 @@ class EntryEditForm extends Component {
                     className="btn btn-default margin-bottom-sm"
                     onClick={() => this.setState({showCategoryForm: true, currentCategory: ''})}
                   >
-                      <span className="fa fa-w fa-plus"></span>
+                      <span className="fa fa-w fa-plus" />
                   </button>
                 }
               </div>

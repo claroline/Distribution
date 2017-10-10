@@ -29,6 +29,13 @@ import {CategoryFormModal} from './editor/category/components/category-form-moda
 import {KeywordFormModal} from './editor/keyword/components/keyword-form-modal.jsx'
 import {FieldFormModal} from './editor/field/components/field-form-modal.jsx'
 
+// register custom modals
+registerModalTypes([
+  ['MODAL_CATEGORY_FORM', CategoryFormModal],
+  ['MODAL_KEYWORD_FORM', KeywordFormModal],
+  ['MODAL_FIELD_FORM', FieldFormModal]
+])
+
 // mount the react application
 bootstrap(
   // app DOM container (also holds initial app data as data attributes)
@@ -87,9 +94,3 @@ bootstrap(
     }
   }
 )
-
-registerModalTypes([
-  ['MODAL_CATEGORY_FORM', CategoryFormModal],
-  ['MODAL_KEYWORD_FORM', KeywordFormModal],
-  ['MODAL_FIELD_FORM', FieldFormModal]
-])
