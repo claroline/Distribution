@@ -30,7 +30,7 @@ trait CodeTrait
     /**
      * Sets code.
      *
-     * @param $uuid
+     * @param $code
      */
     public function setCode($code)
     {
