@@ -85,15 +85,15 @@ class AdditionalInstaller extends BaseInstaller
         }
 
         if (version_compare($currentVersion, '10.6.0', '<')) {
-            $updater080000 = new Updater100600($this->container);
-            $updater080000->setLogger($this->logger);
-            $updater080000->postUpdate();
+            $updater = new Updater100600($this->container);
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
         }
 
         if (version_compare($currentVersion, '11.0.0', '<')) {
-            $updater080000 = new Updater100200($this->container);
-            $updater080000->setLogger($this->logger);
-            $updater080000->postUpdate();
+            $updater = new Updater100200($this->container);
+            $updater->setLogger($this->logger);
+            $updater->postUpdate();
         }
     }
 }
