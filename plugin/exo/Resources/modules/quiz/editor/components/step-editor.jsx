@@ -210,7 +210,6 @@ const ItemPanel = props =>
             showModal={props.showModal}
             mandatoryQuestions={props.mandatoryQuestions}
             closeModal={props.closeModal}
-            quizChanged={props.quizChanged}
             onChange={(propertyPath, value) =>
               props.handleItemUpdate(props.item.id, propertyPath, value)
             }
@@ -255,8 +254,7 @@ ItemPanel.propTypes = {
   isDragging: T.bool.isRequired,
   onSort: T.func.isRequired,
   sortDirection: T.string.isRequired,
-  validating: T.bool.isRequired,
-  quizChanged: T.func.isRequired
+  validating: T.bool.isRequired
 }
 
 const ContentHeader = props =>
@@ -546,7 +544,6 @@ export const StepEditor = props =>
           handleItemDetailUpdate={props.handleItemDetailUpdate}
           showModal={props.showModal}
           closeModal={props.closeModal}
-          quizChanged={props.quizChanged}
         /> :
         <SortableContentPanel
           {...props}
@@ -618,6 +615,5 @@ StepEditor.propTypes = {
   handleContentItemUpdate: T.func,
   handleFileUpload: T.func,
   showModal: T.func.isRequired,
-  closeModal: T.func.isRequired,
-  quizChanged: T.func.isRequired
+  closeModal: T.func.isRequired
 }

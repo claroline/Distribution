@@ -9,6 +9,7 @@ import {tex} from '#/main/core/translation'
 import {MODAL_MESSAGE} from '#/main/core/layout/modal'
 import {denormalize} from './../normalizer'
 import forOwn from 'lodash/forOwn'
+import {ITEM_UPDATE_TAGS} from '#/plugin/tag/actions'
 
 export const ITEM_CREATE = 'ITEM_CREATE'
 export const ITEM_UPDATE = 'ITEM_UPDATE'
@@ -64,7 +65,6 @@ export const quizChangeActions = [
   STEP_UPDATE,
   STEP_ITEM_DELETE,
   QUIZ_UPDATE,
-  QUIZ_CHANGED,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
@@ -75,7 +75,8 @@ export const quizChangeActions = [
   OBJECT_ADD,
   OBJECT_CHANGE,
   OBJECT_REMOVE,
-  OBJECT_MOVE
+  OBJECT_MOVE,
+  ITEM_UPDATE_TAGS
 ]
 
 export const actions = {}
@@ -97,7 +98,6 @@ actions.importItems = makeActionCreator(ITEMS_IMPORT, 'stepId', 'items')
 actions.quizValidating = makeActionCreator(QUIZ_VALIDATING)
 actions.quizSaving = makeActionCreator(QUIZ_SAVING)
 actions.quizSaved = makeActionCreator(QUIZ_SAVED)
-actions.quizChanged = makeActionCreator(QUIZ_CHANGED)
 actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
 actions.updateContentItem = makeActionCreator(CONTENT_ITEM_UPDATE, 'id', 'propertyPath', 'value')
 actions.updateContentItemDetail = makeActionCreator(CONTENT_ITEM_DETAIL_UPDATE, 'id', 'subAction')

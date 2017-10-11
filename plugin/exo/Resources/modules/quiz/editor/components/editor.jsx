@@ -76,7 +76,6 @@ function selectSubEditor(props) {
           numbering={props.quizProperties.parameters.numbering}
           showModal={props.showModal}
           closeModal={props.fadeModal}
-          quizChanged={props.quizChanged}
         />
       )
   }
@@ -111,8 +110,7 @@ selectSubEditor.propTypes = {
   duplicateItem: T.func.isRequired,
   saveContentItemFile: T.func,
   showModal: T.func.isRequired,
-  fadeModal: T.func.isRequired,
-  quizChanged: T.func.isRequired
+  fadeModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
