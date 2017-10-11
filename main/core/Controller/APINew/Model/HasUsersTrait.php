@@ -18,8 +18,8 @@ trait HasUsersTrait
     {
         try {
             $object = $this->find($class, $uuid);
-            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
-            $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $groups);
+            $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+            $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $users);
 
             return new JsonResponse(
                 $this->serializer->serialize($object)
@@ -37,8 +37,8 @@ trait HasUsersTrait
     {
         try {
             $object = $this->find($class, $uuid);
-            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
-            $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $groups);
+            $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+            $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $users);
 
             return new JsonResponse(
               $this->serializer->serialize($object)

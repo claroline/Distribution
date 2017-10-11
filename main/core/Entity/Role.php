@@ -289,12 +289,39 @@ class Role implements RoleInterface
         return $this->users;
     }
 
-    public function addUser($user)
+    public function addUser(User $user)
     {
         $this->users->add($user);
 
         if ($user->hasRole($this)) {
             $user->addRole($this);
+        }
+    }
+
+    public function addGroup(Group $group)
+    {
+        $this->groups->add($group);
+
+        if ($group->hasRole($this)) {
+            $group->addRole($this);
+        }
+    }
+
+    public function removeUser(User $user)
+    {
+        $this->users->remove($user);
+
+        if ($user->hasRole($this)) {
+            $user->removeRole($this);
+        }
+    }
+
+    public function removeGroup(Group $group)
+    {
+        $this->groups->remove($group);
+
+        if ($group->hasRole($this)) {
+            $group->removeRole($this);
         }
     }
 
