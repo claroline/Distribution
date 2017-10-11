@@ -32,9 +32,9 @@ trait CodeTrait
      *
      * @param $uuid
      */
-    public function setCode($uuid)
+    public function setCode($code)
     {
-        $this->code = code;
+        $this->code = $code;
     }
 
     //default is same than uuid
