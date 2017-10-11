@@ -4,6 +4,8 @@ const PLATFORM_DOMAIN   = 'platform'
 const VALIDATION_DOMAIN = 'validators'
 
 import {Translator as BaseTranslator} from './translator'
+//some javascript will break if this import is missing. It's pretty hard to find where atm.
+import './browser'
 
 /**
  * Get the current application translator.
