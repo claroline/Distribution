@@ -309,7 +309,7 @@ class Role implements RoleInterface
 
     public function removeUser(User $user)
     {
-        $this->users->remove($user);
+        $this->users->removeElement($user);
 
         if ($user->hasRole($this)) {
             $user->removeRole($this);
@@ -318,7 +318,7 @@ class Role implements RoleInterface
 
     public function removeGroup(Group $group)
     {
-        $this->groups->remove($group);
+        $this->groups->removeElement($group);
 
         if ($group->hasRole($this)) {
             $group->removeRole($this);

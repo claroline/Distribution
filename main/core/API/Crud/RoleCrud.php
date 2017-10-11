@@ -35,12 +35,5 @@ class RoleCrud
      */
     public function prePatch(CrudEvent $event)
     {
-        if ($event->getObject() instanceof Role) {
-            $role = $event->getObject();
-
-            if (!$role->getWorkspace()) {
-                $role->setName(strtoupper('role_'.$role->getTranslationKey()));
-            }
-        }
     }
 }
