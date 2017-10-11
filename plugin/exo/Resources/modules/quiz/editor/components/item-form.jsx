@@ -65,6 +65,7 @@ const Metadata = props =>
     >
       <TagsEditor
         item={props.item}
+        updateCallback={props.quizChanged}
       />
     </FormGroup>
   </div>
@@ -84,7 +85,8 @@ Metadata.propTypes = {
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   onChange: T.func.isRequired,
-  validating: T.bool.isRequired
+  validating: T.bool.isRequired,
+  quizChanged: T.func.isRequired
 }
 
 const Hint = props =>
@@ -193,6 +195,7 @@ const ItemForm = props =>
         closeModal={props.closeModal}
         onChange={props.onChange}
         validating={props.validating}
+        quizChanged={props.quizChanged}
       />
     </ToggleableSet>
 
@@ -240,7 +243,8 @@ ItemForm.propTypes = {
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired,
   onChange: T.func.isRequired,
-  onHintsChange: T.func.isRequired
+  onHintsChange: T.func.isRequired,
+  quizChanged: T.func.isRequired
 }
 
 export {

@@ -35,6 +35,7 @@ export const HINT_REMOVE = 'HINT_REMOVE'
 export const QUIZ_SAVING = 'QUIZ_SAVING'
 export const QUIZ_VALIDATING = 'QUIZ_VALIDATING'
 export const QUIZ_SAVED = 'QUIZ_SAVED'
+export const QUIZ_CHANGED = 'QUIZ_CHANGED'
 export const QUIZ_SAVE_ERROR = 'QUIZ_SAVE_ERROR'
 export const CONTENT_ITEM_CREATE = 'CONTENT_ITEM_CREATE'
 export const CONTENT_ITEM_UPDATE = 'CONTENT_ITEM_UPDATE'
@@ -63,6 +64,7 @@ export const quizChangeActions = [
   STEP_UPDATE,
   STEP_ITEM_DELETE,
   QUIZ_UPDATE,
+  QUIZ_CHANGED,
   HINT_ADD,
   HINT_CHANGE,
   HINT_REMOVE,
@@ -95,6 +97,7 @@ actions.importItems = makeActionCreator(ITEMS_IMPORT, 'stepId', 'items')
 actions.quizValidating = makeActionCreator(QUIZ_VALIDATING)
 actions.quizSaving = makeActionCreator(QUIZ_SAVING)
 actions.quizSaved = makeActionCreator(QUIZ_SAVED)
+actions.quizChanged = makeActionCreator(QUIZ_CHANGED)
 actions.quizSaveError = makeActionCreator(QUIZ_SAVE_ERROR)
 actions.updateContentItem = makeActionCreator(CONTENT_ITEM_UPDATE, 'id', 'propertyPath', 'value')
 actions.updateContentItemDetail = makeActionCreator(CONTENT_ITEM_DETAIL_UPDATE, 'id', 'subAction')
