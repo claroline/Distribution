@@ -285,22 +285,40 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      */
     public function findUsersByWorkspaces(array $workspaces, $executeQuery = true)
     {
+        // First find user ids, then retrieve users it's much faster this way, with UNION select in SQL
+        $sql = 'SELECT DISTINCT u.id AS id FROM (
+                  SELECT u1.id AS id FROM claro_user u1
+                  INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
+                  INNER JOIN claro_role r1 ON r1.id = ur1.role_id
+                  INNER JOIN claro_workspace ws1 ON r1.workspace_id = ws1.id
+                  WHERE ws1.id IN (:workspaces) AND u1.is_removed = :removed
+                  UNION
+                  SELECT u2.id AS id FROM claro_user u2
+                  INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
+                  INNER JOIN claro_group g2 ON g2.id = ug2.group_id
+                  INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
+                  INNER JOIN claro_role r2 ON r2.id = gr2.role_id
+                  INNER JOIN claro_workspace ws2 ON r2.workspace_id = ws2.id
+                  WHERE ws2.id IN (:workspaces) AND u2.is_removed = :removed
+                  ) u
+                ';
+        $rsm = new Query\ResultSetMapping();
+        $rsm->addScalarResult('id', 'id', 'integer');
+        $userIds = array_column($this->_em->createNativeQuery($sql, $rsm)
+            ->setParameter('workspaces', $workspaces)
+            ->setParameter('removed', false)
+            ->getScalarResult(), 'id');
+
         $dql = '
             SELECT DISTINCT u FROM Claroline\CoreBundle\Entity\User u
-            JOIN u.roles wr
-            LEFT JOIN u.groups g
-            LEFT JOIN g.roles gr
-            LEFT JOIN gr.workspace gw
-            LEFT JOIN wr.workspace w
-            WHERE (
-              w IN (:workspaces) OR
-              gw IN (:workspaces)
-            )
-            AND u.isRemoved = false
+            WHERE u.id IN (:ids)
             ORDER BY u.id
         ';
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('workspaces', $workspaces);
+
+        $query = $this->_em
+            ->createQuery($dql)
+            ->setParameter('ids', $userIds)
+            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
         return $executeQuery ? $query->getResult() : $query;
     }
