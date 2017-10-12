@@ -110,24 +110,7 @@ class Entries extends Component {
       name: 'status',
       label: t('published'),
       displayed: true,
-      type: 'boolean',
-      /*renderer: (rowData) => {
-        const status = rowData.status === 1 ? '' : rowData.status === 0 ?
-          <span
-            className="fa fa-w fa-info-circle"
-            data-toggle="tooltip"
-            title={t('pending')}
-          >
-          </span> :
-          <span
-            className="fa fa-w fa-exclamation-triangle"
-            data-toggle="tooltip"
-            title={t('unpublished')}
-          >
-          </span>
-
-        return status
-      }*/
+      type: 'boolean'
     })
     columns.push({
       name: 'title',

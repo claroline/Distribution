@@ -7,9 +7,6 @@ import {t, trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
-import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
-import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {UserMessage} from '#/main/core/layout/user/components/user-message.jsx'
 import {UserMessageForm} from '#/main/core/layout/user/components/user-message-form.jsx'
 
@@ -87,7 +84,7 @@ class EntryComments extends Component {
             }
 
             {this.state.showNewCommentForm &&
-              <h4>Laisser un commentaire</h4>
+              <h4>{trans('add_comment', {}, 'clacoform')}</h4>
             }
 
             {this.state.showNewCommentForm &&
@@ -105,7 +102,7 @@ class EntryComments extends Component {
         }
 
         <section className="comments-section">
-          <h4>Tous les commentaires</h4>
+          <h4>{trans('all_comments', {}, 'clacoform')}</h4>
 
           {0 === comments.length &&
             <div className="list-empty">

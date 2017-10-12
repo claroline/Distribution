@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {t} from '#/main/core/translation'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
 
 import {User as UserTypes} from '#/main/core/layout/user/prop-types'
 

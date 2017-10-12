@@ -78,7 +78,7 @@ const EntryActions = props =>
           <li>
             <CheckGroup
               checkId="notify-edition-chk"
-              checked={state.entryUser.notifyEdition}
+              checked={props.notifyEdition}
               label={trans('editions', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyEdition: checked})}
             />
@@ -86,7 +86,7 @@ const EntryActions = props =>
           <li>
             <CheckGroup
               checkId="notify-comment-chk"
-              checked={state.entryUser.notifyComment}
+              checked={props.notifyComment}
               label={trans('comments', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyComment: checked})}
             />
@@ -174,6 +174,10 @@ EntryActions.propTypes = {
   canGeneratePdf: T.bool.isRequired,
   canManage: T.bool.isRequired,
   canShare: T.bool.isRequired,
+
+  notifyEdition: T.bool,
+  notifyComment: T.bool,
+  displayComments: T.func.isRequired,
 
   // actions functions
   changeOwner: T.func.isRequired,
@@ -399,6 +403,7 @@ class EntryView extends Component {
           {['up', 'both'].indexOf(this.props.menuPosition) > -1 &&
             <EntryMenu />
           }
+
           <div className="entry panel panel-default">
             <div className="panel-body">
               <h2 className="entry-title">{this.props.entry.title}</h2>
@@ -423,7 +428,9 @@ class EntryView extends Component {
                     entryId={this.props.entry.id}
                     status={this.props.entry.status}
                     notificationsEnabled={this.isNotificationsEnabled()}
-
+                    displayComments={this.props.displayComments}
+                    notifyEdition={this.state.entryUser.notifyEdition}
+                    notifyComment={this.state.entryUser.notifyComment}
                     canAdministrate={this.props.canAdministrate}
                     canEdit={this.props.canEditEntry}
                     canGeneratePdf={this.props.canGeneratePdf}
@@ -462,13 +469,13 @@ class EntryView extends Component {
 
             {this.props.displayCategories && this.props.entry.categories && 0 < this.props.entry.categories.length &&
               <div className="entry-footer panel-footer">
-                <span className="title">Categories:</span>
+                <span className="title">{t('categories')}</span>
                 {this.props.entry.categories.map(c =>
                   <span key={`category-${c.id}`} className="label label-primary">{c.name}</span>
                 )}
 
                 <hr/>
-                <span className="title">Keywords:</span>
+                <span className="title">{t('keywords')}</span>
                 {this.props.entry.keywords.map(c =>
                   <span key={`keyword-${c.id}`} className="label label-default">{c.name}</span>
                 )}
@@ -480,9 +487,6 @@ class EntryView extends Component {
             <EntryMenu />
           }
 
-          {/*{(this.props.displayComments || this.canComment()) &&
-            <hr />
-          }*/}
           {(this.props.displayComments || this.canComment()) &&
             <EntryComments
               canComment={this.canComment()}

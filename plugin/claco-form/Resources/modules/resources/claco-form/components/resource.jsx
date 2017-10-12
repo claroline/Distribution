@@ -155,7 +155,7 @@ function mapDispatchToProps(dispatch) {
         })
       )
 
-    },
+    }
   }
 }
 

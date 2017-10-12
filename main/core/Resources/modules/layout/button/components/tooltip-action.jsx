@@ -12,7 +12,7 @@ const TooltipAction = props => React.createElement(
   typeof props.action === 'function' ? TooltipButton : TooltipLink,
   Object.assign({}, props, {
     title: props.label,
-    [typeof props.action === 'function' ? 'onClick' : 'target']: props.action,
+    [typeof props.action === 'function' ? 'onClick' : 'target']: props.action
   }),
   <span className={props.icon} />
 )

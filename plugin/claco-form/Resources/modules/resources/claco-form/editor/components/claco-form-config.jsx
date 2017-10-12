@@ -8,7 +8,6 @@ import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {trans, t} from '#/main/core/translation'
 
-import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
