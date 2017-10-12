@@ -43,23 +43,18 @@ class EntryComments extends Component {
     this.setState({showNewCommentForm: false})
   }
 
-  editComment(commentId) {
-    if (this.state[commentId] && this.state[commentId].comment) {
-      this.props.editComment(this.props.entry.id, commentId, this.state[commentId].comment)
-    }
-    this.setState({[commentId]: {showCommentForm: false, comment: ''}})
+  editComment(commentId, commentContent) {
+    this.props.editComment(this.props.entry.id, commentId, commentContent)
+
+    this.setState({[commentId]: {showCommentForm: false}})
   }
 
   showCommentForm(comment) {
-    this.setState({[comment.id]: {showCommentForm: true, comment: comment.content}})
-  }
-
-  updateComment(commentId, value) {
-    this.setState({[commentId]: {showCommentForm: true, comment: value}})
+    this.setState({[comment.id]: {showCommentForm: true}})
   }
 
   cancelCommentEdition(commentId) {
-    this.setState({[commentId]: {showCommentForm: false, comment: ''}})
+    this.setState({[commentId]: {showCommentForm: false}})
   }
 
   render() {
@@ -119,7 +114,7 @@ class EntryComments extends Component {
                 content={comment.content}
                 allowHtml={true}
                 submitLabel={t('add_comment')}
-                submit={() => this.editComment(comment.id)}
+                submit={(commentContent) => this.editComment(comment.id, commentContent)}
                 cancel={() => this.cancelCommentEdition(comment.id)}
               /> :
               <UserMessage
