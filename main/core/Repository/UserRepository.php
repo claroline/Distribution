@@ -592,8 +592,8 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
         $dql = "
             SELECT u, g, r1, r2 From Claroline\CoreBundle\Entity\User u
+            JOIN u.roles r1
             LEFT JOIN u.groups g
-            LEFT JOIN u.roles r1
             LEFT JOIN g.roles r2
             WHERE u.id in (:ids)
             AND u.isRemoved = :removed
