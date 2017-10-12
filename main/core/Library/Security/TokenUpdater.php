@@ -93,6 +93,12 @@ class TokenUpdater
     public function updateNormal($token)
     {
         $user = $token->getUser();
+
+        //doesn't make any sense to update this if no user is connected
+        if ($user === 'anon.') {
+            return;
+        }
+
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->tokenStorage->setToken($token);
     }
