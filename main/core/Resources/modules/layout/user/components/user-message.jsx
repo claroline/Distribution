@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import merge from 'lodash/merge'
 
 import {t} from '#/main/core/translation'
 import {localeDate} from '#/main/core/layout/data/types/date/utils'
@@ -22,53 +23,58 @@ import {UserAvatar} from './user-avatar.jsx'
  * @param props
  * @constructor
  */
-const UserMessage = props =>
-  <div className={classes('user-message-container', {
-    'user-message-left': 'left' === props.position,
-    'user-message-right': 'right' === props.position
-  })}>
-    {'left' === props.position &&
+const UserMessage = props => {
+  const actions = props.actions.filter(action => action.displayed)
+
+  return (
+    <div className={classes('user-message-container', {
+      'user-message-left': 'left' === props.position,
+      'user-message-right': 'right' === props.position
+    })}>
+      {'left' === props.position &&
       <UserAvatar picture={props.user.picture} />
-    }
+      }
 
-    <div className="user-message">
-      <div className="user-message-meta">
-        <div className="user-message-info">
-          {props.user && props.user.name ?
-            props.user.name : t('unknown')
-          }
+      <div className="user-message">
+        <div className="user-message-meta">
+          <div className="user-message-info">
+            {props.user && props.user.name ?
+              props.user.name : t('unknown')
+            }
 
-          {props.date &&
+            {props.date &&
             <div className="date">{t('published_at', {date: localeDate(props.date)})}</div>
-          }
-        </div>
+            }
+          </div>
 
-        {0 !== props.actions.length &&
+          {0 !== actions.length &&
           <div className="user-message-actions">
-            {props.actions.map((action, actionIndex) =>
+            {actions.map((action, actionIndex) =>
               <TooltipAction
                 key={`action-${actionIndex}`}
                 id={`action-${actionIndex}`}
-                className="btn-link-default"
+                className={action.dangerous ? 'btn-link-danger' : 'btn-link-default'}
                 position="bottom"
                 {...action}
               />
             )}
           </div>
-        }
+          }
+        </div>
+
+        {React.createElement(
+          props.allowHtml ? HtmlText : 'div',
+          {className: 'user-message-content'},
+          props.content
+        )}
       </div>
 
-      {React.createElement(
-        props.allowHtml ? HtmlText : 'div',
-        {className: 'user-message-content'},
-        props.content
-      )}
+      {'right' === props.position &&
+        <UserAvatar picture={props.user.picture} />
+      }
     </div>
-
-    {'right' === props.position &&
-      <UserAvatar picture={props.user.picture} />
-    }
-  </div>
+  )
+}
 
 UserMessage.propTypes = {
   /**
@@ -119,7 +125,9 @@ UserMessage.propTypes = {
    * @type {array}
    */
   actions: T.arrayOf(
-    T.shape(ActionTypes.propTypes)
+    T.shape(merge({}, ActionTypes.propTypes, {
+      displayed: T.bool.isRequired
+    }))
   )
 }
 

@@ -31,7 +31,7 @@ class UserMessageForm extends Component {
 
   render() {
     return (
-      <div className={classes('user-message-container user-message-form-container', {
+      <div className={classes('user-message-container user-message-form-container', this.props.className, {
         'user-message-left': 'left' === this.props.position,
         'user-message-right': 'right' === this.props.position
       })}>
@@ -65,7 +65,8 @@ class UserMessageForm extends Component {
               controlId: 'user-message-content',
               label: t('message'),
               hideLabel: true,
-              value: this.state.content,
+              value: this.state.content, // for TextGroup
+              content: this.state.content, // for HtmlGroup. todo merge with standard `value`
               long: true,
               onChange: value => this.updateContent(value)
             }
@@ -89,6 +90,8 @@ class UserMessageForm extends Component {
 }
 
 UserMessageForm.propTypes = {
+  className: T.string,
+
   /**
    * The user who have sent the message.
    *
@@ -123,6 +126,7 @@ UserMessageForm.propTypes = {
 }
 
 UserMessageForm.defaultProps = {
+  className: '',
   user: {},
   content: '',
   allowHtml: false,

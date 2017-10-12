@@ -177,7 +177,7 @@ EntryActions.propTypes = {
 
   notifyEdition: T.bool,
   notifyComment: T.bool,
-  displayComments: T.func.isRequired,
+  displayComments: T.bool.isRequired,
 
   // actions functions
   changeOwner: T.func.isRequired,

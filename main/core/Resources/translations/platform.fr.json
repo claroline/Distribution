@@ -1480,5 +1480,6 @@
     "rich_text_tools": "Outils de texte riche",
     "minimize": "Réduire",
     "display_parameters": "Paramètres d'affichage",
-    "add_comment": "Commenter"
+    "add_comment": "Commenter",
+    "keywords": "Mots clés"
 }
