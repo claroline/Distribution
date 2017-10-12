@@ -9,15 +9,15 @@ import {asset} from '#/main/core/asset'
  * @param props
  * @constructor
  */
-const Avatar = props =>
+const UserAvatar = props =>
   props.picture ?
     <img className="user-avatar" alt="avatar" src={asset('uploads/pictures/'+props.picture)} /> :
     <span className="user-avatar fa fa-user-circle-o" />
 
-Avatar.propTypes = {
+UserAvatar.propTypes = {
   picture: T.string
 }
 
 export {
-  Avatar
+  UserAvatar
 }

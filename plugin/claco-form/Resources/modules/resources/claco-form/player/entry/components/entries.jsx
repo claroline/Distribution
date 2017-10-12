@@ -12,6 +12,7 @@ import {asset} from '#/main/core/asset'
 import {actions} from '../actions'
 import {selectors} from '../../../selectors'
 import {getFieldType, getCountry} from '../../../utils'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 
 class Entries extends Component {
   deleteEntry(entry) {
@@ -110,7 +111,7 @@ class Entries extends Component {
       label: t('published'),
       displayed: true,
       type: 'boolean',
-      renderer: (rowData) => {
+      /*renderer: (rowData) => {
         const status = rowData.status === 1 ? '' : rowData.status === 0 ?
           <span
             className="fa fa-w fa-info-circle"
@@ -126,7 +127,7 @@ class Entries extends Component {
           </span>
 
         return status
-      }
+      }*/
     })
     columns.push({
       name: 'title',
@@ -237,7 +238,7 @@ class Entries extends Component {
     }
     dataListActions.push({
       icon: 'fa fa-w fa-pencil',
-      label: trans('edit_entry', {}, 'clacoform'),
+      label: t('edit'),
       action: (rows) => this.navigateTo(`/entry/${rows[0].id}/edit`),
       displayed: (rows) => this.canEditEntry(rows[0]),
       context: 'row'
@@ -258,10 +259,10 @@ class Entries extends Component {
     })
     dataListActions.push({
       icon: 'fa fa-w fa-trash',
-      label: trans('delete_entry', {}, 'clacoform'),
+      label: t('delete'),
       action: (rows) => this.deleteEntry(rows[0]),
       displayed: (rows) => this.canManageEntry(rows[0]),
-      isDangerous: true,
+      dangerous: true,
       context: 'row'
     })
 
@@ -452,7 +453,7 @@ Entries.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    canEdit: state.canEdit,
+    canEdit: resourceSelect.editable(state),
     isAnon: state.isAnon,
     user: state.user,
     fields: state.fields,

@@ -1478,5 +1478,7 @@
     "access_restrictions": "Restrictions d'accès",
     "access_dates": "Restreindre par dates",
     "rich_text_tools": "Outils de texte riche",
-    "minimize": "Réduire"
+    "minimize": "Réduire",
+    "display_parameters": "Paramètres d'affichage",
+    "add_comment": "Commenter"
 }

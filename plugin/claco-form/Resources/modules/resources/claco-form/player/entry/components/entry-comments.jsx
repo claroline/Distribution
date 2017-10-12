@@ -1,23 +1,26 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
-import moment from 'moment'
-import {trans, t} from '#/main/core/translation'
-import {selectors} from '../../../selectors'
-import {actions} from '../actions'
+
+import {t, trans} from '#/main/core/translation'
+
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {UserMessage} from '#/main/core/layout/user/components/user-message.jsx'
+import {UserMessageForm} from '#/main/core/layout/user/components/user-message-form.jsx'
+
+import {selectors} from '../../../selectors'
+import {actions} from '../actions'
 
 class EntryComments extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showNewCommentForm: false,
-      newComment: ''
+      showNewCommentForm: false
     }
   }
 
@@ -37,11 +40,9 @@ class EntryComments extends Component {
     })
   }
 
-  createNewComment() {
-    if (this.state.newComment) {
-      this.props.createComment(this.props.entry.id, this.state.newComment)
-    }
-    this.setState({showNewCommentForm: false, newComment: ''})
+  createNewComment(comment) {
+    this.props.createComment(this.props.entry.id, comment)
+    this.setState({showNewCommentForm: false})
   }
 
   editComment(commentId) {
@@ -64,50 +65,72 @@ class EntryComments extends Component {
   }
 
   render() {
+    const comments = this.props.entry.comments ? this.props.entry.comments.filter(comment => this.filterComment(comment)) : []
+
     return (
-      <div>
+      <section className="comments-container">
+        <h3 className="comments-title">
+          <span className="fa fa-fw fa-comments" style={{marginRight: '10px'}}/>
+          {trans('comments', {}, 'clacoform')}
+        </h3>
+
         {this.props.canComment &&
-          <div className="margin-bottom-sm">
-            {this.state.showNewCommentForm ?
-              <div>
-                <Textarea
-                  id="new-comment-form"
-                  content={this.state.newComment}
-                  minRows={2}
-                  onChange={value => this.setState({newComment: value})}
-                  onClick={() => {}}
-                  onSelect={() => {}}
-                  onChangeMode={() => {}}
-                />
-                <br/>
-                <div>
-                  <button
-                    className="btn btn-primary margin-right-sm"
-                    disabled={!this.state.newComment}
-                    onClick={() => this.createNewComment()}
-                  >
-                    {t('ok')}
-                  </button>
-                  <button
-                    className="btn btn-default margin-right-sm"
-                    onClick={() => this.setState({showNewCommentForm: false, newComment: ''})}
-                  >
-                    {t('cancel')}
-                  </button>
-                </div>
-              </div> :
+          <section className="comments-section">
+            {!this.state.showNewCommentForm &&
               <button
-                className="btn btn-default"
-                onClick={() => this.setState({showNewCommentForm: true, newComment: ''})}
+                className="btn btn-add-comment"
+                onClick={() => this.setState({showNewCommentForm: true})}
               >
-                <span className="fa fa-w fa-plus-circle margin-right-sm" />
+                <span className="fa fa-fw fa-edit" style={{marginRight: '7px'}} />
                 {trans('add_comment', {}, 'clacoform')}
               </button>
             }
-          </div>
+
+            {this.state.showNewCommentForm &&
+              <h4>Laisser un commentaire</h4>
+            }
+
+            {this.state.showNewCommentForm &&
+              <UserMessageForm
+                user={this.props.user}
+                allowHtml={true}
+                submitLabel={t('add_comment')}
+                submit={(comment) => this.createNewComment(comment)}
+                cancel={() => this.setState({showNewCommentForm: false})}
+              />
+            }
+
+            <hr/>
+          </section>
         }
-        <div>
-          {this.props.entry.comments && this.props.entry.comments.length > 0 ?
+
+        <section className="comments-section">
+          <h4>Tous les commentaires</h4>
+
+          {0 === comments.length &&
+            <div className="list-empty">
+              {trans('no_comment', {}, 'clacoform')}
+            </div>
+          }
+
+          {comments.map((comment, commentIndex) =>
+            <UserMessage
+              key={`comment-${commentIndex}`}
+              user={this.props.displayCommentAuthor ? comment.user : undefined}
+              date={this.props.displayCommentDate ? comment.creationDate : ''}
+              content={comment.content}
+              allowHtml={true}
+              actions={[
+                {
+                  icon: 'fa fa-fw fa-pencil',
+                  label: t('edit'),
+                  action: () => this.showCommentForm(comment)
+                }
+              ]}
+            />
+          )}
+        </section>
+          {/*{this.props.entry.comments && this.props.entry.comments.length > 0 &&
             <table className="table">
               <tbody>
                 {this.props.entry.comments.filter(c => this.filterComment(c)).map(c =>
@@ -228,13 +251,9 @@ class EntryComments extends Component {
                   </tr>
                 )}
               </tbody>
-            </table> :
-            <div className="alert alert-warning">
-              {trans('no_comment', {}, 'clacoform')}
-            </div>
-          }
-        </div>
-      </div>
+            </table>
+          }*/}
+      </section>
     )
   }
 }

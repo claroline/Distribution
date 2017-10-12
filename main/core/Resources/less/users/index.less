@@ -6,9 +6,18 @@
 @import "mixins";
 
 // Components styles
+@import "comments";
 @import "impersonation";
 @import "login";
+@import "message";
 @import "profile";
+
+.user-avatar {
+    border-radius: 50%;
+
+    // for .fa when no picture
+    color: #ccc;
+}
 
 .user-micro {
     display: inline-flex;
@@ -17,6 +26,7 @@
     color: #777; // toto : use a var
     vertical-align: middle;
     font-size: @font-size-small;
+    font-weight: bold;
 
     .user-avatar {
         margin-right: 10px;
@@ -25,11 +35,6 @@
         max-height: 30px;
 
         // for .fa when no picture
-        color: #ccc;
         font-size: 30px;
     }
-}
-
-.user-avatar {
-    border-radius: 50%;
 }

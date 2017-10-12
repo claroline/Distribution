@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
 
-import {Avatar} from './avatar.jsx'
+import {UserAvatar} from './user-avatar.jsx'
 
 /**
  * Micro representation of a User.
@@ -13,7 +13,7 @@ import {Avatar} from './avatar.jsx'
  */
 const UserMicro = props =>
   <div className="user-micro">
-    <Avatar picture={props.picture} />
+    <UserAvatar picture={props.picture} />
 
     {props.name ?
       props.name : t('unknown')

@@ -16,6 +16,7 @@ const Section = props =>
   <Panel
     {...omit(props, ['level', 'title', 'icon', 'children'])}
 
+    collapsible={true}
     header={
       React.createElement('h'+props.level, {
         className: classes({opened: props.expanded})

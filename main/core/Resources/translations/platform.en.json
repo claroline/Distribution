@@ -1456,5 +1456,7 @@
     "access_restrictions": "Access Restrictions",
     "access_dates": "Restrict by dates",
     "rich_text_tools": "Rich text tools",
-    "minimize": "Minimize"
+    "minimize": "Minimize",
+    "display_parameters": "Display parameters",
+    "add_comment": "Comment"
 }

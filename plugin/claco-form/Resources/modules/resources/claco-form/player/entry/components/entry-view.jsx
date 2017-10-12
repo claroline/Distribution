@@ -8,6 +8,7 @@ import {trans, t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {localeDate} from '#/main/core/layout/data/types/date/utils'
 
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
@@ -16,7 +17,6 @@ import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx
 
 import {UserMicro} from '#/main/core/layout/user/components/user-micro.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
-import {Section, Sections} from '#/main/core/layout/components/sections.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
@@ -44,80 +44,9 @@ const FilesThumbnails = props =>
 FilesThumbnails.propTypes = {
   files: T.arrayOf(T.shape({
     name: T.string,
-    mimeType: T.sting,
-    url: T.sting
+    mimeType: T.string,
+    url: T.string
   }))
-}
-
-const EntryKeywordsSection = props =>
-  <Section
-    id="entry-keywords"
-    title={trans('keywords', {}, 'clacoform')}
-    icon="fa fa-fw fa-font"
-    expanded={props.expanded}
-  >
-    {this.props.keywords && this.props.keywords.map(k =>
-      <span key={`keyword-${k.id}`} className="label">
-        {k.name}
-      </span>
-    )}
-  </Section>
-
-EntryKeywordsSection.propTypes = {
-  expanded: T.bool.isRequired,
-  keywords: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })).isRequired
-}
-
-EntryKeywordsSection.defaultProps = {
-  keywords: []
-}
-
-const EntryCategoriesSection = props =>
-  <Section
-    id="entry-categories"
-    title={t('categories')}
-    icon="fa fa-fw fa-tags"
-    expanded={props.expanded}
-  >
-    {this.props.categories.map(c =>
-      <span key={`category-${c.id}`} className="label">
-        {c.name}
-      </span>
-    )}
-  </Section>
-
-EntryCategoriesSection.propTypes = {
-  expanded: T.bool.isRequired,
-  categories: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })).isRequired
-}
-
-EntryCategoriesSection.defaultProps = {
-  categories: []
-}
-
-const EntryCommentsSections = props =>
-  <Section
-    id="entry-comments"
-    title={trans('comments', {}, 'clacoform')}
-    icon="fa fa-fw fa-comments"
-    expanded={props.expanded}
-  >
-    <EntryComments
-      canComment={props.canComment}
-      canManage={props.canManage}
-    />
-  </Section>
-
-EntryCommentsSections.propTypes = {
-  expanded: T.bool.isRequired,
-  canComment: T.bool.isRequired,
-  canManage: T.bool.isRequired
 }
 
 const EntryActions = props =>
@@ -135,21 +64,21 @@ const EntryActions = props =>
           notifyComment: !props.notificationsEnabled
         })}
       >
-        <span className={`fa fa-w fa-${this.isNotificationsEnabled() ? 'bell-slash-o' : 'bell-o'}`} />
+        <span className={`fa fa-w fa-${props.notificationsEnabled ? 'bell-slash-o' : 'bell-o'}`} />
       </TooltipButton>
 
-      {this.props.displayComments &&
+      {props.displayComments &&
         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
           <span className="fa fa-caret-down" />
         </button>
       }
 
-      {this.props.displayComments &&
+      {props.displayComments &&
         <ul className="dropdown-menu dropdown-menu-right notifications-buttons">
           <li>
             <CheckGroup
               checkId="notify-edition-chk"
-              checked={this.state.entryUser.notifyEdition}
+              checked={state.entryUser.notifyEdition}
               label={trans('editions', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyEdition: checked})}
             />
@@ -157,7 +86,7 @@ const EntryActions = props =>
           <li>
             <CheckGroup
               checkId="notify-comment-chk"
-              checked={this.state.entryUser.notifyComment}
+              checked={state.entryUser.notifyComment}
               label={trans('comments', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyComment: checked})}
             />
@@ -466,34 +395,13 @@ class EntryView extends Component {
   render() {
     return (
       this.props.canViewEntry || this.canShare() ?
-        <div className="entry">
+        <div>
           {['up', 'both'].indexOf(this.props.menuPosition) > -1 &&
             <EntryMenu />
           }
-          <div className="panel panel-default">
+          <div className="entry panel panel-default">
             <div className="panel-body">
-              <h2 className="panel-title entry-view-title">
-                {this.props.entry.title}
-              </h2>
-
-              {this.props.template && this.props.useTemplate ?
-                <HtmlText>
-                  {this.generateTemplate()}
-                </HtmlText> :
-                this.props.fields.filter(f => this.isFieldDisplayable(f)).map(f =>
-                  <div key={`field-${f.id}`}>
-                    <div className="row">
-                      <label className="col-md-3">
-                        {f.name}
-                      </label>
-                      <div className="col-md-9">
-                        {this.displayFieldContent(f)}
-                      </div>
-                    </div>
-                    <hr/>
-                  </div>
-                )
-              }
+              <h2 className="entry-title">{this.props.entry.title}</h2>
 
               <div className="entry-meta">
                 {this.canViewMetadata() &&
@@ -501,11 +409,6 @@ class EntryView extends Component {
                     <UserMicro {...this.props.entry.user} />
 
                     <div className="date">
-                      {this.props.entry.publicationDate &&
-                      <span>{trans('publication_date', {}, 'clacoform')}
-                        : {moment(this.props.entry.publicationDate).format('DD/MM/YYYY')} - </span>
-                      }
-
                       {this.props.entry.publicationDate ?
                         t('published_at', {date: localeDate(this.props.entry.publicationDate)}) : t('not_published')
                       }
@@ -536,25 +439,55 @@ class EntryView extends Component {
                   />
                 }
               </div>
+
+              {this.props.template && this.props.useTemplate ?
+                <HtmlText>
+                  {this.generateTemplate()}
+                </HtmlText> :
+                this.props.fields.filter(f => this.isFieldDisplayable(f)).map(f =>
+                  <div key={`field-${f.id}`}>
+                    <div className="row">
+                      <label className="col-md-3">
+                        {f.name}
+                      </label>
+                      <div className="col-md-9">
+                        {this.displayFieldContent(f)}
+                      </div>
+                    </div>
+                    <hr/>
+                  </div>
+                )
+              }
             </div>
+
+            {this.props.displayCategories && this.props.entry.categories && 0 < this.props.entry.categories.length &&
+              <div className="entry-footer panel-footer">
+                <span className="title">Categories:</span>
+                {this.props.entry.categories.map(c =>
+                  <span key={`category-${c.id}`} className="label label-primary">{c.name}</span>
+                )}
+
+                <hr/>
+                <span className="title">Keywords:</span>
+                {this.props.entry.keywords.map(c =>
+                  <span key={`keyword-${c.id}`} className="label label-default">{c.name}</span>
+                )}
+              </div>
+            }
           </div>
-
-          <Sections level={3} accordion={false}>
-            {this.props.displayKeywords &&
-              <EntryKeywordsSection keywords={this.props.entry.keywords} expanded={this.props.openKeywords} />
-            }
-
-            {this.props.displayCategories &&
-              <EntryCategoriesSection categories={this.props.entry.categories} expanded={this.props.openCategories} />
-            }
-
-            {(this.props.displayComments || this.canComment()) &&
-              <EntryCommentsSections expanded={this.props.openComments} canComment={this.canComment()} canManage={this.canManageEntry()} />
-            }
-          </Sections>
 
           {['down', 'both'].indexOf(this.props.menuPosition) > -1 &&
             <EntryMenu />
+          }
+
+          {/*{(this.props.displayComments || this.canComment()) &&
+            <hr />
+          }*/}
+          {(this.props.displayComments || this.canComment()) &&
+            <EntryComments
+              canComment={this.canComment()}
+              canManage={this.canManageEntry()}
+            />
           }
         </div> :
         <div className="alert alert-danger">
@@ -587,8 +520,6 @@ EntryView.propTypes = {
   displayKeywords: T.bool.isRequired,
   displayComments: T.bool.isRequired,
 
-  openCategories: T.bool.isRequired,
-  openKeywords: T.bool.isRequired,
   openComments: T.bool.isRequired,
 
   commentsEnabled: T.bool.isRequired,
@@ -680,7 +611,7 @@ function mapStateToProps(state, ownProps) {
     user: state.user,
     entryId: parseInt(ownProps.match.params.id),
 
-    canEdit: state.canEdit,
+    canEdit: resourceSelect.editable(state),
     canEditEntry: selectors.canEditCurrentEntry(state),
     canViewEntry: selectors.canOpenCurrentEntry(state),
     canAdministrate: selectors.canAdministrate(state),
@@ -695,8 +626,6 @@ function mapStateToProps(state, ownProps) {
     displayCategories: selectors.getParam(state, 'display_categories'),
     displayComments: selectors.getParam(state, 'display_comments'),
 
-    openCategories: selectors.getParam(state, 'open_categories'),
-    openKeywords: selectors.getParam(state, 'open_keywords'),
     openComments: selectors.getParam(state, 'open_comments'),
 
     commentsEnabled: selectors.getParam(state, 'comments_enabled'),
