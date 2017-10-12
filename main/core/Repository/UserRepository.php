@@ -568,20 +568,42 @@ class UserRepository extends EntityRepository implements UserProviderInterface
      */
     public function findByRolesIncludingGroups(array $roles, $getQuery = false, $orderedBy = 'id', $order = '')
     {
+        // First find user ids, then retrieve users it's much faster this way, with UNION select in SQL
+        $sql = 'SELECT DISTINCT u.id AS id FROM (
+                  SELECT u1.id AS id FROM claro_user u1
+                  INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
+                  INNER JOIN claro_role r1 ON r1.id = ur1.role_id
+                  WHERE r1.id IN (:roles) AND u1.is_removed = :removed
+                  UNION
+                  SELECT u2.id AS id FROM claro_user u2
+                  INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
+                  INNER JOIN claro_group g2 ON g2.id = ug2.group_id
+                  INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
+                  INNER JOIN claro_role r2 ON r2.id = gr2.role_id
+                  WHERE r2.id IN (:roles) AND u2.is_removed = :removed
+                  ) u
+                ';
+        $rsm = new Query\ResultSetMapping();
+        $rsm->addScalarResult('id', 'id', 'integer');
+        $userIds = array_column($this->_em->createNativeQuery($sql, $rsm)
+            ->setParameter('roles', $roles)
+            ->setParameter('removed', false)
+            ->getScalarResult(), 'id');
+
         $dql = "
-            SELECT u, r1, g, r2, ws From Claroline\CoreBundle\Entity\User u
-            LEFT JOIN u.roles r1
-            LEFT JOIN u.personalWorkspace ws
+            SELECT u, g, r1, r2 From Claroline\CoreBundle\Entity\User u
             LEFT JOIN u.groups g
+            LEFT JOIN u.roles r1
             LEFT JOIN g.roles r2
-            WHERE (r1 in (:roles)
-            OR r2 in (:roles))
-            AND u.isRemoved = false
+            WHERE u.id in (:ids)
+            AND u.isRemoved = :removed
             ORDER BY u.{$orderedBy} ".
             $order;
-
         $query = $this->_em->createQuery($dql);
-        $query->setParameter('roles', $roles);
+        $query
+            ->setParameter('ids', $userIds)
+            ->setParameter('removed', false)
+            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
         return ($getQuery) ? $query : $query->getResult();
     }
