@@ -67,7 +67,9 @@ class EntryComments extends Component {
     const comments = this.props.entry.comments ? this.props.entry.comments.filter(comment => this.filterComment(comment)) : []
 
     return (
-      <section className="comments-container">
+      <section className={classes('comments-container', {
+        opened: this.state.opened
+      })}>
         <h3 className="comments-title">
           <span className="comments-icon">
             <span className="fa fa-fw fa-comments" />
@@ -85,7 +87,7 @@ class EntryComments extends Component {
           </button>
         </h3>
 
-        {this.props.canComment &&
+        {this.state.opened && this.props.canComment &&
           <section className="comments-section">
             {!this.state.showNewCommentForm &&
               <button
@@ -115,63 +117,65 @@ class EntryComments extends Component {
           </section>
         }
 
-        <section className="comments-section">
-          <h4>{trans('all_comments', {}, 'clacoform')}</h4>
+        {this.state.opened &&
+          <section className="comments-section">
+            <h4>{trans('all_comments', {}, 'clacoform')}</h4>
 
-          {0 === comments.length &&
+            {0 === comments.length &&
             <div className="list-empty">
               {trans('no_comment', {}, 'clacoform')}
             </div>
-          }
+            }
 
-          {comments.map((comment, commentIndex) =>
-            this.state[comment.id] && this.state[comment.id].showCommentForm ?
-              <UserMessageForm
-                key={`comment-${commentIndex}`}
-                user={this.props.user}
-                content={comment.content}
-                allowHtml={true}
-                submitLabel={t('add_comment')}
-                submit={(commentContent) => this.editComment(comment.id, commentContent)}
-                cancel={() => this.cancelCommentEdition(comment.id)}
-              /> :
-              <UserMessage
-                key={`comment-${commentIndex}`}
-                className={classes({
-                  'user-message-inactive': 0 === comment.status,
-                  'user-message-blocked': 2 === comment.status
-                })}
-                user={this.props.displayCommentAuthor ? comment.user : undefined}
-                date={this.props.displayCommentDate ? comment.creationDate : ''}
-                content={comment.content}
-                allowHtml={true}
-                actions={[
-                  {
-                    icon: 'fa fa-fw fa-pencil',
-                    label: t('edit'),
-                    displayed: this.canEditComment(comment),
-                    action: () => this.showCommentForm(comment)
-                  }, {
-                    icon: 'fa fa-fw fa-check',
-                    label: t('activate'),
-                    displayed: this.props.canManage && (0 === comment.status || 2 === comment.status),
-                    action: () => this.props.activateComment(this.props.entry.id, comment.id)
-                  }, {
-                    icon: 'fa fa-fw fa-ban',
-                    label: trans('block', {}, 'clacoform'),
-                    displayed: this.props.canManage && 1 === comment.status,
-                    action: () => this.props.blockComment(this.props.entry.id, comment.id)
-                  }, {
-                    icon: 'fa fa-fw fa-trash-o',
-                    label: t('delete'),
-                    displayed: this.props.canManage,
-                    action: () => this.deleteComment(comment.id),
-                    dangerous: true
-                  }
-                ]}
-              />
-          )}
-        </section>
+            {comments.map((comment, commentIndex) =>
+              this.state[comment.id] && this.state[comment.id].showCommentForm ?
+                <UserMessageForm
+                  key={`comment-${commentIndex}`}
+                  user={this.props.user}
+                  content={comment.content}
+                  allowHtml={true}
+                  submitLabel={t('add_comment')}
+                  submit={(commentContent) => this.editComment(comment.id, commentContent)}
+                  cancel={() => this.cancelCommentEdition(comment.id)}
+                /> :
+                <UserMessage
+                  key={`comment-${commentIndex}`}
+                  className={classes({
+                    'user-message-inactive': 0 === comment.status,
+                    'user-message-blocked': 2 === comment.status
+                  })}
+                  user={this.props.displayCommentAuthor ? comment.user : undefined}
+                  date={this.props.displayCommentDate ? comment.creationDate : ''}
+                  content={comment.content}
+                  allowHtml={true}
+                  actions={[
+                    {
+                      icon: 'fa fa-fw fa-pencil',
+                      label: t('edit'),
+                      displayed: this.canEditComment(comment),
+                      action: () => this.showCommentForm(comment)
+                    }, {
+                      icon: 'fa fa-fw fa-check',
+                      label: t('activate'),
+                      displayed: this.props.canManage && (0 === comment.status || 2 === comment.status),
+                      action: () => this.props.activateComment(this.props.entry.id, comment.id)
+                    }, {
+                      icon: 'fa fa-fw fa-ban',
+                      label: trans('block', {}, 'clacoform'),
+                      displayed: this.props.canManage && 1 === comment.status,
+                      action: () => this.props.blockComment(this.props.entry.id, comment.id)
+                    }, {
+                      icon: 'fa fa-fw fa-trash-o',
+                      label: t('delete'),
+                      displayed: this.props.canManage,
+                      action: () => this.deleteComment(comment.id),
+                      dangerous: true
+                    }
+                  ]}
+                />
+            )}
+          </section>
+        }
       </section>
     )
   }

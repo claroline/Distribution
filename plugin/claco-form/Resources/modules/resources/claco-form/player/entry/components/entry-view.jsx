@@ -467,16 +467,23 @@ class EntryView extends Component {
               }
             </div>
 
-            {this.props.displayCategories && this.props.entry.categories && 0 < this.props.entry.categories.length &&
+            {((this.props.displayCategories && this.props.entry.categories && 0 < this.props.entry.categories.length) ||
+            (this.props.displayKeywords && this.props.entry.keywords && 0 < this.props.entry.keywords.length)) &&
               <div className="entry-footer panel-footer">
-                <span className="title">{t('categories')}</span>
-                {this.props.entry.categories.map(c =>
+                {this.props.displayCategories && this.props.entry.categories && 0 < this.props.entry.categories.length &&
+                  <span className="title">{t('categories')}</span>
+                }
+                {this.props.displayCategories && this.props.entry.categories && this.props.entry.categories.map(c =>
                   <span key={`category-${c.id}`} className="label label-primary">{c.name}</span>
                 )}
 
-                <hr/>
-                <span className="title">{t('keywords')}</span>
-                {this.props.entry.keywords.map(c =>
+                {this.props.displayKeywords && this.props.entry.keywords && 0 < this.props.entry.keywords.length &&
+                  <hr/>
+                }
+                {this.props.displayKeywords && this.props.entry.keywords && 0 < this.props.entry.keywords.length &&
+                  <span className="title">{t('keywords')}</span>
+                }
+                {this.props.displayKeywords && this.props.entry.keywords && this.props.entry.keywords.map(c =>
                   <span key={`keyword-${c.id}`} className="label label-default">{c.name}</span>
                 )}
               </div>

@@ -7,6 +7,10 @@
     hr {
         border-color: @body-bg;
     }
+
+    &.opened .comments-title {
+        margin-bottom: 10px; // original value for titles
+    }
 }
 
 .btn-add-comment {
@@ -22,6 +26,7 @@
     display: flex;
     align-items: center;
     margin-top: 0;
+    margin-bottom: 0; // when closed keeping the margin is ugly
 
     .comments-icon {
         position: relative;
