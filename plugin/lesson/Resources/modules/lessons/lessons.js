@@ -2,7 +2,7 @@ import angular from 'angular/index'
 import 'angular-bootstrap'
 import 'angular-route'
 import 'angular-ui-tinymce'
-import "angular-ui-tree"
+import 'angular-ui-tree'
 import 'angular-loading-bar'
 import 'angular-animate'
 import 'angular-ui-translation/angular-translation'
@@ -35,7 +35,7 @@ import alertsTemplate from './alerts.partial.html'
 angular.element(document).ready(function () {
   angular.bootstrap(angular.element(document).find('body')[0], ['LessonModule'], {
     strictDi: true
-  });
+  })
 })
 
 angular
@@ -102,14 +102,14 @@ angular
   .directive('giveFocus', ['$timeout', ($timeout) => ({
     restrict: 'A',
     link: ($scope, element) => {
-      $timeout(function() {
-        element[0].focus();
-      });
+      $timeout(function () {
+        element[0].focus()
+      })
     }
   })])
 
   .filter('trustedHtml', ['$sce', $sce => text => $sce.trustAsHtml(text)])
-  .filter('prettyJSON', () => json => JSON.stringify(json, null, " "))
+  .filter('prettyJSON', () => json => JSON.stringify(json, null, ' '))
 
   .config([
     '$routeProvider',

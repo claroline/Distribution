@@ -11,7 +11,7 @@ export default class MainController {
   }
 
   closeAlert(index) {
-    this.alerts.splice(index, 1);
+    this.alerts.splice(index, 1)
   }
 
 }

@@ -100,11 +100,11 @@ export default class TreeController {
   }
 
   collapseAll() {
-    _$scope.get(this).$broadcast('angular-ui-tree:collapse-all');
+    _$scope.get(this).$broadcast('angular-ui-tree:collapse-all')
   }
 
   expandAll() {
-    _$scope.get(this).$broadcast('angular-ui-tree:expand-all');
+    _$scope.get(this).$broadcast('angular-ui-tree:expand-all')
   }
 
   getDragEnableButtonText() {
