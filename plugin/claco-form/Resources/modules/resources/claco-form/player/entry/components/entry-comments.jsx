@@ -17,9 +17,15 @@ import {actions} from '../actions'
 class EntryComments extends Component {
   constructor(props) {
     super(props)
+
     this.state = {
+      opened: props.opened,
       showNewCommentForm: false
     }
+  }
+
+  toggleComments() {
+    this.setState({opened: !this.state.opened})
   }
 
   filterComment(comment) {
@@ -63,8 +69,20 @@ class EntryComments extends Component {
     return (
       <section className="comments-container">
         <h3 className="comments-title">
-          <span className="fa fa-fw fa-comments" style={{marginRight: '10px'}}/>
+          <span className="comments-icon">
+            <span className="fa fa-fw fa-comments" />
+            <span className="comments-count">{comments.length || '0'}</span>
+          </span>
+
           {trans('comments', {}, 'clacoform')}
+
+          <button
+            type="button"
+            className="btn btn-link btn-sm btn-toggle-comments"
+            onClick={() => this.toggleComments()}
+          >
+            {t(this.state.opened ? 'hide':'show')}
+          </button>
         </h3>
 
         {this.props.canComment &&
@@ -165,6 +183,7 @@ EntryComments.propTypes = {
     firstName: T.string,
     lastName: T.string
   }),
+  opened: T.bool.isRequired,
   entry: T.object.isRequired,
   canComment: T.bool.isRequired,
   canManage: T.bool.isRequired,

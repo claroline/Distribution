@@ -19,7 +19,34 @@
 }
 
 .comments-title {
+    display: flex;
+    align-items: center;
     margin-top: 0;
+
+    .comments-icon {
+        position: relative;
+        margin-right: 10px;
+    }
+
+    .comments-count {
+        position: absolute;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        bottom: -8px;
+        right: -8px;
+        background: @label-primary-bg;
+        color: @label-color;
+        font-size: 10px;
+        font-weight: bold;
+        border-radius: 50%;
+    }
+
+    .btn-toggle-comments {
+        margin-left: auto;
+    }
 }
 
 .comments-section {

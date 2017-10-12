@@ -489,6 +489,7 @@ class EntryView extends Component {
 
           {(this.props.displayComments || this.canComment()) &&
             <EntryComments
+              opened={this.props.openComments}
               canComment={this.canComment()}
               canManage={this.canManageEntry()}
             />
