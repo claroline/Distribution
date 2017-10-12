@@ -9,22 +9,11 @@ let _$route = new WeakMap()
 let _$location = new WeakMap()
 let _$anchorScroll = new WeakMap()
 let _restService = new WeakMap()
+let _transFilter = new WeakMap()
 
 export default class ChapterController {
 
-  constructor ($rootScope,
-    $scope,
-    lessonData,
-    modal,
-    $route,
-    $location,
-    $anchorScroll,
-    restService,
-    Chapter,
-    Tree,
-    Alerts,
-    tinyMceConfig
-  ) {
+  constructor ($rootScope, $scope, lessonData, modal, $route, $location, $anchorScroll, restService, Chapter, Tree, Alerts, tinyMceConfig, transFilter) {
     _$rootScope.set(this, $rootScope)
     _$scope.set(this, $scope)
     _$route.set(this, $route)
@@ -33,6 +22,7 @@ export default class ChapterController {
     _modalInstance.set(this, null)
     _modalFactory.set(this, modal)
     _restService.set(this, restService)
+    _transFilter.set(this, transFilter)
 
     // lessonData contains the default values for the lesson
     this.lessonData = lessonData
@@ -150,7 +140,7 @@ export default class ChapterController {
           }
       )
     } else {
-      this.alerts.push({'type': 'danger', 'msg': window.Translator.trans('form_error', 'icap_lesson')})
+      this.alerts.push({'type': 'danger', 'msg': _transFilter.get(this)('form_error', {}, 'icap_lesson')})
     }
   }
 
@@ -178,7 +168,7 @@ export default class ChapterController {
           }
       )
     } else {
-      this.alerts.push({'type': 'danger', 'msg': window.Translator.trans('form_error', 'icap_lesson')})
+      this.alerts.push({'type': 'danger', 'msg': _transFilter.get(this)('form_error', {}, 'icap_lesson')})
     }
   }
 
@@ -210,7 +200,7 @@ export default class ChapterController {
           }
       )
     } else {
-      this.alerts.push({'type': 'danger', 'msg': window.Translator.trans('form_error', 'icap_lesson')})
+      this.alerts.push({'type': 'danger', 'msg': _transFilter.get(this)('form_error', {}, 'icap_lesson')})
     }
   }
 
@@ -298,7 +288,7 @@ export default class ChapterController {
         // Find the root chapter and adjust its title
         angular.forEach(response, (value) => {
           if (value.slug == this.lessonData.root) {
-            value.title = window.Translator.trans('Root', 'icap_lesson')
+            value.title = _transFilter.get(this)('Root', {}, 'icap_lesson')
             this.break
           }
         })
@@ -356,5 +346,6 @@ ChapterController.$inject = [
   'Chapter',
   'Tree',
   'Alerts',
-  'tinyMceConfig'
+  'tinyMceConfig',
+  'transFilter'
 ]
