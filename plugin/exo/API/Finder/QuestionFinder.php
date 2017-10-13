@@ -84,7 +84,7 @@ class QuestionFinder implements FinderInterface
                 case 'content':
                     // search in title and content column
                     $qb
-                        ->andWhere('(obj.content LIKE :text OR obj.title LIKE :contentText)')
+                        ->andWhere('(obj.content LIKE :contentText OR obj.title LIKE :contentText)')
                         ->setParameter('contentText', '%'.addcslashes($filterValue, '%_').'%');
 
                     break;
