@@ -253,6 +253,7 @@
     "self_register": "Register",
     "self_register_to_session_event": "Register to session event",
     "self_register_to_session_event_set": "Register to session event set",
+    "self_unregister": "Unregister",
     "send_confirmation_mail": "Send a confirmation email",
     "send_confirmation_mail_to_session": "Send a confirmation email to all learners of the training session",
     "send_confirmation_mail_to_session_message": "Are you sure you want to send a confirmation email to all learners of the training session ?",

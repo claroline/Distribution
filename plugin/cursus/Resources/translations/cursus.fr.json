@@ -254,6 +254,7 @@
     "self_register": "S'inscrire",
     "self_register_to_session_event": "S'inscrire à la séance",
     "self_register_to_session_event_set": "S'inscrire aux séances du groupe",
+    "self_unregister": "Se désinscrire",
     "send_confirmation_mail": "Envoyer un courriel de confirmation",
     "send_confirmation_mail_to_session": "Envoyer un courriel de confirmation à tous les apprenants de la session de formation.",
     "send_confirmation_mail_to_session_message": "Êtes-vous sûr de vouloir envoyer un courriel de confirmation à tous les apprenants de la session de formation ?",
