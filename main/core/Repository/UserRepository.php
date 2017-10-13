@@ -596,13 +596,11 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             LEFT JOIN u.groups g
             LEFT JOIN g.roles r2
             WHERE u.id in (:ids)
-            AND u.isRemoved = :removed
             ORDER BY u.{$orderedBy} ".
             $order;
         $query = $this->_em->createQuery($dql);
         $query
             ->setParameter('ids', $userIds)
-            ->setParameter('removed', false)
             ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
         return ($getQuery) ? $query : $query->getResult();
@@ -694,25 +692,56 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function findByRolesAndNameIncludingGroups(array $roles, $name, $getQuery = false, $orderedBy = 'id', $order = null)
     {
         $search = strtoupper($name);
+
+        // First find user ids, then retrieve users it's much faster this way, with UNION select in SQL
+        $sql = 'SELECT DISTINCT u.id AS id FROM (
+                  SELECT u1.id AS id FROM claro_user u1
+                  INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
+                  INNER JOIN claro_role r1 ON r1.id = ur1.role_id
+                  WHERE r1.id IN (:roles) 
+                  AND u1.is_removed = :removed 
+                  AND (
+                    UPPER(u1.last_name) LIKE :search
+                    OR UPPER(u1.first_name) LIKE :search
+                    OR UPPER(u1.username) LIKE :search
+                    OR UPPER (u1.mail) LIKE :search
+                  ) 
+                  UNION
+                  SELECT u2.id AS id FROM claro_user u2
+                  INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
+                  INNER JOIN claro_group g2 ON g2.id = ug2.group_id
+                  INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
+                  INNER JOIN claro_role r2 ON r2.id = gr2.role_id
+                  WHERE r2.id IN (:roles) 
+                  AND u2.is_removed = :removed
+                  AND (
+                    UPPER(u2.last_name) LIKE :search
+                    OR UPPER(u2.first_name) LIKE :search
+                    OR UPPER(u2.username) LIKE :search
+                    OR UPPER (u2.mail) LIKE :search
+                  )
+                  ) u
+                ';
+        $rsm = new Query\ResultSetMapping();
+        $rsm->addScalarResult('id', 'id', 'integer');
+        $userIds = array_column($this->_em->createNativeQuery($sql, $rsm)
+            ->setParameter('roles', $roles)
+            ->setParameter('removed', false)
+            ->setParameter('search', "%{$search}%")
+            ->getScalarResult(), 'id');
+
         $dql = "
             SELECT u, ur, g, gr FROM Claroline\CoreBundle\Entity\User u
             JOIN u.roles ur
             LEFT JOIN u.groups g
             LEFT JOIN g.roles gr
-            WHERE u.isRemoved = false
-            AND (
-                ur IN (:roles) OR gr IN (:roles)
-            )
-            AND (
-                UPPER(u.lastName) LIKE :search
-                OR UPPER(u.firstName) LIKE :search
-                OR UPPER(u.username) LIKE :search
-            )
+            WHERE u.id IN (:ids)
             ORDER BY u.{$orderedBy} {$order}
         ";
         $query = $this->_em->createQuery($dql);
-        $query->setParameter('roles', $roles);
-        $query->setParameter('search', "%{$search}%");
+        $query
+            ->setParameter('ids', $userIds)
+            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
 
         return ($getQuery) ? $query : $query->getResult();
     }
