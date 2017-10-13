@@ -1,0 +1,7 @@
+{
+  "webpack": {
+    "entry": {
+      "dropzone-resource": "resources/dropzone"
+    }
+  }
+}

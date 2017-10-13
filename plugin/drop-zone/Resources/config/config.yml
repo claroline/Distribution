@@ -1,0 +1,6 @@
+plugin:
+  has_options: false
+
+  resources:
+    - name: claroline_dropzone
+      class: Claroline\DropZoneBundle\Entity\Dropzone
