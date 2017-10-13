@@ -24,6 +24,15 @@ class Dropzone extends AbstractResource
 {
     use UuidTrait;
 
+    const MANUAL_STATE_NOT_STARTED = 'notStarted';
+    const MANUAL_STATE_PEER_REVIEW = 'peerReview';
+    const MANUAL_STATE_ALLOW_DROP = 'allowDrop';
+    const MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW = 'allowDropAndPeerReview';
+    const MANUAL_STATE_FINISHED = 'finished';
+
+    const AUTO_CLOSED_STATE_WAITING = 'waiting';
+    const AUTO_CLOSED_STATE_CLOSED = 'autoClosed';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -32,18 +41,168 @@ class Dropzone extends AbstractResource
     protected $id;
 
     /**
-     * Score to obtain to pass.
+     * 1 = common
+     * 2 = criteria
+     * 3 = participant
+     * 4 = finished.
      *
-     * @ORM\Column(name="success_score", type="float", nullable=true)
-     *
-     * @var float
+     * @ORM\Column(name="edition_state", type="smallint", nullable=false)
      */
-    private $successScore;
+    protected $editionState = 1;
 
     /**
-     * @ORM\Column(type="json_array", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
-    protected $details;
+    protected $instruction = null;
+
+    /**
+     * @ORM\Column(name="correction_instruction",type="text", nullable=true)
+     */
+    protected $correctionInstruction = null;
+
+    /**
+     * @ORM\Column(name="success_message",type="text", nullable=true)
+     */
+    protected $successMessage = null;
+
+    /**
+     * @ORM\Column(name="fail_message",type="text", nullable=true)
+     */
+    protected $failMessage = null;
+
+    /**
+     * @ORM\Column(name="workspace_resource_enabled", type="boolean", nullable=false)
+     */
+    protected $workspaceResourceEnabled = false;
+
+    /**
+     * @ORM\Column(name="upload_enabled", type="boolean", nullable=false)
+     */
+    protected $uploadEnabled = true;
+
+    /**
+     * @ORM\Column(name="url_enabled", type="boolean", nullable=false)
+     */
+    protected $urlEnabled = false;
+
+    /**
+     * @ORM\Column(name="rich_text_enabled", type="boolean", nullable=false)
+     */
+    protected $richTextEnabled = false;
+
+    /**
+     * @ORM\Column(name="peer_review", type="boolean", nullable=false)
+     */
+    protected $peerReview = false;
+
+    /**
+     * @ORM\Column(name="expected_correction_total", type="smallint", nullable=false)
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 10
+     * )
+     */
+    protected $expectedCorrectionTotal = 3;
+
+    /**
+     * @ORM\Column(name="display_notation_to_learners", type="boolean", nullable=false)
+     */
+    protected $displayNotationToLearners = true;
+
+    /**
+     * @ORM\Column(name="display_notation_message_to_learners", type="boolean", nullable=false)
+     */
+    protected $displayNotationMessageToLearners = false;
+
+    /**
+     * @ORM\Column(name="score_to_pass", type="float", nullable=false)
+     * @Assert\Range(
+     *      min = 0,
+     *      max = 20
+     * )
+     */
+    protected $scoreToPass = 10;
+
+    /**
+     * @ORM\Column(name="manual_planning", type="boolean", nullable=false)
+     */
+    protected $manualPlanning = true;
+
+    /**
+     * @ORM\Column(name="manual_state", type="string", nullable=false)
+     */
+    protected $manualState = 'notStarted';
+
+    /**
+     * @ORM\Column(name="drop_start_date", type="datetime", nullable=true)
+     */
+    protected $dropStartDate = null;
+
+    /**
+     * @ORM\Column(name="drop_end_date", type="datetime", nullable=true)
+     */
+    protected $dropEndDate = null;
+
+    /**
+     * @ORM\Column(name="review_start_date", type="datetime", nullable=true)
+     */
+    protected $reviewStartDate = null;
+
+    /**
+     * @ORM\Column(name="review_end_date", type="datetime", nullable=true)
+     */
+    protected $reviewEndDate = null;
+
+    /**
+     * @ORM\Column(name="comment_in_correction_enabled", type="boolean", nullable=false)
+     */
+    protected $commentInCorrectionEnabled = false;
+
+    /**
+     * @ORM\Column(name="comment_in_correction_forced",type="boolean",nullable=false)
+     */
+    protected $commentInCorrectionForced = false;
+
+    /**
+     * @ORM\Column(name="display_corrections_to_learners", type="boolean", nullable=false)
+     */
+    protected $displayCorrectionsToLearners = false;
+
+    /**
+     * Depend on diplayCorrectionsToLearners, need diplayCorrectionsToLearners to be true in order to work.
+     * Allow users to flag that they are not agree with the correction.
+     *
+     * @ORM\Column(name="correction_denial_enabled",type="boolean",nullable=false)
+     */
+    protected $correctionDenialEnabled = false;
+
+    /**
+     * @ORM\Column(name="criteria_column_total", type="smallint", nullable=false)
+     * @Assert\LessThanOrEqual(value=10)
+     * @Assert\GreaterThanOrEqual(value=3)
+     */
+    protected $criteriaColumnTotal = 4;
+
+    /**
+     * if true,
+     * when time is up, all drop not already closed will be closed and flaged as uncompletedDrop.
+     * That will allow them to access the next step ( correction by users or admins ).
+     *
+     * @ORM\Column(name="auto_close_opened_drops_when_time_is_up", type="boolean", nullable=false)
+     */
+    protected $autoCloseOpenedDropsWhenTimeIsUp = false;
+
+    /**
+     * @ORM\Column(name="auto_close_state", type="string", nullable=false)
+     */
+    protected $autoCloseState = self::AUTO_CLOSED_STATE_WAITING;
+
+    /**
+     * Notify Evaluation admins when a someone made a drop
+     *
+     * @ORM\Column(name="notify_on_drop", type="boolean", nullable=false)
+     */
+    protected $notifyOnDrop = false;
 
     /**
      * Dropzone constructor.
@@ -63,293 +222,283 @@ class Dropzone extends AbstractResource
         $this->id = $id;
     }
 
-    public function getCorrectionType()
+    public function getEditionState()
     {
-        return $this->correctionType;
+        return $this->editionState;
     }
 
-    public function setCorrectionType($correctionType)
+    public function setEditionState($editionState)
     {
-        $this->correctionType = $correctionType;
-    }
-
-    public function getSuccessScore()
-    {
-        return $this->successScore;
-    }
-
-    public function setSuccessScore($successScore)
-    {
-        $this->successScore = $successScore;
-    }
-
-    public function getDetails()
-    {
-        return $this->details;
-    }
-
-    public function setDetails($details)
-    {
-        $this->details = $details;
+        $this->editionState = $editionState;
     }
 
     public function getInstruction()
     {
-        return !is_null($this->details) && isset($this->details['instruction']) ? $this->details['instruction'] : null;
+        return $this->instruction;
     }
 
     public function setInstruction($instruction)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['instruction'] = $instruction;
+        $this->instruction = $instruction;
     }
 
     public function getCorrectionInstruction()
     {
-        return !is_null($this->details) && isset($this->details['correctionInstruction']) ? $this->details['correctionInstruction'] : null;
+        return $this->correctionInstruction;
     }
 
     public function setCorrectionInstruction($correctionInstruction)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['correctionInstruction'] = $correctionInstruction;
+        $this->correctionInstruction = $correctionInstruction;
     }
 
     public function getSuccessMessage()
     {
-        return !is_null($this->details) && isset($this->details['successMessage']) ? $this->details['successMessage'] : null;
+        return $this->successMessage;
     }
 
     public function setSuccessMessage($successMessage)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['successMessage'] = $successMessage;
+        $this->successMessage = $successMessage;
     }
 
     public function getFailMessage()
     {
-        return !is_null($this->details) && isset($this->details['failMessage']) ? $this->details['failMessage'] : null;
+        return $this->failMessage;
     }
 
     public function setFailMessage($failMessage)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['failMessage'] = $failMessage;
+        $this->failMessage = $failMessage;
     }
 
-    public function isWorkspaceResouceAllowed()
+    public function isWorkspaceResourceEnabled()
     {
-        return !is_null($this->details) && isset($this->details['workspaceResourceAllowed']) ? $this->details['workspaceResourceAllowed'] : false;
+        return $this->workspaceResourceEnabled;
     }
 
-    public function setWorkspaceResouceAllowed($workspaceResourceAllowed)
+    public function setWorkspaceResourceEnabled($workspaceResourceEnabled)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['uploadAllowed'] = $workspaceResourceAllowed;
+        $this->workspaceResourceEnabled = $workspaceResourceEnabled;
     }
 
-    public function isUploadAllowed()
+    public function isUploadEnabled()
     {
-        return !is_null($this->details) && isset($this->details['uploadAllowed']) ? $this->details['uploadAllowed'] : true;
+        return $this->uploadEnabled;
     }
 
-    public function setUploadAllowed($uploadAllowed)
+    public function setUploadEnabled($uploadEnabled)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['uploadAllowed'] = $uploadAllowed;
+        $this->uploadEnabled = $uploadEnabled;
     }
 
-    public function isUrlAllowed()
+    public function isUrlEnabled()
     {
-        return !is_null($this->details) && isset($this->details['urlAllowed']) ? $this->details['urlAllowed'] : false;
+        return $this->urlEnabled;
     }
 
-    public function setUrlAllowed($urlAllowed)
+    public function setUrlEnabled($urlEnabled)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['urlAllowed'] = $urlAllowed;
+        $this->urlEnabled = $urlEnabled;
     }
 
-    public function isRichTextAllowed()
+    public function isRichTextEnabled()
     {
-        return !is_null($this->details) && isset($this->details['richTextAllowed']) ? $this->details['richTextAllowed'] : false;
+        return $this->richTextEnabled;
     }
 
-    public function setRichTextAllowe($richTextAllowed)
+    public function setRichTextEnabled($richTextEnabled)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['richTextAllowed'] = $richTextAllowed;
+        $this->richTextEnabled = $richTextEnabled;
     }
 
     public function getPeerReview()
     {
-        return !is_null($this->details) && isset($this->details['peerReview']) ? $this->details['peerReview'] : false;
+        return $this->peerReview;
     }
 
     public function setPeerReview($peerReview)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['peerReview'] = $peerReview;
+        $this->peerReview = $peerReview;
     }
 
-    public function getExpectedCorrectionCount()
+    public function getExpectedCorrectionTotal()
     {
-        return !is_null($this->details) && isset($this->details['expectedCorrectionCount']) ? $this->details['expectedCorrectionCount'] : 3;
+        return $this->expectedCorrectionTotal;
     }
 
-    public function setExpectedCorrectionCount($expectedCorrectionCount)
+    public function setExpectedCorrectionTotal($expectedCorrectionTotal)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['expectedCorrectionCount'] = $expectedCorrectionCount;
+        $this->expectedCorrectionTotal = $expectedCorrectionTotal;
     }
 
-    public function getDisplayScoreToLearners()
+    public function getDisplayNotationToLearners()
     {
-        return !is_null($this->details) && isset($this->details['displayScoreToLearners']) ? $this->details['displayScoreToLearners'] : true;
+        return $this->displayNotationToLearners;
     }
 
-    public function setDisplayScoreToLearners($displayScoreToLearners)
+    public function setDisplayNotationToLearners($displayNotationToLearners)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['displayScoreToLearners'] = $displayScoreToLearners;
+        $this->displayNotationToLearners = $displayNotationToLearners;
     }
 
-    public function getDisplayScoreMessageToLearners()
+    public function getDisplayNotationMessageToLearners()
     {
-        return !is_null($this->details) && isset($this->details['displayScoreMessageToLearners']) ? $this->details['displayScoreMessageToLearners'] : false;
+        return $this->displayNotationMessageToLearners;
     }
 
-    public function setDisplayScoreMessageToLearners($displayScoreMessageToLearners)
+    public function setDisplayNotationMessageToLearners($displayNotationMessageToLearners)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['displayScoreMessageToLearners'] = $displayScoreMessageToLearners;
+        $this->displayNotationMessageToLearners = $displayNotationMessageToLearners;
+    }
+
+    public function getScoreToPass()
+    {
+        return $this->scoreToPass;
+    }
+
+    public function setScoreToPass($scoreToPass)
+    {
+        $this->scoreToPass = $scoreToPass;
     }
 
     public function getManualPlanning()
     {
-        return !is_null($this->details) && isset($this->details['manualPlanning']) ? $this->details['manualPlanning'] : true;
+        return $this->manualPlanning;
     }
 
     public function setManualPlanning($manualPlanning)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['manualPlanning'] = $manualPlanning;
+        $this->manualPlanning = $manualPlanning;
     }
 
     public function getManualState()
     {
-        return !is_null($this->details) && isset($this->details['manualState']) ? $this->details['manualState'] : 'notStarted';
+        return $this->manualState;
     }
 
     public function setManualState($manualState)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['manualState'] = $manualState;
+        $this->manualState = $manualState;
     }
 
     public function getDropStartDate()
     {
-        return !is_null($this->details) && isset($this->details['dropStartDate']) ? $this->details['dropStartDate'] : null;
+        return $this->dropStartDate;
     }
 
-    public function setDropStartDate($dropStartDate)
+    public function setDropStartDate(\DateTime $dropStartDate = null)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['dropStartDate'] = $dropStartDate;
+        $this->dropStartDate = $dropStartDate;
     }
 
     public function getDropEndDate()
     {
-        return !is_null($this->details) && isset($this->details['dropEndDate']) ? $this->details['dropEndDate'] : null;
+        return $this->dropEndDate;
     }
 
-    public function setDropEndDate($dropEndDate)
+    public function setDropEndDate(\DateTime $dropEndDate = null)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['dropEndDate'] = $dropEndDate;
+        $this->dropEndDate = $dropEndDate;
     }
 
     public function getReviewStartDate()
     {
-        return !is_null($this->details) && isset($this->details['reviewStartDate']) ? $this->details['reviewStartDate'] : null;
+        return $this->reviewStartDate;
     }
 
-    public function setReviewStartDate($reviewStartDate)
+    public function setReviewStartDate(\DateTime $reviewStartDate = null)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['reviewStartDate'] = $reviewStartDate;
+        $this->reviewStartDate = $reviewStartDate;
     }
 
     public function getReviewEndDate()
     {
-        return !is_null($this->details) && isset($this->details['reviewEndDate']) ? $this->details['reviewEndDate'] : null;
+        return $this->reviewEndDate;
     }
 
-    public function setReviewEndDate($reviewEndDate)
+    public function setReviewEndDate(\DateTime $reviewEndDate = null)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['reviewEndDate'] = $reviewEndDate;
+        $this->reviewEndDate = $reviewEndDate;
     }
 
-    public function isCorrectionCommentAllowed()
+    public function isCommentInCorrectionEnabled()
     {
-        return !is_null($this->details) && isset($this->details['correctionCommentAllowed']) ? $this->details['correctionCommentAllowed'] : false;
+        return $this->commentInCorrectionEnabled;
     }
 
-    public function setCorrectionCommentAllowed($correctionCommentAllowed)
+    public function setCommentInCorrectionEnabled($commentInCorrectionEnabled)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['correctionCommentAllowed'] = $correctionCommentAllowed;
+        $this->commentInCorrectionEnabled = $commentInCorrectionEnabled;
     }
 
-    public function isCorrectionCommentForced()
+    public function isCommentInCorrectionForced()
     {
-        return !is_null($this->details) && isset($this->details['correctionCommentForced']) ? $this->details['correctionCommentForced'] : false;
+        return $this->commentInCorrectionForced;
     }
 
-    public function setCorrectionCommentForced($correctionCommentForced)
+    public function setCommentInCorrectionForced($commentInCorrectionForced)
     {
-        if (is_null($this->details)) {
-            $this->details = [];
-        }
-        $this->details['correctionCommentForced'] = $correctionCommentForced;
+        $this->commentInCorrectionForced = $commentInCorrectionForced;
+    }
+
+    public function getDisplayCorrectionsToLearners()
+    {
+        return $this->displayCorrectionsToLearners;
+    }
+
+    public function setDisplayCorrectionsToLearners($displayCorrectionsToLearners)
+    {
+        $this->displayCorrectionsToLearners = $displayCorrectionsToLearners;
+    }
+
+    public function isCorrectionDenialEnabled()
+    {
+        return $this->correctionDenialEnabled;
+    }
+
+    public function setCorrectionDenialEnabled($correctionDenialEnabled)
+    {
+        $this->correctionDenialEnabled = $correctionDenialEnabled;
+    }
+
+    public function getCriteriaColumnTotal()
+    {
+        return $this->criteriaColumnTotal;
+    }
+
+    public function setCriteriaColumnTotal($criteriaColumnTotal)
+    {
+        $this->criteriaColumnTotal = $criteriaColumnTotal;
+    }
+
+    public function getAutoCloseOpenedDropsWhenTimeIsUp()
+    {
+        return $this->autoCloseOpenedDropsWhenTimeIsUp;
+    }
+
+    public function setAutoCloseOpenedDropsWhenTimeIsUp($autoCloseOpenedDropsWhenTimeIsUp)
+    {
+        $this->autoCloseOpenedDropsWhenTimeIsUp = $autoCloseOpenedDropsWhenTimeIsUp;
+    }
+
+    public function getAutoCloseState()
+    {
+        return $this->autoCloseState;
+    }
+
+    public function setAutoCloseState($autoCloseState)
+    {
+        $this->autoCloseState = $autoCloseState;
+    }
+
+    public function getNotifyOnDrop()
+    {
+        return $this->notifyOnDrop;
+    }
+
+    public function setNotifyOnDrop($notifyOnDrop)
+    {
+        $this->notifyOnDrop = $notifyOnDrop;
     }
 }

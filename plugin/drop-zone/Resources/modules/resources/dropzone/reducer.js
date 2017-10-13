@@ -9,9 +9,11 @@ import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
 const userReducer = makeReducer({}, {})
+const dropzoneReducer = makeReducer({}, {})
 
 const reducer = {
   user: userReducer,
+  dropzone: dropzoneReducer,
 
   // generic reducers
   currentRequests: apiReducer,
