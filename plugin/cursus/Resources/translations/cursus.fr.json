@@ -215,6 +215,7 @@
     "placeholder_session_event_end_message": "Ce placeholder sera remplacé par la date de fin de la séance",
     "placeholder_session_event_location_extra_message": "Ce placeholder sera remplacé par les informations complémentaires sur la localisation de la séance",
     "placeholder_session_event_location_message": "Ce placeholder sera remplacé par la localisation de la séance",
+    "placeholder_session_event_location_name_message": "Ce placeholder sera remplacé par le nom de la localisation de la séance",
     "placeholder_session_event_name_message": "Ce placeholder sera remplacé par le nom de la séance",
     "placeholder_session_event_start_message": "Ce placeholder sera remplacé par la date de début de la séance",
     "placeholder_session_event_trainers_message": "Ce placeholder sera remplacé par la liste des formateurs de la séance",
