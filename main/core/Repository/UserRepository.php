@@ -290,16 +290,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                   SELECT u1.id AS id FROM claro_user u1
                   INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
                   INNER JOIN claro_role r1 ON r1.id = ur1.role_id
-                  INNER JOIN claro_workspace ws1 ON r1.workspace_id = ws1.id
-                  WHERE ws1.id IN (:workspaces) AND u1.is_removed = :removed
+                  WHERE r1.workspace_id IN (:workspaces) AND u1.is_removed = :removed
                   UNION
                   SELECT u2.id AS id FROM claro_user u2
                   INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
                   INNER JOIN claro_group g2 ON g2.id = ug2.group_id
                   INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
                   INNER JOIN claro_role r2 ON r2.id = gr2.role_id
-                  INNER JOIN claro_workspace ws2 ON r2.workspace_id = ws2.id
-                  WHERE ws2.id IN (:workspaces) AND u2.is_removed = :removed
+                  WHERE r2.workspace_id IN (:workspaces) AND u2.is_removed = :removed
                   ) u
                 ';
         $rsm = new Query\ResultSetMapping();
@@ -572,15 +570,13 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $sql = 'SELECT DISTINCT u.id AS id FROM (
                   SELECT u1.id AS id FROM claro_user u1
                   INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
-                  INNER JOIN claro_role r1 ON r1.id = ur1.role_id
-                  WHERE r1.id IN (:roles) AND u1.is_removed = :removed
+                  WHERE ur1.role_id IN (:roles) AND u1.is_removed = :removed
                   UNION
                   SELECT u2.id AS id FROM claro_user u2
                   INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
                   INNER JOIN claro_group g2 ON g2.id = ug2.group_id
                   INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
-                  INNER JOIN claro_role r2 ON r2.id = gr2.role_id
-                  WHERE r2.id IN (:roles) AND u2.is_removed = :removed
+                  WHERE gr2.role_id IN (:roles) AND u2.is_removed = :removed
                   ) u
                 ';
         $rsm = new Query\ResultSetMapping();
@@ -697,8 +693,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $sql = 'SELECT DISTINCT u.id AS id FROM (
                   SELECT u1.id AS id FROM claro_user u1
                   INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
-                  INNER JOIN claro_role r1 ON r1.id = ur1.role_id
-                  WHERE r1.id IN (:roles) 
+                  WHERE ur1.role_id IN (:roles) 
                   AND u1.is_removed = :removed 
                   AND (
                     UPPER(u1.last_name) LIKE :search
@@ -711,8 +706,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                   INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
                   INNER JOIN claro_group g2 ON g2.id = ug2.group_id
                   INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
-                  INNER JOIN claro_role r2 ON r2.id = gr2.role_id
-                  WHERE r2.id IN (:roles) 
+                  WHERE gr2.role_id IN (:roles) 
                   AND u2.is_removed = :removed
                   AND (
                     UPPER(u2.last_name) LIKE :search
@@ -891,16 +885,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface
               SELECT u1.id AS id
               FROM claro_user u1
               INNER JOIN claro_user_role ur1 ON u1.id = ur1.user_id
-              INNER JOIN claro_role r1 ON r1.id = ur1.role_id
-              WHERE r1.id = :roleId
+              WHERE ur1.role_id = :roleId
               UNION
               SELECT u2.id AS id
               FROM claro_user u2
               INNER JOIN claro_user_group ug2 ON u2.id = ug2.user_id
               INNER JOIN claro_group g2 ON g2.id = ug2.group_id
               INNER JOIN claro_group_role gr2 ON g2.id = gr2.group_id
-              INNER JOIN claro_role r2 ON r2.id = gr2.role_id
-              WHERE r2.id = :roleId
+              WHERE gr2.role_id = :roleId
             ) AS usr
         ';
 
@@ -1308,243 +1300,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         }
     }
 
-    public function findUsersForUserPickerOld(
-        $search = '',
-        $withUsername = true,
-        $withMail = false,
-        $withCode = false,
-        $orderedBy = 'id',
-        $order = 'ASC',
-        array $roleRestrictions = [],
-        array $groupRestrictions = [],
-        array $workspaceRestrictions = [],
-        array $excludedUsers = [],
-        array $forcedUsers = [],
-        array $forcedGroups = [],
-        array $forcedRoles = [],
-        array $forcedWorkspaces = [],
-        $withOrganizations = false,
-        array $forcedOrganizations = [],
-        $executeQuery = true
-    ) {
-        $withSearch = !empty($search);
-        $withGroups = count($groupRestrictions) > 0;
-        $withRoles = count($roleRestrictions) > 0;
-        $withWorkspaces = count($workspaceRestrictions) > 0;
-        $withExcludedUsers = count($excludedUsers) > 0;
-        $withForcedUsers = count($forcedUsers) > 0;
-        $withForcedGroups = count($forcedGroups) > 0;
-        $withForcedRoles = count($forcedRoles) > 0;
-        $withForcedWorkspaces = count($forcedWorkspaces) > 0;
-
-        $dql = '
-            SELECT DISTINCT u
-            FROM Claroline\CoreBundle\Entity\User u
-        ';
-
-        if ($withOrganizations) {
-            $dql .= '
-                JOIN u.organizations o
-            ';
-        }
-        $dql .= '
-            WHERE u.isRemoved = false
-        ';
-
-        if ($withGroups || $withRoles || $withWorkspaces) {
-            $dql .= '
-                AND (
-            ';
-
-            if ($withRoles) {
-                $dql .= '
-                    u IN (
-                        SELECT ur
-                        FROM Claroline\CoreBundle\Entity\User ur
-                        JOIN ur.roles urr
-                        WITH urr IN (:roleRestrictions)
-                    )
-                    OR u IN (
-                        SELECT ur2
-                        FROM Claroline\CoreBundle\Entity\User ur2
-                        JOIN ur2.groups ur2g
-                        JOIN ur2g.roles ur2gr
-                        WITH ur2gr IN (:roleRestrictions)
-                    )
-                ';
-            }
-            if ($withGroups) {
-                if ($withRoles) {
-                    $dql .= 'OR';
-                }
-
-                $dql .= '
-                    u IN (
-                        SELECT ug
-                        FROM Claroline\CoreBundle\Entity\User ug
-                        JOIN ug.groups ugg
-                        WITH ugg IN (:groupRestrictions)
-                    )
-                ';
-            }
-            if ($withWorkspaces) {
-                if ($withRoles || $withGroups) {
-                    $dql .= 'OR';
-                }
-
-                $dql .= '
-                    u IN (
-                        SELECT uw
-                        FROM Claroline\CoreBundle\Entity\User uw
-                        JOIN uw.roles uwr
-                        WITH uwr.workspace IN (:workspaceRestrictions)
-                    )
-                    OR u IN (
-                        SELECT uw2
-                        FROM Claroline\CoreBundle\Entity\User uw2
-                        JOIN uw2.groups uw2g
-                        JOIN uw2g.roles uw2gr
-                        WITH uw2gr.workspace IN (:workspaceRestrictions)
-                    )
-                ';
-            }
-            $dql .= '
-                )
-            ';
-        }
-        if ($withExcludedUsers) {
-            $dql .= '
-                AND u NOT IN (:excludedUsers)
-            ';
-        }
-        if ($withForcedUsers) {
-            $dql .= '
-                AND u IN (:forcedUsers)
-            ';
-        }
-        if ($withForcedGroups) {
-            $dql .= '
-                AND u IN (
-                    SELECT ufg
-                    FROM Claroline\CoreBundle\Entity\User ufg
-                    JOIN ufg.groups ufgg
-                    WITH ufgg IN (:forcedGroups)
-                )
-            ';
-        }
-        if ($withForcedRoles) {
-            $dql .= '
-                AND (
-                    u IN (
-                        SELECT ufr
-                        FROM Claroline\CoreBundle\Entity\User ufr
-                        JOIN ufr.roles ufrr
-                        WITH ufrr IN (:forcedRoles)
-                    )
-                    OR u IN (
-                        SELECT ufr2
-                        FROM Claroline\CoreBundle\Entity\User ufr2
-                        JOIN ufr2.groups ufr2g
-                        JOIN ufr2g.roles ufr2gr
-                        WITH ufr2gr IN (:forcedRoles)
-                    )
-                )
-            ';
-        }
-        if ($withForcedWorkspaces) {
-            $dql .= '
-                AND (
-                    u IN (
-                        SELECT ufw
-                        FROM Claroline\CoreBundle\Entity\User ufw
-                        JOIN ufw.roles ufwr
-                        WITH ufwr.workspace IN (:forcedWorkspaces)
-                    )
-                    OR u IN (
-                        SELECT ufw2
-                        FROM Claroline\CoreBundle\Entity\User ufw2
-                        JOIN ufw2.groups ufw2g
-                        JOIN ufw2g.roles ufw2gr
-                        WITH ufw2gr.workspace IN (:forcedWorkspaces)
-                    )
-                )
-            ';
-        }
-        if ($withSearch) {
-            $dql .= '
-                AND (
-                    UPPER(u.firstName) LIKE :search
-                    OR UPPER(u.lastName) LIKE :search
-                    OR CONCAT(UPPER(u.firstName), CONCAT(\' \', UPPER(u.lastName))) LIKE :search
-                    OR CONCAT(UPPER(u.lastName), CONCAT(\' \', UPPER(u.firstName))) LIKE :search
-            ';
-
-            if ($withUsername) {
-                $dql .= '
-                    OR UPPER(u.username) LIKE :search
-                ';
-            }
-
-            if ($withMail) {
-                $dql .= '
-                    OR UPPER(u.mail) LIKE :search
-                ';
-            }
-
-            if ($withCode) {
-                $dql .= '
-                    OR UPPER(u.administrativeCode) LIKE :search
-                ';
-            }
-            $dql .= '
-                )
-            ';
-        }
-        if ($withOrganizations) {
-            $dql .= '
-                AND o IN (:forcedOrganizations)
-            ';
-        }
-        $dql .= "
-            ORDER BY u.{$orderedBy} {$order}
-        ";
-        $query = $this->_em->createQuery($dql);
-
-        if ($withGroups) {
-            $query->setParameter('groupRestrictions', $groupRestrictions);
-        }
-        if ($withRoles) {
-            $query->setParameter('roleRestrictions', $roleRestrictions);
-        }
-        if ($withWorkspaces) {
-            $query->setParameter('workspaceRestrictions', $workspaceRestrictions);
-        }
-        if ($withForcedUsers) {
-            $query->setParameter('forcedUsers', $forcedUsers);
-        }
-        if ($withForcedGroups) {
-            $query->setParameter('forcedGroups', $forcedGroups);
-        }
-        if ($withForcedRoles) {
-            $query->setParameter('forcedRoles', $forcedRoles);
-        }
-        if ($withForcedWorkspaces) {
-            $query->setParameter('forcedWorkspaces', $forcedWorkspaces);
-        }
-        if ($withExcludedUsers) {
-            $query->setParameter('excludedUsers', $excludedUsers);
-        }
-        if ($withSearch) {
-            $upperSearch = strtoupper($search);
-            $query->setParameter('search', "%{$upperSearch}%");
-        }
-        if ($withOrganizations) {
-            $query->setParameter('forcedOrganizations', $forcedOrganizations);
-        }
-
-        return $executeQuery ? $query->getResult() : $query;
-    }
-
     public function findUsersForUserPicker(
         $search = '',
         $withUsername = true,
@@ -1573,10 +1328,6 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $withForcedGroups = count($forcedGroups) > 0;
         $withForcedRoles = count($forcedRoles) > 0;
         $withForcedWorkspaces = count($forcedWorkspaces) > 0;
-
-        $dql = '
-            SELECT DISTINCT u.id AS id FROM
-        ';
 
         $dql = '
             SELECT DISTINCT u
