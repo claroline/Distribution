@@ -16,6 +16,7 @@ namespace Claroline\CoreBundle\Repository\Icon;
 use Claroline\CoreBundle\Entity\Icon\IconSet;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 
 class IconItemRepository extends EntityRepository
@@ -91,6 +92,123 @@ class IconItemRepository extends EntityRepository
         $qb->andWhere($qb->expr()->isNotNull('icon.resourceIcon'));
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function findMimeTypesForCalibration()
+    {
+        $dql = '
+            SELECT icon.mimeType FROM Claroline\CoreBundle\Entity\Resource\ResourceIcon icon 
+            WHERE icon.mimeType != :mimeType 
+            AND icon.mimeType IS NOT NULL 
+            AND icon.isShortcut = false 
+            GROUP BY icon.mimeType 
+            HAVING COUNT(icon.id) > 1
+        ';
+
+        return array_column($this->getEntityManager()
+            ->createQuery($dql)
+            ->setParameter('mimeType', 'custom')
+            ->getScalarResult(), 'mimeType');
+    }
+
+    public function recalibrateResourceIconsForMimeTypes(array $mimeTypes)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
+
+        $sql = '
+            UPDATE claro_resource_icon rio, claro_resource_icon rios, claro_icon_item ii, claro_resource_icon rid, claro_resource_icon rids
+            SET rio.relative_url = rid.relative_url, rios.relative_url = rids.relative_url
+            WHERE ii.icon_set_id = (SELECT id FROM claro_icon_set WHERE is_active = :activeSet)
+            AND rid.id = ii.resource_icon_id
+            AND rios.id = rio.shortcut_id
+            AND rids.id = rid.shortcut_id
+            AND rio.mimeType = rid.mimeType
+            AND rid.mimeType IN ('.implode(', ', $expr->getArguments()).')
+            AND rio.is_shortcut = rid.is_shortcut
+            AND rio.id != rid.id
+            AND rio.id != rid.shortcut_id
+        ';
+
+        return $this
+            ->getEntityManager()
+            ->getConnection()
+            ->executeUpdate($sql, ['activeSet' => true]);
+    }
+
+    public function recalibrateIconItemsForMimeTypes(array $mimeTypes)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
+
+        $sql = '
+            UPDATE claro_icon_item ii, claro_resource_icon ri
+            SET ii.resource_icon_id = ri.id
+            WHERE ii.mime_type = ri.mimeType
+            AND ri.id IN (
+                SELECT MIN(id) AS id FROM claro_resource_icon 
+                WHERE mimeType IN ('.implode(', ', $expr->getArguments()).')
+                AND is_shortcut = :shortcut 
+                GROUP BY mimeType
+            )
+        ';
+
+        return $this
+            ->getEntityManager()
+            ->getConnection()
+            ->executeUpdate($sql, ['shortcut' => false]);
+    }
+
+    public function updateResourceIconsReferenceAfterCalibration(array $mimeTypes)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
+
+        $sql = '
+            UPDATE claro_resource_node n, claro_resource_icon rin, claro_resource_icon ri
+            SET n.icon_id = ri.id
+            WHERE n.icon_id = rin.id
+            AND rin.mimeType = ri.mimeType
+            AND rin.is_shortcut = ri.is_shortcut
+            AND (
+                ri.id IN (
+                  SELECT DISTINCT resource_icon_id FROM claro_icon_item
+                  WHERE mime_type IN (' .implode(', ', $expr->getArguments()).')
+                ) 
+                OR ri.id IN (
+                    SELECT DISTINCT ri2.shortcut_id FROM claro_icon_item ii2 
+                    INNER JOIN claro_resource_icon ri2 ON ii2.resource_icon_id = ri2.id
+                    WHERE ii2.mime_type IN (' .implode(', ', $expr->getArguments()).')
+                )
+            )
+        ';
+
+        return $this->getEntityManager()->getConnection()->executeUpdate($sql);
+    }
+
+    public function deleteRedundantResourceIconsAfterCalibration(array $mimeTypes)
+    {
+        $qb = $this->createQueryBuilder('i');
+        $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
+
+        $sql = 'SELECT DISTINCT ri2.shortcut_id AS id FROM claro_icon_item ii2 
+                INNER JOIN claro_resource_icon ri2 ON ii2.resource_icon_id = ri2.id';
+
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('id', 'id', 'integer');
+        $ids = array_column($this->getEntityManager()->createNativeQuery($sql, $rsm)->getScalarResult(), 'id');
+        $sql = '
+            DELETE FROM claro_resource_icon
+            WHERE mimeType IN (' .implode(', ', $expr->getArguments()).')
+            AND id NOT IN (
+                SELECT DISTINCT resource_icon_id FROM claro_icon_item
+            )
+            AND id NOT IN (
+                ' .implode(', ', $ids).'
+            )
+        ';
+
+        return $this->getEntityManager()->getConnection()->executeUpdate($sql, ['shortcut' => false]);
     }
 
     private function addDefaultResourceIconSetToQueryBuilder(QueryBuilder $qb)

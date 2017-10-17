@@ -452,6 +452,29 @@ class IconSetManager
     }
 
     /**
+     * Re-calibrates icons for icon sets for the case where these icons have been de-calibrated.
+     */
+    public function calibrateIconSets()
+    {
+        $this->log('Calibrating icon sets...');
+        // Get decalibrated icon types
+        $mimeTypes = $this->iconItemRepo->findMimeTypesForCalibration();
+        if (!empty($mimeTypes)) {
+            $this->log('Calibrating icons for mime types: \''.implode('\', \'', $mimeTypes).'\'');
+            $this->iconItemRepo->recalibrateResourceIconsForMimeTypes($mimeTypes);
+            $this->iconItemRepo->recalibrateIconItemsForMimeTypes($mimeTypes);
+            $this->iconItemRepo->updateResourceIconsReferenceAfterCalibration($mimeTypes);
+            $this->iconItemRepo->deleteRedundantResourceIconsAfterCalibration($mimeTypes);
+            $this->log('Icon sets calibrated with success.');
+
+            return;
+        }
+        $this->log('No mime types found for calibration. Everything works fine.');
+
+        return;
+    }
+
+    /**
      * @param $cname
      */
     private function createIconSetDirForCname($cname)
