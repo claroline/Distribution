@@ -483,9 +483,10 @@ class IconSetManager
             }
             $this->om->flush();
             // Recalibrate IconItems
-
             $this->iconItemRepo->recalibrateIconItemsForMimeTypes($mimeTypes);
+            // Update resource icons reference after calibration
             $this->iconItemRepo->updateResourceIconsReferenceAfterCalibration($mimeTypes);
+            // Delete redundant resource icons (the one's duplicated)
             $this->iconItemRepo->deleteRedundantResourceIconsAfterCalibration($mimeTypes);
             $this->log('Icon sets calibrated with success.');
 
