@@ -111,31 +111,6 @@ class IconItemRepository extends EntityRepository
             ->getScalarResult(), 'mimeType');
     }
 
-    public function recalibrateResourceIconsForMimeTypes(array $mimeTypes)
-    {
-        $qb = $this->createQueryBuilder('i');
-        $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
-
-        $sql = '
-            UPDATE claro_resource_icon rio, claro_resource_icon rios, claro_icon_item ii, claro_resource_icon rid, claro_resource_icon rids
-            SET rio.relative_url = rid.relative_url, rios.relative_url = rids.relative_url
-            WHERE ii.icon_set_id = (SELECT id FROM claro_icon_set WHERE is_active = :activeSet)
-            AND rid.id = ii.resource_icon_id
-            AND rios.id = rio.shortcut_id
-            AND rids.id = rid.shortcut_id
-            AND rio.mimeType = rid.mimeType
-            AND rid.mimeType IN ('.implode(', ', $expr->getArguments()).')
-            AND rio.is_shortcut = rid.is_shortcut
-            AND rio.id != rid.id
-            AND rio.id != rid.shortcut_id
-        ';
-
-        return $this
-            ->getEntityManager()
-            ->getConnection()
-            ->executeUpdate($sql, ['activeSet' => true]);
-    }
-
     public function recalibrateIconItemsForMimeTypes(array $mimeTypes)
     {
         $qb = $this->createQueryBuilder('i');

@@ -461,7 +461,25 @@ class IconSetManager
         $mimeTypes = $this->iconItemRepo->findMimeTypesForCalibration();
         if (!empty($mimeTypes)) {
             $this->log('Calibrating icons for mime types: \''.implode('\', \'', $mimeTypes).'\'');
-            $this->iconItemRepo->recalibrateResourceIconsForMimeTypes($mimeTypes);
+            $activeSet = $this->getActiveResourceIconSet();
+            $activeSetIcons = $this->getIconSetIconsByType($activeSet, true);
+            $resourceIcons = $this
+                ->om
+                ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
+                ->findByMimeTypes($mimeTypes);
+            foreach ($resourceIcons as $resourceIcon) {
+                $activeSetIcon = $activeSetIcons->getByMimeType($resourceIcon->getMimeType());
+                if (!is_null($activeSetIcon) && $activeSetIcon->getResourceIcon()->getId() !== $resourceIcon->getId()) {
+                    $resourceIcon->setRelativeUrl($activeSetIcon->getRelativeUrl());
+                    $resourceIconShortcut = $resourceIcon->getShortcutIcon();
+                    $resourceIconShortcut->setRelativeUrl(
+                        $activeSetIcon->getResourceIcon()->getShortcutIcon()->getRelativeUrl()
+                    );
+                    $this->om->persist($resourceIcon);
+                    $this->om->persist($resourceIconShortcut);
+                }
+            }
+            $this->om->flush();
             $this->iconItemRepo->recalibrateIconItemsForMimeTypes($mimeTypes);
             $this->iconItemRepo->updateResourceIconsReferenceAfterCalibration($mimeTypes);
             $this->iconItemRepo->deleteRedundantResourceIconsAfterCalibration($mimeTypes);
