@@ -53,9 +53,10 @@ class Mailer
 
         try {
             $client->send($message);
-            $logger->info('Email sent to '.$message->getAttribute('to')[0]);
+            $to = count($message->getAttribute('to')) > 0 ? $message->getAttribute('to')[0] : $message->getAttribute('bcc')[0];
+            $logger->info('Email sent to '.$to);
         } catch (\Exception $e) {
-            $logger->error('Fail to send email to '.$message->getAttribute('to')[0]);
+            $logger->error('Fail to send email to '.$to);
         }
     }
 
