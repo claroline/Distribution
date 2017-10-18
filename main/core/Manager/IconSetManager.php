@@ -467,8 +467,10 @@ class IconSetManager
                 ->om
                 ->getRepository('ClarolineCoreBundle:Resource\ResourceIcon')
                 ->findByMimeTypes($mimeTypes);
+            // Fix paths for resourceIcons
             foreach ($resourceIcons as $resourceIcon) {
-                $activeSetIcon = $activeSetIcons->getByMimeType($resourceIcon->getMimeType());
+                $curMimeType = $resourceIcon->getMimeType();
+                $activeSetIcon = $activeSetIcons->getByMimeType($curMimeType);
                 if (!is_null($activeSetIcon) && $activeSetIcon->getResourceIcon()->getId() !== $resourceIcon->getId()) {
                     $resourceIcon->setRelativeUrl($activeSetIcon->getRelativeUrl());
                     $resourceIconShortcut = $resourceIcon->getShortcutIcon();
@@ -480,6 +482,8 @@ class IconSetManager
                 }
             }
             $this->om->flush();
+            // Recalibrate IconItems
+
             $this->iconItemRepo->recalibrateIconItemsForMimeTypes($mimeTypes);
             $this->iconItemRepo->updateResourceIconsReferenceAfterCalibration($mimeTypes);
             $this->iconItemRepo->deleteRedundantResourceIconsAfterCalibration($mimeTypes);

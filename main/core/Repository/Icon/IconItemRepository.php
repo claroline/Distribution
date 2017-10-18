@@ -117,15 +117,14 @@ class IconItemRepository extends EntityRepository
         $expr = $qb->expr()->in('i.mimeType', $mimeTypes);
 
         $sql = '
-            UPDATE claro_icon_item ii, claro_resource_icon ri
-            SET ii.resource_icon_id = ri.id
-            WHERE ii.mime_type = ri.mimeType
-            AND ri.id IN (
-                SELECT MIN(id) AS id FROM claro_resource_icon 
+            UPDATE claro_icon_item ii, (
+                SELECT MIN(id) AS id, mimeType AS mimeType 
+                FROM claro_resource_icon 
                 WHERE mimeType IN ('.implode(', ', $expr->getArguments()).')
                 AND is_shortcut = :shortcut 
-                GROUP BY mimeType
-            )
+                GROUP BY mimeType) ri
+            SET ii.resource_icon_id = ri.id
+            WHERE ii.mime_type = ri.mimeType
         ';
 
         return $this
