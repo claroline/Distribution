@@ -50,10 +50,10 @@ class Mailer
 
             return;
         }
+        $to = count($message->getAttribute('to')) > 0 ? $message->getAttribute('to')[0] : $message->getAttribute('bcc')[0];
 
         try {
             $client->send($message);
-            $to = count($message->getAttribute('to')) > 0 ? $message->getAttribute('to')[0] : $message->getAttribute('bcc')[0];
             $logger->info('Email sent to '.$to);
         } catch (\Exception $e) {
             $logger->error('Fail to send email to '.$to);
