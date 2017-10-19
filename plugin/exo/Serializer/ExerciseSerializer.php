@@ -116,6 +116,15 @@ class ExerciseSerializer implements SerializerInterface
     private function serializeMetadata(Exercise $exercise)
     {
         $metadata = new \stdClass();
+        $metadata->created = $exercise->getResourceNode()->getCreationDate()->format('Y-m-d\TH:i:s');
+        $metadata->updated = $exercise->getResourceNode()->getModificationDate()->format('Y-m-d\TH:i:s');
+        $metadata->published = $exercise->getResourceNode()->isPublished();
+        $metadata->publishedOnce = $exercise->wasPublishedOnce();
+
+        $author = new \stdClass();
+        $author->name = $exercise->getResourceNode()->getCreator()->getFirstName().' '.$exercise->getResourceNode()->getCreator()->getLastName();
+        $author->email = $exercise->getResourceNode()->getCreator()->getMail();
+        $metadata->authors = array($author);
 
         return $metadata;
     }
