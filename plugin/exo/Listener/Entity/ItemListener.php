@@ -65,12 +65,25 @@ class ItemListener
      * @param Item               $item
      * @param LifecycleEventArgs $event
      */
-    public function prePersist(Item $item, LifecycleEventArgs $event)
+    public function postPersist(Item $item, LifecycleEventArgs $event)
     {
-        $interaction = $item->getInteraction();
-        if (null !== $interaction) {
-            $event->getEntityManager()->persist($interaction);
+        $object = $event->getObject();
+        if ($object instanceof Item) {
+            $interaction = $item->getInteraction();
+            if (null !== $interaction) {
+                $em = $event->getEntityManager();
+                $uow = $em->getUnitOfWork();
+                if (!$uow->isScheduledForInsert($interaction)) {
+                    $interactionMeta = $em->getClassMetadata(get_class($interaction));
+                    $persister = $uow->getEntityPersister($interactionMeta->getName());
+                    $persister->addInsert($interaction);
+                    $uow->computeChangeSet($interactionMeta, $interaction);
+                    $persister->executeInserts();
+                }
+            }
         }
+
+        return;
     }
 
     /**
