@@ -55,7 +55,7 @@ class AnnouncementController
      */
     public function createAction(AnnouncementAggregate $aggregate, Request $request)
     {
-        $this->checkPermission('CREATE', $aggregate->getResourceNode(), [], true);
+        $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
 
         try {
             $announcement = $this->manager->create($aggregate, json_decode($request->getContent(), true));
