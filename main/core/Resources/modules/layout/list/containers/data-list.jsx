@@ -93,6 +93,11 @@ function mapStateToProps(state, ownProps) {
     queryString: listSelect.queryString(listState)
   }
 
+  if (newProps.deletable) {
+    newProps.modalDeleteTitle = listSelect.deleteBulk(listState).title
+    newProps.modalDeleteQuestion = listSelect.deleteBulk(listState).question
+  }
+
   // grab data for optional features
   newProps.filterable = listSelect.isFilterable(listState)
   if (newProps.filterable) {
@@ -160,11 +165,11 @@ function mapDispatchToProps(dispatch, ownProps) {
     changePage(page) {
       dispatch(listActions.changePage(page))
     },
-    deleteItems(items) {
+    deleteItems(items, title, question) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title: 'a title',
-          question: 'a question',
+          title,
+          question,
           handleConfirm: () => dispatch(listActions.deleteItems(items, ownProps.name))
         })
       )
@@ -247,7 +252,11 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     props.actions.push({
       icon: 'fa fa-fw fa-trash-o',
       label: t('delete'),
-      action: (rows) => dispatchProps.deleteItems(rows),
+      action: (rows) => dispatchProps.deleteItems(
+        rows,
+        stateProps.modalDeleteTitle(rows),
+        stateProps.modalDeleteQuestion(rows)
+      ),
       dangerous: true,
       autoDelete: true
     })

@@ -8,6 +8,9 @@ import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer} from '#/main/core/administration/workspace/reducer'
 
+
+import {t, transChoice} from '#/main/core/translation'
+
 import {Workspaces} from '#/main/core/administration/workspace/components/workspaces.jsx'
 
 // mount the react application
@@ -33,8 +36,10 @@ bootstrap(
     workspaces: merge({}, initialData.workspaces, {
       fetchUrl: generateUrl('apiv2_workspace_list'),
       deleteBulk: {
-        title: () => 'yolo title',
-        question: () => 'yolo question'
+        title: (workspaces) => transChoice('remove_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
+        question: (workspaces) => t('remove_workspaces_confirm', {
+          workspace_list: workspaces.map(workspace => workspace.name).join(', ')
+        })
       }
     })
   })
