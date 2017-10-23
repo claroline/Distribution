@@ -56,14 +56,33 @@ class Users extends Component {
                 type: 'string',
                 label: t('name'),
                 renderer: (rowData) => <a href='#'> {rowData.lastName} {rowData.firstName}</a>,
-                flags: ~LIST_PROP_FILTERABLE
+                flags: ~LIST_PROP_FILTERABLE,
+                displayed: true
               },
-              {name: 'username', type: 'string', label: t('username'), flags: LIST_PROP_FILTERABLE&LIST_PROP_DISPLAYED},
-              {name: 'firstName', type: 'string', label: t('first_name'), flags: LIST_PROP_FILTERABLE&~LIST_PROP_DISPLAYED},
-              {name: 'lastName', type: 'string', label: t('last_name'), flags: LIST_PROP_FILTERABLE&~LIST_PROP_DISPLAYED}
+              {
+                name: 'username',
+                type: 'string',
+                label: t('username'),
+                flags: LIST_PROP_FILTERABLE&LIST_PROP_DISPLAYED,
+                displayed: true
+              },
+              {
+                name: 'firstName',
+                type: 'string',
+                label: t('first_name'),
+                flags: LIST_PROP_FILTERABLE&~LIST_PROP_DISPLAYED,
+                displayed: true
+              },
+              {
+                name: 'lastName',
+                type: 'string',
+                label: t('last_name'),
+                flags: LIST_PROP_FILTERABLE&~LIST_PROP_DISPLAYED,
+                displayed: true
+              }
             ]}
             card={(row) => {
-              
+
             }}
           />
         </PageContent>
