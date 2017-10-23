@@ -119,7 +119,7 @@ class AnnouncementController
      */
     public function deleteAction(AnnouncementAggregate $aggregate, Announcement $announcement)
     {
-        $this->checkPermission('DELETE', $aggregate->getResourceNode(), [], true);
+        $this->checkPermission('EDIT', $aggregate->getResourceNode(), [], true);
 
         try {
             $this->manager->delete($announcement);
