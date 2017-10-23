@@ -7,12 +7,7 @@
     <div>{{ macros.flashBox() }}</div>
     <div
       class="page-container user-administration-container"
-      data-users="{{ results | json_encode | raw | escape }}"
-      data-count="{{ total }}"
-      data-filters="{{ filters | json_encode | raw | escape }}"
-      data-sort-by="{{ sortBy | json_encode | raw | escape }}"
-      data-page="{{ page }}"
-      data-page-size="{{ pageSize }}"
+      data-users="{{ users | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

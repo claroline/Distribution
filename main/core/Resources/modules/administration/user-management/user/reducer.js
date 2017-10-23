@@ -1,22 +1,11 @@
 import {makeReducer} from '#/main/core/utilities/redux'
+import {makeListReducer} from '#/main/core/layout/list/reducer'
 
-import {
-  USERS_LOAD
-} from './actions'
+const userReducer = makeReducer([], {})
 
-const handlers = {
-  [USERS_LOAD]: (state, action) => {
-    return {
-      data: action.users,
-      totalResults: action.total
-    }
-  }
-}
-
-const reducer = makeReducer({
-  data: [],
-  totalResults: 0
-}, handlers)
+const reducer = makeListReducer({
+  data: userReducer
+})
 
 export {
   reducer
