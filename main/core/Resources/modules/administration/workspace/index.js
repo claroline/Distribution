@@ -31,7 +31,11 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => ({
     workspaces: merge({}, initialData.workspaces, {
-      fetchUrl: generateUrl('apiv2_workspace_list')
+      fetchUrl: generateUrl('apiv2_workspace_list'),
+      deleteBulk: {
+        title: () => 'yolo title',
+        question: () => 'yolo question'
+      }
     })
   })
 )

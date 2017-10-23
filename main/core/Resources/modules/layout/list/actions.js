@@ -2,6 +2,7 @@ import {makeActionCreator} from '#/main/core/utilities/redux'
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
+import {getDataQueryString} from '#/main/core/layout/list/utils'
 
 export const actions = {}
 
@@ -33,6 +34,24 @@ actions.toggleSelectAll = makeActionCreator(LIST_TOGGLE_SELECT_ALL, 'rows')
 export const LIST_DATA_LOAD = 'LIST_DATA_LOAD'
 
 actions.loadData = makeActionCreator(LIST_DATA_LOAD, 'data', 'total')
+
+actions.deleteItems = (items, name) => (dispatch, getState) => {
+  const listState = getState()[name]
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: listSelect.deleteBulkUrl(listState) + getDataQueryString(items),
+      request: {
+        method: 'DELETE'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.changePage(0))
+        dispatch(actions.fetchData(name))
+      }
+    }
+  })
+}
+
 actions.fetchData = (name) => (dispatch, getState) => {
   const listState = getState()[name]
 

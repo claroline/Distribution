@@ -8,14 +8,22 @@ const isSelectable = (listState) => typeof listState.selected !== 'undefined'
 const isPaginated  = (listState) => typeof listState.page !== 'undefined' && listState.pageSize !== 'undefined'
 
 // access list data
-const fetchUrl     = (listState) => listState.fetchUrl
-const data         = (listState) => listState.data
-const totalResults = (listState) => listState.totalResults
-const filters      = (listState) => listState.filters || []
-const sortBy       = (listState) => listState.sortBy || {}
-const selected     = (listState) => listState.selected || []
-const pageSize     = (listState) => listState.pageSize || -1
-const currentPage  = (listState) => listState.page || 0
+const fetchUrl      = (listState) => listState.fetchUrl
+const deleteBulk    = (listState) => listState.deleteBulk || {}
+const isDeletable   = (listState) => typeof listState.deleteBulk !== Boolean(listState.deleteBulk)
+const data          = (listState) => listState.data
+const totalResults  = (listState) => listState.totalResults
+const filters       = (listState) => listState.filters || []
+const sortBy        = (listState) => listState.sortBy || {}
+const selected      = (listState) => listState.selected || []
+const pageSize      = (listState) => listState.pageSize || -1
+const currentPage   = (listState) => listState.page || 0
+
+
+const deleteBulkUrl = createSelector(
+  [deleteBulk, fetchUrl],
+  (deleteBulk, fetchUrl) => deleteBulk.deleteBulkUrl || fetchUrl
+)
 
 // ATTENTION : we assume all data object have an unique `id` prop
 // maybe one day we will decorate data on load with ids if missing...
@@ -61,6 +69,7 @@ function queryString(listState) {
 export const select = {
   isAsync,
   isFilterable,
+  isDeletable,
   isSortable,
   isSelectable,
   isPaginated,
@@ -73,5 +82,7 @@ export const select = {
   currentPage,
   pageSize,
   selectedRows,
+  deleteBulk,
+  deleteBulkUrl,
   queryString
 }
