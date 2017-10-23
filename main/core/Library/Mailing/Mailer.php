@@ -45,17 +45,18 @@ class Mailer
         $rightsLog = $this->rootDir.'/logs/email.log';
         $logger = FileLogger::get($rightsLog);
 
-        if (empty($message->getAttribute('to'))) {
+        if (empty($message->getAttribute('to')) && empty($message->getAttribute('bcc'))) {
             $logger->error('To field is either empty or invalid');
 
             return;
         }
+        $to = count($message->getAttribute('to')) > 0 ? $message->getAttribute('to')[0] : $message->getAttribute('bcc')[0];
 
         try {
             $client->send($message);
-            $logger->info('Email sent to '.$message->getAttribute('to')[0]);
+            $logger->info('Email sent to '.$to);
         } catch (\Exception $e) {
-            $logger->error('Fail to send email to '.$message->getAttribute('to')[0]);
+            $logger->error('Fail to send email to '.$to);
         }
     }
 

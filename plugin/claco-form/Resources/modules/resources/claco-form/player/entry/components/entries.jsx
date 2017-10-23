@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import moment from 'moment'
+import classes from 'classnames'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -12,6 +13,7 @@ import {asset} from '#/main/core/asset'
 import {actions} from '../actions'
 import {selectors} from '../../../selectors'
 import {getFieldType, getCountry} from '../../../utils'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 
 class Entries extends Component {
   deleteEntry(entry) {
@@ -111,21 +113,12 @@ class Entries extends Component {
       displayed: true,
       type: 'boolean',
       renderer: (rowData) => {
-        const status = rowData.status === 1 ? '' : rowData.status === 0 ?
-          <span
-            className="fa fa-w fa-info-circle"
-            data-toggle="tooltip"
-            title={t('pending')}
-          >
-          </span> :
-          <span
-            className="fa fa-w fa-exclamation-triangle"
-            data-toggle="tooltip"
-            title={t('unpublished')}
-          >
-          </span>
+        const publishedCell = <span className={classes('fa fa-fw', {
+          'fa-check true': rowData.status === 1,
+          'fa-times false': rowData.status !== 1
+        })}/>
 
-        return status
+        return publishedCell
       }
     })
     columns.push({
@@ -237,7 +230,7 @@ class Entries extends Component {
     }
     dataListActions.push({
       icon: 'fa fa-w fa-pencil',
-      label: trans('edit_entry', {}, 'clacoform'),
+      label: t('edit'),
       action: (rows) => this.navigateTo(`/entry/${rows[0].id}/edit`),
       displayed: (rows) => this.canEditEntry(rows[0]),
       context: 'row'
@@ -258,10 +251,10 @@ class Entries extends Component {
     })
     dataListActions.push({
       icon: 'fa fa-w fa-trash',
-      label: trans('delete_entry', {}, 'clacoform'),
+      label: t('delete'),
       action: (rows) => this.deleteEntry(rows[0]),
       displayed: (rows) => this.canManageEntry(rows[0]),
-      isDangerous: true,
+      dangerous: true,
       context: 'row'
     })
 
@@ -383,7 +376,7 @@ class Entries extends Component {
               card={(row) => ({
                 onClick: `#/entry/${row.id}/view`,
                 poster: null,
-                icon: row.user.id > 0 && row.user.picture ?
+                icon: row.user && row.user.id > 0 && row.user.picture ?
                   <img src={asset('uploads/pictures/' + row.user.picture)} /> :
                   'fa fa-user',
                 title: this.getCardValue(row, 'title'),
@@ -452,7 +445,7 @@ Entries.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    canEdit: state.canEdit,
+    canEdit: resourceSelect.editable(state),
     isAnon: state.isAnon,
     user: state.user,
     fields: state.fields,

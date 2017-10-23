@@ -97,8 +97,12 @@ class RoleManager
      *
      * @return \Claroline\CoreBundle\Entity\Role
      */
-    public function createWorkspaceRole($name, $translationKey, Workspace $workspace, $isReadOnly = false)
-    {
+    public function createWorkspaceRole(
+        $name,
+        $translationKey,
+        Workspace $workspace,
+        $isReadOnly = false
+    ) {
         $role = new Role();
         $role->setName($name);
         $role->setTranslationKey($translationKey);
@@ -1115,7 +1119,7 @@ class RoleManager
             }
             $this->om->clear();
         }
-
+        $this->om->endFlushSuite();
         // Check users' roles
         $this->log('Checking user role integrity.');
         $userManager = $this->container->get('claroline.manager.user_manager');
@@ -1153,6 +1157,7 @@ class RoleManager
             }
             $this->om->clear();
         }
+        $this->om->endFlushSuite();
     }
 
     public function checkUserIntegrity(User $user, $i = 1, $totalUsers = 1)
