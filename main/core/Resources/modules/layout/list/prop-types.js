@@ -31,12 +31,7 @@ const DataAction = {
      * @type {string}
      */
     context: T.oneOf(['row', 'selection'])
-  }),
-
-  defaultProps: {
-    disabled: () => false,
-    displayed: () => true
-  }
+  })
 }
 
 /**

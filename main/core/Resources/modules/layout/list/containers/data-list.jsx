@@ -9,7 +9,7 @@ import {select as listSelect} from '#/main/core/layout/list/selectors'
 
 import {DataAction, DataProperty} from '#/main/core/layout/list/prop-types'
 import {DataList as DataListComponent} from '#/main/core/layout/list/components/data-list.jsx'
-
+import cloneDeep from 'lodash/cloneDeep'
 
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -247,10 +247,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     }
   }
 
-  //this might not be where it should be defined but it works
-
-  if (stateProps.deletable && !props.actions.find(action => action.autoDelete)) {
-    props.actions.push({
+  if (stateProps.deletable) {
+    const actions = cloneDeep(props.actions)
+    actions.push({
       icon: 'fa fa-fw fa-trash-o',
       label: t('delete'),
       action: (rows) => dispatchProps.deleteItems(
@@ -259,9 +258,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         stateProps.modalDeleteQuestion(rows)
       ),
       dangerous: true,
-      autoDelete: true,
       displayed: (rows) => stateProps.displayDelete(rows)
     })
+    props.actions = actions
   }
 
   return props
