@@ -40,7 +40,7 @@ actions.deleteItems = (items, name) => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: listSelect.deleteBulkUrl(listState) + getDataQueryString(items),
+      url: listSelect.deleteUrl(listState) + getDataQueryString(items),
       request: {
         method: 'DELETE'
       },

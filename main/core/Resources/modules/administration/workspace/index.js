@@ -35,11 +35,14 @@ bootstrap(
   (initialData) => ({
     workspaces: merge({}, initialData.workspaces, {
       fetchUrl: generateUrl('apiv2_workspace_list'),
-      deleteBulk: {
+      delete: {
         title: (workspaces) => transChoice('remove_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
         question: (workspaces) => t('remove_workspaces_confirm', {
           workspace_list: workspaces.map(workspace => workspace.name).join(', ')
-        })
+        }),
+        display: (workspaces) => {
+          !workspaces.find(workspace => workspace.name === 'default_workspace' || workspace.name === 'default_personal')
+        }
       }
     })
   })

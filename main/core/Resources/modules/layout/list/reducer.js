@@ -30,7 +30,7 @@ const fetchUrlReducer = (state = null) => state
  *
  * This is not supposed to change at runtime. We store it in redux for the sake of simplicity.
  */
-const deleteBulkReducer = (state = null) => state
+const deleteReducer = (state = null) => state
 
 /**
  * Reduces list data items.
@@ -205,7 +205,7 @@ function makeListReducer(customReducers = {}, options = {}) {
   }
 
   if (listOptions.deletable) {
-    reducer.deleteBulk = deleteBulkReducer
+    reducer.delete = deleteReducer
   }
 
   if (listOptions.filterable) {

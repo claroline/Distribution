@@ -5,12 +5,11 @@ const isAsync      = (listState) => typeof listState.fetchUrl !== 'undefined'
 const isFilterable = (listState) => typeof listState.filters !== 'undefined'
 const isSortable   = (listState) => typeof listState.sortBy !== 'undefined'
 const isSelectable = (listState) => typeof listState.selected !== 'undefined'
+const isDeletable  = (listState) => typeof listState.delete !== 'undefined'
 const isPaginated  = (listState) => typeof listState.page !== 'undefined' && listState.pageSize !== 'undefined'
 
 // access list data
 const fetchUrl      = (listState) => listState.fetchUrl
-const deleteBulk    = (listState) => listState.deleteBulk || {}
-const isDeletable   = (listState) => typeof listState.deleteBulk !== Boolean(listState.deleteBulk)
 const data          = (listState) => listState.data
 const totalResults  = (listState) => listState.totalResults
 const filters       = (listState) => listState.filters || []
@@ -18,11 +17,26 @@ const sortBy        = (listState) => listState.sortBy || {}
 const selected      = (listState) => listState.selected || []
 const pageSize      = (listState) => listState.pageSize || -1
 const currentPage   = (listState) => listState.page || 0
+const deleteOptions = (listState) => listState.delete || {}
 
+const modalDeleteTitle = createSelector(
+  [deleteOptions],
+  (deleteOptions) => deleteOptions.title || 'default title'
+)
 
-const deleteBulkUrl = createSelector(
-  [deleteBulk, fetchUrl],
-  (deleteBulk, fetchUrl) => deleteBulk.deleteBulkUrl || fetchUrl
+const modalDeleteQuestion = createSelector(
+  [deleteOptions],
+  (deleteOptions) => deleteOptions.question || 'default question'
+)
+
+const displayDelete = createSelector(
+  [deleteOptions],
+  (deleteOptions) => deleteOptions.display || function () { return true }
+)
+
+const deleteUrl = createSelector(
+  [deleteOptions, fetchUrl],
+  (deleteOptions, fetchUrl) => deleteOptions.deleteUrl || fetchUrl
 )
 
 // ATTENTION : we assume all data object have an unique `id` prop
@@ -82,7 +96,9 @@ export const select = {
   currentPage,
   pageSize,
   selectedRows,
-  deleteBulk,
-  deleteBulkUrl,
-  queryString
+  queryString,
+  modalDeleteTitle,
+  modalDeleteQuestion,
+  displayDelete,
+  deleteUrl
 }

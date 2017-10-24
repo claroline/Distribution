@@ -94,8 +94,8 @@ function mapStateToProps(state, ownProps) {
   }
 
   if (newProps.deletable) {
-    newProps.modalDeleteTitle = listSelect.deleteBulk(listState).title
-    newProps.modalDeleteQuestion = listSelect.deleteBulk(listState).question
+    newProps.modalDeleteTitle = listSelect.modalDeleteTitle(listState)
+    newProps.modalDeleteQuestion = listSelect.modalDeleteQuestion(listState)
   }
 
   // grab data for optional features
