@@ -1,13 +1,14 @@
 import {makeReducer} from '#/main/core/utilities/redux'
 import update from 'immutability-helper'
 import {updateArray} from '#/main/core/administration/user-management/utils/redux'
+import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {
   ROLE_EDIT,
   ROLE_ADD
 } from './actions'
 
-const handlers = {
+const rolesReducer = makeReducer([], {
   [ROLE_EDIT]: (state, action) => {
     const idx = state.data.findIndex(el => el.id === action.role.id)
     const data = updateArray(state.data, idx, action.role)
@@ -17,12 +18,11 @@ const handlers = {
   [ROLE_ADD]: (state, action) => {
     return update(state, {'data': {$push: [action.role]}})
   }
-}
+})
 
-const reducer = makeReducer({
-  data: [],
-  totalResults: 0
-}, handlers)
+const reducer = makeListReducer({
+  data: rolesReducer
+})
 
 export {
   reducer
