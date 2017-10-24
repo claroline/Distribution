@@ -96,6 +96,7 @@ function mapStateToProps(state, ownProps) {
   if (newProps.deletable) {
     newProps.modalDeleteTitle = listSelect.modalDeleteTitle(listState)
     newProps.modalDeleteQuestion = listSelect.modalDeleteQuestion(listState)
+    newProps.displayDelete = listSelect.displayDelete(listState)
   }
 
   // grab data for optional features
@@ -258,7 +259,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         stateProps.modalDeleteQuestion(rows)
       ),
       dangerous: true,
-      autoDelete: true
+      autoDelete: true,
+      displayed: (rows) => stateProps.displayDelete(rows)
     })
   }
 
