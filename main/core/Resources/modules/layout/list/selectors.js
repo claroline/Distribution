@@ -1,11 +1,12 @@
 import {createSelector} from 'reselect'
 
 // check enabled list features
-const isAsync      = (listState) => typeof listState.fetchUrl !== 'undefined'
+const isAsync      = (listState) => !!listState.fetchUrl
+const isDeletable  = (listState) => !!listState.delete
+
 const isFilterable = (listState) => typeof listState.filters !== 'undefined'
 const isSortable   = (listState) => typeof listState.sortBy !== 'undefined'
 const isSelectable = (listState) => typeof listState.selected !== 'undefined'
-const isDeletable  = (listState) => typeof listState.delete !== 'undefined'
 const isPaginated  = (listState) => typeof listState.page !== 'undefined' && listState.pageSize !== 'undefined'
 
 // access list data

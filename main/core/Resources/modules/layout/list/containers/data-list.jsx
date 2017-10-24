@@ -166,12 +166,12 @@ function mapDispatchToProps(dispatch, ownProps) {
     changePage(page) {
       dispatch(listActions.changePage(page))
     },
-    deleteItems(items, title, question) {
+    deleteItems(items, title, question, asyncr) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title,
           question,
-          handleConfirm: () => dispatch(listActions.deleteItems(items, ownProps.name))
+          handleConfirm: () => dispatch(listActions.deleteItems(items, ownProps.name, asyncr))
         })
       )
     }
@@ -249,13 +249,16 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   if (stateProps.deletable) {
     const actions = cloneDeep(props.actions)
+
     actions.push({
       icon: 'fa fa-fw fa-trash-o',
       label: t('delete'),
       action: (rows) => dispatchProps.deleteItems(
         rows,
         stateProps.modalDeleteTitle(rows),
-        stateProps.modalDeleteQuestion(rows)
+        stateProps.modalDeleteQuestion(rows),
+        false
+        //stateProps.async
       ),
       dangerous: true,
       displayed: (rows) => stateProps.displayDelete(rows)

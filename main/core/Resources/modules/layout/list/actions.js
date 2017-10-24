@@ -33,23 +33,30 @@ actions.toggleSelectAll = makeActionCreator(LIST_TOGGLE_SELECT_ALL, 'rows')
 // data loading
 export const LIST_DATA_LOAD = 'LIST_DATA_LOAD'
 
+//data delete
+export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
+
 actions.loadData = makeActionCreator(LIST_DATA_LOAD, 'data', 'total')
 
-actions.deleteItems = (items, name) => (dispatch, getState) => {
+actions.deleteItems = (items, name, asyncr) => (dispatch, getState) => {
   const listState = getState()[name]
 
-  dispatch({
-    [REQUEST_SEND]: {
-      url: listSelect.deleteUrl(listState) + getDataQueryString(items),
-      request: {
-        method: 'DELETE'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.changePage(0))
-        dispatch(actions.fetchData(name))
+  if (asyncr) {
+    dispatch({
+      [REQUEST_SEND]: {
+        url: listSelect.deleteUrl(listState) + getDataQueryString(items),
+        request: {
+          method: 'DELETE'
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.changePage(0))
+          dispatch(actions.fetchData(name))
+        }
       }
-    }
-  })
+    })
+  } else {
+    dispatch({[LIST_DATA_DELETE]: {items}})
+  }
 }
 
 actions.fetchData = (name) => (dispatch, getState) => {
@@ -74,5 +81,6 @@ actions.fetchData = (name) => (dispatch, getState) => {
 export const LIST_PAGE_SIZE_UPDATE = 'LIST_PAGE_SIZE_UPDATE'
 export const LIST_PAGE_CHANGE      = 'LIST_PAGE_CHANGE'
 
+actions.deleteItems    = makeActionCreator(LIST_DATA_DELETE, 'items')
 actions.changePage     = makeActionCreator(LIST_PAGE_CHANGE, 'page')
 actions.updatePageSize = makeActionCreator(LIST_PAGE_SIZE_UPDATE, 'pageSize')

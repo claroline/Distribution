@@ -44,6 +44,9 @@ function getRowActions(actions = []) {
  * @returns {Array}
  */
 function getBulkActions(actions = [], items = []) {
+  //items must exists
+  //items = items.filter(item => item !== undefined)
+
   return actions
     .filter(action => !action.context || 'selection' === action.context)
     .filter(action => action.displayed ? action.displayed(items): true)

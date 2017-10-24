@@ -12,6 +12,7 @@ import {
   LIST_TOGGLE_SELECT,
   LIST_TOGGLE_SELECT_ALL,
   LIST_DATA_LOAD,
+  LIST_DATA_DELETE,
   LIST_PAGE_CHANGE,
   LIST_PAGE_SIZE_UPDATE
 } from '#/main/core/layout/list/actions'
@@ -36,7 +37,17 @@ const deleteReducer = (state = null) => state
  * Reduces list data items.
  */
 const dataReducer = makeReducer([], {
-  [LIST_DATA_LOAD]: (state, action = {}) => action.data
+  [LIST_DATA_LOAD]: (state, action = {}) => action.data,
+  [LIST_DATA_DELETE]: (state, action = {}) => {
+    const items = cloneDeep(state)
+
+    action.items.forEach(toRemove => {
+      const itemIndex = items.findIndex(item => item.id === toRemove.id)
+      items.splice(itemIndex, 1)
+    })
+
+    return items
+  }
 })
 
 /**
@@ -124,6 +135,17 @@ const selectReducer = makeReducer([], {
     }
 
     return selected
+  },
+
+  [LIST_DATA_DELETE]: (state, action = {}) => {
+    const items = cloneDeep(state)
+
+    action.items.forEach(toRemove => {
+      const itemIndex = items.findIndex(item => item.id === toRemove.id)
+      items.splice(itemIndex, 1)
+    })
+
+    return items
   },
 
   [LIST_TOGGLE_SELECT_ALL]: (state, action = {}) => {
