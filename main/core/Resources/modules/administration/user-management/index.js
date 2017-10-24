@@ -14,7 +14,7 @@ import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 
 import {reducer as usersReducer} from '#/main/core/administration/user-management/user/reducer'
-//import {reducer as groupsReducer} from '#/main/core/administration/user-management/group/reducer'
+import {reducer as groupsReducer} from '#/main/core/administration/user-management/group/reducer'
 //import {reducer as rolesReducer} from '#/main/core/administration/user-management/role/reducer'
 
 import {Users} from '#/main/core/administration/user-management/user/components/users.jsx'
@@ -37,7 +37,7 @@ bootstrap(
   {
     // app reducers
     users: usersReducer,
-    //groups: groupsReducer,
+    groups: groupsReducer,
     //roles: rolesReducer,
     // generic reducers
     currentRequests: apiReducer,

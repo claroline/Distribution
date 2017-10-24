@@ -284,13 +284,12 @@ class UsersController extends Controller
      */
     public function indexAction()
     {
-        return ['users' => $this->finder->search(
-            'Claroline\CoreBundle\Entity\User',
-            array_merge(
-              $this->container->get('request')->query->all(),
-              ['page' => 0, 'limit' => 20]
-            )
-          ),
+        $filters = ['page' => 0, 'limit' => 20];
+
+        return [
+          'users' => $this->finder->search('Claroline\CoreBundle\Entity\User', $filters),
+          'groups' => $this->finder->search('Claroline\CoreBundle\Entity\Group', $filters),
+          'roles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', $filters),
         ];
     }
 

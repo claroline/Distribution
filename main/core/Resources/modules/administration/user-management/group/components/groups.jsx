@@ -50,7 +50,12 @@ class Groups extends Component {
             data={this.props.data}
             totalResults={this.props.totalResults}
             definition={[
-              {name: 'name', type: 'string', label: t('name')}
+              {
+                name: 'name',
+                type: 'string',
+                label: t('name'),
+                displayed: true
+              }
             ]}
             card={(row) => ({
               onClick: '#',
@@ -69,6 +74,7 @@ class Groups extends Component {
                   footerLong
                 </span>
             })}
+            actions={[]}
           />
         </PageContent>
       </Page>

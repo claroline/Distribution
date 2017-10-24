@@ -8,6 +8,8 @@
     <div
       class="page-container user-administration-container"
       data-users="{{ users | json_encode | raw | escape }}"
+      data-groups="{{ groups | json_encode | raw | escape }}"
+      data-roles="{{ roles | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

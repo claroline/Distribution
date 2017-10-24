@@ -1,11 +1,8 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {actions} from '#/main/core/administration/user-management/user/actions'
-import {select} from '#/main/core/administration/user-management/user/selectors'
 
 import {
   PageContainer as Page,
@@ -98,6 +95,7 @@ class Users extends Component {
                   footerLong
                 </span>
             })}
+            actions={[]}
           />
         </PageContent>
       </Page>
