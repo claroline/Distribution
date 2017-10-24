@@ -21,12 +21,12 @@ const deleteOptions = (listState) => listState.delete || {}
 
 const modalDeleteTitle = createSelector(
   [deleteOptions],
-  (deleteOptions) => deleteOptions.title || () => 'default title'
+  (deleteOptions) => deleteOptions.title || function () { return 'default title' }
 )
 
 const modalDeleteQuestion = createSelector(
   [deleteOptions],
-  (deleteOptions) => deleteOptions.question || () => 'default question'
+  (deleteOptions) => deleteOptions.question || function () { return 'default question' }
 )
 
 const displayDelete = createSelector(
