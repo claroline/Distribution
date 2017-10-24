@@ -6,13 +6,12 @@ import {generateUrl} from '#/main/core/fos-js-router'
 // modals
 import {registerModalType} from '#/main/core/layout/modal'
 import {ConfirmModal} from '#/main/core/layout/modal/components/confirm.jsx'
-import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
+//import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
 import {FormModal} from '#/main/core/layout/modal/components/form.jsx'
 
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
-import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {reducer as usersReducer} from '#/main/core/administration/user-management/user/reducer'
 //import {reducer as groupsReducer} from '#/main/core/administration/user-management/group/reducer'
@@ -50,6 +49,12 @@ bootstrap(
     return {
       users: merge({}, initialData.users, {
         fetchUrl: generateUrl('apiv2_user_list')
+      }),
+      groups: merge({}, initialData.groups, {
+        fetchUrl: generateUrl('apiv2_group_list')
+      }),
+      roles: merge({}, initialData.roles, {
+        fetchUrl: generateUrl('apiv2_role_list')
       })
     }
   }
