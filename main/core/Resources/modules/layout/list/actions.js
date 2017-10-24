@@ -38,26 +38,24 @@ export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
 
 actions.loadData = makeActionCreator(LIST_DATA_LOAD, 'data', 'total')
 
-actions.deleteItems = (items, name, asyncr) => (dispatch, getState) => {
+actions.asyncDeleteItems = (items, name) => (dispatch, getState) => {
   const listState = getState()[name]
 
-  if (asyncr) {
-    dispatch({
-      [REQUEST_SEND]: {
-        url: listSelect.deleteUrl(listState) + getDataQueryString(items),
-        request: {
-          method: 'DELETE'
-        },
-        success: (data, dispatch) => {
-          dispatch(actions.changePage(0))
-          dispatch(actions.fetchData(name))
-        }
+  dispatch({
+    [REQUEST_SEND]: {
+      url: listSelect.deleteUrl(listState) + getDataQueryString(items),
+      request: {
+        method: 'DELETE'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.changePage(0))
+        dispatch(actions.fetchData(name))
       }
-    })
-  } else {
-    dispatch({[LIST_DATA_DELETE]: {items}})
-  }
+    }
+  })
 }
+
+actions.syncDeleteItems = makeActionCreator(LIST_DATA_DELETE, 'items')
 
 actions.fetchData = (name) => (dispatch, getState) => {
   const listState = getState()[name]

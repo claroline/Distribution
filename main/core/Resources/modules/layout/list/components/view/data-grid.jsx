@@ -177,7 +177,7 @@ const DataGrid = props =>
       <DataBulkActions
         count={props.selection.current.length}
         selectedItems={props.selection.current.map(id => props.data.find(row => id === row.id))}
-        actions={getBulkActions(props.actions, props.selection.current.map(id => props.data.find(row => id === row.id)))}
+        actions={getBulkActions(props.actions)}
       />
     }
 

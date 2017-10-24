@@ -171,7 +171,11 @@ function mapDispatchToProps(dispatch, ownProps) {
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title,
           question,
-          handleConfirm: () => dispatch(listActions.deleteItems(items, ownProps.name, asyncr))
+          handleConfirm: () => {
+            asyncr ?
+              dispatch(listActions.asyncDeleteItems(items, ownProps.name)):
+              dispatch(listActions.syncDeleteItems(items, ownProps.name))
+          }
         })
       )
     }
@@ -257,8 +261,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         rows,
         stateProps.modalDeleteTitle(rows),
         stateProps.modalDeleteQuestion(rows),
-        false
-        //stateProps.async
+        stateProps.async
       ),
       dangerous: true,
       displayed: (rows) => stateProps.displayDelete(rows)

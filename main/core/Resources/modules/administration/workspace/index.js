@@ -41,10 +41,7 @@ bootstrap(
           workspace_list: workspaces.map(workspace => workspace.name).join(', ')
         }),
         displayed: (workspaces) => {
-          return !workspaces.find(
-            workspace => workspace.code === 'default_personal' ||
-            workspace.code === 'default_workspace'
-          )
+          return 0 < workspaces.filter( workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length
         }
       }
     })
