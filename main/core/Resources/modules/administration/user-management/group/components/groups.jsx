@@ -47,6 +47,7 @@ class Groups extends Component {
 
         <PageContent>
           <DataList
+            name="groups"
             data={this.props.data}
             totalResults={this.props.totalResults}
             definition={[
