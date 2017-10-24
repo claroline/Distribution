@@ -43,8 +43,10 @@ function getRowActions(actions = []) {
  *
  * @returns {Array}
  */
-function getBulkActions(actions = []) {
-  return actions.filter(action => !action.context || 'selection' === action.context)
+function getBulkActions(actions = [], items = []) {
+  return actions
+    .filter(action => !action.context || 'selection' === action.context)
+    .filter(action => action.displayed ? action.displayed(items): true)
 }
 
 /**

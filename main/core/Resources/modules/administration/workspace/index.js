@@ -40,7 +40,7 @@ bootstrap(
         question: (workspaces) => t('remove_workspaces_confirm', {
           workspace_list: workspaces.map(workspace => workspace.name).join(', ')
         }),
-        display: (workspaces) => {
+        displayed: (workspaces) => {
           return !workspaces.find(
             workspace => workspace.code === 'default_personal' ||
             workspace.code === 'default_workspace'

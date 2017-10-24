@@ -31,7 +31,7 @@ const modalDeleteQuestion = createSelector(
 
 const displayDelete = createSelector(
   [deleteOptions],
-  (deleteOptions) => deleteOptions.display || function () { return true }
+  (deleteOptions) => deleteOptions.displayed || function () { return true }
 )
 
 const deleteUrl = createSelector(
