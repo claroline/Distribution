@@ -2,15 +2,16 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
+use Claroline\CoreBundle\API\Options;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToOne;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.abstract_serializer", abstract=true)
+ * @DI\Service("claroline.generic_serializer")
  */
-abstract class AbstractSerializer
+class GenericSerializer
 {
     const INCLUDE_MANY_TO_ONE = 'many_to_one';
     //maybe later include many to many
@@ -54,6 +55,10 @@ abstract class AbstractSerializer
                   $this->om->getRepository($class)->findOneByUuid($data->id) :
                   $this->om->getRepository($class)->findOneById($data->id);
             }
+        }
+
+        if (in_array(Options::NO_HYDRATOR, $options)) {
+            return $object;
         }
 
         $this->resolveData(

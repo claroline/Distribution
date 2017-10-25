@@ -14,4 +14,5 @@ namespace Claroline\CoreBundle\API;
 class Options
 {
     const IS_RECURSIVE = 'is_recursive';
+    const NO_HYDRATOR = 'no_hydrator';
 }
