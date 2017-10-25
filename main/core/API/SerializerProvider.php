@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API;
 
+use Claroline\CoreBundle\API\Serializer\GenericSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -15,6 +16,20 @@ class SerializerProvider
      * @var array
      */
     private $serializers = [];
+
+    /**
+     * Injects Serializer service.
+     *
+     * @DI\InjectParams({
+     *      "serializer" = @DI\Inject("claroline.generic_serializer")
+     * })
+     *
+     * @param GenericSerializer $serializer
+     */
+    public function setGenericSerializer(GenericSerializer $serializer)
+    {
+        $this->genericSerializer = $serializer;
+    }
 
     /**
      * Registers a new serializer.
@@ -88,6 +103,14 @@ class SerializerProvider
      */
     public function deserialize($class, $data, $options = [])
     {
-        return $this->get($class)->deserialize($class, $data, $options);
+        //maybe move this method from the genericSerializer. Maybe allows some hydrate options:
+        //for instance:
+        // - CREATE_IF_MISSING (wich would create the object if he doesn't exists)
+        // - AUTO_HYDRATE (wich would already set the properties from the generic one)
+        // dunno yet
+
+        $object = $this->genericSerializer->getObject($data, $class);
+
+        return $this->get($class)->deserialize($data, $object, $class, $options);
     }
 }

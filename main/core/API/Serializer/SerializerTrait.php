@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 trait SerializerTrait
 {
     /**
-     * Injects Authorization service.
+     * Injects Serializer service.
      *
      * @DI\InjectParams({
      *      "serializer" = @DI\Inject("claroline.generic_serializer")
@@ -37,8 +37,8 @@ trait SerializerTrait
         return $this->serializer->serialize($object, $options);
     }
 
-    public function deserialize($class, $object, array $options = [])
+    public function deserialize($data, $object = null, $class = null, array $options = [])
     {
-        return $this->serializer->deserialize($class, $object, $options);
+        return $this->serializer->deserialize($class, $data, $options);
     }
 }

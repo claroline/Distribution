@@ -110,11 +110,12 @@ class UserSerializer
     }
 
     /**
-     * Default deserialize method.
+     * Deserialize method.
+     * This is only a partial implementation.
      */
-    public function deserialize($class, $data, array $options = [])
+    public function deserialize($data, User $user = null, $class = 'Claroline\CoreBundle\Entity\User', array $options = [])
     {
-        $object = $this->serializer::deserialize($class, $data, $options);
+        $object = $this->serializer->deserialize($class, $data, $options);
         $object->setPlainPassword($data->plainPassword);
 
         return $object;
