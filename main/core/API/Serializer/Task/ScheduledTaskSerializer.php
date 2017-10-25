@@ -84,7 +84,7 @@ class ScheduledTaskSerializer
      *
      * @return ScheduledTask - the updated task entity
      */
-    public function deserialize(array $data, array $options = [], ScheduledTask $scheduledTask = null)
+    public function deserialize(array $data, ScheduledTask $scheduledTask = null)
     {
         $scheduledTask = $scheduledTask ?: new ScheduledTask();
 
