@@ -40,7 +40,7 @@ class UserSerializer
     }
 
     /**
-     * Serializes a Workspace entity for the JSON api.
+     * Serializes a User entity for the JSON api.
      *
      * @param User  $user    - the user to serialize
      * @param array $options
