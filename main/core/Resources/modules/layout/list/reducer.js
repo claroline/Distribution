@@ -54,7 +54,8 @@ const dataReducer = makeReducer([], {
  * Reduces list total results.
  */
 const totalResultsReducer = makeReducer(0, {
-  [LIST_DATA_LOAD]: (state, action = {}) => action.total
+  [LIST_DATA_LOAD]: (state, action = {}) => action.total,
+  [LIST_DATA_DELETE]: (state, action = {}) => state - action.items.length
 })
 
 /**
