@@ -120,8 +120,6 @@ class AnnouncementManager
         $announce = new Announcement();
         $announce->setAggregate($aggregate);
 
-        $this->update($announce, $data, 'LogAnnouncementCreate');
-
         $this->om->endFlushSuite();
 
         return $announce;
