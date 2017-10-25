@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
-use Claroline\CoreBundle\API\Options;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -45,21 +44,7 @@ class GenericSerializer
      */
     public function deserialize($class, $data, array $options = [])
     {
-        $object = null;
-
-        if (isset($data->id) || isset($data->uuid)) {
-            if (isset($data->uuid)) {
-                $object = $this->om->getRepository($class)->findOneByUuid($data->uuid);
-            } else {
-                $object = !is_numeric($data->id) && property_exists($class, 'uuid') ?
-                  $this->om->getRepository($class)->findOneByUuid($data->id) :
-                  $this->om->getRepository($class)->findOneById($data->id);
-            }
-
-            if (in_array(Options::NO_HYDRATOR, $options)) {
-                return $object;
-            }
-        }
+        $object = $this->getObject($data, $class);
 
         $this->resolveData(
             $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
@@ -254,5 +239,20 @@ class GenericSerializer
         }
 
         return $asArray;
+    }
+
+    public function getObject(\stdClass $data, $class)
+    {
+        if (isset($data->id) || isset($data->uuid)) {
+            if (isset($data->uuid)) {
+                $object = $this->om->getRepository($class)->findOneByUuid($data->uuid);
+            } else {
+                $object = !is_numeric($data->id) && property_exists($class, 'uuid') ?
+                $this->om->getRepository($class)->findOneByUuid($data->id) :
+                $this->om->getRepository($class)->findOneById($data->id);
+            }
+
+            return $object;
+        }
     }
 }

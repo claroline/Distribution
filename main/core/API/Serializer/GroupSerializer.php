@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class GroupSerializer
 {
-    use GenericSerializerTrait;
+    use SerializerTrait;
 
     public function getClass()
     {

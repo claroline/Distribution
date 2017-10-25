@@ -11,7 +11,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class RoleSerializer
 {
-    use GenericSerializerTrait;
+    use SerializerTrait;
 
     public function getClass()
     {

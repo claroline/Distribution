@@ -12,7 +12,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class OrganizationSerializer
 {
-    use GenericSerializerTrait;
+    use SerializerTrait;
 
     /**
      * Serializes an Organization entity for the JSON api.
