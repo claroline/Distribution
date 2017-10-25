@@ -55,10 +55,10 @@ class GenericSerializer
                   $this->om->getRepository($class)->findOneByUuid($data->id) :
                   $this->om->getRepository($class)->findOneById($data->id);
             }
-        }
 
-        if (in_array(Options::NO_HYDRATOR, $options)) {
-            return $object;
+            if (in_array(Options::NO_HYDRATOR, $options)) {
+                return $object;
+            }
         }
 
         $this->resolveData(
