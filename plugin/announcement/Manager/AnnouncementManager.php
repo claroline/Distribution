@@ -120,6 +120,8 @@ class AnnouncementManager
         $announce = new Announcement();
         $announce->setAggregate($aggregate);
 
+        $this->update($announce, $data, 'LogAnnouncementCreate');
+
         $this->om->endFlushSuite();
 
         return $announce;
@@ -161,7 +163,9 @@ class AnnouncementManager
         $this->om->endFlushSuite();
 
         // log
-        $this->eventDispatcher->dispatch('log', 'Claroline\\AnnouncementBundle\\Event\\Log\\'.$logEvent.'Event', [$announcement->getAggregate(), $announcement]);
+        if ($announcement->getAggregate()->getResourceNode()->getId()) {
+            $this->eventDispatcher->dispatch('log', 'Claroline\\AnnouncementBundle\\Event\\Log\\'.$logEvent.'Event', [$announcement->getAggregate(), $announcement]);
+        }
 
         return $announcement;
     }
