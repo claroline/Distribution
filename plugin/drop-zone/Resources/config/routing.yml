@@ -1,0 +1,4 @@
+claro_dropzone_bundle:
+    resource: "@ClarolineDropZoneBundle/Controller/"
+    type:     annotation
+    prefix:   /

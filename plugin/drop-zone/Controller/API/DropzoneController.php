@@ -50,7 +50,8 @@ class DropzoneController
      * @EXT\Method("PUT")
      * @EXT\ParamConverter(
      *     "dropzone",
-     *     class="ClarolineDropZoneBundle:Dropzone"
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
      * )
      *
      * @param Dropzone $dropzone
@@ -80,7 +81,8 @@ class DropzoneController
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter(
      *     "dropzone",
-     *     class="ClarolineDropZoneBundle:Dropzone"
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
      * )
      *
      * @param Dropzone $dropzone

@@ -13,6 +13,7 @@ namespace Claroline\DropZoneBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -159,7 +160,7 @@ class Dropzone extends AbstractResource
     protected $commentInCorrectionEnabled = false;
 
     /**
-     * @ORM\Column(name="comment_in_correction_forced",type="boolean",nullable=false)
+     * @ORM\Column(name="comment_in_correction_forced",type="boolean", nullable=false)
      */
     protected $commentInCorrectionForced = false;
 
@@ -177,20 +178,23 @@ class Dropzone extends AbstractResource
     protected $correctionDenialEnabled = false;
 
     /**
-     * @ORM\Column(name="criteria_column_total", type="smallint", nullable=false)
-     * @Assert\LessThanOrEqual(value=10)
-     * @Assert\GreaterThanOrEqual(value=3)
+     * @ORM\Column(name="criteria_enabled", type="boolean", nullable=false)
      */
-    protected $criteriaColumnTotal = 4;
+    protected $criteriaEnabled = false;
+
+    /**
+     * @ORM\Column(name="criteria_total", type="smallint", nullable=false)
+     */
+    protected $criteriaTotal = 4;
 
     /**
      * if true,
      * when time is up, all drop not already closed will be closed and flaged as uncompletedDrop.
      * That will allow them to access the next step ( correction by users or admins ).
      *
-     * @ORM\Column(name="auto_close_opened_drops_when_time_is_up", type="boolean", nullable=false)
+     * @ORM\Column(name="auto_close_drops_at_drop_end_date", type="boolean", nullable=false)
      */
-    protected $autoCloseOpenedDropsWhenTimeIsUp = false;
+    protected $autoCloseDropsAtDropEndDate = false;
 
     /**
      * @ORM\Column(name="auto_close_state", type="string", nullable=false)
@@ -205,11 +209,21 @@ class Dropzone extends AbstractResource
     protected $notifyOnDrop = false;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\DropZoneBundle\Entity\Criterion",
+     *     mappedBy="dropzone",
+     *     cascade={"persist", "remove"}
+     * )
+     */
+    protected $criteria;
+
+    /**
      * Dropzone constructor.
      */
     public function __construct()
     {
         $this->refreshUuid();
+        $this->criteria = new ArrayCollection();
     }
 
     public function getId()
@@ -462,24 +476,34 @@ class Dropzone extends AbstractResource
         $this->correctionDenialEnabled = $correctionDenialEnabled;
     }
 
-    public function getCriteriaColumnTotal()
+    public function isCriteriaEnabled()
     {
-        return $this->criteriaColumnTotal;
+        return $this->criteriaEnabled;
     }
 
-    public function setCriteriaColumnTotal($criteriaColumnTotal)
+    public function setCriteriaEnabled($criteriaEnabled)
     {
-        $this->criteriaColumnTotal = $criteriaColumnTotal;
+        $this->criteriaEnabled = $criteriaEnabled;
     }
 
-    public function getAutoCloseOpenedDropsWhenTimeIsUp()
+    public function getCriteriaTotal()
     {
-        return $this->autoCloseOpenedDropsWhenTimeIsUp;
+        return $this->criteriaTotal;
     }
 
-    public function setAutoCloseOpenedDropsWhenTimeIsUp($autoCloseOpenedDropsWhenTimeIsUp)
+    public function setCriteriaTotal($criteriaTotal)
     {
-        $this->autoCloseOpenedDropsWhenTimeIsUp = $autoCloseOpenedDropsWhenTimeIsUp;
+        $this->criteriaTotal = $criteriaTotal;
+    }
+
+    public function getAutoCloseDropsAtDropEndDate()
+    {
+        return $this->autoCloseDropsAtDropEndDate;
+    }
+
+    public function setAutoCloseDropsAtDropEndDate($autoCloseDropsAtDropEndDate)
+    {
+        $this->autoCloseDropsAtDropEndDate = $autoCloseDropsAtDropEndDate;
     }
 
     public function getAutoCloseState()
@@ -500,5 +524,29 @@ class Dropzone extends AbstractResource
     public function setNotifyOnDrop($notifyOnDrop)
     {
         $this->notifyOnDrop = $notifyOnDrop;
+    }
+
+    public function getCriteria()
+    {
+        return $this->criteria->toArray();
+    }
+
+    public function addCriterion(Criterion $criterion)
+    {
+        if (!$this->criteria->contains($criterion)) {
+            $this->criteria->add($criterion);
+        }
+    }
+
+    public function removeCriterion(Criterion $criterion)
+    {
+        if ($this->criteria->contains($criterion)) {
+            $this->criteria->removeElement($criterion);
+        }
+    }
+
+    public function emptyCriteria()
+    {
+        $this->criteria->clear();
     }
 }

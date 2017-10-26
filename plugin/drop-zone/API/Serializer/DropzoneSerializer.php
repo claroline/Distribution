@@ -2,6 +2,7 @@
 
 namespace Claroline\DropZoneBundle\API\Serializer;
 
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -11,6 +12,26 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class DropzoneSerializer
 {
+    private $criterionSerializer;
+    private $dropzoneRepo;
+
+    /**
+     * DropzoneSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *     "criterionSerializer" = @DI\Inject("claroline.serializer.dropzone.criterion"),
+     *     "om"                  = @DI\Inject("claroline.persistence.object_manager")
+     * })
+     *
+     * @param CriterionSerializer $criterionSerializer
+     * @param ObjectManager       $om
+     */
+    public function __construct(CriterionSerializer $criterionSerializer, ObjectManager $om)
+    {
+        $this->criterionSerializer = $criterionSerializer;
+        $this->dropzoneRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Dropzone');
+    }
+
     /**
      * @param Dropzone $dropzone
      *
@@ -23,62 +44,137 @@ class DropzoneSerializer
             'parameters' => $this->getParameters($dropzone),
             'display' => $this->getDisplay($dropzone),
             'notifications' => $this->getNotifications($dropzone),
+            'criteria' => $this->getCriteria($dropzone),
         ];
     }
 
     /**
-     * @param array    $data
-     * @param Dropzone $dropzone
+     * @param string $class
+     * @param array  $data
      *
      * @return Dropzone
      */
-    public function deserialize(array $data, Dropzone $dropzone = null)
+    public function deserialize($class, $data)
     {
+        if (isset($data['id']) && $data['id']) {
+            $dropzone = $this->dropzoneRepo->findOneBy(['uuid' => $data['id']]);
+        }
         $dropzone = $dropzone ?: new Dropzone();
 
+        if (isset($data['parameters'])) {
+            if (isset($data['parameters']['editionState'])) {
+                $dropzone->setEditionState($data['parameters']['editionState']);
+            }
+            if (isset($data['parameters']['workspaceResourceEnabled'])) {
+                $dropzone->setWorkspaceResourceEnabled($data['parameters']['workspaceResourceEnabled']);
+            }
+            if (isset($data['parameters']['uploadEnabled'])) {
+                $dropzone->setUploadEnabled($data['parameters']['uploadEnabled']);
+            }
+            if (isset($data['parameters']['urlEnabled'])) {
+                $dropzone->setUrlEnabled($data['parameters']['urlEnabled']);
+            }
+            if (isset($data['parameters']['richTextEnabled'])) {
+                $dropzone->setRichTextEnabled($data['parameters']['richTextEnabled']);
+            }
+            if (isset($data['parameters']['peerReview'])) {
+                $dropzone->setPeerReview($data['parameters']['peerReview']);
+            }
+            if (isset($data['parameters']['expectedCorrectionTotal'])) {
+                $dropzone->setExpectedCorrectionTotal($data['parameters']['expectedCorrectionTotal']);
+            }
+            if (isset($data['parameters']['scoreToPass'])) {
+                $dropzone->setScoreToPass($data['parameters']['scoreToPass']);
+            }
+            if (isset($data['parameters']['manualPlanning'])) {
+                $dropzone->setManualPlanning($data['parameters']['manualPlanning']);
+            }
+            if (isset($data['parameters']['manualState'])) {
+                $dropzone->setManualState($data['parameters']['manualState']);
+            }
+            if (isset($data['parameters']['dropStartDate'])) {
+                $dropStartDate = !empty($data['parameters']['dropStartDate']) ?
+                    new \DateTime($data['parameters']['dropStartDate']) :
+                    null;
+                $dropzone->setDropStartDate($dropStartDate);
+            }
+            if (isset($data['parameters']['dropEndDate'])) {
+                $dropEndDate = !empty($data['parameters']['dropEndDate']) ?
+                    new \DateTime($data['parameters']['dropEndDate']) :
+                    null;
+                $dropzone->setDropEndDate($dropEndDate);
+            }
+            if (isset($data['parameters']['reviewStartDate'])) {
+                $reviewStartDate = !empty($data['parameters']['reviewStartDate']) ?
+                    new \DateTime($data['parameters']['reviewStartDate']) :
+                    null;
+                $dropzone->setReviewStartDate($reviewStartDate);
+            }
+            if (isset($data['parameters']['reviewEndDate'])) {
+                $reviewEndDate = !empty($data['parameters']['reviewEndDate']) ?
+                    new \DateTime($data['parameters']['reviewEndDate']) :
+                    null;
+                $dropzone->setReviewEndDate($reviewEndDate);
+            }
+            if (isset($data['parameters']['commentInCorrectionEnabled'])) {
+                $dropzone->setCommentInCorrectionEnabled($data['parameters']['commentInCorrectionEnabled']);
+            }
+            if (isset($data['parameters']['commentInCorrectionForced'])) {
+                $dropzone->setCommentInCorrectionForced($data['parameters']['commentInCorrectionForced']);
+            }
+            if (isset($data['parameters']['correctionDenialEnabled'])) {
+                $dropzone->setCorrectionDenialEnabled($data['parameters']['correctionDenialEnabled']);
+            }
+            if (isset($data['parameters']['criteriaEnabled'])) {
+                $dropzone->setCriteriaEnabled($data['parameters']['criteriaEnabled']);
+            }
+            if (isset($data['parameters']['criteriaTotal'])) {
+                $dropzone->setCriteriaTotal($data['parameters']['criteriaTotal']);
+            }
+            if (isset($data['parameters']['autoCloseDropsAtDropEndDate'])) {
+                $dropzone->setAutoCloseDropsAtDropEndDate($data['parameters']['autoCloseDropsAtDropEndDate']);
+            }
+            if (isset($data['parameters']['autoCloseState'])) {
+                $dropzone->setAutoCloseState($data['parameters']['autoCloseState']);
+            }
+
+        }
+        if (isset($data['display'])) {
+            if (isset($data['display']['instruction'])) {
+                $dropzone->setInstruction($data['display']['instruction']);
+            }
+            if (isset($data['display']['correctionInstruction'])) {
+                $dropzone->setCorrectionInstruction($data['display']['correctionInstruction']);
+            }
+            if (isset($data['display']['successMessage'])) {
+                $dropzone->setSuccessMessage($data['display']['successMessage']);
+            }
+            if (isset($data['display']['failMessage'])) {
+                $dropzone->setFailMessage($data['display']['failMessage']);
+            }
+            if (isset($data['display']['displayNotationToLearners'])) {
+                $dropzone->setDisplayNotationToLearners($data['display']['displayNotationToLearners']);
+            }
+            if (isset($data['display']['displayNotationMessageToLearners'])) {
+                $dropzone->setDisplayNotationMessageToLearners($data['display']['displayNotationMessageToLearners']);
+            }
+            if (isset($data['display']['displayCorrectionsToLearners'])) {
+                $dropzone->setDisplayCorrectionsToLearners($data['display']['displayCorrectionsToLearners']);
+            }
+        }
+        if (isset($data['notifications'])) {
+            $notifyOnDrop = isset($data['notifications']['enabled']) &&
+                $data['notifications']['enabled'] &&
+                isset($data['notifications']['actions']) &&
+                is_array($data['notifications']['actions']) &&
+                in_array('drop', $data['notifications']['actions']);
+            $dropzone->setNotifyOnDrop($notifyOnDrop);
+        }
+        if (isset($data['criteria'])) {
+            $this->deserializeCriteria($dropzone, $data['criteria']);
+        }
+
         return $dropzone;
-//        $announce = $announce ?: new Announcement();
-//
-//        $announce->setTitle($data['title']);
-//        $announce->setContent($data['content']);
-//        $announce->setAnnouncer($data['meta']['author']);
-//
-//        if (empty($announce->getCreator())) {
-//            $currentUser = $this->tokenStorage->getToken()->getUser();
-//            if ($currentUser instanceof User) {
-//                // only get authenticated user
-//                $announce->setCreator($currentUser);
-//            }
-//        }
-//
-//        // calculate visibility restrictions
-//        $announce->setVisible($data['restrictions']['visible']);
-//
-//        $visibleFrom = null;
-//        if (!empty($data['restrictions']['visibleFrom'])) {
-//            $visibleFrom = \DateTime::createFromFormat('Y-m-d\TH:i:s', $data['restrictions']['visibleFrom']);
-//        }
-//        $announce->setVisibleFrom($visibleFrom);
-//
-//        $visibleUntil = null;
-//        if (!empty($data['restrictions']['visibleUntil'])) {
-//            $visibleUntil = \DateTime::createFromFormat('Y-m-d\TH:i:s', $data['restrictions']['visibleUntil']);
-//        }
-//        $announce->setVisibleFrom($visibleUntil);
-//
-//        // calculate publication date
-//        if (!$announce->isVisible()) {
-//            $announce->setPublicationDate(null);
-//        } else {
-//            $now = new \DateTime();
-//            if (empty($announce->getVisibleFrom()) || $announce->getVisibleFrom() < $now) {
-//                $announce->setPublicationDate($now);
-//            } else {
-//                $announce->setPublicationDate($announce->getVisibleFrom());
-//            }
-//        }
-//
-//        return $announce;
     }
 
     private function getParameters(Dropzone $dropzone)
@@ -94,15 +190,16 @@ class DropzoneSerializer
         $parameters['scoreToPass'] = $dropzone->getScoreToPass();
         $parameters['manualPlanning'] = $dropzone->getManualPlanning();
         $parameters['manualState'] = $dropzone->getManualState();
-        $parameters['dropStartDate'] = $dropzone->getDropStartDate();
-        $parameters['dropEndDate'] = $dropzone->getDropEndDate();
-        $parameters['reviewStartDate'] = $dropzone->getReviewStartDate();
-        $parameters['reviewEndDate'] = $dropzone->getReviewEndDate();
+        $parameters['dropStartDate'] = $dropzone->getDropStartDate() ? $dropzone->getDropStartDate()->format('Y-m-d H:i') : null;
+        $parameters['dropEndDate'] = $dropzone->getDropEndDate() ? $dropzone->getDropEndDate()->format('Y-m-d H:i') : null;
+        $parameters['reviewStartDate'] = $dropzone->getReviewStartDate() ? $dropzone->getReviewStartDate()->format('Y-m-d H:i') : null;
+        $parameters['reviewEndDate'] = $dropzone->getReviewEndDate() ? $dropzone->getReviewEndDate()->format('Y-m-d H:i') : null;
         $parameters['commentInCorrectionEnabled'] = $dropzone->isCommentInCorrectionEnabled();
         $parameters['commentInCorrectionForced'] = $dropzone->isCommentInCorrectionForced();
         $parameters['correctionDenialEnabled'] = $dropzone->isCorrectionDenialEnabled();
-        $parameters['criteriaColumnTotal'] = $dropzone->getCriteriaColumnTotal();
-        $parameters['autoCloseOpenedDropsWhenTimeIsUp'] = $dropzone->getAutoCloseOpenedDropsWhenTimeIsUp();
+        $parameters['criteriaEnabled'] = $dropzone->isCriteriaEnabled();
+        $parameters['criteriaTotal'] = $dropzone->getCriteriaTotal();
+        $parameters['autoCloseDropsAtDropEndDate'] = $dropzone->getAutoCloseDropsAtDropEndDate();
         $parameters['autoCloseState'] = $dropzone->getAutoCloseState();
 
         return $parameters;
@@ -130,5 +227,25 @@ class DropzoneSerializer
         ];
 
         return $notifications;
+    }
+    private function getCriteria(Dropzone $dropzone)
+    {
+        $criteria = [];
+
+        foreach ($dropzone->getCriteria() as $criterion) {
+            $criteria[] = $this->criterionSerializer->serialize($criterion);
+        }
+
+        return $criteria;
+    }
+
+    private function deserializeCriteria(Dropzone $dropzone, $criteriaData)
+    {
+        $dropzone->emptyCriteria();
+
+        foreach ($criteriaData as $criterionData) {
+            $criterion = $this->criterionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Criterion', $criterionData);
+            $dropzone->addCriterion($criterion);
+        }
     }
 }

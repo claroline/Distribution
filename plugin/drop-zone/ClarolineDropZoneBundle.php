@@ -20,6 +20,6 @@ class ClarolineDropZoneBundle extends DistributionPluginBundle
 {
     public function hasMigrations()
     {
-        return false;
+        return true;
     }
 }
