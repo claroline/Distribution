@@ -53,43 +53,6 @@ class GenericSerializer
         );
     }
 
-    /*
-     * Create an object from it's constructor
-     * It's better if you can avoid it
-     *
-     * @var string   $class the class
-     * @var \stdClass $data object data
-     * @var \stdClass $resolvedData (the object you want to populate if it's required to fetch many to one properties)
-     */
-    public function buildObject($class, \stdClass $data, \stdClass $resolvedData = null)
-    {
-        $resolvedData = $this->resolveData(
-            $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
-            $data,
-            $class
-        );
-
-        $toArray = $this->toArray($resolvedData);
-
-        $rc = new \ReflectionClass($class);
-
-        $parameters = array_map(function ($parameter) {
-            return $parameter->getName();
-        }, $rc->getConstructor()->getParameters());
-
-        $constructorArgs = [];
-
-        foreach ($parameters as $parameter) {
-            if (isset($toArray[$parameter])) {
-                $constructorArgs[] = $toArray[$parameter];
-            }
-        }
-
-        return count($constructorArgs) === count($parameters) ?
-            new $class(...$constructorArgs) :
-            $rc->newInstanceWithoutConstructor();
-    }
-
     private function getSerializableProperties($class, $options = [])
     {
         $refClass = new \ReflectionClass($class);

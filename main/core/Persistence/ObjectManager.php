@@ -213,24 +213,6 @@ class ObjectManager extends ObjectManagerDecorator
     }
 
     /**
-     * Returns an instance of a class.
-     *
-     * Note: this is a convenience method intended to ease unit testing, as objects
-     * returned by this factory are mockable.
-     *
-     * @param string $class
-     *
-     * @return object
-     *
-     * @todo find a way to ensure that the class is a valid data class (e.g. by
-     * using the getClassMetatadata method)
-     */
-    public function factory($class)
-    {
-        return new $class();
-    }
-
-    /**
      * Finds a set of objects by their ids.
      *
      * @param $class

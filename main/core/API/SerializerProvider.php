@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API;
 
-use Claroline\CoreBundle\API\Serializer\GenericSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -22,20 +21,6 @@ class SerializerProvider
      * @var ObjectManager
      */
     private $om;
-
-    /**
-     * Injects Serializer service.
-     *
-     * @DI\InjectParams({
-     *      "serializer" = @DI\Inject("claroline.generic_serializer")
-     * })
-     *
-     * @param GenericSerializer $serializer
-     */
-    public function setGenericSerializer(GenericSerializer $serializer)
-    {
-        $this->serializer = $serializer;
-    }
 
     /**
      * Injects Serializer service.
@@ -130,15 +115,7 @@ class SerializerProvider
         }
 
         if (!$object) {
-            $reflection = new \ReflectionClass($class);
-
-            if (count($reflection->getConstructor()->getParameters()) === 0) {
-                $object = new $class();
-            } else {
-                //The generic serializer is able to handle it if alls the data match the properties
-                //of the constructor but don't rely to much on it (and it's not stable enough anyway atm)
-                $object = $this->serializer->buildObject($class, $data);
-            }
+            $object = new $class();
         }
 
         return $this->get($class)->deserialize($data, $object, $options);

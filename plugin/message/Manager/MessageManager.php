@@ -148,7 +148,7 @@ class MessageManager
         $this->om->persist($message);
 
         if ($setAsSent && $message->getSender()) {
-            $userMessage = $this->om->factory('Claroline\MessageBundle\Entity\UserMessage');
+            $userMessage = new UserMessage();
             $userMessage->setIsSent(true);
             $userMessage->setUser($message->getSender());
             $userMessage->setMessage($message);
@@ -186,7 +186,7 @@ class MessageManager
         });
 
         foreach ($filteredUsers as $filteredUser) {
-            $userMessage = $this->om->factory('Claroline\MessageBundle\Entity\UserMessage');
+            $userMessage = new UserMessage();
             $userMessage->setUser($filteredUser);
             $userMessage->setMessage($message);
             $this->om->persist($userMessage);
@@ -409,8 +409,8 @@ class MessageManager
         $content,
         $object,
         $sender = null,
-        $withMail = true)
-    {
+        $withMail = true
+    ) {
         $users = [];
 
         if ($subject instanceof User) {
