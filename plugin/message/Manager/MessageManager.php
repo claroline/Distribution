@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\MessageBundle\Entity\Message;
+use Claroline\MessageBundle\Entity\UserMessage;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
