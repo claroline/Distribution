@@ -80,10 +80,14 @@ class GenericSerializer
         $constructorArgs = [];
 
         foreach ($parameters as $parameter) {
-            $constructorArgs[] = $toArray[$parameter];
+            if (isset($toArray[$parameter])) {
+                $constructorArgs[] = $toArray[$parameter];
+            }
         }
 
-        return new $class(...$constructorArgs);
+        return count($constructorArgs) === count($parameters) ?
+            new $class(...$constructorArgs) :
+            $rc->newInstanceWithoutConstructor();
     }
 
     private function getSerializableProperties($class, $options = [])
