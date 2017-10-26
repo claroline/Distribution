@@ -147,7 +147,7 @@ class AnnouncementListener
 
         if ($announcements) {
             foreach ($announcements as $announcement) {
-                $this->manager->delete($announcement);
+                $this->manager->delete($announcement, false);
             }
         }
         $event->stopPropagation();
@@ -187,7 +187,7 @@ class AnnouncementListener
         $announcements = $aggregate->getAnnouncements();
         foreach ($announcements as $announcement) {
             $newAnnouncement = $this->manager->serialize($announcement);
-            $this->manager->create($copy, $newAnnouncement);
+            $this->manager->create($copy, $newAnnouncement, false);
         }
         $this->om->endFlushSuite();
 
