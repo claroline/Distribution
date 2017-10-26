@@ -48,7 +48,7 @@ class GenericSerializer
 
         return $this->mapObjectToEntity(
             $properties,
-            $this->resolveData($properties, $data, $object),
+            $this->resolveData($properties, $data, get_class($object)),
             $object
         );
     }
@@ -69,11 +69,21 @@ class GenericSerializer
             $class
         );
 
-        $rc = new \ReflectionClass($class);
-        $object = $rc->newInstanceWithoutConstructor();
-        call_user_func_array([$object, '__construct'], $this->toArray($resolvedData));
+        $toArray = $this->toArray($resolvedData);
 
-        return $object;
+        $rc = new \ReflectionClass($class);
+
+        $parameters = array_map(function ($parameter) {
+            return $parameter->getName();
+        }, $rc->getConstructor()->getParameters());
+
+        $constructorArgs = [];
+
+        foreach ($parameters as $parameter) {
+            $constructorArgs[] = $toArray[$parameter];
+        }
+
+        return new $class(...$constructorArgs);
     }
 
     private function getSerializableProperties($class, $options = [])
@@ -104,14 +114,20 @@ class GenericSerializer
         foreach ($mapping as $dataProperty => $map) {
             foreach ($refClass->getProperties() as $property) {
                 if ($property->getName() === $dataProperty && property_exists($data, $dataProperty)) {
+                    $resolved->{$dataProperty} = $data->{$map};
+
                     foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
                         if ($annotation instanceof ManyToOne) {
                             //basic search by fields here... later create the object aswell
-                            $resolved->{$dataProperty} = $this->om
-                              ->getRepository($annotation->targetEntity)
-                              ->findOneBy($this->toArray($data->{$map}));
-                        } else {
-                            $resolved->{$dataProperty} = $data->{$dataProperty};
+                            if (get_class($data->{$map}) !== $annotation->targetEntity) {
+                                try {
+                                    $resolved->{$dataProperty} = $this->om
+                                        ->getRepository($annotation->targetEntity)
+                                        ->findOneBy($this->toArray($data->{$map}));
+                                } catch (\Exception $e) {
+                                    $resolved->{$dataProperty} = null;
+                                }
+                            }
                         }
                     }
                 }
