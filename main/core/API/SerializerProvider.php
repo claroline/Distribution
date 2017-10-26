@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\API\Serializer\GenericSerializer;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -18,6 +19,11 @@ class SerializerProvider
     private $serializers = [];
 
     /**
+     * @var ObjectManager
+     */
+    private $om;
+
+    /**
      * Injects Serializer service.
      *
      * @DI\InjectParams({
@@ -28,7 +34,21 @@ class SerializerProvider
      */
     public function setGenericSerializer(GenericSerializer $serializer)
     {
-        $this->genericSerializer = $serializer;
+        $this->serializer = $serializer;
+    }
+
+    /**
+     * Injects Serializer service.
+     *
+     * @DI\InjectParams({
+     *      "om" = @DI\Inject("claroline.persistence.object_manager")
+     * })
+     *
+     * @param ObjectManager $om
+     */
+    public function setObjectManager(ObjectManager $om)
+    {
+        $this->om = $om;
     }
 
     /**
@@ -103,14 +123,24 @@ class SerializerProvider
      */
     public function deserialize($class, $data, $options = [])
     {
-        //maybe move this method from the genericSerializer. Maybe allows some hydrate options:
-        //for instance:
-        // - CREATE_IF_MISSING (wich would create the object if he doesn't exists)
-        // - AUTO_HYDRATE (wich would already set the properties from the generic one)
-        // dunno yet
+        $object = null;
 
-        $object = $this->genericSerializer->getObject($data, $class);
+        if (!in_array(Options::NO_FETCH, $options)) {
+            $object = $this->om->getObject($data, $class);
+        }
 
-        return $this->get($class)->deserialize($data, $object, $class, $options);
+        if (!$object) {
+            $reflection = new \ReflectionClass($class);
+
+            if (count($reflection->getConstructor()->getParameters()) === 0) {
+                $object = new $class();
+            } else {
+                //The generic serializer is able to handle it if alls the data match the properties
+                //of the constructor but don't rely to much on it (and it's not stable enough anyway atm)
+                $object = $this->serializer->buildObject($class, $data);
+            }
+        }
+
+        return $this->get($class)->deserialize($data, $object, $options);
     }
 }

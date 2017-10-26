@@ -11,11 +11,6 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
-use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-
-/**
- * Allows the target class to checks the current user permissions on a ResourceNode.
- */
 trait SerializerTrait
 {
     /**
@@ -37,8 +32,8 @@ trait SerializerTrait
         return $this->serializer->serialize($object, $options);
     }
 
-    public function deserialize($data, $object = null, $class = null, array $options = [])
+    public function deserialize($data, $object, array $options = [])
     {
-        return $this->serializer->deserialize($class, $data, $options);
+        return $this->serializer->deserialize($data, $object, $options);
     }
 }

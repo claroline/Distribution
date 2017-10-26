@@ -382,4 +382,22 @@ class ObjectManager extends ObjectManagerDecorator
 
         $this->flush();
     }
+
+    /**
+     * Fetch an object from database according to the class and the id/uuid of the data.
+     */
+    public function getObject(\stdClass $data, $class)
+    {
+        if (isset($data->id) || isset($data->uuid)) {
+            if (isset($data->uuid)) {
+                $object = $this->getRepository($class)->findOneByUuid($data->uuid);
+            } else {
+                $object = !is_numeric($data->id) && property_exists($class, 'uuid') ?
+                $this->getRepository($class)->findOneByUuid($data->id) :
+                $this->getRepository($class)->findOneById($data->id);
+            }
+
+            return $object;
+        }
+    }
 }

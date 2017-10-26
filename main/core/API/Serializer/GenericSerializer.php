@@ -42,27 +42,38 @@ class GenericSerializer
     /**
      * Default deserialize method.
      */
-    public function deserialize($class, $data, array $options = [])
+    public function deserialize($data, $object, array $options = [])
     {
-        $object = $this->getObject($data, $class);
+        $properties = $this->getSerializableProperties($object, [self::INCLUDE_MANY_TO_ONE]);
 
-        $this->resolveData(
+        return $this->mapObjectToEntity(
+            $properties,
+            $this->resolveData($properties, $data, $object),
+            $object
+        );
+    }
+
+    /*
+     * Create an object from it's constructor
+     * It's better if you can avoid it
+     *
+     * @var string   $class the class
+     * @var \stdClass $data object data
+     * @var \stdClass $resolvedData (the object you want to populate if it's required to fetch many to one properties)
+     */
+    public function buildObject($class, \stdClass $data, \stdClass $resolvedData = null)
+    {
+        $resolvedData = $this->resolveData(
             $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
             $data,
             $class
         );
 
-        if (!$object) {
-            $rc = new \ReflectionClass($class);
-            $object = $rc->newInstanceWithoutConstructor();
-            call_user_func_array([$object, '__construct'], $this->toArray($data));
-        }
+        $rc = new \ReflectionClass($class);
+        $object = $rc->newInstanceWithoutConstructor();
+        call_user_func_array([$object, '__construct'], $this->toArray($resolvedData));
 
-        return $this->mapObjectToEntity(
-            $this->getSerializableProperties($class, [self::INCLUDE_MANY_TO_ONE]),
-            $data,
-            $object
-        );
+        return $object;
     }
 
     private function getSerializableProperties($class, $options = [])
@@ -87,6 +98,7 @@ class GenericSerializer
 
     protected function resolveData($mapping, \stdClass $data, $class)
     {
+        $resolved = new \stdClass();
         $refClass = new \ReflectionClass($class);
 
         foreach ($mapping as $dataProperty => $map) {
@@ -95,14 +107,18 @@ class GenericSerializer
                     foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
                         if ($annotation instanceof ManyToOne) {
                             //basic search by fields here... later create the object aswell
-                            $data->{$dataProperty} = $this->om
+                            $resolved->{$dataProperty} = $this->om
                               ->getRepository($annotation->targetEntity)
                               ->findOneBy($this->toArray($data->{$map}));
+                        } else {
+                            $resolved->{$dataProperty} = $data->{$dataProperty};
                         }
                     }
                 }
             }
         }
+
+        return $resolved;
     }
 
     /**
@@ -239,20 +255,5 @@ class GenericSerializer
         }
 
         return $asArray;
-    }
-
-    public function getObject(\stdClass $data, $class)
-    {
-        if (isset($data->id) || isset($data->uuid)) {
-            if (isset($data->uuid)) {
-                $object = $this->om->getRepository($class)->findOneByUuid($data->uuid);
-            } else {
-                $object = !is_numeric($data->id) && property_exists($class, 'uuid') ?
-                $this->om->getRepository($class)->findOneByUuid($data->id) :
-                $this->om->getRepository($class)->findOneById($data->id);
-            }
-
-            return $object;
-        }
     }
 }
