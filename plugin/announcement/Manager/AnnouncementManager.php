@@ -168,7 +168,7 @@ class AnnouncementManager
         if ($withLog) {
             $this->eventDispatcher->dispatch(
                 'log',
-                'Claroline\\AnnouncementBundle\\Event\\Log\\' . $logEvent . 'Event',
+                'Claroline\\AnnouncementBundle\\Event\\Log\\'.$logEvent.'Event',
                 [$announcement->getAggregate(), $announcement]
             );
         }
