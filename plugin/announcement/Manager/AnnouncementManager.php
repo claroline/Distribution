@@ -163,7 +163,7 @@ class AnnouncementManager
         $this->om->endFlushSuite();
 
         // log
-        if ($announcement->getAggregate()->getResourceNode()->getId()) {
+        if ($announcement->getAggregate()->getResourceNode() && $announcement->getAggregate()->getResourceNode()->getId()) {
             $this->eventDispatcher->dispatch('log', 'Claroline\\AnnouncementBundle\\Event\\Log\\'.$logEvent.'Event', [$announcement->getAggregate(), $announcement]);
         }
 
