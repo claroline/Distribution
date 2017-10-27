@@ -161,6 +161,10 @@ AnnounceForm.propTypes = {
   announcement: T.shape(
     AnnouncementTypes.propTypes
   ).isRequired,
+  workspaceRoles: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    translationKey: T.string.isRequired,
+  })).isRequired,
   updateProperty: T.func.isRequired
 }
 
