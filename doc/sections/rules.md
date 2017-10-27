@@ -20,7 +20,7 @@ In order to have rules on your entity you have to do two things.
 namespace Claroline\CoreBundle\Entity\Badge;
 
 use Claroline\CoreBundle\Badge\Constraints\ResultConstraint;
-use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Model\Log;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Rule\Entity\Rule;

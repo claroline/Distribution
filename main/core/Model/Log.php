@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Entity\Log;
+namespace Claroline\CoreBundle\Model;
 
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -17,152 +17,32 @@ use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Model\LogInterface;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
-use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Log\LogRepository")
- * @ORM\Table(name="claro_log", indexes={
- *     @Index(name="action_idx", columns={"action"}),
- *     @Index(name="tool_idx", columns={"tool_name"}),
- *     @Index(name="doer_type_idx", columns={"doer_type"})
- * })
- */
 class Log implements LogInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-    /**
-     * @ORM\Column()
-     */
+    protected $id = null;
     protected $action;
-
-    /**
-     * @ORM\Column(name="date_log", type="datetime")
-     * @Gedmo\Timestampable(on="create")
-     */
     protected $dateLog;
-
-    /**
-     * @ORM\Column(name="short_date_log", type="date")
-     * @Gedmo\Timestampable(on="create")
-     */
     protected $shortDateLog;
-
-    /**
-     * @ORM\Column(type="json_array", nullable=true)
-     */
-    protected $details;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(name="doer_id", referencedColumnName="id", onDelete="SET NULL")
-     */
-    protected $doer;
-
-    /**
-     * @ORM\Column(name="doer_type")
-     */
+    protected $details = [];
+    protected $doer = null;
     protected $doerType;
-
-    /**
-     * @ORM\Column(name="doer_ip", nullable=true)
-     */
-    protected $doerIp;
-
-    /**
-     * @ORM\Column(name="doer_session_id", nullable=true)
-     */
-    protected $doerSessionId;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinTable(name="claro_log_doer_platform_roles")
-     */
-    protected $doerPlatformRoles;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinTable(name="claro_log_doer_workspace_roles")
-     */
-    protected $doerWorkspaceRoles;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    protected $receiver;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Group")
-     * @ORM\JoinColumn(name="receiver_group_id", onDelete="SET NULL")
-     */
-    protected $receiverGroup;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    protected $owner;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    protected $workspace;
-
-    /**
-     * @ORM\Column(name="tool_name", nullable=true)
-     */
-    protected $toolName;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode", inversedBy="logs")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    protected $resourceNode;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceType",
-     *     cascade={"persist"}
-     * )
-     * @ORM\JoinColumn(name="resource_type_id", onDelete="SET NULL")
-     */
-    protected $resourceType;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    protected $role;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_displayed_in_admin", type="boolean")
-     */
-    protected $isDisplayedInAdmin = false;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_displayed_in_workspace", type="boolean")
-     */
-    protected $isDisplayedInWorkspace = false;
-
-    /**
-     * @ORM\Column(name="other_element_id", type="integer", nullable=true)
-     */
-    protected $otherElementId;
+    protected $doerIp = null;
+    protected $doerSessionId = null;
+    protected $doerPlatformRoles = [];
+    protected $doerWorkspaceRoles = [];
+    protected $receiver = null;
+    protected $receiverGroup = null;
+    protected $owner = null;
+    protected $workspace = null;
+    protected $toolName = null;
+    protected $resourceNode = null;
+    protected $resourceType = null;
+    private $role = null;
+    private $isDisplayedInAdmin = false;
+    private $isDisplayedInWorkspace = false;
+    private $otherElementId = null;
 
     /**
      * Constructor.
@@ -171,6 +51,8 @@ class Log implements LogInterface
     {
         $this->doerPlatformRoles = new ArrayCollection();
         $this->doerWorkspaceRoles = new ArrayCollection();
+        $this->dateLog = new \DateTime();
+        $this->shortDateLog = new \DateTime();
     }
 
     /**

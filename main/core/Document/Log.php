@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Entity\Log;
+namespace Claroline\CoreBundle\Document;
 
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -18,149 +18,120 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Model\LogInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
-use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Log\LogRepository")
- * @ORM\Table(name="claro_log", indexes={
- *     @Index(name="action_idx", columns={"action"}),
- *     @Index(name="tool_idx", columns={"tool_name"}),
- *     @Index(name="doer_type_idx", columns={"doer_type"})
- * })
+ * @MongoDB\Document
  */
 class Log implements LogInterface
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @MongoDB\Id
      */
     protected $id;
 
     /**
-     * @ORM\Column()
+     * @MongoDB\Field(type="string")
      */
     protected $action;
 
     /**
-     * @ORM\Column(name="date_log", type="datetime")
-     * @Gedmo\Timestampable(on="create")
+     * @MongoDB\Field(type="date")
      */
     protected $dateLog;
 
     /**
-     * @ORM\Column(name="short_date_log", type="date")
-     * @Gedmo\Timestampable(on="create")
+     * @MongoDB\Field(type="date")
      */
     protected $shortDateLog;
 
     /**
-     * @ORM\Column(type="json_array", nullable=true)
+     * @MongoDB\Field(type="raw")
      */
     protected $details;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(name="doer_id", referencedColumnName="id", onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $doer;
 
     /**
-     * @ORM\Column(name="doer_type")
+     * @MongoDB\Field(type="string")
      */
     protected $doerType;
 
     /**
-     * @ORM\Column(name="doer_ip", nullable=true)
+     * @MongoDB\Field(type="string")
      */
     protected $doerIp;
 
     /**
-     * @ORM\Column(name="doer_session_id", nullable=true)
+     * @MongoDB\Field(type="string")
      */
     protected $doerSessionId;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinTable(name="claro_log_doer_platform_roles")
+     * @MongoDB\Field(type="raw")
      */
     protected $doerPlatformRoles;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinTable(name="claro_log_doer_workspace_roles")
+     * @MongoDB\Field(type="raw")
      */
     protected $doerWorkspaceRoles;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $receiver;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Group")
-     * @ORM\JoinColumn(name="receiver_group_id", onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $receiverGroup;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $owner;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $workspace;
 
     /**
-     * @ORM\Column(name="tool_name", nullable=true)
+     * @MongoDB\Field(type="string")
      */
     protected $toolName;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode", inversedBy="logs")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $resourceNode;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceType",
-     *     cascade={"persist"}
-     * )
-     * @ORM\JoinColumn(name="resource_type_id", onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $resourceType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinColumn(onDelete="SET NULL")
+     * @MongoDB\Field(type="string")
      */
     protected $role;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_displayed_in_admin", type="boolean")
+     * @MongoDB\Field(type="boolean")
      */
     protected $isDisplayedInAdmin = false;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="is_displayed_in_workspace", type="boolean")
+     * @MongoDB\Field(type="boolean")
      */
     protected $isDisplayedInWorkspace = false;
 
     /**
-     * @ORM\Column(name="other_element_id", type="integer", nullable=true)
+     * @MongoDB\Field(type="integer")
      */
     protected $otherElementId;
 
@@ -169,8 +140,8 @@ class Log implements LogInterface
      */
     public function __construct()
     {
-        $this->doerPlatformRoles = new ArrayCollection();
-        $this->doerWorkspaceRoles = new ArrayCollection();
+        $this->doerPlatformRoles = [];
+        $this->doerWorkspaceRoles = [];
     }
 
     /**
@@ -336,7 +307,7 @@ class Log implements LogInterface
      */
     public function setDoer(User $doer = null)
     {
-        $this->doer = $doer;
+        $this->doer = $this->getIdentifier($doer);
 
         return $this;
     }
@@ -358,9 +329,9 @@ class Log implements LogInterface
      *
      * @return Log
      */
-    public function addDoerPlatformRole(Role $doerPlatformRoles)
+    public function addDoerPlatformRole(Role $doerPlatformRole)
     {
-        $this->doerPlatformRoles[] = $doerPlatformRoles;
+        $this->doerPlatformRoles[] = $this->getIdentifier($doerPlatformRole);
 
         return $this;
     }
@@ -370,9 +341,11 @@ class Log implements LogInterface
      *
      * @param Role $doerPlatformRoles
      */
-    public function removeDoerPlatformRole(Role $doerPlatformRoles)
+    public function removeDoerPlatformRole(Role $doerPlatformRole)
     {
-        $this->doerPlatformRoles->removeElement($doerPlatformRoles);
+        unset($this->doerPlatformRoles[array_search($this->getIdentifier($doerPlatformRole), $this->doerPlatformRoles)]);
+
+        return $this;
     }
 
     /**
@@ -392,9 +365,9 @@ class Log implements LogInterface
      *
      * @return Log
      */
-    public function addDoerWorkspaceRole(Role $doerWorkspaceRoles)
+    public function addDoerWorkspaceRole(Role $doerWorkspaceRole)
     {
-        $this->doerWorkspaceRoles[] = $doerWorkspaceRoles;
+        $this->doerWorkspaceRoles[] = $this->getIdentifier($doerWorkspaceRole);
 
         return $this;
     }
@@ -404,9 +377,11 @@ class Log implements LogInterface
      *
      * @param Role $doerWorkspaceRoles
      */
-    public function removeDoerWorkspaceRole(Role $doerWorkspaceRoles)
+    public function removeDoerWorkspaceRole(Role $doerWorkspaceRole)
     {
-        $this->doerWorkspaceRoles->removeElement($doerWorkspaceRoles);
+        unset($this->doerWorkspaceRoles[array_search($this->getIdentifier($doerWorkspaceRole), $this->doerWorkspaceRoles)]);
+
+        return $this;
     }
 
     /**
@@ -428,7 +403,7 @@ class Log implements LogInterface
      */
     public function setReceiver(User $receiver = null)
     {
-        $this->receiver = $receiver;
+        $this->receiver = $this->getIdentifier($receiver);
 
         return $this;
     }
@@ -452,7 +427,7 @@ class Log implements LogInterface
      */
     public function setReceiverGroup(Group $receiverGroup = null)
     {
-        $this->receiverGroup = $receiverGroup;
+        $this->receiverGroup = $this->getIdentifier($receiverGroup);
 
         return $this;
     }
@@ -476,7 +451,7 @@ class Log implements LogInterface
      */
     public function setOwner(User $owner = null)
     {
-        $this->owner = $owner;
+        $this->owner = $this->getIdentifier($owner);
 
         return $this;
     }
@@ -500,7 +475,7 @@ class Log implements LogInterface
      */
     public function setWorkspace(Workspace $workspace = null)
     {
-        $this->workspace = $workspace;
+        $this->workspace = $this->getIdentifier($workspace);
 
         return $this;
     }
@@ -524,7 +499,7 @@ class Log implements LogInterface
      */
     public function setResourceNode(ResourceNode $resourceNode = null)
     {
-        $this->resourceNode = $resourceNode;
+        $this->resourceNode = $this->getIdentifier($resourceNode);
 
         return $this;
     }
@@ -548,7 +523,7 @@ class Log implements LogInterface
      */
     public function setResourceType(ResourceType $resourceType = null)
     {
-        $this->resourceType = $resourceType;
+        $this->resourceType = $this->getIdentifier($resourceType);
 
         return $this;
     }
@@ -572,7 +547,7 @@ class Log implements LogInterface
      */
     public function setRole(Role $role = null)
     {
-        $this->role = $role;
+        $this->role = $this->getIdentifier($role);
 
         return $this;
     }
@@ -670,4 +645,31 @@ class Log implements LogInterface
 
         return $this;
     }
+
+    private function getIdentifier($object)
+    {
+        if (!$object) {
+            return null;
+        }
+
+        if (method_exists($object, 'getUuid')) {
+            return $object->getUuid();
+        }
+
+        if (method_exists($object, 'getGuid')) {
+            return $object->getGuid();
+        }
+
+        return $object->getId();
+    }
+
+    /*
+        private function serializeRole(Role $role)
+        {
+            return [
+                'uuid' => $role->getUuid(),
+                'translationKey' => $role->getTranslationKey(),
+                'name' => $role->getName()
+            ];
+        }*/
 }

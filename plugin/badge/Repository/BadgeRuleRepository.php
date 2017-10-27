@@ -2,9 +2,9 @@
 
 namespace Icap\BadgeBundle\Repository;
 
-use Icap\BadgeBundle\Entity\Badge;
-use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Model\LogInterface;
 use Doctrine\ORM\EntityRepository;
+use Icap\BadgeBundle\Entity\Badge;
 
 class BadgeRuleRepository extends EntityRepository
 {
@@ -14,7 +14,7 @@ class BadgeRuleRepository extends EntityRepository
      *
      * @return array|\Doctrine\ORM\AbstractQuery
      */
-    public function findBadgeAutomaticallyAwardedFromAction(Log $log, $executeQuery = true)
+    public function findBadgeAutomaticallyAwardedFromAction(LogInterface $log, $executeQuery = true)
     {
         $actiontype = $log->getAction();
 

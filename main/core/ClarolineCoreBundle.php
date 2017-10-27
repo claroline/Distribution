@@ -12,12 +12,12 @@
 namespace Claroline\CoreBundle;
 
 use Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle;
-use Claroline\CoreBundle\DependencyInjection\Compiler\ApiConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\DoctrineEntityListenerPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\DynamicConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\ImportersConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\MailingConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\PlatformConfigPass;
+use Claroline\CoreBundle\DependencyInjection\Compiler\ProviderConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\RichTextFormatterConfigPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\RouterPass;
 use Claroline\CoreBundle\DependencyInjection\Compiler\RuleConstraintsConfigPass;
@@ -48,7 +48,7 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
         $container->addCompilerPass(new DoctrineEntityListenerPass());
         $container->addCompilerPass(new RuleConstraintsConfigPass());
         $container->addCompilerPass(new RouterPass());
-        $container->addCompilerPass(new ApiConfigPass());
+        $container->addCompilerPass(new ProviderConfigPass());
         $container->addCompilerPass(new MailingConfigPass());
 
         $extension = $container->getExtension('security');
@@ -108,6 +108,7 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             'Symfony\Bundle\MonologBundle\MonologBundle' => 'monolog',
             'Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle' => 'swiftmailer',
             'Doctrine\Bundle\DoctrineBundle\DoctrineBundle' => 'doctrine',
+            'Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle' => 'doctrine_mongodb',
         ];
 
         if (in_array($bundleClass, $emptyConfigs)) {

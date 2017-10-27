@@ -114,7 +114,6 @@ class PlatformDefaults implements ParameterProviderInterface
             'direct_third_party_authentication' => false,
             'platform_log_enabled' => true,
             'workspace_users_csv_import_by_full_name' => false,
-            'platform_log_enabled' => true,
             //not documented, for the cli tool claroline:user:mailing
             'auto_validate_email' => false,
             'auto_enable_email_redirect' => false,
@@ -135,6 +134,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'icap_lesson' => ['visible'],
             ],
             'default_root_anon_id' => null,
+            'enable_mongo' => false,
         ];
     }
 }

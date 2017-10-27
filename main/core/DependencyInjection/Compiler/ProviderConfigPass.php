@@ -15,13 +15,14 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
-class ApiConfigPass implements CompilerPassInterface
+class ProviderConfigPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
         $this->register($container, 'claroline.api.finder', 'claroline.finder');
         $this->register($container, 'claroline.api.serializer', 'claroline.serializer');
         $this->register($container, 'claroline.api.validator', 'claroline.validator');
+        $this->register($container, 'claroline.persistence.adapter', 'claroline.adapter');
     }
 
     private function register(ContainerBuilder $container, $provider, $registerTag)

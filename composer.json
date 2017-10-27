@@ -75,7 +75,10 @@
         "claroline/front-end-bundle": "dev-7.x-test",
         "ocramius/proxy-manager": "1.0.2",
         "ramsey/uuid": "~3.5",
-        "postal/postal": "*"
+        "postal/postal": "*",
+        "doctrine/mongodb-odm-bundle": "^3.0",
+        "alcaeus/mongo-php-adapter": "^1.0",
+        "ext-mongo": "*"
     },
     "replace": {
         "claroline/distribution-bundle": "*",

@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Form\DataTransformer\DateRangeToTextTransformer;
+use Claroline\CoreBundle\Model\LogInterface;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -814,7 +815,7 @@ class LogManager
         return ['ids' => $topUsersIdList, 'userData' => $topUsersFormatedArray];
     }
 
-    public function getDetails(Log $log)
+    public function getDetails(LogInterface $log)
     {
         $details = $log->getDetails();
         $translator = $this->container->get('translator');

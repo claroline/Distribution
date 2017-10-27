@@ -16,13 +16,13 @@ use Claroline\CoreBundle\Entity\Activity\ActivityParameters;
 use Claroline\CoreBundle\Entity\Activity\ActivityRule;
 use Claroline\CoreBundle\Entity\Activity\Evaluation;
 use Claroline\CoreBundle\Entity\Activity\PastEvaluation;
-use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Resource\Activity;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Model\Log\LogInterface;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -183,7 +183,7 @@ class ActivityManager
     public function manageEvaluation(
         User $user,
         ActivityParameters $activityParams,
-        Log $currentLog,
+        LogInterface $currentLog,
         $rulesLogs,
         $activityStatus
     ) {
@@ -581,7 +581,7 @@ class ActivityManager
             );
         }
 
-        return array();
+        return [];
     }
 
     /*********************************************
@@ -668,7 +668,7 @@ class ActivityManager
             );
         }
 
-        return array();
+        return [];
     }
 
     public function getEvaluationsByUsersAndActivityParams(
@@ -684,7 +684,7 @@ class ActivityManager
             );
         }
 
-        return array();
+        return [];
     }
 
     /**********************************************
@@ -706,7 +706,7 @@ class ActivityManager
     public function getPastEvaluationsByUserAndActivityParamsAndLog(
         User $user,
         ActivityParameters $activityParams,
-        Log $log,
+        LogInterface $log,
         $executeQuery = true
     ) {
         return $this->pastEvaluationRepo

@@ -2,7 +2,7 @@
 
 namespace Icap\BadgeBundle\Event;
 
-use Claroline\CoreBundle\Entity\Log\Log;
+use Claroline\CoreBundle\Model\LogInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 class BadgeCreateValidationLinkEvent extends Event
@@ -10,7 +10,7 @@ class BadgeCreateValidationLinkEvent extends Event
     private $log;
     private $content = null;
 
-    public function __construct(Log $log)
+    public function __construct(LogInterface $log)
     {
         $this->log = $log;
     }
@@ -40,7 +40,7 @@ class BadgeCreateValidationLinkEvent extends Event
     }
 
     /**
-     * @return \Claroline\CoreBundle\Entity\Log\Log
+     * @return \Claroline\CoreBundle\Model\LogInterface
      */
     public function getLog()
     {

@@ -1,0 +1,10 @@
+doctrine_mongodb:
+    default_commit_options: ~
+    connections:
+        default:
+            server: "%mongodb_server%"
+            options: {}
+    default_database: "%mongodb_database%"
+    document_managers:
+        default:
+            auto_mapping: true

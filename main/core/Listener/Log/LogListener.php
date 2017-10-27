@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Listener\Log;
 
-use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogGroupDeleteEvent;
 use Claroline\CoreBundle\Event\Log\LogNotRepeatableInterface;
@@ -21,7 +20,10 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceRoleDeleteEvent;
 use Claroline\CoreBundle\Event\LogCreateEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\RoleManager;
+use Claroline\CoreBundle\Model\Log;
+use Claroline\CoreBundle\Model\LogInterface;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Persistence\Options;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -35,6 +37,8 @@ class LogListener
     private $container;
     private $roleManager;
     private $ch;
+    private $dm;
+    private $adapter;
 
     /**
      * @DI\InjectParams({
@@ -42,7 +46,9 @@ class LogListener
      *     "tokenStorage"        = @DI\Inject("security.token_storage"),
      *     "container"           = @DI\Inject("service_container"),
      *     "roleManager"         = @DI\Inject("claroline.manager.role_manager"),
-     *     "ch"                  = @DI\Inject("claroline.config.platform_config_handler")
+     *     "ch"                  = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "mongodb"             = @DI\Inject("doctrine_mongodb"),
+     *     "adapter"             = @DI\Inject("claroline.persistence.adapter")
      * })
      */
     public function __construct(
@@ -50,7 +56,9 @@ class LogListener
         TokenStorageInterface $tokenStorage,
         $container,
         RoleManager $roleManager,
-        PlatformConfigurationHandler $ch
+        PlatformConfigurationHandler $ch,
+        $mongodb,
+        $adapter
     ) {
         $this->om = $om;
         $this->tokenStorage = $tokenStorage;
@@ -58,6 +66,9 @@ class LogListener
         $this->roleManager = $roleManager;
         $this->ch = $ch;
         $this->enabledLog = $this->ch->getParameter('platform_log_enabled');
+        $this->enableMongo = $this->ch->getParameter('enable_mongo');
+        $this->dm = $mongodb->getManager();
+        $this->adapter = $adapter;
     }
 
     private function createLog(LogGenericEvent $event)
@@ -77,14 +88,14 @@ class LogListener
             $token = $this->tokenStorage->getToken();
             if ($token === null) {
                 $doer = null;
-                $doerType = Log::doerTypePlatform;
+                $doerType = LogInterface::doerTypePlatform;
             } else {
                 if ($token->getUser() === 'anon.') {
                     $doer = null;
-                    $doerType = Log::doerTypeAnonymous;
+                    $doerType = LogInterface::doerTypeAnonymous;
                 } else {
                     $doer = $token->getUser();
-                    $doerType = Log::doerTypeUser;
+                    $doerType = LogInterface::doerTypeUser;
                 }
                 if ($this->container->isScopeActive('request')) {
                     $request = $this->container->get('request');
@@ -96,10 +107,10 @@ class LogListener
             }
         } elseif (LogGenericEvent::PLATFORM_EVENT_TYPE === $event->getDoer()) {
             $doer = null;
-            $doerType = Log::doerTypePlatform;
+            $doerType = LogInterface::doerTypePlatform;
         } else {
             $doer = $event->getDoer();
-            $doerType = Log::doerTypeUser;
+            $doerType = LogInterface::doerTypeUser;
         }
 
         $log = new Log();
@@ -117,9 +128,9 @@ class LogListener
         if (!($event->getAction() === LogUserDeleteEvent::ACTION && $event->getReceiver() === $doer)) {
             //Prevent self delete case
             //Sometimes, the entity manager has been cleared, so we must merge the doer.
-           if ($doer) {
-               $doer = $this->om->merge($doer);
-           }
+            if ($doer) {
+                $doer = $this->om->merge($doer);
+            }
             $log->setDoer($doer);
         }
         $log->setDoerType($doerType);
@@ -187,6 +198,7 @@ class LogListener
                 'publicUrl' => $doer->getPublicUrl(),
             ];
 
+            //use the mongodb adapter here
             if (count($log->getDoerPlatformRoles()) > 0) {
                 $doerPlatformRolesDetails = [];
                 foreach ($log->getDoerPlatformRoles() as $platformRole) {
@@ -204,8 +216,13 @@ class LogListener
         }
         $log->setDetails($details);
 
-        $this->om->persist($log);
-        $this->om->flush();
+        if ($this->enableMongo) {
+            $this->dm->persist($this->adapter->adapt($log, Options::MONGO));
+            $this->dm->flush();
+        } else {
+            $this->om->persist($this->adapter->adapt($log, Options::MYSQL));
+            $this->om->flush();
+        }
 
         $createLogEvent = new LogCreateEvent($log);
         $this->container->get('event_dispatcher')->dispatch(LogCreateEvent::NAME, $createLogEvent);
