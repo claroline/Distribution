@@ -42,6 +42,8 @@ const InstructionsSection = props =>
   </FormSections>
 
 InstructionsSection.propTypes = {
+  errors: T.object,
+  validating: T.bool,
   display: T.shape({
     instruction: T.string
   }),
@@ -208,8 +210,12 @@ const CriteriaSection = props =>
   </FormSections>
 
 CriteriaSection.propTypes = {
+  errors: T.object,
+  validating: T.bool,
   parameters: T.shape({
+    peerReview: T.bool.isRequired,
     criteriaEnabled: T.bool.isRequired,
+    criteriaTotal: T.number.isRequired,
     commentInCorrectionEnabled: T.bool.isRequired,
     commentInCorrectionForced: T.bool.isRequired
   }),

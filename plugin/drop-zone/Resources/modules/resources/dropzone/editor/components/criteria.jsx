@@ -112,7 +112,7 @@ function mapDispatchToProps(dispatch) {
   return {
     addCriterion: (dropzoneId) => dispatch(actions.addCriterion(dropzoneId)),
     updateCriterion: (id, property, value) => dispatch(actions.updateCriterion(id, property, value)),
-    removeCriterion: (id) => dispatch(actions.removeCriterion(id)),
+    removeCriterion: (id) => dispatch(actions.removeCriterion(id))
   }
 }
 
