@@ -1,6 +1,4 @@
 import {makeReducer} from '#/main/core/utilities/redux'
-import update from 'immutability-helper'
-import {updateArray} from '#/main/core/administration/user-management/utils/redux'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {
@@ -10,13 +8,20 @@ import {
 
 const rolesReducer = makeReducer([], {
   [ROLE_EDIT]: (state, action) => {
-    const idx = state.data.findIndex(el => el.id === action.role.id)
-    const data = updateArray(state.data, idx, action.role)
+    const newState = cloneDeep(state)
 
-    return update(state, {'data': {$set: data}})
+    const idx = state.findIndex(el => el.id === action.role.id)
+    if (-1 !== idx) {
+      newState[idx] = action.role
+    }
+
+    return newState
   },
   [ROLE_ADD]: (state, action) => {
-    return update(state, {'data': {$push: [action.role]}})
+    const newState = cloneDeep(state)
+    newState.push(action.role)
+
+    return newState
   }
 })
 
