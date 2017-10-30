@@ -32,7 +32,7 @@ const reducer = makeReducer({
     errors: {},
     data: action.dropzone
   }),
-  [DROPZONE_FORM_VALIDATE]: (state, action) => ({
+  [DROPZONE_FORM_VALIDATE]: (state) => ({
     validating: true,
     pendingChanges: state.pendingChanges,
     errors: validate(state.data),

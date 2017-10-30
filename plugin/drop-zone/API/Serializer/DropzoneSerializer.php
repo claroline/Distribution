@@ -137,7 +137,6 @@ class DropzoneSerializer
             if (isset($data['parameters']['autoCloseState'])) {
                 $dropzone->setAutoCloseState($data['parameters']['autoCloseState']);
             }
-
         }
         if (isset($data['display'])) {
             if (isset($data['display']['instruction'])) {

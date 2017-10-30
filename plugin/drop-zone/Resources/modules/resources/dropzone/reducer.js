@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer} from '#/main/core/utilities/redux'
 
 // generic reducers

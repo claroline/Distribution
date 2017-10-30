@@ -202,7 +202,7 @@ class Dropzone extends AbstractResource
     protected $autoCloseState = self::AUTO_CLOSED_STATE_WAITING;
 
     /**
-     * Notify Evaluation admins when a someone made a drop
+     * Notify Evaluation admins when a someone made a drop.
      *
      * @ORM\Column(name="notify_on_drop", type="boolean", nullable=false)
      */
