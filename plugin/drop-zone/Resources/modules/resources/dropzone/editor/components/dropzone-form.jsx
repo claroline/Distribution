@@ -4,8 +4,7 @@ import {connect} from 'react-redux'
 import get from 'lodash/get'
 import moment from 'moment'
 
-import {trans} from '#/main/core/translation'
-
+import {t, trans} from '#/main/core/translation'
 import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
@@ -18,9 +17,10 @@ import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'
 import Datetime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
 
-import {Criteria} from './criteria.jsx'
+import {constants} from '../../constants'
 import {select} from '../../selectors'
 import {actions} from '../actions'
+import {Criteria} from './criteria.jsx'
 
 const InstructionsSection = props =>
   <FormSections>
@@ -297,13 +297,7 @@ const PlanningSection = props =>
         <RadioGroup
           controlId="manual-state"
           label={trans('choose_current_manual_state', {}, 'dropzone')}
-          options={[
-            {value: 'notStarted', label: trans('manual_state_not_started', {}, 'dropzone')},
-            {value: 'peerReview', label: trans('manual_state_peer_review', {}, 'dropzone')},
-            {value: 'allowDrop', label: trans('manual_state_allow_drop', {}, 'dropzone')},
-            {value: 'allowDropAndPeerReview', label: trans('manual_state_allow_drop_and_peer_review', {}, 'dropzone')},
-            {value: 'finished', label: trans('manual_state_finished', {}, 'dropzone')}
-          ]}
+          options={props.parameters.peerReview ? constants.PEER_PLANNING_STATES : constants.TEACHER_PLANNING_STATES}
           inline={false}
           checkedValue={props.parameters.manualState}
           onChange={value => props.updateForm('parameters.manualState', value)}
@@ -412,6 +406,7 @@ const PlanningSection = props =>
 
 PlanningSection.propTypes = {
   parameters: T.shape({
+    peerReview: T.bool.isRequired,
     manualPlanning: T.bool.isRequired,
     manualState: T.string.isRequired,
     autoCloseDropsAtDropEndDate: T.bool.isRequired,
@@ -421,6 +416,29 @@ PlanningSection.propTypes = {
     reviewEndDate: T.string
   }),
   updateForm: T.func.isRequired
+}
+
+const NotificationsSection = props =>
+  <FormSections>
+    <FormSection
+      id="notification-section"
+      title={t('notifications')}
+    >
+      <CheckGroup
+        checkId="drop-notification-chk"
+        checked={props.notifications.enabled}
+        label={trans('notify_managers_on_drop', {}, 'dropzone')}
+        onChange={checked => props.updateNotifications('drop', checked)}
+      />
+    </FormSection>
+  </FormSections>
+
+NotificationsSection.propTypes = {
+  notifications: T.shape({
+    enabled: T.bool.isRequired,
+    actions: T.array
+  }),
+  updateNotifications: T.func.isRequired
 }
 
 const DropzoneForm = props =>
@@ -438,6 +456,7 @@ const DropzoneForm = props =>
     <CriteriaSection {...props}/>
     <NotationSection {...props}/>
     <PlanningSection {...props}/>
+    <NotificationsSection {...props}/>
   </form>
 
 DropzoneForm.propTypes = {
@@ -446,7 +465,8 @@ DropzoneForm.propTypes = {
   parameters: T.object,
   display: T.object,
   notifications: T.object,
-  updateForm: T.func.isRequired
+  updateForm: T.func.isRequired,
+  updateNotifications: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -461,7 +481,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateForm: (property, value) => dispatch(actions.updateForm(property, value))
+    updateForm: (property, value) => dispatch(actions.updateForm(property, value)),
+    updateNotifications: (property, value) => dispatch(actions.updateNotifications(property, value))
   }
 }
 

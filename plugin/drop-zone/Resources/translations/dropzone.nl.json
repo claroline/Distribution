@@ -33,6 +33,7 @@
     "manual_state_finished": "De evaluatie is voltooid. Niemand kan eraan deelnemen",
     "manual_state_not_started": "De evaluatie is nog niet begonnen",
     "manual_state_peer_review": "De lerenden mogen de kopieën corrigeren. (Peer review)",
+    "notify_managers_on_drop": "De evaluatie beheerders notificeren wanneer iemand een kopie neerzet",
     "peer_correction_info": "Lerenden corrigeren elkaar. (Peer review)",
     "planning": "Planning",
     "planning_info_1": "De opening van de evaluatie kan manueel gemaakt worden of automatisch met data.",

@@ -34,6 +34,7 @@
     "manual_state_finished": "L'évaluation est terminée. Plus personne ne peut y participer",
     "manual_state_not_started": "L'évaluation n'a pas encore commencé",
     "manual_state_peer_review": "Les apprenants peuvent corriger les copies. (Évaluation par les pairs)",
+    "notify_managers_on_drop": "Notifier les administrateurs de l'évaluation lorsque quelqu'un dépose une copie",
     "peer_correction_info": "Les apprenants se corrigent entre eux (Évaluation par les pairs)",
     "planning": "Planification",
     "planning_info_1": "L'ouverture de l'évaluation peut se faire de manière manuelle ou automatique par dates.",

@@ -34,6 +34,7 @@
     "manual_state_finished": "The evaluation is finished. Nobody can take part in it anymore",
     "manual_state_not_started": "The evaluation has not begun yet",
     "manual_state_peer_review": "The learners can correct the copies. (Peer review)",
+    "notify_managers_on_drop": "Notify the evaluation managers when someone drops a copy",
     "peer_correction_info": "Learners correct each others. (Peer review)",
     "planning": "Planning",
     "planning_info_1": "The opening of the evaluation can be made manually or automatically by dates.",
