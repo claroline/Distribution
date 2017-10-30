@@ -170,7 +170,9 @@ class DropzoneSerializer
                 in_array('drop', $data['notifications']['actions']);
             $dropzone->setNotifyOnDrop($notifyOnDrop);
         }
-        if (isset($data['criteria'])) {
+        $dropzone->emptyCriteria();
+
+        if (isset($data['parameters']['criteriaEnabled']) && $data['parameters']['criteriaEnabled'] && isset($data['criteria'])) {
             $this->deserializeCriteria($dropzone, $data['criteria']);
         }
 
@@ -241,8 +243,6 @@ class DropzoneSerializer
 
     private function deserializeCriteria(Dropzone $dropzone, $criteriaData)
     {
-        $dropzone->emptyCriteria();
-
         foreach ($criteriaData as $criterionData) {
             $criterion = $this->criterionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Criterion', $criterionData);
             $dropzone->addCriterion($criterion);

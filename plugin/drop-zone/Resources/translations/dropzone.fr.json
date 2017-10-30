@@ -15,6 +15,7 @@
     "criteria_info_1": "Veuillez créer ici le formulaire d'évaluation qui sera rempli par les correcteurs.",
     "criteria_info_2": "Le nombre de critères n'est pas limité.",
     "criteria_info_3": "Vous pouvez proposer une zone de commentaire libre au correcteur.",
+    "criteria_scale": "Echelle des critères",
     "display_corrections_to_learners": "Afficher les corrections aux apprenants",
     "display_notation_message_to_learners": "Afficher un message de réussite ou d'échec aux apprenants",
     "display_notation_to_learners": "Afficher le score aux apprenants",

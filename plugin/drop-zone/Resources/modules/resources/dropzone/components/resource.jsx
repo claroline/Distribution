@@ -20,7 +20,7 @@ const DropzoneResource = props =>
       open: '#/edit',
       label: t('configure'),
       save: {
-        disabled: !props.formPendingChanges,
+        disabled: !props.formPendingChanges || (props.formValidating && !props.formValid),
         action: () => {
           props.saveDropzone(props.dropzoneId, props.dropzoneForm)
         }
@@ -56,6 +56,8 @@ DropzoneResource.propTypes = {
   dropzoneForm: T.object,
   formOpened: T.bool.isRequired,
   formPendingChanges: T.bool.isRequired,
+  formValidating: T.bool.isRequired,
+  formValid: T.bool.isRequired,
 
   loadForm: T.func.isRequired,
   resetForm: T.func.isRequired,
@@ -68,7 +70,9 @@ function mapStateToProps(state) {
     dropzoneId: select.dropzoneId(state),
     dropzoneForm: select.formData(state),
     formOpened: select.formIsOpened(state),
-    formPendingChanges: select.formHasPendingChanges(state)
+    formPendingChanges: select.formHasPendingChanges(state),
+    formValid: select.formValid(state),
+    formValidating: select.formValidating(state)
   }
 }
 

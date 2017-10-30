@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import get from 'lodash/get'
 import moment from 'moment'
 
 import {trans} from '#/main/core/translation'
@@ -12,7 +13,6 @@ import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.js
 import {NumberGroup}  from '#/main/core/layout/form/components/group/number-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
 
-import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'
 
 import Datetime from 'react-datetime'
@@ -28,11 +28,15 @@ const InstructionsSection = props =>
       id="instructions-section"
       title={trans('instructions', {}, 'dropzone')}
     >
-      <Textarea
-        id="instruction"
+      <HtmlGroup
+        controlId="instruction"
+        label={trans('instruction', {}, 'dropzone')}
         content={props.display.instruction || ''}
-        onChange={value => props.updateDisplay('instruction', value)}
+        onChange={value => props.updateForm('display.instruction', value)}
         minRows={3}
+        hideLabel={true}
+        warnOnly={!props.validating}
+        error={get(props.errors, 'instruction')}
       />
     </FormSection>
   </FormSections>
@@ -41,7 +45,7 @@ InstructionsSection.propTypes = {
   display: T.shape({
     instruction: T.string
   }),
-  updateDisplay: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 const DocumentsSection = props =>
@@ -55,25 +59,25 @@ const DocumentsSection = props =>
         checkId="upload-enabled-chk"
         checked={props.parameters.uploadEnabled}
         label={trans('uploaded_files', {}, 'dropzone')}
-        onChange={checked => props.updateParameters('uploadEnabled', checked)}
+        onChange={checked => props.updateForm('parameters.uploadEnabled', checked)}
       />
       <CheckGroup
         checkId="rich-text-enabled-chk"
         checked={props.parameters.richTextEnabled}
         label={trans('rich_text_online_edition', {}, 'dropzone')}
-        onChange={checked => props.updateParameters('richTextEnabled', checked)}
+        onChange={checked => props.updateForm('parameters.richTextEnabled', checked)}
       />
       <CheckGroup
         checkId="workspace-resource-enabled-chk"
         checked={props.parameters.workspaceResourceEnabled}
         label={trans('workspace_resources', {}, 'dropzone')}
-        onChange={checked => props.updateParameters('workspaceResourceEnabled', checked)}
+        onChange={checked => props.updateForm('parameters.workspaceResourceEnabled', checked)}
       />
       <CheckGroup
         checkId="url-enabled-chk"
         checked={props.parameters.urlEnabled}
         label={trans('url_info', {}, 'dropzone')}
-        onChange={checked => props.updateParameters('urlEnabled', checked)}
+        onChange={checked => props.updateForm('parameters.urlEnabled', checked)}
       />
     </FormSection>
   </FormSections>
@@ -85,7 +89,7 @@ DocumentsSection.propTypes = {
     workspaceResourceEnabled: T.bool.isRequired,
     urlEnabled: T.bool.isRequired
   }),
-  updateParameters: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 const CorrectionSection = props =>
@@ -104,10 +108,10 @@ const CorrectionSection = props =>
         checkedValue={props.parameters.peerReview ? 'peer' : 'teacher'}
         onChange={value => {
           const peerReview = value === 'peer'
-          props.updateParameters('peerReview', peerReview)
+          props.updateForm('parameters.peerReview', peerReview)
 
           if (peerReview) {
-            props.updateParameters('criteriaEnabled', true)
+            props.updateForm('parameters.criteriaEnabled', true)
           }
         }}
       />
@@ -118,20 +122,20 @@ const CorrectionSection = props =>
             label={trans('expected_correction_total_label', {}, 'dropzone')}
             value={props.parameters.expectedCorrectionTotal}
             min={1}
-            onChange={value => props.updateParameters('expectedCorrectionTotal', parseInt(value))}
+            onChange={value => props.updateForm('parameters.expectedCorrectionTotal', parseInt(value))}
           />
           <CheckGroup
             checkId="display-notation-chk"
             checked={props.display.displayNotationToLearners}
             label={trans('display_corrections_to_learners', {}, 'dropzone')}
-            onChange={checked => props.updateDisplay('displayNotationToLearners', checked)}
+            onChange={checked => props.updateForm('display.displayNotationToLearners', checked)}
           />
           {props.display.displayNotationToLearners &&
             <CheckGroup
               checkId="correction-denial-chk"
               checked={props.parameters.correctionDenialEnabled}
               label={trans('correction_denial_label', {}, 'dropzone')}
-              onChange={checked => props.updateParameters('correctionDenialEnabled', checked)}
+              onChange={checked => props.updateForm('parameters.correctionDenialEnabled', checked)}
             />
           }
         </div>
@@ -148,8 +152,7 @@ CorrectionSection.propTypes = {
   display: T.shape({
     displayNotationToLearners: T.bool.isRequired
   }),
-  updateParameters: T.func.isRequired,
-  updateDisplay: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 const CriteriaSection = props =>
@@ -166,7 +169,7 @@ const CriteriaSection = props =>
         checked={props.parameters.criteriaEnabled}
         label={trans('enable_evaluation_criteria', {}, 'dropzone')}
         disabled={props.parameters.peerReview}
-        onChange={checked => props.updateParameters('criteriaEnabled', checked)}
+        onChange={checked => props.updateForm('parameters.criteriaEnabled', checked)}
       />
       {props.parameters.criteriaEnabled &&
         <div>
@@ -174,20 +177,29 @@ const CriteriaSection = props =>
             controlId="correction-instruction"
             label={trans('correction_instruction', {}, 'dropzone')}
             content={props.display.correctionInstruction || ''}
-            onChange={value => props.updateDisplay('correctionInstruction', value)}
+            onChange={value => props.updateForm('display.correctionInstruction', value)}
             minRows={3}
           />
           <CheckGroup
             checkId="comment-in-correction-enabled-chk"
             checked={props.parameters.commentInCorrectionEnabled}
             label={trans('enable_comment', {}, 'dropzone')}
-            onChange={checked => props.updateParameters('commentInCorrectionEnabled', checked)}
+            onChange={checked => props.updateForm('parameters.commentInCorrectionEnabled', checked)}
           />
           <CheckGroup
             checkId="comment-in-correction-forced-chk"
             checked={props.parameters.commentInCorrectionForced}
             label={trans('force_comment', {}, 'dropzone')}
-            onChange={checked => props.updateParameters('commentInCorrectionForced', checked)}
+            onChange={checked => props.updateForm('parameters.commentInCorrectionForced', checked)}
+          />
+          <NumberGroup
+            controlId="criteria-total"
+            label={trans('criteria_scale', {}, 'dropzone')}
+            value={props.parameters.criteriaTotal}
+            min={1}
+            onChange={value => props.updateForm('parameters.criteriaTotal', parseInt(value))}
+            warnOnly={!props.validating}
+            error={get(props.errors, 'criteriaTotal')}
           />
           <Criteria/>
         </div>
@@ -204,8 +216,7 @@ CriteriaSection.propTypes = {
   display: T.shape({
     correctionInstruction: T.string
   }),
-  updateParameters: T.func.isRequired,
-  updateDisplay: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 const NotationSection = props =>
@@ -219,32 +230,32 @@ const NotationSection = props =>
         label={trans('score_to_pass', {}, 'dropzone')}
         value={props.parameters.scoreToPass}
         min={0}
-        onChange={value => props.updateParameters('scoreToPass', parseInt(value))}
+        onChange={value => props.updateForm('parameters.scoreToPass', parseInt(value))}
       />
       <CheckGroup
         checkId="display-notation-to-learners-chk"
         checked={props.display.displayNotationToLearners}
         label={trans('display_notation_to_learners', {}, 'dropzone')}
-        onChange={checked => props.updateDisplay('displayNotationToLearners', checked)}
+        onChange={checked => props.updateForm('display.displayNotationToLearners', checked)}
       />
       <ActivableSet
         id="display-notation-message-to-learners"
         label={trans('display_notation_message_to_learners', {}, 'dropzone')}
         activated={props.display.displayNotationMessageToLearners}
-        onChange={activated => props.updateDisplay('displayNotationMessageToLearners', activated)}
+        onChange={activated => props.updateForm('display.displayNotationMessageToLearners', activated)}
       >
         <HtmlGroup
           controlId="success-message"
           label={trans('success_message', {}, 'dropzone')}
           content={props.display.successMessage || ''}
-          onChange={value => props.updateDisplay('successMessage', value)}
+          onChange={value => props.updateForm('display.successMessage', value)}
           minRows={3}
         />
         <HtmlGroup
           controlId="fail-message"
           label={trans('fail_message', {}, 'dropzone')}
           content={props.display.failMessage || ''}
-          onChange={value => props.updateDisplay('failMessage', value)}
+          onChange={value => props.updateForm('display.failMessage', value)}
           minRows={3}
         />
       </ActivableSet>
@@ -261,8 +272,7 @@ NotationSection.propTypes = {
     successMessage: T.string,
     failMessage: T.string
   }),
-  updateParameters: T.func.isRequired,
-  updateDisplay: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 const PlanningSection = props =>
@@ -281,7 +291,7 @@ const PlanningSection = props =>
         ]}
         inline={true}
         checkedValue={props.parameters.manualPlanning ? 'manual' : 'date'}
-        onChange={value => props.updateParameters('manualPlanning', value === 'manual')}
+        onChange={value => props.updateForm('parameters.manualPlanning', value === 'manual')}
       />
       {props.parameters.manualPlanning &&
         <RadioGroup
@@ -296,7 +306,7 @@ const PlanningSection = props =>
           ]}
           inline={false}
           checkedValue={props.parameters.manualState}
-          onChange={value => props.updateParameters('manualState', value)}
+          onChange={value => props.updateForm('parameters.manualState', value)}
         />
       }
       {!props.parameters.manualPlanning &&
@@ -318,7 +328,7 @@ const PlanningSection = props =>
                 }
                 onChange={date => {
                   const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateParameters('dropStartDate', stringDate)
+                  props.updateForm('parameters.dropStartDate', stringDate)
                 }}
               />
             </div>
@@ -340,7 +350,7 @@ const PlanningSection = props =>
                 }
                 onChange={date => {
                   const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateParameters('dropEndDate', stringDate)
+                  props.updateForm('parameters.dropEndDate', stringDate)
                 }}
               />
             </div>
@@ -349,7 +359,7 @@ const PlanningSection = props =>
             checkId="auto-close-drops-at-drop-end-date"
             checked={props.parameters.autoCloseDropsAtDropEndDate}
             label={trans('auto_close_drops_at_drop_end_date', {}, 'dropzone')}
-            onChange={checked => props.updateParameters('autoCloseDropsAtDropEndDate', checked)}
+            onChange={checked => props.updateForm('parameters.autoCloseDropsAtDropEndDate', checked)}
           />
           <div className="row dropzone-datetime-row">
             <div className="control-label col-md-3">
@@ -368,7 +378,7 @@ const PlanningSection = props =>
                 }
                 onChange={date => {
                   const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateParameters('reviewStartDate', stringDate)
+                  props.updateForm('parameters.reviewStartDate', stringDate)
                 }}
               />
             </div>
@@ -390,7 +400,7 @@ const PlanningSection = props =>
                 }
                 onChange={date => {
                   const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateParameters('reviewEndDate', stringDate)
+                  props.updateForm('parameters.reviewEndDate', stringDate)
                 }}
               />
             </div>
@@ -410,7 +420,7 @@ PlanningSection.propTypes = {
     reviewStartDate: T.string,
     reviewEndDate: T.string
   }),
-  updateParameters: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 const DropzoneForm = props =>
@@ -431,27 +441,27 @@ const DropzoneForm = props =>
   </form>
 
 DropzoneForm.propTypes = {
+  errors: T.object,
+  validating: T.bool,
   parameters: T.object,
   display: T.object,
   notifications: T.object,
-  updateParameters: T.func.isRequired,
-  updateDisplay: T.func.isRequired,
-  updateNotifications: T.func.isRequired
+  updateForm: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
     parameters: select.formParametersData(state),
     display: select.formDisplayData(state),
-    notifications: select.formNotificationsData(state)
+    notifications: select.formNotificationsData(state),
+    errors: select.formErrors(state),
+    validating: select.formValidating(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    updateParameters: (property, value) => dispatch(actions.updateParameters(property, value)),
-    updateDisplay: (property, value) => dispatch(actions.updateDisplay(property, value)),
-    updateNotifications: (property, value) => dispatch(actions.updateNotifications(property, value))
+    updateForm: (property, value) => dispatch(actions.updateForm(property, value))
   }
 }
 

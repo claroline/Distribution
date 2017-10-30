@@ -7,8 +7,7 @@ import {
   DROPZONE_FORM_LOAD,
   DROPZONE_FORM_RESET,
   DROPZONE_FORM_VALIDATE,
-  DROPZONE_PARAMETERS_UPDATE,
-  DROPZONE_DISPLAY_UPDATE,
+  DROPZONE_FORM_UPDATE,
   DROPZONE_NOTIFICATIONS_UPDATE,
   DROPZONE_CRITERION_ADD,
   DROPZONE_CRITERION_UPDATE,
@@ -39,25 +38,14 @@ const reducer = makeReducer({
     errors: validate(state.data),
     data: state.data
   }),
-  [DROPZONE_PARAMETERS_UPDATE]: (state, action) => {
-    const parameters = Object.assign({}, state.data.parameters, {[action.property]: action.value})
-    const newData = Object.assign({}, state.data, {parameters: parameters})
+  [DROPZONE_FORM_UPDATE]: (state, action) => {
+    const newData = cloneDeep(state.data)
+    set(newData, action.property, action.value)
 
     return {
       validating: false,
       pendingChanges: true,
-      errors: {},
-      data: newData
-    }
-  },
-  [DROPZONE_DISPLAY_UPDATE]: (state, action) => {
-    const display = Object.assign({}, state.data.display, {[action.property]: action.value})
-    const newData = Object.assign({}, state.data, {display: display})
-
-    return {
-      validating: false,
-      pendingChanges: true,
-      errors: {},
+      errors: validate(newData),
       data: newData
     }
   },
@@ -84,7 +72,7 @@ const reducer = makeReducer({
     return {
       validating: false,
       pendingChanges: true,
-      errors: {},
+      errors: validate(newData),
       data: newData
     }
   },
@@ -98,7 +86,7 @@ const reducer = makeReducer({
     return {
       validating: false,
       pendingChanges: true,
-      errors: {},
+      errors: validate(newData),
       data: newData
     }
   },
@@ -114,7 +102,7 @@ const reducer = makeReducer({
     return {
       validating: false,
       pendingChanges: true,
-      errors: {},
+      errors: validate(newData),
       data: newData
     }
   }

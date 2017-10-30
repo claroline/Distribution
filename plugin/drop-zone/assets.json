@@ -3,5 +3,11 @@
     "entry": {
       "dropzone-resource": "resources/dropzone"
     }
+  },
+
+  "styles": {
+    "entry": {
+      "resource": "resource.less"
+    }
   }
 }
