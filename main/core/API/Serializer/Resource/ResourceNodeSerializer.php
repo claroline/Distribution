@@ -111,7 +111,6 @@ class ResourceNodeSerializer
             ],
             'shortcuts' => $this->getShortcuts($resourceNode),
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
-            'views_count' => $resourceNode->getViewsCount(),
         ];
 
         if (!empty($resourceNode->getWorkspace())) {
@@ -172,6 +171,7 @@ class ResourceNodeSerializer
             'creator' => $resourceNode->getCreator() ? $this->userSerializer->serialize($resourceNode->getCreator()) : null,
             'actions' => $this->getActions($resourceNode),
             'accesses' => $resourceNode->getAccesses(),
+            'views' => $resourceNode->getViewsCount(),
         ];
     }
 

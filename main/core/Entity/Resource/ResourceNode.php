@@ -1010,7 +1010,7 @@ class ResourceNode
      */
     public function addView()
     {
-        if ($this->getViewsCount() === null) {
+        if ($this->viewsCount === null) {
             $this->viewsCount = 1;
         } else {
             ++$this->viewsCount;
