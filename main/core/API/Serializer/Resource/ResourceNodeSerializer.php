@@ -111,6 +111,7 @@ class ResourceNodeSerializer
             ],
             'shortcuts' => $this->getShortcuts($resourceNode),
             'breadcrumb' => $this->breadcrumbManager->getBreadcrumb($resourceNode),
+            'views_count' => $resourceNode->getViewsCount(),
         ];
 
         if (!empty($resourceNode->getWorkspace())) {
