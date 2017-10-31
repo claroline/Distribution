@@ -5,7 +5,6 @@ import {generateUrl} from '#/main/core/fos-js-router'
 
 // modals
 import {registerModalType} from '#/main/core/layout/modal'
-import {ConfirmModal} from '#/main/core/layout/modal/components/confirm.jsx'
 //import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
 import {FormModal} from '#/main/core/layout/modal/components/form.jsx'
 
@@ -13,25 +12,24 @@ import {FormModal} from '#/main/core/layout/modal/components/form.jsx'
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 
-import {reducer as usersReducer} from '#/main/core/administration/user-management/user/reducer'
-import {reducer as groupsReducer} from '#/main/core/administration/user-management/group/reducer'
-import {reducer as rolesReducer} from '#/main/core/administration/user-management/role/reducer'
+import {reducer as usersReducer} from '#/main/core/administration/user/user/reducer'
+import {reducer as groupsReducer} from '#/main/core/administration/user/group/reducer'
+import {reducer as rolesReducer} from '#/main/core/administration/user/role/reducer'
 
-//import {Users} from '#/main/core/administration/user-management/user/components/users.jsx'
-//import {Groups} from '#/main/core/administration/user-management/group/components/groups.jsx'
-import {Roles} from '#/main/core/administration/user-management/role/components/roles.jsx'
+//import {Users} from '#/main/core/administration/user/user/components/users.jsx'
+//import {Groups} from '#/main/core/administration/user/group/components/groups.jsx'
+import {UserMain} from '#/main/core/administration/user/components/main.jsx'
 
 // register custom modals for the app
-registerModalType('CONFIRM_MODAL', ConfirmModal)
 registerModalType('MODAL_FORM', FormModal)
 
 // mount the react application
 bootstrap(
   // app DOM container (also holds initial app data as data attributes)
-  '.user-administration-container',
+  '.users-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
-  Roles,
+  UserMain,
 
   // app store configuration
   {

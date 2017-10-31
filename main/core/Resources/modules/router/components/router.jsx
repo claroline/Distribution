@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {
-  Router,
+  Router as BaseRouter,
   Route as BaseRoute,
   Switch
 } from 'react-router-dom'
@@ -64,17 +64,17 @@ const Routes = props =>
   <BaseRoute
     key={props.path}
     path={props.path}
+    exact={props.exact}
   >
     <Switch>
-      {props.routes.map(routeConfig => routeConfig.routes ?
+      {props.routes.map((routeConfig, routeIndex) => routeConfig.routes ?
         <Routes
           {...routeConfig}
-          key={props.path}
-          dispatchRouteAction={props.dispatchRouteAction}
+          key={`route-${routeIndex}`}
         /> :
         <Route
           {...routeConfig}
-          key={props.path}
+          key={`route-${routeIndex}`}
           onEnter={routeConfig.onEnter}
           onLeave={routeConfig.onLeave}
         />
@@ -83,7 +83,8 @@ const Routes = props =>
   </BaseRoute>
 
 Routes.propTypes = {
-  path: T.string.isRequired,
+  path: T.string,
+  exact: T.bool,
   routes: T.arrayOf(
     T.shape(RouteTypes.propTypes).isRequired // todo : allow more than one nesting in prop-types
   )
@@ -91,23 +92,17 @@ Routes.propTypes = {
 
 Routes.defaultProps = RouteTypes.defaultProps
 
-const CustomRouter = props =>
-  <Router history={history}>
-    <Routes
-      path={props.basePath}
-      routes={props.routes}
-    />
-  </Router>
+const Router = props =>
+  <BaseRouter history={history}>
+    {props.children}
+  </BaseRouter>
 
-CustomRouter.propTypes = {
-  basePath: T.string,
-  routes: T.array.isRequired
-}
-
-CustomRouter.defaultProps = {
-  basePath: ''
+Router.propTypes = {
+  children: T.node
 }
 
 export {
-  CustomRouter as Router
+  Router,
+  Routes,
+  Route
 }

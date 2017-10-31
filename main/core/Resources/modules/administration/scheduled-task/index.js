@@ -26,8 +26,8 @@ bootstrap(
     }, {
       path: '/:id',
       component: ScheduledTask,
-      onEnterAction: (nextState) => actions.editTask(nextState.params.id),
-      onLeaveAction: () => actions.resetTaskForm()
+      onEnter: (nextState) => actions.editTask(nextState.params.id),
+      onLeave: () => actions.resetTaskForm()
     }
   ]),
 

@@ -1,9 +1,12 @@
 {
   "webpack": {
     "entry": {
+      "modernizr": "modernizr/modernizr",
+      "core-js": "core-js",
+      "whatwg-fetch": "fetch-shim",
       "translator": "translation/browser",
       "organization-field": "symfony/form/organization/index",
-      "user-management": "administration/user-management",
+      "user-management": "administration/user",
       "facet-management": "facets/module",
       "workspace-management": "administration/workspace",
       "theme-management": "administration/theme",
@@ -15,9 +18,6 @@
       "desktop-home": "desktopHome/desktopHome",
       "admin-home-tabs-config": "adminHomeTabsConfig/adminHomeTabsConfig",
       "workspace-home": "workspace/tools/home/workspaceHome",
-      "modernizr": "modernizr/modernizr",
-      "core-js": "core-js",
-      "whatwg-fetch": "fetch-shim",
       "resource-icon-set-list": "icon/resource-icon-set-list/module",
       "resource-icon-item-list": "icon/resource-icon-item-list/module",
       "copy-text-to-clipboard": "copy-text-to-clipboard/copy-text-to-clipboard",
