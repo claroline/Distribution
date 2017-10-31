@@ -2,6 +2,7 @@
 
 namespace Claroline\DropZoneBundle\API\Serializer;
 
+use Claroline\CoreBundle\API\Serializer\RoleSerializer;
 use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Drop;
@@ -16,9 +17,11 @@ class DropSerializer
 {
     private $documentSerializer;
     private $userSerializer;
+    private $roleSerializer;
     private $tokenStorage;
     private $dropRepo;
     private $dropzoneRepo;
+    private $roleRepo;
 
     /**
      * DropSerializer constructor.
@@ -26,26 +29,31 @@ class DropSerializer
      * @DI\InjectParams({
      *     "documentSerializer" = @DI\Inject("claroline.serializer.dropzone.document"),
      *     "userSerializer"     = @DI\Inject("claroline.serializer.user"),
+     *     "roleSerializer"     = @DI\Inject("claroline.serializer.role"),
      *     "tokenStorage"       = @DI\Inject("security.token_storage"),
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param DocumentSerializer    $documentSerializer
      * @param UserSerializer        $userSerializer
+     * @param RoleSerializer        $roleSerializer
      * @param TokenStorageInterface $tokenStorage
      * @param ObjectManager         $om
      */
     public function __construct(
         DocumentSerializer $documentSerializer,
         UserSerializer $userSerializer,
+        RoleSerializer $roleSerializer,
         TokenStorageInterface $tokenStorage,
         ObjectManager $om
     ) {
         $this->documentSerializer = $documentSerializer;
         $this->userSerializer = $userSerializer;
+        $this->roleSerializer = $roleSerializer;
         $this->tokenStorage = $tokenStorage;
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->dropzoneRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Dropzone');
+        $this->roleRepo = $om->getRepository('Claroline\CoreBundle\Entity\Role');
     }
 
     /**
@@ -59,7 +67,8 @@ class DropSerializer
             'id' => $drop->getUuid(),
             'dropzone' => $drop->getDropzone()->getUuid(),
             'user' => $this->userSerializer->serialize($drop->getUser()),
-            'dropDate' =>  $drop->getDropDate()->format('Y-m-d H:i'),
+            'role' => $drop->getRole() ? $this->roleSerializer->serialize($drop->getRole()) : null,
+            'dropDate' => $drop->getDropDate()->format('Y-m-d H:i'),
             'reported' => $drop->isReported(),
             'finished' => $drop->isFinished(),
             'number' => $drop->getNumber(),
@@ -91,6 +100,10 @@ class DropSerializer
             if ($currentUser instanceof User) {
                 $drop->setUser($currentUser);
             }
+        }
+        if (isset($data['role'])) {
+            $role = isset($data['role']['id']) ? $this->roleRepo->findOneBy(['id' => $data['role']['id']]) : null;
+            $drop->setRole($role);
         }
         if (isset($data['reported'])) {
             $drop->setReported($data['reported']);

@@ -130,14 +130,14 @@ class Document
         $data = null;
 
         switch ($this->type) {
-            case self::DOCUMENT_TYPE_FILE :
-            case self::DOCUMENT_TYPE_URL :
+            case self::DOCUMENT_TYPE_FILE:
+            case self::DOCUMENT_TYPE_URL:
                 $data = $this->getUrl();
                 break;
-            case self::DOCUMENT_TYPE_TEXT :
+            case self::DOCUMENT_TYPE_TEXT:
                 $data = $this->getContent();
                 break;
-            case self::DOCUMENT_TYPE_RESOURCE :
+            case self::DOCUMENT_TYPE_RESOURCE:
                 $data = $this->getResource();
                 break;
         }
@@ -148,14 +148,14 @@ class Document
     public function setData($data)
     {
         switch ($this->type) {
-            case self::DOCUMENT_TYPE_FILE :
-            case self::DOCUMENT_TYPE_URL :
+            case self::DOCUMENT_TYPE_FILE:
+            case self::DOCUMENT_TYPE_URL:
                 $this->setUrl($data);
                 break;
-            case self::DOCUMENT_TYPE_TEXT :
+            case self::DOCUMENT_TYPE_TEXT:
                 $this->setContent($data);
                 break;
-            case self::DOCUMENT_TYPE_RESOURCE :
+            case self::DOCUMENT_TYPE_RESOURCE:
                 $this->setResource($data);
                 break;
         }

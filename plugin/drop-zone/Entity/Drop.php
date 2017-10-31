@@ -12,6 +12,7 @@
 namespace Claroline\DropZoneBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,6 +46,12 @@ class Drop
      * @ORM\JoinColumn(name="user_id", nullable=false, onDelete="CASCADE")
      */
     protected $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
+     * @ORM\JoinColumn(name="role_id", nullable=true, onDelete="SET NULL")
+     */
+    protected $role;
 
     /**
      * @ORM\OneToMany(
@@ -130,6 +137,16 @@ class Drop
     public function setUser(User $user)
     {
         $this->user = $user;
+    }
+
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    public function setRole(Role $role = null)
+    {
+        $this->role = $role;
     }
 
     public function getDocuments()
