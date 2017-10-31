@@ -120,8 +120,44 @@ class Document
         return $this->resource;
     }
 
-    public function setResource(ResourceNode $resource)
+    public function setResource(ResourceNode $resource = null)
     {
         $this->resource = $resource;
+    }
+
+    public function getData()
+    {
+        $data = null;
+
+        switch ($this->type) {
+            case self::DOCUMENT_TYPE_FILE :
+            case self::DOCUMENT_TYPE_URL :
+                $data = $this->getUrl();
+                break;
+            case self::DOCUMENT_TYPE_TEXT :
+                $data = $this->getContent();
+                break;
+            case self::DOCUMENT_TYPE_RESOURCE :
+                $data = $this->getResource();
+                break;
+        }
+
+        return $data;
+    }
+
+    public function setData($data)
+    {
+        switch ($this->type) {
+            case self::DOCUMENT_TYPE_FILE :
+            case self::DOCUMENT_TYPE_URL :
+                $this->setUrl($data);
+                break;
+            case self::DOCUMENT_TYPE_TEXT :
+                $this->setContent($data);
+                break;
+            case self::DOCUMENT_TYPE_RESOURCE :
+                $this->setResource($data);
+                break;
+        }
     }
 }

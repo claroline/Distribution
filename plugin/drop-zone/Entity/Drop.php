@@ -216,7 +216,7 @@ class Drop
         $this->unlockedDrop = $unlockedDrop;
     }
 
-    public function getUnlockedUser()
+    public function isUnlockedUser()
     {
         return $this->unlockedUser;
     }

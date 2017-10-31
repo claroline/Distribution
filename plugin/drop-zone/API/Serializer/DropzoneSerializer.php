@@ -229,6 +229,7 @@ class DropzoneSerializer
 
         return $notifications;
     }
+
     private function getCriteria(Dropzone $dropzone)
     {
         $criteria = [];
