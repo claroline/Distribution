@@ -13,15 +13,19 @@ import {
 } from './editor/actions'
 
 const userReducer = makeReducer({}, {})
+
 const dropzoneReducer = makeReducer({}, {
   [DROPZONE_LOAD]: (state, action) => {
     return action.dropzone
   }
 })
 
+const myDropsReducer = makeReducer({}, {})
+
 const reducer = {
   user: userReducer,
   dropzone: dropzoneReducer,
+  myDrops: myDropsReducer,
   dropzoneForm: editorReducer,
 
   // generic reducers

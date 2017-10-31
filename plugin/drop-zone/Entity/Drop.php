@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\DropZoneBundle\Repository\DropRepository")
  * @ORM\Table(name="claro_dropzonebundle_drop")
  */
 class Drop
