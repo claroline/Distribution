@@ -37,6 +37,8 @@ class ApiListener
             'resource' => $event->getResourceNode()->getId(),
         ]);
 
-        $event->add('IcapSocialmedia/likes', $count);
+        $event->add('social', [
+            'likes' => $count,
+        ]);
     }
 }
