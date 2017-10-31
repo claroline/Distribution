@@ -50,6 +50,10 @@ export default class ScormResultsService {
       t['userLastName'] = t['user']['lastName']
       t['userUsername'] = t['user']['username']
 
+      if (t['lastSessionDate']) {
+        t['lastSessionDate'] = this.formatLastSessionDate(t['lastSessionDate'])
+      }
+
       if (this.type === 'scorm12') {
         t['transBestLessonStatus'] = Translator.trans(t['bestLessonStatus'], {}, 'scorm')
         t['transLessonStatus'] = Translator.trans(t['lessonStatus'], {}, 'scorm')
@@ -105,6 +109,13 @@ export default class ScormResultsService {
     const secundsTxt = secunds > 9 ? secunds : `0${secunds}`
 
     return `${hours}:${minutesTxt}:${secundsTxt}`
+  }
+
+  formatLastSessionDate(date) {
+    let formattedDate = date.replace('T', ' ')
+    formattedDate = formattedDate.replace(/\+.*$/, '')
+
+    return formattedDate
   }
 
   formatScorm12Date (date) {
