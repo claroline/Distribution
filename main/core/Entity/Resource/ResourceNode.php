@@ -309,9 +309,9 @@ class ResourceNode
     /**
      * @var int
      *
-     * @ORM\Column(nullable=true, type="integer", name="views_count")
+     * @ORM\Column(nullable=false, type="integer", name="views_count", options={"default": 0})
      */
-    protected $viewsCount;
+    protected $viewsCount = 0;
 
     public function __construct()
     {
@@ -1010,11 +1010,7 @@ class ResourceNode
      */
     public function addView()
     {
-        if ($this->viewsCount === null) {
-            $this->viewsCount = 1;
-        } else {
-            ++$this->viewsCount;
-        }
+        ++$this->viewsCount;
 
         return $this;
     }
