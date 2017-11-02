@@ -13,6 +13,7 @@ namespace Claroline\AnnouncementBundle\Listener\Resource;
 
 use Claroline\AnnouncementBundle\Entity\AnnouncementAggregate;
 use Claroline\AnnouncementBundle\Manager\AnnouncementManager;
+use Claroline\CoreBundle\API\Serializer\RoleSerializer;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
@@ -46,17 +47,20 @@ class AnnouncementListener
     private $templating;
     /** @var AnnouncementManager */
     private $manager;
+    /** @var RoleSerializer */
+    private $roleSerializer;
 
     /**
      * AnnouncementListener constructor.
      *
      * @DI\InjectParams({
-     *     "formFactory"  = @DI\Inject("form.factory"),
-     *     "httpKernel"   = @DI\Inject("http_kernel"),
-     *     "om"           = @DI\Inject("claroline.persistence.object_manager"),
-     *     "requestStack" = @DI\Inject("request_stack"),
-     *     "templating"   = @DI\Inject("templating"),
-     *     "manager"      = @DI\Inject("claroline.manager.announcement_manager")
+     *     "formFactory"    = @DI\Inject("form.factory"),
+     *     "httpKernel"     = @DI\Inject("http_kernel"),
+     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
+     *     "requestStack"   = @DI\Inject("request_stack"),
+     *     "templating"     = @DI\Inject("templating"),
+     *     "manager"        = @DI\Inject("claroline.manager.announcement_manager"),
+     *     "roleSerializer" = @DI\Inject("claroline.serializer.role")
      * })
      *
      * @param FormFactory         $formFactory
@@ -65,6 +69,7 @@ class AnnouncementListener
      * @param RequestStack        $requestStack
      * @param TwigEngine          $templating
      * @param AnnouncementManager $manager
+     * @param RoleSerializer      $roleSerializer
      */
     public function __construct(
         FormFactory $formFactory,
@@ -72,7 +77,8 @@ class AnnouncementListener
         ObjectManager $om,
         RequestStack $requestStack,
         TwigEngine $templating,
-        AnnouncementManager $manager
+        AnnouncementManager $manager,
+        RoleSerializer $roleSerializer
     ) {
         $this->formFactory = $formFactory;
         $this->httpKernel = $httpKernel;
@@ -80,6 +86,7 @@ class AnnouncementListener
         $this->request = $requestStack->getCurrentRequest();
         $this->templating = $templating;
         $this->manager = $manager;
+        $this->roleSerializer = $roleSerializer;
     }
 
     /**
@@ -147,7 +154,7 @@ class AnnouncementListener
 
         if ($announcements) {
             foreach ($announcements as $announcement) {
-                $this->manager->delete($announcement);
+                $this->manager->delete($announcement, false);
             }
         }
         $event->stopPropagation();
@@ -160,9 +167,18 @@ class AnnouncementListener
      */
     public function onOpen(OpenResourceEvent $event)
     {
+        $resource = $event->getResource();
+        $serializedRoles = [];
+        $roles = $resource->getResourceNode()->getWorkspace()->getRoles()->toArray();
+
+        foreach ($roles as $role) {
+            $serializedRoles[] = $this->roleSerializer->serialize($role);
+        }
+
         $content = $this->templating->render(
             'ClarolineAnnouncementBundle:Announcement:open.html.twig', [
-                '_resource' => $event->getResource(),
+                '_resource' => $resource,
+                'roles' => $serializedRoles,
             ]
         );
 
@@ -187,7 +203,7 @@ class AnnouncementListener
         $announcements = $aggregate->getAnnouncements();
         foreach ($announcements as $announcement) {
             $newAnnouncement = $this->manager->serialize($announcement);
-            $this->manager->create($copy, $newAnnouncement);
+            $this->manager->create($copy, $newAnnouncement, false);
         }
         $this->om->endFlushSuite();
 

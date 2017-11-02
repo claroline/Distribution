@@ -1,4 +1,5 @@
 import {createSelector} from 'reselect'
+import {t, transChoice} from '#/main/core/translation'
 
 // check enabled list features
 const isAsync      = (listState) => typeof listState.fetchUrl !== 'undefined'
@@ -21,12 +22,12 @@ const deleteOptions = (listState) => listState.delete || {}
 
 const modalDeleteTitle = createSelector(
   [deleteOptions],
-  (deleteOptions) => deleteOptions.title || function () { return 'default title' }
+  (deleteOptions) => deleteOptions.title || function () { return t('objects_delete_title', 'platform') }
 )
 
 const modalDeleteQuestion = createSelector(
   [deleteOptions],
-  (deleteOptions) => deleteOptions.question || function () { return 'default question' }
+  (deleteOptions) => deleteOptions.question || function (items) { return transChoice('object_delete_question', items.length, {'count': items.length}, 'platform') }
 )
 
 const displayDelete = createSelector(
