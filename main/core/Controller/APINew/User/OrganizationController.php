@@ -9,15 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\APINew;
+namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\Controller\APINew\AbstractController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasParent;
-use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Organization\Organization")
@@ -30,7 +29,7 @@ class OrganizationController extends AbstractController
     /**
      * @Route("/list/recursive", name="apiv2_organization_list_recursive")
      */
-    public function recursiveListAction(Request $request)
+    public function recursiveListAction()
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Organization\Organization',

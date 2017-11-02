@@ -59,14 +59,27 @@ class ApiLoader extends Loader
         }
 
         $path = $this->locator->locate($resource);
-        $routes = new RouteCollection();
         $imported = $this->import($resource, 'annotation');
+
+        $routes = new RouteCollection();
         $routes->addCollection($imported);
 
-        foreach (new \DirectoryIterator($path) as $fileInfo) {
-            if (!$fileInfo->isDot() && $fileInfo->isFile()) {
-                $file = $fileInfo->getPathname();
+        $this->loadFromPath($path, $routes);
 
+        return $routes;
+    }
+
+    private function loadFromPath($path, RouteCollection $routes)
+    {
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if ($fileInfo->isDot()) {
+                continue;
+            }
+
+            $file = $fileInfo->getPathname();
+            if ($fileInfo->isDir()) {
+                $this->loadFromPath($file, $routes);
+            } else {
                 //find prefix from annotations
                 $controller = $this->findClass($file);
 
@@ -100,9 +113,9 @@ class ApiLoader extends Loader
                             }
 
                             $routeDefaults = [
-                              '_controller' => $controller.'::'.$name.'Action',
-                              'class' => $class,
-                              'env' => $this->container->getParameter('kernel.environment'),
+                                '_controller' => $controller.'::'.$name.'Action',
+                                'class' => $class,
+                                'env' => $this->container->getParameter('kernel.environment'),
                             ];
 
                             $route = new Route($pattern, $routeDefaults, []);
@@ -116,8 +129,6 @@ class ApiLoader extends Loader
                 }
             }
         }
-
-        return $routes;
     }
 
     private function makeRouteMap($controller, RouteCollection $routes, $prefix)

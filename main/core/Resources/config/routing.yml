@@ -458,7 +458,7 @@ claro_admin_scheduled_task:
     type: annotation
 
 claro_new_api:
-    resource: "@ClarolineCoreBundle/Controller/APINew"
+    resource: "@ClarolineCoreBundle/Controller/APINew/"
     prefix: apiv2
     type: api
     options:
