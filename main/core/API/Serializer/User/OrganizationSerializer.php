@@ -3,7 +3,7 @@
 namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\CoreBundle\API\Options;
-use Claroline\CoreBundle\API\Serializer\AbstractSerializer;
+use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -19,6 +19,7 @@ class OrganizationSerializer
      * Serializes an Organization entity for the JSON api.
      *
      * @param Organization $organization - the organization to serialize
+     * @param array        $options
      *
      * @return array - the serialized representation of the workspace
      */

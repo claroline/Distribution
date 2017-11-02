@@ -13,6 +13,9 @@ namespace Claroline\CoreBundle\API\Serializer;
 
 trait SerializerTrait
 {
+    /** @var GenericSerializer */
+    protected $serializer;
+
     /**
      * Injects Serializer service.
      *
