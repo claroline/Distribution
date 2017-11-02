@@ -3,7 +3,7 @@
 namespace Claroline\AnnouncementBundle\API\Serializer;
 
 use Claroline\AnnouncementBundle\Entity\Announcement;
-use Claroline\CoreBundle\API\Serializer\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Crud;
+namespace Claroline\CoreBundle\API\Crud\User;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\CrudEvent;
@@ -20,7 +20,7 @@ class UserCrud
      *     "container" = @DI\Inject("service_container")
      * })
      *
-     * @param ObjectManager $om
+     * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
@@ -35,11 +35,12 @@ class UserCrud
     /**
      * @DI\Observe("crud_pre_create_object")
      *
-     * @param \Claroline\CoreBundle\Event\CrudEvent $event
+     * @param CrudEvent $event
      */
     public function preCreate(CrudEvent $event)
     {
         if ($event->getObject() instanceof User) {
+            /** @var User $user */
             $user = $event->getObject();
 
             $user->setPublicUrl($this->userManager->generatePublicUrl($user));
@@ -69,7 +70,7 @@ class UserCrud
     /**
      * @DI\Observe("crud_post_create_object")
      *
-     * @param \Claroline\CoreBundle\Event\CrudEvent $event
+     * @param CrudEvent $event
      */
     public function postCreate(CrudEvent $event)
     {

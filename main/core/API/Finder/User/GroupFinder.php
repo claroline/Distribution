@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder;
+namespace Claroline\CoreBundle\API\Finder\User;
 
 use Claroline\CoreBundle\API\FinderInterface;
 use Claroline\CoreBundle\Entity\User;
@@ -19,10 +19,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @DI\Service("claroline.api.finder.user")
+ * @DI\Service("claroline.api.finder.group")
  * @DI\Tag("claroline.finder")
  */
-class UserFinder implements FinderInterface
+class GroupFinder implements FinderInterface
 {
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
@@ -51,7 +51,7 @@ class UserFinder implements FinderInterface
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\User';
+        return 'Claroline\CoreBundle\Entity\Group';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)

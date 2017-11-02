@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Crud;
+namespace Claroline\CoreBundle\API\Crud\User;
 
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Event\CrudEvent;
@@ -18,7 +18,7 @@ class OrganizationCrud
      *     "manager" = @DI\Inject("claroline.manager.workspace_manager")
      * })
      *
-     * @param ObjectManager $om
+     * @param WorkspaceManager $manager
      */
     public function __construct(WorkspaceManager $manager)
     {
@@ -28,14 +28,17 @@ class OrganizationCrud
     /**
      * @DI\Observe("crud_pre_delete_object")
      *
-     * @param \Claroline\CoreBundle\Event\CrudEvent $event
+     * @param CrudEvent $event
      */
     public function preDelete(CrudEvent $event)
     {
         if ($event->getObject() instanceof Organization) {
-            if ($event->getObject()->isDefault()) {
+            /** @var Organization $organization */
+            $organization = $event->getObject();
+            if ($organization->isDefault()) {
                 $event->block();
-                //we can also throw an exception
+
+                // we can also throw an exception
             }
         }
     }

@@ -1,8 +1,9 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer;
+namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\AbstractSerializer;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use JMS\DiExtraBundle\Annotation as DI;
 

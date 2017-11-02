@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Facet;
 
-use Claroline\CoreBundle\API\Serializer\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use JMS\DiExtraBundle\Annotation as DI;
 

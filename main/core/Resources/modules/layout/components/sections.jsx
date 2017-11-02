@@ -43,7 +43,7 @@ const Sections = props =>
     accordion={props.accordion}
     defaultActiveKey={props.defaultOpened}
   >
-    {React.Children.map(props.children, (child, index) =>
+    {React.Children.map(props.children, (child, index) => 'hr' === child.type ? child :
       React.cloneElement(child, {
         key: index,
         eventKey: index,

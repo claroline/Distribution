@@ -9,20 +9,20 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder;
+namespace Claroline\CoreBundle\API\Finder\User;
 
 use Claroline\CoreBundle\API\FinderInterface;
-use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Role;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @DI\Service("claroline.api.finder.group")
+ * @DI\Service("claroline.api.finder.role")
  * @DI\Tag("claroline.finder")
  */
-class GroupFinder implements FinderInterface
+class RoleFinder implements FinderInterface
 {
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
@@ -51,29 +51,48 @@ class GroupFinder implements FinderInterface
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\Group';
+        return 'Claroline\CoreBundle\Entity\Role';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
-        if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
-            /** @var User $currentUser */
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-            $qb->leftJoin('obj.organizations', 'uo');
-            $qb->leftJoin('uo.administrators', 'ua');
-            $qb->andWhere('ua.id = :userId');
-            $qb->setParameter('userId', $currentUser->getId());
-        }
-
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+              case 'type':
+                switch ($filterValue) {
+                  case 'workspace':
+                    $filterValue = Role::WS_ROLE;
+                    break;
+                  case 'user':
+                    $filterValue = Role::USER_ROLE;
+                    break;
+                  case 'custom':
+                    $filterValue = Role::CUSTOM_ROLE;
+                    break;
+                  case 'platform':
+                    $filterValue = Role::PLATFORM_ROLE;
+                    break;
+                }
+                // no break
+
+              case 'user':
+                  $qb->leftJoin('obj.users', 'ru');
+                  $qb->andWhere("ru.username = :{$filterName}");
+                  $qb->setParameter($filterName, $filterValue);
+                  break;
+
               default:
                 if (is_bool($filterValue)) {
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
                 } else {
-                    $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    if (is_int($filterValue)) {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    } else {
+                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    }
                 }
             }
         }

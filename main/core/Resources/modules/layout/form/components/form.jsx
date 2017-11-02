@@ -1,88 +1,43 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
-import classes from 'classnames'
-import {t} from '#/main/core/translation'
-import update from 'immutability-helper'
 
-export class Form extends Component {
-  constructor(props) {
-    super(props)
-  }
+const Form = props => {
+  const primarySection = 1 === props.sections.length ? props.sections[0] : props.sections.find(section => section.primary)
 
-  componentDidMount() {
-    this.setState({item: this.props.item})
-  }
-
-  updateItem(prop, value) {
-    let item = this.state.item
-    item = update(item, {[prop]: {$set: value}})
-    this.setState({item})
-  }
-
-  render() {
-    return (
-      <div>
-        <div>
-          myform
+  return (
+    <form action="#">
+      {primarySection &&
+        <div className="panel panel-default">
+          <fieldset className="panel-body">
+            <h2 className="sr-only">{primarySection.title}</h2>
+          </fieldset>
         </div>
-        <fieldset>
-          {this.props.definition.map(field => {
-            switch(field[1]) {
-              case 'text':
-                return (
-                  <input
-                    type="text"
-                    defaultValue={this.props.item[field[0]]}
-                    onChange={e => {
-                      if (this.props.onChange) {
-                        this.props.onChange(field[0], e.target.value)
-                      }
-
-                      this.updateItem(field[0], e.target.value)
-                    }}
-                  />
-                )
-              case 'number':
-                return (
-                  <input
-                    type="number"
-                    className="form-control"
-                    onChange={e => {
-                      if (this.props.onChange) {
-                        this.props.onChange(field[0], e.target.value)
-                      }
-
-                      this.updateItem(field[0], e.target.value)
-                    }}
-                  />
-                )
-              case 'checkbox':
-                return (
-                  <input
-                    type="checkbox"
-                    value={this.props.item[field[0]]}
-                  />
-                )
-              case 'checkboxes':
-                return field[2].options.map(option => <div>{option[0]}<input type="checkbox" value={option[1]}/></div>)
-            }
-          })}
-          <button
-            className={classes('modal-btn btn', this.props.isDangerous ? 'btn-danger' : 'btn-primary')}
-            onClick={() => this.props.onSubmit(this.state.item)}
-          >
-            {t('Ok')}
-          </button>
-        </fieldset>
-      </div>
-    )
-  }
+      }
+    </form>
+  )
 }
 
 Form.propTypes = {
-  definition: T.array.isRequired,
-  item: T.object.isRequired,
-  onChange: T.function,
-  onSubmit: T.function
+  data: T.object.isRequired,
+  errors: T.object,
+  validating: T.bool,
+  sections: T.arrayOf(T.shape({
+    primary: T.bool,
+    icon: T.string,
+    title: T.string.isRequired,
+    fields: T.arrayOf(T.shape({
+      id: T.string.isRequired,
+      label: T.string.isRequired,
+      help: T.string,
+      options: T.object
+    })).isRequired
+  })).isRequired,
+}
+
+Form.defaultProps = {
+  validating: false
+}
+
+export {
+  Form
 }

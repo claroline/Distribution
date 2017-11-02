@@ -1,10 +1,10 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer;
+namespace Claroline\CoreBundle\API\Serializer\User;
 
+use Claroline\CoreBundle\API\Serializer\AbstractSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -25,7 +25,6 @@ class UserSerializer extends AbstractSerializer
      *     "tokenStorage" = @DI\Inject("security.token_storage")
      * })
      *
-     * @param ObjectManager         $om
      * @param FacetManager          $facetManager
      * @param TokenStorageInterface $tokenStorage
      */

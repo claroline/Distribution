@@ -15,9 +15,8 @@ import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer as usersReducer} from '#/main/core/administration/user/user/reducer'
 import {reducer as groupsReducer} from '#/main/core/administration/user/group/reducer'
 import {reducer as rolesReducer} from '#/main/core/administration/user/role/reducer'
+import {reducer as profileReducer} from '#/main/core/administration/user/profile/reducer'
 
-//import {Users} from '#/main/core/administration/user/user/components/users.jsx'
-//import {Groups} from '#/main/core/administration/user/group/components/groups.jsx'
 import {UserMain} from '#/main/core/administration/user/components/main.jsx'
 
 // register custom modals for the app
@@ -37,6 +36,8 @@ bootstrap(
     users: usersReducer,
     groups: groupsReducer,
     roles: rolesReducer,
+    profile: profileReducer,
+
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer
