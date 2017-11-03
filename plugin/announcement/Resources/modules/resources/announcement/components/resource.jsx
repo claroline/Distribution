@@ -15,7 +15,7 @@ import {Announcement as AnnouncementTypes} from './../prop-types'
 import {select} from './../selectors.js'
 import {actions} from './../actions.js'
 
-const AnnouncementResource = props =>
+const Resource = props =>
   <ResourceContainer
     editor={{
       opened: props.formOpened,
@@ -45,7 +45,10 @@ const AnnouncementResource = props =>
         }, {
           path: '/add',
           component: AnnounceForm,
-          onEnter: () => props.openForm(AnnouncementTypes.defaultProps),
+          onEnter: () => {
+            props.openForm(AnnouncementTypes.defaultProps)
+            props.initFormDefaultRoles(props.roles.map(r => r.id))
+          },
           onLeave: props.resetForm
         }, {
           path: '/:id',
@@ -62,7 +65,7 @@ const AnnouncementResource = props =>
     />
   </ResourceContainer>
 
-AnnouncementResource.propTypes = {
+Resource.propTypes = {
   aggregateId: T.string.isRequired,
   posts: T.arrayOf(
     T.shape(AnnouncementTypes.propTypes)
@@ -75,10 +78,14 @@ AnnouncementResource.propTypes = {
   formPendingChanges: T.bool.isRequired,
   formValidating: T.bool.isRequired,
   formValid: T.bool.isRequired,
+  roles: T.arrayOf(T.shape({
+    id: T.number.isRequired
+  })),
 
   save: T.func.isRequired,
   openForm: T.func.isRequired,
-  resetForm: T.func.isRequired
+  resetForm: T.func.isRequired,
+  initFormDefaultRoles: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -89,7 +96,8 @@ function mapStateToProps(state) {
     formOpened: select.formIsOpened(state),
     formData: select.formData(state),
     formValid: select.formValid(state),
-    formValidating: select.formValidating(state)
+    formValidating: select.formValidating(state),
+    roles: select.workspaceRoles(state)
   }
 }
 
@@ -112,11 +120,14 @@ function mapDispatchToProps(dispatch) {
     },
     save(aggregateId, announce) {
       dispatch(actions.saveAnnounce(aggregateId, announce))
+    },
+    initFormDefaultRoles(roleIds) {
+      dispatch(actions.updateForm('roles', roleIds))
     }
   }
 }
 
-const ConnectedAnnouncementResource = connect(mapStateToProps, mapDispatchToProps)(AnnouncementResource)
+const ConnectedAnnouncementResource = connect(mapStateToProps, mapDispatchToProps)(Resource)
 
 export {
   ConnectedAnnouncementResource as AnnouncementResource

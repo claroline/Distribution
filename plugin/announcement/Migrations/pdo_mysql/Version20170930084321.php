@@ -15,7 +15,7 @@ class Version20170930084321 extends AbstractMigration
     public function up(Schema $schema)
     {
         $this->addSql('
-            ALTER TABLE claro_announcement 
+            ALTER TABLE claro_announcement
             ADD uuid VARCHAR(36) NOT NULL
         ');
 
@@ -24,15 +24,16 @@ class Version20170930084321 extends AbstractMigration
         ');
 
         $this->addSql('
-            ALTER TABLE claro_announcement_aggregate 
+            ALTER TABLE claro_announcement_aggregate
             ADD uuid VARCHAR(36) NOT NULL
-        ');
-        $this->addSql('
-            CREATE UNIQUE INDEX UNIQ_79BF2C8CD17F50A6 ON claro_announcement_aggregate (uuid)
         ');
 
         $this->addSql('
             UPDATE claro_announcement_aggregate SET uuid = (SELECT UUID())
+        ');
+
+        $this->addSql('
+            CREATE UNIQUE INDEX UNIQ_79BF2C8CD17F50A6 ON claro_announcement_aggregate (uuid)
         ');
 
         $this->addSql('
@@ -50,11 +51,11 @@ class Version20170930084321 extends AbstractMigration
         ');
 
         $this->addSql('
-            ALTER TABLE claro_announcement 
+            ALTER TABLE claro_announcement
             DROP uuid
         ');
         $this->addSql('
-            ALTER TABLE claro_announcement_aggregate 
+            ALTER TABLE claro_announcement_aggregate
             DROP uuid
         ');
     }

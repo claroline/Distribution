@@ -1417,6 +1417,7 @@
     "workspace_unregistration_confirm_title": "Voulez-vous vous désinscrire de cet espace d'activités ?",
     "workspace_user_invalid": "L'utilisateur %username% n'existe pas à la ligne %line%.",
     "workspace_user_not_unique": "Utilisateur non unique (%name%) détecté à la ligne %line%.",
+    "workspace_users_subscribe_success": "Les utilisateurs ont été inscrits avec succès",
     "workspace_welcome": "Accueil",
     "workspaces": "Espaces d'activités",
     "workspaces_count": "{1} 1 espace d'activités|[2,Inf[ %count% espaces d'activités",
@@ -1473,9 +1474,15 @@
     "login_auth_claro_account": "Me connecter avec mon compte Claroline :",
     "login_auth_sso": "Me connecter avec un de mes autres comptes :",
     "published_at": "publié le %date%",
+    "last_modified_at": "modifié le %date%",
     "not_published": "non publié",
     "access_restrictions": "Restrictions d'accès",
     "access_dates": "Restreindre par dates",
     "rich_text_tools": "Outils de texte riche",
-    "minimize": "Réduire"
+    "minimize": "Réduire",
+    "display_parameters": "Paramètres d'affichage",
+    "add_comment": "Commenter",
+    "keywords": "Mots clés",
+    "objects_delete_title": "Supprimer des objets",
+    "object_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?"
 }

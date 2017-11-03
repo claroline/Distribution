@@ -28,8 +28,8 @@ class AdministrationToolListener
      */
     public function __construct(
         RequestStack $requestStack,
-        HttpKernelInterface $httpKernel)
-    {
+        HttpKernelInterface $httpKernel
+    ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->httpKernel = $httpKernel;
     }
@@ -179,7 +179,7 @@ class AdministrationToolListener
         ], $event);
     }
 
-    private function redirect($params, OpenAdministrationToolEvent $event)
+    protected function redirect($params, OpenAdministrationToolEvent $event)
     {
         $subRequest = $this->request->duplicate([], null, $params);
 

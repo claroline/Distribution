@@ -19,7 +19,7 @@ class OrganizationSerializer extends AbstractSerializer
      *
      * @return array - the serialized representation of the workspace
      */
-    public function serialize($organization, array $options = [])
+    public function serialize(Organization $organization, array $options = [])
     {
         $data = [
           'id' => $organization->getId(),
@@ -50,18 +50,5 @@ class OrganizationSerializer extends AbstractSerializer
         }
 
         return $data;
-    }
-
-    /**
-     * Default deserialize method.
-     */
-    public function deserialize($class, $data, array $options = [])
-    {
-        return parent::deserialize($class, $data, $options);
-    }
-
-    public function getClass()
-    {
-        return 'Claroline\CoreBundle\Entity\Organization\Organization';
     }
 }
