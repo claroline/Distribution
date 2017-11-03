@@ -40,3 +40,8 @@
 [1630d88](https://github.com/claroline/Distribution/commit/1630d88) - [CoreBundle] adds react router and utilities [#2614](https://github.com/claroline/Distribution/pull/2614)  
 [6150310](https://github.com/claroline/Distribution/commit/6150310) - Update distribution version [#2587](https://github.com/claroline/Distribution/pull/2587)  
 
+# Version 11.0.1-alpha3  
+
+[ba05c65](https://github.com/claroline/Distribution/commit/ba05c65) - Update RemoteUserSynchronizationController.php [#3191](https://github.com/claroline/Distribution/pull/3191)  
+[b315825](https://github.com/claroline/Distribution/commit/b315825) - Update distribution version [#2668](https://github.com/claroline/Distribution/pull/2668)  
+
