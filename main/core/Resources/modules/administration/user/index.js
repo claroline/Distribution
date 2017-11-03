@@ -16,6 +16,7 @@ import {reducer as usersReducer} from '#/main/core/administration/user/user/redu
 import {reducer as groupsReducer} from '#/main/core/administration/user/group/reducer'
 import {reducer as rolesReducer} from '#/main/core/administration/user/role/reducer'
 import {reducer as profileReducer} from '#/main/core/administration/user/profile/reducer'
+import {reducer as organizationReducer} from '#/main/core/administration/user/organization/reducer'
 
 import {UserMain} from '#/main/core/administration/user/components/main.jsx'
 
@@ -37,7 +38,7 @@ bootstrap(
     groups: groupsReducer,
     roles: rolesReducer,
     profile: profileReducer,
-
+    organizations: organizationReducer,
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer
@@ -54,7 +55,8 @@ bootstrap(
       }),
       roles: merge({}, initialData.roles, {
         fetchUrl: generateUrl('apiv2_role_list')
-      })
+      }),
+      organizations: merge({}, initialData.organizations)
     }
   }
 )

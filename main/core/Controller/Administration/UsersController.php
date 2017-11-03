@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Entity\Action\AdditionalAction;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
@@ -290,6 +291,11 @@ class UsersController extends Controller
           'users' => $this->finder->search('Claroline\CoreBundle\Entity\User', $filters),
           'groups' => $this->finder->search('Claroline\CoreBundle\Entity\Group', $filters),
           'roles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', $filters),
+          'organizations' => $this->finder->search(
+              'Claroline\CoreBundle\Entity\Organization\Organization',
+              ['filters' => ['parent' => null]],
+              [Options::IS_RECURSIVE]
+          ),
         ];
     }
 
