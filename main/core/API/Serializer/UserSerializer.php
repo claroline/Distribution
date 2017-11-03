@@ -38,14 +38,14 @@ class UserSerializer extends AbstractSerializer
     }
 
     /**
-     * Serializes a Workspace entity for the JSON api.
+     * Serializes a User entity for the JSON api.
      *
      * @param User  $user    - the user to serialize
      * @param array $options
      *
      * @return array - the serialized representation of the user
      */
-    public function serialize($user, array $options = [])
+    public function serialize(User $user, array $options = [])
     {
         if (isset($options['public']) && $options['public']) {
             return $this->serializePublic($user);
@@ -59,6 +59,8 @@ class UserSerializer extends AbstractSerializer
             'lastName' => $user->getLastName(),
             'username' => $user->getUsername(),
             'picture' => $user->getPicture(),
+            'mail' => $user->getMail(),
+            'administrativeCode' => $user->getAdministrativeCode(),
         ];
     }
 

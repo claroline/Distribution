@@ -97,8 +97,12 @@ class RoleManager
      *
      * @return \Claroline\CoreBundle\Entity\Role
      */
-    public function createWorkspaceRole($name, $translationKey, Workspace $workspace, $isReadOnly = false)
-    {
+    public function createWorkspaceRole(
+        $name,
+        $translationKey,
+        Workspace $workspace,
+        $isReadOnly = false
+    ) {
         $role = new Role();
         $role->setName($name);
         $role->setTranslationKey($translationKey);
@@ -123,7 +127,7 @@ class RoleManager
      */
     public function createBaseRole($name, $translationKey, $isReadOnly = true)
     {
-        $role = $this->om->factory('Claroline\CoreBundle\Entity\Role');
+        $role = new Role();
         $role->setName($name);
         $role->setTranslationKey($translationKey);
         $role->setReadOnly($isReadOnly);
@@ -146,7 +150,7 @@ class RoleManager
      */
     public function createCustomRole($name, $translationKey, $isReadOnly = false)
     {
-        $role = $this->om->factory('Claroline\CoreBundle\Entity\Role');
+        $role = new Role();
         $role->setName($name);
         $role->setTranslationKey($translationKey);
         $role->setReadOnly($isReadOnly);
@@ -172,7 +176,7 @@ class RoleManager
         $this->om->startFlushSuite();
 
         if (is_null($role)) {
-            $role = $this->om->factory('Claroline\CoreBundle\Entity\Role');
+            $role = new Role();
             $role->setName($roleName);
             $role->setTranslationKey($username);
             $role->setReadOnly(true);
@@ -1115,7 +1119,7 @@ class RoleManager
             }
             $this->om->clear();
         }
-
+        $this->om->endFlushSuite();
         // Check users' roles
         $this->log('Checking user role integrity.');
         $userManager = $this->container->get('claroline.manager.user_manager');
@@ -1153,6 +1157,7 @@ class RoleManager
             }
             $this->om->clear();
         }
+        $this->om->endFlushSuite();
     }
 
     public function checkUserIntegrity(User $user, $i = 1, $totalUsers = 1)

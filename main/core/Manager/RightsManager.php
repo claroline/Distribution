@@ -12,7 +12,6 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Entity\Resource\PwsRightsManagementAccess;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
@@ -27,7 +26,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -82,7 +80,6 @@ class RightsManager
         $this->resourceRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
         $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
-        $this->pwsRightsManagementAccessRepo = $om->getRepository('ClarolineCoreBundle:Resource\PwsRightsManagementAccess');
         $this->translator = $translator;
         $this->om = $om;
         $this->dispatcher = $dispatcher;
@@ -233,7 +230,7 @@ class RightsManager
         $this->om->startFlushSuite();
 
         foreach ($originalRights as $originalRight) {
-            $new = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceRights');
+            $new = new ResourceRights();
             $new->setRole($originalRight->getRole());
             $new->setResourceNode($node);
             $new->setMask($originalRight->getMask());
@@ -274,7 +271,7 @@ class RightsManager
             }
 
             if (!$found) {
-                $rights = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceRights');
+                $rights = new ResourceRights();
                 $rights->setRole($role);
                 $rights->setResourceNode($descendant);
                 $this->om->persist($rights);
@@ -348,7 +345,7 @@ class RightsManager
             return $resourceRights;
         }
 
-        $resourceRights = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceRights');
+        $resourceRights = new ResourceRights();
         $resourceRights->setResourceNode($node);
         $resourceRights->setRole($role);
 
@@ -414,7 +411,7 @@ class RightsManager
         ResourceNode $node,
         array $creations = []
     ) {
-        $rights = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceRights');
+        $rights = new ResourceRights();
         $rights->setRole($role);
         $rights->setResourceNode($node);
         $rights->setCreatableResourceTypes($creations);
@@ -622,66 +619,6 @@ class RightsManager
             $this->rightsRepo
                 ->findUserRolesResourceRights($resource, $keys, $executeQuery) :
             [];
-    }
-
-    public function getAllPersonalWorkspaceRightsConfig()
-    {
-        return $this->pwsRightsManagementAccessRepo->findAll();
-    }
-
-    public function getPwsRightsManagementAccess(Role $role)
-    {
-        $access = $this->pwsRightsManagementAccessRepo->findOneByRole($role);
-
-        if ($access === null) {
-            $access = new PwsRightsManagementAccess();
-            $access->setRole($role);
-            $access->setIsAccessible(false);
-            $this->om->persist($access);
-            $this->om->flush();
-        }
-
-        return $access;
-    }
-
-    public function activatePersonalWorkspaceRightsPerm(Role $role)
-    {
-        $access = $this->getPwsRightsManagementAccess($role);
-        $access->setIsAccessible(true);
-        $this->om->persist($access);
-        $this->om->flush();
-    }
-
-    public function deactivatePersonalWorkspaceRightsPerm(Role $role)
-    {
-        $access = $this->getPwsRightsManagementAccess($role);
-        $access->setIsAccessible(false);
-        $this->om->persist($access);
-        $this->om->flush();
-    }
-
-    /**
-     * Check if the permissions can be edited for a resource. This may change in the future
-     * because it's quite heavy !
-     */
-    public function canEditPwsPerm(TokenInterface $token)
-    {
-        if ($this->container->get('security.context')->isGranted('ROLE_ADMIN')) {
-            return true;
-        }
-
-        $roles = $this->roleManager->getStringRolesFromToken($token);
-        $accesses = $this->om
-            ->getRepository('ClarolineCoreBundle:Resource\PwsRightsManagementAccess')
-            ->findByRoles($roles);
-
-        foreach ($accesses as $access) {
-            if ($access->isAccessible()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public function checkIntegrity()
