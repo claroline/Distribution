@@ -1,4 +1,5 @@
 import React from 'react'
+import {Organizations} from '#/main/core/administration/user/organization/components/organizations.jsx'
 
 const OrganizationTabActions = props =>
   <div>
@@ -7,7 +8,7 @@ const OrganizationTabActions = props =>
 
 const OrganizationTab = props =>
   <div>
-    Organization tab
+    <Organizations></Organizations>
   </div>
 
 export {
