@@ -7,8 +7,6 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer} from '#/main/core/administration/workspace/reducer'
-
-
 import {t, transChoice} from '#/main/core/translation'
 
 import {Workspaces} from '#/main/core/administration/workspace/components/workspaces.jsx'
