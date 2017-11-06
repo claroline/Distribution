@@ -4,33 +4,33 @@ import {BOOLEAN_TYPE,  booleanDefinition}  from '#/main/core/layout/data/types/b
 import {COLOR_TYPE,    colorDefinition}    from '#/main/core/layout/data/types/color'
 import {DATE_TYPE,     dateDefinition}     from '#/main/core/layout/data/types/date/index'
 import {DATETIME_TYPE, datetimeDefinition} from '#/main/core/layout/data/types/datetime'
+import {ENUM_TYPE,     enumDefinition}     from '#/main/core/layout/data/types/enum'
 import {HTML_TYPE,     htmlDefinition}     from '#/main/core/layout/data/types/html'
 import {IP_TYPE,       ipDefinition}       from '#/main/core/layout/data/types/ip'
 import {NUMBER_TYPE,   numberDefinition}   from '#/main/core/layout/data/types/number'
 import {STRING_TYPE,   stringDefinition}   from '#/main/core/layout/data/types/string'
-import {ENUM_TYPE,     enumDefinition}   from '#/main/core/layout/data/types/enum'
 
 // the list of registered data types
-export const dataTypes = {}
+const dataTypes = {}
 
 // register default types
 registerType(BOOLEAN_TYPE,  booleanDefinition)
 registerType(COLOR_TYPE,    colorDefinition)
 registerType(DATE_TYPE,     dateDefinition)
 registerType(DATETIME_TYPE, datetimeDefinition)
+registerType(ENUM_TYPE,     enumDefinition)
 registerType(HTML_TYPE,     htmlDefinition)
 registerType(IP_TYPE,       ipDefinition)
 registerType(NUMBER_TYPE,   numberDefinition)
 registerType(STRING_TYPE,   stringDefinition)
-registerType(ENUM_TYPE,     enumDefinition)
 
 /**
  * Validates & registers a data type.
  *
  * @param {string} typeName
- * @param {object} typeDefinition
+ * @param {Object} typeDefinition
  */
-export function registerType(typeName, typeDefinition) {
+function registerType(typeName, typeDefinition) {
   invariant(typeof typeName === 'string', `Data type name must be a string. "${typeName}" provided.`)
   invariant(!dataTypes[typeName],         `Data type ${typeName} is already registered.`)
 
@@ -41,21 +41,45 @@ export function registerType(typeName, typeDefinition) {
   dataTypes[typeName] = definition
 }
 
-export function getTypes() {
+/**
+ * Gets the list of registered data types.
+ *
+ * @returns {Object}
+ */
+function getTypes() {
   return dataTypes
 }
 
-export function getType(typeName) {
+/**
+ * Gets a registered data type by its name.
+ *
+ * @param typeName
+ *
+ * @returns {Object}
+ */
+function getType(typeName) {
   invariant(dataTypes[typeName], `Data type "${typeName}" is not registered.`)
 
   return dataTypes[typeName]
 }
 
-export function getDefaultType() {
+/**
+ * Gets the default data type.
+ *
+ * @returns {Object}
+ */
+function getDefaultType() {
   return dataTypes[STRING_TYPE]
 }
 
-export function getTypeOrDefault(typeName) {
+/**
+ * Tries to get a type by its name and return the default one if not found.
+ *
+ * @param {string} typeName
+ *
+ * @returns {Object}
+ */
+function getTypeOrDefault(typeName) {
   try {
     return getType(typeName)
   } catch (e) {
@@ -119,4 +143,12 @@ function setDefinitionDefaults(definition) {
      */
     components: {}
   }, definition)
+}
+
+export {
+  getDefaultType,
+  getType,
+  getTypeOrDefault,
+  getTypes,
+  registerType
 }

@@ -77,16 +77,16 @@ const EntryActions = props =>
         <ul className="dropdown-menu dropdown-menu-right notifications-buttons">
           <li>
             <CheckGroup
-              checkId="notify-edition-chk"
-              checked={props.notifyEdition}
+              id="notify-edition-chk"
+              value={props.notifyEdition}
               label={trans('editions', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyEdition: checked})}
             />
           </li>
           <li>
             <CheckGroup
-              checkId="notify-comment-chk"
-              checked={props.notifyComment}
+              id="notify-comment-chk"
+              value={props.notifyComment}
               label={trans('comments', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyComment: checked})}
             />

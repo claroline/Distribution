@@ -172,4 +172,6 @@ const apiMiddleware = () => next => action => {
   return doFetch(requestParameters, next)
 }
 
-export {apiMiddleware}
+export {
+  apiMiddleware
+}

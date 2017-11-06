@@ -32,25 +32,25 @@ const MetaSection = props =>
     {...omit(props, ['meta', 'updateParameter'])}
   >
     <HtmlGroup
-      controlId="resource-description"
+      id="resource-description"
       label={t_res('resource_description')}
-      content={props.meta.description || ''}
+      value={props.meta.description}
       onChange={description => props.updateParameter('meta.description', description)}
     />
 
     <CheckGroup
-      checkId="resource-published"
+      id="resource-published"
       label={t_res('resource_not_published')}
       labelChecked={t_res('resource_published')}
-      checked={props.meta.published}
+      value={props.meta.published}
       onChange={checked => props.updateParameter('meta.published', checked)}
     />
 
     <CheckGroup
-      checkId="resource-portal"
+      id="resource-portal"
       label={t_res('resource_portal_not_published')}
       labelChecked={t_res('resource_portal_published')}
-      checked={props.meta.portal}
+      value={props.meta.portal}
       onChange={checked => props.updateParameter('meta.portal', checked)}
       help={t_res('resource_portal_help')}
     />
@@ -75,21 +75,21 @@ const DisplaySection = props =>
     {...omit(props, ['parameters', 'updateParameter'])}
   >
     <CheckGroup
-      checkId="resource-fullscreen"
+      id="resource-fullscreen"
       label={t_res('resource_fullscreen')}
-      checked={props.parameters.fullscreen}
+      value={props.parameters.fullscreen}
       onChange={checked => props.updateParameter('parameters.fullscreen', checked)}
     />
 
     <CheckGroup
-      checkId="resource-closable"
+      id="resource-closable"
       label={t_res('resource_closable')}
-      checked={props.parameters.closable}
+      value={props.parameters.closable}
       onChange={checked => props.updateParameter('parameters.closable', checked)}
     />
 
     <FormGroup
-      controlId="resource-close-target"
+      id="resource-close-target"
       label={t_res('resource_close_target')}
       warnOnly={!props.validating}
       error={get(props, 'errors.parameters.closeTarget')}
@@ -139,7 +139,7 @@ const AccessesSection = (props) =>
       <div className="row">
         <FormGroup
           className="col-md-6 col-xs-6 form-last"
-          controlId="resource-accessible-from"
+          id="resource-accessible-from"
           label={t_res('resource_accessible_from')}
           validating={props.validating}
         >
@@ -152,7 +152,7 @@ const AccessesSection = (props) =>
 
         <FormGroup
           className="col-md-6 col-xs-6 form-last"
-          controlId="resource-accessible-until"
+          id="resource-accessible-until"
           label={t_res('resource_accessible_until')}
           validating={props.validating}
         >
@@ -176,7 +176,7 @@ const AccessesSection = (props) =>
       }}
     >
       <FormGroup
-        controlId="resource-access-code"
+        id="resource-access-code"
         label={t('access_code')}
         validating={props.validating}
       >
@@ -237,14 +237,14 @@ const LicenseSection = props =>
     {...omit(props, ['meta', 'updateParameter'])}
   >
     <TextGroup
-      controlId="resource-authors"
+      id="resource-authors"
       label={t_res('resource_authors')}
       value={props.meta.authors}
       onChange={text => props.updateParameter('meta.authors', text)}
     />
 
     <TextGroup
-      controlId="resource-license"
+      id="resource-license"
       label={t_res('resource_license')}
       value={props.meta.license}
       onChange={text => props.updateParameter('meta.license', text)}
@@ -324,7 +324,7 @@ class EditPropertiesModal extends Component {
       >
         <Modal.Body>
           <TextGroup
-            controlId="resource-name"
+            id="resource-name"
             label={t_res('resource_name')}
             value={this.state.resourceNode.name}
             onChange={text => this.updateProperty('name', text)}

@@ -25,6 +25,7 @@ FormSection.propTypes = {
 
 const FormSections = props =>
   <Sections
+    level={props.level}
     accordion={props.accordion}
     defaultOpened={props.defaultOpened}
     defaultActiveKey={props.defaultOpened}
@@ -37,11 +38,6 @@ FormSections.propTypes = {
   level: T.number, // level for panel headings
   defaultOpened: T.string,
   children: T.node.isRequired
-}
-
-FormSections.defaultProps = {
-  accordion: true,
-  level: 5
 }
 
 export {

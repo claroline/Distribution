@@ -5,7 +5,7 @@ import {t, transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/layout/list/constants'
 
-import {DataAction, DataProperty} from '#/main/core/layout/list/prop-types'
+import {DataAction, DataListProperty} from '#/main/core/layout/list/prop-types'
 import {
   createListDefinition,
   getDisplayableProps,
@@ -197,7 +197,7 @@ DataList.propTypes = {
    * Definition of the data properties.
    */
   definition: T.arrayOf(
-    T.shape(DataProperty.propTypes)
+    T.shape(DataListProperty.propTypes)
   ).isRequired,
 
   /**

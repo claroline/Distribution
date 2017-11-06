@@ -47,7 +47,7 @@ const GeneralSection = props =>
 
       {props.theme.meta.plugin &&
         <FormGroup
-          controlId="theme-plugin"
+          id="theme-plugin"
           label={trans('theme_plugin', {}, 'theme')}
         >
           <div id="theme-plugin">{props.theme.meta.plugin}</div>
@@ -55,14 +55,14 @@ const GeneralSection = props =>
       }
 
       <TextGroup
-        controlId="theme-name"
+        id="theme-name"
         label={trans('theme_name', {}, 'theme')}
         value={props.theme.name}
         onChange={value => props.updateProperty('name', value)}
       />
 
       <TextGroup
-        controlId="theme-description"
+        id="theme-description"
         label={trans('theme_description', {}, 'theme')}
         value={props.theme.meta.description}
         long={true}
@@ -70,10 +70,10 @@ const GeneralSection = props =>
       />
 
       <CheckGroup
-        checkId="theme-default"
+        id="theme-default"
         label={trans('theme_is_not_default', {}, 'theme')}
         labelChecked={trans('theme_is_default', {}, 'theme')}
-        checked={props.theme.meta.default}
+        value={props.theme.meta.default}
         disabled={true}
         onChange={() => true}
       />
@@ -83,18 +83,18 @@ const GeneralSection = props =>
         hideText={t('hide_advanced_options')}
       >
         <CheckGroup
-          checkId="theme-enabled"
+          id="theme-enabled"
           label={trans('theme_enabled', {}, 'theme')}
-          checked={props.theme.meta.enabled}
+          value={props.theme.meta.enabled}
           disabled={props.theme.meta.default || props.theme.current}
           onChange={checked => props.updateProperty('meta.enabled', checked)}
           help={trans('theme_enabled_help', {}, 'theme')}
         />
 
         <CheckGroup
-          checkId="theme-extend-default"
+          id="theme-extend-default"
           label={trans('theme_extend_default', {}, 'theme')}
-          checked={props.theme.parameters.extendDefault}
+          value={props.theme.parameters.extendDefault}
           disabled={!props.theme.meta.custom}
           onChange={checked => props.updateProperty('parameters.extendDefault', checked)}
           help={trans('theme_extend_default_help', {}, 'theme')}

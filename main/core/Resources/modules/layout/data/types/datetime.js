@@ -1,15 +1,15 @@
 
-export const DATETIME_TYPE = 'datetime'
+const DATETIME_TYPE = 'datetime'
 
-export const datetimeDefinition = {
+const datetimeDefinition = {
   // nothing special to do
   parse: (display) => display,
   // nothing special to do
   render: (raw) => raw,
-  validate: (value) => typeof value === 'string',
-  components: {
-    form: null,
-    table: null,
-    search: null
-  }
+  validate: (value) => typeof value === 'string'
+}
+
+export {
+  DATETIME_TYPE,
+  datetimeDefinition
 }

@@ -2,7 +2,9 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import moment from 'moment'
+
 import {formatDate} from '#/main/core/date'
+
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {CheckboxesGroup} from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
@@ -107,23 +109,13 @@ export const FormField = props => {
           />
         )
       } else {
-        return (props.noLabel ?
-          <div className={classes({'has-error': props.error})}>
-            <Select
-              options={props.choices || []}
-              selectedValue={props.value || ''}
-              disabled={props.disabled}
-              onChange={value => props.onChange(value)}
-            />
-            {props.error &&
-              <ErrorBlock text={props.error}/>
-            }
-          </div> :
+        return (
           <SelectGroup
-            controlId={props.controlId}
+            id={props.controlId}
             label={props.label}
-            options={props.choices || []}
-            selectedValue={props.value || ''}
+            hideLabel={props.noLabel}
+            choices={props.choices || {}}
+            value={props.value || ''}
             disabled={props.disabled}
             error={props.error}
             multiple={false}
@@ -132,46 +124,24 @@ export const FormField = props => {
         )
       }
     case 'country':
-      return (props.noLabel ?
-        <div className={classes({'has-error': props.error})}>
-          <Select
-            options={constants.COUNTRIES}
-            selectedValue={props.value || ''}
-            disabled={props.disabled}
-            onChange={value => props.onChange(value)}
-          />
-          {props.error &&
-            <ErrorBlock text={props.error}/>
-          }
-        </div> :
+      return (
         <SelectGroup
-          controlId={props.controlId}
+          id={props.controlId}
           label={props.label}
-          options={constants.COUNTRIES}
-          selectedValue={props.value || ''}
+          hideLabel={props.noLabel}
+          choices={constants.COUNTRIES}
+          value={props.value || ''}
           disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
       )
     case 'text':
-      return (props.noLabel ?
-        <div className={classes({'has-error': props.error})}>
-          <input
-            id={props.controlId}
-            type="text"
-            className="form-control"
-            value={props.value || ''}
-            disabled={props.disabled}
-            onChange={(e) => props.onChange(e.target.value)}
-          />
-          {props.error &&
-            <ErrorBlock text={props.error}/>
-          }
-        </div> :
+      return (
         <TextGroup
-          controlId={props.controlId}
+          id={props.controlId}
           label={props.label}
+          hideLabel={props.noLabel}
           value={props.value || ''}
           disabled={props.disabled}
           error={props.error}
@@ -194,9 +164,9 @@ export const FormField = props => {
           }
         </div> :
         <NumberGroup
-          controlId={props.controlId}
+          id={props.controlId}
           label={props.label}
-          value={props.value === null || isNaN(props.value) ? undefined : props.value}
+          value={props.value === null ? undefined : props.value}
           disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}
@@ -231,22 +201,19 @@ export const FormField = props => {
         <div className={classes({'has-error': props.error})}>
           <Textarea
             id={props.controlId}
-            content={props.value || ''}
+            value={props.value || ''}
             minRows={2}
             disabled={props.disabled}
             onChange={value => props.onChange(value)}
-            onClick={() => {}}
-            onSelect={() => {}}
-            onChangeMode={() => {}}
           />
           {props.error &&
             <ErrorBlock text={props.error}/>
           }
         </div> :
         <HtmlGroup
-          controlId={props.controlId}
+          id={props.controlId}
           label={props.label}
-          content={props.value || ''}
+          value={props.value}
           disabled={props.disabled}
           error={props.error}
           onChange={value => props.onChange(value)}

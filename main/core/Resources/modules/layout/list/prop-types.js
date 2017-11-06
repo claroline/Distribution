@@ -1,7 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
 
-import {getTypes} from '#/main/core/layout/data'
+import {DataProperty} from '#/main/core/layout/data/prop-types'
 import {Action as ActionTypes} from '#/main/core/layout/button/prop-types'
 
 /**
@@ -39,32 +39,8 @@ const DataAction = {
  *
  * @type {object}
  */
-const DataProperty = {
-  propTypes: {
-    /**
-     * The name (or path) of the property.
-     * It's used to access the value inside the parent object.
-     *
-     * N.B. It can be any selector understandable by lodash/set & lodash/get.
-     *
-     * @type {string}
-     */
-    name: T.string.isRequired,
-
-    /**
-     * The label associated to the property.
-     *
-     * @type {string}
-     */
-    label: T.string.isRequired,
-
-    /**
-     * The data type (eg. string, number, boolean).
-     *
-     * @type {string}
-     */
-    type: T.oneOf(Object.keys(getTypes())),
-
+const DataListProperty = {
+  propTypes: merge({}, DataProperty.propTypes, {
     /**
      * An alias for the property.
      * If defined, filters and sortBy will use it to retrieve the property.
@@ -119,18 +95,15 @@ const DataProperty = {
      * @type {bool}
      */
     sortable: T.bool
-  },
+  }),
 
-  defaultProps: {
-    type: 'string',
+  defaultProps: merge({}, DataProperty.defaultProps, {
     alias: null,
-    options: {},
-
     displayed: false,
     displayable: true,
     filterable: true,
     sortable: true
-  }
+  })
 }
 
 /**
@@ -144,7 +117,7 @@ const DataListView = {
     data: T.arrayOf(T.object).isRequired,
     count: T.number.isRequired,
     columns: T.arrayOf(
-      T.shape(DataProperty.propTypes)
+      T.shape(DataListProperty.propTypes)
     ).isRequired,
     sorting: T.shape({
       current: T.shape({
@@ -200,7 +173,7 @@ const DataCard = {
 
 export {
   DataAction,
-  DataProperty,
+  DataListProperty,
   DataCard,
   DataListView
 }

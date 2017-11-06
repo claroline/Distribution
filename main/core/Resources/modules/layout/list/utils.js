@@ -1,6 +1,6 @@
 import merge from 'lodash/merge'
 
-import {DataProperty} from '#/main/core/layout/list/prop-types'
+import {DataListProperty} from '#/main/core/layout/list/prop-types'
 
 /**
  * Fills definition with missing default values.
@@ -10,7 +10,7 @@ import {DataProperty} from '#/main/core/layout/list/prop-types'
  * @return {Array} - the defaulted definition
  */
 function createListDefinition(definition) {
-  return definition.map(dataDef => merge({}, DataProperty.defaultProps, dataDef))
+  return definition.map(dataDef => merge({}, DataListProperty.defaultProps, dataDef))
 }
 
 /**

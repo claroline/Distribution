@@ -1,10 +1,13 @@
-import {makeReducer} from '#/main/core/utilities/redux'
+import {combineReducers} from '#/main/core/utilities/redux'
+
 import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {makeFormReducer} from '#/main/core/layout/form/reducer'
 
-const groupReducer = makeReducer([], {})
+import {validate} from './validator'
 
-const reducer = makeListReducer({
-  data: groupReducer
+const reducer = combineReducers({
+  list: makeListReducer(),
+  current: makeFormReducer({}, validate)
 })
 
 export {

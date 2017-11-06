@@ -26,7 +26,7 @@ const AnnounceForm = props =>
         <h2 className="sr-only">General properties</h2>
 
         <TextGroup
-          controlId="announcement-title"
+          id="announcement-title"
           label={t('title')}
           value={props.announcement.title || ''}
           onChange={value => props.updateProperty('title', value)}
@@ -34,9 +34,9 @@ const AnnounceForm = props =>
         />
 
         <HtmlGroup
-          controlId="announcement-content"
+          id="announcement-content"
           label={t('content')}
-          content={props.announcement.content}
+          value={props.announcement.content}
           onChange={value => props.updateProperty('content', value)}
           minRows={10}
           warnOnly={!props.validating}
@@ -44,7 +44,7 @@ const AnnounceForm = props =>
         />
 
         <TextGroup
-          controlId="announcement-author"
+          id="announcement-author"
           label={t('author')}
           value={props.announcement.meta.author || ''}
           onChange={value => props.updateProperty('meta.author', value)}
@@ -60,10 +60,10 @@ const AnnounceForm = props =>
         title={t('access_restrictions')}
       >
         <CheckGroup
-          checkId="announcement-visible"
+          id="announcement-visible"
           label={trans('announcement_is_not_visible', {}, 'announcement')}
           labelChecked={trans('announcement_is_visible', {}, 'announcement')}
-          checked={props.announcement.restrictions.visible}
+          value={props.announcement.restrictions.visible}
           onChange={() => props.updateProperty('restrictions.visible', !props.announcement.restrictions.visible)}
           warnOnly={!props.validating}
         />

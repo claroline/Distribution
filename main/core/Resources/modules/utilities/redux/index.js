@@ -1,18 +1,8 @@
-/* global process, require */
-
-import {
-  applyMiddleware,
-  combineReducers,
-  compose,
-  createStore as baseCreate
-} from 'redux'
-import thunk from 'redux-thunk'
 import invariant from 'invariant'
+import {combineReducers} from 'redux'
+
 import {apiMiddleware} from '#/main/core/api/middleware'
-
-const middleware = [apiMiddleware, thunk]
-
-export {combineReducers}
+import {createStore} from '#/main/core/utilities/redux/store'
 
 // generator for very simple action creators (see redux doc)
 export function makeActionCreator(type, ...argNames) {
@@ -22,6 +12,7 @@ export function makeActionCreator(type, ...argNames) {
       invariant(args[index] !== undefined, `${argNames[index]} is required`)
       action[argNames[index]] = args[index]
     })
+
     return action
   }
 }
@@ -34,7 +25,7 @@ export function makeActionCreator(type, ...argNames) {
 //     [LIST_TOGGLE_SELECT_ALL]: toggleSelectAll
 //   })
 export function makeReducer(initialState, handlers) {
-  return function reducer(state = initialState, action) {
+  return (state = initialState, action) => {
     if (handlers.hasOwnProperty(action.type)) {
       return handlers[action.type](state, action)
     } else {
@@ -54,27 +45,7 @@ export function reduceReducers(...reducers) {
     )
 }
 
-// pre-configure store for all redux apps
-if (process.env.NODE_ENV !== 'production') {
-  const freeze = require('redux-freeze')
-  middleware.push(freeze)
-}
-
-export function createStore(reducers, initialState, enhancers = []) {
-  // Add dev tools
-  if (process.env.NODE_ENV !== 'production') {
-    // Register browser extension
-    if (window.devToolsExtension) {
-      enhancers.push(window.devToolsExtension())
-    }
-  }
-
-  return baseCreate(
-    reducers,
-    initialState,
-    compose(
-      applyMiddleware(...middleware),
-      ...enhancers
-    )
-  )
+export {
+  combineReducers,
+  createStore
 }

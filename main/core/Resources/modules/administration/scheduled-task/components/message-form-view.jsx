@@ -210,10 +210,9 @@ class MessageFormView extends Component {
             <div className="col-md-9">
               <Textarea
                 id="message-form-content"
-                content={this.state.content}
+                value={this.state.content}
                 onChange={text => this.updateProps('content', text)}
-              >
-              </Textarea>
+              />
               {this.state.contentError &&
                 <div className="help-block field-error">
                   {this.state.contentError}

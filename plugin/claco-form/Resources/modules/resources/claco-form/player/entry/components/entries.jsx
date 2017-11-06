@@ -93,7 +93,7 @@ class Entries extends Component {
           displayed: false,
           type: 'enum',
           options: {
-            enum: options
+            choices: options
           }
         })
       }

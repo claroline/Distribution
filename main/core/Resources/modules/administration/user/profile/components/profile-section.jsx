@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
+import {PageSection} from '#/main/core/layout/page/components/page-section.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
@@ -49,16 +50,16 @@ const CurrentTab = props =>
         title={t('parameters')}
       >
         <TextGroup
-          controlId="tab-name"
+          id="tab-name"
           label={t('title')}
           value=""
           onChange={() => true}
         />
 
         <CheckGroup
-          checkId="tab-on-create"
+          id="tab-on-create"
           label="Afficher à la création"
-          checked={false}
+          value={false}
           onChange={() => true}
         />
       </FormSection>
@@ -109,20 +110,35 @@ CurrentTab.propTypes = {
 }
 
 const Profile = props =>
-  <div className="user-profile row">
-    <div className="col-md-3">
-      <Tabs
-        tabs={props.tabs}
-        currentTab={props.currentTab}
-        addTab={props.addTab}
-        removeTab={props.removeTab}
+  <PageSection
+    path="/profile"
+    icon="fa fa-id-card-o"
+    title={t('user_profile')}
+    actions={[
+      {
+        icon: 'fa fa-floppy-o',
+        label: t('save'),
+        action: () => true,
+        disabled: false,
+        primary: true
+      }
+    ]}
+  >
+    <div className="user-profile row">
+      <div className="col-md-3">
+        <Tabs
+          tabs={props.tabs}
+          currentTab={props.currentTab}
+          addTab={props.addTab}
+          removeTab={props.removeTab}
+        />
+      </div>
+
+      <CurrentTab
+        sections={props.sections}
       />
     </div>
-
-    <CurrentTab
-      sections={props.sections}
-    />
-  </div>
+  </PageSection>
 
 Profile.propTypes = {
   currentTab: T.string,
@@ -160,5 +176,5 @@ function mapDispatchToProps(dispatch) {
 const ConnectedProfile = connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 export {
-  ConnectedProfile as Profile
+  ConnectedProfile as ProfileSection
 }

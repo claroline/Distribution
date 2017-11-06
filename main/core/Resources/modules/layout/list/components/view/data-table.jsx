@@ -13,7 +13,7 @@ import {
   TableRow,
   TableCell
 } from '#/main/core/layout/table/components/table.jsx'
-import {DataAction, DataListView, DataProperty} from '#/main/core/layout/list/prop-types'
+import {DataAction, DataListView, DataListProperty} from '#/main/core/layout/list/prop-types'
 import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 
 const DataCell = props => {
@@ -31,7 +31,7 @@ const DataCell = props => {
 
 DataCell.propTypes = {
   rowData: T.object.isRequired,
-  column: T.shape(DataProperty.propTypes).isRequired
+  column: T.shape(DataListProperty.propTypes).isRequired
 }
 
 const DataTableRow = props =>
@@ -69,7 +69,7 @@ DataTableRow.propTypes = {
   index: T.number.isRequired,
   row: T.object.isRequired,
   columns: T.arrayOf(
-    T.shape(DataProperty.propTypes)
+    T.shape(DataListProperty.propTypes)
   ).isRequired,
   actions: T.arrayOf(
     T.shape(DataAction.propTypes)

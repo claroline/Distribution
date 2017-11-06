@@ -1,4 +1,4 @@
-import { makeActionCreator } from '#/main/core/utilities/redux'
+import {makeActionCreator} from '#/main/core/utilities/redux'
 
 // TODO : add public file upload here (see quiz objects upload)
 
