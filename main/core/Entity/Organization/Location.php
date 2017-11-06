@@ -26,7 +26,7 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 class Location
 {
     use UuidTrait;
-        
+
     const TYPE_DEPARTMENT = 1;
     const TYPE_USER = 2;
     const TYPE_TRAINING = 3;
@@ -133,6 +133,7 @@ class Location
     {
         $this->users = new ArrayCollection();
         $this->organizations = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()

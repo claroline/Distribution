@@ -39,6 +39,7 @@ const Locations = props =>
         type: 'string',
         label: t('coordinates'),
         displayed: true,
+        filterable: false,
         renderer: (rowData) => getCoordinates(rowData)
       }
     ]}
