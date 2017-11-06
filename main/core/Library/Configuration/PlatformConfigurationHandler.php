@@ -57,6 +57,16 @@ class PlatformConfigurationHandler
         }
     }
 
+    public function getParameters()
+    {
+        return $this->parameters;
+    }
+
+    public function getDefaultsConfigs()
+    {
+        return $this->defaultConfigs;
+    }
+
     public function setParameter($parameter, $value)
     {
         if (!is_writable($this->configFile)) {

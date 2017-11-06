@@ -155,8 +155,7 @@ class ApiLoader extends Loader
                         $defaults[$actionName][0] = $annotation->getPath();
                         $toRemove = $prefix.'_'.strtolower($actionName);
                         $autoName = 'claroline_core_apinew_';
-                        //todo remove route from plugins but it doesn't exists yet
-                        $routes->remove($autoName.$toRemove);
+                        //todo remove superfluous routes
                     }
 
                     if ($annotation instanceof MethodConfig) {

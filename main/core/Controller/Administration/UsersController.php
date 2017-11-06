@@ -296,6 +296,12 @@ class UsersController extends Controller
               ['filters' => ['parent' => null]],
               [Options::IS_RECURSIVE]
           ),
+          'parameters' => $this->configHandler->getParameters(),
+          'locales' => $this->localeManager->getAvailableLocales(),
+          'platformRoles' => $this->finder->search(
+            'Claroline\CoreBundle\Entity\Role',
+            ['filters' => ['type' => ROLE::PLATFORM_ROLE]]
+          ),
         ];
     }
 

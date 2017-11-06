@@ -23,6 +23,9 @@
       data-groups="{{ groups | json_encode | raw | escape }}"
       data-roles="{{ roles | json_encode | raw | escape }}"
       data-organizations="{{ organizations | json_encode | raw | escape }}"
+      data-parameters="{{ parameters | json_encode | raw | escape }}"
+      data-platformRoles="{{ platformRoles | json_encode | raw | escape }}"
+      data-locales="{{ locales | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}
