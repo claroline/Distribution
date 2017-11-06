@@ -37,11 +37,6 @@ class Organization
     use CodeTrait;
     use GroupsTrait;
 
-    public function __construct()
-    {
-        $this->refreshUuid();
-    }
-    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

@@ -35,11 +35,6 @@ class Group extends AbstractRoleSubject implements OrderableInterface
     use UuidTrait;
     use OrganizationsTrait;
 
-    public function __construct()
-    {
-        $this->refreshUuid();
-    }
-    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

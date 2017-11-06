@@ -41,11 +41,6 @@ class Role implements RoleInterface
     const CUSTOM_ROLE = 3;
     const USER_ROLE = 4;
 
-    public function __construct()
-    {
-        $this->refreshUuid();
-    }
-    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

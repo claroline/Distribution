@@ -31,11 +31,6 @@ class Location
     const TYPE_USER = 2;
     const TYPE_TRAINING = 3;
 
-    public function __construct()
-    {
-        $this->refreshUuid();
-    }
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -138,6 +133,7 @@ class Location
     {
         $this->users = new ArrayCollection();
         $this->organizations = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()
