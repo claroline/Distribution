@@ -9,7 +9,7 @@ import MenuItem from 'react-bootstrap/lib/MenuItem'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {ListSearch} from '#/main/core/layout/list/components/search.jsx'
 import {constants} from '#/main/core/layout/list/constants'
-import {DataProperty} from '#/main/core/layout/list/prop-types'
+import {DataListProperty} from '#/main/core/layout/list/prop-types'
 
 const ListColumnsButton = props =>
   <TooltipElement
@@ -45,7 +45,7 @@ const ListColumnsButton = props =>
 
 ListColumnsButton.propTypes = {
   available: T.arrayOf(
-    T.shape(DataProperty.propTypes)
+    T.shape(DataListProperty.propTypes)
   ).isRequired,
   current: T.arrayOf(T.string).isRequired,
   toggle: T.func.isRequired
@@ -122,7 +122,7 @@ ListActions.propTypes = {
   columns: T.shape({
     current: T.arrayOf(T.string).isRequired,
     available: T.arrayOf(
-      T.shape(DataProperty.propTypes)
+      T.shape(DataListProperty.propTypes)
     ).isRequired,
     toggle: T.func.isRequired
   })
@@ -164,7 +164,7 @@ ListHeader.propTypes = {
   columns: T.shape({
     current: T.arrayOf(T.string).isRequired,
     available: T.arrayOf(
-      T.shape(DataProperty.propTypes)
+      T.shape(DataListProperty.propTypes)
     ).isRequired,
     toggle: T.func.isRequired
   }),
@@ -175,7 +175,7 @@ ListHeader.propTypes = {
       value: T.any.isRequired
     })).isRequired,
     available: T.arrayOf(
-      T.shape(DataProperty.propTypes)
+      T.shape(DataListProperty.propTypes)
     ).isRequired,
     addFilter: T.func.isRequired,
     removeFilter: T.func.isRequired

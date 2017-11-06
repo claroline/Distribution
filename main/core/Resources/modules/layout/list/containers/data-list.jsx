@@ -1,13 +1,14 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import get from 'lodash/get'
 
 import {t} from '#/main/core/translation'
 
 import {actions as listActions} from '#/main/core/layout/list/actions'
 import {select as listSelect} from '#/main/core/layout/list/selectors'
 
-import {DataAction, DataProperty} from '#/main/core/layout/list/prop-types'
+import {DataAction, DataListProperty} from '#/main/core/layout/list/prop-types'
 import {DataList as DataListComponent} from '#/main/core/layout/list/components/data-list.jsx'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -38,7 +39,7 @@ DataList.propTypes = {
    * The definition of the list rows data.
    */
   definition: T.arrayOf(
-    T.shape(DataProperty.propTypes)
+    T.shape(DataListProperty.propTypes)
   ).isRequired,
 
   /**
@@ -83,7 +84,7 @@ DataList.propTypes = {
  */
 function mapStateToProps(state, ownProps) {
   // get the root of the list in the store
-  const listState = state[ownProps.name]
+  const listState = get(state, ownProps.name)
 
   const newProps = {
     data: listSelect.data(listState),

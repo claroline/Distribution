@@ -37,32 +37,34 @@ const Resource = props =>
       }
     ]}
   >
-    <Router
-      routes={[
-        {
-          path: '/',
-          component: Announces
-        }, {
-          path: '/add',
-          component: AnnounceForm,
-          onEnter: () => {
-            props.openForm(AnnouncementTypes.defaultProps)
-            props.initFormDefaultRoles(props.roles.map(r => r.id))
-          },
-          onLeave: props.resetForm
-        }, {
-          path: '/:id',
-          component: Announce,
-          onEnter: (params) => props.openDetail(params.id),
-          onLeave: props.resetDetail
-        }, {
-          path: '/:id/edit',
-          component: AnnounceForm,
-          onEnter: (params) => props.openForm(props.posts.find(post => post.id === params.id)),
-          onLeave: props.resetForm
-        }
-      ]}
-    />
+    <Router>
+      <Routes
+        routes={[
+          {
+            path: '/',
+            component: Announces
+          }, {
+            path: '/add',
+            component: AnnounceForm,
+            onEnter: () => {
+              props.openForm(AnnouncementTypes.defaultProps)
+              props.initFormDefaultRoles(props.roles.map(r => r.id))
+            },
+            onLeave: props.resetForm
+          }, {
+            path: '/:id',
+            component: Announce,
+            onEnter: (params) => props.openDetail(params.id),
+            onLeave: props.resetDetail
+          }, {
+            path: '/:id/edit',
+            component: AnnounceForm,
+            onEnter: (params) => props.openForm(props.posts.find(post => post.id === params.id)),
+            onLeave: props.resetForm
+          }
+        ]}
+      />
+    </Router>
   </ResourceContainer>
 
 Resource.propTypes = {

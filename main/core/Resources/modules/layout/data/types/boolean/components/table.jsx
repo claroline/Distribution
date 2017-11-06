@@ -1,6 +1,7 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+
+import {DataCell as DataCellTypes} from '#/main/core/layout/data/prop-types'
 
 import {TableCell} from '#/main/core/layout/table/components/table.jsx'
 import {translateBool} from '#/main/core/layout/data/types/boolean/utils'
@@ -14,9 +15,7 @@ const BooleanCell = props =>
     <span className="sr-only">{translateBool(props.data)}</span>
   </TableCell>
 
-BooleanCell.propTypes = {
-  data: T.bool.isRequired
-}
+BooleanCell.propTypes = DataCellTypes.propTypes
 
 export {
   BooleanCell

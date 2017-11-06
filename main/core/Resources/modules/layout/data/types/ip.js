@@ -1,7 +1,7 @@
 
-export const IP_TYPE = 'ip'
+const IP_TYPE = 'ip'
 
-export const ipDefinition = {
+const ipDefinition = {
   /**
    * Parses an IP string and return an array of IP parts.
    *
@@ -60,4 +60,9 @@ export const ipDefinition = {
 
     return typeof value === 'string' && regex.test(value)
   }
+}
+
+export {
+  IP_TYPE,
+  ipDefinition
 }

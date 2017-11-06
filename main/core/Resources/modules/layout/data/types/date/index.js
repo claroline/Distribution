@@ -1,9 +1,9 @@
 import {isValidDate, localeDate, serverDate} from '#/main/core/layout/data/types/date/utils'
 import {DateSearch} from '#/main/core/layout/data/types/date/components/search.jsx'
 
-export const DATE_TYPE = 'date'
+const DATE_TYPE = 'date'
 
-export const dateDefinition = {
+const dateDefinition = {
   /**
    * Parses display date into ISO 8601 date.
    *
@@ -36,4 +36,9 @@ export const dateDefinition = {
     table: null,
     search: DateSearch
   }
+}
+
+export {
+  DATE_TYPE,
+  dateDefinition
 }

@@ -2,30 +2,21 @@ import merge from 'lodash/merge'
 
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {generateUrl} from '#/main/core/fos-js-router'
-
 import {t, transChoice} from '#/main/core/translation'
-
-// modals
-import {registerModalType} from '#/main/core/layout/modal'
-//import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
-import {FormModal} from '#/main/core/layout/modal/components/form.jsx'
 
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 
-import {reducer as usersReducer} from '#/main/core/administration/user/user/reducer'
 import {reducer as parametersReducer} from '#/main/core/administration/user/parameters/reducer'
+import {reducer as usersReducer} from '#/main/core/administration/user/user/reducer'
 import {reducer as groupsReducer} from '#/main/core/administration/user/group/reducer'
 import {reducer as rolesReducer} from '#/main/core/administration/user/role/reducer'
 import {reducer as profileReducer} from '#/main/core/administration/user/profile/reducer'
 import {reducer as organizationReducer} from '#/main/core/administration/user/organization/reducer'
-import {reducer as locationsReducer} from '#/main/core/administration/user/locations/reducer'
+import {reducer as locationReducer} from '#/main/core/administration/user/location/reducer'
 
 import {UserMain} from '#/main/core/administration/user/components/main.jsx'
-
-// register custom modals for the app
-registerModalType('MODAL_FORM', FormModal)
 
 // mount the react application
 bootstrap(
@@ -38,13 +29,13 @@ bootstrap(
   // app store configuration
   {
     // app reducers
+    parameters: parametersReducer,
     users: usersReducer,
     groups: groupsReducer,
     roles: rolesReducer,
-    locations: locationsReducer,
+    locations: locationReducer,
     profile: profileReducer,
     organizations: organizationReducer,
-    parameters: parametersReducer,
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer
@@ -56,9 +47,11 @@ bootstrap(
       users: merge({}, initialData.users, {
         fetchUrl: generateUrl('apiv2_user_list')
       }),
-      groups: merge({}, initialData.groups, {
-        fetchUrl: generateUrl('apiv2_group_list')
-      }),
+      groups: {
+        list: merge({}, initialData.groups, {
+          fetchUrl: generateUrl('apiv2_group_list')
+        })
+      },
       roles: merge({}, initialData.roles, {
         fetchUrl: generateUrl('apiv2_role_list')
       }),

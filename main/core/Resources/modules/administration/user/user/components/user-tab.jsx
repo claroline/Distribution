@@ -6,7 +6,12 @@ import {t} from '#/main/core/translation'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-const Users = props =>
+const UserTabActions = props =>
+  <div>
+    page actions
+  </div>
+
+const UserTab = props =>
   <DataList
     name="users"
     definition={[
@@ -50,24 +55,11 @@ const Users = props =>
     })}
   />
 
-Users.propTypes = {
+UserTab.propTypes = {
 
 }
-
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-
-  }
-}
-
-const ConnectedUsers = connect(mapStateToProps, mapDispatchToProps)(Users)
 
 export {
-  ConnectedUsers as Users
+  UserTabActions,
+  UserTab
 }

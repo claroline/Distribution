@@ -6,6 +6,11 @@ import {t} from '#/main/core/translation'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
+const LocationTabActions = props =>
+  <div>
+    page actions
+  </div>
+
 const Locations = props =>
   <DataList
     name="locations"
@@ -124,8 +129,9 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedLocations = connect(mapStateToProps, mapDispatchToProps)(Locations)
+const LocationTab = connect(mapStateToProps, mapDispatchToProps)(Locations)
 
 export {
-  ConnectedLocations as Locations
+  LocationTabActions,
+  LocationTab
 }

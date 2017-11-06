@@ -11,12 +11,17 @@ import {enumRole} from '#/main/core/enum/role'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-const Roles = props =>
+const RoleTabActions = props =>
+  <div>
+    page actions
+  </div>
+
+const RoleTab = props =>
   <DataList
     name="roles"
     definition={[
       {name: 'name', type: 'string', label: t('name'), displayed: true},
-      {name: 'type', type: 'enum', label: t('type'), options: {enum: enumRole}, displayed: false},
+      {name: 'type', type: 'enum', label: t('type'), options: {choices: enumRole}, displayed: false},
       {name: 'translationKey', type: 'string', label: t('translation'), renderer: (rowData) => t(rowData.translationKey), displayed: true}
     ]}
     actions={[]}
@@ -33,24 +38,11 @@ const Roles = props =>
     })}
   />
 
-Roles.propTypes = {
+RoleTab.propTypes = {
 
 }
-
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-
-  }
-}
-
-const ConnectedRoles = connect(mapStateToProps, mapDispatchToProps)(Roles)
 
 export {
-  ConnectedRoles as Roles
+  RoleTabActions,
+  RoleTab
 }

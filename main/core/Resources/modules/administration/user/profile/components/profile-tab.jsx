@@ -10,6 +10,11 @@ import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
 
+const ProfileTabActions = props =>
+  <div>
+    page actions
+  </div>
+
 const Tabs = props =>
   <ul className="user-profile-sections nav nav-pills nav-stacked">
     <li role="presentation" className="active">
@@ -49,16 +54,16 @@ const CurrentTab = props =>
         title={t('parameters')}
       >
         <TextGroup
-          controlId="tab-name"
+          id="tab-name"
           label={t('title')}
           value=""
           onChange={() => true}
         />
 
         <CheckGroup
-          checkId="tab-on-create"
+          id="tab-on-create"
           label="Afficher à la création"
-          checked={false}
+          value={false}
           onChange={() => true}
         />
       </FormSection>
@@ -160,5 +165,6 @@ function mapDispatchToProps(dispatch) {
 const ConnectedProfile = connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 export {
-  ConnectedProfile as Profile
+  ProfileTabActions,
+  ConnectedProfile as ProfileTab
 }

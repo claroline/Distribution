@@ -29,6 +29,11 @@ const Action = {
     disabled: T.bool,
 
     /**
+     * Is the action primary ?
+     */
+    primary: T.bool,
+
+    /**
      * Is the action dangerous ?
      */
     dangerous: T.bool

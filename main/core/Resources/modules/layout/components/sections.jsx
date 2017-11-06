@@ -31,7 +31,7 @@ const Section = props =>
 
 Section.propTypes = {
   id: T.string.isRequired,
-  level: T.number,
+  level: T.number.isRequired,
   icon: T.string,
   title: T.string.isRequired,
   expanded: T.bool,

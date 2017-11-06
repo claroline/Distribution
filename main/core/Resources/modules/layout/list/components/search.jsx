@@ -18,7 +18,7 @@ const CurrentFilter = props => {
       </span>
 
         <span className="search-filter-value">
-          {typeDef.render(props.value)}
+          {typeDef.render(props.value, props.options)}
 
           <button type="button" className="btn btn-link" onClick={props.remove}>
           <span className="fa fa-times" />
@@ -32,8 +32,13 @@ const CurrentFilter = props => {
 CurrentFilter.propTypes = {
   type: T.string.isRequired,
   label: T.string.isRequired,
+  options: T.object,
   value: T.any.isRequired,
   remove: T.func.isRequired
+}
+
+CurrentFilter.defaultProps = {
+  options: {}
 }
 
 const AvailableFilterActive = props =>
@@ -87,7 +92,7 @@ const AvailableFilter = props => {
     <li role="presentation">
       {React.createElement(
         isValidSearch ? AvailableFilterActive : AvailableFilterDisabled,
-        isValidSearch ? {onSelect: () => props.onSelect(typeDef.parse(props.currentSearch))} : {}, [
+        isValidSearch ? {onSelect: () => props.onSelect(typeDef.parse(props.currentSearch, props.options))} : {}, [
           <span key="available-filter-prop" className="available-filter-prop">
             <AvailableFilterFlag id={`${props.name}-filter-flag`} isValid={isValidSearch} />
             {props.label} <small>({props.type})</small>
@@ -203,6 +208,7 @@ class ListSearch extends Component {
                 key={`current-filter-${activeFilter.property}`}
                 type={propDef.type}
                 label={propDef.label}
+                options={propDef.options}
                 value={activeFilter.value}
                 remove={() => this.props.removeFilter(activeFilter)}
               />

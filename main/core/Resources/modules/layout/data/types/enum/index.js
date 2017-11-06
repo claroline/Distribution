@@ -1,16 +1,19 @@
+import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {EnumSearch} from '#/main/core/layout/data/types/enum/components/search.jsx'
-import {EnumCell} from '#/main/core/layout/data/types/enum/components/table.jsx'
 
-export const ENUM_TYPE = 'enum'
+const ENUM_TYPE = 'enum'
 
-export const enumDefinition = {
-  parse: (display) => display,
-  render: (raw) => raw,
-  validate: () => {
-    return true
-  },
+const enumDefinition = {
+  parse: (display, options) => Object.keys(options.choices).find(enumValue => display === options.choices[enumValue]),
+  render: (raw, options) => options.choices[raw],
+  validate: (value, options) => !!options.choices[value],
   components: {
-    table: EnumCell,
-    search: EnumSearch
+    search: EnumSearch,
+    form: SelectGroup
   }
+}
+
+export {
+  ENUM_TYPE,
+  enumDefinition
 }

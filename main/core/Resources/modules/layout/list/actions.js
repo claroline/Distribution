@@ -1,3 +1,5 @@
+import get from 'lodash/get'
+
 import {makeActionCreator} from '#/main/core/utilities/redux'
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
@@ -39,7 +41,7 @@ export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
 actions.loadData = makeActionCreator(LIST_DATA_LOAD, 'data', 'total')
 
 actions.asyncDeleteItems = (items, name) => (dispatch, getState) => {
-  const listState = getState()[name]
+  const listState = get(getState(), name)
 
   dispatch({
     [REQUEST_SEND]: {
@@ -58,7 +60,7 @@ actions.asyncDeleteItems = (items, name) => (dispatch, getState) => {
 actions.syncDeleteItems = makeActionCreator(LIST_DATA_DELETE, 'items')
 
 actions.fetchData = (name) => (dispatch, getState) => {
-  const listState = getState()[name]
+  const listState = get(getState(), name)
 
   dispatch({
     [REQUEST_SEND]: {

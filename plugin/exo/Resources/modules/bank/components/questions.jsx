@@ -42,7 +42,7 @@ const QuestionsPage = props =>
             },
             type: 'enum',
             options: {
-              enum: listItemNames().reduce(
+              choices: listItemNames().reduce(
                 (selectObj, itemType) => Object.assign(
                   selectObj, {
                     [itemType.type]: trans(itemType.name, {}, 'question_types')

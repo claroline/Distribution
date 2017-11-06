@@ -7,7 +7,7 @@ import {t} from '#/main/core/translation'
 import {getPlainText} from '#/main/core/layout/data/types/html/utils'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
-import {DataAction, DataCard, DataProperty, DataListView} from '#/main/core/layout/list/prop-types'
+import {DataAction, DataCard, DataListProperty, DataListView} from '#/main/core/layout/list/prop-types'
 import {getBulkActions, getRowActions, getPropDefinition, getSortableProps, isRowSelected} from '#/main/core/layout/list/utils'
 import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 
@@ -147,7 +147,7 @@ DataGridSort.propTypes = {
     direction: T.number
   }).isRequired,
   available: T.arrayOf(
-    T.shape(DataProperty.propTypes)
+    T.shape(DataListProperty.propTypes)
   ).isRequired,
   updateSort: T.func.isRequired
 }

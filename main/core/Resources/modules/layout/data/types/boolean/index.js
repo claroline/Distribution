@@ -1,10 +1,11 @@
 import {parseBool, translateBool} from '#/main/core/layout/data/types/boolean/utils'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {BooleanSearch} from '#/main/core/layout/data/types/boolean/components/search.jsx'
 import {BooleanCell} from '#/main/core/layout/data/types/boolean/components/table.jsx'
 
-export const BOOLEAN_TYPE = 'boolean'
+const BOOLEAN_TYPE = 'boolean'
 
-export const booleanDefinition = {
+const booleanDefinition = {
   parse: (display) => parseBool(display),
   render: (raw) => translateBool(raw),
 
@@ -19,6 +20,12 @@ export const booleanDefinition = {
   },
   components: {
     table: BooleanCell,
-    search: BooleanSearch
+    search: BooleanSearch,
+    form: CheckGroup
   }
+}
+
+export {
+  BOOLEAN_TYPE,
+  booleanDefinition
 }
