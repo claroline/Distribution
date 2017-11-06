@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {actions} from '#/main/core/administration/user/location/actions'
 
 const LocationTabActions = props =>
   <div>
@@ -46,7 +47,7 @@ const Locations = props =>
     actions={[{
       icon: 'fa fa-fw fa-location-arrow',
       label: t('geolocate'),
-      action: (rows) => alert('geolocate'),
+      action: (rows) => props.geolocate(rows[0]),
       context: 'row'
     }]}
     card={(row) => ({
@@ -125,7 +126,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-
+    geolocate(location) {
+      dispatch(actions.geolocate(location))
+    }
   }
 }
 
