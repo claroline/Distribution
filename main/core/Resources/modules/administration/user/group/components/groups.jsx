@@ -13,7 +13,7 @@ const GroupsActions = props =>
       id="group-add"
       icon="fa fa-plus"
       title={t('add_group')}
-      action="/groups/add"
+      action="#/groups/add"
       primary={true}
     />
 
@@ -21,7 +21,7 @@ const GroupsActions = props =>
       id="group-import"
       icon="fa fa-download"
       title={t('add_group')}
-      action="/groups/import"
+      action="#/groups/import"
     />
   </PageActions>
 

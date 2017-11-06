@@ -40,10 +40,8 @@ const GroupTab = props =>
   </Switch>
 
 GroupTab.propTypes = {
-  openForm: T.func.isRequired,
-  resetForm: T.func.isRequired
+  openForm: T.func.isRequired
 }
-
 
 function mapDispatchToProps(dispatch) {
   return {

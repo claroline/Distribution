@@ -3,13 +3,17 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
-import {PageSection} from '#/main/core/layout/page/components/page-section.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
+
+const ProfileTabActions = props =>
+  <div>
+    page actions
+  </div>
 
 const Tabs = props =>
   <ul className="user-profile-sections nav nav-pills nav-stacked">
@@ -110,35 +114,20 @@ CurrentTab.propTypes = {
 }
 
 const Profile = props =>
-  <PageSection
-    path="/profile"
-    icon="fa fa-id-card-o"
-    title={t('user_profile')}
-    actions={[
-      {
-        icon: 'fa fa-floppy-o',
-        label: t('save'),
-        action: () => true,
-        disabled: false,
-        primary: true
-      }
-    ]}
-  >
-    <div className="user-profile row">
-      <div className="col-md-3">
-        <Tabs
-          tabs={props.tabs}
-          currentTab={props.currentTab}
-          addTab={props.addTab}
-          removeTab={props.removeTab}
-        />
-      </div>
-
-      <CurrentTab
-        sections={props.sections}
+  <div className="user-profile row">
+    <div className="col-md-3">
+      <Tabs
+        tabs={props.tabs}
+        currentTab={props.currentTab}
+        addTab={props.addTab}
+        removeTab={props.removeTab}
       />
     </div>
-  </PageSection>
+
+    <CurrentTab
+      sections={props.sections}
+    />
+  </div>
 
 Profile.propTypes = {
   currentTab: T.string,
@@ -176,5 +165,6 @@ function mapDispatchToProps(dispatch) {
 const ConnectedProfile = connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 export {
-  ConnectedProfile as ProfileSection
+  ProfileTabActions,
+  ConnectedProfile as ProfileTab
 }

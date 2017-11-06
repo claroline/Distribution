@@ -336,6 +336,9 @@ class LocationManager
             $location->setLatitude($loc['lat']);
         }
 
+        $this->om->persist($location);
+        $this->om->flush();
+
         return $location;
     }
 

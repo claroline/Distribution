@@ -17,7 +17,7 @@ const GroupActions = props =>
       id="group-list"
       icon="fa fa-list"
       title={t('cancel')}
-      action="/groups"
+      action="#/groups"
     />
   </PageActions>
 
