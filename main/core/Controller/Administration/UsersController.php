@@ -296,6 +296,7 @@ class UsersController extends Controller
               ['filters' => ['parent' => null]],
               [Options::IS_RECURSIVE]
           ),
+          'locations' => $this->finder->search('Claroline\CoreBundle\Entity\Organization\Location', $filters),
           'parameters' => $this->configHandler->getParameters(),
           'locales' => $this->localeManager->getAvailableLocales(),
           'platformRoles' => $this->finder->search(

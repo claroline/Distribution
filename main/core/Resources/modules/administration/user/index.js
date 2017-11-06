@@ -3,6 +3,8 @@ import merge from 'lodash/merge'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {generateUrl} from '#/main/core/fos-js-router'
 
+import {t, transChoice} from '#/main/core/translation'
+
 // modals
 import {registerModalType} from '#/main/core/layout/modal'
 //import {UserPickerModal} from '#/main/core/layout/modal/components/user-picker.jsx'
@@ -18,6 +20,7 @@ import {reducer as groupsReducer} from '#/main/core/administration/user/group/re
 import {reducer as rolesReducer} from '#/main/core/administration/user/role/reducer'
 import {reducer as profileReducer} from '#/main/core/administration/user/profile/reducer'
 import {reducer as organizationReducer} from '#/main/core/administration/user/organization/reducer'
+import {reducer as locationsReducer} from '#/main/core/administration/user/locations/reducer'
 
 import {UserMain} from '#/main/core/administration/user/components/main.jsx'
 
@@ -38,6 +41,7 @@ bootstrap(
     users: usersReducer,
     groups: groupsReducer,
     roles: rolesReducer,
+    locations: locationsReducer,
     profile: profileReducer,
     organizations: organizationReducer,
     parameters: parametersReducer,
@@ -57,6 +61,15 @@ bootstrap(
       }),
       roles: merge({}, initialData.roles, {
         fetchUrl: generateUrl('apiv2_role_list')
+      }),
+      locations: merge({}, initialData.locations, {
+        fetchUrl: generateUrl('apiv2_location_list'),
+        delete: {
+          title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
+          question: (locations) => t('remove_locations_confirm', {
+            location_list: locations.map(locations => workspace.name).join(', ')
+          })
+        }
       }),
       organizations: merge({}, initialData.organizations),
       parameters: merge({}, {data: initialData.parameters}, {platformRoles: initialData.platformroles}, {locales: initialData.locales})

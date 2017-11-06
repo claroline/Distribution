@@ -10,6 +10,7 @@ import {Groups} from '#/main/core/administration/user/group/components/groups.js
 import {Roles} from '#/main/core/administration/user/role/components/roles.jsx'
 import {Organizations} from '#/main/core/administration/user/organization/components/organizations.jsx'
 import {Profile} from '#/main/core/administration/user/profile/components/profile.jsx'
+import {Locations} from '#/main/core/administration/user/locations/components/locations.jsx'
 
 const UserMain = props =>
   <SectionedPage
@@ -91,6 +92,19 @@ const UserMain = props =>
         ],
         component: Organizations
       }, {
+        path: '/locations',
+        icon: 'fa fa-location-arrow',
+        title: t('locations'),
+        actions: [
+          {
+            icon: 'fa fa-plus',
+            label: t('add_location'),
+            action: '/locations/add',
+            primary: true
+          }
+        ],
+        component: Locations
+      },{
         path: '/profile',
         icon: 'fa fa-id-card-o',
         title: t('user_profile'),
