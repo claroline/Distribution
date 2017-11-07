@@ -28,7 +28,6 @@ actions.removeCriterion = makeActionCreator(DROPZONE_CRITERION_REMOVE, 'id')
 
 actions.saveDropzone = (dropzoneId, dropzone) => {
   return (dispatch) => {
-    //dispatch(actions.updateDropzone(dropzoneId, dropzone))
     dispatch(actions.validateForm())
 
     if (isValid(dropzone)) {

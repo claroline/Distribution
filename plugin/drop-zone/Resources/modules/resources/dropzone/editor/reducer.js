@@ -4,6 +4,7 @@ import {makeReducer} from '#/main/core/utilities/redux'
 import {validate} from './validator'
 import {generateId} from '../utils'
 import {
+  DROPZONE_LOAD,
   DROPZONE_FORM_LOAD,
   DROPZONE_FORM_RESET,
   DROPZONE_FORM_VALIDATE,
@@ -14,7 +15,13 @@ import {
   DROPZONE_CRITERION_REMOVE
 } from './actions'
 
-const reducer = makeReducer({
+const dropzoneReducer = makeReducer({}, {
+  [DROPZONE_LOAD]: (state, action) => {
+    return action.dropzone
+  }
+})
+
+const dropzoneFormReducer = makeReducer({
   validating: false,
   pendingChanges: false,
   errors: {},
@@ -107,6 +114,11 @@ const reducer = makeReducer({
     }
   }
 })
+
+const reducer = {
+  dropzone: dropzoneReducer,
+  dropzoneForm: dropzoneFormReducer
+}
 
 export {
   reducer

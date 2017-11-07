@@ -1,5 +1,32 @@
 import isEmpty from 'lodash/isEmpty'
 import {createSelector} from 'reselect'
+import {constants} from './constants'
+
+const user = state => state.user
+
+const userId = createSelector(
+  [user],
+  (user) => user && user.id ? user.id : null
+)
+
+const dropzone = state => state.dropzone
+
+const dropzoneId = createSelector(
+  [dropzone],
+  (dropzone) => dropzone.id
+)
+const dropzoneParameters = createSelector(
+  [dropzone],
+  (dropzone) => dropzone.parameters
+)
+const dropzoneDisplay = createSelector(
+  [dropzone],
+  (dropzone) => dropzone.display
+)
+const dropzoneNotifications = createSelector(
+  [dropzone],
+  (dropzone) => dropzone.notifications
+)
 
 const dropzoneForm = state => state.dropzoneForm
 const formHasPendingChanges = createSelector(
@@ -43,15 +70,58 @@ const formValid = createSelector(
   (formErrors) => isEmpty(formErrors)
 )
 
-const dropzone = state => state.dropzone
+const myDrop = state => state.myDrop
+const myDrops = state => state.myDrops
 
-const dropzoneId = createSelector(
+const myDropId = createSelector(
+  [myDrop],
+  (myDrop) => myDrop && myDrop.id ? myDrop.id : null
+)
+
+const isDropEnabled = createSelector(
   [dropzone],
-  (dropzone) => dropzone.id
+  (dropzone) => {
+    const currentDate = new Date()
+
+    return (
+      dropzone.parameters.manualPlanning &&
+      [constants.MANUAL_STATE_ALLOW_DROP, constants.MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
+    ) ||
+    (
+      !dropzone.parameters.manualPlanning &&
+      currentDate >= new Date(dropzone.parameters.dropStartDate) &&
+      currentDate <= new Date(dropzone.parameters.dropEndDate)
+    )
+  }
+)
+
+const isPeerReviewEnabled = createSelector(
+  [dropzone],
+  (dropzone) => {
+    const currentDate = new Date()
+
+    return dropzone.parameters.peerReview && (
+      (
+        dropzone.parameters.manualPlanning &&
+        [constants.MANUAL_STATE_PEER_REVIEW, constants.MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
+      ) ||
+      (
+        !dropzone.parameters.manualPlanning &&
+        currentDate >= new Date(dropzone.parameters.reviewStartDate) &&
+        currentDate <= new Date(dropzone.parameters.reviewEndDate)
+      )
+    )
+  }
 )
 
 export const select = {
+  user,
+  userId,
+  dropzone,
   dropzoneId,
+  dropzoneParameters,
+  dropzoneDisplay,
+  dropzoneNotifications,
   formHasPendingChanges,
   formIsOpened,
   formData,
@@ -61,5 +131,10 @@ export const select = {
   formCriteriaData,
   formErrors,
   formValidating,
-  formValid
+  formValid,
+  myDrop,
+  myDrops,
+  myDropId,
+  isDropEnabled,
+  isPeerReviewEnabled
 }

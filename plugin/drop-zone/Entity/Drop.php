@@ -43,7 +43,7 @@ class Drop
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="SET NULL")
      */
     protected $user;
 
@@ -62,7 +62,7 @@ class Drop
     protected $documents;
 
     /**
-     * @ORM\Column(name="drop_date", type="datetime", nullable=false)
+     * @ORM\Column(name="drop_date", type="datetime", nullable=true)
      */
     protected $dropDate;
 
@@ -77,9 +77,9 @@ class Drop
     protected $finished = false;
 
     /**
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(name="drop_number", type="integer", nullable=true)
      */
-    protected $number = null;
+    protected $number;
 
     /**
      * Indicate if the drop was close automaticaly (when time is up by the dropzone option $autoCloseDropsAtDropEndDate).
@@ -106,6 +106,7 @@ class Drop
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->documents = new ArrayCollection();
     }
 
@@ -134,7 +135,7 @@ class Drop
         return $this->user;
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
     }
@@ -178,7 +179,7 @@ class Drop
         return $this->dropDate;
     }
 
-    public function setDropDate(\DateTime $dropDate)
+    public function setDropDate(\DateTime $dropDate = null)
     {
         $this->dropDate = $dropDate;
     }

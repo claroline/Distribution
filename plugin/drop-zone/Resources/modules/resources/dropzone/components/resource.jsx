@@ -9,6 +9,7 @@ import {ResourceContainer} from '#/main/core/layout/resource/containers/resource
 
 import {Menu} from './menu.jsx'
 import {DropzoneForm} from '../editor/components/dropzone-form.jsx'
+import {MyDrop} from '../player/components/my-drop.jsx'
 
 import {select} from '../selectors.js'
 import {actions as editorActions} from '../editor/actions.js'
@@ -44,6 +45,9 @@ const DropzoneResource = props =>
           component: DropzoneForm,
           onEnter: () => props.loadForm(props.dropzone),
           onLeave: props.resetForm
+        }, {
+          path: '/my/drop',
+          component: MyDrop
         }
       ]}
     />

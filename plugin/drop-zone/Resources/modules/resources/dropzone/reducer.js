@@ -7,26 +7,14 @@ import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
 // dropzone reducers
 import {reducer as editorReducer} from './editor/reducer'
-
-import {
-  DROPZONE_LOAD
-} from './editor/actions'
-
-const userReducer = makeReducer({}, {})
-
-const dropzoneReducer = makeReducer({}, {
-  [DROPZONE_LOAD]: (state, action) => {
-    return action.dropzone
-  }
-})
-
-const myDropsReducer = makeReducer({}, {})
+import {reducer as playerReducer} from './player/reducer'
 
 const reducer = {
-  user: userReducer,
-  dropzone: dropzoneReducer,
-  myDrops: myDropsReducer,
-  dropzoneForm: editorReducer,
+  user: makeReducer({}, {}),
+  dropzone: editorReducer.dropzone,
+  myDrop: playerReducer.myDrop,
+  //myDrops: playerReducer.myDrops,
+  dropzoneForm: editorReducer.dropzoneForm,
 
   // generic reducers
   currentRequests: apiReducer,

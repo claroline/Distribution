@@ -13,6 +13,7 @@ namespace Claroline\DropZoneBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -45,9 +46,14 @@ class Document
     protected $drop;
 
     /**
-     * @ORM\Column(name="document_type", type="string", nullable=false)
+     * @ORM\Column(name="document_type", type="integer", nullable=false)
      */
     protected $type;
+
+    /**
+     * @ORM\Column(name="file_array", type="json_array", nullable=true)
+     */
+    protected $file;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -64,6 +70,22 @@ class Document
      * @ORM\JoinColumn(name="resource_id", nullable=true, onDelete="SET NULL")
      */
     protected $resource;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="SET NULL")
+     */
+    protected $user;
+
+    /**
+     * @ORM\Column(name="drop_date", type="datetime", nullable=false)
+     */
+    protected $dropDate;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {
@@ -93,6 +115,16 @@ class Document
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(array $file = null)
+    {
+        $this->file = $file;
     }
 
     public function getUrl()
@@ -125,12 +157,34 @@ class Document
         $this->resource = $resource;
     }
 
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    public function getDropDate()
+    {
+        return $this->dropDate;
+    }
+
+    public function setDropDate(\DateTime $dropDate)
+    {
+        $this->dropDate = $dropDate;
+    }
+
     public function getData()
     {
         $data = null;
 
         switch ($this->type) {
             case self::DOCUMENT_TYPE_FILE:
+                $data = $this->getFile();
+                break;
             case self::DOCUMENT_TYPE_URL:
                 $data = $this->getUrl();
                 break;
@@ -149,6 +203,8 @@ class Document
     {
         switch ($this->type) {
             case self::DOCUMENT_TYPE_FILE:
+                $this->setFile($data);
+                break;
             case self::DOCUMENT_TYPE_URL:
                 $this->setUrl($data);
                 break;

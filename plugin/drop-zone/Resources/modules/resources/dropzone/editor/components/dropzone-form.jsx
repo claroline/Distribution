@@ -11,11 +11,7 @@ import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.j
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {NumberGroup}  from '#/main/core/layout/form/components/group/number-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
-
-import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'
-
-import Datetime from 'react-datetime'
-import 'react-datetime/css/react-datetime.css'
+import {DatetimeGroup} from '#/main/core/layout/form/components/group/datetime-group.jsx'
 
 import {constants} from '../../constants'
 import {select} from '../../selectors'
@@ -94,15 +90,25 @@ DocumentsSection.propTypes = {
   updateForm: T.func.isRequired
 }
 
-const CorrectionSection = props =>
+const DropCorrectionSection = props =>
   <FormSections>
     <FormSection
-      id="correction-section"
-      title={trans('correction_type', {}, 'dropzone')}
+      id="drop-correction-section"
+      title={trans('drop_and_correction_type', {}, 'dropzone')}
     >
-      <p>{trans('correction_type_info', {}, 'dropzone')}</p>
-      <Radios
-        groupName="peer-review"
+      <RadioGroup
+        controlId="drop-type"
+        label={trans('drop_type', {}, 'dropzone')}
+        options={[
+          {value: 0, label: trans('drop_type_user', {}, 'dropzone')},
+          {value: 1, label: trans('drop_type_team', {}, 'dropzone')}
+        ]}
+        checkedValue={props.parameters.dropType}
+        onChange={value => props.updateForm('parameters.dropType', parseInt(value))}
+      />
+      <RadioGroup
+        controlId="peer-review"
+        label={trans('correction_type_info', {}, 'dropzone')}
         options={[
           {value: 'teacher', label: trans('teacher_correction_info', {}, 'dropzone')},
           {value: 'peer', label: trans('peer_correction_info', {}, 'dropzone')}
@@ -145,8 +151,9 @@ const CorrectionSection = props =>
     </FormSection>
   </FormSections>
 
-CorrectionSection.propTypes = {
+DropCorrectionSection.propTypes = {
   parameters: T.shape({
+    dropType: T.number.isRequired,
     peerReview: T.bool.isRequired,
     expectedCorrectionTotal: T.number.isRequired,
     correctionDenialEnabled: T.bool.isRequired
@@ -232,11 +239,22 @@ const NotationSection = props =>
       title={trans('rating', {}, 'dropzone')}
     >
       <NumberGroup
+        controlId="score-max"
+        label={trans('score_max', {}, 'dropzone')}
+        value={props.parameters.scoreMax}
+        min={0}
+        onChange={value => props.updateForm('parameters.scoreMax', parseInt(value))}
+        warnOnly={!props.validating}
+        error={get(props.errors, 'scoreMax')}
+      />
+      <NumberGroup
         controlId="score-to-pass"
         label={trans('score_to_pass', {}, 'dropzone')}
         value={props.parameters.scoreToPass}
         min={0}
         onChange={value => props.updateForm('parameters.scoreToPass', parseInt(value))}
+        warnOnly={!props.validating}
+        error={get(props.errors, 'scoreToPass')}
       />
       <CheckGroup
         checkId="display-notation-to-learners-chk"
@@ -269,7 +287,10 @@ const NotationSection = props =>
   </FormSections>
 
 NotationSection.propTypes = {
+  errors: T.object,
+  validating: T.bool,
   parameters: T.shape({
+    scoreMax: T.number.isRequired,
     scoreToPass: T.number.isRequired
   }),
   display: T.shape({
@@ -289,8 +310,9 @@ const PlanningSection = props =>
     >
       <p>{trans('planning_info_1', {}, 'dropzone')}</p>
       <p>{trans('planning_info_2', {}, 'dropzone')}</p>
-      <Radios
-        groupName="planning"
+      <RadioGroup
+        controlId="planning"
+        label={trans('planning_type_label', {}, 'dropzone')}
         options={[
           {value: 'manual', label: trans('manually', {}, 'dropzone')},
           {value: 'date', label: trans('by_dates', {}, 'dropzone')}
@@ -311,110 +333,68 @@ const PlanningSection = props =>
       }
       {!props.parameters.manualPlanning &&
         <div>
-          <div className="row dropzone-datetime-row">
-            <div className="control-label col-md-3">
-              <label>{trans('drop_start_date', {}, 'dropzone')}</label>
-            </div>
-            <div className="col-md-9">
-              <Datetime
-                closeOnSelect={true}
-                dateFormat={true}
-                timeFormat={true}
-                locale="fr"
-                utc={false}
-                defaultValue={props.parameters.dropStartDate ?
-                  moment(props.parameters.dropStartDate, 'YYYY-MM-DD\THH:mm') :
-                  ''
-                }
-                onChange={date => {
-                  const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateForm('parameters.dropStartDate', stringDate)
-                }}
-              />
-            </div>
-          </div>
-          <div className="row dropzone-datetime-row">
-            <div className="control-label col-md-3">
-              <label>{trans('drop_end_date', {}, 'dropzone')}</label>
-            </div>
-            <div className="col-md-9">
-              <Datetime
-                closeOnSelect={true}
-                dateFormat={true}
-                timeFormat={true}
-                locale="fr"
-                utc={false}
-                defaultValue={props.parameters.dropEndDate ?
-                  moment(props.parameters.dropEndDate, 'YYYY-MM-DD\THH:mm') :
-                  ''
-                }
-                onChange={date => {
-                  const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateForm('parameters.dropEndDate', stringDate)
-                }}
-              />
-            </div>
-          </div>
+          <DatetimeGroup
+            controlId="drop-start-date"
+            label={trans('drop_start_date', {}, 'dropzone')}
+            defaultValue={props.parameters.dropStartDate ? moment(props.parameters.dropStartDate, 'YYYY-MM-DD\THH:mm') : ''}
+            onChange={date => {
+              const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
+              props.updateForm('parameters.dropStartDate', stringDate)
+            }}
+            warnOnly={!props.validating}
+            error={get(props.errors, 'dropStartDate')}
+          />
+          <DatetimeGroup
+            controlId="drop-end-date"
+            label={trans('drop_end_date', {}, 'dropzone')}
+            defaultValue={props.parameters.dropEndDate ? moment(props.parameters.dropEndDate, 'YYYY-MM-DD\THH:mm') : ''}
+            onChange={date => {
+              const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
+              props.updateForm('parameters.dropEndDate', stringDate)
+            }}
+            warnOnly={!props.validating}
+            error={get(props.errors, 'dropEndDate')}
+          />
           <CheckGroup
             checkId="auto-close-drops-at-drop-end-date"
             checked={props.parameters.autoCloseDropsAtDropEndDate}
             label={trans('auto_close_drops_at_drop_end_date', {}, 'dropzone')}
             onChange={checked => props.updateForm('parameters.autoCloseDropsAtDropEndDate', checked)}
           />
-          <div className="row dropzone-datetime-row">
-            <div className="control-label col-md-3">
-              <label>{trans('review_start_date', {}, 'dropzone')}</label>
-            </div>
-            <div className="col-md-9">
-              <Datetime
-                closeOnSelect={true}
-                dateFormat={true}
-                timeFormat={true}
-                locale="fr"
-                utc={false}
-                defaultValue={props.parameters.reviewStartDate ?
-                  moment(props.parameters.reviewStartDate, 'YYYY-MM-DD\THH:mm') :
-                  ''
-                }
-                onChange={date => {
-                  const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateForm('parameters.reviewStartDate', stringDate)
-                }}
-              />
-            </div>
-          </div>
-          <div className="row dropzone-datetime-row">
-            <div className="control-label col-md-3">
-              <label>{trans('review_end_date', {}, 'dropzone')}</label>
-            </div>
-            <div className="col-md-9">
-              <Datetime
-                closeOnSelect={true}
-                dateFormat={true}
-                timeFormat={true}
-                locale="fr"
-                utc={false}
-                defaultValue={props.parameters.reviewEndDate ?
-                  moment(props.parameters.reviewEndDate, 'YYYY-MM-DD\THH:mm') :
-                  ''
-                }
-                onChange={date => {
-                  const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
-                  props.updateForm('parameters.reviewEndDate', stringDate)
-                }}
-              />
-            </div>
-          </div>
+          <DatetimeGroup
+            controlId="review-start-date"
+            label={trans('review_start_date', {}, 'dropzone')}
+            defaultValue={props.parameters.reviewStartDate ? moment(props.parameters.reviewStartDate, 'YYYY-MM-DD\THH:mm') : ''}
+            onChange={date => {
+              const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
+              props.updateForm('parameters.reviewStartDate', stringDate)
+            }}
+            warnOnly={!props.validating}
+            error={get(props.errors, 'reviewStartDate')}
+          />
+          <DatetimeGroup
+            controlId="review-end-date"
+            label={trans('review_end_date', {}, 'dropzone')}
+            defaultValue={props.parameters.reviewEndDate ? moment(props.parameters.reviewEndDate, 'YYYY-MM-DD\THH:mm') : ''}
+            onChange={date => {
+              const stringDate = typeof date === 'string' ? date : date.format('YYYY-MM-DD\THH:mm')
+              props.updateForm('parameters.reviewEndDate', stringDate)
+            }}
+            warnOnly={!props.validating}
+            error={get(props.errors, 'reviewEndDate')}
+          />
         </div>
       }
     </FormSection>
   </FormSections>
 
 PlanningSection.propTypes = {
+  errors: T.object,
+  validating: T.bool,
   parameters: T.shape({
     peerReview: T.bool.isRequired,
     manualPlanning: T.bool.isRequired,
-    manualState: T.string.isRequired,
+    manualState: T.number.isRequired,
     autoCloseDropsAtDropEndDate: T.bool.isRequired,
     dropStartDate: T.string,
     dropEndDate: T.string,
@@ -458,7 +438,7 @@ const DropzoneForm = props =>
     </div>
     <InstructionsSection {...props}/>
     <DocumentsSection {...props}/>
-    <CorrectionSection {...props}/>
+    <DropCorrectionSection {...props}/>
     <CriteriaSection {...props}/>
     <NotationSection {...props}/>
     <PlanningSection {...props}/>

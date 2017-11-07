@@ -20,6 +20,7 @@ use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Dropzone;
+use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormFactory;
@@ -31,6 +32,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class DropzoneListener
 {
+    private $dropzoneManager;
     private $formFactory;
     private $httpKernel;
     private $om;
@@ -40,6 +42,7 @@ class DropzoneListener
 
     /**
      * @DI\InjectParams({
+     *     "dropzoneManager"       = @DI\Inject("claroline.manager.dropzone_manager"),
      *     "formFactory"           = @DI\Inject("form.factory"),
      *     "httpKernel"            = @DI\Inject("http_kernel"),
      *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
@@ -49,6 +52,7 @@ class DropzoneListener
      * })
      */
     public function __construct(
+        DropzoneManager $dropzoneManager,
         FormFactory $formFactory,
         HttpKernelInterface $httpKernel,
         ObjectManager $om,
@@ -56,6 +60,7 @@ class DropzoneListener
         RequestStack $requestStack,
         TwigEngine $templating
     ) {
+        $this->dropzoneManager = $dropzoneManager;
         $this->formFactory = $formFactory;
         $this->httpKernel = $httpKernel;
         $this->om = $om;
@@ -145,7 +150,7 @@ class DropzoneListener
      */
     public function onDelete(DeleteResourceEvent $event)
     {
-        $this->om->remove($event->getResource());
+        $this->dropzoneManager->delete($event->getResource());
         $event->stopPropagation();
     }
 }

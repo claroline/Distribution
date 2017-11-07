@@ -83,8 +83,14 @@ class DropzoneSerializer
             if (isset($data['parameters']['expectedCorrectionTotal'])) {
                 $dropzone->setExpectedCorrectionTotal($data['parameters']['expectedCorrectionTotal']);
             }
+            if (isset($data['parameters']['scoreMax'])) {
+                $dropzone->setScoreMax($data['parameters']['scoreMax']);
+            }
             if (isset($data['parameters']['scoreToPass'])) {
                 $dropzone->setScoreToPass($data['parameters']['scoreToPass']);
+            }
+            if (isset($data['parameters']['dropType'])) {
+                $dropzone->setDropType($data['parameters']['dropType']);
             }
             if (isset($data['parameters']['manualPlanning'])) {
                 $dropzone->setManualPlanning($data['parameters']['manualPlanning']);
@@ -188,7 +194,9 @@ class DropzoneSerializer
         $parameters['richTextEnabled'] = $dropzone->isRichTextEnabled();
         $parameters['peerReview'] = $dropzone->getPeerReview();
         $parameters['expectedCorrectionTotal'] = $dropzone->getExpectedCorrectionTotal();
+        $parameters['scoreMax'] = $dropzone->getScoreMax();
         $parameters['scoreToPass'] = $dropzone->getScoreToPass();
+        $parameters['dropType'] = $dropzone->getDropType();
         $parameters['manualPlanning'] = $dropzone->getManualPlanning();
         $parameters['manualState'] = $dropzone->getManualState();
         $parameters['dropStartDate'] = $dropzone->getDropStartDate() ? $dropzone->getDropStartDate()->format('Y-m-d H:i') : null;

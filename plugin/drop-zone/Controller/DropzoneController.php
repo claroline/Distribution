@@ -63,13 +63,13 @@ class DropzoneController extends Controller
      */
     public function dropzoneOpenAction(Dropzone $dropzone, User $user = null)
     {
-        $this->checkPermission('OPEN', $dropzone, [], true);
-        $myDrops = empty($user) ? [] : $this->manager->getSerializedUserDrops($dropzone, $user);
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $myDrop = empty($user) ? null : $this->manager->getUserDrop($dropzone, $user);
 
         return [
             '_resource' => $dropzone,
             'user' => $user,
-            'myDrops' => $myDrops,
+            'myDrop' => $myDrop,
         ];
     }
 }

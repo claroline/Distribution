@@ -15,7 +15,6 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -25,14 +24,17 @@ class Dropzone extends AbstractResource
 {
     use UuidTrait;
 
-    const MANUAL_STATE_NOT_STARTED = 'notStarted';
-    const MANUAL_STATE_PEER_REVIEW = 'peerReview';
-    const MANUAL_STATE_ALLOW_DROP = 'allowDrop';
-    const MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW = 'allowDropAndPeerReview';
-    const MANUAL_STATE_FINISHED = 'finished';
+    const MANUAL_STATE_NOT_STARTED = 0;
+    const MANUAL_STATE_ALLOW_DROP = 1;
+    const MANUAL_STATE_FINISHED = 2;
+    const MANUAL_STATE_PEER_REVIEW = 3;
+    const MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW = 4;
 
-    const AUTO_CLOSED_STATE_WAITING = 'waiting';
-    const AUTO_CLOSED_STATE_CLOSED = 'autoClosed';
+    const AUTO_CLOSED_STATE_WAITING = 0;
+    const AUTO_CLOSED_STATE_CLOSED = 1;
+
+    const DROP_TYPE_USER = 0;
+    const DROP_TYPE_ROLE = 1;
 
     /**
      * @ORM\Id
@@ -98,10 +100,6 @@ class Dropzone extends AbstractResource
 
     /**
      * @ORM\Column(name="expected_correction_total", type="smallint", nullable=false)
-     * @Assert\Range(
-     *      min = 1,
-     *      max = 10
-     * )
      */
     protected $expectedCorrectionTotal = 3;
 
@@ -117,12 +115,18 @@ class Dropzone extends AbstractResource
 
     /**
      * @ORM\Column(name="score_to_pass", type="float", nullable=false)
-     * @Assert\Range(
-     *      min = 0,
-     *      max = 20
-     * )
      */
-    protected $scoreToPass = 10;
+    protected $scoreToPass = 50;
+
+    /**
+     * @ORM\Column(name="score_max", type="integer", nullable=false)
+     */
+    protected $scoreMax = 100;
+
+    /**
+     * @ORM\Column(name="drop_type", type="integer", nullable=false)
+     */
+    protected $dropType = self::DROP_TYPE_USER;
 
     /**
      * @ORM\Column(name="manual_planning", type="boolean", nullable=false)
@@ -130,9 +134,9 @@ class Dropzone extends AbstractResource
     protected $manualPlanning = true;
 
     /**
-     * @ORM\Column(name="manual_state", type="string", nullable=false)
+     * @ORM\Column(name="manual_state", type="integer", nullable=false)
      */
-    protected $manualState = 'notStarted';
+    protected $manualState = self::MANUAL_STATE_NOT_STARTED;
 
     /**
      * @ORM\Column(name="drop_start_date", type="datetime", nullable=true)
@@ -197,7 +201,7 @@ class Dropzone extends AbstractResource
     protected $autoCloseDropsAtDropEndDate = false;
 
     /**
-     * @ORM\Column(name="auto_close_state", type="string", nullable=false)
+     * @ORM\Column(name="auto_close_state", type="integer", nullable=false)
      */
     protected $autoCloseState = self::AUTO_CLOSED_STATE_WAITING;
 
@@ -366,6 +370,16 @@ class Dropzone extends AbstractResource
         $this->displayNotationMessageToLearners = $displayNotationMessageToLearners;
     }
 
+    public function getScoreMax()
+    {
+        return $this->scoreMax;
+    }
+
+    public function setScoreMax($scoreMax)
+    {
+        $this->scoreMax = $scoreMax;
+    }
+
     public function getScoreToPass()
     {
         return $this->scoreToPass;
@@ -374,6 +388,16 @@ class Dropzone extends AbstractResource
     public function setScoreToPass($scoreToPass)
     {
         $this->scoreToPass = $scoreToPass;
+    }
+
+    public function getDropType()
+    {
+        return $this->dropType;
+    }
+
+    public function setDropType($dropType)
+    {
+        $this->dropType = $dropType;
     }
 
     public function getManualPlanning()

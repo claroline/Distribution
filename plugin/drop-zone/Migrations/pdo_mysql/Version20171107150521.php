@@ -8,37 +8,41 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/10/31 11:44:45
+ * Generation date: 2017/11/07 03:05:21
  */
-class Version20171031114444 extends AbstractMigration
+class Version20171107150521 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
-        $this->addSql('
+        $this->addSql("
             CREATE TABLE claro_dropzonebundle_document (
                 id INT AUTO_INCREMENT NOT NULL, 
                 drop_id INT NOT NULL, 
                 resource_id INT DEFAULT NULL, 
-                document_type VARCHAR(255) NOT NULL, 
+                user_id INT DEFAULT NULL, 
+                document_type INT NOT NULL, 
+                file_array LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', 
                 url VARCHAR(255) DEFAULT NULL, 
                 content LONGTEXT DEFAULT NULL, 
+                drop_date DATETIME NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_E846CAA8D17F50A6 (uuid), 
                 INDEX IDX_E846CAA84D224760 (drop_id), 
                 INDEX IDX_E846CAA889329D25 (resource_id), 
+                INDEX IDX_E846CAA8A76ED395 (user_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
-        ');
+        ");
         $this->addSql('
             CREATE TABLE claro_dropzonebundle_drop (
                 id INT AUTO_INCREMENT NOT NULL, 
                 dropzone_id INT NOT NULL, 
-                user_id INT NOT NULL, 
+                user_id INT DEFAULT NULL, 
                 role_id INT DEFAULT NULL, 
-                drop_date DATETIME NOT NULL, 
+                drop_date DATETIME DEFAULT NULL, 
                 reported TINYINT(1) NOT NULL, 
                 finished TINYINT(1) NOT NULL, 
-                number INT NOT NULL, 
+                drop_number INT DEFAULT NULL, 
                 auto_closed_drop TINYINT(1) NOT NULL, 
                 unlocked_drop TINYINT(1) NOT NULL, 
                 unlocked_user TINYINT(1) NOT NULL, 
@@ -67,8 +71,10 @@ class Version20171031114444 extends AbstractMigration
                 display_notation_to_learners TINYINT(1) NOT NULL, 
                 display_notation_message_to_learners TINYINT(1) NOT NULL, 
                 score_to_pass DOUBLE PRECISION NOT NULL, 
+                score_max INT NOT NULL, 
+                drop_type INT NOT NULL, 
                 manual_planning TINYINT(1) NOT NULL, 
-                manual_state VARCHAR(255) NOT NULL, 
+                manual_state INT NOT NULL, 
                 drop_start_date DATETIME DEFAULT NULL, 
                 drop_end_date DATETIME DEFAULT NULL, 
                 review_start_date DATETIME DEFAULT NULL, 
@@ -80,7 +86,7 @@ class Version20171031114444 extends AbstractMigration
                 criteria_enabled TINYINT(1) NOT NULL, 
                 criteria_total SMALLINT NOT NULL, 
                 auto_close_drops_at_drop_end_date TINYINT(1) NOT NULL, 
-                auto_close_state VARCHAR(255) NOT NULL, 
+                auto_close_state INT NOT NULL, 
                 notify_on_drop TINYINT(1) NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 resourceNode_id INT DEFAULT NULL, 
@@ -113,6 +119,12 @@ class Version20171031114444 extends AbstractMigration
             ON DELETE SET NULL
         ');
         $this->addSql('
+            ALTER TABLE claro_dropzonebundle_document 
+            ADD CONSTRAINT FK_E846CAA8A76ED395 FOREIGN KEY (user_id) 
+            REFERENCES claro_user (id) 
+            ON DELETE SET NULL
+        ');
+        $this->addSql('
             ALTER TABLE claro_dropzonebundle_drop 
             ADD CONSTRAINT FK_97D5DB3154FC3EC3 FOREIGN KEY (dropzone_id) 
             REFERENCES claro_dropzonebundle_dropzone (id) 
@@ -122,7 +134,7 @@ class Version20171031114444 extends AbstractMigration
             ALTER TABLE claro_dropzonebundle_drop 
             ADD CONSTRAINT FK_97D5DB31A76ED395 FOREIGN KEY (user_id) 
             REFERENCES claro_user (id) 
-            ON DELETE CASCADE
+            ON DELETE SET NULL
         ');
         $this->addSql('
             ALTER TABLE claro_dropzonebundle_drop 

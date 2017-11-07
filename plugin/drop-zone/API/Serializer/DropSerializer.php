@@ -7,7 +7,6 @@ use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Drop;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.serializer.dropzone.drop")
@@ -18,10 +17,11 @@ class DropSerializer
     private $documentSerializer;
     private $userSerializer;
     private $roleSerializer;
-    private $tokenStorage;
+
     private $dropRepo;
     private $dropzoneRepo;
     private $roleRepo;
+    private $userRepo;
 
     /**
      * DropSerializer constructor.
@@ -30,30 +30,28 @@ class DropSerializer
      *     "documentSerializer" = @DI\Inject("claroline.serializer.dropzone.document"),
      *     "userSerializer"     = @DI\Inject("claroline.serializer.user"),
      *     "roleSerializer"     = @DI\Inject("claroline.serializer.role"),
-     *     "tokenStorage"       = @DI\Inject("security.token_storage"),
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param DocumentSerializer    $documentSerializer
-     * @param UserSerializer        $userSerializer
-     * @param RoleSerializer        $roleSerializer
-     * @param TokenStorageInterface $tokenStorage
-     * @param ObjectManager         $om
+     * @param DocumentSerializer $documentSerializer
+     * @param UserSerializer     $userSerializer
+     * @param RoleSerializer     $roleSerializer
+     * @param ObjectManager      $om
      */
     public function __construct(
         DocumentSerializer $documentSerializer,
         UserSerializer $userSerializer,
         RoleSerializer $roleSerializer,
-        TokenStorageInterface $tokenStorage,
         ObjectManager $om
     ) {
         $this->documentSerializer = $documentSerializer;
         $this->userSerializer = $userSerializer;
         $this->roleSerializer = $roleSerializer;
-        $this->tokenStorage = $tokenStorage;
+
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->dropzoneRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Dropzone');
         $this->roleRepo = $om->getRepository('Claroline\CoreBundle\Entity\Role');
+        $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
     }
 
     /**
@@ -66,9 +64,9 @@ class DropSerializer
         return [
             'id' => $drop->getUuid(),
             'dropzone' => $drop->getDropzone()->getUuid(),
-            'user' => $this->userSerializer->serialize($drop->getUser()),
+            'user' => $drop->getUser() ? $this->userSerializer->serialize($drop->getUser()) : null,
             'role' => $drop->getRole() ? $this->roleSerializer->serialize($drop->getRole()) : null,
-            'dropDate' => $drop->getDropDate()->format('Y-m-d H:i'),
+            'dropDate' => $drop->getDropDate() ? $drop->getDropDate()->format('Y-m-d H:i') : null,
             'reported' => $drop->isReported(),
             'finished' => $drop->isFinished(),
             'number' => $drop->getNumber(),
@@ -95,11 +93,10 @@ class DropSerializer
             $dropzone = $this->dropzoneRepo->findOneBy(['uuid' => $data['drop']]);
             $drop->setDropzone($dropzone);
             $drop->setDropDate(new \DateTime());
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-
-            if ($currentUser instanceof User) {
-                $drop->setUser($currentUser);
-            }
+        }
+        if (isset($data['user'])) {
+            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
+            $drop->setUser($user);
         }
         if (isset($data['role'])) {
             $role = isset($data['role']['id']) ? $this->roleRepo->findOneBy(['id' => $data['role']['id']]) : null;
