@@ -62,6 +62,8 @@ class UserSerializer
             'picture' => $user->getPicture(),
             'mail' => $user->getMail(),
             'administrativeCode' => $user->getAdministrativeCode(),
+            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace(),
+            'isEnabled' => $user->isEnabled()
         ];
     }
 
@@ -115,7 +117,14 @@ class UserSerializer
     public function deserialize($data, User $user = null, array $options = [])
     {
         $object = $this->serializer->deserialize($data, $user, $options);
-        $object->setPlainPassword($data->plainPassword);
+
+        if (isset($data->plainPassword)) {
+            $object->setPlainPassword($data->plainPassword);
+        }
+
+        if (isset($data->isEnabled)) {
+            $object->setIsEnabled($data->isEnabled);
+        }
 
         return $object;
     }

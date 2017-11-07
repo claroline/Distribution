@@ -5,7 +5,7 @@ var coursesManagement = function (userId) {
 module.exports = {
   actions: [
     {
-      name: 'courses_management',
+      name: (Translator) => Translator.trans('courses_management', {}, 'cursus'),
       url: coursesManagement,
       type: 'administration_users',
       class: 'fa fa-list-alt'

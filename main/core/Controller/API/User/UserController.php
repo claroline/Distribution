@@ -198,34 +198,6 @@ class UserController extends FOSRestController
         return $this->container->get('security.authorization_checker')->isGranted($action, $object);
     }
 
-    /**
-     * @View(serializerGroups={"api_user"})
-     * @Post("/pws/create/{user}")
-     */
-    public function createPersonalWorkspaceAction(User $user)
-    {
-        if (!$user->getPersonalWorkspace()) {
-            $this->userManager->setPersonalWorkspace($user);
-        } else {
-            throw new \Exception('Workspace already exists');
-        }
-
-        return $user;
-    }
-
-    /**
-     * @View(serializerGroups={"api_user"})
-     * @Post("/pws/delete/{user}")
-     */
-    public function deletePersonalWorkspaceAction(User $user)
-    {
-        $personalWorkspace = $user->getPersonalWorkspace();
-        $this->eventDispatcher->dispatch('log', 'Log\LogWorkspaceDelete', [$personalWorkspace]);
-        $this->workspaceManager->deleteWorkspace($personalWorkspace);
-
-        return $user;
-    }
-
     private function throwExceptionIfNotGranted($action, $users)
     {
         $collection = is_array($users) ? new UserCollection($users) : new UserCollection([$users]);
