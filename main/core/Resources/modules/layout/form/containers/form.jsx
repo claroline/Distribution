@@ -13,6 +13,7 @@ const Form = props =>
 
     data={props.data}
     errors={props.errors}
+    pendingChanges={props.pendingChanges}
     validating={props.validating}
     updateProp={props.updateProp}
   >
@@ -26,6 +27,7 @@ Form.propTypes = {
   // retrieved from store
   data: T.object,
   errors: T.object,
+  pendingChanges: T.bool,
   validating: T.bool,
   updateProp: T.func.isRequired
 }
@@ -33,6 +35,7 @@ Form.propTypes = {
 Form.defaultProps = {
   data: {},
   errors: {},
+  pendingChanges: false,
   validating: false
 }
 
@@ -42,8 +45,9 @@ function mapStateToProps(state, ownProps) {
 
   return {
     data: select.data(formState),
-    validating: select.validating(formState),
-    errors: select.errors(formState)
+    errors: select.errors(formState),
+    pendingChanges: select.pendingChanges(formState),
+    validating: select.validating(formState)
   }
 }
 

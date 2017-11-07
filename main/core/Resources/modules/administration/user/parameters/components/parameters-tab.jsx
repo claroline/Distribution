@@ -28,6 +28,11 @@ const ParametersActions = props =>
     />
   </PageActions>
 
+ParametersActions.propTypes = {
+  save: T.func.isRequired,
+  saveEnabled: T.bool.isRequired
+}
+
 const ParametersTab = props =>
   <Form
     level={3}
@@ -99,15 +104,15 @@ const ParametersTab = props =>
           {
             name: 'anonymous.captcha',
             type: 'boolean',
-            label: t('display_captcha'),
+            label: t('display_captcha')
           }, {
             name: 'anonymous.emailHoneypot',
             type: 'boolean',
-            label: t('use_honeypot'),
+            label: t('use_honeypot')
           }, {
             name: 'anonymous.profileAccess',
             type: 'boolean',
-            label: t('show_profile_for_anonymous'),
+            label: t('show_profile_for_anonymous')
           }
         ]
       }, {
@@ -118,7 +123,7 @@ const ParametersTab = props =>
           {
             name: 'termsOfService.enabled',
             type: 'boolean',
-            label: t('term_of_service_activation_message'),
+            label: t('term_of_service_activation_message')
           }, { // todo should be hidden if not enabled
             name: 'termsOfService.content',
             type: 'html', // todo : create a new localized content type
@@ -138,7 +143,7 @@ const ParametersTab = props =>
 
 function mapStateToProps(state) {
   return {
-    saveEnabled: select.saveEnabled(state.parameters)
+    saveEnabled: select.saveEnabled(select.form(state, 'parameters'))
   }
 }
 

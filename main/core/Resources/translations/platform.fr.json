@@ -1484,5 +1484,6 @@
     "add_comment": "Commenter",
     "keywords": "Mots clés",
     "objects_delete_title": "Supprimer des objets",
-    "object_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?"
+    "object_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?",
+    "unsaved_changes_warning": "Certaines modifications du formulaire n'ont pas été enregistrées. Si vous quittez cette page maintenant, ces modifications seront perdues."
 }

@@ -1,5 +1,10 @@
+import get from 'lodash/get'
 import {createSelector} from 'reselect'
+
 import {t, transChoice} from '#/main/core/translation'
+
+// retrieves a list instance in the store
+const list = (state, listName) => get(state, listName)
 
 // check enabled list features
 const isAsync      = (listState) => typeof listState.fetchUrl !== 'undefined'
@@ -82,6 +87,7 @@ function queryString(listState) {
 }
 
 export const select = {
+  list,
   isAsync,
   isFilterable,
   isDeletable,

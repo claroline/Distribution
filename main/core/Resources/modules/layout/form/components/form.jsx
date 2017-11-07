@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import invariant from 'invariant'
@@ -67,74 +67,102 @@ AdvancedSection.defaultProps = {
   hideText: t('hide_advanced_options')
 }
 
-const Form = props => {
-  const primarySection = 1 === props.sections.length ? props.sections[0] : props.sections.find(section => section.primary)
-  const otherSections = props.sections.filter(section => section !== primarySection)
+class Form extends Component {
+  constructor(props) {
+    super(props)
 
-  return (
-    <form action="#" className={classes('form', props.className)}>
-      {primarySection &&
-        <div className="panel panel-default">
-          <fieldset className="panel-body">
-            {React.createElement('h'+props.level, {
-              className: 'sr-only'
-            }, primarySection.title)}
+    this.warnPendingChanges = this.warnPendingChanges.bind(this)
+  }
 
-            {primarySection.fields.map(field =>
-              <FormField
-                {...field}
-                key={field.name}
-                disabled={field.disabled ? field.disabled(props.data) : false}
-                value={get(props.data, field.name)}
-                error={get(props.errors, field.name)}
-                onChange={(value) => props.updateProp(field.name, value)}
-              />
-            )}
+  warnPendingChanges(e) {
+    if (this.props.pendingChanges) {
+      // note: this is supposed to be the text displayed in the browser built-in
+      // popup (see https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onbeforeunload#Example)
+      // but it doesn't seem to be actually used in modern browsers. We use it
+      // here because a string is needed anyway.
+      e.returnValue = t('unsaved_changes_warning')
 
-            {primarySection.advanced &&
-              <AdvancedSection {...primarySection.advanced} />
-            }
-          </fieldset>
-        </div>
-      }
+      return e.returnValue
+    }
+  }
 
-      <FormSections
-        level={props.level}
-      >
-        {otherSections.map(section =>
-          <FormSection
-            key={section.id}
-            id={section.id}
-            icon={section.icon}
-            title={section.title}
-            errors={props.errors}
-            validating={props.validating}
-          >
-            {section.fields.map(field =>
-              <FormField
-                {...field}
-                key={field.name}
-                disabled={field.disabled ? field.disabled(props.data) : false}
-                value={get(props.data, field.name)}
-                error={get(props.errors, field.name)}
-                onChange={(value) => props.updateProp(field.name, value)}
-              />
-            )}
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.warnPendingChanges)
+  }
 
-            {section.advanced &&
-              <AdvancedSection {...section.advanced} />
-            }
-          </FormSection>
-        )}
-      </FormSections>
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.warnPendingChanges)
+  }
 
-      {props.children &&
-        <hr />
-      }
+  render() {
+    const primarySection = 1 === this.props.sections.length ? this.props.sections[0] : this.props.sections.find(section => section.primary)
+    const otherSections = this.props.sections.filter(section => section !== primarySection)
 
-      {props.children}
-    </form>
-  )
+    return (
+      <form action="#" className={classes('form', this.props.className)}>
+        {primarySection &&
+          <div className="panel panel-default">
+            <fieldset className="panel-body">
+              {React.createElement('h'+this.props.level, {
+                className: 'sr-only'
+              }, primarySection.title)}
+
+              {primarySection.fields.map(field =>
+                <FormField
+                  {...field}
+                  key={field.name}
+                  disabled={field.disabled ? field.disabled(this.props.data) : false}
+                  value={get(this.props.data, field.name)}
+                  error={get(this.props.errors, field.name)}
+                  onChange={(value) => this.props.updateProp(field.name, value)}
+                />
+              )}
+
+              {primarySection.advanced &&
+                <AdvancedSection {...primarySection.advanced} />
+              }
+            </fieldset>
+          </div>
+        }
+
+        <FormSections
+          level={this.props.level}
+        >
+          {otherSections.map(section =>
+            <FormSection
+              key={section.id}
+              id={section.id}
+              icon={section.icon}
+              title={section.title}
+              errors={this.props.errors}
+              validating={this.props.validating}
+            >
+              {section.fields.map(field =>
+                <FormField
+                  {...field}
+                  key={field.name}
+                  disabled={field.disabled ? field.disabled(this.props.data) : false}
+                  value={get(this.props.data, field.name)}
+                  error={get(this.props.errors, field.name)}
+                  onChange={(value) => this.props.updateProp(field.name, value)}
+                />
+              )}
+
+              {section.advanced &&
+                <AdvancedSection {...section.advanced} />
+              }
+            </FormSection>
+          )}
+        </FormSections>
+
+        {this.props.children &&
+          <hr />
+        }
+
+        {this.props.children}
+      </form>
+    )
+  }
 }
 
 Form.propTypes = {
@@ -142,6 +170,7 @@ Form.propTypes = {
   data: T.object,
   errors: T.object,
   validating: T.bool,
+  pendingChanges: T.bool,
   sections: T.arrayOf(T.shape({
     id: T.string.isRequired,
     icon: T.string,
@@ -174,7 +203,8 @@ Form.defaultProps = {
   data: {},
   level: 2,
   errors: {},
-  validating: false
+  validating: false,
+  pendingChanges: false
 }
 
 export {

@@ -9,7 +9,7 @@ const FormField = {
   propTypes: {
     id: T.string.isRequired,
     value: T.any,
-    placeholder: T.string, // not yet implemented
+    placeholder: T.string, // todo : not yet implemented
     disabled: T.bool.isRequired,
     onChange: T.func.isRequired
   },

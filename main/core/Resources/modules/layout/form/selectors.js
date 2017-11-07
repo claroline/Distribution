@@ -1,5 +1,9 @@
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 import {createSelector} from 'reselect'
+
+// retrieves a form instance in the store
+const form = (state, formName) => get(state, formName)
 
 const validating = (formState) => formState.validating
 const pendingChanges = (formState) => formState.pendingChanges
@@ -17,6 +21,7 @@ const saveEnabled = createSelector(
 )
 
 export const select = {
+  form,
   validating,
   pendingChanges,
   errors,
