@@ -6,6 +6,9 @@ import omit from 'lodash/omit'
 import Panel      from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
+import {Action as ActionTypes} from '#/main/core/layout/button/prop-types'
+import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action.jsx'
+
 /**
  * Renders a section.
  *
@@ -14,7 +17,7 @@ import PanelGroup from 'react-bootstrap/lib/PanelGroup'
  */
 const Section = props =>
   <Panel
-    {...omit(props, ['level', 'title', 'icon', 'children'])}
+    {...omit(props, ['level', 'title', 'icon', 'actions', 'children'])}
 
     collapsible={true}
     header={
@@ -22,7 +25,23 @@ const Section = props =>
         className: classes({opened: props.expanded})
       }, [
         props.icon && <span key="panel-icon" className={props.icon} style={{marginRight: 10}} />,
-        props.title
+        props.title,
+        0 !== props.actions.length &&
+        <div key="panel-actions" className="panel-actions">
+          {props.actions.map((action, actionIndex) =>
+            <TooltipAction
+              {...action}
+
+              key={`${props.id}-action-${actionIndex}`}
+              id={`${props.id}-action-${actionIndex}`}
+              className={classes({
+                'btn-link-default': !action.primary && !action.dangerous,
+                'btn-link-danger': action.dangerous,
+                'btn-link-primary': action.primary
+              })}
+            />
+          )}
+        </div>
       ])
     }
   >
@@ -33,9 +52,16 @@ Section.propTypes = {
   id: T.string.isRequired,
   level: T.number.isRequired,
   icon: T.string,
-  title: T.string.isRequired,
+  title: T.node.isRequired,
   expanded: T.bool,
+  actions: T.arrayOf(T.shape(
+    ActionTypes.propTypes
+  )),
   children: T.node.isRequired
+}
+
+Section.defaultProps = {
+  actions: []
 }
 
 const Sections = props =>

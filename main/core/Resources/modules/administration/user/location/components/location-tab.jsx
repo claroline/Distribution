@@ -36,7 +36,7 @@ const LocationTab = props =>
     <Route
       path="/locations/:id"
       component={Location}
-      onEnter={(params) => props.openForm(params.uuid)}
+      onEnter={(params) => props.openForm(params.id)}
     />
   </Switch>
 

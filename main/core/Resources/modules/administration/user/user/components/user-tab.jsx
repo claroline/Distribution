@@ -4,10 +4,6 @@ import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
-import {actions} from '#/main/core/administration/user/role/actions'
-
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
-
 import {Route, Switch} from '#/main/core/router'
 import {User,  UserActions}  from '#/main/core/administration/user/user/components/user.jsx'
 import {Users, UsersActions} from '#/main/core/administration/user/user/components/users.jsx'

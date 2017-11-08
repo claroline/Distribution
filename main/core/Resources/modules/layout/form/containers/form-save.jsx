@@ -8,7 +8,7 @@ import {actions} from '#/main/core/layout/form/actions'
 import {select} from '#/main/core/layout/form/selectors'
 
 // this is a HOC to allow any button component with the correct interface
-// will set `title`, `disabled`, `action` props of the passed btn component
+// it will set `title`, `disabled`, `action` props of the passed btn component
 function makeSaveAction(formName) {
   return (ButtonComponent) => {
     const SaveWrapper = props =>
@@ -31,11 +31,14 @@ function makeSaveAction(formName) {
     SaveWrapper.displayName = `SaveWrapper(${formName})`
 
     // connect it to the store
-    return connect(state => ({
-      saveEnabled: select.saveEnabled(select.form(state, formName))
-    }), state => ({
-      save: () => dispatch(actions.save(formName))
-    }))(SaveWrapper)
+    return connect(
+      state => ({
+        saveEnabled: select.saveEnabled(select.form(state, formName))
+      }),
+      dispatch => ({
+        save: () => dispatch(actions.save(formName))
+      })
+    )(SaveWrapper)
   }
 }
 

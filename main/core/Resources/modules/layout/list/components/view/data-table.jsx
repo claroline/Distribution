@@ -22,7 +22,7 @@ const DataCell = props => {
   return (typeof props.column.renderer === 'function') || !typeDef.components || !typeDef.components.table ?
     <TableCell className={`${props.column.type}-cell`}>
       {typeof props.column.renderer === 'function' ?
-        props.column.renderer(props.rowData) : typeDef.render(get(props.rowData, props.column.name))
+        props.column.renderer(props.rowData) : typeDef.render(get(props.rowData, props.column.name), props.column.options || {})
       }
     </TableCell>
     :
@@ -31,7 +31,9 @@ const DataCell = props => {
 
 DataCell.propTypes = {
   rowData: T.object.isRequired,
-  column: T.shape(DataListProperty.propTypes).isRequired
+  column: T.shape(
+    DataListProperty.propTypes
+  ).isRequired
 }
 
 const DataTableRow = props =>

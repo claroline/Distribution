@@ -7,6 +7,7 @@ import {t} from '#/main/core/translation'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 import Configuration from '#/main/core/library/Configuration/Configuration'
+import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 const UsersActions = props =>
   <PageActions>
@@ -22,47 +23,6 @@ const UsersActions = props =>
 const Users = props =>
   <DataList
     name="users.list"
-    definition={[
-      {
-        name: 'name',
-        type: 'string',
-        label: t('name'),
-        renderer: (rowData) => <a href='#'> {rowData.lastName} {rowData.firstName}</a>,
-        displayed: true
-      },
-      {
-        name: 'username',
-        type: 'string',
-        label: t('username'),
-        displayed: true
-      },
-      {
-        name: 'firstName',
-        type: 'string',
-        label: t('first_name'),
-        displayed: false
-      },
-      {
-        name: 'lastName',
-        type: 'string',
-        label: t('last_name'),
-        displayed: false
-      },
-      {
-        name: 'hasPersonalWorkspace',
-        type: 'boolean',
-        label: t('has_personal_workspace'),
-        filterable: true,
-        displayed: true
-      },
-      {
-        name: 'isEnabled',
-        type: 'boolean',
-        label: t('isEnabled'),
-        filterable: true,
-        displayed: true
-      },
-    ]}
     actions={[
       {
         icon: 'fa fa-fw fa-eye',
@@ -121,17 +81,8 @@ const Users = props =>
         context: 'row'
       })
     ]}
-    card={(row) => ({
-      onClick: '#',
-      poster: null,
-      icon: 'fa fa-user',
-      title: row.username,
-      subtitle: row.firstName + ' ' + row.lastName,
-      contentText: '',
-      flags: [],
-      footer: <span>footer</span>,
-      footerLong: <span>footerLong</span>
-    })}
+    definition={UserList.definition}
+    card={UserList.card}
   />
 
 Users.propTypes = {

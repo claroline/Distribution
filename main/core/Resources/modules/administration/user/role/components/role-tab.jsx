@@ -1,12 +1,12 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
-import {actions} from '#/main/core/administration/user/role/actions'
-
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+
+import {actions} from '#/main/core/administration/user/role/actions'
 
 import {Route, Switch} from '#/main/core/router'
 import {Role,  RoleActions}  from '#/main/core/administration/user/role/components/role.jsx'
@@ -44,7 +44,6 @@ const RoleTab = props =>
 RoleTab.propTypes = {
   openForm: T.func.isRequired
 }
-
 function mapDispatchToProps(dispatch) {
   return {
     openForm(id = null) {

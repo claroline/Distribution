@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+import difference from 'lodash/difference'
 import set from 'lodash/set'
 
 import {makeReducer, combineReducers, reduceReducers} from '#/main/core/utilities/redux'
@@ -85,6 +86,12 @@ function makeFormReducer(customReducers = {}, validate = () => true) {
     reducer[reducerName] = customReducers[reducerName] ?
       reduceReducers(baseReducer[reducerName], customReducers[reducerName]) : baseReducer[reducerName]
   })
+
+  // get custom keys
+  const rest = difference(Object.keys(customReducers), Object.keys(baseReducer))
+  rest.map(reducerName =>
+    reducer[reducerName] = customReducers[reducerName]
+  )
 
   return combineReducers(reducer)
 }

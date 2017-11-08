@@ -1,5 +1,5 @@
 import React from 'react'
-//import {PropTypes as T} from 'prop-types'
+import {implementPropTypes} from '#/main/core/prop-types'
 
 import {Action as ActionTypes} from '#/main/core/layout/button/prop-types'
 
@@ -17,8 +17,7 @@ const TooltipAction = props => React.createElement(
   <span className={props.icon} />
 )
 
-TooltipAction.propTypes = ActionTypes.propTypes
-TooltipAction.defaultProps = ActionTypes.defaultProps
+implementPropTypes(TooltipAction, ActionTypes)
 
 export {
   TooltipAction

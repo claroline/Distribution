@@ -97,6 +97,7 @@ class Form extends Component {
   render() {
     const primarySection = 1 === this.props.sections.length ? this.props.sections[0] : this.props.sections.find(section => section.primary)
     const otherSections = this.props.sections.filter(section => section !== primarySection)
+    const openedSection = otherSections.find(section => section.defaultOpened)
 
     return (
       <form action="#" className={classes('form', this.props.className)}>
@@ -125,35 +126,38 @@ class Form extends Component {
           </div>
         }
 
-        <FormSections
-          level={this.props.level}
-        >
-          {otherSections.map(section =>
-            <FormSection
-              key={section.id}
-              id={section.id}
-              icon={section.icon}
-              title={section.title}
-              errors={this.props.errors}
-              validating={this.props.validating}
-            >
-              {section.fields.map(field =>
-                <FormField
-                  {...field}
-                  key={field.name}
-                  disabled={field.disabled ? field.disabled(this.props.data) : false}
-                  value={get(this.props.data, field.name)}
-                  error={get(this.props.errors, field.name)}
-                  onChange={(value) => this.props.updateProp(field.name, value)}
-                />
-              )}
+        {0 !== otherSections &&
+          <FormSections
+            level={this.props.level}
+            defaultOpened={openedSection ? openedSection.id : undefined}
+          >
+            {otherSections.map(section =>
+              <FormSection
+                key={section.id}
+                id={section.id}
+                icon={section.icon}
+                title={section.title}
+                errors={this.props.errors}
+                validating={this.props.validating}
+              >
+                {section.fields.map(field =>
+                  <FormField
+                    {...field}
+                    key={field.name}
+                    disabled={field.disabled ? field.disabled(this.props.data) : false}
+                    value={get(this.props.data, field.name)}
+                    error={get(this.props.errors, field.name)}
+                    onChange={(value) => this.props.updateProp(field.name, value)}
+                  />
+                )}
 
-              {section.advanced &&
+                {section.advanced &&
                 <AdvancedSection {...section.advanced} />
-              }
-            </FormSection>
-          )}
-        </FormSections>
+                }
+              </FormSection>
+            )}
+          </FormSections>
+        }
 
         {this.props.children &&
           <hr />
@@ -176,6 +180,7 @@ Form.propTypes = {
     icon: T.string,
     title: T.string.isRequired,
     primary: T.bool,
+    defaultOpened: T.bool,
     fields: T.arrayOf(T.shape({
       name: T.string.isRequired,
       type: T.string,

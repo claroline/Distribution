@@ -65,7 +65,7 @@ bootstrap(
           delete: {
             title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
             question: (locations) => t('remove_locations_confirm', {
-              location_list: locations.map(locations => workspace.name).join(', ')
+              location_list: locations.map(location => location.name).join(', ')
             })
           }
         })
