@@ -4,7 +4,6 @@ import {actions as listActions} from '#/main/core/layout/list/actions'
 import {Location as LocationTypes} from '#/main/core/administration/user/location/prop-types'
 import {actions as formActions} from '#/main/core/layout/form/actions'
 
-
 export const actions = {}
 
 //actions.geolocate = makeActionCreator(ROLE_EDIT, 'location')

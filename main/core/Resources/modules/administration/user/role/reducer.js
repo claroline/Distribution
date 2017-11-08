@@ -1,32 +1,13 @@
-import {makeReducer} from '#/main/core/utilities/redux'
+import {combineReducers} from '#/main/core/utilities/redux'
+
 import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {makeFormReducer} from '#/main/core/layout/form/reducer'
 
-import {
-  ROLE_EDIT,
-  ROLE_ADD
-} from './actions'
+import {validate} from './validator'
 
-const rolesReducer = makeReducer([], {
-  [ROLE_EDIT]: (state, action) => {
-    const newState = cloneDeep(state)
-
-    const idx = state.findIndex(el => el.id === action.role.id)
-    if (-1 !== idx) {
-      newState[idx] = action.role
-    }
-
-    return newState
-  },
-  [ROLE_ADD]: (state, action) => {
-    const newState = cloneDeep(state)
-    newState.push(action.role)
-
-    return newState
-  }
-})
-
-const reducer = makeListReducer({
-  data: rolesReducer
+const reducer = combineReducers({
+  list: makeListReducer(),
+  current: makeFormReducer({}, validate)
 })
 
 export {

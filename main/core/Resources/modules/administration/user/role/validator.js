@@ -7,10 +7,10 @@ import {setIfError, notBlank, notEmptyArray} from '#/main/core/validation'
  *
  * @returns {Object}
  */
-function validate(location) {
+function validate(role) {
   const errors = {}
 
-  setIfError(errors, 'name', notBlank(location.name))
+  setIfError(errors, 'name', notBlank(role.name))
 
   return errors
 }

@@ -1,23 +1,24 @@
-import {makeActionCreator} from '#/main/core/utilities/redux'
-import {generateUrl} from '#/main/core/fos-js-router'
-import {REQUEST_SEND} from '#/main/core/api/actions'
-
-export const ROLE_EDIT = 'ROLE_EDIT'
-export const ROLE_SAVE = 'ROLE_SAVE'
-export const ROLE_ADD = 'ROLE_ADD'
-
 export const actions = {}
 
-actions.editRole = makeActionCreator(ROLE_EDIT, 'role')
-actions.saveRole = makeActionCreator(ROLE_SAVE)
+import {REQUEST_SEND} from '#/main/core/api/actions'
+import {actions as formActions} from '#/main/core/layout/form/actions'
 
-actions.addRole = (role) => ({
-  [REQUEST_SEND]: {
-    url: generateUrl('api_role_create'),
-    request: {
-      method: 'POST',
-      body: JSON.stringify(role)
-    },
-    success: (data, dispatch) => dispatch(actions.fetchRoles())
+import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
+
+actions.open = (uuid = null) => (dispatch) => {
+  if (uuid) {
+    dispatch({
+      [REQUEST_SEND]: {
+        route: ['apiv2_role_get', {uuid}],
+        request: {
+          method: 'GET'
+        },
+        success: (response, dispatch) => {
+          dispatch(formActions.resetForm(response))
+        }
+      }
+    })
+  } else {
+    dispatch(formActions.resetForm(RoleTypes.defaultProps))
   }
-})
+}

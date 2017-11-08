@@ -678,7 +678,7 @@ class UserManager
         $this->objectManager->endFlushSuite();
 
         if ($logger) {
-            $logger($countCreated.' users updated ('.implode(',', $updated).')');
+            $logger($countUpdated.' users updated ('.implode(',', $updated).')');
             $logger($countCreated.' users created ('.implode(',', $created).')');
         }
 

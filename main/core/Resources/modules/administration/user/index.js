@@ -44,26 +44,32 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => {
     return {
-      users: merge({}, initialData.users, {
-        fetchUrl: generateUrl('apiv2_user_list')
-      }),
+      users: {
+        list: merge({}, initialData.users, {
+          fetchUrl: generateUrl('apiv2_user_list')
+        })
+      },
       groups: {
         list: merge({}, initialData.groups, {
           fetchUrl: generateUrl('apiv2_group_list')
         })
       },
-      roles: merge({}, initialData.roles, {
-        fetchUrl: generateUrl('apiv2_role_list')
-      }),
-      locations: merge({}, initialData.locations, {
-        fetchUrl: generateUrl('apiv2_location_list'),
-        delete: {
-          title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
-          question: (locations) => t('remove_locations_confirm', {
-            location_list: locations.map(locations => workspace.name).join(', ')
-          })
-        }
-      }),
+      roles: {
+        list: merge({}, initialData.roles, {
+          fetchUrl: generateUrl('apiv2_role_list')
+        })
+      },
+      locations: {
+        list: merge({}, initialData.locations, {
+          fetchUrl: generateUrl('apiv2_location_list'),
+          delete: {
+            title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
+            question: (locations) => t('remove_locations_confirm', {
+              location_list: locations.map(locations => workspace.name).join(', ')
+            })
+          }
+        })
+      },
       organizations: merge({}, initialData.organizations),
       parameters: merge({}, {data: initialData.parameters}, {platformRoles: initialData.platformroles}, {locales: initialData.locales})
     }

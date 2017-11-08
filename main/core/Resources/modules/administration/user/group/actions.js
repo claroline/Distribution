@@ -9,7 +9,7 @@ actions.open = (groupId = null) => (dispatch) => {
   if (groupId) {
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_workspace_get', {id: groupId}],
+        route: ['apiv2_role_get', {id: groupId}],
         request: {
           method: 'GET'
         },
