@@ -83,7 +83,7 @@ class DropFileForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      file: []
+      files: []
     }
   }
 
@@ -93,14 +93,15 @@ class DropFileForm extends Component {
         <FileGroup
           controlId="drop-file"
           label="drop_file"
-          value={this.state.file}
-          onChange={value => this.setState({file: value})}
+          value={this.state.files}
+          onChange={value => this.setState({files: value})}
           hideLabel={true}
+          max={0}
         />
         <button
           className="btn btn-primary"
-          disabled={this.state.file.length === 0}
-          onClick={() => this.props.handleSubmit(this.state.file[0])}
+          disabled={this.state.files.length === 0}
+          onClick={() => this.props.handleSubmit(this.state.files)}
         >
           {t('add')}
         </button>
@@ -145,6 +146,7 @@ export class DropForm extends Component {
   render() {
     return (
       <div id="drop-form">
+        <h2>{trans('add_document', {}, 'dropzone')}</h2>
         {this.state.availableDropTypes.length > 0 &&
           <RadioGroup
             controlId="drop-type"

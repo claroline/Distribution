@@ -3,7 +3,8 @@ import {makeReducer} from '#/main/core/utilities/redux'
 
 import {
   MY_DROP_LOAD,
-  DOCUMENT_ADD,
+  MY_DROP_UPDATE,
+  DOCUMENTS_ADD,
   DOCUMENT_REMOVE
 } from './actions'
 
@@ -11,9 +12,12 @@ const myDropReducer = makeReducer({}, {
   [MY_DROP_LOAD]: (state, action) => {
     return action.drop
   },
-  [DOCUMENT_ADD]: (state, action) => {
+  [MY_DROP_UPDATE]: (state, action) => {
+    return Object.assign({}, state, {[action.property]: action.value})
+  },
+  [DOCUMENTS_ADD]: (state, action) => {
     const documents = cloneDeep(state.documents)
-    documents.push(action.document)
+    action.documents.forEach(d => documents.push(d))
 
     return Object.assign({}, state, {documents: documents})
   },

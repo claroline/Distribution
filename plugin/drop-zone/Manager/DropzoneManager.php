@@ -187,7 +187,6 @@ class DropzoneManager
             $drop = new Drop();
             $drop->setUser($user);
             $drop->setDropzone($dropzone);
-            $drop->setDropDate(new \DateTime());
             $this->om->persist($drop);
             $this->om->flush();
         }
@@ -246,15 +245,41 @@ class DropzoneManager
         $document->setDropDate(new \DateTime());
         $document->setType($documentType);
         $data = $documentData;
-
-        if (intval($documentType) === Document::DOCUMENT_TYPE_FILE) {
-            $data = $this->registerFile($drop->getDropzone(), $documentData);
-        }
         $document->setData($data);
         $this->om->persist($document);
         $this->om->flush();
 
         return $document;
+    }
+
+    /**
+     * Creates Files Documents.
+     *
+     * @param Drop  $drop
+     * @param User  $user
+     * @param array $files
+     */
+    public function createFilesDocuments(Drop $drop, User $user, array $files)
+    {
+        $documents = [];
+        $currentDate = new \DateTime();
+        $dropzone = $drop->getDropzone();
+        $this->om->startFlushSuite();
+
+        foreach ($files as $file) {
+            $document = new Document();
+            $document->setDrop($drop);
+            $document->setUser($user);
+            $document->setDropDate($currentDate);
+            $document->setType(Document::DOCUMENT_TYPE_FILE);
+            $data = $this->registerFile($dropzone, $file);
+            $document->setFile($data);
+            $this->om->persist($document);
+            $documents[] = $this->serializeDocument($document);
+        }
+        $this->om->endFlushSuite();
+
+        return $documents;
     }
 
     /**
@@ -272,6 +297,19 @@ class DropzoneManager
             }
         }
         $this->om->remove($document);
+        $this->om->flush();
+    }
+
+    /**
+     * Terminates a drop.
+     *
+     * @param Drop $drop
+     */
+    public function submitDrop(Drop $drop)
+    {
+        $drop->setFinished(true);
+        $drop->setDropDate(new \DateTime());
+        $this->om->persist($drop);
         $this->om->flush();
     }
 

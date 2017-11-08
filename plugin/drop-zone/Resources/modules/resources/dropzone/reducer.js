@@ -8,12 +8,14 @@ import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 // dropzone reducers
 import {reducer as editorReducer} from './editor/reducer'
 import {reducer as playerReducer} from './player/reducer'
+import {reducer as correctionReducer} from './correction/reducer'
 
 const reducer = {
   user: makeReducer({}, {}),
   dropzone: editorReducer.dropzone,
   myDrop: playerReducer.myDrop,
   //myDrops: playerReducer.myDrops,
+  drops: correctionReducer.drops,
   dropzoneForm: editorReducer.dropzoneForm,
 
   // generic reducers

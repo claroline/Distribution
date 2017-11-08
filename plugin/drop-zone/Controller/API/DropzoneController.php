@@ -11,7 +11,9 @@
 
 namespace Claroline\DropZoneBundle\Controller\API;
 
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
@@ -21,6 +23,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @EXT\Route("/dropzone", options={"expose"=true})
@@ -29,6 +32,9 @@ class DropzoneController
 {
     use PermissionCheckerTrait;
 
+    /** @var FinderProvider */
+    private $finder;
+
     /** @var DropzoneManager */
     private $manager;
 
@@ -36,13 +42,16 @@ class DropzoneController
      * DropzoneController constructor.
      *
      * @DI\InjectParams({
+     *     "finder"  = @DI\Inject("claroline.api.finder"),
      *     "manager" = @DI\Inject("claroline.manager.dropzone_manager")
      * })
      *
+     * @param FinderProvider  $finder
      * @param DropzoneManager $manager
      */
-    public function __construct(DropzoneManager $manager)
+    public function __construct(FinderProvider $finder, DropzoneManager $manager)
     {
+        $this->finder = $finder;
         $this->manager = $manager;
     }
 
@@ -108,7 +117,7 @@ class DropzoneController
     /**
      * Adds a Document to a Drop.
      *
-     * @EXT\Route("/drop/{id}/type/{type}", name="claro_dropzone_document_add")
+     * @EXT\Route("/drop/{id}/type/{type}", name="claro_dropzone_documents_add")
      * @EXT\Method("POST")
      * @EXT\ParamConverter(
      *     "drop",
@@ -124,34 +133,37 @@ class DropzoneController
      *
      * @return JsonResponse
      */
-    public function documentAddAction(Drop $drop, $type, User $user, Request $request)
+    public function documentsAddAction(Drop $drop, $type, User $user, Request $request)
     {
         $dropzone = $drop->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkDropEdition($drop, $user);
         $dropData = null;
-
-        switch ($type) {
-            case Document::DOCUMENT_TYPE_FILE:
-                $dropData = $request->files->get('dropData', false);
-                break;
-            case Document::DOCUMENT_TYPE_TEXT:
-            case Document::DOCUMENT_TYPE_URL:
-            case Document::DOCUMENT_TYPE_RESOURCE:
-                $dropData = $request->request->get('dropData', false);
-                break;
-        }
+        $documents = [];
 
         try {
-            $document = $this->manager->createDocument($drop, $user, intval($type), $dropData);
+            switch ($type) {
+                case Document::DOCUMENT_TYPE_FILE:
+                    $files = $request->files->all();
+                    $documents = $this->manager->createFilesDocuments($drop, $user, $files);
+                    break;
+                case Document::DOCUMENT_TYPE_TEXT:
+                case Document::DOCUMENT_TYPE_URL:
+                case Document::DOCUMENT_TYPE_RESOURCE:
+                    $dropData = $request->request->get('dropData', false);
+                    $document = $this->manager->createDocument($drop, $user, intval($type), $dropData);
+                    $documents[] = $this->manager->serializeDocument($document);
+                    break;
+            }
 
-            return new JsonResponse($this->manager->serializeDocument($document));
+            return new JsonResponse($documents);
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
     }
 
     /**
-     * Adds a Document to a Drop.
+     * Deletes a Document.
      *
      * @EXT\Route("/document/{id}", name="claro_dropzone_document_delete")
      * @EXT\Method("DELETE")
@@ -172,6 +184,7 @@ class DropzoneController
         $drop = $document->getDrop();
         $dropzone = $drop->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkDropEdition($drop, $user);
 
         try {
             $documentId = $document->getUuid();
@@ -181,5 +194,90 @@ class DropzoneController
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
+    }
+
+    /**
+     * Submits Drop.
+     *
+     * @EXT\Route("/drop/{id}/submit", name="claro_dropzone_drop_submit")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop $drop
+     * @param User $user
+     *
+     * @return JsonResponse
+     */
+    public function dropSubmitAction(Drop $drop, User $user)
+    {
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkDropEdition($drop, $user);
+
+        try {
+            $this->manager->submitDrop($drop);
+
+            return new JsonResponse($this->manager->serializeDrop($drop));
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * @EXT\Route("/{id}/drops/search", name="claro_dropzone_drops_search")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "dropzone",
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Dropzone $dropzone
+     * @param Request  $request
+     *
+     * @return JsonResponse
+     */
+    public function dropsSearchAction(Dropzone $dropzone, Request $request)
+    {
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+        $params = $request->query->all();
+
+        if (!isset($params['filters'])) {
+            $params['filters'] = [];
+        }
+        $params['filters']['dropzone'] = $dropzone->getUuid();
+
+        $data = $this->finder->search(
+            'Claroline\DropZoneBundle\Entity\Drop',
+            $params
+        );
+
+        return new JsonResponse($data, 200);
+    }
+
+    private function checkDropEdition(Drop $drop, User $user)
+    {
+        $dropzone = $drop->getDropzone();
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
+
+        if ($this->authorization->isGranted('EDIT', $collection)) {
+            return;
+        }
+
+        if ($dropzone->isDropEnabled()) {
+            $roles = $user->getRoles();
+
+            if ($drop->getUser() === $user || in_array($drop->getRole(), $roles)) {
+                return;
+            }
+        }
+
+        throw new AccessDeniedException();
     }
 }

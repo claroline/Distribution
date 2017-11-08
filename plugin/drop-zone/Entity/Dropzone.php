@@ -573,4 +573,32 @@ class Dropzone extends AbstractResource
     {
         $this->criteria->clear();
     }
+
+    public function isDropEnabled()
+    {
+        $currentDate = new \DateTime();
+
+        return (
+            $this->manualPlanning &&
+            in_array($this->manualState, [self::MANUAL_STATE_ALLOW_DROP, self::MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW])
+        ) || (
+            !$this->manualPlanning &&
+            (!empty($this->dropStartDate) && $currentDate >= $this->dropStartDate) &&
+            (!empty($this->dropEndDate) && $currentDate <= $this->dropEndDate)
+        );
+    }
+
+    public function isReviewEnabled()
+    {
+        $currentDate = new \DateTime();
+
+        return $this->peerReview && ((
+            $this->manualPlanning &&
+            in_array($this->manualState, [self::MANUAL_STATE_PEER_REVIEW, self::MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW])
+        ) || (
+            !$this->manualPlanning &&
+            (!empty($this->reviewStartDate) && $currentDate >= $this->reviewStartDate) &&
+            (!empty($this->reviewEndDate) && $currentDate <= $this->reviewEndDate)
+        ));
+    }
 }

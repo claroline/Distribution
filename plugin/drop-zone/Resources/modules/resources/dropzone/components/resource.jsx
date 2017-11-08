@@ -10,9 +10,11 @@ import {ResourceContainer} from '#/main/core/layout/resource/containers/resource
 import {Menu} from './menu.jsx'
 import {DropzoneForm} from '../editor/components/dropzone-form.jsx'
 import {MyDrop} from '../player/components/my-drop.jsx'
+import {Drops} from '../correction/components/drops.jsx'
 
 import {select} from '../selectors.js'
 import {actions as editorActions} from '../editor/actions.js'
+import {actions as correctionActions} from '../correction/actions.js'
 
 const DropzoneResource = props =>
   <ResourceContainer
@@ -32,6 +34,16 @@ const DropzoneResource = props =>
         icon: 'fa fa-fw fa-list',
         label: trans('menu', {}, 'dropzone'),
         action: '#/'
+      },
+      {
+        icon: 'fa fa-fw fa-download',
+        label: trans('my_drop', {}, 'dropzone'),
+        action: '#/my/drop'
+      },
+      {
+        icon: 'fa fa-fw fa-check-square-o',
+        label: trans('correction', {}, 'dropzone'),
+        action: '#/drops'
       }
     ]}
   >
@@ -48,6 +60,10 @@ const DropzoneResource = props =>
         }, {
           path: '/my/drop',
           component: MyDrop
+        }, {
+          path: '/drops',
+          component: Drops,
+          onEnter: () => props.fetchDrops(props.dropzoneId)
         }
       ]}
     />
@@ -65,7 +81,8 @@ DropzoneResource.propTypes = {
 
   loadForm: T.func.isRequired,
   resetForm: T.func.isRequired,
-  saveDropzone: T.func.isRequired
+  saveDropzone: T.func.isRequired,
+  fetchDrops: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -84,7 +101,8 @@ function mapDispatchToProps(dispatch) {
   return {
     loadForm: (dropzone) => dispatch(editorActions.loadForm(dropzone)),
     resetForm: () => dispatch(editorActions.resetForm()),
-    saveDropzone: (dropzoneId, data) => dispatch(editorActions.saveDropzone(dropzoneId, data))
+    saveDropzone: (dropzoneId, data) => dispatch(editorActions.saveDropzone(dropzoneId, data)),
+    fetchDrops: (dropzoneId) => dispatch(correctionActions.fetchDrops(dropzoneId))
   }
 }
 

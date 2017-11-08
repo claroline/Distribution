@@ -17,6 +17,7 @@
     "display_corrections_to_learners": "De correcties aan de lerenden tonen",
     "display_notation_message_to_learners": "Geef een bericht van succes of falen aan de lerenden",
     "display_notation_to_learners": "De score aan de lerenden tonen",
+    "documents_added_to_copy": "Documenten aan de kopie gevoegd",
     "drop_and_correction_type": "Drop & evaluatietype",
     "drop_end_date": "Einde van de dropperiode",
     "drop_start_date": "Begin van de dropperiode",
@@ -40,6 +41,8 @@
     "planning_info_1": "De opening van de evaluatie kan manueel gemaakt worden of automatisch met data.",
     "planning_info_2": "Het is verdeeld in een aantal stappen: de opening van de evaluatie door het neerzetten van kopieën toe te laten, het begin van de peer review die de dropperiode sluit en het einde van de evaluatie.",
     "rating  ": "Notatie",
+    "render_my_copy": "Mijn kopie weergeven",
+    "render_my_copy_confirm_message": "U bent op het punt om uw exemplaar te weer te geven. Deze actie is definitief. Bent u er zeker van dat u klaar bent ?",
     "resource_type": "Bron van een werkruimte",
     "review_end_date": "Einde van peer review",
     "review_start_date": "Begin van peer review",
@@ -51,5 +54,6 @@
     "uploaded_files": "Geüploade bestanden",
     "url_info": "Weblinks",
     "url_type": "Weblink",
+    "warning": "Waarschuwing",
     "workspace_resources": "Bronnen van de werkruimte"
 }

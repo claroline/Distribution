@@ -1,5 +1,6 @@
 {
     "add_criterion": "Add a criterion",
+    "add_document": "Add a document",
     "allowed_document_types": "Allowed document types",
     "allowed_document_types_info": "Select the types of documents the learners will be allowed to render :",
     "auto_close_drops_at_drop_end_date": "Automatically validate the unfinished copies when the dropped period is over.",
@@ -20,6 +21,7 @@
     "display_corrections_to_learners": "Display the corrections to the learners.",
     "display_notation_message_to_learners": "Display a message of success or failure to the learners.",
     "display_notation_to_learners": "Display scores to learners",
+    "documents_added_to_copy": "Documents added to the copy",
     "drop_and_correction_type": "Drop & evaluation type",
     "drop_end_date": "End of dropping period",
     "drop_start_date": "Beginning of dropping period",
@@ -40,6 +42,7 @@
     "manual_state_finished": "The evaluation is finished. Nobody can take part in it anymore",
     "manual_state_not_started": "The evaluation has not begun yet",
     "manual_state_peer_review": "The learners can correct the copies. (Peer review)",
+    "no_document": "No document",
     "notify_managers_on_drop": "Notify the evaluation managers when someone drops a copy",
     "peer_correction_info": "Learners correct each others. (Peer review)",
     "planning": "Planning",
@@ -47,6 +50,8 @@
     "planning_info_2": "It's divided into several steps: the opening of the evaluation by allowing to drop copies, the start of the peer review that closes the dropping period, and the end of the evaluation.",
     "planning_type_label": "Planning type",
     "rating": "Score",
+    "render_my_copy": "Render my copy",
+    "render_my_copy_confirm_message": "You are about to render your copy. This action is definitive. Are you sure you have finished ?",
     "resource_type": "Resource of a workspace",
     "review_end_date": "End of peer review",
     "review_start_date": "Start of peer review",
@@ -59,5 +64,6 @@
     "uploaded_files": "Uploaded files",
     "url_info": "Web links",
     "url_type": "Weblink",
+    "warning": "Warning",
     "workspace_resources": "Workspace resources"
 }
