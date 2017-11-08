@@ -41,6 +41,7 @@ const Action = {
   defaultProps: {
     icon: 'fa fa-fw fa-circle',
     disabled: false,
+    primary: false,
     dangerous: false
   }
 }

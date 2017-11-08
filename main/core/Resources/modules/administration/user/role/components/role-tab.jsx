@@ -4,12 +4,13 @@ import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
+import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+
 import {actions} from '#/main/core/administration/user/role/actions'
 import {select} from '#/main/core/administration/user/role/selectors'
 
-import {enumRole} from '#/main/core/enum/role'
-
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {enumRole} from '#/main/core//administration/user/role/constants'
+import {RoleCard} from '#/main/core//administration/user/role/components/role-card.jsx'
 
 const RoleTabActions = props =>
   <div>
@@ -25,17 +26,7 @@ const RoleTab = props =>
       {name: 'translationKey', type: 'string', label: t('translation'), renderer: (rowData) => t(rowData.translationKey), displayed: true}
     ]}
     actions={[]}
-    card={(row) => ({
-      onClick: '#',
-      poster: null,
-      icon: 'fa fa-users',
-      title: row.name,
-      subtitle: row.name,
-      contentText: '',
-      flags: [],
-      footer: <span>footer</span>,
-      footerLong: <span>footerLong</span>
-    })}
+    card={RoleCard}
   />
 
 RoleTab.propTypes = {

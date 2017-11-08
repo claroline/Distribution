@@ -8,6 +8,7 @@ import {actions} from '#/main/core/layout/form/actions'
 import {select} from '#/main/core/layout/form/selectors'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
 
 import {
@@ -16,16 +17,11 @@ import {
   REGISTRATION_MAIL_VALIDATION_PARTIAL
 } from '#/main/core/administration/user/parameters/constants'
 
+const ParametersSaveAction = makeSaveAction('parameters')(PageAction)
+
 const ParametersActions = props =>
   <PageActions>
-    <PageAction
-      id="parameters-save"
-      icon="fa fa-floppy-o"
-      title={t('save')}
-      action={props.save}
-      disabled={!props.saveEnabled}
-      primary={true}
-    />
+    <ParametersSaveAction />
   </PageActions>
 
 ParametersActions.propTypes = {
@@ -42,6 +38,7 @@ const ParametersTab = props =>
         id: 'registration',
         icon: 'fa fa-fw fa-user-plus',
         title: t('registration'),
+        defaultOpened: true,
         fields: [
           {
             name: 'registration.auto',
@@ -118,7 +115,7 @@ const ParametersTab = props =>
       }, {
         id: 'term_of_services',
         icon: 'fa fa-fw fa-copyright',
-        title: t('term_of_services'),
+        title: t('term_of_service'),
         fields: [
           {
             name: 'termsOfService.enabled',
@@ -127,7 +124,7 @@ const ParametersTab = props =>
           }, { // todo should be hidden if not enabled
             name: 'termsOfService.content',
             type: 'html', // todo : create a new localized content type
-            label: 'terms_of_service'
+            label: t('term_of_service')
           }
         ]
       }, {

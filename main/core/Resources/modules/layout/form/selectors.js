@@ -5,6 +5,7 @@ import {createSelector} from 'reselect'
 // retrieves a form instance in the store
 const form = (state, formName) => get(state, formName)
 
+const isNew = (formState) => formState.new
 const validating = (formState) => formState.validating
 const pendingChanges = (formState) => formState.pendingChanges
 const errors = (formState) => formState.errors
@@ -22,6 +23,7 @@ const saveEnabled = createSelector(
 
 export const select = {
   form,
+  isNew,
   validating,
   pendingChanges,
   errors,

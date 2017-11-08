@@ -7,7 +7,9 @@ import {validate} from './validator'
 
 const reducer = combineReducers({
   list: makeListReducer(),
-  current: makeFormReducer({}, validate)
+  current: makeFormReducer({
+    roles: makeListReducer()
+  }, validate)
 })
 
 export {
