@@ -55,15 +55,17 @@ bootstrap(
       roles: merge({}, initialData.roles, {
         fetchUrl: generateUrl('apiv2_role_list')
       }),
-      locations: merge({}, initialData.locations, {
-        fetchUrl: generateUrl('apiv2_location_list'),
-        delete: {
-          title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
-          question: (locations) => t('remove_locations_confirm', {
-            location_list: locations.map(locations => workspace.name).join(', ')
-          })
-        }
-      }),
+      locations: {
+        list: merge({}, initialData.locations, {
+          fetchUrl: generateUrl('apiv2_location_list'),
+          delete: {
+            title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
+            question: (locations) => t('remove_locations_confirm', {
+              location_list: locations.map(location => location.name).join(', ')
+            })
+          }
+        })
+      },
       organizations: merge({}, initialData.organizations),
       parameters: merge({}, {data: initialData.parameters}, {platformRoles: initialData.platformroles}, {locales: initialData.locales})
     }

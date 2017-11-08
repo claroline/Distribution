@@ -16,13 +16,6 @@ const GroupsActions = props =>
       action="#/groups/add"
       primary={true}
     />
-
-    <PageAction
-      id="group-import"
-      icon="fa fa-download"
-      title={t('add_group')}
-      action="#/groups/import"
-    />
   </PageActions>
 
 const Groups = props =>
