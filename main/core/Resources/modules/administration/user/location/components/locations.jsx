@@ -20,7 +20,7 @@ const LocationsActions = props =>
 
 const Locations = props =>
   <DataList
-    name="locations"
+    name="locations.list"
     definition={[
       {
         name: 'name',
