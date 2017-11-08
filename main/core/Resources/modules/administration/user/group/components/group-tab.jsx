@@ -12,7 +12,6 @@ import {Groups, GroupsActions} from '#/main/core/administration/user/group/compo
 const GroupTabActions = props =>
   <Switch>
     <Route path="/groups" exact={true} component={GroupsActions} />
-
     <Route path="/groups/add" exact={true} component={GroupActions} />
     <Route path="/groups/:id" component={GroupActions} />
   </Switch>
@@ -43,15 +42,12 @@ GroupTab.propTypes = {
   openForm: T.func.isRequired
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    openForm(id = null) {
-      dispatch(actions.open(id))
-    }
-  }
-}
-
-const ConnectedGroupTab = connect(null, mapDispatchToProps)(GroupTab)
+const ConnectedGroupTab = connect(
+  null,
+  dispatch => ({
+    openForm: (id = null) => dispatch(actions.open(id))
+  })
+)(GroupTab)
 
 export {
   GroupTabActions,

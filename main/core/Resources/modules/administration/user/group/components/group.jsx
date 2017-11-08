@@ -1,4 +1,6 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
@@ -8,8 +10,7 @@ import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-import {enumRole} from '#/main/core//administration/user/role/constants'
-import {RoleCard} from '#/main/core//administration/user/role/components/role-card.jsx'
+import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
 const GroupSaveAction = makeSaveAction('groups.current')(PageAction)
 
@@ -25,7 +26,7 @@ const GroupActions = props =>
     />
   </PageActions>
 
-const Group = props =>
+const GroupForm = props =>
   <Form
     level={3}
     name="groups.current"
@@ -89,13 +90,9 @@ const Group = props =>
       >
         <DataList
           name="groups.current.roles"
-          definition={[
-            {name: 'name', type: 'string', label: t('name'), displayed: true},
-            {name: 'type', type: 'enum', label: t('type'), options: {choices: enumRole}, displayed: false},
-            {name: 'translationKey', type: 'string', label: t('translation'), renderer: (rowData) => t(rowData.translationKey), displayed: true}
-          ]}
           actions={[]}
-          card={RoleCard}
+          definition={RoleList.definition}
+          card={RoleList.card}
         />
       </FormSection>
 
@@ -119,9 +116,20 @@ const Group = props =>
     </FormSections>
   </Form>
 
-Group.propTypes = {
-
+GroupForm.propTypes = {
+  addRole: T.func.isRequired,
+  removeRole: T.func.isRequired
 }
+
+const Group = connect(
+  state => ({
+
+  }),
+  dispatch =>({
+    addRole: () => dispatch(),
+    removeRole: () => dispatch()
+  })
+)(GroupForm)
 
 export {
   GroupActions,
