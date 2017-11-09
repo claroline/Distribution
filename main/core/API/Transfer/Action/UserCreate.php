@@ -38,15 +38,17 @@ class UserCreate extends AbstractAction
         return 'user_create';
     }
 
-    public function getProperties()
+    public function getExplain()
     {
+        //schema des utilisateurs ?
         return [
           'username' => true,
           'name' => true,
           'lastname' => true,
           'firstname' => true,
-          'groups.name' => false,
-          'organizations.name' => false
+          'groups.[identifier]' => false,
+          'organizations.[identifier]' => false,
+          'organizations.ccc.xxx'
         ];
     }
 

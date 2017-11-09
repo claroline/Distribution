@@ -8,7 +8,7 @@ abstract class AbstractAction
 {
     abstract public function import($data);
     abstract public function getName();
-    abstract public function getProperties();
+    abstract public function getExplain();
 
     public function getBatchSize()
     {

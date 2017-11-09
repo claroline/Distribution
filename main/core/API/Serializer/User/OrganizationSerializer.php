@@ -55,4 +55,9 @@ class OrganizationSerializer
 
         return $data;
     }
+
+    public function getIdentifiers()
+    {
+        return ['id', 'uuid', 'name'];
+    }
 }

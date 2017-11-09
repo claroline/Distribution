@@ -42,7 +42,7 @@ class TransferController
         $data = $this->getData($request);
         $this->provider->import($data['data'], $action, $data['mime_type']);
 
-        return new JsonResponse();
+        return new JsonResponse('done', 200);
     }
 
     /**

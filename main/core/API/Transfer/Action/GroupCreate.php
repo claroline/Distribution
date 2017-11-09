@@ -38,10 +38,12 @@ class GroupCreate extends AbstractAction
         return 'group_create';
     }
 
-    public function getProperties()
+    //Dans quelle mesure ça ne pourrait pas être le json schema ?
+    public function getExplain()
     {
         return [
-          'name' => true
+          'name' => true,
+          'organizations.[identifier]' => false
         ];
     }
 

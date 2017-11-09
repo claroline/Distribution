@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Transfer\Action;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
@@ -18,20 +19,29 @@ class AddUserToGroup extends AbstractAction
      * Action constructor.
      *
      * @DI\InjectParams({
-     *     "crud" = @DI\Inject("claroline.api.crud")
+     *     "crud"       = @DI\Inject("claroline.api.crud"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud)
+    public function __construct(Crud $crud, SerializerProvider $serializer)
     {
         $this->crud = $crud;
+        $this->serializer = $serializer;
     }
 
     public function import($data)
     {
-        $user = 1;
-        $group = 2;
+        $user = $this->serializer->deserialize(
+            'Claroline\CoreBundle\Entity\User',
+            $data->user[0]
+        );
+
+        $group = $this->serializer->deserialize(
+            'Claroline\CoreBundle\Entity\Group',
+            $data->group[0]
+        );
 
         $this->crud->patch($user, 'group', 'add', [$group]);
     }
@@ -41,11 +51,11 @@ class AddUserToGroup extends AbstractAction
         return 'add_user_to_group';
     }
 
-    public function getProperties()
+    public function getExplain()
     {
         return [
-          'group' => true,
-          'user' => true
+          'group.[identifier]' => true,
+          'user.[identifier]' => true
         ];
     }
 

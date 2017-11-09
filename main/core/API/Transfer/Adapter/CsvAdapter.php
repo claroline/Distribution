@@ -23,10 +23,20 @@ class CsvAdapter implements AdapterInterface
         );
 
         foreach ($lines as $line) {
+            $properties = str_getcsv($line, ';');
             $object = new \stdClass();
 
             foreach ($headers as $index => $property) {
-                $object->$property = $line[$index];
+                if ($properties[$index]) {
+                    if (strpos($property, '.') > 0) {
+                        $parts = explode('.', $property);
+                        $new = new \stdClass();
+                        $new->{$parts[1]} = $properties[$index];
+                        $object->{$parts[0]} = [$new];
+                    } else {
+                        $object->$property = $properties[$index];
+                    }
+                }
             }
 
             $data[] = $object;
