@@ -106,7 +106,7 @@ const QuestionsPage = props =>
         card={(row) => ({
           poster: null,
           icon: <ItemIcon name={getDefinition(row.type).name} size="lg"/>,
-          title: row.title || row.content.substr(0, 50),
+          title: row.title || row.content.substr(0, 50), // todo remove html
           subtitle: trans(getDefinition(row.type).name, {}, 'question_types'),
           flags: [
             row.meta.model && ['fa fa-object-group', t('model')]

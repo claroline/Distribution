@@ -86,16 +86,22 @@ class FinderProvider
         return $this->finders[$class];
     }
 
-    public function search($class, array $queryParams = [], array $serializerOptions = [])
+    public function search($class, array $finderParams = [], array $serializerOptions = [])
     {
         // get search params
-        $filters = isset($queryParams['filters']) ? $this->parseFilters($queryParams['filters']) : [];
-        $sortBy = isset($queryParams['sortBy']) ? $this->parseSortBy($queryParams['sortBy']) : null;
-        $page = isset($queryParams['page']) ? (int) $queryParams['page'] : 0;
-        $limit = isset($queryParams['limit']) ? (int) $queryParams['limit'] : -1;
+        $filters = isset($finderParams['filters']) ? $this->parseFilters($finderParams['filters']) : [];
+        $sortBy = isset($finderParams['sortBy']) ? $this->parseSortBy($finderParams['sortBy']) : null;
+        $page = isset($finderParams['page']) ? (int) $finderParams['page'] : 0;
+        $limit = isset($finderParams['limit']) ? (int) $finderParams['limit'] : -1;
 
-        $data = $this->fetch($class, $page, $limit, $filters, $sortBy);
-        $count = $this->fetch($class, $page, $limit, $filters, $sortBy, true);
+        // these filters are not configurable/displayed in UI
+        // it's mostly used for access restrictions or entity collections
+        $hiddenFilters = isset($finderParams['hiddenFilters']) ? $this->parseFilters($finderParams['hiddenFilters']) : [];
+
+        $queryFilters = array_merge($filters, $hiddenFilters); // todo : as is it override user filters with same key if any
+
+        $data = $this->fetch($class, $page, $limit, $queryFilters, $sortBy);
+        $count = $this->fetch($class, $page, $limit, $queryFilters, $sortBy, true);
 
         return [
             'data' => array_map(function ($result) use ($serializerOptions) {
@@ -115,7 +121,7 @@ class FinderProvider
             /** @var QueryBuilder $qb */
             $qb = $this->om->createQueryBuilder();
 
-            $qb->select($count ? 'count(distinct obj)' : 'distinct obj')
+            $qb->select($count ? 'COUNT(DISTINCT obj)' : 'DISTINCT obj')
                ->from($class, 'obj');
 
             // filter query - let's the finder implementation process the filters to configure query

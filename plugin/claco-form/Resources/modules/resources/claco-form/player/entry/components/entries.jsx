@@ -4,12 +4,14 @@ import {withRouter} from 'react-router-dom'
 import moment from 'moment'
 import classes from 'classnames'
 import {PropTypes as T} from 'prop-types'
+
 import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 import {constants as listConstants} from '#/main/core/layout/list/constants'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {asset} from '#/main/core/asset'
+import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
+
 import {actions} from '../actions'
 import {selectors} from '../../../selectors'
 import {getFieldType, getCountry} from '../../../utils'
@@ -376,17 +378,10 @@ class Entries extends Component {
               card={(row) => ({
                 onClick: `#/entry/${row.id}/view`,
                 poster: null,
-                icon: row.user && row.user.id > 0 && row.user.picture ?
-                  <img src={asset('uploads/pictures/' + row.user.picture)} /> :
-                  'fa fa-user',
+                icon: <UserAvatar picture={row.user ? row.user.picture : undefined} alt={true} />,
                 title: this.getCardValue(row, 'title'),
                 subtitle: this.getCardValue(row, 'subtitle'),
-                contentText: this.getCardValue(row, 'content'),
-                flags: [].filter(flag => !!flag),
-                footer:
-                  <span></span>,
-                footerLong:
-                  <span></span>
+                contentText: this.getCardValue(row, 'content')
               })}
             />
           </div> :

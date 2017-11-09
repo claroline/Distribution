@@ -88,7 +88,7 @@ const DataTable = props =>
   <Table className="data-table" condensed={'sm' === props.size}>
     <thead>
       <tr>
-        {1 < props.count && props.selection &&
+        {props.selection &&
           <TableHeaderCell align="center" className="checkbox-cell">
             <TooltipElement
               id="data-table-select"
@@ -141,7 +141,7 @@ const DataTable = props =>
           columns={props.columns}
           actions={getRowActions(props.actions)}
           selected={isRowSelected(row, props.selection ? props.selection.current : [])}
-          onSelect={1 < props.count && props.selection ? () => props.selection.toggle(row) : null}
+          onSelect={props.selection ? () => props.selection.toggle(row) : null}
         />
       )}
     </tbody>

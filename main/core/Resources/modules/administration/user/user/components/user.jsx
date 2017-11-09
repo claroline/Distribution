@@ -32,7 +32,7 @@ const User = props =>
           {
             name: 'username',
             type: 'string',
-            label: t('usrname')
+            label: t('username')
           }
         ]
       }

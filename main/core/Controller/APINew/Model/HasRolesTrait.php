@@ -12,6 +12,27 @@ trait HasRolesTrait
 {
     /**
      * @Route("{uuid}/role")
+     * @Method("GET")
+     *
+     * @param string  $uuid
+     * @param string  $class
+     * @param Request $request
+     * @param string  $env
+     *
+     * @return JsonResponse
+     */
+    public function listRolesAction($uuid, $class, Request $request, $env)
+    {
+        return new JsonResponse(
+            $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['_id' => $uuid]]
+            ))
+        );
+    }
+
+    /**
+     * @Route("{uuid}/role")
      * @Method("PATCH")
      */
     public function addRolesAction($uuid, $class, Request $request, $env)

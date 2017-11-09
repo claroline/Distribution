@@ -95,7 +95,7 @@ const filterReducer = makeReducer([], {
 const sortReducer = makeReducer({property: null, direction: 0}, {
   [LIST_SORT_UPDATE]: (state, action = {}) => {
     let direction = 1
-    if (state.property === action.property) {
+    if (state && state.property === action.property) {
       if (1 === state.direction) {
         direction = -1
       } else if (-1 === state.direction) {
@@ -119,9 +119,7 @@ const sortReducer = makeReducer({property: null, direction: 0}, {
  * ATTENTION: we assume all data rows have an unique prop `id`.
  */
 const selectReducer = makeReducer([], {
-  [LIST_RESET_SELECT]: () => {
-    return []
-  },
+  [LIST_RESET_SELECT]: () => [],
 
   [LIST_TOGGLE_SELECT]: (state, action = {}) => {
     const selected = state.slice(0)

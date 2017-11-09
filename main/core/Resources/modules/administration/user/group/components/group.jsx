@@ -2,28 +2,43 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {generateUrl} from '#/main/core/fos-js-router'
 import {t} from '#/main/core/translation'
 
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {select as formSelect} from '#/main/core/layout/form/selectors'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
+import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 const GroupSaveAction = makeSaveAction('groups.current')(PageAction)
 
 const GroupActions = props =>
   <PageActions>
-    <GroupSaveAction />
+    <PageGroupActions>
+      <PageAction
+        id="group-list"
+        icon="fa fa-trash-o"
+        title={t('delete')}
+        action={() => true}
+        dangerous={true}
+      />
+    </PageGroupActions>
 
-    <PageAction
-      id="group-list"
-      icon="fa fa-list"
-      title={t('cancel')}
-      action="#/groups"
-    />
+    <PageGroupActions>
+      <GroupSaveAction />
+
+      <PageAction
+        id="group-list"
+        icon="fa fa-list"
+        title={t('back_to_list')}
+        action="#/groups"
+      />
+    </PageGroupActions>
   </PageActions>
 
 const GroupForm = props =>
@@ -51,6 +66,7 @@ const GroupForm = props =>
         ]
       }
     ]}
+
   >
     <FormSections
       level={3}
@@ -70,7 +86,13 @@ const GroupForm = props =>
           }
         ]}
       >
-        USERS
+        <DataList
+          name="groups.current.users"
+          fetchUrl={generateUrl('apiv2_group_list_users', {uuid: props.group.id})}
+          actions={[]}
+          definition={UserList.definition}
+          card={UserList.card}
+        />
       </FormSection>
 
       <FormSection
@@ -90,6 +112,7 @@ const GroupForm = props =>
       >
         <DataList
           name="groups.current.roles"
+          fetchUrl={generateUrl('apiv2_group_list_roles', {uuid: props.group.id})}
           actions={[]}
           definition={RoleList.definition}
           card={RoleList.card}
@@ -117,13 +140,16 @@ const GroupForm = props =>
   </Form>
 
 GroupForm.propTypes = {
+  group: T.shape({
+    id: T.string
+  }).isRequired,
   addRole: T.func.isRequired,
   removeRole: T.func.isRequired
 }
 
 const Group = connect(
   state => ({
-
+    group: formSelect.data(formSelect.form(state, 'groups.current'))
   }),
   dispatch =>({
     addRole: () => dispatch(),

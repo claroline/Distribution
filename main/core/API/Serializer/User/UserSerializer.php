@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -62,8 +63,19 @@ class UserSerializer
             'picture' => $user->getPicture(),
             'mail' => $user->getMail(),
             'administrativeCode' => $user->getAdministrativeCode(),
-            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace(),
-            'isEnabled' => $user->isEnabled()
+            'meta' => [
+                'created' => $user->getCreated()->format('Y-m-d\TH:i:s'),
+                'description' => $user->getDescription(),
+                'personalWorkspace' => !!$user->getPersonalWorkspace(),
+                'enabled' => $user->isEnabled(),
+            ],
+            'restrictions' => [
+                'accessibleFrom' => !empty($user->getInitDate()) ? $user->getInitDate()->format('Y-m-d\TH:i:s') : null,
+                'accessibleUntil' => !empty($user->getExpirationDate()) ? $user->getExpirationDate()->format('Y-m-d\TH:i:s') : null,
+            ],
+            'roles' => array_map(function (Role $role) {
+                return ['id' => $role->getId(), 'name' => $role->getName()];
+            }, $user->getEntityRoles()),
         ];
     }
 
