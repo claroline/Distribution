@@ -55,7 +55,7 @@ class Drop
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\DropzoneBundle\Entity\Document",
+     *     targetEntity="Claroline\DropZoneBundle\Entity\Document",
      *     mappedBy="drop"
      * )
      */
@@ -104,10 +104,19 @@ class Drop
      */
     protected $unlockedUser = false;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\DropZoneBundle\Entity\Correction",
+     *     mappedBy="drop"
+     * )
+     */
+    protected $corrections;
+
     public function __construct()
     {
         $this->refreshUuid();
         $this->documents = new ArrayCollection();
+        $this->corrections = new ArrayCollection();
     }
 
     public function getId()
@@ -242,5 +251,29 @@ class Drop
     public function setUnlockedUser($unlockedUser)
     {
         $this->unlockedUser = $unlockedUser;
+    }
+
+    public function getCorrections()
+    {
+        return $this->corrections->toArray();
+    }
+
+    public function addCorrection(Correction $correction)
+    {
+        if (!$this->corrections->contains($correction)) {
+            $this->corrections->add($correction);
+        }
+    }
+
+    public function removeCorrection(Correction $correction)
+    {
+        if ($this->corrections->contains($correction)) {
+            $this->corrections->removeElement($correction);
+        }
+    }
+
+    public function emptyCorrections()
+    {
+        $this->corrections->clear();
     }
 }

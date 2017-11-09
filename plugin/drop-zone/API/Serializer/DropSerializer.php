@@ -14,6 +14,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class DropSerializer
 {
+    private $correctionSerializer;
     private $documentSerializer;
     private $userSerializer;
     private $roleSerializer;
@@ -27,23 +28,27 @@ class DropSerializer
      * DropSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "documentSerializer" = @DI\Inject("claroline.serializer.dropzone.document"),
-     *     "userSerializer"     = @DI\Inject("claroline.serializer.user"),
-     *     "roleSerializer"     = @DI\Inject("claroline.serializer.role"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager")
+     *     "correctionSerializer" = @DI\Inject("claroline.serializer.dropzone.correction"),
+     *     "documentSerializer"   = @DI\Inject("claroline.serializer.dropzone.document"),
+     *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
+     *     "roleSerializer"       = @DI\Inject("claroline.serializer.role"),
+     *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param DocumentSerializer $documentSerializer
-     * @param UserSerializer     $userSerializer
-     * @param RoleSerializer     $roleSerializer
-     * @param ObjectManager      $om
+     * @param CorrectionSerializer $correctionSerializer
+     * @param DocumentSerializer   $documentSerializer
+     * @param UserSerializer       $userSerializer
+     * @param RoleSerializer       $roleSerializer
+     * @param ObjectManager        $om
      */
     public function __construct(
+        CorrectionSerializer $correctionSerializer,
         DocumentSerializer $documentSerializer,
         UserSerializer $userSerializer,
         RoleSerializer $roleSerializer,
         ObjectManager $om
     ) {
+        $this->correctionSerializer = $correctionSerializer;
         $this->documentSerializer = $documentSerializer;
         $this->userSerializer = $userSerializer;
         $this->roleSerializer = $roleSerializer;
@@ -74,6 +79,7 @@ class DropSerializer
             'unlockedDrop' => $drop->isUnlockedDrop(),
             'unlockedUser' => $drop->isUnlockedUser(),
             'documents' => $this->getDocuments($drop),
+            'corrections' => $this->getCorrections($drop),
         ];
     }
 
@@ -92,7 +98,6 @@ class DropSerializer
             $drop->setUuid($data['id']);
             $dropzone = $this->dropzoneRepo->findOneBy(['uuid' => $data['drop']]);
             $drop->setDropzone($dropzone);
-            $drop->setDropDate(new \DateTime());
         }
         if (isset($data['user'])) {
             $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
@@ -101,6 +106,10 @@ class DropSerializer
         if (isset($data['role'])) {
             $role = isset($data['role']['id']) ? $this->roleRepo->findOneBy(['id' => $data['role']['id']]) : null;
             $drop->setRole($role);
+        }
+        if (isset($data['dropDate'])) {
+            $dropDate = !empty($data['dropDate']) ? new \DateTime($data['dropDate']) : null;
+            $drop->setDropDate($dropDate);
         }
         if (isset($data['reported'])) {
             $drop->setReported($data['reported']);
@@ -121,6 +130,7 @@ class DropSerializer
             $drop->setUnlockedUser($data['unlockedUser']);
         }
         $this->deserializeDocuments($drop, $data['documents']);
+        $this->deserializeCorrections($drop, $data['corrections']);
 
         return $drop;
     }
@@ -136,6 +146,17 @@ class DropSerializer
         return $documents;
     }
 
+    private function getCorrections(Drop $drop)
+    {
+        $corrections = [];
+
+        foreach ($drop->getCorrections() as $correction) {
+            $corrections[] = $this->correctionSerializer->serialize($correction);
+        }
+
+        return $corrections;
+    }
+
     private function deserializeDocuments(Drop $drop, $documentsData)
     {
         $drop->emptyDocuments();
@@ -143,6 +164,16 @@ class DropSerializer
         foreach ($documentsData as $documentData) {
             $document = $this->documentSerializer->deserialize('Claroline\DropZoneBundle\Entity\Document', $documentData);
             $drop->addDocument($document);
+        }
+    }
+
+    private function deserializeCorrections(Drop $drop, $correctionsData)
+    {
+        $drop->emptyCorrections();
+
+        foreach ($correctionsData as $correctionData) {
+            $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $correctionData);
+            $drop->addCorrection($correction);
         }
     }
 }
