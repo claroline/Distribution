@@ -112,15 +112,28 @@ class SerializerProvider
     public function deserialize($class, $data, $options = [])
     {
         $object = null;
+        $serializer = $this->get($class);
 
         if (!in_array(Options::NO_FETCH, $options)) {
+            //first find by uuid and id
             $object = $this->om->getObject($data, $class);
+
+            //maybe move that chunk of code somewhere else
+            if (!$object) {
+                $properties = get_object_vars($data);
+
+                foreach (array_keys($properties) as $property) {
+                    if (method_exists($serializer, 'getIdentifiers') && in_array($property, $serializer->getIdentifiers()) && !$object) {
+                        $object = $this->om->getRepository($class)->findOneBy([$property => $data->{$property}]);
+                    }
+                }
+            }
         }
 
         if (!$object) {
             $object = new $class();
         }
 
-        return $this->get($class)->deserialize($data, $object, $options);
+        return $serializer->deserialize($data, $object, $options);
     }
 }

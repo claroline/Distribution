@@ -140,4 +140,9 @@ class UserSerializer
 
         return $object;
     }
+
+    public function getIdentifiers()
+    {
+        return ['id', 'uuid', 'username'];
+    }
 }

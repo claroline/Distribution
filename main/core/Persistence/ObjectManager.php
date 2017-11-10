@@ -381,5 +381,7 @@ class ObjectManager extends ObjectManagerDecorator
 
             return $object;
         }
+
+        //else we look what's fetchable or no for that class
     }
 }
