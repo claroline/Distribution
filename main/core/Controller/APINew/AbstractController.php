@@ -35,6 +35,7 @@ class AbstractController extends ContainerAware
         $this->serializer = $container->get('claroline.api.serializer');
         $this->crud = $container->get('claroline.api.crud');
         $this->om = $container->get('claroline.persistence.object_manager');
+        $this->options = $this->mergeOptions();
     }
 
     public function getAction(Request $request, $class, $env)
@@ -42,23 +43,36 @@ class AbstractController extends ContainerAware
         $object = $this->om->getRepository($class)->findOneBy($request->query->get('filters'));
 
         return $object ?
-            new JsonResponse($this->serializer->serialize($object)) :
+            new JsonResponse(
+                $this->serializer->serialize(
+                $object,
+                $this->options['get']
+            )
+            ) :
             new JsonResponse('', 404);
     }
 
     public function listAction(Request $request, $class, $env)
     {
-        return new JsonResponse($this->finder->search($class, $request->query->all()));
+        return new JsonResponse($this->finder->search(
+            $class,
+            $request->query->all(),
+            $this->options['list']
+        ));
     }
 
     public function createAction(Request $request, $class, $env)
     {
         try {
-            $object = $this->crud->create($class, $this->decodeRequest($request));
+            $object = $this->crud->create(
+                $class,
+                $this->decodeRequest($request),
+                $this->options['create']
+            );
 
             return new JsonResponse(
-              $this->serializer->serialize($object),
-              201
+                $this->serializer->serialize($object, $this->options['get']),
+                201
             );
         } catch (\Exception $e) {
             $this->handleException($e, $env);
@@ -68,10 +82,14 @@ class AbstractController extends ContainerAware
     public function updateAction($uuid, Request $request, $class, $env)
     {
         try {
-            $object = $this->crud->update($class, $this->decodeRequest($request));
+            $object = $this->crud->update(
+                $class,
+                $this->decodeRequest($request),
+                $this->options['update']
+            );
 
             return new JsonResponse(
-                $this->serializer->serialize($object)
+                $this->serializer->serialize($object, $this->options['get'])
             );
         } catch (\Exception $e) {
             $this->handleException($e, $env);
@@ -81,7 +99,10 @@ class AbstractController extends ContainerAware
     public function deleteBulkAction(Request $request, $class, $env)
     {
         try {
-            $this->crud->deleteBulk($class, $this->decodeIdsString($request, $class));
+            $this->crud->deleteBulk(
+                $this->decodeIdsString($request, $class),
+                $this->options['deleteBulk']
+            );
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
@@ -117,5 +138,23 @@ class AbstractController extends ContainerAware
         return !is_numeric($id) && property_exists($class, 'uuid') ?
             $this->om->getRepository($class)->findOneByUuid($id) :
             $this->om->getRepository($class)->findOneById($id);
+    }
+
+    private function getDefaultOptions()
+    {
+        return [
+            'list' => [],
+            'get' => [],
+            'create' => [],
+            'update' => [],
+            'deleteBulk' => []
+        ];
+    }
+
+    private function mergeOptions()
+    {
+        return method_exists($this, 'getOptions') ?
+            array_merge_recursive($this->getDefaultOptions(), $this->getOptions()):
+            $this->getOptions();
     }
 }

@@ -123,18 +123,19 @@ class Crud
      * Deletes an entry `object` of `class`.
      *
      * @param object $object  - the entity to delete
-     * @param string $class   - the class of the entity to delete
      * @param array  $options - additional delete options
      */
-    public function delete($object, $class, array $options = [])
+    public function delete($object, array $options = [])
     {
         $this->checkPermission('DELETE', $object, [], true);
 
         /** @var CrudEvent $event */
         $event = $this->dispatcher->dispatch('crud_pre_delete_object', 'Crud', [$object]);
         if ($event->isAllowed()) {
-            $this->om->remove($object);
-            $this->om->flush();
+            if (!in_array(Options::SOFT_DELETE, $options)) {
+                $this->om->remove($object);
+                $this->om->flush();
+            }
             $this->dispatcher->dispatch('crud_post_delete_object', 'Crud', [$object]);
         }
     }
@@ -142,17 +143,16 @@ class Crud
     /**
      * Deletes a list of entries of `class`.
      *
-     * @param string $class   - the class of the entries to delete
      * @param array  $data    - the list of entries to delete
      * @param array  $options - additional delete options
      */
-    public function deleteBulk($class, array $data, array $options = [])
+    public function deleteBulk(array $data, array $options = [])
     {
         $this->om->startFlushSuite();
 
         foreach ($data as $el) {
             //get the element
-            $this->delete($el, $class, $options);
+            $this->delete($el, $options);
         }
 
         $this->om->endFlushSuite();

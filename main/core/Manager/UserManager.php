@@ -154,6 +154,8 @@ class UserManager
     /**
      * Create a user.
      * Its basic properties (name, username,... ) must already be set.
+     * @todo use crud instead
+     * @todo REMOVE ME
      *
      * @param User      $user
      * @param bool      $sendMail               do we need to mail the new user ?
@@ -257,6 +259,8 @@ class UserManager
 
     /**
      * Removes users from a csv file.
+     * @todo use the csv from the api transfer
+     * @todo REMOVE ME
      */
     public function csvRemove($file)
     {
@@ -316,6 +320,8 @@ class UserManager
 
     /**
      * Rename a user.
+     * @todo use crud instead
+     * @todo REMOVE ME
      * It renames the user role and its personal WS if needed.
      *
      * @param User   $user
@@ -343,6 +349,10 @@ class UserManager
         $this->objectManager->flush();
     }
 
+    /**
+     * @todo use crud instead
+     * @todo REMOVE ME
+     */
     public function setIsMailNotified(User $user, $isNotified)
     {
         $user->setIsMailNotified($isNotified);
@@ -354,47 +364,13 @@ class UserManager
      * Removes a user.
      *
      * @param \Claroline\CoreBundle\Entity\User $user
+     * @todo use crud instead
+     * @todo REMOVE ME
+     *
      */
     public function deleteUser(User $user)
     {
         $this->log('Removing '.$user->getUsername().'...');
-        /* When the api will identify a user, please uncomment this
-        if ($this->container->get('security.token_storage')->getToken()->getUser()->getId() === $user->getId()) {
-            throw new \Exception('A user cannot delete himself');
-        }*/
-        $userRole = $this->roleManager->getUserRole($user->getUsername());
-
-        //soft delete~
-        $user->setIsRemoved(true);
-        $user->setMail('mail#'.$user->getId());
-        $user->setFirstName('firstname#'.$user->getId());
-        $user->setLastName('lastname#'.$user->getId());
-        $user->setPlainPassword(uniqid());
-        $user->setUsername('username#'.$user->getId());
-        $user->setPublicUrl('removed#'.$user->getId());
-        $user->setAdministrativeCode('code#'.$user->getId());
-        $user->setIsEnabled(false);
-
-        // keeping the user's workspace with its original code
-        // would prevent creating a user with the same username
-        // todo: workspace deletion should be an option
-        $ws = $user->getPersonalWorkspace();
-
-        if ($ws) {
-            $ws->setCode($ws->getCode().'#deleted_user#'.$user->getId());
-            $ws->setDisplayable(false);
-            $this->objectManager->persist($ws);
-        }
-
-        if ($userRole) {
-            $this->objectManager->remove($userRole);
-        }
-        $this->objectManager->persist($user);
-        $this->objectManager->flush();
-
-        $this->strictEventDispatcher->dispatch('claroline_users_delete', 'GenericData', [[$user]]);
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
-        $this->strictEventDispatcher->dispatch('delete_user', 'DeleteUser', [$user]);
     }
 
     /**
@@ -423,6 +399,9 @@ class UserManager
      *
      * @internal param string $authentication an authentication source
      * @internal param bool $mail do the users need to be mailed
+
+     * @todo use api transfer instead
+     * @todo REMOVE ME
      */
     public function importUsers(
         array $users,
@@ -756,6 +735,8 @@ class UserManager
     /**
      * Sets an array of platform role to a user.
      *
+     * @todo use crud instead
+     * @todo REMOVE ME
      * @param User            $user
      * @param ArrayCollection $roles
      */
@@ -767,6 +748,9 @@ class UserManager
 
     /**
      * Serialize a user. Use JMS serializer from entities instead.
+     *
+     * @todo use serializer instead
+     * @todo REMOVE ME
      *
      * @param User[] $users
      *
@@ -808,6 +792,8 @@ class UserManager
 
     /**
      * @param string $username
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return User
      */
@@ -838,6 +824,9 @@ class UserManager
      * @param string $orderedBy
      * @param string $order
      *
+     * @todo use finder instead
+     * @todo REMOVE ME
+     *
      * @return Pagerfanta
      */
     public function getAllUsers($page, $max = 20, $orderedBy = 'id', $order = null)
@@ -847,6 +836,10 @@ class UserManager
         return $this->pagerFactory->createPager($query, $page, $max);
     }
 
+    /**
+     * @todo use finder instead
+     * @todo REMOVE ME
+     */
     public function getAll()
     {
         return $this->userRepo->findAll();
@@ -857,6 +850,8 @@ class UserManager
      * @param int    $page
      * @param int    $max
      * @param string $orderedBy
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return Pagerfanta
      */
@@ -870,6 +865,8 @@ class UserManager
     /**
      * @param string $firstName
      * @param string $lastName
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return User[]
      */
@@ -887,6 +884,9 @@ class UserManager
      * @param int    $max
      * @param string $orderedBy
      * @param string $order
+     *
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return Pagerfanta
      */
@@ -909,6 +909,9 @@ class UserManager
      * @param int    $max
      * @param string $orderedBy
      * @param string $order
+     *
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return Pagerfanta
      */
@@ -937,6 +940,9 @@ class UserManager
      * @param int         $max
      * @param bool        $withPager
      *
+     *
+     * @todo use finder instead
+     * @todo REMOVE ME
      * @return User[]|Pagerfanta
      */
     public function getUsersByWorkspaces(array $workspaces, $page = 1, $max = 20, $withPager = true)
@@ -956,6 +962,8 @@ class UserManager
      * @param int       $page
      * @param int       $max
      *
+     * @todo use finder instead
+     * @todo REMOVE ME
      * @return Pagerfanta
      */
     public function getAllUsersByWorkspaceAndName(Workspace $workspace, $search, $page, $max = 20)
@@ -1006,6 +1014,8 @@ class UserManager
 
     /**
      * @param string $guid
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return Workspace
      */
@@ -1036,6 +1046,8 @@ class UserManager
 
     /**
      * @param int $userId
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return User
      */
@@ -1050,6 +1062,8 @@ class UserManager
      * @param int    $max
      * @param string $orderedBy
      * @param null   $order
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return \Pagerfanta\Pagerfanta
      */
@@ -1062,6 +1076,8 @@ class UserManager
 
     /**
      * @param Role[] $roles
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return array
      */
@@ -1090,6 +1106,8 @@ class UserManager
      * @param int    $page
      * @param int    $max
      * @param string $orderedBy
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return \Pagerfanta\Pagerfanta
      */
@@ -1104,6 +1122,8 @@ class UserManager
      * @param Role[] $roles
      * @param int    $page
      * @param int    $max
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return \Pagerfanta\Pagerfanta
      */
@@ -1116,6 +1136,8 @@ class UserManager
 
     /**
      * @param string $email
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return User
      */
@@ -1128,6 +1150,8 @@ class UserManager
      * @todo Please describe me. I couldn't find findOneByResetPasswordHash
      *
      * @param string $resetPassword
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return User
      */
@@ -1138,6 +1162,8 @@ class UserManager
 
     /**
      * @param string $validationHash
+     * @todo use finder instead
+     * @todo REMOVE ME
      *
      * @return User
      */
@@ -1157,6 +1183,8 @@ class UserManager
 
     /**
      * @return User[]
+     * @todo use finder instead
+     * @todo REMOVE ME
      */
     public function getAllEnabledUsers($executeQuery = true)
     {
@@ -1181,6 +1209,8 @@ class UserManager
 
     /**
      * Set the user locale.
+     * @todo use crud instead
+     * @todo REMOVE ME
      *
      * @param \Claroline\CoreBundle\Entity\User $user
      * @param string                            $locale Language with format en, fr, es, etc

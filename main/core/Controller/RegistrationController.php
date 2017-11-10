@@ -91,100 +91,13 @@ class RegistrationController extends Controller
     public function userRegistrationFormAction()
     {
         $this->checkAccess();
-        $user = new User();
-        $form = $this->registrationManager->getRegistrationForm($user);
+        //registerationManager might be removed later on
 
-        return ['form' => $form->createView()];
+        return [];
     }
 
     /**
-     * @Route(
-     *     "/create",
-     *     name="claro_registration_register_user"
-     * )
-     *
-     * @Template("ClarolineCoreBundle:Registration:userRegistrationForm.html.twig")
-     *
-     * Registers a new user and displays a flash message in case of success.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function registerUserAction()
-    {
-        $this->checkAccess();
-        $user = new User();
-        $form = $this->registrationManager->getRegistrationForm($user);
-        $form->handleRequest($this->request);
-
-        if ($form->isValid()) {
-            $this->registrationManager->registerNewUser($user, $form);
-
-            $msg = $this->translator->trans('account_created', [], 'platform');
-            $this->request->getSession()->getFlashBag()->add('success', $msg);
-
-            if ($this->configHandler->getParameter('registration_mail_validation')) {
-                $msg = $this->translator->trans('please_validate_your_account', [], 'platform');
-                $this->request->getSession()->getFlashBag()->add('success', $msg);
-            }
-
-            if ($this->configHandler->getParameter('auto_logging_after_registration')) {
-                return $this->registrationManager->loginUser($user, $this->request);
-            }
-
-            return $this->redirect($this->generateUrl('claro_security_login'));
-        }
-
-        return ['form' => $form->createView()];
-    }
-
-    /**
-     * @Route("/new/user.{format}", name = "claro_register_user")
-     * @Method({"POST"})
-     */
-    public function postUserRegistrationAction($format)
-    {
-        $formats = ['json', 'xml'];
-
-        if (!in_array($format, $formats)) {
-            return new Response(
-                "The format {$format} is not supported (supported formats are 'json', 'xml')",
-                400
-            );
-        }
-
-        $status = 200;
-        $content = [];
-
-        if ($this->configHandler->getParameter('allow_self_registration')) {
-            $request = $this->request;
-
-            $user = new User();
-            $user->setUsername($request->request->get('username'));
-            $user->setPlainPassword($request->request->get('password'));
-            $user->setFirstName($request->request->get('firstName'));
-            $user->setLastName($request->request->get('lastName'));
-            $user->setMail($request->request->get('mail'));
-
-            $errorList = $this->validator->validate($user);
-
-            if (count($errorList) > 0) {
-                $status = 422;
-                foreach ($errorList as $error) {
-                    $content[] = ['property' => $error->getPropertyPath(), 'message' => $error->getMessage()];
-                }
-            } else {
-                $this->userManager->createUser($user);
-            }
-        } else {
-            $status = 403;
-        }
-
-        return $format === 'json' ?
-            new JsonResponse($content, $status) :
-            new XmlResponse($content, $status);
-    }
-
-    /**
+     * @todo move this to the api
      * @Route(
      *     "/activate/{hash}/",
      *     name="claro_security_activate_user",

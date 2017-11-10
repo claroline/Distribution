@@ -24,12 +24,15 @@ class UserCrud
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
+        //too many dependencies, simplify this when we can
+        $this->container   = $container;
+        $this->om          = $container->get('claroline.persistence.object_manager');
         $this->roleManager = $container->get('claroline.manager.role_manager');
         $this->toolManager = $container->get('claroline.manager.tool_manager');
         $this->mailManager = $container->get('claroline.manager.mail_manager');
         $this->userManager = $container->get('claroline.manager.user_manager');
-        $this->config = $container->get('claroline.config.platform_config_handler');
+        $this->dispatcher  = $container->get('claroline.event.event_dispatcher');
+        $this->config      = $container->get('claroline.config.platform_config_handler');
     }
 
     /**
@@ -68,13 +71,48 @@ class UserCrud
     }
 
     /**
-     * @DI\Observe("crud_post_create_object")
+     * @DI\Observe("crud_pre_delete_object")
      *
      * @param CrudEvent $event
      */
-    public function postCreate(CrudEvent $event)
+    public function preDelete(CrudEvent $event)
     {
         if ($event->getObject() instanceof User) {
+            $userRole = $this->roleManager->getUserRole($user->getUsername());
+
+            //soft delete~
+            $user->setIsRemoved(true);
+            $user->setMail('mail#'.$user->getId());
+            $user->setFirstName('firstname#'.$user->getId());
+            $user->setLastName('lastname#'.$user->getId());
+            $user->setPlainPassword(uniqid());
+            $user->setUsername('username#'.$user->getId());
+            $user->setPublicUrl('removed#'.$user->getId());
+            $user->setAdministrativeCode('code#'.$user->getId());
+            $user->setIsEnabled(false);
+
+            // keeping the user's workspace with its original code
+            // would prevent creating a user with the same username
+            // todo: workspace deletion should be an option
+            $ws = $user->getPersonalWorkspace();
+
+            if ($ws) {
+                $ws->setCode($ws->getCode().'#deleted_user#'.$user->getId());
+                $ws->setDisplayable(false);
+                $this->om->persist($ws);
+            }
+
+            if ($userRole) {
+                $this->om->remove($userRole);
+            }
+            $this->om->persist($user);
+            $this->om->flush();
+
+            //dispatch some events but they should be listening the same as we are imo.
+            //something should be done for event listeners
+            $this->dispatcher->dispatch('claroline_users_delete', 'GenericData', [[$user]]);
+            $this->dispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
+            $this->dispatcher->dispatch('delete_user', 'DeleteUser', [$user]);
         }
     }
 }
