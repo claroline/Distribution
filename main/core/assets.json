@@ -6,6 +6,7 @@
       "whatwg-fetch": "fetch-shim",
       "translator": "translation/browser",
       "organization-field": "symfony/form/organization/index",
+      "user-management": "administration/user",
       "facet-management": "facets/module",
       "workspace-management": "administration/workspace",
       "theme-management": "administration/theme",
