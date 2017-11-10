@@ -1,42 +1,21 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
-import moment from 'moment'
 
-class DateSearch extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {open: true}
-  }
-
-  openPicker() {
-    this.setState({open: true})
-  }
-
-  closePicker() {
-    this.setState({open: false})
-  }
-
-  render() {
-    return(
-      <span className="date-filter">
-        {this.props.isValid &&
-          <span className="available-filter-value">{this.props.search}</span>
-        }
-        &nbsp;
-        <DatePicker
-          className="input-hide"
-          showCalendarButton={true}
-          onChange={date => this.props.updateSearch(date)}
-          minDate={moment.utc('1970')}
-          name="filter-date"
-          open={this.state.open}
-        >
-        </DatePicker>
-      </span>
-    )
-  }
-}
+const DateSearch = props =>
+  <span className="date-filter">
+    {props.isValid &&
+      <span className="available-filter-value">{props.search}</span>
+    }
+    &nbsp;
+    <DatePicker
+      name="filter-date"
+      className="input-hide"
+      showCalendarButton={true}
+      onChange={date => props.updateSearch(date)}
+    />
+  </span>
 
 DateSearch.propTypes = {
   search: T.string.isRequired,
@@ -44,4 +23,6 @@ DateSearch.propTypes = {
   updateSearch: T.func.isRequired
 }
 
-export {DateSearch}
+export {
+  DateSearch
+}

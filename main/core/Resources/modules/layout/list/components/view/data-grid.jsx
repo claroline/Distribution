@@ -112,7 +112,7 @@ const DataGridSort = props =>
     {t('list_sort_by')}
     <DropdownButton
       id="data-grid-sort-menu"
-      title={getPropDefinition(props.current.property, props.available).label}
+      title={props.current.property ? getPropDefinition(props.current.property, props.available).label : t('none')}
       bsStyle="link"
       noCaret={true}
       pullRight={true}
@@ -131,15 +131,17 @@ const DataGridSort = props =>
     <button
       type="button"
       className="btn btn-link"
-      onClick={() => props.updateSort(props.current.property)}
+      disabled={!props.current.property}
+      onClick={() => !props.current.property && props.updateSort(props.current.property)}
     >
       <span className={classes('fa fa-fw', {
-        'fa-sort'     :  0 === props.current.direction,
+        'fa-sort'     :  0 === props.current.direction || !props.current.direction,
         'fa-sort-asc' :  1 === props.current.direction,
         'fa-sort-desc': -1 === props.current.direction
       })} />
     </button>
   </div>
+
 
 DataGridSort.propTypes = {
   current: T.shape({
@@ -155,7 +157,7 @@ DataGridSort.propTypes = {
 const DataGrid = props =>
   <div className={`data-grid data-grid-${props.size}`}>
     <div className="data-grid-header">
-      {1 < props.count && props.selection &&
+      {props.selection &&
         <Checkbox
           id="data-grid-select"
           label={t('list_select_all')}
@@ -188,7 +190,7 @@ const DataGrid = props =>
             index={rowIndex}
             size={props.size}
             row={row}
-            data={props.card(row)}
+            data={props.card(row, props.size)}
             actions={getRowActions(props.actions)}
             selected={isRowSelected(row, props.selection ? props.selection.current : [])}
             onSelect={1 < props.count && props.selection ? () => props.selection.toggle(row) : null}

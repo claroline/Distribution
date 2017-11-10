@@ -29,7 +29,8 @@ const PageAction = props =>
           {
             'disabled': props.disabled,
             'page-action-primary': props.primary,
-            'page-action-default': !props.primary
+            'page-action-danger': props.dangerous,
+            'page-action-default': !props.primary && !props.dangerous
           },
           props.className
         )}
@@ -47,7 +48,8 @@ const PageAction = props =>
           {
             'disabled': props.disabled,
             'page-action-primary': props.primary,
-            'page-action-default': !props.primary
+            'page-action-danger': props.dangerous,
+            'page-action-default': !props.primary && !props.dangerous
           },
           props.className
         )}
@@ -63,6 +65,7 @@ const PageAction = props =>
 PageAction.propTypes = {
   id: T.string.isRequired,
   primary: T.bool,
+  dangerous: T.bool,
   title: T.string.isRequired,
   icon: T.string.isRequired,
   disabled: T.bool,
@@ -81,7 +84,8 @@ PageAction.propTypes = {
 
 PageAction.defaultProps = {
   disabled: false,
-  primary: false
+  primary: false,
+  dangerous: false
 }
 
 /**

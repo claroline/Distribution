@@ -1,13 +1,14 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
+
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
 
 const UserSaveAction = makeSaveAction('users.current')(PageAction)
 
-const UserActions = props =>
+const UserActions = () =>
   <PageActions>
     <UserSaveAction />
 
@@ -19,7 +20,7 @@ const UserActions = props =>
     />
   </PageActions>
 
-const User = props =>
+const User = () =>
   <Form
     level={3}
     name="users.current"
@@ -32,16 +33,12 @@ const User = props =>
           {
             name: 'username',
             type: 'string',
-            label: t('usrname')
+            label: t('username')
           }
         ]
       }
     ]}
   />
-
-User.propTypes = {
-
-}
 
 export {
   UserActions,

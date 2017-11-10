@@ -144,28 +144,28 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     // filtering
     addFilter(property, value) {
-      dispatch(listActions.addFilter(property, value))
+      dispatch(listActions.addFilter(ownProps.name, property, value))
     },
     removeFilter(filter) {
-      dispatch(listActions.removeFilter(filter))
+      dispatch(listActions.removeFilter(ownProps.name, filter))
     },
     // sorting
     updateSort(property) {
-      dispatch(listActions.updateSort(property))
+      dispatch(listActions.updateSort(ownProps.name, property))
     },
     // selection
     toggleSelect(id) {
-      dispatch(listActions.toggleSelect(id))
+      dispatch(listActions.toggleSelect(ownProps.name, id))
     },
     toggleSelectAll(items) {
-      dispatch(listActions.toggleSelectAll(items))
+      dispatch(listActions.toggleSelectAll(ownProps.name, items))
     },
     // pagination
     updatePageSize(pageSize) {
-      dispatch(listActions.updatePageSize(pageSize))
+      dispatch(listActions.updatePageSize(ownProps.name, pageSize))
     },
     changePage(page) {
-      dispatch(listActions.changePage(page))
+      dispatch(listActions.changePage(ownProps.name, page))
     },
     deleteItems(items, title, question, asyncr) {
       dispatch(
@@ -174,8 +174,8 @@ function mapDispatchToProps(dispatch, ownProps) {
           question,
           handleConfirm: () => {
             asyncr ?
-              dispatch(listActions.asyncDeleteItems(items, ownProps.name)):
-              dispatch(listActions.syncDeleteItems(items, ownProps.name))
+              dispatch(listActions.asyncDeleteItems(ownProps.name, items)):
+              dispatch(listActions.deleteItems(ownProps.name, items))
           }
         })
       )

@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API;
 
+use Claroline\CoreBundle\Event\CrudEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
@@ -73,13 +74,13 @@ class Crud
         $this->validate($class, $data);
 
         // gets entity from raw data.
-        $object = $this->serializer->deserialize($class, $data);
+        $object = $this->serializer->deserialize($class, $data, $options);
 
         // creates the entity if allowed
         $this->checkPermission('CREATE', $object, [], true);
 
+        /** @var CrudEvent $event */
         $event = $this->dispatcher->dispatch('crud_pre_create_object', 'Crud', [$object]);
-
         if ($event->isAllowed()) {
             $this->om->save($object);
             $this->dispatcher->dispatch('crud_post_create_object', 'Crud', [$object]);
@@ -103,12 +104,13 @@ class Crud
         $this->validate($class, $data);
 
         // gets entity from raw data.
-        $object = $this->serializer->deserialize($class, $data);
+        $object = $this->serializer->deserialize($class, $data, $options);
 
         // updates the entity if allowed
         $this->checkPermission('EDIT', $object, [], true);
-        $event = $this->dispatcher->dispatch('crud_pre_update_object', 'Crud', [$object]);
 
+        /** @var CrudEvent $event */
+        $event = $this->dispatcher->dispatch('crud_pre_update_object', 'Crud', [$object]);
         if ($event->isAllowed()) {
             $this->om->save($object);
             $this->dispatcher->dispatch('crud_post_update_object', 'Crud', [$object]);
@@ -128,8 +130,8 @@ class Crud
     {
         $this->checkPermission('DELETE', $object, [], true);
 
+        /** @var CrudEvent $event */
         $event = $this->dispatcher->dispatch('crud_pre_delete_object', 'Crud', [$object]);
-
         if ($event->isAllowed()) {
             $this->om->remove($object);
             $this->om->flush();
@@ -190,9 +192,9 @@ class Crud
     /**
      * Patches a property in `object`.
      *
-     * @param object $object - the entity to update
-     * @param string $action - the action to execute on the collection (aka. add/remove/set)
-     * @param mixed  $data   - the datas that must be set
+     * @param object $object   - the entity to update
+     * @param string $property - the property to update
+     * @param mixed  $data     - the data that must be set
      */
     public function replace($object, $property, $data)
     {

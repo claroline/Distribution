@@ -9,7 +9,7 @@ export const actions = {}
 //actions.geolocate = makeActionCreator(ROLE_EDIT, 'location')
 //actions.saveRole = makeActionCreator(ROLE_SAVE)
 
-actions.geolocate = (location, page) => ({
+actions.geolocate = (location) => ({
   [REQUEST_SEND]: {
     url: generateUrl('apiv2_location_geolocate', {uuid: location.uuid}),
     success: (data, dispatch) => dispatch(listActions.fetchData('locations'))

@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\Controller\APINew\AbstractController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
@@ -23,6 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class GroupController extends AbstractController
 {
+    use HasUsersTrait;
     use HasRolesTrait;
     use HasOrganizationsTrait;
 }

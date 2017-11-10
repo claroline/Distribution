@@ -2,41 +2,49 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
-import {Route, Switch} from '#/main/core/router'
+import {Routes} from '#/main/core/router'
 
 import {actions} from '#/main/core/administration/user/group/actions'
 import {Group,  GroupActions}  from '#/main/core/administration/user/group/components/group.jsx'
 import {Groups, GroupsActions} from '#/main/core/administration/user/group/components/groups.jsx'
 
-const GroupTabActions = props =>
-  <Switch>
-    <Route path="/groups" exact={true} component={GroupsActions} />
-    <Route path="/groups/add" exact={true} component={GroupActions} />
-    <Route path="/groups/:id" component={GroupActions} />
-  </Switch>
+const GroupTabActions = () =>
+  <Routes
+    routes={[
+      {
+        path: '/groups',
+        exact: true,
+        component: GroupsActions
+      }, {
+        path: '/groups/add',
+        exact: true,
+        component: GroupActions
+      }, {
+        path: '/groups/:id',
+        component: GroupActions
+      }
+    ]}
+  />
 
 const GroupTab = props =>
-  <Switch>
-    <Route
-      path="/groups"
-      exact={true}
-      component={Groups}
-    />
-
-    <Route
-      path="/groups/add"
-      exact={true}
-      component={Group}
-      onEnter={() => props.openForm(null)}
-    />
-
-    <Route
-      path="/groups/:id"
-      component={Group}
-      onEnter={(params) => props.openForm(params.id)}
-    />
-  </Switch>
+  <Routes
+    routes={[
+      {
+        path: '/groups',
+        exact: true,
+        component: Groups
+      }, {
+        path: '/groups/add',
+        exact: true,
+        onEnter: () => props.openForm(null),
+        component: Group
+      }, {
+        path: '/groups/:id',
+        onEnter: (params) => props.openForm(params.id),
+        component: Group
+      }
+    ]}
+  />
 
 GroupTab.propTypes = {
   openForm: T.func.isRequired

@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -79,7 +80,10 @@ class UserSerializer
             'hideMailWarning' => $user->getHideMailWarning(),
             'hasTunedPublicUrl' => $user->hasTunedPublicUrl(),
             'authentication' => $user->getAuthentication(),
-            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace()
+            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace(),
+            'roles' => array_map(function (Role $role) {
+                return ['id' => $role->getId(), 'name' => $role->getName()];
+            }, $user->getEntityRoles()),
         ];
     }
 
@@ -89,7 +93,8 @@ class UserSerializer
             'hasAcceptedTerms' => $user->hasAcceptedTerms(),
             'isEnabled' => $user->isEnabled(),
             'isRemoved' => $user->isRemoved(),
-            'expirationDate' => $user->getExpirationDate()
+            'accessibleFrom' => !empty($user->getInitDate()) ? $user->getInitDate()->format('Y-m-d\TH:i:s') : null,
+            'accessibleUntil' => !empty($user->getExpirationDate()) ? $user->getExpirationDate()->format('Y-m-d\TH:i:s') : null,
         ];
     }
 

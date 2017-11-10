@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
+import {localeDate} from '#/main/core/date'
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
 
@@ -106,7 +106,7 @@ const QuestionsPage = props =>
         card={(row) => ({
           poster: null,
           icon: <ItemIcon name={getDefinition(row.type).name} size="lg"/>,
-          title: row.title || row.content.substr(0, 50),
+          title: row.title || row.content.substr(0, 50), // todo remove html
           subtitle: trans(getDefinition(row.type).name, {}, 'question_types'),
           flags: [
             row.meta.model && ['fa fa-object-group', t('model')]

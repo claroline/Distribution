@@ -1,9 +1,9 @@
-import {setIfError, notBlank, notEmptyArray} from '#/main/core/validation'
+import {setIfError, notBlank} from '#/main/core/validation'
 
 /**
- * Gets validation errors for a Group.
+ * Gets validation errors for a Role.
  *
- * @param   {Object} group
+ * @param   {Object} role
  *
  * @returns {Object}
  */

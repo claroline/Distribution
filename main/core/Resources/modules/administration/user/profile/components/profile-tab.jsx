@@ -10,7 +10,7 @@ import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
 
-const ProfileTabActions = props =>
+const ProfileTabActions = () =>
   <div>
     page actions
   </div>
@@ -131,7 +131,7 @@ const Profile = props =>
 
 Profile.propTypes = {
   currentTab: T.string,
-  sections: T.arrayOf(T.shape({
+  tabs: T.arrayOf(T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
   })).isRequired,

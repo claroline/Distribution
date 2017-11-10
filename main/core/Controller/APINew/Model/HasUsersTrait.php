@@ -12,6 +12,27 @@ trait HasUsersTrait
 {
     /**
      * @Route("{uuid}/user")
+     * @Method("GET")
+     *
+     * @param string  $uuid
+     * @param string  $class
+     * @param Request $request
+     * @param string  $env
+     *
+     * @return JsonResponse
+     */
+    public function listUsersAction($uuid, $class, Request $request, $env)
+    {
+        return new JsonResponse(
+            $this->finder->search('Claroline\CoreBundle\Entity\User', array_merge(
+                $request->query->all(),
+                ['hiddenFilters' => ['_id' => $uuid]]
+            ))
+        );
+    }
+
+    /**
+     * @Route("{uuid}/user")
      * @Method("PATCH")
      */
     public function addUsersAction($uuid, $class, Request $request, $env)

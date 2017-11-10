@@ -110,7 +110,9 @@ GeneralSection.propTypes = {
     meta: T.shape({
       plugin: T.string,
       description: T.string,
-      enabled: T.bool
+      enabled: T.bool,
+      default: T.bool,
+      custom: T.bool
     }).isRequired,
     parameters: T.shape({
       extendDefault: T.bool

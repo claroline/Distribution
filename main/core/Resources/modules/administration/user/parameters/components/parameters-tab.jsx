@@ -1,10 +1,7 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
-import {actions} from '#/main/core/layout/form/actions'
 import {select} from '#/main/core/layout/form/selectors'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
@@ -19,17 +16,12 @@ import {
 
 const ParametersSaveAction = makeSaveAction('parameters')(PageAction)
 
-const ParametersActions = props =>
+const ParametersTabActions = () =>
   <PageActions>
     <ParametersSaveAction />
   </PageActions>
 
-ParametersActions.propTypes = {
-  save: T.func.isRequired,
-  saveEnabled: T.bool.isRequired
-}
-
-const ParametersTab = props =>
+const ParametersTab = () =>
   <Form
     level={3}
     name="parameters"
@@ -137,22 +129,6 @@ const ParametersTab = props =>
       }
     ]}
   />
-
-function mapStateToProps(state) {
-  return {
-    saveEnabled: select.saveEnabled(select.form(state, 'parameters'))
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    save() {
-      //dispatch(actions.submitForm())
-    }
-  }
-}
-
-const ParametersTabActions = connect(mapStateToProps, mapDispatchToProps)(ParametersActions)
 
 export {
   ParametersTabActions,

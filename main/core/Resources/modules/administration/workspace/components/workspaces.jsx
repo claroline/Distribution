@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {t, transChoice, Translator} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
+import {localeDate} from '#/main/core/date'
 import {MODAL_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
 
 import Configuration from '#/main/core/library/Configuration/Configuration'

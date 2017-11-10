@@ -90,7 +90,8 @@ class SerializerProvider
     /**
      * Serializes an object.
      *
-     * @param $object - the object to serialize
+     * @param mixed $object  - the object to serialize
+     * @param array $options - the serialization options
      *
      * @return mixed - a json serializable structure
      */
@@ -102,9 +103,11 @@ class SerializerProvider
     /**
      * Serializes an object.
      *
-     * @param $object - the object to serialize
+     * @param string $class   - the class of the object to deserialize
+     * @param mixed  $data    - the data to deserialize
+     * @param array  $options - the deserialization options
      *
-     * @return mixed - a json serializable structure
+     * @return mixed - the resulting entity of deserialization
      */
     public function deserialize($class, $data, $options = [])
     {

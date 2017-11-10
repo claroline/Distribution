@@ -2,11 +2,10 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
-import moment from 'moment'
 
 import {trans, t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
+import {localeDate} from '#/main/core/date'
 
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -284,8 +283,8 @@ class EntryView extends Component {
           return getCountry(value) ? getCountry(value).label : ''
         case 'date' :
           return value != undefined && value !== null && value.date ?
-            moment(value.date).format('DD/MM/YYYY') :
-            value ? moment(value).format('DD/MM/YYYY') : ''
+            localeDate(value.date) :
+            value ? localeDate(value) : ''
         case 'rich_text':
           return (<div dangerouslySetInnerHTML={{ __html: value}}/>)
         case 'file':
@@ -371,8 +370,8 @@ class EntryView extends Component {
             break
           case 'date':
             replacedField = fieldValue && fieldValue.date ?
-              moment(fieldValue.date).format('DD/MM/YYYY') :
-              fieldValue ? moment(fieldValue).format('DD/MM/YYYY') : ''
+              localeDate(fieldValue.date) :
+              fieldValue ? localeDate(fieldValue) : ''
             break
           case 'country':
             replacedField = fieldValue && getCountry(fieldValue) ? getCountry(fieldValue).label : ''

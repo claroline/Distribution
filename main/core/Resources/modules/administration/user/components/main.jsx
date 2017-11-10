@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
-import {TabbedPage, PageTab} from '#/main/core/layout/page/components/tabbed-page.jsx'
+import {TabbedPage} from '#/main/core/layout/page/components/tabbed-page.jsx'
 
 // app sections
 import {ParametersTab, ParametersTabActions} from '#/main/core/administration/user/parameters/components/parameters-tab.jsx'
@@ -12,7 +12,7 @@ import {OrganizationTab, OrganizationTabActions} from '#/main/core/administratio
 import {ProfileTab, ProfileTabActions} from '#/main/core/administration/user/profile/components/profile-tab.jsx'
 import {LocationTab, LocationTabActions} from '#/main/core/administration/user/location/components/location-tab.jsx'
 
-const UserMain = props =>
+const UserMain = () =>
   <TabbedPage
     tabs={[
       {
