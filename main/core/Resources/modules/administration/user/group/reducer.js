@@ -7,9 +7,9 @@ import {makeFormReducer} from '#/main/core/layout/form/reducer'
 import {validate} from './validator'
 
 const reducer = combineReducers({
-  list: makeListReducer({fetchUrl: generateUrl('apiv2_group_list')}),
+  list: makeListReducer('groups.list'),
   current: makeFormReducer({
-    users: makeListReducer({}, {fetchUrl: generateUrl('apiv2_user_list')}),
+    users: makeListReducer(),
     roles: makeListReducer(),
     organizations: makeListReducer()
   }, validate)

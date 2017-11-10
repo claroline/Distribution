@@ -16,7 +16,7 @@ const LocationList = {
       name: 'adress',
       type: 'string',
       label: t('adress'),
-      renderer: (rowData) => getReadableAdress(rowData),
+      renderer: (rowData) => getReadableAddress(rowData),
       displayed: true
     },
     {
@@ -40,53 +40,53 @@ const LocationList = {
 
 function getCoordinates(location) {
   if (location.latitude && location.longitude) {
-      return location.latitude + ' - ' + location.longitude
+    return location.latitude + ' - ' + location.longitude
   }
 }
 
-function getReadableAdress(location) {
+function getReadableAddress(location) {
   //this depends on the language I guess... but we don't always have every field either
   //basic display for now
-    let str = ''
-    let prepend = false
+  let str = ''
+  let prepend = false
 
-    if (location.street_number) {
-      str += location.street_number
-      prepend = true
+  if (location.street_number) {
+    str += location.street_number
+    prepend = true
+  }
+
+  if (location.street) {
+    if (prepend) {
+      str += ', '
     }
+    str += location.street
+    prepend = true
+  }
 
-    if (location.street) {
-      if (prepend) {
-        str += ', '
-      }
-      str += location.street
-      prepend = true
+  if (location.pc) {
+    if (prepend) {
+      str += ', '
     }
+    str += location.pc
+    prepend = true
+  }
 
-    if (location.pc) {
-      if (prepend) {
-        str += ', '
-      }
-      str += location.pc
-      prepend = true
+  if (location.town) {
+    if (prepend) {
+      str += ', '
     }
+    str += location.town
+    prepend = true
+  }
 
-    if (location.town) {
-      if (prepend) {
-        str += ', '
-      }
-      str += location.town
-      prepend = true
+  if (location.country) {
+    if (prepend) {
+      str += ', '
     }
+    str += location.country
+  }
 
-    if (location.country) {
-      if (prepend) {
-        str += ', '
-      }
-      str += location.country
-    }
-
-    return str
+  return str
 }
 
 export {

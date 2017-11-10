@@ -1,8 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
-import moment from 'moment'
 import shajs from 'sha.js'
+
 import {generateUrl} from '#/main/core/fos-js-router'
 import {trans, t} from '#/main/core/translation'
+import {isValidDate} from '#/main/core/date'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 
@@ -78,11 +79,11 @@ actions.validateResourceForm = () => (dispatch, getState) => {
     endDateError: null
   }
 
-  if (form['startDate'] && !moment(form['startDate']).isValid()) {
+  if (form['startDate'] && !isValidDate(form['startDate'])) {
     validation['startDateError'] = t('form_not_valid_error')
     validation['hasError'] = true
   }
-  if (form['endDate'] && !moment(form['endDate']).isValid()) {
+  if (form['endDate'] && !isValidDate(form['endDate'])) {
     validation['endDateError'] = t('form_not_valid_error')
     validation['hasError'] = true
   }

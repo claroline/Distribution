@@ -3,10 +3,14 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 import Configuration from '#/main/core/library/Configuration/Configuration'
+import {MODAL_URL} from '#/main/core/layout/modal'
+
+import {actions} from '#/main/core/administration/user/user/actions'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 const UsersActions = props =>
@@ -29,70 +33,64 @@ const Users = props =>
         label: t('show_as'),
         action: (rows) => window.location = generateUrl('claro_desktop_open', {'_switch': rows[0].username}),
         context: 'row',
-      },
-      {
+      }, {
         icon: '',
-        label: 'enable ws',
+        label: t('enable_personal_ws'),
         context: 'row',
-        displayed: (rows) => !rows[0].hasPersonalWorkspace,
+        displayed: (rows) => !rows[0].meta.personalWorkspace,
         action: (rows) => props.createWorkspace(rows[0])
-      },
-      {
+      }, {
         icon: '',
-        label: 'disable ws',
+        label: t('disable_personal_ws'),
         context: 'row',
-        displayed: (rows) => rows[0].hasPersonalWorkspace,
+        displayed: (rows) => rows[0].meta.personalWorkspace,
         action: (rows) => props.deleteWorkspace(rows[0])
-      },
-      {
-        icon: '',
-        label: 'enable user',
+      }, {
+        icon: 'fa fa-fw fa-check-circle-o',
+        label: t('enable_user'),
         context: 'row',
-        displayed: (rows) => !rows[0].isEnabled,
+        displayed: (rows) => !rows[0].meta.enabled,
         action: (rows) => props.enable(rows[0])
-      },
-      {
-        icon: '',
-        label: 'disable user',
+      }, {
+        icon: 'fa fa-fw fa-times-circle-o',
+        label: t('disable_user'),
         context: 'row',
-        displayed: (rows) => rows[0].isEnabled,
+        displayed: (rows) => rows[0].meta.enabled,
         action: (rows) => props.disable(rows[0])
-      },
-      {
+      }, {
         icon: 'fa fa-fw fa-book',
         label: t('user_workspaces'),
-        action: (rows) => {
+        action: () => {
           alert('filters are already enabled for the main page, but the user filter does not exists yet')
           window.location = generateUrl('claro_admin_workspace_list')
         },
         context: 'row'
       },
-      ...Configuration.getUsersAdministrationActions().map(action => action.options.modal ? {
-        icon: action.icon,
-        label: action.name(Translator),
-        action: (rows) => props.showModal(MODAL_URL, {
-          url: action.url(rows[0].id)
-        }),
-        context: 'row'
-      } : {
-        icon: action.icon,
-        label: action.name(Translator),
-        action: (rows) => window.location = action.url(rows[0].id),
-        context: 'row'
-      })
+      ...Configuration.getUsersAdministrationActions().map(action => action.options.modal ?
+        {
+          icon: action.icon,
+          label: action.name(Translator),
+          action: (rows) => props.showModal(MODAL_URL, {
+            url: action.url(rows[0].id)
+          }),
+          context: 'row'
+        } : {
+          icon: action.icon,
+          label: action.name(Translator),
+          action: (rows) => window.location = action.url(rows[0].id),
+          context: 'row'
+        }
+      )
     ]}
     definition={UserList.definition}
     card={UserList.card}
   />
 
 Users.propTypes = {
-
-}
-
-function mapStateToProps(state) {
-  return {
-
-  }
+  enable: T.func.isRequired,
+  disabled: T.func.isRequired,
+  createWorkspace: T.func.isRequired,
+  deleteWorkspace: T.func.isRequired
 }
 
 function mapDispatchToProps(dispatch) {
@@ -112,19 +110,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-
-  }
-}
-
-const ConnectedUsers = connect(mapStateToProps, mapDispatchToProps)(Users)
+const ConnectedUsers = connect(null, mapDispatchToProps)(Users)
 
 export {
   UsersActions,

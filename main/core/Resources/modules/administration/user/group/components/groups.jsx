@@ -1,13 +1,13 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-const GroupsActions = props =>
+import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
+
+const GroupsActions = () =>
   <PageActions>
     <PageAction
       id="group-add"
@@ -18,56 +18,15 @@ const GroupsActions = props =>
     />
   </PageActions>
 
-const Groups = props =>
+const Groups = () =>
   <DataList
     name="groups.list"
-    definition={[
-      {
-        name: 'name',
-        type: 'string',
-        label: t('name'),
-        renderer: (rowData) => {
-          // variable is used because React will use it has component display name (eslint requirement)
-          const groupLink = <a href={`#/groups/${rowData.id}`}>{rowData.name}</a>
-
-          return groupLink
-        },
-        displayed: true
-      }
-    ]}
     actions={[]}
-    card={(row) => ({
-      onClick: '#',
-      poster: null,
-      icon: 'fa fa-users',
-      title: row.name,
-      subtitle: row.name,
-      contentText: '',
-      flags: [],
-      footer: <span>footer</span>,
-      footerLong: <span>footerLong</span>
-    })}
+    definition={GroupList.definition}
+    card={GroupList.card}
   />
-
-Groups.propTypes = {
-
-}
-
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-
-  }
-}
-
-const ConnectedGroups = connect(mapStateToProps, mapDispatchToProps)(Groups)
 
 export {
   GroupsActions,
-  ConnectedGroups as Groups
+  Groups
 }

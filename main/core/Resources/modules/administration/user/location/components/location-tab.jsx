@@ -3,42 +3,56 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
+import {Routes} from '#/main/core/router'
 
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 import {actions} from '#/main/core/administration/user/location/actions'
-
-import {Route, Switch} from '#/main/core/router'
-
 import {Location,  LocationActions}  from '#/main/core/administration/user/location/components/location.jsx'
 import {Locations, LocationsActions} from '#/main/core/administration/user/location/components/locations.jsx'
 
 const LocationTabActions = props =>
-<Switch>
-  <Route path="/locations" exact={true} component={LocationsActions} />
-  <Route path="/locations/add" exact={true} component={LocationActions} />
-</Switch>
+  <Routes
+    routes={[
+      {
+        path: '/locations',
+        exact: true,
+        component: LocationsActions
+      }, {
+        path: '/locations/add',
+        exact: true,
+        component: LocationActions
+      }, {
+        path: '/locations/:id',
+        exact: true,
+        component: LocationActions
+      }
+    ]}
+  >
+  </Routes>
 
 const LocationTab = props =>
-  <Switch>
-    <Route
-      path="/locations"
-      exact={true}
-      component={Locations}
-    />
+  <Routes
+    routes={[
+      {
+        path: '/locations',
+        exact: true,
+        component: Locations
+      }, {
+        path: '/locations/add',
+        exact: true,
+        component: Location,
+        onEnter: () => props.openForm(null)
+      }, {
+        path: '/locations/:id',
+        exact: true,
+        component: Location,
+        onEnter: (params) => props.openForm(params.id)
+      }
+    ]}
+  />
 
-    <Route
-      path="/locations/add"
-      exact={true}
-      component={Location}
-      onEnter={() => props.openForm(null)}
-    />
-
-    <Route
-      path="/locations/:id"
-      component={Location}
-      onEnter={(params) => props.openForm(params.id)}
-    />
-  </Switch>
+LocationTab.propTypes = {
+  openForm: T.func.isRequired
+}
 
 function mapDispatchToProps(dispatch) {
   return {

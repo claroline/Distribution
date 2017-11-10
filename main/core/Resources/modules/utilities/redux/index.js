@@ -34,6 +34,16 @@ export function makeReducer(initialState, handlers) {
   }
 }
 
+// [Advanced use]
+export function makeInstanceReducer(condition) {
+  if (condition) {
+
+  } else {
+
+  }
+}
+
+// [Advanced use]
 // applies 2 or more reducers to the same store key.
 // NB. This is low level API to apply custom reducers to base app components.
 //     If you end up using it, you may are doing bad things !

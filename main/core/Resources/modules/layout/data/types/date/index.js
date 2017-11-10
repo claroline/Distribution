@@ -1,4 +1,5 @@
-import {isValidDate, localeDate, serverDate} from '#/main/core/layout/data/types/date/utils'
+import {isValidDate, localeDate, serverDate} from '#/main/core/date'
+
 import {DateSearch} from '#/main/core/layout/data/types/date/components/search.jsx'
 
 const DATE_TYPE = 'date'

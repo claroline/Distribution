@@ -91,6 +91,8 @@ class Form extends Component {
   }
 
   componentWillUnmount() {
+    // todo warn also here
+    // if client route has changed, it will not trigger before unload
     window.removeEventListener('beforeunload', this.warnPendingChanges)
   }
 

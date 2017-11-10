@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
-import moment from 'moment'
 import classes from 'classnames'
 import {PropTypes as T} from 'prop-types'
 
 import {trans, t} from '#/main/core/translation'
+import {localeDate} from '#/main/core/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
@@ -141,7 +141,7 @@ class Entries extends Component {
         type: 'date',
         filterable: false,
         displayed: this.isDisplayedField('creationDateString'),
-        renderer: (rowData) => this.canViewEntryMetadata(rowData) ? moment(rowData.creationDate).format('DD/MM/YYYY') : '-'
+        renderer: (rowData) => this.canViewEntryMetadata(rowData) ? localeDate(rowData.creationDate) : '-'
       })
       columns.push({
         name: 'createdAfter',
@@ -296,7 +296,7 @@ class Entries extends Component {
       if (value !== undefined && value !== null && value !== '') {
         switch (getFieldType(field.type).name) {
           case 'date':
-            formattedValue = value.date ? moment(value.date).format('DD/MM/YYYY') : moment(value).format('DD/MM/YYYY')
+            formattedValue = value.date ? localeDate(value.date) : localeDate(value)
             break
           case 'country':
             formattedValue = getCountry(value).label

@@ -1,7 +1,8 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
+import {localeDate} from '#/main/core/date'
+
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
 
 const UserCard = (row) => ({
@@ -13,11 +14,11 @@ const UserCard = (row) => ({
   contentText: '',
   flags: [
     row.meta.personalWorkspace && ['fa fa-book',  t('has_personal_workspace')],
-    row.meta.enabled           && ['fa fa-check', t('user_enabled')]
+    row.meta.enabled           && ['fa fa-check-circle-o', t('user_enabled')]
   ].filter(flag => !!flag),
   footer:
     <span>
-      registered at <b>{localeDate(row.meta.created)}</b>,
+      registered at <b>{localeDate(row.meta.created)}</b>
     </span>
 })
 

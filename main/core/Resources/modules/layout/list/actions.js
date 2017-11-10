@@ -12,14 +12,14 @@ export const actions = {}
 export const LIST_FILTER_ADD    = 'LIST_FILTER_ADD'
 export const LIST_FILTER_REMOVE = 'LIST_FILTER_REMOVE'
 
-actions.addFilter    = makeActionCreator(LIST_FILTER_ADD, 'property', 'value')
-actions.removeFilter = makeActionCreator(LIST_FILTER_REMOVE, 'filter')
+actions.addFilter    = makeActionCreator(LIST_FILTER_ADD, 'listName', 'property', 'value')
+actions.removeFilter = makeActionCreator(LIST_FILTER_REMOVE, 'listName', 'filter')
 
 
 // sorting
 export const LIST_SORT_UPDATE = 'LIST_SORT_UPDATE'
 
-actions.updateSort = makeActionCreator(LIST_SORT_UPDATE, 'property')
+actions.updateSort = makeActionCreator(LIST_SORT_UPDATE, 'listName', 'property')
 
 
 // selection
@@ -27,9 +27,9 @@ export const LIST_RESET_SELECT      = 'LIST_RESET_SELECT'
 export const LIST_TOGGLE_SELECT     = 'LIST_TOGGLE_SELECT'
 export const LIST_TOGGLE_SELECT_ALL = 'LIST_TOGGLE_SELECT_ALL'
 
-actions.resetSelect     = makeActionCreator(LIST_RESET_SELECT)
-actions.toggleSelect    = makeActionCreator(LIST_TOGGLE_SELECT, 'row')
-actions.toggleSelectAll = makeActionCreator(LIST_TOGGLE_SELECT_ALL, 'rows')
+actions.resetSelect     = makeActionCreator(LIST_RESET_SELECT, 'listName')
+actions.toggleSelect    = makeActionCreator(LIST_TOGGLE_SELECT, 'listName', 'row')
+actions.toggleSelectAll = makeActionCreator(LIST_TOGGLE_SELECT_ALL, 'listName', 'rows')
 
 
 // data loading
@@ -38,10 +38,10 @@ export const LIST_DATA_LOAD = 'LIST_DATA_LOAD'
 //data delete
 export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
 
-actions.loadData = makeActionCreator(LIST_DATA_LOAD, 'data', 'total')
+actions.loadData = makeActionCreator(LIST_DATA_LOAD, 'listName', 'data', 'total')
 
-actions.asyncDeleteItems = (items, name) => (dispatch, getState) => {
-  const listState = get(getState(), name)
+actions.asyncDeleteItems = (listName, items) => (dispatch, getState) => {
+  const listState = get(getState(), listName)
 
   dispatch({
     [REQUEST_SEND]: {
@@ -50,17 +50,15 @@ actions.asyncDeleteItems = (items, name) => (dispatch, getState) => {
         method: 'DELETE'
       },
       success: (data, dispatch) => {
-        dispatch(actions.changePage(0))
-        dispatch(actions.fetchData(name))
+        dispatch(actions.changePage(listName, 0))
+        dispatch(actions.fetchData(listName))
       }
     }
   })
 }
 
-actions.syncDeleteItems = makeActionCreator(LIST_DATA_DELETE, 'items')
-
-actions.fetchData = (name) => (dispatch, getState) => {
-  const listState = get(getState(), name)
+actions.fetchData = (listName) => (dispatch, getState) => {
+  const listState = get(getState(), listName)
 
   dispatch({
     [REQUEST_SEND]: {
@@ -69,8 +67,8 @@ actions.fetchData = (name) => (dispatch, getState) => {
         method: 'GET'
       },
       success: (response, dispatch) => {
-        dispatch(actions.resetSelect())
-        dispatch(actions.loadData(response.data, response.totalResults))
+        dispatch(actions.resetSelect(listName))
+        dispatch(actions.loadData(listName, response.data, response.totalResults))
       }
     }
   })
@@ -81,6 +79,6 @@ actions.fetchData = (name) => (dispatch, getState) => {
 export const LIST_PAGE_SIZE_UPDATE = 'LIST_PAGE_SIZE_UPDATE'
 export const LIST_PAGE_CHANGE      = 'LIST_PAGE_CHANGE'
 
-actions.deleteItems    = makeActionCreator(LIST_DATA_DELETE, 'items')
-actions.changePage     = makeActionCreator(LIST_PAGE_CHANGE, 'page')
-actions.updatePageSize = makeActionCreator(LIST_PAGE_SIZE_UPDATE, 'pageSize')
+actions.deleteItems    = makeActionCreator(LIST_DATA_DELETE, 'listName', 'items')
+actions.changePage     = makeActionCreator(LIST_PAGE_CHANGE, 'listName', 'page')
+actions.updatePageSize = makeActionCreator(LIST_PAGE_SIZE_UPDATE, 'listName', 'pageSize')

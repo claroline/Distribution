@@ -22,7 +22,7 @@ const RoleList = {
       displayed: true
     }, {
       name: 'translationKey',
-      type: 'string',
+      type: 'string', // todo should be a new data type translated
       label: t('translation'),
       renderer: (rowData) => t(rowData.translationKey),
       displayed: true

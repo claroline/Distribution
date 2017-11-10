@@ -26,10 +26,7 @@ import {
 const fetchUrlReducer = (state = null) => state
 
 /**
- * Reduces the API url from where the data come from.
- * It's used to delete elements from data lists.
  *
- * This is not supposed to change at runtime. We store it in redux for the sake of simplicity.
  */
 const deleteReducer = (state = null) => state
 

@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {NavLink} from 'react-router-dom'
 
 import {t, trans, transChoice} from '#/main/core/translation'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
+import {localeDate} from '#/main/core/date'
 
 import {
   PageContainer as Page,

@@ -3,8 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import moment from 'moment'
 
-import {formatDate} from '#/main/core/date'
-
 import {ErrorBlock} from '#/main/core/layout/form/components/error-block.jsx'
 import {CheckboxesGroup} from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
@@ -92,7 +90,7 @@ export const FormField = props => {
               options={props.choices || []}
               selectedValue={props.value || []}
               disabled={props.disabled}
-              onChange={value => props.onChange(value)}
+              onChange={props.onChange}
             />
             {props.error &&
               <ErrorBlock text={props.error}/>
@@ -169,7 +167,7 @@ export const FormField = props => {
           value={props.value === null ? undefined : props.value}
           disabled={props.disabled}
           error={props.error}
-          onChange={value => props.onChange(value)}
+          onChange={props.onChange}
         />
       )
     case 'email':
@@ -193,7 +191,7 @@ export const FormField = props => {
           value={props.value || undefined}
           disabled={props.disabled}
           error={props.error}
-          onChange={value => props.onChange(value)}
+          onChange={props.onChange}
         />
       )
     case 'rich_text':
@@ -204,7 +202,7 @@ export const FormField = props => {
             value={props.value || ''}
             minRows={2}
             disabled={props.disabled}
-            onChange={value => props.onChange(value)}
+            onChange={props.onChange}
           />
           {props.error &&
             <ErrorBlock text={props.error}/>
@@ -216,7 +214,7 @@ export const FormField = props => {
           value={props.value}
           disabled={props.disabled}
           error={props.error}
-          onChange={value => props.onChange(value)}
+          onChange={props.onChange}
         />
       )
     case 'date':
@@ -228,10 +226,7 @@ export const FormField = props => {
             minDate={moment.utc('1900-01-01T12:00:00')}
             value={props.value !== undefined && props.value !== null ? props.value.date || props.value || '' : ''}
             disabled={props.disabled}
-            onChange={date => {
-              const value = moment(date).isValid() ? formatDate(date) : null
-              props.onChange(value)
-            }}
+            onChange={props.onChange}
           />
           {props.error &&
           <ErrorBlock text={props.error}/>
@@ -245,10 +240,7 @@ export const FormField = props => {
           value={props.value !== undefined && props.value !== null ? props.value.date || props.value || '' : ''}
           disabled={props.disabled}
           error={props.error}
-          onChange={date => {
-            const value = moment(date).isValid() ? formatDate(date) : null
-            props.onChange(value)
-          }}
+          onChange={props.onChange}
         />
       )
     case 'file':

@@ -1,6 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
@@ -8,7 +6,7 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
-const RolesActions = props =>
+const RolesActions = () =>
   <PageActions>
     <PageAction
       id="role-add"
@@ -19,7 +17,7 @@ const RolesActions = props =>
     />
   </PageActions>
 
-const Roles = props =>
+const Roles = () =>
   <DataList
     name="roles.list"
     actions={[]}
@@ -27,25 +25,7 @@ const Roles = props =>
     card={RoleList.card}
   />
 
-Roles.propTypes = {
-
-}
-
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-
-  }
-}
-
-const ConnectedRoles = connect(mapStateToProps, mapDispatchToProps)(Roles)
-
 export {
   RolesActions,
-  ConnectedRoles as Roles
+  Roles
 }

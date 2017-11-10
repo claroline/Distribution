@@ -57,16 +57,8 @@ const GroupForm = props =>
             label: t('name')
           }
         ]
-      }, {
-        id: 'access_restrictions',
-        icon: 'fa fa-fw fa-key',
-        title: t('access_restrictions'),
-        fields: [
-          // accountExpiration
-        ]
       }
     ]}
-
   >
     <FormSections
       level={3}

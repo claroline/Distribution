@@ -1,4 +1,5 @@
 import invariant from 'invariant'
+
 import {makeActionCreator} from '#/main/core/utilities/redux'
 
 export const FORM_RESET       = 'FORM_RESET'

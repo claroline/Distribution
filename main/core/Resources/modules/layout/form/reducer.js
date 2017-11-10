@@ -4,7 +4,6 @@ import set from 'lodash/set'
 
 import {makeReducer, combineReducers, reduceReducers} from '#/main/core/utilities/redux'
 
-//import {validate} from './validator'
 import {
   FORM_RESET,
   FORM_VALIDATE,
