@@ -81,6 +81,10 @@ class UserFinder implements FinderInterface
             }
         }
 
+        if (!in_array('isRemoved', array_keys($searches))) {
+            $qb->andWhere("obj.isRemoved = FALSE");
+        }
+
         return $qb;
     }
 }
