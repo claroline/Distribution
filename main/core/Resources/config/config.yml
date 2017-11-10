@@ -111,8 +111,6 @@ plugin:
           class: users
         - name: widgets_management
           class: list-alt
-        - name: organization_management
-          class: building
         - name: tasks_scheduling
           class: tasks
 

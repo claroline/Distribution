@@ -66,7 +66,7 @@ class UserSerializer
             'meta' => $this->serializeMeta($user),
             'restrictions' => $this->serializeRestrictions($user),
             'roles' => array_map(function (Role $role) {
-                return ['id' => $role->getId(), 'name' => $role->getName()];
+                return ['id' => $role->getId(), 'uuid' => $role->getUuid(), 'name' => $role->getName()];
             }, $user->getEntityRoles()),
         ];
     }
@@ -145,6 +145,7 @@ class UserSerializer
      */
     public function deserialize($data, User $user = null, array $options = [])
     {
+        //remove this later (with the Trait)
         $object = $this->serializer->deserialize($data, $user, $options);
 
         if (isset($data->plainPassword)) {

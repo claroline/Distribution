@@ -260,11 +260,6 @@ claro_admin_oauth:
     prefix: admin/oauth
     type: annotation
 
-claro_admin_organization:
-    resource: "@ClarolineCoreBundle/Controller/Administration/OrganizationController.php"
-    prefix: admin/organization
-    type: annotation
-
 claro_admin_i18n:
     resource: "@ClarolineCoreBundle/Controller/Administration/InternationalizationController.php"
     prefix: admin/i18n
@@ -317,22 +312,6 @@ claro_facet_api:
 
 claro_group_api:
     resource: "@ClarolineCoreBundle/Controller/API/User/GroupController.php"
-    type: rest
-    prefix: api
-    defaults: {_format: json}
-    options:
-        expose: true
-
-claro_organization_api:
-    resource: "@ClarolineCoreBundle/Controller/API/Organization/OrganizationController.php"
-    type: rest
-    prefix: api
-    defaults: {_format: json}
-    options:
-        expose: true
-
-claro_location_api:
-    resource: "@ClarolineCoreBundle/Controller/API/Organization/LocationController.php"
     type: rest
     prefix: api
     defaults: {_format: json}
