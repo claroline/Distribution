@@ -78,6 +78,7 @@ class UserCrud
     public function preDelete(CrudEvent $event)
     {
         if ($event->getObject() instanceof User) {
+            $user = $event->getObject();
             $userRole = $this->roleManager->getUserRole($user->getUsername());
 
             //soft delete~
@@ -113,6 +114,18 @@ class UserCrud
             $this->dispatcher->dispatch('claroline_users_delete', 'GenericData', [[$user]]);
             $this->dispatcher->dispatch('log', 'Log\LogUserDelete', [$user]);
             $this->dispatcher->dispatch('delete_user', 'DeleteUser', [$user]);
+        }
+    }
+
+    /**
+     * @DI\Observe("crud_pre_update_object")
+     *
+     * @param CrudEvent $event
+     */
+    public function preUpdate(CrudEvent $event)
+    {
+        if ($event->getObject() instanceof User) {
+            //things will happen here
         }
     }
 }

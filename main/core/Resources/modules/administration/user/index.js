@@ -46,7 +46,13 @@ bootstrap(
     return {
       users: {
         list: merge({}, initialData.users, {
-          fetchUrl: generateUrl('apiv2_user_list')
+          fetchUrl: generateUrl('apiv2_user_list'),
+          delete: {
+            title: (users) => transChoice('remove_users', users.length, {count: users.length}, 'platform'),
+            question: (users) => t('remove_users_confirm', {
+              user_list: users.map(user => user.username).join(', ')
+            })
+          }
         })
       },
       groups: {
