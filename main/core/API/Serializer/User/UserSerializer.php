@@ -64,35 +64,33 @@ class UserSerializer
             'mail' => $user->getMail(),
             'administrativeCode' => $user->getAdministrativeCode(),
             'meta' => $this->serializeMeta($user),
-            'restrictions' => $this->serializeRestrictions($user)
-
-        ];
-    }
-
-    public function serializeMeta(User $user)
-    {
-        return [
-            'creationDate' => $user->getCreated(),
-            'initDate' => $user->getInitDate(),
-            'description' => $user->getDescription(),
-            'isMailValidated' => $user->isMailNotified(),
-            'isMailNotified' => $user->isMailNotified(),
-            'hideMailWarning' => $user->getHideMailWarning(),
-            'hasTunedPublicUrl' => $user->hasTunedPublicUrl(),
-            'authentication' => $user->getAuthentication(),
-            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace(),
+            'restrictions' => $this->serializeRestrictions($user),
             'roles' => array_map(function (Role $role) {
                 return ['id' => $role->getId(), 'name' => $role->getName()];
             }, $user->getEntityRoles()),
         ];
     }
 
+    public function serializeMeta(User $user)
+    {
+        return [
+            'acceptedTerms' => $user->hasAcceptedTerms(),
+            'creationDate' => $user->getCreated(),
+            'description' => $user->getDescription(),
+            'mailValidated' => $user->isMailNotified(),
+            'mailNotified' => $user->isMailNotified(),
+            'mailWarningHidden' => $user->getHideMailWarning(),
+            'publicUrlTuned' => $user->hasTunedPublicUrl(),
+            'authentication' => $user->getAuthentication(),
+            'personalWorkspace' => !!$user->getPersonalWorkspace(),
+            'enabled' => $user->isEnabled(),
+            'removed' => $user->isRemoved(),
+        ];
+    }
+
     public function serializeRestrictions(User $user)
     {
         return [
-            'hasAcceptedTerms' => $user->hasAcceptedTerms(),
-            'isEnabled' => $user->isEnabled(),
-            'isRemoved' => $user->isRemoved(),
             'accessibleFrom' => !empty($user->getInitDate()) ? $user->getInitDate()->format('Y-m-d\TH:i:s') : null,
             'accessibleUntil' => !empty($user->getExpirationDate()) ? $user->getExpirationDate()->format('Y-m-d\TH:i:s') : null,
         ];

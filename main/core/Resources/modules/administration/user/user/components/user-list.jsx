@@ -28,7 +28,7 @@ const UserList = {
       label: t('first_name'),
       displayed: true
     }, {
-      name: 'meta.hasPersonalWorkspace',
+      name: 'meta.personalWorkspace',
       alias: 'hasPersonalWorkspace',
       type: 'boolean',
       label: t('has_personal_workspace'),

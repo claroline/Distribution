@@ -56,19 +56,6 @@ class UserFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
-        $flatSearch = [];
-
-        foreach ($searches as $key => $value) {
-            if (strpos($key, 'meta.') === 0 || strpos($key, 'restrictions.') === 0) {
-                $parts = explode('.', $key);
-                $flatSearch[$parts[1]] = $value;
-            } else {
-                $flatSearch[$key] = $value;
-            }
-        }
-
-        $searches = $flatSearch;
-
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
