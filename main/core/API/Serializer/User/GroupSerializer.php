@@ -65,12 +65,17 @@ class GroupSerializer
         $serializedOrganizations = [];
 
         foreach ($group->getOrganizations() as $organization) {
-            $serializedOrganizations[] = $this->serializer->serialize(
-              $organization
-            );
+            $serializedOrganizations[] = $this->serializer->serialize($organization);
+        }
+
+        $serializedRoles = [];
+
+        foreach ($group->getRoles() as $role) {
+            $serializedRoles[] = $this->serializer->serialize($role);
         }
 
         $object['organizations'] = $serializedOrganizations;
+        $object['roles'] = $serializedRoles;
 
         return $object;
     }

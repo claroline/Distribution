@@ -62,8 +62,34 @@ class UserSerializer
             'picture' => $user->getPicture(),
             'mail' => $user->getMail(),
             'administrativeCode' => $user->getAdministrativeCode(),
-            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace(),
-            'isEnabled' => $user->isEnabled()
+            'meta' => $this->serializeMeta($user),
+            'restrictions' => $this->serializeRestrictions($user)
+
+        ];
+    }
+
+    public function serializeMeta(User $user)
+    {
+        return [
+            'creationDate' => $user->getCreated(),
+            'initDate' => $user->getInitDate(),
+            'description' => $user->getDescription(),
+            'isMailValidated' => $user->isMailNotified(),
+            'isMailNotified' => $user->isMailNotified(),
+            'hideMailWarning' => $user->getHideMailWarning(),
+            'hasTunedPublicUrl' => $user->hasTunedPublicUrl(),
+            'authentication' => $user->getAuthentication(),
+            'hasPersonalWorkspace' => !!$user->getPersonalWorkspace()
+        ];
+    }
+
+    public function serializeRestrictions(User $user)
+    {
+        return [
+            'hasAcceptedTerms' => $user->hasAcceptedTerms(),
+            'isEnabled' => $user->isEnabled(),
+            'isRemoved' => $user->isRemoved(),
+            'expirationDate' => $user->getExpirationDate()
         ];
     }
 

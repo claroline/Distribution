@@ -31,12 +31,12 @@ const UserList = {
       type: 'string',
       label: t('last_name')
     }, {
-      name: 'hasPersonalWorkspace',
+      name: 'meta.hasPersonalWorkspace',
       type: 'boolean',
       label: t('has_personal_workspace'),
       displayed: true
     }, {
-      name: 'isEnabled',
+      name: 'restrictions.isEnabled',
       type: 'boolean',
       label: t('isEnabled'),
       displayed: true
