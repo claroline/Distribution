@@ -115,6 +115,8 @@ const isPeerReviewEnabled = createSelector(
 )
 
 const drops = state => state.drops
+const currentDrop = state => state.currentDrop
+const correctionForm = state => state.correctionForm
 
 export const select = {
   user,
@@ -139,5 +141,7 @@ export const select = {
   myDropId,
   isDropEnabled,
   isPeerReviewEnabled,
-  drops
+  drops,
+  currentDrop,
+  correctionForm
 }

@@ -15,9 +15,11 @@ use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\DropZoneBundle\API\Serializer\CorrectionSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DocumentSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DropSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DropzoneSerializer;
+use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
@@ -43,6 +45,9 @@ class DropzoneManager
     /** @var DocumentSerializer */
     private $documentSerializer;
 
+    /** @var CorrectionSerializer */
+    private $correctionSerializer;
+
     /** @var Filesystem */
     private $fileSystem;
 
@@ -61,30 +66,33 @@ class DropzoneManager
      * DropzoneManager constructor.
      *
      * @DI\InjectParams({
-     *     "crud"               = @DI\Inject("claroline.api.crud"),
-     *     "dropzoneSerializer" = @DI\Inject("claroline.serializer.dropzone"),
-     *     "dropSerializer"     = @DI\Inject("claroline.serializer.dropzone.drop"),
-     *     "documentSerializer" = @DI\Inject("claroline.serializer.dropzone.document"),
-     *     "fileSystem"         = @DI\Inject("filesystem"),
-     *     "filesDir"           = @DI\Inject("%claroline.param.files_directory%"),
-     *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
-     *     "utils"              = @DI\Inject("claroline.utilities.misc")
+     *     "crud"                 = @DI\Inject("claroline.api.crud"),
+     *     "dropzoneSerializer"   = @DI\Inject("claroline.serializer.dropzone"),
+     *     "dropSerializer"       = @DI\Inject("claroline.serializer.dropzone.drop"),
+     *     "documentSerializer"   = @DI\Inject("claroline.serializer.dropzone.document"),
+     *     "correctionSerializer" = @DI\Inject("claroline.serializer.dropzone.correction"),
+     *     "fileSystem"           = @DI\Inject("filesystem"),
+     *     "filesDir"             = @DI\Inject("%claroline.param.files_directory%"),
+     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
+     *     "utils"                = @DI\Inject("claroline.utilities.misc")
      * })
      *
-     * @param Crud               $crud
-     * @param DropzoneSerializer $dropzoneSerializer
-     * @param DropSerializer     $dropSerializer
-     * @param DocumentSerializer $documentSerializer
-     * @param Filesystem         $fileSystem
-     * @param string             $filesDir
-     * @param ObjectManager      $om
-     * @param ClaroUtilities     $utils
+     * @param Crud                 $crud
+     * @param DropzoneSerializer   $dropzoneSerializer
+     * @param DropSerializer       $dropSerializer
+     * @param DocumentSerializer   $documentSerializer
+     * @param CorrectionSerializer $correctionSerializer
+     * @param Filesystem           $fileSystem
+     * @param string               $filesDir
+     * @param ObjectManager        $om
+     * @param ClaroUtilities       $utils
      */
     public function __construct(
         Crud $crud,
         DropzoneSerializer $dropzoneSerializer,
         DropSerializer $dropSerializer,
         DocumentSerializer $documentSerializer,
+        CorrectionSerializer $correctionSerializer,
         Filesystem $fileSystem,
         $filesDir,
         ObjectManager $om,
@@ -94,6 +102,7 @@ class DropzoneManager
         $this->dropzoneSerializer = $dropzoneSerializer;
         $this->dropSerializer = $dropSerializer;
         $this->documentSerializer = $documentSerializer;
+        $this->correctionSerializer = $correctionSerializer;
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->om = $om;
@@ -136,6 +145,18 @@ class DropzoneManager
     public function serializeDocument(Document $document)
     {
         return $this->documentSerializer->serialize($document);
+    }
+
+    /**
+     * Serializes a Correction entity.
+     *
+     * @param Correction $correction
+     *
+     * @return array
+     */
+    public function serializeCorrection(Correction $correction)
+    {
+        return $this->correctionSerializer->serialize($correction);
     }
 
     /**
@@ -310,6 +331,33 @@ class DropzoneManager
         $drop->setFinished(true);
         $drop->setDropDate(new \DateTime());
         $this->om->persist($drop);
+        $this->om->flush();
+    }
+
+    /**
+     * Updates a Correction.
+     *
+     * @param array $data
+     *
+     * @return Dropzone
+     */
+    public function saveCorrection(array $data)
+    {
+        $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
+        $this->om->persist($correction);
+        $this->om->flush();
+
+        return $correction;
+    }
+
+    /**
+     * Deletes a Correction.
+     *
+     * @param Correction $correction
+     */
+    public function deleteCorrection(Correction $correction)
+    {
+        $this->om->remove($correction);
         $this->om->flush();
     }
 

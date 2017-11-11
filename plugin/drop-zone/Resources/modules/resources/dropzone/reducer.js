@@ -13,10 +13,12 @@ import {reducer as correctionReducer} from './correction/reducer'
 const reducer = {
   user: makeReducer({}, {}),
   dropzone: editorReducer.dropzone,
+  dropzoneForm: editorReducer.dropzoneForm,
   myDrop: playerReducer.myDrop,
   //myDrops: playerReducer.myDrops,
   drops: correctionReducer.drops,
-  dropzoneForm: editorReducer.dropzoneForm,
+  currentDrop: correctionReducer.currentDrop,
+  correctionForm: correctionReducer.correctionForm,
 
   // generic reducers
   currentRequests: apiReducer,

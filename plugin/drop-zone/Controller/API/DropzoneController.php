@@ -15,6 +15,7 @@ use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
+use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
@@ -259,6 +260,89 @@ class DropzoneController
         );
 
         return new JsonResponse($data, 200);
+    }
+
+    /**
+     * @EXT\Route("/drop/{id}", name="claro_dropzone_drop_fetch")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop $drop
+     *
+     * @return JsonResponse
+     */
+    public function dropFetchAction(Drop $drop)
+    {
+        $dropzone = $drop->getDropzone();
+        /* TODO: checks if current user can edit resource or view this drop */
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        return new JsonResponse($this->manager->serializeDrop($drop));
+    }
+
+    /**
+     * @EXT\Route("/drop/{id}/correction/save", name="claro_dropzone_correction_save")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop    $drop
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function correctionSaveAction(Drop $drop, Request $request)
+    {
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $correction = $this->manager->saveCorrection(json_decode($request->getContent(), true));
+
+            return new JsonResponse(
+                $this->manager->serializeCorrection($correction)
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * @EXT\Route("/correction/{id}/delete", name="claro_dropzone_correction_delete")
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter(
+     *     "correction",
+     *     class="ClarolineDropZoneBundle:Correction",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Correction $correction
+     *
+     * @return JsonResponse
+     */
+    public function correctionDeleteAction(Correction $correction)
+    {
+        $dropzone = $correction->getDrop()->getDropzone();
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $serializedCorrection = $this->manager->serializeCorrection($correction);
+            $this->manager->deleteCorrection($correction);
+
+            return new JsonResponse($serializedCorrection);
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
     }
 
     private function checkDropEdition(Drop $drop, User $user)

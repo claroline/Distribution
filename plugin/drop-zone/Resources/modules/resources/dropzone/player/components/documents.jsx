@@ -58,8 +58,8 @@ Document.propTypes = {
     data: T.oneOfType([T.string, T.object]).isRequired,
     dropDate: T.string.isRequired
   }),
-  deleteDocument: T.func.isRequired,
-  showModal: T.func.isRequired
+  deleteDocument: T.func,
+  showModal: T.func
 }
 
 export const Documents = props =>
@@ -72,7 +72,6 @@ export const Documents = props =>
             <Document
               key={`document-${d.id}`}
               document={d}
-              canEdit={props.isDropEnabled && !props.drop.finished}
               {...props}
             />
           )}
@@ -85,9 +84,12 @@ export const Documents = props =>
   </div>
 
 Documents.propTypes = {
-  isDropEnabled: T.bool.isRequired,
-  drop: T.shape({
-    finished: T.bool.isRequired
-  }).isRequired,
-  documents: T.array
+  canEdit: T.bool.isRequired,
+  documents: T.array,
+  deleteDocument: T.func,
+  showModal: T.func
+}
+
+Documents.defaultProps = {
+  canEdit: false
 }

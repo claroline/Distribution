@@ -25,7 +25,8 @@ class Drops extends Component {
       displayed: true,
       displayable: true,
       filterable: true,
-      type: 'date'
+      type: 'date',
+      renderer: (rowData) => <a href={`#/drop/${rowData.id}`}>{rowData.dropDate ? rowData.dropDate : 'no_date'}</a>
     })
     columns.push({
       name: 'user',

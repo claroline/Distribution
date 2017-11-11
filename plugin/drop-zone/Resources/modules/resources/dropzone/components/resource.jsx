@@ -11,6 +11,7 @@ import {Menu} from './menu.jsx'
 import {DropzoneForm} from '../editor/components/dropzone-form.jsx'
 import {MyDrop} from '../player/components/my-drop.jsx'
 import {Drops} from '../correction/components/drops.jsx'
+import {Drop} from '../correction/components/drop.jsx'
 
 import {select} from '../selectors.js'
 import {actions as editorActions} from '../editor/actions.js'
@@ -64,6 +65,11 @@ const DropzoneResource = props =>
           path: '/drops',
           component: Drops,
           onEnter: () => props.fetchDrops(props.dropzoneId)
+        }, {
+          path: '/drop/:id',
+          component: Drop,
+          onEnter: (params) => props.fetchDrop(params.id),
+          onLeave: () => props.resetCurrentDrop()
         }
       ]}
     />
@@ -82,7 +88,9 @@ DropzoneResource.propTypes = {
   loadForm: T.func.isRequired,
   resetForm: T.func.isRequired,
   saveDropzone: T.func.isRequired,
-  fetchDrops: T.func.isRequired
+  fetchDrops: T.func.isRequired,
+  fetchDrop: T.func.isRequired,
+  resetCurrentDrop: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -102,7 +110,9 @@ function mapDispatchToProps(dispatch) {
     loadForm: (dropzone) => dispatch(editorActions.loadForm(dropzone)),
     resetForm: () => dispatch(editorActions.resetForm()),
     saveDropzone: (dropzoneId, data) => dispatch(editorActions.saveDropzone(dropzoneId, data)),
-    fetchDrops: (dropzoneId) => dispatch(correctionActions.fetchDrops(dropzoneId))
+    fetchDrops: (dropzoneId) => dispatch(correctionActions.fetchDrops(dropzoneId)),
+    fetchDrop: (dropId) => dispatch(correctionActions.fetchDrop(dropId)),
+    resetCurrentDrop: () => dispatch(correctionActions.resetCurrentDrop())
   }
 }
 

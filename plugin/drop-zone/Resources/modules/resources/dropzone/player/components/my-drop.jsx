@@ -15,6 +15,7 @@ const MyDrop = props =>
   <div className="drop-panel">
     <Documents
       documents={props.drop.documents}
+      canEdit={props.isDropEnabled && !props.drop.finished}
       {...props}
     />
 
