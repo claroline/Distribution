@@ -10,6 +10,7 @@ export const CURRENT_DROP_RESET = 'CURRENT_DROP_RESET'
 export const CORRECTION_FORM_LOAD = 'CORRECTION_FORM_LOAD'
 export const CORRECTION_FORM_RESET = 'CORRECTION_FORM_RESET'
 export const CORRECTION_FORM_UPDATE = 'CORRECTION_FORM_UPDATE'
+export const CORRECTION_FORM_CRITERION_UPDATE = 'CORRECTION_FORM_CRITERION_UPDATE'
 export const CORRECTION_UPDATE = 'CORRECTION_UPDATE'
 export const CORRECTION_REMOVE = 'CORRECTION_REMOVE'
 
@@ -59,6 +60,7 @@ actions.fetchDrop = (dropId) => (dispatch, getState) => {
 actions.loadCorrectionForm = makeActionCreator(CORRECTION_FORM_LOAD, 'correction')
 actions.resetCorrectionForm = makeActionCreator(CORRECTION_FORM_RESET)
 actions.updateCorrectionForm = makeActionCreator(CORRECTION_FORM_UPDATE, 'property', 'value')
+actions.updateCorrectionFormCriterion = makeActionCreator(CORRECTION_FORM_CRITERION_UPDATE, 'criterionId', 'value')
 actions.updateCorrection = makeActionCreator(CORRECTION_UPDATE, 'correction')
 actions.removeCorrection = makeActionCreator(CORRECTION_REMOVE, 'correctionId')
 

@@ -174,6 +174,18 @@ const CriteriaSection = props =>
       <p>{trans('criteria_info_2', {}, 'dropzone')}</p>
       <p>{trans('criteria_info_3', {}, 'dropzone')}</p>
       <CheckGroup
+        checkId="comment-in-correction-enabled-chk"
+        checked={props.parameters.commentInCorrectionEnabled}
+        label={trans('enable_comment', {}, 'dropzone')}
+        onChange={checked => props.updateForm('parameters.commentInCorrectionEnabled', checked)}
+      />
+      <CheckGroup
+        checkId="comment-in-correction-forced-chk"
+        checked={props.parameters.commentInCorrectionForced}
+        label={trans('force_comment', {}, 'dropzone')}
+        onChange={checked => props.updateForm('parameters.commentInCorrectionForced', checked)}
+      />
+      <CheckGroup
         checkId="criteria-enabled-chk"
         checked={props.parameters.criteriaEnabled}
         label={trans('enable_evaluation_criteria', {}, 'dropzone')}
@@ -188,18 +200,6 @@ const CriteriaSection = props =>
             content={props.display.correctionInstruction || ''}
             onChange={value => props.updateForm('display.correctionInstruction', value)}
             minRows={3}
-          />
-          <CheckGroup
-            checkId="comment-in-correction-enabled-chk"
-            checked={props.parameters.commentInCorrectionEnabled}
-            label={trans('enable_comment', {}, 'dropzone')}
-            onChange={checked => props.updateForm('parameters.commentInCorrectionEnabled', checked)}
-          />
-          <CheckGroup
-            checkId="comment-in-correction-forced-chk"
-            checked={props.parameters.commentInCorrectionForced}
-            label={trans('force_comment', {}, 'dropzone')}
-            onChange={checked => props.updateForm('parameters.commentInCorrectionForced', checked)}
           />
           <NumberGroup
             controlId="criteria-total"

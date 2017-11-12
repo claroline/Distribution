@@ -161,6 +161,7 @@ class CorrectionSerializer
         $correction->emptyGrades();
 
         foreach ($gradesData as $gradeData) {
+            $gradeData['correction'] = $correction;
             $grade = $this->gradeSerializer->deserialize('Claroline\DropZoneBundle\Entity\Grade', $gradeData);
             $correction->addGrade($grade);
         }

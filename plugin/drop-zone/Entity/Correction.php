@@ -116,7 +116,8 @@ class Correction
     /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\DropZoneBundle\Entity\Grade",
-     *     mappedBy="correction"
+     *     mappedBy="correction",
+     *     cascade={"persist"}
      * )
      */
     protected $grades;

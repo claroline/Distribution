@@ -16,6 +16,7 @@ class CorrectionCreation extends Component {
       showCorrectionForm: false
     }
     this.updateCorrection = this.updateCorrection.bind(this)
+    this.updateCorrectionCriterion = this.updateCorrectionCriterion.bind(this)
     this.saveCorrection = this.saveCorrection.bind(this)
     this.cancelCorrection = this.cancelCorrection.bind(this)
   }
@@ -28,6 +29,10 @@ class CorrectionCreation extends Component {
 
   updateCorrection(property, value) {
     this.props.updateCorrection(property, value)
+  }
+
+  updateCorrectionCriterion(criterionId, value) {
+    this.props.updateCorrectionCriterion(criterionId, value)
   }
 
   saveCorrection() {
@@ -45,7 +50,9 @@ class CorrectionCreation extends Component {
     return (this.state.showCorrectionForm ?
       <CorrectionForm
         correction={this.props.correction}
+        dropzone={this.props.dropzone}
         handleUpdate={this.updateCorrection}
+        handleCriterionUpdate={this.updateCorrectionCriterion}
         handleSave={this.saveCorrection}
         handleCancel={this.cancelCorrection}
       /> :
@@ -60,24 +67,22 @@ class CorrectionCreation extends Component {
 }
 
 CorrectionCreation.propTypes = {
+  dropzone: T.object,
   drop: T.shape({
     id: T.string
   }),
-  correction: T.shape({
-    id: T.string,
-    drop: T.string,
-    totalGrade: T.number,
-    comment: T.string
-  }),
+  correction: T.object,
   loadNewCorrection: T.func.isRequired,
   resetCorrection: T.func.isRequired,
   updateCorrection: T.func.isRequired,
+  updateCorrectionCriterion: T.func.isRequired,
   saveCorrection: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
-    correction: select.correctionForm(state)
+    correction: select.correctionForm(state),
+    dropzone: select.dropzone(state)
   }
 }
 
@@ -86,6 +91,7 @@ function mapDispatchToProps(dispatch) {
     loadNewCorrection: (id, dropId) => dispatch(actions.loadNewCorrection(id, dropId)),
     resetCorrection: () => dispatch(actions.resetCorrectionForm()),
     updateCorrection: (property, value) => dispatch(actions.updateCorrectionForm(property, value)),
+    updateCorrectionCriterion: (criterionId, value) => dispatch(actions.updateCorrectionFormCriterion(criterionId, value)),
     saveCorrection: (correction) => dispatch(actions.saveCorrection(correction))
   }
 }

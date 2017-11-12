@@ -3,6 +3,7 @@
 namespace Claroline\DropZoneBundle\API\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Grade;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -60,9 +61,11 @@ class GradeSerializer
         if (empty($grade)) {
             $grade = new Grade();
             $grade->setUuid($data['id']);
-            $correction = $this->correctionRepo->findOneBy(['uuid' => $data['correction']]);
+            $correction = $data['correction'] instanceof Correction ?
+                $data['correction'] :
+                $this->correctionRepo->findOneBy(['uuid' => $data['correction']]);
             $grade->setCorrection($correction);
-            $criterion = $this->criterionRepo->findOneBy(['uuid' => $data['correction']]);
+            $criterion = $this->criterionRepo->findOneBy(['uuid' => $data['criterion']]);
             $grade->setCriterion($criterion);
         }
         if (isset($data['value'])) {

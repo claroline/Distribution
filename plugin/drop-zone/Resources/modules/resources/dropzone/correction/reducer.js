@@ -8,6 +8,7 @@ import {
   CORRECTION_FORM_LOAD,
   CORRECTION_FORM_RESET,
   CORRECTION_FORM_UPDATE,
+  CORRECTION_FORM_CRITERION_UPDATE,
   CORRECTION_UPDATE,
   CORRECTION_REMOVE
 } from './actions'
@@ -65,6 +66,17 @@ const correctionFormReducer = makeReducer({}, {
   },
   [CORRECTION_FORM_UPDATE]: (state, action) => {
     return Object.assign({}, state, {[action.property]: action.value})
+  },
+  [CORRECTION_FORM_CRITERION_UPDATE]: (state, action) => {
+    const grades = cloneDeep(state.grades)
+    const index = grades.findIndex(g => g.criterion === action.criterionId)
+
+    if (index > -1) {
+      const grade = Object.assign({}, grades[index], {value: action.value})
+      grades[index] = grade
+    }
+
+    return Object.assign({}, state, {grades: grades})
   }
 })
 

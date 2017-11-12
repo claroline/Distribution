@@ -33,10 +33,7 @@ class Drop
     protected $id;
 
     /**
-     * @ORM\ManyToOne(
-     *      targetEntity="Claroline\DropZoneBundle\Entity\Dropzone",
-     *      inversedBy="drops"
-     * )
+     * @ORM\ManyToOne(targetEntity="Claroline\DropZoneBundle\Entity\Dropzone")
      * @ORM\JoinColumn(name="dropzone_id", nullable=false, onDelete="CASCADE")
      */
     protected $dropzone;
