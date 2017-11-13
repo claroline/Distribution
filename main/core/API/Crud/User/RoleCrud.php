@@ -13,24 +13,22 @@ use JMS\DiExtraBundle\Annotation as DI;
 class RoleCrud
 {
     /**
-     * @DI\Observe("crud_pre_create_object")
+     * @DI\Observe("crud_pre_create_object_claroline_corebundle_entity_role")
      *
      * @param CrudEvent $event
      */
     public function preCreate(CrudEvent $event)
     {
-        if ($event->getObject() instanceof Role) {
-            /** @var Role $role */
-            $role = $event->getObject();
+        /** @var Role $role */
+        $role = $event->getObject();
 
-            if (!$role->getWorkspace()) {
-                $role->setName(strtoupper('role_'.$role->getTranslationKey()));
-            }
+        if (!$role->getWorkspace()) {
+            $role->setName(strtoupper('role_'.$role->getTranslationKey()));
         }
     }
 
     /**
-     * @DI\Observe("crud_pre_patch_object")
+     * @DI\Observe("crud_pre_patch_object_claroline_corebundle_entity_role")
      *
      * @param CrudEvent $event
      */

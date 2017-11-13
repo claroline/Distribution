@@ -38,6 +38,10 @@ final class Options
     /****************/
 
     const SOFT_DELETE = 'soft_delete';
-    
+
     const NO_PERMISSION_CHECK = 'no_permission_check';
+
+    //maybe move this somewhere else: like UserOptions for Crud ?
+    const SEND_EMAIL = 'send_email';
+    const ADD_NOTIFICATIONS = 'add_notifications';
 }

@@ -28,7 +28,7 @@ class UserCreate extends AbstractAction
         $this->crud = $crud;
     }
 
-    public function import($data)
+    public function execute($data)
     {
         $this->crud->create('Claroline\CoreBundle\Entity\User', $data);
     }

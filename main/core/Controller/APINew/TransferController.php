@@ -40,7 +40,7 @@ class TransferController
     public function importAction($action, Request $request)
     {
         $data = $this->getData($request);
-        $this->provider->import($data['data'], $action, $data['mime_type']);
+        $this->provider->execute($data['data'], $action, $data['mime_type']);
 
         return new JsonResponse('done', 200);
     }

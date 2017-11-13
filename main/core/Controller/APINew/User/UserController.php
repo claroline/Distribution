@@ -67,7 +67,12 @@ class UserController extends AbstractController
     public function getOptions()
     {
         return [
-            'deleteBulk' => [Options::SOFT_DELETE]
+            'deleteBulk' => [Options::SOFT_DELETE],
+            'create' => [
+                //maybe move these options in an other class
+                Options::SEND_EMAIL,
+                Options::ADD_NOTIFICATIONS
+            ]
         ];
     }
 }

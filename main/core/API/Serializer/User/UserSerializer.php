@@ -61,7 +61,7 @@ class UserSerializer
             'lastName' => $user->getLastName(),
             'username' => $user->getUsername(),
             'picture' => $user->getPicture(),
-            'mail' => $user->getMail(),
+            'email' => $user->getMail(),
             'administrativeCode' => $user->getAdministrativeCode(),
             'meta' => $this->serializeMeta($user),
             'restrictions' => $this->serializeRestrictions($user),
@@ -143,11 +143,17 @@ class UserSerializer
      * Deserialize method.
      * This is only a partial implementation.
      */
-    public function deserialize($data, User $user = null, array $options = [])
+    public function deserialize(\stdClass $data, User $user = null, array $options = [])
     {
         //remove this later (with the Trait)
         $object = $this->serializer->deserialize($data, $user, $options);
 
+        //@todo rename mail into email later
+        if (isset($data->plainPassword)) {
+            $object->setMail($data->email);
+        }
+
+        var_dump($data->plainPassword);
         if (isset($data->plainPassword)) {
             $object->setPlainPassword($data->plainPassword);
         }
@@ -162,5 +168,10 @@ class UserSerializer
     public function getIdentifiers()
     {
         return ['id', 'uuid', 'username'];
+    }
+
+    public function getClass()
+    {
+        return 'Claroline\CoreBundle\Entity\User';
     }
 }

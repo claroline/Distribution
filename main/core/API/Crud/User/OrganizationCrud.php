@@ -26,20 +26,18 @@ class OrganizationCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_delete_object")
+     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_organization_organization")
      *
      * @param CrudEvent $event
      */
     public function preDelete(CrudEvent $event)
     {
-        if ($event->getObject() instanceof Organization) {
-            /** @var Organization $organization */
-            $organization = $event->getObject();
-            if ($organization->isDefault()) {
-                $event->block();
+        /** @var Organization $organization */
+        $organization = $event->getObject();
+        if ($organization->isDefault()) {
+            $event->block();
 
-                // we can also throw an exception
-            }
+            // we can also throw an exception
         }
     }
 }

@@ -77,13 +77,11 @@ class Crud
         $object = $this->serializer->deserialize($class, $data, $options);
 
         // creates the entity if allowed
-        $this->checkPermission('CREATE', $object, [], true);
+        //$this->checkPermission('CREATE', $object, [], true);
 
-        /** @var CrudEvent $event */
-        $event = $this->dispatcher->dispatch('crud_pre_create_object', 'Crud', [$object]);
-        if ($event->isAllowed()) {
+        if ($this->dispatch('crud_pre_create_object', $object, $options)) {
             $this->om->save($object);
-            $this->dispatcher->dispatch('crud_post_create_object', 'Crud', [$object]);
+            $this->dispatch('crud_post_create_object', $object, $options);
         }
 
         return $object;
@@ -109,11 +107,9 @@ class Crud
         // updates the entity if allowed
         $this->checkPermission('EDIT', $object, [], true);
 
-        /** @var CrudEvent $event */
-        $event = $this->dispatcher->dispatch('crud_pre_update_object', 'Crud', [$object]);
-        if ($event->isAllowed()) {
+        if ($this->dispatch('crud_pre_update_object', $object, $options)) {
             $this->om->save($object);
-            $this->dispatcher->dispatch('crud_post_update_object', 'Crud', [$object]);
+            $this->dispatch('crud_post_update_object', $object, $options);
         }
 
         return $object;
@@ -129,14 +125,12 @@ class Crud
     {
         $this->checkPermission('DELETE', $object, [], true);
 
-        /** @var CrudEvent $event */
-        $event = $this->dispatcher->dispatch('crud_pre_delete_object', 'Crud', [$object]);
-        if ($event->isAllowed()) {
+        if ($this->dispatch('crud_pre_delete_object', $object, $options)) {
             if (!in_array(Options::SOFT_DELETE, $options)) {
                 $this->om->remove($object);
                 $this->om->flush();
             }
-            $this->dispatcher->dispatch('crud_post_delete_object', 'Crud', [$object]);
+            $this->dispatch('crud_post_delete_object', $object, $options);
         }
     }
 
@@ -179,14 +173,15 @@ class Crud
         //add the options to pass on here
         $this->checkPermission('PATCH', $object, ['data' => $elements], true);
         //we'll need to pass the $action and $data here aswell later
-        $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
 
-        foreach ($elements as $element) {
-            $object->$methodName($element);
+        if ($this->dispatch('crud_pre_patch_object', $object, $options)) {
+            foreach ($elements as $element) {
+                $object->$methodName($element);
+            }
+
+            $this->om->save($object);
+            $this->dispatch('crud_post_patch_object', $object, $options);
         }
-
-        $this->om->save($object);
-        $this->dispatcher->dispatch('crud_post_patch_object', 'Crud', [$object]);
     }
 
     /**
@@ -209,11 +204,12 @@ class Crud
         //add the options to pass on here
         $this->checkPermission('PATCH', $object, [], true);
         //we'll need to pass the $action and $data here aswell later
-        $this->dispatcher->dispatch('crud_pre_patch_object', 'Crud', [$object]);
-        $object->$methodName($data);
+        if ($this->dispatch('crud_pre_patch_object', $object, $options)) {
+            $object->$methodName($data);
 
-        $this->om->save($object);
-        $this->dispatcher->dispatch('crud_post_patch_object', 'Crud', [$object]);
+            $this->om->save($object);
+            $this->dispatch('crud_post_patch_object', $object, $options);
+        }
     }
 
     /**
@@ -228,5 +224,18 @@ class Crud
             // calls the validator for class. It will throw exception on error
             $this->validator->validate($class, $data, true);
         }
+    }
+
+    /**
+     * We dispatch 2 events: a generic one and an other with a custom name.
+     * Listen to what you want. Both have their uses.
+     */
+    public function dispatch($name, $object, array $options = [])
+    {
+        $generic        = $this->dispatcher->dispatch($name, 'Crud', [$object, $options]);
+        $serializedName = $name.'_'.strtolower(str_replace('\\', '_', get_class($object)));
+        $specific       = $this->dispatcher->dispatch($serializedName, 'Crud', [$object, $options]);
+
+        return $generic->isAllowed() && $specific->isAllowed();
     }
 }

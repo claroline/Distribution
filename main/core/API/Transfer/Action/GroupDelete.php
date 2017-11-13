@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action;
 
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
@@ -12,44 +13,50 @@ use Claroline\CoreBundle\API\Crud;
  * @DI\Service()
  * @DI\Tag("claroline.transfer.action")
  */
-class GroupCreate extends AbstractAction
+class GroupDelete extends AbstractAction
 {
     /**
      * Action constructor.
      *
      * @DI\InjectParams({
-     *     "crud" = @DI\Inject("claroline.api.crud")
+     *     "crud"       = @DI\Inject("claroline.api.crud"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud)
+    public function __construct(Crud $crud, SerializerProvider $serializer)
     {
         $this->crud = $crud;
+        $this->serializer = $serializer;
     }
 
     public function execute($data)
     {
-        $this->crud->create('Claroline\CoreBundle\Entity\Group', $data);
+        $group = $this->serializer->deserialize(
+            'Claroline\CoreBundle\Entity\Group',
+            $data->group[0]
+        );
+
+        $this->crud->delete('Claroline\CoreBundle\Entity\Group', $group);
     }
 
     public function getName()
     {
-        return 'group_create';
+        return 'group_delete';
     }
 
-    //Dans quelle mesure ça ne pourrait pas être le json schema ?
     public function getExplain()
     {
+        //schema des utilisateurs ?
         return [
-          'name' => true,
-          'organizations.[identifier]' => false
+          'group.[identifier]' => true
         ];
     }
 
     public function getBatchSize()
     {
-        return 250;
+        return 100;
     }
 
     public function clear(ObjectManager $om)
