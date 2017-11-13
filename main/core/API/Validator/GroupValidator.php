@@ -13,7 +13,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 class GroupValidator implements ValidatorInterface
 {
     /**
-     * WorkspaceSerializer constructor.
+     * GroupValidator constructor.
      *
      * @DI\InjectParams({
      *     "om" = @DI\Inject("claroline.persistence.object_manager")
@@ -27,7 +27,6 @@ class GroupValidator implements ValidatorInterface
         $this->repo = $this->om->getRepository('Claroline\CoreBundle\Entity\Group');
     }
 
-    //if the schema validation works, this is were we're going
     public function validate($data)
     {
         $errors  = [];

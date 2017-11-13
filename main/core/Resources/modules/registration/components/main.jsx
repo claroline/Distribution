@@ -9,6 +9,7 @@ import {Optional} from '#/main/core/registration/components/optional.jsx'
 import {select} from '#/main/core/registration/selectors'
 import {connect} from 'react-redux'
 import {actions} from '#/main/core/registration/actions'
+import {validate} from '#/main/core/registration/validator'
 
 class UserRegistration extends Component
 {
@@ -19,7 +20,7 @@ class UserRegistration extends Component
       errors: {}
     }
 
-    this.save = this.save.bind(this)
+    this.save = this.tryValidate.bind(this)
     //this.props.onCreate = this.props.onCreate.bind(this)
   }
 
@@ -34,6 +35,7 @@ class UserRegistration extends Component
         <button
           className="btn btn-primary"
           onClick={() => {
+            this.tryValidate()
             props.onCreate(this.props.user)
           }}
         >
@@ -44,17 +46,12 @@ class UserRegistration extends Component
     </div>
   )}
 
-  save() {
+  tryValidate() {
     const errors = validate(this.props.user)
 
     this.setState({
-      validating: true,
-      errors: errors
+      errors: validate(this.props.user)
     })
-
-    if (isEmpty(errors)) {
-      this.props.save(this.state.theme)
-    }
   }
 }
 
