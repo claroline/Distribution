@@ -18,10 +18,17 @@ class CrudEvent extends Event
     private $object;
     private $block;
 
-    public function __construct($object)
+    /**
+     * @param $object  The object created
+     * @param $options an array of options
+     * @param $extra   anything else you might want to pass
+     * (not used yet but options isn't always enough imo)
+     */
+    public function __construct($object, $options = [])
     {
         $this->object = $object;
         $this->block = false;
+        $this->options = $options;
     }
 
     public function setObject($object)
@@ -32,6 +39,11 @@ class CrudEvent extends Event
     public function getObject()
     {
         return $this->object;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
     }
 
     public function block()

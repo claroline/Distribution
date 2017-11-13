@@ -31,7 +31,7 @@ class AddUserToGroup extends AbstractAction
         $this->serializer = $serializer;
     }
 
-    public function import($data)
+    public function execute($data)
     {
         $user = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\User',

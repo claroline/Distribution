@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
@@ -174,10 +175,28 @@ class UserManager
         $model = null,
         $publicUrl = null,
         $organizations = [],
+        //this param is not used anymore anywhere
         $forcePersonalWorkspace = null,
         $addNotifications = true
     ) {
+        $this->objectManager->startFlushSuite();
         $additionalRoles = [];
+
+        $options = [];
+
+        if ($sendMail) {
+            $options[] = Options::SEND_EMAIL;
+        }
+
+        if ($addNotifications) {
+            $options[] = Options::ADD_NOTIFICATIONS;
+        }
+
+        $this->container->get('claroline.crud.user')->create(
+            $user,
+            $options,
+            ['model' => $model]
+        );
 
         foreach ($rolesToAdd as $roleToAdd) {
             $additionalRoles[] = is_string($roleToAdd) ? $this->roleManager->getRoleByName($roleToAdd) : $roleToAdd;
@@ -188,21 +207,7 @@ class UserManager
             $user->setOrganizations($organizations);
         }
 
-        $this->objectManager->startFlushSuite();
-
         $user->setOrganizations($organizations);
-        $publicUrl ? $user->setPublicUrl($publicUrl) : $user->setPublicUrl($this->generatePublicUrl($user));
-        $this->toolManager->addRequiredToolsToUser($user, 0);
-        $this->toolManager->addRequiredToolsToUser($user, 1);
-        $roleUser = $this->roleManager->getRoleByName(PlatformRoles::USER);
-        $user->addRole($roleUser);
-        $this->roleManager->createUserRole($user);
-        $notifications = $this->platformConfigHandler->getParameter('auto_enable_notifications');
-
-        if ($addNotifications) {
-            $nManager = $this->container->get('icap.notification.manager.notification_user_parameters');
-            $nManager->processUpdate($notifications, $user);
-        }
 
         foreach ($additionalRoles as $role) {
             if ($role) {
@@ -210,33 +215,6 @@ class UserManager
             }
         }
 
-        if ($this->mailManager->isMailerAvailable() && $sendMail) {
-            //send a validation by hash
-            $mailValidation = $this->platformConfigHandler->getParameter('registration_mail_validation');
-            if ($mailValidation === PlatformDefaults::REGISTRATION_MAIL_VALIDATION_FULL) {
-                $password = sha1(rand(1000, 10000).$user->getUsername().$user->getSalt());
-                $user->setResetPasswordHash($password);
-                $user->setIsEnabled(false);
-                $this->mailManager->sendEnableAccountMessage($user);
-            } elseif ($mailValidation === PlatformDefaults::REGISTRATION_MAIL_VALIDATION_PARTIAL) {
-                //don't change anything
-                $this->mailManager->sendCreationMessage($user);
-            }
-        }
-
-        if ($forcePersonalWorkspace !== null) {
-            if ($forcePersonalWorkspace) {
-                $this->setPersonalWorkspace($user, $model);
-            }
-        } else {
-            if ($this->personalWorkspaceAllowed($additionalRoles)) {
-                $this->setPersonalWorkspace($user, $model);
-            }
-        }
-
-        $this->objectManager->persist($user);
-        $this->strictEventDispatcher->dispatch('user_created_event', 'UserCreated', ['user' => $user]);
-        $this->strictEventDispatcher->dispatch('log', 'Log\LogUserCreate', [$user]);
         $this->objectManager->endFlushSuite();
 
         return $user;

@@ -26,14 +26,12 @@ class WorkspaceCrud
     }
 
     /**
-     * @DI\Observe("crud_pre_delete_object")
+     * @DI\Observe("crud_pre_delete_object_claroline_corebundle_entity_workspace_workspace")
      *
      * @param \Claroline\CoreBundle\Event\CrudEvent $event
      */
     public function preDelete(CrudEvent $event)
     {
-        if ($event->getObject() instanceof Workspace) {
-            $this->manager->deleteWorkspace($event->getObject());
-        }
+        $this->manager->deleteWorkspace($event->getObject());
     }
 }

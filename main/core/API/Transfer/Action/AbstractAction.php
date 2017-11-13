@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 
 abstract class AbstractAction
 {
-    abstract public function import($data);
+    abstract public function execute($data);
     abstract public function getName();
     abstract public function getExplain();
 
