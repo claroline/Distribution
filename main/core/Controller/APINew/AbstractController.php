@@ -6,6 +6,7 @@ use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -74,7 +75,7 @@ class AbstractController extends ContainerAware
                 201
             );
         } catch (\Exception $e) {
-            $this->handleException($e, $env);
+            return $this->handleException($e, $env);
         }
     }
 
@@ -91,7 +92,7 @@ class AbstractController extends ContainerAware
                 $this->serializer->serialize($object, $this->options['get'])
             );
         } catch (\Exception $e) {
-            $this->handleException($e, $env);
+            return $this->handleException($e, $env);
         }
     }
 
@@ -105,12 +106,17 @@ class AbstractController extends ContainerAware
 
             return new JsonResponse(null, 204);
         } catch (\Exception $e) {
-            $this->handleException($e, $env);
+            return $this->handleException($e, $env);
         }
     }
 
+    //maybe handle the exception better ?
     protected function handleException(\Exception $e, $env)
     {
+        if ($e instanceof InvalidDataException) {
+            return new JsonResponse($e->getErrors(), 422);
+        }
+
         if ($env === 'prod') {
             return new JsonResponse($e->getMessage(), 422);
         }

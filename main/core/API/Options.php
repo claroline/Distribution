@@ -38,7 +38,7 @@ final class Options
     /****************/
 
     const SOFT_DELETE = 'soft_delete';
-
+    const THROW_VALIDATION_EXCEPTION = 'throw_validation_exception';
     const NO_PERMISSION_CHECK = 'no_permission_check';
 
     //maybe move this somewhere else: like UserOptions for Crud ?

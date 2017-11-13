@@ -73,15 +73,17 @@ class GroupSerializer
     {
         $group->setName($data->name);
 
-        $group->setOrganizations(
-            array_map(function (\stdClass $organization) use ($options) {
-                return $this->serializer->deserialize(
-                    'Claroline\CoreBundle\Entity\Organization\Organization',
-                    $organization,
-                    $options
-                );
-            }, $data->organizations)
-        );
+        if (isset($data->organizations)) {
+            $group->setOrganizations(
+                array_map(function (\stdClass $organization) use ($options) {
+                    return $this->serializer->deserialize(
+                        'Claroline\CoreBundle\Entity\Organization\Organization',
+                        $organization,
+                        $options
+                    );
+                }, $data->organizations)
+            );
+        }
 
         return $group;
     }

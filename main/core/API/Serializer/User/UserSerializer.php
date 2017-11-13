@@ -153,7 +153,6 @@ class UserSerializer
             $object->setMail($data->email);
         }
 
-        var_dump($data->plainPassword);
         if (isset($data->plainPassword)) {
             $object->setPlainPassword($data->plainPassword);
         }
