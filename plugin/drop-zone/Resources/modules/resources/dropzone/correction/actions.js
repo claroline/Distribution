@@ -86,6 +86,18 @@ actions.saveCorrection = (correction) => ({
   }
 })
 
+actions.submitCorrection = (correctionId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_correction_submit', {id: correctionId}),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateCorrection(data))
+    }
+  }
+})
+
 actions.deleteCorrection = (correctionId) => ({
   [REQUEST_SEND]: {
     url: generateUrl('claro_dropzone_correction_delete', {id: correctionId}),

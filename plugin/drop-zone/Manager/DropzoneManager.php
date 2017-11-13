@@ -62,6 +62,8 @@ class DropzoneManager
     /** @var DropRepository */
     private $dropRepo;
 
+    private $correctionRepo;
+
     /**
      * DropzoneManager constructor.
      *
@@ -109,6 +111,7 @@ class DropzoneManager
         $this->utils = $utils;
 
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
+        $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
     }
 
     /**
@@ -339,11 +342,34 @@ class DropzoneManager
      *
      * @param array $data
      *
-     * @return Dropzone
+     * @return Correction
      */
     public function saveCorrection(array $data)
     {
+        $existingCorrection = $this->correctionRepo->findOneBy(['uuid' => $data['id']]);
+        $isNew = empty($existingCorrection);
         $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
+
+        if (!$isNew) {
+            $correction->setLastOpenDate(new \DateTime());
+        }
+        $this->om->persist($correction);
+        $this->om->flush();
+
+        return $correction;
+    }
+
+    /**
+     * Submits a Correction.
+     *
+     * @param Correction $correction
+     *
+     * @return Correction
+     */
+    public function submitCorrection(Correction $correction)
+    {
+        $correction->setFinished(true);
+        $correction->setEndDate(new \DateTime());
         $this->om->persist($correction);
         $this->om->flush();
 

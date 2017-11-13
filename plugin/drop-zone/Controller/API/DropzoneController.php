@@ -317,6 +317,36 @@ class DropzoneController
     }
 
     /**
+     * @EXT\Route("/correction/{id}/submit", name="claro_dropzone_correction_submit")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "correction",
+     *     class="ClarolineDropZoneBundle:Correction",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Correction $correction
+     *
+     * @return JsonResponse
+     */
+    public function correctionSubmitAction(Correction $correction)
+    {
+        $dropzone = $correction->getDrop()->getDropzone();
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $correction = $this->manager->submitCorrection($correction);
+
+            return new JsonResponse(
+                $this->manager->serializeCorrection($correction)
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
      * @EXT\Route("/correction/{id}/delete", name="claro_dropzone_correction_delete")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter(
