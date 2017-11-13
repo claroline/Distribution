@@ -2,7 +2,8 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
-use Claroline\CoreBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Role;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\API\SerializerProvider;
@@ -20,7 +21,7 @@ class GroupSerializer
      *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param OrganizationSerializer $organizationSerializer
+     * @param SerializerProvider $serializer
      */
     public function __construct(SerializerProvider $serializer)
     {
@@ -32,56 +33,56 @@ class GroupSerializer
         return 'Claroline\CoreBundle\Entity\Group';
     }
 
+    public function getIdentifiers()
+    {
+        return ['id', 'uuid', 'name'];
+    }
+
     /**
-     * deserialize
+     * Serializes a Group entity.
+     *
+     * @param Group $group
+     * @param array $options
+     *
+     * @return array
+     */
+    public function serialize(Group $group, array $options = [])
+    {
+        return [
+            'id' => $group->getUuid(),
+            'name' => $group->getName(),
+            'roles' => array_map(function (Role $role) use ($options) {
+                return $this->serializer->serialize($role, $options);
+            }, $group->getEntityRoles()->toArray()),
+            'organizations' => array_map(function (Organization $organization) use ($options) {
+                return $this->serializer->serialize($organization, $options);
+            }, $group->getOrganizations()->toArray())
+        ];
+    }
+
+    /**
+     * Deserializes data into a Group entity.
+     *
+     * @param \stdClass $data
+     * @param Group $group
+     * @param array $options
+     *
+     * @return Group
      */
     public function deserialize($data, Group $group = null, array $options = [])
     {
         $group->setName($data->name);
-        $orgaList = [];
 
-        if (isset($data->organizations)) {
-            foreach ($data->organizations as $organization) {
-                $orgaList[] = $this->serializer->deserialize(
+        $group->setOrganizations(
+            array_map(function (\stdClass $organization) use ($options) {
+                return $this->serializer->deserialize(
                     'Claroline\CoreBundle\Entity\Organization\Organization',
-                    $organization
+                    $organization,
+                    $options
                 );
-            }
-        }
-
-        $group->setOrganizations($orgaList);
+            }, $data->organizations)
+        );
 
         return $group;
-    }
-
-    /**
-     * serialize.
-     * This is only a partial implementation.
-     */
-    public function serialize(Group $group, array $options = [])
-    {
-        $object['name'] = $group->getName();
-
-        $serializedOrganizations = [];
-
-        foreach ($group->getOrganizations() as $organization) {
-            $serializedOrganizations[] = $this->serializer->serialize($organization);
-        }
-
-        $serializedRoles = [];
-
-        foreach ($group->getRoles() as $role) {
-            $serializedRoles[] = $this->serializer->serialize($role);
-        }
-
-        $object['organizations'] = $serializedOrganizations;
-        $object['roles'] = $serializedRoles;
-
-        return $object;
-    }
-
-    public function getIdentifiers()
-    {
-        return ['id', 'uuid', 'name'];
     }
 }

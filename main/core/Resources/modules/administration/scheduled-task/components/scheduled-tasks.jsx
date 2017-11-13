@@ -59,7 +59,9 @@ const ScheduledTasksPage = props =>
     <PageContent>
       <DataList
         name="tasks"
-        fetchUrl={generateUrl('claro_scheduled_task_list')}
+        fetch={{
+          url: generateUrl('claro_scheduled_task_list')
+        }}
         definition={[
           {
             name: 'name',

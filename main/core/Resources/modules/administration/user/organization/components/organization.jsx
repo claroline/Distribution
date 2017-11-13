@@ -6,7 +6,10 @@ import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
 
-const OrganizationSaveAction = makeSaveAction('organizations.current')(PageAction)
+const OrganizationSaveAction = makeSaveAction('organizations.current', formData => ({
+  create: ['apiv2_organization_create'],
+  update: ['apiv2_organization_update', {id: formData.id}]
+}))(PageAction)
 
 const OrganizationActions = props =>
   <PageActions>

@@ -14,7 +14,9 @@ import {
   REGISTRATION_MAIL_VALIDATION_PARTIAL
 } from '#/main/core/administration/user/parameters/constants'
 
-const ParametersSaveAction = makeSaveAction('parameters')(PageAction)
+const ParametersSaveAction = makeSaveAction('parameters', formData => ({
+  update: ['apiv2_user_parameters_update']
+}))(PageAction)
 
 const ParametersTabActions = () =>
   <PageActions>

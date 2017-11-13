@@ -36,13 +36,18 @@ const LocationsActions = () =>
 const Locations = props =>
   <DataList
     name="locations.list"
-    fetchUrl={generateUrl('apiv2_location_list')}
+    fetch={{
+      url: generateUrl('apiv2_location_list')
+    }}
+    delete={{
+      url: generateUrl('apiv2_location_delete_bulk'),
+    }}
     definition={LocationList.definition}
     actions={[{
       icon: 'fa fa-fw fa-map-marker',
       label: t('geolocate'),
       action: (rows) => props.geolocate(rows[0]),
-      context: 'row'
+      context: 'row' // todo should be available in selection mode too
     }]}
     card={LocationList.card}
   />

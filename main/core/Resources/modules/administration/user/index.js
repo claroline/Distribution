@@ -1,5 +1,3 @@
-import merge from 'lodash/merge'
-
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {t, transChoice} from '#/main/core/translation'
@@ -59,7 +57,9 @@ bootstrap(
       organizations: {
         list: initialData.organizations
       },
-      parameters: merge({}, {data: initialData.parameters}, {platformRoles: initialData.platformroles})
+      parameters: {
+        data: initialData.parameters
+      }
     }
   }
 )

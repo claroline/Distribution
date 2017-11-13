@@ -1,5 +1,4 @@
 import {connect} from 'react-redux'
-import cloneDeep from 'lodash/cloneDeep'
 
 import {t} from '#/main/core/translation'
 
@@ -26,17 +25,10 @@ function mapStateToProps(state, ownProps) {
   const newProps = {
     data: listSelect.data(listState),
     totalResults: listSelect.totalResults(listState),
-    queryString: listSelect.queryString(listState)
+    delete: ownProps.delete
   }
 
   // grab data for optional features
-  newProps.deletable = listSelect.isDeletable(listState)
-  if (newProps.deletable) {
-    newProps.modalDeleteTitle = listSelect.modalDeleteTitle(listState)
-    newProps.modalDeleteQuestion = listSelect.modalDeleteQuestion(listState)
-    newProps.displayDelete = listSelect.displayDelete(listState)
-  }
-
   newProps.filterable = listSelect.isFilterable(listState)
   if (newProps.filterable) {
     newProps.filters = listSelect.filters(listState)
@@ -76,8 +68,12 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     // async
     fetchData() {
-      dispatch(listActions.fetchData(ownProps.name, ownProps.fetchUrl))
+      dispatch(listActions.fetchData(ownProps.name, ownProps.fetch.url))
     },
+    deleteData(items) {
+      dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
+    },
+
     // filtering
     addFilter(property, value) {
       dispatch(listActions.addFilter(ownProps.name, property, value))
@@ -85,10 +81,12 @@ function mapDispatchToProps(dispatch, ownProps) {
     removeFilter(filter) {
       dispatch(listActions.removeFilter(ownProps.name, filter))
     },
+
     // sorting
     updateSort(property) {
       dispatch(listActions.updateSort(ownProps.name, property))
     },
+
     // selection
     toggleSelect(id) {
       dispatch(listActions.toggleSelect(ownProps.name, id))
@@ -96,6 +94,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     toggleSelectAll(items) {
       dispatch(listActions.toggleSelectAll(ownProps.name, items))
     },
+
     // pagination
     updatePageSize(pageSize) {
       dispatch(listActions.updatePageSize(ownProps.name, pageSize))
@@ -103,15 +102,19 @@ function mapDispatchToProps(dispatch, ownProps) {
     changePage(page) {
       dispatch(listActions.changePage(ownProps.name, page))
     },
-    deleteItems(items, title, question, async) {
+
+    // delete
+    deleteItems(items, title, question) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title,
-          question,
+          title: title,
+          question: question,
           handleConfirm: () => {
-            async ?
-              dispatch(listActions.asyncDeleteItems(ownProps.name, items)):
+            if (ownProps.delete.url) {
+              dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
+            } else {
               dispatch(listActions.deleteItems(ownProps.name, items))
+            }
           }
         })
       )
@@ -131,7 +134,7 @@ function mapDispatchToProps(dispatch, ownProps) {
  */
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const asyncDecorator = (func) => {
-    if (!!ownProps.fetchUrl) {
+    if (!!ownProps.fetch) {
       return (...args) => {
         // call original action
         func.apply(null, args)
@@ -146,17 +149,27 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   const props = {
     name:          ownProps.name,
+    fetch:         ownProps.fetch,
     definition:    ownProps.definition,
-    fetchUrl:      ownProps.fetchUrl,
-    data:          stateProps.data,
-    totalResults:  stateProps.totalResults,
     actions:       ownProps.actions,
     card:          ownProps.card,
-    queryString:   stateProps.queryString,
     filterColumns: ownProps.filterColumns,
-    display:       ownProps.display
+    display:       ownProps.display,
+    translations:  ownProps.translations,
+    data:          stateProps.data,
+    totalResults:  stateProps.totalResults
   }
 
+  // delete action
+  if (stateProps.delete) {
+    props.deleteAction = {
+      action: dispatchProps.deleteItems,
+      disabled: stateProps.delete.disabled,
+      displayed: stateProps.delete.displayed
+    }
+  }
+
+  // optional list features
   if (stateProps.filterable) {
     props.filters = {
       current: stateProps.filters,
@@ -187,24 +200,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
       changePage: asyncDecorator(dispatchProps.changePage),
       updatePageSize: asyncDecorator(dispatchProps.updatePageSize)
     }
-  }
-
-  if (stateProps.deletable) {
-    const actions = cloneDeep(props.actions)
-
-    actions.push({
-      icon: 'fa fa-fw fa-trash-o',
-      label: t('delete'),
-      action: (rows) => dispatchProps.deleteItems(
-        rows,
-        stateProps.modalDeleteTitle(rows),
-        stateProps.modalDeleteQuestion(rows),
-        !!ownProps.fetchUrl
-      ),
-      dangerous: true,
-      displayed: (rows) => stateProps.displayDelete(rows)
-    })
-    props.actions = actions
   }
 
   return props

@@ -22,7 +22,14 @@ const GroupsActions = () =>
 const Groups = () =>
   <DataList
     name="groups.list"
-    fetchUrl={generateUrl('apiv2_group_list')}
+    fetch={{
+      url: generateUrl('apiv2_group_list'),
+      autoload: false
+    }}
+    delete={{
+      url: generateUrl('apiv2_group_delete_bulk'),
+      disabled: (rows) => false
+    }}
     actions={[]}
     definition={GroupList.definition}
     card={GroupList.card}

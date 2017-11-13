@@ -171,11 +171,6 @@ class UsersController extends Controller
           ),
           'locations' => $this->finder->search('Claroline\CoreBundle\Entity\Organization\Location', $filters),
           'parameters' => $this->configHandler->getParameters(),
-          'locales' => $this->localeManager->getAvailableLocales(),
-          'platformRoles' => $this->finder->search(
-            'Claroline\CoreBundle\Entity\Role',
-            ['filters' => ['type' => ROLE::PLATFORM_ROLE]]
-          ),
         ];
     }
 

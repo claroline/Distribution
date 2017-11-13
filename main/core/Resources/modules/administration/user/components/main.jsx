@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
-import {TabbedPage} from '#/main/core/layout/page/components/tabbed-page.jsx'
+import {TabbedPageContainer as TabbedPage} from '#/main/core/layout/page/containers/tabbed-page.jsx'
 
 // app sections
 import {ParametersTab, ParametersTabActions} from '#/main/core/administration/user/parameters/components/parameters-tab.jsx'

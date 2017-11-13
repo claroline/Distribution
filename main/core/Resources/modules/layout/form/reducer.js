@@ -20,7 +20,7 @@ const defaultState = {
 }
 
 const newReducer = makeInstanceReducer(defaultState.new, {
-  [FORM_RESET]: (state, action) => !!action.new
+  [FORM_RESET]: (state, action) => !!action.isNew
 })
 
 /**

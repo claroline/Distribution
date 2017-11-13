@@ -135,10 +135,10 @@ class ApiLoader extends Loader
     {
         $defaults = [
           'create' => ['', 'POST'],
-          'update' => ['{uuid}', 'PUT'],
+          'update' => ['{id}', 'PUT'],
           'deleteBulk' => ['', 'DELETE'],
           'list' => ['', 'GET'],
-          'get' => ['get', 'GET'],
+          'get' => ['{id}', 'GET'],
         ];
 
         $traits = class_uses($controller);

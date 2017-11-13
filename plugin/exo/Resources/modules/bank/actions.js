@@ -1,7 +1,5 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
-import {generateUrl} from '#/main/core/fos-js-router'
 import {actions as listActions} from '#/main/core/layout/list/actions'
-
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
 
@@ -28,7 +26,7 @@ actions.shareQuestions = (questions, users, adminRights) => ({
 
 actions.duplicateQuestions = (questions, isModel = 0) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('questions_duplicate', {isModel: isModel}),
+    route: ['questions_duplicate', {isModel: isModel}],
     request: {
       method: 'POST'
     },

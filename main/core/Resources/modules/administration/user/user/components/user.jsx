@@ -6,7 +6,10 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
 
-const UserSaveAction = makeSaveAction('users.current')(PageAction)
+const UserSaveAction = makeSaveAction('users.current', formData => ({
+  create: ['apiv2_user_create'],
+  update: ['apiv2_user_update', {id: formData.id}]
+}))(PageAction)
 
 const UserActions = () =>
   <PageActions>

@@ -28,6 +28,8 @@ class AbstractController extends ContainerAware
     /** @var ContainerInterface */
     protected $container;
 
+    protected $options;
+
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
@@ -38,16 +40,13 @@ class AbstractController extends ContainerAware
         $this->options = $this->mergeOptions();
     }
 
-    public function getAction(Request $request, $class, $env)
+    public function getAction($id, $class, $env)
     {
-        $object = $this->om->getRepository($class)->findOneBy($request->query->get('filters'));
+        $object = $this->find($class, $id);
 
         return $object ?
             new JsonResponse(
-                $this->serializer->serialize(
-                $object,
-                $this->options['get']
-            )
+                $this->serializer->serialize($object, $this->options['get'])
             ) :
             new JsonResponse('', 404);
     }
@@ -79,7 +78,7 @@ class AbstractController extends ContainerAware
         }
     }
 
-    public function updateAction($uuid, Request $request, $class, $env)
+    public function updateAction($id, Request $request, $class, $env)
     {
         try {
             $object = $this->crud->update(
@@ -135,9 +134,11 @@ class AbstractController extends ContainerAware
     //@todo: not as lazy implementation
     protected function find($class, $id)
     {
-        return !is_numeric($id) && property_exists($class, 'uuid') ?
-            $this->om->getRepository($class)->findOneByUuid($id) :
-            $this->om->getRepository($class)->findOneById($id);
+        return $this->om->getRepository($class)->findOneBy(
+            !is_numeric($id) && property_exists($class, 'uuid') ?
+                ['uuid' => $id] :
+                ['id' => $id]
+        );
     }
 
     private function getDefaultOptions()
@@ -155,6 +156,6 @@ class AbstractController extends ContainerAware
     {
         return method_exists($this, 'getOptions') ?
             array_merge_recursive($this->getDefaultOptions(), $this->getOptions()):
-            $this->getOptions();
+            $this->getDefaultOptions();
     }
 }

@@ -1,6 +1,8 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+
+import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
+import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 import {Router, Route, NavLink, Switch} from '#/main/core/router'
 import {Page} from '#/main/core/layout/page/components/page.jsx'
@@ -58,7 +60,9 @@ PageTab.defaultProps = {
 
 const TabbedPage = props =>
   <Router>
-    <Page>
+    <Page
+      {...props}
+    >
       <PageTabs
         sections={props.tabs}
       >
@@ -85,11 +89,11 @@ const TabbedPage = props =>
     </Page>
   </Router>
 
-TabbedPage.propTypes = {
+implementPropTypes(Page, PageTypes, {
   tabs: T.arrayOf(T.shape({
 
   })).isRequired
-}
+})
 
 export {
   TabbedPage

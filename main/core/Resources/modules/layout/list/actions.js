@@ -1,5 +1,3 @@
-import get from 'lodash/get'
-
 import {makeInstanceActionCreator} from '#/main/core/utilities/redux'
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
@@ -35,17 +33,33 @@ actions.toggleSelectAll = makeInstanceActionCreator(LIST_TOGGLE_SELECT_ALL, 'row
 // data loading
 export const LIST_DATA_LOAD = 'LIST_DATA_LOAD'
 
-//data delete
-export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
-
-actions.loadData = makeInstanceActionCreator(LIST_DATA_LOAD, 'data', 'total')
-
-actions.asyncDeleteItems = (listName, items) => (dispatch, getState) => {
-  const listState = get(getState(), listName)
+actions.loadItems = makeInstanceActionCreator(LIST_DATA_LOAD, 'data', 'total')
+actions.fetchData = (listName, url) => (dispatch, getState) => {
+  const listState = listSelect.list(getState(), listName)
 
   dispatch({
     [REQUEST_SEND]: {
-      url: listSelect.deleteUrl(listState) + getDataQueryString(items),
+      url: url + listSelect.queryString(listState),
+      request: {
+        method: 'GET'
+      },
+      success: (response, dispatch) => {
+        dispatch(actions.resetSelect(listName))
+        dispatch(actions.loadItems(listName, response.data, response.totalResults))
+      }
+    }
+  })
+}
+
+
+// data delete
+export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
+
+actions.deleteItems = makeInstanceActionCreator(LIST_DATA_DELETE, 'items')
+actions.deleteData = (listName, url, items) => (dispatch) => {
+  dispatch({
+    [REQUEST_SEND]: {
+      url: url + getDataQueryString(items),
       request: {
         method: 'DELETE'
       },
@@ -57,28 +71,10 @@ actions.asyncDeleteItems = (listName, items) => (dispatch, getState) => {
   })
 }
 
-actions.fetchData = (listName, url) => (dispatch, getState) => {
-  const listState = get(getState(), listName)
-
-  dispatch({
-    [REQUEST_SEND]: {
-      url: url + listSelect.queryString(listState),
-      request: {
-        method: 'GET'
-      },
-      success: (response, dispatch) => {
-        dispatch(actions.resetSelect(listName))
-        dispatch(actions.loadData(listName, response.data, response.totalResults))
-      }
-    }
-  })
-}
-
 
 // pagination
 export const LIST_PAGE_SIZE_UPDATE = 'LIST_PAGE_SIZE_UPDATE'
 export const LIST_PAGE_CHANGE      = 'LIST_PAGE_CHANGE'
 
-actions.deleteItems    = makeInstanceActionCreator(LIST_DATA_DELETE, 'items')
 actions.changePage     = makeInstanceActionCreator(LIST_PAGE_CHANGE, 'page')
 actions.updatePageSize = makeInstanceActionCreator(LIST_PAGE_SIZE_UPDATE, 'pageSize')

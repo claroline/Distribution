@@ -373,7 +373,9 @@ class Entries extends Component {
                 available: Object.keys(listConstants.DISPLAY_MODES)
               }}
               name="entries"
-              fetchUrl={generateUrl('claro_claco_form_entries_search', {clacoForm: this.props.resourceId})}
+              fetch={{
+                url: generateUrl('claro_claco_form_entries_search', {clacoForm: this.props.resourceId})
+              }}
               definition={this.generateColumns()}
               filterColumns={this.props.searchColumnEnabled}
               actions={this.generateActions()}

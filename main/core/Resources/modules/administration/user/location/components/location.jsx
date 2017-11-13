@@ -6,7 +6,10 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
 
-const LocationSaveAction = makeSaveAction('locations.current')(PageAction)
+const LocationSaveAction = makeSaveAction('locations.current', formData => ({
+  create: ['apiv2_location_create'],
+  update: ['apiv2_location_update', {id: formData.id}]
+}))(PageAction)
 
 const LocationActions = () =>
   <PageActions>

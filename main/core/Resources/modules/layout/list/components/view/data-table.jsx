@@ -121,7 +121,7 @@ const DataTable = props =>
 
       {props.selection && 0 < props.selection.current.length &&
         <tr className="selected-actions-row">
-          <td colSpan={props.columns.length + (1 < props.count && props.selection ? 1:0) + (props.actions ? 1:0) }>
+          <td colSpan={props.columns.length + (props.selection ? 1:0) + (props.actions ? 1:0) }>
             <DataBulkActions
               count={props.selection.current.length}
               selectedItems={props.selection.current.map(id => props.data.find(row => id === row.id))}

@@ -15,7 +15,10 @@ import {DataListContainer as DataList} from '#/main/core/layout/list/containers/
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
-const GroupSaveAction = makeSaveAction('groups.current')(PageAction)
+const GroupSaveAction = makeSaveAction('groups.current', formData => ({
+  create: ['apiv2_group_create'],
+  update: ['apiv2_group_update', {id: formData.id}]
+}))(PageAction)
 
 const GroupActions = props =>
   <PageActions>
@@ -80,7 +83,10 @@ const GroupForm = props =>
       >
         <DataList
           name="groups.current.users"
-          fetchUrl={generateUrl('apiv2_group_list_users', {uuid: props.group.id})}
+          fetch={{
+            url: generateUrl('apiv2_group_list_users', {uuid: props.group.id}),
+            autoload: true
+          }}
           actions={[]}
           definition={UserList.definition}
           card={UserList.card}
@@ -104,7 +110,10 @@ const GroupForm = props =>
       >
         <DataList
           name="groups.current.roles"
-          fetchUrl={generateUrl('apiv2_group_list_roles', {uuid: props.group.id})}
+          fetch={{
+            url: generateUrl('apiv2_group_list_roles', {uuid: props.group.id}),
+            autoload: true
+          }}
           actions={[]}
           definition={RoleList.definition}
           card={RoleList.card}

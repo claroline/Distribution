@@ -1,6 +1,7 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {t} from '#/main/core/translation'
 import {connectList} from '#/main/core/layout/list/connect'
 
 import {
@@ -14,11 +15,22 @@ import {DataList as DataListComponent} from '#/main/core/layout/list/components/
  *
  * It automatically displays list features registered in the store (@see makeListReducer()).
  * It can also performs API calls to refresh data if configured to.
- *
- * @param props
- * @constructor
  */
-const DataList = props =>  <DataListComponent {...props} />
+class DataList extends Component {
+  constructor(props) {
+    super(props)
+
+    // todo autoload
+  }
+
+  render() {
+    return (
+      <DataListComponent
+        {...this.props}
+      />
+    )
+  }
+}
 
 DataList.propTypes = {
   /**
@@ -29,7 +41,22 @@ DataList.propTypes = {
    */
   name: T.string.isRequired,
 
-  fetchUrl: T.string,
+  /**
+   * Provides asynchronous data load.
+   */
+  fetch: T.shape({
+    url: T.string.isRequired,
+    autoload: T.bool
+  }),
+
+  /**
+   * Provides data delete.
+   */
+  delete: T.shape({
+    url: T.string, // if provided, data delete will call server
+    disabled: T.func, // receives the list of rows (either the selected ones or the current one)
+    displayed: T.func // receives the list of rows (either the selected ones or the current one)
+  }),
 
   /**
    * The definition of the list rows data.
@@ -59,13 +86,32 @@ DataList.propTypes = {
    */
   filterColumns: T.bool,
 
+  /**
+   * Override default list translations.
+   */
+  translations: T.shape({
+    domain: T.string,
+    keys: T.shape({
+      searchPlaceholder: T.string,
+      emptyPlaceholder: T.string,
+      countResults: T.string,
+      deleteConfirm: T.string,
+      deleteConfirmMessage: T.string
+    })
+  }),
+
   // calculated from redux store
   data: T.array.isRequired,
   totalResults: T.number.isRequired,
   filters: T.object,
   sorting: T.object,
   pagination: T.object,
-  selection: T.object
+  selection: T.object,
+  deleteItems: T.func
+}
+
+DataList.defaultProps = {
+  actions: []
 }
 
 // connect list to redux

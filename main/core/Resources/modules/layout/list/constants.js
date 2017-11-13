@@ -13,8 +13,7 @@ const DEFAULT_FEATURES = {
   filterable: true,
   sortable  : true,
   selectable: true,
-  paginated : true,
-  deletable : true
+  paginated : true
 }
 
 const DISPLAY_TABLE    = 'table'
@@ -68,6 +67,17 @@ const DISPLAY_MODES = {
 const AVAILABLE_PAGE_SIZES = [10, 20, 50, 100, -1] // -1 is for all
 const DEFAULT_PAGE_SIZE    = AVAILABLE_PAGE_SIZES[1]
 
+const DEFAULT_TRANSLATIONS = {
+  domain: 'platform',
+  keys: {
+    searchPlaceholder: 'list_search_placeholder',
+    emptyPlaceholder: 'list_no_results',
+    countResults: 'list_results_count',
+    deleteConfirmTitle: 'objects_delete_title',
+    deleteConfirmQuestion: 'objects_delete_question'
+  }
+}
+
 export const constants = {
   AVAILABLE_PAGE_SIZES,
   DEFAULT_PAGE_SIZE,
@@ -78,5 +88,6 @@ export const constants = {
   DISPLAY_TABLE_SM,
   DISPLAY_TILES,
   DISPLAY_TILES_SM,
-  DISPLAY_LIST
+  DISPLAY_LIST,
+  DEFAULT_TRANSLATIONS
 }

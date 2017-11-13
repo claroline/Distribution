@@ -1,5 +1,4 @@
 import {combineReducers} from 'redux'
-import merge from 'lodash/merge'
 
 // syntax sugar to avoid writing reducers as big switches.
 // Example :

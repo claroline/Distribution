@@ -21,9 +21,14 @@ const RolesActions = () =>
 const Roles = () =>
   <DataList
     name="roles.list"
-    actions={[]}
-    fetchUrl={generateUrl('apiv2_role_list')}
+    fetch={{
+      url: generateUrl('apiv2_role_list')
+    }}
+    delete={{
+      url: generateUrl('apiv2_role_delete_bulk')
+    }}
     definition={RoleList.definition}
+    actions={[]}
     card={RoleList.card}
   />
 

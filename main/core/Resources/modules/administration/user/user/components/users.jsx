@@ -27,7 +27,12 @@ const UsersActions = props =>
 const Users = props =>
   <DataList
     name="users.list"
-    fetchUrl={generateUrl('apiv2_user_list')}
+    fetch={{
+      url: generateUrl('apiv2_user_list')
+    }}
+    delete={{
+      url: generateUrl('apiv2_user_delete_bulk')
+    }}
     actions={[
       {
         icon: 'fa fa-fw fa-eye',
@@ -37,31 +42,31 @@ const Users = props =>
       }, {
         icon: '',
         label: t('enable_personal_ws'),
-        context: 'row',
+        context: 'row', // todo should be a selection action too
         displayed: (rows) => !rows[0].meta.personalWorkspace,
         action: (rows) => props.createWorkspace(rows[0])
       }, {
         icon: '',
         label: t('disable_personal_ws'),
-        context: 'row',
+        context: 'row', // todo should be a selection action too
         displayed: (rows) => rows[0].meta.personalWorkspace,
         action: (rows) => props.deleteWorkspace(rows[0])
       }, {
         icon: 'fa fa-fw fa-check-circle-o',
         label: t('enable_user'),
-        context: 'row',
+        context: 'row', // todo should be a selection action too
         displayed: (rows) => !rows[0].meta.enabled,
         action: (rows) => props.enable(rows[0])
       }, {
         icon: 'fa fa-fw fa-times-circle-o',
         label: t('disable_user'),
-        context: 'row',
+        context: 'row', // todo should be a selection action too
         displayed: (rows) => rows[0].meta.enabled,
         action: (rows) => props.disable(rows[0])
       }, {
         icon: 'fa fa-fw fa-book',
         label: t('user_workspaces'),
-        action: () => {
+        action: () => { // todo implement
           alert('filters are already enabled for the main page, but the user filter does not exists yet')
           window.location = generateUrl('claro_admin_workspace_list')
         },

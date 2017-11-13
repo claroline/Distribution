@@ -1,7 +1,9 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import classes from 'classnames'
+
+import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
+import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 import {makeModal} from '#/main/core/layout/modal'
 
@@ -35,32 +37,9 @@ const Page = props =>
     }
   )
 
-Page.propTypes = {
-  fullscreen: T.bool,
-  embedded: T.bool,
-  children: T.node.isRequired,
-  modal: T.shape({
-    type: T.string,
-    fading: T.bool.isRequired,
-    props: T.object.isRequired
-  }),
-  fadeModal: T.func,
-  hideModal: T.func
-}
-
-Page.defaultTypes = {
-  /**
-   * Is the page displayed in full screen ?
-   */
-  fullscreen: false,
-
-  /**
-   * Is the page embed into another ?
-   *
-   * Permits to know if we use a <main> or a <section> tag.
-   */
-  embedded: false
-}
+implementPropTypes(Page, PageTypes, {
+  children: T.node.isRequired
+})
 
 /**
  * Header of the current page.

@@ -46,7 +46,14 @@ const WorkspacesPage = props =>
     <PageContent>
       <DataList
         name="workspaces"
-        fetchUrl={generateUrl('apiv2_workspace_list')}
+        fetch={{
+          url: generateUrl('apiv2_workspace_list')
+        }}
+        delete={{
+          url: generateUrl('apiv2_workspace_delete_bulk'),
+          displayed: (workspaces) =>
+            0 < workspaces.filter(workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length
+        }}
         definition={[
           {
             name: 'name',

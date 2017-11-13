@@ -30,7 +30,9 @@ const QuestionsPage = props =>
     <PageContent>
       <DataList
         name="questions"
-        fetchUrl={generateUrl('question_list')}
+        fetch={{
+          url: generateUrl('question_list')
+        }}
         definition={[
           {
             name: 'type',

@@ -1,31 +1,48 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import invariant from 'invariant'
 
 import {t} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 import {actions} from '#/main/core/layout/form/actions'
 import {select} from '#/main/core/layout/form/selectors'
 
-// this is a HOC to allow any button component with the correct interface
+// this is a HOC to allow any button component with the correct interface to become a form submit
 // it will set `title`, `disabled`, `action` props of the passed btn component
-function makeSaveAction(formName) {
+function makeSaveAction(formName, actionsMap) {
   return (ButtonComponent) => {
-    const SaveWrapper = props =>
-      <ButtonComponent
-        id={`save-${formName}-btn`}
-        icon="fa fa-floppy-o"
-        title={t('save')}
-        primary={true}
-        disabled={!props.saveEnabled}
-        action={props.save}
+    const SaveWrapper = props => {
+      // calculate actions
+      const formActions = actionsMap(props.formData)
+      const currentAction = props.new ? formActions.create : formActions.update
 
-        {...props} // we put passed props at the end to be able to override it
-      />
+      invariant(currentAction, `Cannot get the correct action for form "${formName}".`)
+
+      return (
+        <ButtonComponent
+          id={`save-${formName}-btn`}
+          icon="fa fa-floppy-o"
+          title={t('save')}
+          primary={true}
+          disabled={!props.saveEnabled}
+          action={() => {
+            props.saveForm(
+              currentAction instanceof Array ? generateUrl(...currentAction) : currentAction
+            )
+          }}
+
+          {...props} // we put passed props at the end to be able to override it
+        />
+      )
+    }
 
     SaveWrapper.propTypes = {
+      new: T.bool.isRequired,
+      formData: T.object.isRequired,
       saveEnabled: T.bool.isRequired,
-      save: T.func.isRequired
+      saveForm: T.func.isRequired
     }
 
     SaveWrapper.displayName = `SaveWrapper(${formName})`
@@ -33,10 +50,12 @@ function makeSaveAction(formName) {
     // connect it to the store
     return connect(
       state => ({
+        new: select.isNew(select.form(state, formName)),
+        formData: select.data(select.form(state, formName)),
         saveEnabled: select.saveEnabled(select.form(state, formName))
       }),
       dispatch => ({
-        save: () => dispatch(actions.save(formName))
+        saveForm: (targetUrl) => dispatch(actions.saveForm(formName, targetUrl))
       })
     )(SaveWrapper)
   }

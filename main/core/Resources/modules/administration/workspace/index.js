@@ -1,5 +1,3 @@
-import merge from 'lodash/merge'
-
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
 // reducers
@@ -26,20 +24,5 @@ bootstrap(
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer
-  },
-
-  // remap data-attributes set on the app DOM container
-  (initialData) => ({
-    workspaces: merge({}, initialData.workspaces, {
-      delete: {
-        title: (workspaces) => transChoice('remove_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
-        question: (workspaces) => t('remove_workspaces_confirm', {
-          workspace_list: workspaces.map(workspace => workspace.name).join(', ')
-        }),
-        displayed: (workspaces) => {
-          return 0 < workspaces.filter(workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length
-        }
-      }
-    })
-  })
+  }
 )
