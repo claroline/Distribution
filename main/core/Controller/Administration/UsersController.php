@@ -166,7 +166,7 @@ class UsersController extends Controller
           'roles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', $filters),
           'organizations' => $this->finder->search(
               'Claroline\CoreBundle\Entity\Organization\Organization',
-              ['filters' => ['parent' => null]],
+              ['hiddenFilters' => ['parent' => null]],
               [Options::IS_RECURSIVE]
           ),
           'locations' => $this->finder->search('Claroline\CoreBundle\Entity\Organization\Location', $filters),

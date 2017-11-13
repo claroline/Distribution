@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
-use Claroline\CoreBundle\Controller\APINew\AbstractController;
+use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -23,8 +23,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Organization\Location")
  * @Route("location")
  */
-class LocationController extends AbstractController
+class LocationController extends AbstractCrudController
 {
+    public function getName()
+    {
+        return 'location';
+    }
+
     /**
      * @Route("/{uuid}/geolocate", name="apiv2_location_geolocate")
      * @Method("GET")

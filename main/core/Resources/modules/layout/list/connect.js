@@ -157,7 +157,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     display:       ownProps.display,
     translations:  ownProps.translations,
     data:          stateProps.data,
-    totalResults:  stateProps.totalResults
+    totalResults:  stateProps.totalResults,
+
+    fetchData: dispatchProps.fetchData
   }
 
   // delete action

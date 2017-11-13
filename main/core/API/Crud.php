@@ -163,8 +163,9 @@ class Crud
      * @param string $property - the name of the property which holds the collection
      * @param string $action   - the action to execute on the collection (aka. add/remove/set)
      * @param mixed  $elements - the collection to patch
+     * @param array  $options
      */
-    public function patch($object, $property, $action, array $elements)
+    public function patch($object, $property, $action, array $elements, array $options = [])
     {
         $methodName = $action.ucfirst(strtolower($property));
 
@@ -195,8 +196,9 @@ class Crud
      * @param string $property - the property to update
      * @param mixed  $data     - the data that must be set
      * @param array  $options  - an array of options
+
      */
-    public function replace($object, $property, $data, $options = [])
+    public function replace($object, $property, $data, array $options = [])
     {
         $methodName = 'set'.ucfirst(strtolower($property));
 
@@ -238,6 +240,12 @@ class Crud
     /**
      * We dispatch 2 events: a generic one and an other with a custom name.
      * Listen to what you want. Both have their uses.
+     *
+     * @param string $name
+     * @param mixed  $object
+     * @param array  $options
+     *
+     * @return bool
      */
     public function dispatch($name, $object, array $options = [])
     {

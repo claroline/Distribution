@@ -98,7 +98,7 @@ class FinderProvider
         // it's mostly used for access restrictions or entity collections
         $hiddenFilters = isset($finderParams['hiddenFilters']) ? $this->parseFilters($finderParams['hiddenFilters']) : [];
 
-        $queryFilters = array_merge($filters, $hiddenFilters); // todo : as is it override user filters with same key if any
+        $queryFilters = array_merge_recursive($filters, $hiddenFilters);
 
         $data = $this->fetch($class, $page, $limit, $queryFilters, $sortBy);
         $count = $this->fetch($class, $page, $limit, $queryFilters, $sortBy, true);

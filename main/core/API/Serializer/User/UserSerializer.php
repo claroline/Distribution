@@ -75,7 +75,7 @@ class UserSerializer
     {
         return [
             'acceptedTerms' => $user->hasAcceptedTerms(),
-            'created' => $user->getCreated(),
+            'created' => $user->getCreated()->format('Y-m-d\TH:i:s'),
             'description' => $user->getDescription(),
             'mailValidated' => $user->isMailNotified(),
             'mailNotified' => $user->isMailNotified(),

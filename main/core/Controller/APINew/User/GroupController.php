@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\CoreBundle\Controller\APINew\AbstractController;
+use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
@@ -22,8 +22,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Group")
  * @Route("group")
  */
-class GroupController extends AbstractController
+class GroupController extends AbstractCrudController
 {
+    public function getName()
+    {
+        return 'group';
+    }
+
     use HasUsersTrait;
     use HasRolesTrait;
     use HasOrganizationsTrait;

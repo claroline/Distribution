@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class AbstractController extends ContainerAware
+abstract class AbstractCrudController extends ContainerAware
 {
     /** @var FinderProvider */
     protected $finder;
@@ -30,6 +30,13 @@ class AbstractController extends ContainerAware
     protected $container;
 
     protected $options;
+
+    /**
+     * Get the name of the managed entity.
+     *
+     * @return string
+     */
+    abstract function getName();
 
     public function setContainer(ContainerInterface $container = null)
     {

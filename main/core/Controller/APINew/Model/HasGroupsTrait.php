@@ -11,13 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasGroupsTrait
 {
     /**
-     * @Route("{uuid}/group")
+     * @Route("{id}/group")
      * @Method("PATCH")
      */
-    public function addGroupsAction($uuid, $class, Request $request, $env)
+    public function addGroupsAction($id, $class, Request $request, $env)
     {
         try {
-            $object = $this->find($class, $uuid);
+            $object = $this->find($class, $id);
             $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
             $this->crud->patch($object, 'group', Crud::COLLECTION_ADD, $groups);
 
@@ -30,13 +30,13 @@ trait HasGroupsTrait
     }
 
     /**
-     * @Route("{uuid}/group")
+     * @Route("{id}/group")
      * @Method("DELETE")
      */
-    public function removeGroupsAction($uuid, $class, Request $request, $env)
+    public function removeGroupsAction($id, $class, Request $request, $env)
     {
         try {
-            $object = $this->find($class, $uuid);
+            $object = $this->find($class, $id);
             $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
             $this->crud->patch($object, 'group', Crud::COLLECTION_REMOVE, $groups);
 

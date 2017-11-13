@@ -67,17 +67,22 @@ class UserFinder implements FinderInterface
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'hasPersonalWorkspace':
-                  $qb->andWhere("obj.personalWorkspace IS NOT NULL");
-                  return;
-              default:
-                if (is_bool($filterValue)) {
-                    $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                } else {
-                    $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                }
+                case 'hasPersonalWorkspace':
+                    $qb->andWhere("obj.personalWorkspace IS NOT NULL");
+                    break;
+                case 'group':
+                    $qb->leftJoin('obj.groups', 'g');
+                    $qb->andWhere('g.uuid IN (:groupIds)');
+                    $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                default:
+                    if (is_bool($filterValue)) {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    } else {
+                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    }
             }
         }
 

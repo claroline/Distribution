@@ -20,7 +20,10 @@ class DataList extends Component {
   constructor(props) {
     super(props)
 
-    // todo autoload
+    if (this.props.fetch && this.props.fetch.autoload) {
+      // todo find better
+      this.props.fetchData()
+    }
   }
 
   render() {
@@ -107,7 +110,8 @@ DataList.propTypes = {
   sorting: T.object,
   pagination: T.object,
   selection: T.object,
-  deleteItems: T.func
+  deleteItems: T.func,
+  fetchData: T.func
 }
 
 DataList.defaultProps = {
