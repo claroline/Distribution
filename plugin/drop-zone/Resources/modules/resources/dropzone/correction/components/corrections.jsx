@@ -8,6 +8,7 @@ export const Corrections = props =>
   <table className="table corrections-table">
     <thead>
       <tr>
+        <th></th>
         <th>{trans('corrector', {}, 'dropzone')}</th>
         <th>{trans('start_date', {}, 'dropzone')}</th>
         <th>{trans('end_date', {}, 'dropzone')}</th>

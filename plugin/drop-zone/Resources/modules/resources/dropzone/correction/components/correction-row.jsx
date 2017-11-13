@@ -63,7 +63,7 @@ class CorrectionRow extends Component {
   render() {
     return (this.state.showForm ?
       <tr className="correction-row correction-form-row">
-        <td colSpan="6">
+        <td colSpan="7">
           <CorrectionForm
             correction={this.state.correction}
             dropzone={this.props.dropzone}
@@ -75,6 +75,11 @@ class CorrectionRow extends Component {
         </td>
       </tr> :
       <tr className="correction-row">
+        <td>
+          {this.props.correction.correctionDenied &&
+            <span className="fa fa-w fa-exclamation-triangle"/>
+          }
+        </td>
         <td>
           {`${this.props.correction.user.firstName} ${this.props.correction.user.lastName}`}
         </td>
