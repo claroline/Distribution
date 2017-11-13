@@ -4,7 +4,9 @@ namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -26,23 +28,24 @@ class OrganizationSerializer
     public function serialize(Organization $organization, array $options = [])
     {
         $data = [
-          'id' => $organization->getId(),
-          'name' => $organization->getName(),
-          'position' => $organization->getPosition(),
-          'email' => $organization->getEmail(),
-          'default' => $organization->getDefault(),
-          'administrators' => array_map(function ($administrator) {
-              return [
-                  'id' => $administrator->getId(),
+            'id' => $organization->getId(),
+            'name' => $organization->getName(),
+            'code' => $organization->getCode(),
+            'position' => $organization->getPosition(),
+            'email' => $organization->getEmail(),
+            'default' => $organization->getDefault(),
+            'administrators' => array_map(function (User $administrator) {
+                return [
+                    'id' => $administrator->getId(),
                   'username' => $administrator->getUsername(),
-              ];
-          }, $organization->getAdministrators()->toArray()),
-          'locations' => array_map(function ($location) {
-              return [
-                  'id' => $location->getId(),
-                  'name' => $location->getName(),
-            ];
-          }, $organization->getLocations()->toArray()),
+                ];
+            }, $organization->getAdministrators()->toArray()),
+            'locations' => array_map(function (Location $location) {
+                return [
+                    'id' => $location->getId(),
+                    'name' => $location->getName(),
+                ];
+            }, $organization->getLocations()->toArray()),
         ];
 
         if (in_array(Options::IS_RECURSIVE, $options)) {
@@ -58,6 +61,6 @@ class OrganizationSerializer
 
     public function getIdentifiers()
     {
-        return ['id', 'uuid', 'name'];
+        return ['id', 'uuid', 'name', 'code'];
     }
 }

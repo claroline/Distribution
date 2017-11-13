@@ -33,7 +33,7 @@ CurrentFilter.propTypes = {
   type: T.string.isRequired,
   label: T.string.isRequired,
   options: T.object,
-  value: T.any.isRequired,
+  value: T.any,
   remove: T.func.isRequired
 }
 
@@ -250,7 +250,7 @@ ListSearch.propTypes = {
   })).isRequired,
   current: T.arrayOf(T.shape({
     property: T.string.isRequired,
-    value: T.any.isRequired
+    value: T.any
   })).isRequired,
   addFilter: T.func.isRequired,
   removeFilter: T.func.isRequired

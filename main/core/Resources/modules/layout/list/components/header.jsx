@@ -172,7 +172,7 @@ ListHeader.propTypes = {
   filters: T.shape({
     current: T.arrayOf(T.shape({
       property: T.string.isRequired,
-      value: T.any.isRequired
+      value: T.any
     })).isRequired,
     available: T.arrayOf(
       T.shape(DataListProperty.propTypes)

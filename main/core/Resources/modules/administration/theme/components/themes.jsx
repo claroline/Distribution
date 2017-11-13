@@ -4,9 +4,11 @@ import {connect} from 'react-redux'
 import {NavLink, withRouter} from 'react-router-dom'
 
 import {t, trans, transChoice} from '#/main/core/translation'
-import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {generateUrl} from '#/main/core/fos-js-router'
 
+import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
+
 import {actions} from '#/main/core/administration/theme/actions'
 
 import {
@@ -23,7 +25,7 @@ const ThemesPage = props =>
     <PageContent>
       <DataList
         name="themes"
-
+        fetchUrl={generateUrl('claro_theme_list')}
         definition={[
           {
             name: 'name',

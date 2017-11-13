@@ -65,7 +65,7 @@ export const reducer = {
   /*viewMode: makeReducer(initialState['viewMode'], viewReducers),*/
   /*tasks: makeReducer(initialState['tasks'], tasksReducers),*/
 
-  tasks: makeListReducer(),
+  tasks: makeListReducer('tasks'),
 
   taskForm: makeReducer(initialState['taskForm'], taskFormReducers)
   /*list: makeListReducer(),*/

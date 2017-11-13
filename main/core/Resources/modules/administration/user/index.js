@@ -45,33 +45,21 @@ bootstrap(
   (initialData) => {
     return {
       users: {
-        list: merge({}, initialData.users, {
-          fetchUrl: generateUrl('apiv2_user_list')
-        })
+        list: initialData.users
       },
       groups: {
-        list: merge({}, initialData.groups, {
-          fetchUrl: generateUrl('apiv2_group_list')
-        })
+        list: initialData.groups
       },
       roles: {
-        list: merge({}, initialData.roles, {
-          fetchUrl: generateUrl('apiv2_role_list')
-        })
+        list: initialData.roles
       },
       locations: {
-        list: merge({}, initialData.locations, {
-          fetchUrl: generateUrl('apiv2_location_list'),
-          delete: {
-            title: (locations) => transChoice('remove_locations', locations.length, {count: locations.length}, 'platform'),
-            question: (locations) => t('remove_locations_confirm', {
-              location_list: locations.map(location => location.name).join(', ')
-            })
-          }
-        })
+        list: initialData.locations
       },
-      organizations: merge({}, initialData.organizations),
-      parameters: merge({}, {data: initialData.parameters}, {platformRoles: initialData.platformroles}, {locales: initialData.locales})
+      organizations: {
+        list: initialData.organizations
+      },
+      parameters: merge({}, {data: initialData.parameters}, {platformRoles: initialData.platformroles})
     }
   }
 )

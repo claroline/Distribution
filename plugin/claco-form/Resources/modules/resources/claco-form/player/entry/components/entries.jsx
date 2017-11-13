@@ -6,6 +6,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {trans, t} from '#/main/core/translation'
 import {localeDate} from '#/main/core/date'
+import {generateUrl} from '#/main/core/fos-js-router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
@@ -372,6 +373,7 @@ class Entries extends Component {
                 available: Object.keys(listConstants.DISPLAY_MODES)
               }}
               name="entries"
+              fetchUrl={generateUrl('claro_claco_form_entries_search', {clacoForm: this.props.resourceId})}
               definition={this.generateColumns()}
               filterColumns={this.props.searchColumnEnabled}
               actions={this.generateActions()}

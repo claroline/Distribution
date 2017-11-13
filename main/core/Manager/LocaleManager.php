@@ -69,6 +69,19 @@ class LocaleManager
         return $locales;
     }
 
+    public function getLocales()
+    {
+        $available = $this->getAvailableLocales();
+        $implemented = array_keys($this->getImplementedLocales());
+
+        return array_map(function ($locale) use ($available) {
+            return [
+                'name' => $locale,
+                'enabled' => array_key_exists($locale, $available),
+            ];
+        }, $implemented);
+    }
+
     /**
      * Get a list of available languages in the platform.
      *
@@ -145,6 +158,10 @@ class LocaleManager
         return $locale;
     }
 
+    /**
+     * @deprecated
+     * @return array
+     */
     public function getLocaleListForSelect()
     {
         $locales = $this->retrieveAvailableLocales();
@@ -161,6 +178,10 @@ class LocaleManager
         return $data;
     }
 
+    /**
+     * @deprecated
+     * @return array
+     */
     public function getLocalesLabels()
     {
         return [

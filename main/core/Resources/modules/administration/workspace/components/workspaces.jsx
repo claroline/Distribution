@@ -46,6 +46,7 @@ const WorkspacesPage = props =>
     <PageContent>
       <DataList
         name="workspaces"
+        fetchUrl={generateUrl('apiv2_workspace_list')}
         definition={[
           {
             name: 'name',

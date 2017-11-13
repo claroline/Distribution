@@ -1,7 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
+import difference from 'lodash/difference'
 
-import {makeReducer, reduceReducers, combineReducers} from '#/main/core/utilities/redux'
+import {makeInstanceReducer, reduceReducers, combineReducers} from '#/main/core/utilities/redux'
 
 import {constants} from '#/main/core/layout/list/constants'
 import {
@@ -17,25 +18,26 @@ import {
   LIST_PAGE_SIZE_UPDATE
 } from '#/main/core/layout/list/actions'
 
-/**
- * Reduces the API url from where the data come from.
- * It's used to refresh async data lists.
- *
- * This is not supposed to change at runtime. We store it in redux for the sake of simplicity.
- */
-const fetchUrlReducer = (state = null) => state
-
-/**
- *
- */
-const deleteReducer = (state = null) => state
+const defaultState = {
+  data: [],
+  totalResults: 0,
+  filters: [],
+  sortBy: {
+    property: null,
+    direction: 0
+  },
+  selected: [],
+  page: 0,
+  pageSize: constants.DEFAULT_PAGE_SIZE,
+  delete: null
+}
 
 /**
  * Reduces list data items.
  */
-const dataReducer = makeReducer([], {
-  [LIST_DATA_LOAD]: (state, action = {}) => action.data,
-  [LIST_DATA_DELETE]: (state, action = {}) => {
+const dataReducer = makeInstanceReducer(defaultState.data, {
+  [LIST_DATA_LOAD]: (state, action) => action.data,
+  [LIST_DATA_DELETE]: (state, action) => {
     const items = cloneDeep(state)
 
     action.items.forEach(toRemove => {
@@ -50,16 +52,16 @@ const dataReducer = makeReducer([], {
 /**
  * Reduces list total results.
  */
-const totalResultsReducer = makeReducer(0, {
-  [LIST_DATA_LOAD]: (state, action = {}) => action.total,
-  [LIST_DATA_DELETE]: (state, action = {}) => state - action.items.length
+const totalResultsReducer = makeInstanceReducer(defaultState.totalResults, {
+  [LIST_DATA_LOAD]: (state, action) => action.total,
+  [LIST_DATA_DELETE]: (state, action) => state - action.items.length
 })
 
 /**
  * Reduces list filters.
  */
-const filterReducer = makeReducer([], {
-  [LIST_FILTER_ADD]: (state, action = {}) => {
+const filtersReducer = makeInstanceReducer(defaultState.filters, {
+  [LIST_FILTER_ADD]: (state, action) => {
     const newFilters = cloneDeep(state)
 
     const existingFilter = newFilters.find(filter => filter.property === action.property)
@@ -75,7 +77,7 @@ const filterReducer = makeReducer([], {
     return newFilters
   },
 
-  [LIST_FILTER_REMOVE]: (state, action = {}) => {
+  [LIST_FILTER_REMOVE]: (state, action) => {
     const newFilters = state.slice(0)
     const pos = state.indexOf(action.filter)
     if (-1 !== pos) {
@@ -89,8 +91,8 @@ const filterReducer = makeReducer([], {
 /**
  * Reduces list sort.
  */
-const sortReducer = makeReducer({property: null, direction: 0}, {
-  [LIST_SORT_UPDATE]: (state, action = {}) => {
+const sortByReducer = makeInstanceReducer(defaultState.sortBy, {
+  [LIST_SORT_UPDATE]: (state, action) => {
     let direction = 1
     if (state && state.property === action.property) {
       if (1 === state.direction) {
@@ -115,10 +117,10 @@ const sortReducer = makeReducer({property: null, direction: 0}, {
  *
  * ATTENTION: we assume all data rows have an unique prop `id`.
  */
-const selectReducer = makeReducer([], {
+const selectedReducer = makeInstanceReducer(defaultState.selected, {
   [LIST_RESET_SELECT]: () => [],
 
-  [LIST_TOGGLE_SELECT]: (state, action = {}) => {
+  [LIST_TOGGLE_SELECT]: (state, action) => {
     const selected = state.slice(0)
 
     const itemPos = state.indexOf(action.row.id)
@@ -133,7 +135,7 @@ const selectReducer = makeReducer([], {
     return selected
   },
 
-  [LIST_DATA_DELETE]: (state, action = {}) => {
+  [LIST_DATA_DELETE]: (state, action) => {
     const items = cloneDeep(state)
 
     action.items.forEach(toRemove => {
@@ -144,7 +146,7 @@ const selectReducer = makeReducer([], {
     return items
   },
 
-  [LIST_TOGGLE_SELECT_ALL]: (state, action = {}) => {
+  [LIST_TOGGLE_SELECT_ALL]: (state, action) => {
     return 0 < state.length ? [] : action.rows.map(row => row.id)
   }
 })
@@ -152,7 +154,7 @@ const selectReducer = makeReducer([], {
 /**
  * Reduces list current page.
  */
-const pageReducer = makeReducer(0, {
+const pageReducer = makeInstanceReducer(defaultState.page, {
   /**
    * Changes the current page.
    *
@@ -161,7 +163,7 @@ const pageReducer = makeReducer(0, {
    *
    * @returns {Object}
    */
-  [LIST_PAGE_CHANGE]: (state, action = {}) => action.page,
+  [LIST_PAGE_CHANGE]: (state, action) => action.page,
 
   /**
    * Resets current page on page size changes.
@@ -176,7 +178,7 @@ const pageReducer = makeReducer(0, {
 /**
  * Reduces list page size.
  */
-const pageSizeReducer = makeReducer(constants.DEFAULT_PAGE_SIZE, {
+const pageSizeReducer = makeInstanceReducer(defaultState.pageSize, {
   /**
    * Changes the page size.
    *
@@ -185,8 +187,24 @@ const pageSizeReducer = makeReducer(constants.DEFAULT_PAGE_SIZE, {
    *
    * @returns {Object}
    */
-  [LIST_PAGE_SIZE_UPDATE]: (state, action = {}) => action.pageSize
+  [LIST_PAGE_SIZE_UPDATE]: (state, action) => action.pageSize
 })
+
+/**
+ *
+ */
+const deleteReducer = makeInstanceReducer(defaultState.delete, {})
+
+const baseReducer = {
+  data: dataReducer,
+  totalResults: totalResultsReducer,
+  filters: filtersReducer,
+  sortBy: sortByReducer,
+  selected: selectedReducer,
+  page: pageReducer,
+  pageSize: pageSizeReducer,
+  delete: deleteReducer
+}
 
 /**
  * Creates reducers for lists.
@@ -198,50 +216,54 @@ const pageSizeReducer = makeReducer(constants.DEFAULT_PAGE_SIZE, {
  *
  * Example to add a custom reducer to `data`:
  *   customReducers = {
- *      data: myReducerFunc()
+ *      data: handlers
  *   }
  *
- * @param {object} customReducers - an object containing custom reducers.
- * @param {object} options        - an options object to disable/enable list features (default: DEFAULT_FEATURES).
+ * @param {string} listName      - the name of the list
+ * @param {object} customReducer - an object containing custom reducer.
+ * @param {object} options       - an options object to disable/enable list features (default: DEFAULT_FEATURES).
  *
  * @returns {function}
  */
-function makeListReducer(customReducers = {}, options = {}) {
+function makeListReducer(listName, customReducer = {}, options = {}) {
   const reducer = {}
+
   const listOptions = merge({}, constants.DEFAULT_FEATURES, options)
 
   // adds base list reducers
-  reducer.data = customReducers.data ?
-    reduceReducers(dataReducer, customReducers.data) : dataReducer
+  reducer.data = customReducer.data ?
+    reduceReducers(baseReducer.data(listName), customReducer.data) : baseReducer.data(listName)
 
-  reducer.totalResults = customReducers.totalResults ?
-    reduceReducers(totalResultsReducer, customReducers.totalResults) : totalResultsReducer
+  reducer.totalResults = customReducer.totalResults ?
+    reduceReducers(baseReducer.totalResults(listName), customReducer.totalResults) : baseReducer.totalResults(listName)
 
   // adds reducers for optional features when enabled
-  if (listOptions.async) {
-    reducer.fetchUrl = fetchUrlReducer
-  }
-
   if (listOptions.deletable) {
-    reducer.delete = deleteReducer
+    reducer.delete = baseReducer.delete(listName)
   }
 
   if (listOptions.filterable) {
-    reducer.filters = filterReducer
+    reducer.filters = baseReducer.filters(listName)
   }
 
   if (listOptions.sortable) {
-    reducer.sortBy = sortReducer
+    reducer.sortBy = baseReducer.sortBy(listName)
   }
 
   if (listOptions.selectable) {
-    reducer.selected = selectReducer
+    reducer.selected = baseReducer.selected(listName)
   }
 
   if (listOptions.paginated) {
-    reducer.page = pageReducer
-    reducer.pageSize = pageSizeReducer
+    reducer.page = baseReducer.page(listName)
+    reducer.pageSize = baseReducer.pageSize(listName)
   }
+
+  // get custom keys
+  const rest = difference(Object.keys(customReducer), Object.keys(baseReducer))
+  rest.map(reducerName =>
+    reducer[reducerName] = customReducer[reducerName]
+  )
 
   return combineReducers(reducer)
 }

@@ -6,6 +6,7 @@ import {NavLink} from 'react-router-dom'
 
 import {t, trans, transChoice} from '#/main/core/translation'
 import {localeDate} from '#/main/core/date'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 import {
   PageContainer as Page,
@@ -58,6 +59,7 @@ const ScheduledTasksPage = props =>
     <PageContent>
       <DataList
         name="tasks"
+        fetchUrl={generateUrl('claro_scheduled_task_list')}
         definition={[
           {
             name: 'name',

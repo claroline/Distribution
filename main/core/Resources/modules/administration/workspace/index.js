@@ -1,7 +1,6 @@
 import merge from 'lodash/merge'
 
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
@@ -32,7 +31,6 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => ({
     workspaces: merge({}, initialData.workspaces, {
-      fetchUrl: generateUrl('apiv2_workspace_list'),
       delete: {
         title: (workspaces) => transChoice('remove_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
         question: (workspaces) => t('remove_workspaces_confirm', {

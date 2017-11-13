@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\APINew;
+namespace Claroline\CoreBundle\Controller\APINew\User;
 
+use Claroline\CoreBundle\Controller\APINew\AbstractController;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -28,12 +28,14 @@ class LocationController extends AbstractController
     /**
      * @Route("/{uuid}/geolocate", name="apiv2_location_geolocate")
      * @Method("GET")
-     * @ParamConverter("location", class = "Claroline\CoreBundle\Entity\Organization\Location", options = {"uuid" = "location"})
+     * @ParamConverter("location", class="Claroline\CoreBundle\Entity\Organization\Location", options={"uuid" = "id"})
      */
     public function geolocateAction(Location $location)
     {
         $this->container->get('claroline.manager.organization.location_manager')->setCoordinates($location);
 
-        return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\Organization\Location')->serialize($location));
+        return new JsonResponse(
+            $this->serializer->get('Claroline\CoreBundle\Entity\Organization\Location')->serialize($location)
+        );
     }
 }

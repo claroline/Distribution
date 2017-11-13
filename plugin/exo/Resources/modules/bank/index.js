@@ -1,6 +1,3 @@
-import merge  from 'lodash/merge'
-
-import {generateUrl} from '#/main/core/fos-js-router'
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
 import {registerDefaultItemTypes} from '#/plugin/exo/items/item-types'
@@ -36,13 +33,5 @@ bootstrap(
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer
-  },
-
-  // remap data-attributes set on the app DOM container
-  (initialData) => ({
-    currentUser: initialData.currentUser,
-    questions: merge({}, initialData.questions, {
-      fetchUrl: generateUrl('question_list')
-    })
-  })
+  }
 )

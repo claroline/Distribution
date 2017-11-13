@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
 import {localeDate} from '#/main/core/date'
+import {generateUrl} from '#/main/core/fos-js-router'
+
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_SHARE} from '#/plugin/exo/bank/components/modal/share.jsx'
 
@@ -28,6 +30,7 @@ const QuestionsPage = props =>
     <PageContent>
       <DataList
         name="questions"
+        fetchUrl={generateUrl('question_list')}
         definition={[
           {
             name: 'type',

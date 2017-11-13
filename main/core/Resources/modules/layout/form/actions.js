@@ -1,6 +1,4 @@
-import invariant from 'invariant'
-
-import {makeActionCreator} from '#/main/core/utilities/redux'
+import {makeInstanceActionCreator} from '#/main/core/utilities/redux'
 
 export const FORM_RESET       = 'FORM_RESET'
 export const FORM_VALIDATE    = 'FORM_VALIDATE'
@@ -9,16 +7,14 @@ export const FORM_UPDATE_PROP = 'FORM_UPDATE_PROP'
 
 export const actions = {}
 
-actions.resetForm = (data, isNew = false) => {
-  invariant(data !== undefined, `data is required`)
-
+actions.validateForm = makeInstanceActionCreator(FORM_VALIDATE, 'errors')
+actions.submitForm = makeInstanceActionCreator(FORM_SUBMIT)
+actions.updateProp = makeInstanceActionCreator(FORM_UPDATE_PROP, 'propName', 'propValue')
+actions.resetForm = (formName, data = {}, isNew = false) => {
   return {
     type: FORM_RESET,
+    instanceName: formName,
     data: data,
     isNew: isNew
   }
 }
-
-actions.validateForm = makeActionCreator(FORM_VALIDATE, 'errors')
-actions.submitForm = makeActionCreator(FORM_SUBMIT)
-actions.updateProp = makeActionCreator(FORM_UPDATE_PROP, 'propName', 'propValue')

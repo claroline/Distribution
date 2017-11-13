@@ -2,40 +2,64 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {TreeView} from '#/main/core/layout/treeview/treeview.jsx'
+import {Routes} from '#/main/core/router'
+
+import {Organization, OrganizationActions}  from '#/main/core/administration/user/organization/components/organization.jsx'
+import {Organizations, OrganizationsActions} from '#/main/core/administration/user/organization/components/organizations.jsx'
+
 import {select} from '#/main/core/administration/user/organization/selectors'
 
 const OrganizationTabActions = props =>
-  <div>
-    page actions
-  </div>
-
-const OrganizationTab = props =>
-  <TreeView
-    data={props.organizations.data}
-    options={{
-      name: 'select-orga',
-      selected: [],
-      selectable: true,
-      collapse: true
-    }}
-    onChange={() => { }}
+  <Routes
+    routes={[
+      {
+        path: '/organizations',
+        exact: true,
+        component: OrganizationsActions
+      }, {
+        path: '/organizations/add',
+        exact: true,
+        component: OrganizationActions
+      }, {
+        path: '/organizations/:id',
+        component: OrganizationActions
+      }
+    ]}
   />
 
+const OrganizationTab = props =>
+  <Routes
+    routes={[
+      {
+        path: '/organizations',
+        exact: true,
+        component: Organizations
+      }, {
+        path: '/organizations/add',
+        exact: true,
+        onEnter: () => props.openForm(null),
+        component: Organization
+      }, {
+        path: '/organizations/:id',
+        onEnter: (params) => props.openForm(params.id),
+        component: Organization
+      }
+    ]}
+  />
 
 OrganizationTab.propTypes = {
-  organizations: T.shape({
-    data: T.array.isRequired
-  }).isRequired
+  openForm: T.func.isRequired
 }
 
-function mapStateToProps(state) {
+function mapDispatchToProps(dispatch) {
   return {
-    organizations: select.organizations(state)
+    openForm() {
+
+    }
   }
 }
 
-const ConnectedOrganizationTab = connect(mapStateToProps)(OrganizationTab)
+const ConnectedOrganizationTab = connect(null, mapDispatchToProps)(OrganizationTab)
 
 export {
   OrganizationTabActions,

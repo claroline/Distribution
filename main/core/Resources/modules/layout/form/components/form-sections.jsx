@@ -28,7 +28,6 @@ const FormSections = props =>
     level={props.level}
     accordion={props.accordion}
     defaultOpened={props.defaultOpened}
-    defaultActiveKey={props.defaultOpened}
   >
     {props.children}
   </Sections>

@@ -10,7 +10,6 @@ import {DataGrid} from '#/main/core/layout/list/components/view/data-grid.jsx'
  * @type {object}
  */
 const DEFAULT_FEATURES = {
-  async     : true,
   filterable: true,
   sortable  : true,
   selectable: true,

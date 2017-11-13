@@ -7,7 +7,6 @@ import {t, transChoice} from '#/main/core/translation'
 const list = (state, listName) => get(state, listName)
 
 // check enabled list features
-const isAsync      = (listState) => typeof listState.fetchUrl !== 'undefined'
 const isDeletable  = (listState) => typeof listState.delete !== 'undefined'
 const isFilterable = (listState) => typeof listState.filters !== 'undefined'
 const isSortable   = (listState) => typeof listState.sortBy !== 'undefined'
@@ -67,8 +66,7 @@ function queryString(listState) {
   const currentFilters = filters(listState)
   if (0 < currentFilters.length) {
     currentFilters.map(filter => {
-      let value = filter.value.constructor.name === 'Moment' ? filter.value.unix(): filter.value
-      queryParams.push(`filters[${filter.property}]=${encodeURIComponent(value)}`)
+      queryParams.push(`filters[${filter.property}]=${encodeURIComponent(filter.value)}`)
     }).join('&')
   }
 
@@ -88,7 +86,6 @@ function queryString(listState) {
 
 export const select = {
   list,
-  isAsync,
   isFilterable,
   isDeletable,
   isSortable,

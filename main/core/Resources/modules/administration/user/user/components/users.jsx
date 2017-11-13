@@ -27,12 +27,13 @@ const UsersActions = props =>
 const Users = props =>
   <DataList
     name="users.list"
+    fetchUrl={generateUrl('apiv2_user_list')}
     actions={[
       {
         icon: 'fa fa-fw fa-eye',
         label: t('show_as'),
         action: (rows) => window.location = generateUrl('claro_desktop_open', {'_switch': rows[0].username}),
-        context: 'row',
+        context: 'row'
       }, {
         icon: '',
         label: t('enable_personal_ws'),
@@ -88,7 +89,7 @@ const Users = props =>
 
 Users.propTypes = {
   enable: T.func.isRequired,
-  disabled: T.func.isRequired,
+  disable: T.func.isRequired,
   createWorkspace: T.func.isRequired,
   deleteWorkspace: T.func.isRequired
 }

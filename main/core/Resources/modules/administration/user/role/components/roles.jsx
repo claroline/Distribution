@@ -1,6 +1,7 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
@@ -21,6 +22,7 @@ const Roles = () =>
   <DataList
     name="roles.list"
     actions={[]}
+    fetchUrl={generateUrl('apiv2_role_list')}
     definition={RoleList.definition}
     card={RoleList.card}
   />

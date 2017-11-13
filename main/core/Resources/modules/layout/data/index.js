@@ -10,6 +10,9 @@ import {IP_TYPE,       ipDefinition}       from '#/main/core/layout/data/types/i
 import {NUMBER_TYPE,   numberDefinition}   from '#/main/core/layout/data/types/number'
 import {STRING_TYPE,   stringDefinition}   from '#/main/core/layout/data/types/string'
 
+// todo do not register it here
+import {LOCALE_TYPE,   localeDefinition}   from '#/main/core/layout/data/types/locale'
+
 // the list of registered data types
 const dataTypes = {}
 
@@ -23,6 +26,8 @@ registerType(HTML_TYPE,     htmlDefinition)
 registerType(IP_TYPE,       ipDefinition)
 registerType(NUMBER_TYPE,   numberDefinition)
 registerType(STRING_TYPE,   stringDefinition)
+
+registerType(LOCALE_TYPE,   localeDefinition)
 
 /**
  * Validates & registers a data type.

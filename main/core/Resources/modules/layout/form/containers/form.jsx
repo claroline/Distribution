@@ -51,10 +51,10 @@ function mapStateToProps(state, ownProps) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
   return {
     updateProp(propName, propValue) {
-      dispatch(actions.updateProp(propName, propValue))
+      dispatch(actions.updateProp(ownProps.name, propName, propValue))
     }
   }
 }

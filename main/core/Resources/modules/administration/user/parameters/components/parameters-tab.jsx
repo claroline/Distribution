@@ -35,7 +35,7 @@ const ParametersTab = () =>
           {
             name: 'registration.auto',
             type: 'boolean',
-            label: t('self_registration')
+            label: t('activate_self_registration')
           }, { // todo should be hidden if registration.auto === false
             name: 'registration.showOnLogin',
             type: 'boolean',
@@ -50,11 +50,10 @@ const ParametersTab = () =>
             }
           }, {
             name: 'registration.defaultLang',
-            type: 'enum', // todo should be a semantic type
+            type: 'locale', // todo should be a semantic type
             label: t('default_language'),
             options: {
-              noEmpty: true,
-              choices: {} // languages
+              onlyEnabled: true
             }
           }, {
             name: 'registration.validation',
@@ -81,14 +80,15 @@ const ParametersTab = () =>
             type: 'number',
             label: t('cookie_lifetime'),
             options: {
-              min: 0
+              min: 0,
+              unit: t('days')
             }
           }
         ]
       }, {
         id: 'anonymous',
         icon: 'fa fa-fw fa-user-secret',
-        title: t('anonymous'),
+        title: t('anonymous_users'),
         fields: [
           {
             name: 'anonymous.captcha',
@@ -112,19 +112,13 @@ const ParametersTab = () =>
           {
             name: 'termsOfService.enabled',
             type: 'boolean',
-            label: t('term_of_service_activation_message')
+            label: t('term_of_service_activation_message'),
+            help: t('term_of_service_activation_help'),
           }, { // todo should be hidden if not enabled
             name: 'termsOfService.content',
             type: 'html', // todo : create a new localized content type
             label: t('term_of_service')
           }
-        ]
-      }, {
-        id: 'access_restrictions',
-        icon: 'fa fa-fw fa-key',
-        title: t('access_restrictions'),
-        fields: [
-          // accountExpiration
         ]
       }
     ]}

@@ -71,8 +71,8 @@ const Sections = props =>
   >
     {React.Children.map(props.children, (child, index) => 'hr' === child.type ? child :
       React.cloneElement(child, {
-        key: index,
-        eventKey: index,
+        key: child.props.id,
+        eventKey: child.props.id,
         level: props.level
       })
     )}

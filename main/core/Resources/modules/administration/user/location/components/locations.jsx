@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
@@ -35,10 +36,11 @@ const LocationsActions = () =>
 const Locations = props =>
   <DataList
     name="locations.list"
+    fetchUrl={generateUrl('apiv2_location_list')}
     definition={LocationList.definition}
     actions={[{
       icon: 'fa fa-fw fa-map-marker',
-      label: t('geotag'),
+      label: t('geolocate'),
       action: (rows) => props.geolocate(rows[0]),
       context: 'row'
     }]}
@@ -46,7 +48,7 @@ const Locations = props =>
   />
 
 Locations.propTypes = {
-  geotag: T.func.isRequired
+  geolocate: T.func.isRequired
 }
 
 const ConnectedLocations = connect(

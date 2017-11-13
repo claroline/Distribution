@@ -4,8 +4,13 @@ import {PropTypes as T} from 'prop-types'
 import {t, transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/layout/list/constants'
-
-import {DataAction, DataListProperty} from '#/main/core/layout/list/prop-types'
+import {
+  DataAction,
+  DataListProperty,
+  DataListSelection,
+  DataListSearch,
+  DataListPagination
+} from '#/main/core/layout/list/prop-types'
 import {
   createListDefinition,
   getDisplayableProps,
@@ -13,21 +18,9 @@ import {
   getFilterableProps
 } from '#/main/core/layout/list/utils'
 
+import {ListEmpty} from '#/main/core/layout/list/components/empty.jsx'
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
-import {Pagination} from '#/main/core/layout/list/components/pagination.jsx'
-
-const EmptyList = props =>
-  <div className="list-empty">
-    {t(props.hasFilters ? 'list_search_no_results' : 'list_no_results')}
-  </div>
-
-EmptyList.propTypes = {
-  hasFilters: T.bool
-}
-
-EmptyList.defaultProps = {
-  hasFilters: false
-}
+import {ListFooter} from '#/main/core/layout/list/components/footer.jsx'
 
 /**
  * Full data list with configured components (eg. search, pagination).
@@ -157,22 +150,11 @@ class DataList extends Component {
         }
 
         {0 < this.props.totalResults &&
-          <div className="list-footer">
-            <div className="count">
-              {transChoice('list_results_count', this.props.totalResults, {count: this.props.totalResults}, 'platform')}
-            </div>
-
-            {(this.props.pagination && listConst.AVAILABLE_PAGE_SIZES[0] < this.props.totalResults) &&
-              <Pagination
-                {...this.props.pagination}
-                totalResults={this.props.totalResults}
-              />
-            }
-          </div>
+          <ListFooter totalResults={this.props.totalResults} pagination={this.props.pagination} />
         }
 
         {0 === this.props.totalResults &&
-          <EmptyList hasFilters={this.props.filters && 0 < this.props.filters.current.length} />
+          <ListEmpty hasFilters={this.props.filters && 0 < this.props.filters.current.length} />
         }
       </div>
     )
@@ -199,6 +181,13 @@ DataList.propTypes = {
   definition: T.arrayOf(
     T.shape(DataListProperty.propTypes)
   ).isRequired,
+
+  /**
+   * Actions available for each data row and selected rows (if selection is enabled).
+   */
+  actions: T.arrayOf(
+    T.shape(DataAction.propTypes)
+  ),
 
   /**
    * Display formats of the list.
@@ -228,14 +217,9 @@ DataList.propTypes = {
    * Search filters configuration.
    * Providing this object automatically display the search box component.
    */
-  filters: T.shape({
-    current: T.arrayOf(T.shape({
-      property: T.string.isRequired,
-      value: T.any.isRequired
-    })).isRequired,
-    addFilter: T.func.isRequired,
-    removeFilter: T.func.isRequired
-  }),
+  filters: T.shape(
+    DataListSearch.propTypes
+  ),
 
   /**
    * Sorting configuration.
@@ -253,28 +237,16 @@ DataList.propTypes = {
    * Pagination configuration.
    * Providing this object automatically display pagination and results per page components.
    */
-  pagination: T.shape({
-    current: T.number,
-    pageSize: T.number.isRequired,
-    changePage: T.func.isRequired,
-    updatePageSize: T.func.isRequired
-  }),
+  pagination: T.shape(
+    DataListPagination.propTypes
+  ),
 
   /**
    * Selection configuration.
    * Providing this object automatically display select checkboxes for each data results.
    */
-  selection: T.shape({
-    current: T.array.isRequired,
-    toggle: T.func.isRequired,
-    toggleAll: T.func.isRequired
-  }),
-
-  /**
-   * Actions available for each data row and selected rows (if selection is enabled).
-   */
-  actions: T.arrayOf(
-    T.shape(DataAction.propTypes)
+  selection: T.shape(
+    DataListSelection.propTypes
   ),
 
   /**

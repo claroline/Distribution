@@ -11,7 +11,7 @@ import {Roles, RolesActions} from '#/main/core/administration/user/role/componen
 
 const RoleTabActions = () =>
   <Routes
-    actions={[
+    routes={[
       {
         path: '/roles',
         exact: true,

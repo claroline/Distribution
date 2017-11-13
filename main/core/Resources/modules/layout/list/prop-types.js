@@ -171,9 +171,55 @@ const DataCard = {
   }
 }
 
+/**
+ * Definition of the selection feature.
+ *
+ * @type {object}
+ */
+const DataListSelection = {
+  propTypes: {
+    current: T.array.isRequired,
+    toggle: T.func.isRequired,
+    toggleAll: T.func.isRequired
+  }
+}
+
+/**
+ * Definition of the search feature.
+ *
+ * @type {object}
+ */
+const DataListSearch = {
+  propTypes: {
+    current: T.arrayOf(T.shape({
+      property: T.string.isRequired,
+      value: T.any
+    })).isRequired,
+    addFilter: T.func.isRequired,
+    removeFilter: T.func.isRequired
+  }
+}
+
+/**
+ * Definition of the pagination feature.
+ *
+ * @type {object}
+ */
+const DataListPagination = {
+  propTypes: {
+    current: T.number,
+    pageSize: T.number.isRequired,
+    changePage: T.func.isRequired,
+    updatePageSize: T.func.isRequired
+  }
+}
+
 export {
   DataAction,
   DataListProperty,
   DataCard,
-  DataListView
+  DataListView,
+  DataListSelection,
+  DataListSearch,
+  DataListPagination
 }
