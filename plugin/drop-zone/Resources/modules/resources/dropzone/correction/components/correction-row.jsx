@@ -83,6 +83,14 @@ class CorrectionRow extends Component {
         <td>{this.props.dropzone.parameters.criteriaEnabled ? 'criteria sum' : this.props.correction.totalGrade}</td>
         <td>
           <div className="btn-group">
+            {this.props.correction.finished &&
+              <button
+                className="btn btn-default btn-sm"
+                onClick={() => this.props.switchCorrectionValidation(this.props.correction.id)}
+              >
+                {this.props.correction.valid ? trans('invalidate_correction', {}, 'dropzone') : trans('revalidate_correction', {}, 'dropzone')}
+              </button>
+            }
             <button
               className="btn btn-default btn-sm"
               onClick={() => this.setState({showForm: true})}
@@ -120,11 +128,14 @@ CorrectionRow.propTypes = {
     }).isRequired,
     startDate: T.string.isRequired,
     endDate: T.string,
-    totalGrade: T.string
+    totalGrade: T.string,
+    finished: T.bool.isRequired,
+    valid: T.bool.isRequired
   }).isRequired,
   dropzone: T.object,
   saveCorrection: T.func.isRequired,
   submitCorrection: T.func.isRequired,
+  switchCorrectionValidation: T.func.isRequired,
   deleteCorrection: T.func.isRequired,
   showModal: T.func.isRequired
 }
@@ -139,6 +150,7 @@ function mapDispatchToProps(dispatch) {
   return {
     saveCorrection: (correction) => dispatch(actions.saveCorrection(correction)),
     submitCorrection: (correctionId) => dispatch(actions.submitCorrection(correctionId)),
+    switchCorrectionValidation: (correctionId) => dispatch(actions.switchCorrectionValidation(correctionId)),
     deleteCorrection: (correctionId) => dispatch(actions.deleteCorrection(correctionId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }

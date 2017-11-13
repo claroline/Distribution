@@ -377,6 +377,22 @@ class DropzoneManager
     }
 
     /**
+     * Switch Correction validation.
+     *
+     * @param Correction $correction
+     *
+     * @return Correction
+     */
+    public function switchCorrectionValidation(Correction $correction)
+    {
+        $correction->setValid(!$correction->isValid());
+        $this->om->persist($correction);
+        $this->om->flush();
+
+        return $correction;
+    }
+
+    /**
      * Deletes a Correction.
      *
      * @param Correction $correction

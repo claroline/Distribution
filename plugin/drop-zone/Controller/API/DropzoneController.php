@@ -336,7 +336,37 @@ class DropzoneController
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
 
         try {
-            $correction = $this->manager->submitCorrection($correction);
+            $this->manager->submitCorrection($correction);
+
+            return new JsonResponse(
+                $this->manager->serializeCorrection($correction)
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * @EXT\Route("/correction/{id}/validation/switch", name="claro_dropzone_correction_validation_switch")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "correction",
+     *     class="ClarolineDropZoneBundle:Correction",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Correction $correction
+     *
+     * @return JsonResponse
+     */
+    public function correctionValidationSwitchAction(Correction $correction)
+    {
+        $dropzone = $correction->getDrop()->getDropzone();
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $this->manager->switchCorrectionValidation($correction);
 
             return new JsonResponse(
                 $this->manager->serializeCorrection($correction)
