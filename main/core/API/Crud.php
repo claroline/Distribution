@@ -233,7 +233,7 @@ class Crud
     public function dispatch($name, $object, array $options = [])
     {
         $generic        = $this->dispatcher->dispatch($name, 'Crud', [$object, $options]);
-        $serializedName = $name.'_'.strtolower(str_replace('/', '_', get_class($object)));
+        $serializedName = $name.'_'.strtolower(str_replace('\\', '_', get_class($object)));
         $specific       = $this->dispatcher->dispatch($serializedName, 'Crud', [$object, $options]);
 
         return $generic->isAllowed() && $specific->isAllowed();
