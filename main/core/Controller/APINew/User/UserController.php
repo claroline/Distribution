@@ -20,6 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\API\Options;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -61,5 +62,12 @@ class UserController extends AbstractController
         $this->workspaceManager->deleteWorkspace($personalWorkspace);
 
         return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
+    }
+
+    public function getOptions()
+    {
+        return [
+            'deleteBulk' => [Options::SOFT_DELETE]
+        ];
     }
 }

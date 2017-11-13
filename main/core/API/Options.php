@@ -32,4 +32,12 @@ final class Options
      * currently used by: organization
      */
     const IS_RECURSIVE = 'is_recursive';
+
+    /****************/
+    /* CRUD OPTIONS */
+    /****************/
+
+    const SOFT_DELETE = 'soft_delete';
+    
+    const NO_PERMISSION_CHECK = 'no_permission_check';
 }

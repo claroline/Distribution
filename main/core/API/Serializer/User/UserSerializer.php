@@ -63,19 +63,36 @@ class UserSerializer
             'picture' => $user->getPicture(),
             'mail' => $user->getMail(),
             'administrativeCode' => $user->getAdministrativeCode(),
-            'meta' => [
-                'created' => $user->getCreated()->format('Y-m-d\TH:i:s'),
-                'description' => $user->getDescription(),
-                'personalWorkspace' => !!$user->getPersonalWorkspace(),
-                'enabled' => $user->isEnabled(),
-            ],
-            'restrictions' => [
-                'accessibleFrom' => !empty($user->getInitDate()) ? $user->getInitDate()->format('Y-m-d\TH:i:s') : null,
-                'accessibleUntil' => !empty($user->getExpirationDate()) ? $user->getExpirationDate()->format('Y-m-d\TH:i:s') : null,
-            ],
+            'meta' => $this->serializeMeta($user),
+            'restrictions' => $this->serializeRestrictions($user),
             'roles' => array_map(function (Role $role) {
-                return ['id' => $role->getId(), 'name' => $role->getName()];
+                return ['id' => $role->getId(), 'uuid' => $role->getUuid(), 'name' => $role->getName()];
             }, $user->getEntityRoles()),
+        ];
+    }
+
+    public function serializeMeta(User $user)
+    {
+        return [
+            'acceptedTerms' => $user->hasAcceptedTerms(),
+            'created' => $user->getCreated(),
+            'description' => $user->getDescription(),
+            'mailValidated' => $user->isMailNotified(),
+            'mailNotified' => $user->isMailNotified(),
+            'mailWarningHidden' => $user->getHideMailWarning(),
+            'publicUrlTuned' => $user->hasTunedPublicUrl(),
+            'authentication' => $user->getAuthentication(),
+            'personalWorkspace' => !!$user->getPersonalWorkspace(),
+            'enabled' => $user->isEnabled(),
+            'removed' => $user->isRemoved(),
+        ];
+    }
+
+    public function serializeRestrictions(User $user)
+    {
+        return [
+            'accessibleFrom' => !empty($user->getInitDate()) ? $user->getInitDate()->format('Y-m-d\TH:i:s') : null,
+            'accessibleUntil' => !empty($user->getExpirationDate()) ? $user->getExpirationDate()->format('Y-m-d\TH:i:s') : null,
         ];
     }
 
@@ -128,6 +145,7 @@ class UserSerializer
      */
     public function deserialize($data, User $user = null, array $options = [])
     {
+        //remove this later (with the Trait)
         $object = $this->serializer->deserialize($data, $user, $options);
 
         if (isset($data->plainPassword)) {

@@ -11,7 +11,6 @@
       "workspace-management": "administration/workspace",
       "theme-management": "administration/theme",
       "private-profile": "profile/module",
-      "organization-management": "organization/module",
       "plugin-management": "plugins/module",
       "portal": "portal/module",
       "tinymce": "tinymce/tinymce",
@@ -21,7 +20,8 @@
       "resource-icon-set-list": "icon/resource-icon-set-list/module",
       "resource-icon-item-list": "icon/resource-icon-item-list/module",
       "copy-text-to-clipboard": "copy-text-to-clipboard/copy-text-to-clipboard",
-      "scheduled-task-management": "administration/scheduled-task/index"
+      "scheduled-task-management": "administration/scheduled-task/index",
+      "user-registration": "registration/index.js"
     }
   },
 
