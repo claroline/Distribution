@@ -84,7 +84,7 @@ export const CorrectionForm = props =>
           minRows={3}
         />
       }
-      <div className="btn-group">
+      <div className="btn-group btn-group-right">
         <button
           className="btn btn-default"
           onClick={() => props.handleCancel()}

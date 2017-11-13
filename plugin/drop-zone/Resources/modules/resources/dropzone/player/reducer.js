@@ -8,6 +8,10 @@ import {
   DOCUMENT_REMOVE
 } from './actions'
 
+import {
+  CORRECTION_UPDATE
+} from '../correction/actions'
+
 const myDropReducer = makeReducer({}, {
   [MY_DROP_LOAD]: (state, action) => {
     return action.drop
@@ -30,6 +34,16 @@ const myDropReducer = makeReducer({}, {
     }
 
     return Object.assign({}, state, {documents: documents})
+  },
+  [CORRECTION_UPDATE]: (state, action) => {
+    const corrections = cloneDeep(state.corrections)
+    const index = corrections.findIndex(c => c.id === action.correction.id)
+
+    if (index > -1) {
+      corrections[index] = action.correction
+    }
+
+    return Object.assign({}, state, {corrections: corrections})
   }
 })
 
