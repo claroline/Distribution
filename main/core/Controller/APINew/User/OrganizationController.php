@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Options;
-use Claroline\CoreBundle\Controller\APINew\AbstractController;
+use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasParent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,8 +22,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Organization\Organization")
  * @Route("organization")
  */
-class OrganizationController extends AbstractController
+class OrganizationController extends AbstractCrudController
 {
+    public function getName()
+    {
+        return 'organization';
+    }
+
     use HasParent;
 
     /**

@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\CoreBundle\Controller\APINew\AbstractController;
+use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
@@ -27,8 +27,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * @ApiMeta(class="Claroline\CoreBundle\Entity\User")
  * @Route("user")
  */
-class UserController extends AbstractController
+class UserController extends AbstractCrudController
 {
+    public function getName()
+    {
+        return 'user';
+    }
+
     use HasRolesTrait;
     use HasOrganizationsTrait;
     use HasGroupsTrait;

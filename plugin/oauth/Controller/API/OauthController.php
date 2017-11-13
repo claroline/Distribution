@@ -12,7 +12,7 @@
 namespace Icap\OAuthBundle\Controller\API;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\CoreBundle\Controller\APINew\AbstractController;
+use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -20,6 +20,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  * @ApiMeta(class="Icap\OAuthBundle\Entity\OauthUser")
  * @Route("oauth")
  */
-class OauthController extends AbstractController
+class OauthController extends AbstractCrudController
 {
+    public function getName()
+    {
+        return 'oauth';
+    }
 }

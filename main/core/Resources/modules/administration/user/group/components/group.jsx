@@ -69,10 +69,7 @@ const GroupForm = props =>
       <FormSection
         id="group-users"
         icon="fa fa-fw fa-user"
-        title={[
-          t('users'),
-          <small style={{marginLeft: 5}}>50 utilisateurs</small>
-        ]}
+        title={t('users')}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -84,8 +81,11 @@ const GroupForm = props =>
         <DataList
           name="groups.current.users"
           fetch={{
-            url: generateUrl('apiv2_group_list_users', {uuid: props.group.id}),
+            url: generateUrl('apiv2_group_list_users', {id: props.group.id}),
             autoload: true
+          }}
+          delete={{
+            url: generateUrl('apiv2_group_remove_users', {id: props.group.id}),
           }}
           actions={[]}
           definition={UserList.definition}
@@ -96,10 +96,7 @@ const GroupForm = props =>
       <FormSection
         id="group-roles"
         icon="fa fa-fw fa-id-badge"
-        title={[
-          t('roles'),
-          <small style={{marginLeft: 5}}>4 rôles</small>
-        ]}
+        title={t('roles')}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -111,8 +108,11 @@ const GroupForm = props =>
         <DataList
           name="groups.current.roles"
           fetch={{
-            url: generateUrl('apiv2_group_list_roles', {uuid: props.group.id}),
+            url: generateUrl('apiv2_group_list_roles', {id: props.group.id}),
             autoload: true
+          }}
+          delete={{
+            url: generateUrl('apiv2_group_remove_roles', {id: props.group.id}),
           }}
           actions={[]}
           definition={RoleList.definition}
@@ -123,10 +123,7 @@ const GroupForm = props =>
       <FormSection
         id="group-organizations"
         icon="fa fa-fw fa-building"
-        title={[
-          t('organizations'),
-          <small style={{marginLeft: 5}}>3 organisations</small>
-        ]}
+        title={t('organizations')}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',

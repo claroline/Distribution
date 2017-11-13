@@ -58,28 +58,34 @@ class RoleFinder implements FinderInterface
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'type':
-                switch ($filterValue) {
-                  case 'workspace':
-                    $filterValue = Role::WS_ROLE;
-                    break;
-                  case 'user':
-                    $filterValue = Role::USER_ROLE;
-                    break;
-                  case 'custom':
-                    $filterValue = Role::CUSTOM_ROLE;
-                    break;
-                  case 'platform':
-                    $filterValue = Role::PLATFORM_ROLE;
-                    break;
-                }
+                case 'type':
+                    switch ($filterValue) {
+                        case 'workspace':
+                            $filterValue = Role::WS_ROLE;
+                            break;
+                        case 'user':
+                            $filterValue = Role::USER_ROLE;
+                            break;
+                        case 'custom':
+                            $filterValue = Role::CUSTOM_ROLE;
+                            break;
+                        case 'platform':
+                            $filterValue = Role::PLATFORM_ROLE;
+                            break;
+                    }
                 // no break
 
-              case 'user':
-                  $qb->leftJoin('obj.users', 'ru');
-                  $qb->andWhere("ru.username = :{$filterName}");
-                  $qb->setParameter($filterName, $filterValue);
-                  break;
+                case 'user':
+                    $qb->leftJoin('obj.users', 'ru');
+                    $qb->andWhere("ru.username = :{$filterName}");
+                    $qb->setParameter($filterName, $filterValue);
+                    break;
+
+                case 'group':
+                    $qb->leftJoin('obj.groups', 'g');
+                    $qb->andWhere('g.uuid IN (:groupIds)');
+                    $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
 
               default:
                 if (is_bool($filterValue)) {

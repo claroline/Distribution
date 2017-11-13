@@ -7,6 +7,9 @@ export const actions = {}
 
 actions.open = (formName, groupId = null) => (dispatch) => {
   if (groupId) {
+    // todo ugly. only to be able to load list before the end of  group loading
+    dispatch(formActions.resetForm(formName, {id: groupId}, false))
+
     dispatch({
       [REQUEST_SEND]: {
         route: ['apiv2_group_get', {id: groupId}],
