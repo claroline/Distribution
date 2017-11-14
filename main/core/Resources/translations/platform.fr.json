@@ -1495,5 +1495,7 @@
     "it": "Italiano",
     "de": "Deutsch",
     "activate_self_registration": "Activer l'auto-inscription",
-    "user_enabled": "Actif"
+    "user_enabled": "Actif",
+    "platform": "Plateforme",
+    "custom": "Custom"
 }

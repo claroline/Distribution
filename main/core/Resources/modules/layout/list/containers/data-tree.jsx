@@ -9,6 +9,8 @@ import {
 } from '#/main/core/layout/list/prop-types'
 import {DataTree as DataTreeComponent} from '#/main/core/layout/list/components/data-tree.jsx'
 
+// todo there are big c/c from data-list
+
 /**
  * Connected DataTree.
  *
@@ -28,6 +30,23 @@ DataTree.propTypes = {
    * (aka where `makeListReducer()` has been called).
    */
   name: T.string.isRequired,
+
+  /**
+   * Provides asynchronous data load.
+   */
+  fetch: T.shape({
+    url: T.string.isRequired,
+    autoload: T.bool
+  }),
+
+  /**
+   * Provides data delete.
+   */
+  delete: T.shape({
+    url: T.string, // if provided, data delete will call server
+    disabled: T.func, // receives the list of rows (either the selected ones or the current one)
+    displayed: T.func // receives the list of rows (either the selected ones or the current one)
+  }),
 
   /**
    * The definition of the list rows data.

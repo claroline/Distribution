@@ -1473,5 +1473,7 @@
     "it": "Italiano",
     "de": "Deutsch",
     "activate_self_registration": "Enable self-registration",
-    "user_enabled": "Enabled"
+    "user_enabled": "Enabled",
+    "platform": "Platform",
+    "custom": "Custom"
 }

@@ -22,6 +22,10 @@ const Organizations = props =>
   <DataTreeContainer
     name="organizations.list"
     fetchUrl={generateUrl('apiv2_organization_list')}
+    delete={{
+      url: generateUrl('apiv2_group_delete_bulk'),
+      disabled: (rows) => false
+    }}
     definition={[
       {
         name: 'name',

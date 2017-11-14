@@ -10,7 +10,19 @@ const RoleList = {
     {
       name: 'name',
       type: 'string',
+      label: t('code'),
+      displayed: true,
+      renderer: (rowData) => {
+        // variable is used because React will use it has component display name (eslint requirement)
+        const roleLink = <a href={`#/roles/${rowData.id}`}>{rowData.name}</a>
+
+        return roleLink
+      }
+    }, {
+      name: 'translationKey',
+      type: 'string', // todo should be a new data type translated
       label: t('name'),
+      renderer: (rowData) => t(rowData.translationKey),
       displayed: true
     }, {
       name: 'type',
@@ -19,12 +31,6 @@ const RoleList = {
       options: {
         choices: enumRole
       },
-      displayed: true
-    }, {
-      name: 'translationKey',
-      type: 'string', // todo should be a new data type translated
-      label: t('translation'),
-      renderer: (rowData) => t(rowData.translationKey),
       displayed: true
     }
   ],

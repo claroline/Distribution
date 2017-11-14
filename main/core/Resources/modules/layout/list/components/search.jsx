@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import merge from 'lodash/merge'
 
 import {t} from '#/main/core/translation'
 import {getTypeOrDefault} from '#/main/core/layout/data'
@@ -86,7 +87,7 @@ AvailableFilterFlag.propTypes = {
 
 const AvailableFilter = props => {
   const typeDef = getTypeOrDefault(props.type)
-  const isValidSearch = !typeDef.validate || typeDef.validate(props.currentSearch)
+  const isValidSearch = !typeDef.validate || typeDef.validate(props.currentSearch, props.options)
 
   return (
     <li role="presentation">
@@ -103,12 +104,11 @@ const AvailableFilter = props => {
             }
 
             {typeDef.components.search &&
-              React.createElement(typeDef.components.search, {
+              React.createElement(typeDef.components.search, merge({}, props.options, {
                 search: props.currentSearch,
                 isValid: isValidSearch,
-                updateSearch: props.onSelect,
-                options: props.options
-              })
+                updateSearch: props.onSelect
+              }))
             }
           </span>
         ]

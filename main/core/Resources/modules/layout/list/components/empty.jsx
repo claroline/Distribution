@@ -5,10 +5,35 @@ import {t} from '#/main/core/translation'
 
 const ListEmpty = props =>
   <div className="list-empty">
-    {t(props.hasFilters ? 'list_search_no_results' : 'list_no_results')}
+    <div className="list-empty-info">
+      <span className="list-empty-icon fa fa-frown-o" />
+
+      <div className="list-empty-content">
+        {t(props.hasFilters ? 'list_search_no_results' : 'list_no_results')}
+
+        {props.contentDesc &&
+          <p className="list-content-desc">
+            {props.contentDesc}
+          </p>
+        }
+      </div>
+    </div>
+
+    {/*<div className="list-empty-actions">
+      <button type="button" className="btn btn-block btn-link">
+        <span className="fa fa-fw fa-search" />
+        Changer votre recherche
+      </button>
+
+      <button type="button" className="btn btn-block btn-primary">
+        <span className="fa fa-fw fa-plus" />
+        Créer un nouveau lieu
+      </button>
+    </div>*/}
   </div>
 
 ListEmpty.propTypes = {
+  contentDesc: T.string,
   hasFilters: T.bool
 }
 

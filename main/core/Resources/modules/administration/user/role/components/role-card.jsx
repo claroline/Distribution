@@ -1,15 +1,13 @@
 import React from 'react'
 
+import {enumRole} from '#/main/core/administration/user/role/constants'
+
 const RoleCard = (row) => ({
-  onClick: '#',
+  onClick: `#/roles/${row.id}`,
   poster: null,
   icon: 'fa fa-id-badge',
   title: row.name,
-  subtitle: row.name,
-  contentText: '',
-  flags: [],
-  footer: <span>footer</span>,
-  footerLong: <span>footerLong</span>
+  subtitle: enumRole[row.type]
 })
 
 export {

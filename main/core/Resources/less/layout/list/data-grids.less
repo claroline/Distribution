@@ -172,10 +172,12 @@
     }
 
     .item-title {
-        margin: 0;
-        padding: @panel-body-padding;
+        margin: @panel-body-padding;
+        padding: 0;
         font-size: @font-size-base;
         font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
 
         > small {
             margin-top: 5px;

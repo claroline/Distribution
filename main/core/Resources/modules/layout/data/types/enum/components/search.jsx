@@ -14,13 +14,13 @@ const EnumSearch = (props) =>
         e.stopPropagation()
       }}
       onChange={e => {
-        props.updateSearch(props.options.choices[e.target.value])
+        props.updateSearch(props.choices[e.target.value])
         e.preventDefault()
       }}
     >
       <option />
-      {Object.keys(props.options.choices).map(value =>
-        <option key={value} value={value}>{props.options.choices[value]}</option>
+      {Object.keys(props.choices).map(value =>
+        <option key={value} value={value}>{props.choices[value]}</option>
       )}
     </select>
   </span>

@@ -1,10 +1,9 @@
 import React from 'react'
 
 const GroupCard = (row) => ({
-  onClick: `#/groups/${props.id}`,
+  onClick: `#/groups/${row.id}`,
   icon: 'fa fa-users',
-  title: row.name,
-  subtitle: row.name
+  title: row.name
 })
 
 export {

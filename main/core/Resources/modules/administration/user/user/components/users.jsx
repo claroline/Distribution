@@ -34,6 +34,7 @@ const Users = props =>
       url: generateUrl('apiv2_user_delete_bulk')
     }}
     actions={[
+      // todo add show profile
       {
         icon: 'fa fa-fw fa-eye',
         label: t('show_as'),
