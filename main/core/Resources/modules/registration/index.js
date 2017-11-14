@@ -16,6 +16,6 @@ bootstrap(
       user: reducer,
   },
   (initialData) => ({
-      user: {}
+      user: {errors: {}}
   })
 )

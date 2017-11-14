@@ -3,6 +3,8 @@
 namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
+use Claroline\CoreBundle\API\Validator\CustomValidationException;
+
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -72,14 +74,14 @@ class ValidatorProvider
      */
     public function validate($class, $data, $throwException = false)
     {
+        //todo: implements json-schema aswell
         $errors = $this->get($class)->validate($data);
+
         if (!empty($errors) && $throwException) {
             throw new InvalidDataException(
                 sprintf('Invalid data for "%s".', $class),
                 $errors
             );
         }
-
-        return $errors;
     }
 }
