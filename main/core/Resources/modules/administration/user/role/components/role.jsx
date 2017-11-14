@@ -33,7 +33,7 @@ const Role = props =>
         primary: true,
         fields: [
           {
-            name: 'name',
+            name: 'translationKey',
             type: 'string',
             label: t('name')
           }

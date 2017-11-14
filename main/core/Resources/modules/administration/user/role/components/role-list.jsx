@@ -25,12 +25,13 @@ const RoleList = {
       renderer: (rowData) => t(rowData.translationKey),
       displayed: true
     }, {
-      name: 'type',
+      name: 'meta.type',
       type: 'enum',
       label: t('type'),
       options: {
         choices: enumRole
       },
+      alias: 'type',
       displayed: true
     }
   ],
