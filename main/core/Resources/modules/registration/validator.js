@@ -29,27 +29,19 @@ function validate(user) {
   setIfError(errors, 'firstName', notBlank(user.firstName))
   setIfError(errors, 'lastName', notBlank(user.lastName))
   setIfError(errors, 'email', email(user.email))
+  setIfError(errors, 'plainPassword', notBlank(user.plainPassword))
+  setIfError(errors, 'confirmPlainPassword', notBlank(user.confirmPlainPassword))
+
+  if (user.confirmPlainPassword !== user.plainPassword) {
+    errors.confirmPlainPassword
+      = errors.plainPassword
+      = tval("Password doesn't match the confirmation")
+  }
 
   return errors
 }
 
-function validateProperty(errors, property, value) {
-  const notBlankProps = ['username', 'firstName', 'lastName']
-  const emailProps = ['email']
-
-  if (notBlankProps.indexOf(property) >= -1) {
-    errors[property] = notBlank(value)
-    //setIfError(errors, property, notBlank(value))
-  }
-
-  if (emailProps.indexOf(property) > -1) {
-    errors[property] = email(value)
-    //setIfError(errors, property, email(value))
-  }
-}
-
 export {
   isValid,
-  validate,
-  validateProperty
+  validate
 }

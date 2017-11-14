@@ -36,7 +36,7 @@ export function number(value) {
 export function email(value)
 {
   if (!/^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/.test(value)) {
-    return tval('This value should be a adress email.')
+    return tval('This value should be an adress email.')
   }
 }
 

@@ -4,6 +4,7 @@ import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
 // reducers
 import {reducer} from '#/main/core/registration/reducer'
+import {optionsReducer} from '#/main/core/registration/optionsReducer'
 import {t, transChoice} from '#/main/core/translation'
 
 import {UserRegistration} from '#/main/core/registration/components/main.jsx'
@@ -13,9 +14,13 @@ bootstrap(
   '.registration-form-container',
   UserRegistration,
   {
-      user: reducer,
+    user: reducer,
+    options: optionsReducer
   },
-  (initialData) => ({
-      user: {errors: {}}
-  })
+  (initialData) => {
+    return {
+      user: {errors: {}},
+      options: initialData.options
+    }
+  }
 )

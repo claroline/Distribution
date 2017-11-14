@@ -36,7 +36,7 @@ function makeInstanceReducer(initialState, handlers) {
 // [Advanced use]
 // applies 2 or more reducers to the same store key.
 // NB. This is low level API to apply custom reducers to base app components.
-//     If you end up using it, you may are doing bad things !
+//     If you end up using it, you may be doing bad things !
 function reduceReducers(...reducers) {
   return (previous, current) =>
     reducers.reduce(
