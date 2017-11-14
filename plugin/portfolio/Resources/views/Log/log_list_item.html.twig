@@ -17,7 +17,9 @@
         {% include 'IcapPortfolioBundle:Log:log_list_item_guide.html.twig' %}
     {% endset %}
     {{ log.action|trans({'%portfolio%': portfolio, '%guide%': guide}, 'log')|raw }}
-{% elseif constant('Icap\\PortfolioBundle\\Event\\Log\\PortfolioViewEvent::ACTION') == log.action %}
+{% elseif constant('Icap\\PortfolioBundle\\Event\\Log\\PortfolioViewEvent::ACTION') == log.action ||
+        constant('Icap\\PortfolioBundle\\Event\\Log\\PortfolioEditEvent::ACTION') == log.action
+%}
     {{ log.action|trans({'%portfolio%': portfolio}, 'log')|raw }}
 {% else %}
     no default text
