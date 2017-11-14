@@ -24,7 +24,8 @@ class RoleSerializer
         return [
             'translationKey' => $role->getTranslationKey(),
             'name' => $role->getName(),
-            'meta' => $this->serializeMeta($role, $options)
+            'meta' => $this->serializeMeta($role, $options),
+            'restrictions'=> $this->serializeRestrictions($role)
         ];
     }
 
@@ -33,9 +34,15 @@ class RoleSerializer
         return [
            'isReadOnly' => $role->isReadOnly(),
            'type' => $role->getType(),
-           'maxUsers' => $role->getMaxUsers(),
            'personalWorkspaceCreationEnabled' => $role->getPersonalWorkspaceCreationEnabled()
        ];
+    }
+
+    public function serializeRestrictions(Role $role, array $options = [])
+    {
+        return [
+            'maxUsers' => $role->getMaxUsers(),
+        ];
     }
 
     /**
@@ -51,6 +58,9 @@ class RoleSerializer
     {
         if (isset($data->translationKey)) {
             $role->setTranslationKey($data->translationKey);
+            //2 roles can have the same translationKey while the name is unique, for now we only allow to create
+            //platform roles so it's not an issue but it's going to need improvements
+            //when workspaces and custom roles will be supported
             $role->setName('ROLE_' . str_replace(' ', '_', strtoupper($data->translationKey)));
         }
 
