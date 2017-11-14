@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\API\Serializer;
 trait SerializerTrait
 {
     /** @var GenericSerializer */
-    protected $serializer;
+    protected $genericSerializer;
 
     /**
      * Injects Serializer service.
@@ -27,16 +27,16 @@ trait SerializerTrait
      */
     public function setSerializer(GenericSerializer $serializer)
     {
-        $this->serializer = $serializer;
+        $this->genericSerializer = $serializer;
     }
 
     public function serialize($object, array $options = [])
     {
-        return $this->serializer->serialize($object, $options);
+        return $this->genericSerializer->serialize($object, $options);
     }
 
     public function deserialize($data, $object, array $options = [])
     {
-        return $this->serializer->deserialize($data, $object, $options);
+        return $this->genericSerializer->deserialize($data, $object, $options);
     }
 }
