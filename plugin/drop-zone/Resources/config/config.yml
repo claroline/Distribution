@@ -1,5 +1,5 @@
 plugin:
-  has_options: false
+  has_options: true
 
   resources:
     - name: claroline_dropzone

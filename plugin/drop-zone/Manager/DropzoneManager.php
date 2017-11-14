@@ -19,10 +19,12 @@ use Claroline\DropZoneBundle\API\Serializer\CorrectionSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DocumentSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DropSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DropzoneSerializer;
+use Claroline\DropZoneBundle\API\Serializer\DropzoneToolSerializer;
 use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
+use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Repository\DropRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
@@ -48,6 +50,9 @@ class DropzoneManager
     /** @var CorrectionSerializer */
     private $correctionSerializer;
 
+    /** @var DropzoneToolSerializer */
+    private $dropzoneToolSerializer;
+
     /** @var Filesystem */
     private $fileSystem;
 
@@ -63,31 +68,34 @@ class DropzoneManager
     private $dropRepo;
 
     private $correctionRepo;
+    private $drozoneToolRepo;
 
     /**
      * DropzoneManager constructor.
      *
      * @DI\InjectParams({
-     *     "crud"                 = @DI\Inject("claroline.api.crud"),
-     *     "dropzoneSerializer"   = @DI\Inject("claroline.serializer.dropzone"),
-     *     "dropSerializer"       = @DI\Inject("claroline.serializer.dropzone.drop"),
-     *     "documentSerializer"   = @DI\Inject("claroline.serializer.dropzone.document"),
-     *     "correctionSerializer" = @DI\Inject("claroline.serializer.dropzone.correction"),
-     *     "fileSystem"           = @DI\Inject("filesystem"),
-     *     "filesDir"             = @DI\Inject("%claroline.param.files_directory%"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager"),
-     *     "utils"                = @DI\Inject("claroline.utilities.misc")
+     *     "crud"                   = @DI\Inject("claroline.api.crud"),
+     *     "dropzoneSerializer"     = @DI\Inject("claroline.serializer.dropzone"),
+     *     "dropSerializer"         = @DI\Inject("claroline.serializer.dropzone.drop"),
+     *     "documentSerializer"     = @DI\Inject("claroline.serializer.dropzone.document"),
+     *     "correctionSerializer"   = @DI\Inject("claroline.serializer.dropzone.correction"),
+     *     "dropzoneToolSerializer" = @DI\Inject("claroline.serializer.dropzone.tool"),
+     *     "fileSystem"             = @DI\Inject("filesystem"),
+     *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
+     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "utils"                  = @DI\Inject("claroline.utilities.misc")
      * })
      *
-     * @param Crud                 $crud
-     * @param DropzoneSerializer   $dropzoneSerializer
-     * @param DropSerializer       $dropSerializer
-     * @param DocumentSerializer   $documentSerializer
-     * @param CorrectionSerializer $correctionSerializer
-     * @param Filesystem           $fileSystem
-     * @param string               $filesDir
-     * @param ObjectManager        $om
-     * @param ClaroUtilities       $utils
+     * @param Crud                   $crud
+     * @param DropzoneSerializer     $dropzoneSerializer
+     * @param DropSerializer         $dropSerializer
+     * @param DocumentSerializer     $documentSerializer
+     * @param CorrectionSerializer   $correctionSerializer
+     * @param DropzoneToolSerializer $dropzoneToolSerializer
+     * @param Filesystem             $fileSystem
+     * @param string                 $filesDir
+     * @param ObjectManager          $om
+     * @param ClaroUtilities         $utils
      */
     public function __construct(
         Crud $crud,
@@ -95,6 +103,7 @@ class DropzoneManager
         DropSerializer $dropSerializer,
         DocumentSerializer $documentSerializer,
         CorrectionSerializer $correctionSerializer,
+        DropzoneToolSerializer $dropzoneToolSerializer,
         Filesystem $fileSystem,
         $filesDir,
         ObjectManager $om,
@@ -105,6 +114,7 @@ class DropzoneManager
         $this->dropSerializer = $dropSerializer;
         $this->documentSerializer = $documentSerializer;
         $this->correctionSerializer = $correctionSerializer;
+        $this->dropzoneToolSerializer = $dropzoneToolSerializer;
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->om = $om;
@@ -112,6 +122,7 @@ class DropzoneManager
 
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
+        $this->dropzoneToolRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneTool');
     }
 
     /**
@@ -160,6 +171,18 @@ class DropzoneManager
     public function serializeCorrection(Correction $correction)
     {
         return $this->correctionSerializer->serialize($correction);
+    }
+
+    /**
+     * Serializes a Tool entity.
+     *
+     * @param DropzoneTool $tool
+     *
+     * @return array
+     */
+    public function serializeTool(DropzoneTool $tool)
+    {
+        return $this->dropzoneToolSerializer->serialize($tool);
     }
 
     /**
@@ -401,6 +424,34 @@ class DropzoneManager
     {
         $this->om->remove($correction);
         $this->om->flush();
+    }
+
+    public function getSerializedTools()
+    {
+        $serializedTools = [];
+        $tools = $this->dropzoneToolRepo->findAll();
+
+        foreach ($tools as $tool) {
+            $serializedTools[] = $this->dropzoneToolSerializer->serialize($tool);
+        }
+
+        return $serializedTools;
+    }
+
+    /**
+     * Updates a Tool.
+     *
+     * @param array $data
+     *
+     * @return Tool
+     */
+    public function saveTool(array $data)
+    {
+        $tool = $this->dropzoneToolSerializer->deserialize('Claroline\DropZoneBundle\Entity\DropzoneTool', $data);
+        $this->om->persist($tool);
+        $this->om->flush();
+
+        return $tool;
     }
 
     private function registerFile(Dropzone $dropzone, UploadedFile $file)

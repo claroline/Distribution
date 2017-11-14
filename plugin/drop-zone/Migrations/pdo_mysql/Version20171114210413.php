@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/11/09 10:48:27
+ * Generation date: 2017/11/14 09:04:14
  */
-class Version20171109104824 extends AbstractMigration
+class Version20171114210413 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -146,6 +146,30 @@ class Version20171109104824 extends AbstractMigration
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ");
+        $this->addSql("
+            CREATE TABLE claro_dropzonebundle_tool_drop (
+                id INT AUTO_INCREMENT NOT NULL, 
+                drop_id INT DEFAULT NULL, 
+                tool_id INT NOT NULL, 
+                tool_data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_CA0C95FAD17F50A6 (uuid), 
+                INDEX IDX_CA0C95FA4D224760 (drop_id), 
+                INDEX IDX_CA0C95FA8F7B22CC (tool_id), 
+                PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
+        $this->addSql("
+            CREATE TABLE claro_dropzonebundle_tool (
+                id INT AUTO_INCREMENT NOT NULL, 
+                tool_name VARCHAR(255) NOT NULL, 
+                tool_type INT NOT NULL, 
+                tool_drop_data LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', 
+                uuid VARCHAR(36) NOT NULL, 
+                UNIQUE INDEX UNIQ_C733E0C2D17F50A6 (uuid), 
+                PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ");
         $this->addSql('
             ALTER TABLE claro_dropzonebundle_correction 
             ADD CONSTRAINT FK_CBFA38964D224760 FOREIGN KEY (drop_id) 
@@ -224,6 +248,18 @@ class Version20171109104824 extends AbstractMigration
             REFERENCES claro_user (id) 
             ON DELETE SET NULL
         ');
+        $this->addSql('
+            ALTER TABLE claro_dropzonebundle_tool_drop 
+            ADD CONSTRAINT FK_CA0C95FA4D224760 FOREIGN KEY (drop_id) 
+            REFERENCES claro_dropzonebundle_drop (id) 
+            ON DELETE CASCADE
+        ');
+        $this->addSql('
+            ALTER TABLE claro_dropzonebundle_tool_drop 
+            ADD CONSTRAINT FK_CA0C95FA8F7B22CC FOREIGN KEY (tool_id) 
+            REFERENCES claro_dropzonebundle_tool (id) 
+            ON DELETE CASCADE
+        ');
     }
 
     public function down(Schema $schema)
@@ -241,6 +277,10 @@ class Version20171109104824 extends AbstractMigration
             DROP FOREIGN KEY FK_E846CAA84D224760
         ');
         $this->addSql('
+            ALTER TABLE claro_dropzonebundle_tool_drop 
+            DROP FOREIGN KEY FK_CA0C95FA4D224760
+        ');
+        $this->addSql('
             ALTER TABLE claro_dropzonebundle_grade 
             DROP FOREIGN KEY FK_DD032F3497766307
         ');
@@ -251,6 +291,10 @@ class Version20171109104824 extends AbstractMigration
         $this->addSql('
             ALTER TABLE claro_dropzonebundle_criterion 
             DROP FOREIGN KEY FK_1DD9F2E254FC3EC3
+        ');
+        $this->addSql('
+            ALTER TABLE claro_dropzonebundle_tool_drop 
+            DROP FOREIGN KEY FK_CA0C95FA8F7B22CC
         ');
         $this->addSql('
             DROP TABLE claro_dropzonebundle_correction
@@ -269,6 +313,12 @@ class Version20171109104824 extends AbstractMigration
         ');
         $this->addSql('
             DROP TABLE claro_dropzonebundle_document
+        ');
+        $this->addSql('
+            DROP TABLE claro_dropzonebundle_tool_drop
+        ');
+        $this->addSql('
+            DROP TABLE claro_dropzonebundle_tool
         ');
     }
 }

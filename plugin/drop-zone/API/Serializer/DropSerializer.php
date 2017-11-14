@@ -16,6 +16,7 @@ class DropSerializer
 {
     private $correctionSerializer;
     private $documentSerializer;
+    private $dropzoneToolDropSerializer;
     private $userSerializer;
     private $roleSerializer;
 
@@ -28,28 +29,32 @@ class DropSerializer
      * DropSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "correctionSerializer" = @DI\Inject("claroline.serializer.dropzone.correction"),
-     *     "documentSerializer"   = @DI\Inject("claroline.serializer.dropzone.document"),
-     *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
-     *     "roleSerializer"       = @DI\Inject("claroline.serializer.role"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
+     *     "correctionSerializer"       = @DI\Inject("claroline.serializer.dropzone.correction"),
+     *     "documentSerializer"         = @DI\Inject("claroline.serializer.dropzone.document"),
+     *     "dropzoneToolDropSerializer" = @DI\Inject("claroline.serializer.dropzone.tool.drop"),
+     *     "userSerializer"             = @DI\Inject("claroline.serializer.user"),
+     *     "roleSerializer"             = @DI\Inject("claroline.serializer.role"),
+     *     "om"                         = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param CorrectionSerializer $correctionSerializer
-     * @param DocumentSerializer   $documentSerializer
-     * @param UserSerializer       $userSerializer
-     * @param RoleSerializer       $roleSerializer
-     * @param ObjectManager        $om
+     * @param CorrectionSerializer       $correctionSerializer
+     * @param DocumentSerializer         $documentSerializer
+     * @param DropzoneToolDropSerializer $dropzoneToolDropSerializer
+     * @param UserSerializer             $userSerializer
+     * @param RoleSerializer             $roleSerializer
+     * @param ObjectManager              $om
      */
     public function __construct(
         CorrectionSerializer $correctionSerializer,
         DocumentSerializer $documentSerializer,
+        DropzoneToolDropSerializer $dropzoneToolDropSerializer,
         UserSerializer $userSerializer,
         RoleSerializer $roleSerializer,
         ObjectManager $om
     ) {
         $this->correctionSerializer = $correctionSerializer;
         $this->documentSerializer = $documentSerializer;
+        $this->dropzoneToolDropSerializer = $dropzoneToolDropSerializer;
         $this->userSerializer = $userSerializer;
         $this->roleSerializer = $roleSerializer;
 
@@ -80,6 +85,7 @@ class DropSerializer
             'unlockedUser' => $drop->isUnlockedUser(),
             'documents' => $this->getDocuments($drop),
             'corrections' => $this->getCorrections($drop),
+            'toolDrops' => $this->getToolDrops($drop),
         ];
     }
 
@@ -155,6 +161,17 @@ class DropSerializer
         }
 
         return $corrections;
+    }
+
+    private function getToolDrops(Drop $drop)
+    {
+        $toolDrops = [];
+
+        foreach ($drop->getToolDrops() as $toolDrop) {
+            $toolDrops[] = $this->dropzoneToolDropSerializer->serialize($toolDrop);
+        }
+
+        return $toolDrops;
     }
 
     private function deserializeDocuments(Drop $drop, $documentsData)

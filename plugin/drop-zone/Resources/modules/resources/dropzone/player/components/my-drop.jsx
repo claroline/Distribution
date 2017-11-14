@@ -46,6 +46,10 @@ const MyDrop = props =>
         {trans('render_my_copy', {}, 'dropzone')}
       </button>
     }
+
+    {props.drop.finished && props.isPeerReviewEnabled &&
+      <div>Peer Review</div>
+    }
   </div>
 
 MyDrop.propTypes = {
@@ -55,6 +59,7 @@ MyDrop.propTypes = {
     documents: T.array
   }).isRequired,
   isDropEnabled: T.bool.isRequired,
+  isPeerReviewEnabled: T.bool.isRequired,
   renderMyDrop: T.func.isRequired,
   saveCorrection: T.func.isRequired,
   showModal: T.func.isRequired
@@ -65,7 +70,8 @@ function mapStateToProps(state) {
     dropzone: select.dropzone(state),
     drop: select.myDrop(state),
     params: select.dropzoneParameters(state),
-    isDropEnabled: select.isDropEnabled(state)
+    isDropEnabled: select.isDropEnabled(state),
+    isPeerReviewEnabled: select.isPeerReviewEnabled(state)
   }
 }
 

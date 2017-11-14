@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -70,6 +71,18 @@ class DropzoneController extends Controller
             '_resource' => $dropzone,
             'user' => $user,
             'myDrop' => $myDrop,
+        ];
+    }
+
+    /**
+     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
+     * @EXT\Route("/plugin/configure", name="claro_dropzone_plugin_configure")
+     * @EXT\Template()
+     */
+    public function pluginConfigureAction()
+    {
+        return [
+            'tools' => $this->manager->getSerializedTools(),
         ];
     }
 }

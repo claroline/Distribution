@@ -109,11 +109,20 @@ class Drop
      */
     protected $corrections;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\DropZoneBundle\Entity\DropzoneToolDrop",
+     *     mappedBy="drop"
+     * )
+     */
+    protected $toolDrops;
+
     public function __construct()
     {
         $this->refreshUuid();
         $this->documents = new ArrayCollection();
         $this->corrections = new ArrayCollection();
+        $this->toolDrops = new ArrayCollection();
     }
 
     public function getId()
@@ -272,5 +281,29 @@ class Drop
     public function emptyCorrections()
     {
         $this->corrections->clear();
+    }
+
+    public function getToolDrops()
+    {
+        return $this->toolDrops->toArray();
+    }
+
+    public function addToolDrop(DropzoneToolDrop $toolDrop)
+    {
+        if (!$this->toolDrops->contains($toolDrop)) {
+            $this->toolDrops->add($toolDrop);
+        }
+    }
+
+    public function removeToolDrop(DropzoneToolDrop $toolDrop)
+    {
+        if ($this->toolDrops->contains($toolDrop)) {
+            $this->toolDrops->removeElement($toolDrop);
+        }
+    }
+
+    public function emptyToolDrops()
+    {
+        $this->toolDrops->clear();
     }
 }

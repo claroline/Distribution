@@ -405,6 +405,31 @@ class DropzoneController
         }
     }
 
+    /**
+     * @EXT\Route("/tool/save", name="claro_dropzone_tool_save")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function toolSaveAction(Request $request)
+    {
+        //        $dropzone = $drop->getDropzone();
+//        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $tool = $this->manager->saveTool(json_decode($request->getContent(), true));
+
+            return new JsonResponse(
+                $this->manager->serializeTool($tool)
+            );
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
     private function checkDropEdition(Drop $drop, User $user)
     {
         $dropzone = $drop->getDropzone();

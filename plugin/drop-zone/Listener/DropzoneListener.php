@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Form\ResourceNameType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -67,6 +68,21 @@ class DropzoneListener
         $this->platformConfigHandler = $platformConfigHandler;
         $this->request = $requestStack->getCurrentRequest();
         $this->templating = $templating;
+    }
+
+    /**
+     * @DI\Observe("plugin_options_dropzonebundle")
+     *
+     * @param PluginOptionsEvent $event
+     */
+    public function onPluginOptionsOpen(PluginOptionsEvent $event)
+    {
+        $params = [];
+        $params['_controller'] = 'ClarolineDropZoneBundle:Dropzone:pluginConfigure';
+        $subRequest = $this->request->duplicate([], null, $params);
+        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $event->setResponse($response);
+        $event->stopPropagation();
     }
 
     /**
