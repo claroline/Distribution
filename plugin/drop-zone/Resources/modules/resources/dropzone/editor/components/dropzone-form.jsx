@@ -134,11 +134,11 @@ const DropCorrectionSection = props =>
           />
           <CheckGroup
             checkId="display-notation-chk"
-            checked={props.display.displayNotationToLearners}
+            checked={props.display.displayCorrectionsToLearners}
             label={trans('display_corrections_to_learners', {}, 'dropzone')}
-            onChange={checked => props.updateForm('display.displayNotationToLearners', checked)}
+            onChange={checked => props.updateForm('display.displayCorrectionsToLearners', checked)}
           />
-          {props.display.displayNotationToLearners &&
+          {props.display.displayCorrectionsToLearners &&
             <CheckGroup
               checkId="correction-denial-chk"
               checked={props.parameters.correctionDenialEnabled}
@@ -159,7 +159,7 @@ DropCorrectionSection.propTypes = {
     correctionDenialEnabled: T.bool.isRequired
   }),
   display: T.shape({
-    displayNotationToLearners: T.bool.isRequired
+    displayCorrectionsToLearners: T.bool.isRequired
   }),
   updateForm: T.func.isRequired
 }

@@ -21,7 +21,7 @@ const MyDrop = props =>
       {...props}
     />
 
-    {props.drop.finished && props.drop.corrections.filter(c => c.finished).length > 0 &&
+    {props.dropzone.display.displayCorrectionsToLearners && props.drop.finished && props.drop.corrections.filter(c => c.finished).length > 0 &&
       <Corrections
         corrections={props.drop.corrections.filter(c => c.finished)}
         {...props}
