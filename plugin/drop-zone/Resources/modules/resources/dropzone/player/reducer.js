@@ -5,7 +5,10 @@ import {
   MY_DROP_LOAD,
   MY_DROP_UPDATE,
   DOCUMENTS_ADD,
-  DOCUMENT_REMOVE
+  DOCUMENT_REMOVE,
+  PEER_DROP_LOAD,
+  PEER_DROP_RESET,
+  PEER_DROPS_INC
 } from './actions'
 
 import {
@@ -49,9 +52,36 @@ const myDropReducer = makeReducer({}, {
 
 const myDropsReducer = makeReducer({}, {})
 
+const nbCorrectionsReducer = makeReducer({}, {
+  [PEER_DROPS_INC]: (state) => {
+    return state + 1
+  }
+})
+
+const peerDropReducer = makeReducer({}, {
+  [CORRECTION_UPDATE]: (state, action) => {
+    const corrections = cloneDeep(state.corrections)
+    const index = corrections.findIndex(c => c.id === action.correction.id)
+
+    if (index > -1) {
+      corrections[index] = action.correction
+    }
+
+    return Object.assign({}, state, {corrections: corrections})
+  },
+  [PEER_DROP_LOAD]: (state, action) => {
+    return action.drop
+  },
+  [PEER_DROP_RESET]: () => {
+    return null
+  }
+})
+
 const reducer = {
   myDrop: myDropReducer,
-  myDrops: myDropsReducer
+  myDrops: myDropsReducer,
+  nbCorrections: nbCorrectionsReducer,
+  peerDrop: peerDropReducer
 }
 
 export {

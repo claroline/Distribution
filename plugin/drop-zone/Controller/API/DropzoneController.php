@@ -406,6 +406,30 @@ class DropzoneController
     }
 
     /**
+     * @EXT\Route("/{id}/peer/drop/fetch", name="claro_dropzone_peer_drop_fetch")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "dropzone",
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function peerDropFetchAction(Dropzone $dropzone, User $user)
+    {
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $drop = $this->manager->getPeerDrop($dropzone, $user);
+        $data = empty($drop) ? null : $this->manager->serializeDrop($drop);
+
+        return new JsonResponse($data);
+    }
+
+    /**
      * @EXT\Route("/tool/save", name="claro_dropzone_tool_save")
      * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})

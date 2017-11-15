@@ -2,6 +2,7 @@ import isEmpty from 'lodash/isEmpty'
 import {createSelector} from 'reselect'
 import {constants} from './constants'
 
+const canEdit = state => state.resourceNode.rights.current.edit
 const user = state => state.user
 
 const userId = createSelector(
@@ -78,6 +79,8 @@ const myDropId = createSelector(
   (myDrop) => myDrop && myDrop.id ? myDrop.id : null
 )
 
+const peerDrop = state => state.peerDrop
+
 const isDropEnabled = createSelector(
   [dropzone],
   (dropzone) => {
@@ -117,8 +120,10 @@ const isPeerReviewEnabled = createSelector(
 const drops = state => state.drops
 const currentDrop = state => state.currentDrop
 const correctionForm = state => state.correctionForm
+const nbCorrections = state => state.nbCorrections
 
 export const select = {
+  canEdit,
   user,
   userId,
   dropzone,
@@ -139,9 +144,11 @@ export const select = {
   myDrop,
   myDrops,
   myDropId,
+  peerDrop,
   isDropEnabled,
   isPeerReviewEnabled,
   drops,
   currentDrop,
-  correctionForm
+  correctionForm,
+  nbCorrections
 }

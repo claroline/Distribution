@@ -47,8 +47,13 @@ const MyDrop = props =>
       </button>
     }
 
-    {props.drop.finished && props.isPeerReviewEnabled &&
-      <div>Peer Review</div>
+    {props.drop.finished && props.isPeerReviewEnabled && props.nbCorrections < props.dropzone.parameters.expectedCorrectionTotal &&
+      <a
+        href="#/peer/drop"
+        className="btn btn-default"
+      >
+        {trans('peer_correction', {}, 'dropzone')}
+      </a>
     }
   </div>
 
@@ -60,6 +65,7 @@ MyDrop.propTypes = {
   }).isRequired,
   isDropEnabled: T.bool.isRequired,
   isPeerReviewEnabled: T.bool.isRequired,
+  nbCorrections: T.number.isRequired,
   renderMyDrop: T.func.isRequired,
   saveCorrection: T.func.isRequired,
   showModal: T.func.isRequired
@@ -71,7 +77,8 @@ function mapStateToProps(state) {
     drop: select.myDrop(state),
     params: select.dropzoneParameters(state),
     isDropEnabled: select.isDropEnabled(state),
-    isPeerReviewEnabled: select.isPeerReviewEnabled(state)
+    isPeerReviewEnabled: select.isPeerReviewEnabled(state),
+    nbCorrections: select.nbCorrections(state)
   }
 }
 

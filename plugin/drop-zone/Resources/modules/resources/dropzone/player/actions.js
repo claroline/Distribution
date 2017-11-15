@@ -1,6 +1,7 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {REQUEST_SEND} from '#/main/core/api/actions'
+import {navigate} from '#/main/core/router'
 import {select} from '../selectors'
 import {constants} from '../constants'
 
@@ -8,6 +9,9 @@ export const MY_DROP_LOAD = 'MY_DROP_LOAD'
 export const MY_DROP_UPDATE = 'MY_DROP_UPDATE'
 export const DOCUMENTS_ADD = 'DOCUMENTS_ADD'
 export const DOCUMENT_REMOVE = 'DOCUMENT_REMOVE'
+export const PEER_DROP_LOAD = 'PEER_DROP_LOAD'
+export const PEER_DROP_RESET = 'PEER_DROP_RESET'
+export const PEER_DROPS_INC = 'PEER_DROPS_INC'
 
 export const actions = {}
 
@@ -69,3 +73,44 @@ actions.renderMyDrop = () => (dispatch, getState) => {
     }
   })
 }
+
+actions.fetchPeerDrop = () => (dispatch, getState) => {
+  const state = getState()
+  const peerDrop = select.peerDrop(state)
+
+  if (!peerDrop) {
+    const dropzoneId = select.dropzoneId(state)
+
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_dropzone_peer_drop_fetch', {id: dropzoneId}),
+        request: {
+          method: 'GET'
+        },
+        success: (data, dispatch) => {
+          if (data && data.id) {
+            dispatch(actions.loadPeerDrop(data))
+          }
+        }
+      }
+    })
+  }
+}
+
+actions.loadPeerDrop = makeActionCreator(PEER_DROP_LOAD, 'drop')
+actions.resetPeerDrop = makeActionCreator(PEER_DROP_RESET)
+actions.incPeerDrop = makeActionCreator(PEER_DROPS_INC)
+
+actions.submitCorrection = (correctionId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_correction_submit', {id: correctionId}),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.incPeerDrop())
+      dispatch(actions.resetPeerDrop())
+      navigate('/my/drop')
+    }
+  }
+})

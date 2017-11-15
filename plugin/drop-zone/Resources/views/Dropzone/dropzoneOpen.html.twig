@@ -13,6 +13,8 @@
         data-dropzone="{{ _resource | api_serialize | json_encode | raw | escape }}"
         {#data-my-drops="{{ myDrops | json_encode | raw | escape }}"#}
         data-my-drop="{{ myDrop | api_serialize | json_encode | raw | escape }}"
+        data-peer-drop="{{ peerDrop | json_encode | raw | escape }}"
+        data-nb-corrections="{{ nbCorrections | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

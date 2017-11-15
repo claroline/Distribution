@@ -14,9 +14,11 @@ const Document = props =>
     <td className="document-type">
       {constants.DOCUMENT_TYPES_NAMES[props.document.type]}
     </td>
-    <td className="document-date">
-      {props.document.dropDate}
-    </td>
+    {props.showMeta &&
+      <td className="document-date">
+        {props.document.dropDate}
+      </td>
+    }
     <td className="document-data">
       {props.document.type === constants.DOCUMENT_TYPES.file.value ?
         <a
@@ -52,6 +54,7 @@ const Document = props =>
 
 Document.propTypes = {
   canEdit: T.bool.isRequired,
+  showMeta: T.bool.isRequired,
   document: T.shape({
     id: T.string.isRequired,
     type: T.number.isRequired,
@@ -91,5 +94,6 @@ Documents.propTypes = {
 }
 
 Documents.defaultProps = {
-  canEdit: false
+  canEdit: false,
+  showMeta: true
 }

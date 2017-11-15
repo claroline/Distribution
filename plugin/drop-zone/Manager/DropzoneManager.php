@@ -454,6 +454,86 @@ class DropzoneManager
         return $tool;
     }
 
+    /**
+     * Gets a drop for peer evaluation.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     *
+     * @return Drop | null
+     */
+    public function getUserFinishedPeerDrops(Dropzone $dropzone, User $user)
+    {
+        return $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
+    }
+
+    /**
+     * Gets a drop for peer evaluation.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     *
+     * @return Drop | null
+     */
+    public function getPeerDrop(Dropzone $dropzone, User $user)
+    {
+        $peerDrop = null;
+        $unfinishedDrops = $this->dropRepo->findUserUnfinishedPeerDrop($dropzone, $user);
+
+        if (count($unfinishedDrops) > 0) {
+            $peerDrop = $unfinishedDrops[0];
+        } else {
+            $finishedDrops = $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
+            $nbCorrections = count($finishedDrops);
+
+            if ($dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
+                $peerDrop = $this->getAvailableDropForPeer($dropzone, $user);
+            }
+        }
+
+        return $peerDrop;
+    }
+
+    /**
+     * Gets available drop for peer evaluation.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     *
+     * @return Drop | null
+     */
+    public function getAvailableDropForPeer(Dropzone $dropzone, User $user)
+    {
+        $peerDrop = null;
+        $drops = $this->dropRepo->findUserAvailableDrops($dropzone, $user);
+        $validDrops = [];
+
+        foreach ($drops as $drop) {
+            $corrections = $drop->getCorrections();
+
+            if (count($corrections) < $dropzone->getExpectedCorrectionTotal()) {
+                $validDrops[] = $drop;
+            }
+        }
+        if (count($validDrops) > 0) {
+            /* TODO: Randomize choice */
+            $peerDrop = $validDrops[0];
+
+            /* Creates empty correction */
+            $correction = new Correction();
+            $correction->setDrop($peerDrop);
+            $correction->setUser($user);
+            $currentDate = new \DateTime();
+            $correction->setStartDate($currentDate);
+            $correction->setLastOpenDate($currentDate);
+            $peerDrop->addCorrection($correction);
+            $this->om->persist($correction);
+            $this->om->flush();
+        }
+
+        return $peerDrop;
+    }
+
     private function registerFile(Dropzone $dropzone, UploadedFile $file)
     {
         $ds = DIRECTORY_SEPARATOR;
