@@ -28,7 +28,8 @@ const Users = props =>
   <DataList
     name="users.list"
     fetch={{
-      url: generateUrl('apiv2_user_list')
+      url: generateUrl('apiv2_user_list'),
+      autoload: true
     }}
     delete={{
       url: generateUrl('apiv2_user_delete_bulk')
