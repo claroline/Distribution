@@ -53,6 +53,7 @@ const Document = props =>
 Document.propTypes = {
   canEdit: T.bool.isRequired,
   showMeta: T.bool.isRequired,
+  showTools: T.bool.isRequired,
   document: T.shape({
     id: T.string.isRequired,
     type: T.number.isRequired,
@@ -85,13 +86,13 @@ export const Documents = props =>
   </div>
 
 Documents.propTypes = {
-  canEdit: T.bool.isRequired,
-  documents: T.array,
-  deleteDocument: T.func,
-  showModal: T.func
+  documents: T.arrayOf(T.shape({
+    id: T.string.isRequired
+  }))
 }
 
 Documents.defaultProps = {
   canEdit: false,
-  showMeta: true
+  showMeta: true,
+  showTools: false
 }

@@ -127,7 +127,8 @@
         "innova/media-resource-bundle": "*",
         "ujm/exo-bundle": "*",
         "icap/lesson-bundle": "*",
-        "icap/inwicast-plugin-bundle": "*"
+        "icap/inwicast-plugin-bundle": "*",
+        "claroline/drop-zone-bundle": "*"
     },
     "autoload": {
         "psr-4": {
