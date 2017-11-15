@@ -16,9 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_dropzonebundle_tool_drop")
+ * @ORM\Table(name="claro_dropzonebundle_tool_document")
  */
-class DropzoneToolDrop
+class DropzoneToolDocument
 {
     use UuidTrait;
 
@@ -31,11 +31,12 @@ class DropzoneToolDrop
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\DropZoneBundle\Entity\Drop"
+     *     targetEntity="Claroline\DropZoneBundle\Entity\Document",
+     *     inversedBy="toolDocuments"
      * )
-     * @ORM\JoinColumn(name="drop_id", nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="document_id", nullable=false, onDelete="CASCADE")
      */
-    protected $drop;
+    protected $document;
 
     /**
      * @ORM\ManyToOne(
@@ -65,16 +66,6 @@ class DropzoneToolDrop
         $this->id = $id;
     }
 
-    public function getDrop()
-    {
-        return $this->drop;
-    }
-
-    public function setDrop(Drop $drop = null)
-    {
-        $this->drop = $drop;
-    }
-
     public function getTool()
     {
         return $this->tool;
@@ -83,6 +74,16 @@ class DropzoneToolDrop
     public function setTool(DropzoneTool $tool)
     {
         $this->tool = $tool;
+    }
+
+    public function getDocument()
+    {
+        return $this->document;
+    }
+
+    public function setDocument(Document $document = null)
+    {
+        $this->document = $document;
     }
 
     public function getData()

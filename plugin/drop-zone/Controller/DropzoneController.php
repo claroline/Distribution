@@ -68,6 +68,7 @@ class DropzoneController extends Controller
         $myDrop = empty($user) ? null : $this->manager->getUserDrop($dropzone, $user);
         $finishedPeerDrops = $this->manager->getUserFinishedPeerDrops($dropzone, $user);
         $peerDrop = $this->manager->getPeerDrop($dropzone, $user);
+        $serializedTools = $this->manager->getSerializedTools();
 
         return [
             '_resource' => $dropzone,
@@ -75,6 +76,7 @@ class DropzoneController extends Controller
             'myDrop' => $myDrop,
             'nbCorrections' => count($finishedPeerDrops),
             'peerDrop' => !empty($peerDrop) ? $this->manager->serializeDrop($peerDrop) : $peerDrop,
+            'tools' => $serializedTools,
         ];
     }
 

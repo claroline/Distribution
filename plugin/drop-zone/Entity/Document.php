@@ -14,6 +14,7 @@ namespace Claroline\DropZoneBundle\Entity;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -82,9 +83,18 @@ class Document
      */
     protected $dropDate;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\DropZoneBundle\Entity\DropzoneToolDocument",
+     *     mappedBy="document"
+     * )
+     */
+    protected $toolDocuments;
+
     public function __construct()
     {
         $this->refreshUuid();
+        $this->toolDocuments = new ArrayCollection();
     }
 
     public function getId()
@@ -215,5 +225,29 @@ class Document
                 $this->setResource($data);
                 break;
         }
+    }
+
+    public function getToolDocuments()
+    {
+        return $this->toolDocuments->toArray();
+    }
+
+    public function addToolDocument(DropzoneToolDocument $toolDocument)
+    {
+        if (!$this->toolDocuments->contains($toolDocument)) {
+            $this->toolDocuments->add($toolDocument);
+        }
+    }
+
+    public function removeToolDocument(DropzoneToolDocument $toolDocument)
+    {
+        if ($this->toolDocuments->contains($toolDocument)) {
+            $this->toolDocuments->removeElement($toolDocument);
+        }
+    }
+
+    public function emptyToolDocuments()
+    {
+        $this->toolDocuments->clear();
     }
 }

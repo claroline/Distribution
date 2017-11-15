@@ -5,6 +5,7 @@ import {
   MY_DROP_LOAD,
   MY_DROP_UPDATE,
   DOCUMENTS_ADD,
+  DOCUMENT_UPDATE,
   DOCUMENT_REMOVE,
   PEER_DROP_LOAD,
   PEER_DROP_RESET,
@@ -25,6 +26,16 @@ const myDropReducer = makeReducer({}, {
   [DOCUMENTS_ADD]: (state, action) => {
     const documents = cloneDeep(state.documents)
     action.documents.forEach(d => documents.push(d))
+
+    return Object.assign({}, state, {documents: documents})
+  },
+  [DOCUMENT_UPDATE]: (state, action) => {
+    const documents = cloneDeep(state.documents)
+    const index = documents.findIndex(d => d.id === action.document.id)
+
+    if (index > -1) {
+      documents[index] = action.document
+    }
 
     return Object.assign({}, state, {documents: documents})
   },

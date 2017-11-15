@@ -8,6 +8,7 @@ import {constants} from '../constants'
 export const MY_DROP_LOAD = 'MY_DROP_LOAD'
 export const MY_DROP_UPDATE = 'MY_DROP_UPDATE'
 export const DOCUMENTS_ADD = 'DOCUMENTS_ADD'
+export const DOCUMENT_UPDATE = 'DOCUMENT_UPDATE'
 export const DOCUMENT_REMOVE = 'DOCUMENT_REMOVE'
 export const PEER_DROP_LOAD = 'PEER_DROP_LOAD'
 export const PEER_DROP_RESET = 'PEER_DROP_RESET'
@@ -18,6 +19,7 @@ export const actions = {}
 actions.loadMyDrop = makeActionCreator(MY_DROP_LOAD, 'drop')
 actions.updateMyDrop = makeActionCreator(MY_DROP_UPDATE, 'property', 'value')
 actions.addDocuments = makeActionCreator(DOCUMENTS_ADD, 'documents')
+actions.updateDocument = makeActionCreator(DOCUMENT_UPDATE, 'document')
 actions.removeDocument = makeActionCreator(DOCUMENT_REMOVE, 'documentId')
 
 actions.saveDrop = (dropType, dropData) => (dispatch, getState) => {

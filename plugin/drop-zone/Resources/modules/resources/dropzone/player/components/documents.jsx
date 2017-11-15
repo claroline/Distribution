@@ -48,6 +48,33 @@ const Document = props =>
         />
       </td>
     }
+    {props.showTools &&
+      <td>
+        {props.tools.map(t =>
+          <button
+            key={`tool-btn-${t.id}`}
+            className="btn btn-default"
+            onClick={() => props.executeTool(t.id, props.document.id)}
+          >
+            {t.name}
+          </button>
+        )}
+        {props.document.toolDocuments.length > 0 && props.document.toolDocuments.map(td => {
+          if (td.data && td.data.reportUrl) {
+            return (
+              <button
+                className="btn btn-default"
+                onClick={() => window.open(td.data.reportUrl, '_blank')}
+              >
+                {trans('report', {}, 'dropzone')}
+              </button>
+            )
+          } else {
+            return ''
+          }
+        })}
+      </td>
+    }
   </tr>
 
 Document.propTypes = {
@@ -58,9 +85,16 @@ Document.propTypes = {
     id: T.string.isRequired,
     type: T.number.isRequired,
     data: T.oneOfType([T.string, T.object]).isRequired,
-    dropDate: T.string.isRequired
+    dropDate: T.string.isRequired,
+    toolDocuments: T.arrayOf(T.shape({
+      data: T.shape({
+        reportrUrl: T.string
+      })
+    }))
   }),
+  tools: T.array,
   deleteDocument: T.func,
+  executeTool: T.func,
   showModal: T.func
 }
 

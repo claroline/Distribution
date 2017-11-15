@@ -9,6 +9,7 @@ import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 import {reducer as editorReducer} from './editor/reducer'
 import {reducer as playerReducer} from './player/reducer'
 import {reducer as correctionReducer} from './correction/reducer'
+import {reducer as configurationReducer} from '../../plugin/configuration/reducer'
 
 const reducer = {
   user: makeReducer({}, {}),
@@ -21,6 +22,7 @@ const reducer = {
   drops: correctionReducer.drops,
   currentDrop: correctionReducer.currentDrop,
   correctionForm: correctionReducer.correctionForm,
+  tools: configurationReducer.tools,
 
   // generic reducers
   currentRequests: apiReducer,

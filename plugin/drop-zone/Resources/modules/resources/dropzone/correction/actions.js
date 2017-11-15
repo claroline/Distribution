@@ -3,6 +3,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {select} from '../selectors'
 import {generateCorrection} from '../utils'
+import {actions as playerActions} from '../player/actions'
 
 export const DROPS_LOAD = 'DROPS_LOAD'
 export const CURRENT_DROP_LOAD = 'CURRENT_DROP_LOAD'
@@ -118,6 +119,18 @@ actions.deleteCorrection = (correctionId) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.removeCorrection(correctionId))
+    }
+  }
+})
+
+actions.executeTool = (toolId, documentId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_tool_execute', {tool: toolId, document: documentId}),
+    request: {
+      method: 'POST'
+    },
+    success: (data, dispatch) => {
+      dispatch(playerActions.updateDocument(data))
     }
   }
 })

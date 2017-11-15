@@ -19,6 +19,7 @@ use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
+use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -447,6 +448,40 @@ class DropzoneController
             return new JsonResponse(
                 $this->manager->serializeTool($tool)
             );
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * @EXT\Route("/tool/{tool}/document/{document}", name="claro_dropzone_tool_execute")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *     "tool",
+     *     class="ClarolineDropZoneBundle:DropzoneTool",
+     *     options={"mapping": {"tool": "uuid"}}
+     * )
+     * @EXT\ParamConverter(
+     *     "document",
+     *     class="ClarolineDropZoneBundle:Document",
+     *     options={"mapping": {"document": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param DropzoneTool $tool
+     * @param Document     $document
+     *
+     * @return JsonResponse
+     */
+    public function toolExecuteAction(DropzoneTool $tool, Document $document)
+    {
+        $dropzone = $document->getDrop()->getDropzone();
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $updatedDocument = $this->manager->executeTool($tool, $document);
+
+            return new JsonResponse($this->manager->serializeDocument($updatedDocument));
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }

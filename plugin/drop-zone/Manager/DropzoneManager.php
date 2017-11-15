@@ -25,6 +25,7 @@ use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Entity\DropzoneTool;
+use Claroline\DropZoneBundle\Entity\DropzoneToolDocument;
 use Claroline\DropZoneBundle\Repository\DropRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem;
@@ -68,7 +69,8 @@ class DropzoneManager
     private $dropRepo;
 
     private $correctionRepo;
-    private $drozoneToolRepo;
+    private $dropzoneToolRepo;
+    private $dropzoneToolDocumentRepo;
 
     /**
      * DropzoneManager constructor.
@@ -123,6 +125,7 @@ class DropzoneManager
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
         $this->dropzoneToolRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneTool');
+        $this->dropzoneToolDocumentRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneToolDocument');
     }
 
     /**
@@ -532,6 +535,57 @@ class DropzoneManager
         }
 
         return $peerDrop;
+    }
+
+    /**
+     * Executes a Tool on a Document.
+     *
+     * @param DropzoneTool $tool
+     * @param Document     $document
+     *
+     * @return Document
+     */
+    public function executeTool(DropzoneTool $tool, Document $document)
+    {
+        if ($tool->getType() === DropzoneTool::COMPILATIO && $document->getType() === Document::DOCUMENT_TYPE_FILE) {
+            $toolDocument = $this->dropzoneToolDocumentRepo->findOneBy(['tool' => $tool, 'document' => $document]);
+            $toolData = $tool->getData();
+            $compilatio = new \SoapClient($toolData['url']);
+
+            if (empty($toolDocument)) {
+                $documentData = $document->getFile();
+                $params = [];
+                $params[] = $toolData['key'];
+                $params[] = utf8_encode($documentData['name']);
+                $params[] = utf8_encode($documentData['name']);
+                $params[] = utf8_encode($documentData['name']);
+                $params[] = utf8_encode($documentData['mimeType']);
+                $params[] = base64_encode(file_get_contents($this->filesDir.DIRECTORY_SEPARATOR.$documentData['url']));
+                $idDocument = $compilatio->__call('addDocumentBase64', $params);
+                $analysisParams = [];
+                $analysisParams[] = $toolData['key'];
+                $analysisParams[] = $idDocument;
+                $compilatio->__call('startDocumentAnalyse', $analysisParams);
+                $reportUrl = $compilatio->__call('getDocumentReportUrl', $analysisParams);
+
+                if ($idDocument && $reportUrl) {
+                    $this->createToolDocument($tool, $document, $idDocument, $reportUrl);
+                }
+            }
+        }
+
+        return $document;
+    }
+
+    public function createToolDocument(DropzoneTool $tool, Document $document, $idDocument, $reportUrl)
+    {
+        $toolDocument = new DropzoneToolDocument();
+        $toolDocument->setTool($tool);
+        $toolDocument->setDocument($document);
+        $data = ['idDocument' => $idDocument, 'reportUrl' => $reportUrl];
+        $toolDocument->setData($data);
+        $this->om->persist($toolDocument);
+        $this->om->flush();
     }
 
     private function registerFile(Dropzone $dropzone, UploadedFile $file)

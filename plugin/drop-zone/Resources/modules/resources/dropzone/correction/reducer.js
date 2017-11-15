@@ -13,6 +13,11 @@ import {
   CORRECTION_REMOVE
 } from './actions'
 
+import {
+  DOCUMENT_UPDATE
+} from '../player/actions'
+
+
 const currentDropReducer = makeReducer({}, {
   [CURRENT_DROP_LOAD]: (state, action) => {
     return action.drop
@@ -45,6 +50,16 @@ const currentDropReducer = makeReducer({}, {
     }
 
     return Object.assign({}, state, {corrections: corrections})
+  },
+  [DOCUMENT_UPDATE]: (state, action) => {
+    const documents = cloneDeep(state.documents)
+    const index = documents.findIndex(d => d.id === action.document.id)
+
+    if (index > -1) {
+      documents[index] = action.document
+    }
+
+    return Object.assign({}, state, {documents: documents})
   }
 })
 

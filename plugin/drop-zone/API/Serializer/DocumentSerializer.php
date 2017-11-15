@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class DocumentSerializer
 {
+    private $dropzoneToolDocumentSerializer;
     private $userSerializer;
     private $tokenStorage;
 
@@ -25,20 +26,24 @@ class DocumentSerializer
      * DocumentSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "userSerializer" = @DI\Inject("claroline.serializer.user"),
-     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
-     *     "om"             = @DI\Inject("claroline.persistence.object_manager")
+     *     "dropzoneToolDocumentSerializer" = @DI\Inject("claroline.serializer.dropzone.tool.document"),
+     *     "userSerializer"                 = @DI\Inject("claroline.serializer.user"),
+     *     "tokenStorage"                   = @DI\Inject("security.token_storage"),
+     *     "om"                             = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param UserSerializer        $userSerializer
-     * @param TokenStorageInterface $tokenStorage
-     * @param ObjectManager         $om
+     * @param DropzoneToolDocumentSerializer $dropzoneToolDocumentSerializer
+     * @param UserSerializer                 $userSerializer
+     * @param TokenStorageInterface          $tokenStorage
+     * @param ObjectManager                  $om
      */
     public function __construct(
+        DropzoneToolDocumentSerializer $dropzoneToolDocumentSerializer,
         UserSerializer $userSerializer,
         TokenStorageInterface $tokenStorage,
         ObjectManager $om
     ) {
+        $this->dropzoneToolDocumentSerializer = $dropzoneToolDocumentSerializer;
         $this->userSerializer = $userSerializer;
         $this->tokenStorage = $tokenStorage;
 
@@ -63,7 +68,19 @@ class DocumentSerializer
             'drop' => $document->getDrop()->getUuid(),
             'user' => $document->getUser() ? $this->userSerializer->serialize($document->getUser()) : null,
             'dropDate' => $document->getDropDate() ? $document->getDropDate()->format('Y-m-d H:i') : null,
+            'toolDocuments' => $this->getToolDocuments($document),
         ];
+    }
+
+    private function getToolDocuments(Document $document)
+    {
+        $toolDocuments = [];
+
+        foreach ($document->getToolDocuments() as $toolDocument) {
+            $toolDocuments[] = $this->dropzoneToolDocumentSerializer->serialize($toolDocument);
+        }
+
+        return $toolDocuments;
     }
 
     /**
