@@ -5,20 +5,23 @@ import {actions as formActions} from '#/main/core/layout/form/actions'
 
 import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
 
-actions.open = (uuid = null) => (dispatch) => {
-  if (uuid) {
+actions.open = (formName, id = null) => (dispatch) => {
+  // todo ugly. only to be able to load list before the end of  group loading
+  dispatch(formActions.resetForm(formName, {id}, false))
+
+  if (id) {
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_role_get', {uuid}],
+        route: ['apiv2_role_get', {id}],
         request: {
           method: 'GET'
         },
         success: (response, dispatch) => {
-          dispatch(formActions.resetForm(response))
+          dispatch(formActions.resetForm(formName, response, false))
         }
       }
     })
   } else {
-    dispatch(formActions.resetForm(RoleTypes.defaultProps))
+    dispatch(formActions.resetForm(formName, RoleTypes.defaultProps, true))
   }
 }

@@ -32,12 +32,19 @@ class GroupValidator implements ValidatorInterface
         $errors  = [];
         $qb = $this->om->createQueryBuilder();
 
-        $groups = $qb->select('DISTINCT g')
+        $qb->select('DISTINCT g')
            ->from('Claroline\CoreBundle\Entity\Group', 'g')
            ->where('g.name LIKE :name')
            ->setParameter('name', $data->name)
            ->getQuery()
            ->getResult();
+
+        if (isset($data->id)) {
+            $qb->setParameter('uuid', $data->id)
+               ->andWhere('g.uuid != :uuid');
+        }
+
+        $groups = $qb->getQuery()->getResult();
 
         if (count($groups) > 0) {
             $errors[] = ['path' => 'name', 'message' => 'name_exists'];

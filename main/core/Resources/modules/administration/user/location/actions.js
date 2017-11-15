@@ -16,20 +16,23 @@ actions.geolocate = (location) => ({
   }
 })
 
-actions.open = (uuid = null) => (dispatch) => {
-  if (uuid) {
+actions.open = (formName, id = null) => (dispatch) => {
+  // todo ugly. only to be able to load list before the end of  group loading
+  dispatch(formActions.resetForm(formName, {id}, false))
+
+  if (id) {
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_location_get', {uuid}],
+        route: ['apiv2_location_get', {id}],
         request: {
           method: 'GET'
         },
         success: (response, dispatch) => {
-          dispatch(formActions.resetForm(response))
+          dispatch(formActions.resetForm(formName, response, true))
         }
       }
     })
   } else {
-    dispatch(formActions.resetForm(LocationTypes.defaultProps))
+    dispatch(formActions.resetForm(formName, LocationTypes.defaultProps, true))
   }
 }

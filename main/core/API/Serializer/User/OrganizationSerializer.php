@@ -28,7 +28,7 @@ class OrganizationSerializer
     public function serialize(Organization $organization, array $options = [])
     {
         $data = [
-            'id' => $organization->getId(),
+            'id' => $organization->getUuid(),
             'name' => $organization->getName(),
             'code' => $organization->getCode(),
             'position' => $organization->getPosition(),

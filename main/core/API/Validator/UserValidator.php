@@ -31,17 +31,22 @@ class UserValidator implements ValidatorInterface
     {
         $errors  = [];
         $qb = $this->om->createQueryBuilder();
-
-        $users = $qb->select('DISTINCT user')
+        $qb->select('DISTINCT user')
            ->from('Claroline\CoreBundle\Entity\User', 'user')
            ->where($qb->expr()->orX(
                $qb->expr()->like('user.username', ':username'),
                $qb->expr()->like('user.username', ':email')
            ))
+
            ->setParameter('username', $data->username)
-           ->setParameter('email', $data->email)
-           ->getQuery()
-           ->getResult();
+           ->setParameter('email', $data->email);
+
+        if (isset($data->id)) {
+            $qb->setParameter('uuid', $data->id)
+            ->andWhere('user.uuid != :uuid');
+        }
+
+        $users = $qb->getQuery()->getResult();
 
         if (count($users) > 0) {
             $errors[] = ['path' => 'username', 'message' => 'username_exists'];
@@ -49,16 +54,21 @@ class UserValidator implements ValidatorInterface
 
         $qb = $this->om->createQueryBuilder();
 
-        $users = $qb->select('DISTINCT user')
+        $qb->select('DISTINCT user')
            ->from('Claroline\CoreBundle\Entity\User', 'user')
            ->where($qb->expr()->orX(
                $qb->expr()->like('user.mail', ':username'),
                $qb->expr()->like('user.mail', ':email')
            ))
            ->setParameter('username', $data->username)
-           ->setParameter('email', $data->email)
-           ->getQuery()
-           ->getResult();
+           ->setParameter('email', $data->email);
+
+        if (isset($data->id)) {
+            $qb->setParameter('uuid', $data->id)
+               ->andWhere('user.uuid != :uuid');
+        }
+
+        $users = $qb->getQuery()->getResult();
 
         if (count($users) > 0) {
             $errors[] = ['path' => 'email', 'message' => 'email_exists'];

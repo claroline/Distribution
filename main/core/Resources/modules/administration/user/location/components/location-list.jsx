@@ -10,7 +10,13 @@ const LocationList = {
       name: 'name',
       type: 'string',
       label: t('name'),
-      displayed: true
+      displayed: true,
+      renderer: (rowData) => {
+        // variable is used because React will use it has component display name (eslint requirement)
+        const locationLink = <a href={`#/locations/${rowData.id}`}>{rowData.name}</a>
+
+        return locationLink
+      }
     },
     {
       name: 'adress',

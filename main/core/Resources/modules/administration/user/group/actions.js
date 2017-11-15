@@ -5,14 +5,14 @@ import {Group as GroupTypes} from '#/main/core/administration/user/group/prop-ty
 
 export const actions = {}
 
-actions.open = (formName, groupId = null) => (dispatch) => {
-  if (groupId) {
+actions.open = (formName, id = null) => (dispatch) => {
+  if (id) {
     // todo ugly. only to be able to load list before the end of  group loading
-    dispatch(formActions.resetForm(formName, {id: groupId}, false))
+    dispatch(formActions.resetForm(formName, {id}, false))
 
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_group_get', {id: groupId}],
+        route: ['apiv2_group_get', {id}],
         request: {
           method: 'GET'
         },

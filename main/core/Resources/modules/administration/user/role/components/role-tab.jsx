@@ -41,7 +41,7 @@ const RoleTab = props =>
         component: Role
       }, {
         path: '/roles/:id',
-        onEnter: (params) => props.openForm(params.uuid),
+        onEnter: (params) => props.openForm('roles.current', params.id),
         component: Role
       }
     ]}
@@ -50,11 +50,10 @@ const RoleTab = props =>
 RoleTab.propTypes = {
   openForm: T.func.isRequired
 }
+
 function mapDispatchToProps(dispatch) {
   return {
-    openForm(id = null) {
-      dispatch(actions.open(id))
-    }
+    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
   }
 }
 

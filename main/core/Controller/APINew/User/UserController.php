@@ -39,9 +39,9 @@ class UserController extends AbstractCrudController
     use HasGroupsTrait;
 
     /**
-     * @Route("/{uuid}/pws/create", name="apiv2_user_pws_create")
+     * @Route("/{id}/pws/create", name="apiv2_user_pws_create")
      * @Method("POST")
-     * @ParamConverter("location", class = "Claroline\CoreBundle\Entity\User", options = {"uuid" = "user"})
+     * @ParamConverter("user", options={"mapping": {"id": "uuid"}})
      */
     public function createPersonalWorkspaceAction(User $user)
     {
@@ -56,9 +56,9 @@ class UserController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{uuid}/pws/delete", name="apiv2_user_pws_delete")
+     * @Route("/{id}/pws/delete", name="apiv2_user_pws_delete")
      * @Method("DELETE")
-     * @ParamConverter("location", class = "Claroline\CoreBundle\Entity\User", options = {"uuid" = "user"})
+     * @ParamConverter("user", options={"mapping": {"id": "uuid"}})
      */
     public function deletePersonalWorkspaceAction(User $user)
     {

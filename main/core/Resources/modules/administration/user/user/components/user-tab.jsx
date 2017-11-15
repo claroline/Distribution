@@ -8,6 +8,9 @@ import {Routes} from '#/main/core/router'
 import {User,  UserActions}  from '#/main/core/administration/user/user/components/user.jsx'
 import {Users, UsersActions} from '#/main/core/administration/user/user/components/users.jsx'
 
+
+import {actions} from '#/main/core/administration/user/user/actions'
+
 const UserTabActions = props =>
   <Routes
     routes={[
@@ -41,7 +44,7 @@ const UserTab = props =>
       }, {
         path: '/users/:id',
         component: User,
-        onEnter: (params) => props.openForm(params.uuid)
+        onEnter: (params) => props.openForm('users.current', params.id)
       }
     ]}
   />
@@ -52,9 +55,7 @@ UserTab.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    openForm(id = null) {
-      //dispatch(actions.open(id))
-    }
+    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
   }
 }
 

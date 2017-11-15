@@ -45,7 +45,7 @@ const LocationTab = props =>
         path: '/locations/:id',
         exact: true,
         component: Location,
-        onEnter: (params) => props.openForm(params.id)
+        onEnter: (params) => props.openForm('locations.current', params.id)
       }
     ]}
   />
@@ -56,9 +56,7 @@ LocationTab.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    openForm(id = null) {
-      dispatch(actions.open(id))
-    }
+    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
   }
 }
 

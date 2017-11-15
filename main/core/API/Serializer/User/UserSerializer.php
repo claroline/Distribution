@@ -54,8 +54,7 @@ class UserSerializer
         }
 
         return [
-            'id' => $user->getId(),
-            'uuid' => $user->getUuid(),
+            'id' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
