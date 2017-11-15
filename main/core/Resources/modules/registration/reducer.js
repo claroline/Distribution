@@ -17,7 +17,6 @@ const userReducer = makeReducer({}, {
     return state
   },
   [USER_VALIDATE]: (state, action) => {
-
     state = cloneDeep(state)
     state.errors = validate(state)
     action.errors.forEach(error => {

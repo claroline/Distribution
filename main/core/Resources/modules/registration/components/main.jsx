@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 
 import {t} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
 
 import {Facet} from '#/main/core/registration/components/facet.jsx'
 import {Required} from '#/main/core/registration/components/required.jsx'
@@ -15,10 +16,24 @@ class UserRegistration extends Component
 {
   constructor(props) {
     super(props)
+    this.onCreated = this.onCreated.bind(this)
   }
 
   onCreate() {
-    this.props.onCreate(this.props.user)
+    this.props.onCreate(
+      this.props.user,
+      this.onCreated
+    )
+  }
+
+  onCreated() {
+    if (this.props.options.redirectAfterLoginUrl) {
+      window.location = this.props.options.redirectAfterLoginUrl
+    }
+
+    switch(this.props.options.redirectAfterLoginOption) {
+      case 'DESKTOP': window.location = generateUrl('claro_desktop_open')
+    }
   }
 
   render() {
@@ -60,14 +75,15 @@ Required.defaultProps = {user: {}}
 function mapStateToProps(state)
 {
   return {
-    user: select.user(state)
+    user: select.user(state),
+    options: select.options(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onCreate(user) {
-      dispatch(actions.createUser(user))
+    onCreate(user, onCreated) {
+      dispatch(actions.createUser(user, onCreated))
     }
   }
 }

@@ -10,7 +10,7 @@ export const actions       = {}
 actions.updateUser = makeActionCreator(USER_UPDATE, 'property', 'value')
 actions.validateUser = makeActionCreator(USER_VALIDATE, 'errors')
 
-actions.createUser = (user) => ({
+actions.createUser = (user, onCreated) => ({
   [REQUEST_SEND]: {
     url: generateUrl('apiv2_user_create'),
     request: {
@@ -18,8 +18,7 @@ actions.createUser = (user) => ({
       body: JSON.stringify(user)
     },
     success: (data, dispatch) => {
-      //console.log(data)
-      //redirect and stuff
+      onCreated()
     },
     error: (data, dispatch) => {
       data.json().then(errors => {

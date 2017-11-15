@@ -1,6 +1,8 @@
-const user = (formState) => formState.user
+const user = (state) => state.user
+const options = (state) => state.options
 
 
 export const select = {
-  user
+  user,
+  options
 }
