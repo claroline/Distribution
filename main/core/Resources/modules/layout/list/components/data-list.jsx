@@ -25,9 +25,6 @@ import {ListFooter} from '#/main/core/layout/list/components/footer.jsx'
 
 /**
  * Full data list with configured components (eg. search, pagination).
- *
- * @param props
- * @constructor
  */
 class DataList extends Component {
   constructor(props) {
@@ -35,7 +32,6 @@ class DataList extends Component {
 
     // adds missing default in the definition
     this.definition = createListDefinition(this.props.definition)
-
     // fills missing translations with default ones
     this.translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
 
@@ -101,9 +97,6 @@ class DataList extends Component {
   }
 
   render() {
-    // get translations, fills missing translations with default ones
-    //const translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
-
     // enables and configures list tools
     let displayTool
     if (1 < this.props.display.available.length) {

@@ -4,9 +4,10 @@ import {connect} from 'react-redux'
 
 import {Routes} from '#/main/core/router'
 
-import {Organization, OrganizationActions}  from '#/main/core/administration/user/organization/components/organization.jsx'
+import {Organization, OrganizationActions} from '#/main/core/administration/user/organization/components/organization.jsx'
 import {Organizations, OrganizationsActions} from '#/main/core/administration/user/organization/components/organizations.jsx'
 
+import {actions} from '#/main/core/administration/user/organization/actions'
 import {select} from '#/main/core/administration/user/organization/selectors'
 
 const OrganizationTabActions = props =>
@@ -51,15 +52,12 @@ OrganizationTab.propTypes = {
   openForm: T.func.isRequired
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    openForm() {
-
-    }
-  }
-}
-
-const ConnectedOrganizationTab = connect(null, mapDispatchToProps)(OrganizationTab)
+const ConnectedOrganizationTab = connect(
+  null,
+  dispatch => ({
+    openForm: (id = null) => dispatch(actions.open('organizations.current', id))
+  })
+)(OrganizationTab)
 
 export {
   OrganizationTabActions,

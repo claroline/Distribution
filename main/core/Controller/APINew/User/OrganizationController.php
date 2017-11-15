@@ -14,7 +14,10 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
-use Claroline\CoreBundle\Controller\APINew\Model\HasParent;
+use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasParentTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasWorkspacesTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -29,7 +32,10 @@ class OrganizationController extends AbstractCrudController
         return 'organization';
     }
 
-    use HasParent;
+    use HasParentTrait;
+    use HasUsersTrait;
+    use HasGroupsTrait;
+    use HasWorkspacesTrait;
 
     /**
      * @Route("/list/recursive", name="apiv2_organization_list_recursive")

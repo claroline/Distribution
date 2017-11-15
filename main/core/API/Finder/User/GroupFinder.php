@@ -67,14 +67,20 @@ class GroupFinder implements FinderInterface
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              default:
-                if (is_bool($filterValue)) {
-                    $qb->andWhere("obj.{$filterName} = :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
-                } else {
-                    $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
-                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
-                }
+                case 'organization':
+                    $qb->leftJoin('obj.organizations', 'o');
+                    $qb->andWhere('o.uuid IN (:organizationIds)');
+                    $qb->setParameter('organizationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+
+                default:
+                    if (is_bool($filterValue)) {
+                        $qb->andWhere("obj.{$filterName} = :{$filterName}");
+                        $qb->setParameter($filterName, $filterValue);
+                    } else {
+                        $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
+                        $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    }
             }
         }
 

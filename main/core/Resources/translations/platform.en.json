@@ -54,7 +54,7 @@
     "add_field_to_panel": "Add a field",
     "add_filter": "Add filter",
     "add_friend_confirm_message": "Do you really want to add this friend platform ?",
-    "add_group": "Add group",
+    "add_group": "Add a group",
     "add_group_s_confirm_message": "group(s) added",
     "add_groups": "Add groups",
     "add_panel_to_facet": "Add a panel",
@@ -1475,5 +1475,12 @@
     "activate_self_registration": "Enable self-registration",
     "user_enabled": "Enabled",
     "platform": "Platform",
-    "custom": "Custom"
+    "custom": "Custom",
+    "add_organization": "Add an organization",
+    "add_sub_organization": "Add a sub-organization",
+    "back_to_list": "Back to list",
+    "show_advanced_options": "Display advanced parameters",
+    "hide_advanced_options": "Hide advanced parameters",
+    "parent": "Parent",
+    "managers": "Managers"
 }

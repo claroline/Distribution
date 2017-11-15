@@ -2,15 +2,12 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import Configuration from '#/main/core/library/Configuration/Configuration'
 import {t, transChoice, Translator} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {localeDate} from '#/main/core/date'
-import {MODAL_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
-
-import Configuration from '#/main/core/library/Configuration/Configuration'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {actions} from '#/main/core/administration/workspace/actions'
+import {MODAL_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
 
 import {
   PageContainer as Page,
@@ -21,6 +18,9 @@ import {
 } from '#/main/core/layout/page'
 
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+
+import {actions} from '#/main/core/administration/workspace/actions'
+import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
 
 const WorkspacesPage = props =>
   <Page id="workspace-management">
@@ -54,80 +54,7 @@ const WorkspacesPage = props =>
           displayed: (workspaces) =>
             0 < workspaces.filter(workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length
         }}
-        definition={[
-          {
-            name: 'name',
-            label: t('name'),
-            renderer: (rowData) => {
-              // variable is used because React will use it has component display name (eslint requirement)
-              const wsLink = <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.id})}>{rowData.name}</a>
-
-              return wsLink
-            },
-            displayed: true
-          }, {
-            name: 'code',
-            label: t('code'),
-            displayed: true
-          }, {
-            name: 'meta.model',
-            label: t('model'),
-            type: 'boolean',
-            alias: 'model',
-            displayed: true
-          }, {
-            name: 'meta.created',
-            label: t('creation_date'),
-            type: 'date',
-            alias: 'created',
-            displayed: true,
-            filterable: false
-          }, {
-            name: 'meta.personal',
-            label: t('personal_workspace'),
-            type: 'boolean',
-            alias: 'personal'
-          }, {
-            name: 'display.displayable',
-            label: t('displayable_in_workspace_list'),
-            type: 'boolean',
-            alias: 'displayable'
-          }, {
-            name: 'createdAfter',
-            label: t('created_after'),
-            type: 'date',
-            displayable: false
-          }, {
-            name: 'createdBefore',
-            label: t('created_before'),
-            type: 'date',
-            displayable: false
-          }, {
-            name: 'registration.selfRegistration',
-            label: t('public_registration'),
-            type: 'boolean',
-            alias: 'selfRegistration'
-          }, {
-            name: 'registration.selfUnregistration',
-            label: t('public_unregistration'),
-            type: 'boolean',
-            alias: 'selfUnregistration'
-          }, {
-            name: 'restrictions.maxStorage',
-            label: t('max_storage_size'),
-            alias: 'maxStorage'
-          }, {
-            name: 'restrictions.maxResources',
-            label: t('max_amount_resources'),
-            type: 'number',
-            alias: 'maxResources'
-          }, {
-            name: 'restrictions.maxUsers',
-            label: t('workspace_max_users'),
-            type: 'number',
-            alias: 'maxUsers'
-          }
-        ]}
+        definition={WorkspaceList.definition}
 
         actions={[
           ...Configuration.getWorkspacesAdministrationActions().map(action => action.options.modal ? {
@@ -158,29 +85,7 @@ const WorkspacesPage = props =>
           }
         ]}
 
-        card={(row) => ({
-          onClick: generateUrl('claro_workspace_open', {workspaceId: row.id}),
-          poster: null,
-          icon: 'fa fa-book',
-          title: row.name,
-          subtitle: row.code,
-          contentText: row.meta.description,
-          flags: [
-            row.meta.personal                 && ['fa fa-user',         t('personal_workspace')],
-            row.meta.model                    && ['fa fa-object-group', t('model')],
-            row.display.displayable           && ['fa fa-eye',          t('displayable_in_workspace_list')],
-            row.registration.selfRegistration && ['fa fa-globe',        t('public_registration')]
-          ].filter(flag => !!flag),
-          footer:
-            <span>
-              created by <b>{row.meta.creator ? row.meta.creator.name : t('unknown')}</b>
-            </span>,
-          footerLong:
-            <span>
-              created at <b>{localeDate(row.meta.created)}</b>,
-              by <b>{row.meta.creator ? row.meta.creator.name: t('unknown')}</b>
-            </span>
-        })}
+        card={WorkspaceList.card}
       />
     </PageContent>
   </Page>

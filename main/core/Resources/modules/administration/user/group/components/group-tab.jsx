@@ -36,11 +36,11 @@ const GroupTab = props =>
       }, {
         path: '/groups/add',
         exact: true,
-        onEnter: () => props.openForm('groups.current'),
+        onEnter: () => props.openForm(),
         component: Group
       }, {
         path: '/groups/:id',
-        onEnter: (params) => props.openForm('groups.current', params.id),
+        onEnter: (params) => props.openForm(params.id),
         component: Group
       }
     ]}
@@ -53,7 +53,7 @@ GroupTab.propTypes = {
 const ConnectedGroupTab = connect(
   null,
   dispatch => ({
-    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
+    openForm: (id = null) => dispatch(actions.open('groups.current', id))
   })
 )(GroupTab)
 

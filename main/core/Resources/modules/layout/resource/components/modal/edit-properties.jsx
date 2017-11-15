@@ -26,7 +26,6 @@ export const MODAL_RESOURCE_PROPERTIES = 'MODAL_RESOURCE_PROPERTIES'
 
 const MetaSection = props =>
   <FormSection
-    id="resource-meta"
     icon="fa fa-fw fa-info"
     title={t_res('resource_meta')}
     {...omit(props, ['meta', 'updateParameter'])}
@@ -69,7 +68,6 @@ MetaSection.propTypes = {
 
 const DisplaySection = props =>
   <FormSection
-    id="resource-display"
     icon="fa fa-fw fa-desktop"
     title={t('display_parameters')}
     {...omit(props, ['parameters', 'updateParameter'])}
@@ -120,7 +118,6 @@ DisplaySection.propTypes = {
 
 const AccessesSection = (props) =>
   <FormSection
-    id="resource-accesses"
     icon="fa fa-fw fa-key"
     title={t('access_restrictions')}
     {...omit(props, ['meta', 'parameters', 'updateParameter'])}
@@ -231,7 +228,6 @@ AccessesSection.propTypes = {
 
 const LicenseSection = props =>
   <FormSection
-    id="resource-license"
     icon="fa fa-fw fa-copyright"
     title={t_res('resource_authors_license')}
     {...omit(props, ['meta', 'updateParameter'])}
@@ -333,8 +329,11 @@ class EditPropertiesModal extends Component {
           />
         </Modal.Body>
 
-        <FormSections>
+        <FormSections
+          level={5}
+        >
           <MetaSection
+            id="resource-meta"
             meta={this.state.resourceNode.meta}
             updateParameter={this.updateProperty}
             validating={this.state.validating}
@@ -342,6 +341,7 @@ class EditPropertiesModal extends Component {
           />
 
           <DisplaySection
+            id="resource-display"
             parameters={this.state.resourceNode.parameters}
             updateParameter={this.updateProperty}
             validating={this.state.validating}
@@ -349,6 +349,7 @@ class EditPropertiesModal extends Component {
           />
 
           <AccessesSection
+            id="resource-restrictions"
             meta={this.state.resourceNode.meta}
             parameters={this.state.resourceNode.parameters}
             updateParameter={this.updateProperty}
@@ -357,6 +358,7 @@ class EditPropertiesModal extends Component {
           />
 
           <LicenseSection
+            id="resource-license"
             meta={this.state.resourceNode.meta}
             updateParameter={this.updateProperty}
             validating={this.state.validating}

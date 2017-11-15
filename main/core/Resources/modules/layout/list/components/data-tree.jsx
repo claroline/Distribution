@@ -1,9 +1,14 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+import merge from 'lodash/merge'
 
 import {t, trans, transChoice} from '#/main/core/translation'
 
+import {CustomDragLayer} from '#/plugin/exo/utils/custom-drag-layer.jsx'
+import {makeDroppable, makeDraggable} from '#/plugin/exo/utils/dragAndDrop'
+
+import {constants as listConst} from '#/main/core/layout/list/constants'
 import {
   createListDefinition,
   getBulkActions,
@@ -13,11 +18,13 @@ import {
 } from '#/main/core/layout/list/utils'
 import {
   DataAction as DataActionTypes,
+  DataCard as DataCardTypes,
   DataListProperty as DataListPropertyTypes,
   DataListSelection as DataListSelectionTypes,
   DataListSearch as DataListSearchTypes
 } from '#/main/core/layout/list/prop-types'
 
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
 import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 import {ListEmpty} from '#/main/core/layout/list/components/empty.jsx'
@@ -25,6 +32,138 @@ import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
 
 // todo there are some big c/c from data-list
 // todo maybe make it a list view
+
+const DataTreeItemContent = props =>
+  <div className={classes('data-tree-item', props.computedData.className, {
+    'selected': props.selected,
+    'data-tree-leaf': !props.hasChildren
+  })}>
+    {props.hasChildren &&
+      <button
+        type="button"
+        className="btn btn-tree-toggle"
+        onClick={props.toggle}
+      >
+        <span className={classes('fa fa-fw', {
+          'fa-plus': !props.expanded,
+          'fa-minus': props.expanded
+        })} />
+      </button>
+    }
+
+    <div className="data-tree-item-content">
+      <div className="data-tree-item-label">
+        {props.onSelect &&
+          <input
+            type="checkbox"
+            className="data-tree-item-select"
+            checked={props.selected}
+            onChange={props.onSelect}
+          />
+        }
+
+        {React.createElement(
+          props.computedData.onClick ? 'a' : 'h2', {
+            className: 'item-title',
+            [typeof props.computedData.onClick === 'function' ? 'onClick':'href']: props.computedData.onClick
+          }, [
+            props.computedData.title,
+            props.computedData.subtitle &&
+            <small key="item-subtitle">{props.computedData.subtitle}</small>
+          ]
+        )}
+
+        {props.computedData.flags &&
+          <div className="item-flags">
+            {props.computedData.flags.map((flag, flagIndex) => flag &&
+              <TooltipElement
+                key={flagIndex}
+                id={`item-${props.data.id}-flag-${flagIndex}`}
+                tip={flag[1]}
+              >
+                <span className={classes('item-flag', flag[0])} />
+              </TooltipElement>
+            )}
+          </div>
+        }
+      </div>
+
+      {0 < props.actions.length &&
+        <DataActions
+          id={`actions-${props.data.id}`}
+          item={props.data}
+          actions={props.actions}
+        />
+      }
+
+      {props.connectDragSource && props.connectDragSource(
+        <span
+          className="btn data-actions-btn btn-drag"
+        >
+          <span className="fa fa-fw fa-arrows" />
+          <span className="sr-only">{t('move')}</span>
+        </span>
+      )}
+    </div>
+  </div>
+
+DataTreeItemContent.propTypes = {
+  selected: T.bool.isRequired,
+  expanded: T.bool.isRequired,
+  hasChildren: T.bool.isRequired,
+  actions: T.array.isRequired,
+  data: T.shape({
+    id: T.string
+  }).isRequired,
+  /**
+   * Computed card data from row.
+   */
+  computedData: T.shape(
+    DataCardTypes.propTypes
+  ).isRequired,
+  toggle: T.func,
+  onSelect: T.func,
+
+  connectDragSource: T.func
+}
+
+DataTreeItemContent.defaultProps = {
+  selected: false
+}
+
+let DataTreeItemContainer = props => props.connectDropTarget(
+  <li className="data-tree-item-container" style={{opacity: props.isDragging ? 0.5:1}}>
+    {React.Children.map(props.children, (child, index) => child ?
+      React.cloneElement(child, {
+        key: index,
+        connectDragSource: props.connectDragSource
+      }) : null
+    )}
+  </li>
+)
+
+DataTreeItemContainer.propTypes = {
+  isDragging: T.bool.isRequired,
+  connectDragSource: T.func.isRequired,
+  connectDropTarget: T.func.isRequired,
+  children: T.any.isRequired
+}
+
+const DataPreview = props =>
+  <div className="data-tree-item">
+    IM A DRAG PREVIEW !!!! SEE ME
+  </div>
+
+DataTreeItemContainer = makeDraggable(
+  DataTreeItemContainer,
+  'TREE_ITEM',
+  DataPreview
+)
+
+DataTreeItemContainer = makeDroppable(
+  DataTreeItemContainer,
+  'TREE_ITEM'
+)
 
 class DataTreeItem extends Component {
   constructor(props) {
@@ -43,63 +182,18 @@ class DataTreeItem extends Component {
 
   render() {
     return (
-      <li className="data-tree-item-container">
-        <div className={classes('data-tree-item', {
-          'data-tree-leaf': !this.props.data.children || 0 === this.props.data.children.length
-        })}>
-          {this.props.data.children && 0 < this.props.data.children.length &&
-            <button
-              type="button"
-              className="btn btn-tree-toggle"
-              onClick={() => this.toggle()}
-            >
-            <span className={classes('fa fa-fw', {
-              'fa-plus': !this.state.expanded,
-              'fa-minus': this.state.expanded
-            })} />
-            </button>
-          }
-
-          <div className="data-tree-item-content">
-            <div className="data-tree-item-label">
-              {this.props.onSelect &&
-                <input
-                  type="checkbox"
-                  className="data-tree-item-select"
-                  checked={this.props.selected}
-                  onChange={this.props.onSelect}
-                />
-              }
-              {this.props.data.name}
-            </div>
-
-            {0 < this.props.actions.length &&
-              <DataActions
-                id={`actions-${this.props.data.id}`}
-                item={this.props.data}
-                actions={this.props.actions}
-              />
-            }
-
-            {this.props.connectDragSource && this.props.connectDragSource(
-              <span
-                className="btn data-actions-btn btn-drag"
-              >
-                <span className="fa fa-fw fa-arrows" />
-                <span className="sr-only">{t('move')}</span>
-              </span>
-            )}
-          </div>
-        </div>
-
-
-
-
-
-
-
-
-
+      <DataTreeItemContainer onDrop={this.props.onDrop}>
+        <DataTreeItemContent
+          selected={isRowSelected(this.props.data, this.props.selected)}
+          expanded={this.state.expanded}
+          hasChildren={this.props.data.children && 0 < this.props.data.children.length}
+          data={this.props.data}
+          computedData={this.props.card(this.props.data)}
+          actions={this.props.actions}
+          onSelect={this.props.onSelect ? () => this.props.onSelect(this.props.data) : undefined}
+          toggle={() => this.toggle()}
+          connectDragSource={this.props.connectDragSource}
+        />
 
         {this.props.data.children && 0 < this.props.data.children.length &&
           <ul
@@ -108,32 +202,37 @@ class DataTreeItem extends Component {
               display: this.state.expanded ? 'block':'none'
             }}
           >
-            {this.props.data.children.map((child, childIndex) => this.props.connectDropTarget ? this.props.connectDropTarget(
-                <DataTreeItem
-                  key={`tree-child-${childIndex}`}
-                  data={child}
-                  actions={this.props.actions}
-                  selected={this.props.selected}
-                  onSelect={this.props.onSelect}
-                />
-              ) :
+            {this.props.data.children.map((child, childIndex) =>
               <DataTreeItem
                 key={`tree-child-${childIndex}`}
                 data={child}
                 actions={this.props.actions}
                 selected={this.props.selected}
                 onSelect={this.props.onSelect}
-              />)}
+                card={this.props.card}
+                onDrop={this.props.onDrop}
+              />
+            )}
           </ul>
         }
-      </li>
+      </DataTreeItemContainer>
     )
   }
 }
 
+DataTreeItem = makeDraggable(
+  DataTreeItem,
+  'TREE_ITEM'
+)
+
+DataTreeItem = makeDroppable(
+  DataTreeItem,
+  'TREE_ITEM'
+)
+
 DataTreeItem.propTypes = {
   expanded: T.bool,
-  selected: T.bool,
+  selected: T.array,
   data: T.shape({
     id: T.oneOfType([T.string, T.number]).isRequired,
     children: T.array
@@ -141,15 +240,19 @@ DataTreeItem.propTypes = {
   actions: T.arrayOf(
     T.shape(DataActionTypes.propTypes)
   ).isRequired,
-  //toggle: T.func.isRequired,
+
   onSelect: T.func,
-  connectDragSource: T.func,
-  connectDropTarget: T.func
+
+  onDrop: T.func,
+  /*connectDragSource: T.func.isRequired,
+  connectDropTarget: T.func.isRequired,*/
+
+  card: T.func.isRequired
 }
 
 DataTreeItem.defaultProps = {
   expanded: false,
-  selected: false
+  selected: []
 }
 
 class DataTree extends Component {
@@ -158,16 +261,15 @@ class DataTree extends Component {
 
     // adds missing default in the definition
     this.definition = createListDefinition(this.props.definition)
+    // fills missing translations with default ones
+    this.translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
+
     this.state = {
       expanded: false
     }
   }
 
   toggleAll() {
-
-  }
-
-  toggleNode(nodeId) {
 
   }
 
@@ -244,8 +346,13 @@ class DataTree extends Component {
                   key={`tree-item-${rowIndex}`}
                   data={row}
                   actions={getRowActions(actions)}
-                  selected={isRowSelected(row, this.props.selection ? this.props.selection.current : [])}
-                  onSelect={this.props.selection ? () => this.props.selection.toggle(row) : null}
+                  selected={this.props.selection ? this.props.selection.current : []}
+                  onSelect={this.props.selection ? this.props.selection.toggle : undefined}
+                  card={this.props.card}
+
+                  onDrop={() => {
+                    console.log('coucou')
+                  }}
                 />
               )}
             </ul>
@@ -255,6 +362,7 @@ class DataTree extends Component {
         {0 === this.props.totalResults &&
           <ListEmpty hasFilters={this.props.filters && 0 < this.props.filters.current.length} />
         }
+        <CustomDragLayer/>
       </div>
     )
   }
@@ -322,6 +430,15 @@ DataTree.propTypes = {
   }),
 
   /**
+   * A function to normalize data for card display.
+   * - the data row is passed as argument
+   * - the func MUST return an object respecting `DataCard.propTypes`.
+   *
+   * It's required to enable cards based display modes.
+   */
+  card: T.func.isRequired,
+
+  /**
    * Override default list translations.
    */
   translations: T.shape({
@@ -337,7 +454,8 @@ DataTree.propTypes = {
 }
 
 DataTree.defaultProps = {
-  actions: []
+  actions: [],
+  translations: listConst.DEFAULT_TRANSLATIONS
 }
 
 export {

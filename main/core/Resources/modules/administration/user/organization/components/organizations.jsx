@@ -21,16 +21,27 @@ const OrganizationsActions = props =>
 const Organizations = props =>
   <DataTreeContainer
     name="organizations.list"
-    fetchUrl={generateUrl('apiv2_organization_list')}
+    fetch={{
+      url: generateUrl('apiv2_organization_list_recursive'),
+      autoload: true
+    }}
     delete={{
-      url: generateUrl('apiv2_group_delete_bulk'),
-      disabled: (rows) => false
+      url: generateUrl('apiv2_organization_delete_bulk'),
+      displayed: (organizations) => 0 !== organizations.filter(organization => !organization.meta.default).length
     }}
     definition={[
       {
         name: 'name',
         type: 'string',
         label: t('name')
+      }, {
+        name: 'meta.default',
+        type: 'boolean',
+        label: t('default')
+      }, {
+        name: 'meta.parent',
+        type: 'organization',
+        label: t('parent')
       }, {
         name: 'email',
         type: 'email',
@@ -46,8 +57,25 @@ const Organizations = props =>
       }
     ]}
     actions={[
-
+      {
+        icon: 'fa fa-fw fa-plus',
+        label: t('add_sub_organization'),
+        context: 'row',
+        action: (rows) => {
+          // todo open orga form
+        }
+      }
     ]}
+    card={(row) => ({
+      onClick: `#/organizations/${row.id}`,
+      poster: null,
+      icon: 'fa fa-building',
+      title: row.name,
+      subtitle: row.code,
+      flags: [
+        row.meta.default && ['fa fa-check', t('default')]
+      ].filter(flag => !!flag)
+    })}
   />
 
 export {

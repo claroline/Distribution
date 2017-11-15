@@ -24,7 +24,7 @@ const Groups = () =>
     name="groups.list"
     fetch={{
       url: generateUrl('apiv2_group_list'),
-      autoload: false
+      autoload: true
     }}
     delete={{
       url: generateUrl('apiv2_group_delete_bulk'),

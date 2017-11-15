@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {connectList} from '#/main/core/layout/list/connect'
@@ -20,7 +20,22 @@ import {DataTree as DataTreeComponent} from '#/main/core/layout/list/components/
  * @param props
  * @constructor
  */
-const DataTree = props =>  <DataTreeComponent {...props} />
+class DataTree extends Component {
+  constructor(props) {
+    super(props)
+
+    if (this.props.fetch && this.props.fetch.autoload) {
+      // todo find better
+      this.props.fetchData()
+    }
+  }
+
+  render() {
+    return (
+      <DataTreeComponent {...this.props} />
+    )
+  }
+}
 
 DataTree.propTypes = {
   /**

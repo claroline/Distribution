@@ -8,14 +8,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Manages a groups collection on an entity.
+ * Manages a workspaces collection on an entity.
  */
-trait HasGroupsTrait
+trait HasWorkspacesTrait
 {
     /**
-     * List groups of the collection.
+     * List workspaces of the collection.
      *
-     * @EXT\Route("{id}/user")
+     * @EXT\Route("{id}/workspace")
      * @EXT\Method("GET")
      *
      * @param string  $id
@@ -25,10 +25,10 @@ trait HasGroupsTrait
      *
      * @return JsonResponse
      */
-    public function listGroupsAction($id, $class, Request $request, $env)
+    public function listWorkspacesAction($id, $class, Request $request, $env)
     {
         return new JsonResponse(
-            $this->finder->search('Claroline\CoreBundle\Entity\Group', array_merge(
+            $this->finder->search('Claroline\CoreBundle\Entity\Workspace\Workspace', array_merge(
                 $request->query->all(),
                 ['hiddenFilters' => [$this->getName() => [$id]]]
             ))
@@ -36,9 +36,9 @@ trait HasGroupsTrait
     }
 
     /**
-     * Adds groups to the collection.
+     * Adds workspaces to the collection.
      *
-     * @EXT\Route("{id}/group")
+     * @EXT\Route("{id}/workspace")
      * @EXT\Method("PATCH")
      *
      * @param string  $id
@@ -48,12 +48,12 @@ trait HasGroupsTrait
      *
      * @return JsonResponse
      */
-    public function addGroupsAction($id, $class, Request $request, $env)
+    public function addWorkspacesAction($id, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $id);
-            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
-            $this->crud->patch($object, 'group', Crud::COLLECTION_ADD, $groups);
+            $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+            $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $workspaces);
 
             return new JsonResponse(
                 $this->serializer->serialize($object)
@@ -64,9 +64,9 @@ trait HasGroupsTrait
     }
 
     /**
-     * Removes groups from the collection.
+     * Removes workspaces from the collection.
      *
-     * @EXT\Route("{id}/group")
+     * @EXT\Route("{id}/workspace")
      * @EXT\Method("DELETE")
      *
      * @param string  $id
@@ -76,16 +76,16 @@ trait HasGroupsTrait
      *
      * @return JsonResponse
      */
-    public function removeGroupsAction($id, $class, Request $request, $env)
+    public function removeWorkspacesAction($id, $class, Request $request, $env)
     {
         try {
             $object = $this->find($class, $id);
-            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
-            $this->crud->patch($object, 'group', Crud::COLLECTION_REMOVE, $groups);
+            $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+            $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $workspaces);
 
             return new JsonResponse(
-              $this->serializer->serialize($object)
-          );
+                $this->serializer->serialize($object)
+            );
         } catch (\Exception $e) {
             $this->handleException($e, $env);
         }
