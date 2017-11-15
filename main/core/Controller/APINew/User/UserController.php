@@ -71,13 +71,23 @@ class UserController extends AbstractCrudController
 
     public function getOptions()
     {
+        $create = [
+          //maybe move these options in an other class
+          Options::SEND_EMAIL,
+          Options::ADD_NOTIFICATIONS
+        ];
+
+        //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
+        //but keep it easy for now because an other route could be relevant
+        $selfLog = true;
+
+        if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
+            $create[] = Options::USER_SELF_LOG;
+        }
+
         return [
             'deleteBulk' => [Options::SOFT_DELETE],
-            'create' => [
-                //maybe move these options in an other class
-                Options::SEND_EMAIL,
-                Options::ADD_NOTIFICATIONS
-            ]
+            'create' => $create
         ];
     }
 }

@@ -26,14 +26,15 @@ class UserCrud
     public function __construct(ContainerInterface $container)
     {
         //too many dependencies, simplify this when we can
-        $this->container   = $container;
-        $this->om          = $container->get('claroline.persistence.object_manager');
-        $this->roleManager = $container->get('claroline.manager.role_manager');
-        $this->toolManager = $container->get('claroline.manager.tool_manager');
-        $this->mailManager = $container->get('claroline.manager.mail_manager');
-        $this->userManager = $container->get('claroline.manager.user_manager');
-        $this->dispatcher  = $container->get('claroline.event.event_dispatcher');
-        $this->config      = $container->get('claroline.config.platform_config_handler');
+        $this->container    = $container;
+        $this->om           = $container->get('claroline.persistence.object_manager');
+        $this->roleManager  = $container->get('claroline.manager.role_manager');
+        $this->toolManager  = $container->get('claroline.manager.tool_manager');
+        $this->mailManager  = $container->get('claroline.manager.mail_manager');
+        $this->userManager  = $container->get('claroline.manager.user_manager');
+        $this->dispatcher   = $container->get('claroline.event.event_dispatcher');
+        $this->config       = $container->get('claroline.config.platform_config_handler');
+        $this->registration = $container->get('claroline.manager.registration_manager');
     }
 
     /**
@@ -44,6 +45,18 @@ class UserCrud
     public function preCreate(CrudEvent $event)
     {
         $this->create($event->getObject(), $event->getOptions());
+    }
+
+    /**
+     * @DI\Observe("crud_post_create_object_claroline_corebundle_entity_user")
+     *
+     * @param CrudEvent $event
+     */
+    public function postCreate(CrudEvent $event)
+    {
+        if (in_array(Options::USER_SELF_LOG, $event->getOptions())) {
+            $this->registration->login($event->getObject());
+        }
     }
 
     public function create(User $user, $options = [], $extra = [])
