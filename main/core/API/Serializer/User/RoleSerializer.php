@@ -26,7 +26,7 @@ class RoleSerializer
             'translationKey' => $role->getTranslationKey(),
             'name' => $role->getName(),
             'meta' => $this->serializeMeta($role, $options),
-            'restrictions'=> $this->serializeRestrictions($role)
+            'restrictions' => $this->serializeRestrictions($role)
         ];
     }
 

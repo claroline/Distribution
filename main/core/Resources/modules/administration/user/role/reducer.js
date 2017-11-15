@@ -5,7 +5,10 @@ import {makeFormReducer} from '#/main/core/layout/form/reducer'
 
 const reducer = combineReducers({
   list: makeListReducer('roles.list'),
-  current: makeFormReducer('roles.current')
+  current: makeFormReducer('roles.current', {
+    users: makeListReducer('roles.current.users'),
+    groups: makeListReducer('roles.current.groups')
+  })
 })
 
 export {

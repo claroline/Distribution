@@ -64,7 +64,6 @@ class UserFinder implements FinderInterface
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
         }
-
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'hasPersonalWorkspace':
@@ -74,6 +73,11 @@ class UserFinder implements FinderInterface
                     $qb->leftJoin('obj.groups', 'g');
                     $qb->andWhere('g.uuid IN (:groupIds)');
                     $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'role':
+                    $qb->leftJoin('obj.roles', 'r');
+                    $qb->andWhere('r.uuid IN (:roleIds)');
+                    $qb->setParameter('roleIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
                 case 'organization':
                     $qb->leftJoin('obj.organizations', 'o');
