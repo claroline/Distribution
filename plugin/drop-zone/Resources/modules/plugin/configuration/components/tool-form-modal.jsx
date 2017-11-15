@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {t, trans} from '#/main/core/translation'
-import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'
+import {t} from '#/main/core/translation'
 
 export const MODAL_TOOL_FORM = 'MODAL_TOOL_FORM'
 
@@ -40,5 +39,6 @@ export class ToolFormModal extends Component {
 }
 
 ToolFormModal.propTypes = {
+  tool: T.object,
   fadeModal: T.func.isRequired
 }

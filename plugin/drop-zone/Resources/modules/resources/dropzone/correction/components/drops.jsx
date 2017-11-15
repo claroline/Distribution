@@ -73,9 +73,8 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-  }
+function mapDispatchToProps() {
+  return {}
 }
 
 const ConnectedDrops = connect(mapStateToProps, mapDispatchToProps)(Drops)

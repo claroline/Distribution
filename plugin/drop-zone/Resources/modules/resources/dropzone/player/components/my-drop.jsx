@@ -58,10 +58,21 @@ const MyDrop = props =>
   </div>
 
 MyDrop.propTypes = {
+  dropzone: T.shape({
+    parameters: T.shape({
+      expectedCorrectionTotal: T.number.isRequired
+    }).isRequired,
+    display: T.shape({
+      displayCorrectionsToLearners: T.bool.isRequired
+    }).isRequired
+  }).isRequired,
   drop: T.shape({
     id: T.string.isRequired,
     finished: T.bool.isRequired,
-    documents: T.array
+    documents: T.array,
+    corrections: T.arrayOf(T.shape({
+      finished: T.bool.isRequired
+    }))
   }).isRequired,
   isDropEnabled: T.bool.isRequired,
   isPeerReviewEnabled: T.bool.isRequired,

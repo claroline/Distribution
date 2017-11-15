@@ -55,7 +55,7 @@ class DropzoneToolDropSerializer
     {
         $dropzoneToolDrop = $this->dropzoneToolDropRepo->findOneBy(['uuid' => $data['id']]);
 
-        if (empty($dropzoneTool)) {
+        if (empty($dropzoneToolDrop)) {
             $dropzoneToolDrop = new DropzoneToolDrop();
             $dropzoneToolDrop->setUuid($data['id']);
             $tool = $this->dropzoneToolRepo->findOneBy(['uuid' => $data['tool']]);

@@ -59,7 +59,7 @@ const DropzoneResource = props =>
         }, {
           path: '/peer/drop',
           component: PeerDrop,
-          onEnter: () => props.fetchPeerDrop(),
+          onEnter: () => props.fetchPeerDrop()
         }
       ]}
     />
@@ -81,7 +81,8 @@ DropzoneResource.propTypes = {
   saveDropzone: T.func.isRequired,
   fetchDrops: T.func.isRequired,
   fetchDrop: T.func.isRequired,
-  resetCurrentDrop: T.func.isRequired
+  resetCurrentDrop: T.func.isRequired,
+  fetchPeerDrop: T.func.isRequired
 }
 
 function customActions(props) {

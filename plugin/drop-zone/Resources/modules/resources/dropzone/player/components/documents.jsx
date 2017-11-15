@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {asset} from '#/main/core/asset'
@@ -6,8 +6,6 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {constants} from '../../constants'
-import {select} from '../../selectors'
-import {actions} from '../actions'
 
 const Document = props =>
   <tr className="drop-document">

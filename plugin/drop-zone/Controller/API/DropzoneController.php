@@ -440,9 +440,7 @@ class DropzoneController
      */
     public function toolSaveAction(Request $request)
     {
-        //        $dropzone = $drop->getDropzone();
-//        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-
+        /* TODO: Checks plugin config access rights */
         try {
             $tool = $this->manager->saveTool(json_decode($request->getContent(), true));
 

@@ -127,7 +127,8 @@ class Tools extends Component {
 }
 
 Tools.propTypes = {
-  tools: T.array
+  tools: T.array,
+  saveTool: T.func.isRequired
 }
 
 function mapStateToProps(state) {

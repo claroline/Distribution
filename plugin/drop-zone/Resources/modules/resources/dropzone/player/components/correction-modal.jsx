@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import cloneDeep from 'lodash/cloneDeep'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
@@ -83,6 +82,7 @@ class DenialBox extends Component {
 }
 
 DenialBox.propTypes = {
+  correction: T.object.isRequired,
   saveCorrection: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
@@ -122,7 +122,7 @@ export class CorrectionModal extends Component {
                         disabled={true}
                         inline={true}
                         hideLabel={true}
-                        checkedValue={this.props.correction.grades.find(g => g.criterion === c.id).value}
+                        checkedValue={this.state.correction.grades.find(g => g.criterion === c.id).value}
                         onChange={() => {}}
                       />
                     </td>
@@ -131,11 +131,11 @@ export class CorrectionModal extends Component {
               </tbody>
             </table>
           }
-          {this.props.correction.comment &&
+          {this.state.correction.comment &&
             <div>
               <h3>{t('comment')}</h3>
               <HtmlText className="correction-comment">
-                {this.props.correction.comment}
+                {this.state.correction.comment}
               </HtmlText>
             </div>
           }
@@ -157,5 +157,17 @@ export class CorrectionModal extends Component {
 }
 
 CorrectionModal.propTypes = {
+  correction: T.object.isRequired,
+  dropzone: T.shape({
+    parameters: T.shape({
+      criteriaEnabled: T.bool.isRequired,
+      criteriaTotal: T.number.isRequired,
+      correctionDenialEnabled: T.bool.isRequired
+    }).isRequired,
+    criteria: T.arrayOf(T.shape({
+      id: T.string.isRequired,
+      instruction: T.string.isRequired
+    }))
+  }).isRequired,
   fadeModal: T.func.isRequired
 }

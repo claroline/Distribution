@@ -60,7 +60,7 @@ class PeerDrop extends Component {
   }
 
   render() {
-    return (!!this.props.drop ?
+    return (this.props.drop ?
       <div className="drop-panel">
         <Documents
           documents={this.props.drop.documents}
@@ -91,13 +91,20 @@ class PeerDrop extends Component {
 }
 
 PeerDrop.propTypes = {
+  dropzone: T.object.isRequired,
   user: T.shape({
     id: T.number.isRequired
   }),
   drop: T.shape({
     id: T.string.isRequired,
     finished: T.bool.isRequired,
-    documents: T.array
+    documents: T.array,
+    corrections: T.arrayOf(T.shape({
+      finished: T.bool.isRequired,
+      user: T.shape({
+        id: T.number.isRequired
+      }).isRequired
+    }))
   }),
   isPeerReviewEnabled: T.bool.isRequired,
   saveCorrection: T.func.isRequired,

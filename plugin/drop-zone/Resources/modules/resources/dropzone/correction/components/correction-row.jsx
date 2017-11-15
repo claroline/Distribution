@@ -135,7 +135,8 @@ CorrectionRow.propTypes = {
     endDate: T.string,
     totalGrade: T.string,
     finished: T.bool.isRequired,
-    valid: T.bool.isRequired
+    valid: T.bool.isRequired,
+    correctionDenied: T.bool.isRequired
   }).isRequired,
   dropzone: T.object,
   saveCorrection: T.func.isRequired,
