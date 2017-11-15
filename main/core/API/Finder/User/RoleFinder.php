@@ -79,10 +79,9 @@ class RoleFinder implements FinderInterface
                     break;
                 case 'user':
                     $qb->leftJoin('obj.users', 'ru');
-                    $qb->andWhere("ru.username = :{$filterName}");
-                    $qb->setParameter($filterName, $filterValue);
+                    $qb->andWhere('ru.uuid IN (:userIds)');
+                    $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
-
                 case 'group':
                     $qb->leftJoin('obj.groups', 'g');
                     $qb->andWhere('g.uuid IN (:groupIds)');
