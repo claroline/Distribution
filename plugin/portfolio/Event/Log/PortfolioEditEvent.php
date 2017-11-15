@@ -22,17 +22,11 @@ class PortfolioEditEvent extends LogGenericEvent implements NotifiableInterface
     protected $portfolio;
 
     /**
-     * @var \Icap\PortfolioBundle\Entity\PortfolioGuide[]
-     */
-    protected $guides;
-
-    /**
      * @param Portfolio $portfolio
      */
-    public function __construct(Portfolio $portfolio, array $portfolioGuides)
+    public function __construct(Portfolio $portfolio)
     {
         $this->portfolio = $portfolio;
-        $this->guides = $portfolioGuides;
 
         $user = $portfolio->getUser();
 
@@ -79,7 +73,7 @@ class PortfolioEditEvent extends LogGenericEvent implements NotifiableInterface
     public function getIncludeUserIds()
     {
         $userIds = [];
-        foreach ($this->guides as $guide) {
+        foreach ($this->portfolio->getPortfolioGuides() as $guide) {
             $userIds[] = $guide->getUser()->getId();
         }
 
@@ -103,7 +97,7 @@ class PortfolioEditEvent extends LogGenericEvent implements NotifiableInterface
      */
     public function getActionKey()
     {
-        $this::ACTION;
+        return $this::ACTION;
     }
 
     /**
