@@ -35,15 +35,15 @@ const ParametersTab = () =>
         defaultOpened: true,
         fields: [
           {
-            name: 'registration.auto',
+            name: 'registration.self',
             type: 'boolean',
             label: t('activate_self_registration')
           }, { // todo should be hidden if registration.auto === false
-            name: 'registration.showOnLogin',
+            name: 'registration.register_button_at_login',
             type: 'boolean',
             label: t('show_register_button_in_login_page')
           }, {
-            name: 'registration.defaultRole',
+            name: 'registration.default_role',
             type: 'enum',
             label: t('default_role'),
             options: {
@@ -51,7 +51,7 @@ const ParametersTab = () =>
               choices: {} // roles
             }
           }, {
-            name: 'registration.defaultLang',
+            name: 'locales.default',
             type: 'locale', // todo should be a semantic type
             label: t('default_language'),
             options: {
@@ -78,7 +78,7 @@ const ParametersTab = () =>
         fields: [
           // redirect
           {
-            name: 'cookieLifetime',
+            name: 'security.cookie_lifetime',
             type: 'number',
             label: t('cookie_lifetime'),
             options: {
@@ -93,15 +93,15 @@ const ParametersTab = () =>
         title: t('anonymous_users'),
         fields: [
           {
-            name: 'anonymous.captcha',
+            name: 'security.form_captcha',
             type: 'boolean',
             label: t('display_captcha')
           }, {
-            name: 'anonymous.emailHoneypot',
+            name: 'security.form_honeypot',
             type: 'boolean',
             label: t('use_honeypot')
           }, {
-            name: 'anonymous.profileAccess',
+            name: 'security.anonymous_public_profile',
             type: 'boolean',
             label: t('show_profile_for_anonymous')
           }
@@ -112,12 +112,12 @@ const ParametersTab = () =>
         title: t('term_of_service'),
         fields: [
           {
-            name: 'termsOfService.enabled',
+            name: 'tos.enabled',
             type: 'boolean',
             label: t('term_of_service_activation_message'),
             help: t('term_of_service_activation_help'),
           }, { // todo should be hidden if not enabled
-            name: 'termsOfService.content',
+            name: 'tos.content',
             type: 'html', // todo : create a new localized content type
             label: t('term_of_service')
           }

@@ -53,8 +53,20 @@ class ParametersController
      */
     public function updateAction(Request $request)
     {
-        $config = $this->serializer->deserialize(json_decode($request->getContent()));
-        $this->ch->setParameters($config->getParameters());
+        $parameters = $this->serializer->deserialize(json_decode($request->getContent()));
+        $this->ch->setParameters($parameters);
+
+        return new JsonResponse($this->serializer->serialize());
+    }
+
+    /**
+     * @Route("/users", name="apiv2_user_parameters_update")
+     * @Method("PUT")
+     */
+    public function updateUserAction(Request $request)
+    {
+        $parameters = $this->serializer->deserializeUser(json_decode($request->getContent()));
+        $this->ch->setParameters($parameters);
 
         return new JsonResponse($this->serializer->serialize());
     }

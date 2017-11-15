@@ -34,9 +34,9 @@ const Location = () =>
         primary: true,
         fields: [
           {name: 'name', type: 'string', label: t('name'), required: true},
+          {name: 'street', type: 'string', label: t('street'), required: true},
           {name: 'boxNumber', type: 'string', label: t('box_number')},
           {name: 'streetNumber', type: 'string', label: t('street_number'), required: true},
-          {name: 'street', type: 'string', label: t('street'), required: true},
           {name: 'pc', type: 'string', label: t('postal_code'), required: true},
           {name: 'town', type: 'string', label: t('town'), required: true},
           {name: 'country', type: 'string', label: t('country'), required: true},

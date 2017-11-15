@@ -109,11 +109,11 @@ class ParametersSerializer
           ],
           'registration' => [
               'username_regex' => $parameters['username_regex'],
-              'allow_self_registration' => $parameters['allow_self_registration'],
+              'self' => $parameters['allow_self_registration'],
               'default_role' => $parameters['default_role'],
               'register_button_at_login' => $parameters['register_button_at_login'],
-              'auto_logging_after_registration' => $parameters['auto_logging_after_registration'],
-              'mail_validation' => $parameters['registration_mail_validation'],
+              'auto_logging' => $parameters['auto_logging_after_registration'],
+              'validation' => $parameters['registration_mail_validation'],
           ],
           'authentication' => [
             'redirect_after_login_option' => $parameters['redirect_after_login_option'],
@@ -186,6 +186,21 @@ class ParametersSerializer
         return $serialized;
     }
 
+    public function deserializeUser(\stdClass $data)
+    {
+        $parameters = [];
+
+        $this->deserializeLocale($parameters, $data);
+        $this->deserializeTos($parameters, $data);
+        $this->deserializeSecurity($parameters, $data);
+        $this->deserializeRegistration($parameters, $data);
+        $this->deserializeAuthentication($parameters, $data);
+
+        var_dump($parameters);
+
+        return $parameters;
+    }
+
     /**
      * Deserializes the parameters list.
      *
@@ -196,121 +211,49 @@ class ParametersSerializer
         $parameters = [];
 
         if (isset($data->display)) {
-            $this->buildParameter('display.footer', 'footer', $parameters, $data);
-            $this->buildParameter('display.logo', 'logo', $parameters, $data);
-            $this->buildParameter('display.theme', 'theme', $parameters, $data);
-            $this->buildParameter('display.home_menu', 'home_menu', $parameters, $data);
-            $this->buildParameter('display.footer_login', 'footer_login', $parameters, $data);
-            $this->buildParameter('display.footer_workspaces', 'footer_workspaces', $parameters, $data);
-            $this->buildParameter('display.header_locale', 'header_locale', $parameters, $data);
-            $this->buildParameter('display.resource_icon_set', 'resource_icon_set', $parameters, $data);
-            $this->buildParameter('display.name', 'name', $parameters, $data);
-            $this->buildParameter('display.name_active', 'name_active', $parameters, $data);
+            $this->deserializeDisplay($parameters, $data);
         }
 
         if (isset($data->mailer)) {
-            $this->buildParameter('mailer.transport', 'mailer_transport', $parameters, $data);
-            $this->buildParameter('mailer.host', 'mailer_host', $parameters, $data);
-            $this->buildParameter('mailer.port', 'mailer_port', $parameters, $data);
-            $this->buildParameter('mailer.encryption', 'mailer_encryption', $parameters, $data);
-            $this->buildParameter('mailer.username', 'mailer_username', $parameters, $data);
-            $this->buildParameter('mailer.password', 'mailer_password', $parameters, $data);
-            $this->buildParameter('mailer.auth_mode', 'mailer_auth_mode', $parameters, $data);
-            $this->buildParameter('mailer.api_key', 'mailer_api_key', $parameters, $data);
-            $this->buildParameter('mailer.tag', 'mailer_tag', $parameters, $data);
-            $this->buildParameter('mailer.from', 'mailer_from', $parameters, $data);
+            $this->deserializeMailer($parameters, $data);
         }
 
         if (isset($data->ssl)) {
-            $this->buildParameter('ssl.enabled', 'ssl_enabled', $parameters, $data);
-            $this->buildParameter('ssl.version', 'ssl_version_value', $parameters, $data);
+            $this->deserializeSsl($parameters, $data);
         }
 
         if (isset($data->server)) {
-            $this->buildParameter('server.tmp_dir', 'tmp_dir', $parameters, $data);
+            $this->deserializeServer($parameters, $data);
         }
 
         if (isset($data->session)) {
-            $this->buildParameter('session.storage_type', 'session_storage_type', $parameters, $data);
-            $this->buildParameter('session.db_table', 'session_db_table', $parameters, $data);
-            $this->buildParameter('session.db_id_col', 'session_db_id_col', $parameters, $data);
-            $this->buildParameter('session.db_data_col', 'session_db_data_col', $parameters, $data);
-            $this->buildParameter('session.db_time_col', 'session_db_time_col', $parameters, $data);
-            $this->buildParameter('session.db_dsn', 'session_db_dsn', $parameters, $data);
-            $this->buildParameter('session.db_user', 'session_db_dsn', $parameters, $data);
-            $this->buildParameter('session.db_password', 'session_db_password', $parameters, $data);
+            $this->deserializeSession($parameters, $data);
         }
 
         if (isset($data->auto_enable_notifications)) {
             $parameters['auto_enable_notifications'] = $data->auto_enable_notifications;
         }
 
-        if (isset($data->locales)) {
-            $this->buildParameter('locales.available', 'locales', $parameters, $data);
-            $this->buildParameter('locales.default', 'locale_language', $parameters, $data);
-        }
-
-        if (isset($data->security)) {
-            $this->buildParameter('security.form_captcha', 'form_captcha', $parameters, $data);
-            $this->buildParameter('security.form_honeypot', 'form_honeypot', $parameters, $data);
-            $this->buildParameter('security.platform_limit_date', 'platform_limit_date', $parameters, $data);
-            $this->buildParameter('security.platform_init_date', 'platform_init_date', $parameters, $data);
-            $this->buildParameter('security.cookie_lifetime', 'cookie_lifetime', $parameters, $data);
-            $this->buildParameter('security.account_duration', 'account_duration', $parameters, $data);
-            $this->buildParameter('security.default_root_anon_id', 'default_root_anon_id', $parameters, $data);
-            $this->buildParameter('security.anonymous_public_profile', 'anonymous_public_profile', $parameters, $data);
-        }
-
-        if (isset($data->tos)) {
-            $this->buildParameter('tos.enabled', 'terms_of_service', $parameters, $data);
-            //andle the text here
-          //'text' => ['fr' => '123', 'en' => '456']
-        }
-
-        if (isset($data->registration)) {
-            $this->buildParameter('registration.username_regex', 'username_regex', $parameters, $data);
-            $this->buildParameter('registration.allow_self_registration', 'allow_self_registration', $parameters, $data);
-            $this->buildParameter('registration.default_role', 'default_role', $parameters, $data);
-            $this->buildParameter('registration.register_button_at_login', 'register_button_at_login', $parameters, $data);
-            $this->buildParameter('registration.auto_logging_after_registration', 'auto_logging_after_registration', $parameters, $data);
-            $this->buildParameter('registration.mail_validation', 'registration_mail_validation', $parameters, $data);
-        }
-
-        if (isset($data->authentication)) {
-            $this->buildParameter('authentication.redirect_after_login_option', 'redirect_after_login_option', $parameters, $data);
-            $this->buildParameter('authentication.redirect_after_login_url', 'redirect_after_login_url', $parameters, $data);
-            $this->buildParameter('authentication.login_target_route', 'login_target_route', $parameters, $data);
-            $this->buildParameter('authentication.direct_third_party', 'direct_third_party_authentication', $parameters, $data);
-        }
+        $this->deserializeLocale($parameters, $data);
+        $this->deserializeTos($parameters, $data);
+        $this->deserializeSecurity($parameters, $data);
+        $this->deserializeRegistration($parameters, $data);
+        $this->deserializeAuthentication($parameters, $data);
 
         if (isset($data->workspace)) {
-            $this->buildParameter('workspace.max_storage_size', 'max_storage_size', $parameters, $data);
-            $this->buildParameter('workspace.max_upload_resources', 'max_upload_resources', $parameters, $data);
-            $this->buildParameter('workspace.max_workspace_users', 'max_workspace_users', $parameters, $data);
-            $this->buildParameter('workspace.default_tag', 'default_workspace_tag', $parameters, $data);
-            $this->buildParameter('workspace.users_csv_by_full_name', 'workspace_users_csv_import_by_full_name', $parameters, $data);
-            $this->buildParameter('workspace.send_mail_at_registration', 'send_mail_at_workspace_registration', $parameters, $data);
-            $this->buildParameter('workspace.enable_rich_text_file_import', 'enable_rich_text_file_import', $parameters, $data);
+            $this->deserializeWorkspace($parameters, $data);
         }
 
         if (isset($data->internet)) {
-            $this->buildParameter('internet.domain_name', 'domain_name', $parameters, $data);
-            $this->buildParameter('internet.platform_url', 'platform_url', $parameters, $data);
-            $this->buildParameter('internet.google_meta_tag', 'google_meta_tag', $parameters, $data);
+            $this->deserializeInternet($parameters, $data);
         }
 
         if (isset($data->help)) {
-            $this->buildParameter('help.url', 'help_url', $parameters, $data);
-            $this->buildParameter('help.show', 'show_help_button', $parameters, $data);
-            $this->buildParameter('help.support_email', 'support_email', $parameters, $data);
+            $this->deserializeHelp($parameters, $data);
         }
 
         if (isset($data->geolocation)) {
-            if (isset($data->geolocation->google)) {
-                $this->buildParameter('geolocation.google.geocoding_client_id', 'google_geocoding_client_id', $parameters, $data);
-                $this->buildParameter('geolocation.google.geocoding_signature', 'google_geocoding_signature', $parameters, $data);
-                $this->buildParameter('geolocation.google.geocoding_key', 'google_geocoding_key', $parameters, $data);
-            }
+            $this->deserializeGeolocation($parameters, $data);
         }
 
         if (isset($data->pdf)) {
@@ -318,14 +261,11 @@ class ParametersSerializer
         }
 
         if (isset($data->statistics)) {
-            $this->buildParameter('statistics.url', 'datas_sending_url', $parameters, $data);
-            $this->buildParameter('statistics.confirmed', 'confirm_send_datas', $parameters, $data);
-            $this->buildParameter('statistics.token', 'token', $parameters, $data);
+            $this->deserializeStatistics($parameters, $data);
         }
 
         if (isset($data->database_restoration)) {
-            $this->buildParameter('database_restoration.auto_validate_email', 'auto_validate_email', $parameters, $data);
-            $this->buildParameter('database_restoration.auto_enable_email_redirect', 'auto_enable_email_redirect', $parameters, $data);
+            $this->deserializeDatabaseRestoration($parameters, $data);
         }
 
         if (isset($data->logs)) {
@@ -353,6 +293,157 @@ class ParametersSerializer
         }
 
         return new PlatformConfiguration($parameters);
+    }
+
+    public function deserializeDisplay(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('display.footer', 'footer', $parameters, $data);
+        $this->buildParameter('display.logo', 'logo', $parameters, $data);
+        $this->buildParameter('display.theme', 'theme', $parameters, $data);
+        $this->buildParameter('display.home_menu', 'home_menu', $parameters, $data);
+        $this->buildParameter('display.footer_login', 'footer_login', $parameters, $data);
+        $this->buildParameter('display.footer_workspaces', 'footer_workspaces', $parameters, $data);
+        $this->buildParameter('display.header_locale', 'header_locale', $parameters, $data);
+        $this->buildParameter('display.resource_icon_set', 'resource_icon_set', $parameters, $data);
+        $this->buildParameter('display.name', 'name', $parameters, $data);
+        $this->buildParameter('display.name_active', 'name_active', $parameters, $data);
+    }
+
+    public function deserializeMailer(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('mailer.transport', 'mailer_transport', $parameters, $data);
+        $this->buildParameter('mailer.host', 'mailer_host', $parameters, $data);
+        $this->buildParameter('mailer.port', 'mailer_port', $parameters, $data);
+        $this->buildParameter('mailer.encryption', 'mailer_encryption', $parameters, $data);
+        $this->buildParameter('mailer.username', 'mailer_username', $parameters, $data);
+        $this->buildParameter('mailer.password', 'mailer_password', $parameters, $data);
+        $this->buildParameter('mailer.auth_mode', 'mailer_auth_mode', $parameters, $data);
+        $this->buildParameter('mailer.api_key', 'mailer_api_key', $parameters, $data);
+        $this->buildParameter('mailer.tag', 'mailer_tag', $parameters, $data);
+        $this->buildParameter('mailer.from', 'mailer_from', $parameters, $data);
+    }
+
+    public function deserializeSsl(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('ssl.enabled', 'ssl_enabled', $parameters, $data);
+        $this->buildParameter('ssl.version', 'ssl_version_value', $parameters, $data);
+    }
+
+    public function deserializeLocale(array &$parameters, $data)
+    {
+        if (isset($data->locales)) {
+            $this->buildParameter('locales.available', 'locales', $parameters, $data);
+            $this->buildParameter('locales.default', 'locale_language', $parameters, $data);
+        }
+    }
+
+    public function deserializeSession(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('session.storage_type', 'session_storage_type', $parameters, $data);
+        $this->buildParameter('session.db_table', 'session_db_table', $parameters, $data);
+        $this->buildParameter('session.db_id_col', 'session_db_id_col', $parameters, $data);
+        $this->buildParameter('session.db_data_col', 'session_db_data_col', $parameters, $data);
+        $this->buildParameter('session.db_time_col', 'session_db_time_col', $parameters, $data);
+        $this->buildParameter('session.db_dsn', 'session_db_dsn', $parameters, $data);
+        $this->buildParameter('session.db_user', 'session_db_dsn', $parameters, $data);
+        $this->buildParameter('session.db_password', 'session_db_password', $parameters, $data);
+    }
+
+    public function deserializeSecurity(array &$parameters, \stdClass $data)
+    {
+        if (isset($data->security)) {
+            $this->buildParameter('security.form_captcha', 'form_captcha', $parameters, $data);
+            $this->buildParameter('security.form_honeypot', 'form_honeypot', $parameters, $data);
+            $this->buildParameter('security.platform_limit_date', 'platform_limit_date', $parameters, $data);
+            $this->buildParameter('security.platform_init_date', 'platform_init_date', $parameters, $data);
+            $this->buildParameter('security.cookie_lifetime', 'cookie_lifetime', $parameters, $data);
+            $this->buildParameter('security.account_duration', 'account_duration', $parameters, $data);
+            $this->buildParameter('security.default_root_anon_id', 'default_root_anon_id', $parameters, $data);
+            $this->buildParameter('security.anonymous_public_profile', 'anonymous_public_profile', $parameters, $data);
+        }
+    }
+
+    public function deserializeServer(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('server.tmp_dir', 'tmp_dir', $parameters, $data);
+    }
+
+    public function deserializeRegistration(array &$parameters, \stdClass $data)
+    {
+        if (isset($parameters->registration)) {
+            $this->buildParameter('registration.username_regex', 'username_regex', $parameters, $data);
+            $this->buildParameter('registration.self', 'allow_self_registration', $parameters, $data);
+            $this->buildParameter('registration.default_role', 'default_role', $parameters, $data);
+            $this->buildParameter('registration.register_button_at_login', 'register_button_at_login', $parameters, $data);
+            $this->buildParameter('registration.auto_logging', 'auto_logging_after_registration', $parameters, $data);
+            $this->buildParameter('registration.validation', 'registration_mail_validation', $parameters, $data);
+        }
+    }
+
+    public function deserializeAuthentication(array &$parameters, \stdClass $data)
+    {
+        if (isset($data->authentication)) {
+            $this->buildParameter('authentication.redirect_after_login_option', 'redirect_after_login_option', $parameters, $data);
+            $this->buildParameter('authentication.redirect_after_login_url', 'redirect_after_login_url', $parameters, $data);
+            $this->buildParameter('authentication.login_target_route', 'login_target_route', $parameters, $data);
+            $this->buildParameter('authentication.direct_third_party', 'direct_third_party_authentication', $parameters, $data);
+        }
+    }
+
+    public function deserializeWorkspace(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('workspace.max_storage_size', 'max_storage_size', $parameters, $data);
+        $this->buildParameter('workspace.max_upload_resources', 'max_upload_resources', $parameters, $data);
+        $this->buildParameter('workspace.max_workspace_users', 'max_workspace_users', $parameters, $data);
+        $this->buildParameter('workspace.default_tag', 'default_workspace_tag', $parameters, $data);
+        $this->buildParameter('workspace.users_csv_by_full_name', 'workspace_users_csv_import_by_full_name', $parameters, $data);
+        $this->buildParameter('workspace.send_mail_at_registration', 'send_mail_at_workspace_registration', $parameters, $data);
+        $this->buildParameter('workspace.enable_rich_text_file_import', 'enable_rich_text_file_import', $parameters, $data);
+    }
+
+    public function deserializeInternet(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('internet.domain_name', 'domain_name', $parameters, $data);
+        $this->buildParameter('internet.platform_url', 'platform_url', $parameters, $data);
+        $this->buildParameter('internet.google_meta_tag', 'google_meta_tag', $parameters, $data);
+    }
+
+    public function deserializeHelp(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('help.url', 'help_url', $parameters, $data);
+        $this->buildParameter('help.show', 'show_help_button', $parameters, $data);
+        $this->buildParameter('help.support_email', 'support_email', $parameters, $data);
+    }
+
+    public function deserializeGeolocation(array &$parameters, \stdClass $data)
+    {
+        if (isset($data->geolocation->google)) {
+            $this->buildParameter('geolocation.google.geocoding_client_id', 'google_geocoding_client_id', $parameters, $data);
+            $this->buildParameter('geolocation.google.geocoding_signature', 'google_geocoding_signature', $parameters, $data);
+            $this->buildParameter('geolocation.google.geocoding_key', 'google_geocoding_key', $parameters, $data);
+        }
+    }
+
+    public function serializeStatistics(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('statistics.url', 'datas_sending_url', $parameters, $data);
+        $this->buildParameter('statistics.confirmed', 'confirm_send_datas', $parameters, $data);
+        $this->buildParameter('statistics.token', 'token', $parameters, $data);
+    }
+
+    public function deserializeDatabaseRestoration(array &$parameters, \stdClass $data)
+    {
+        $this->buildParameter('database_restoration.auto_validate_email', 'auto_validate_email', $parameters, $data);
+        $this->buildParameter('database_restoration.auto_enable_email_redirect', 'auto_enable_email_redirect', $parameters, $data);
+    }
+
+    public function deserializeTos(array &$parameters, \stdClass $data)
+    {
+        if (isset($data->tos)) {
+            $this->buildParameter('tos.enabled', 'terms_of_service', $parameters, $data);
+            //andle the text here
+        //'text' => ['fr' => '123', 'en' => '456']
+        }
     }
 
     private function buildParameter($serializedPath, $parametersPath, &$parameters, $data)
