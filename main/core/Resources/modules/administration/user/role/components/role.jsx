@@ -17,7 +17,7 @@ const RoleActions = props =>
     <PageAction
       id="roles-list"
       icon="fa fa-list"
-      title={t('cancel')}
+      title={t('back_to_list')}
       action="#/roles"
     />
   </PageActions>

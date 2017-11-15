@@ -18,13 +18,19 @@ import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action
 const Section = props =>
   <Panel
     {...omit(props, ['level', 'title', 'icon', 'actions', 'children'])}
-
     collapsible={true}
     header={
       React.createElement('h'+props.level, {
         className: classes({opened: props.expanded})
       }, [
-        props.icon && <span key="panel-icon" className={props.icon} style={{marginRight: 10}} />,
+        <span
+          key="panel-icon"
+          className={classes(props.icon, {
+            'fa fa-fw fa-caret-down': !props.icon && props.expanded,
+            'fa fa-fw fa-caret-right': !props.icon && !props.expanded
+          })}
+          style={{marginRight: 10}}
+        />,
         props.title,
         0 !== props.actions.length &&
         <div key="panel-actions" className="panel-actions">

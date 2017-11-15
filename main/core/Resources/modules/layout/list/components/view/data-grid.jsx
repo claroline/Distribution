@@ -193,7 +193,7 @@ const DataGrid = props =>
             data={props.card(row, props.size)}
             actions={getRowActions(props.actions)}
             selected={isRowSelected(row, props.selection ? props.selection.current : [])}
-            onSelect={1 < props.count && props.selection ? () => props.selection.toggle(row) : null}
+            onSelect={props.selection ? () => props.selection.toggle(row) : null}
           />
         </li>
       )}

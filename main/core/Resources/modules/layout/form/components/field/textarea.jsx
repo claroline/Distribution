@@ -214,7 +214,7 @@ class Textarea extends Component {
       <ContentEditable
         id={this.props.id}
         minRows={this.props.minRows}
-        content={this.props.value}
+        content={this.props.value || ''}
         disabled={this.props.disabled}
         onChange={this.props.onChange}
         onSelect={this.props.onSelect}
@@ -227,7 +227,7 @@ class Textarea extends Component {
     return (
       <Tinymce
         id={this.props.id}
-        content={this.props.value}
+        content={this.props.value || ''}
         disabled={this.props.disabled}
         onChange={this.props.onChange}
         onSelect={this.props.onSelect}

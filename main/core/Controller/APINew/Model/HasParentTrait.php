@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-trait HasParent
+trait HasParentTrait
 {
     /**
      * @Route("{parent}/move/{child}")

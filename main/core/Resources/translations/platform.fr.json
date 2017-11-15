@@ -1497,5 +1497,12 @@
     "activate_self_registration": "Activer l'auto-inscription",
     "user_enabled": "Actif",
     "platform": "Plateforme",
-    "custom": "Custom"
+    "custom": "Custom",
+    "add_organization": "Ajouter une organisation",
+    "add_sub_organization": "Ajouter une sous-organisation",
+    "back_to_list": "Retour à la liste",
+    "show_advanced_options": "Afficher les paramètres avancés",
+    "hide_advanced_options": "Masquer les paramètres avancés",
+    "parent": "Parent",
+    "managers": "Gestionnaires"
 }
