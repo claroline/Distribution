@@ -1457,6 +1457,9 @@ class UserManager
         $this->strictEventDispatcher->dispatch('log', 'Log\LogUserLogin', [$user]);
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->tokenStorage->setToken($token);
+        $user->setLastLogin(new \DateTime());
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
     }
 
     public function persistUserOptions(UserOptions $options)

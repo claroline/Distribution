@@ -219,6 +219,14 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="last_login", type="datetime", nullable=true)
+     * @Groups({"api_user"})
+     */
+    protected $lastLogin;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="initialization_date", type="datetime", nullable=true)
      * @Groups({"api_user"})
      * @SerializedName("initDate")
@@ -1238,5 +1246,15 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
                 $this->removeRole($role);
             }
         }
+    }
+
+    public function setLastLogin(\DateTime $date)
+    {
+        $this->lastLogin = $date;
+    }
+
+    public function getLastLogin()
+    {
+        return $this->lastLogin;
     }
 }

@@ -72,8 +72,11 @@ class UserSerializer
 
     public function serializeMeta(User $user)
     {
+        $lastLogin = $user->getLastLogin() ? $user->getLastLogin()->format('Y-m-d\TH:i:s'): null;
+
         return [
             'acceptedTerms' => $user->hasAcceptedTerms(),
+            'lastLogin' => $lastLogin,
             'created' => $user->getCreated()->format('Y-m-d\TH:i:s'),
             'description' => $user->getDescription(),
             'mailValidated' => $user->isMailNotified(),

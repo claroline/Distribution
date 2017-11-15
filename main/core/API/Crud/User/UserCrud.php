@@ -55,7 +55,7 @@ class UserCrud
     public function postCreate(CrudEvent $event)
     {
         if (in_array(Options::USER_SELF_LOG, $event->getOptions())) {
-            $this->registration->login($event->getObject());
+            $this->userManager->logUser($event->getObject());
         }
     }
 
