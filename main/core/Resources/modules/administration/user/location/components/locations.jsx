@@ -37,7 +37,8 @@ const Locations = props =>
   <DataList
     name="locations.list"
     fetch={{
-      url: generateUrl('apiv2_location_list')
+      url: generateUrl('apiv2_location_list'),
+      autoload: true
     }}
     delete={{
       url: generateUrl('apiv2_location_delete_bulk'),

@@ -22,7 +22,8 @@ const Roles = () =>
   <DataList
     name="roles.list"
     fetch={{
-      url: generateUrl('apiv2_role_list')
+      url: generateUrl('apiv2_role_list'),
+      autoload: true
     }}
     delete={{
       url: generateUrl('apiv2_role_delete_bulk')

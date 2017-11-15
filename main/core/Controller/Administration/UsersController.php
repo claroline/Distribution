@@ -161,18 +161,8 @@ class UsersController extends Controller
      */
     public function indexAction()
     {
-        $filters = ['page' => 0, 'limit' => 20];
-
         return [
-          'users' => $this->finder->search('Claroline\CoreBundle\Entity\User', $filters),
-          'groups' => $this->finder->search('Claroline\CoreBundle\Entity\Group', $filters),
-          'roles' => $this->finder->search('Claroline\CoreBundle\Entity\Role', $filters),
-          'organizations' => $this->finder->search(
-              'Claroline\CoreBundle\Entity\Organization\Organization',
-              ['hiddenFilters' => ['parent' => null]],
-              [Options::IS_RECURSIVE]
-          ),
-          'locations' => $this->finder->search('Claroline\CoreBundle\Entity\Organization\Location', $filters),
+          // todo : put it in the async load of form
           'parameters' => $this->parametersSerializer->serialize(),
         ];
     }

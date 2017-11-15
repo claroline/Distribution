@@ -22,15 +22,12 @@ const Organizations = props =>
   <DataTreeContainer
     name="organizations.list"
     fetch={{
-      url: generateUrl('apiv2_organization_list')
+      url: generateUrl('apiv2_organization_list_recursive'),
+      autoload: true
     }}
     delete={{
       url: generateUrl('apiv2_organization_delete_bulk'),
-      displayed: (organizations) => 0 !== organizations.filter(organization => {
-        console.log(organization)
-
-        return !organization.meta.default
-      }).length
+      displayed: (organizations) => 0 !== organizations.filter(organization => !organization.meta.default).length
     }}
     definition={[
       {

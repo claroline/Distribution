@@ -22,6 +22,7 @@ class RoleSerializer
     public function serialize(Role $role, array $options = [])
     {
         return [
+            'id' => $role->getUuid(),
             'translationKey' => $role->getTranslationKey(),
             'name' => $role->getName(),
             'meta' => $this->serializeMeta($role, $options),
