@@ -5,7 +5,6 @@ import {t, trans} from '#/main/core/translation'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {select} from '../../selectors'
-import {actions} from '../actions'
 
 class Drops extends Component {
   generateColumns() {
