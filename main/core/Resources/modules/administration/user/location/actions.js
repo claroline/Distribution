@@ -11,7 +11,7 @@ export const actions = {}
 
 actions.geolocate = (location) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('apiv2_location_geolocate', {uuid: location.uuid}),
+    url: generateUrl('apiv2_location_geolocate', {id: location.id}),
     success: (data, dispatch) => dispatch(listActions.fetchData('locations'))
   }
 })

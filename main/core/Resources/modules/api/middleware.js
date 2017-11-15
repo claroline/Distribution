@@ -44,7 +44,7 @@ function handleResponseSuccess(data, success) {
 
 function handleResponseError(error, failure, request, next) {
   if (failure) {
-    invariant(isFunction(failure), '`failure` should be a function')
+    invariant(isFunction(failure), '`error` should be a function')
   } else {
     failure = () => {}
   }
@@ -147,7 +147,7 @@ function getRequest(request = {}) {
 }
 
 function doFetch(requestParameters, next) {
-  const {url, route, request, before, success, failure} = requestParameters
+  const {url, route, request, before, success, error} = requestParameters
   const finalUrl = getUrl(url, route)
   const finalRequest = getRequest(request)
 
@@ -158,7 +158,7 @@ function doFetch(requestParameters, next) {
     .then(response => getResponseData(response))
     .then(
       data => next(handleResponseSuccess(data, success)),
-      error => next(handleResponseError(error, failure, requestParameters, next))
+      rError => next(handleResponseError(rError, error, requestParameters, next))
     )
 }
 

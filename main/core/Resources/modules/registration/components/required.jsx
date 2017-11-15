@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
 
 import {t} from '#/main/core/translation'
+import {FormContainer} from '#/main/core/layout/form/containers/form.jsx'
+import {PasswordGroup} from '#/main/core/layout/form/components/group/password-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 import {actions} from '#/main/core/registration/actions'
 import {select} from '#/main/core/registration/selectors'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import {validate, validateProperty} from '#/main/core/registration/validator'
+import {validate} from '#/main/core/registration/validator'
 
 class Required extends Component
 {
@@ -15,9 +17,6 @@ class Required extends Component
   }
 
   onChange(property, value) {
-    //test the property here
-    validateProperty(this.props.errors, property, value)
-    console.log(this.props.errors)
     this.props.onChange(property, value)
   }
 
@@ -44,12 +43,19 @@ class Required extends Component
         onChange={text => this.onChange('username', text)}
         error={this.props.errors.username}
       />
-      <TextGroup
+      <PasswordGroup
         id={`register-password`}
         label={t('password')}
         value={this.props.user.plainPassword}
         onChange={text => this.onChange('plainPassword', text)}
         error={this.props.errors.plainPassword}
+      />
+      <PasswordGroup
+        id={`register-password-confirm`}
+        label={t('password-confirm')}
+        value={this.props.user.confirmPlainPassword}
+        onChange={text => this.onChange('confirmPlainPassword', text)}
+        error={this.props.errors.confirmPlainPassword}
       />
       <TextGroup
         id={`register-email`}
@@ -68,9 +74,8 @@ Required.propTypes = {
 }
 
 Required.defaultProps = {
-    user: {
-
-    }
+    user: {},
+    tryValidate: T.func.isRequired
 }
 
 function mapDispatchToProps(dispatch) {

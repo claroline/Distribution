@@ -96,7 +96,8 @@ class UsersController extends Controller
      *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
      *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
      *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
-     *     "finder"                 = @DI\Inject("claroline.api.finder")
+     *     "finder"                 = @DI\Inject("claroline.api.finder"),
+     *     "parametersSerializer"   = @DI\Inject("claroline.serializer.parameters")
      * })
      */
     public function __construct(
@@ -119,7 +120,8 @@ class UsersController extends Controller
         UserManager $userManager,
         WorkspaceManager $workspaceManager,
         GroupManager $groupManager,
-        FinderProvider $finder
+        FinderProvider $finder,
+        $parametersSerializer
     ) {
         $this->authenticationManager = $authenticationManager;
         $this->configHandler = $configHandler;
@@ -142,6 +144,7 @@ class UsersController extends Controller
         $this->groupManager = $groupManager;
         $this->tokenStorage = $tokenStorage;
         $this->finder = $finder;
+        $this->parametersSerializer = $parametersSerializer;
     }
 
     /**
@@ -170,7 +173,7 @@ class UsersController extends Controller
               [Options::IS_RECURSIVE]
           ),
           'locations' => $this->finder->search('Claroline\CoreBundle\Entity\Organization\Location', $filters),
-          'parameters' => $this->configHandler->getParameters(),
+          'parameters' => $this->parametersSerializer->serialize(),
         ];
     }
 

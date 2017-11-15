@@ -43,7 +43,7 @@ actions.saveConfiguration = () => (dispatch, getState) => {
         dispatch(actions.updateConfigurationMessage(trans('configuration_saved_success_msg', {}, 'bbb'), 'success'))
         dispatch(actions.getMeetings())
       },
-      failure: (data, dispatch) => {
+      error: (data, dispatch) => {
         dispatch(actions.updateConfigurationMessage(trans('configuration_saved_error_msg', {}, 'bbb'), 'danger'))
       }
     }

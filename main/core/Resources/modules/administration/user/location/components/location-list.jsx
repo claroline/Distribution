@@ -39,8 +39,8 @@ const LocationList = {
 
 
 function getCoordinates(location) {
-  if (location.latitude && location.longitude) {
-    return location.latitude + ' - ' + location.longitude
+  if (location.gps.latitude && location.gps.longitude) {
+    return location.gps.latitude + ' - ' + location.gps.longitude
   }
 }
 

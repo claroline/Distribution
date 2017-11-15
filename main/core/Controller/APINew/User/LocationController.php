@@ -31,9 +31,9 @@ class LocationController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{uuid}/geolocate", name="apiv2_location_geolocate")
+     * @Route("/{id}/geolocate", name="apiv2_location_geolocate")
      * @Method("GET")
-     * @ParamConverter("location", class="Claroline\CoreBundle\Entity\Organization\Location", options={"uuid" = "id"})
+     * @ParamConverter("location", options={"mapping": {"id": "uuid"}})
      */
     public function geolocateAction(Location $location)
     {

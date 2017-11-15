@@ -32,11 +32,7 @@ const Role = props =>
         title: t('general'),
         primary: true,
         fields: [
-          {
-            name: 'name',
-            type: 'string',
-            label: t('name')
-          }
+          {name: 'translationKey', type: 'string', label: t('name'), required: true}
         ]
       }
     ]}

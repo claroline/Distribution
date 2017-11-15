@@ -33,11 +33,11 @@ const User = () =>
         title: t('general'),
         primary: true,
         fields: [
-          {
-            name: 'username',
-            type: 'string',
-            label: t('username')
-          }
+          {name: 'username', type: 'string', label: t('username'), required: true},
+          {name: 'firstName', type: 'string', label: t('first_name'), required: true},
+          {name: 'lastName', type: 'string', label: t('last_name'), required: true},
+          {name: 'email', type: 'string', label: t('email'), required: true},
+          {name: 'plainPassword', type: 'string', label: t('password (needs to be double + hidden)'), required: true},
         ]
       }
     ]}

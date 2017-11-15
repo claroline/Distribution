@@ -146,7 +146,7 @@ class UserSerializer
     public function deserialize(\stdClass $data, User $user = null, array $options = [])
     {
         //remove this later (with the Trait)
-        $object = $this->serializer->deserialize($data, $user, $options);
+        $object = $this->genericSerializer->deserialize($data, $user, $options);
 
         //@todo rename mail into email later
         if (isset($data->plainPassword)) {

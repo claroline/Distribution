@@ -9,24 +9,24 @@ import {Optional} from '#/main/core/registration/components/optional.jsx'
 import {select} from '#/main/core/registration/selectors'
 import {connect} from 'react-redux'
 import {actions} from '#/main/core/registration/actions'
-import {validate} from '#/main/core/registration/validator'
+import {validate, isValid} from '#/main/core/registration/validator'
 
 class UserRegistration extends Component
 {
   constructor(props) {
     super(props)
+  }
 
-    this.state = {
-      errors: {}
-    }
-
-    this.save = this.tryValidate.bind(this)
-    //this.props.onCreate = this.props.onCreate.bind(this)
+  onCreate() {
+    this.props.onCreate(this.props.user)
   }
 
   render() {
     return(<div>
-      <Required user={this.props.user} errors={this.state.errors} />
+      <Required
+        user={this.props.user}
+        errors={this.props.user.errors}
+      />
       {/*
         <Optional user={props.user}/>
         <Facet user={props.user}/>
@@ -35,8 +35,9 @@ class UserRegistration extends Component
         <button
           className="btn btn-primary"
           onClick={() => {
-            this.tryValidate()
-            props.onCreate(this.props.user)
+            if (isValid(this.props.user)) {
+              this.onCreate()
+            }
           }}
         >
           {t('validate')}
@@ -45,14 +46,6 @@ class UserRegistration extends Component
       </div>
     </div>
   )}
-
-  tryValidate() {
-    const errors = validate(this.props.user)
-
-    this.setState({
-      errors: validate(this.props.user)
-    })
-  }
 }
 
 

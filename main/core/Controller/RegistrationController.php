@@ -93,7 +93,15 @@ class RegistrationController extends Controller
         $this->checkAccess();
         //registerationManager might be removed later on
 
-        return [];
+        return [
+          'options' => [
+            'localeLanguage' => $this->configHandler->getParameter('locale_language'),
+            'defaultRole' => $this->configHandler->getParameter('default_role'),
+            'redirectAfterLoginOption' => $this->configHandler->getParameter('redirect_after_login_option'),
+            'redirectAfterLoginUrl' => $this->configHandler->getParameter('redirect_after_login_url'),
+            'userNameRegex' => $this->configHandler->getParameter('username_regex')
+          ]
+        ];
     }
 
     /**
