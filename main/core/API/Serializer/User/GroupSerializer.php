@@ -71,7 +71,9 @@ class GroupSerializer
      */
     public function deserialize($data, Group $group = null, array $options = [])
     {
-        $group->setName($data->name);
+        if (isset($data->name)) {
+            $group->setName($data->name);
+        }
 
         if (isset($data->organizations)) {
             $group->setOrganizations(

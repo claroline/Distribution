@@ -16,6 +16,7 @@ class LocationSerializer
         return [
           'id' => $location->getUuid(),
           'name' => $location->getName(),
+          'street' => $location->getStreet(),
           'boxNumber' => $location->getBoxNumber(),
           'streetNumber' => $location->getStreetNumber(),
           'pc' => $location->getPc(),
@@ -32,6 +33,7 @@ class LocationSerializer
     public function deserialize($data, Location $location = null, array $options = [])
     {
         $this->addIfPropertyExists('name', 'setName', $data, $location);
+        $this->addIfPropertyExists('street', 'setStreet', $data, $location);
         $this->addIfPropertyExists('boxNumber', 'setBoxNumber', $data, $location);
         $this->addIfPropertyExists('street', 'setStreet', $data, $location);
         $this->addIfPropertyExists('streetNumber', 'setStreetNumber', $data, $location);
