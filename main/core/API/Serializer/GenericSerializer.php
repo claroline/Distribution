@@ -45,6 +45,8 @@ class GenericSerializer
     public function deserialize($data, $object, array $options = [])
     {
         $properties = $this->getSerializableProperties($object, [self::INCLUDE_MANY_TO_ONE]);
+        //update the mapObjectToEntity method instead of doing this
+        $data  = json_decode(json_encode($data));
 
         return $this->mapObjectToEntity(
             $properties,

@@ -71,19 +71,19 @@ class GroupSerializer
      */
     public function deserialize($data, Group $group = null, array $options = [])
     {
-        if (isset($data->name)) {
-            $group->setName($data->name);
+        if (isset($data['name'])) {
+            $group->setName($data['name']);
         }
 
-        if (isset($data->organizations)) {
+        if (isset($data['organizations'])) {
             $group->setOrganizations(
-                array_map(function (\stdClass $organization) use ($options) {
+                array_map(function ($organization) use ($options) {
                     return $this->serializer->deserialize(
                         'Claroline\CoreBundle\Entity\Organization\Organization',
                         $organization,
                         $options
                     );
-                }, $data->organizations)
+                }, $data['organizations'])
             );
         }
 

@@ -151,16 +151,16 @@ class UserSerializer
         $object = $this->genericSerializer->deserialize($data, $user, $options);
 
         //@todo rename mail into email later
-        if (isset($data->plainPassword)) {
-            $object->setMail($data->email);
+        if (isset($data['email'])) {
+            $object->setMail($data['email']);
         }
 
-        if (isset($data->plainPassword)) {
-            $object->setPlainPassword($data->plainPassword);
+        if (isset($data['plainPassword'])) {
+            $object->setPlainPassword($data['plainPassword']);
         }
 
-        if (isset($data->isEnabled)) {
-            $object->setIsEnabled($data->isEnabled);
+        if (isset($data['isEnabled'])) {
+            $object->setIsEnabled($data['isEnabled']);
         }
 
         return $object;

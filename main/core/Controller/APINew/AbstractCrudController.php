@@ -36,7 +36,7 @@ abstract class AbstractCrudController extends ContainerAware
      *
      * @return string
      */
-    abstract function getName();
+    abstract public function getName();
 
     public function setContainer(ContainerInterface $container = null)
     {
@@ -133,7 +133,7 @@ abstract class AbstractCrudController extends ContainerAware
 
     protected function decodeRequest(Request $request)
     {
-        return json_decode($request->getContent());
+        return json_decode($request->getContent(), true);
     }
 
     protected function decodeIdsString(Request $request, $class)

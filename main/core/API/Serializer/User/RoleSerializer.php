@@ -57,12 +57,12 @@ class RoleSerializer
      */
     public function deserialize($data, Role $role = null, array $options = [])
     {
-        if (isset($data->translationKey)) {
-            $role->setTranslationKey($data->translationKey);
+        if (isset($data['translationKey'])) {
+            $role->setTranslationKey($data['translationKey']);
             //2 roles can have the same translationKey while the name is unique, for now we only allow to create
             //platform roles so it's not an issue but it's going to need improvements
             //when workspaces and custom roles will be supported
-            $role->setName('ROLE_' . str_replace(' ', '_', strtoupper($data->translationKey)));
+            $role->setName('ROLE_' . str_replace(' ', '_', strtoupper($data['translationKey'])));
         }
 
         return $role;

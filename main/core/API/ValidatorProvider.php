@@ -15,7 +15,7 @@ class ValidatorProvider
 {
     const CREATE = 'create';
     const UPDATE = 'update';
-    
+
     private $om;
 
     /**
@@ -109,12 +109,10 @@ class ValidatorProvider
             $qb->select('DISTINCT o')
              ->from($class, 'o')
              ->where("o.{$entityProp} LIKE :{$entityProp}")
-             ->setParameter($entityProp, $data->{$dataProp})
-             ->getQuery()
-             ->getResult();
+             ->setParameter($entityProp, $data[$dataProp]);
 
-            if (isset($data->id)) {
-                $qb->setParameter('uuid', $data->id)
+            if ($mode === self::UPDATE) {
+                $qb->setParameter('uuid', $data['id'])
                  ->andWhere('o.uuid != :uuid');
             }
 
@@ -126,7 +124,7 @@ class ValidatorProvider
         }
 
         //custom validation
-        $errors = $validator->validate($data);
+        $errors = array_merge($errors, $validator->validate($data));
 
         if (!empty($errors) && $throwException) {
             throw new InvalidDataException(

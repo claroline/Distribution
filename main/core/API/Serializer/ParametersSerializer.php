@@ -451,8 +451,8 @@ class ParametersSerializer
         $value = $data;
         $keys = explode('.', $serializedPath);
         foreach ($keys as $key) {
-            if (isset($value->{$key})) {
-                $value = $value->{$key};
+            if (isset($value[$key])) {
+                $value = $value[$key];
             } else {
                 //no key = keep old value and don't do anything
                 return;

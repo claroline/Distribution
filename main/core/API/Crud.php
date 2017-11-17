@@ -71,7 +71,7 @@ class Crud
     public function create($class, $data, array $options = [])
     {
         // validates submitted data.
-        $errors = $this->validate($class, $data, $options);
+        $errors = $this->validate($class, $data, ValidatorProvider::CREATE);
 
         if (count($errors) > 0) {
             return $errors;
@@ -103,7 +103,7 @@ class Crud
     public function update($class, $data, array $options = [])
     {
         // validates submitted data.
-        $this->validate($class, $data, $options);
+        $this->validate($class, $data, ValidatorProvider::UPDATE);
 
         // gets entity from raw data.
         $object = $this->serializer->deserialize($class, $data, $options);
@@ -224,14 +224,15 @@ class Crud
      *
      * @param string $class - the class of the entity used for validation
      * @param mixed  $data  - the serialized data to validate
+     * @param string $mode  - the validation mode
      */
-    public function validate($class, $data, $options)
+    public function validate($class, $data, $mode)
     {
         $errors = [];
 
         if ($this->validator->has($class)) {
             // calls the validator for class. It will throw exception on error
-            $errors = $this->validator->validate($class, $data, true);
+            $errors = $this->validator->validate($class, $data, $mode, true);
         }
 
         return $errors;

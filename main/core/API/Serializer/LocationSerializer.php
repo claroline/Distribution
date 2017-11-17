@@ -47,8 +47,8 @@ class LocationSerializer
 
     private function addIfPropertyExists($prop, $setter, $data, Location $location)
     {
-        if (isset($data->{$prop})) {
-            $location->$setter($data->{$prop});
+        if (isset($data[$prop])) {
+            $location->$setter($data[$prop]);
         }
     }
 

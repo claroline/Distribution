@@ -15,4 +15,11 @@ interface ValidatorInterface
      * @return array - the list of found errors (should used prop names as keys)
      */
     public function validate($data);
+
+    /**
+     * A list of unique properties you want to check (they will be checked by
+     * the provider so the validate method is easier)
+     * with the format [$dataPropName => $entityPropName]
+     */
+    public function getUniqueFields();
 }

@@ -120,11 +120,9 @@ class SerializerProvider
 
             //maybe move that chunk of code somewhere else
             if (!$object) {
-                $properties = get_object_vars($data);
-
-                foreach (array_keys($properties) as $property) {
+                foreach (array_keys($data) as $property) {
                     if (method_exists($serializer, 'getIdentifiers') && in_array($property, $serializer->getIdentifiers()) && !$object) {
-                        $object = $this->om->getRepository($class)->findOneBy([$property => $data->{$property}]);
+                        $object = $this->om->getRepository($class)->findOneBy([$property => $data[$property]]);
                     }
                 }
             }
