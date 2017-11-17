@@ -16,7 +16,7 @@ const defaultState = {
   validating: false,
   pendingChanges: false,
   errors: {},
-  data: {}
+  data: null
 }
 
 const newReducer = makeInstanceReducer(defaultState.new, {
@@ -29,13 +29,13 @@ const newReducer = makeInstanceReducer(defaultState.new, {
  */
 const validatingReducer = makeInstanceReducer(defaultState.validating, {
   [FORM_RESET]: () => defaultState.validating,
-  [FORM_SUBMIT]: (state, action) => true,
-  [FORM_UPDATE_PROP]: (state, action) => false
+  [FORM_SUBMIT]: () => true,
+  [FORM_UPDATE_PROP]: () => false
 })
 
 const pendingChangesReducer = makeInstanceReducer(defaultState.pendingChanges, {
   [FORM_RESET]: () => defaultState.pendingChanges,
-  [FORM_UPDATE_PROP]: (state, action) => true
+  [FORM_UPDATE_PROP]: () => true
 })
 
 /**
@@ -50,7 +50,7 @@ const errorsReducer = makeInstanceReducer(defaultState.errors, {
  * Reduces the data of the form.
  */
 const dataReducer = makeInstanceReducer(defaultState.data, {
-  [FORM_RESET]: (state, action) => action.data || defaultState.data,
+  [FORM_RESET]: (state, action) => action.data || {},
   [FORM_UPDATE_PROP]: (state, action) => {
     const newState = cloneDeep(state)
 

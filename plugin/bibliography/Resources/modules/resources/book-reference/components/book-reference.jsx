@@ -6,14 +6,16 @@ import {ResourceContainer} from '#/main/core/layout/resource/containers/resource
 import {Routes, Router} from '#/main/core/router'
 import {Player} from './player.jsx'
 import {Editor} from './editor.jsx'
+import {select as formSelect} from '#/main/core/layout/form/selectors'
+import {actions as formActions} from '#/main/core/layout/form/actions'
 
 const BookReference = props =>
   <ResourceContainer
     editor={{
-      //opened: props.formOpened,
+      opened: props.formOpened,
       open: '#/edit',
       save: {
-        disabled: !props.formPendingChanges || (props.formValidating && !props.formValid),
+        disabled: !props.saveEnabled,
         action: () => {}
       }
     }}
@@ -27,24 +29,32 @@ const BookReference = props =>
         },
         {
           path: '/edit',
-          component: Editor
+          component: Editor,
+          onEnter: () => props.openForm(props.bookReference)
         }
       ]}/>
     </Router>
   </ResourceContainer>
 
 BookReference.propTypes = {
-  formPendingChanges: T.bool,
-  formValidating: T.bool,
-  formValid: T.bool
+  saveEnabled: T.bool.isRequired,
+  bookReference: T.object.isRequired,
+  openForm: T.func.isRequired,
+  formOpened: T.bool.isRequired
 }
 
-function mapStateToProps() {
-  return {}
+function mapStateToProps(state) {
+  return {
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'bookReferenceForm')),
+    bookReference: state.bookReference,
+    formOpened: formSelect.data(formSelect.form(state, 'bookReferenceForm')) !== null
+  }
 }
 
-function mapDispatchToProps() {
-  return {}
+function mapDispatchToProps(dispatch) {
+  return {
+    openForm(bookReferenceData) { dispatch(formActions.resetForm('bookReferenceForm', bookReferenceData)) }
+  }
 }
 
 const ConnectedBookReference = connect(mapStateToProps, mapDispatchToProps)(BookReference)

@@ -7,6 +7,7 @@ import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
 import {BookReference} from './components/book-reference.jsx'
 import {reducer} from './reducer'
+import { makeFormReducer } from '#/main/core/layout/form/reducer'
 
 // mount the react application
 bootstrap(
@@ -20,16 +21,10 @@ bootstrap(
   {
     // there is no editor for now, so we just init a static store
     bookReference: reducer,
-
+    bookReferenceForm: makeFormReducer('bookReferenceForm'),
     // generic reducers
     currentRequests: apiReducer,
     modal: modalReducer,
     resourceNode: resourceReducer
-  },
-  initialData => ({
-    bookReference: {
-      data: initialData.bookReference
-    },
-    resourceNode: initialData.resourceNode
-  })
+  }
 )

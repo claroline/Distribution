@@ -5,14 +5,14 @@ import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
 import {PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 
-const BookReferenceSaveAction = makeSaveAction('bookReference', formData => ({
+const BookReferenceSaveAction = makeSaveAction('bookReferenceForm', formData => ({
   update: ['apiv2_book_reference_update', {id: formData.id}]
 }))(PageAction)
 
 const Editor = () =>
   <Form
     level={3}
-    name="bookReference"
+    name="bookReferenceForm"
     sections={[
       {
         id: 'general',

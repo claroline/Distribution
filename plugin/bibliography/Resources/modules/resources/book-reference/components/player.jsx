@@ -53,7 +53,7 @@ Player.propTypes = {
 
 const ConnectedPlayer = connect(
   state => ({
-    'bookReference': state.bookReference.data
+    'bookReference': state.bookReference
   }),
   null
 )(Player)
