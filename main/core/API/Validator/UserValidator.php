@@ -85,13 +85,13 @@ class UserValidator implements ValidatorInterface
         }
     }
 
-    public function getUnique()
-    {
-        return ['username', 'mail', 'email' /*alias */];
-    }
-
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\User';
+    }
+
+    public function getUniqueFields()
+    {
+        return [];
     }
 }

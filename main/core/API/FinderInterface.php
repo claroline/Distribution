@@ -18,4 +18,5 @@ interface FinderInterface
     //the queried object is already named "obj".
     public function configureQueryBuilder(QueryBuilder $qb, array $searches, array $sortBy = null);
     public function getClass();
+    public function getUnique();
 }

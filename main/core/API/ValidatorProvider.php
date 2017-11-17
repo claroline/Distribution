@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Claroline\CoreBundle\API\Validator\CustomValidationException;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -12,12 +13,32 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class ValidatorProvider
 {
+    const CREATE = 'create';
+    const UPDATE = 'update';
+    
+    private $om;
+
     /**
      * The list of registered validators in the platform.
      *
      * @var array
      */
     private $validators = [];
+
+    /**
+     * GroupValidator constructor.
+     *
+     * @DI\InjectParams({
+     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     * })
+     *
+     * @param ObjectManager $om
+     */
+    public function __construct(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
+
 
     /**
      * Registers a new validator.
@@ -72,10 +93,40 @@ class ValidatorProvider
      *
      * @throws InvalidDataException
      */
-    public function validate($class, $data, $throwException = false)
+    public function validate($class, $data, $mode, $throwException = false)
     {
         //todo: implements json-schema aswell
-        $errors = $this->get($class)->validate($data);
+        //validate uniques
+        $validator = $this->get($class);
+        //can be deduced from the mapping, but we won't know
+        //wich field is related to wich data prop in that case
+        $uniqueFields = $validator->getUniqueFields();
+        $errors = [];
+
+        foreach ($uniqueFields as $dataProp => $entityProp) {
+            $qb = $this->om->createQueryBuilder();
+
+            $qb->select('DISTINCT o')
+             ->from($class, 'o')
+             ->where("o.{$entityProp} LIKE :{$entityProp}")
+             ->setParameter($entityProp, $data->{$dataProp})
+             ->getQuery()
+             ->getResult();
+
+            if (isset($data->id)) {
+                $qb->setParameter('uuid', $data->id)
+                 ->andWhere('o.uuid != :uuid');
+            }
+
+            $objects = $qb->getQuery()->getResult();
+
+            if (count($objects) > 0) {
+                $errors[] = ['path' => $dataProp, 'message' => "{$dataProp}_exists"];
+            }
+        }
+
+        //custom validation
+        $errors = $validator->validate($data);
 
         if (!empty($errors) && $throwException) {
             throw new InvalidDataException(
