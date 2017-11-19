@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller;
 
+use Claroline\CoreBundle\API\FinderProvider;
+use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializerBuilder;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -19,19 +21,51 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PortalController extends Controller
 {
+    private $finder;
+
+    /**
+     * PortalController constructor.
+     *
+     * @DI\InjectParams({
+     *     "finder" = @DI\Inject("claroline.api.finder")
+     * })
+     *
+     * @param FinderProvider $finder
+     */
+    public function __construct(FinderProvider $finder)
+    {
+        $this->finder = $finder;
+    }
+
     /**
      * @EXT\Route("/", name="claro_portal_index")
      * @EXT\Route("/{path}", name="claro_portal_index_2", requirements={"path" = "^((?!api).)*$"})
      * @EXT\Method({"GET", "HEAD"})
      * @EXT\Template("ClarolineCoreBundle:Portal:index.html.twig")
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction()
     {
-        $types = $this->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypesForSearch();
+        $result = $this->finder->search(
+            'Claroline\CoreBundle\Entity\Resource\ResourceNode', [
+                'limit' => 20,
+                'filters' => [
+                    'publishedToPortal' => true,
+                    'resourceType' => $this->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypes(),
+                ],
+                'sortBy' => 'name',
+            ]
+        );
 
-        return array('types' => $types);
+        // unset filters
+        foreach ($result['filters'] as $key => $value) {
+            if ($value['property'] === 'publishedToPortal' || $value['property'] === 'resourceType') {
+                unset($result['filters'][$key]);
+            }
+        }
+
+        return [
+            'resources' => $result,
+        ];
     }
 
     /**
