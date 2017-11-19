@@ -1,0 +1,92 @@
+import React from 'react'
+import {connect} from 'react-redux'
+
+import {t, trans, transChoice} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/fos-js-router'
+
+import {localeDate} from '#/main/core/layout/data/types/date/utils'
+
+import {
+  PageContainer as Page,
+  PageHeader,
+  PageContent
+} from '#/main/core/layout/page'
+
+import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+
+const PortalPage = () =>
+  <Page id="portal">
+    <PageHeader title={t('portal')}>
+    </PageHeader>
+
+    <PageContent>
+      <DataList
+        name="portal"
+        definition={[
+          {
+            name: 'name',
+            label: t('name'),
+            renderer: (rowData) => {
+              // variables is used because React will use it has component display name (eslint requirement)
+              const wsLink = <a href={generateUrl('claro_resource_open', {node: rowData.id, resourceType: rowData.meta.type})}>{rowData.name}</a>
+
+              return wsLink
+            },
+            displayed: true
+          }, {
+            name: 'meta.created',
+            label: t('creation_date'),
+            type: 'date',
+            alias: 'creationDate',
+            displayed: true,
+            filterable: false
+          }, {
+            name: 'createdAfter',
+            label: t('created_after'),
+            type: 'date',
+            displayable: false
+          }, {
+            name: 'createdBefore',
+            label: t('created_before'),
+            type: 'date',
+            displayable: false
+          }
+        ]}
+
+        card={(row) => ({
+          onClick: generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}),
+          poster: row.poster ? '/' + row.poster : (row.youtubePoster ? row.youtubePoster : null),
+          icon: !row.youtubePoster || row.youtubePoster === null ?
+                  <span className="item-icon-container" style={{
+                    backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }}>
+                  </span> : <span className="item-icon-container no-opacity"></span>,
+          title: row.name,
+          subtitle: row.code,
+          contentText: null,
+          flags: [].filter(flag => !!flag),
+          footer:
+            <span>
+              {t('published_at')} <b>{localeDate(row.meta.created)}</b>
+            </span>,
+          footerLong:
+            <span>
+              <span className="description">{row.description}</span>
+              <b>{trans(row.meta.type, {}, 'resource')}</b> {t('published_at')} {localeDate(row.meta.created)}
+              <span className="creator"> {t('by')} {row.meta.creator ? row.meta.creator.name: t('unknown')}</span><br />
+              <span className="social"><i className="fa fa-eye" aria-hidden="true"></i> {transChoice('display_views', row.views, {'%count%': row.views}, 'platform')}
+                &nbsp;
+                <i className="fa fa-heart" aria-hidden="true"></i> {transChoice('nb_likes', row.likes, {'%count%': row.likes}, 'icap_socialmedia')}</span>
+            </span>
+        })}
+      />
+    </PageContent>
+  </Page>
+
+const Portal = connect(null, null)(PortalPage)
+
+export {
+  Portal
+}
