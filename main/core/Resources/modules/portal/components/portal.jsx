@@ -66,7 +66,6 @@ const PortalPage = () =>
           title: row.name,
           subtitle: row.code,
           contentText: null,
-          flags: [].filter(flag => !!flag),
           footer:
             <span>
               {t('published_at')} <b>{localeDate(row.meta.created)}</b>
@@ -76,9 +75,9 @@ const PortalPage = () =>
               <span className="description">{row.description}</span>
               <b>{trans(row.meta.type, {}, 'resource')}</b> {t('published_at')} {localeDate(row.meta.created)}
               <span className="creator"> {t('by')} {row.meta.creator ? row.meta.creator.name: t('unknown')}</span><br />
-              <span className="social"><i className="fa fa-eye" aria-hidden="true"></i> {transChoice('display_views', row.views, {'%count%': row.views}, 'platform')}
+              <span className="social"><i className="fa fa-eye" aria-hidden="true"></i> {transChoice('display_views', row.meta.views, {'%count%': row.meta.views}, 'platform')}
                 &nbsp;
-                <i className="fa fa-heart" aria-hidden="true"></i> {transChoice('nb_likes', row.likes, {'%count%': row.likes}, 'icap_socialmedia')}</span>
+                <i className="fa fa-heart" aria-hidden="true"></i> {transChoice('nb_likes', row.social.likes, {'%count%': row.social.likes}, 'icap_socialmedia')}</span>
             </span>
         })}
       />

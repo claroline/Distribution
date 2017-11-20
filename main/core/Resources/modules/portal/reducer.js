@@ -4,7 +4,8 @@ import {makeListReducer} from '#/main/core/layout/list/reducer'
 const portalReducer = makeReducer([], {})
 
 const reducer = makeListReducer({
-  data: portalReducer
+  data: portalReducer,
+  selectable: false
 })
 
 export {

@@ -1,18 +1,14 @@
 <?php
 
-namespace Claroline\CoreBundle\Controller\API\Portal;
+namespace Claroline\CoreBundle\Controller\APINew\Resource;
 
 use Claroline\CoreBundle\API\FinderProvider;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use FOS\RestBundle\Controller\FOSRestController;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @NamePrefix("api_")
- */
-class PortalController extends FOSRestController
+class PortalController
 {
     /** @var FinderProvider */
     private $finder;
@@ -32,13 +28,13 @@ class PortalController extends FOSRestController
     }
 
     /**
-     * @Get("/resourcenode", name="get_search_resource_nodes", options={ "method_prefix" = false })
+     * @Get("/portal", name="apiv2_portal_index", options={ "method_prefix" = false })
      *
      * @param Request $request
      *
      * @return array
      */
-    public function getSearchResourceNodesAction(Request $request)
+    public function indexAction(Request $request)
     {
         $options = $request->query->all();
 
@@ -54,6 +50,7 @@ class PortalController extends FOSRestController
         );
 
         // unset filters
+        //TODO: this workaround will be avoidable after the merge of #2901 by using the hiddenFilters key in $options to to hide the filters in the client.
         foreach ($result['filters'] as $key => $value) {
             if ($value['property'] === 'publishedToPortal' || $value['property'] === 'resourceType') {
                 unset($result['filters'][$key]);

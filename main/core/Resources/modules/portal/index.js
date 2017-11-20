@@ -31,7 +31,7 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => ({
     portal: merge({}, initialData.portal, {
-      fetchUrl: generateUrl('api_get_search_resource_nodes')
+      fetchUrl: generateUrl('apiv2_portal_index')
     })
   })
 )
