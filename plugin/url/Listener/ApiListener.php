@@ -33,6 +33,8 @@ class ApiListener
     {
         $resource = $this->om->getRepository('HeVinciUrlBundle:Url')->findOneByResourceNode($event->getResourceNode());
 
+        $isYoutube = false;
+
         // Detect if an automatic poster can be displayed if none has been defined
         if ($event->getInjectedData()['poster'] === null && $resource !== null) {
 
@@ -41,8 +43,13 @@ class ApiListener
             if ($youtubeId !== false) {
                 $thumbnailUrl = 'http://img.youtube.com/vi/'.$youtubeId.'/hqdefault.jpg';
                 $event->add('poster', $thumbnailUrl);
+                $isYoutube = true;
             }
         }
+
+        $event->add('url', [
+            'isYoutube' => $isYoutube,
+        ]);
     }
 
     private function getYoutubeId($url)
