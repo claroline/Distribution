@@ -5,7 +5,7 @@ const compilatioValue = 0
 const toolTypes = [
   {
     type: compilatioValue,
-    name: trans('compilatio', {}, 'dropzone'),
+    name: 'Compilatio',
     icon: 'fa fa-copy'
   }
 ]

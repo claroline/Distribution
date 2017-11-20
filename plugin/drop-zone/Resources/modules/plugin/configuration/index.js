@@ -1,9 +1,9 @@
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {registerModalTypes} from '#/main/core/layout/modal'
 
-import {reducer} from './reducer'
-import {Tools} from './components/tools.jsx'
-import {CompilatioFormModal} from './components/modal/compilatio-form-modal.jsx'
+import {reducer} from '#/plugin/drop-zone/plugin/configuration/reducer'
+import {Tools} from '#/plugin/drop-zone/plugin/configuration/components/tools.jsx'
+import {CompilatioFormModal} from '#/plugin/drop-zone/plugin/configuration/components/modal/compilatio-form-modal.jsx'
 
 // mount the react application
 bootstrap(

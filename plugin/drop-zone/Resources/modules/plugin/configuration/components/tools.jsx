@@ -21,50 +21,49 @@ import {actions} from '#/plugin/drop-zone/plugin/configuration/actions'
 import {generateId} from '#/plugin/drop-zone/resources/dropzone/utils'
 
 class Tools extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      tool: {},
-      showForm: false
-    }
+  showCompilatioForm(tool = null) {
+    const toolForm = !tool ?
+      {
+        id: generateId(),
+        name: '',
+        type: constants.compilatioValue,
+        data: {
+          url: 'http://service.compilatio.net/webservices/CompilatioUserClient2.wsdl',
+          key: null
+        }
+      } :
+      tool
+    this.props.loadToolForm(toolForm)
+
+    this.props.showModal('MODAL_COMPILATIO_FORM', {
+      title: trans('compilatio_configuration', {}, 'dropzone')
+    })
   }
 
   showForm() {
     this.props.showModal(MODAL_GENERIC_TYPE_PICKER, {
       title: trans('tool_type_selection_title', {}, 'dropzone'),
       types: constants.toolTypes,
-      handleSelect: (type) => console.log(type)
+      handleSelect: (type) => this.handleToolTypeSelection(type)
     })
-    // const tool =  {
-    //   id: generateId(),
-    //   name: '',
-    //   type: 0,
-    //   data: {
-    //     url: null,
-    //     key: null
-    //   }
-    // }
-    // this.setState({tool: tool, showForm: true})
   }
 
-  saveTool() {
-    this.props.saveTool(this.state.tool)
-    this.setState({tool: {}, showForm: false})
-  }
+  handleToolTypeSelection(toolType) {
+    this.props.fadeModal()
 
-  updateTool(property, value) {
-    const tool = Object.assign({}, this.state.tool, {[property]: value})
-    this.setState({tool: tool})
-  }
-
-  updateToolData(property, value) {
-    const data = Object.assign({}, this.state.tool.data, {[property]: value})
-    const tool = Object.assign({}, this.state.tool, {data: data})
-    this.setState({tool: tool})
+    switch (toolType.type) {
+      case constants.compilatioValue:
+        this.showCompilatioForm()
+        break
+    }
   }
 
   editTool(tool) {
-
+    switch (tool.type) {
+      case constants.compilatioValue:
+        this.showCompilatioForm(tool)
+        break
+    }
   }
 
   deleteTool(tool) {
@@ -88,7 +87,18 @@ class Tools extends Component {
       name: 'type',
       label: t('type'),
       type: 'number',
-      displayed: true
+      displayed: true,
+      renderer: (rowData) => {
+        let type = rowData.type
+
+        switch (type) {
+          case constants.compilatioValue:
+            type = 'Compilatio'
+            break
+        }
+
+        return type
+      }
     })
     columns.push({
       name: 'data',
@@ -172,42 +182,6 @@ class Tools extends Component {
                 <span></span>
             })}
           />
-          {this.state.showForm &&
-            <form>
-              <TextGroup
-                controlId="tool-name"
-                label={t('name')}
-                value={this.state.tool.name}
-                onChange={value => this.updateTool('name', value)}
-              />
-              <TextGroup
-                controlId="tool-url"
-                label={trans('url', {}, 'dropzone')}
-                value={this.state.tool.data.url || ''}
-                onChange={value => this.updateToolData('url', value)}
-              />
-              <TextGroup
-                controlId="tool-key"
-                label={trans('key', {}, 'dropzone')}
-                value={this.state.tool.data.key || ''}
-                onChange={value => this.updateToolData('key', value)}
-              />
-              <div className="btn-group">
-                <button
-                  className="btn btn-default"
-                  onClick={() => this.setState({tool: {}, showForm: false})}
-                >
-                  {t('cancel')}
-                </button>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => this.saveTool()}
-                >
-                  {t('ok')}
-                </button>
-              </div>
-            </form>
-          }
         </PageContent>
       </PageContainer>
     )
@@ -216,7 +190,10 @@ class Tools extends Component {
 
 Tools.propTypes = {
   tools: T.object,
-  saveTool: T.func.isRequired
+  loadToolForm: T.func.isRequired,
+  deleteTool: T.func.isRequired,
+  showModal: T.func.isRequired,
+  fadeModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -227,9 +204,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    saveTool: (tool) => dispatch(actions.saveTool(tool)),
+    loadToolForm: (tool) => dispatch(actions.loadToolForm(tool)),
     deleteTool: (toolId) => dispatch(actions.deleteTool(toolId)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
+    fadeModal: () => dispatch(modalActions.fadeModal())
   }
 }
 
