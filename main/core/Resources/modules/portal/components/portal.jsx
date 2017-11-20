@@ -55,29 +55,27 @@ const PortalPage = () =>
 
         card={(row) => ({
           onClick: generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}),
-          poster: row.poster ? '/' + row.poster : (row.youtubePoster ? row.youtubePoster : null),
-          icon: !row.youtubePoster || row.youtubePoster === null ?
-                  <span className="item-icon-container" style={{
-                    backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center'
-                  }}>
-                  </span> : <span className="item-icon-container no-opacity"></span>,
+          poster: row.poster,
+          icon: <span className="item-icon-container" style={{
+            backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}></span>,
           title: row.name,
           subtitle: row.code,
-          contentText: null,
+          contentText: row.meta.description,
+          flags: [
+            row.meta.views   && ['fa fa-eye', transChoice('display_views', row.meta.views, {'%count%': row.meta.views}, 'platform')],
+            row.social.likes && ['fa fa-heart', transChoice('nb_likes', row.social.likes, {'%count%': row.social.likes}, 'icap_socialmedia')]
+          ].filter(flag => !!flag),
           footer:
             <span>
               {t('published_at')} <b>{localeDate(row.meta.created)}</b>
             </span>,
           footerLong:
             <span>
-              <span className="description">{row.description}</span>
               <b>{trans(row.meta.type, {}, 'resource')}</b> {t('published_at')} {localeDate(row.meta.created)}
               <span className="creator"> {t('by')} {row.meta.creator ? row.meta.creator.name: t('unknown')}</span><br />
-              <span className="social"><i className="fa fa-eye" aria-hidden="true"></i> {transChoice('display_views', row.meta.views, {'%count%': row.meta.views}, 'platform')}
-                &nbsp;
-                <i className="fa fa-heart" aria-hidden="true"></i> {transChoice('nb_likes', row.social.likes, {'%count%': row.social.likes}, 'icap_socialmedia')}</span>
             </span>
         })}
       />
