@@ -6,9 +6,9 @@ import {generateUrl} from '#/main/core/fos-js-router'
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
-import {reducer} from '#/main/core/portal/reactized/reducer'
+import {reducer} from '#/main/core/portal/reducer'
 
-import {Portal} from '#/main/core/portal/reactized/components/portal.jsx'
+import {Portal} from '#/main/core/portal/components/portal.jsx'
 
 // mount the react application
 bootstrap(

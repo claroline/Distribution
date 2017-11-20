@@ -364,7 +364,7 @@ claro_plugin_api:
         expose: true
 
 claro_portal_api:
-    resource: "@ClarolineCoreBundle/Controller/API/Portal/PortalController.php"
+    resource: "@ClarolineCoreBundle/Controller/APINew/Resource/PortalController.php"
     prefix: api
     type: rest
     defaults: {_format: json}
