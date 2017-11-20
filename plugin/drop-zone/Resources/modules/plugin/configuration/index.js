@@ -3,7 +3,7 @@ import {registerModalTypes} from '#/main/core/layout/modal'
 
 import {reducer} from './reducer'
 import {Tools} from './components/tools.jsx'
-import {ToolFormModal} from './components/tool-form-modal.jsx'
+import {CompilatioFormModal} from './components/modal/compilatio-form-modal.jsx'
 
 // mount the react application
 bootstrap(
@@ -14,9 +14,19 @@ bootstrap(
   Tools,
 
   // app store configuration
-  reducer
+  reducer,
+
+  // transform data attributes for redux store
+  (initialData) => {
+    return {
+      tools: {
+        data: initialData.tools,
+        totalResults: initialData.tools.length
+      }
+    }
+  }
 )
 
 registerModalTypes([
-  ['MODAL_TOOL_FORM', ToolFormModal]
+  ['MODAL_COMPILATIO_FORM', CompilatioFormModal]
 ])

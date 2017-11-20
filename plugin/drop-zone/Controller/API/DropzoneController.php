@@ -454,6 +454,33 @@ class DropzoneController
     }
 
     /**
+     * @EXT\Route("/tool/{id}/delete", name="claro_dropzone_tool_delete")
+     * @EXT\Method("DELETE")
+     * @EXT\ParamConverter(
+     *     "tool",
+     *     class="ClarolineDropZoneBundle:DropzoneTool",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param DropzoneTool $tool
+     *
+     * @return JsonResponse
+     */
+    public function toolDeleteAction(DropzoneTool $tool)
+    {
+        /* TODO: Checks plugin config access rights */
+        try {
+            $serializedTool = $this->manager->serializeTool($tool);
+            $this->manager->deleteTool($tool);
+
+            return new JsonResponse($serializedTool);
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
      * @EXT\Route("/tool/{tool}/document/{document}", name="claro_dropzone_tool_execute")
      * @EXT\Method("POST")
      * @EXT\ParamConverter(

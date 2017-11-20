@@ -13,7 +13,6 @@ namespace Claroline\DropZoneBundle\Manager;
 
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\API\Serializer\CorrectionSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DocumentSerializer;
@@ -28,6 +27,7 @@ use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Entity\DropzoneToolDocument;
 use Claroline\DropZoneBundle\Repository\DropRepository;
 use JMS\DiExtraBundle\Annotation as DI;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -62,9 +62,6 @@ class DropzoneManager
     /** @var ObjectManager */
     private $om;
 
-    /** @var ClaroUtilities */
-    private $utils;
-
     /** @var DropRepository */
     private $dropRepo;
 
@@ -84,8 +81,7 @@ class DropzoneManager
      *     "dropzoneToolSerializer" = @DI\Inject("claroline.serializer.dropzone.tool"),
      *     "fileSystem"             = @DI\Inject("filesystem"),
      *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "utils"                  = @DI\Inject("claroline.utilities.misc")
+     *     "om"                     = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param Crud                   $crud
@@ -97,7 +93,6 @@ class DropzoneManager
      * @param Filesystem             $fileSystem
      * @param string                 $filesDir
      * @param ObjectManager          $om
-     * @param ClaroUtilities         $utils
      */
     public function __construct(
         Crud $crud,
@@ -108,8 +103,7 @@ class DropzoneManager
         DropzoneToolSerializer $dropzoneToolSerializer,
         Filesystem $fileSystem,
         $filesDir,
-        ObjectManager $om,
-        ClaroUtilities $utils
+        ObjectManager $om
     ) {
         $this->crud = $crud;
         $this->dropzoneSerializer = $dropzoneSerializer;
@@ -120,7 +114,6 @@ class DropzoneManager
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->om = $om;
-        $this->utils = $utils;
 
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
@@ -458,6 +451,17 @@ class DropzoneManager
     }
 
     /**
+     * Deletes a Tool.
+     *
+     * @param DropzoneTool $tool
+     */
+    public function deleteTool(DropzoneTool $tool)
+    {
+        $this->om->remove($tool);
+        $this->om->flush();
+    }
+
+    /**
      * Gets a drop for peer evaluation.
      *
      * @param Dropzone $dropzone
@@ -591,7 +595,7 @@ class DropzoneManager
     private function registerFile(Dropzone $dropzone, UploadedFile $file)
     {
         $ds = DIRECTORY_SEPARATOR;
-        $hashName = $this->utils->generateGuid();
+        $hashName = Uuid::uuid4()->toString();
         $dir = $this->filesDir.$ds.'dropzone'.$ds.$dropzone->getUuid();
         $fileName = $hashName.'.'.$file->getClientOriginalExtension();
 

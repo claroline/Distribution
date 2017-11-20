@@ -22,3 +22,15 @@ actions.saveTool = (tool) => ({
     }
   }
 })
+
+actions.deleteTool = (toolId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_tool_delete', {id: toolId}),
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.removeTool(toolId))
+    }
+  }
+})

@@ -87,12 +87,14 @@ export const CorrectionForm = props =>
       <div className="btn-group btn-group-right">
         <button
           className="btn btn-default"
+          type="button"
           onClick={() => props.handleCancel()}
         >
           {t('cancel')}
         </button>
         <button
           className="btn btn-primary"
+          type="button"
           onClick={() => props.handleSave()}
         >
           {t('save')}

@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer} from '#/main/core/utilities/redux'
+import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 // generic reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
@@ -29,8 +30,13 @@ const toolsReducer = makeReducer({}, {
   }
 })
 
+const toolsListReducer = makeListReducer(
+  {data: toolsReducer},
+  {selectable: false, filterable: false, paginated: false, sortable: false}
+)
+
 const reducer = {
-  tools: toolsReducer,
+  tools: toolsListReducer,
 
   // generic reducers
   currentRequests: apiReducer,

@@ -4,8 +4,6 @@ import Modal from 'react-bootstrap/lib/Modal'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {t} from '#/main/core/translation'
 
-export const MODAL_TOOL_FORM = 'MODAL_TOOL_FORM'
-
 export class ToolFormModal extends Component {
   constructor(props) {
     super(props)
