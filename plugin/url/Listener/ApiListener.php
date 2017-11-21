@@ -31,12 +31,12 @@ class ApiListener
      */
     public function onSerialize(DecorateResourceNodeEvent $event)
     {
-        $resource = $this->om->getRepository('HeVinciUrlBundle:Url')->findOneByResourceNode($event->getResourceNode());
+        // Restrict listener to Url resources only
+        $resourceNode = $event->getResourceNode();
+        if ($resourceNode->getResourceType()->getName() === 'hevinci_url') {
+            $isYoutube = false;
 
-        $isYoutube = false;
-
-        // Detect if an automatic poster can be displayed if none has been defined
-        if ($event->getInjectedData()['poster'] === null && $resource !== null) {
+            $resource = $this->om->getRepository('HeVinciUrlBundle:Url')->findOneByResourceNode($resourceNode);
 
             // Is it a youtube video ?
             $youtubeId = $this->getYoutubeId($resource->getUrl());
@@ -45,11 +45,11 @@ class ApiListener
                 $event->add('poster', $thumbnailUrl);
                 $isYoutube = true;
             }
-        }
 
-        $event->add('url', [
-            'isYoutube' => $isYoutube,
-        ]);
+            $event->add('url', [
+                'isYoutube' => $isYoutube,
+            ]);
+        }
     }
 
     private function getYoutubeId($url)
