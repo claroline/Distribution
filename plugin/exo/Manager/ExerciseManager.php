@@ -342,9 +342,9 @@ class ExerciseManager
                 $csv['firstname'] = [$user->getFirstName()];
                 $csv['lastname'] = [$user->getLastName()];
             } else {
-                $csv['username'] = 'none';
-                $csv['lastname'] = 'none';
-                $csv['firstname'] = 'none';
+                $csv['username'] = ['none'];
+                $csv['lastname'] = ['none'];
+                $csv['firstname'] = ['none'];
             }
 
             $orderedIds = array_keys($questions);
@@ -360,8 +360,6 @@ class ExerciseManager
                     $orderedAnswers[] = $indexedAnswers[$id];
                 }
             }
-
-            //throw new \Exception('badibaboom');
 
             foreach ($orderedAnswers as $answer) {
                 $item = $items[$answer->getQuestionId()];
@@ -389,7 +387,7 @@ class ExerciseManager
         foreach ($dataPapers as $paper) {
             $flattenedAnswers = [];
             foreach ($paper as $paperItem) {
-                if ($paperItem) {
+                if (is_array($paperItem)) {
                     foreach ($paperItem as $paperEl) {
                         $flattenedAnswers[] = $paperEl;
                     }
