@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "group": {
+      "type": "object",
+      "properties": {
+        "oneOf": [
+          {
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

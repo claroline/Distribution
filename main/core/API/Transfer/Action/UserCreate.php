@@ -38,18 +38,9 @@ class UserCreate extends AbstractAction
         return 'user_create';
     }
 
-    public function getExplain()
+    public function getSchema()
     {
-        //schema des utilisateurs ?
-        return [
-          'username' => true,
-          'name' => true,
-          'lastname' => true,
-          'firstname' => true,
-          'groups.[identifier]' => false,
-          'organizations.[identifier]' => false,
-          'organizations.ccc.xxx'
-        ];
+        return __DIR__ . '/../../Schema/user.json';
     }
 
     public function getBatchSize()

@@ -38,18 +38,9 @@ class GroupCreate extends AbstractAction
         return 'group_create';
     }
 
-    //Dans quelle mesure ça ne pourrait pas être le json schema ?
-    public function getExplain()
-    {
-        return [
-          'name' => true,
-          'organizations.[identifier]' => false
-        ];
-    }
-
     public function getSchema()
     {
-        return file_get_contents(__DIR__ . '/../../Schema/Object/group.json');
+        return __DIR__ . '/../../Schema/group.json';
     }
 
     public function getBatchSize()

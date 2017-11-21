@@ -74,15 +74,19 @@ class TransferProvider
         return $this->actions[$action];
     }
 
-    public function getAvailableActions()
+    public function getAvailableActions($format)
     {
         $availables = [];
 
         foreach ($this->actions as $action) {
-            $availables[$action->getName()] = $action->getSchema();
+            $availables[$action->getName()] = json_decode(file_get_contents($action->getSchema()));
         }
 
         return $availables;
+    }
+
+    private function mergeSchema($path)
+    {
     }
 
     public function getAdapter($mimeType)

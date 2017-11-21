@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "oneOf": [
+          {
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "properties": {
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "properties": {
+              "username": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "properties": {
+              "code": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

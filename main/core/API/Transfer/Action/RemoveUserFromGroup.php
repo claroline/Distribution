@@ -2,9 +2,9 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action;
 
-use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
@@ -13,7 +13,7 @@ use Claroline\CoreBundle\API\Crud;
  * @DI\Service()
  * @DI\Tag("claroline.transfer.action")
  */
-class UserDelete extends AbstractAction
+class RemoveUserFromGroup extends AbstractAction
 {
     /**
      * Action constructor.
@@ -38,22 +38,31 @@ class UserDelete extends AbstractAction
             $data->user[0]
         );
 
-        $this->crud->delete('Claroline\CoreBundle\Entity\User', $user);
+        $group = $this->serializer->deserialize(
+            'Claroline\CoreBundle\Entity\Group',
+            $data->group[0]
+        );
+
+        $this->crud->patch($user, 'group', 'remove', [$group]);
     }
 
     public function getName()
     {
-        return 'user_delete';
+        return 'remove_user_from_group';
     }
 
     public function getSchema()
     {
-        return __DIR__ . '/../../Schema/identifier/user.json';
+        return __DIR__ . '/../../Schema/user_group.json';
+    }
+
+    public function getLogMessage($data)
+    {
     }
 
     public function getBatchSize()
     {
-        return 100;
+        return 500;
     }
 
     public function clear(ObjectManager $om)

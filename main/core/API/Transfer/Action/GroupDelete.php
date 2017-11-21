@@ -46,12 +46,9 @@ class GroupDelete extends AbstractAction
         return 'group_delete';
     }
 
-    public function getExplain()
+    public function getSchema()
     {
-        //schema des utilisateurs ?
-        return [
-          'group.[identifier]' => true
-        ];
+        return __DIR__ . '/../../Schema/identifier/group.json';
     }
 
     public function getBatchSize()

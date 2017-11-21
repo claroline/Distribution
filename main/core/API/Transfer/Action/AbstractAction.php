@@ -8,7 +8,7 @@ abstract class AbstractAction
 {
     abstract public function execute($data);
     abstract public function getName();
-    abstract public function getExplain();
+    abstract public function getSchema();
 
     public function getBatchSize()
     {
@@ -23,11 +23,6 @@ abstract class AbstractAction
     public function getLogMessage($data)
     {
         return $this->getName();
-    }
-
-    public function getSchema()
-    {
-        return "{}";
     }
 
     public function export()

@@ -51,12 +51,9 @@ class AddUserToGroup extends AbstractAction
         return 'add_user_to_group';
     }
 
-    public function getExplain()
+    public function getSchema()
     {
-        return [
-          'group.[identifier]' => true,
-          'user.[identifier]' => true
-        ];
+        return __DIR__ . '/../../Schema/user_group.json';
     }
 
     public function getLogMessage($data)

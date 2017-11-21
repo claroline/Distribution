@@ -34,7 +34,11 @@ class TransferController
     }
 
     /**
-     * @Route("/import/{action}", name="apiv2_transfer_import")
+     * @Route(
+     *    "/import/{action}",
+     *    name="apiv2_transfer_import",
+     *    defaults={"action" = "json"},
+     * )
      * @Method("POST")
      */
     public function importAction($action, Request $request)
@@ -46,12 +50,12 @@ class TransferController
     }
 
     /**
-     * @Route("/actions", name="apiv2_transfer_actions")
+     * @Route("/actions/{format}", name="apiv2_transfer_actions")
      * @Method("GET")
      */
-    public function getAvailableActions()
+    public function getAvailableActions($format)
     {
-        return new JsonResponse($this->provider->getAvailableActions());
+        return new JsonResponse($this->provider->getAvailableActions($format));
     }
 
     private function getData(Request $request)
