@@ -14,9 +14,8 @@ import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button
 import {QCM_MULTIPLE, QCM_SINGLE, actions} from './editor'
 
 import {
-  NUMBERING_LITTERAL,
-  NUMBERING_NONE,
-  NUMBERING_NUMERIC
+  numberingModes,
+  NUMBERING_NONE
 } from './../../quiz/enums'
 
 class ChoiceItem extends Component {
@@ -240,11 +239,7 @@ const Choice = props =>
     <RadioGroup
       controlId={`item-${props.item.id}-numbering`}
       label={tex('choice_numbering')}
-      options={[
-        {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},
-        {value: NUMBERING_NUMERIC, label: tex('quiz_numbering_numeric')},
-        {value: NUMBERING_LITTERAL, label: tex('quiz_numbering_litteral')}
-      ]}
+      options={numberingModes}
       checkedValue={props.item.numbering ? props.item.numbering : NUMBERING_NONE}
       onChange={numbering => props.onChange(actions.updateProperty('numbering', numbering))}
     />

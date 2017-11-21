@@ -1,5 +1,6 @@
+import {update} from '#/main/core/utilities/immutability'
+
 import {PAPERS_INIT, PAPER_CURRENT, PAPER_ADD, PAPER_FETCHED} from './actions'
-import {update} from '../../utils/utils'
 import {utils} from './utils'
 
 export const reducePapers = (state = {papers: {}, isFetched: false}, action = {}) => {

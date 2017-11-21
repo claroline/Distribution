@@ -3,16 +3,19 @@ import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 
 import {t, tex} from '#/main/core/translation'
-import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
+
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
+
+import {HINT_ADD, HINT_CHANGE, HINT_REMOVE} from './../actions'
 import ObjectsEditor from './item-objects-editor.jsx'
 import TagsEditor from '#/plugin/tag/item-tags-editor.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
+
 
 // TODO: add categories, define-as-model
 
@@ -106,10 +109,7 @@ const Hint = props =>
       value={props.penalty}
       className="form-control hint-penalty"
       aria-label={tex('penalty')}
-      onChange={e => props.onChange(
-        HINT_CHANGE,
-        {id: props.id, penalty: e.target.value}
-      )}
+      onChange={e => props.onChange(HINT_CHANGE, {id: props.id, penalty: e.target.value})}
     />
 
     <TooltipButton

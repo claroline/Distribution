@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {
-  Router,
+  Router as BaseRouter,
   Route as BaseRoute,
   Switch
 } from 'react-router-dom'
@@ -26,15 +26,36 @@ class Route extends Component {
     }
   }
 
+  shouldComponentUpdate() {
+    // not called on mounting
+    return true
+  }
+
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps)
+
     // todo find a way to block mounting (for async)
     if (this.props.location.pathname !== nextProps.location.pathname) {
-      if (this.props.onLeave) {
-        this.props.onLeave(this.props.computedMatch.params)
+      // route has changed, call the hooks if any
+
+      // 1. checks if the new route can be entered
+      let authorized = true
+      if (nextProps.canEnter) {
+        authorized = nextProps.canEnter(nextProps.computedMatch.params)
       }
 
-      if (nextProps.onEnter) {
-        nextProps.onEnter(nextProps.computedMatch.params)
+      if (authorized) {
+        // 2. leave the old matching route
+        if (this.props.onLeave) {
+          this.props.onLeave(this.props.computedMatch.params)
+        }
+
+        // 3. enter the new matching route
+        if (nextProps.onEnter) {
+          nextProps.onEnter(nextProps.computedMatch.params)
+        }
+      } else {
+        // cancel navigation
       }
     }
   }
@@ -60,21 +81,22 @@ class Route extends Component {
 Route.propTypes = RouteTypes.propTypes
 Route.defaultProps = RouteTypes.defaultProps
 
+// todo handle hooks on routes group too
+
 const Routes = props =>
   <BaseRoute
-    key={props.path}
     path={props.path}
+    exact={props.exact}
   >
     <Switch>
-      {props.routes.map(routeConfig => routeConfig.routes ?
+      {props.routes.map((routeConfig, routeIndex) => routeConfig.routes ?
         <Routes
           {...routeConfig}
-          key={props.path}
-          dispatchRouteAction={props.dispatchRouteAction}
+          key={`route-${routeIndex}`}
         /> :
         <Route
           {...routeConfig}
-          key={props.path}
+          key={`route-${routeIndex}`}
           onEnter={routeConfig.onEnter}
           onLeave={routeConfig.onLeave}
         />
@@ -84,6 +106,7 @@ const Routes = props =>
 
 Routes.propTypes = {
   path: T.string.isRequired,
+  exact: T.bool,
   routes: T.arrayOf(
     T.shape(RouteTypes.propTypes).isRequired // todo : allow more than one nesting in prop-types
   )
@@ -91,23 +114,26 @@ Routes.propTypes = {
 
 Routes.defaultProps = RouteTypes.defaultProps
 
-const CustomRouter = props =>
-  <Router history={history}>
+const Router = props =>
+  <BaseRouter history={history}>
     <Routes
       path={props.basePath}
+      exact={false}
       routes={props.routes}
     />
-  </Router>
+  </BaseRouter>
 
-CustomRouter.propTypes = {
+Router.propTypes = {
   basePath: T.string,
   routes: T.array.isRequired
 }
 
-CustomRouter.defaultProps = {
-  basePath: ''
+Router.defaultProps = {
+  basePath: '/'
 }
 
 export {
-  CustomRouter as Router
+  Router,
+  Routes,
+  Route
 }

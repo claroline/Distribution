@@ -1,7 +1,7 @@
 import {makeReducer} from '#/main/core/utilities/redux'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 
-import {update} from '#/plugin/exo/utils/utils'
+import {update} from '#/main/core/utilities/immutability'
 
 import {
   QUESTIONS_SHARE

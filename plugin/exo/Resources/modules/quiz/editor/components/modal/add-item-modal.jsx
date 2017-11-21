@@ -44,7 +44,10 @@ class AddItemModal extends Component {
                 className={classes('modal-item-entry', {'selected': this.state.currentType === type})}
                 role="option"
                 onMouseOver={() => this.handleItemMouseOver(type)}
-                onClick={() => this.props.handleSelect(type)}
+                onClick={() => {
+                  this.props.handleSelect(type)
+                  this.props.fadeModal()
+                }}
               >
                 <ItemIcon name={getDefinition(type).name} size="lg"/>
               </div>
@@ -66,7 +69,10 @@ class AddItemModal extends Component {
 }
 
 AddItemModal.propTypes = {
-  handleSelect: T.func.isRequired
+  handleSelect: T.func.isRequired,
+  fadeModal: T.func.isRequired
 }
 
-export {AddItemModal}
+export {
+  AddItemModal
+}

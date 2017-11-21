@@ -1,5 +1,5 @@
 import {tex} from '#/main/core/translation'
-import select from './selectors'
+import {select} from './selectors'
 
 export function makeSaveGuard(getState) {
   // no need to attach a listener if the quiz is readonly
@@ -11,6 +11,7 @@ export function makeSaveGuard(getState) {
         // but it doesn't seem to be actually used in modern browsers. We use it
         // here because a string is needed anyway.
         e.returnValue = tex('unsaved_changes_warning')
+
         return e.returnValue
       }
     })

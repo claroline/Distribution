@@ -1,11 +1,13 @@
 import mapValues from 'lodash/mapValues'
 import cloneDeep from 'lodash/cloneDeep'
 import defaultsDeep from 'lodash/defaultsDeep'
+
+import {tex} from '#/main/core/translation'
+
 import defaults from './defaults'
 import {TYPE_QUIZ} from './enums'
 import {makeId} from './../utils/utils'
 import {isQuestionType} from './../items/item-types'
-import {tex} from '#/main/core/translation'
 
 // augment normalized quiz data with editor state attributes and default values
 // (can be passed an array of sub-decorators for each item mime type)
@@ -16,7 +18,7 @@ export function decorate(state, itemDecorators = {}, applyOnItems = true) {
   if (newState.quiz.steps.length === 0) {
     const defaultStep = {
       id: makeId(),
-      items:[]
+      items: []
     }
     newState.steps[defaultStep.id] = defaultStep
     newState.quiz.steps = [defaultStep.id]

@@ -1,8 +1,10 @@
-import {update, makeId} from './../../utils/utils'
+import moment from 'moment'
 import {makeReducer} from '#/main/core/utilities/redux'
+
+import {update} from '#/main/core/utilities/immutability'
+import {makeId} from './../../utils/utils'
 import {isQuestionType} from './../../items/item-types'
 import {decorateAnswer} from './decorators'
-import moment from 'moment'
 
 import {
   TEST_MODE_SET,

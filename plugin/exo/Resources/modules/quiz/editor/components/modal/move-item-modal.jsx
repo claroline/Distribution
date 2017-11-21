@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 
 import {tex} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import select from '../../selectors'
+import {select} from '../../selectors'
 
 export const MODAL_MOVE_ITEM = 'MODAL_MOVE_ITEM'
 

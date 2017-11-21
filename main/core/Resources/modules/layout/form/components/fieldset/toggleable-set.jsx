@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import Collapse from 'react-bootstrap/lib/Collapse'
 
 /**
- * Renders a toggleable fieldset.
+ * Renders a fieldset toggleable through a link.
  */
 class ToggleableSet extends Component {
   constructor(props) {

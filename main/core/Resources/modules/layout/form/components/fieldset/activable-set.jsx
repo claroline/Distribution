@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
 
 /**
- * Renders an activable fieldset.
+ * Renders a fieldset activable through a checkbox state.
  */
 class ActivableSet extends Component {
   constructor(props) {

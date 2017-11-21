@@ -9,22 +9,23 @@ const SelectGroup = props =>
     {...props}
   >
     <Select
+      id={props.controlId}
       options={props.options}
       selectedValue={props.selectedValue}
       disabled={props.disabled}
       onChange={props.onChange}
       multiple={props.multiple}
-      noEmpty={props.noEmpty}
+      allowEmpty={props.allowEmpty}
     />
   </FormGroup>
 
 SelectGroup.propTypes = {
   controlId: T.string.isRequired,
   options: T.array.isRequired,
-  selectedValue: T.oneOfType([T.string, T.number, T.array]).isRequired,
+  selectedValue: T.oneOfType([T.string, T.number, T.array, T.bool]).isRequired,
   disabled: T.bool,
   multiple: T.bool,
-  noEmpty: T.bool,
+  allowEmpty: T.bool,
   onChange: T.func.isRequired
 }
 

@@ -21,6 +21,11 @@ const stepList = createSelector(
   (quiz, steps) => quiz.steps.map(id => steps[id])
 )
 
+const tags = createSelector(
+  items,
+  (items) => Object.keys(items).map(key => items[key]).reduce((tags, item) => [...tags.concat(item.tags)], [])
+)
+
 const quizThumbnail = createSelector(
   quiz,
   currentObject,
@@ -138,7 +143,7 @@ const valid = createSelector(
   }
 )
 
-export default {
+export const select = {
   quiz,
   items,
   thumbnails,
@@ -151,5 +156,6 @@ export default {
   valid,
   validating,
   saved,
-  steps
+  steps,
+  tags
 }

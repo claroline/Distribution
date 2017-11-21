@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 
-import {update} from './../../../utils/utils'
+import {update} from '#/main/core/utilities/immutability'
 import {tex} from '#/main/core/translation'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'

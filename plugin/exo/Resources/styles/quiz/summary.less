@@ -15,6 +15,16 @@
     margin-right: @grid-gutter-width;
     margin-bottom: 0;
 
+    .new-step {
+        /*flex: none;*/
+        width: 100px;
+        height: 100px;
+
+        margin-top: auto;
+        font-size: 52px;
+        font-weight: bold;
+    }
+
     .thumbnail {
         display: flex;
         flex-direction: column;
@@ -32,11 +42,9 @@
         a {
             color: @quiz-summary-link-color;
             text-decoration: none;
-            /* required by text-overflow */
-            white-space: nowrap;
-            overflow: hidden;
         }
 
+        &:focus,
         &.active {
             color: @quiz-summary-link-active-color;
             background: @quiz-summary-link-active-bg;
@@ -69,20 +77,27 @@
         height: 33%;
     }
     .step-actions {
+        font-size: @font-size-base;
         display: flex;
         justify-content: space-between;
+        align-items: flex-start;
         visibility: hidden;
+
+        .btn {
+            padding: 0;
+        }
     }
     .step-title {
-        display: flex;
+        display: flex; // this is just to vertical align text inside the container
         flex-direction: column;
         justify-content: center;
         outline: 0;
-        text-overflow: ellipsis;
         font-weight: bold;
-    }
-    .new-step {
-        flex: none;
+
+        text-overflow: ellipsis;
+        /* required by text-overflow */
+        white-space: nowrap;
+        overflow: hidden;
     }
 }
 

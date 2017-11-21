@@ -2,15 +2,21 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {tex} from '#/main/core/translation'
+import {Routes} from '#/main/core/router/components/router.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+
+import {TYPE_QUIZ, TYPE_STEP} from './../../enums'
+import {actions} from './../actions'
+import {select} from './../selectors'
+
+import {CustomDragLayer} from './../../../utils/custom-drag-layer.jsx'
 import {ThumbnailBox} from './thumbnail-box.jsx'
 import {QuizEditor} from './quiz-editor.jsx'
 import {StepEditor} from './step-editor.jsx'
-import {actions} from './../actions'
-import {TYPE_QUIZ, TYPE_STEP} from './../../enums'
-import select from './../selectors'
-import {CustomDragLayer} from './../../../utils/custom-drag-layer.jsx'
 
-let Editor = props =>
+const EditorComponent = props =>
   <div className="quiz-editor">
     <ThumbnailBox
       thumbnails={props.thumbnails}
@@ -18,114 +24,75 @@ let Editor = props =>
       onThumbnailClick={props.selectObject}
       onThumbnailMove={props.moveStep}
       onNewStepClick={props.createStep}
-      onStepDeleteClick={props.deleteStepAndItems}
-      showModal={props.showModal}
+      onStepDeleteClick={props.deleteStep}
     />
+
     <div className="edit-zone user-select-disabled">
-      {selectSubEditor(props)}
+      <Routes
+        path=""
+        routes={[
+          {
+            path: '/edit/parameters',
+            onEnter: () => props.selectObject(props.quiz.id, TYPE_QUIZ),
+            component: QuizEditor
+          }, {
+            path: '/edit/steps/:id',
+            onEnter: (params) => props.selectObject(params.id, TYPE_STEP),
+            component: StepEditor
+          }
+        ]}
+      />
     </div>
-    <CustomDragLayer/>
+
+    <CustomDragLayer />
   </div>
 
-Editor.propTypes = {
+EditorComponent.propTypes = {
+  quiz: T.shape({
+    id: T.string.isRequired
+  }).isRequired,
   thumbnails: T.array.isRequired,
   validating: T.bool.isRequired,
+
   selectObject: T.func.isRequired,
   moveStep: T.func.isRequired,
   createStep: T.func.isRequired,
-  deleteStepAndItems: T.func.isRequired,
-  showModal: T.func.isRequired
-}
-
-function selectSubEditor(props) {
-  switch (props.currentObject.type) {
-    case TYPE_QUIZ:
-      return (
-        <QuizEditor
-          quiz={props.quizProperties}
-          items={props.items}
-          validating={props.validating}
-          updateProperties={props.updateQuiz}
-          activePanelKey={props.activeQuizPanel}
-          handlePanelClick={props.selectQuizPanel}
-        />
-      )
-    case TYPE_STEP:
-      return (
-        <StepEditor
-          step={props.currentObject}
-          stepIndex={props.currentObjectIndex}
-          mandatoryQuestions={props.quizProperties.parameters.mandatoryQuestions}
-          validating={props.validating}
-          updateStep={props.updateStep}
-          activePanelKey={props.activeStepPanel}
-          handlePanelClick={props.selectStepPanel}
-          handleItemDelete={props.deleteStepItem}
-          handleItemMove={props.moveItem}
-          handleItemCreate={props.createItem}
-          handleItemChangeStep={props.changeItemStep}
-          handleItemDuplicate={props.duplicateItem}
-          handleItemUpdate={props.updateItem}
-          handleItemHintsUpdate={props.updateItemHints}
-          handleItemDetailUpdate={props.updateItemDetail}
-          handleItemsImport={props.importItems}
-          handleContentItemCreate={props.createContentItem}
-          handleContentItemUpdate={props.updateContentItem}
-          handleContentItemDetailUpdate={props.updateContentItemDetail}
-          handleFileUpload={props.saveContentItemFile}
-          numbering={props.quizProperties.parameters.numbering}
-          showModal={props.showModal}
-          closeModal={props.fadeModal}
-        />
-      )
-  }
-  throw new Error(`Unkwnown type ${props.currentObject}`)
-}
-
-selectSubEditor.propTypes = {
-  activeQuizPanel: T.string.isRequired,
-  selectQuizPanel: T.func.isRequired,
-  updateQuiz: T.func.isRequired,
-  quizProperties: T.object.isRequired,
-  currentObjectIndex: T.number.isRequired,
-  currentObject: T.shape({
-    type: T.string.isRequired
-  }).isRequired,
-  items: T.array.isRequired,
-  updateStep: T.string.isRequired,
-  activeStepPanel: T.string.isRequired,
-  selectStepPanel: T.func.isRequired,
-  validating: T.bool.isRequired,
-  deleteStepItem: T.func.isRequired,
-  moveItem: T.func.isRequired,
-  createItem: T.func.isRequired,
-  updateItem: T.func.isRequired,
-  updateItemHints: T.func.isRequired,
-  updateItemDetail: T.func.isRequired,
-  importItems: T.func.isRequired,
-  createContentItem: T.func.isRequired,
-  updateContentItem: T.func.isRequired,
-  updateContentItemDetail: T.func.isRequired,
-  changeItemStep: T.func.isRequired,
-  duplicateItem: T.func.isRequired,
-  saveContentItemFile: T.func,
-  showModal: T.func.isRequired,
-  fadeModal: T.func.isRequired
+  deleteStep: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
+    quiz: select.quiz(state),
     thumbnails: select.thumbnails(state),
-    items: select.items(state),
-    currentObject: select.currentObjectDeep(state),
-    currentObjectIndex: select.currentObjectIndex(state),
-    activeQuizPanel: select.quizOpenPanel(state),
-    activeStepPanel: select.stepOpenPanel(state),
-    quizProperties: select.quiz(state),
     validating: select.validating(state)
   }
 }
 
-Editor = connect(mapStateToProps, actions)(Editor)
+function mapDispatchToProps(dispatch) {
+  return {
+    selectObject(id, type) {
+      dispatch(actions.selectObject(id, type))
+    },
+    createStep(position) {
+      dispatch(actions.createStep(position))
+    },
+    deleteStep(id) {
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: tex('delete_step'),
+          question: tex('remove_step_confirm_message'),
+          handleConfirm: () => dispatch(actions.deleteStepAndItems(id))
+        })
+      )
+    },
+    moveStep(id, swapId) {
+      dispatch(actions.moveStep(id, swapId))
+    }
+  }
+}
 
-export {Editor}
+const Editor = connect(mapStateToProps, mapDispatchToProps)(EditorComponent)
+
+export {
+  Editor
+}

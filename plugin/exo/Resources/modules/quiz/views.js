@@ -10,9 +10,10 @@ import {
   VIEW_CORRECTION_ANSWERS
 } from './enums'
 
-import {Overview}   from './overview/overview.jsx'
+import {Overview}   from './overview/components/overview.jsx'
 import {Player}     from './player/components/player.jsx'
 import {AttemptEnd} from './player/components/attempt-end.jsx'
+
 import {Editor}     from './editor/components/editor.jsx'
 import {Papers}     from './papers/components/papers.jsx'
 import {Paper}      from './papers/components/paper.jsx'

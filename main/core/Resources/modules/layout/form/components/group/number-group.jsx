@@ -13,7 +13,7 @@ const NumberGroup = props =>
       disabled={props.disabled}
       min={props.min}
       max={props.max}
-      onChange={(e) => props.onChange(e.target.value)}
+      onChange={(e) => props.onChange(Number(e.target.value))}
     />
   </FormGroup>
 

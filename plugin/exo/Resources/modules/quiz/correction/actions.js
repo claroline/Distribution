@@ -1,11 +1,11 @@
 import invariant from 'invariant'
 
 import {makeActionCreator} from '#/main/core/utilities/redux'
+import {REQUEST_SEND} from '#/main/core/api/actions'
 import {actions as baseActions} from './../actions'
 import {VIEW_CORRECTION_QUESTIONS, VIEW_CORRECTION_ANSWERS} from './../enums'
 import {navigate} from './../router'
 import {selectors} from './selectors'
-import {REQUEST_SEND} from './../../api/actions'
 
 export const CORRECTION_INIT = 'CORRECTION_INIT'
 export const QUESTION_CURRENT = 'QUESTION_CURRENT'

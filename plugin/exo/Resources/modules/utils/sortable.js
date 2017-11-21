@@ -7,8 +7,6 @@ export const SORT_HORIZONTAL = 'SORT_HORIZONTAL'
 export const SORT_VERTICAL = 'SORT_VERTICAL'
 export const SORT_DETECT = 'SORT_DETECT'
 
-
-
 // see https://gaearon.github.io/react-dnd/examples-sortable-simple.html
 export function makeSortable(component, type, previewComponent = null) {
   const source = {

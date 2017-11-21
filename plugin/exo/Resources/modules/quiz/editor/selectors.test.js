@@ -1,7 +1,7 @@
 import freeze from 'deep-freeze'
 import {ensure} from '#/main/core/tests'
 import {TYPE_QUIZ, TYPE_STEP} from './../enums'
-import select from './selectors'
+import {select} from './selectors'
 import {tex, t} from '#/main/core/translation'
 
 describe('Thumbnails selector', () => {

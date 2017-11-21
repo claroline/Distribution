@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 import classes from 'classnames'
 import isEmpty from 'lodash/isEmpty'
 
@@ -15,14 +16,19 @@ import {getDefinition, isQuestionType} from './../../../items/item-types'
 import {getContentDefinition} from './../../../contents/content-types'
 
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_ADD_ITEM} from './modal/add-item-modal.jsx'
 import {MODAL_IMPORT_ITEMS} from './modal/import-items-modal.jsx'
 import {MODAL_ADD_CONTENT} from './modal/add-content-modal.jsx'
 import {MODAL_MOVE_ITEM} from './modal/move-item-modal.jsx'
 import {MODAL_DUPLICATE_ITEM} from '#/plugin/exo/items/components/modal/duplicate-modal.jsx'
 
+import {select as quizSelect} from './../../selectors'
+import {select} from './../selectors'
+import {actions} from './../actions'
+
 import {Icon as ItemIcon} from './../../../items/components/icon.jsx'
-import {ValidationStatus} from './validation-status.jsx'
+import {ValidationStatus} from '#/plugin/exo/components/validation-status.jsx'
 import {StepForm} from './step-form.jsx'
 import {ItemForm} from './item-form.jsx'
 import {ContentItemForm} from './content-item-form.jsx'
@@ -62,14 +68,7 @@ const ItemActions = props =>
       className="btn-link-danger"
       title={t('delete')}
       position="left"
-      onClick={e => {
-        e.stopPropagation()
-        props.showModal(MODAL_DELETE_CONFIRM, {
-          title: tex('delete_item'),
-          question: tex('remove_question_confirm_message'),
-          handleConfirm: () => props.handleItemDelete(props.itemId)
-        })
-      }}
+      onClick={() => props.handleItemDelete(props.itemId)}
     >
       <span className="fa fa-fw fa-trash-o" />
     </TooltipButton>
@@ -79,15 +78,7 @@ const ItemActions = props =>
       className="btn-link-default"
       title={tex('change_step')}
       position="left"
-      onClick={e => {
-        e.stopPropagation()
-        props.showModal(MODAL_MOVE_ITEM, {
-          title: tex('change_step'),
-          question: tex('change_step_confirm_message'),
-          itemId: props.itemId,
-          handleClick: (stepId) => props.handleItemChangeStep(props.itemId, stepId)
-        })
-      }}
+      onClick={() => props.handleItemChangeStep(props.itemId)}
     >
       <span className="fa fa-fw fa-exchange" />
     </TooltipButton>
@@ -97,13 +88,7 @@ const ItemActions = props =>
       className="btn-link-default"
       title={tex('duplicate')}
       position="left"
-      onClick={e => {
-        e.stopPropagation()
-        props.showModal(MODAL_DUPLICATE_ITEM, {
-          title: tex('duplicate_item'),
-          handleSubmit: (amount) => props.handleItemDuplicate(props.itemId, amount)
-        })
-      }}
+      onClick={() => props.handleItemDuplicate(props.itemId)}
     >
       <span className="fa fa-fw fa-copy" />
     </TooltipButton>
@@ -118,7 +103,6 @@ const ItemActions = props =>
           role="button"
           className="btn btn-link-default drag-handle"
           draggable="true"
-          onClick={(e) => e.stopPropagation()}
         >
           <span className="fa fa-fw fa-arrows" />
         </span>
@@ -131,7 +115,6 @@ ItemActions.propTypes = {
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
   handleItemDelete: T.func.isRequired,
-  showModal: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   handleItemChangeStep: T.func.isRequired,
   handleItemDuplicate: T.func.isRequired
@@ -157,7 +140,6 @@ const ItemHeader = props =>
       handleItemDelete={props.handleItemDelete}
       handleItemDuplicate={props.handleItemDuplicate}
       handleItemChangeStep={props.handleItemChangeStep}
-      showModal={props.showModal}
       connectDragSource={props.connectDragSource}
     />
   </div>
@@ -169,68 +151,65 @@ ItemHeader.propTypes = {
   handleItemDelete: T.func.isRequired,
   handleItemChangeStep: T.func.isRequired,
   handleItemDuplicate: T.func.isRequired,
-  showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
   connectDragSource: T.func.isRequired,
   expanded: T.bool.isRequired
 }
 
-const ItemPanel = props =>
-  props.connectDropTarget(
-    <div
-      id={`panel-${props.item.id}`}
-      style={{opacity: props.isDragging ? 0 : 1}}
+const ItemPanel = props => props.connectDropTarget(
+  <div
+    id={`panel-${props.item.id}`}
+    style={{opacity: props.isDragging ? 0 : 1}}
+  >
+    <fieldset
+      disabled={props.item.meta.protectQuestion && !props.item.rights.edit}
     >
-      <fieldset
-        disabled={props.item.meta.protectQuestion && !props.item.rights.edit}
-      >
-        <Panel
-          header={
-            <ItemHeader
-              item={props.item}
-              numbering={props.numbering !== NUMBERING_NONE ? props.stepIndex + '.' + getNumbering(props.numbering, props.index): null}
-              handlePanelClick={props.handlePanelClick}
-              handleItemDelete={props.handleItemDelete}
-              handleItemChangeStep={props.handleItemChangeStep}
-              handleItemDuplicate={props.handleItemDuplicate}
-              showModal={props.showModal}
-              connectDragSource={props.connectDragSource}
-              hasErrors={!isEmpty(props.item._errors)}
-              validating={props.validating}
-              expanded={props.expanded}
-            />
-          }
-          collapsible={true}
-          expanded={props.expanded}
-        >
-          <ItemForm
+      <Panel
+        header={
+          <ItemHeader
             item={props.item}
+            numbering={props.numbering !== NUMBERING_NONE ? props.stepIndex + '.' + getNumbering(props.numbering, props.index): null}
+            handlePanelClick={props.handlePanelClick}
+            handleItemDelete={props.handleItemDelete}
+            handleItemChangeStep={props.handleItemChangeStep}
+            handleItemDuplicate={props.handleItemDuplicate}
+            connectDragSource={props.connectDragSource}
+            hasErrors={!isEmpty(props.item._errors)}
             validating={props.validating}
-            showModal={props.showModal}
-            mandatoryQuestions={props.mandatoryQuestions}
-            closeModal={props.closeModal}
-            onChange={(propertyPath, value) =>
-              props.handleItemUpdate(props.item.id, propertyPath, value)
+            expanded={props.expanded}
+          />
+        }
+        collapsible={true}
+        expanded={props.expanded}
+      >
+        <ItemForm
+          item={props.item}
+          validating={props.validating}
+          showModal={props.showModal}
+          mandatoryQuestions={props.mandatoryQuestions}
+          closeModal={props.closeModal}
+          onChange={(propertyPath, value) =>
+            props.handleItemUpdate(props.item.id, propertyPath, value)
+          }
+          onHintsChange={(updateType, payload) =>
+            props.handleItemHintsUpdate(props.item.id, updateType, payload)
+          }
+        >
+          {React.createElement(
+            getDefinition(props.item.type).editor.component,
+            {
+              item: props.item,
+              validating: props.validating,
+              onChange: subAction =>
+                props.handleItemDetailUpdate(props.item.id, subAction)
             }
-            onHintsChange={(updateType, payload) =>
-              props.handleItemHintsUpdate(props.item.id, updateType, payload)
-            }
-          >
-            {React.createElement(
-              getDefinition(props.item.type).editor.component,
-              {
-                item: props.item,
-                validating: props.validating,
-                onChange: subAction =>
-                  props.handleItemDetailUpdate(props.item.id, subAction)
-              }
-            )}
-          </ItemForm>
-        </Panel>
-      </fieldset>
-    </div>
-  )
+          )}
+        </ItemForm>
+      </Panel>
+    </fieldset>
+  </div>
+)
 
 ItemPanel.propTypes = {
   id: T.string.isRequired,
@@ -272,7 +251,6 @@ const ContentHeader = props =>
       handleItemDelete={props.handleItemDelete}
       handleItemDuplicate={props.handleItemDuplicate}
       handleItemChangeStep={props.handleItemChangeStep}
-      showModal={props.showModal}
       hasErrors={props.hasErrors}
       validating={props.validating}
       connectDragSource={props.connectDragSource}
@@ -285,61 +263,51 @@ ContentHeader.propTypes = {
   handleItemDelete: T.func.isRequired,
   handleItemDuplicate: T.func.isRequired,
   handleItemChangeStep: T.func.isRequired,
-  showModal: T.func.isRequired,
   hasErrors: T.bool.isRequired,
   validating: T.bool.isRequired,
   connectDragSource: T.func.isRequired,
   expanded: T.bool.isRequired
 }
 
-class ContentPanel extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  render() {
-    return this.props.connectDropTarget(
-      <div style={{opacity: this.props.isDragging ? 0 : 1}}>
-        <Panel
-          header={
-            <ContentHeader
-              item={this.props.item}
-              handlePanelClick={this.props.handlePanelClick}
-              handleItemDelete={this.props.handleItemDelete}
-              handleItemDuplicate={this.props.handleItemDuplicate}
-              handleItemChangeStep={this.props.handleItemChangeStep}
-              showModal={this.props.showModal}
-              connectDragSource={this.props.connectDragSource}
-              hasErrors={!isEmpty(this.props.item._errors)}
-              validating={this.props.validating}
-              expanded={this.props.expanded}
-            />
-          }
-          collapsible={true}
+const ContentPanel = props => props.connectDropTarget(
+  <div style={{opacity: this.props.isDragging ? 0 : 1}}>
+    <Panel
+      header={
+        <ContentHeader
+          item={this.props.item}
+          handlePanelClick={this.props.handlePanelClick}
+          handleItemDelete={this.props.handleItemDelete}
+          handleItemDuplicate={this.props.handleItemDuplicate}
+          handleItemChangeStep={this.props.handleItemChangeStep}
+          connectDragSource={this.props.connectDragSource}
+          hasErrors={!isEmpty(this.props.item._errors)}
+          validating={this.props.validating}
           expanded={this.props.expanded}
-        >
-          <ContentItemForm
-            item={this.props.item}
-            validating={this.props.validating}
-            onChange={(propertyPath, value) =>
-                this.props.handleContentItemUpdate(this.props.item.id, propertyPath, value)
-              }
-          >
-            {React.createElement(
-              getContentDefinition(this.props.item.type).editor.component,
-              {
-                item: this.props.item,
-                validating: this.props.validating,
-                onChange: subAction =>
-                  this.props.handleContentItemDetailUpdate(this.props.item.id, subAction)
-              }
-            )}
-          </ContentItemForm>
-        </Panel>
-      </div>
-    )
-  }
-}
+        />
+      }
+      collapsible={true}
+      expanded={this.props.expanded}
+    >
+      <ContentItemForm
+        item={this.props.item}
+        validating={this.props.validating}
+        onChange={(propertyPath, value) =>
+          this.props.handleContentItemUpdate(this.props.item.id, propertyPath, value)
+        }
+      >
+        {React.createElement(
+          getContentDefinition(this.props.item.type).editor.component,
+          {
+            item: this.props.item,
+            validating: this.props.validating,
+            onChange: subAction =>
+              this.props.handleContentItemDetailUpdate(this.props.item.id, subAction)
+          }
+        )}
+      </ContentItemForm>
+    </Panel>
+  </div>
+)
 
 ContentPanel.propTypes = {
   id: T.string.isRequired,
@@ -354,7 +322,6 @@ ContentPanel.propTypes = {
   handleItemDetailUpdate: T.func.isRequired,
   handleContentItemUpdate: T.func.isRequired,
   handleContentItemDetailUpdate: T.func.isRequired,
-  showModal: T.func.isRequired,
   connectDropTarget: T.func.isRequired,
   connectDragSource: T.func.isRequired,
   isDragging: T.bool.isRequired,
@@ -378,104 +345,58 @@ let SortableContentPanel = makeSortable(
 class StepFooter extends Component {
   constructor(props) {
     super(props)
-    // this is required before componentDidMount. If not state is not defined...
-    this.state = {
-      currentLabel: tex('add_question_from_new'),
-      currentAction: MODAL_ADD_ITEM
-    }
+
+    this.actionsMap = [
+      [MODAL_ADD_ITEM,     tex('add_question_from_new'),      this.props.handleItemCreate],
+      [MODAL_ADD_CONTENT,  tex('add_content'),                this.props.handleItemsImport],
+      [MODAL_IMPORT_ITEMS, tex('add_question_from_existing'), this.props.handleContentItemCreate],
+    ]
+
+    // set up the default action
+    this.state = {currentAction: this.actionsMap[0][0]}
   }
 
-  handleBtnClick(action) {
-    this.setState({
-      currentLabel:action === MODAL_ADD_ITEM ?
-        tex('add_question_from_new') :
-        action === MODAL_IMPORT_ITEMS ?
-          tex('add_question_from_existing') :
-          tex('add_content'),
-      currentAction: action
-    })
-
-    if (action === MODAL_ADD_ITEM) {
-      this.props.showModal(MODAL_ADD_ITEM, {
-        title: tex('add_question_from_new'),
-        handleSelect: type => {
-          this.props.closeModal()
-          this.props.handleItemCreate(this.props.stepId, type)
-        }
-      })
-    } else if (action === MODAL_IMPORT_ITEMS) {
-      this.props.showModal(MODAL_IMPORT_ITEMS, {
-        title: tex('add_question_from_existing'),
-        handleSelect: selected => {
-          this.props.closeModal()
-          this.props.handleItemsImport(this.props.stepId, selected)
-        }
-      })
-    } else if (action === MODAL_ADD_CONTENT) {
-      this.props.showModal(MODAL_ADD_CONTENT, {
-        title: tex('add_content'),
-        handleSelect: (selected) => {
-          this.props.closeModal()
-          return this.props.handleContentItemCreate(this.props.stepId, selected)
-        },
-        handleFileUpload: (itemId, file) => {
-          this.props.handleFileUpload(itemId, file)
-          return this.props.closeModal()
-        }
-      })
-    }
+  handleAction(action) {
+    // set selected action as the current one
+    this.setState({currentAction: action[0]})
+    // execute action
+    action[2](this.props.stepId)
   }
 
   render() {
+    const currentAction = this.actionsMap.find(action => this.state.currentAction === action[0])
+    const otherActions = this.actionsMap.filter(action => this.state.currentAction !== action[0])
+
     return (
       <div className="step-footer">
         <div className="btn-group">
-          <button type="button" onClick={() => this.handleBtnClick(this.state.currentAction)} className="btn btn-primary">{this.state.currentLabel}</button>
-          <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span className="caret" />
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => this.handleAction(currentAction)}
+          >
+            {currentAction[1]}
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary dropdown-toggle"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span className="fa fa-caret-down" />
             <span className="sr-only">Toggle Dropdown</span>
           </button>
-          { this.state.currentAction === MODAL_IMPORT_ITEMS ?
-            <ul className="dropdown-menu">
-              <li>
-                <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_ITEM)}>
-                  {tex('add_question_from_new')}
+
+          <ul className="dropdown-menu">
+            {otherActions.map(action =>
+              <li key={action[0]}>
+                <a role="button" onClick={() => this.handleAction(action)}>
+                  {action[1]}
                 </a>
               </li>
-              <li>
-                <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_CONTENT)}>
-                  {tex('add_content')}
-                </a>
-              </li>
-            </ul>
-            :
-            this.state.currentAction === MODAL_ADD_ITEM ?
-              <ul className="dropdown-menu">
-                <li>
-                  <a role="button" onClick={() => this.handleBtnClick(MODAL_IMPORT_ITEMS)}>
-                    {tex('add_question_from_existing')}
-                  </a>
-                </li>
-                <li>
-                  <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_CONTENT)}>
-                    {tex('add_content')}
-                  </a>
-                </li>
-              </ul>
-              :
-              <ul className="dropdown-menu">
-                <li>
-                  <a role="button" onClick={() => this.handleBtnClick(MODAL_ADD_ITEM)}>
-                    {tex('add_question_from_new')}
-                  </a>
-                </li>
-                <li>
-                  <a role="button" onClick={() => this.handleBtnClick(MODAL_IMPORT_ITEMS)}>
-                    {tex('add_question_from_existing')}
-                  </a>
-                </li>
-              </ul>
-          }
+            )}
+          </ul>
         </div>
       </div>
     )
@@ -493,7 +414,7 @@ StepFooter.propTypes = {
   handleFileUpload: T.func
 }
 
-export const StepEditor = props =>
+const StepEditor = props =>
   <div>
     <PanelGroup accordion activeKey={props.activePanelKey}>
       <Panel
@@ -587,6 +508,7 @@ export const StepEditor = props =>
   </div>
 
 StepEditor.propTypes = {
+  stepIndex: T.number,
   step: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired,
@@ -598,9 +520,9 @@ StepEditor.propTypes = {
   }).isRequired,
   mandatoryQuestions: T.bool.isRequired,
   numbering: T.string,
-  stepIndex: T.number,
   activePanelKey: T.oneOfType([T.string, T.bool]).isRequired,
   validating: T.bool.isRequired,
+
   updateStep: T.func.isRequired,
   handlePanelClick: T.func.isRequired,
   handleItemDelete: T.func.isRequired,
@@ -613,7 +535,108 @@ StepEditor.propTypes = {
   handleItemsImport: T.func.isRequired,
   handleContentItemCreate: T.func.isRequired,
   handleContentItemUpdate: T.func,
-  handleFileUpload: T.func,
   showModal: T.func.isRequired,
   closeModal: T.func.isRequired
+}
+
+function mapStateToProps(state) {
+  return {
+    step: select.currentObjectDeep(state),
+    stepIndex: select.currentObjectIndex(state),
+    validating: select.validating(state),
+    numbering: quizSelect.quizNumbering(state),
+    mandatoryQuestions: quizSelect.mandatoryQuestions(state),
+    activePanelKey: select.stepOpenPanel(state)
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    updateStep(stepId, newValue) {
+      dispatch(actions.updateStep(stepId, newValue))
+    },
+    handlePanelClick(stepId, panelKey) {
+      dispatch(actions.selectStepPanel(stepId, panelKey))
+    },
+    handleItemDelete(stepId, itemId) {
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: tex('delete_item'),
+          question: tex('remove_question_confirm_message'),
+          handleConfirm: () => dispatch(actions.deleteStepItem(stepId, itemId))
+        })
+      )
+    },
+    handleItemMove(id, swapId, stepId) {
+      dispatch(actions.moveItem(id, swapId, stepId))
+    },
+    handleItemChangeStep(itemId) {
+      dispatch(
+        modalActions.showModal(MODAL_MOVE_ITEM, {
+          title: tex('change_step'),
+          question: tex('change_step_confirm_message'),
+          handleClick: stepId => dispatch(actions.changeItemStep(itemId, stepId))
+        })
+      )
+    },
+    handleItemDuplicate(itemId) {
+      dispatch(
+        modalActions.showModal(MODAL_DUPLICATE_ITEM, {
+          title: tex('duplicate_item'),
+          handleSubmit: amount => dispatch(actions.duplicateItem(itemId, amount))
+        })
+      )
+    },
+    handleItemUpdate(itemId, propertyPath, value) {
+      dispatch(actions.updateItem(itemId, propertyPath, value))
+    },
+    handleItemHintsUpdate(itemId, updateType, payload) {
+      dispatch(actions.updateItemHints(itemId, updateType, payload))
+    },
+    handleItemDetailUpdate(itemId, subAction) {
+      dispatch(actions.updateItemDetail(itemId, subAction))
+    },
+    handleItemCreate(stepId) {
+      dispatch(
+        modalActions.showModal(MODAL_ADD_ITEM, {
+          title: tex('add_question_from_new'),
+          handleSelect: type => dispatch(actions.createItem(stepId, type))
+        })
+      )
+    },
+    handleContentItemCreate(stepId) {
+      this.props.showModal(MODAL_ADD_CONTENT, {
+        title: tex('add_content'),
+        handleSelect: (selected) => dispatch(actions.createContentItem(stepId, selected)),
+        handleFileUpload: (itemId, file) => dispatch(actions.saveContentItemFile(itemId, file))
+      })
+    },
+    handleItemsImport(stepId) {
+      dispatch(
+        modalActions.showModal(MODAL_IMPORT_ITEMS, {
+          title: tex('add_question_from_existing'),
+          handleSelect: selectedItems => dispatch(actions.importItems(stepId, selectedItems))
+        })
+      )
+    },
+    handleContentItemUpdate(id, propertyPath, value) {
+      dispatch(actions.updateContentItem(id, propertyPath, value))
+    },
+    handleContentItemDetailUpdate(id, subAction) {
+      dispatch(actions.updateContentItemDetail(id, subAction))
+    },
+
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    },
+    closeModal() {
+      dispatch(modalActions.fadeModal())
+    }
+  }
+}
+
+const ConnectedStepEditor = connect(mapStateToProps, mapDispatchToProps)(StepEditor)
+
+export {
+  ConnectedStepEditor as StepEditor
 }

@@ -2,7 +2,7 @@ import invariant from 'invariant'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {navigate} from './router'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
-import select from './selectors'
+import {select} from './selectors'
 import {VIEW_OVERVIEW} from './enums'
 import {actions as playerActions} from './player/actions'
 
@@ -25,7 +25,7 @@ const updateViewMode = (mode, hasFragment = true) => {
       select.noItems(state)
     ) {
       // Redirects to editor for admins if the quiz is empty
-      navigate('editor', false)
+      navigate('edit', false)
       dispatch(openFirstStep(select.firstStepId(state)))
     } else if (mode === VIEW_OVERVIEW &&
       !select.hasOverview(state)

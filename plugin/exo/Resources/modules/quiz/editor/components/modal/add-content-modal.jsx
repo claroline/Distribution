@@ -1,9 +1,11 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
+
 import {trans} from '#/main/core/translation'
-import {listContentTypes, getContentDefinition} from './../../../../contents/content-types'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+
+import {listContentTypes, getContentDefinition} from './../../../../contents/content-types'
 import {ContentInput} from './../content-input.jsx'
 
 export const MODAL_ADD_CONTENT = 'MODAL_ADD_CONTENT'
@@ -39,16 +41,21 @@ class AddContentModal extends Component {
                 key={type}
                 type={type}
                 selected={this.state.currentType === type}
-                handleSelect={type => this.props.handleSelect(type)}
                 handleItemMouseOver={type => this.handleItemMouseOver(type)}
-                handleFileUpload={(itemId, file) => this.props.handleFileUpload(itemId, file)}
+                handleSelect={type => {
+                  this.props.handleSelect(type)
+                  this.props.fadeModal()
+                }}
+                handleFileUpload={(itemId, file) => {
+                  this.props.handleFileUpload(itemId, file)
+                  this.props.fadeModal()
+                }}
               />
             )}
           </div>
+
           <div className="modal-item-desc">
-            <span className="modal-item-name">
-              {this.state.currentName}
-            </span>
+            <span className="modal-item-name">{this.state.currentName}</span>
           </div>
         </Modal.Body>
       </BaseModal>
@@ -58,7 +65,10 @@ class AddContentModal extends Component {
 
 AddContentModal.propTypes = {
   handleSelect: T.func.isRequired,
-  handleFileUpload: T.func
+  handleFileUpload: T.func,
+  fadeModal: T.func.isRequired
 }
 
-export {AddContentModal}
+export {
+  AddContentModal
+}

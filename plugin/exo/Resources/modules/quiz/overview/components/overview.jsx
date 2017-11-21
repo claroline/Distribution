@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
+
 import classes from 'classnames'
 
 import {tex} from '#/main/core/translation'
@@ -8,7 +10,10 @@ import {
   markModes,
   quizTypes,
   SHOW_CORRECTION_AT_DATE
-} from './../enums'
+} from './../../enums'
+
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {select} from './../../selectors'
 
 const Parameter = props =>
   <tr>
@@ -168,7 +173,7 @@ Layout.defaultProps = {
   description: null
 }
 
-class Overview extends Component {
+class OverviewComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -193,7 +198,7 @@ class Overview extends Component {
   }
 }
 
-Overview.propTypes = {
+OverviewComponent.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
   quiz: T.shape({
@@ -203,4 +208,16 @@ Overview.propTypes = {
   }).isRequired
 }
 
-export {Overview}
+function mapStateToProps(state) {
+  return {
+    editable: resourceSelect.editable(state),
+    empty: select.empty(state),
+    quiz: select.quiz(state)
+  }
+}
+
+const Overview = connect(mapStateToProps, null)(OverviewComponent)
+
+export {
+  Overview
+}

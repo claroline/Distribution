@@ -26,7 +26,8 @@ const quiz = {
     showScoreAt: SHOW_SCORE_AT_CORRECTION,
     showStatistics: false,
     showFullCorrection: true,
-    endMessage: ''
+    endMessage: '',
+    totalScoreOn: 0
   }
 }
 

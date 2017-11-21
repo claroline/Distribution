@@ -265,7 +265,6 @@ const List = props =>
       controlId="params-display-title"
       label={trans('field_for_title', {}, 'clacoform')}
       options={generateDisplayList(props)}
-      noEmpty={true}
       selectedValue={props.params.display_title || 'title'}
       onChange={value => props.updateParameters('display_title', value)}
     />
@@ -273,7 +272,6 @@ const List = props =>
       controlId="params-display-subtitle"
       label={trans('field_for_subtitle', {}, 'clacoform')}
       options={generateDisplayList(props)}
-      noEmpty={true}
       selectedValue={props.params.display_subtitle || 'title'}
       onChange={value => props.updateParameters('display_subtitle', value)}
     />
@@ -281,7 +279,6 @@ const List = props =>
       controlId="params-display-content"
       label={trans('field_for_content', {}, 'clacoform')}
       options={generateDisplayList(props)}
-      noEmpty={true}
       selectedValue={props.params.display_content || 'title'}
       onChange={value => props.updateParameters('display_content', value)}
     />

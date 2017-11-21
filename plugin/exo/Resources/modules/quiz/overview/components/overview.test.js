@@ -8,7 +8,7 @@ import {
   SHUFFLE_ALWAYS,
   SHOW_CORRECTION_AT_DATE,
   SHOW_SCORE_AT_CORRECTION
-} from './../enums'
+} from './../../enums'
 
 describe('<Overview/>', () => {
   before(mockTranslator)

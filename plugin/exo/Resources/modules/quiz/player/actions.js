@@ -1,15 +1,16 @@
 import isEmpty from 'lodash/isEmpty'
+import moment from 'moment'
 
 import {makeActionCreator} from '#/main/core/utilities/redux'
-import {REQUEST_SEND} from './../../api/actions'
+import {REQUEST_SEND} from '#/main/core/api/actions'
+
 import {actions as quizActions} from './../actions'
 import {VIEW_PLAYER} from './../enums'
-import quizSelectors from './../selectors'
+import {select as quizSelectors} from './../selectors'
 import {navigate} from './../router'
 import {select as playerSelectors} from './selectors'
 import {generatePaper} from './../papers/generator'
 import {normalize, denormalizeAnswers, denormalize} from './normalizer'
-import moment from 'moment'
 import {actions as paperAction} from '../papers/actions'
 
 export const ATTEMPT_START  = 'ATTEMPT_START'
@@ -162,7 +163,7 @@ actions.handleAttemptEnd = (paper) => {
 
     // We will decide here if we show the correction now or not and where we redirect the user
     if (playerSelectors.hasEndPage(getState())) {
-        // Show the end page
+      // Show the end page
       navigate('play/end')
     } else {
       switch (playerSelectors.showCorrectionAt(getState())) {
@@ -198,7 +199,6 @@ actions.initPlayer = (paper, answers = {}) => {
     const firstStep = paper.structure.steps[0]
 
     dispatch(actions.openStep(firstStep))
-    dispatch(quizActions.updateViewMode(VIEW_PLAYER))
   }
 }
 

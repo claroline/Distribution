@@ -1,6 +1,6 @@
 import React from 'react'
 
-import quizSelect from './../../selectors'
+import {select as quizSelect} from './../../selectors'
 import {selectors as paperSelect} from './../../papers/selectors'
 import {getDefinition, isQuestionType} from './../../../items/item-types'
 import {PropTypes as T} from 'prop-types'

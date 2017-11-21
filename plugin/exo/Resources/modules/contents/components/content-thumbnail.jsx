@@ -5,7 +5,7 @@ import classes from 'classnames'
 
 import {makeSortable} from './../../utils/sortable'
 import {t, tex} from '#/main/core/translation'
-import {ValidationStatus} from './../../quiz/editor/components/validation-status.jsx'
+import {ValidationStatus} from '#/plugin/exo/components/validation-status.jsx'
 import {getContentDefinition} from './../content-types'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONTENT} from './content-modal.jsx'
@@ -108,7 +108,6 @@ let ContentThumbnail = props => {
         </span>
       </span>
     )
-
 }
 
 ContentThumbnail.propTypes = {

@@ -1,17 +1,18 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-
 import Modal from 'react-bootstrap/lib/Modal'
-import {listItemNames, getDefinition} from './../../../../items/item-types'
-import {Icon} from './../../../../items/components/icon.jsx'
+
 import {t, tex, trans} from '#/main/core/translation'
+import {REQUEST_SEND} from '#/main/core/api/actions'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {REQUEST_SEND} from './../../../../api/actions'
 import {generateUrl} from '#/main/core/fos-js-router'
 
+import {listItemNames, getDefinition} from './../../../../items/item-types'
+import {Icon} from './../../../../items/components/icon.jsx'
 
 export const MODAL_IMPORT_ITEMS = 'MODAL_IMPORT_ITEMS'
+
 const actions = {}
 
 actions.getQuestions = (filter, onSuccess) => {

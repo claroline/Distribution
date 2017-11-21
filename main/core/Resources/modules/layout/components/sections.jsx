@@ -6,6 +6,24 @@ import omit from 'lodash/omit'
 import Panel      from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
+const SectionIcon = props =>
+  <span
+    className={props.icon ? props.icon : classes('fa fa-fw', {
+      'fa-caret-down': props.expanded,
+      'fa-caret-right': !props.expanded
+    })}
+    style={{marginRight: 10}}
+  />
+
+SectionIcon.propTypes = {
+  icon: T.string,
+  expanded: T.bool
+}
+
+SectionIcon.defaultProps = {
+  expanded: false
+}
+
 /**
  * Renders a section.
  *
@@ -21,7 +39,7 @@ const Section = props =>
       React.createElement('h'+props.level, {
         className: classes({opened: props.expanded})
       }, [
-        props.icon && <span key="panel-icon" className={props.icon} style={{marginRight: 10}} />,
+        <SectionIcon key="panel-icon" icon={props.icon} expanded={props.expanded} />,
         props.title
       ])
     }

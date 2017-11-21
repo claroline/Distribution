@@ -2,7 +2,7 @@ import {createSelector} from 'reselect'
 
 const offline = (state) => state.noServer || state.testMode
 const paper = (state) => state.paper
-const currentStepId = (state) => state.currentStep.id
+const currentStepId = (state) => state.currentStep ? state.currentStep.id : null
 const answers = (state) => state.answers
 const quizMaxAttempts = (state) => state.quiz.parameters.maxAttempts
 const quizEndMessage = (state) => state.quiz.parameters.endMessage
@@ -14,7 +14,7 @@ const hasEndPage = state => state.quiz.parameters.showEndPage
 
 const steps = createSelector(
   paper,
-  (paper) => paper.structure.steps
+  (paper) => paper.structure ? paper.structure.steps : []
 )
 
 /**

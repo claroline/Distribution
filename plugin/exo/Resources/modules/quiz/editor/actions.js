@@ -1,5 +1,5 @@
 import invariant from 'invariant'
-import select from './selectors'
+import {select} from './selectors'
 import times from 'lodash/times'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {makeId} from './../../utils/utils'

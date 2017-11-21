@@ -6,7 +6,7 @@ import Panel from 'react-bootstrap/lib/Panel'
 import {tex} from '#/main/core/translation'
 import {getDefinition, isQuestionType} from './../../../items/item-types'
 import {getContentDefinition} from './../../../contents/content-types'
-import selectQuiz from './../../selectors'
+import {select as selectQuiz} from './../../selectors'
 import {select} from './../selectors'
 
 import {actions as playerActions} from './../actions'
