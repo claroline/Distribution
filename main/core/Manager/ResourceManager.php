@@ -197,7 +197,7 @@ class ResourceManager
         $this->checkResourcePrepared($resource);
 
         /** @var ResourceNode $node */
-        $node = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceNode');
+        $node = new ResourceNode();
         $node->setResourceType($resourceType);
         $node->setPublished($isPublished);
         $node->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
@@ -810,7 +810,7 @@ class ResourceManager
         $env = $this->container->get('kernel')->getEnvironment();
 
         if ($resource instanceof ResourceShortcut) {
-            $copy = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceShortcut');
+            $copy = new ResourceShortcut();
             $copy->setTarget($resource->getTarget());
             $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
             $copy->setResourceNode($newNode);
@@ -1346,7 +1346,7 @@ class ResourceManager
      */
     public function createResource($class, $name)
     {
-        $entity = $this->om->factory($class);
+        $entity = new $class();
 
         if ($entity instanceof AbstractResource) {
             $entity->setName($name);
@@ -1590,7 +1590,7 @@ class ResourceManager
         $index = null
     ) {
         /** @var ResourceNode $newNode */
-        $newNode = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceNode');
+        $newNode = new ResourceNode();
         $newNode->setResourceType($node->getResourceType());
         $newNode->setCreator($user);
         $newNode->setWorkspace($newParent->getWorkspace());

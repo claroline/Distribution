@@ -115,7 +115,7 @@ class ThumbnailManager
             $thumbnailPath = $this->webdir.$ds.$publicFile->getUrl();
             $relativeUrl = ltrim(str_replace($this->webdir, '', $thumbnailPath), "{$ds}");
             //entity creation
-            $thumbnail = $this->om->factory('Claroline\CoreBundle\Entity\Resource\ResourceThumbnail');
+            $thumbnail = new ResourceThumbnail();
             $thumbnail->setRelativeUrl($relativeUrl);
             $thumbnail->setMimeType('custom');
             $thumbnail->setShortcut(false);
