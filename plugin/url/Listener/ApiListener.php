@@ -41,9 +41,13 @@ class ApiListener
             // Is it a youtube video ?
             $youtubeId = $this->getYoutubeId($resource->getUrl());
             if ($youtubeId !== false) {
-                $thumbnailUrl = 'http://img.youtube.com/vi/'.$youtubeId.'/hqdefault.jpg';
-                $event->add('poster', $thumbnailUrl);
                 $isYoutube = true;
+
+                // Only add remote youTube thumbnail if no local resource node thumbnail is defined
+                if ($resourceNode->getThumbnail() === null) {
+                    $thumbnailUrl = 'http://img.youtube.com/vi/'.$youtubeId.'/hqdefault.jpg';
+                    $event->add('poster', $thumbnailUrl);
+                }
             }
 
             $event->add('url', [
