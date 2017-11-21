@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import {t, trans} from '#/main/core/translation'
 
+import {t, trans} from '#/main/core/translation'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'
 import {FileGroup}  from '#/main/core/layout/form/components/group/file-group.jsx'
 
-import {constants} from '../../constants'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
 class DropTextForm extends Component {
   constructor(props) {

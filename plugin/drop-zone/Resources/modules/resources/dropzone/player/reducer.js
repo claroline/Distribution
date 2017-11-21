@@ -10,11 +10,10 @@ import {
   PEER_DROP_LOAD,
   PEER_DROP_RESET,
   PEER_DROPS_INC
-} from './actions'
-
+} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {
   CORRECTION_UPDATE
-} from '../correction/actions'
+} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
 const myDropReducer = makeReducer({}, {
   [MY_DROP_LOAD]: (state, action) => {
@@ -61,8 +60,6 @@ const myDropReducer = makeReducer({}, {
   }
 })
 
-const myDropsReducer = makeReducer({}, {})
-
 const nbCorrectionsReducer = makeReducer({}, {
   [PEER_DROPS_INC]: (state) => {
     return state + 1
@@ -90,7 +87,6 @@ const peerDropReducer = makeReducer({}, {
 
 const reducer = {
   myDrop: myDropReducer,
-  myDrops: myDropsReducer,
   nbCorrections: nbCorrectionsReducer,
   peerDrop: peerDropReducer
 }

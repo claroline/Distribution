@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
+
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {t, trans} from '#/main/core/translation'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'

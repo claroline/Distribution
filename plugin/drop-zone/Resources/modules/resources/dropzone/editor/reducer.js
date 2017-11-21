@@ -1,8 +1,9 @@
 import cloneDeep from 'lodash/cloneDeep'
 import set from 'lodash/set'
 import {makeReducer} from '#/main/core/utilities/redux'
-import {validate} from './validator'
-import {generateId} from '../utils'
+
+import {validate} from '#/plugin/drop-zone/resources/dropzone/editor/validator'
+import {generateId} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {
   DROPZONE_LOAD,
   DROPZONE_FORM_LOAD,
@@ -13,7 +14,7 @@ import {
   DROPZONE_CRITERION_ADD,
   DROPZONE_CRITERION_UPDATE,
   DROPZONE_CRITERION_REMOVE
-} from './actions'
+} from '#/plugin/drop-zone/resources/dropzone/editor/actions'
 
 const dropzoneReducer = makeReducer({}, {
   [DROPZONE_LOAD]: (state, action) => {

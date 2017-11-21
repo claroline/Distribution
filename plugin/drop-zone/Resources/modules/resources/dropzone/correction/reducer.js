@@ -1,5 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
+
 import {makeReducer} from '#/main/core/utilities/redux'
+import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {
   DROPS_LOAD,
@@ -11,11 +13,10 @@ import {
   CORRECTION_FORM_CRITERION_UPDATE,
   CORRECTION_UPDATE,
   CORRECTION_REMOVE
-} from './actions'
-
+} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {
   DOCUMENT_UPDATE
-} from '../player/actions'
+} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 
 
 const currentDropReducer = makeReducer({}, {
@@ -63,14 +64,22 @@ const currentDropReducer = makeReducer({}, {
   }
 })
 
-const dropsReducer = makeReducer({
-  data: [],
-  totalResults: 0
-}, {
+const dropsReducer = makeReducer({}, {
   [DROPS_LOAD]: (state, action) => {
-    return action.drops
+    return action.drops.data
   }
 })
+
+const dropsResultsReducer = makeReducer({}, {
+  [DROPS_LOAD]: (state, action) => {
+    return action.drops.totalResults
+  }
+})
+
+const dropsListReducer = makeListReducer({
+  data: dropsReducer,
+  totalResults: dropsResultsReducer
+}, {})
 
 const correctionFormReducer = makeReducer({}, {
   [CORRECTION_FORM_LOAD]: (state, action) => {
@@ -96,7 +105,7 @@ const correctionFormReducer = makeReducer({}, {
 })
 
 const reducer = {
-  drops: dropsReducer,
+  drops: dropsListReducer,
   currentDrop: currentDropReducer,
   correctionForm: correctionFormReducer
 }

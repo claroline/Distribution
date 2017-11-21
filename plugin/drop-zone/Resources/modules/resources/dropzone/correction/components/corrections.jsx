@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {t, trans} from '#/main/core/translation'
 
-import {CorrectionRow} from './correction-row.jsx'
+import {CorrectionRow} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-row.jsx'
 
 export const Corrections = props =>
   <table className="table corrections-table">

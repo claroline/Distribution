@@ -1,5 +1,3 @@
-import {trans} from '#/main/core/translation'
-
 const compilatioValue = 0
 
 const toolTypes = [

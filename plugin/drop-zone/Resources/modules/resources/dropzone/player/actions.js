@@ -2,8 +2,9 @@ import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 import {navigate} from '#/main/core/router'
-import {select} from '../selectors'
-import {constants} from '../constants'
+
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
 export const MY_DROP_LOAD = 'MY_DROP_LOAD'
 export const MY_DROP_UPDATE = 'MY_DROP_UPDATE'

@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {t, trans} from '#/main/core/translation'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
-import {select} from '../../selectors'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 
 class Drops extends Component {
   generateColumns() {

@@ -5,7 +5,8 @@ import {asset} from '#/main/core/asset'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
-import {constants} from '../../constants'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {DocumentType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
 const Document = props =>
   <tr className="drop-document">
@@ -81,17 +82,7 @@ Document.propTypes = {
   canEdit: T.bool.isRequired,
   showMeta: T.bool.isRequired,
   showTools: T.bool.isRequired,
-  document: T.shape({
-    id: T.string.isRequired,
-    type: T.number.isRequired,
-    data: T.oneOfType([T.string, T.object]).isRequired,
-    dropDate: T.string.isRequired,
-    toolDocuments: T.arrayOf(T.shape({
-      data: T.shape({
-        reportrUrl: T.string
-      })
-    }))
-  }),
+  document: T.shape(DocumentType.propTypes),
   tools: T.array,
   deleteDocument: T.func,
   executeTool: T.func,

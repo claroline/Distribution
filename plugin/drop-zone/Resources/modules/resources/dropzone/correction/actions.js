@@ -1,9 +1,10 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {REQUEST_SEND} from '#/main/core/api/actions'
-import {select} from '../selectors'
-import {generateCorrection} from '../utils'
-import {actions as playerActions} from '../player/actions'
+
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {generateCorrection} from '#/plugin/drop-zone/resources/dropzone/utils'
+import {actions as playerActions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 
 export const DROPS_LOAD = 'DROPS_LOAD'
 export const CURRENT_DROP_LOAD = 'CURRENT_DROP_LOAD'

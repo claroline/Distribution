@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/core/translation'
 
 export const Corrections = props =>

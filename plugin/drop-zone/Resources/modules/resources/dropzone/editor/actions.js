@@ -2,7 +2,8 @@ import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {navigate} from '#/main/core/router'
 import {REQUEST_SEND} from '#/main/core/api/actions'
-import {isValid} from './validator'
+
+import {isValid} from '#/plugin/drop-zone/resources/dropzone/editor/validator'
 
 export const DROPZONE_LOAD = 'DROPZONE_LOAD'
 export const DROPZONE_FORM_LOAD = 'DROPZONE_FORM_LOAD'

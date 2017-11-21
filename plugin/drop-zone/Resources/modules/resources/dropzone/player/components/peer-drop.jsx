@@ -2,16 +2,17 @@ import React, {Component} from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/core/translation'
 import {navigate} from '#/main/core/router'
 
-import {select} from '../../selectors'
-import {generateCorrectionGrades} from '../../utils'
-import {actions} from '../actions'
-import {actions as correctionActions} from '../../correction/actions'
-
-import {Documents} from './documents.jsx'
-import {CorrectionForm} from '../../correction/components/correction-form.jsx'
+import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {generateCorrectionGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
+import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
+import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
+import {CorrectionForm} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-form.jsx'
 
 class PeerDrop extends Component {
   constructor(props) {
@@ -91,20 +92,10 @@ class PeerDrop extends Component {
 }
 
 PeerDrop.propTypes = {
-  dropzone: T.object.isRequired,
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  drop: T.shape(DropType.propTypes),
   user: T.shape({
     id: T.number.isRequired
-  }),
-  drop: T.shape({
-    id: T.string.isRequired,
-    finished: T.bool.isRequired,
-    documents: T.array,
-    corrections: T.arrayOf(T.shape({
-      finished: T.bool.isRequired,
-      user: T.shape({
-        id: T.number.isRequired
-      }).isRequired
-    }))
   }),
   isPeerReviewEnabled: T.bool.isRequired,
   saveCorrection: T.func.isRequired,

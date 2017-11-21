@@ -1,17 +1,18 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 
-import {select} from '../../selectors'
-import {actions} from '../actions'
-import {actions as correctionActions} from '../../correction/actions'
-
-import {Documents} from './documents.jsx'
-import {Corrections} from './corrections.jsx'
-import {DropForm} from './drop-form.jsx'
+import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
+import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
+import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
+import {Corrections} from '#/plugin/drop-zone/resources/dropzone/player/components/corrections.jsx'
+import {DropForm} from '#/plugin/drop-zone/resources/dropzone/player/components/drop-form.jsx'
 
 const MyDrop = props =>
   <div className="drop-panel">
@@ -58,22 +59,8 @@ const MyDrop = props =>
   </div>
 
 MyDrop.propTypes = {
-  dropzone: T.shape({
-    parameters: T.shape({
-      expectedCorrectionTotal: T.number.isRequired
-    }).isRequired,
-    display: T.shape({
-      displayCorrectionsToLearners: T.bool.isRequired
-    }).isRequired
-  }).isRequired,
-  drop: T.shape({
-    id: T.string.isRequired,
-    finished: T.bool.isRequired,
-    documents: T.array,
-    corrections: T.arrayOf(T.shape({
-      finished: T.bool.isRequired
-    }))
-  }).isRequired,
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  drop: T.shape(DropType.propTypes).isRequired,
   isDropEnabled: T.bool.isRequired,
   isPeerReviewEnabled: T.bool.isRequired,
   nbCorrections: T.number.isRequired,

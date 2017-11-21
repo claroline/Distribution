@@ -6,10 +6,10 @@ import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
 // dropzone reducers
-import {reducer as editorReducer} from './editor/reducer'
-import {reducer as playerReducer} from './player/reducer'
-import {reducer as correctionReducer} from './correction/reducer'
-import {reducer as configurationReducer} from '../../plugin/configuration/reducer'
+import {reducer as editorReducer} from '#/plugin/drop-zone/resources/dropzone/editor/reducer'
+import {reducer as playerReducer} from '#/plugin/drop-zone/resources/dropzone/player/reducer'
+import {reducer as correctionReducer} from '#/plugin/drop-zone/resources/dropzone/correction/reducer'
+import {reducer as configurationReducer} from '#/plugin/drop-zone/plugin/configuration/reducer'
 
 const reducer = {
   user: makeReducer({}, {}),
@@ -17,7 +17,6 @@ const reducer = {
   dropzoneForm: editorReducer.dropzoneForm,
   myDrop: playerReducer.myDrop,
   peerDrop: playerReducer.peerDrop,
-  //myDrops: playerReducer.myDrops,
   nbCorrections: playerReducer.nbCorrections,
   drops: correctionReducer.drops,
   currentDrop: correctionReducer.currentDrop,

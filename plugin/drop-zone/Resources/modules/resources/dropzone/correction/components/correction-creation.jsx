@@ -1,13 +1,13 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/core/translation'
 
-import {generateId} from '../../utils'
-import {select} from '../../selectors'
-import {actions} from '../actions'
-
-import {CorrectionForm} from './correction-form.jsx'
+import {generateId} from '#/plugin/drop-zone/resources/dropzone/utils'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
+import {CorrectionForm} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-form.jsx'
 
 class CorrectionCreation extends Component {
   constructor(props) {

@@ -2,12 +2,12 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {select} from '../../selectors'
-import {actions} from '../actions'
-
-import {Documents} from '../../player/components/documents.jsx'
-import {Corrections} from './corrections.jsx'
-import {CorrectionCreation} from './correction-creation.jsx'
+import {DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
+import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
+import {Corrections} from '#/plugin/drop-zone/resources/dropzone/correction/components/corrections.jsx'
+import {CorrectionCreation} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-creation.jsx'
 
 const Drop = props =>
   <div id="drop-container">
@@ -26,11 +26,7 @@ const Drop = props =>
   </div>
 
 Drop.propTypes = {
-  drop: T.shape({
-    id: T.string,
-    documents: T.array,
-    corrections: T.array
-  }),
+  drop: T.shape(DropType.propTypes),
   tools: T.array,
   executeTool: T.func
 }

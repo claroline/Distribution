@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+
 import {t, trans} from '#/main/core/translation'
 import {NumberGroup}  from '#/main/core/layout/form/components/group/number-group.jsx'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'

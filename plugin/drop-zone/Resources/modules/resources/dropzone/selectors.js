@@ -121,7 +121,7 @@ const drops = state => state.drops
 const currentDrop = state => state.currentDrop
 const correctionForm = state => state.correctionForm
 const nbCorrections = state => state.nbCorrections
-const tools = state => state.tools
+const tools = state => state.tools.data
 
 export const select = {
   canEdit,

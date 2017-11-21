@@ -7,8 +7,8 @@ import {trans} from '#/main/core/translation'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
-import {select} from '../../selectors'
-import {actions} from '../actions'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/editor/actions'
 
 class Criterion extends Component {
   constructor(props) {
@@ -40,6 +40,7 @@ class Criterion extends Component {
         <div className="criterion-btn-group">
           <button
             className="btn btn-default btn-sm"
+            type="button"
             disabled={!this.props.criterion.instruction}
             onClick={() => this.setState({editMode: !this.state.editMode})}
           >
@@ -47,6 +48,7 @@ class Criterion extends Component {
           </button>
           <button
             className="btn btn-danger btn-sm"
+            type="button"
             onClick={() => this.props.handleDelete(this.props.criterion.id)}
           >
             <span className="fa fa-w fa-trash"/>
@@ -72,6 +74,7 @@ const Criteria = props =>
   <div>
     <button
       className="btn btn-primary"
+      type="button"
       onClick={() => props.addCriterion(props.dropzoneId)}
     >
       <span className="fa fa-w fa-plus"></span>

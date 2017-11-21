@@ -2,13 +2,14 @@ import React, {Component} from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {t, trans} from '#/main/core/translation'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
-import {select} from '../../selectors'
-import {actions} from '../actions'
-import {generateCorrectionGrades} from '../../utils'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {generateCorrectionGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
 import {CorrectionForm} from './correction-form.jsx'
 

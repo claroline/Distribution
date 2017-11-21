@@ -6,7 +6,6 @@ import {t, trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM, MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
 import {constants as listConstants} from '#/main/core/layout/list/constants'
-import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'
 import {
   PageContainer,
   PageHeader,
@@ -23,16 +22,16 @@ import {generateId} from '#/plugin/drop-zone/resources/dropzone/utils'
 class Tools extends Component {
   showCompilatioForm(tool = null) {
     const toolForm = !tool ?
-      {
-        id: generateId(),
-        name: '',
-        type: constants.compilatioValue,
-        data: {
-          url: 'http://service.compilatio.net/webservices/CompilatioUserClient2.wsdl',
-          key: null
-        }
-      } :
-      tool
+    {
+      id: generateId(),
+      name: '',
+      type: constants.compilatioValue,
+      data: {
+        url: 'http://service.compilatio.net/webservices/CompilatioUserClient2.wsdl',
+        key: null
+      }
+    } :
+    tool
     this.props.loadToolForm(toolForm)
 
     this.props.showModal('MODAL_COMPILATIO_FORM', {
@@ -115,7 +114,7 @@ class Tools extends Component {
             )}
           </div>
 
-          return dataBox
+        return dataBox
       }
     })
 
@@ -168,7 +167,7 @@ class Tools extends Component {
             definition={this.generateColumns()}
             filterColumns={true}
             actions={this.generateActions()}
-            card={(row) => ({
+            card={() => ({
               onClick: () => {},
               poster: null,
               icon: null,
