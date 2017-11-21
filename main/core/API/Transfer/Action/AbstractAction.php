@@ -25,6 +25,10 @@ abstract class AbstractAction
         return $this->getName();
     }
 
+    public function getSchema()
+    {
+        return "{}";
+    }
 
     public function export()
     {

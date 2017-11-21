@@ -6,4 +6,5 @@ interface AdapterInterface
 {
     public function getData($content);
     public function getMimeTypes();
+    public function getExplain($json);
 }

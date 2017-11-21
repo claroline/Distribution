@@ -10,6 +10,7 @@
       "facet-management": "facets/module",
       "workspace-management": "administration/workspace",
       "theme-management": "administration/theme",
+      "import-management": "administration/import",
       "private-profile": "profile/module",
       "plugin-management": "plugins/module",
       "portal": "portal/module",

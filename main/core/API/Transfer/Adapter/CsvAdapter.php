@@ -49,4 +49,9 @@ class CsvAdapter implements AdapterInterface
     {
         return ['text/csv'];
     }
+
+    public function getExplain($json)
+    {
+        //parse the json and explain what to do
+    }
 }

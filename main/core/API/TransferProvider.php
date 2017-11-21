@@ -79,7 +79,7 @@ class TransferProvider
         $availables = [];
 
         foreach ($this->actions as $action) {
-            $availables[$action->getName()] = $action->getProperties();
+            $availables[$action->getName()] = $action->getSchema();
         }
 
         return $availables;

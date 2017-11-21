@@ -19,4 +19,9 @@ class JsonAdapter implements AdapterInterface
     {
         return ['application/json'];
     }
+
+    public function getExplain($json)
+    {
+        return $json;
+    }
 }

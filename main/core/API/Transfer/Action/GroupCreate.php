@@ -47,6 +47,11 @@ class GroupCreate extends AbstractAction
         ];
     }
 
+    public function getSchema()
+    {
+        return file_get_contents(__DIR__ . '/../../Schema/Object/group.json');
+    }
+
     public function getBatchSize()
     {
         return 250;
