@@ -229,7 +229,6 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        //return $this->exerciseManager->exportResultsToCsv($exercise);
         return new StreamedResponse(function () use ($exercise) {
             $this->exerciseManager->exportResultsToCsv($exercise);
         }, 200, [
