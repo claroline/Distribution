@@ -122,6 +122,20 @@ class Entries extends Component {
       }
     })
     columns.push({
+      name: 'locked',
+      label: t('locked'),
+      displayed: false,
+      type: 'boolean',
+      renderer: (rowData) => {
+        const lockCell = <span className={classes('fa fa-fw', {
+          'fa-lock true': rowData.locked,
+          'fa-unlock false': !rowData.locked
+        })}/>
+
+        return lockCell
+      }
+    })
+    columns.push({
       name: 'title',
       label: t('title'),
       displayed: this.isDisplayedField('title'),
