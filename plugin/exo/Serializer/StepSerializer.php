@@ -57,7 +57,7 @@ class StepSerializer implements SerializerInterface
         }
 
         $stepData->parameters = $this->serializeParameters($step);
-        $stepData->picking = $this->serializeParameters($step);
+        $stepData->picking = $this->serializePicking($step);
         $stepData->items = $this->serializeItems($step, $options);
 
         return $stepData;
