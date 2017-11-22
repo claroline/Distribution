@@ -15,7 +15,6 @@ import {SelectGroup} from '#/main/core/layout/form/components/group/select-group
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
-import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
 import {ValidationStatus} from './validation-status.jsx'
 import {RandomPicking} from './random-picking.jsx'
@@ -482,6 +481,7 @@ makePanel.propTypes = {
   updateProperties: T.func.isRequired,
   quiz: T.object.isRequired,
   items: T.array.isRequired,
+  tags: T.array.isRequired,
   _errors: T.object
 }
 

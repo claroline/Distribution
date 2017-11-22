@@ -692,5 +692,6 @@
     "no_picked_tag": "Aucun tag sélectionné pour le tirage.",
     "picking_tag_input_help": "Choisissez le nombre de questions à utiliser pour chaque tag.",
     "quiz_no_tag": "Il n'y a aucun tag dans ce quiz.",
-    "quiz_no_tag_help": "Ajoutez des tags à vos questions afin de pouvoir configurer et utiliser le tirage par tag."
+    "quiz_no_tag_help": "Ajoutez des tags à vos questions afin de pouvoir configurer et utiliser le tirage par tag.",
+    "tags_to_pick": "Tags à tirer"
 }

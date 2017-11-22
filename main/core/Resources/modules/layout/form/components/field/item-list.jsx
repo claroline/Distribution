@@ -5,10 +5,6 @@ import {t} from '#/main/core/translation'
 
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {HelpBlock} from '#/main/core/layout/form/components/help-block.jsx'
-import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
-import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
-import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
-import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 
 // todo : finish implementation
 // todo : replace in IPList control
@@ -20,7 +16,7 @@ const Item = props =>
       className="form-control input-sm"
       onChange={tag => props.onChange([tag, props.value[1]])}
     >
-      <option value="">{tex('quiz_select_picking_tags')}</option>
+      <option value="">{t('quiz_select_picking_tags')}</option>
       {props.tags.map(tag =>
         <option value={tag} selected={tag === props.value[0]}>{tag}</option>
       )}
@@ -134,8 +130,8 @@ class ItemList extends Component {
               <li key={`${this.props.id}-${index}`} className="tag-item">
                 <Tag
                   id={`${this.props.id}-auth-${index}`}
-                  value={tag}
-                  onChange={tag => this.updateItem(index, item)}
+                  value={item}
+                  onChange={item => this.updateItem(index, item)}
                 />
 
                 <TooltipButton

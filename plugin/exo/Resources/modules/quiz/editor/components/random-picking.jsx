@@ -6,7 +6,6 @@ import {tex} from '#/main/core/translation'
 
 import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
-import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 
 import {
   shuffleModes,

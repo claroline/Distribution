@@ -74,10 +74,10 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
   switch (action.type) {
     case QUIZ_UPDATE: {
       // updates quiz
-      const updatedQuiz =  merge(
-        cloneDeep(quiz), // copy current quiz state
-        sanitize.quiz(action.propertyPath, action.value) // append new prop value
-      )
+      const updatedQuiz = cloneDeep(quiz)
+
+      // append new prop value
+      set(updatedQuiz, action.propertyPath, sanitize.quiz(action.propertyPath, action.value))
 
       // handles custom cases
       if ('picking.type' === action.propertyPath) {
@@ -92,6 +92,7 @@ function reduceQuiz(quiz = initialQuizState(), action = {}) {
               pageSize: 1
             }
             break
+
           case QUIZ_PICKING_DEFAULT:
           default:
             updatedQuiz.picking = {

@@ -170,6 +170,8 @@ class TagManager
         }
         $tagsList = [];
 
+        $this->om->getUnitOfWork();
+
         foreach ($uniqueTags as $tagName) {
             $tag = is_null($user) ? $this->getOrCreatePlatformTag($tagName) : $this->getOrCreateUserTag($user, $tagName);
             $tagsList[$tagName] = $tag;

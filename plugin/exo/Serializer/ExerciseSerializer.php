@@ -331,20 +331,21 @@ class ExerciseSerializer implements SerializerInterface
         $picking->type = $exercise->getPicking();
         switch ($picking->type) {
             case Picking::TAGS:
-                $tagPicking = $exercise->getRandomTag();
+                $tagPicking = $exercise->getPick();
 
-                $picking->pick = $tagPicking['pick'];
+                $picking->pick = $tagPicking['tags'];
                 $picking->pageSize = $tagPicking['pageSize'];
 
                 break;
             case Picking::STANDARD:
             default:
                 $picking->pick = $exercise->getPick();
-                $picking->randomOrder = $exercise->getRandomOrder();
-                $picking->randomPick = $exercise->getRandomPick();
 
                 break;
         }
+
+        $picking->randomOrder = $exercise->getRandomOrder();
+        $picking->randomPick = $exercise->getRandomPick();
 
         return $picking;
     }
@@ -353,32 +354,27 @@ class ExerciseSerializer implements SerializerInterface
     {
         $exercise->setPicking($picking->type);
 
+        if (isset($picking->randomOrder)) {
+            $exercise->setRandomOrder($picking->randomOrder);
+        }
+
+        if (isset($picking->randomPick)) {
+            $exercise->setRandomPick($picking->randomPick);
+        }
+
         switch ($picking->type) {
             case Picking::TAGS:
-                // resets steps picking params
-                $exercise->setPick(0);
-                $exercise->setRandomOrder(Recurrence::NEVER);
-                $exercise->setRandomPick(Recurrence::NEVER);
-
                 // updates tags picking params
-                $exercise->setRandomTag([
-                    'pick' => $picking->pick,
-                    'pageSize' => $picking->pageSize
+                $exercise->setPick([
+                    'tags' => $picking->pick,
+                    'pageSize' => $picking->pageSize,
                 ]);
 
                 break;
             case Picking::STANDARD:
             default:
-                // resets tags picking params
-                $exercise->setRandomTag([]);
-
                 // updates steps picking params
-                if (isset($picking->randomOrder)) {
-                    $exercise->setRandomOrder($picking->randomOrder);
-                }
-
                 if (isset($picking->randomPick)) {
-                    $exercise->setRandomPick($picking->randomPick);
                     if (Recurrence::ONCE === $picking->randomPick || Recurrence::ALWAYS === $picking->randomPick) {
                         $exercise->setPick($picking->pick);
                     } else {

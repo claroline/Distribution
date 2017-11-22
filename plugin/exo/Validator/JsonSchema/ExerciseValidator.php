@@ -114,6 +114,13 @@ class ExerciseValidator extends JsonSchemaValidator
                     'message' => 'The property `randomOrder` cannot be "once" when `randomPick` is "always"',
                 ];
             }
+        } else if (Picking::TAGS === $picking->type) {
+            if (Recurrence::NEVER === $picking->randomPick) {
+                $errors[] = [
+                    'path' => '/picking/randomPick',
+                    'message' => 'The property `randomPick` cannot be "never" when picking `type` is "tags"',
+                ];
+            }
         }
 
         return $errors;

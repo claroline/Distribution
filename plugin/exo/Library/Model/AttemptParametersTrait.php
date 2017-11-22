@@ -127,7 +127,7 @@ trait AttemptParametersTrait
      */
     public function getPick()
     {
-        return json_decode($this->pick);
+        return json_decode($this->pick, true);
     }
 
     /**

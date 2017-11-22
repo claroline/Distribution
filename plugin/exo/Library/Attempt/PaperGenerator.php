@@ -10,6 +10,8 @@ use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Item\Item;
 use UJM\ExoBundle\Entity\Step;
+use UJM\ExoBundle\Entity\StepItem;
+use UJM\ExoBundle\Library\Options\Picking;
 use UJM\ExoBundle\Library\Options\Recurrence;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Serializer\ExerciseSerializer;
@@ -118,46 +120,49 @@ class PaperGenerator
 
     private function pickSteps(Exercise $exercise, \stdClass $previousExercise = null)
     {
-        if (isset($exercise->getRandomTag()->pageSize) && $exercise->getRandomTag()->pageSize > 0) {
-            return $this->pickStepsByTags($exercise);
-        } else {
-            if (!empty($previousExercise) && Recurrence::ALWAYS !== $exercise->getRandomPick()) {
-                // Just get the list of steps from the previous paper
-                $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
-                    return $exercise->getStep($pickedStep->id);
-                }, $previousExercise->steps);
-            } else {
-                // Pick a new set of steps
-                $steps = static::pick(
-                  $exercise->getSteps()->toArray(),
-                  $exercise->getPick()
-              );
-            }
+        switch ($exercise->getPicking()) {
+            case Picking::TAGS:
+                return $this->pickStepsByTags($exercise);
 
-            $pickedSteps = [];
-            foreach ($steps as $step) {
-                $previousStructure = null;
-                if ($previousExercise) {
-                    foreach ($previousExercise->steps as $stepStructure) {
-                        if ($stepStructure->id === $step->getUuid()) {
-                            $previousStructure = $stepStructure;
-                            break;
-                        }
-                    }
+            case Picking::STANDARD:
+            default:
+                if (!empty($previousExercise) && Recurrence::ALWAYS !== $exercise->getRandomPick()) {
+                    // Just get the list of steps from the previous paper
+                    $steps = array_map(function (\stdClass $pickedStep) use ($exercise) {
+                        return $exercise->getStep($pickedStep->id);
+                    }, $previousExercise->steps);
+                } else {
+                    // Pick a new set of steps
+                    $steps = static::pick(
+                        $exercise->getSteps()->toArray(),
+                        $exercise->getPick()
+                    );
                 }
 
-                $pickedStep = $this->stepSerializer->serialize($step);
-                $pickedStep->items = $this->pickItems($step, $previousStructure);
-                $pickedSteps[] = $pickedStep;
-            }
+                $pickedSteps = [];
+                foreach ($steps as $step) {
+                    $previousStructure = null;
+                    if ($previousExercise) {
+                        foreach ($previousExercise->steps as $stepStructure) {
+                            if ($stepStructure->id === $step->getUuid()) {
+                                $previousStructure = $stepStructure;
+                                break;
+                            }
+                        }
+                    }
 
-            // Shuffle steps according to config
-            if ((empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomOrder())
-              || Recurrence::ALWAYS === $exercise->getRandomOrder()) {
-                shuffle($pickedSteps);
-            }
+                    $pickedStep = $this->stepSerializer->serialize($step);
+                    $pickedStep->items = $this->pickItems($step, $previousStructure);
+                    $pickedSteps[] = $pickedStep;
+                }
 
-            return $pickedSteps;
+                // Shuffle steps according to config
+                if ((empty($previousExercise) && Recurrence::ONCE === $exercise->getRandomOrder())
+                    || Recurrence::ALWAYS === $exercise->getRandomOrder()) {
+                    shuffle($pickedSteps);
+                }
+
+                return $pickedSteps;
         }
     }
 
@@ -171,8 +176,9 @@ class PaperGenerator
      */
     private function pickStepsByTags(Exercise $exercise)
     {
-        $pageSize = $exercise->getRandomTag()->pageSize;
-        $tags = $exercise->getRandomTag()->pick;
+        $pickConfig = $exercise->getPick();
+        $pageSize = $pickConfig['pageSize'];
+        $tags = $pickConfig['tags'];
         $total = array_reduce($tags, function ($sum, $tag) {
             return $sum + (int) $tag[1];
         }, 0);
@@ -181,7 +187,7 @@ class PaperGenerator
         $questions = [];
 
         foreach ($steps as $step) {
-            $questions = array_merge($questions, array_map(function ($stepItem) {
+            $questions = array_merge($questions, array_map(function (StepItem $stepItem) {
                 return $stepItem->getQuestion();
             }, $step->getStepQuestions()->toArray()));
         }

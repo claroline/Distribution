@@ -1,5 +1,4 @@
-import set from 'lodash/set'
-
+// todo : could be removed when we will use semantic form group
 function sanitizeQuiz(propertyPath, value) {
   if (propertyPath === 'parameters.duration'
     || propertyPath === 'parameters.maxAttempts'
@@ -8,9 +7,10 @@ function sanitizeQuiz(propertyPath, value) {
     value = parseInt(value)
   }
 
-  return set({}, propertyPath, value)
+  return value
 }
 
+// todo : could be removed when we will use semantic form group
 function sanitizeStep(step) {
   if (step.parameters) {
     if (step.parameters.maxAttempts) {

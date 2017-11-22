@@ -607,7 +607,7 @@ class ItemSerializer extends AbstractSerializer
      * Serializes Item tags.
      * Forwards the tag serialization to ItemTagSerializer.
      *
-     * @param Item  $question
+     * @param Item $question
      *
      * @return array
      */

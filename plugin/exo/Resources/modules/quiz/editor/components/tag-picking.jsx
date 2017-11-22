@@ -10,7 +10,6 @@ import {Numeric} from '#/main/core/layout/form/components/field/numeric.jsx'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
 import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
-import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 
 import {
   shuffleModes,
@@ -202,7 +201,7 @@ const TagPicking = props =>
 
       <FormGroup
         controlId="tag-picking"
-        label="Tags à tirer"
+        label={tex('tags_to_pick')}
         warnOnly={!props.validating}
         error={get(props, 'errors.pick')}
       >
@@ -231,6 +230,7 @@ TagPicking.propTypes = {
   pick: T.array.isRequired,
   randomPick: T.string.isRequired,
   randomOrder: T.string.isRequired,
+  pageSize: T.number,
   validating: T.bool.isRequired,
   errors: T.object,
   onChange: T.func.isRequired
