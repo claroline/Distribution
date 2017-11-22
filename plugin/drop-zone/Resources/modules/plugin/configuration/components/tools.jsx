@@ -109,7 +109,7 @@ class Tools extends Component {
           <div>
             {Object.keys(rowData.data).map((k, idx) =>
               <div key={`data-row-${idx}`}>
-                {k} : {rowData.data[k]}
+                {trans(k, {}, 'dropzone')} : {rowData.data[k]}
               </div>
             )}
           </div>

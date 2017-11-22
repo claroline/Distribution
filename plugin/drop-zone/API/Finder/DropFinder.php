@@ -36,6 +36,17 @@ class DropFinder implements FinderInterface
             switch ($filterName) {
                 case 'dropzone':
                     break;
+                case 'user':
+                    $qb->join('obj.user', 'u');
+                    $qb->andWhere("
+                        UPPER(u.firstName) LIKE :name
+                        OR UPPER(u.lastName) LIKE :name
+                        OR UPPER(u.username) LIKE :name
+                        OR CONCAT(UPPER(u.firstName), CONCAT(' ', UPPER(u.lastName))) LIKE :name
+                        OR CONCAT(UPPER(u.lastName), CONCAT(' ', UPPER(u.firstName))) LIKE :name
+                    ");
+                    $qb->setParameter('name', '%'.strtoupper($filterValue).'%');
+                    break;
                 default:
                     if (is_bool($filterValue)) {
                         $qb->andWhere("obj.{$filterName} = :{$filterName}");

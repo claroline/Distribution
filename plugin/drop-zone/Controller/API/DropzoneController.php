@@ -22,6 +22,7 @@ use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -328,13 +329,16 @@ class DropzoneController
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Correction $correction
+     * @param User       $user
      *
      * @return JsonResponse
      */
-    public function correctionSubmitAction(Correction $correction)
+    public function correctionSubmitAction(Correction $correction, User $user)
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkCorrectionEdition($correction, $user);
+
 
         try {
             $this->manager->submitCorrection($correction);
@@ -358,13 +362,15 @@ class DropzoneController
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Correction $correction
+     * @param User       $user
      *
      * @return JsonResponse
      */
-    public function correctionValidationSwitchAction(Correction $correction)
+    public function correctionValidationSwitchAction(Correction $correction, User $user)
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkCorrectionEdition($correction, $user);
 
         try {
             $this->manager->switchCorrectionValidation($correction);
@@ -388,13 +394,15 @@ class DropzoneController
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Correction $correction
+     * @param User       $user
      *
      * @return JsonResponse
      */
-    public function correctionDeleteAction(Correction $correction)
+    public function correctionDeleteAction(Correction $correction, User $user)
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkCorrectionEdition($correction, $user);
 
         try {
             $serializedCorrection = $this->manager->serializeCorrection($correction);
@@ -431,6 +439,7 @@ class DropzoneController
     }
 
     /**
+     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      * @EXT\Route("/tool/save", name="claro_dropzone_tool_save")
      * @EXT\Method("POST")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
@@ -441,7 +450,6 @@ class DropzoneController
      */
     public function toolSaveAction(Request $request)
     {
-        /* TODO: Checks plugin config access rights */
         try {
             $tool = $this->manager->saveTool(json_decode($request->getContent(), true));
 
@@ -454,6 +462,7 @@ class DropzoneController
     }
 
     /**
+     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      * @EXT\Route("/tool/{id}/delete", name="claro_dropzone_tool_delete")
      * @EXT\Method("DELETE")
      * @EXT\ParamConverter(
@@ -469,7 +478,6 @@ class DropzoneController
      */
     public function toolDeleteAction(DropzoneTool $tool)
     {
-        /* TODO: Checks plugin config access rights */
         try {
             $serializedTool = $this->manager->serializeTool($tool);
             $this->manager->deleteTool($tool);
@@ -522,11 +530,29 @@ class DropzoneController
         if ($this->authorization->isGranted('EDIT', $collection)) {
             return;
         }
-
         if ($dropzone->isDropEnabled()) {
             $roles = $user->getRoles();
 
             if ($drop->getUser() === $user || in_array($drop->getRole(), $roles)) {
+                return;
+            }
+        }
+
+        throw new AccessDeniedException();
+    }
+
+    private function checkCorrectionEdition(Correction $correction, User $user)
+    {
+        $dropzone = $correction->getDrop()->getDropzone();
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
+
+        if ($this->authorization->isGranted('EDIT', $collection)) {
+            return;
+        }
+        if (!$correction->isFinished()) {
+            $roles = $user->getRoles();
+
+            if ($correction->getUser() === $user || in_array($correction->getRole(), $roles)) {
                 return;
             }
         }

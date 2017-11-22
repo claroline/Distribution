@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 import {createSelector} from 'reselect'
-import {constants} from './constants'
+
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
 const canEdit = state => state.resourceNode.rights.current.edit
 const user = state => state.user
@@ -114,6 +115,28 @@ const isPeerReviewEnabled = createSelector(
         currentDate <= new Date(dropzone.parameters.reviewEndDate)
       )
     )
+  }
+)
+
+const currentState = createSelector(
+  [dropzone],
+  (dropzone) => {
+    let currentState = constants.MANUAL_STATE_NOT_STARTED
+
+    if (dropzone.parameters.manualPlanning) {
+      currentState = dropzone.parameters.manualState
+    } else {
+      const currentDate = new Date()
+      const dropStartDate = new Date(dropzone.parameters.dropStartDate)
+      const dropEndDate = new Date(dropzone.parameters.dropEndDate)
+      const reviewStartDate = new Date(dropzone.parameters.reviewStartDate)
+      const reviewEndDate = new Date(dropzone.parameters.reviewEndDate)
+
+      const canDrop = dropStartDate <= currentDate && currentDate <= dropEndDate
+      const canReview = reviewStartDate <= currentDate && currentDate <= reviewEndDate
+    }
+
+    return currentState
   }
 )
 

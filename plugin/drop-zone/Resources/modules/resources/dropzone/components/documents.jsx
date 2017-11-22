@@ -6,6 +6,7 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {constants as configConstants} from '#/plugin/drop-zone/plugin/configuration/constants'
 import {DocumentType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
 const Document = props =>
@@ -61,7 +62,7 @@ const Document = props =>
           </button>
         )}
         {props.document.toolDocuments.length > 0 && props.document.toolDocuments.map(td => {
-          if (td.data && td.data.reportUrl) {
+          if (td.type === configConstants.compilatioValue && td.data && td.data.reportUrl) {
             return (
               <button
                 className="btn btn-default"

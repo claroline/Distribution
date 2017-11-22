@@ -378,7 +378,7 @@ NotificationsSection.propTypes = {
   updateNotifications: T.func.isRequired
 }
 
-const DropzoneForm = props =>
+const DropzoneForm = props => props.canEdit ?
   <form>
     <div className="panel panel-default">
       <fieldset className="panel-body">
@@ -396,9 +396,13 @@ const DropzoneForm = props =>
       <PlanningSection {...props}/>
       <NotificationsSection {...props}/>
     </FormSections>
-  </form>
+  </form> :
+  <div className="alert alert-danger">
+    {t('unauthorized')}
+  </div>
 
 DropzoneForm.propTypes = {
+  canEdit: T.bool.isRequired,
   formData: T.shape(DropzoneType.propTypes),
   errors: T.object,
   validating: T.bool,
@@ -408,6 +412,7 @@ DropzoneForm.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    canEdit: select.canEdit(state),
     formData: select.formData(state),
     errors: select.formErrors(state),
     validating: select.formValidating(state)

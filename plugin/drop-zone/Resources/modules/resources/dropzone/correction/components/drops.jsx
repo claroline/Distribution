@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {navigate} from '#/main/core/router'
 import {t, trans} from '#/main/core/translation'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
@@ -21,12 +22,11 @@ class Drops extends Component {
     })
     columns.push({
       name: 'dropDate',
-      label: trans('drop_date', {}, 'dropzone'),
+      label: trans('submit_date', {}, 'dropzone'),
       displayed: true,
       displayable: true,
       filterable: true,
-      type: 'date',
-      renderer: (rowData) => <a href={`#/drop/${rowData.id}`}>{rowData.dropDate ? rowData.dropDate : 'no_date'}</a>
+      type: 'date'
     })
     columns.push({
       name: 'user',
@@ -38,13 +38,25 @@ class Drops extends Component {
     return columns
   }
 
+  generateActions() {
+    const actions = []
+    actions.push({
+      icon: 'fa fa-w fa-eye',
+      label: t('open'),
+      action: (rows) => navigate(`/drop/${rows[0].id}`),
+      context: 'row'
+    })
+
+    return actions
+  }
+
   render() {
     return (
       <DataList
         name="drops"
         definition={this.generateColumns()}
         filterColumns={true}
-        actions={[]}
+        actions={this.generateActions()}
         card={(row) => ({
           onClick: `#/drop/${row.id}/view`,
           poster: null,
