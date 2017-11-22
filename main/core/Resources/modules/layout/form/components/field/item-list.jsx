@@ -93,7 +93,7 @@ class ItemList extends Component {
     return (
       <div id={this.props.id} className="tag-list-control">
         <div className="tag-item tag-add">
-          <Tag
+          <Item
             id={`${this.props.id}-add`}
             value={this.state.pending}
             onChange={this.updatePending}
@@ -128,7 +128,7 @@ class ItemList extends Component {
           <ul>
             {this.props.items.map((item, index) =>
               <li key={`${this.props.id}-${index}`} className="tag-item">
-                <Tag
+                <Item
                   id={`${this.props.id}-auth-${index}`}
                   value={item}
                   onChange={item => this.updateItem(index, item)}

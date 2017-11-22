@@ -329,6 +329,9 @@ class ExerciseSerializer implements SerializerInterface
         $picking = new \stdClass();
 
         $picking->type = $exercise->getPicking();
+        $picking->randomOrder = $exercise->getRandomOrder();
+        $picking->randomPick = $exercise->getRandomPick();
+
         switch ($picking->type) {
             case Picking::TAGS:
                 $tagPicking = $exercise->getPick();
@@ -343,9 +346,6 @@ class ExerciseSerializer implements SerializerInterface
 
                 break;
         }
-
-        $picking->randomOrder = $exercise->getRandomOrder();
-        $picking->randomPick = $exercise->getRandomPick();
 
         return $picking;
     }
