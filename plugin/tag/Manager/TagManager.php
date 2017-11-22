@@ -119,7 +119,7 @@ class TagManager
      * is already scheduled for insertion.
      *
      * @param string $name
-     * @param User $user
+     * @param User   $user
      *
      * @return Tag|null
      */
@@ -161,7 +161,6 @@ class TagManager
                 $tag = is_null($user) ? $this->getOrCreatePlatformTag($tagName) : $this->getOrCreateUserTag($user, $tagName);
                 $tagsList[$tagName] = $tag;
             }
-            //$this->om->forceFlush();
 
             foreach ($uniqueTags as $tagName) {
                 $tag = $tagsList[$tagName];
