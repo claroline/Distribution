@@ -1,17 +1,14 @@
 import set from 'lodash/set'
 
 function sanitizeQuiz(propertyPath, value) {
-  if (propertyPath === 'parameters.pick'
-    || propertyPath === 'parameters.duration'
+  if (propertyPath === 'parameters.duration'
     || propertyPath === 'parameters.maxAttempts'
     || propertyPath === 'parameters.maxAttemptsPerDay'
     || propertyPath === 'parameters.maxPapers') {
     value = parseInt(value)
   }
 
-  let properties = {}
-
-  return set(properties, propertyPath, value)
+  return set({}, propertyPath, value)
 }
 
 function sanitizeStep(step) {

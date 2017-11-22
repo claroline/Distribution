@@ -20,14 +20,14 @@ class Exercise extends AbstractResource
 {
     use UuidTrait;
 
+    use AttemptParametersTrait;
+
     /**
      * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description = '';
-
-    use AttemptParametersTrait;
 
     /**
      * When corrections are available to the Users ?
@@ -227,9 +227,6 @@ class Exercise extends AbstractResource
         $this->refreshUuid();
         $this->dateCorrection = new \DateTime();
         $this->steps = new ArrayCollection();
-        $randomTag = new \stdClass();
-        $randomTag->pageSize = 0;
-        $this->randomTag = $randomTag;
     }
 
     /**
@@ -646,6 +643,16 @@ class Exercise extends AbstractResource
     public function getNumbering()
     {
         return $this->numbering;
+    }
+
+    public function setPicking($picking)
+    {
+        $this->picking = $picking;
+    }
+
+    public function getPicking()
+    {
+        return $this->picking;
     }
 
     public function setMaxPapers($maxPapers)
