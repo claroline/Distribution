@@ -29,6 +29,7 @@ class Dropzone extends AbstractResource
     const MANUAL_STATE_FINISHED = 2;
     const MANUAL_STATE_PEER_REVIEW = 3;
     const MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW = 4;
+    const MANUAL_STATE_ALLOW_WAITING_FOR_PEER_REVIEW = 5;
 
     const AUTO_CLOSED_STATE_WAITING = 0;
     const AUTO_CLOSED_STATE_CLOSED = 1;
