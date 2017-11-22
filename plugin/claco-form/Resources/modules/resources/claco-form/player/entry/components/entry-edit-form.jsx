@@ -425,7 +425,8 @@ EntryEditForm.propTypes = {
   entryId: T.number,
   canEdit: T.bool.isRequired,
   entry: T.shape({
-    id: T.number
+    id: T.number,
+    locked: T.bool
   }),
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,

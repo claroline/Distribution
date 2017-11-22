@@ -571,6 +571,7 @@ EntryView.propTypes = {
     id: T.number,
     title: T.string,
     status: T.number,
+    locked: T.bool,
     creationDate: T.string,
     publicationDate: T.string,
     editionDate: T.string,
