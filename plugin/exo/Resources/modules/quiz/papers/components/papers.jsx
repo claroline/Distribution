@@ -99,7 +99,8 @@ let Papers = props =>
 
 Papers.propTypes = {
   admin: T.bool.isRequired,
-  papers: T.object.isRequired
+  papers: T.object.isRequired,
+  quiz: T.object.isRequired
 }
 
 function mapStateToProps(state) {
