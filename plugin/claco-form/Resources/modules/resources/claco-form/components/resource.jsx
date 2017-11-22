@@ -151,7 +151,7 @@ function mapDispatchToProps(dispatch) {
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title: trans('delete_all_entries', {}, 'clacoform'),
           question: trans('delete_all_entries_confirm', {}, 'clacoform'),
-          handleConfirm: () => dispatch(actions.deleteAllEntries())
+          handleConfirm: () => dispatch(editorActions.deleteAllEntries())
         })
       )
 

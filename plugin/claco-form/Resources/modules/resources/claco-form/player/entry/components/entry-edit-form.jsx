@@ -297,7 +297,7 @@ class EntryEditForm extends Component {
       <div>
         <h2>{trans('entry_edition', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.entry && this.props.entry.id > 0 && this.state.id > 0 && this.props.canEditEntry ?
+        {this.props.entry && this.props.entry.id > 0 && this.state.id > 0 && this.props.canEditEntry && !this.props.entry.locked ?
           <div>
             {this.props.template && this.props.useTemplate ?
               <HtmlText>
