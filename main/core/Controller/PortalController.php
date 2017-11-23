@@ -49,14 +49,15 @@ class PortalController extends Controller
             'Claroline\CoreBundle\Entity\Resource\ResourceNode', [
                 'limit' => 20,
                 'filters' => [
-                    'publishedToPortal' => true,
-                    'resourceType' => $this->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypes(),
+                    'publishedToPortal' => true, // Limit the search to resource nodes published to portal
+                    'resourceType' => $this->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypes(), // Limit the search to only the authorized resource types which can be displayed on the portal
                 ],
                 'sortBy' => 'name',
             ]
         );
 
         // unset filters
+        //TODO: this workaround will be avoidable after the merge of #2901 by using the hiddenFilters key in $options to to hide the filters in the client.
         foreach ($result['filters'] as $key => $value) {
             if ($value['property'] === 'publishedToPortal' || $value['property'] === 'resourceType') {
                 unset($result['filters'][$key]);

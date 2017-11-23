@@ -7,7 +7,8 @@ const reducer = makeListReducer(
   {
     data: portalReducer
   }, {
-    selectable: false
+    selectable: false,
+    deletable: false
   })
 
 export {

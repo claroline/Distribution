@@ -1,40 +1,21 @@
 <?php
 
-namespace Claroline\CoreBundle\Controller\APINew\Resource;
+namespace Claroline\CoreBundle\Controller\APINew;
 
-use Claroline\CoreBundle\API\FinderProvider;
-use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
-use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class PortalController
+class ResourceNodeController extends AbstractController
 {
-    /** @var FinderProvider */
-    private $finder;
-
     /**
-     * PortalController constructor.
-     *
-     * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.api.finder")
-     * })
-     *
-     * @param FinderProvider $finder
-     */
-    public function __construct(FinderProvider $finder)
-    {
-        $this->finder = $finder;
-    }
-
-    /**
-     * @Get("/portal", name="apiv2_portal_index", options={ "method_prefix" = false })
+     * @Route("/portal", name="apiv2_portal_index", options={ "method_prefix" = false })
      *
      * @param Request $request
      *
      * @return array
      */
-    public function indexAction(Request $request)
+    public function portalSearchAction(Request $request)
     {
         $options = $request->query->all();
 
@@ -42,7 +23,7 @@ class PortalController
         $options['filters']['publishedToPortal'] = true;
 
         // Limit the search to only the authorized resource types which can be displayed on the portal
-        $options['filters']['resourceType'] = $this->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypes();
+        $options['filters']['resourceType'] = $this->container->get('claroline.manager.portal_manager')->getPortalEnabledResourceTypes();
 
         $result = $this->finder->search(
             'Claroline\CoreBundle\Entity\Resource\ResourceNode',
@@ -57,6 +38,6 @@ class PortalController
             }
         }
 
-        return $result;
+        return new JsonResponse($result);
     }
 }
