@@ -53,6 +53,8 @@ const PortalPage = () =>
           }
         ]}
 
+        actions={[]}
+
         card={(row) => ({
           onClick: generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}),
           poster: row.poster,
