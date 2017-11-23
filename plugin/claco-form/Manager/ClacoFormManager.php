@@ -209,6 +209,8 @@ class ClacoFormManager
         $clacoForm->setOpenComments(false);
         $clacoForm->setDisplayCommentAuthor(true);
         $clacoForm->setDisplayCommentDate(true);
+        $clacoForm->setCommentsRoles(['ROLE_USER']);
+        $clacoForm->setCommentsDisplayRoles(['ROLE_USER']);
 
         $clacoForm->setVotesEnabled(false);
         $clacoForm->setDisplayVotes(false);
@@ -2428,13 +2430,19 @@ class ClacoFormManager
 
     public function checkCommentCreationRight(Entry $entry)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
         $clacoForm = $entry->getClacoForm();
 
-        if (!$this->hasEntryAccessRight($entry) ||
-            !$clacoForm->isCommentsEnabled() ||
-            (($user === 'anon.') && !$clacoForm->isAnonymousCommentsEnabled())) {
+        if (!$this->hasEntryAccessRight($entry) || !$clacoForm->isCommentsEnabled()) {
             throw new AccessDeniedException();
+        }
+        $user = $this->tokenStorage->getToken()->getUser();
+        $userRoles = $user === 'anon.' ? ['ROLE_ANONYMOUS'] : $user->getRoles();
+        $commentsRoles = $clacoForm->getCommentsRoles();
+
+        foreach ($commentsRoles as $commentsRole) {
+            if (in_array($commentsRole, $userRoles)) {
+                return;
+            }
         }
     }
 
@@ -2442,9 +2450,21 @@ class ClacoFormManager
     {
         $user = $this->tokenStorage->getToken()->getUser();
         $entry = $comment->getEntry();
+        $clacoForm = $entry->getClacoForm();
 
-        if (!$this->hasEntryAccessRight($entry) || (($user !== $comment->getUser()) && !$this->hasEntryModerationRight($entry))) {
+        if (!$this->hasEntryAccessRight($entry) ||
+            !$clacoForm->isCommentsEnabled() ||
+            (($user !== $comment->getUser()) && !$this->hasEntryModerationRight($entry))
+        ) {
             throw new AccessDeniedException();
+        }
+        $userRoles = $user->getRoles();
+        $commentsRoles = $clacoForm->getCommentsRoles();
+
+        foreach ($commentsRoles as $commentsRole) {
+            if (in_array($commentsRole, $userRoles)) {
+                return;
+            }
         }
     }
 

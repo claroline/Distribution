@@ -373,12 +373,16 @@ const Comments = props =>
       label={trans('label_comments_enabled', {}, 'clacoform')}
       onChange={checked => props.updateParameters('comments_enabled', checked)}
     />
-    <CheckGroup
-      checkId="params-anonymous-comments-enabled"
-      checked={props.params.anonymous_comments_enabled}
-      label={trans('label_anonymous_comments_enabled', {}, 'clacoform')}
-      onChange={checked => props.updateParameters('anonymous_comments_enabled', checked)}
-    />
+    {props.params.comments_enabled &&
+      <SelectGroup
+        controlId="params-comments-roles"
+        label={trans('enable_comments_for_roles', {}, 'clacoform')}
+        options={props.roles.map(r => ({value: r.name, label: t(r.translationKey)}))}
+        multiple={true}
+        selectedValue={props.params.comments_roles || []}
+        onChange={value => props.updateParameters('comments_roles', value)}
+      />
+    }
     <RadioGroup
       controlId="params-moderate-comments"
       label={trans('label_moderate_comments', {}, 'clacoform')}
@@ -396,6 +400,16 @@ const Comments = props =>
       label={trans('label_display_comments', {}, 'clacoform')}
       onChange={checked => props.updateParameters('display_comments', checked)}
     />
+    {props.params.display_comments &&
+      <SelectGroup
+        controlId="params-comments-display-roles"
+        label={trans('display_comments_for_roles', {}, 'clacoform')}
+        options={props.roles.map(r => ({value: r.name, label: t(r.translationKey)}))}
+        multiple={true}
+        selectedValue={props.params.comments_display_roles || []}
+        onChange={value => props.updateParameters('comments_display_roles', value)}
+      />
+    }
     <CheckGroup
       checkId="params-open-comments"
       checked={props.params.open_comments}
@@ -480,7 +494,7 @@ generateDisplayList.propTypes = {
   }))
 }
 
-function makePanel(Section, title, key, props, withCategories = false, withFields = false) {
+function makePanel(Section, title, key, props, withCategories = false, withFields = false, withRoles = false) {
   const caretIcon = key === props.params.activePanelKey ? 'fa-caret-down' : 'fa-caret-right'
   const keyValue = key === props.params.activePanelKey ? '' : key
 
@@ -502,6 +516,7 @@ function makePanel(Section, title, key, props, withCategories = false, withField
         params={props.params}
         categories={withCategories ? props.categories : []}
         fields={withFields ? props.fields : []}
+        roles={withRoles ? props.roles : []}
       />
     </Panel>
   )
@@ -550,20 +565,13 @@ makePanel.propTypes = {
     name: T.string.isRequired,
     hidden: T.bool
   })),
+  roles: T.array,
   updateParameters: T.func.isRequired
 }
 
 class ClacoFormConfig extends Component {
   componentDidMount() {
     this.props.initializeParameters()
-  }
-
-  showAllEntriesDeletion() {
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
-      title: trans('delete_all_entries', {}, 'clacoform'),
-      question: trans('delete_all_entries_confirm_msg', {}, 'clacoform'),
-      handleConfirm: () => this.props.deleteAllEntries()
-    })
   }
 
   render() {
@@ -584,7 +592,7 @@ class ClacoFormConfig extends Component {
               {makePanel(Metadata, trans('metadata', {}, 'clacoform'), 'metadata', this.props)}
               {makePanel(Locked, trans('locked_fields', {}, 'clacoform'), 'locked_fields', this.props)}
               {makePanel(Categories, t('categories'), 'categories', this.props)}
-              {makePanel(Comments, trans('comments', {}, 'clacoform'), 'comments', this.props)}
+              {makePanel(Comments, trans('comments', {}, 'clacoform'), 'comments', this.props, false, false, true)}
               {makePanel(Keywords, trans('keywords', {}, 'clacoform'), 'keywords', this.props)}
             </PanelGroup>
           </form> :
@@ -642,6 +650,7 @@ ClacoFormConfig.propTypes = {
     name: T.string.isRequired,
     hidden: T.bool
   })),
+  roles: T.array,
   initializeParameters: T.func.isRequired,
   updateParameters: T.func.isRequired,
   deleteAllEntries: T.func.isRequired,
@@ -653,7 +662,8 @@ function mapStateToProps(state) {
     canEdit: resourceSelect.editable(state),
     params: state.parameters,
     categories: state.categories,
-    fields: state.fields
+    fields: state.fields,
+    roles: state.roles
   }
 }
 
