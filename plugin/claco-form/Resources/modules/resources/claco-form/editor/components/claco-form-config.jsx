@@ -17,7 +17,6 @@ import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.j
 
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {constants as listConstants} from '#/main/core/layout/list/constants'
 import {actions} from '../actions'
 import {Message} from '../../components/message.jsx'
@@ -438,8 +437,14 @@ Comments.propTypes = {
     display_comments: T.boolean,
     open_comments: T.boolean,
     display_comment_author: T.boolean,
-    display_comment_date: T.boolean
+    display_comment_date: T.boolean,
+    comments_roles: T.array,
+    comments_display_roles: T.array
   }).isRequired,
+  roles: T.arrayOf(T.shape({
+    name: T.string.isRequired,
+    translationKey: T.string.isRequired
+  })).isRequired,
   updateParameters: T.func.isRequired
 }
 
