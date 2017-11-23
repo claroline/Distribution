@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Transfer\Adapter;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
+use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
 
 /**
  * @DI\Service()
@@ -83,9 +84,19 @@ class CsvAdapter implements AdapterInterface
 
     private function explainOneOf($data, $explanation, $currentPath)
     {
+        $explanations = [];
+
         foreach ($data->oneOf as $oneOf) {
-            $this->explainSchema($oneOf, $explanation, $currentPath);
+            $explanations[] = $this->explainSchema($oneOf, null, $currentPath);
         }
+
+        $properties = [];
+
+        foreach ($explanations as $singleExplain) {
+            $properties[] = $singleExplain->getProperties()[0];
+        }
+
+        $explanation->addOneOf($properties, 'an auto generated descr', true);
     }
 
     /**
@@ -128,16 +139,18 @@ class CsvAdapter implements AdapterInterface
             $identifiers = $schema->claroIds;
 
             if (isset($schema->type) && $schema->type === 'object') {
+                $oneOfs = [];
                 foreach ($identifiers as $property) {
                     $data = $schema->properties->{$property};
-
-                    $explanation->addProperty(
+                    $oneOfs[] = new Property(
                         $prop . '.' . $property,
                         $data->type,
                         $this->getProperty($data, 'description', ''),
                         false
                     );
                 }
+
+                $explanation->addOneOf($oneOfs, 'a description generated', true);
             }
         }
 

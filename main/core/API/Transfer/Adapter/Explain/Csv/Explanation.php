@@ -16,4 +16,14 @@ class Explanation
     {
         $this->properties[] = new Property($name, $type, $description, $required);
     }
+
+    public function getProperties()
+    {
+        return $this->properties;
+    }
+
+    public function addOneOf(array $properties, $description)
+    {
+        $this->properties[] = new OneOf($properties, $description, true);
+    }
 }
