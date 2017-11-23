@@ -207,8 +207,7 @@ class EntryCreateForm extends Component {
         }
       }
     })
-    // this.setState({errors: errors, hasError: hasError, files: files}, this.registerEntry)
-    this.setState({errors: errors, hasError: hasError, files: files}, () => console.log(this.state))
+    this.setState({errors: errors, hasError: hasError, files: files}, this.registerEntry)
   }
 
   render() {
