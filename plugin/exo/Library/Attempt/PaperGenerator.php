@@ -160,7 +160,7 @@ class PaperGenerator
      * Generates steps based on the quiz configuration and a list of items.
      * In this kind of quiz all items are stored in a single step.
      *
-     * @param Exercise $exercise
+     * @param Exercise  $exercise
      * @param \stdClass $previousExercise
      *
      * @return array
