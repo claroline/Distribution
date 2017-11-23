@@ -1,6 +1,5 @@
 import {shuffle, sampleSize} from 'lodash/collection'
 import moment from 'moment'
-import times from 'lodash/times'
 import cloneDeep from 'lodash/cloneDeep'
 
 import {tex} from '#/main/core/translation'
