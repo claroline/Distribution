@@ -18,7 +18,7 @@ const StepForm = props =>
       id={`step-${props.id}-description`}
       label={t('description')}
       value={props.description}
-      onChange={description => props.onChange({description})}
+      onChange={text => props.onChange({description: text})}
     />
   </fieldset>
 

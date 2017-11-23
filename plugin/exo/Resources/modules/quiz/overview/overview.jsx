@@ -2,13 +2,17 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import Alert from 'react-bootstrap/lib/Alert'
 import {tex} from '#/main/core/translation'
+
 import {
   correctionModes,
   markModes,
   quizTypes,
   SHOW_CORRECTION_AT_DATE
 } from './../enums'
+
+
 
 const Parameter = props =>
   <tr>
@@ -48,13 +52,13 @@ const Parameters = props =>
               {tex(quizTypes.find(type => type[0] === props.parameters.type)[1])}
             </Parameter>
             <Parameter name="number_steps_draw">
-              {props.parameters.pick || tex('all_step')}
+              {props.picking.pick || tex('all_step')}
             </Parameter>
             <Parameter name="random_steps">
-              {tex(props.parameters.randomOrder ? 'yes' : 'no')}
+              {tex(props.picking.randomOrder ? 'yes' : 'no')}
             </Parameter>
             <Parameter name="keep_same_step">
-              {tex(props.parameters.randomPick ? 'no' : 'yes')}
+              {tex(props.picking.randomPick ? 'no' : 'yes')}
             </Parameter>
             <Parameter name="anonymous">
               {tex(props.parameters.anonymizeAttempts ? 'yes' : 'no')}
@@ -98,9 +102,6 @@ Parameters.propTypes = {
   onAdditionalToggle: T.func.isRequired,
   parameters: T.shape({
     type: T.string.isRequired,
-    randomOrder: T.string.isRequired,
-    randomPick: T.string.isRequired,
-    pick: T.number.isRequired,
     duration: T.number.isRequired,
     maxPapers: T.number.isRequired,
     maxAttempts: T.number.isRequired,
@@ -111,6 +112,11 @@ Parameters.propTypes = {
     correctionDate: T.string,
     anonymizeAttempts: T.bool.isRequired,
     showScoreAt: T.string.isRequired
+  }).isRequired,
+  picking: T.shape({
+    randomOrder: T.string.isRequired,
+    randomPick: T.string.isRequired,
+    pick: T.oneOfType([T.number, T.array]).isRequired
   }).isRequired
 }
 
@@ -138,11 +144,22 @@ const Layout = props =>
           props.meta.userPaperCount < props.parameters.maxAttempts &&
           ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
         )
-      ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) &&
+      ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
+        <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
+          {tex('exercise_start')}
+        </a>:
 
-      <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
-        {tex('exercise_start')}
-      </a>
+        <Alert bsStyle="danger overview-warning">
+          <span className="fa fa-fw fa-warning">{"\u00A0"}</span>
+          {(props.meta.userPaperCount < props.parameters.maxAttempts &&
+            ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
+          ) ?
+            <span>{tex('exercise_attempt_limit')}</span>:
+          ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
+            <span>{tex('exercise_paper_limit')}</span>:
+            <span></span>
+          }
+        </Alert>
     }
   </div>
 
@@ -183,6 +200,7 @@ class Overview extends Component {
         editable={this.props.editable}
         description={this.props.quiz.description}
         parameters={this.props.quiz.parameters}
+        picking={this.props.quiz.picking}
         meta={this.props.quiz.meta}
         additionalInfo={this.state.additionalInfo}
         onAdditionalToggle={() => this.setState({
@@ -199,7 +217,8 @@ Overview.propTypes = {
   quiz: T.shape({
     description: T.string,
     meta: T.object.isRequired,
-    parameters: T.object.isRequired
+    parameters: T.object.isRequired,
+    picking: T.object.isRequired
   }).isRequired
 }
 
