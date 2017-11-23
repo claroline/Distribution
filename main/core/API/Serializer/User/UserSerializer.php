@@ -166,13 +166,13 @@ class UserSerializer
         return $object;
     }
 
-    public function getIdentifiers()
-    {
-        return ['id', 'uuid', 'username'];
-    }
-
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\User';
+    }
+
+    public function getSchema()
+    {
+        return '#/main/core/user.json';
     }
 }

@@ -17,11 +17,16 @@ class JsonAdapter implements AdapterInterface
 
     public function getMimeTypes()
     {
-        return ['application/json'];
+        return ['application/json', 'json'];
     }
 
-    public function getExplain($json)
+    public function explainSchema($schema)
     {
-        return $json;
+        return $schema;
+    }
+
+    public function explainIdentifiers(array $schema)
+    {
+        return new \stdClass();
     }
 }

@@ -7,8 +7,14 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 abstract class AbstractAction
 {
     abstract public function execute($data);
-    abstract public function getName();
-    abstract public function getSchema();
+
+    /**
+     * return an array with the following element:
+     * - section
+     * - action
+     * - action name
+     */
+    abstract public function getAction();
 
     public function getBatchSize()
     {

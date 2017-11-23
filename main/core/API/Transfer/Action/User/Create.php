@@ -1,18 +1,19 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action;
+namespace Claroline\CoreBundle\API\Transfer\Action\User;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
+use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
 
 /**
  * @DI\Service()
  * @DI\Tag("claroline.transfer.action")
  */
-class UserCreate extends AbstractAction
+class Create extends AbstractAction
 {
     /**
      * Action constructor.
@@ -33,14 +34,20 @@ class UserCreate extends AbstractAction
         $this->crud->create('Claroline\CoreBundle\Entity\User', $data);
     }
 
-    public function getName()
-    {
-        return 'user_create';
-    }
-
     public function getSchema()
     {
-        return __DIR__ . '/../../Schema/user.json';
+        return ['$root' => ['Claroline\CoreBundle\Entity\User', 'full']];
+    }
+
+    /**
+     * return an array with the following element:
+     * - section
+     * - action
+     * - action name
+     */
+    public function getAction()
+    {
+        return ['user', 'create', 'create_user'];
     }
 
     public function getBatchSize()

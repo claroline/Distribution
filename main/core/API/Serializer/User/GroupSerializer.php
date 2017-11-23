@@ -89,4 +89,9 @@ class GroupSerializer
 
         return $group;
     }
+
+    public function getSchema()
+    {
+        return '#/main/core/group.json';
+    }
 }

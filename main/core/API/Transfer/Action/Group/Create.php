@@ -1,18 +1,19 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action;
+namespace Claroline\CoreBundle\API\Transfer\Action\Group;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
+use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
 
 /**
  * @DI\Service()
  * @DI\Tag("claroline.transfer.action")
  */
-class GroupCreate extends AbstractAction
+class Create extends AbstractAction
 {
     /**
      * Action constructor.
@@ -33,14 +34,15 @@ class GroupCreate extends AbstractAction
         $this->crud->create('Claroline\CoreBundle\Entity\Group', $data);
     }
 
-    public function getName()
+    /**
+     * return an array with the following element:
+     * - section
+     * - action
+     * - action name
+     */
+    public function getAction()
     {
-        return 'group_create';
-    }
-
-    public function getSchema()
-    {
-        return __DIR__ . '/../../Schema/group.json';
+        return ['group', 'create', 'create_group'];
     }
 
     public function getBatchSize()
@@ -50,5 +52,10 @@ class GroupCreate extends AbstractAction
 
     public function clear(ObjectManager $om)
     {
+    }
+
+    public function getSchema()
+    {
+        return ['$root' => ['Claroline\CoreBundle\Entity\Group', 'full']];
     }
 }
