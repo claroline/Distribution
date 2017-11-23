@@ -29,7 +29,7 @@ const RandomPicking = props =>
     {props.randomPick !== SHUFFLE_NEVER &&
       <div className="sub-fields">
         <NumberGroup
-          controlId="quiz-pick"
+          id="quiz-pick"
           label={tex('number_steps_draw')}
           min={0}
           value={props.pick}

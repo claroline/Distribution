@@ -79,7 +79,7 @@ const Display = props =>
     </ActivableSet>
 
     <RadioGroup
-      controlId="quiz-numbering"
+      id="quiz-numbering"
       label={tex('quiz_numbering')}
       options={[
         {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},
@@ -139,11 +139,11 @@ Access.propTypes = {
 const Picking = props =>
   <fieldset>
     <SelectGroup
-      controlId="quiz-picking"
+      id="quiz-picking"
       label={tex('quiz_picking_type')}
       options={quizPicking}
       noEmpty={true}
-      selectedValue={props.picking.type}
+      value={props.picking.type}
       onChange={(value) => props.onChange('picking.type', value)}
     />
 

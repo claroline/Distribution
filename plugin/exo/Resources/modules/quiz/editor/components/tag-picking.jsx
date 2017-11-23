@@ -190,7 +190,7 @@ const TagPicking = props =>
 
     <div className="sub-fields">
       <NumberGroup
-        controlId="quiz-pageSize"
+        id="quiz-pageSize"
         label={tex('number_question_page')}
         min={1}
         value={props.pageSize}
@@ -200,7 +200,7 @@ const TagPicking = props =>
       />
 
       <FormGroup
-        controlId="tag-picking"
+        id="tag-picking"
         label={tex('tags_to_pick')}
         warnOnly={!props.validating}
         error={get(props, 'errors.pick')}
