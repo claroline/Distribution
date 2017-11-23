@@ -363,14 +363,6 @@ claro_plugin_api:
     options:
         expose: true
 
-claro_portal_api:
-    resource: "@ClarolineCoreBundle/Controller/APINew/Resource/PortalController.php"
-    prefix: api
-    type: rest
-    defaults: {_format: json}
-    options:
-        expose: true
-
 claro_year_api:
     resource: "@ClarolineCoreBundle/Controller/API/Calendar/YearController.php"
     type: rest

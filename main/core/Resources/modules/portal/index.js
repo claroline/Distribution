@@ -6,6 +6,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
+
 import {reducer} from '#/main/core/portal/reducer'
 
 import {Portal} from '#/main/core/portal/components/portal.jsx'
