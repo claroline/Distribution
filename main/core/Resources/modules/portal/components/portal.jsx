@@ -69,11 +69,13 @@ const PortalPage = props =>
                      : generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}),
           poster: row.poster,
           className: row.url.isExternal ? 'external-resource' : 'internal-resource',
-          icon: <span className="item-icon-container" style={{
-            backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}></span>,
+          icon: row.url.isYoutube
+                  ? <span className="item-icon-container fa fa-play"></span>
+                  : <span className="item-icon-container" style={{
+                    backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                  }}></span>,
           title: row.name,
           subtitle: row.code,
           contentText: row.meta.description,
