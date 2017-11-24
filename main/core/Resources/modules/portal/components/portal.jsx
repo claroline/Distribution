@@ -64,12 +64,12 @@ const PortalPage = props =>
         actions={[]}
 
         card={(row) => ({
-          onClick: row.url.isYoutube
-                     ? () => {props.displayModalVideo(row.name, row.url.embedYoutubeUrl)}
-                     : generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}),
+          onClick: row.url && row.url.isYoutube
+                     ? () => {props.displayModalVideo(row.name, row.url.embedYoutubeUrl)} // open a modal with the video in a iframe
+                     : generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}), // direct link to the resource
           poster: row.poster,
-          className: row.url.isExternal ? 'external-resource' : 'internal-resource',
-          icon: row.url.isYoutube
+          className: row.url && row.url.isExternal ? 'external-resource' : 'internal-resource',
+          icon: row.url && row.url.isYoutube
                   ? <span className="item-icon-container fa fa-play"></span>
                   : <span className="item-icon-container" style={{
                     backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
