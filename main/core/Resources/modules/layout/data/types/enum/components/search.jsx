@@ -14,7 +14,7 @@ const EnumSearch = (props) =>
         e.stopPropagation()
       }}
       onChange={e => {
-        props.updateSearch(props.choices[e.target.value])
+        props.updateSearch(e.target.value)
         e.preventDefault()
       }}
     >

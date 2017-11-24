@@ -17,7 +17,7 @@ import {
   PageAction
 } from '#/main/core/layout/page'
 
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {actions} from '#/main/core/administration/workspace/actions'
 import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
@@ -44,8 +44,9 @@ const WorkspacesPage = props =>
     </PageHeader>
 
     <PageContent>
-      <DataList
+      <DataListContainer
         name="workspaces"
+        open={WorkspaceList.open}
         fetch={{
           url: generateUrl('apiv2_workspace_list')
         }}

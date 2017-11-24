@@ -15,20 +15,18 @@ import {OrganizationTab, OrganizationTabActions} from '#/main/core/administratio
 import {ProfileTab, ProfileTabActions} from '#/main/core/administration/user/profile/components/profile-tab.jsx'
 import {LocationTab, LocationTabActions} from '#/main/core/administration/user/location/components/location-tab.jsx'
 
-const UserMain = () =>
+const Tool = () =>
   <TabbedPage
+    redirect={[
+      {from: '/', exact: true, to: '/users'}
+    ]}
+
     tabs={[
       {
-        icon: 'fa fa-cog',
-        title: t('parameters'),
-        path: '/',
-        exact: true,
-        actions: ParametersTabActions,
-        content: ParametersTab
-      }, {
         icon: 'fa fa-user',
         title: t('users'),
         path: '/users',
+        exact: true,
         actions: UserTabActions,
         content: UserTab
       }, {
@@ -37,12 +35,6 @@ const UserMain = () =>
         path: '/groups',
         actions: GroupTabActions,
         content: GroupTab
-      }, {
-        icon: 'fa fa-id-badge',
-        title: t('roles'),
-        path: '/roles',
-        actions: RoleTabActions,
-        content: RoleTab
       }, {
         icon: 'fa fa-building',
         title: t('organizations'),
@@ -56,17 +48,29 @@ const UserMain = () =>
         actions: LocationTabActions,
         content: LocationTab
       }, {
+        icon: 'fa fa-id-badge',
+        title: t('roles'),
+        path: '/roles',
+        actions: RoleTabActions,
+        content: RoleTab
+      }, {
         icon: 'fa fa-id-card-o',
         title: t('user_profile'),
         path: '/profile',
         actions: ProfileTabActions,
         content: ProfileTab
+      }, {
+        icon: 'fa fa-cog',
+        title: t('parameters'),
+        path: '/parameters',
+        actions: ParametersTabActions,
+        content: ParametersTab
       }
     ]}
   />
 
-const UserMainDnD = DragDropContext(TouchBackend({ enableMouseEvents: true }))(UserMain)
+const ToolDnD = DragDropContext(TouchBackend({ enableMouseEvents: true }))(Tool)
 
 export {
-  UserMainDnD as UserMain
+  ToolDnD as UserTool
 }

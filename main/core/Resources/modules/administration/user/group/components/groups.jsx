@@ -4,7 +4,7 @@ import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 
@@ -20,8 +20,9 @@ const GroupsActions = () =>
   </PageActions>
 
 const Groups = () =>
-  <DataList
+  <DataListContainer
     name="groups.list"
+    open={GroupList.open}
     fetch={{
       url: generateUrl('apiv2_group_list'),
       autoload: true
@@ -30,7 +31,6 @@ const Groups = () =>
       url: generateUrl('apiv2_group_delete_bulk'),
       disabled: (rows) => false
     }}
-    actions={[]}
     definition={GroupList.definition}
     card={GroupList.card}
   />

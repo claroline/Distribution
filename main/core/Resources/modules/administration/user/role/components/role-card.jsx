@@ -7,7 +7,7 @@ const RoleCard = (row) => ({
   poster: null,
   icon: 'fa fa-id-badge',
   title: row.name,
-  subtitle: enumRole[row.type]
+  subtitle: enumRole[row.meta.type]
 })
 
 export {

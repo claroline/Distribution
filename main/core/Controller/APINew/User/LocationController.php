@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
+use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
+use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -29,6 +31,9 @@ class LocationController extends AbstractCrudController
     {
         return 'location';
     }
+
+    use HasUsersTrait;
+    use HasOrganizationsTrait;
 
     /**
      * @Route("/{id}/geolocate", name="apiv2_location_geolocate")

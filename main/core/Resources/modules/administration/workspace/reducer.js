@@ -26,7 +26,7 @@ const workspaceReducer = makeReducer([], {
   }
 })
 
-const reducer = makeListReducer('workspaces', {
+const reducer = makeListReducer('workspaces', {}, {
   data: workspaceReducer
 })
 

@@ -7,6 +7,8 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {TreeView} from '#/main/core/layout/treeview/treeview.jsx'
 import {DataTreeContainer} from '#/main/core/layout/list/containers/data-tree.jsx'
 
+import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
+
 const OrganizationsActions = props =>
   <PageActions>
     <PageAction
@@ -21,6 +23,7 @@ const OrganizationsActions = props =>
 const Organizations = props =>
   <DataTreeContainer
     name="organizations.list"
+    open={OrganizationList.open}
     fetch={{
       url: generateUrl('apiv2_organization_list_recursive'),
       autoload: true
@@ -29,33 +32,7 @@ const Organizations = props =>
       url: generateUrl('apiv2_organization_delete_bulk'),
       displayed: (organizations) => 0 !== organizations.filter(organization => !organization.meta.default).length
     }}
-    definition={[
-      {
-        name: 'name',
-        type: 'string',
-        label: t('name')
-      }, {
-        name: 'meta.default',
-        type: 'boolean',
-        label: t('default')
-      }, {
-        name: 'meta.parent',
-        type: 'organization',
-        label: t('parent')
-      }, {
-        name: 'email',
-        type: 'email',
-        label: t('email')
-      }, {
-        name: 'code',
-        type: 'string',
-        label: t('code')
-      }, { // find better
-        name: 'parent',
-        type: 'string',
-        label: t('parent')
-      }
-    ]}
+    definition={OrganizationList.definition}
     actions={[
       {
         icon: 'fa fa-fw fa-plus',
@@ -66,16 +43,7 @@ const Organizations = props =>
         }
       }
     ]}
-    card={(row) => ({
-      onClick: `#/organizations/${row.id}`,
-      poster: null,
-      icon: 'fa fa-building',
-      title: row.name,
-      subtitle: row.code,
-      flags: [
-        row.meta.default && ['fa fa-check', t('default')]
-      ].filter(flag => !!flag)
-    })}
+    card={OrganizationList.card}
   />
 
 export {

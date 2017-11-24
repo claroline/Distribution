@@ -27,6 +27,7 @@ const UsersActions = props =>
 const Users = props =>
   <DataList
     name="users.list"
+    open={UserList.open}
     fetch={{
       url: generateUrl('apiv2_user_list'),
       autoload: true

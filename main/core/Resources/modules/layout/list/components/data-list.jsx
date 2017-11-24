@@ -157,14 +157,15 @@ class DataList extends Component {
 
         {0 < this.props.totalResults &&
           React.createElement(listConst.DISPLAY_MODES[this.state.currentDisplay].component, {
-            size:      listConst.DISPLAY_MODES[this.state.currentDisplay].size,
-            data:      this.props.data,
-            count:     this.props.totalResults,
-            columns:   this.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name)),
-            sorting:   this.props.sorting,
-            selection: this.props.selection,
-            actions:   actions,
-            card:      this.props.card
+            size:          listConst.DISPLAY_MODES[this.state.currentDisplay].size,
+            data:          this.props.data,
+            count:         this.props.totalResults,
+            columns:       this.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name)),
+            sorting:       this.props.sorting,
+            selection:     this.props.selection,
+            primaryAction: this.props.primaryAction,
+            actions:       actions,
+            card:          this.props.card
           })
         }
 
@@ -207,6 +208,15 @@ DataList.propTypes = {
   actions: T.arrayOf(
     T.shape(DataAction.propTypes)
   ),
+
+  /**
+   * Data primary action (aka open/edit action for rows in most cases).
+   * Providing this object will automatically display the primary action (depending on the current view mode).
+   */
+  primaryAction: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
 
   /**
    * Data delete action.

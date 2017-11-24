@@ -1,15 +1,13 @@
 import React from 'react'
 
+import {locationTypes} from '#/main/core/administration/user/location/constants'
+
 const LocationCard = (row) => ({
-  onClick: '#',
-  poster: null,
-  icon: 'fa fa-users',
+  icon: 'fa fa-location-arrow',
   title: row.name,
-  subtitle: row.name,
-  contentText: '',
-  flags: [],
-  footer: <span>footer</span>,
-  footerLong: <span>footerLong</span>
+  subtitle: locationTypes[row.meta.type],
+  contentText: '', // todo display address
+  footer: <span>footer</span> // todo display coords
 })
 
 export {

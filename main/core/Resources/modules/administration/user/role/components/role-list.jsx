@@ -6,18 +6,16 @@ import {enumRole} from '#/main/core/administration/user/role/constants'
 import {RoleCard} from '#/main/core/administration/user/role/components/role-card.jsx'
 
 const RoleList = {
+  open: {
+    action: (row) => `#/roles/${row.id}`
+  },
   definition: [
     {
       name: 'name',
       type: 'string',
       label: t('code'),
       displayed: true,
-      renderer: (rowData) => {
-        // variable is used because React will use it has component display name (eslint requirement)
-        const roleLink = <a href={`#/roles/${rowData.id}`}>{rowData.name}</a>
-
-        return roleLink
-      }
+      primary: true
     }, {
       name: 'translationKey',
       type: 'string', // todo should be a new data type translated

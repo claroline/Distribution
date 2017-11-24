@@ -45,10 +45,23 @@ DataList.propTypes = {
   name: T.string.isRequired,
 
   /**
+   * Open action generator for rows.
+   * It gets the current data row as first param.
+   *
+   * NB. It's called to generate the action (to be able to catch generated URL),
+   * so if your open action is a func, generator should return another function,
+   * not call it. Example : (row) => myFunc
+   */
+  open: T.shape({
+    action: T.oneOfType([T.func, T.string]),
+    disabled: T.func
+  }),
+
+  /**
    * Provides asynchronous data load.
    */
   fetch: T.shape({
-    url: T.string.isRequired,
+    url: T.oneOfType([T.string, T.array]).isRequired,
     autoload: T.bool
   }),
 
@@ -56,7 +69,7 @@ DataList.propTypes = {
    * Provides data delete.
    */
   delete: T.shape({
-    url: T.string, // if provided, data delete will call server
+    url: T.oneOfType([T.string, T.array]), // if provided, data delete will call server
     disabled: T.func, // receives the list of rows (either the selected ones or the current one)
     displayed: T.func // receives the list of rows (either the selected ones or the current one)
   }),
@@ -110,7 +123,6 @@ DataList.propTypes = {
   sorting: T.object,
   pagination: T.object,
   selection: T.object,
-  deleteItems: T.func,
   fetchData: T.func
 }
 

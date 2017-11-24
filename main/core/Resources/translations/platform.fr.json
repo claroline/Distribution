@@ -303,6 +303,7 @@
     "date_range.format.with_hours": "d/m/Y H:i:s",
     "date_range.from": "De",
     "date_range.js_format": "DD/MM/YYYY",
+    "date_range.js_format.with_hours": "DD/MM/YYYY HH:MM:SS",
     "date_range.last_month": "Mois précédent",
     "date_range.last_school_year": "Année scolaire précédente",
     "date_range.last_seven_days": "7 derniers jours",
@@ -1507,5 +1508,6 @@
     "show_advanced_options": "Afficher les paramètres avancés",
     "hide_advanced_options": "Masquer les paramètres avancés",
     "parent": "Parent",
-    "managers": "Gestionnaires"
+    "managers": "Gestionnaires",
+    "last_login": "Dernière connexion"
 }

@@ -11,6 +11,50 @@ import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx
 
 import {DataAction as DataActionTypes} from '#/main/core/layout/list/prop-types'
 
+const DataPrimaryAction = props => {
+  let disabled = true
+  let action = null
+
+  if (props.action) {
+    disabled = props.action.disabled ? props.action.disabled(props.item) : false
+    action = props.action.action(props.item)
+  }
+
+  if (disabled) {
+    return React.createElement(props.disabledWrapper, {className: props.className}, props.children)
+  } else {
+    if (typeof action === 'string') {
+      return (
+        <a role="link" href={action} className={props.className}>
+          {props.children}
+        </a>
+      )
+    } else {
+      return (
+        <a role="button" onClick={action} className={props.className}>
+          {props.children}
+        </a>
+      )
+    }
+  }
+}
+
+DataPrimaryAction.propTypes = {
+  className: T.string,
+  item: T.object.isRequired,
+  action: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
+  disabledWrapper: T.string,
+  children: T.any.isRequired
+}
+
+DataPrimaryAction.defaultProps = {
+  disabled: false,
+  disabledWrapper: 'span'
+}
+
 /**
  * Actions available for a single data item.
  *
@@ -130,5 +174,6 @@ DataBulkActions.propTypes = {
 
 export {
   DataActions,
-  DataBulkActions
+  DataBulkActions,
+  DataPrimaryAction
 }

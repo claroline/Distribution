@@ -52,7 +52,7 @@ const questionReducer = makeReducer([], {
   }
 })
 
-const reducer = makeListReducer('questions', {
+const reducer = makeListReducer('questions', {}, {
   data: questionReducer
 })
 

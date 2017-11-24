@@ -21,7 +21,7 @@ function makeReducer(initialState, handlers) {
 // make actions only trigger reducers for the current instance
 // without this, actions are caught by all instances of the reducer in the app
 function makeInstanceReducer(initialState, handlers) {
-  return (instanceName) => {
+  return (instanceName, instanceInitialState = null) => {
     const instanceHandlers = {}
     for (let actionName in handlers) {
       if (handlers.hasOwnProperty(actionName)) {
@@ -29,7 +29,7 @@ function makeInstanceReducer(initialState, handlers) {
       }
     }
 
-    return makeReducer(initialState, instanceHandlers)
+    return makeReducer(instanceInitialState || initialState, instanceHandlers)
   }
 }
 

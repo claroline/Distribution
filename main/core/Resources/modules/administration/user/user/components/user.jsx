@@ -2,14 +2,13 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
-import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
+import {FormContainer} from '#/main/core/layout/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {select as formSelect} from '#/main/core/layout/form/selectors'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
@@ -32,7 +31,7 @@ const UserActions = () =>
   </PageActions>
 
 const UserForm = props =>
-  <Form
+  <FormContainer
     level={3}
     name="users.current"
     sections={[
@@ -65,20 +64,21 @@ const UserForm = props =>
           }
         ]}
       >
-      <DataList
-        name="users.current.roles"
-        fetch={{
-          url: generateUrl('apiv2_user_list_roles', {id: props.user.id}),
-          autoload: true
-        }}
-        delete={{
-          url: generateUrl('apiv2_user_remove_roles', {id: props.user.id}),
-        }}
-        actions={[]}
-        definition={RoleList.definition}
-        card={RoleList.card}
-      />
+        <DataListContainer
+          name="users.current.roles"
+          open={RoleList.open}
+          fetch={{
+            url: ['apiv2_user_list_roles', {id: props.user.id}],
+            autoload: true
+          }}
+          delete={{
+            url: ['apiv2_user_remove_roles', {id: props.user.id}],
+          }}
+          definition={RoleList.definition}
+          card={RoleList.card}
+        />
       </FormSection>
+
       <FormSection
         id="user-groups"
         icon="fa fa-fw fa-id-badge"
@@ -91,22 +91,22 @@ const UserForm = props =>
           }
         ]}
       >
-        <DataList
+        <DataListContainer
           name="users.current.groups"
+          open={GroupList.open}
           fetch={{
-            url: generateUrl('apiv2_user_list_groups', {id: props.user.id}),
+            url: ['apiv2_user_list_groups', {id: props.user.id}],
             autoload: true
           }}
           delete={{
-            url: generateUrl('apiv2_user_remove_groups', {id: props.user.id}),
+            url: ['apiv2_user_remove_groups', {id: props.user.id}],
           }}
-          actions={[]}
           definition={GroupList.definition}
           card={GroupList.card}
         />
       </FormSection>
     </FormSections>
-  </Form>
+  </FormContainer>
 
 const User = connect(
     state => ({

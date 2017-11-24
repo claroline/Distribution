@@ -11,7 +11,7 @@ import {
 } from './actions'
 
 const reducer = {
-  themes: makeListReducer('themes', {
+  themes: makeListReducer('themes', {}, {
     data: {
       [THEME_UPDATE]: (state, action) => {
         const newState = cloneDeep(state)

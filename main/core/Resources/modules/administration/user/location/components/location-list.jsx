@@ -2,26 +2,32 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 
+import {locationTypes} from '#/main/core/administration/user/location/constants'
 import {LocationCard} from '#/main/core/administration/user/location/components/location-card.jsx'
 
 const LocationList = {
+  open: {
+    action: (row) => `#/locations/${row.id}`
+  },
   definition: [
     {
       name: 'name',
       type: 'string',
       label: t('name'),
       displayed: true,
-      renderer: (rowData) => {
-        // variable is used because React will use it has component display name (eslint requirement)
-        const locationLink = <a href={`#/locations/${rowData.id}`}>{rowData.name}</a>
-
-        return locationLink
-      }
+      primary: true
     },
     {
-      name: 'adress',
+      name: 'meta.type',
+      type: 'enum',
+      label: t('type'),
+      options: {
+        choices: locationTypes
+      }},
+    {
+      name: 'address',
       type: 'string',
-      label: t('adress'),
+      label: t('address'),
       renderer: (rowData) => getReadableAddress(rowData),
       displayed: true
     },
@@ -35,7 +41,6 @@ const LocationList = {
       name: 'coordinates',
       type: 'string',
       label: t('coordinates'),
-      displayed: true,
       filterable: false,
       renderer: (rowData) => getCoordinates(rowData)
     }

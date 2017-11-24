@@ -9,7 +9,7 @@ import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
 import {DataAction, DataCard, DataListProperty, DataListView} from '#/main/core/layout/list/prop-types'
 import {getBulkActions, getRowActions, getPropDefinition, getSortableProps, isRowSelected} from '#/main/core/layout/list/utils'
-import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
+import {DataActions, DataPrimaryAction, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 
 const DataGridItem = props =>
   <div className={classes('data-grid-item', props.data.className, {selected: props.selected})}>
@@ -46,34 +46,33 @@ const DataGridItem = props =>
       }
     </div>
 
-    {React.createElement(
-      props.data.onClick ? 'a' : 'div', {
-        className: 'item-content',
-        [typeof props.data.onClick === 'function' ? 'onClick':'href']: props.data.onClick
-      }, [
-        // card title
-        <h2 key="item-title" className="item-title">
-          {props.data.title}
-          {props.data.subtitle &&
-            <small>{props.data.subtitle}</small>
-          }
-        </h2>,
+    <DataPrimaryAction
+      item={props.row}
+      action={props.primaryAction}
+      className="item-content"
+      disabledWrapper="div"
+    >
+      <h2 key="item-title" className="item-title">
+        {props.data.title}
+        {props.data.subtitle &&
+          <small>{props.data.subtitle}</small>
+        }
+      </h2>
 
-        // card detail text
-        'sm' !== props.size && props.data.contentText &&
+      {'sm' !== props.size && props.data.contentText &&
         <div key="item-description" className="item-description">
           {getPlainText(props.data.contentText)}
-        </div>,
+        </div>
+      }
 
-        // card footer
-        props.data.footer &&
+      {props.data.footer &&
         <div key="item-footer" className="item-footer">
           {'sm' !== props.size && props.data.footerLong ?
             props.data.footerLong : props.data.footer
           }
         </div>
-      ]
-    )}
+      }
+    </DataPrimaryAction>
 
     {props.actions &&
       <DataActions
@@ -95,6 +94,11 @@ DataGridItem.propTypes = {
   data: T.shape(
     DataCard.propTypes
   ).isRequired,
+
+  primaryAction: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
 
   actions: T.arrayOf(
     T.shape(DataAction.propTypes)
@@ -191,6 +195,7 @@ const DataGrid = props =>
             size={props.size}
             row={row}
             data={props.card(row, props.size)}
+            primaryAction={props.primaryAction}
             actions={getRowActions(props.actions)}
             selected={isRowSelected(row, props.selection ? props.selection.current : [])}
             onSelect={props.selection ? () => props.selection.toggle(row) : null}

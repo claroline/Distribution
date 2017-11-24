@@ -28,8 +28,7 @@ const defaultState = {
   },
   selected: [],
   page: 0,
-  pageSize: constants.DEFAULT_PAGE_SIZE,
-  delete: null
+  pageSize: constants.DEFAULT_PAGE_SIZE
 }
 
 /**
@@ -172,7 +171,16 @@ const pageReducer = makeInstanceReducer(defaultState.page, {
    *
    * @returns {Object}
    */
-  [LIST_PAGE_SIZE_UPDATE]: () => 0
+  [LIST_PAGE_SIZE_UPDATE]: () => 0,
+
+  /**
+   * Resets current page on filter add.
+   *
+   * @todo find a better way to handle this
+   *
+   * @returns {Object}
+   */
+  [LIST_FILTER_ADD]: () => 0
 })
 
 /**
@@ -190,11 +198,6 @@ const pageSizeReducer = makeInstanceReducer(defaultState.pageSize, {
   [LIST_PAGE_SIZE_UPDATE]: (state, action) => action.pageSize
 })
 
-/**
- *
- */
-const deleteReducer = makeInstanceReducer(defaultState.delete, {})
-
 const baseReducer = {
   data: dataReducer,
   totalResults: totalResultsReducer,
@@ -202,8 +205,7 @@ const baseReducer = {
   sortBy: sortByReducer,
   selected: selectedReducer,
   page: pageReducer,
-  pageSize: pageSizeReducer,
-  delete: deleteReducer
+  pageSize: pageSizeReducer
 }
 
 /**
@@ -219,47 +221,46 @@ const baseReducer = {
  *      data: handlers
  *   }
  *
- * @param {string} listName      - the name of the list
+ * @param {string} listName      - the name of the list.
+ * @param {object} initialState  - the initial state of the list instance (useful to add default filters in autoloading lists).
  * @param {object} customReducer - an object containing custom reducer.
  * @param {object} options       - an options object to disable/enable list features (default: DEFAULT_FEATURES).
  *
  * @returns {function}
  */
-function makeListReducer(listName, customReducer = {}, options = {}) {
+function makeListReducer(listName, initialState = {}, customReducer = {}, options = {}) {
   const reducer = {}
 
+  const listState = merge({}, defaultState, initialState)
   const listOptions = merge({}, constants.DEFAULT_FEATURES, options)
 
   // adds base list reducers
   reducer.data = customReducer.data ?
-    reduceReducers(baseReducer.data(listName), customReducer.data) : baseReducer.data(listName)
+    reduceReducers(baseReducer.data(listName, listState.data), customReducer.data) : baseReducer.data(listName, listState.data)
 
   reducer.totalResults = customReducer.totalResults ?
-    reduceReducers(baseReducer.totalResults(listName), customReducer.totalResults) : baseReducer.totalResults(listName)
+    reduceReducers(baseReducer.totalResults(listName, listState.totalResults), customReducer.totalResults) : baseReducer.totalResults(listName, listState.totalResults)
 
   // adds reducers for optional features when enabled
-  if (listOptions.deletable) {
-    reducer.delete = baseReducer.delete(listName)
-  }
-
   if (listOptions.filterable) {
-    reducer.filters = baseReducer.filters(listName)
+    reducer.filters = baseReducer.filters(listName, listState.filters)
   }
 
   if (listOptions.sortable) {
-    reducer.sortBy = baseReducer.sortBy(listName)
+    reducer.sortBy = baseReducer.sortBy(listName, listState.sortBy)
   }
 
   if (listOptions.selectable) {
-    reducer.selected = baseReducer.selected(listName)
+    reducer.selected = baseReducer.selected(listName, listState.selected)
   }
 
   if (listOptions.paginated) {
-    reducer.page = baseReducer.page(listName)
-    reducer.pageSize = baseReducer.pageSize(listName)
+    reducer.page = baseReducer.page(listName, listState.page)
+    reducer.pageSize = baseReducer.pageSize(listName, listState.pageSize)
   }
 
   // get custom keys
+  // todo : not used and I'm not sure it works
   const rest = difference(Object.keys(customReducer), Object.keys(baseReducer))
   rest.map(reducerName =>
     reducer[reducerName] = customReducer[reducerName]

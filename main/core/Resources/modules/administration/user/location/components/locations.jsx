@@ -3,10 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {actions} from '#/main/core/administration/user/location/actions'
 import {LocationList} from '#/main/core/administration/user/location/components/location-list.jsx'
@@ -33,15 +32,16 @@ const LocationsActions = () =>
  * @param props
  * @constructor
  */
-const Locations = props =>
-  <DataList
+const LocationsList = props =>
+  <DataListContainer
     name="locations.list"
+    open={LocationList.open}
     fetch={{
-      url: generateUrl('apiv2_location_list'),
+      url: ['apiv2_location_list'],
       autoload: true
     }}
     delete={{
-      url: generateUrl('apiv2_location_delete_bulk'),
+      url: ['apiv2_location_delete_bulk'],
     }}
     definition={LocationList.definition}
     actions={[{
@@ -53,18 +53,18 @@ const Locations = props =>
     card={LocationList.card}
   />
 
-Locations.propTypes = {
+LocationsList.propTypes = {
   geolocate: T.func.isRequired
 }
 
-const ConnectedLocations = connect(
+const Locations = connect(
   null,
   (dispatch) => ({
     geolocate: (location) => dispatch(actions.geolocate(location))
   })
-)(Locations)
+)(LocationsList)
 
 export {
   LocationsActions,
-  ConnectedLocations as Locations
+  Locations
 }

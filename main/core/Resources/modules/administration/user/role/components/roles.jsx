@@ -4,7 +4,7 @@ import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
 const RolesActions = () =>
@@ -19,17 +19,17 @@ const RolesActions = () =>
   </PageActions>
 
 const Roles = () =>
-  <DataList
+  <DataListContainer
     name="roles.list"
+    open={RoleList.open}
     fetch={{
-      url: generateUrl('apiv2_role_list'),
+      url: ['apiv2_role_list'],
       autoload: true
     }}
     delete={{
-      url: generateUrl('apiv2_role_delete_bulk')
+      url: ['apiv2_role_delete_bulk']
     }}
     definition={RoleList.definition}
-    actions={[]}
     card={RoleList.card}
   />
 

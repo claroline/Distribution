@@ -17,8 +17,16 @@ const UserCard = (row) => ({
     row.meta.enabled           && ['fa fa-check-circle-o', t('user_enabled')]
   ].filter(flag => !!flag),
   footer:
+    row.meta.lastLogin &&
     <span>
-      registered at <b>{localeDate(row.meta.created)}</b>
+      last logged at <b>{localeDate(row.meta.lastLogin)}</b>
+    </span>,
+  footerLong:
+    <span>
+      created at <b>{localeDate(row.meta.created)}</b>
+      {row.meta.lastLogin &&
+        <span>, last logged at <b>{localeDate(row.meta.lastLogin)}</b></span>
+      }
     </span>
 })
 

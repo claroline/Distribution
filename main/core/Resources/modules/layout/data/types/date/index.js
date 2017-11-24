@@ -12,7 +12,7 @@ const dateDefinition = {
    *
    * @return {string}
    */
-  parse: (display) => serverDate(display),
+  parse: (display) => display ? serverDate(display, false) : null,
 
   /**
    * Renders ISO date into locale date.
@@ -21,7 +21,7 @@ const dateDefinition = {
    *
    * @return {string}
    */
-  render: (raw) => localeDate(raw),
+  render: (raw) => raw ? localeDate(raw, false) : null,
 
   /**
    * Validates input value for a date.
@@ -33,8 +33,6 @@ const dateDefinition = {
   validate: (value) => typeof value === 'string' && isValidDate(value),
 
   components: {
-    form: null,
-    table: null,
     search: DateSearch
   }
 }

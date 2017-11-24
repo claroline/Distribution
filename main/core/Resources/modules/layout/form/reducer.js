@@ -16,7 +16,7 @@ const defaultState = {
   validating: false,
   pendingChanges: false,
   errors: {},
-  data: null
+  data: {}
 }
 
 const newReducer = makeInstanceReducer(defaultState.new, {
