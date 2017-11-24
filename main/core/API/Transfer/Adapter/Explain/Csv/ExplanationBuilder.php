@@ -83,7 +83,8 @@ class ExplanationBuilder
                         $prop . '.' . $property,
                         $data->type,
                         $this->getProperty($data, 'description', ''),
-                        false
+                        false,
+                        true
                     )]);
                 }
 

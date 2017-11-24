@@ -20,10 +20,8 @@ class CsvAdapter implements AdapterInterface
      *
      * @todo make this recursive (for object containing other object: max level is 2 now: ie: groups.yolo)
      */
-    public function decodeSchema($content, $schema)
+    public function decodeSchema($content, $explanation)
     {
-        $explanation = $this->explainSchema($schema);
-
         $data = [];
         $lines = str_getcsv($content, PHP_EOL);
         $header = array_shift($lines);
@@ -55,10 +53,6 @@ class CsvAdapter implements AdapterInterface
         }
 
         return $object;
-    }
-
-    public function decodeIdentifiers($data, array $schemas)
-    {
     }
 
     private function addPropertyToObject(Property $property, \stdClass $object, $value)

@@ -36,10 +36,11 @@ class Explanation
                 foreach ($explanations as $explanation) {
                     if (!$foundProperty) {
                         $foundProperty = $explanation->getProperty($name);
+                        if ($foundProperty) {
+                            return $foundProperty;
+                        }
                     }
                 }
-
-                return $foundProperty;
             }
         }
     }

@@ -43,9 +43,20 @@ class TransferProvider
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->serializer->get($schema['$root'][0])->getSchema();
             $schemaData = $this->getSchemaFromPath($jsonSchema);
-            $data = $adapter->decodeSchema($data, json_decode($schemaData));
+            $explanation = $adapter->explainSchema(json_decode($schemaData));
+            $data = $adapter->decodeSchema($data, $explanation);
         } else {
-            //
+            foreach ($schema as $prop => $value) {
+                $jsonSchema = $this->serializer->get($value[0])->getSchema();
+                $schemaData = $this->getSchemaFromPath($jsonSchema);
+
+                if ($data) {
+                    $identifiersSchema[$prop] = json_decode($schemaData);
+                }
+            }
+
+            $explanation = $adapter->explainIdentifiers($identifiersSchema);
+            $data = $adapter->decodeSchema($data, $explanation);
         }
 
         $i = 0;
@@ -116,10 +127,11 @@ class TransferProvider
 
                     if ($data) {
                         $identifiersSchema[$prop] = json_decode($data);
-                        $explanation = $adapter->explainIdentifiers($identifiersSchema);
-                        $availables[$action->getAction()[0]][$action->getAction()[1]] = $explanation;
                     }
                 }
+
+                $explanation = $adapter->explainIdentifiers($identifiersSchema);
+                $availables[$action->getAction()[0]][$action->getAction()[1]] = $explanation;
             }
         }
 
