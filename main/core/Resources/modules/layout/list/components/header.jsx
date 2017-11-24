@@ -34,6 +34,7 @@ const ListColumnsButton = props =>
             <input
               type="checkbox"
               checked={-1 !== props.current.indexOf(availableColumn.name)}
+              disabled={1 === props.current.length && -1 !== props.current.indexOf(availableColumn.name)}
               onChange={() => props.toggle(availableColumn.name)}
             />
             {availableColumn.label}
@@ -51,40 +52,37 @@ ListColumnsButton.propTypes = {
   toggle: T.func.isRequired
 }
 
-const ListDisplayButton = props => {
-  return (
-    <TooltipElement
-      id="list-format"
-      position="bottom"
-      tip={t('list_display_modes_title', {current: constants.DISPLAY_MODES[props.current].label})}
+const ListDisplayButton = props =>
+  <TooltipElement
+    id="list-format"
+    position="bottom"
+    tip={t('list_display_modes_title', {current: constants.DISPLAY_MODES[props.current].label})}
+  >
+    <DropdownButton
+      id="list-format-toggle"
+      title={<span className={constants.DISPLAY_MODES[props.current].icon} />}
+      bsStyle="link"
+      className="btn-link-default"
+      noCaret={true}
+      pullRight={true}
     >
-      <DropdownButton
-        id="list-format-toggle"
-        title={<span className={constants.DISPLAY_MODES[props.current].icon} />}
-        bsStyle="link"
-        className="btn-link-default"
-        noCaret={true}
-        pullRight={true}
-      >
-        <MenuItem header>{t('list_display_modes')}</MenuItem>
-        {props.available.map(format =>
-          <MenuItem
-            key={format}
-            eventKey={format}
-            active={format === props.current}
-            onClick={(e) => {
-              e.preventDefault()
-              props.onChange(format)
-            }}
-          >
-            <span className={constants.DISPLAY_MODES[format].icon} />
-            {constants.DISPLAY_MODES[format].label}
-          </MenuItem>
-        )}
-      </DropdownButton>
-    </TooltipElement>
-  )
-}
+      <MenuItem header>{t('list_display_modes')}</MenuItem>
+      {props.available.map(format =>
+        <MenuItem
+          key={format}
+          eventKey={format}
+          active={format === props.current}
+          onClick={(e) => {
+            e.preventDefault()
+            props.onChange(format)
+          }}
+        >
+          <span className={constants.DISPLAY_MODES[format].icon} />
+          {constants.DISPLAY_MODES[format].label}
+        </MenuItem>
+      )}
+    </DropdownButton>
+  </TooltipElement>
 
 ListDisplayButton.propTypes = {
   current: T.oneOf(Object.keys(constants.DISPLAY_MODES)).isRequired,

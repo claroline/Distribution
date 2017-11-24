@@ -1,3 +1,4 @@
+import {generateUrl} from '#/main/core/fos-js-router'
 import {makeInstanceActionCreator} from '#/main/core/utilities/redux'
 
 import {REQUEST_SEND} from '#/main/core/api/actions'
@@ -39,7 +40,7 @@ actions.fetchData = (listName, url) => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: url + listSelect.queryString(listState),
+      url: (typeof url === 'string' ? url : generateUrl(...url)) + listSelect.queryString(listState),
       request: {
         method: 'GET'
       },
@@ -59,7 +60,7 @@ actions.deleteItems = makeInstanceActionCreator(LIST_DATA_DELETE, 'items')
 actions.deleteData = (listName, url, items) => (dispatch) => {
   dispatch({
     [REQUEST_SEND]: {
-      url: url + getDataQueryString(items),
+      url: (typeof url === 'string' ? url : generateUrl(...url)) + getDataQueryString(items),
       request: {
         method: 'DELETE'
       },

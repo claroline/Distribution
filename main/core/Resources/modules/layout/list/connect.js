@@ -25,6 +25,7 @@ function mapStateToProps(state, ownProps) {
   const newProps = {
     data: listSelect.data(listState),
     totalResults: listSelect.totalResults(listState),
+    open: ownProps.open,
     delete: ownProps.delete
   }
 
@@ -160,6 +161,11 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     totalResults:  stateProps.totalResults,
 
     fetchData: dispatchProps.fetchData
+  }
+
+  // open action
+  if (stateProps.open) {
+    props.primaryAction = stateProps.open
   }
 
   // delete action

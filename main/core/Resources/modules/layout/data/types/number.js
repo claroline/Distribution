@@ -6,7 +6,7 @@ const numberDefinition = {
   // nothing special to do
   parse: (display) => parseFloat(display),
   // nothing special to do
-  render: (raw) => raw,
+  render: (raw) => raw+'', // transtyping to string permits to avoid React interpret 0 value as falsy and display nothing
   validate: (value) => !isNaN(parseFloat(value)) && isFinite(value),
   components: {
     form: NumberGroup

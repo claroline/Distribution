@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder;
+namespace Claroline\CoreBundle\API\Finder\User;
 
 use Claroline\CoreBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -30,18 +30,18 @@ class LocationFinder implements FinderInterface
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'adress': {
-                //adress query goes here
+              case 'address': {
+                // address query goes here
                 $qb->andWhere($qb->expr()->orX(
-                    $qb->expr()->like('obj.pc', ':adress'),
-                    $qb->expr()->like('obj.street', ':adress'),
-                    $qb->expr()->like('obj.town', ':adress'),
-                    $qb->expr()->like('obj.country', ':adress'),
+                    $qb->expr()->like('obj.pc', ':address'),
+                    $qb->expr()->like('obj.street', ':address'),
+                    $qb->expr()->like('obj.town', ':address'),
+                    $qb->expr()->like('obj.country', ':address'),
                     $qb->expr()->eq('obj.streetNumber', ':number'),
                     $qb->expr()->eq('obj.boxNumber', ':number')
                 ));
 
-                $qb->setParameter('adress', '%'.$filterValue.'%');
+                $qb->setParameter('address', '%'.$filterValue.'%');
                 $qb->setParameter('number', $filterValue);
 
                 break;

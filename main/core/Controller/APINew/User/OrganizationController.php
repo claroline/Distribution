@@ -44,7 +44,7 @@ class OrganizationController extends AbstractCrudController
     {
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Organization\Organization',
-            ['filters' => ['parent' => null]],
+            ['hiddenFilters' => ['parent' => null]],
             [Options::IS_RECURSIVE]
         ));
     }

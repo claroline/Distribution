@@ -10,6 +10,7 @@ import {history} from '#/main/core/router/history'
 import {Route as RouteTypes} from '#/main/core/router/prop-types'
 
 // todo : implement canEnter for security purpose
+// todo : manage redirect
 
 /**
  * Creates a custom Route component to bind redux action on enter and leave.

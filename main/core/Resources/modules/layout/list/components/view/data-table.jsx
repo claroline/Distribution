@@ -14,58 +14,87 @@ import {
   TableCell
 } from '#/main/core/layout/table/components/table.jsx'
 import {DataAction, DataListView, DataListProperty} from '#/main/core/layout/list/prop-types'
-import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
+import {DataActions, DataPrimaryAction, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 
 const DataCell = props => {
   const typeDef = getTypeOrDefault(props.column.type)
 
-  return (typeof props.column.renderer === 'function') || !typeDef.components || !typeDef.components.table ?
+  let cellRendering
+  if (props.column.renderer) {
+    // use custom renderer defined for the current DataTable
+    cellRendering = props.column.renderer(props.rowData)
+  } else if (typeDef.components && typeDef.components.table) {
+    // use custom component defined in the type definition
+    cellRendering = React.createElement(typeDef.components.table, {data: get(props.rowData, props.column.name)})
+  } else {
+    // use render defined in the type definition
+    cellRendering = typeDef.render(get(props.rowData, props.column.name), props.column.options || {})
+  }
+
+  return (
     <TableCell className={`${props.column.type}-cell`}>
-      {typeof props.column.renderer === 'function' ?
-        props.column.renderer(props.rowData) : typeDef.render(get(props.rowData, props.column.name), props.column.options || {})
-      }
+      <DataPrimaryAction
+        item={props.rowData}
+        action={props.action}
+      >
+        {cellRendering || '-'}
+      </DataPrimaryAction>
     </TableCell>
-    :
-    React.createElement(typeDef.components.table, {data: get(props.rowData, props.column.name)})
+  )
 }
 
 DataCell.propTypes = {
+  action: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
   rowData: T.object.isRequired,
   column: T.shape(
     DataListProperty.propTypes
   ).isRequired
 }
 
-const DataTableRow = props =>
-  <TableRow className={props.selected ? 'selected' : null}>
-    {props.onSelect &&
-      <TableCell align="center" className="checkbox-cell">
-        <input
-          type="checkbox"
-          checked={props.selected}
-          onChange={props.onSelect}
-        />
-      </TableCell>
-    }
+const DataTableRow = props => {
+  // retrieve the column that should hold the primary action
+  let columnAction = props.columns.find(columnDef => columnDef.primary)
+  if (!columnAction) {
+    // primary column is not displayed, take the first one by default
+    columnAction = props.columns[0]
+  }
 
-    {props.columns.map((column, columnIndex) =>
-      <DataCell
-        key={`data-cell-${columnIndex}`}
-        column={column}
-        rowData={props.row}
-      />
-    )}
+  return (
+    <TableRow className={props.selected ? 'selected' : null}>
+      {props.onSelect &&
+        <TableCell align="center" className="checkbox-cell">
+          <input
+            type="checkbox"
+            checked={props.selected}
+            onChange={props.onSelect}
+          />
+        </TableCell>
+      }
 
-    {0 < props.actions.length &&
-      <TableCell align="right" className="actions-cell">
-        <DataActions
-          id={`data-table-item-${props.index}-actions`}
-          item={props.row}
-          actions={props.actions}
+      {props.columns.map((column, columnIndex) =>
+        <DataCell
+          key={`data-cell-${columnIndex}`}
+          column={column}
+          rowData={props.row}
+          action={props.primaryAction && columnAction === column ? props.primaryAction : undefined}
         />
-      </TableCell>
-    }
-  </TableRow>
+      )}
+
+      {0 < props.actions.length &&
+        <TableCell align="right" className="actions-cell">
+          <DataActions
+            id={`data-table-item-${props.index}-actions`}
+            item={props.row}
+            actions={props.actions}
+          />
+        </TableCell>
+      }
+    </TableRow>
+  )
+}
 
 DataTableRow.propTypes = {
   index: T.number.isRequired,
@@ -73,6 +102,10 @@ DataTableRow.propTypes = {
   columns: T.arrayOf(
     T.shape(DataListProperty.propTypes)
   ).isRequired,
+  primaryAction: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
   actions: T.arrayOf(
     T.shape(DataAction.propTypes)
   ),
@@ -139,6 +172,7 @@ const DataTable = props =>
           index={rowIndex}
           row={row}
           columns={props.columns}
+          primaryAction={props.primaryAction}
           actions={getRowActions(props.actions)}
           selected={isRowSelected(row, props.selection ? props.selection.current : [])}
           onSelect={props.selection ? () => props.selection.toggle(row) : null}

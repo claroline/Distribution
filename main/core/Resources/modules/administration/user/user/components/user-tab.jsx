@@ -44,7 +44,7 @@ const UserTab = props =>
       }, {
         path: '/users/:id',
         component: User,
-        onEnter: (params) => props.openForm('users.current', params.id)
+        onEnter: (params) => props.openForm(params.id)
       }
     ]}
   />
@@ -53,13 +53,12 @@ UserTab.propTypes = {
   openForm: T.func.isRequired
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
-  }
-}
-
-const ConnectedUserTab = connect(null, mapDispatchToProps)(UserTab)
+const ConnectedUserTab = connect(
+  null,
+  dispatch => ({
+    openForm: (id = null) => dispatch(actions.open('users.current', id))
+  })
+)(UserTab)
 
 export {
   UserTabActions,

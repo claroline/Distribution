@@ -19,10 +19,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * @DI\Service("claroline.api.finder.user")
+ * @DI\Service("claroline.api.finder.organization")
  * @DI\Tag("claroline.finder")
  */
-class UserFinder implements FinderInterface
+class OrganizationFinder implements FinderInterface
 {
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
@@ -31,7 +31,7 @@ class UserFinder implements FinderInterface
     private $tokenStorage;
 
     /**
-     * WorkspaceFinder constructor.
+     * OrganizationFinder constructor.
      *
      * @DI\InjectParams({
      *     "authChecker"  = @DI\Inject("security.authorization_checker"),
@@ -51,7 +51,7 @@ class UserFinder implements FinderInterface
 
     public function getClass()
     {
-        return 'Claroline\CoreBundle\Entity\User';
+        return 'Claroline\CoreBundle\Entity\Organization\Organization';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
@@ -59,35 +59,26 @@ class UserFinder implements FinderInterface
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
-            $qb->leftJoin('obj.organizations', 'uo');
-            $qb->leftJoin('uo.administrators', 'ua');
+            $qb->leftJoin('obj.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
         }
+
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-                case 'hasPersonalWorkspace':
-                    $qb->andWhere("obj.personalWorkspace IS NOT NULL");
-                    break;
-                case 'group':
-                    $qb->leftJoin('obj.groups', 'g');
-                    $qb->andWhere('g.uuid IN (:groupIds)');
-                    $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
-                    break;
-                case 'role':
-                    $qb->leftJoin('obj.roles', 'r');
-                    $qb->andWhere('r.uuid IN (:roleIds)');
-                    $qb->setParameter('roleIds', is_array($filterValue) ? $filterValue : [$filterValue]);
-                    break;
-                case 'organization':
-                    $qb->leftJoin('obj.organizations', 'o');
-                    $qb->andWhere('o.uuid IN (:organizationIds)');
-                    $qb->setParameter('organizationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
-                    break;
                 case 'location':
                     $qb->leftJoin('obj.locations', 'l');
                     $qb->andWhere('l.uuid IN (:locationIds)');
                     $qb->setParameter('locationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'parent':
+                    if (empty($filterValue)) {
+                        $qb->andWhere('obj.parent IS NULL');
+                    } else {
+                        $qb->leftJoin('obj.parent', 'p');
+                        $qb->andWhere('p.uuid IN (:parentIds)');
+                        $qb->setParameter('parentIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    }
                     break;
                 default:
                     if (is_bool($filterValue)) {
@@ -98,10 +89,6 @@ class UserFinder implements FinderInterface
                         $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
                     }
             }
-        }
-
-        if (!in_array('isRemoved', array_keys($searches))) {
-            $qb->andWhere("obj.isRemoved = FALSE");
         }
 
         return $qb;

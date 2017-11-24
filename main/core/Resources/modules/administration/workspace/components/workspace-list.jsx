@@ -6,17 +6,15 @@ import {WorkspaceCard} from '#/main/core/administration/workspace/components/wor
 import {generateUrl} from '#/main/core/fos-js-router'
 
 const WorkspaceList = {
+  open: {
+    action: (rowData) => generateUrl('claro_workspace_open', {workspaceId: rowData.id})
+  },
   definition: [
     {
       name: 'name',
       label: t('name'),
-      renderer: (rowData) => {
-        // variable is used because React will use it has component display name (eslint requirement)
-        const wsLink = <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.id})}>{rowData.name}</a>
-
-        return wsLink
-      },
-      displayed: true
+      displayed: true,
+      primary: true
     }, {
       name: 'code',
       label: t('code'),

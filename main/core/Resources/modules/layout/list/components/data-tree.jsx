@@ -26,7 +26,7 @@ import {
 
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
-import {DataActions, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
+import {DataActions, DataPrimaryAction, DataBulkActions} from '#/main/core/layout/list/components/data-actions.jsx'
 import {ListEmpty} from '#/main/core/layout/list/components/empty.jsx'
 import {ListHeader} from '#/main/core/layout/list/components/header.jsx'
 
@@ -62,16 +62,18 @@ const DataTreeItemContent = props =>
           />
         }
 
-        {React.createElement(
-          props.computedData.onClick ? 'a' : 'h2', {
-            className: 'item-title',
-            [typeof props.computedData.onClick === 'function' ? 'onClick':'href']: props.computedData.onClick
-          }, [
+        <DataPrimaryAction
+          item={props.data}
+          action={props.primaryAction}
+          className="item-title"
+          disabledWrapper="h2"
+        >
+          {[
             props.computedData.title,
             props.computedData.subtitle &&
             <small key="item-subtitle">{props.computedData.subtitle}</small>
-          ]
-        )}
+          ]}
+        </DataPrimaryAction>
 
         {props.computedData.flags &&
           <div className="item-flags">
@@ -112,6 +114,10 @@ DataTreeItemContent.propTypes = {
   expanded: T.bool.isRequired,
   hasChildren: T.bool.isRequired,
   actions: T.array.isRequired,
+  primaryAction: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
   data: T.shape({
     id: T.string
   }).isRequired,
@@ -190,6 +196,7 @@ class DataTreeItem extends Component {
           data={this.props.data}
           computedData={this.props.card(this.props.data)}
           actions={this.props.actions}
+          primaryAction={this.props.primaryAction}
           onSelect={this.props.onSelect ? () => this.props.onSelect(this.props.data) : undefined}
           toggle={() => this.toggle()}
           connectDragSource={this.props.connectDragSource}
@@ -207,6 +214,7 @@ class DataTreeItem extends Component {
                 key={`tree-child-${childIndex}`}
                 data={child}
                 actions={this.props.actions}
+                primaryAction={this.props.primaryAction}
                 selected={this.props.selected}
                 onSelect={this.props.onSelect}
                 card={this.props.card}
@@ -237,6 +245,7 @@ DataTreeItem.propTypes = {
     id: T.oneOfType([T.string, T.number]).isRequired,
     children: T.array
   }).isRequired,
+  primaryAction: T.object,
   actions: T.arrayOf(
     T.shape(DataActionTypes.propTypes)
   ).isRequired,
@@ -346,6 +355,7 @@ class DataTree extends Component {
                   key={`tree-item-${rowIndex}`}
                   data={row}
                   actions={getRowActions(actions)}
+                  primaryAction={this.props.primaryAction}
                   selected={this.props.selection ? this.props.selection.current : []}
                   onSelect={this.props.selection ? this.props.selection.toggle : undefined}
                   card={this.props.card}
@@ -397,6 +407,15 @@ DataTree.propTypes = {
   actions: T.arrayOf(
     T.shape(DataActionTypes.propTypes)
   ),
+
+  /**
+   * Data primary action (aka open/edit action for rows in most cases).
+   * Providing this object will automatically display the primary action (depending on the current view mode).
+   */
+  primaryAction: T.shape({
+    disabled: T.func,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }),
 
   /**
    * Data delete action.

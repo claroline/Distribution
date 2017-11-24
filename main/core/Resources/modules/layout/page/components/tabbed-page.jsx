@@ -4,7 +4,7 @@ import classes from 'classnames'
 import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
-import {Router, Route, NavLink, Switch} from '#/main/core/router'
+import {Router, Route, Redirect, NavLink, Switch} from '#/main/core/router'
 import {Page} from '#/main/core/layout/page/components/page.jsx'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 
@@ -85,14 +85,26 @@ const TabbedPage = props =>
             component={tab.content}
           />
         )}
+
+        {props.redirect.map((redirect, redirectIndex) =>
+          <Redirect
+            {...redirect}
+            key={`tab-redirect-${redirectIndex}`}
+          />
+        )}
       </Switch>
     </Page>
   </Router>
 
-implementPropTypes(Page, PageTypes, {
+implementPropTypes(TabbedPage, PageTypes, {
   tabs: T.arrayOf(T.shape({
 
-  })).isRequired
+  })).isRequired,
+  redirect: T.arrayOf(T.shape({
+
+  }))
+}, {
+  redirect: []
 })
 
 export {

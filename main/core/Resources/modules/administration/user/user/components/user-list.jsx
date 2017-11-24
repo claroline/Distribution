@@ -5,18 +5,16 @@ import {t} from '#/main/core/translation'
 import {UserCard} from '#/main/core/administration/user/user/components/user-card.jsx'
 
 const UserList = {
+  open: {
+    action: (row) => `#/users/${row.id}`
+  },
   definition: [
     {
       name: 'username',
       type: 'string',
       label: t('username'),
-      renderer: (rowData) => {
-        // variable is used because React will use it has component display name (eslint requirement)
-        const userLink = <a href={`#/users/${rowData.id}`}>{rowData.username}</a>
-
-        return userLink
-      },
-      displayed: true
+      displayed: true,
+      primary: true
     }, {
       name: 'lastName',
       type: 'string',
@@ -47,8 +45,8 @@ const UserList = {
     },
     {
       name: 'meta.lastLogin',
-      type: 'date',
-      alias: 'last_login',
+      type: 'datetime',
+      alias: 'lastLogin',
       label: t('last_login'),
       displayed: true
     }

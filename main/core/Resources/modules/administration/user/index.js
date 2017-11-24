@@ -14,7 +14,7 @@ import {reducer as profileReducer} from '#/main/core/administration/user/profile
 import {reducer as organizationReducer} from '#/main/core/administration/user/organization/reducer'
 import {reducer as locationReducer} from '#/main/core/administration/user/location/reducer'
 
-import {UserMain} from '#/main/core/administration/user/components/main.jsx'
+import {UserTool} from '#/main/core/administration/user/components/tool.jsx'
 
 // mount the react application
 bootstrap(
@@ -22,7 +22,7 @@ bootstrap(
   '.users-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
-  UserMain,
+  UserTool,
 
   // app store configuration
   {
@@ -42,7 +42,7 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => {
     return {
-      users: {
+      /*users: {
         list: initialData.users
       },
       groups: {
@@ -56,7 +56,7 @@ bootstrap(
       },
       organizations: {
         list: initialData.organizations
-      },
+      },*/
       parameters: {
         data: initialData.parameters
       }

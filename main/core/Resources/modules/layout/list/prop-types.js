@@ -76,6 +76,11 @@ const DataListProperty = {
     displayed: T.bool, // only used in tables representation
 
     /**
+     * Defines if the property is the primary data column (will hold primaryAction if displayed, will also take more space).
+     */
+    primary: T.bool, // only used in tables representation
+
+    /**
      * Defines if the property can be displayed in `table` like representations.
      *
      * @type {bool}
@@ -131,9 +136,19 @@ const DataListView = {
       toggle: T.func.isRequired,
       toggleAll: T.func.isRequired
     }),
+
+    /**
+     * Data primary action (aka open/edit action for rows in most cases).
+     */
+    primaryAction: T.shape({
+      disabled: T.func,
+      action: T.oneOfType([T.string, T.func]).isRequired
+    }),
+
     actions: T.arrayOf(
       T.shape(DataAction.propTypes)
     ),
+
     /**
      * A function to normalize data for card display.
      * - the data row is passed as argument
@@ -156,7 +171,7 @@ const DataListView = {
  */
 const DataCard = {
   propTypes: {
-    onClick: T.oneOfType([T.string, T.func]), // either a url or a custom func to execute
+    // onClick: T.oneOfType([T.string, T.func]), // either a url or a custom func to execute
     className: T.string,
     poster: T.string,
     icon: T.oneOfType([T.string, T.element]).isRequired,

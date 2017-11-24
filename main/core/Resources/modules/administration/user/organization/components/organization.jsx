@@ -3,14 +3,13 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
-import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
+import {FormContainer} from '#/main/core/layout/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {select as formSelect} from '#/main/core/layout/form/selectors'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
@@ -46,7 +45,7 @@ const OrganizationActions = props =>
   </PageActions>
 
 const OrganizationForm = props =>
-  <Form
+  <FormContainer
     level={3}
     name="organizations.current"
     sections={[
@@ -105,14 +104,15 @@ const OrganizationForm = props =>
           }
         ]}
       >
-        <DataList
+        <DataListContainer
           name="organizations.current.users"
+          open={UserList.open}
           fetch={{
-            url: generateUrl('apiv2_organization_list_users', {id: props.organization.id}),
+            url: ['apiv2_organization_list_users', {id: props.organization.id}],
             autoload: true
           }}
           delete={{
-            url: generateUrl('apiv2_organization_remove_users', {id: props.organization.id}),
+            url: ['apiv2_organization_remove_users', {id: props.organization.id}],
           }}
           actions={[]}
           definition={UserList.definition}
@@ -122,7 +122,7 @@ const OrganizationForm = props =>
 
       <FormSection
         id="organization-groups"
-        icon="fa fa-fw fa-id-badge"
+        icon="fa fa-fw fa-users"
         title={t('groups')}
         actions={[
           {
@@ -132,14 +132,15 @@ const OrganizationForm = props =>
           }
         ]}
       >
-        <DataList
+        <DataListContainer
           name="organizations.current.groups"
+          open={GroupList.open}
           fetch={{
-            url: generateUrl('apiv2_organization_list_groups', {id: props.organization.id}),
+            url: ['apiv2_organization_list_groups', {id: props.organization.id}],
             autoload: true
           }}
           delete={{
-            url: generateUrl('apiv2_organization_remove_groups', {id: props.organization.id}),
+            url: ['apiv2_organization_remove_groups', {id: props.organization.id}],
           }}
           actions={[]}
           definition={GroupList.definition}
@@ -159,14 +160,15 @@ const OrganizationForm = props =>
           }
         ]}
       >
-        <DataList
+        <DataListContainer
           name="organizations.current.workspaces"
+          open={WorkspaceList.open}
           fetch={{
-            url: generateUrl('apiv2_organization_list_workspaces', {id: props.organization.id}),
+            url: ['apiv2_organization_list_workspaces', {id: props.organization.id}],
             autoload: true
           }}
           delete={{
-            url: generateUrl('apiv2_organization_remove_workspaces', {id: props.organization.id}),
+            url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}],
           }}
           actions={[]}
           definition={WorkspaceList.definition}
@@ -174,7 +176,7 @@ const OrganizationForm = props =>
         />
       </FormSection>
     </FormSections>
-  </Form>
+  </FormContainer>
 
 OrganizationForm.propTypes = {
   organization: T.shape({

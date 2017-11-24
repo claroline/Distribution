@@ -74,6 +74,7 @@ class UsersController extends Controller
     private $authorization;
     private $groupManager;
     private $tokenStorage;
+    private $parametersSerializer;
 
     /**
      * @DI\InjectParams({
