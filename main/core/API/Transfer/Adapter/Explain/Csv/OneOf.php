@@ -13,4 +13,9 @@ class OneOf
         $this->description = $description;
         $this->required    = $required;
     }
+
+    public function getExplanations()
+    {
+        return $this->oneOf;
+    }
 }

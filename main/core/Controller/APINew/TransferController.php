@@ -35,13 +35,13 @@ class TransferController
 
     /**
      * @Route(
-     *    "/import/{action}",
-     *    name="apiv2_transfer_import",
+     *    "/execute/{action}",
+     *    name="apiv2_transfer_execute",
      *    defaults={"action" = "json"},
      * )
      * @Method("POST")
      */
-    public function importAction($action, Request $request)
+    public function executeAction($action, Request $request)
     {
         $data = $this->getData($request);
         $this->provider->execute($data['data'], $action, $data['mime_type']);

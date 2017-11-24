@@ -15,4 +15,19 @@ class Property
         $this->required    = $required;
         $this->isArray     = $isArray;
     }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function isArray()
+    {
+        return $this->isArray;
+    }
 }

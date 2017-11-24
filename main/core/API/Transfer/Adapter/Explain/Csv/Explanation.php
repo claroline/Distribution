@@ -22,6 +22,28 @@ class Explanation
         return $this->properties;
     }
 
+    public function getProperty($name)
+    {
+        foreach ($this->properties as $property) {
+            if ($property instanceof Property) {
+                if ($property->getName() === $name) {
+                    return $property;
+                }
+            } elseif ($property instanceof OneOf) {
+                $explanations = $property->getExplanations();
+                $foundProperty = null;
+
+                foreach ($explanations as $explanation) {
+                    if (!$foundProperty) {
+                        $foundProperty = $explanation->getProperty($name);
+                    }
+                }
+
+                return $foundProperty;
+            }
+        }
+    }
+
     public function addOneOf(array $properties, $description)
     {
         $this->properties[] = new OneOf($properties, $description, true);

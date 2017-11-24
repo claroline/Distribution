@@ -5,6 +5,8 @@ namespace Claroline\CoreBundle\API\Transfer\Adapter;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
+use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\ExplanationBuilder;
+use Claroline\CoreBundle\API\Utilities\ObjectHandler;
 
 /**
  * @DI\Service()
@@ -20,6 +22,8 @@ class CsvAdapter implements AdapterInterface
      */
     public function decodeSchema($content, $schema)
     {
+        $explanation = $this->explainSchema($schema);
+
         $data = [];
         $lines = str_getcsv($content, PHP_EOL);
         $header = array_shift($lines);
@@ -32,138 +36,69 @@ class CsvAdapter implements AdapterInterface
 
         foreach ($lines as $line) {
             $properties = str_getcsv($line, ';');
-            $object = new \stdClass();
-
-            foreach ($headers as $index => $property) {
-                if ($properties[$index]) {
-                    if (strpos($property, '.') > 0) {
-                        $parts = explode('.', $property);
-                        //my first guess is that it shouldn't always be an array
-                        //the schema should be parsed here just to be sure (and at the beginning, not here)
-                        $new = new \stdClass();
-                        $new->{$parts[1]} = $properties[$index];
-                        $object->{$parts[0]} = [$new];
-                    } else {
-                        $object->$property = $properties[$index];
-                    }
-                }
-            }
-
-            $data[] = $object;
+            $data[] = $this->buildObjectFromLine($properties, $headers, $explanation);
         }
 
         return $data;
     }
 
-    public function getMimeTypes()
+    private function buildObjectFromLine($properties, array $headers, Explanation $explanation)
     {
-        return ['text/csv', 'csv'];
-    }
+        $object = new \stdClass();
 
-    private function explainObject($data, $explanation, $currentPath, $isArray = false)
-    {
-        foreach ($data->properties as $name => $property) {
-            $whereAmI = $currentPath === '' ? $name: $currentPath . '.' . $name;
-
-            if ($property->type === 'array') {
-                $this->explainSchema($property->items, $explanation, $whereAmI, true);
-            } elseif ($property->type === 'object') {
-                $this->explainObject($property, $explanation, $whereAmI, $isArray);
-            }
-
-            if (!in_array($property->type, ['array', 'object'])) {
-                $required = isset($data->required) ? in_array($name, $data->required): false;
-                $explanation->addProperty(
-                    $whereAmI,
-                    $property->type,
-                    $this->getProperty($property, 'description', ''),
-                    $required,
-                    $isArray
-                );
-            }
-        }
-    }
-
-    private function explainOneOf($data, $explanation, $currentPath, $isArray = false)
-    {
-        $explanations = [];
-
-        foreach ($data->oneOf as $oneOf) {
-            $explanations[] = $this->explainSchema($oneOf, null, $currentPath, $isArray);
-        }
-
-        $properties = [];
-
-        foreach ($explanations as $singleExplain) {
-            //$properties[] = $singleExplain->getProperties()[0];
-        }
-
-        $explanation->addOneOf($explanations, 'an auto generated descr', true);
-    }
-
-    /**
-     * Explain how to import according to the json-schema for a given mime type (csv)
-     * Here, we'll give a csv description according to the schema
-     * This is only a first version because not everything will be supported by csv
-     */
-    public function explainSchema(
-        $data,
-        $explanation = null,
-        $currentPath = '',
-        $isArray = false
-    ) {
-        if (!$explanation) {
-            $explanation = new Explanation();
-        }
-        //parse the json and explain what to do
-
-        if (isset($data->type)) {
-            $this->explainObject($data, $explanation, $currentPath, $isArray);
-        } elseif (property_exists($data, 'oneOf')) {
-            $this->explainOneOf($data, $explanation, $currentPath, $isArray);
-        } elseif (property_exists($data, 'allOf')) {
-        } elseif (property_exists($data, 'anyOf')) {
-        }
-
-        return $explanation;
-    }
-
-    private function getProperty($data, $prop, $default)
-    {
-        if (isset($data->{$prop})) {
-            return $data->{$prop};
-        }
-
-        return $default;
-    }
-
-    public function explainIdentifiers(array $schemas)
-    {
-        $explanation = new Explanation();
-
-        foreach ($schemas as $prop => $schema) {
-            $identifiers = $schema->claroIds;
-
-            if (isset($schema->type) && $schema->type === 'object') {
-                $oneOfs = [];
-                foreach ($identifiers as $property) {
-                    $data = $schema->properties->{$property};
-                    $oneOfs[] = new Explanation([new Property(
-                        $prop . '.' . $property,
-                        $data->type,
-                        $this->getProperty($data, 'description', ''),
-                        false
-                    )]);
-                }
-
-                $explanation->addOneOf($oneOfs, 'a description generated', true);
+        foreach ($headers as $index => $property) {
+            //idiot condition proof in case something is wrong with the csv (like more lines or columns)
+            if ($properties[$index]) {
+                $explainedProperty = $explanation->getProperty($property);
+                $this->addPropertyToObject($explainedProperty, $object, $properties[$index]);
             }
         }
 
-        return $explanation;
+        return $object;
     }
 
     public function decodeIdentifiers($data, array $schemas)
     {
+    }
+
+    private function addPropertyToObject(Property $property, \stdClass $object, $value)
+    {
+        $propertyName = $property->getName();
+
+        if ($property->isArray()) {
+            $keys = explode('.', $propertyName);
+            $objectProp = array_pop($keys);
+            $value = array_map(function ($value) use ($objectProp) {
+                $object = new \StdClass();
+                $object->{$objectProp} = $value;
+
+                return $object;
+            }, explode(',', $value));
+
+            $propertyName = implode('.', $keys);
+        }
+
+        $handler = new ObjectHandler();
+        $handler->set($object, $propertyName, $value);
+    }
+
+    public function explainSchema($data)
+    {
+        $builder = new ExplanationBuilder();
+
+        return $builder->explainSchema($data);
+    }
+
+    public function explainIdentifiers(array $schemas)
+    {
+        $builder = new ExplanationBuilder();
+
+        return $builder->explainIdentifiers($schemas);
+    }
+
+
+    public function getMimeTypes()
+    {
+        return ['text/csv', 'csv'];
     }
 }
