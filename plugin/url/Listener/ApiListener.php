@@ -55,25 +55,38 @@ class ApiListener
             $event->add('url', [
                 'isYoutube' => $isYoutube,
                 'embedYoutubeUrl' => $embedYoutubeUrl,
+                'isExternal' => $this->isExternal($resource->getUrl()),
             ]);
         }
     }
 
     private function getYoutubeId($url)
     {
+        $return = false;
+
         $parsedUrl = parse_url($url);
 
-        switch ($parsedUrl['host']) {
-            case 'www.youtube.com':
-                parse_str($parsedUrl['query'], $parsedQuery);
-
-                return $parsedQuery['v'];
-            case 'youtu.be':
-                return substr($parsedUrl['path'], 1);
-            default:
-                break;
+        if (array_key_exists('host', $parsedUrl)) {
+            switch ($parsedUrl['host']) {
+                case 'www.youtube.com':
+                    parse_str($parsedUrl['query'], $parsedQuery);
+                    $return = $parsedQuery['v'];
+                    break;
+                case 'youtu.be':
+                    $return = substr($parsedUrl['path'], 1);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        return false;
+        return $return;
+    }
+
+    private function isExternal($url)
+    {
+        $components = parse_url($url);
+
+        return !empty($components['host']) && strcasecmp($components['host'], $_SERVER['HTTP_HOST']);
     }
 }
