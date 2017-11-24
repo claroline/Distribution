@@ -1,55 +1,11 @@
-tbody {
-  border: 1px solid #ddd;
-}
-
-.data-grid-item .item-icon-container.no-opacity {
-  opacity: 1;
-}
-
-.data-grid-item .item-footer {
-  text-align: left;
-  padding-left: 15px;
-
-  .social {
-    float: right;
+.data-grid-item {
+  /* force pointer on links without href */
+  a:hover {
+    cursor:pointer;
   }
-
-  .item-icon-container{
-    font-size: inherit;
+  /* action dropdown is always displayed, even if empty */
+  //TODO: remove this hack when action dropdown display is corrected
+  .dropdown {
+    display: none;
   }
-}
-
-.data-grid-item .item-header {
-  min-height: 200px;
-  background-color: #0096de;
-}
-
-.data-grid-item-container, .data-grid-item {
-  border: none;
-  background-color: transparent;
-  box-shadow: none;
-}
-
-.data-grid-item .item-icon-container {
-  margin: 77px;
-}
-
-.data-grid-md .data-grid-item .item-title {
-  font-size: 14px;
-  display: block;
-  height: 50px;
-  background-color: #353d4d;
-  color: white;
-  padding: 10px;
-}
-
-.data-grid-item .item-footer {
-  padding: 0;
-  color: black;
-}
-
-.description {
-  display: block;
-  position: absolute;
-  top: 50px;
 }

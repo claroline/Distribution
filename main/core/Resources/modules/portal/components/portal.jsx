@@ -68,6 +68,7 @@ const PortalPage = props =>
                      ? () => {props.displayModalVideo(row.name, row.url.embedYoutubeUrl)}
                      : generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}),
           poster: row.poster,
+          className: row.url.isExternal ? 'external-resource' : 'internal-resource',
           icon: <span className="item-icon-container" style={{
             backgroundImage: 'url("/data/icon_sets/claroline/' + row.meta.type + '.svg")',
             backgroundSize: 'cover',
