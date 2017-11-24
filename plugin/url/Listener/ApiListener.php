@@ -35,6 +35,7 @@ class ApiListener
         $resourceNode = $event->getResourceNode();
         if ($resourceNode->getResourceType()->getName() === 'hevinci_url') {
             $isYoutube = false;
+            $embedYoutubeUrl = null;
 
             $resource = $this->om->getRepository('HeVinciUrlBundle:Url')->findOneByResourceNode($resourceNode);
 
@@ -45,6 +46,7 @@ class ApiListener
 
                 // Only add remote youTube thumbnail if no local resource node thumbnail is defined
                 if ($resourceNode->getThumbnail() === null) {
+                    $embedYoutubeUrl = 'https://www.youtube.com/embed/'.$youtubeId;
                     $thumbnailUrl = 'http://img.youtube.com/vi/'.$youtubeId.'/hqdefault.jpg';
                     $event->add('poster', $thumbnailUrl);
                 }
@@ -52,6 +54,7 @@ class ApiListener
 
             $event->add('url', [
                 'isYoutube' => $isYoutube,
+                'embedYoutubeUrl' => $embedYoutubeUrl,
             ]);
         }
     }
