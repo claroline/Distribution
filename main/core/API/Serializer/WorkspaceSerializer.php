@@ -116,4 +116,11 @@ class WorkspaceSerializer
             'selfUnregistration' => $workspace->getSelfUnregistration(),
         ];
     }
+
+
+
+    public function getSchema()
+    {
+        return '#/main/core/workspace.json';
+    }
 }

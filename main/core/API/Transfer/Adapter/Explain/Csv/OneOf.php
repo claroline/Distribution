@@ -7,9 +7,9 @@ namespace Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv;
  */
 class OneOf
 {
-    public function __construct(array $properties, $description, $required)
+    public function __construct(array $schemas, $description, $required)
     {
-        $this->oneOf       = $properties;
+        $this->oneOf       = $schemas;
         $this->description = $description;
         $this->required    = $required;
     }

@@ -18,7 +18,7 @@ class CsvAdapter implements AdapterInterface
      *
      * @todo make this recursive (for object containing other object: max level is 2 now: ie: groups.yolo)
      */
-    public function getData($content, $schema = '{}')
+    public function decodeSchema($content, $schema)
     {
         $data = [];
         $lines = str_getcsv($content, PHP_EOL);
@@ -60,43 +60,45 @@ class CsvAdapter implements AdapterInterface
         return ['text/csv', 'csv'];
     }
 
-    private function explainObject($data, $explanation, $currentPath)
+    private function explainObject($data, $explanation, $currentPath, $isArray = false)
     {
         foreach ($data->properties as $name => $property) {
             $whereAmI = $currentPath === '' ? $name: $currentPath . '.' . $name;
 
             if ($property->type === 'array') {
-                $this->explainSchema($property->items, $explanation, $whereAmI);
+                $this->explainSchema($property->items, $explanation, $whereAmI, true);
             } elseif ($property->type === 'object') {
-                $this->explainObject($property, $explanation, $whereAmI);
+                $this->explainObject($property, $explanation, $whereAmI, $isArray);
             }
 
             if (!in_array($property->type, ['array', 'object'])) {
+                $required = isset($data->required) ? in_array($name, $data->required): false;
                 $explanation->addProperty(
                     $whereAmI,
                     $property->type,
                     $this->getProperty($property, 'description', ''),
-                    in_array($name, $data->required)
+                    $required,
+                    $isArray
                 );
             }
         }
     }
 
-    private function explainOneOf($data, $explanation, $currentPath)
+    private function explainOneOf($data, $explanation, $currentPath, $isArray = false)
     {
         $explanations = [];
 
         foreach ($data->oneOf as $oneOf) {
-            $explanations[] = $this->explainSchema($oneOf, null, $currentPath);
+            $explanations[] = $this->explainSchema($oneOf, null, $currentPath, $isArray);
         }
 
         $properties = [];
 
         foreach ($explanations as $singleExplain) {
-            $properties[] = $singleExplain->getProperties()[0];
+            //$properties[] = $singleExplain->getProperties()[0];
         }
 
-        $explanation->addOneOf($properties, 'an auto generated descr', true);
+        $explanation->addOneOf($explanations, 'an auto generated descr', true);
     }
 
     /**
@@ -104,17 +106,21 @@ class CsvAdapter implements AdapterInterface
      * Here, we'll give a csv description according to the schema
      * This is only a first version because not everything will be supported by csv
      */
-    public function explainSchema($data, $explanation = null, $currentPath = '')
-    {
+    public function explainSchema(
+        $data,
+        $explanation = null,
+        $currentPath = '',
+        $isArray = false
+    ) {
         if (!$explanation) {
             $explanation = new Explanation();
         }
         //parse the json and explain what to do
 
         if (isset($data->type)) {
-            $this->explainObject($data, $explanation, $currentPath);
+            $this->explainObject($data, $explanation, $currentPath, $isArray);
         } elseif (property_exists($data, 'oneOf')) {
-            $this->explainOneOf($data, $explanation, $currentPath);
+            $this->explainOneOf($data, $explanation, $currentPath, $isArray);
         } elseif (property_exists($data, 'allOf')) {
         } elseif (property_exists($data, 'anyOf')) {
         }
@@ -142,12 +148,12 @@ class CsvAdapter implements AdapterInterface
                 $oneOfs = [];
                 foreach ($identifiers as $property) {
                     $data = $schema->properties->{$property};
-                    $oneOfs[] = new Property(
+                    $oneOfs[] = new Explanation([new Property(
                         $prop . '.' . $property,
                         $data->type,
                         $this->getProperty($data, 'description', ''),
                         false
-                    );
+                    )]);
                 }
 
                 $explanation->addOneOf($oneOfs, 'a description generated', true);
@@ -155,5 +161,9 @@ class CsvAdapter implements AdapterInterface
         }
 
         return $explanation;
+    }
+
+    public function decodeIdentifiers($data, array $schemas)
+    {
     }
 }

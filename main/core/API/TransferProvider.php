@@ -36,7 +36,15 @@ class TransferProvider
     {
         $executor = $this->getExecutor($action);
         $adapter = $this->getAdapter($mimeType);
-        $data = $adapter->getData($data);
+
+        $schema = $executor->getSchema();
+        if (array_key_exists('$root', $schema)) {
+            $jsonSchema = $this->serializer->get($schema['$root'][0])->getSchema();
+            $data = $adapter->decodeSchema($data, $jsonSchema);
+        } else {
+            //
+        }
+
         $i = 0;
         $this->om->startFlushSuite();
 
@@ -44,7 +52,7 @@ class TransferProvider
             $i++;
             //$this->log($executor->getLogMessage());
             //
-            $executor->import($data);
+            $executor->execute($data);
 
             if ($i % $executor->getBatchSize() === 0) {
                 $this->om->forceFlush();
