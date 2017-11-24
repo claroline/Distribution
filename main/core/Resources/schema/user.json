@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "The user id"
+    },
+    "email": {
+      "type": "string",
+      "description": "the user email adress"
+    },
+    "firstName": {
+      "type": "string",
+      "description": "the user first name"
+    },
+    "lastName": {
+      "type": "string",
+      "description": "the user last name"
+    },
+    "username": {
+      "type": "string",
+      "description": "the username"
+    },
+    "groups": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": ["name"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": ["id"]
+          }
+        ]
+      }
+    }
+  },
+  "required": ["name", "email", "firstName", "lastName", "username"],
+  "claroIds": ["id", "email", "username"]
+}

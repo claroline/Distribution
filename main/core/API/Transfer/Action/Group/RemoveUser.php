@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action;
+namespace Claroline\CoreBundle\API\Transfer\Action\Group;
 
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
@@ -8,12 +8,13 @@ use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
+use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
 
 /**
  * @DI\Service()
  * @DI\Tag("claroline.transfer.action")
  */
-class AddUserToGroup extends AbstractAction
+class RemoveUser extends AbstractAction
 {
     /**
      * Action constructor.
@@ -43,17 +44,26 @@ class AddUserToGroup extends AbstractAction
             $data->group[0]
         );
 
-        $this->crud->patch($user, 'group', 'add', [$group]);
-    }
-
-    public function getName()
-    {
-        return 'add_user_to_group';
+        $this->crud->patch($user, 'group', 'remove', [$group]);
     }
 
     public function getSchema()
     {
-        return __DIR__ . '/../../Schema/user_group.json';
+        return [
+          'group' => ['Claroline\CoreBundle\Entity\Group', 'partial'],
+          'user'  => ['Claroline\CoreBundle\Entity\User', 'partial']
+        ];
+    }
+
+    /**
+     * return an array with the following element:
+     * - section
+     * - action
+     * - action name
+     */
+    public function getAction()
+    {
+        return ['group', 'remove_user', 'remove_user_from_group'];
     }
 
     public function getLogMessage($data)
