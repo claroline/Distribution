@@ -274,10 +274,6 @@ class EntryView extends Component {
       (this.props.displayMetadata === 'manager' && this.props.isManager)
   }
 
-  canComment() {
-    return this.props.commentsEnabled && (!this.props.isAnon || this.props.anonymousCommentsEnabled)
-  }
-
   canManageEntry() {
     return this.props.canEdit || this.props.isManager
   }
@@ -519,11 +515,12 @@ class EntryView extends Component {
             <EntryMenu />
           }
 
-          {(this.props.displayComments || this.canComment()) &&
+          {(this.props.canViewComments || this.props.canComment) &&
             <EntryComments
               opened={this.props.openComments}
-              canComment={this.canComment()}
+              canComment={this.props.canComment}
               canManage={this.canManageEntry()}
+              canViewComments={this.props.canViewComments}
             />
           }
         </div> :
@@ -547,6 +544,8 @@ EntryView.propTypes = {
   canGeneratePdf: T.bool.isRequired,
   canEditEntry: T.bool,
   canViewEntry: T.bool,
+  canComment: T.bool,
+  canViewComments: T.bool,
 
   isAnon: T.bool.isRequired,
   isOwner: T.bool,
@@ -655,6 +654,8 @@ function mapStateToProps(state, ownProps) {
     canViewEntry: selectors.canOpenCurrentEntry(state),
     canAdministrate: selectors.canAdministrate(state),
     canGeneratePdf: state.canGeneratePdf,
+    canComment: selectors.canComment(state),
+    canViewComments: selectors.canViewComments(state),
 
     isAnon: state.isAnon,
     entry: state.currentEntry,

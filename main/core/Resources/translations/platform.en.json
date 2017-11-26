@@ -363,6 +363,7 @@
     "destination": "Destination",
     "directory": "Directory",
     "disable": "Disable",
+    "disable_workspace_notifications": "Disable notifications",
     "display": "Display",
     "display_at_registration": "Display at registration",
     "display_captcha": "Enable captcha",

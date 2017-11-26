@@ -62,6 +62,8 @@ bootstrap(
     currentEntry: currentEntryReducers,
     cascadeLevelMax: mainReducers,
     message: messageReducers,
+    roles: mainReducers,
+    myRoles: mainReducers,
 
     // generic reducers
     resourceNode: resourceNodeReducer,
@@ -85,7 +87,9 @@ bootstrap(
       fields: initialData.fields,
       entries: initialData.entries,
       myEntriesCount: initialData.myEntriesCount,
-      cascadeLevelMax: initialData.cascadeLevelMax
+      cascadeLevelMax: initialData.cascadeLevelMax,
+      roles: initialData.roles,
+      myRoles: initialData.myRoles
     }
   }
 )
