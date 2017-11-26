@@ -33,7 +33,6 @@ Page.propTypes = {
   children: T.node.isRequired
 }
 
-
 function mapStateToProps(state) {
   return {
     modal: modalSelect.modal(state)

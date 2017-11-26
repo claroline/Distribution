@@ -13,6 +13,11 @@ const Page = {
      * Permits to know if we use a <main> or a <section> tag.
      */
     embedded: T.bool,
+
+    // alerts management
+    alerts: T.array,
+
+    // modal management
     modal: T.shape({
       type: T.string,
       fading: T.bool.isRequired,

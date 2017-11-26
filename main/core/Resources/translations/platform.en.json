@@ -1487,5 +1487,9 @@
     "hide_advanced_options": "Hide advanced parameters",
     "parent": "Parent",
     "managers": "Managers",
-    "last_login": "Last login"
+    "last_login": "Last login",
+    "disable_user": "Disable user",
+    "disable_personal_ws": "Remove personal workspace",
+    "enable_user": "Enable user",
+    "enable_personal_ws": "Create personal workspace"
 }

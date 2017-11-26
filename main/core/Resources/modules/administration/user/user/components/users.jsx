@@ -2,11 +2,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
+import {t, Translator} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 import Configuration from '#/main/core/library/Configuration/Configuration'
 import {MODAL_URL} from '#/main/core/layout/modal'
 
@@ -24,8 +24,8 @@ const UsersActions = props =>
     />
   </PageActions>
 
-const Users = props =>
-  <DataList
+const UsersList = props =>
+  <DataListContainer
     name="users.list"
     open={UserList.open}
     fetch={{
@@ -36,20 +36,23 @@ const Users = props =>
       url: generateUrl('apiv2_user_delete_bulk')
     }}
     actions={[
-      // todo add show profile
       {
+        icon: 'fa fa-fw fa-id-card-o',
+        label: t('show_profile'),
+        action: (rows) => window.location = generateUrl('claro_public_profile_view', {publicUrl: rows[0].meta.publicUrl}),
+      }, {
         icon: 'fa fa-fw fa-eye',
         label: t('show_as'),
-        action: (rows) => window.location = generateUrl('claro_desktop_open', {'_switch': rows[0].username}),
+        action: (rows) => window.location = generateUrl('claro_desktop_open', {_switch: rows[0].username}),
         context: 'row'
       }, {
-        icon: '', // todo add icon
+        icon: 'fa fa-fw fa-book',
         label: t('enable_personal_ws'),
         context: 'row', // todo should be a selection action too
         displayed: (rows) => !rows[0].meta.personalWorkspace,
         action: (rows) => props.createWorkspace(rows[0])
       }, {
-        icon: '', // todo add icon
+        icon: 'fa fa-fw fa-book',
         label: t('disable_personal_ws'),
         context: 'row', // todo should be a selection action too
         displayed: (rows) => rows[0].meta.personalWorkspace,
@@ -66,14 +69,6 @@ const Users = props =>
         context: 'row', // todo should be a selection action too
         displayed: (rows) => rows[0].meta.enabled,
         action: (rows) => props.disable(rows[0])
-      }, {
-        icon: 'fa fa-fw fa-book',
-        label: t('user_workspaces'),
-        action: () => { // todo implement
-          alert('filters are already enabled for the main page, but the user filter does not exists yet')
-          window.location = generateUrl('claro_admin_workspace_list')
-        },
-        context: 'row'
       },
       ...Configuration.getUsersAdministrationActions().map(action => action.options.modal ?
         {
@@ -95,7 +90,7 @@ const Users = props =>
     card={UserList.card}
   />
 
-Users.propTypes = {
+UsersList.propTypes = {
   enable: T.func.isRequired,
   disable: T.func.isRequired,
   createWorkspace: T.func.isRequired,
@@ -119,9 +114,9 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-const ConnectedUsers = connect(null, mapDispatchToProps)(Users)
+const Users = connect(null, mapDispatchToProps)(UsersList)
 
 export {
   UsersActions,
-  ConnectedUsers as Users
+  Users
 }

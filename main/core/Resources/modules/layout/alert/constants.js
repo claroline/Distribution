@@ -1,0 +1,7 @@
+const FLYING_ALERTS_MAX     = 5
+const FLYING_ALERTS_TIMEOUT = 1000
+
+export const constants = {
+  FLYING_ALERTS_MAX,
+  FLYING_ALERTS_TIMEOUT
+}

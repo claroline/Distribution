@@ -1509,5 +1509,9 @@
     "hide_advanced_options": "Masquer les paramètres avancés",
     "parent": "Parent",
     "managers": "Gestionnaires",
-    "last_login": "Dernière connexion"
+    "last_login": "Dernière connexion",
+    "disable_user": "Désactiver l'utilisateur",
+    "disable_personal_ws": "Supprimer l'espace personnel",
+    "enable_user": "Activer l'utilisateur",
+    "enable_personal_ws": "Créer l'espace personnel"
 }

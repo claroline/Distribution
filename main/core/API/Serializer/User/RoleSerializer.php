@@ -33,7 +33,7 @@ class RoleSerializer
     public function serializeMeta(Role $role, array $options = [])
     {
         return [
-           'isReadOnly' => $role->isReadOnly(),
+           'readOnly' => $role->isReadOnly(),
            'type' => $role->getType(),
            'personalWorkspaceCreationEnabled' => $role->getPersonalWorkspaceCreationEnabled()
        ];

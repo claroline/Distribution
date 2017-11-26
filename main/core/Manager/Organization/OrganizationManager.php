@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager\Organization;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -20,6 +21,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class OrganizationManager
 {
+    use LoggableTrait;
+
     private $om;
 
     /**

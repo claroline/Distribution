@@ -103,7 +103,7 @@ class DataList extends Component {
       displayTool = {
         current: this.state.currentDisplay,
         available: this.props.display.available,
-        onChange: this.setDisplayMode.bind(this)
+        onChange: this.setDisplayMode
       }
     }
 

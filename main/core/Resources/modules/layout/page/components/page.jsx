@@ -7,6 +7,22 @@ import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 import {makeModal} from '#/main/core/layout/modal'
 
+import {FlyingAlerts} from '#/main/core/layout/alert/flying-alerts.sjx'
+
+const PageWrapper = props => !props.embedded ?
+  <main className={props.className}>
+    {props.children}
+  </main> :
+  <section className={props.className}>
+    {props.children}
+  </section>
+
+PageWrapper.propTypes = {
+  className: T.string,
+  embedded: T.bool.isRequired,
+  children: T.any
+}
+
 /**
  * Root of the current page.
  *
@@ -18,24 +34,27 @@ import {makeModal} from '#/main/core/layout/modal'
  * @constructor
  */
 const Page = props =>
-  React.createElement(
-    !props.embedded ? 'main' : 'section', {
-      className: classes('page', {
-        fullscreen: props.fullscreen,
-        embedded: props.embedded
-      }),
-      children: [
-        get(props, 'modal.type') && makeModal(
-          props.modal.type,
-          props.modal.props,
-          props.modal.fading,
-          props.fadeModal,
-          props.hideModal
-        ),
-        props.children
-      ]
+  <PageWrapper
+    embedded={props.embedded}
+    className={classes('page', {
+      fullscreen: props.fullscreen,
+      embedded: props.embedded
+    })}
+  >
+    {props.alerts &&
+      <FlyingAlerts alerts={props.alerts} />
     }
-  )
+
+    {get(props, 'modal.type') && makeModal(
+      props.modal.type,
+      props.modal.props,
+      props.modal.fading,
+      props.fadeModal,
+      props.hideModal
+    )}
+
+    {props.children}
+  </PageWrapper>
 
 implementPropTypes(Page, PageTypes, {
   children: T.node.isRequired
