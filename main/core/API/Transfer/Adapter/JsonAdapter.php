@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class JsonAdapter implements AdapterInterface
 {
-    public function getData($content)
+    public function decodeSchema($content, $schema)
     {
         return json_decode($content);
     }
@@ -28,5 +28,10 @@ class JsonAdapter implements AdapterInterface
     public function explainIdentifiers(array $schema)
     {
         return new \stdClass();
+    }
+
+    public function decodeIdentifiers($data, array $schemas)
+    {
+        return json_decode($data);
     }
 }

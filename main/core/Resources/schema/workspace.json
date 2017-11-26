@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "uuid": {
+      "type": "string",
+      "format": "email"
+    },
+    "name": {
+      "type": "string"
+    },
+    "code": {
+      "type": "string"
+    },
+    "poster": {
+      "type": "string"
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "boolean"
+        },
+        "personal": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "creator": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "display": {
+      "type": "object",
+      "properties": {
+        "displayable": {
+          "type": "boolean"
+        }
+      }
+    },
+    "restrictions": {
+      "type": "object",
+      "properties": {
+        "accessibleFrom": {
+          "type": "string"
+        },
+        "accessibleUntil": {
+          "type": "string"
+        },
+        "maxUsers": {
+          "type": "integer"
+        },
+        "maxStorage": {
+          "type": "integer"
+        },
+        "maxResources": {
+          "type": "integer"
+        }
+      }
+    },
+    "restrictions": {
+      "type": "object",
+      "properties": {
+        "validation": {
+          "type": "boolean"
+        },
+        "selfRegistration": {
+          "type": "boolean"
+        },
+        "selfUnregistration": {
+          "type": "boolean"
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "required": ["name"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": ["id"]
+          }
+        ]
+      }
+    },
+    "managers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "username": {
+                "type": "string"
+              }
+            },
+            "required": ["username"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            },
+            "required": ["id"]
+          }
+        ]
+      }
+    }
+  },
+  "claroIds": ["id", "code"],
+  "required": ["code"]
+}
