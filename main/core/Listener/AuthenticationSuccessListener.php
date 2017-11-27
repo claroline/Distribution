@@ -135,6 +135,9 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
             } catch (MethodNotAllowedException $e) {
                 $this->router->getContext()->setMethod('GET');
                 $securityRoute = $this->router->match($securityUriClean)['_route'];
+            } catch (\Exception $e) {
+                // In case of any exception matching the securityUri, redirect to desktop
+                return new RedirectResponse($this->router->generate('claro_desktop_open'));
             }
         }
         // If login route then check other conditions.
