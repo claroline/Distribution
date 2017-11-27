@@ -5,6 +5,7 @@ import get from 'lodash/get'
 import moment from 'moment'
 
 import {t, trans} from '#/main/core/translation'
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
@@ -289,7 +290,7 @@ const PlanningSection = props =>
     {props.formData.parameters.manualPlanning &&
       <RadioGroup
         controlId="manual-state"
-        label={trans('choose_current_manual_state', {}, 'dropzone')}
+        label={trans('choose_current_state', {}, 'dropzone')}
         options={props.formData.parameters.peerReview ? constants.PEER_PLANNING_STATES : constants.TEACHER_PLANNING_STATES}
         inline={false}
         checkedValue={props.formData.parameters.manualState}
@@ -412,7 +413,7 @@ DropzoneForm.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    canEdit: select.canEdit(state),
+    canEdit: resourceSelect.editable(state),
     formData: select.formData(state),
     errors: select.formErrors(state),
     validating: select.formValidating(state)

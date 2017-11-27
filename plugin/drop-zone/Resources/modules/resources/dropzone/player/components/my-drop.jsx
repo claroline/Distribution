@@ -5,6 +5,8 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
@@ -16,6 +18,17 @@ import {DropForm} from '#/plugin/drop-zone/resources/dropzone/player/components/
 
 const MyDrop = props =>
   <div className="drop-panel">
+    <FormSections>
+      <FormSection
+        id="instructions-section"
+        title={trans('instructions', {}, 'dropzone')}
+      >
+        <HtmlText>
+          {props.dropzone.display.instruction}
+        </HtmlText>
+      </FormSection>
+    </FormSections>
+
     <Documents
       documents={props.drop.documents}
       canEdit={props.isDropEnabled && !props.drop.finished}
@@ -39,12 +52,12 @@ const MyDrop = props =>
         onClick={() => {
           props.showModal(MODAL_CONFIRM, {
             title: trans('warning', {}, 'dropzone'),
-            question: trans('render_my_copy_confirm_message', {}, 'dropzone'),
+            question: trans('submit_my_copy_confirm_message', {}, 'dropzone'),
             handleConfirm: () => props.renderMyDrop()
           })
         }}
       >
-        {trans('render_my_copy', {}, 'dropzone')}
+        {trans('submit_my_copy', {}, 'dropzone')}
       </button>
     }
 
@@ -73,7 +86,6 @@ function mapStateToProps(state) {
   return {
     dropzone: select.dropzone(state),
     drop: select.myDrop(state),
-    params: select.dropzoneParameters(state),
     isDropEnabled: select.isDropEnabled(state),
     isPeerReviewEnabled: select.isPeerReviewEnabled(state),
     nbCorrections: select.nbCorrections(state)
@@ -82,7 +94,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    saveDrop: (dropType, dropData) => dispatch(actions.saveDrop(dropType, dropData)),
+    saveDocument: (dropType, dropData) => dispatch(actions.saveDocument(dropType, dropData)),
     deleteDocument: (documentId) => dispatch(actions.deleteDocument(documentId)),
     renderMyDrop: () => dispatch(actions.renderMyDrop()),
     saveCorrection: (correction) => dispatch(correctionActions.saveCorrection(correction)),

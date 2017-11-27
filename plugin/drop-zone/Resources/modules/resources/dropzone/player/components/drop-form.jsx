@@ -8,6 +8,7 @@ import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.js
 import {FileGroup}  from '#/main/core/layout/form/components/group/file-group.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
 class DropTextForm extends Component {
   constructor(props) {
@@ -119,27 +120,27 @@ export class DropForm extends Component {
     super(props)
     const availableTypes = []
 
-    if (props.params.uploadEnabled) {
+    if (props.dropzone.parameters.uploadEnabled) {
       availableTypes.push(constants.DOCUMENT_TYPES.file)
     }
-    if (props.params.richTextEnabled) {
+    if (props.dropzone.parameters.richTextEnabled) {
       availableTypes.push(constants.DOCUMENT_TYPES.text)
     }
-    if (props.params.urlEnabled) {
+    if (props.dropzone.parameters.urlEnabled) {
       availableTypes.push(constants.DOCUMENT_TYPES.url)
     }
-    if (props.params.workspaceResourceEnabled) {
+    if (props.dropzone.parameters.workspaceResourceEnabled) {
       availableTypes.push(constants.DOCUMENT_TYPES.resource)
     }
     this.state = {
       dropType: '',
       availableDropTypes: availableTypes
     }
-    this.submitDrop = this.submitDrop.bind(this)
+    this.submitDocument = this.submitDocument.bind(this)
   }
 
-  submitDrop(data) {
-    this.props.saveDrop(this.state.dropType, data)
+  submitDocument(data) {
+    this.props.saveDocument(this.state.dropType, data)
     this.setState({dropType: ''})
   }
 
@@ -158,17 +159,17 @@ export class DropForm extends Component {
         }
         {this.state.dropType === constants.DOCUMENT_TYPES.file.value &&
           <DropFileForm
-            handleSubmit={this.submitDrop}
+            handleSubmit={this.submitDocument}
           />
         }
         {this.state.dropType === constants.DOCUMENT_TYPES.text.value &&
           <DropTextForm
-            handleSubmit={this.submitDrop}
+            handleSubmit={this.submitDocument}
           />
         }
         {this.state.dropType === constants.DOCUMENT_TYPES.url.value &&
           <DropUrlForm
-            handleSubmit={this.submitDrop}
+            handleSubmit={this.submitDocument}
           />
         }
       </div>
@@ -177,11 +178,6 @@ export class DropForm extends Component {
 }
 
 DropForm.propTypes = {
-  params: T.shape({
-    uploadEnabled: T.bool,
-    richTextEnabled: T.bool,
-    urlEnabled: T.bool,
-    workspaceResourceEnabled: T.bool
-  }).isRequired,
-  saveDrop: T.func.isRequired
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  saveDocument: T.func.isRequired
 }

@@ -3,21 +3,21 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, trans} from '#/main/core/translation'
-
+import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {Router} from '#/main/core/router/components/router.jsx'
 import {ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
 
-import {Menu} from './menu.jsx'
-import {DropzoneForm} from '../editor/components/dropzone-form.jsx'
-import {MyDrop} from '../player/components/my-drop.jsx'
-import {Drops} from '../correction/components/drops.jsx'
-import {Drop} from '../correction/components/drop.jsx'
-import {PeerDrop} from '../player/components/peer-drop.jsx'
+import {select} from '#/plugin/drop-zone/resources/dropzone/selectors.js'
+import {actions as editorActions} from '#/plugin/drop-zone/resources/dropzone/editor/actions.js'
+import {actions as playerActions} from '#/plugin/drop-zone/resources/dropzone/player/actions.js'
+import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions.js'
+import {Menu} from '#/plugin/drop-zone/resources/dropzone/components/menu.jsx'
+import {DropzoneForm} from '#/plugin/drop-zone/resources/dropzone/editor/components/dropzone-form.jsx'
+import {MyDrop} from '#/plugin/drop-zone/resources/dropzone/player/components/my-drop.jsx'
+import {Drops} from '#/plugin/drop-zone/resources/dropzone/correction/components/drops.jsx'
+import {Drop} from '#/plugin/drop-zone/resources/dropzone/correction/components/drop.jsx'
+import {PeerDrop} from '#/plugin/drop-zone/resources/dropzone/player/components/peer-drop.jsx'
 
-import {select} from '../selectors.js'
-import {actions as editorActions} from '../editor/actions.js'
-import {actions as playerActions} from '../player/actions.js'
-import {actions as correctionActions} from '../correction/actions.js'
 
 const DropzoneResource = props =>
   <ResourceContainer
@@ -89,11 +89,6 @@ function customActions(props) {
   const actions = []
 
   actions.push({
-    icon: 'fa fa-fw fa-list',
-    label: trans('menu', {}, 'dropzone'),
-    action: '#/'
-  })
-  actions.push({
     icon: 'fa fa-fw fa-download',
     label: trans('my_drop', {}, 'dropzone'),
     action: '#/my/drop'
@@ -112,7 +107,7 @@ function customActions(props) {
 
 function mapStateToProps(state) {
   return {
-    canEdit: select.canEdit(state),
+    canEdit: resourceSelect.editable(state),
     dropzone: state.dropzone,
     dropzoneId: select.dropzoneId(state),
     dropzoneForm: select.formData(state),

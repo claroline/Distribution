@@ -11,7 +11,13 @@
         data-user="{{ user | api_serialize({'public': true}) | json_encode | raw | escape }}"
         data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
         data-dropzone="{{ _resource | api_serialize | json_encode | raw | escape }}"
-        data-my-drop="{{ myDrop | api_serialize | json_encode | raw | escape }}"
+        data-my-drop="
+            {% if myDrop is not empty %}
+                {{ myDrop | api_serialize | json_encode | raw | escape }}
+            {% else %}
+                {{ myDrop | json_encode | raw | escape }}
+            {% endif %}
+        "
         data-peer-drop="{{ peerDrop | json_encode | raw | escape }}"
         data-nb-corrections="{{ nbCorrections | json_encode | raw | escape }}"
         data-tools="{{ tools | json_encode | raw | escape }}"

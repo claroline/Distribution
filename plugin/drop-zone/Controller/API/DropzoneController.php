@@ -118,6 +118,36 @@ class DropzoneController
     }
 
     /**
+     * Initializes Drop of current user.
+     *
+     * @EXT\Route("/{id}/my/drop/initialize", name="claro_dropzone_my_drop_initialize")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *     "dropzone",
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function myDropInitializeAction(Dropzone $dropzone, User $user)
+    {
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $myDrop = $this->manager->getUserDrop($dropzone, $user, true);
+
+            return new JsonResponse($this->manager->serializeDrop($myDrop));
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
      * Adds a Document to a Drop.
      *
      * @EXT\Route("/drop/{id}/type/{type}", name="claro_dropzone_documents_add")
@@ -338,7 +368,6 @@ class DropzoneController
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
         $this->checkCorrectionEdition($correction, $user);
-
 
         try {
             $this->manager->submitCorrection($correction);

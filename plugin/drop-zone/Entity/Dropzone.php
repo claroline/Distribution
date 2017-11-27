@@ -24,12 +24,12 @@ class Dropzone extends AbstractResource
 {
     use UuidTrait;
 
-    const MANUAL_STATE_NOT_STARTED = 0;
-    const MANUAL_STATE_ALLOW_DROP = 1;
-    const MANUAL_STATE_FINISHED = 2;
-    const MANUAL_STATE_PEER_REVIEW = 3;
-    const MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW = 4;
-    const MANUAL_STATE_ALLOW_WAITING_FOR_PEER_REVIEW = 5;
+    const STATE_NOT_STARTED = 0;
+    const STATE_ALLOW_DROP = 1;
+    const STATE_FINISHED = 2;
+    const STATE_PEER_REVIEW = 3;
+    const STATE_ALLOW_DROP_AND_PEER_REVIEW = 4;
+    const STATE_ALLOW_WAITING_FOR_PEER_REVIEW = 5;
 
     const AUTO_CLOSED_STATE_WAITING = 0;
     const AUTO_CLOSED_STATE_CLOSED = 1;
@@ -137,7 +137,7 @@ class Dropzone extends AbstractResource
     /**
      * @ORM\Column(name="manual_state", type="integer", nullable=false)
      */
-    protected $manualState = self::MANUAL_STATE_NOT_STARTED;
+    protected $manualState = self::STATE_NOT_STARTED;
 
     /**
      * @ORM\Column(name="drop_start_date", type="datetime", nullable=true)
@@ -581,7 +581,7 @@ class Dropzone extends AbstractResource
 
         return (
             $this->manualPlanning &&
-            in_array($this->manualState, [self::MANUAL_STATE_ALLOW_DROP, self::MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW])
+            in_array($this->manualState, [self::STATE_ALLOW_DROP, self::STATE_ALLOW_DROP_AND_PEER_REVIEW])
         ) || (
             !$this->manualPlanning &&
             (!empty($this->dropStartDate) && $currentDate >= $this->dropStartDate) &&
@@ -595,7 +595,7 @@ class Dropzone extends AbstractResource
 
         return $this->peerReview && ((
             $this->manualPlanning &&
-            in_array($this->manualState, [self::MANUAL_STATE_PEER_REVIEW, self::MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW])
+            in_array($this->manualState, [self::STATE_PEER_REVIEW, self::STATE_ALLOW_DROP_AND_PEER_REVIEW])
         ) || (
             !$this->manualPlanning &&
             (!empty($this->reviewStartDate) && $currentDate >= $this->reviewStartDate) &&

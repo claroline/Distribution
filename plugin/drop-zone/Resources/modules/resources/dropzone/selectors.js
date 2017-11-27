@@ -3,7 +3,6 @@ import {createSelector} from 'reselect'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
-const canEdit = state => state.resourceNode.rights.current.edit
 const user = state => state.user
 
 const userId = createSelector(
@@ -89,7 +88,7 @@ const isDropEnabled = createSelector(
 
     return (
       dropzone.parameters.manualPlanning &&
-      [constants.MANUAL_STATE_ALLOW_DROP, constants.MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
+      [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
     ) ||
     (
       !dropzone.parameters.manualPlanning &&
@@ -107,7 +106,7 @@ const isPeerReviewEnabled = createSelector(
     return dropzone.parameters.peerReview && (
       (
         dropzone.parameters.manualPlanning &&
-        [constants.MANUAL_STATE_PEER_REVIEW, constants.MANUAL_STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
+        [constants.STATE_PEER_REVIEW, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
       ) ||
       (
         !dropzone.parameters.manualPlanning &&
@@ -121,7 +120,7 @@ const isPeerReviewEnabled = createSelector(
 const currentState = createSelector(
   [dropzone],
   (dropzone) => {
-    let currentState = constants.MANUAL_STATE_NOT_STARTED
+    let currentState = constants.STATE_NOT_STARTED
 
     if (dropzone.parameters.manualPlanning) {
       currentState = dropzone.parameters.manualState
@@ -132,8 +131,20 @@ const currentState = createSelector(
       const reviewStartDate = new Date(dropzone.parameters.reviewStartDate)
       const reviewEndDate = new Date(dropzone.parameters.reviewEndDate)
 
-      const canDrop = dropStartDate <= currentDate && currentDate <= dropEndDate
-      const canReview = reviewStartDate <= currentDate && currentDate <= reviewEndDate
+      if (currentDate >= dropStartDate) {
+        if (currentDate > dropEndDate && currentDate > reviewEndDate) {
+          currentState = constants.STATE_FINISHED
+        } else if (currentDate > dropEndDate && currentDate < reviewStartDate) {
+          currentState = constants.STATE_ALLOW_WAITING_FOR_PEER_REVIEW
+        } else {
+          if (dropStartDate <= currentDate && currentDate <= dropEndDate) {
+            currentState += constants.STATE_ALLOW_DROP
+          }
+          if (reviewStartDate <= currentDate && currentDate <= reviewEndDate) {
+            currentState += constants.STATE_PEER_REVIEW
+          }
+        }
+      }
     }
 
     return currentState
@@ -147,7 +158,6 @@ const nbCorrections = state => state.nbCorrections
 const tools = state => state.tools.data
 
 export const select = {
-  canEdit,
   user,
   userId,
   dropzone,
@@ -171,6 +181,7 @@ export const select = {
   peerDrop,
   isDropEnabled,
   isPeerReviewEnabled,
+  currentState,
   drops,
   currentDrop,
   correctionForm,

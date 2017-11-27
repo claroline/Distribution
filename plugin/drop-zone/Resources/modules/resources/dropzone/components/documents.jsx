@@ -112,9 +112,7 @@ export const Documents = props =>
   </div>
 
 Documents.propTypes = {
-  documents: T.arrayOf(T.shape({
-    id: T.string.isRequired
-  }))
+  documents: T.arrayOf(T.shape(DocumentType.propTypes))
 }
 
 Documents.defaultProps = {

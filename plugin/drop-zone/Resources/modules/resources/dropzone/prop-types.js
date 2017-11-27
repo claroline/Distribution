@@ -68,10 +68,10 @@ const DropzoneToolDocumentType = {
 const DocumentType = {
   propTypes: {
     id: T.string.isRequired,
-    type: T.string.isRequired,
+    type: T.number.isRequired,
     drop: T.string.isRequired,
     user: T.shape({
-      id: T.string.isRequired,
+      id: T.number.isRequired,
       username: T.string.isRequired,
       firstName: T.string.isRequired,
       lastName: T.string.isRequired

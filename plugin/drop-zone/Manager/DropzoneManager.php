@@ -220,13 +220,14 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
+     * @param bool     $withCreation
      */
-    public function getUserDrop(Dropzone $dropzone, User $user)
+    public function getUserDrop(Dropzone $dropzone, User $user, $withCreation = false)
     {
         $drops = $this->dropRepo->findBy(['dropzone' => $dropzone, 'user' => $user]);
         $drop = count($drops) > 0 ? $drops[0] : null;
 
-        if (empty($drop)) {
+        if (empty($drop) && $withCreation) {
             $drop = new Drop();
             $drop->setUser($user);
             $drop->setDropzone($dropzone);

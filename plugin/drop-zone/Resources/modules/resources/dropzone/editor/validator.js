@@ -64,14 +64,17 @@ function validate(dropzone) {
   if (!dropzone.parameters.manualPlanning) {
     setIfError(errors, 'dropStartDate', notBlank(dropzone.parameters.dropStartDate))
     setIfError(errors, 'dropEndDate', notBlank(dropzone.parameters.dropEndDate))
-    setIfError(errors, 'reviewStartDate', notBlank(dropzone.parameters.reviewStartDate))
-    setIfError(errors, 'reviewEndDate', notBlank(dropzone.parameters.reviewEndDate))
 
     if (!errors['dropStartDate'] && !errors['dropEndDate']) {
       setIfError(errors, 'dropEndDate', dateAfter(dropzone.parameters.dropEndDate, dropzone.parameters.dropStartDate))
     }
-    if (!errors['reviewStartDate'] && !errors['reviewEndDate']) {
-      setIfError(errors, 'reviewEndDate', dateAfter(dropzone.parameters.reviewEndDate, dropzone.parameters.reviewStartDate))
+    if (dropzone.parameters.peerReview) {
+      setIfError(errors, 'reviewStartDate', notBlank(dropzone.parameters.reviewStartDate))
+      setIfError(errors, 'reviewEndDate', notBlank(dropzone.parameters.reviewEndDate))
+
+      if (!errors['reviewStartDate'] && !errors['reviewEndDate']) {
+        setIfError(errors, 'reviewEndDate', dateAfter(dropzone.parameters.reviewEndDate, dropzone.parameters.reviewStartDate))
+      }
     }
   }
   return errors
