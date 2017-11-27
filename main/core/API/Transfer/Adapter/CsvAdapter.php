@@ -7,6 +7,7 @@ use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\ExplanationBuilder;
 use Claroline\CoreBundle\API\Utilities\ObjectHandler;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service()
@@ -14,6 +15,20 @@ use Claroline\CoreBundle\API\Utilities\ObjectHandler;
  */
 class CsvAdapter implements AdapterInterface
 {
+    private $translator;
+
+    /**
+     * @DI\InjectParams({
+     *     "translator" = @DI\Inject("translator")
+     * })
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * Create a php \stdClass object from the schema according to the data passed on.
      * Each line is a new object.
@@ -82,14 +97,14 @@ class CsvAdapter implements AdapterInterface
 
     public function explainSchema($data)
     {
-        $builder = new ExplanationBuilder();
+        $builder = new ExplanationBuilder($this->translator);
 
         return $builder->explainSchema($data);
     }
 
     public function explainIdentifiers(array $schemas)
     {
-        $builder = new ExplanationBuilder();
+        $builder = new ExplanationBuilder($this->translator);
 
         return $builder->explainIdentifiers($schemas);
     }
