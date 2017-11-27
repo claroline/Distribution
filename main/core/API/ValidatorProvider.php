@@ -103,7 +103,7 @@ class ValidatorProvider
         if ($schema) {
             $validator = Validator::buildDefault();
             $errors = $validator->validate((object)$data, $schema/*, 3rd param for uri resolution*/);
-            
+
             if (!empty($errors) && $throwException) {
                 throw new InvalidDataException(
                     sprintf('Invalid data for "%s".', $class),
@@ -111,7 +111,9 @@ class ValidatorProvider
                 );
             }
 
-            return $errors;
+            if (count($errors) > 0) {
+                return $errors;
+            }
         }
 
         //validate uniques
@@ -135,6 +137,8 @@ class ValidatorProvider
             }
 
             $objects = $qb->getQuery()->getResult();
+
+            var_dump(count($objects));
 
             if (count($objects) > 0) {
                 $errors[] = ['path' => $dataProp, 'message' => "{$dataProp}_exists"];

@@ -72,6 +72,10 @@ class CsvAdapter implements AdapterInterface
             $propertyName = implode('.', $keys);
         }
 
+        if ($property->getType() === 'integer') {
+            $value = (int)$value;
+        }
+
         $handler = new ObjectHandler();
         $handler->set($object, $propertyName, $value);
     }
