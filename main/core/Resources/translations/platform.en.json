@@ -361,6 +361,7 @@
     "destination": "Destination",
     "directory": "Directory",
     "disable": "Disable",
+    "disable_workspace_notifications": "Disable notifications",
     "display": "Display",
     "display_at_registration": "Display at registration",
     "display_captcha": "Display captcha for anonymous",
@@ -1198,6 +1199,7 @@
     "third_party_authentication": "Third party authentication (CAS, LDAP, Office 365, Facebook etc.)",
     "this_page_requires_authentication": "This page requires authentication. Please login.",
     "this_resource_is_not_published": "This resource is not published",
+    "thumbnail": "Thumbnail",
     "time_ago": "%count% %unit% ago",
     "time_col": "Database time column",
     "tinymce_all_buttons": "All tools",
@@ -1462,5 +1464,6 @@
     "add_comment": "Comment",
     "keywords": "Keywords",
     "objects_delete_title": "Delete objects",
-    "object_delete_question": "{1} Do you really want to remove the selected object ?|[2,Inf[ Do you really want to remove the %count% selected objects ?"
+    "object_delete_question": "{1} Do you really want to remove the selected object ?|[2,Inf[ Do you really want to remove the %count% selected objects ?",
+    "no_item": "No item."
 }

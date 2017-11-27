@@ -134,6 +134,26 @@ actions.switchEntryStatus = (entryId) => (dispatch, getState) => {
   })
 }
 
+actions.switchEntryLock = (entryId) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entry_lock_switch', {entry: entryId}),
+      request: {
+        method: 'PUT'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.updateEntry(data))
+
+        if (currentEntry && currentEntry.id === entryId) {
+          dispatch(actions.loadCurrentEntry(data))
+        }
+      }
+    }
+  })
+}
+
 actions.downloadEntryPdf = (entryId) => () => {
   window.location.href = generateUrl('claro_claco_form_entry_pdf_download', {entry: entryId})
 }
@@ -150,7 +170,7 @@ actions.createComment = (entryId, content) => (dispatch) => {
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.addEntryComment(entryId, JSON.parse(data)))
+        dispatch(actions.addEntryComment(entryId, data))
       }
     }
   })
@@ -168,7 +188,7 @@ actions.editComment = (entryId, commentId, content) => (dispatch) => {
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.updateEntryComment(entryId, JSON.parse(data)))
+        dispatch(actions.updateEntryComment(entryId, data))
       }
     }
   })

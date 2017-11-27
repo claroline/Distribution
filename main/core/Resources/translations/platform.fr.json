@@ -366,6 +366,7 @@
     "destination": "Destination",
     "directory": "Dossier",
     "disable": "Désactiver",
+    "disable_workspace_notifications": "Désactiver les notifications",
     "display": "Afficher",
     "display_at_registration": "Afficher à la création du compte",
     "display_captcha": "Afficher les captchas pour les anonymes",
@@ -1215,6 +1216,7 @@
     "third_party_authentication": "Authentification tiers (CAS, LDAP, Office 365, Facebook etc.)",
     "this_page_requires_authentication": "Cette page requiert une authentification. Veuillez vous identifier.",
     "this_resource_is_not_published": "Cette ressource n'est pas publiée",
+    "thumbnail": "Miniature",
     "time_ago": "Il y a %count% %unit%",
     "time_col": "Colonne des durées",
     "tinymce_all_buttons": "Tous les outils",
@@ -1484,5 +1486,6 @@
     "add_comment": "Commenter",
     "keywords": "Mots clés",
     "objects_delete_title": "Supprimer des objets",
-    "object_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?"
+    "object_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?",
+    "no_item": "Aucun élément."
 }

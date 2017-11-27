@@ -33,6 +33,7 @@ use Claroline\ClacoFormBundle\Event\Log\LogCommentStatusChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
+use Claroline\ClacoFormBundle\Event\Log\LogEntryLockSwitchEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryStatusChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryUserChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
@@ -49,7 +50,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -57,6 +57,7 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use Claroline\PdfGeneratorBundle\Manager\PdfManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -88,7 +89,6 @@ class ClacoFormManager
     private $tokenStorage;
     private $translator;
     private $userManager;
-    private $utils;
 
     private $categoryRepo;
     private $commentRepo;
@@ -116,8 +116,7 @@ class ClacoFormManager
      *     "templating"      = @DI\Inject("templating"),
      *     "tokenStorage"    = @DI\Inject("security.token_storage"),
      *     "translator"      = @DI\Inject("translator"),
-     *     "userManager"     = @DI\Inject("claroline.manager.user_manager"),
-     *     "utils"           = @DI\Inject("claroline.utilities.misc")
+     *     "userManager"     = @DI\Inject("claroline.manager.user_manager")
      * })
      */
     public function __construct(
@@ -136,8 +135,7 @@ class ClacoFormManager
         TwigEngine $templating,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        UserManager $userManager,
-        ClaroUtilities $utils
+        UserManager $userManager
     ) {
         $this->archiveDir = $archiveDir;
         $this->authorization = $authorization;
@@ -155,7 +153,6 @@ class ClacoFormManager
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->userManager = $userManager;
-        $this->utils = $utils;
         $this->categoryRepo = $om->getRepository('ClarolineClacoFormBundle:Category');
         $this->clacoFormRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoForm');
         $this->clacoFormWidgetConfigRepo = $om->getRepository('ClarolineClacoFormBundle:ClacoFormWidgetConfig');
@@ -208,6 +205,8 @@ class ClacoFormManager
         $clacoForm->setOpenComments(false);
         $clacoForm->setDisplayCommentAuthor(true);
         $clacoForm->setDisplayCommentDate(true);
+        $clacoForm->setCommentsRoles(['ROLE_USER']);
+        $clacoForm->setCommentsDisplayRoles(['ROLE_USER']);
 
         $clacoForm->setVotesEnabled(false);
         $clacoForm->setDisplayVotes(false);
@@ -1071,6 +1070,19 @@ class ClacoFormManager
         return $entry;
     }
 
+    public function switchEntryLock(Entry $entry)
+    {
+        $locked = $entry->isLocked();
+        $entry->setLocked(!$locked);
+        $this->persistEntry($entry);
+        $event = new LogEntryLockSwitchEvent($entry);
+        $this->eventDispatcher->dispatch('log', $event);
+        $categories = $entry->getCategories();
+        $this->notifyCategoriesManagers($entry, $categories, $categories);
+
+        return $entry;
+    }
+
     public function changeEntryOwner(Entry $entry, User $user)
     {
         $entry->setUser($user);
@@ -1636,7 +1648,7 @@ class ClacoFormManager
     public function zipEntries($content, ClacoForm $clacoForm)
     {
         $archive = new \ZipArchive();
-        $pathArch = $this->configHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.$this->utils->generateGuid().'.zip';
+        $pathArch = $this->configHandler->getParameter('tmp_dir').DIRECTORY_SEPARATOR.Uuid::uuid4()->toString().'.zip';
         $archive->open($pathArch, \ZipArchive::CREATE);
         $archive->addFromString($clacoForm->getResourceNode()->getName().'.xls', $content);
 
@@ -1723,6 +1735,19 @@ class ClacoFormManager
                 $template = str_replace("%$name%", $value, $template);
             }
         }
+        $canViewComments = $this->canViewComments($clacoForm);
+        $comments = [];
+
+        if ($canViewComments) {
+            $entryComments = $entry->getComments();
+
+            foreach ($entryComments as $comment) {
+                if ($comment->getStatus() === Comment::VALIDATED) {
+                    $comments[] = $comment;
+                }
+            }
+        }
+
         $html = $this->templating->render(
             'ClarolineClacoFormBundle:ClacoForm:entry.html.twig',
             [
@@ -1733,6 +1758,8 @@ class ClacoFormManager
                 'fields' => $fields,
                 'fieldValues' => $fieldValues,
                 'countries' => $countries,
+                'canViewComments' => $canViewComments,
+                'comments' => $comments,
             ]
         );
 
@@ -1880,14 +1907,16 @@ class ClacoFormManager
         $this->om->startFlushSuite();
 
         foreach ($entries as $entry) {
-            $fieldValues = $entry->getFieldValues();
+            if (!$entry->isLocked()) {
+                $fieldValues = $entry->getFieldValues();
 
-            foreach ($fieldValues as $fieldValue) {
-                $fieldFacetValue = $fieldValue->getFieldFacetValue();
-                $this->om->remove($fieldFacetValue);
-                $this->om->remove($fieldValue);
+                foreach ($fieldValues as $fieldValue) {
+                    $fieldFacetValue = $fieldValue->getFieldFacetValue();
+                    $this->om->remove($fieldFacetValue);
+                    $this->om->remove($fieldValue);
+                }
+                $this->om->remove($entry);
             }
-            $this->om->remove($entry);
         }
         $this->om->endFlushSuite();
     }
@@ -2398,7 +2427,7 @@ class ClacoFormManager
 
     public function checkEntryEdition(Entry $entry)
     {
-        if (!$this->hasEntryEditionRight($entry)) {
+        if ($entry->isLocked() || !$this->hasEntryEditionRight($entry)) {
             throw new AccessDeniedException();
         }
     }
@@ -2412,13 +2441,19 @@ class ClacoFormManager
 
     public function checkCommentCreationRight(Entry $entry)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
         $clacoForm = $entry->getClacoForm();
 
-        if (!$this->hasEntryAccessRight($entry) ||
-            !$clacoForm->isCommentsEnabled() ||
-            (($user === 'anon.') && !$clacoForm->isAnonymousCommentsEnabled())) {
+        if (!$this->hasEntryAccessRight($entry) || !$clacoForm->isCommentsEnabled()) {
             throw new AccessDeniedException();
+        }
+        $user = $this->tokenStorage->getToken()->getUser();
+        $userRoles = $user === 'anon.' ? ['ROLE_ANONYMOUS'] : $user->getRoles();
+        $commentsRoles = $clacoForm->getCommentsRoles();
+
+        foreach ($commentsRoles as $commentsRole) {
+            if (in_array($commentsRole, $userRoles)) {
+                return;
+            }
         }
     }
 
@@ -2426,9 +2461,21 @@ class ClacoFormManager
     {
         $user = $this->tokenStorage->getToken()->getUser();
         $entry = $comment->getEntry();
+        $clacoForm = $entry->getClacoForm();
 
-        if (!$this->hasEntryAccessRight($entry) || (($user !== $comment->getUser()) && !$this->hasEntryModerationRight($entry))) {
+        if (!$this->hasEntryAccessRight($entry) ||
+            !$clacoForm->isCommentsEnabled() ||
+            (($user !== $comment->getUser()) && !$this->hasEntryModerationRight($entry))
+        ) {
             throw new AccessDeniedException();
+        }
+        $userRoles = $user->getRoles();
+        $commentsRoles = $clacoForm->getCommentsRoles();
+
+        foreach ($commentsRoles as $commentsRole) {
+            if (in_array($commentsRole, $userRoles)) {
+                return;
+            }
         }
     }
 
@@ -2456,10 +2503,30 @@ class ClacoFormManager
         }
     }
 
+    public function canViewComments(ClacoForm $clacoForm)
+    {
+        $canViewComments = false;
+
+        if ($clacoForm->getDisplayComments()) {
+            $user = $this->tokenStorage->getToken()->getUser();
+            $userRoles = $user === 'anon.' ? ['ROLE_ANONYMOUS'] : $user->getRoles();
+            $commentsDisplayRoles = $clacoForm->getCommentsDisplayRoles();
+
+            foreach ($commentsDisplayRoles as $commentsDisplayRole) {
+                if (in_array($commentsDisplayRole, $userRoles)) {
+                    $canViewComments = true;
+                    break;
+                }
+            }
+        }
+
+        return $canViewComments;
+    }
+
     private function registerFile(ClacoForm $clacoForm, UploadedFile $file)
     {
         $ds = DIRECTORY_SEPARATOR;
-        $hashName = $this->utils->generateGuid();
+        $hashName = Uuid::uuid4()->toString();
         $dir = $this->filesDir.$ds.'clacoform'.$ds.$clacoForm->getId();
         $fileName = $hashName.'.'.$file->getClientOriginalExtension();
 
