@@ -36,12 +36,12 @@ class AddUser extends AbstractAction
     {
         $user = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\User',
-            $data->user[0]
+            $data['user'][0]
         );
 
         $group = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\Group',
-            $data->group[0]
+            $data['group'][0]
         );
 
         $this->crud->patch($user, 'group', 'add', [$group]);
