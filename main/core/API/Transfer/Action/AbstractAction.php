@@ -3,9 +3,12 @@
 namespace Claroline\CoreBundle\API\Transfer\Action;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 
 abstract class AbstractAction
 {
+    use LoggableTrait;
+
     abstract public function execute($data);
 
     /**
@@ -26,9 +29,9 @@ abstract class AbstractAction
         return;
     }
 
-    public function getLogMessage($data)
+    public function setLogger($logger)
     {
-        return $this->getName();
+        $this->logger = $logger;
     }
 
     public function export()

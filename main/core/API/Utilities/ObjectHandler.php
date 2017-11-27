@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\API\Utilities;
 
 //where do we put that code because it's usefull...
+//use array instead ?
+//do I really want to be in API\Utilities ? probably not
 class ObjectHandler
 {
     public function set(\stdClass $object, $keys, $value)

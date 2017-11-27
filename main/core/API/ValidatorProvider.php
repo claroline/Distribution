@@ -138,8 +138,6 @@ class ValidatorProvider
 
             $objects = $qb->getQuery()->getResult();
 
-            var_dump(count($objects));
-
             if (count($objects) > 0) {
                 $errors[] = ['path' => $dataProp, 'message' => "{$dataProp}_exists"];
             }

@@ -6,37 +6,54 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Transfer\Adapter\AdapterInterface;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
+use Claroline\CoreBundle\Library\Logger\FileLogger;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 
 /**
  * @DI\Service("claroline.api.transfer")
  */
 class TransferProvider
 {
+    use LoggableTrait;
+
     /**
      * Crud constructor.
      *
      * @DI\InjectParams({
-     *     "om"= @DI\Inject("claroline.persistence.object_manager"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "logDir"     = @DI\Inject("%claroline.param.import_log_dir%")
      * })
      *
      * @param ObjectManager      $om
      */
-    public function __construct(ObjectManager $om, SerializerProvider $serializer)
-    {
-        $this->adapters = [];
-        $this->actions = [];
-        $this->om = $om;
+    public function __construct(
+        ObjectManager $om,
+        SerializerProvider $serializer,
+        $logDir
+      ) {
+        $this->adapters   = [];
+        $this->actions    = [];
+        $this->om         = $om;
         $this->serializer = $serializer;
+        $this->logDir     = $logDir;
+        $this->logger     = FileLogger::get(uniqid() . '.log', 'claroline.transfer.logger');
     }
 
-    public function execute($data, $action, $mimeType)
+    public function execute($data, $action, $mimeType, $logFile = null)
     {
+        if (!$logFile) {
+            $logFile = $this->logDir . '/'. uniqid() . '.log';
+        }
+
+        $this->logger = FileLogger::get($logFile, 'claroline.transfer.logger');
+
         $executor = $this->getExecutor($action);
+        $executor->setLogger($this->logger);
         $adapter = $this->getAdapter($mimeType);
 
         $schema = $executor->getSchema();
-        //$this->log("Building objets from data...");
+        $this->log("Building objects from data...");
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->serializer->getSchema($schema['$root'][0]);
@@ -57,11 +74,12 @@ class TransferProvider
 
         $i = 0;
         $this->om->startFlushSuite();
+        $total = count($data);
+        $this->log("Executing operations...");
 
         foreach ($data as $data) {
             $i++;
-            //$this->log($executor->getLogMessage());
-            //
+            $this->log("{$i}/{$total}: " . $executor->getAction()[2]);
             $executor->execute($data);
 
             if ($i % $executor->getBatchSize() === 0) {
@@ -140,10 +158,5 @@ class TransferProvider
         }
 
         throw new \Exception('No adapter found for mime type ' . $mimeType);
-    }
-
-    public function log($logMessage)
-    {
-        //do something smart here I guess
     }
 }
