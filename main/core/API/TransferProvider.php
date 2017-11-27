@@ -43,9 +43,10 @@ class TransferProvider
     public function execute($data, $action, $mimeType, $logFile = null)
     {
         if (!$logFile) {
-            $logFile = $this->logDir . '/'. uniqid() . '.log';
+            $logFile = uniqid();
         }
 
+        $logFile = $this->logDir . '/'. $logFile . '.log';
         $this->logger = FileLogger::get($logFile, 'claroline.transfer.logger');
 
         $executor = $this->getExecutor($action);
