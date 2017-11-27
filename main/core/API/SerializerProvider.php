@@ -26,14 +26,16 @@ class SerializerProvider
      * Injects Serializer service.
      *
      * @DI\InjectParams({
-     *      "om" = @DI\Inject("claroline.persistence.object_manager")
+     *      "om"      = @DI\Inject("claroline.persistence.object_manager"),
+     *      "rootDir" = @DI\Inject("%kernel.root_dir%")
      * })
      *
      * @param ObjectManager $om
      */
-    public function setObjectManager(ObjectManager $om)
+    public function setObjectManager(ObjectManager $om, $rootDir)
     {
         $this->om = $om;
+        $this->rootDir = $rootDir . '/..';
     }
 
     /**
@@ -133,5 +135,21 @@ class SerializerProvider
         }
 
         return $serializer->deserialize($data, $object, $options);
+    }
+
+    public function getSchema($class)
+    {
+        $serializer = $this->get($class);
+
+        if (method_exists($serializer, 'getSchema')) {
+            $url = $serializer->getSchema();
+            $path = explode('/', $url);
+            $absolutePath = $this->rootDir. '/vendor/claroline/distribution/'
+            . $path[1] . '/' . $path[2] . '/Resources/schema/' . $path[3];
+
+            $data = @file_get_contents($absolutePath);
+
+            return json_decode($data);
+        }
     }
 }
