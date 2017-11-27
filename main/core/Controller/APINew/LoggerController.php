@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @EXT\Route("logger")
  */
-class LocaleController
+class LoggerController
 {
     /**
      * @var LocaleManager
