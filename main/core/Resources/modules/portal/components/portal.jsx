@@ -79,18 +79,19 @@ const PortalPage = props =>
           title: row.name,
           subtitle: row.code,
           contentText: row.meta.description,
-          flags: [
-            row.meta.views   && ['fa fa-eye', transChoice('display_views', row.meta.views, {'%count%': row.meta.views}, 'platform')],
-            row.social.likes && ['fa fa-heart', transChoice('nb_likes', row.social.likes, {'%count%': row.social.likes}, 'icap_socialmedia')]
-          ].filter(flag => !!flag),
           footer:
             <div>
               {t('published_at', {'date': localeDate(row.meta.created)})}
             </div>,
           footerLong:
+          //TODO: social data anv view count should be displayed in flags. Display in footer should be a hidden option of the platform.
             <div>
               <span className="publish-date">{trans(row.meta.type, {}, 'resource')} {t('published_at', {'date': localeDate(row.meta.created)})}</span>
-              <span className="creator"> {t('by')} {row.meta.creator ? row.meta.creator.name: t('unknown')}</span><br />
+              <span className="creator"> {t('by')} {row.meta.creator ? row.meta.creator.name: t('unknown')}</span>
+              <br />
+              <span className="social"><i className="fa fa-eye" aria-hidden="true"></i> {transChoice('display_views', row.meta.views, {'%count%': row.meta.views}, 'platform')}
+              &nbsp;
+                <i className="fa fa-heart" aria-hidden="true"></i> {transChoice('nb_likes', row.social.likes, {'%count%': row.social.likes}, 'icap_socialmedia')}</span>
             </div>
         })}
       />
