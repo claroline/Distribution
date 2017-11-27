@@ -42,7 +42,7 @@ class Create extends AbstractAction
      */
     public function getAction()
     {
-        return ['workspace', 'create', 'create_workspace'];
+        return ['workspace', 'create'];
     }
 
     public function getBatchSize()

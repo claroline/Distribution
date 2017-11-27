@@ -79,7 +79,7 @@ class TransferProvider
 
         foreach ($data as $data) {
             $i++;
-            $this->log("{$i}/{$total}: " . $executor->getAction()[2]);
+            $this->log("{$i}/{$total}: " . $this->getActionName($executor));
             $executor->execute($data);
 
             if ($i % $executor->getBatchSize() === 0) {
@@ -95,6 +95,11 @@ class TransferProvider
         $mimeType = $file->getMimeType();
     }
 
+    public function getActionName(AbstractAction $action)
+    {
+        return $action->getAction()[0] . '_' . $action->getAction()[1];
+    }
+
     public function add($dependency)
     {
         if ($dependency instanceof AdapterInterface) {
@@ -103,7 +108,7 @@ class TransferProvider
         }
 
         if ($dependency instanceof AbstractAction) {
-            $this->actions[$dependency->getAction()[2]] = $dependency;
+            $this->actions[$this->getActionName($dependency)] = $dependency;
             return;
         }
 

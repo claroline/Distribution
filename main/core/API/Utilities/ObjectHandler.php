@@ -16,6 +16,7 @@ namespace Claroline\CoreBundle\API\Utilities;
 //do I really want to be in API\Utilities ? probably not
 class ObjectHandler
 {
+    //this is more or less the lodash equivalent of 'set'
     public function set(\stdClass $object, $keys, $value)
     {
         $keys = explode('.', $keys);

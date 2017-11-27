@@ -63,7 +63,7 @@ class RemoveUser extends AbstractAction
      */
     public function getAction()
     {
-        return ['group', 'remove_user', 'remove_user_from_group'];
+        return ['group', 'remove_user'];
     }
 
     public function getLogMessage($data)

@@ -55,7 +55,7 @@ class Delete extends AbstractAction
      */
     public function getAction()
     {
-        return ['user', 'delete', 'delete_user'];
+        return ['user', 'delete'];
     }
 
     public function getBatchSize()

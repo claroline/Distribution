@@ -63,7 +63,7 @@ class AddUser extends AbstractAction
      */
     public function getAction()
     {
-        return ['group', 'add_user', 'add_user_to_group'];
+        return ['group', 'add_user'];
     }
 
     public function getBatchSize()
