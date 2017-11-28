@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import difference from 'lodash/difference'
+import merge from 'lodash/merge'
 import set from 'lodash/set'
 
 import {makeInstanceReducer, combineReducers, reduceReducers} from '#/main/core/utilities/redux'
@@ -72,18 +73,21 @@ const baseReducer = {
 /**
  * Creates reducer for forms.
  *
- * @param {string} formName      - the name of the form
+ * @param {string} formName      - the name of the form.
+ * @param {object} initialState  - the initial state of the form instance.
  * @param {object} customReducer - an object containing custom handlers.
  *
  * @returns {function}
  */
-function makeFormReducer(formName, customReducer = {}) {
+function makeFormReducer(formName, initialState = {}, customReducer = {}) {
   const reducer = {}
+
+  const formState = merge({}, defaultState, initialState)
 
   // enhance base form reducers with custom ones if any
   Object.keys(baseReducer).map(reducerName => {
     reducer[reducerName] = customReducer[reducerName] ?
-      reduceReducers(baseReducer[reducerName](formName), customReducer[reducerName](formName)) : baseReducer[reducerName](formName)
+      reduceReducers(baseReducer[reducerName](formName, formState[reducerName]), customReducer[reducerName](formName)) : baseReducer[reducerName](formName, formState[reducerName])
   })
 
   // get custom keys

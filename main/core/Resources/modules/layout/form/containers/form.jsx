@@ -16,6 +16,7 @@ const Form = props =>
     pendingChanges={props.pendingChanges}
     validating={props.validating}
     updateProp={props.updateProp}
+    setErrors={props.setErrors}
   >
     {props.children}
   </FormComponent>
@@ -29,6 +30,7 @@ Form.propTypes = {
   errors: T.object,
   pendingChanges: T.bool,
   validating: T.bool,
+  setErrors: T.func.isRequired,
   updateProp: T.func.isRequired
 }
 
@@ -39,27 +41,27 @@ Form.defaultProps = {
   validating: false
 }
 
-function mapStateToProps(state, ownProps) {
-  // get the root of the form in the store
-  const formState = get(state, ownProps.name)
+const FormContainer = connect(
+  (state, ownProps) => {
+    // get the root of the form in the store
+    const formState = get(state, ownProps.name)
 
-  return {
-    data: select.data(formState),
-    errors: select.errors(formState),
-    pendingChanges: select.pendingChanges(formState),
-    validating: select.validating(formState)
-  }
-}
-
-function mapDispatchToProps(dispatch, ownProps) {
-  return {
+    return {
+      data: select.data(formState),
+      errors: select.errors(formState),
+      pendingChanges: select.pendingChanges(formState),
+      validating: select.validating(formState)
+    }
+  },
+  (dispatch, ownProps) => ({
+    setErrors(errors) {
+      dispatch(actions.setErrors(ownProps.name, errors))
+    },
     updateProp(propName, propValue) {
       dispatch(actions.updateProp(ownProps.name, propName, propValue))
     }
-  }
-}
-
-const FormContainer = connect(mapStateToProps, mapDispatchToProps)(Form)
+  })
+)(Form)
 
 export {
   FormContainer

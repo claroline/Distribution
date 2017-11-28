@@ -27,8 +27,7 @@ actions.fetchCompetencyData = (objectiveId, competencyId) => {
   return (dispatch) => {
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('hevinci_my_objectives_competency', {objective: objectiveId, competency: competencyId}),
-        request: {method: 'GET'},
+        url: ['hevinci_my_objectives_competency', {objective: objectiveId, competency: competencyId}],
         success: (data, dispatch) => {
           dispatch(actions.loadCompetencyData(data))
         }
@@ -41,8 +40,7 @@ actions.fetchLevelData = (competencyId, level) => {
   return (dispatch) => {
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('hevinci_my_objectives_competency_level', {competency: competencyId, level: level}),
-        request: {method: 'GET'},
+        url: ['hevinci_my_objectives_competency_level', {competency: competencyId, level: level}],
         success: (data, dispatch) => {
           dispatch(actions.updateCompetencyData(data))
         }
@@ -55,8 +53,7 @@ actions.fetchRelevantResource = (competencyId, level) => {
   return (dispatch) => {
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('hevinci_my_objectives_competency_resource_fetch', {competency: competencyId, level: level}),
-        request: {method: 'GET'},
+        url: ['hevinci_my_objectives_competency_resource_fetch', {competency: competencyId, level: level}],
         success: (data) => {
           if (data && data['resourceId']) {
             const url = generateUrl('claro_resource_open_short', {node: data['resourceId']})

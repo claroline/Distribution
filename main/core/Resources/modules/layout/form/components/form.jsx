@@ -9,6 +9,7 @@ import {t} from '#/main/core/translation'
 import {getTypeOrDefault} from '#/main/core/layout/data'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
+import {validateProp} from '#/main/core/layout/form/validator'
 
 const FormField = props => {
   const typeDef = getTypeOrDefault(props.type)
@@ -114,10 +115,14 @@ class Form extends Component {
                 <FormField
                   {...field}
                   key={field.name}
-                  disabled={field.disabled ? field.disabled(this.props.data) : false}
                   value={get(this.props.data, field.name)}
+                  onChange={(value) => {
+                    this.props.setErrors(validateProp(field, value))
+                    this.props.updateProp(field.name, value)
+                  }}
+                  disabled={field.disabled ? field.disabled(this.props.data) : false}
+                  validating={this.props.validating}
                   error={get(this.props.errors, field.name)}
-                  onChange={(value) => this.props.updateProp(field.name, value)}
                 />
               )}
 
@@ -146,15 +151,19 @@ class Form extends Component {
                   <FormField
                     {...field}
                     key={field.name}
-                    disabled={field.disabled ? field.disabled(this.props.data) : false}
                     value={get(this.props.data, field.name)}
+                    onChange={(value) => {
+                      this.props.setErrors(validateProp(field, value))
+                      this.props.updateProp(field.name, value)
+                    }}
+                    disabled={field.disabled ? field.disabled(this.props.data) : false}
+                    validating={this.props.validating}
                     error={get(this.props.errors, field.name)}
-                    onChange={(value) => this.props.updateProp(field.name, value)}
                   />
                 )}
 
                 {section.advanced &&
-                <AdvancedSection {...section.advanced} />
+                  <AdvancedSection {...section.advanced} />
                 }
               </FormSection>
             )}
@@ -191,7 +200,9 @@ Form.propTypes = {
       hideLabel: T.bool,
       disabled: T.func,
       options: T.object,
-      onChange: T.func
+      required: T.bool,
+      onChange: T.func,
+      validate: T.func
     })).isRequired,
     advanced: T.shape({
       showText: T.string,
@@ -201,6 +212,7 @@ Form.propTypes = {
       })).isRequired
     })
   })).isRequired,
+  setErrors: T.func.isRequired,
   updateProp: T.func.isRequired,
   className: T.string,
   children: T.element

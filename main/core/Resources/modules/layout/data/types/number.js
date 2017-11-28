@@ -1,3 +1,5 @@
+import {chain, number, inRange} from '#/main/core/validation'
+
 import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
 
 const NUMBER_TYPE = 'number'
@@ -7,7 +9,7 @@ const numberDefinition = {
   parse: (display) => parseFloat(display),
   // nothing special to do
   render: (raw) => raw+'', // transtyping to string permits to avoid React interpret 0 value as falsy and display nothing
-  validate: (value) => !isNaN(parseFloat(value)) && isFinite(value),
+  validate: (value, options) => chain(value, options, [number, inRange]),
   components: {
     form: NumberGroup
   }

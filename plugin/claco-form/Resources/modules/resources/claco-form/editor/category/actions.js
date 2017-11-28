@@ -22,7 +22,7 @@ actions.createCategory = (category) => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_category_create', {clacoForm: resourceId}),
+      url: ['claro_claco_form_category_create', {clacoForm: resourceId}],
       request: {
         method: 'POST',
         body: formData
@@ -43,7 +43,7 @@ actions.editCategory = (category) => (dispatch) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_category_edit', {category: category.id}),
+      url: ['claro_claco_form_category_edit', {category: category.id}],
       request: {
         method: 'POST',
         body: formData
@@ -58,7 +58,7 @@ actions.editCategory = (category) => (dispatch) => {
 actions.deleteCategory = (categoryId) => (dispatch) => {
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_category_delete', {category: categoryId}),
+      url: ['claro_claco_form_category_delete', {category: categoryId}],
       request: {
         method: 'DELETE'
       },

@@ -1,5 +1,6 @@
 import {isValidDate, localeDate, serverDate} from '#/main/core/date'
 
+import {DateGroup} from '#/main/core/layout/form/components/group/date-group.jsx'
 import {DateSearch} from '#/main/core/layout/data/types/date/components/search.jsx'
 
 const DATE_TYPE = 'date'
@@ -33,6 +34,7 @@ const dateDefinition = {
   validate: (value) => typeof value === 'string' && isValidDate(value),
 
   components: {
+    form: DateGroup,
     search: DateSearch
   }
 }

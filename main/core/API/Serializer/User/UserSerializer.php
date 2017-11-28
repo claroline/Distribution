@@ -142,9 +142,15 @@ class UserSerializer
 
     /**
      * Deserialize method.
-     * This is only a partial implementation.
+     * TODO This is only a partial implementation.
+     *
+     * @param array $data
+     * @param User  $user
+     * @param array $options
+     *
+     * @return User
      */
-    public function deserialize($data, User $user = null, array $options = [])
+    public function deserialize(array $data, User $user = null, array $options = [])
     {
         //remove this later (with the Trait)
         $object = $this->genericSerializer->deserialize($data, $user, $options);

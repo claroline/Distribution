@@ -1,5 +1,5 @@
 import React from 'react'
-import {NavLink, Switch, Redirect} from 'react-router-dom'
+import {NavLink, Switch, Redirect, withRouter} from 'react-router-dom'
 
 import {history} from '#/main/core/router/history'
 import {Router, Routes, Route} from '#/main/core/router/components/router.jsx'
@@ -60,5 +60,6 @@ export {
   NavLink,
   Switch,
   routedApp,
-  navigate
+  navigate,
+  withRouter
 }

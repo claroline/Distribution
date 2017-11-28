@@ -19,7 +19,7 @@ actions.createKeyword = (keyword) => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_keyword_create', {clacoForm: resourceId}),
+      url: ['claro_claco_form_keyword_create', {clacoForm: resourceId}],
       request: {
         method: 'POST',
         body: formData
@@ -37,7 +37,7 @@ actions.editKeyword = (keyword) => (dispatch) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_keyword_edit', {keyword: keyword.id}),
+      url: ['claro_claco_form_keyword_edit', {keyword: keyword.id}],
       request: {
         method: 'POST',
         body: formData
@@ -52,7 +52,7 @@ actions.editKeyword = (keyword) => (dispatch) => {
 actions.deleteKeyword = (keywordId) => (dispatch) => {
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_keyword_delete', {keyword: keywordId}),
+      url: ['claro_claco_form_keyword_delete', {keyword: keywordId}],
       request: {
         method: 'DELETE'
       },

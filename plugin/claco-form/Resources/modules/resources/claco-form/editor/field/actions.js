@@ -21,7 +21,7 @@ actions.createField = (fieldData) => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_field_create', {clacoForm: resourceId}),
+      url: ['claro_claco_form_field_create', {clacoForm: resourceId}],
       request: {
         method: 'POST',
         body: formData
@@ -41,7 +41,7 @@ actions.editField = (fieldData) => (dispatch) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_field_edit', {field: fieldData.field.id}),
+      url: ['claro_claco_form_field_edit', {field: fieldData.field.id}],
       request: {
         method: 'POST',
         body: formData
@@ -61,7 +61,7 @@ actions.editField = (fieldData) => (dispatch) => {
 actions.deleteField = (fieldId) => (dispatch) => {
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_field_delete', {field: fieldId}),
+      url: ['claro_claco_form_field_delete', {field: fieldId}],
       request: {
         method: 'DELETE'
       },

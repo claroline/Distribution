@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {
+  Redirect,
   Router as BaseRouter,
   Route as BaseRoute,
   Switch
@@ -80,6 +81,13 @@ const Routes = props =>
           onLeave={routeConfig.onLeave}
         />
       )}
+
+      {props.redirect.map((redirect, redirectIndex) =>
+        <Redirect
+          {...redirect}
+          key={`redirect-${redirectIndex}`}
+        />
+      )}
     </Switch>
   </BaseRoute>
 
@@ -88,10 +96,19 @@ Routes.propTypes = {
   exact: T.bool,
   routes: T.arrayOf(
     T.shape(RouteTypes.propTypes).isRequired // todo : allow more than one nesting in prop-types
-  )
+  ),
+  redirect: T.arrayOf(T.shape({
+    from: T.string.isRequired,
+    to: T.string.isRequired,
+    exact: T.bool
+  }))
 }
 
-Routes.defaultProps = RouteTypes.defaultProps
+Routes.defaultProps = {
+  path: '',
+  exact: false,
+  redirect: []
+}
 
 const Router = props =>
   <BaseRouter history={history}>

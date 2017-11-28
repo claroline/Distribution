@@ -1,29 +1,29 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
+
+import {PageContainer, PageHeader, PageContent} from '#/main/core/layout/page/index'
+import {FormStepper} from '#/main/core/layout/form/components/form-stepper.jsx'
 
 import {Facet} from '#/main/core/registration/components/facet.jsx'
 import {Required} from '#/main/core/registration/components/required.jsx'
 import {Optional} from '#/main/core/registration/components/optional.jsx'
 
 import {select} from '#/main/core/registration/selectors'
-import {connect} from 'react-redux'
 import {actions} from '#/main/core/registration/actions'
 import {validate, isValid} from '#/main/core/registration/validator'
 
-class UserRegistration extends Component
-{
+class RegistrationForm extends Component {
   constructor(props) {
     super(props)
+
     this.onCreated = this.onCreated.bind(this)
   }
 
   onCreate() {
-    this.props.onCreate(
-      this.props.user,
-      this.onCreated
-    )
+    this.props.onCreate(this.props.user, this.onCreated)
   }
 
   onCreated() {
@@ -31,65 +31,60 @@ class UserRegistration extends Component
       window.location = this.props.options.redirectAfterLoginUrl
     }
 
-    switch(this.props.options.redirectAfterLoginOption) {
+    switch (this.props.options.redirectAfterLoginOption) {
       case 'DESKTOP': window.location = generateUrl('claro_desktop_open')
     }
   }
 
   render() {
-    return(<div>
-      <Required
-        user={this.props.user}
-        errors={this.props.user.errors}
-      />
-      {/*
-        <Optional user={props.user}/>
-        <Facet user={props.user}/>
-      */}
-      <div className="user-submit-section">
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            if (isValid(this.props.user)) {
-              this.onCreate()
-            }
-          }}
-        >
-          {t('validate')}
-        </button>
-        <button className="btn btn-secondary">{t('cancel')}</button>
-      </div>
-    </div>
-  )}
-}
+    return (
+      <PageContainer id="user-registration">
+        <PageHeader
+          title={t('user_registration')}
+        />
 
-
-Required.propTypes = {
-  /*user: T.shape({
-  }).isRequired*/
-}
-
-
-Required.defaultProps = {user: {}}
-
-function mapStateToProps(state)
-{
-  return {
-    user: select.user(state),
-    options: select.options(state)
+        <PageContent>
+          <FormStepper
+            submit={{
+              action: this.onCreate
+            }}
+            steps={[
+              {
+                path: '/account',
+                title: 'Compte utilisateur',
+                component: Required
+              }, {
+                path: '/options',
+                title: 'Configuration',
+                component: Optional
+              }, {
+                path: '/facet',
+                title: 'Facet title',
+                component: Facet
+              }
+            ]}
+            redirect={[
+              {from: '/', exact: true, to: '/account'}
+            ]}
+          />
+        </PageContent>
+      </PageContainer>
+    )
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
+const UserRegistration = connect(
+  (state) => ({
+    user: select.user(state),
+    options: select.options(state)
+  }),
+  (dispatch) => ({
     onCreate(user, onCreated) {
       dispatch(actions.createUser(user, onCreated))
     }
-  }
-}
-
-const ConnectedUserRegistration = connect(mapStateToProps, mapDispatchToProps)(UserRegistration)
+  })
+)(RegistrationForm)
 
 export {
-  ConnectedUserRegistration as UserRegistration
+  UserRegistration
 }

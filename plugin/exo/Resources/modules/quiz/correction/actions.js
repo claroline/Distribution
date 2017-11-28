@@ -23,11 +23,11 @@ const removeAnswers = makeActionCreator(REMOVE_ANSWERS, 'questionId')
 
 actions.fetchCorrection = quizId => ({
   [REQUEST_SEND]: {
-    route: ['exercise_correction_questions', {exerciseId: quizId}],
+    url: ['exercise_correction_questions', {exerciseId: quizId}],
     success: (data, dispatch) => {
       dispatch(initCorrection(data))
     },
-    failure: () => navigate('overview')
+    error: () => navigate('overview')
   }
 })
 
@@ -87,7 +87,7 @@ actions.saveCorrection = (questionId) => {
     })
     dispatch({
       [REQUEST_SEND]: {
-        route: ['exercise_correction_save', {exerciseId: selectors.quizId(state), questionId: questionId}],
+        url: ['exercise_correction_save', {exerciseId: selectors.quizId(state), questionId: questionId}],
         request: {
           method: 'PUT' ,
           body: JSON.stringify(answers)

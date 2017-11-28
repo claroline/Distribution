@@ -114,18 +114,14 @@ function getResponseData(response) {
   return data // this is a promise
 }
 
-function getUrl(url, route) {
-  invariant(url || route, 'a `url` or a `route` property is required')
+function getUrl(url) {
+  invariant(url && (isString(url) || Array.isArray(url)), '`url` should be a string or an array')
 
-  if (url) {
-    invariant(isString(url), '`url` should be a string')
-
+  if (isString(url)) {
     return url
   }
 
-  invariant(Array.isArray(route), '`route` should be an array')
-
-  return generateUrl(route[0], route[1] ? route[1] : {})
+  return generateUrl(url[0], url[1] ? url[1] : {})
 }
 
 function handleBefore(before) {
@@ -147,8 +143,8 @@ function getRequest(request = {}) {
 }
 
 function doFetch(requestParameters, next) {
-  const {url, route, request, before, success, error} = requestParameters
-  const finalUrl = getUrl(url, route)
+  const {url, request, before, success, error} = requestParameters
+  const finalUrl = getUrl(url)
   const finalRequest = getRequest(request)
 
   next(handleBefore(before))

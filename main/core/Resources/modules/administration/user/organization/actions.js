@@ -12,7 +12,7 @@ actions.open = (formName, organizationId = null) => (dispatch) => {
 
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_organization_get', {id: organizationId}],
+        url: ['apiv2_organization_get', {id: organizationId}],
         request: {
           method: 'GET'
         },

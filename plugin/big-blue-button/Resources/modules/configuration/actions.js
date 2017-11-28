@@ -34,7 +34,7 @@ actions.saveConfiguration = () => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_bbb_plugin_configuration_save'),
+      url: ['claro_bbb_plugin_configuration_save'],
       request: {
         method: 'POST',
         body: formData
@@ -55,7 +55,7 @@ actions.initializeMeetings = makeActionCreator(MEETINGS_INIT, 'meetings')
 actions.getMeetings = () => (dispatch) => {
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_bbb_plugin_configuration_meetings_list'),
+      url: ['claro_bbb_plugin_configuration_meetings_list'],
       request: {
         method: 'GET'
       },

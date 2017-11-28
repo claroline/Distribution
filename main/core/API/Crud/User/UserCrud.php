@@ -109,6 +109,7 @@ class UserCrud
      */
     public function preDelete(CrudEvent $event)
     {
+        /** @var User $user */
         $user = $event->getObject();
         $userRole = $this->roleManager->getUserRole($user->getUsername());
 

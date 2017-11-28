@@ -4,7 +4,7 @@ import {DragDropContext} from 'react-dnd'
 import {default as TouchBackend} from 'react-dnd-touch-backend'
 
 import {t} from '#/main/core/translation'
-import {TabbedPageContainer as TabbedPage} from '#/main/core/layout/page/containers/tabbed-page.jsx'
+import {TabbedPageContainer} from '#/main/core/layout/page/containers/tabbed-page.jsx'
 
 // app sections
 import {ParametersTab, ParametersTabActions} from '#/main/core/administration/user/parameters/components/parameters-tab.jsx'
@@ -16,7 +16,8 @@ import {ProfileTab, ProfileTabActions} from '#/main/core/administration/user/pro
 import {LocationTab, LocationTabActions} from '#/main/core/administration/user/location/components/location-tab.jsx'
 
 const Tool = () =>
-  <TabbedPage
+  <TabbedPageContainer
+    hasModal={true}
     redirect={[
       {from: '/', exact: true, to: '/users'}
     ]}

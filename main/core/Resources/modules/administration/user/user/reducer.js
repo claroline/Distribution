@@ -7,7 +7,7 @@ import {PLATFORM_ROLE} from '#/main/core/administration/user/role/constants'
 
 const reducer = combineReducers({
   list: makeListReducer('users.list'),
-  current: makeFormReducer('users.current', {
+  current: makeFormReducer('users.current', {}, {
     workspaces: makeListReducer('users.current.workspaces'),
     groups: makeListReducer('users.current.groups'),
     organizations: makeListReducer('users.current.organizations'),

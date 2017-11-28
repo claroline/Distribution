@@ -8,7 +8,7 @@ const reducer = combineReducers({
     sortable: false,
     paginated: false
   }),
-  current: makeFormReducer('organizations.current', {
+  current: makeFormReducer('organizations.current', {}, {
     workspaces: makeListReducer('organizations.current.workspaces'),
     users: makeListReducer('organizations.current.users'),
     groups: makeListReducer('organizations.current.groups')

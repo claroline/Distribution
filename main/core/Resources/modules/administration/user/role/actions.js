@@ -12,7 +12,7 @@ actions.open = (formName, id = null) => (dispatch) => {
   if (id) {
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_role_get', {id}],
+        url: ['apiv2_role_get', {id}],
         request: {
           method: 'GET'
         },
