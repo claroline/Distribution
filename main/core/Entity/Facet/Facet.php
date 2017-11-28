@@ -18,6 +18,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Claroline\CoreBundle\Entity\Role;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FacetRepository")
@@ -26,6 +27,8 @@ use JMS\Serializer\Annotation\SerializedName;
  */
 class Facet
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -87,6 +90,7 @@ class Facet
     {
         $this->roles = new ArrayCollection();
         $this->panelFacets = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()

@@ -344,4 +344,22 @@ class FacetController extends FOSRestController
 
         return $facet;
     }
+
+    /**
+ * @View(serializerGroups={"api_role"})
+ * @Get("/roles/platform", name="get_platform_roles", options={ "method_prefix" = false })
+ * @SEC\PreAuthorize("hasRole('ROLE_ADMIN')")
+ */
+    public function getPlatformRolesAction()
+    {
+        return $this->roleManager->getAllPlatformRoles(false);
+    }
+    /**
+     * @View(serializerGroups={"api_facet_admin"})
+     * @Get("roles/platform/exclude/admin", name="get_platform_roles_admin_excluded", options={ "method_prefix" = false })
+     */
+    public function getPlatformRolesAdminExcludedAction()
+    {
+        return $this->roleManager->getPlatformNonAdminRoles(true);
+    }
 }

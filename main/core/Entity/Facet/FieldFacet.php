@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FieldFacetRepository")
@@ -24,6 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class FieldFacet
 {
+    use UuidTrait;
+
     const STRING_TYPE = 1;
     const FLOAT_TYPE = 2;
     const DATE_TYPE = 3;
@@ -142,6 +145,7 @@ class FieldFacet
     {
         $this->fieldsFacetValue = new ArrayCollection();
         $this->fieldFacetChoices = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     /**
@@ -244,6 +248,27 @@ class FieldFacet
         }
     }
 
+    public function getFieldType()
+    {
+        switch ($this->type) {
+            case self::FLOAT_TYPE: return 'float';
+            case self::DATE_TYPE: return 'date';
+            case self::STRING_TYPE: return 'string';
+            case self::RADIO_TYPE: return 'radio';
+            case self::SELECT_TYPE: return 'select';
+            case self::CHECKBOXES_TYPE: return 'checkboxes';
+            case self::COUNTRY_TYPE: return 'country';
+            case self::EMAIL_TYPE: return 'email';
+            case self::RICH_TEXT_TYPE: return 'text';
+            case self::CASCADE_SELECT_TYPE: return 'cascade';
+            case self::FILE_TYPE: return 'file';
+            default: return 'error';
+        }
+    }
+    /**
+     * @deprecated
+     * Remove me
+     */
     public function getInputType()
     {
         switch ($this->type) {

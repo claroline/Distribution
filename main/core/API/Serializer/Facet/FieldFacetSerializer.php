@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer\Facet;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\API\Options;
 
 /**
  * @DI\Service("claroline.serializer.field_facet")
@@ -21,6 +22,26 @@ class FieldFacetSerializer
      */
     public function serialize(FieldFacet $fieldFacet, array $options = [])
     {
+        if (in_array(Options::PROFILE_SERIALIZE, $options)) {
+            $serialized = [
+              //no uuid yet
+              'id'       => $fieldFacet->getId(),
+              'name'     => $fieldFacet->getName(),
+              'type'     => $fieldFacet->getFieldType(),
+              //maybe translate this
+              'label'    => $fieldFacet->getName(),
+              'required' => $fieldFacet->isRequired()
+            ];
+
+            if (true) {
+                $serialized['options'] = [];
+            }
+
+            return $serialized;
+        }
+
+        //could be used by the clacoform. It should change later. The default one should be
+        //PROFILE_SERIALIZE. See with @kitan
         $serialized = [
             'id' => $fieldFacet->getId(),
             'name' => $fieldFacet->getName(),
@@ -29,5 +50,9 @@ class FieldFacetSerializer
         ];
 
         return $serialized;
+    }
+
+    public function deserialize()
+    {
     }
 }
