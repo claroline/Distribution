@@ -11,8 +11,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class FieldFacetSerializer
 {
-    const OPTION_MINIMAL = 'minimal';
-
     /**
      * Serializes a FieldFacet entity for the JSON api.
      *

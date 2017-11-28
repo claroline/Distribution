@@ -52,13 +52,12 @@ class CsvAdapter implements AdapterInterface
             $data[] = $this->buildObjectFromLine($properties, $headers, $explanation);
         }
 
-        //it currently works with array
-        return json_decode(json_encode($data), true);
+        return $data;
     }
 
     private function buildObjectFromLine($properties, array $headers, Explanation $explanation)
     {
-        $object = new \stdClass();
+        $object = [];
 
         foreach ($headers as $index => $property) {
             //idiot condition proof in case something is wrong with the csv (like more lines or columns)
@@ -71,7 +70,7 @@ class CsvAdapter implements AdapterInterface
         return $object;
     }
 
-    private function addPropertyToObject(Property $property, \stdClass $object, $value)
+    private function addPropertyToObject(Property $property, array &$object, $value)
     {
         $propertyName = $property->getName();
 
@@ -79,8 +78,8 @@ class CsvAdapter implements AdapterInterface
             $keys = explode('.', $propertyName);
             $objectProp = array_pop($keys);
             $value = array_map(function ($value) use ($objectProp) {
-                $object = new \StdClass();
-                $object->{$objectProp} = $value;
+                $object = [];
+                $object[$objectProp] = $value;
 
                 return $object;
             }, explode(',', $value));
@@ -116,22 +115,22 @@ class CsvAdapter implements AdapterInterface
     }
 
     //this is more or less the lodash equivalent of 'set'
-    private function set(\stdClass $object, $keys, $value)
+    private function set(array &$object, $keys, $value)
     {
         $keys = explode('.', $keys);
         $depth = count($keys);
         $key = array_shift($keys);
 
         if ($depth === 1) {
-            $object->{$key} = $value;
+            $object[$key] = $value;
         } else {
-            if (!isset($object->{$key})) {
-                $object->{$key} = new \stdClass();
-            } elseif (!$object->{$key} instanceof \stdClass) {
+            if (!isset($object[$key])) {
+                $object[$key] = [];
+            } elseif (!is_array($object[$key])) {
                 throw new \Exception('Cannot set property because it already exists as a non \stdClass');
             }
 
-            $this->set($object->{$key}, implode('.', $keys), $value);
+            $this->set($object[$key], implode('.', $keys), $value);
         }
     }
 }

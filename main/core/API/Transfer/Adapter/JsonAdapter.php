@@ -27,7 +27,7 @@ class JsonAdapter implements AdapterInterface
 
     public function explainIdentifiers(array $schema)
     {
-        return new \stdClass();
+        return $schema;
     }
 
     public function decodeIdentifiers($data, array $schemas)
