@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
@@ -22,32 +21,13 @@ class PeerDrop extends Component {
         generateCorrectionGrades(props.drop.corrections.find(c => !c.finished && c.user.id === props.user.id), props.dropzone) :
         {}
     }
-    this.updateCorrection = this.updateCorrection.bind(this)
-    this.updateCorrectionCriterion = this.updateCorrectionCriterion.bind(this)
     this.saveCorrection = this.saveCorrection.bind(this)
     this.cancelCorrection = this.cancelCorrection.bind(this)
   }
 
-  updateCorrection(property, value) {
-    const correction = Object.assign({}, this.state.correction, {[property]: value})
+  saveCorrection(correction) {
+    this.props.saveCorrection(correction)
     this.setState({correction: correction})
-  }
-
-  updateCorrectionCriterion(criterionId, value) {
-    const grades = cloneDeep(this.state.correction.grades)
-    const index = grades.findIndex(g => g.criterion === criterionId)
-
-    if (index > -1) {
-      const grade = Object.assign({}, grades[index], {value: value})
-      grades[index] = grade
-    }
-    const correction = Object.assign({}, this.state.correction, {grades: grades})
-
-    this.setState({correction: correction})
-  }
-
-  saveCorrection() {
-    this.props.saveCorrection(this.state.correction)
   }
 
   cancelCorrection() {
@@ -72,13 +52,12 @@ class PeerDrop extends Component {
         <CorrectionForm
           correction={this.state.correction}
           dropzone={this.props.dropzone}
-          handleUpdate={this.updateCorrection}
-          handleCriterionUpdate={this.updateCorrectionCriterion}
-          handleSave={this.saveCorrection}
-          handleCancel={this.cancelCorrection}
+          saveCorrection={this.saveCorrection}
+          cancelCorrection={this.cancelCorrection}
         />
         <button
-          className="btn btn-primary"
+          className="btn btn-primary pull-right"
+          type="button"
           onClick={() => this.props.submitCorrection(this.state.correction.id)}
         >
           {trans('submit_correction', {}, 'dropzone')}

@@ -6,6 +6,7 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {getToolDocumentType} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {constants as configConstants} from '#/plugin/drop-zone/plugin/configuration/constants'
 import {DocumentType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
@@ -56,16 +57,19 @@ const Document = props =>
           <button
             key={`tool-btn-${t.id}`}
             className="btn btn-default"
+            type="button"
             onClick={() => props.executeTool(t.id, props.document.id)}
           >
             {t.name}
           </button>
         )}
         {props.document.toolDocuments.length > 0 && props.document.toolDocuments.map(td => {
-          if (td.type === configConstants.compilatioValue && td.data && td.data.reportUrl) {
+          if (getToolDocumentType(td, props.tools) === configConstants.compilatioValue && td.data && td.data.reportUrl) {
             return (
               <button
+                key={`tool-document-button-${td.id}`}
                 className="btn btn-default"
+                type="button"
                 onClick={() => window.open(td.data.reportUrl, '_blank')}
               >
                 {trans('report', {}, 'dropzone')}

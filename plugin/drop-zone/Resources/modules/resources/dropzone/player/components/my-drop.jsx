@@ -30,25 +30,26 @@ const MyDrop = props =>
     </FormSections>
 
     <Documents
-      documents={props.drop.documents}
-      canEdit={props.isDropEnabled && !props.drop.finished}
+      documents={props.myDrop.documents}
+      canEdit={props.isDropEnabled && !props.myDrop.finished}
       {...props}
     />
 
-    {props.dropzone.display.displayCorrectionsToLearners && props.drop.finished && props.drop.corrections.filter(c => c.finished).length > 0 &&
+    {props.dropzone.display.displayCorrectionsToLearners && props.myDrop.finished && props.myDrop.corrections.filter(c => c.finished).length > 0 &&
       <Corrections
-        corrections={props.drop.corrections.filter(c => c.finished)}
+        corrections={props.myDrop.corrections.filter(c => c.finished)}
         {...props}
       />
     }
 
-    {props.isDropEnabled && !props.drop.finished &&
+    {props.isDropEnabled && !props.myDrop.finished &&
       <DropForm {...props}/>
     }
 
-    {props.isDropEnabled && !props.drop.finished &&
+    {props.isDropEnabled && !props.myDrop.finished &&
       <button
         className="btn btn-primary pull-right"
+        type="button"
         onClick={() => {
           props.showModal(MODAL_CONFIRM, {
             title: trans('warning', {}, 'dropzone'),
@@ -60,23 +61,12 @@ const MyDrop = props =>
         {trans('submit_my_copy', {}, 'dropzone')}
       </button>
     }
-
-    {props.drop.finished && props.isPeerReviewEnabled && props.nbCorrections < props.dropzone.parameters.expectedCorrectionTotal &&
-      <a
-        href="#/peer/drop"
-        className="btn btn-default"
-      >
-        {trans('peer_correction', {}, 'dropzone')}
-      </a>
-    }
   </div>
 
 MyDrop.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
-  drop: T.shape(DropType.propTypes).isRequired,
+  myDrop: T.shape(DropType.propTypes).isRequired,
   isDropEnabled: T.bool.isRequired,
-  isPeerReviewEnabled: T.bool.isRequired,
-  nbCorrections: T.number.isRequired,
   renderMyDrop: T.func.isRequired,
   saveCorrection: T.func.isRequired,
   showModal: T.func.isRequired
@@ -85,10 +75,8 @@ MyDrop.propTypes = {
 function mapStateToProps(state) {
   return {
     dropzone: select.dropzone(state),
-    drop: select.myDrop(state),
-    isDropEnabled: select.isDropEnabled(state),
-    isPeerReviewEnabled: select.isPeerReviewEnabled(state),
-    nbCorrections: select.nbCorrections(state)
+    myDrop: select.myDrop(state),
+    isDropEnabled: select.isDropEnabled(state)
   }
 }
 

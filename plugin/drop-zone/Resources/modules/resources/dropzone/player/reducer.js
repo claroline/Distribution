@@ -49,14 +49,20 @@ const myDropReducer = makeReducer({}, {
     return Object.assign({}, state, {documents: documents})
   },
   [CORRECTION_UPDATE]: (state, action) => {
-    const corrections = cloneDeep(state.corrections)
-    const index = corrections.findIndex(c => c.id === action.correction.id)
+    if (state && state.id === action.correction.drop) {
+      const corrections = cloneDeep(state.corrections)
+      const index = corrections.findIndex(c => c.id === action.correction.id)
 
-    if (index > -1) {
-      corrections[index] = action.correction
+      if (index > -1) {
+        corrections[index] = action.correction
+      } else {
+        corrections.push(action.correction)
+      }
+
+      return Object.assign({}, state, {corrections: corrections})
+    } else {
+      return state
     }
-
-    return Object.assign({}, state, {corrections: corrections})
   }
 })
 
@@ -68,14 +74,20 @@ const nbCorrectionsReducer = makeReducer({}, {
 
 const peerDropReducer = makeReducer({}, {
   [CORRECTION_UPDATE]: (state, action) => {
-    const corrections = cloneDeep(state.corrections)
-    const index = corrections.findIndex(c => c.id === action.correction.id)
+    if (state && state.id === action.correction.drop) {
+      const corrections = cloneDeep(state.corrections)
+      const index = corrections.findIndex(c => c.id === action.correction.id)
 
-    if (index > -1) {
-      corrections[index] = action.correction
+      if (index > -1) {
+        corrections[index] = action.correction
+      } else {
+        corrections.push(action.correction)
+      }
+
+      return Object.assign({}, state, {corrections: corrections})
+    } else {
+      return state
     }
-
-    return Object.assign({}, state, {corrections: corrections})
   },
   [PEER_DROP_LOAD]: (state, action) => {
     return action.drop

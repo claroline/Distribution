@@ -1,11 +1,16 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import get from 'lodash/get'
+import cloneDeep from 'lodash/cloneDeep'
 
 import {t, trans} from '#/main/core/translation'
 import {NumberGroup}  from '#/main/core/layout/form/components/group/number-group.jsx'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+
+import {DropzoneType, CorrectionType, GradeType, CriterionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+import {validate, isValid} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
 
 const CriteriaForm = props =>
   <div id="criteria-form">
@@ -46,75 +51,105 @@ const CriteriaForm = props =>
   </div>
 
 CriteriaForm.propTypes = {
-  criteria: T.arrayOf(T.shape({
-    id: T.string.isRequired,
-    instruction: T.string.isRequired
-  })).isRequired,
+  criteria: T.arrayOf(T.shape(CriterionType.propTypes)).isRequired,
   total: T.number.isRequired,
-  grades: T.arrayOf(T.shape({
-    id: T.string.isRequired,
-    criterion: T.string.isRequired,
-    value: T.number
-  })),
+  grades: T.arrayOf(T.shape(GradeType.propTypes)),
   handleUpdate: T.func.isRequired
 }
 
-export const CorrectionForm = props =>
-  <form>
-    <div className="panel panel-default correction-form-panel">
-      {props.dropzone.parameters.criteriaEnabled ?
-        <CriteriaForm
-          criteria={props.dropzone.criteria}
-          total={props.dropzone.parameters.criteriaTotal}
-          grades={props.correction.grades}
-          handleUpdate={props.handleCriterionUpdate}
-        /> :
-        <NumberGroup
-          controlId="score"
-          label={trans('score', {}, 'dropzone')}
-          value={props.correction.totalGrade !== null ? props.correction.totalGrade : undefined}
-          onChange={value => props.handleUpdate('totalGrade', parseInt(value))}
-        />
-      }
-      {props.dropzone.parameters.commentInCorrectionEnabled &&
-        <HtmlGroup
-          controlId="comment"
-          label={trans('comment', {}, 'dropzone')}
-          content={props.correction.comment || ''}
-          onChange={value => props.handleUpdate('comment', value)}
-          minRows={3}
-        />
-      }
-      <div className="btn-group btn-group-right">
-        <button
-          className="btn btn-default"
-          type="button"
-          onClick={() => props.handleCancel()}
-        >
-          {t('cancel')}
-        </button>
-        <button
-          className="btn btn-primary"
-          type="button"
-          onClick={() => props.handleSave()}
-        >
-          {t('save')}
-        </button>
-      </div>
-    </div>
-  </form>
+export class CorrectionForm extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      correction: props.correction,
+      errors: {}
+    }
+    this.updateCorrectionCriterion = this.updateCorrectionCriterion.bind(this)
+  }
+
+  updateCorrection(property, value) {
+    const correction = Object.assign({}, this.state.correction, {[property]: value})
+    this.setState({correction: correction})
+  }
+
+  updateCorrectionCriterion(criterionId, value) {
+    const grades = cloneDeep(this.state.correction.grades)
+    const index = grades.findIndex(g => g.criterion === criterionId)
+
+    if (index > -1) {
+      const grade = Object.assign({}, grades[index], {value: value})
+      grades[index] = grade
+    }
+    const correction = Object.assign({}, this.state.correction, {grades: grades})
+
+    this.setState({correction: correction})
+  }
+
+  validateCorrection() {
+    const errors = validate(this.state.correction, this.props.dropzone)
+    this.setState({errors: errors}, () => this.saveCorrection())
+  }
+
+  saveCorrection() {
+    if (isValid(this.state.correction, this.props.dropzone)) {
+      this.props.saveCorrection(this.state.correction)
+    }
+  }
+
+  render() {
+    return (
+      <form>
+        <div className="panel panel-default correction-form-panel">
+          {this.props.dropzone.parameters.criteriaEnabled ?
+            <CriteriaForm
+              criteria={this.props.dropzone.criteria}
+              total={this.props.dropzone.parameters.criteriaTotal}
+              grades={this.state.correction.grades}
+              handleUpdate={this.updateCorrectionCriterion}
+            /> :
+            <NumberGroup
+              controlId="score"
+              label={t('score')}
+              value={this.state.correction.totalGrade !== null ? this.state.correction.totalGrade : undefined}
+              onChange={value => this.updateCorrection('totalGrade', parseInt(value))}
+              error={get(this.state.errors, 'totalGrade')}
+            />
+          }
+          {this.props.dropzone.parameters.commentInCorrectionEnabled &&
+            <HtmlGroup
+              controlId="comment"
+              label={t('comment')}
+              content={this.state.correction.comment || ''}
+              onChange={value => this.updateCorrection('comment', value)}
+              minRows={3}
+              error={get(this.state.errors, 'comment')}
+            />
+          }
+          <div className="btn-group btn-group-right">
+            <button
+              className="btn btn-default"
+              type="button"
+              onClick={() => this.props.cancelCorrection()}
+            >
+              {t('cancel')}
+            </button>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={() => this.validateCorrection()}
+            >
+              {t('save')}
+            </button>
+          </div>
+        </div>
+      </form>
+    )
+  }
+}
 
 CorrectionForm.propTypes = {
-  dropzone: T.object,
-  correction: T.shape({
-    id: T.string,
-    drop: T.string,
-    totalGrade: T.number,
-    comment: T.string,
-    grades: T.array
-  }),
-  handleUpdate: T.func.isRequired,
-  handleCriterionUpdate: T.func.isRequired,
-  handleSave: T.func.isRequired,
-  handleCancel: T.func.isRequired
+  dropzone: T.shape(DropzoneType.propTypes),
+  correction: T.shape(CorrectionType.propTypes),
+  saveCorrection: T.func.isRequired,
+  cancelCorrection: T.func.isRequired
 }

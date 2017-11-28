@@ -10,9 +10,9 @@ export const Corrections = props =>
       <tr>
         <th></th>
         <th>{trans('corrector', {}, 'dropzone')}</th>
-        <th>{trans('start_date', {}, 'dropzone')}</th>
-        <th>{trans('end_date', {}, 'dropzone')}</th>
-        <th>{trans('score', {}, 'dropzone')}</th>
+        <th>{t('start_date')}</th>
+        <th>{t('end_date')}</th>
+        <th>{t('score')}</th>
         <th>{t('actions')}</th>
       </tr>
     </thead>

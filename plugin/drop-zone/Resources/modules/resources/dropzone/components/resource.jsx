@@ -69,12 +69,12 @@ DropzoneResource.propTypes = {
   canEdit: T.bool.isRequired,
   dropzone: T.object.isRequired,
   dropzoneId: T.string.isRequired,
-
   dropzoneForm: T.object,
   formOpened: T.bool.isRequired,
   formPendingChanges: T.bool.isRequired,
   formValidating: T.bool.isRequired,
   formValid: T.bool.isRequired,
+  myDrop: T.object,
 
   loadForm: T.func.isRequired,
   resetForm: T.func.isRequired,
@@ -89,10 +89,18 @@ function customActions(props) {
   const actions = []
 
   actions.push({
-    icon: 'fa fa-fw fa-download',
-    label: trans('my_drop', {}, 'dropzone'),
-    action: '#/my/drop'
+    icon: 'fa fa-fw fa-home',
+    label: t('home'),
+    action: '#/'
   })
+
+  if (props.myDrop) {
+    actions.push({
+      icon: 'fa fa-fw fa-download',
+      label: trans('my_drop', {}, 'dropzone'),
+      action: '#/my/drop'
+    })
+  }
 
   if (props.canEdit) {
     actions.push({
@@ -114,7 +122,8 @@ function mapStateToProps(state) {
     formOpened: select.formIsOpened(state),
     formPendingChanges: select.formHasPendingChanges(state),
     formValid: select.formValid(state),
-    formValidating: select.formValidating(state)
+    formValidating: select.formValidating(state),
+    myDrop: select.myDrop(state)
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {t, trans} from '#/main/core/translation'
 
 export const Corrections = props =>
   <table className="table corrections-table">
@@ -9,9 +9,9 @@ export const Corrections = props =>
       <tr>
         <th></th>
         <th></th>
-        <th>{trans('start_date', {}, 'dropzone')}</th>
-        <th>{trans('end_date', {}, 'dropzone')}</th>
-        <th>{trans('score', {}, 'dropzone')}</th>
+        <th>{t('start_date')}</th>
+        <th>{t('end_date')}</th>
+        <th>{t('score')}</th>
       </tr>
     </thead>
     <tbody>
@@ -37,7 +37,7 @@ export const Corrections = props =>
               )
             }}
           >
-            {trans('correction_n', {'%n%': idx}, 'dropzone')}
+            {trans('correction_n', {number: idx + 1}, 'dropzone')}
           </a>
         </td>
         <td>{c.startDate}</td>

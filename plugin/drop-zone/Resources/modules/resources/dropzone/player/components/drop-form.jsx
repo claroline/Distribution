@@ -31,6 +31,7 @@ class DropTextForm extends Component {
         />
         <button
           className="btn btn-primary"
+          type="button"
           disabled={!this.state.text}
           onClick={() => this.props.handleSubmit(this.state.text)}
         >
@@ -66,6 +67,7 @@ class DropUrlForm extends Component {
         />
         <button
           className="btn btn-primary"
+          type="button"
           disabled={!this.state.url}
           onClick={() => this.props.handleSubmit(this.state.url)}
         >
@@ -101,6 +103,7 @@ class DropFileForm extends Component {
         />
         <button
           className="btn btn-primary"
+          type="button"
           disabled={this.state.files.length === 0}
           onClick={() => this.props.handleSubmit(this.state.files)}
         >

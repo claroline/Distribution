@@ -5,10 +5,10 @@ export function generateId() {
   return uuid()
 }
 
-export function generateCorrection(id, dropId, user, dropzone) {
+export function generateCorrection(dropId, user, dropzone) {
   const currentDate = moment().format('YYYY-MM-DD\THH:mm')
   const correction = {
-    id: id,
+    id: uuid(),
     drop: dropId,
     user: user,
     totalGrade: null,
@@ -17,6 +17,10 @@ export function generateCorrection(id, dropId, user, dropzone) {
     lastOpenDate: currentDate,
     endDate: null,
     finished: false,
+    valid: true,
+    editable: false,
+    reported: false,
+    correctionDenied: false,
     grades: []
   }
 
@@ -44,4 +48,10 @@ export function generateCorrectionGrades(correction, dropzone) {
   }
 
   return Object.assign({}, correction, {grades: grades})
+}
+
+export function getToolDocumentType(toolDocument, tools) {
+  const tool = tools.find(t => t.id === toolDocument.tool)
+
+  return tool ? tool.type : null
 }

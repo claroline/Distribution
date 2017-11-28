@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
@@ -7,11 +6,11 @@ import {t, trans} from '#/main/core/translation'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
+import {DropzoneType, CorrectionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 import {generateCorrectionGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
-
-import {CorrectionForm} from './correction-form.jsx'
+import {CorrectionForm} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-form.jsx'
 
 class CorrectionRow extends Component {
   constructor(props) {
@@ -20,33 +19,13 @@ class CorrectionRow extends Component {
       correction: generateCorrectionGrades(props.correction, props.dropzone),
       showForm: false
     }
-    this.updateCorrection = this.updateCorrection.bind(this)
-    this.updateCorrectionCriterion = this.updateCorrectionCriterion.bind(this)
     this.saveCorrection = this.saveCorrection.bind(this)
     this.cancelCorrection = this.cancelCorrection.bind(this)
   }
 
-  updateCorrection(property, value) {
-    const correction = Object.assign({}, this.state.correction, {[property]: value})
-    this.setState({correction: correction})
-  }
-
-  updateCorrectionCriterion(criterionId, value) {
-    const grades = cloneDeep(this.state.correction.grades)
-    const index = grades.findIndex(g => g.criterion === criterionId)
-
-    if (index > -1) {
-      const grade = Object.assign({}, grades[index], {value: value})
-      grades[index] = grade
-    }
-    const correction = Object.assign({}, this.state.correction, {grades: grades})
-
-    this.setState({correction: correction})
-  }
-
-  saveCorrection() {
-    this.props.saveCorrection(this.state.correction)
-    this.setState({showForm: false})
+  saveCorrection(correction) {
+    this.props.saveCorrection(correction)
+    this.setState({correction: correction, showForm: false})
   }
 
   cancelCorrection() {
@@ -68,10 +47,8 @@ class CorrectionRow extends Component {
           <CorrectionForm
             correction={this.state.correction}
             dropzone={this.props.dropzone}
-            handleUpdate={this.updateCorrection}
-            handleCriterionUpdate={this.updateCorrectionCriterion}
-            handleSave={this.saveCorrection}
-            handleCancel={this.cancelCorrection}
+            saveCorrection={this.saveCorrection}
+            cancelCorrection={this.cancelCorrection}
           />
         </td>
       </tr> :
@@ -92,6 +69,7 @@ class CorrectionRow extends Component {
             {this.props.correction.finished &&
               <button
                 className="btn btn-default btn-sm"
+                type="button"
                 onClick={() => this.props.switchCorrectionValidation(this.props.correction.id)}
               >
                 {this.props.correction.valid ? trans('invalidate_correction', {}, 'dropzone') : trans('revalidate_correction', {}, 'dropzone')}
@@ -99,6 +77,7 @@ class CorrectionRow extends Component {
             }
             <button
               className="btn btn-default btn-sm"
+              type="button"
               onClick={() => this.setState({showForm: true})}
             >
               {t('edit')}
@@ -106,6 +85,7 @@ class CorrectionRow extends Component {
             {!this.props.correction.finished &&
               <button
                 className="btn btn-default btn-sm"
+                type="button"
                 onClick={() => this.props.submitCorrection(this.props.correction.id)}
               >
                 {trans('submit_correction', {}, 'dropzone')}
@@ -113,6 +93,7 @@ class CorrectionRow extends Component {
             }
             <button
               className="btn btn-danger btn-sm"
+              type="button"
               onClick={() => this.deleteCorrection(this.props.correction.id)}
             >
               {t('delete')}
@@ -125,21 +106,8 @@ class CorrectionRow extends Component {
 }
 
 CorrectionRow.propTypes = {
-  correction: T.shape({
-    id: T.string.isRequired,
-    drop: T.string.isRequired,
-    user: T.shape({
-      firstName: T.string.isRequired,
-      lastName: T.string.isRequired
-    }).isRequired,
-    startDate: T.string.isRequired,
-    endDate: T.string,
-    totalGrade: T.string,
-    finished: T.bool.isRequired,
-    valid: T.bool.isRequired,
-    correctionDenied: T.bool.isRequired
-  }).isRequired,
-  dropzone: T.object,
+  correction: T.shape(CorrectionType.propTypes).isRequired,
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
   saveCorrection: T.func.isRequired,
   submitCorrection: T.func.isRequired,
   switchCorrectionValidation: T.func.isRequired,

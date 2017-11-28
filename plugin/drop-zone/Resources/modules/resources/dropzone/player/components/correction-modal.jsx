@@ -8,6 +8,8 @@ import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.js
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
+import {validateNotBlank} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
+
 export const MODAL_CORRECTION = 'MODAL_CORRECTION'
 
 class DenialBox extends Component {
@@ -15,6 +17,7 @@ class DenialBox extends Component {
     super(props)
     this.state = {
       correction: props.correction,
+      error: null,
       showForm: false
     }
   }
@@ -25,14 +28,24 @@ class DenialBox extends Component {
   }
 
   cancelDeniedComment() {
-    this.setState({correction: this.props.correction, showForm: false})
+    this.setState({correction: this.props.correction, error: null, showForm: false})
   }
 
   saveDeniedComment() {
-    const correction = Object.assign({}, this.state.correction, {correctionDenied: true})
+    if (!this.state.error) {
+      const correction = Object.assign({}, this.state.correction, {correctionDenied: true})
+      this.setState(
+        {correction: correction, error: null, showForm: false},
+        () => this.props.saveCorrection(this.state.correction)
+      )
+    }
+  }
+
+  validateDeniedComment() {
+    const error = validateNotBlank(this.state.correction.correctionDeniedComment)
     this.setState(
-      {correction: correction, showForm: false},
-      () => this.props.saveCorrection(this.state.correction)
+      {error: error},
+      () => this.saveDeniedComment()
     )
   }
 
@@ -47,6 +60,7 @@ class DenialBox extends Component {
         {!this.state.correction.correctionDenied && !this.state.showForm &&
           <button
             className="btn btn-danger"
+            type="button"
             onClick={() => this.setState({showForm: true})}
           >
             {trans('deny_correction', {}, 'dropzone')}
@@ -56,21 +70,25 @@ class DenialBox extends Component {
           <div>
             <HtmlGroup
               controlId="correction-denied-comment"
-              label={trans('correction_denied_comment_label', {}, 'dropzone')}
+              label={trans('denial_reason', {}, 'dropzone')}
               content={this.state.correction.correctionDeniedComment || ''}
               onChange={value => this.updateCorrectionDeniedComment(value)}
               minRows={3}
+              error={this.state.error}
             />
             <div className="btn-group btn-group-right">
               <button
                 className="btn btn-default"
+                type="button"
                 onClick={() => this.cancelDeniedComment()}
               >
                 {t('cancel')}
               </button>
               <button
                 className="btn btn-primary"
-                onClick={() => this.saveDeniedComment()}
+                type="button"
+                disabled={!this.state.correction.correctionDeniedComment}
+                onClick={() => this.validateDeniedComment()}
               >
                 {t('save')}
               </button>
@@ -123,7 +141,10 @@ export class CorrectionModal extends Component {
                         disabled={true}
                         inline={true}
                         hideLabel={true}
-                        checkedValue={this.state.correction.grades.find(g => g.criterion === c.id).value}
+                        checkedValue={this.state.correction.grades.find(g => g.criterion === c.id) ?
+                          this.state.correction.grades.find(g => g.criterion === c.id).value :
+                          ''
+                        }
                         onChange={() => {}}
                       />
                     </td>
@@ -147,6 +168,7 @@ export class CorrectionModal extends Component {
         <Modal.Footer>
           <button
             className="btn btn-default"
+            type="button"
             onClick={this.props.fadeModal}
           >
             {t('close')}
