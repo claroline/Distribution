@@ -161,10 +161,10 @@ class TagManager
                 $tag = is_null($user) ? $this->getOrCreatePlatformTag($tagName) : $this->getOrCreateUserTag($user, $tagName);
                 $tagsList[$tagName] = $tag;
             }
-            
+
             //force flush needed otherwise new tags are missing their IDs and following tests fail
             $this->om->forceFlush();
-            
+
             foreach ($uniqueTags as $tagName) {
                 $tag = $tagsList[$tagName];
 
