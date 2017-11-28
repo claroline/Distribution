@@ -15,32 +15,50 @@ use Symfony\Component\EventDispatcher\Event;
 
 class CrudEvent extends Event
 {
+    /**
+     * @var mixed
+     */
     private $object;
-    private $block;
 
     /**
-     * @param $object  The object created
-     * @param $options an array of options
-     * @param $extra   anything else you might want to pass
-     * (not used yet but options isn't always enough imo)
+     * @var bool
      */
-    public function __construct($object, $options = [])
+    private $block = false;
+
+    /**
+     * @var array
+     */
+    private $options = [];
+
+    /**
+     * @param mixed $object  - The object created
+     * @param array $options - An array of options
+     */
+    public function __construct($object, array $options = [])
     {
         $this->object = $object;
-        $this->block = false;
         $this->options = $options;
     }
 
+    /**
+     * @param mixed $object
+     */
     public function setObject($object)
     {
         $this->object = $object;
     }
 
+    /**
+     * @return mixed
+     */
     public function getObject()
     {
         return $this->object;
     }
 
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
@@ -56,6 +74,9 @@ class CrudEvent extends Event
         $this->block = false;
     }
 
+    /**
+     * @return bool
+     */
     public function isAllowed()
     {
         return !$this->block;

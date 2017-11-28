@@ -38,11 +38,11 @@ class UserValidator implements ValidatorInterface
                $qb->expr()->like('user.username', ':email')
            ))
 
-           ->setParameter('username', $data->username)
-           ->setParameter('email', $data->email);
+           ->setParameter('username', $data['username'])
+           ->setParameter('email', $data['email']);
 
         if (isset($data->id)) {
-            $qb->setParameter('uuid', $data->id)
+            $qb->setParameter('uuid', $data['id'])
             ->andWhere('user.uuid != :uuid');
         }
 
@@ -60,11 +60,11 @@ class UserValidator implements ValidatorInterface
                $qb->expr()->like('user.mail', ':username'),
                $qb->expr()->like('user.mail', ':email')
            ))
-           ->setParameter('username', $data->username)
-           ->setParameter('email', $data->email);
+           ->setParameter('username', $data['username'])
+           ->setParameter('email', $data['email']);
 
         if (isset($data->id)) {
-            $qb->setParameter('uuid', $data->id)
+            $qb->setParameter('uuid', $data['id'])
                ->andWhere('user.uuid != :uuid');
         }
 

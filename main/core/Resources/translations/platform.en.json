@@ -1492,5 +1492,9 @@
     "disable_user": "Disable user",
     "disable_personal_ws": "Remove personal workspace",
     "enable_user": "Enable user",
-    "enable_personal_ws": "Create personal workspace"
+    "enable_personal_ws": "Create personal workspace",
+    "password_confirm": "Password confirm",
+    "user_registration": "Registration",
+    "registration_confirm": "Validate my registration",
+    "form_next_step": "Next"
 }

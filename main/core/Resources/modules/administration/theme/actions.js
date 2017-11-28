@@ -18,7 +18,7 @@ actions.resetThemeForm = makeActionCreator(THEME_FORM_RESET)
 
 actions.saveTheme = (theme) => ({
   [REQUEST_SEND]: {
-    route: ['claro_theme_update', {id: theme.id}],
+    url: ['claro_theme_update', {id: theme.id}],
     request: {
       method: 'PUT',
       body: JSON.stringify(theme)
@@ -32,7 +32,7 @@ actions.deleteThemes = (themes) => {
 
   return {
     [REQUEST_SEND]: {
-      route: ['claro_themes_delete'],
+      url: ['claro_themes_delete'],
       request: {
         method: 'DELETE',
         body: JSON.stringify(themeIds)

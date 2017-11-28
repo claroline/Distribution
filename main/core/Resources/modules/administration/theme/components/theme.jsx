@@ -19,7 +19,7 @@ import {select} from '#/main/core/administration/theme/selectors'
 import {validate} from '#/main/core/administration/theme/validator'
 
 import {
-  PageContainer as Page,
+  PageContainer,
   PageHeader,
   PageContent,
   PageGroupActions,
@@ -329,7 +329,7 @@ class Theme extends Component {
 
   render() {
     return (
-      <Page id="theme-form">
+      <PageContainer id="theme-form" hasModals={true}>
         <PageHeader
           title={t('themes_management')}
           subtitle={this.props.theme.name}
@@ -354,24 +354,21 @@ class Theme extends Component {
                 action="#/"
               />
 
-              <MoreAction id="theme-more">
-                <MenuItem header={true}>{t('more_actions')}</MenuItem>
-
-                <MenuItem onClick={() => this.props.rebuildTheme(this.props.theme)}>
-                  <span className="fa fa-fw fa-refresh" />
-                  {trans('rebuild_theme', {}, 'theme')}
-                </MenuItem>
-
-                <MenuItem divider={true} />
-
-                <MenuItem
-                  className="dropdown-link-danger"
-                  onClick={() => this.props.removeTheme(this.props.theme)}
-                >
-                  <span className="fa fa-fw fa-trash" />
-                  {trans('delete_theme', {}, 'theme')}
-                </MenuItem>
-              </MoreAction>
+              <MoreAction
+                id="theme-more"
+                actions={[
+                  {
+                    icon: 'fa fa-fw fa-refresh',
+                    label: trans('rebuild_theme', {}, 'theme'),
+                    action: () => this.props.rebuildTheme(this.props.theme)
+                  }, {
+                    icon: 'fa fa-fw fa-trash',
+                    label: trans('delete_theme', {}, 'theme'),
+                    action: () => this.props.removeTheme(this.props.theme),
+                    dangerous: true
+                  }
+                ]}
+              />
             </PageGroupActions>
           </PageActions>
         </PageHeader>
@@ -386,7 +383,7 @@ class Theme extends Component {
            <ExtraSection />
            </FormSections>*/}
         </PageContent>
-      </Page>
+      </PageContainer>
     )
   }
 }

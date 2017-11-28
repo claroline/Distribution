@@ -71,9 +71,8 @@ claro_profile:
     type: annotation
 
 claro_registration:
-    resource: "@ClarolineCoreBundle/Controller/RegistrationController.php"
+    resource: "@ClarolineCoreBundle/Controller/User/RegistrationController.php"
     type: annotation
-    prefix: register
 
 claro_desktop:
     resource: "@ClarolineCoreBundle/Controller/DesktopController.php"

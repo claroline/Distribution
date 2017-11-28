@@ -35,7 +35,7 @@ actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hint')
 
 actions.fetchAttempt = quizId => ({
   [REQUEST_SEND]: {
-    route: ['exercise_attempt_start', {exerciseId: quizId}],
+    url: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
     success: (data, dispatch) => {
       const normalized = normalize(data)
@@ -47,7 +47,7 @@ actions.fetchAttempt = quizId => ({
 
 actions.sendAnswers = (quizId, paperId, answers) =>({
   [REQUEST_SEND]: {
-    route: ['exercise_attempt_submit', {exerciseId: quizId, id: paperId}],
+    url: ['exercise_attempt_submit', {exerciseId: quizId, id: paperId}],
     request: {
       method: 'PUT',
       body: JSON.stringify(denormalizeAnswers(answers))
@@ -59,14 +59,14 @@ actions.sendAnswers = (quizId, paperId, answers) =>({
 
 actions.requestHint = (quizId, paperId, questionId, hintId) => ({
   [REQUEST_SEND]: {
-    route: ['exercise_attempt_hint_show', {exerciseId: quizId, id: paperId, questionId: questionId, hintId: hintId}],
+    url: ['exercise_attempt_hint_show', {exerciseId: quizId, id: paperId, questionId: questionId, hintId: hintId}],
     success: (hint, dispatch) => dispatch(actions.useHint(questionId, hint))
   }
 })
 
 actions.requestEnd = (quizId, paperId) => ({
   [REQUEST_SEND]: {
-    route: ['exercise_attempt_finish', {exerciseId: quizId, id: paperId}],
+    url: ['exercise_attempt_finish', {exerciseId: quizId, id: paperId}],
     request: {
       method: 'PUT'
     },

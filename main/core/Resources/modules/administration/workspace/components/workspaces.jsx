@@ -10,7 +10,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM, MODAL_URL, MODAL_USER_PICKER} from '#/main/core/layout/modal'
 
 import {
-  PageContainer as Page,
+  PageContainer,
   PageHeader,
   PageContent,
   PageActions,
@@ -23,7 +23,7 @@ import {actions} from '#/main/core/administration/workspace/actions'
 import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
 
 const WorkspacesPage = props =>
-  <Page id="workspace-management">
+  <PageContainer id="workspace-management" hasModal={true}>
     <PageHeader title={t('workspaces_management')}>
       <PageActions>
         <PageAction
@@ -89,7 +89,7 @@ const WorkspacesPage = props =>
         card={WorkspaceList.card}
       />
     </PageContent>
-  </Page>
+  </PageContainer>
 
 WorkspacesPage.propTypes = {
   copyWorkspaces: T.func.isRequired,

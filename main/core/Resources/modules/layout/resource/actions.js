@@ -12,9 +12,7 @@ actions.updatePublication = makeActionCreator(RESOURCE_UPDATE_PUBLICATION)
 
 actions.updateNode = (resourceNode) => ({
   [REQUEST_SEND]: {
-    route: ['claro_resource_node_update',
-      {id: resourceNode.id}
-    ],
+    url: ['claro_resource_node_update', {id: resourceNode.id}],
     request: {
       method: 'PUT',
       body: JSON.stringify(resourceNode)
@@ -25,7 +23,7 @@ actions.updateNode = (resourceNode) => ({
 
 actions.togglePublication = (resourceNode) => ({
   [REQUEST_SEND]: {
-    route: [
+    url: [
       resourceNode.meta.published ? 'claro_resource_node_unpublish' : 'claro_resource_node_publish',
       {id: resourceNode.id}
     ],

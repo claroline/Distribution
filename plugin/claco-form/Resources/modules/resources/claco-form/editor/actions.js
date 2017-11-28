@@ -31,7 +31,7 @@ actions.saveParameters = () => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_configuration_edit', {clacoForm: resourceId}),
+      url: ['claro_claco_form_configuration_edit', {clacoForm: resourceId}],
       request: {
         method: 'POST',
         body: formData
@@ -49,7 +49,7 @@ actions.deleteAllEntries = () => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_all_entries_delete', {clacoForm: resourceId}),
+      url: ['claro_claco_form_all_entries_delete', {clacoForm: resourceId}],
       request: {
         method: 'DELETE'
       },

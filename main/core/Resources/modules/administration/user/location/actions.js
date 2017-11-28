@@ -11,7 +11,7 @@ export const actions = {}
 
 actions.geolocate = (location) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('apiv2_location_geolocate', {id: location.id}),
+    url: ['apiv2_location_geolocate', {id: location.id}],
     success: (data, dispatch) => dispatch(listActions.fetchData('locations'))
   }
 })
@@ -23,7 +23,7 @@ actions.open = (formName, id = null) => (dispatch) => {
   if (id) {
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_location_get', {id}],
+        url: ['apiv2_location_get', {id}],
         request: {
           method: 'GET'
         },

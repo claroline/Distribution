@@ -25,13 +25,13 @@ actions.addPaper = makeActionCreator(PAPER_ADD, 'paper')
 
 actions.fetchPapers = quizId => ({
   [REQUEST_SEND]: {
-    route: ['exercise_papers', {exerciseId: quizId}],
+    url: ['exercise_papers', {exerciseId: quizId}],
     request: {method: 'GET'},
     success: (data, dispatch) => {
       dispatch(initPapers(normalize(data)))
       dispatch(setPaperFetched())
     },
-    failure: () => navigate('overview')
+    error: () => navigate('overview')
   }
 })
 

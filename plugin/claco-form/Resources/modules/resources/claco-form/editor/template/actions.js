@@ -14,7 +14,7 @@ actions.saveTemplate = (template, useTemplate) => (dispatch, getState) => {
 
   dispatch({
     [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_template_edit', {clacoForm: resourceId}),
+      url: ['claro_claco_form_template_edit', {clacoForm: resourceId}],
       request: {
         method: 'POST',
         body: formData

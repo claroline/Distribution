@@ -11,7 +11,7 @@ actions.share = makeActionCreator(QUESTIONS_SHARE, 'questions', 'users', 'adminR
 
 actions.shareQuestions = (questions, users, adminRights) => ({
   [REQUEST_SEND]: {
-    route: ['questions_share'],
+    url: ['questions_share'],
     request: {
       method: 'POST',
       body: JSON.stringify({
@@ -26,7 +26,7 @@ actions.shareQuestions = (questions, users, adminRights) => ({
 
 actions.duplicateQuestions = (questions, isModel = 0) => ({
   [REQUEST_SEND]: {
-    route: ['questions_duplicate', {isModel: isModel}],
+    url: ['questions_duplicate', {isModel: isModel}],
     request: {
       method: 'POST'
     },
@@ -36,7 +36,7 @@ actions.duplicateQuestions = (questions, isModel = 0) => ({
 
 actions.removeQuestions = questions => ({
   [REQUEST_SEND]: {
-    route: ['questions_delete'],
+    url: ['questions_delete'],
     request: {
       method: 'DELETE',
       body: JSON.stringify(questions.map(question => question.id))

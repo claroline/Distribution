@@ -67,7 +67,7 @@ actions.createMessageTask = (data) => {
 
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('claro_admin_scheduled_task_create'),
+        url: ['claro_admin_scheduled_task_create'],
         request: {
           method: 'POST',
           body: formData
@@ -97,7 +97,7 @@ actions.editMessageTask = (taskId, data) => {
 
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('claro_admin_scheduled_task_edit', {task: taskId}),
+        url: ['claro_admin_scheduled_task_edit', {task: taskId}],
         request: {
           method: 'POST',
           body: formData

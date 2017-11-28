@@ -12,18 +12,18 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/main/core/administration/theme/actions'
 
 import {
-  PageContainer as Page,
+  PageContainer,
   PageHeader,
   PageContent
 } from '#/main/core/layout/page'
 
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 const ThemesPage = props =>
-  <Page id="theme-management">
+  <PageContainer id="theme-management" hasModal={true}>
     <PageHeader title={t('themes_management')} />
     <PageContent>
-      <DataList
+      <DataListContainer
         name="themes"
         fetch={{
           url: generateUrl('claro_theme_list')
@@ -70,7 +70,7 @@ const ThemesPage = props =>
         })}
       />
     </PageContent>
-  </Page>
+  </PageContainer>
 
 ThemesPage.propTypes = {
   rebuildThemes: T.func.isRequired,

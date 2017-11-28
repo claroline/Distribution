@@ -11,8 +11,8 @@ import thunk from 'redux-thunk'
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
-import {apiMiddleware} from './../api/middleware'
-import {reducers as apiReducers} from './../api/reducers'
+import {apiMiddleware} from '#/main/core/api/middleware'
+import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
@@ -34,7 +34,7 @@ export function makeReducer(editable) {
 
     noServer: identity,
     modal: modalReducer,
-    currentRequests: apiReducers.currentRequests,
+    currentRequests: apiReducer,
     viewMode: quizReducers.viewMode,
     quiz: editable ? editorReducers.quiz : identity,
     steps: editable ? editorReducers.steps : identity,

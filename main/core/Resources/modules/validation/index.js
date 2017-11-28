@@ -2,7 +2,7 @@ import set from 'lodash/set'
 
 import {trans, tval} from '#/main/core/translation'
 
-export function notBlank(value, isHtml = false) {
+function notBlank(value, isHtml = false) {
   if (typeof value === 'string') {
     value = value.trim()
   } else if (isNaN(value)) {
@@ -14,7 +14,13 @@ export function notBlank(value, isHtml = false) {
   }
 }
 
-export function isHtmlEmpty(html, allowedTags = ['img', 'audio', 'iframe', 'video']) {
+function string(value) {
+  if (typeof value !== 'string') {
+    return tval('This value should be a string.')
+  }
+}
+
+function isHtmlEmpty(html, allowedTags = ['img', 'audio', 'iframe', 'video']) {
   if (!html) {
     return true
   }
@@ -27,13 +33,13 @@ export function isHtmlEmpty(html, allowedTags = ['img', 'audio', 'iframe', 'vide
   }))
 }
 
-export function number(value) {
-  if (typeof value !== 'number' && isNaN(parseFloat(value))) {
+function number(value) {
+  if (typeof value !== 'number' && (isNaN(parseFloat(value)) || !isFinite(value))) {
     return tval('This value should be a valid number.')
   }
 }
 
-export function gtZero(value) {
+function gtZero(value) {
   if (value <= 0) {
     return trans(
       'This value should be greater than {{ limit }}.',
@@ -43,14 +49,37 @@ export function gtZero(value) {
   }
 }
 
-export function email(value)
-{
-  if (!/^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/.test(value)) {
-    return tval('This value should be an adress email.')
+function gtMin(value, options) {
+  if (undefined !== options.min && value < options.min) {
+    return trans(
+      'This value should be greater than {{ limit }}.',
+      {},
+      'validators'
+    ).replace('{{ limit }}', options.min)
   }
 }
 
-export function gteZero(value) {
+function ltMax(value, options) {
+  if (undefined !== options.max && value > options.max) {
+    return trans(
+      'This value should be lower than {{ limit }}.',
+      {},
+      'validators'
+    ).replace('{{ limit }}', options.max)
+  }
+}
+
+function inRange(value, options) {
+  return chain(value, options, [gtMin, ltMax])
+}
+
+function email(value) {
+  if (!/^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/.test(value)) {
+    return tval('This value should be a valid email.')
+  }
+}
+
+function gteZero(value) {
   if (value < 0) {
     return trans(
       'This value should be {{ limit }} or more.',
@@ -60,20 +89,57 @@ export function gteZero(value) {
   }
 }
 
-export function notEmptyArray(value) {
+function notEmptyArray(value) {
   if (value.length === 0) {
     return tval('This value should not be blank.')
   }
 }
 
-export function chain(value, validators) {
+/**
+ * Disables `validator` if `condition` is not met.
+ * NB. This doesn't call the validator itself.
+ *
+ * @param {bool}     condition
+ * @param {function} validator
+ *
+ * @return {function}
+ */
+function validateIf(condition, validator) {
+  if (condition) {
+    return validator
+  }
+
+  // if condition is not met, we just return a func that will never throw error
+  return () => undefined
+}
+
+function chain(value, options, validators) {
   return validators.reduce((result, validate) => {
-    return result || validate(value)
+    return result || validate(value, options)
   }, undefined)
 }
 
-export function setIfError(errors, errorPath, error) {
+function setIfError(errors, errorPath, error) {
   if (typeof error !== 'undefined') {
     set(errors, errorPath, error)
   }
+}
+
+export {
+  validateIf,
+  chain,
+  setIfError,
+
+  // validators
+  string,
+  notBlank,
+  isHtmlEmpty,
+  number,
+  inRange,
+  gtMin,
+  ltMax,
+  gtZero,
+  email,
+  gteZero,
+  notEmptyArray
 }

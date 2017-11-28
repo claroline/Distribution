@@ -23,7 +23,7 @@ import {REQUEST_SEND} from '[path_to_module]/api/actions'
 
 actions.fetchAttempt = quizId => ({
   [REQUEST_SEND]: {
-    route: ['exercise_attempt_start', {exerciseId: quizId}],
+    url: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
     success: (data, dispatch) => {
       const normalized = normalize(data)
@@ -35,7 +35,7 @@ actions.fetchAttempt = quizId => ({
 ```
 
 Action parameters:
-- `route (array)`: the route definition of the api endpoint. It's passed to FOSJsRouting to generate the final URL.
+- `url (array)`: the route definition of the api endpoint. It's passed to FOSJsRouting to generate the final URL.
  The first param is the route name, the second it's an arguments object.
 - `url (string)`: the url to call. If provided, it's used in priority, if not, the middleware will fallback to the `route` param.
 - `request (object|Request)`: a custom request to send. See (Fetch)[https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch] for more detail..

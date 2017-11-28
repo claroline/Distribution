@@ -17,26 +17,18 @@ function isValid(theme) {
 /**
  * Gets validation errors for a Theme.
  *
- * @param   {Object} theme
+ * @param   {Object} user
  *
  * @returns {Object}
  */
 function validate(user) {
   const errors = {}
 
-  //loops through properties instead
   setIfError(errors, 'username', notBlank(user.username))
   setIfError(errors, 'firstName', notBlank(user.firstName))
   setIfError(errors, 'lastName', notBlank(user.lastName))
   setIfError(errors, 'email', email(user.email))
   setIfError(errors, 'plainPassword', notBlank(user.plainPassword))
-  setIfError(errors, 'confirmPlainPassword', notBlank(user.confirmPlainPassword))
-
-  if (user.confirmPlainPassword !== user.plainPassword) {
-    errors.confirmPlainPassword
-      = errors.plainPassword
-      = tval("Password doesn't match the confirmation")
-  }
 
   return errors
 }

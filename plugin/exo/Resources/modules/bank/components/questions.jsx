@@ -13,22 +13,22 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/plugin/exo/bank/actions'
 
 import {
-  PageContainer as Page,
+  PageContainer,
   PageHeader,
   PageContent
 } from '#/main/core/layout/page'
 
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 import {getDefinition, listItemNames} from '#/plugin/exo/items/item-types'
 import {Icon as ItemIcon} from '#/plugin/exo/items/components/icon.jsx'
 
 const QuestionsPage = props =>
-  <Page id="question-bank">
+  <PageContainer id="question-bank" hasModal={true}>
     <PageHeader title={tex('questions_bank')} />
 
     <PageContent>
-      <DataList
+      <DataListContainer
         name="questions"
         fetch={{
           url: generateUrl('question_list')
@@ -123,7 +123,7 @@ const QuestionsPage = props =>
         })}
       />
     </PageContent>
-  </Page>
+  </PageContainer>
 
 QuestionsPage.propTypes = {
   removeQuestions: T.func.isRequired,

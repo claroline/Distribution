@@ -8,7 +8,7 @@ export const actions = {}
 
 actions.enable = (user) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('apiv2_user_update', {uuid: user.id}),
+    url: ['apiv2_user_update', {uuid: user.id}],
     request: {
       body: JSON.stringify({isEnabled: true, uuid: user.id}),
       method: 'PUT'
@@ -19,7 +19,7 @@ actions.enable = (user) => ({
 
 actions.disable = (user) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('apiv2_user_update', {uuid: user.id}),
+    url: ['apiv2_user_update', {uuid: user.id}],
     request: {
       method: 'PUT',
       body: JSON.stringify({isEnabled: false, uuid: user.id})
@@ -30,7 +30,7 @@ actions.disable = (user) => ({
 
 actions.createWorkspace = (user) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('apiv2_user_pws_create', {uuid: user.id}),
+    url: ['apiv2_user_pws_create', {uuid: user.id}],
     request: { method: 'POST'},
     success: (data, dispatch) => dispatch(listActions.fetchData('users'))
   }
@@ -38,7 +38,7 @@ actions.createWorkspace = (user) => ({
 
 actions.deleteWorkspace = (user) => ({
   [REQUEST_SEND]: {
-    url: generateUrl('apiv2_user_pws_delete', {uuid: user.id}),
+    url: ['apiv2_user_pws_delete', {uuid: user.id}],
     request: {method: 'DELETE'},
     success: (data, dispatch) => dispatch(listActions.fetchData('users'))
   }
@@ -51,7 +51,7 @@ actions.open = (formName, id = null) => (dispatch) => {
   if (id) {
     dispatch({
       [REQUEST_SEND]: {
-        route: ['apiv2_user_get', {id}],
+        url: ['apiv2_user_get', {id}],
         request: {
           method: 'GET'
         },

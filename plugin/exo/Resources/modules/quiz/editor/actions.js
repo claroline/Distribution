@@ -196,14 +196,14 @@ actions.save = () => {
       const denormalized = denormalize(state.quiz, state.steps, state.items)
       dispatch({
         [REQUEST_SEND]: {
-          route: ['exercise_update', {id: state.quiz.id}],
+          url: ['exercise_update', {id: state.quiz.id}],
           request: {
             method: 'PUT' ,
             body: JSON.stringify(denormalized)
           },
           before: () => dispatch(actions.quizSaving()),
           success: () => dispatch(actions.quizSaved()),
-          failure: () => dispatch(actions.quizSaveError())
+          error: () => dispatch(actions.quizSaveError())
         }
       })
     }
@@ -219,7 +219,7 @@ actions.saveContentItemFile = (itemId, file) => {
 
     dispatch({
       [REQUEST_SEND]: {
-        route: ['upload_public_file'],
+        url: ['upload_public_file'],
         request: {
           method: 'POST',
           body: formData
@@ -269,7 +269,7 @@ actions.saveItemObjectFile = (itemId, objectId, file) => {
 
     dispatch({
       [REQUEST_SEND]: {
-        route: ['upload_public_file'],
+        url: ['upload_public_file'],
         request: {
           method: 'POST',
           body: formData

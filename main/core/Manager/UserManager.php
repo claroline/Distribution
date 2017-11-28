@@ -156,7 +156,7 @@ class UserManager
      * Create a user.
      * Its basic properties (name, username,... ) must already be set.
      * @todo use crud instead
-     * @todo REMOVE ME
+     * @todo REMOVE ME (caution: this is used to create users in Command\User\CreateCommand)
      *
      * @param User      $user
      * @param bool      $sendMail               do we need to mail the new user ?

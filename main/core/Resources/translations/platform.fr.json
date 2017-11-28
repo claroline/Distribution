@@ -1328,7 +1328,7 @@
     "user_selector": "Sélecteur d'utilisateurs",
     "user_subscription_notification_for_admin": "s'est inscrit dans l'espace d'activités %workspace%",
     "user_visit": "Audience/Visites utilisateurs",
-    "username": "Identifiant",
+    "username": "Nom d'utilisateur",
     "username_already_used": "L'identifiant %username% est déjà utilisé",
     "username_and_email_from_two_different_users": "Le nom d'utilisateur %username% et le courriel %email% sont tous deux utilisés et n'appartiennent pas au même utilisateur.",
     "username_found_at": "Le nom d'utilisateur %username% a été trouvé aux lignes: %lines%",
@@ -1514,5 +1514,9 @@
     "disable_user": "Désactiver l'utilisateur",
     "disable_personal_ws": "Supprimer l'espace personnel",
     "enable_user": "Activer l'utilisateur",
-    "enable_personal_ws": "Créer l'espace personnel"
+    "enable_personal_ws": "Créer l'espace personnel",
+    "password_confirm": "Confirmation du mot de passe",
+    "user_registration": "Inscription",
+    "registration_confirm": "Valider mon inscription",
+    "form_next_step": "Suivant"
 }

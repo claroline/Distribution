@@ -1,12 +1,17 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import {makeReducer} from '#/main/core/utilities/redux'
+import {makeFormReducer} from '#/main/core/layout/form/reducer'
 import {validate, isValid} from '#/main/core/registration/validator'
 
 import {
   USER_UPDATE,
   USER_VALIDATE
 } from './actions'
+
+const optionsReducer = makeReducer([], {
+
+})
 
 const userReducer = makeReducer({}, {
   [USER_UPDATE]: (state, action) => {
@@ -27,6 +32,9 @@ const userReducer = makeReducer({}, {
   }
 })
 
-export {
-  userReducer as reducer
+export const reducer = {
+  user: makeFormReducer('user', {
+    new: true
+  }),
+  options: optionsReducer
 }

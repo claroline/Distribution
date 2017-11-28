@@ -5,7 +5,7 @@ import {makeFormReducer} from '#/main/core/layout/form/reducer'
 
 const reducer = combineReducers({
   list: makeListReducer('locations.list'),
-  current: makeFormReducer('locations.current', {
+  current: makeFormReducer('locations.current', {}, {
     users: makeListReducer('locations.current.users'),
     organizations: makeListReducer('locations.current.organizations')
   })

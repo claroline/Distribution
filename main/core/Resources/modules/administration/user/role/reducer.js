@@ -9,7 +9,7 @@ const reducer = combineReducers({
   list: makeListReducer('roles.list', {
     filters: [{property: 'type', value: PLATFORM_ROLE}]
   }),
-  current: makeFormReducer('roles.current', {
+  current: makeFormReducer('roles.current', {}, {
     users: makeListReducer('roles.current.users'),
     groups: makeListReducer('roles.current.groups')
   })
