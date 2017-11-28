@@ -29,6 +29,8 @@ class UserValidator implements ValidatorInterface
 
     public function validate($data)
     {
+        //the big chunk of code allows us to know if the identifiers are already taken
+        //and prohibits the use of an already used adress email in a username field
         $errors  = [];
         $qb = $this->om->createQueryBuilder();
         $qb->select('DISTINCT user')
@@ -78,6 +80,7 @@ class UserValidator implements ValidatorInterface
     }
 
     //not sure yet if using this or deduce from getUnique()
+    //deduce from getUnique
     public function validateBulk(array $users)
     {
         foreach ($users as $user) {
@@ -92,6 +95,6 @@ class UserValidator implements ValidatorInterface
 
     public function getUniqueFields()
     {
-        return [];
+        return ['username', 'email'];
     }
 }

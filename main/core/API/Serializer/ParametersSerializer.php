@@ -196,8 +196,6 @@ class ParametersSerializer
         $this->deserializeRegistration($parameters, $data);
         $this->deserializeAuthentication($parameters, $data);
 
-        var_dump($parameters);
-
         return $parameters;
     }
 

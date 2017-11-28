@@ -42,7 +42,7 @@ class Create extends AbstractAction
      */
     public function getAction()
     {
-        return ['workspace', 'create', 'create_workspace'];
+        return ['workspace', 'create'];
     }
 
     public function getBatchSize()
@@ -56,6 +56,6 @@ class Create extends AbstractAction
 
     public function getSchema()
     {
-        return ['$root' => ['Claroline\CoreBundle\Entity\Workspace\Workspace', 'full']];
+        return ['$root' => 'Claroline\CoreBundle\Entity\Workspace\Workspace'];
     }
 }

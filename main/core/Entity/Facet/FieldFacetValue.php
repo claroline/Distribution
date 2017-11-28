@@ -15,6 +15,7 @@ use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Groups;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity
@@ -22,6 +23,8 @@ use JMS\Serializer\Annotation\Groups;
  */
 class FieldFacetValue
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -76,6 +79,11 @@ class FieldFacetValue
      * @Accessor(getter="getValue")
      */
     protected $value;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function setDateValue(\DateTime $dateValue = null)
     {

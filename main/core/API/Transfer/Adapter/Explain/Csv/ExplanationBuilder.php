@@ -2,11 +2,17 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv;
 
-/**
- *
- */
+use Symfony\Component\Translation\TranslatorInterface;
+
 class ExplanationBuilder
 {
+    private $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     private function explainObject($data, $explanation, $currentPath, $isArray = false)
     {
         foreach ($data->properties as $name => $property) {
@@ -23,7 +29,7 @@ class ExplanationBuilder
                 $explanation->addProperty(
                   $whereAmI,
                   $property->type,
-                  $this->getProperty($property, 'description', ''),
+                  $this->translator->trans($this->getDescription($property), [], 'schema'),
                   $required,
                   $isArray
               );
@@ -82,13 +88,17 @@ class ExplanationBuilder
                     $oneOfs[] = new Explanation([new Property(
                         $prop . '.' . $property,
                         $data->type,
-                        $this->getProperty($data, 'description', ''),
+                        $this->translator->trans($this->getDescription($data), [], 'schema'),
                         false,
                         true
                     )]);
                 }
 
-                $explanation->addOneOf($oneOfs, 'a description generated', true);
+                $explanation->addOneOf(
+                  $oneOfs,
+                  $this->translator->trans('One of the following list of properties', [], 'schema'),
+                  true
+                );
             }
         }
 
@@ -102,5 +112,10 @@ class ExplanationBuilder
         }
 
         return $default;
+    }
+
+    private function getDescription($property)
+    {
+        return $this->getProperty($property, 'description', '');
     }
 }

@@ -36,7 +36,7 @@ class Create extends AbstractAction
 
     public function getSchema()
     {
-        return ['$root' => ['Claroline\CoreBundle\Entity\User', 'full']];
+        return ['$root' => 'Claroline\CoreBundle\Entity\User'];
     }
 
     /**
@@ -47,7 +47,7 @@ class Create extends AbstractAction
      */
     public function getAction()
     {
-        return ['user', 'create', 'create_user'];
+        return ['user', 'create'];
     }
 
     public function getBatchSize()

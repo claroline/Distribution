@@ -3,10 +3,12 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The group id"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The group name"
     }
   },
   "required": ["name"],

@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PanelFacetRepository")
@@ -23,6 +24,8 @@ use JMS\Serializer\Annotation\SerializedName;
  */
 class PanelFacet
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -90,6 +93,7 @@ class PanelFacet
     {
         $this->fieldsFacet = new ArrayCollection();
         $this->panelFacetsRole = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()

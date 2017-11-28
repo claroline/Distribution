@@ -12,8 +12,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class FieldFacetValueSerializer
 {
-    const OPTION_MINIMAL = 'minimal';
-
     /** @var FieldFacetSerializer */
     private $fieldFacetSerializer;
 

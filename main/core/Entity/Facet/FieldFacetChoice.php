@@ -17,6 +17,7 @@ use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity()
@@ -24,6 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class FieldFacetChoice
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -82,6 +85,7 @@ class FieldFacetChoice
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getId()

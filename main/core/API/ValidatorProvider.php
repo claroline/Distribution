@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\API;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Claroline\CoreBundle\API\Validator\CustomValidationException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use JVal\Validator;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -29,16 +30,17 @@ class ValidatorProvider
      * GroupValidator constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param ObjectManager $om
      */
-    public function __construct(ObjectManager $om)
+    public function __construct(ObjectManager $om, SerializerProvider $serializer)
     {
-        $this->om = $om;
+        $this->om         = $om;
+        $this->serializer = $serializer;
     }
-
 
     /**
      * Registers a new validator.
@@ -95,7 +97,25 @@ class ValidatorProvider
      */
     public function validate($class, $data, $mode, $throwException = false)
     {
-        //todo: implements json-schema aswell
+        $schema = $this->serializer->getSchema($class);
+
+        //schema isn't always there yet
+        if ($schema) {
+            $validator = Validator::buildDefault();
+            $errors = $validator->validate((object)$data, $schema/*, 3rd param for uri resolution*/);
+
+            if (!empty($errors) && $throwException) {
+                throw new InvalidDataException(
+                    sprintf('Invalid data for "%s".', $class),
+                    $errors
+                );
+            }
+
+            if (count($errors) > 0) {
+                return $errors;
+            }
+        }
+
         //validate uniques
         $validator = $this->get($class);
         //can be deduced from the mapping, but we won't know
@@ -132,5 +152,7 @@ class ValidatorProvider
                 $errors
             );
         }
+
+        return $errors;
     }
 }

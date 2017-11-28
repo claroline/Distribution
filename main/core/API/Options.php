@@ -41,7 +41,13 @@ final class Options
     const THROW_VALIDATION_EXCEPTION = 'throw_validation_exception';
     const NO_VALIDATE = 'no_validate'; //if validation is too long for huge csv
     const NO_PERMISSION_CHECK = 'no_permission_check';
+
+    //in user crud so the user can be logged automatically after creation
+    //but it's probably not where the option should be located
     const USER_SELF_LOG = 'user_self_log';
+
+    //move me ? it's related to the facets
+    const PROFILE_SERIALIZE = 'profile_serialize';
 
     //maybe move this somewhere else: like UserOptions for Crud ?
     const SEND_EMAIL = 'send_email';

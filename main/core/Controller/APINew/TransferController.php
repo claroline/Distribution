@@ -44,7 +44,12 @@ class TransferController
     public function executeAction($action, Request $request)
     {
         $data = $this->getData($request);
-        $this->provider->execute($data['data'], $action, $data['mime_type']);
+        $this->provider->execute(
+            $data['data'],
+            $action,
+            $data['mime_type'],
+            $this->getLogFile($request)
+        );
 
         return new JsonResponse('done', 200);
     }
@@ -76,5 +81,10 @@ class TransferController
           'data' => $request->getContent(),
           'mime_type' => $request->headers->get('content_type')
         ];
+    }
+
+    private function getLogFile(Request $request)
+    {
+        return $request->query->get('log');
     }
 }

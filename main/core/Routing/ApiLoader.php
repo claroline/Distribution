@@ -83,6 +83,7 @@ class ApiLoader extends Loader
                 //find prefix from annotations
                 $controller = $this->findClass($file);
 
+                //ok so this is a controller
                 if ($controller) {
                     $refClass = new \ReflectionClass($controller);
                     $class = null;
@@ -90,17 +91,22 @@ class ApiLoader extends Loader
                     $prefix = '';
 
                     foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
+
+                        //If we defined api meta, we get all the free stuff fro the api
                         if ($annotation instanceof ApiMeta) {
                             $found = true;
                             $class = $annotation->class;
                         }
 
+                        //The route prefix is defined with the sf2 annotations
                         if ($annotation instanceof RouteConfig) {
                             $prefix = $annotation->getPath();
                         }
                     }
 
                     if ($found) {
+                        //makeRouteMap is an array of generic routes we want to use
+                        //when ApiMeta us defined
                         foreach ($this->makeRouteMap($controller, $routes, $prefix) as $name => $options) {
                             $pattern = '';
 
@@ -139,6 +145,7 @@ class ApiLoader extends Loader
           'deleteBulk' => ['', 'DELETE'],
           'list' => ['', 'GET'],
           'get' => ['{id}', 'GET'],
+          'exist' => ['exist/{field}/{value}', 'GET']
         ];
 
         $traits = class_uses($controller);

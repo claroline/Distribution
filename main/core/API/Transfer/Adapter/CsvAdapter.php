@@ -7,6 +7,7 @@ use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\ExplanationBuilder;
 use Claroline\CoreBundle\API\Utilities\ObjectHandler;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service()
@@ -14,6 +15,20 @@ use Claroline\CoreBundle\API\Utilities\ObjectHandler;
  */
 class CsvAdapter implements AdapterInterface
 {
+    private $translator;
+
+    /**
+     * @DI\InjectParams({
+     *     "translator" = @DI\Inject("translator")
+     * })
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * Create a php \stdClass object from the schema according to the data passed on.
      * Each line is a new object.
@@ -42,7 +57,7 @@ class CsvAdapter implements AdapterInterface
 
     private function buildObjectFromLine($properties, array $headers, Explanation $explanation)
     {
-        $object = new \stdClass();
+        $object = [];
 
         foreach ($headers as $index => $property) {
             //idiot condition proof in case something is wrong with the csv (like more lines or columns)
@@ -55,7 +70,7 @@ class CsvAdapter implements AdapterInterface
         return $object;
     }
 
-    private function addPropertyToObject(Property $property, \stdClass $object, $value)
+    private function addPropertyToObject(Property $property, array &$object, $value)
     {
         $propertyName = $property->getName();
 
@@ -63,8 +78,8 @@ class CsvAdapter implements AdapterInterface
             $keys = explode('.', $propertyName);
             $objectProp = array_pop($keys);
             $value = array_map(function ($value) use ($objectProp) {
-                $object = new \StdClass();
-                $object->{$objectProp} = $value;
+                $object = [];
+                $object[$objectProp] = $value;
 
                 return $object;
             }, explode(',', $value));
@@ -72,20 +87,23 @@ class CsvAdapter implements AdapterInterface
             $propertyName = implode('.', $keys);
         }
 
-        $handler = new ObjectHandler();
-        $handler->set($object, $propertyName, $value);
+        if ($property->getType() === 'integer') {
+            $value = (int)$value;
+        }
+
+        $this->set($object, $propertyName, $value);
     }
 
     public function explainSchema($data)
     {
-        $builder = new ExplanationBuilder();
+        $builder = new ExplanationBuilder($this->translator);
 
         return $builder->explainSchema($data);
     }
 
     public function explainIdentifiers(array $schemas)
     {
-        $builder = new ExplanationBuilder();
+        $builder = new ExplanationBuilder($this->translator);
 
         return $builder->explainIdentifiers($schemas);
     }
@@ -94,5 +112,25 @@ class CsvAdapter implements AdapterInterface
     public function getMimeTypes()
     {
         return ['text/csv', 'csv'];
+    }
+
+    //this is more or less the lodash equivalent of 'set'
+    private function set(array &$object, $keys, $value)
+    {
+        $keys = explode('.', $keys);
+        $depth = count($keys);
+        $key = array_shift($keys);
+
+        if ($depth === 1) {
+            $object[$key] = $value;
+        } else {
+            if (!isset($object[$key])) {
+                $object[$key] = [];
+            } elseif (!is_array($object[$key])) {
+                throw new \Exception('Cannot set property because it already exists as a non \stdClass');
+            }
+
+            $this->set($object[$key], implode('.', $keys), $value);
+        }
     }
 }

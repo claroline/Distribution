@@ -44,7 +44,7 @@ class Delete extends AbstractAction
 
     public function getSchema()
     {
-        return ['user' => ['Claroline\CoreBundle\Entity\User', 'partial']];
+        return ['user' => 'Claroline\CoreBundle\Entity\User'];
     }
 
     /**
@@ -55,7 +55,7 @@ class Delete extends AbstractAction
      */
     public function getAction()
     {
-        return ['user', 'delete', 'delete_user'];
+        return ['user', 'delete'];
     }
 
     public function getBatchSize()

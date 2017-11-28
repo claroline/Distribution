@@ -36,12 +36,12 @@ class AddUser extends AbstractAction
     {
         $user = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\User',
-            $data->user[0]
+            $data['user'][0]
         );
 
         $group = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\Group',
-            $data->group[0]
+            $data['group'][0]
         );
 
         $this->crud->patch($user, 'group', 'add', [$group]);
@@ -50,8 +50,8 @@ class AddUser extends AbstractAction
     public function getSchema()
     {
         return [
-          'group' => ['Claroline\CoreBundle\Entity\Group', 'partial'],
-          'user'  => ['Claroline\CoreBundle\Entity\User', 'partial']
+          'group' => 'Claroline\CoreBundle\Entity\Group',
+          'user'  => 'Claroline\CoreBundle\Entity\User'
         ];
     }
 
@@ -63,7 +63,7 @@ class AddUser extends AbstractAction
      */
     public function getAction()
     {
-        return ['group', 'add_user', 'add_user_to_group'];
+        return ['group', 'add_user'];
     }
 
     public function getBatchSize()

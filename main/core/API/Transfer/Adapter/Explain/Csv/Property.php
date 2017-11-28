@@ -30,4 +30,9 @@ class Property
     {
         return $this->isArray;
     }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
 }

@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Entity\Facet;
 use Claroline\CoreBundle\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\GeneralFacetPreferenceRepository")
@@ -21,6 +22,8 @@ use JMS\Serializer\Annotation\Groups;
  */
 class GeneralFacetPreference
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -69,6 +72,11 @@ class GeneralFacetPreference
      */
     protected $role;
 
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+    
     public function getId()
     {
         return $this->id;

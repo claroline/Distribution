@@ -6,52 +6,71 @@ use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Transfer\Adapter\AdapterInterface;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
+use Claroline\CoreBundle\Library\Logger\FileLogger;
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.api.transfer")
  */
 class TransferProvider
 {
+    use LoggableTrait;
+
     /**
      * Crud constructor.
      *
      * @DI\InjectParams({
-     *     "om"= @DI\Inject("claroline.persistence.object_manager"),
-     *     "rootDir" = @DI\Inject("%kernel.root_dir%"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "logDir"     = @DI\Inject("%claroline.param.import_log_dir%"),
+     *     "translator" = @DI\Inject("translator")
      * })
      *
      * @param ObjectManager      $om
      */
-    public function __construct(ObjectManager $om, $rootDir, SerializerProvider $serializer)
-    {
-        $this->adapters = [];
-        $this->actions = [];
-        $this->om = $om;
-        $this->rootDir = $rootDir . '/..';
+    public function __construct(
+        ObjectManager $om,
+        SerializerProvider $serializer,
+        $logDir,
+        TranslatorInterface $translator
+      ) {
+        $this->adapters   = [];
+        $this->actions    = [];
+        $this->om         = $om;
         $this->serializer = $serializer;
+        $this->logDir     = $logDir;
+        $this->translator = $translator;
+        $this->logger     = FileLogger::get(uniqid() . '.log', 'claroline.transfer.logger');
     }
 
-    public function execute($data, $action, $mimeType)
+    public function execute($data, $action, $mimeType, $logFile = null)
     {
+        if (!$logFile) {
+            $logFile = uniqid();
+        }
+
+        $logFile = $this->logDir . '/'. $logFile . '.log';
+        $this->logger = FileLogger::get($logFile, 'claroline.transfer.logger');
+
         $executor = $this->getExecutor($action);
+        $executor->setLogger($this->logger);
         $adapter = $this->getAdapter($mimeType);
 
         $schema = $executor->getSchema();
-        //$this->log("Building objets from data...");
+        //use the translator here
+        $this->log("Building objects from data...");
 
         if (array_key_exists('$root', $schema)) {
-            $jsonSchema = $this->serializer->get($schema['$root'][0])->getSchema();
-            $schemaData = $this->getSchemaFromPath($jsonSchema);
-            $explanation = $adapter->explainSchema(json_decode($schemaData));
+            $jsonSchema = $this->serializer->getSchema($schema['$root']);
+            $explanation = $adapter->explainSchema($jsonSchema);
             $data = $adapter->decodeSchema($data, $explanation);
         } else {
             foreach ($schema as $prop => $value) {
-                $jsonSchema = $this->serializer->get($value[0])->getSchema();
-                $schemaData = $this->getSchemaFromPath($jsonSchema);
+                $jsonSchema = $this->serializer->getSchema($value);
 
-                if ($data) {
-                    $identifiersSchema[$prop] = json_decode($schemaData);
+                if ($jsonSchema) {
+                    $identifiersSchema[$prop] = $jsonSchema;
                 }
             }
 
@@ -61,11 +80,12 @@ class TransferProvider
 
         $i = 0;
         $this->om->startFlushSuite();
+        $total = count($data);
+        $this->log("Executing operations...");
 
         foreach ($data as $data) {
             $i++;
-            //$this->log($executor->getLogMessage());
-            //
+            $this->log("{$i}/{$total}: " . $this->getActionName($executor));
             $executor->execute($data);
 
             if ($i % $executor->getBatchSize() === 0) {
@@ -81,6 +101,11 @@ class TransferProvider
         $mimeType = $file->getMimeType();
     }
 
+    public function getActionName(AbstractAction $action)
+    {
+        return $action->getAction()[0] . '_' . $action->getAction()[1];
+    }
+
     public function add($dependency)
     {
         if ($dependency instanceof AdapterInterface) {
@@ -89,7 +114,7 @@ class TransferProvider
         }
 
         if ($dependency instanceof AbstractAction) {
-            $this->actions[$dependency->getAction()[2]] = $dependency;
+            $this->actions[$this->getActionName($dependency)] = $dependency;
             return;
         }
 
@@ -110,23 +135,20 @@ class TransferProvider
             $schema = $action->getSchema();
 
             if (array_key_exists('$root', $schema)) {
-                $jsonSchema = $this->serializer->get($schema['$root'][0])->getSchema();
-                //maybe not an stdClass later
-                $data = $this->getSchemaFromPath($jsonSchema);
+                $jsonSchema = $this->serializer->getSchema($schema['$root']);
 
-                if ($data) {
-                    $explanation = $adapter->explainSchema(json_decode($data));
+                if ($jsonSchema) {
+                    $explanation = $adapter->explainSchema($jsonSchema);
                     $availables[$action->getAction()[0]][$action->getAction()[1]] = $explanation;
                 }
             } else {
                 $identifiersSchema = [];
 
                 foreach ($schema as $prop => $value) {
-                    $jsonSchema = $this->serializer->get($value[0])->getSchema();
-                    $data = $this->getSchemaFromPath($jsonSchema);
+                    $jsonSchema = $this->serializer->getSchema($value);
 
-                    if ($data) {
-                        $identifiersSchema[$prop] = json_decode($data);
+                    if ($jsonSchema) {
+                        $identifiersSchema[$prop] = $jsonSchema;
                     }
                 }
 
@@ -147,21 +169,5 @@ class TransferProvider
         }
 
         throw new \Exception('No adapter found for mime type ' . $mimeType);
-    }
-
-    public function getSchemaFromPath($url)
-    {
-        $path = explode('/', $url);
-        $absolutePath = $this->rootDir. '/vendor/claroline/distribution/'
-          . $path[1] . '/' . $path[2] . '/Resources/schema/' . $path[3];
-
-        $data = @file_get_contents($absolutePath);
-
-        return $data;
-    }
-
-    public function log($logMessage)
-    {
-        //do something smart here I guess
     }
 }

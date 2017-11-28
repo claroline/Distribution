@@ -3,17 +3,21 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "integer"
+      "type": "integer",
+      "description": "The workspace id"
     },
     "uuid": {
       "type": "string",
-      "format": "email"
+      "format": "email",
+      "description": "The workspace uuid"
     },
     "name": {
-      "type": "string"
+      "type": "string",
+      "description": "The workspace name"
     },
     "code": {
-      "type": "string"
+      "type": "string",
+      "description": "The workspace code"
     },
     "poster": {
       "type": "string"
@@ -22,22 +26,27 @@
       "type": "object",
       "properties": {
         "model": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "The workspace type"
         },
         "personal": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Is it a personal workspace"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "description": "The workspace description"
         },
         "created": {
-          "type": "string"
+          "type": "string",
+          "description": "The workspace creation date"
         },
         "creator": {
           "type": "object",
           "properties": {
             "id": {
-              "type": "string"
+              "type": "string",
+              "description": "The workspace creator"
             }
           }
         }
@@ -47,7 +56,8 @@
       "type": "object",
       "properties": {
         "displayable": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Is the workspace displayable"
         }
       }
     },
@@ -55,19 +65,24 @@
       "type": "object",
       "properties": {
         "accessibleFrom": {
-          "type": "string"
+          "type": "string",
+          "description": "The workspace opening date"
         },
         "accessibleUntil": {
-          "type": "string"
+          "type": "string",
+          "description": "The workspace closing date"
         },
         "maxUsers": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The maximum amount of users the workspace can have"
         },
         "maxStorage": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The maximum amount of data storage the workspace is allowed to take"
         },
         "maxResources": {
-          "type": "integer"
+          "type": "integer",
+          "description": "The maximum amount of resources in the workspace"
         }
       }
     },

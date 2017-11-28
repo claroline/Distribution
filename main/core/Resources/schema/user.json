@@ -8,19 +8,19 @@
     },
     "email": {
       "type": "string",
-      "description": "the user email adress"
+      "description": "The user email adress"
     },
     "firstName": {
       "type": "string",
-      "description": "the user first name"
+      "description": "The user first name"
     },
     "lastName": {
       "type": "string",
-      "description": "the user last name"
+      "description": "The user last name"
     },
     "username": {
       "type": "string",
-      "description": "the username"
+      "description": "The username"
     },
     "groups": {
       "type": "array",

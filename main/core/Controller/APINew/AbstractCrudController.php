@@ -59,6 +59,13 @@ abstract class AbstractCrudController extends ContainerAware
             new JsonResponse('', 404);
     }
 
+    public function existAction($class, $field, $value, $env)
+    {
+        $objects = $this->om->getRepository($class)->findBy([$field => $value]);
+
+        return new JsonResponse(count($objects) > 0);
+    }
+
     public function listAction(Request $request, $class, $env)
     {
         return new JsonResponse($this->finder->search(
@@ -161,7 +168,8 @@ abstract class AbstractCrudController extends ContainerAware
             'get' => [],
             'create' => [],
             'update' => [],
-            'deleteBulk' => []
+            'deleteBulk' => [],
+            'exist' => []
         ];
     }
 

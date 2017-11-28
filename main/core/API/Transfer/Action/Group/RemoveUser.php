@@ -50,8 +50,8 @@ class RemoveUser extends AbstractAction
     public function getSchema()
     {
         return [
-          'group' => ['Claroline\CoreBundle\Entity\Group', 'partial'],
-          'user'  => ['Claroline\CoreBundle\Entity\User', 'partial']
+          'group' => 'Claroline\CoreBundle\Entity\Group',
+          'user'  => 'Claroline\CoreBundle\Entity\User'
         ];
     }
 
@@ -63,7 +63,7 @@ class RemoveUser extends AbstractAction
      */
     public function getAction()
     {
-        return ['group', 'remove_user', 'remove_user_from_group'];
+        return ['group', 'remove_user'];
     }
 
     public function getLogMessage($data)

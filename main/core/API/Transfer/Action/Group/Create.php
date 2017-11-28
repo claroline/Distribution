@@ -42,7 +42,7 @@ class Create extends AbstractAction
      */
     public function getAction()
     {
-        return ['group', 'create', 'create_group'];
+        return ['group', 'create'];
     }
 
     public function getBatchSize()
@@ -56,6 +56,6 @@ class Create extends AbstractAction
 
     public function getSchema()
     {
-        return ['$root' => ['Claroline\CoreBundle\Entity\Group', 'full']];
+        return ['$root' => 'Claroline\CoreBundle\Entity\Group'];
     }
 }
