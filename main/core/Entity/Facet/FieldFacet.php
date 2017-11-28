@@ -141,6 +141,11 @@ class FieldFacet
      */
     protected $resourceNode;
 
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    protected $options;
+
     public function __construct()
     {
         $this->fieldsFacetValue = new ArrayCollection();
@@ -356,5 +361,10 @@ class FieldFacet
     public function setResourceNode(ResourceNode $resourceNode = null)
     {
         $this->resourceNode = $resourceNode;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
     }
 }

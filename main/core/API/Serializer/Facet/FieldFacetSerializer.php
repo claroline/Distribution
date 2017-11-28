@@ -30,7 +30,8 @@ class FieldFacetSerializer
               'type'     => $fieldFacet->getFieldType(),
               //maybe translate this
               'label'    => $fieldFacet->getName(),
-              'required' => $fieldFacet->isRequired()
+              'required' => $fieldFacet->isRequired(),
+              'options'  => $fieldFacet->getOptions()
             ];
 
             if (true) {
