@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\API\Serializer\Facet;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\API\SerializerProvider;
 
 /**
  * @DI\Service("claroline.serializer.field_facet")
@@ -33,10 +34,6 @@ class FieldFacetSerializer
               'required' => $fieldFacet->isRequired(),
               'options'  => $fieldFacet->getOptions()
             ];
-
-            if (true) {
-                $serialized['options'] = [];
-            }
 
             return $serialized;
         }

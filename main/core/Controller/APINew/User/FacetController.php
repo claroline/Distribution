@@ -17,22 +17,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Claroline\CoreBundle\API\Options;
 
 /**
- * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\FieldFacet")
- * @Route("fieldfacet")
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\Facet")
+ * @Route("facet")
  */
-class FieldFacetController extends AbstractCrudController
+class FacetController extends AbstractCrudController
 {
     public function getName()
     {
-        return 'fieldfacet';
-    }
-
-    public function getOptions()
-    {
-        $list = [Options::PROFILE_SERIALIZE];
-
-        return [
-            'list' => $list
-        ];
+        return 'facet';
     }
 }

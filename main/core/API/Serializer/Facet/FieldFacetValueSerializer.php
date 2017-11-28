@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\API\Serializer\Facet;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\API\SerializerProvider;
 
 /**
  * @DI\Service("claroline.serializer.field_facet_value")
@@ -12,6 +13,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class FieldFacetValueSerializer
 {
+    const OPTION_MINIMAL = 'minimal';
+
     /** @var FieldFacetSerializer */
     private $fieldFacetSerializer;
 
@@ -47,6 +50,11 @@ class FieldFacetValueSerializer
      */
     public function serialize(FieldFacetValue $fieldFacetValue, array $options = [])
     {
+        //this is the bloc that should be used
+        if (in_array(Options::PROFILE_SERIALIZE, $options)) {
+        }
+
+        //probably used by the clacoform
         $serialized = [
             'id' => $fieldFacetValue->getId(),
             'value' => $fieldFacetValue->getValue(),

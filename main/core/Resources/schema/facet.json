@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The facet id"
+    },
+    "name": {
+      "type": "string",
+      "description": "The facet name"
+    },
+    "position": {
+      "type": "integer",
+      "description": "The facet position"
+    },
+    "section": {
+      "type": "array",
+      "description": "The panel list",
+      "uniqueItems": true,
+      "items": { "$ref": "facet.json#" }
+    }
+  },
+  "required": ["name"],
+  "claroIds": ["id", "name"]
+}

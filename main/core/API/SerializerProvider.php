@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use JVal\Utils;
 
 /**
  * @DI\Service("claroline.api.serializer")
@@ -84,8 +85,10 @@ class SerializerProvider
             }
         }
 
+        $className = is_object($object) ? get_class($object): $object;
+
         throw new \Exception(
-            sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', get_class($object))
+            sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', $className)
         );
     }
 
@@ -148,9 +151,9 @@ class SerializerProvider
             $absolutePath = $this->rootDir. '/vendor/claroline/distribution/'
             . $path[1] . '/' . $path[2] . '/Resources/schema/' . $path[3];
 
-            $data = @file_get_contents($absolutePath);
+            $schema = Utils::LoadJsonFromFile($absolutePath);
 
-            return json_decode($data);
+            return $schema;
         }
     }
 }

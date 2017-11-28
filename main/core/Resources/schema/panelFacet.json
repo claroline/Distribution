@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "uuid": {
+      "type": "string",
+      "format": "string",
+      "description": "The panel uuid"
+    },
+    "name": {
+      "type": "string",
+      "description": "The panel name"
+    },
+    "position": {
+      "type": "integer",
+      "description": "The panel position"
+    }
+  },
+  "claroIds": ["id"],
+  "required": ["name"]
+}

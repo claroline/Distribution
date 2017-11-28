@@ -55,6 +55,15 @@ class TransferController
     }
 
     /**
+     * @Route("/action/{name}/{format}", name="apiv2_transfer_action")
+     * @Method("GET")
+     */
+    public function getAction($name, $format)
+    {
+        return new JsonResponse($this->provider->explainAction($name, $format));
+    }
+
+    /**
      * @Route("/actions/{format}", name="apiv2_transfer_actions")
      * @Method("GET")
      */
