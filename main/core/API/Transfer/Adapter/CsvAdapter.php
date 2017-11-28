@@ -92,8 +92,7 @@ class CsvAdapter implements AdapterInterface
             $value = (int)$value;
         }
 
-        $handler = new ObjectHandler();
-        $handler->set($object, $propertyName, $value);
+        $this->set($object, $propertyName, $value);
     }
 
     public function explainSchema($data)
@@ -114,5 +113,25 @@ class CsvAdapter implements AdapterInterface
     public function getMimeTypes()
     {
         return ['text/csv', 'csv'];
+    }
+
+    //this is more or less the lodash equivalent of 'set'
+    private function set(\stdClass $object, $keys, $value)
+    {
+        $keys = explode('.', $keys);
+        $depth = count($keys);
+        $key = array_shift($keys);
+
+        if ($depth === 1) {
+            $object->{$key} = $value;
+        } else {
+            if (!isset($object->{$key})) {
+                $object->{$key} = new \stdClass();
+            } elseif (!$object->{$key} instanceof \stdClass) {
+                throw new \Exception('Cannot set property because it already exists as a non \stdClass');
+            }
+
+            $this->set($object->{$key}, implode('.', $keys), $value);
+        }
     }
 }
