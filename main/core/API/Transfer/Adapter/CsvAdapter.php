@@ -52,6 +52,7 @@ class CsvAdapter implements AdapterInterface
             $data[] = $this->buildObjectFromLine($properties, $headers, $explanation);
         }
 
+        //it currently works with array
         return json_decode(json_encode($data), true);
     }
 

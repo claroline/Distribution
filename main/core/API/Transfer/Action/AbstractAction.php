@@ -10,6 +10,8 @@ abstract class AbstractAction
     use LoggableTrait;
 
     abstract public function execute($data);
+    //better explain the structure
+    abstract public function getSchema();
 
     /**
      * return an array with the following element:

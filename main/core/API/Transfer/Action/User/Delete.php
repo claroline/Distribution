@@ -44,7 +44,7 @@ class Delete extends AbstractAction
 
     public function getSchema()
     {
-        return ['user' => ['Claroline\CoreBundle\Entity\User', 'partial']];
+        return ['user' => 'Claroline\CoreBundle\Entity\User'];
     }
 
     /**

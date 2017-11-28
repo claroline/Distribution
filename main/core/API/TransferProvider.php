@@ -8,6 +8,7 @@ use Claroline\CoreBundle\API\Transfer\Adapter\AdapterInterface;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
 use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.api.transfer")
@@ -22,7 +23,8 @@ class TransferProvider
      * @DI\InjectParams({
      *     "om"         = @DI\Inject("claroline.persistence.object_manager"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
-     *     "logDir"     = @DI\Inject("%claroline.param.import_log_dir%")
+     *     "logDir"     = @DI\Inject("%claroline.param.import_log_dir%"),
+     *     "translator" = @DI\Inject("translator")
      * })
      *
      * @param ObjectManager      $om
@@ -30,13 +32,15 @@ class TransferProvider
     public function __construct(
         ObjectManager $om,
         SerializerProvider $serializer,
-        $logDir
+        $logDir,
+        TranslatorInterface $translator
       ) {
         $this->adapters   = [];
         $this->actions    = [];
         $this->om         = $om;
         $this->serializer = $serializer;
         $this->logDir     = $logDir;
+        $this->translator = $translator;
         $this->logger     = FileLogger::get(uniqid() . '.log', 'claroline.transfer.logger');
     }
 
@@ -54,15 +58,16 @@ class TransferProvider
         $adapter = $this->getAdapter($mimeType);
 
         $schema = $executor->getSchema();
+        //use the translator here
         $this->log("Building objects from data...");
 
         if (array_key_exists('$root', $schema)) {
-            $jsonSchema = $this->serializer->getSchema($schema['$root'][0]);
+            $jsonSchema = $this->serializer->getSchema($schema['$root']);
             $explanation = $adapter->explainSchema($jsonSchema);
             $data = $adapter->decodeSchema($data, $explanation);
         } else {
             foreach ($schema as $prop => $value) {
-                $jsonSchema = $this->serializer->getSchema($value[0]);
+                $jsonSchema = $this->serializer->getSchema($value);
 
                 if ($jsonSchema) {
                     $identifiersSchema[$prop] = $jsonSchema;
@@ -130,7 +135,7 @@ class TransferProvider
             $schema = $action->getSchema();
 
             if (array_key_exists('$root', $schema)) {
-                $jsonSchema = $this->serializer->getSchema($schema['$root'][0]);
+                $jsonSchema = $this->serializer->getSchema($schema['$root']);
 
                 if ($jsonSchema) {
                     $explanation = $adapter->explainSchema($jsonSchema);
@@ -140,7 +145,7 @@ class TransferProvider
                 $identifiersSchema = [];
 
                 foreach ($schema as $prop => $value) {
-                    $jsonSchema = $this->serializer->getSchema($value[0]);
+                    $jsonSchema = $this->serializer->getSchema($value);
 
                     if ($jsonSchema) {
                         $identifiersSchema[$prop] = $jsonSchema;

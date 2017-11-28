@@ -36,7 +36,7 @@ class Create extends AbstractAction
 
     public function getSchema()
     {
-        return ['$root' => ['Claroline\CoreBundle\Entity\User', 'full']];
+        return ['$root' => 'Claroline\CoreBundle\Entity\User'];
     }
 
     /**

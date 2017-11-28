@@ -50,8 +50,8 @@ class AddUser extends AbstractAction
     public function getSchema()
     {
         return [
-          'group' => ['Claroline\CoreBundle\Entity\Group', 'partial'],
-          'user'  => ['Claroline\CoreBundle\Entity\User', 'partial']
+          'group' => 'Claroline\CoreBundle\Entity\Group',
+          'user'  => 'Claroline\CoreBundle\Entity\User'
         ];
     }
 

@@ -56,6 +56,6 @@ class Create extends AbstractAction
 
     public function getSchema()
     {
-        return ['$root' => ['Claroline\CoreBundle\Entity\Group', 'full']];
+        return ['$root' => 'Claroline\CoreBundle\Entity\Group'];
     }
 }
