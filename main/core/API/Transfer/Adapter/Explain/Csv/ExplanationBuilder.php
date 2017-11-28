@@ -88,13 +88,17 @@ class ExplanationBuilder
                     $oneOfs[] = new Explanation([new Property(
                         $prop . '.' . $property,
                         $data->type,
-                        $this->translator->trans($this->getDescription($property), [], 'schema'),
+                        $this->translator->trans($this->getDescription($data), [], 'schema'),
                         false,
                         true
                     )]);
                 }
 
-                $explanation->addOneOf($oneOfs, 'a description generated', true);
+                $explanation->addOneOf(
+                  $oneOfs,
+                  $this->translator->trans('One of the following list of properties', [], 'schema'),
+                  true
+                );
             }
         }
 

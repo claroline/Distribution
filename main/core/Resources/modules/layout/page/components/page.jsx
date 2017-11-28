@@ -7,7 +7,7 @@ import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 import {makeModal} from '#/main/core/layout/modal'
 
-import {FlyingAlerts} from '#/main/core/layout/alert/flying-alerts.sjx'
+//import {FlyingAlerts} from '#/main/core/layout/alert/flying-alerts.sjx'
 
 const PageWrapper = props => !props.embedded ?
   <main className={props.className}>
