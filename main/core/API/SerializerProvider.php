@@ -5,6 +5,11 @@ namespace Claroline\CoreBundle\API;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JVal\Utils;
+use JVal\Registry;
+use JVal\Resolver;
+use JVal\Walker;
+use JVal\Context;
+use JVal\Uri;
 
 /**
  * @DI\Service("claroline.api.serializer")
@@ -37,6 +42,7 @@ class SerializerProvider
     {
         $this->om = $om;
         $this->rootDir = $rootDir . '/..';
+        $this->baseUri = "https://github.com/claroline/Distribution/tree/master";
     }
 
     /**
@@ -153,7 +159,37 @@ class SerializerProvider
 
             $schema = Utils::LoadJsonFromFile($absolutePath);
 
+            $hook = function ($uri) {
+                return $this->resolveRef($uri);
+            };
+
+            //this is the resolution of the $ref thingy with Jval classes
+            $registry = new Registry();
+            //resolver can take a Closure parameter to change the $ref value
+            $resolver = new Resolver();
+            $resolver->setPreFetchHook($hook);
+            $walker = new Walker($registry, $resolver);
+            $context = new Context();
+
+            $schema = $walker->resolveReferences($schema, new Uri(''));
+            $schema = $walker->parseSchema($schema, $context);
+
             return $schema;
         }
+    }
+
+    /**
+     * Converts distant schema URI to a local one to load schemas from source code.
+     *
+     * @param string $uri
+     *
+     * @return string mixed
+     */
+    private function resolveRef($uri)
+    {
+        $uri = str_replace($this->baseUri, '', $uri);
+        $schemaDir = realpath("{$this->rootDir}/vendor/claroline/distribution");
+
+        return $schemaDir.'/'.$uri;
     }
 }
