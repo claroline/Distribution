@@ -130,6 +130,11 @@ class TransferProvider
     {
         $adapter = $this->getAdapter($format);
         $action = $this->getExecutor($actionName);
+
+        if (!$action->supports($format)) {
+            throw new \Exception('This action is not supported for the ' . $format . ' format.');
+        }
+
         $schema = $action->getSchema();
 
         if (array_key_exists('$root', $schema)) {
@@ -157,7 +162,9 @@ class TransferProvider
     {
         $availables = [];
 
-        foreach ($this->actions as $action) {
+        foreach (array_filter($this->actions, function ($action) use ($format) {
+            return $action->supports($format);
+        }) as $action) {
             $schema = $action->getAction();
             $availables[$schema[0]][$schema[1]] = $this->explainAction($this->getActionName($action), $format);
         }

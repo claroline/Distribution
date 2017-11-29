@@ -21,6 +21,11 @@ abstract class AbstractAction
      */
     abstract public function getAction();
 
+    public function supports($format)
+    {
+        return in_array($format, ['csv', 'json']);
+    }
+
     public function getBatchSize()
     {
         return 100;

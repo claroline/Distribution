@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 
 /**
  * @DI\Service("claroline.serializer.facet")
@@ -14,13 +15,14 @@ use Claroline\CoreBundle\API\SerializerProvider;
  */
 class FacetSerializer
 {
+    use SerializerTrait;
+
     /**
      * @DI\InjectParams({
-     *     "serializer"           = @DI\Inject("claroline.api.serializer")
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param FieldFacetSerializer $fieldFacetSerializer
-     * @param UserSerializer       $userSerializer
+     * @param SerializerProvider $serializer
      */
     public function __construct(
         SerializerProvider $serializer
@@ -53,8 +55,15 @@ class FacetSerializer
         ];
     }
 
-    public function deserialize()
+    public function deserialize(array $data, Facet $facet = null, array $options = [])
     {
+        //$count = $this->facetRepo->countFacets($isMain);
+        $this->sipe('name', 'setName', $data, $facet);
+        $this->sipe('meta.isMain', 'setIsMain', $data, $facet);
+        $this->sipe('meta.forceCreation', 'setForceCreationForm', $data, $facet);
+
+        $position = 0;
+        $facet->setPosition($count);
     }
 
     public function getSchema()

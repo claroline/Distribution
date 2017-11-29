@@ -44,6 +44,11 @@ class Create extends AbstractAction
         ];
     }
 
+    public function supports($format)
+    {
+        return in_array($format, ['json']);
+    }
+
     /**
      * return an array with the following element:
      * - section

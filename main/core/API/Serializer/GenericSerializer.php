@@ -9,6 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.generic_serializer")
+ * This class is usefull for quick dev/prototype/simple objects but you shouldn't use it too much
  */
 class GenericSerializer
 {

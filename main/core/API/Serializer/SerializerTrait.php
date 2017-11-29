@@ -11,10 +11,15 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
+use Claroline\CoreBundle\API\Utils\ArrayUtils;
+
 trait SerializerTrait
 {
     /** @var GenericSerializer */
     protected $genericSerializer;
+
+    /** @var arrayUtils */
+    private $arrayUtils;
 
     /**
      * Injects Serializer service.
@@ -38,5 +43,38 @@ trait SerializerTrait
     public function deserialize($data, $object, array $options = [])
     {
         return $this->genericSerializer->deserialize($data, $object, $options);
+    }
+
+    /**
+     * @param $prop   - the property path
+     * @param $setter - the setter to use
+     * @param $data   - the data array
+     * @param $object - the object to use the setter on
+     */
+    public function setIfPropertyExists($prop, $setter, $data, $object)
+    {
+        if (!$this->arrayUtils) {
+            $this->arrayUtils = new ArrayUtils();
+        }
+
+        try {
+            $value = $this->arrayUtils->get($data, $prop);
+            $object->{$setter} = $value;
+        } catch (\Exception $e) {
+            //probably couldn't find the value with a get
+        }
+    }
+
+    /**
+     * Alias of setIfPropertyExists
+     *
+     * @param $prop   - the property path
+     * @param $setter - the setter to use
+     * @param $data   - the data array
+     * @param $object - the object to use the setter on
+     */
+    public function sipe($prop, $setter, $data, $object)
+    {
+        $this->setIfPropertyExists($prop, $setter, $data, $object);
     }
 }
