@@ -14,6 +14,12 @@
     "position": {
       "type": "integer",
       "description": "The panel position"
+    },
+    "fields": {
+      "type": "array",
+      "description": "The field list",
+      "uniqueItems": true,
+      "items": { "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schema/fieldFacet.json" }
     }
   },
   "claroIds": ["id"],

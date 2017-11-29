@@ -15,6 +15,10 @@ class ExplanationBuilder
 
     private function explainObject($data, $explanation, $currentPath, $isArray = false)
     {
+        if (!isset($data->properties)) {
+            return;
+        }
+
         foreach ($data->properties as $name => $property) {
             $whereAmI = $currentPath === '' ? $name: $currentPath . '.' . $name;
 

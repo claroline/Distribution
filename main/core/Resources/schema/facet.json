@@ -22,5 +22,5 @@
     }
   },
   "required": ["name"],
-  "claroIds": ["id", "name"]
+  "claroIds": ["id"]
 }

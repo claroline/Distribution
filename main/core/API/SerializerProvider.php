@@ -164,17 +164,13 @@ class SerializerProvider
             };
 
             //this is the resolution of the $ref thingy with Jval classes
-            $registry = new Registry();
             //resolver can take a Closure parameter to change the $ref value
             $resolver = new Resolver();
             $resolver->setPreFetchHook($hook);
-            $walker = new Walker($registry, $resolver);
-            $context = new Context();
-
+            $walker = new Walker(new Registry(), $resolver);
             $schema = $walker->resolveReferences($schema, new Uri(''));
-            $schema = $walker->parseSchema($schema, $context);
 
-            return $schema;
+            return $walker->parseSchema($schema, new Context());
         }
     }
 
