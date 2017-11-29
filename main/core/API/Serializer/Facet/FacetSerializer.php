@@ -24,9 +24,8 @@ class FacetSerializer
      *
      * @param SerializerProvider $serializer
      */
-    public function __construct(
-        SerializerProvider $serializer
-    ) {
+    public function __construct(SerializerProvider $serializer)
+    {
         $this->serializer = $serializer;
     }
 
@@ -57,13 +56,20 @@ class FacetSerializer
 
     public function deserialize(array $data, Facet $facet = null, array $options = [])
     {
+        $panelFacetSerializer = $this->serializer
+          ->get('Claroline\CoreBundle\Entity\Facet\PanelFacet');
+
         //$count = $this->facetRepo->countFacets($isMain);
         $this->sipe('name', 'setName', $data, $facet);
         $this->sipe('meta.isMain', 'setIsMain', $data, $facet);
+        $this->sipe('position', 'setPosition', $data, $facet);
         $this->sipe('meta.forceCreation', 'setForceCreationForm', $data, $facet);
 
-        $position = 0;
-        $facet->setPosition($count);
+        if (isset($data['sections'])) {
+            foreach ($data['sections'] as $section) {
+                //$this->panelFacetSerializer->deserialize()
+            }
+        }
     }
 
     public function getSchema()
