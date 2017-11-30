@@ -7,6 +7,7 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -229,8 +230,10 @@ class PaperController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        return new StreamedResponse(function () use ($exercise) {
-            $this->exerciseManager->exportResultsToCsv($exercise);
+        $data = $this->exerciseManager->exportResultsToCsv($exercise);
+
+        return new StreamedResponse(function () use ($data) {
+            return $data;
         }, 200, [
             'Content-Type' => 'application/force-download',
             'Content-Disposition' => 'attachment; filename="export.csv"',
