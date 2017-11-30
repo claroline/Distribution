@@ -379,7 +379,7 @@ class ExerciseManager
                     }
 
                     $blankData = [];
-                    for ($i = 0; $i < $countBlank; $i++) {
+                    for ($i = 0; $i < $countBlank; ++$i) {
                         $blankData[] = '';
                     }
 
