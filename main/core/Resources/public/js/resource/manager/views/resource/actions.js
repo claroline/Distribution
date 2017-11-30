@@ -332,7 +332,7 @@
       var type = this.parameters.resourceTypes[node[1]]
       var act = type.actions[action]
 
-      return act ? node[5] & act.mask: false
+      return act ? node[5] & act.mask: 0
     },
     render: function (event) {
       if (event.isSearchMode && !this.isSearchMode) {
