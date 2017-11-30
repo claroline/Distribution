@@ -59,14 +59,13 @@ trait SerializerTrait
 
         try {
             $value = $this->arrayUtils->get($data, $prop);
-            $object->{$setter} = $value;
+            $object->{$setter}($value);
         } catch (\Exception $e) {
-            //probably couldn't find the value with a get
         }
     }
 
     /**
-     * Alias of setIfPropertyExists
+     * Alias of setIfPropertyExists.
      *
      * @param $prop   - the property path
      * @param $setter - the setter to use

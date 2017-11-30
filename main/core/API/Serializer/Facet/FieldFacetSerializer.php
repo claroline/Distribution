@@ -2,10 +2,10 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Facet;
 
+use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\API\Options;
-use Claroline\CoreBundle\API\SerializerProvider;
 
 /**
  * @DI\Service("claroline.serializer.field_facet")
@@ -13,6 +13,8 @@ use Claroline\CoreBundle\API\SerializerProvider;
  */
 class FieldFacetSerializer
 {
+    use SerializerTrait;
+
     /**
      * Serializes a FieldFacet entity for the JSON api.
      *
@@ -26,13 +28,13 @@ class FieldFacetSerializer
         if (in_array(Options::PROFILE_SERIALIZE, $options)) {
             $serialized = [
               //no uuid yet
-              'id'       => $fieldFacet->getId(),
-              'name'     => $fieldFacet->getName(),
-              'type'     => $fieldFacet->getFieldType(),
+              'id' => $fieldFacet->getId(),
+              'name' => $fieldFacet->getName(),
+              'type' => $fieldFacet->getFieldType(),
               //maybe translate this
-              'label'    => $fieldFacet->getName(),
+              'label' => $fieldFacet->getName(),
               'required' => $fieldFacet->isRequired(),
-              'options'  => $fieldFacet->getOptions()
+              'options' => $fieldFacet->getOptions(),
             ];
 
             return $serialized;
@@ -50,7 +52,12 @@ class FieldFacetSerializer
         return $serialized;
     }
 
-    public function deserialize()
+    public function deserialize(array $data, FieldFacet $field = null, array $options = [])
     {
+        $this->sipe('name', 'setName', $data, $field);
+        $this->sipe('type', 'setType', $data, $field);
+        $this->sipe('label', 'setName', $data, $field);
+        $this->sipe('required', 'setRequired', $data, $field);
+        $this->sipe('option', 'setOption', $data, $field);
     }
 }

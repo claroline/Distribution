@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API;
 
-use Claroline\CoreBundle\Event\CrudEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
@@ -104,7 +103,6 @@ class Crud
     {
         // validates submitted data.
         $this->validate($class, $data, ValidatorProvider::UPDATE);
-
         // gets entity from raw data.
         $object = $this->serializer->deserialize($class, $data, $options);
 
@@ -141,8 +139,8 @@ class Crud
     /**
      * Deletes a list of entries of `class`.
      *
-     * @param array  $data    - the list of entries to delete
-     * @param array  $options - additional delete options
+     * @param array $data    - the list of entries to delete
+     * @param array $options - additional delete options
      */
     public function deleteBulk(array $data, array $options = [])
     {
@@ -250,9 +248,9 @@ class Crud
      */
     public function dispatch($name, $object, array $options = [])
     {
-        $generic        = $this->dispatcher->dispatch($name, 'Crud', [$object, $options]);
+        $generic = $this->dispatcher->dispatch($name, 'Crud', [$object, $options]);
         $serializedName = $name.'_'.strtolower(str_replace('\\', '_', get_class($object)));
-        $specific       = $this->dispatcher->dispatch($serializedName, 'Crud', [$object, $options]);
+        $specific = $this->dispatcher->dispatch($serializedName, 'Crud', [$object, $options]);
 
         return $generic->isAllowed() && $specific->isAllowed();
     }

@@ -2,13 +2,10 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action\Facet;
 
-use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\CoreBundle\Security\PermissionCheckerTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -16,31 +13,38 @@ use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
  */
 class Create extends AbstractAction
 {
+    /** @var Crud */
+    private $crud;
+
     /**
      * Action constructor.
      *
      * @DI\InjectParams({
-     *     "crud"       = @DI\Inject("claroline.api.crud"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "crud"       = @DI\Inject("claroline.api.crud")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud, SerializerProvider $serializer)
+    public function __construct(Crud $crud)
     {
         $this->crud = $crud;
-        $this->serializer = $serializer;
     }
 
-    public function execute($data)
+    /**
+     * @param array $data
+     */
+    public function execute(array $data)
     {
-        //nothing yet
+        return $this->crud->create('Claroline\CoreBundle\Entity\Facet\Facet', $data);
     }
 
+    /**
+     * @return array
+     */
     public function getSchema()
     {
         return [
-          '$root' => 'Claroline\CoreBundle\Entity\Facet\Facet'
+          '$root' => 'Claroline\CoreBundle\Entity\Facet\Facet',
         ];
     }
 
@@ -50,9 +54,7 @@ class Create extends AbstractAction
     }
 
     /**
-     * return an array with the following element:
-     * - section
-     * - action
+     * @return array
      */
     public function getAction()
     {

@@ -2,14 +2,14 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 
 abstract class AbstractAction
 {
     use LoggableTrait;
 
-    abstract public function execute($data);
+    abstract public function execute(array $data);
     //better explain the structure
     abstract public function getSchema();
 
@@ -17,7 +17,7 @@ abstract class AbstractAction
      * return an array with the following element:
      * - section
      * - action
-     * - action name
+     * - action name.
      */
     abstract public function getAction();
 
@@ -34,6 +34,11 @@ abstract class AbstractAction
     public function clear(ObjectManager $om)
     {
         return;
+    }
+
+    public function getConfig()
+    {
+        return [];
     }
 
     public function setLogger($logger)

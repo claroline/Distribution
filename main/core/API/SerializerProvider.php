@@ -4,12 +4,12 @@ namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use JVal\Utils;
+use JVal\Context;
 use JVal\Registry;
 use JVal\Resolver;
-use JVal\Walker;
-use JVal\Context;
 use JVal\Uri;
+use JVal\Utils;
+use JVal\Walker;
 
 /**
  * @DI\Service("claroline.api.serializer")
@@ -41,8 +41,8 @@ class SerializerProvider
     public function setObjectManager(ObjectManager $om, $rootDir)
     {
         $this->om = $om;
-        $this->rootDir = $rootDir . '/..';
-        $this->baseUri = "https://github.com/claroline/Distribution/tree/master";
+        $this->rootDir = $rootDir.'/..';
+        $this->baseUri = 'https://github.com/claroline/Distribution/tree/master';
     }
 
     /**
@@ -91,7 +91,7 @@ class SerializerProvider
             }
         }
 
-        $className = is_object($object) ? get_class($object): $object;
+        $className = is_object($object) ? get_class($object) : $object;
 
         throw new \Exception(
             sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', $className)
@@ -144,7 +144,9 @@ class SerializerProvider
             $object = new $class();
         }
 
-        return $serializer->deserialize($data, $object, $options);
+        $serializer->deserialize($data, $object, $options);
+
+        return $object;
     }
 
     public function getSchema($class)
@@ -154,8 +156,8 @@ class SerializerProvider
         if (method_exists($serializer, 'getSchema')) {
             $url = $serializer->getSchema();
             $path = explode('/', $url);
-            $absolutePath = $this->rootDir. '/vendor/claroline/distribution/'
-            . $path[1] . '/' . $path[2] . '/Resources/schema/' . $path[3];
+            $absolutePath = $this->rootDir.'/vendor/claroline/distribution/'
+            .$path[1].'/'.$path[2].'/Resources/schema/'.$path[3];
 
             $schema = Utils::LoadJsonFromFile($absolutePath);
 

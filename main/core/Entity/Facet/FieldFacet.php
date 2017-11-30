@@ -11,13 +11,13 @@
 
 namespace Claroline\CoreBundle\Entity\Facet;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FieldFacetRepository")
@@ -342,6 +342,16 @@ class FieldFacet
     public function setIsRequired($isRequired)
     {
         $this->isRequired = $isRequired;
+    }
+
+    /**
+     * @param bool $isRequired
+     *
+     * alias of setRequired
+     */
+    public function setRequired($isRequired)
+    {
+        $this->setIsRequired($isRequired);
     }
 
     public function getPrettyName()

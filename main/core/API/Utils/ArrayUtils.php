@@ -5,7 +5,7 @@ namespace Claroline\CoreBundle\API\Utils;
 class ArrayUtils
 {
     /**
-     * This is more or less the equivalent of lodash set for array
+     * This is more or less the equivalent of lodash set for array.
      *
      * @param &$object - the array
      * @param $keys    - the property path
@@ -31,7 +31,7 @@ class ArrayUtils
     }
 
     /**
-     * This is more or less the equivalent of lodash get for array
+     * This is more or less the equivalent of lodash get for array.
      *
      * @param &$object - the array
      * @param $keys    - the property path
@@ -39,12 +39,12 @@ class ArrayUtils
      */
     public function get($object, $keys)
     {
-        $keys = explode('.', $keys);
-        $key = array_shift($keys);
+        $parts = explode('.', $keys);
+        $key = array_shift($parts);
 
         if (isset($object[$key])) {
             if (is_array($object[$key])) {
-                return $this->get($object, implode('.', $keys));
+                return $this->get($object, implode('.', $parts));
             }
 
             return $object[$key];
