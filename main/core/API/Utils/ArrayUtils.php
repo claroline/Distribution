@@ -50,6 +50,6 @@ class ArrayUtils
             return $object[$key];
         }
 
-        throw new \Exception("Key {$keys} doesn't exist for array");
+        throw new \Exception("Key {$keys} doesn't exist for array keys [".implode(',', array_keys($object)).']');
     }
 }

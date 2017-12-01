@@ -69,8 +69,11 @@ class PanelFacetSerializer
         $this->sipe('position', 'setPosition', $data, $panel);
 
         if (isset($data['fields'])) {
+            $panel->resetFieldFacets();
+
             foreach ($data['fields'] as $field) {
                 $field = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Facet\FieldFacet', $field, $options);
+                $field->setPanelFacet($panel);
             }
         }
     }

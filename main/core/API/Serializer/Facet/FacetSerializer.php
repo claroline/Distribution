@@ -75,10 +75,12 @@ class FacetSerializer
         $this->sipe('meta.forceCreation', 'setForceCreationForm', $data, $facet);
 
         if (isset($data['sections'])) {
+            $facet->resetPanelFacets();
+
             foreach ($data['sections'] as $section) {
                 //check if section exists first
                 $panelFacet = $this->serializer->deserialize('Claroline\CoreBundle\Entity\Facet\PanelFacet', $section, $options);
-                $facet->addPanelFacet($panelFacet);
+                $panelFacet->setFacet($facet);
             }
         }
     }

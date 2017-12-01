@@ -28,7 +28,7 @@ class FieldFacetSerializer
         if (in_array(Options::PROFILE_SERIALIZE, $options)) {
             $serialized = [
               //no uuid yet
-              'id' => $fieldFacet->getId(),
+              'id' => $fieldFacet->getUuid(),
               'name' => $fieldFacet->getName(),
               'type' => $fieldFacet->getFieldType(),
               //maybe translate this
@@ -58,6 +58,6 @@ class FieldFacetSerializer
         $this->sipe('type', 'setType', $data, $field);
         $this->sipe('label', 'setName', $data, $field);
         $this->sipe('required', 'setRequired', $data, $field);
-        $this->sipe('option', 'setOption', $data, $field);
+        $this->sipe('options', 'setOptions', $data, $field);
     }
 }

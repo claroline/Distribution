@@ -11,14 +11,14 @@
 
 namespace Claroline\CoreBundle\Entity\Facet;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Role;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FacetRepository")
@@ -125,6 +125,10 @@ class Facet
 
     public function resetPanelFacets()
     {
+        foreach ($this->panelFacets as $panelFacet) {
+            $panelFacet->setFacet(null);
+        }
+
         $this->panelFacets = new ArrayCollection();
     }
 
