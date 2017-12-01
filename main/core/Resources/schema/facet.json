@@ -14,6 +14,24 @@
       "type": "integer",
       "description": "The facet position"
     },
+    "display": {
+      "type": "object",
+      "properties": {
+        "creation": {
+          "type": "boolean",
+          "description": "Display the facet at registration"
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "main": {
+          "type": "boolean",
+          "description": "Is it the main facet"
+        }
+      }
+    },
     "section": {
       "type": "array",
       "description": "The panel list",

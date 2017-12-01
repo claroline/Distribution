@@ -43,6 +43,9 @@ class FacetSerializer
           'id' => $facet->getUuid(),
           'title' => $facet->getName(),
           'position' => $facet->getPosition(),
+          'display' => [
+            'creation' => $facet->getForceCreationForm(),
+          ],
           'roles' => [],
           'meta' => $this->getMeta($facet),
           'sections' => array_map(function ($panel) use ($panelFacetSerializer, $options) {
@@ -57,8 +60,7 @@ class FacetSerializer
     public function getMeta(Facet $facet)
     {
         return [
-          'forceCreation' => $facet->getForceCreationForm(),
-          'isMain' => $facet->isMain(),
+          'main' => $facet->isMain(),
         ];
     }
 
@@ -70,9 +72,9 @@ class FacetSerializer
     public function deserialize(array $data, Facet $facet = null, array $options = [])
     {
         $this->sipe('title', 'setName', $data, $facet);
-        $this->sipe('meta.isMain', 'setIsMain', $data, $facet);
+        $this->sipe('meta.main', 'setIsMain', $data, $facet);
         $this->sipe('position', 'setPosition', $data, $facet);
-        $this->sipe('meta.forceCreation', 'setForceCreationForm', $data, $facet);
+        $this->sipe('display.creation', 'setForceCreationForm', $data, $facet);
 
         if (isset($data['sections']) && in_array(Options::DEEP_DESERIALIZE, $options)) {
             $facet->resetPanelFacets();
