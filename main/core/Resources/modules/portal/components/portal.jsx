@@ -72,7 +72,7 @@ const PortalPage = props =>
           icon: row.url && row.url.isYoutube
                      ? <span className="item-icon-container fa fa-play"></span>
                      : <span className="item-icon-container" style={{
-                       backgroundImage: 'url("/' + row.meta.icon + '")',
+                       backgroundImage: 'url("' + row.meta.icon + '")',
                        backgroundPosition: 'center',
                        backgroundRepeat: 'no-repeat'
                      }}></span>,
