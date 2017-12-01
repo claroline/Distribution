@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": "integer",
+      "type": "string",
       "description": "The user id"
     },
     "email": {
@@ -49,6 +49,6 @@
       }
     }
   },
-  "required": ["name", "email", "firstName", "lastName", "username"],
+  "required": ["email", "firstName", "lastName", "username"],
   "claroIds": ["id", "email", "username"]
 }
