@@ -63,7 +63,7 @@ class CorrectionRow extends Component {
         </td>
         <td>{this.props.correction.startDate}</td>
         <td>{this.props.correction.endDate}</td>
-        <td>{this.props.dropzone.parameters.criteriaEnabled ? 'criteria sum' : this.props.correction.totalGrade}</td>
+        <td>{this.props.correction.score} / {this.props.dropzone.parameters.scoreMax}</td>
         <td>
           <div className="btn-group">
             {this.props.correction.finished &&
@@ -75,13 +75,15 @@ class CorrectionRow extends Component {
                 {this.props.correction.valid ? trans('invalidate_correction', {}, 'dropzone') : trans('revalidate_correction', {}, 'dropzone')}
               </button>
             }
-            <button
-              className="btn btn-default btn-sm"
-              type="button"
-              onClick={() => this.setState({showForm: true})}
-            >
-              {t('edit')}
-            </button>
+            {!this.props.correction.finished &&
+              <button
+                className="btn btn-default btn-sm"
+                type="button"
+                onClick={() => this.setState({showForm: true})}
+              >
+                {t('edit')}
+              </button>
+            }
             {!this.props.correction.finished &&
               <button
                 className="btn btn-default btn-sm"

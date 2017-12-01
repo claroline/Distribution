@@ -12,7 +12,10 @@
 namespace Claroline\DropZoneBundle\Manager;
 
 use Claroline\CoreBundle\API\Crud;
+use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\API\Serializer\CorrectionSerializer;
 use Claroline\DropZoneBundle\API\Serializer\DocumentSerializer;
@@ -62,9 +65,13 @@ class DropzoneManager
     /** @var ObjectManager */
     private $om;
 
+    /**
+     * @var ResourceEvaluationManager
+     */
+    private $resourceEvalManager;
+
     /** @var DropRepository */
     private $dropRepo;
-
     private $correctionRepo;
     private $dropzoneToolRepo;
     private $dropzoneToolDocumentRepo;
@@ -81,18 +88,20 @@ class DropzoneManager
      *     "dropzoneToolSerializer" = @DI\Inject("claroline.serializer.dropzone.tool"),
      *     "fileSystem"             = @DI\Inject("filesystem"),
      *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
-     *     "om"                     = @DI\Inject("claroline.persistence.object_manager")
+     *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
+     *     "resourceEvalManager"    = @DI\Inject("claroline.manager.resource_evaluation_manager")
      * })
      *
-     * @param Crud                   $crud
-     * @param DropzoneSerializer     $dropzoneSerializer
-     * @param DropSerializer         $dropSerializer
-     * @param DocumentSerializer     $documentSerializer
-     * @param CorrectionSerializer   $correctionSerializer
-     * @param DropzoneToolSerializer $dropzoneToolSerializer
-     * @param Filesystem             $fileSystem
-     * @param string                 $filesDir
-     * @param ObjectManager          $om
+     * @param Crud                      $crud
+     * @param DropzoneSerializer        $dropzoneSerializer
+     * @param DropSerializer            $dropSerializer
+     * @param DocumentSerializer        $documentSerializer
+     * @param CorrectionSerializer      $correctionSerializer
+     * @param DropzoneToolSerializer    $dropzoneToolSerializer
+     * @param Filesystem                $fileSystem
+     * @param string                    $filesDir
+     * @param ObjectManager             $om
+     * @param ResourceEvaluationManager $resourceEvalManager
      */
     public function __construct(
         Crud $crud,
@@ -103,7 +112,8 @@ class DropzoneManager
         DropzoneToolSerializer $dropzoneToolSerializer,
         Filesystem $fileSystem,
         $filesDir,
-        ObjectManager $om
+        ObjectManager $om,
+        ResourceEvaluationManager $resourceEvalManager
     ) {
         $this->crud = $crud;
         $this->dropzoneSerializer = $dropzoneSerializer;
@@ -114,6 +124,7 @@ class DropzoneManager
         $this->fileSystem = $fileSystem;
         $this->filesDir = $filesDir;
         $this->om = $om;
+        $this->resourceEvalManager = $resourceEvalManager;
 
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
@@ -228,11 +239,13 @@ class DropzoneManager
         $drop = count($drops) > 0 ? $drops[0] : null;
 
         if (empty($drop) && $withCreation) {
+            $this->om->startFlushSuite();
             $drop = new Drop();
             $drop->setUser($user);
             $drop->setDropzone($dropzone);
             $this->om->persist($drop);
-            $this->om->flush();
+            $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+            $this->om->endFlushSuite();
         }
 
         return $drop;
@@ -351,10 +364,39 @@ class DropzoneManager
      */
     public function submitDrop(Drop $drop)
     {
+        $this->om->startFlushSuite();
         $drop->setFinished(true);
         $drop->setDropDate(new \DateTime());
         $this->om->persist($drop);
+        $this->checkCompletion($drop->getDropzone(), $drop->getUser(), $drop->getRole(), $drop);
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Computes Drop score from submitted Corrections.
+     *
+     * @param Drop $drop
+     *
+     * @return Drop
+     */
+    public function computeDropScore(Drop $drop)
+    {
+        $corrections = $drop->getCorrections();
+        $score = 0;
+        $nbValidCorrection = 0;
+
+        foreach ($corrections as $correction) {
+            if ($correction->isFinished() && $correction->isValid()) {
+                $score += $correction->getScore();
+                ++$nbValidCorrection;
+            }
+        }
+        $score = $nbValidCorrection > 0 ? round($score / $nbValidCorrection, 2) : null;
+        $drop->setScore($score);
+        $this->om->persist($drop);
         $this->om->flush();
+
+        return $drop;
     }
 
     /**
@@ -366,6 +408,7 @@ class DropzoneManager
      */
     public function saveCorrection(array $data)
     {
+        $this->om->startFlushSuite();
         $existingCorrection = $this->correctionRepo->findOneBy(['uuid' => $data['id']]);
         $isNew = empty($existingCorrection);
         $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
@@ -373,8 +416,9 @@ class DropzoneManager
         if (!$isNew) {
             $correction->setLastOpenDate(new \DateTime());
         }
+        $correction = $this->computeCorrectionScore($correction);
         $this->om->persist($correction);
-        $this->om->flush();
+        $this->om->endFlushSuite();
 
         return $correction;
     }
@@ -388,10 +432,17 @@ class DropzoneManager
      */
     public function submitCorrection(Correction $correction)
     {
+        $this->om->startFlushSuite();
+
         $correction->setFinished(true);
         $correction->setEndDate(new \DateTime());
         $this->om->persist($correction);
-        $this->om->flush();
+        $this->om->forceFlush();
+        $drop = $this->computeDropScore($correction->getDrop());
+        $this->checkCompletion($drop->getDropzone(), $correction->getUser(), $correction->getRole());
+        $this->checkSuccess($drop);
+
+        $this->om->endFlushSuite();
 
         return $correction;
     }
@@ -405,9 +456,14 @@ class DropzoneManager
      */
     public function switchCorrectionValidation(Correction $correction)
     {
+        $this->om->startFlushSuite();
+
         $correction->setValid(!$correction->isValid());
         $this->om->persist($correction);
-        $this->om->flush();
+        $drop = $this->computeDropScore($correction->getDrop());
+        $this->checkSuccess($drop);
+
+        $this->om->endFlushSuite();
 
         return $correction;
     }
@@ -419,8 +475,54 @@ class DropzoneManager
      */
     public function deleteCorrection(Correction $correction)
     {
+        $this->om->startFlushSuite();
+
+        $drop = $correction->getDrop();
+        $drop->removeCorrection($correction);
         $this->om->remove($correction);
+        $drop = $this->computeDropScore($drop);
+        $this->checkSuccess($drop);
+
+        $this->om->endFlushSuite();
+    }
+
+    /**
+     * Computes Correction score from criteria grades.
+     *
+     * @param Correction $correction
+     *
+     * @return Correction
+     */
+    public function computeCorrectionScore(Correction $correction)
+    {
+        $drop = $correction->getDrop();
+        $dropzone = $drop->getDropzone();
+        $criteria = $dropzone->getCriteria();
+
+        if ($dropzone->isCriteriaEnabled() && count($criteria) > 0) {
+            $score = 0;
+            $criteriaIds = [];
+            $scoreMax = $dropzone->getScoreMax();
+            $total = ($dropzone->getCriteriaTotal() - 1) * count($criteria);
+            $grades = $correction->getGrades();
+
+            foreach ($criteria as $criterion) {
+                $criteriaIds[] = $criterion->getUuid();
+            }
+            foreach ($grades as $grade) {
+                $gradeCriterion = $grade->getCriterion();
+
+                if (in_array($gradeCriterion->getUuid(), $criteriaIds)) {
+                    $score += $grade->getValue();
+                }
+            }
+            $score = round(($score / $total) * $scoreMax, 2);
+            $correction->setScore($score);
+        }
+        $this->om->persist($correction);
         $this->om->flush();
+
+        return $correction;
     }
 
     public function getSerializedTools()
@@ -463,16 +565,29 @@ class DropzoneManager
     }
 
     /**
-     * Gets a drop for peer evaluation.
+     * Gets drops corrected by user.
      *
      * @param Dropzone $dropzone
      * @param User     $user
      *
-     * @return Drop | null
+     * @return array
      */
     public function getUserFinishedPeerDrops(Dropzone $dropzone, User $user)
     {
         return $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
+    }
+
+    /**
+     * Gets drops corrected by role.
+     *
+     * @param Dropzone $dropzone
+     * @param Role     $role
+     *
+     * @return array
+     */
+    public function getRoleFinishedPeerDrops(Dropzone $dropzone, Role $role)
+    {
+        return $this->dropRepo->findRoleFinishedPeerDrops($dropzone, $role);
     }
 
     /**
@@ -486,16 +601,20 @@ class DropzoneManager
     public function getPeerDrop(Dropzone $dropzone, User $user)
     {
         $peerDrop = null;
-        $unfinishedDrops = $this->dropRepo->findUserUnfinishedPeerDrop($dropzone, $user);
+        $userDrop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user, 'finished' => true]);
 
-        if (count($unfinishedDrops) > 0) {
-            $peerDrop = $unfinishedDrops[0];
-        } else {
-            $finishedDrops = $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
-            $nbCorrections = count($finishedDrops);
+        if (!empty($userDrop)) {
+            $unfinishedDrops = $this->dropRepo->findUserUnfinishedPeerDrop($dropzone, $user);
 
-            if ($dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
-                $peerDrop = $this->getAvailableDropForPeer($dropzone, $user);
+            if (count($unfinishedDrops) > 0) {
+                $peerDrop = $unfinishedDrops[0];
+            } else {
+                $finishedDrops = $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
+                $nbCorrections = count($finishedDrops);
+
+                if ($dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
+                    $peerDrop = $this->getAvailableDropForPeer($dropzone, $user);
+                }
             }
         }
 
@@ -591,6 +710,104 @@ class DropzoneManager
         $toolDocument->setData($data);
         $this->om->persist($toolDocument);
         $this->om->flush();
+    }
+
+    public function checkCompletion(Dropzone $dropzone, User $user = null, Role $role = null, Drop $drop = null)
+    {
+        $fixedStatusList = [
+            AbstractResourceEvaluation::STATUS_COMPLETED,
+            AbstractResourceEvaluation::STATUS_PASSED,
+            AbstractResourceEvaluation::STATUS_FAILED,
+        ];
+
+        $this->om->startFlushSuite();
+        $users = !empty($user) ? [$user] : [];
+        /* TODO: Do the same for Role */
+
+        /* Get nb Correction */
+        $isComplete = !$dropzone->isPeerReview() || (!empty($drop) && $drop->isUnlockedUser());
+
+        if (!$isComplete) {
+            $expectedCorrectionTotal = $dropzone->getExpectedCorrectionTotal();
+            $finishedPeerDrops = $this->getUserFinishedPeerDrops($dropzone, $user);
+            $isComplete = count($finishedPeerDrops) >= $expectedCorrectionTotal;
+        }
+        if ($isComplete) {
+            foreach ($users as $user) {
+                $userEval = $this->resourceEvalManager->getResourceUserEvaluation($dropzone->getResourceNode(), $user, false);
+
+                if (!empty($userEval) && !in_array($userEval->getStatus(), $fixedStatusList)) {
+                    $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_COMPLETED);
+                }
+            }
+        }
+        $this->om->endFlushSuite();
+    }
+
+    public function checkSuccess(Drop $drop)
+    {
+        $this->om->startFlushSuite();
+
+        $dropzone = $drop->getDropzone();
+        $user = $drop->getUser();
+        $role = $drop->getRole();
+        $users = !empty($user) ? [$user] : [];
+        /* TODO: Do the same for Role */
+
+        $computeStatus = !$dropzone->isPeerReview();
+
+        if (!$computeStatus) {
+            $nbValidCorrections = 0;
+            $expectedCorrectionTotal = $dropzone->getExpectedCorrectionTotal();
+            $corrections = $drop->getCorrections();
+
+            foreach ($corrections as $correction) {
+                if ($correction->isFinished() && $correction->isValid()) {
+                    ++$nbValidCorrections;
+                }
+            }
+            $computeStatus = $nbValidCorrections >= $expectedCorrectionTotal;
+        }
+        if ($computeStatus) {
+            $score = $drop->getScore();
+            $scoreToPass = $dropzone->getScoreToPass();
+            $status = $score >= $scoreToPass ? AbstractResourceEvaluation::STATUS_PASSED : AbstractResourceEvaluation::STATUS_FAILED;
+
+            foreach ($users as $user) {
+                $this->generateResourceEvaluation($dropzone, $user, $status, $score, $drop);
+            }
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    public function generateResourceUserEvaluation(Dropzone $dropzone, User $user)
+    {
+        $userEval = $this->resourceEvalManager->getResourceUserEvaluation($dropzone->getResourceNode(), $user, false);
+
+        if (empty($userEval)) {
+            $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_NOT_ATTEMPTED);
+        }
+    }
+
+    public function generateResourceEvaluation(Dropzone $dropzone, User $user, $status, $score = null, Drop $drop = null)
+    {
+        $data = !empty($drop) ? $this->serializeDrop($drop) : null;
+
+        $this->resourceEvalManager->createResourceEvaluation(
+            $dropzone->getResourceNode(),
+            $user,
+            new \DateTime(),
+            $status,
+            $score,
+            null,
+            $dropzone->getScoreMax(),
+            null,
+            null,
+            null,
+            $data,
+            true
+        );
     }
 
     private function registerFile(Dropzone $dropzone, UploadedFile $file)

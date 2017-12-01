@@ -11,7 +11,7 @@ export function generateCorrection(dropId, user, dropzone) {
     id: uuid(),
     drop: dropId,
     user: user,
-    totalGrade: null,
+    score: null,
     comment: null,
     startDate: currentDate,
     lastOpenDate: currentDate,

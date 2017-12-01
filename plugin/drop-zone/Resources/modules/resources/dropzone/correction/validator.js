@@ -30,10 +30,10 @@ function validate(correction, dropzone) {
   const errors = {}
 
   if (!dropzone.parameters.criteriaEnabled) {
-    setIfError(errors, 'totalGrade', notBlank(correction.totalGrade))
+    setIfError(errors, 'score', notBlank(correction.score))
 
-    if (!errors['totalGrade']) {
-      setIfError(errors, 'totalGrade', number(correction.totalGrade))
+    if (!errors['score']) {
+      setIfError(errors, 'score', number(correction.score))
     }
   }
 

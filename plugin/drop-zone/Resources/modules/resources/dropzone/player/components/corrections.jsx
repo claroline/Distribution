@@ -3,6 +3,8 @@ import {PropTypes as T} from 'prop-types'
 
 import {t, trans} from '#/main/core/translation'
 
+import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+
 export const Corrections = props =>
   <table className="table corrections-table">
     <thead>
@@ -11,7 +13,9 @@ export const Corrections = props =>
         <th></th>
         <th>{t('start_date')}</th>
         <th>{t('end_date')}</th>
-        <th>{t('score')}</th>
+        {props.dropzone.display.displayNotationToLearners &&
+          <th>{t('score')}</th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -42,14 +46,16 @@ export const Corrections = props =>
         </td>
         <td>{c.startDate}</td>
         <td>{c.endDate}</td>
-        <td>{c.totalGrade}</td>
+        {props.dropzone.display.displayNotationToLearners &&
+          <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
+        }
       </tr>
     )}
     </tbody>
   </table>
 
 Corrections.propTypes = {
-  dropzone: T.object,
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
   corrections: T.array,
   saveCorrection: T.func,
   showModal: T.func

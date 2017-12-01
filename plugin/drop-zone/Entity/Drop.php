@@ -64,6 +64,11 @@ class Drop
     protected $dropDate;
 
     /**
+     * @ORM\Column(name="score", type="float", nullable=true)
+     */
+    protected $score;
+
+    /**
      * @ORM\Column(type="boolean", nullable=false)
      */
     protected $reported = false;
@@ -188,6 +193,16 @@ class Drop
     public function setDropDate(\DateTime $dropDate = null)
     {
         $this->dropDate = $dropDate;
+    }
+
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    public function setScore($score)
+    {
+        $this->score = $score;
     }
 
     public function isReported()

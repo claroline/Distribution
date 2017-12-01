@@ -192,7 +192,7 @@ class DropzoneSerializer
         $parameters['uploadEnabled'] = $dropzone->isUploadEnabled();
         $parameters['urlEnabled'] = $dropzone->isUrlEnabled();
         $parameters['richTextEnabled'] = $dropzone->isRichTextEnabled();
-        $parameters['peerReview'] = $dropzone->getPeerReview();
+        $parameters['peerReview'] = $dropzone->isPeerReview();
         $parameters['expectedCorrectionTotal'] = $dropzone->getExpectedCorrectionTotal();
         $parameters['scoreMax'] = $dropzone->getScoreMax();
         $parameters['scoreToPass'] = $dropzone->getScoreToPass();

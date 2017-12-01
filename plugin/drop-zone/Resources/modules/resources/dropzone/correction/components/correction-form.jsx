@@ -62,6 +62,7 @@ export class CorrectionForm extends Component {
     super(props)
     this.state = {
       correction: props.correction,
+      pendingChanges: false,
       errors: {}
     }
     this.updateCorrectionCriterion = this.updateCorrectionCriterion.bind(this)
@@ -69,7 +70,7 @@ export class CorrectionForm extends Component {
 
   updateCorrection(property, value) {
     const correction = Object.assign({}, this.state.correction, {[property]: value})
-    this.setState({correction: correction})
+    this.setState({correction: correction, pendingChanges: true})
   }
 
   updateCorrectionCriterion(criterionId, value) {
@@ -82,7 +83,7 @@ export class CorrectionForm extends Component {
     }
     const correction = Object.assign({}, this.state.correction, {grades: grades})
 
-    this.setState({correction: correction})
+    this.setState({correction: correction, pendingChanges: true})
   }
 
   validateCorrection() {
@@ -93,6 +94,7 @@ export class CorrectionForm extends Component {
   saveCorrection() {
     if (isValid(this.state.correction, this.props.dropzone)) {
       this.props.saveCorrection(this.state.correction)
+      this.setState({pendingChanges: false})
     }
   }
 
@@ -110,9 +112,9 @@ export class CorrectionForm extends Component {
             <NumberGroup
               controlId="score"
               label={t('score')}
-              value={this.state.correction.totalGrade !== null ? this.state.correction.totalGrade : undefined}
-              onChange={value => this.updateCorrection('totalGrade', parseInt(value))}
-              error={get(this.state.errors, 'totalGrade')}
+              value={this.state.correction.score !== null ? this.state.correction.score : undefined}
+              onChange={value => this.updateCorrection('score', parseInt(value))}
+              error={get(this.state.errors, 'score')}
             />
           }
           {this.props.dropzone.parameters.commentInCorrectionEnabled &&
@@ -133,9 +135,27 @@ export class CorrectionForm extends Component {
             >
               {t('cancel')}
             </button>
+            {this.props.showSubmitButton && this.props.correction.startDate !== this.props.correction.lastOpenDate &&
+              <button
+                className="btn btn-default"
+                type="button"
+                disabled={this.state.pendingChanges ||
+                (this.props.dropzone.parameters.commentInCorrectionEnabled &&
+                  this.props.dropzone.parameters.commentInCorrectionForced &&
+                  !this.state.correction.comment)
+                }
+                onClick={() => this.props.submitCorrection(this.props.correction.id)}
+              >
+                {trans('submit_correction', {}, 'dropzone')}
+              </button>
+            }
             <button
               className="btn btn-primary"
               type="button"
+              disabled={this.props.dropzone.parameters.commentInCorrectionEnabled &&
+                this.props.dropzone.parameters.commentInCorrectionForced &&
+                !this.state.correction.comment
+              }
               onClick={() => this.validateCorrection()}
             >
               {t('save')}
@@ -150,6 +170,13 @@ export class CorrectionForm extends Component {
 CorrectionForm.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes),
   correction: T.shape(CorrectionType.propTypes),
+  showSubmitButton: T.bool.isRequired,
   saveCorrection: T.func.isRequired,
+  submitCorrection: T.func.isRequired,
   cancelCorrection: T.func.isRequired
+}
+
+CorrectionForm.defaultProps = {
+  showSubmitButton: false,
+  submitCorrection: () => {}
 }

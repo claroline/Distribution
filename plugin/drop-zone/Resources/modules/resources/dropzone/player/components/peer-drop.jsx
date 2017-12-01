@@ -16,28 +16,20 @@ import {CorrectionForm} from '#/plugin/drop-zone/resources/dropzone/correction/c
 class PeerDrop extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      correction: props.drop ?
-        generateCorrectionGrades(props.drop.corrections.find(c => !c.finished && c.user.id === props.user.id), props.dropzone) :
-        {}
-    }
     this.saveCorrection = this.saveCorrection.bind(this)
     this.cancelCorrection = this.cancelCorrection.bind(this)
   }
 
   saveCorrection(correction) {
     this.props.saveCorrection(correction)
-    this.setState({correction: correction})
   }
 
   cancelCorrection() {
-    this.setState({
-      correction: generateCorrectionGrades(
-        this.props.drop.corrections.find(c => !c.finished && c.user.id === this.props.user.id),
-        this.props.dropzone
-      )
-    })
-    navigate('/my/drop')
+    navigate('/')
+  }
+
+  getCorrection() {
+    return this.props.drop ? this.props.drop.corrections.find(c => !c.finished && c.user.id === this.props.user.id) : null
   }
 
   render() {
@@ -50,21 +42,16 @@ class PeerDrop extends Component {
           {...this.props}
         />
         <CorrectionForm
-          correction={this.state.correction}
+          correction={generateCorrectionGrades(this.getCorrection(), this.props.dropzone)}
           dropzone={this.props.dropzone}
           saveCorrection={this.saveCorrection}
+          showSubmitButton={true}
+          submitCorrection={this.props.submitCorrection}
           cancelCorrection={this.cancelCorrection}
         />
-        <button
-          className="btn btn-primary pull-right"
-          type="button"
-          onClick={() => this.props.submitCorrection(this.state.correction.id)}
-        >
-          {trans('submit_correction', {}, 'dropzone')}
-        </button>
       </div> :
       <div className="alert alert-warning">
-        {trans('no_drop', {}, 'dropzone')}
+        {trans('no_copy_to_correct', {}, 'dropzone')}
       </div>
     )
   }

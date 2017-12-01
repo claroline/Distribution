@@ -6,10 +6,11 @@ import {navigate} from '#/main/core/router'
 import {t, trans} from '#/main/core/translation'
 import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
 
+import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 
 class Drops extends Component {
-  generateColumns() {
+  generateColumns(props) {
     const columns = []
 
     columns.push({
@@ -34,6 +35,12 @@ class Drops extends Component {
       displayed: true,
       renderer: (rowData) => rowData.user ? `${rowData.user.firstName} ${rowData.user.lastName}` : '-'
     })
+    columns.push({
+      name: 'score',
+      label: t('score'),
+      displayed: true,
+      renderer: (rowData) => rowData.score !== null ? `${rowData.score} / ${props.dropzone.parameters.scoreMax}` : ''
+    })
 
     return columns
   }
@@ -54,7 +61,7 @@ class Drops extends Component {
     return (
       <DataList
         name="drops"
-        definition={this.generateColumns()}
+        definition={this.generateColumns(this.props)}
         filterColumns={true}
         actions={this.generateActions()}
         card={(row) => ({
@@ -76,11 +83,13 @@ class Drops extends Component {
 }
 
 Drops.propTypes = {
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
   drops: T.object
 }
 
 function mapStateToProps(state) {
   return {
+    dropzone: select.dropzone(state),
     drops: select.drops(state)
   }
 }

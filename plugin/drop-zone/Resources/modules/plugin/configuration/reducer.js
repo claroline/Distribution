@@ -80,8 +80,20 @@ const toolsReducer = makeReducer({}, {
   }
 })
 
+const toolsTotalResultsReducer = makeReducer({}, {
+  [TOOL_UPDATE]: (state) => {
+    return state + 1
+  },
+  [TOOL_REMOVE]: (state) => {
+    return state - 1
+  }
+})
+
 const toolsListReducer = makeListReducer(
-  {data: toolsReducer},
+  {
+    data: toolsReducer,
+    totalResults: toolsTotalResultsReducer
+  },
   {selectable: false, filterable: false, paginated: false, sortable: false}
 )
 

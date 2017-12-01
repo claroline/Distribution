@@ -70,6 +70,10 @@ class DropzoneController extends Controller
         $peerDrop = $this->manager->getPeerDrop($dropzone, $user);
         $serializedTools = $this->manager->getSerializedTools();
 
+        if (!empty($user)) {
+            $this->manager->generateResourceUserEvaluation($dropzone, $user);
+        }
+
         return [
             '_resource' => $dropzone,
             'user' => $user,

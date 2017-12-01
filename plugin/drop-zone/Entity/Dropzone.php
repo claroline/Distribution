@@ -199,7 +199,7 @@ class Dropzone extends AbstractResource
      *
      * @ORM\Column(name="auto_close_drops_at_drop_end_date", type="boolean", nullable=false)
      */
-    protected $autoCloseDropsAtDropEndDate = false;
+    protected $autoCloseDropsAtDropEndDate = true;
 
     /**
      * @ORM\Column(name="auto_close_state", type="integer", nullable=false)
@@ -331,7 +331,7 @@ class Dropzone extends AbstractResource
         $this->richTextEnabled = $richTextEnabled;
     }
 
-    public function getPeerReview()
+    public function isPeerReview()
     {
         return $this->peerReview;
     }

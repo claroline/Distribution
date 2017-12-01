@@ -11,6 +11,7 @@
 
 namespace Claroline\DropZoneBundle\Repository;
 
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Doctrine\ORM\EntityRepository;
@@ -70,6 +71,28 @@ class DropRepository extends EntityRepository
         $query->setParameter('dropzone', $dropzone);
         $query->setParameter('user', $user);
         $query->setParameter('roles', $roles);
+
+        return $query->getResult();
+    }
+
+    public function findRoleFinishedPeerDrops(Dropzone $dropzone, Role $role)
+    {
+        $dql = '
+            SELECT drop
+            FROM Claroline\DropZoneBundle\Entity\Drop drop
+            JOIN drop.dropzone d
+            JOIN drop.corrections c
+            JOIN drop.role r
+            JOIN c.role cr
+            WHERE d = :dropzone
+            AND drop.finished = true
+            AND c.finished = true
+            AND r != :role
+            AND cr = :role
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('dropzone', $dropzone);
+        $query->setParameter('role', $role);
 
         return $query->getResult();
     }

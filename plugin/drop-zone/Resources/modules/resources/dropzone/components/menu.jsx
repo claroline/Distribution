@@ -56,17 +56,24 @@ const Menu = props =>
           className="btn btn-default"
         >
           {!props.myDrop.finished && [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 ?
-            trans('complete_my_copy', {}, 'dropzone') :
-            trans('see_my_copy', {}, 'dropzone')
+            <span>
+              <span className="fa fa-w fa-pencil dropzone-button-icon"/>
+              {trans('complete_my_copy', {}, 'dropzone')}
+            </span> :
+            <span>
+              <span className="fa fa-w fa-eye dropzone-button-icon"/>
+              {trans('see_my_copy', {}, 'dropzone')}
+            </span>
           }
         </a>
 
         {props.myDrop.finished && props.isPeerReviewEnabled && props.nbCorrections < props.dropzone.parameters.expectedCorrectionTotal &&
           <a
-          href="#/peer/drop"
-          className="btn btn-default"
+            href="#/peer/drop"
+            className="btn btn-default"
           >
-          {trans('correct_a_copy', {}, 'dropzone')}
+            <span className="fa fa-w fa-edit dropzone-button-icon"/>
+            {trans('correct_a_copy', {}, 'dropzone')}
           </a>
         }
       </div>

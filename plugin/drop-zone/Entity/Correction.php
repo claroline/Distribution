@@ -54,9 +54,9 @@ class Correction
     protected $role;
 
     /**
-     * @ORM\Column(name="total_grade", type="decimal", scale=2, nullable=true)
+     * @ORM\Column(name="score", type="float", nullable=true)
      */
-    protected $totalGrade;
+    protected $score;
 
     /**
      * @ORM\Column(name="correction_comment", type="text", nullable=true)
@@ -168,14 +168,14 @@ class Correction
         $this->role = $role;
     }
 
-    public function getTotalGrade()
+    public function getScore()
     {
-        return $this->totalGrade;
+        return $this->score;
     }
 
-    public function setTotalGrade($totalGrade)
+    public function setScore($score)
     {
-        $this->totalGrade = $totalGrade;
+        $this->score = $score;
     }
 
     public function getComment()

@@ -66,7 +66,7 @@ class CorrectionSerializer
             'drop' => $correction->getDrop()->getUuid(),
             'user' => $correction->getUser() ? $this->userSerializer->serialize($correction->getUser()) : null,
             'role' => $correction->getRole() ? $this->roleSerializer->serialize($correction->getRole()) : null,
-            'totalGrade' => $correction->getTotalGrade(),
+            'score' => $correction->getScore(),
             'comment' => $correction->getComment(),
             'valid' => $correction->isValid(),
             'startDate' => $correction->getStartDate()->format('Y-m-d H:i'),
@@ -113,8 +113,8 @@ class CorrectionSerializer
             $endDate = !empty($data['endDate']) ? new \DateTime($data['endDate']) : null;
             $correction->setEndDate($endDate);
         }
-        if (isset($data['totalGrade'])) {
-            $correction->setTotalGrade($data['totalGrade']);
+        if (isset($data['score'])) {
+            $correction->setScore($data['score']);
         }
         if (isset($data['comment'])) {
             $correction->setComment($data['comment']);

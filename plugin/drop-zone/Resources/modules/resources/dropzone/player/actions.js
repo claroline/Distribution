@@ -130,7 +130,7 @@ actions.submitCorrection = (correctionId) => ({
     success: (data, dispatch) => {
       dispatch(actions.incPeerDrop())
       dispatch(actions.resetPeerDrop())
-      navigate('/my/drop')
+      navigate('/')
     }
   }
 })

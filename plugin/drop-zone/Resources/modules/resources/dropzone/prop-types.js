@@ -105,7 +105,7 @@ const CorrectionType = {
       name: T.string.isRequired,
       translationKey: T.string.isRequired
     }),
-    totalGrade: T.number,
+    score: T.number,
     comment: T.string,
     valid: T.bool.isRequired,
     startDate: T.string.isRequired,
@@ -137,6 +137,7 @@ const DropType = {
       translationKey: T.string.isRequired
     }),
     dropDate: T.string,
+    score: T.number,
     reported: T.bool.isRequired,
     finished: T.bool.isRequired,
     number: T.number,

@@ -72,6 +72,7 @@ class DropSerializer
             'user' => $drop->getUser() ? $this->userSerializer->serialize($drop->getUser()) : null,
             'role' => $drop->getRole() ? $this->roleSerializer->serialize($drop->getRole()) : null,
             'dropDate' => $drop->getDropDate() ? $drop->getDropDate()->format('Y-m-d H:i') : null,
+            'score' => $drop->getScore(),
             'reported' => $drop->isReported(),
             'finished' => $drop->isFinished(),
             'number' => $drop->getNumber(),
@@ -110,6 +111,9 @@ class DropSerializer
         if (isset($data['dropDate'])) {
             $dropDate = !empty($data['dropDate']) ? new \DateTime($data['dropDate']) : null;
             $drop->setDropDate($dropDate);
+        }
+        if (isset($data['score'])) {
+            $drop->setScore($data['score']);
         }
         if (isset($data['reported'])) {
             $drop->setReported($data['reported']);

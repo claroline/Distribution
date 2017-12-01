@@ -148,14 +148,14 @@ class AbstractResourceEvaluation
 
     public function isTerminated()
     {
-        return $this->status !== self::STATUS_NOT_ATTEMPTED
-            && $this->status !== self::STATUS_INCOMPLETE
-            && $this->status !== self::STATUS_UNKNOWN;
+        return $this->status !== self::STATUS_NOT_ATTEMPTED &&
+            $this->status !== self::STATUS_INCOMPLETE &&
+            $this->status !== self::STATUS_UNKNOWN;
     }
 
     public function isSuccessful()
     {
-        return $this->status === self::STATUS_PASSED
-            || $this->status === self::STATUS_COMPLETED;
+        return $this->status === self::STATUS_PASSED ||
+            $this->status === self::STATUS_COMPLETED;
     }
 }
