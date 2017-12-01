@@ -68,7 +68,7 @@ class PanelFacetSerializer
         $this->sipe('title', 'setName', $data, $panel);
         $this->sipe('position', 'setPosition', $data, $panel);
 
-        if (isset($data['fields'])) {
+        if (isset($data['fields']) && in_array(Options::DEEP_DESERIALIZE, $options)) {
             $panel->resetFieldFacets();
 
             foreach ($data['fields'] as $field) {

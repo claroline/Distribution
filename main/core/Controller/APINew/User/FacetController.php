@@ -30,9 +30,13 @@ class FacetController extends AbstractCrudController
     public function getOptions()
     {
         $list = [Options::PROFILE_SERIALIZE];
+        $create = [Options::DEEP_SERIALIZE];
+        $update = [Options::DEEP_SERIALIZE];
 
         return [
             'list' => $list,
+            'create' => $create,
+            'update' => $update,
         ];
     }
 }
