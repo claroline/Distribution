@@ -41,6 +41,28 @@ class Drops extends Component {
       displayed: true,
       renderer: (rowData) => rowData.score !== null ? `${rowData.score} / ${props.dropzone.parameters.scoreMax}` : ''
     })
+    columns.push({
+      name: 'finished',
+      label: trans('submitted', {}, 'dropzone'),
+      displayed: true,
+      type: 'boolean'
+    })
+    columns.push({
+      name: 'complete',
+      label: trans('complete', {}, 'dropzone'),
+      displayed: true,
+      filterable: false,
+      sortable: false,
+      renderer: (rowData) => {
+        const nbExpectedCorrections = props.dropzone.parameters.peerReview ? 1 : props.dropzone.parameters.expectedCorrectionTotal
+        const nbValidCorrections = rowData.corrections.filter(c => c.finished && c.valid).length
+        const element = nbValidCorrections >= nbExpectedCorrections ?
+          <span className="fa fa-w fa-check true"/> :
+          <span className="fa fa-w fa-times false"/>
+
+        return element
+      }
+    })
 
     return columns
   }
@@ -59,25 +81,28 @@ class Drops extends Component {
 
   render() {
     return (
-      <DataList
-        name="drops"
-        definition={this.generateColumns(this.props)}
-        filterColumns={true}
-        actions={this.generateActions()}
-        card={(row) => ({
-          onClick: `#/drop/${row.id}/view`,
-          poster: null,
-          icon: null,
-          title: '',
-          subtitle: '',
-          contentText: '',
-          flags: [].filter(flag => !!flag),
-          footer:
-            <span></span>,
-          footerLong:
-            <span></span>
-        })}
-      />
+      <div id="corrections-management">
+        <h2>{trans('corrections_management', {}, 'dropzone')}</h2>
+        <DataList
+          name="drops"
+          definition={this.generateColumns(this.props)}
+          filterColumns={true}
+          actions={this.generateActions()}
+          card={(row) => ({
+            onClick: `#/drop/${row.id}/view`,
+            poster: null,
+            icon: null,
+            title: '',
+            subtitle: '',
+            contentText: '',
+            flags: [].filter(flag => !!flag),
+            footer:
+              <span></span>,
+            footerLong:
+              <span></span>
+          })}
+        />
+      </div>
     )
   }
 }

@@ -133,7 +133,6 @@ class ResourceEvaluationManager
             $reu->setScore($score);
             $reu->setScoreMax($scoreMax);
             $reu->setScoreMin($scoreMin);
-
         } elseif (!empty($score)) {
             $newScore = empty($scoreMax) ? $score : $score / $scoreMax;
 

@@ -750,7 +750,6 @@ class DropzoneManager
 
         $dropzone = $drop->getDropzone();
         $user = $drop->getUser();
-        $role = $drop->getRole();
         $users = !empty($user) ? [$user] : [];
         /* TODO: Do the same for Role */
 
