@@ -1,4 +1,4 @@
-import {notBlank, notEmptyArray, number, gteZero, gtZero, chain, setIfError} from '#/main/core/validation'
+import {notBlank, notEmpty, number, gteZero, gtZero, chain, setIfError} from '#/main/core/validation'
 import {tex} from '#/main/core/translation'
 
 import {getDefinition} from '#/plugin/exo/items/item-types'
@@ -35,7 +35,7 @@ function validateQuiz(quiz) {
 
   switch (picking.type) {
     case QUIZ_PICKING_TAGS:
-      setIfError(pickingErrors, 'pick', chain(picking.pick, {}, [notEmptyArray]))
+      setIfError(pickingErrors, 'pick', chain(picking.pick, {}, [notEmpty]))
       setIfError(pickingErrors, 'pageSize', chain(picking.pageSize, {}, [notBlank, number, gtZero]))
       break
     case QUIZ_PICKING_DEFAULT:

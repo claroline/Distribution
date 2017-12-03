@@ -1,7 +1,7 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 
 export const QUESTIONS_SHARE = 'QUESTIONS_SHARE'
 
@@ -10,7 +10,7 @@ export const actions = {}
 actions.share = makeActionCreator(QUESTIONS_SHARE, 'questions', 'users', 'adminRights')
 
 actions.shareQuestions = (questions, users, adminRights) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['questions_share'],
     request: {
       method: 'POST',
@@ -20,12 +20,12 @@ actions.shareQuestions = (questions, users, adminRights) => ({
         adminRights
       })
     },
-    success: () => actions.share(questions, users, adminRights)
+    success: (data, dispatch) => dispatch(actions.share(questions, users, adminRights))
   }
 })
 
 actions.duplicateQuestions = (questions, isModel = 0) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['questions_duplicate', {isModel: isModel}],
     request: {
       method: 'POST'
@@ -35,7 +35,7 @@ actions.duplicateQuestions = (questions, isModel = 0) => ({
 })
 
 actions.removeQuestions = questions => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['questions_delete'],
     request: {
       method: 'DELETE',

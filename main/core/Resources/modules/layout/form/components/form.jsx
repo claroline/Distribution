@@ -117,8 +117,12 @@ class Form extends Component {
                   key={field.name}
                   value={get(this.props.data, field.name)}
                   onChange={(value) => {
-                    this.props.setErrors(validateProp(field, value))
+                    if (field.onChange) {
+                      field.onChange(value)
+                    }
+
                     this.props.updateProp(field.name, value)
+                    this.props.setErrors(validateProp(field, value))
                   }}
                   disabled={field.disabled ? field.disabled(this.props.data) : false}
                   validating={this.props.validating}
@@ -153,8 +157,12 @@ class Form extends Component {
                     key={field.name}
                     value={get(this.props.data, field.name)}
                     onChange={(value) => {
-                      this.props.setErrors(validateProp(field, value))
+                      if (field.onChange) {
+                        field.onChange(value)
+                      }
+
                       this.props.updateProp(field.name, value)
+                      this.props.setErrors(validateProp(field, value))
                     }}
                     disabled={field.disabled ? field.disabled(this.props.data) : false}
                     validating={this.props.validating}

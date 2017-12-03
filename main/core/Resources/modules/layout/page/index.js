@@ -21,3 +21,7 @@ export {
 export {
   PageContainer
 } from './containers/page.jsx'
+
+export {
+  TabbedPageContainer
+} from './containers/tabbed-page.jsx'

@@ -1,6 +1,13 @@
+import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'
 
 import {trans, tval} from '#/main/core/translation'
+
+function notEmpty(value) {
+  if (isEmpty(value)) {
+    return tval('This value should not be blank.')
+  }
+}
 
 function notBlank(value, isHtml = false) {
   if (typeof value === 'string') {
@@ -11,12 +18,6 @@ function notBlank(value, isHtml = false) {
 
   if (value === '' || value === null || (isHtml && isHtmlEmpty(value))) {
     return tval('This value should not be blank.')
-  }
-}
-
-function string(value) {
-  if (typeof value !== 'string') {
-    return tval('This value should be a string.')
   }
 }
 
@@ -31,6 +32,12 @@ function isHtmlEmpty(html, allowedTags = ['img', 'audio', 'iframe', 'video']) {
   return !(wrapper.textContent || allowedTags.some((tag) => {
     return html.indexOf(tag) >= 0
   }))
+}
+
+function string(value) {
+  if (typeof value !== 'string') {
+    return tval('This value should be a string.')
+  }
 }
 
 function number(value) {
@@ -73,9 +80,22 @@ function inRange(value, options) {
   return chain(value, options, [gtMin, ltMax])
 }
 
+function ip(value) {
+  if (match(value, {regex: /^([0-9]{1,3}|[\\*])\.([0-9]{1,3}|[\\*])\.([0-9]{1,3}|[\\*])\.([0-9]{1,3}|[\\*])$/g})) {
+    return tval('This value should be a valid IPv4.')
+  }
+}
+
 function email(value) {
-  if (!/^\w+([\.-]?\ w+)*@\w+([\.-]?\ w+)*(\.\w{2,3})+$/.test(value)) {
+  // we use same regex than W3C <input type="email" />
+  if (match(value, {regex: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/ig})) {
     return tval('This value should be a valid email.')
+  }
+}
+
+function match(value, options) {
+  if (undefined !== options.regex && !options.regex.test(value)) {
+    return tval('This value should match the defined format.')
   }
 }
 
@@ -86,12 +106,6 @@ function gteZero(value) {
       {},
       'validators'
     ).replace('{{ limit }}', 0)
-  }
-}
-
-function notEmptyArray(value) {
-  if (value.length === 0) {
-    return tval('This value should not be blank.')
   }
 }
 
@@ -113,12 +127,28 @@ function validateIf(condition, validator) {
   return () => undefined
 }
 
+/**
+ * Applies N validators to `value`.
+ * The chain stops at the first failed validator.
+ *
+ * @param {mixed}  value      - the value to validate.
+ * @param {object} options    - the validation options.
+ * @param {Array}  validators - the list of validators to apply.
+ */
 function chain(value, options, validators) {
   return validators.reduce((result, validate) => {
     return result || validate(value, options)
   }, undefined)
 }
 
+/**
+ *
+ * @param errors
+ * @param errorPath
+ * @param error
+ *
+ * @deprecated
+ */
 function setIfError(errors, errorPath, error) {
   if (typeof error !== 'undefined') {
     set(errors, errorPath, error)
@@ -133,7 +163,8 @@ export {
   // validators
   string,
   notBlank,
-  isHtmlEmpty,
+  ip,
+  match,
   number,
   inRange,
   gtMin,
@@ -141,5 +172,5 @@ export {
   gtZero,
   email,
   gteZero,
-  notEmptyArray
+  notEmpty
 }

@@ -20,7 +20,7 @@ import {
 import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
 
 const ThemesPage = props =>
-  <PageContainer id="theme-management" hasModal={true}>
+  <PageContainer id="theme-management">
     <PageHeader title={t('themes_management')} />
     <PageContent>
       <DataListContainer

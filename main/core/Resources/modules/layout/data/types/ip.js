@@ -1,3 +1,4 @@
+import {chain, string, ip} from '#/main/core/validation'
 
 const IP_TYPE = 'ip'
 
@@ -52,14 +53,11 @@ const ipDefinition = {
    *   - each group MUST be a number between 0 and 255 or "*".
    *
    * @param {string} value
+   * @param {object} options
    *
    * @return {boolean}
    */
-  validate: (value) => {
-    const regex = /^([0-9]{1,3}|[\\*])\.([0-9]{1,3}|[\\*])\.([0-9]{1,3}|[\\*])\.([0-9]{1,3}|[\\*])$/g
-
-    return typeof value === 'string' && regex.test(value)
-  }
+  validate: (value, options) => chain(value, options, [string, ip])
 }
 
 export {

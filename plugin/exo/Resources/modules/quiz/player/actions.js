@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 
 import {makeActionCreator} from '#/main/core/utilities/redux'
-import {REQUEST_SEND} from './../../api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as quizActions} from './../actions'
 import {VIEW_PLAYER} from './../enums'
 import quizSelectors from './../selectors'
@@ -34,7 +34,7 @@ actions.stepFeedback = makeActionCreator(STEP_FEEDBACK)
 actions.useHint = makeActionCreator(HINT_USE, 'questionId', 'hint')
 
 actions.fetchAttempt = quizId => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
     success: (data, dispatch) => {
@@ -46,7 +46,7 @@ actions.fetchAttempt = quizId => ({
 })
 
 actions.sendAnswers = (quizId, paperId, answers) =>({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['exercise_attempt_submit', {exerciseId: quizId, id: paperId}],
     request: {
       method: 'PUT',
@@ -58,14 +58,14 @@ actions.sendAnswers = (quizId, paperId, answers) =>({
 })
 
 actions.requestHint = (quizId, paperId, questionId, hintId) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['exercise_attempt_hint_show', {exerciseId: quizId, id: paperId, questionId: questionId, hintId: hintId}],
     success: (hint, dispatch) => dispatch(actions.useHint(questionId, hint))
   }
 })
 
 actions.requestEnd = (quizId, paperId) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['exercise_attempt_finish', {exerciseId: quizId, id: paperId}],
     request: {
       method: 'PUT'

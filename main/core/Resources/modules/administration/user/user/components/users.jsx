@@ -40,6 +40,7 @@ const UsersList = props =>
         icon: 'fa fa-fw fa-id-card-o',
         label: t('show_profile'),
         action: (rows) => window.location = generateUrl('claro_public_profile_view', {publicUrl: rows[0].meta.publicUrl}),
+        context: 'row'
       }, {
         icon: 'fa fa-fw fa-eye',
         label: t('show_as'),

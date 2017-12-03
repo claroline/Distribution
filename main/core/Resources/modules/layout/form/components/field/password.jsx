@@ -33,7 +33,7 @@ class Password extends Component {
           id={this.props.id}
           type={this.state.visible ? 'text':'password'}
           className="form-control"
-          value={this.props.value}
+          value={this.props.value || ''}
           disabled={this.props.disabled}
           onChange={(e) => this.props.onChange(e.target.value)}
         />

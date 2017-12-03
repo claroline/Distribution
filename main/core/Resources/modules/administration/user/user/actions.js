@@ -1,4 +1,4 @@
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {actions as listActions} from '#/main/core/layout/list/actions'
 import {User as UserTypes} from '#/main/core/administration/user/user/prop-types'
@@ -7,7 +7,7 @@ import {actions as formActions} from '#/main/core/layout/form/actions'
 export const actions = {}
 
 actions.enable = (user) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['apiv2_user_update', {uuid: user.id}],
     request: {
       body: JSON.stringify({isEnabled: true, uuid: user.id}),
@@ -18,7 +18,7 @@ actions.enable = (user) => ({
 })
 
 actions.disable = (user) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['apiv2_user_update', {uuid: user.id}],
     request: {
       method: 'PUT',
@@ -29,7 +29,7 @@ actions.disable = (user) => ({
 })
 
 actions.createWorkspace = (user) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['apiv2_user_pws_create', {uuid: user.id}],
     request: { method: 'POST'},
     success: (data, dispatch) => dispatch(listActions.fetchData('users'))
@@ -37,7 +37,7 @@ actions.createWorkspace = (user) => ({
 })
 
 actions.deleteWorkspace = (user) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['apiv2_user_pws_delete', {uuid: user.id}],
     request: {method: 'DELETE'},
     success: (data, dispatch) => dispatch(listActions.fetchData('users'))
@@ -50,7 +50,7 @@ actions.open = (formName, id = null) => (dispatch) => {
 
   if (id) {
     dispatch({
-      [REQUEST_SEND]: {
+      [API_REQUEST]: {
         url: ['apiv2_user_get', {id}],
         request: {
           method: 'GET'

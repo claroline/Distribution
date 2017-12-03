@@ -1,7 +1,7 @@
 import {makeInstanceActionCreator} from '#/main/core/utilities/redux'
 
 import {select as formSelect} from '#/main/core/layout/form/selectors'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 
 export const FORM_RESET       = 'FORM_RESET'
 export const FORM_SET_ERRORS  = 'FORM_SET_ERRORS'
@@ -29,7 +29,7 @@ actions.saveForm = (formName, target) => (dispatch, getState) => {
   dispatch(actions.submitForm(formName))
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: target,
       request: {
         method: formNew ? 'POST' : 'PUT',

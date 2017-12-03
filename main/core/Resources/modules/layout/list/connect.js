@@ -55,7 +55,7 @@ function mapStateToProps(state, ownProps) {
 }
 
 /**
- * Injects store actions based on the list config.
+ * Injects list actions.
  * NB. we inject all list actions, `mergeProps` will only pick the one for enabled features.
  *
  * @param {function} dispatch

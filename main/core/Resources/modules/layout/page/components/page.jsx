@@ -42,7 +42,7 @@ const Page = props =>
     })}
   >
     {props.alerts &&
-      <FlyingAlerts alerts={props.alerts} />
+      <FlyingAlerts alerts={props.alerts} removeAlert={props.removeAlert}/>
     }
 
     {get(props, 'modal.type') && makeModal(

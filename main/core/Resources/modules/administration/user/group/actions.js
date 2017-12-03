@@ -1,4 +1,4 @@
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/layout/form/actions'
 
 import {Group as GroupTypes} from '#/main/core/administration/user/group/prop-types'
@@ -11,14 +11,12 @@ actions.open = (formName, id = null) => (dispatch) => {
     dispatch(formActions.resetForm(formName, {id}, false))
 
     dispatch({
-      [REQUEST_SEND]: {
+      [API_REQUEST]: {
         url: ['apiv2_group_get', {id}],
         request: {
           method: 'GET'
         },
-        success: (response, dispatch) => {
-          dispatch(formActions.resetForm(formName, response, false))
-        }
+        success: (response, dispatch) => dispatch(formActions.resetForm(formName, response, false))
       }
     })
   } else {

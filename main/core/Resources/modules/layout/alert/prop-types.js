@@ -1,15 +1,17 @@
 import {PropTypes as T} from 'prop-types'
 
+import {constants} from '#/main/core/layout/alert/constants'
+
 const FlyingAlert = {
   propTypes: {
-    type: T.oneOf(
-      ['success', 'warning', 'error', 'info', 'loading']
+    action: T.oneOf(
+      Object.keys(constants.ALERT_ACTIONS)
     ).isRequired,
-    message: T.string.isRequired,
-    details: T.string
-  },
-  defaultProps: {
-
+    status: T.oneOf(
+      Object.keys(constants.ALERT_STATUS)
+    ).isRequired,
+    title: T.string,
+    message: T.string.isRequired
   }
 }
 

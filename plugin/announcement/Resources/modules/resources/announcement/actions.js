@@ -1,7 +1,7 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {navigate} from '#/main/core/router'
 
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 
 import {isValid} from './validator'
 
@@ -49,7 +49,7 @@ actions.saveAnnounce = (aggregateId, announce) => {
 
 actions.addAnnounce = makeActionCreator(ANNOUNCE_ADD, 'announce')
 actions.createAnnounce = (aggregateId, announce) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['claro_announcement_create', {aggregateId: aggregateId}],
     request: {
       method: 'POST',
@@ -65,7 +65,7 @@ actions.createAnnounce = (aggregateId, announce) => ({
 
 actions.changeAnnounce = makeActionCreator(ANNOUNCE_CHANGE, 'announce')
 actions.updateAnnounce = (aggregateId, announce) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['claro_announcement_update', {aggregateId: aggregateId, id: announce.id}],
     request: {
       method: 'PUT',
@@ -81,7 +81,7 @@ actions.updateAnnounce = (aggregateId, announce) => ({
 
 actions.deleteAnnounce = makeActionCreator(ANNOUNCE_DELETE, 'announce')
 actions.removeAnnounce = (aggregateId, announce) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['claro_announcement_delete', {aggregateId: aggregateId, id: announce.id}],
     request: {
       method: 'DELETE'
@@ -95,7 +95,7 @@ actions.removeAnnounce = (aggregateId, announce) => ({
 })
 
 actions.sendAnnounce = (aggregateId, announce) => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['claro_announcement_send', {aggregateId: aggregateId, id: announce.id}],
     request: {
       method: 'POST'

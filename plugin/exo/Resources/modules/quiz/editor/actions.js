@@ -3,7 +3,7 @@ import select from './selectors'
 import times from 'lodash/times'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {makeId} from './../../utils/utils'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {tex} from '#/main/core/translation'
 import {MODAL_MESSAGE} from '#/main/core/layout/modal'
@@ -195,7 +195,7 @@ actions.save = () => {
     } else {
       const denormalized = denormalize(state.quiz, state.steps, state.items)
       dispatch({
-        [REQUEST_SEND]: {
+        [API_REQUEST]: {
           url: ['exercise_update', {id: state.quiz.id}],
           request: {
             method: 'PUT' ,
@@ -218,7 +218,7 @@ actions.saveContentItemFile = (itemId, file) => {
     formData.append('sourceType', 'exo_content_item')
 
     dispatch({
-      [REQUEST_SEND]: {
+      [API_REQUEST]: {
         url: ['upload_public_file'],
         request: {
           method: 'POST',
@@ -268,7 +268,7 @@ actions.saveItemObjectFile = (itemId, objectId, file) => {
     formData.append('sourceType', 'exo_item_object')
 
     dispatch({
-      [REQUEST_SEND]: {
+      [API_REQUEST]: {
         url: ['upload_public_file'],
         request: {
           method: 'POST',

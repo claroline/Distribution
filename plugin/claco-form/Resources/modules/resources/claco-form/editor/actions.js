@@ -1,7 +1,7 @@
 import {generateUrl} from '#/main/core/fos-js-router'
 import {trans} from '#/main/core/translation'
 import {makeActionCreator} from '#/main/core/utilities/redux'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as clacoFormActions} from '../actions'
 import {actions as entryActions} from '../player/entry/actions'
 
@@ -30,7 +30,7 @@ actions.saveParameters = () => (dispatch, getState) => {
   formData.append('configData', JSON.stringify(params))
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_claco_form_configuration_edit', {clacoForm: resourceId}],
       request: {
         method: 'POST',
@@ -48,7 +48,7 @@ actions.deleteAllEntries = () => (dispatch, getState) => {
   const resourceId = getState().resource.id
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_claco_form_all_entries_delete', {clacoForm: resourceId}],
       request: {
         method: 'DELETE'

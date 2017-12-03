@@ -1,6 +1,6 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {trans} from '#/main/core/translation'
 
 export const CONFIGURATION_UPDATE = 'CONFIGURATION_UPDATE'
@@ -33,7 +33,7 @@ actions.saveConfiguration = () => (dispatch, getState) => {
   }
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_bbb_plugin_configuration_save'],
       request: {
         method: 'POST',
@@ -54,7 +54,7 @@ actions.initializeMeetings = makeActionCreator(MEETINGS_INIT, 'meetings')
 
 actions.getMeetings = () => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_bbb_plugin_configuration_meetings_list'],
       request: {
         method: 'GET'

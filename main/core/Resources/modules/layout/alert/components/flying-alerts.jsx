@@ -3,35 +3,66 @@ import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 import {FlyingAlert as FlyingAlertTypes} from '#/main/core/layout/alert/prop-types'
+import {constants as actionConstants} from '#/main/core/layout/action/constants'
 import {constants} from '#/main/core/layout/alert/constants'
 
-const FlyingAlert = props =>
-  <li className={`flying-alert flying-alert-${props.type}`}>
-    <span className={classes('flying-alert-icon fa fa-fw', {
-      'fa-check': 'success' === props.type,
-      'fa-exclamation': 'warning' === props.type,
-      'fa-times': 'error' === props.type,
-      'fa-info': 'info' === props.type,
-      'fa-spinner fa-pulse': 'loading' === props.type
-    })} />
+// todo handle auto hide
 
-    <span className="flying-alert-message">
-      {props.message}
+const FlyingAlertIcon = props => props.showSecondary ?
+  <span className={classes('flying-alert-icon fa fa-fw')}>
+    <span className={classes('flying-alert-icon-primary fa fa-fw', props.primaryIcon)} />
+    <span className={classes('flying-alert-icon-secondary fa', props.secondaryIcon)} />
+  </span> :
+  <span className={classes('flying-alert-icon fa fa-fw', props.primaryIcon)} />
 
-      {props.details &&
-        <button type="button">
-          show details
-        </button>
-      }
-    </span>
-  </li>
 
-implementPropTypes(FlyingAlert, FlyingAlertTypes)
+FlyingAlertIcon.propTypes = {
+  primaryIcon: T.string.isRequired,
+  secondaryIcon: T.string,
+  showSecondary: T.bool
+}
+
+const FlyingAlert = props => {
+  const status = constants.ALERT_STATUS[props.status]
+  const action = actionConstants.ACTIONS[props.action]
+
+  return (
+    <li
+      className={classes('flying-alert', `flying-alert-${props.status}`, `flying-alert-${props.action}`, {
+        removable: status.removable
+      })}
+      onClick={() => status.removable && props.removeAlert()}
+    >
+      <FlyingAlertIcon
+        primaryIcon={action.icon ? action.icon : status.icon}
+        secondaryIcon={status.icon}
+        showSecondary={action.icon && constants.ALERT_STATUS_PENDING !== props.status}
+      />
+
+      <span className="flying-alert-message">
+        <span className="flying-alert-title">
+          {props.title}
+        </span>
+
+        {props.message}
+      </span>
+    </li>
+  )
+}
+
+implementPropTypes(FlyingAlert, FlyingAlertTypes, {
+  removeAlert: T.func.isRequired
+})
 
 const FlyingAlerts = props =>
   <ul className="flying-alerts">
-    {props.alerts.slice(0, constants.FLYING_ALERTS_MAX).map((alert, alertIndex) =>
-      <FlyingAlert key={alertIndex} {...alert} />
+    {props.alerts.slice(0, constants.ALERT_DISPLAY_MAX).map((alert, alertIndex) =>
+      <FlyingAlert
+        {...alert}
+
+        key={alertIndex}
+        removeAlert={props.removeAlert}
+      />
     )}
   </ul>
 

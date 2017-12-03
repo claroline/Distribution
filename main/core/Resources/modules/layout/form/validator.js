@@ -1,6 +1,7 @@
 import get from 'lodash/get'
+import set from 'lodash/set'
 
-import {chain, setIfError, notBlank, validateIf} from '#/main/core/validation'
+import {chain, notBlank, validateIf} from '#/main/core/validation'
 import {getTypeOrDefault} from '#/main/core/layout/data/index'
 
 /**
@@ -9,7 +10,7 @@ import {getTypeOrDefault} from '#/main/core/layout/data/index'
  * @param {object} propDef   - the data definition (@see prop-types/DataFormProperty.propTypes).
  * @param {mixed}  propValue - the value to validate.
  *
- * @return {mixed} - the errors thrown.
+ * @return {object} - the errors thrown.
  */
 function validateProp(propDef, propValue) {
   const errors = {}
@@ -17,14 +18,16 @@ function validateProp(propDef, propValue) {
   // get corresponding type
   const propType = getTypeOrDefault(propDef.type)
 
-  return setIfError(errors, propDef.name, chain(propValue, propDef.options || {}, [
+  set(errors, propDef.name, chain(propValue, propDef.options || {}, [
     // checks if not empty when field is required
     validateIf(propDef.required, notBlank), // todo : there will be problems with html/objects/arrays
-    // execute data type validators if any
+    // execute data type validator if any
     validateIf(propType.validate, propType.validate),
-    // execute form instance validators if any
+    // execute form instance validator if any
     validateIf(propDef.validate, propDef.validate)
   ]))
+
+  return errors
 }
 
 /**

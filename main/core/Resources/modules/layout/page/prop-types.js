@@ -16,6 +16,7 @@ const Page = {
 
     // alerts management
     alerts: T.array,
+    removeAlert: T.func,
 
     // modal management
     modal: T.shape({

@@ -17,7 +17,6 @@ import {LocationTab, LocationTabActions} from '#/main/core/administration/user/l
 
 const Tool = () =>
   <TabbedPageContainer
-    hasModal={true}
     redirect={[
       {from: '/', exact: true, to: '/users'}
     ]}

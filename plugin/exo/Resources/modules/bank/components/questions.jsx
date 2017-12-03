@@ -24,7 +24,7 @@ import {getDefinition, listItemNames} from '#/plugin/exo/items/item-types'
 import {Icon as ItemIcon} from '#/plugin/exo/items/components/icon.jsx'
 
 const QuestionsPage = props =>
-  <PageContainer id="question-bank" hasModal={true}>
+  <PageContainer id="question-bank">
     <PageHeader title={tex('questions_bank')} />
 
     <PageContent>

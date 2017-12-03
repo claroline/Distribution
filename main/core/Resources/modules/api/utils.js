@@ -1,4 +1,8 @@
-
+/**
+ *
+ * @param promise
+ * @return {{promise: Promise, cancel: (function())}}
+ */
 const makeCancelable = (promise) => {
   let hasCanceled_ = false;
 

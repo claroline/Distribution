@@ -1,6 +1,6 @@
 import {generateUrl} from '#/main/core/fos-js-router'
 import {makeActionCreator} from '#/main/core/utilities/redux'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 
 export const KEYWORD_ADD = 'KEYWORD_ADD'
 export const KEYWORD_UPDATE = 'KEYWORD_UPDATE'
@@ -18,7 +18,7 @@ actions.createKeyword = (keyword) => (dispatch, getState) => {
   formData.append('keywordData', JSON.stringify(keyword))
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_claco_form_keyword_create', {clacoForm: resourceId}],
       request: {
         method: 'POST',
@@ -36,7 +36,7 @@ actions.editKeyword = (keyword) => (dispatch) => {
   formData.append('keywordData', JSON.stringify(keyword))
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_claco_form_keyword_edit', {keyword: keyword.id}],
       request: {
         method: 'POST',
@@ -51,7 +51,7 @@ actions.editKeyword = (keyword) => (dispatch) => {
 
 actions.deleteKeyword = (keywordId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: ['claro_claco_form_keyword_delete', {keyword: keywordId}],
       request: {
         method: 'DELETE'

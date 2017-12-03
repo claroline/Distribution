@@ -40,10 +40,7 @@ import {constants} from '#/main/core/administration/scheduled-task/constants'
 }*/
 
 const ScheduledTasksPage = props =>
-  <PageContainer
-    id="scheduled-task-management"
-    hasModals={true}
-  >
+  <PageContainer id="scheduled-task-management">
     <PageHeader
       title={trans('tasks_scheduling', {}, 'tools')}
     >

@@ -1846,7 +1846,7 @@ class WorkspaceManager
             $this->container->get('claroline.core_bundle.listener.log.log_listener')->disable();
             $workspace = new Workspace();
             $workspace->setName($name);
-            $workspace->setIsPersonal($isPersonal);
+            $workspace->setPersonal($isPersonal);
             $workspace->setCode($name);
             $workspace->setModel(true);
             $workspace->setCreator($this->container->get('claroline.manager.user_manager')->getDefaultUser());

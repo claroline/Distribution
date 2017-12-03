@@ -1518,5 +1518,7 @@
     "password_confirm": "Confirmation du mot de passe",
     "user_registration": "Inscription",
     "registration_confirm": "Valider mon inscription",
-    "form_next_step": "Suivant"
+    "form_next_step": "Suivant",
+    "show_password": "Afficher le mot de passe",
+    "accept_term_of_service": "Accepter les conditions d'utilisation"
 }
