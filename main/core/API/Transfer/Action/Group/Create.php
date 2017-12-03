@@ -2,12 +2,10 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action\Group;
 
-use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Security\PermissionCheckerTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -29,7 +27,7 @@ class Create extends AbstractAction
         $this->crud = $crud;
     }
 
-    public function execute($data)
+    public function execute(array $data)
     {
         $this->crud->create('Claroline\CoreBundle\Entity\Group', $data);
     }
@@ -38,7 +36,7 @@ class Create extends AbstractAction
      * return an array with the following element:
      * - section
      * - action
-     * - action name
+     * - action name.
      */
     public function getAction()
     {

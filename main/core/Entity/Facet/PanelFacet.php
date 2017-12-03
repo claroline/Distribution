@@ -11,12 +11,12 @@
 
 namespace Claroline\CoreBundle\Entity\Facet;
 
-use Doctrine\ORM\Mapping as ORM;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\PanelFacetRepository")
@@ -111,10 +111,13 @@ class PanelFacet
         $this->name = $name;
     }
 
-    public function setFacet($facet)
+    public function setFacet(Facet $facet = null)
     {
         $this->facet = $facet;
-        $facet->addPanelFacet($this);
+
+        if ($facet) {
+            $facet->addPanelFacet($this);
+        }
     }
 
     public function getFacet()
@@ -135,6 +138,15 @@ class PanelFacet
     public function addPanelFacetRole(PanelFacetRole $pfr)
     {
         $this->panelFacetsRole->add($pfr);
+    }
+
+    public function resetFieldFacets()
+    {
+        foreach ($this->fieldsFacet as $field) {
+            $field->setPanelFacet(null);
+        }
+
+        $this->fieldsFacet = new ArrayCollection();
     }
 
     public function setPosition($position)

@@ -12,7 +12,7 @@ class JsonAdapter implements AdapterInterface
 {
     public function decodeSchema($content, $schema)
     {
-        return json_decode($content);
+        return json_decode($content, true);
     }
 
     public function getMimeTypes()

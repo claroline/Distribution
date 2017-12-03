@@ -11,13 +11,13 @@
 
 namespace Claroline\CoreBundle\Entity\Facet;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use Claroline\CoreBundle\Entity\Model\UuidTrait;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\FieldFacetRepository")
@@ -40,17 +40,17 @@ class FieldFacet
     const FILE_TYPE = 11;
 
     protected static $types = [
-        self::STRING_TYPE,
-        self::FLOAT_TYPE,
-        self::DATE_TYPE,
-        self::RADIO_TYPE,
-        self::SELECT_TYPE,
-        self::CHECKBOXES_TYPE,
-        self::COUNTRY_TYPE,
-        self::EMAIL_TYPE,
-        self::RICH_TEXT_TYPE,
-        self::CASCADE_SELECT_TYPE,
-        self::FILE_TYPE,
+        'string' => self::STRING_TYPE,
+        'float' => self::FLOAT_TYPE,
+        'date' => self::DATE_TYPE,
+        'radio' => self::RADIO_TYPE,
+        'select' => self::SELECT_TYPE,
+        'checkboxes' => self::CHECKBOXES_TYPE,
+        'country' => self::COUNTRY_TYPE,
+        'email' => self::EMAIL_TYPE,
+        'text' => self::RICH_TEXT_TYPE,
+        'cascade ' => self::CASCADE_SELECT_TYPE,
+        'file' => self::FILE_TYPE,
     ];
 
     /**
@@ -150,16 +150,20 @@ class FieldFacet
     {
         $this->fieldsFacetValue = new ArrayCollection();
         $this->fieldFacetChoices = new ArrayCollection();
+        $this->options = [];
         $this->refreshUuid();
     }
 
     /**
-     * @param Facet $facet
+     * @param PanelFacet $panelFacet
      */
-    public function setPanelFacet(PanelFacet $panelFacet)
+    public function setPanelFacet(PanelFacet $panelFacet = null)
     {
-        $panelFacet->addFieldFacet($this);
         $this->panelFacet = $panelFacet;
+
+        if ($panelFacet) {
+            $panelFacet->addFieldFacet($this);
+        }
     }
 
     /**
@@ -187,6 +191,14 @@ class FieldFacet
 
     public function setType($type)
     {
+        //if we pass a correct type name
+        if (in_array($type, array_keys(static::$types))) {
+            $this->type = static::$types[$type];
+
+            return $this;
+        }
+
+        //otherwise we use the integer
         if (!in_array($type, static::$types)) {
             throw new \InvalidArgumentException(
                 'Type must be a FieldFacet class constant'
@@ -194,6 +206,8 @@ class FieldFacet
         }
 
         $this->type = $type;
+
+        return $this;
     }
 
     public function getType()
@@ -344,6 +358,16 @@ class FieldFacet
         $this->isRequired = $isRequired;
     }
 
+    /**
+     * @param bool $isRequired
+     *
+     * alias of setRequired
+     */
+    public function setRequired($isRequired)
+    {
+        $this->setIsRequired($isRequired);
+    }
+
     public function getPrettyName()
     {
         $string = str_replace(' ', '-', $this->name); // Replaces all spaces with hyphens.
@@ -366,5 +390,10 @@ class FieldFacet
     public function getOptions()
     {
         return $this->options;
+    }
+
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
     }
 }

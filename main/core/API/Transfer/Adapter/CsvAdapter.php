@@ -8,6 +8,7 @@ use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\ExplanationBuilder;
 use Claroline\CoreBundle\API\Utilities\ObjectHandler;
 use Symfony\Component\Translation\TranslatorInterface;
+use Claroline\CoreBundle\API\Utils\ArrayUtils;
 
 /**
  * @DI\Service()
@@ -27,6 +28,7 @@ class CsvAdapter implements AdapterInterface
     public function __construct(TranslatorInterface $translator)
     {
         $this->translator = $translator;
+        $this->arrayUtils = new ArrayUtils();
     }
 
     /**
@@ -91,7 +93,7 @@ class CsvAdapter implements AdapterInterface
             $value = (int)$value;
         }
 
-        $this->set($object, $propertyName, $value);
+        $this->arrayUtils->set($object, $propertyName, $value);
     }
 
     public function explainSchema($data)
@@ -112,25 +114,5 @@ class CsvAdapter implements AdapterInterface
     public function getMimeTypes()
     {
         return ['text/csv', 'csv'];
-    }
-
-    //this is more or less the lodash equivalent of 'set'
-    private function set(array &$object, $keys, $value)
-    {
-        $keys = explode('.', $keys);
-        $depth = count($keys);
-        $key = array_shift($keys);
-
-        if ($depth === 1) {
-            $object[$key] = $value;
-        } else {
-            if (!isset($object[$key])) {
-                $object[$key] = [];
-            } elseif (!is_array($object[$key])) {
-                throw new \Exception('Cannot set property because it already exists as a non \stdClass');
-            }
-
-            $this->set($object[$key], implode('.', $keys), $value);
-        }
     }
 }

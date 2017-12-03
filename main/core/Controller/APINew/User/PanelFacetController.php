@@ -12,15 +12,15 @@
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Claroline\CoreBundle\API\Options;
 
 /**
- * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\FieldFacet")
- * @Route("fieldfacet")
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\PanelFacet")
+ * @Route("panelfacet")
  */
-class FieldFacetController extends AbstractCrudController
+class PanelFacetController extends AbstractCrudController
 {
     public function getName()
     {
@@ -30,9 +30,13 @@ class FieldFacetController extends AbstractCrudController
     public function getOptions()
     {
         $list = [Options::PROFILE_SERIALIZE];
+        $create = [Options::DEEP_SERIALIZE];
+        $update = [Options::DEEP_SERIALIZE];
 
         return [
-            'list' => $list
+            'list' => $list,
+            'create' => $create,
+            'update' => $update,
         ];
     }
 }

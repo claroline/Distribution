@@ -2,13 +2,11 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Action\Group;
 
-use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\CoreBundle\Security\PermissionCheckerTrait;
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Crud;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
+use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service()
@@ -32,7 +30,7 @@ class AddUser extends AbstractAction
         $this->serializer = $serializer;
     }
 
-    public function execute($data)
+    public function execute(array $data)
     {
         $user = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\User',
@@ -51,7 +49,7 @@ class AddUser extends AbstractAction
     {
         return [
           'group' => 'Claroline\CoreBundle\Entity\Group',
-          'user'  => 'Claroline\CoreBundle\Entity\User'
+          'user' => 'Claroline\CoreBundle\Entity\User',
         ];
     }
 
@@ -59,7 +57,7 @@ class AddUser extends AbstractAction
      * return an array with the following element:
      * - section
      * - action
-     * - action name
+     * - action name.
      */
     public function getAction()
     {

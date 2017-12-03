@@ -4,6 +4,12 @@ namespace Claroline\CoreBundle\API;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use JVal\Context;
+use JVal\Registry;
+use JVal\Resolver;
+use JVal\Uri;
+use JVal\Utils;
+use JVal\Walker;
 
 /**
  * @DI\Service("claroline.api.serializer")
@@ -35,7 +41,8 @@ class SerializerProvider
     public function setObjectManager(ObjectManager $om, $rootDir)
     {
         $this->om = $om;
-        $this->rootDir = $rootDir . '/..';
+        $this->rootDir = $rootDir.'/..';
+        $this->baseUri = 'https://github.com/claroline/Distribution/tree/master';
     }
 
     /**
@@ -84,8 +91,10 @@ class SerializerProvider
             }
         }
 
+        $className = is_object($object) ? get_class($object) : $object;
+
         throw new \Exception(
-            sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', get_class($object))
+            sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', $className)
         );
     }
 
@@ -135,7 +144,9 @@ class SerializerProvider
             $object = new $class();
         }
 
-        return $serializer->deserialize($data, $object, $options);
+        $serializer->deserialize($data, $object, $options);
+
+        return $object;
     }
 
     public function getSchema($class)
@@ -145,12 +156,38 @@ class SerializerProvider
         if (method_exists($serializer, 'getSchema')) {
             $url = $serializer->getSchema();
             $path = explode('/', $url);
-            $absolutePath = $this->rootDir. '/vendor/claroline/distribution/'
-            . $path[1] . '/' . $path[2] . '/Resources/schema/' . $path[3];
+            $absolutePath = $this->rootDir.'/vendor/claroline/distribution/'
+            .$path[1].'/'.$path[2].'/Resources/schema/'.$path[3];
 
-            $data = @file_get_contents($absolutePath);
+            $schema = Utils::LoadJsonFromFile($absolutePath);
 
-            return json_decode($data);
+            $hook = function ($uri) {
+                return $this->resolveRef($uri);
+            };
+
+            //this is the resolution of the $ref thingy with Jval classes
+            //resolver can take a Closure parameter to change the $ref value
+            $resolver = new Resolver();
+            $resolver->setPreFetchHook($hook);
+            $walker = new Walker(new Registry(), $resolver);
+            $schema = $walker->resolveReferences($schema, new Uri(''));
+
+            return $walker->parseSchema($schema, new Context());
         }
+    }
+
+    /**
+     * Converts distant schema URI to a local one to load schemas from source code.
+     *
+     * @param string $uri
+     *
+     * @return string mixed
+     */
+    private function resolveRef($uri)
+    {
+        $uri = str_replace($this->baseUri, '', $uri);
+        $schemaDir = realpath("{$this->rootDir}/vendor/claroline/distribution");
+
+        return $schemaDir.'/'.$uri;
     }
 }

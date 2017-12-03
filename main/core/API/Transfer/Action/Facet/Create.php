@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action\User;
+namespace Claroline\CoreBundle\API\Transfer\Action\Facet;
 
 use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
@@ -13,11 +13,14 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class Create extends AbstractAction
 {
+    /** @var Crud */
+    private $crud;
+
     /**
      * Action constructor.
      *
      * @DI\InjectParams({
-     *     "crud" = @DI\Inject("claroline.api.crud")
+     *     "crud"       = @DI\Inject("claroline.api.crud")
      * })
      *
      * @param Crud $crud
@@ -27,25 +30,35 @@ class Create extends AbstractAction
         $this->crud = $crud;
     }
 
+    /**
+     * @param array $data
+     */
     public function execute(array $data)
     {
-        $this->crud->create('Claroline\CoreBundle\Entity\User', $data);
-    }
-
-    public function getSchema()
-    {
-        return ['$root' => 'Claroline\CoreBundle\Entity\User'];
+        return $this->crud->create('Claroline\CoreBundle\Entity\Facet\Facet', $data);
     }
 
     /**
-     * return an array with the following element:
-     * - section
-     * - action
-     * - action name.
+     * @return array
+     */
+    public function getSchema()
+    {
+        return [
+          '$root' => 'Claroline\CoreBundle\Entity\Facet\Facet',
+        ];
+    }
+
+    public function supports($format)
+    {
+        return in_array($format, ['json']);
+    }
+
+    /**
+     * @return array
      */
     public function getAction()
     {
-        return ['user', 'create'];
+        return ['facet', 'create'];
     }
 
     public function getBatchSize()

@@ -126,35 +126,47 @@ class TransferProvider
         return $this->actions[$action];
     }
 
+    public function explainAction($actionName, $format)
+    {
+        $adapter = $this->getAdapter($format);
+        $action = $this->getExecutor($actionName);
+
+        if (!$action->supports($format)) {
+            throw new \Exception('This action is not supported for the ' . $format . ' format.');
+        }
+
+        $schema = $action->getSchema();
+
+        if (array_key_exists('$root', $schema)) {
+            $jsonSchema = $this->serializer->getSchema($schema['$root']);
+
+            if ($jsonSchema) {
+                return $adapter->explainSchema($jsonSchema);
+            }
+        }
+
+        $identifiersSchema = [];
+
+        foreach ($schema as $prop => $value) {
+            $jsonSchema = $this->serializer->getSchema($value);
+
+            if ($jsonSchema) {
+                $identifiersSchema[$prop] = $jsonSchema;
+            }
+        }
+
+        return $adapter->explainIdentifiers($identifiersSchema);
+    }
+
     public function getAvailableActions($format)
     {
         $availables = [];
-        $adapter = $this->getAdapter($format);
 
-        foreach ($this->actions as $action) {
-            $schema = $action->getSchema();
-
-            if (array_key_exists('$root', $schema)) {
-                $jsonSchema = $this->serializer->getSchema($schema['$root']);
-
-                if ($jsonSchema) {
-                    $explanation = $adapter->explainSchema($jsonSchema);
-                    $availables[$action->getAction()[0]][$action->getAction()[1]] = $explanation;
-                }
-            } else {
-                $identifiersSchema = [];
-
-                foreach ($schema as $prop => $value) {
-                    $jsonSchema = $this->serializer->getSchema($value);
-
-                    if ($jsonSchema) {
-                        $identifiersSchema[$prop] = $jsonSchema;
-                    }
-                }
-
-                $explanation = $adapter->explainIdentifiers($identifiersSchema);
-                $availables[$action->getAction()[0]][$action->getAction()[1]] = $explanation;
-            }
+        foreach (array_filter($this->actions, function ($action) use ($format) {
+            return $action->supports($format);
+        }) as $action) {
+            $schema = $action->getAction();
+            $availables[$schema[0]][$schema[1]] = $this->explainAction($this->getActionName($action), $format);
         }
 
         return $availables;

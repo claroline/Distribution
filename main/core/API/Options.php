@@ -52,4 +52,8 @@ final class Options
     //maybe move this somewhere else: like UserOptions for Crud ?
     const SEND_EMAIL = 'send_email';
     const ADD_NOTIFICATIONS = 'add_notifications';
+
+    //for serialize, do we want to (de)serialize objects in subtrees ?
+    const DEEP_SERIALIZE = 'deep_serialize';
+    const DEEP_DESERIALIZE = 'deep_deserialize';
 }
