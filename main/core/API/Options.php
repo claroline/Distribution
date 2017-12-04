@@ -23,6 +23,11 @@ final class Options
      */
     const NO_FETCH = 'no_fetch';
 
+    /*
+     * Using this option, the serializers will return minmal data (no meta or restrictions)
+     */
+    const SERIALIZE_MINIMAL = 'serialize_minimal';
+
     /*******************************/
     /* SPECIFIC SERIALIZER OPTIONS */
     /*******************************/

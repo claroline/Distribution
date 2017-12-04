@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Facet;
 
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Facet\Facet;
@@ -39,6 +40,9 @@ class FacetSerializer
         $panelFacetSerializer = $this->serializer
           ->get('Claroline\CoreBundle\Entity\Facet\PanelFacet');
 
+        $roleSerializer = $this->serializer
+          ->get('Claroline\CoreBundle\Entity\Role');
+
         return [
           'id' => $facet->getUuid(),
           'title' => $facet->getName(),
@@ -46,7 +50,9 @@ class FacetSerializer
           'display' => [
             'creation' => $facet->getForceCreationForm(),
           ],
-          'roles' => [],
+          'roles' => array_map(function (Role $role) use ($roleSerializer) {
+              return $roleSerializer->serializer($role, [Options::SERIALIZE_MINIMAL]);
+          }, $facet->getRoles()->toArray()),
           'meta' => $this->getMeta($facet),
           'sections' => array_map(function ($panel) use ($panelFacetSerializer, $options) {
               return $panelFacetSerializer->serialize($panel, $options);
@@ -85,6 +91,8 @@ class FacetSerializer
                 $panelFacet->setFacet($facet);
             }
         }
+
+        //deserialize roles here too ?
     }
 
     /**

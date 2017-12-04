@@ -11,10 +11,10 @@
 
 namespace Claroline\CoreBundle\Entity\Facet;
 
-use Doctrine\ORM\Mapping as ORM;
-use Claroline\CoreBundle\Entity\Role;
-use JMS\Serializer\Annotation\Groups;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\CoreBundle\Entity\Role;
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity
@@ -67,48 +67,72 @@ class PanelFacetRole
     {
         $this->refreshUuid();
     }
-    
+
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @param Role $role
+     */
     public function setRole(Role $role)
     {
         $this->role = $role;
     }
 
+    /**
+     * return Role.
+     */
     public function getRole()
     {
         return $this->role;
     }
 
+    /**
+     * @param PanelFacet $panelFacet
+     */
     public function setPanelFacet(PanelFacet $panelFacet)
     {
         $this->panelFacet = $panelFacet;
         $panelFacet->addPanelFacetRole($this);
     }
 
+    /**
+     * @return PanelFacet
+     */
     public function getPanelFacet()
     {
         return $this->panelFacet;
     }
 
+    /**
+     * @param bool $bool
+     */
     public function setCanOpen($bool)
     {
         $this->canOpen = $bool;
     }
 
+    /**
+     * @return bool
+     */
     public function canOpen()
     {
         return $this->canOpen;
     }
 
+    /**
+     * @param bool $bool
+     */
     public function setCanEdit($bool)
     {
         $this->canEdit = $bool;
     }
 
+    /**
+     * @return bool
+     */
     public function canEdit()
     {
         return $this->canEdit;

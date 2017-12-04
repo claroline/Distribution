@@ -98,26 +98,41 @@ class Facet
         return $this->id;
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * return string.
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param PanelFacet $panelFacet
+     */
     public function addPanelFacet(PanelFacet $panelFacet)
     {
         $this->panelFacets->add($panelFacet);
     }
 
+    /**
+     * @param PanelFacet $panelFacet
+     */
     public function removePanelFacet(PanelFacet $panelFacet)
     {
         $this->panelFacets->removeElement($panelFacet);
     }
 
+    /**
+     * @return PanelFacet
+     */
     public function getPanelFacets()
     {
         return $this->panelFacets;

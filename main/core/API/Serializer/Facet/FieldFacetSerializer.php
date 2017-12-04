@@ -4,7 +4,9 @@ namespace Claroline\CoreBundle\API\Serializer\Facet;
 
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -14,6 +16,18 @@ use JMS\DiExtraBundle\Annotation as DI;
 class FieldFacetSerializer
 {
     use SerializerTrait;
+
+    /**
+     * @DI\InjectParams({
+     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     * })
+     *
+     * @param SerializerProvider $serializer
+     */
+    public function __construct(SerializerProvider $serializer)
+    {
+        $this->serializer = $serializer;
+    }
 
     /**
      * Serializes a FieldFacet entity for the JSON api.
@@ -37,7 +51,17 @@ class FieldFacetSerializer
               'options' => $fieldFacet->getOptions(),
             ];
 
-            return $serialized;
+            $fieldFacetChoiceSerializer = $this->serializer
+                ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice');
+            $choiceType = [FieldFacet::SELECT_TYPE, FieldFacet::CHECKBOXES_TYPE, FieldFacet::CASCADE_SELECT_TYPE];
+
+            if (in_array($fieldFacet->getType(), $choiceType)) {
+                $choices = array_map(function (FieldFacetChoice $choice) use ($fieldFacetChoiceSerializer) {
+                    return $fieldFacetChoiceSerializer->serialize($choice);
+                }, $fieldFacet->getFieldFacetChoices()->toArray());
+
+                $serialized['options']['choices'] = $choices;
+            }
         }
 
         //could be used by the clacoform. It should change later. The default one should be

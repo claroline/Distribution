@@ -42,13 +42,18 @@ class PanelFacetSerializer
      */
     public function serialize(PanelFacet $panel, array $options = [])
     {
-        $fieldFacetSerializer = $this->serializer->get('Claroline\CoreBundle\Entity\Facet\FieldFacet');
+        $fieldFacetSerializer = $this->serializer
+            ->get('Claroline\CoreBundle\Entity\Facet\FieldFacet');
+        $panelFacetRoleSerializer = $this->serializer
+            ->get('Claroline\CoreBundle\Entity\Facet\PanelFacetRole');
 
         return [
           'id' => $panel->getUuid(),
           'title' => $panel->getName(),
           'position' => $panel->getPosition(),
-          'roles' => [],
+          'roles' => array_map(function (PanelFacetRole $panelFacet) use ($panelFacetRoleSerializer) {
+              return $panelFacetRoleSerializer->serializer($panelFacet);
+          }, $panel->getPanelFacetsRole()->toArray()),
           'meta' => [],
           'fields' => array_map(function ($fieldFacet) use ($fieldFacetSerializer, $options) {
               return $fieldFacetSerializer->serialize($fieldFacet, $options);
