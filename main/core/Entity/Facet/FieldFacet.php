@@ -27,18 +27,29 @@ class FieldFacet
 {
     use UuidTrait;
 
+    /** @var int */
     const STRING_TYPE = 1;
+    /** @var int */
     const FLOAT_TYPE = 2;
+    /** @var int */
     const DATE_TYPE = 3;
+    /** @var int */
     const RADIO_TYPE = 4;
+    /** @var int */
     const SELECT_TYPE = 5;
+    /** @var int */
     const CHECKBOXES_TYPE = 6;
+    /** @var int */
     const COUNTRY_TYPE = 7;
+    /** @var int */
     const EMAIL_TYPE = 8;
+    /** @var int */
     const RICH_TEXT_TYPE = 9;
+    /** @var int */
     const CASCADE_SELECT_TYPE = 10;
+    /** @var int */
     const FILE_TYPE = 11;
-
+    /** @var array */
     protected static $types = [
         'string' => self::STRING_TYPE,
         'float' => self::FLOAT_TYPE,
@@ -58,6 +69,8 @@ class FieldFacet
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
+     *
+     * @var int
      */
     protected $id;
 
@@ -65,12 +78,16 @@ class FieldFacet
      * @ORM\Column
      * @Assert\NotBlank()
      * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
+     *
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(type="integer")
      * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
+     *
+     * @var int
      */
     protected $type;
 
@@ -80,6 +97,8 @@ class FieldFacet
      *      inversedBy="fieldsFacet"
      * )
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
+     *
+     * @var PanelFacet
      */
     protected $panelFacet;
 
@@ -89,18 +108,24 @@ class FieldFacet
      *     mappedBy="fieldFacet",
      *     cascade={"persist"}
      * )
+     *
+     * @var ArrayCollection
      */
     protected $fieldsFacetValue;
 
     /**
      * @ORM\Column(type="integer", name="position", nullable=true)
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var int
      */
     protected $position;
 
     /**
      * @Groups({"api_facet_admin", "api_profile", "api_user_min"})
      * @Accessor(getter="getInputType")
+     *
+     * @var string
      */
     protected $translationKey;
 
@@ -111,24 +136,32 @@ class FieldFacet
      * )
      * @Groups({"api_facet_admin", "api_profile"})
      * @ORM\OrderBy({"position" = "ASC"})
+     *
+     * @var ArrayCollection
      */
     protected $fieldFacetChoices;
 
     /**
      * @Groups({"api_profile"})
      * @Accessor(getter="getUserFieldValue")
+     *
+     * @var mixed
      */
     protected $userFieldValue;
 
     /**
      * @Groups({"api_profile"})
      * @Accessor(getter="isEditable")
+     *
+     * @var bool
      */
     protected $isEditable;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_profile", "api_facet_admin"})
+     *
+     * @var bool
      */
     protected $isRequired = false;
 
@@ -138,14 +171,21 @@ class FieldFacet
      *     inversedBy="fields"
      * )
      * @ORM\JoinColumn(name="resource_node", onDelete="CASCADE", nullable=true)
+     *
+     * @var ResourceNode
      */
     protected $resourceNode;
 
     /**
      * @ORM\Column(type="json_array")
+     *
+     * @var array
      */
     protected $options;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->fieldsFacetValue = new ArrayCollection();
@@ -155,7 +195,7 @@ class FieldFacet
     }
 
     /**
-     * @param PanelFacet $panelFacet
+     * @param PanelFacet|null $panelFacet
      */
     public function setPanelFacet(PanelFacet $panelFacet = null)
     {
@@ -174,21 +214,33 @@ class FieldFacet
         return $this->panelFacet;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param int|string $type
+     */
     public function setType($type)
     {
         //if we pass a correct type name
@@ -210,21 +262,33 @@ class FieldFacet
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getFieldsFacetValue()
     {
         return $this->fieldsFacetValue;
     }
 
+    /**
+     * @param FieldFacetValue $fieldFacetValue
+     */
     public function addFieldFacet(FieldFacetValue $fieldFacetValue)
     {
         $this->fieldsFacetValue->add($fieldFacetValue);
     }
 
+    /**
+     * @param FieldFacetChoice $choice
+     */
     public function addFieldChoice(FieldFacetChoice $choice)
     {
         if (!$this->fieldFacetChoices->contains($choice)) {
@@ -232,6 +296,9 @@ class FieldFacet
         }
     }
 
+    /**
+     * @param FieldFacetChoice $choice
+     */
     public function removeFieldChoice(FieldFacetChoice $choice)
     {
         if ($this->fieldFacetChoices->contains($choice)) {
@@ -239,16 +306,25 @@ class FieldFacet
         }
     }
 
+    /**
+     * @param int $position
+     */
     public function setPosition($position)
     {
         $this->position = $position;
     }
 
+    /**
+     * @return int
+     */
     public function getPosition()
     {
         return $this->position;
     }
 
+    /**
+     * @return string
+     */
     public function getTypeTranslationKey()
     {
         switch ($this->type) {
@@ -267,6 +343,9 @@ class FieldFacet
         }
     }
 
+    /**
+     * @return string
+     */
     public function getFieldType()
     {
         switch ($this->type) {
@@ -286,7 +365,8 @@ class FieldFacet
     }
     /**
      * @deprecated
-     * Remove me
+     *
+     * @return string
      */
     public function getInputType()
     {
@@ -306,11 +386,17 @@ class FieldFacet
         }
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getFieldFacetChoices()
     {
         return $this->fieldFacetChoices;
     }
 
+    /**
+     * @return array
+     */
     public function getFieldFacetChoicesArray()
     {
         return $this->fieldFacetChoices->toArray();
@@ -318,6 +404,9 @@ class FieldFacet
 
     /**
      * For serialization in user profile. It's easier that way.
+     * note for myself: do we need to remove it ?
+     *
+     * @param FieldFacetValue $val
      */
     public function setUserFieldValue(FieldFacetValue $val)
     {
@@ -326,6 +415,9 @@ class FieldFacet
 
     /**
      * For serialization in user profile. It's easier that way.
+     * note for myself: do we need to remove it ?
+     *
+     * @return FieldFacetValue|null
      */
     public function getUserFieldValue()
     {
@@ -334,6 +426,9 @@ class FieldFacet
 
     /**
      * For serialization in user profile. It's easier that way.
+     *
+     * @param bool $boolean
+     *                      note for myself: do we need to remove it ?
      */
     public function setIsEditable($boolean)
     {
@@ -342,17 +437,26 @@ class FieldFacet
 
     /**
      * For serialization in user profile. It's easier that way.
+     * note for myself: do we need to remove it ?
+     *
+     * @return bool
      */
     public function isEditable()
     {
         return $this->isEditable;
     }
 
+    /**
+     * @return bool
+     */
     public function isRequired()
     {
         return $this->isRequired;
     }
 
+    /**
+     * @param bool $isRequired
+     */
     public function setIsRequired($isRequired)
     {
         $this->isRequired = $isRequired;
@@ -368,6 +472,9 @@ class FieldFacet
         $this->setIsRequired($isRequired);
     }
 
+    /**
+     * @return string
+     */
     public function getPrettyName()
     {
         $string = str_replace(' ', '-', $this->name); // Replaces all spaces with hyphens.
@@ -377,21 +484,33 @@ class FieldFacet
         return strtolower($string);
     }
 
+    /**
+     * @return ResourceNode
+     */
     public function getResourceNode()
     {
         return $this->resourceNode;
     }
 
+    /**
+     * @param ResourceNode|null $resourceNode
+     */
     public function setResourceNode(ResourceNode $resourceNode = null)
     {
         $this->resourceNode = $resourceNode;
     }
 
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * @param array $options
+     */
     public function setOptions(array $options)
     {
         $this->options = $options;

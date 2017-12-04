@@ -2,8 +2,9 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
-use JMS\DiExtraBundle\Annotation as DI;
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Entity\Role;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.serializer.role")
@@ -21,13 +22,18 @@ class RoleSerializer
      */
     public function serialize(Role $role, array $options = [])
     {
-        return [
+        $serialized = [
             'id' => $role->getUuid(),
             'translationKey' => $role->getTranslationKey(),
             'name' => $role->getName(),
-            'meta' => $this->serializeMeta($role, $options),
-            'restrictions' => $this->serializeRestrictions($role)
         ];
+
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $serialized['meta'] = $this->serializeMeta($role, $options);
+            $serialized['restrictions'] = $this->serializeRestrictions($role);
+        }
+
+        return $serialized;
     }
 
     public function serializeMeta(Role $role, array $options = [])
@@ -35,7 +41,7 @@ class RoleSerializer
         return [
            'readOnly' => $role->isReadOnly(),
            'type' => $role->getType(),
-           'personalWorkspaceCreationEnabled' => $role->getPersonalWorkspaceCreationEnabled()
+           'personalWorkspaceCreationEnabled' => $role->getPersonalWorkspaceCreationEnabled(),
        ];
     }
 
@@ -62,7 +68,7 @@ class RoleSerializer
             //2 roles can have the same translationKey while the name is unique, for now we only allow to create
             //platform roles so it's not an issue but it's going to need improvements
             //when workspaces and custom roles will be supported
-            $role->setName('ROLE_' . str_replace(' ', '_', strtoupper($data['translationKey'])));
+            $role->setName('ROLE_'.str_replace(' ', '_', strtoupper($data['translationKey'])));
         }
 
         return $role;

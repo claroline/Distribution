@@ -29,6 +29,7 @@ abstract class AbstractCrudController extends ContainerAware
     /** @var ContainerInterface */
     protected $container;
 
+    /** @var array */
     protected $options;
 
     /**
@@ -48,6 +49,13 @@ abstract class AbstractCrudController extends ContainerAware
         $this->options = $this->mergeOptions();
     }
 
+    /**
+     * @param string|int $id
+     * @param string     $class
+     * @param string     $env
+     *
+     * @return JsonResponse
+     */
     public function getAction($id, $class, $env)
     {
         $object = $this->find($class, $id);
@@ -59,6 +67,14 @@ abstract class AbstractCrudController extends ContainerAware
             new JsonResponse('', 404);
     }
 
+    /**
+     * @param string $class
+     * @param string $field
+     * @param string $value
+     * @param string $env
+     *
+     * @return JsonResponse
+     */
     public function existAction($class, $field, $value, $env)
     {
         $objects = $this->om->getRepository($class)->findBy([$field => $value]);
@@ -66,6 +82,13 @@ abstract class AbstractCrudController extends ContainerAware
         return new JsonResponse(count($objects) > 0);
     }
 
+    /**
+     * @param Request $request
+     * @param string  $class
+     * @param string  $env
+     *
+     * @return JsonResponse
+     */
     public function listAction(Request $request, $class, $env)
     {
         return new JsonResponse($this->finder->search(
@@ -75,6 +98,13 @@ abstract class AbstractCrudController extends ContainerAware
         ));
     }
 
+    /**
+     * @param Request $request
+     * @param string  $class
+     * @param string  $env
+     *
+     * @return JsonResponse
+     */
     public function createAction(Request $request, $class, $env)
     {
         try {
@@ -93,6 +123,14 @@ abstract class AbstractCrudController extends ContainerAware
         }
     }
 
+    /**
+     * @param string|int $id
+     * @param Request    $request
+     * @param string     $class
+     * @param string     $env
+     *
+     * @return JsonResponse
+     */
     public function updateAction($id, Request $request, $class, $env)
     {
         try {
@@ -110,6 +148,13 @@ abstract class AbstractCrudController extends ContainerAware
         }
     }
 
+    /**
+     * @param Request $request
+     * @param string  $class
+     * @param string  $env
+     *
+     * @return JsonResponse
+     */
     public function deleteBulkAction(Request $request, $class, $env)
     {
         try {
@@ -125,6 +170,12 @@ abstract class AbstractCrudController extends ContainerAware
     }
 
     //maybe handle the exception better ?
+    /**
+     * @param \Exception $e
+     * @param string     $env
+     *
+     * @return JsonResponse
+     */
     protected function handleException(\Exception $e, $env)
     {
         if ($e instanceof InvalidDataException) {
@@ -138,11 +189,18 @@ abstract class AbstractCrudController extends ContainerAware
         throw $e;
     }
 
+    /**
+     * @param Request $request
+     */
     protected function decodeRequest(Request $request)
     {
         return json_decode($request->getContent(), true);
     }
 
+    /**
+     * @param Request $request
+     * @param string  $class
+     */
     protected function decodeIdsString(Request $request, $class)
     {
         $ids = $request->query->get('ids');
@@ -151,7 +209,10 @@ abstract class AbstractCrudController extends ContainerAware
         return $this->om->findList($class, $property, $ids);
     }
 
-    //@todo: not as lazy implementation
+    /**
+     * @param string     $class
+     * @param string|int $id
+     */
     protected function find($class, $id)
     {
         return $this->om->getRepository($class)->findOneBy(
@@ -161,6 +222,9 @@ abstract class AbstractCrudController extends ContainerAware
         );
     }
 
+    /**
+     * @return array
+     */
     private function getDefaultOptions()
     {
         return [
@@ -169,14 +233,23 @@ abstract class AbstractCrudController extends ContainerAware
             'create' => [],
             'update' => [],
             'deleteBulk' => [],
-            'exist' => []
+            'exist' => [],
         ];
     }
 
+    /**
+     * @return array
+     */
+    protected function getOptions()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
     private function mergeOptions()
     {
-        return method_exists($this, 'getOptions') ?
-            array_merge_recursive($this->getDefaultOptions(), $this->getOptions()):
-            $this->getDefaultOptions();
+        return array_merge_recursive($this->getDefaultOptions(), $this->getOptions());
     }
 }

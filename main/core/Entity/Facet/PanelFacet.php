@@ -31,6 +31,8 @@ class PanelFacet
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var int
      */
     protected $id;
 
@@ -38,6 +40,8 @@ class PanelFacet
      * @ORM\Column
      * @Assert\NotBlank()
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var string
      */
     protected $name;
 
@@ -47,6 +51,8 @@ class PanelFacet
      *      inversedBy="panelFacets"
      * )
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
+     *
+     * @var Facet
      */
     protected $facet;
 
@@ -59,24 +65,32 @@ class PanelFacet
      * @ORM\OrderBy({"position" = "ASC"})
      * @Groups({"api_facet_admin", "api_profile"})
      * @SerializedName("fields")
+     *
+     * @var ArrayCollection
      */
     protected $fieldsFacet;
 
     /**
      * @ORM\Column(type="integer", name="position")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var int
      */
     protected $position;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var bool
      */
     protected $isDefaultCollapsed = false;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var bool
      */
     protected $isEditable = false;
 
@@ -86,9 +100,14 @@ class PanelFacet
      *     mappedBy="panelFacet"
      * )
      * @Groups({"api_facet_admin"})
+     *
+     * @var ArrayCollection
      */
     protected $panelFacetsRole;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->fieldsFacet = new ArrayCollection();
@@ -96,21 +115,33 @@ class PanelFacet
         $this->refreshUuid();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @param Facet|null $facet
+     */
     public function setFacet(Facet $facet = null)
     {
         $this->facet = $facet;
@@ -120,26 +151,41 @@ class PanelFacet
         }
     }
 
+    /**
+     * @return Facet|null
+     */
     public function getFacet()
     {
         return $this->facet;
     }
 
+    /**
+     * @return FieldFacet[]|ArrayCollection
+     */
     public function getFieldsFacet()
     {
         return $this->fieldsFacet;
     }
 
+    /**
+     * @param FieldFacet $fieldFacet
+     */
     public function addFieldFacet(FieldFacet $fieldFacet)
     {
         $this->fieldsFacet->add($fieldFacet);
     }
 
+    /**
+     * @param PanelFacetRole $pfr
+     */
     public function addPanelFacetRole(PanelFacetRole $pfr)
     {
         $this->panelFacetsRole->add($pfr);
     }
 
+    /**
+     * Remove all field facets.
+     */
     public function resetFieldFacets()
     {
         foreach ($this->fieldsFacet as $field) {
@@ -149,46 +195,73 @@ class PanelFacet
         $this->fieldsFacet = new ArrayCollection();
     }
 
+    /**
+     * @param int $position
+     */
     public function setPosition($position)
     {
         $this->position = $position;
     }
 
+    /**
+     * @return int
+     */
     public function getPosition()
     {
         return $this->position;
     }
 
+    /**
+     * @param bool $boolean
+     */
     public function setIsDefaultCollapsed($boolean)
     {
         $this->isDefaultCollapsed = $boolean;
     }
 
+    /**
+     * @return bool
+     */
     public function getIsDefaultCollapsed()
     {
         return $this->isDefaultCollapsed;
     }
 
+    /**
+     * @return bool
+     */
     public function isDefaultCollapsed()
     {
         return $this->isDefaultCollapsed;
     }
 
+    /**
+     * @return bool
+     */
     public function isEditable()
     {
         return $this->isEditable;
     }
 
+    /**
+     * @param bool $isEditable
+     */
     public function setIsEditable($isEditable)
     {
         $this->isEditable = $isEditable;
     }
 
+    /**
+     * @return string
+     */
     public function isCollapsed()
     {
         return $this->isDefaultCollapsed ? 'true' : 'false';
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getPanelFacetsRole()
     {
         return $this->panelFacetsRole;
