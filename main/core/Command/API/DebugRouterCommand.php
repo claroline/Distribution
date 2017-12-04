@@ -53,10 +53,6 @@ class DebugRouterCommand extends ContainerAwareCommand
             }
         }
 
-        if (count($describeCollection->getIterator() === 0)) {
-            $output->writeln('No route found for class '.$class);
-        }
-
         $io = new SymfonyStyle($input, $output);
         $helper = new DescriptorHelper();
         $helper->describe($io, $describeCollection, []);
