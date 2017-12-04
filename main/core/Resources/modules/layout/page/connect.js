@@ -51,6 +51,9 @@ function mapDispatchToProps(dispatch) {
     },
 
     // modal
+    showModal(modalType, modalProps) {
+      dispatch(modalActions.showModal(modalType, modalProps))
+    },
     fadeModal() {
       dispatch(modalActions.fadeModal())
     },
@@ -79,6 +82,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   if (stateProps.hasModals) {
     props.modal = stateProps.modal
+    props.showModal = dispatchProps.showModal
     props.fadeModal = dispatchProps.fadeModal
     props.hideModal = dispatchProps.hideModal
   }
@@ -89,10 +93,18 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 /**
  * Connects a page component to the store.
  *
+ * @todo find a way to implement without the double `connect`.
+ *
+ * @param {function} customMapStateToProps
+ * @param {function} customMapDispatchToProps
+ *
  * @returns {function}
  */
-function connectPage() {
-  return (PageComponent) => connect(mapStateToProps, mapDispatchToProps, mergeProps)(PageComponent)
+function connectPage(customMapStateToProps = () => ({}), customMapDispatchToProps = () => ({})) {
+  return (PageComponent) => connect(
+    customMapStateToProps,
+    customMapDispatchToProps
+  )(connect(mapStateToProps, mapDispatchToProps, mergeProps)(PageComponent))
 }
 
 export {

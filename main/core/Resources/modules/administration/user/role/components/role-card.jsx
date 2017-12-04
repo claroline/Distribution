@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {enumRole} from '#/main/core/administration/user/role/constants'
+import {enumRole} from '#/main/core/user/role/constants'
 
 const RoleCard = (row) => ({
   onClick: `#/roles/${row.id}`,

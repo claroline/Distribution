@@ -1,9 +1,9 @@
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
 // reducers
-import {reducer} from '#/main/core/registration/reducer'
+import {reducer} from '#/main/core/user/registration/reducer'
 
-import {UserRegistration} from '#/main/core/registration/components/main.jsx'
+import {UserRegistration} from '#/main/core/user/registration/components/main.jsx'
 
 // mount the react application
 bootstrap(

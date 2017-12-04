@@ -322,7 +322,7 @@ class ProfileController extends Controller
 
             if ($editYourself) {
                 $successMessage = $translator->trans('edit_your_profile_success', [], 'platform');
-                $redirectUrl = $this->generateUrl('claro_public_profile_view', ['publicUrl' => $user->getPublicUrl()]);
+                $redirectUrl = $this->generateUrl('claro_user_profile', ['publicUrl' => $user->getPublicUrl()]);
             }
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -439,7 +439,7 @@ class ProfileController extends Controller
             }
 
             if ($selfEdit) {
-                return $this->redirect($this->generateUrl('claro_public_profile_view', ['publicUrl' => $user->getPublicUrl()]));
+                return $this->redirect($this->generateUrl('claro_user_profile', ['publicUrl' => $user->getPublicUrl()]));
             } else {
                 return $this->redirect($this->generateUrl('claro_admin_users_index'));
             }
@@ -491,7 +491,7 @@ class ProfileController extends Controller
                 $sessionFlashBag->add('error', $translator->trans('tune_public_url_error', [], 'platform'));
             }
 
-            return $this->redirect($this->generateUrl('claro_public_profile_view', ['publicUrl' => $user->getPublicUrl()]));
+            return $this->redirect($this->generateUrl('claro_user_profile', ['publicUrl' => $user->getPublicUrl()]));
         }
 
         return [

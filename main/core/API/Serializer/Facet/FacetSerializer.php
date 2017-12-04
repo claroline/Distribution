@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Facet;
 
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Facet\Facet;
@@ -56,6 +57,8 @@ class FacetSerializer
 
     /**
      * @param Facet $facet
+     *
+     * @return array
      */
     public function getMeta(Facet $facet)
     {

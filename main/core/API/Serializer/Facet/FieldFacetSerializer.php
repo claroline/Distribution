@@ -26,30 +26,25 @@ class FieldFacetSerializer
     public function serialize(FieldFacet $fieldFacet, array $options = [])
     {
         if (in_array(Options::PROFILE_SERIALIZE, $options)) {
-            $serialized = [
-              //no uuid yet
-              'id' => $fieldFacet->getUuid(),
-              'name' => $fieldFacet->getName(),
-              'type' => $fieldFacet->getFieldType(),
-              //maybe translate this
-              'label' => $fieldFacet->getName(),
-              'required' => $fieldFacet->isRequired(),
-              'options' => $fieldFacet->getOptions(),
+            return [
+                'id' => $fieldFacet->getUuid(),
+                'name' => $fieldFacet->getName(),
+                'type' => $fieldFacet->getFieldType(),
+                //maybe translate this
+                'label' => $fieldFacet->getName(),
+                'required' => $fieldFacet->isRequired(),
+                'options' => $fieldFacet->getOptions(),
             ];
-
-            return $serialized;
         }
 
         //could be used by the clacoform. It should change later. The default one should be
         //PROFILE_SERIALIZE. See with @kitan
-        $serialized = [
+        return [
             'id' => $fieldFacet->getId(),
             'name' => $fieldFacet->getName(),
             'type' => $fieldFacet->getType(),
             'translationKey' => $fieldFacet->getTypeTranslationKey(),
         ];
-
-        return $serialized;
     }
 
     public function deserialize(array $data, FieldFacet $field = null, array $options = [])

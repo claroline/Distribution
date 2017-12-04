@@ -172,7 +172,7 @@ ChoiceItems.propTypes = {
 const Choice = props =>
   <fieldset className="choice-editor">
     <RadioGroup
-      controlId={`item-${props.item.id}-multiple`}
+      id={`item-${props.item.id}-multiple`}
       label={tex('choice_multiple')}
       hideLabel={true}
       options={[
@@ -236,7 +236,7 @@ const Choice = props =>
     <hr className="item-content-separator" />
 
     <RadioGroup
-      controlId={`item-${props.item.id}-numbering`}
+      id={`item-${props.item.id}-numbering`}
       label={tex('choice_numbering')}
       options={[
         {value: NUMBERING_NONE, label: tex('quiz_numbering_none')},

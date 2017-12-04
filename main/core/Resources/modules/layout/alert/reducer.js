@@ -47,22 +47,21 @@ const reducer = makeReducer([], {
   [REQUEST_SEND]: (state, action) => {
     if (!action.apiRequest.silent) {
       const currentAction = action.apiRequest.type || actionConstants.HTTP_ACTIONS[action.apiRequest.request.method]
+      const customMessages = action.apiRequest.messages[constants.ALERT_STATUS_PENDING]
 
       return addAlert(state, {
         id: action.apiRequest.id + constants.ALERT_STATUS_PENDING,
         status: constants.ALERT_STATUS_PENDING,
         action: currentAction,
-        message: action.apiRequest.messages[constants.ALERT_STATUS_PENDING].message,
-        title: action.apiRequest.messages[constants.ALERT_STATUS_PENDING].title
+        message: customMessages && customMessages.message ? customMessages.message : null,
+        title: customMessages && customMessages.title ? customMessages.title : null
       })
     }
 
     return state
   },
 
-  [RECEIVE_RESPONSE]: () => [],
-
-  /*[RECEIVE_RESPONSE]: (state, action) => {
+  [RECEIVE_RESPONSE]: (state, action) => {
     console.log(state)
     console.log(action)
     if (!action.apiRequest.silent) {
@@ -76,18 +75,20 @@ const reducer = makeReducer([], {
       const currentStatus = constants.ALERT_ACTIONS[currentAction][action.response.status]
       if (currentStatus) {
         // the current action define a message for the status
+        const customMessages = action.apiRequest.messages[currentStatus]
+
         return addAlert(newState, {
           id: action.apiRequest.id + currentStatus,
           status: currentStatus,
           action: currentAction,
-          message: action.apiRequest.messages[currentStatus].message,
-          title: action.apiRequest.messages[currentStatus].title
+          message: customMessages && customMessages.message ? customMessages.message : null,
+          title: customMessages && customMessages.title ? customMessages.title : null
         })
       }
     }
 
     return state
-  },*/
+  },
 
   // Client alerts
   [ALERT_ADD]: addAlert,

@@ -8,6 +8,7 @@ import {
 } from 'redux'
 import thunk from 'redux-thunk'
 
+import {reducer as alertReducer}    from '#/main/core/layout/alert/reducer'
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
@@ -30,11 +31,13 @@ const identity = (state = null) => state
 
 export function makeReducer(editable) {
   return combineReducers({
-    resourceNode: resourceReducer,
-
-    noServer: identity,
+    // todo use `makePageReducer`
+    alerts: alertReducer,
     modal: modalReducer,
     currentRequests: apiReducer,
+
+    resourceNode: resourceReducer,
+    noServer: identity,
     viewMode: quizReducers.viewMode,
     quiz: editable ? editorReducers.quiz : identity,
     steps: editable ? editorReducers.steps : identity,

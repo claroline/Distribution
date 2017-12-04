@@ -2,7 +2,7 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 
-import {enumRole} from '#/main/core/administration/user/role/constants'
+import {enumRole} from '#/main/core/user/role/constants'
 import {RoleCard} from '#/main/core/administration/user/role/components/role-card.jsx'
 
 const RoleList = {

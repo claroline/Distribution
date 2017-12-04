@@ -39,7 +39,12 @@ const UsersList = props =>
       {
         icon: 'fa fa-fw fa-id-card-o',
         label: t('show_profile'),
-        action: (rows) => window.location = generateUrl('claro_public_profile_view', {publicUrl: rows[0].meta.publicUrl}),
+        action: (rows) => window.location = generateUrl('claro_user_profile', {publicUrl: rows[0].meta.publicUrl}),
+        context: 'row'
+      }, {
+        icon: 'fa fa-fw fa-line-chart',
+        label: t('show_tracking'),
+        action: (rows) => window.location = generateUrl('claro_user_tracking', {publicUrl: rows[0].meta.publicUrl}),
         context: 'row'
       }, {
         icon: 'fa fa-fw fa-eye',

@@ -141,7 +141,7 @@ const Picking = props =>
     <SelectGroup
       id="quiz-picking"
       label={tex('quiz_picking_type')}
-      options={quizPicking}
+      choices={quizPicking}
       noEmpty={true}
       value={props.picking.type}
       onChange={(value) => props.onChange('picking.type', value)}
@@ -290,7 +290,7 @@ class Correction extends Component {
     return(
       <fieldset>
         <RadioGroup
-          controlId="quiz-total-score-on"
+          id="quiz-total-score-on"
           label={tex('quiz_total_score_on')}
           options={[
             {value: TOTAL_SCORE_ON_DEFAULT, label: tex('quiz_total_score_on_mode_default')},

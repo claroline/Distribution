@@ -130,7 +130,7 @@ class MailController extends Controller
 
         return new RedirectResponse(
             $this->router->generate(
-                'claro_public_profile_view',
+                'claro_user_profile',
                 array('publicUrl' => $user->getPublicUrl())
            )
         );

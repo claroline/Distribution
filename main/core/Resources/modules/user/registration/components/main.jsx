@@ -12,12 +12,12 @@ import {select as formSelect} from '#/main/core/layout/form/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 
-import {Facet} from '#/main/core/registration/components/facet.jsx'
-import {Required} from '#/main/core/registration/components/required.jsx'
-import {Optional} from '#/main/core/registration/components/optional.jsx'
+import {Facet} from '#/main/core/user/registration/components/facet.jsx'
+import {Required} from '#/main/core/user/registration/components/required.jsx'
+import {Optional} from '#/main/core/user/registration/components/optional.jsx'
 
-import {select} from '#/main/core/registration/selectors'
-import {actions} from '#/main/core/registration/actions'
+import {select} from '#/main/core/user/registration/selectors'
+import {actions} from '#/main/core/user/registration/actions'
 
 const RegistrationForm = props =>
   <PageContainer id="user-registration">

@@ -4,7 +4,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 import {makeFormReducer} from '#/main/core/layout/form/reducer'
 
-import {PLATFORM_ROLE} from '#/main/core/administration/user/role/constants'
+import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
 
 const reducer = combineReducers({
   list: makeListReducer('groups.list'),

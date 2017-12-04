@@ -12,13 +12,14 @@ import {asset} from '#/main/core/asset'
  */
 const UserAvatar = props =>
   props.picture ?
-    <img className="user-avatar" alt="avatar" src={asset('uploads/pictures/'+props.picture)} /> :
-    <span className={classes('user-avatar fa', {
+    <img className={classes('user-avatar', props.className)} alt="avatar" src={asset('uploads/pictures/'+props.picture)} /> :
+    <span className={classes('user-avatar fa', props.className, {
       'fa-user-circle-o': !props.alt,
       'fa-user': props.alt
     })} />
 
 UserAvatar.propTypes = {
+  className: T.string,
   picture: T.string,
   alt: T.bool
 }

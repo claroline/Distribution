@@ -278,7 +278,7 @@ class FieldFacet
             case self::CHECKBOXES_TYPE: return 'checkboxes';
             case self::COUNTRY_TYPE: return 'country';
             case self::EMAIL_TYPE: return 'email';
-            case self::RICH_TEXT_TYPE: return 'text';
+            case self::RICH_TEXT_TYPE: return 'html';
             case self::CASCADE_SELECT_TYPE: return 'cascade';
             case self::FILE_TYPE: return 'file';
             default: return 'error';

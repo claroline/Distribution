@@ -36,7 +36,7 @@ PageWrapper.propTypes = {
 const Page = props =>
   <PageWrapper
     embedded={props.embedded}
-    className={classes('page', {
+    className={classes('page', props.className, {
       fullscreen: props.fullscreen,
       embedded: props.embedded
     })}

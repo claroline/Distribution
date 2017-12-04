@@ -22,7 +22,9 @@
       "resource-icon-item-list": "icon/resource-icon-item-list/module",
       "copy-text-to-clipboard": "copy-text-to-clipboard/copy-text-to-clipboard",
       "scheduled-task-management": "administration/scheduled-task/index",
-      "user-registration": "registration/index.js"
+      "user-registration": "user/registration/index.js",
+      "user-profile": "user/profile/index.js",
+      "user-tracking": "user/tracking/index.js"
     }
   },
 

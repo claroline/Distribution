@@ -65,13 +65,23 @@ claro_log_workspace:
     prefix: workspaces
     type: annotation
 
+# old
 claro_profile:
     resource: "@ClarolineCoreBundle/Controller/ProfileController.php"
     prefix: profile
     type: annotation
 
-claro_registration:
+# new
+claro_user_profile:
+    resource: "@ClarolineCoreBundle/Controller/User/ProfileController.php"
+    type: annotation
+
+claro_user_registration:
     resource: "@ClarolineCoreBundle/Controller/User/RegistrationController.php"
+    type: annotation
+
+claro_user_tracking:
+    resource: "@ClarolineCoreBundle/Controller/User/TrackingController.php"
     type: annotation
 
 claro_desktop:

@@ -73,7 +73,7 @@ export const FormField = props => {
           }
         </div> :
         <RadioGroup
-          controlId={props.controlId}
+          id={props.controlId}
           label={props.label}
           options={props.choices || []}
           checkedValue={props.value || ''}

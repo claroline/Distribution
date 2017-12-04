@@ -39,6 +39,16 @@ class UserSerializer
         $this->tokenStorage = $tokenStorage;
     }
 
+    public function getClass()
+    {
+        return 'Claroline\CoreBundle\Entity\User';
+    }
+
+    public function getSchema()
+    {
+        return '#/main/core/user.json';
+    }
+
     /**
      * Serializes a User entity for the JSON api.
      *
@@ -64,13 +74,19 @@ class UserSerializer
             'administrativeCode' => $user->getAdministrativeCode(),
             'meta' => $this->serializeMeta($user),
             'restrictions' => $this->serializeRestrictions($user),
+            'rights' => $this->serializeRights($user),
             'roles' => array_map(function (Role $role) {
-                return ['id' => $role->getId(), 'uuid' => $role->getUuid(), 'name' => $role->getName()];
+                return [
+                    'id' => $role->getUuid(),
+                    'type' => $role->getType(),
+                    'name' => $role->getName(),
+                    'translationKey' => $role->getTranslationKey()
+                ];
             }, $user->getEntityRoles()),
         ];
     }
 
-    public function serializeMeta(User $user)
+    private function serializeMeta(User $user)
     {
         return [
             'publicUrl' => $user->getPublicUrl(),
@@ -89,7 +105,19 @@ class UserSerializer
         ];
     }
 
-    public function serializeRestrictions(User $user)
+    private function serializeRights(User $user)
+    {
+        // return same structure than ResourceNode
+        return [
+            'current' => [
+                'edit' => true, // todo owner of profile + admins
+                'administrate' => true, // todo admins
+                'delete' => true, // todo owner of profile + admins
+            ],
+        ];
+    }
+
+    private function serializeRestrictions(User $user)
     {
         return [
             'accessibleFrom' => !empty($user->getInitDate()) ? $user->getInitDate()->format('Y-m-d\TH:i:s') : null,
@@ -97,7 +125,7 @@ class UserSerializer
         ];
     }
 
-    public function serializePublic(User $user)
+    private function serializePublic(User $user)
     {
         $settingsProfile = $this->facetManager->getVisiblePublicPreference();
         $publicUser = [];
@@ -164,20 +192,10 @@ class UserSerializer
             $object->setPlainPassword($data['plainPassword']);
         }
 
-        if (isset($data['isEnabled'])) {
-            $object->setIsEnabled($data['isEnabled']);
+        if (isset($data['enabled'])) {
+            $object->setIsEnabled($data['enabled']);
         }
 
         return $object;
-    }
-
-    public function getClass()
-    {
-        return 'Claroline\CoreBundle\Entity\User';
-    }
-
-    public function getSchema()
-    {
-        return '#/main/core/user.json';
     }
 }

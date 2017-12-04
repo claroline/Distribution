@@ -1,0 +1,63 @@
+
+@timeline-icon-size:      @font-size-large*3;
+@timeline-icon-font-size: @font-size-large;
+@timeline-lines-width:    4px;
+@timeline-lines-color:    #777;
+
+.user-timeline {
+    position: relative;
+    list-style-type: none;
+    padding: 0;
+
+    &:before {
+        z-index: 1;
+        content: " ";
+        position: absolute;
+        height: 100%;
+        width: @timeline-lines-width;
+        top: 0;
+        left: @timeline-icon-size/2 - @timeline-lines-width/2;
+        background: @timeline-lines-color;
+    }
+}
+
+.timeline-event {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: @component-margin-bottom;
+
+    .timeline-event-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ededed;
+        border-radius: 50%;
+        font-size: @timeline-icon-font-size;
+        width: @timeline-icon-size;
+        height: @timeline-icon-size;
+    }
+
+    .timeline-event-content {
+        flex: 1;
+        margin-left: @grid-gutter-width;
+        padding: @panel-body-padding;
+        background: white;
+        border-radius: 4px;
+        border: 1px solid @panel-default-border;
+
+        .box-shadow(@panel-box-shadow);
+    }
+
+    // event states
+    &.timeline-event-success {
+
+    }
+    &.timeline-event-partial {
+
+    }
+    &.timeline-event-failure {
+
+    }
+}

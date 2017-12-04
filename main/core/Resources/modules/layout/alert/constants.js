@@ -61,7 +61,8 @@ const ALERT_STATUS = {
 const ALERT_ACTIONS = {
   [actionConstants.ACTION_GENERIC]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Chargement en cours'
+      title: 'Chargement en cours',
+      message: 'Veuillez patienter pendant que nous chargeons vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Succès'
@@ -70,13 +71,16 @@ const ALERT_ACTIONS = {
       title: 'Attention'
     },
     [ALERT_STATUS_UNAUTHORIZED]: {
-      title: 'Unauthorized'
+      title: 'Accès non authorisé',
+      message: 'Vous devez être connecté pour accéder à cette fonctionnalité.'
     },
     [ALERT_STATUS_FORBIDDEN]: {
-      title: 'Forbidden'
+      title: 'Accès interdit',
+      message: 'Vous n\'avez pas accès à cette fonctionnalité.'
     },
     [ALERT_STATUS_ERROR]: {
-      title: 'Erreur'
+      title: 'Erreur',
+      message: 'Veuillez contacter un administrateur.'
     },
     [ALERT_STATUS_INFO]: {
       title: 'Information'
@@ -84,24 +88,30 @@ const ALERT_ACTIONS = {
   },
   [actionConstants.ACTION_LOAD]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Chargement en cours'
+      title: 'Chargement en cours',
+      message: 'Veuillez patienter pendant que nous chargeons vos données.'
     },
     [ALERT_STATUS_ERROR]: {
-      title: 'Echec du chargement'
+      title: 'Echec du chargement',
+      message: 'Nous n\'avons pas réussi à charger vos données.'
     }
   },
   [actionConstants.ACTION_SAVE]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Sauvegarde en cours'
+      title: 'Sauvegarde en cours',
+      message: 'Veuillez patienter pendant que nous sauvegardons vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
-      title: 'Sauvegarde réussie'
+      title: 'Sauvegarde réussie',
+      message: 'Vos données ont correctement été sauvegardée.'
     },
     [ALERT_STATUS_WARNING]: {
-      title: 'Echec de la sauvegarde'
+      title: 'Echec de la sauvegarde',
+      message: 'Veuillez corriger les erreurs dans le formulaire et réessayer.'
     },
     [ALERT_STATUS_ERROR]: {
-      title: 'Echec de la sauvegarde'
+      title: 'Echec de la sauvegarde',
+      message: 'Nous n\'avons pas réussi à charger vos données.'
     }
   },
   [actionConstants.ACTION_CREATE]: {

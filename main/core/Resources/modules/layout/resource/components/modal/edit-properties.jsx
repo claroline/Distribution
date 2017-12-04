@@ -20,9 +20,9 @@ import {TextGroup}    from '#/main/core/layout/form/components/group/text-group.
 import {DatePicker}   from '#/main/core/layout/form/components/field/date-picker.jsx'
 import {IpList}       from '#/main/core/layout/form/components/field/ip-list.jsx'
 import {validate}     from '#/main/core/layout/resource/validator'
-import {closeTargets} from '#/main/core/layout/resource/enums'
+import {closeTargets} from '#/main/core/layout/resource/constants'
 
-export const MODAL_RESOURCE_PROPERTIES = 'MODAL_RESOURCE_PROPERTIES'
+const MODAL_RESOURCE_PROPERTIES = 'MODAL_RESOURCE_PROPERTIES'
 
 const MetaSection = props =>
   <FormSection
@@ -389,5 +389,6 @@ EditPropertiesModal.propTypes = {
 }
 
 export {
+  MODAL_RESOURCE_PROPERTIES,
   EditPropertiesModal
 }

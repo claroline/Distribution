@@ -148,6 +148,7 @@
 .flying-alerts {
     position: absolute;
     z-index: 10; // todo find something less arbitrary
+    top: @top-bar-height + @top-bar-border-bottom-size + floor(@grid-gutter-width / 2);
     right: @grid-gutter-width;
     list-style-type: none;
     padding: 0;

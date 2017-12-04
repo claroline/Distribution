@@ -106,7 +106,7 @@ const AnnounceForm = props =>
         title={trans('announcement_sending', {}, 'announcement')}
       >
         <RadioGroup
-          controlId="announcement-notify-users"
+          id="announcement-notify-users"
           label={trans('announcement_notify_users', {}, 'announcement')}
           hideLabel={true}
           options={[

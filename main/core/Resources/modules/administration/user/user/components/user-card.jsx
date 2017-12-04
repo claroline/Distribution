@@ -19,13 +19,13 @@ const UserCard = (row) => ({
   footer:
     row.meta.lastLogin &&
     <span>
-      last logged at <b>{localeDate(row.meta.lastLogin)}</b>
+      {t('last_logged_at')} <b>{localeDate(row.meta.lastLogin)}</b>
     </span>,
   footerLong:
     <span>
-      created at <b>{localeDate(row.meta.created)}</b>
+      {t('registered_at')} <b>{localeDate(row.meta.created)}</b>
       {row.meta.lastLogin &&
-        <span>, last logged at <b>{localeDate(row.meta.lastLogin)}</b></span>
+        <span>, {t('last_logged_at')} <b>{localeDate(row.meta.lastLogin)}</b></span>
       }
     </span>
 })

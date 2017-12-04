@@ -81,6 +81,7 @@ const ApiRequest = {
       method: 'GET',
       credentials: 'include'
     },
+    messages: {},
     before: () => true,
     success: (responseData) => responseData,
     error: (responseError) => responseError

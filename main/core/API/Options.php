@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\API;
 
+// todo : should be broken in multiple files or it will become very large with time.
 final class Options
 {
     /*******************************/

@@ -81,7 +81,7 @@ General.propTypes = {
 const Display = props =>
   <fieldset>
     <RadioGroup
-      controlId="params-default-home"
+      id="params-default-home"
       label={trans('label_default_home', {}, 'clacoform')}
       options={[
         {value: 'menu', label: trans('menu', {}, 'clacoform')},
@@ -93,7 +93,7 @@ const Display = props =>
       onChange={value => props.updateParameters('default_home', value)}
     />
     <RadioGroup
-      controlId="params-display-nb-entries"
+      id="params-display-nb-entries"
       label={trans('label_display_nb_entries', {}, 'clacoform')}
       options={[
         {value: 'all', label: trans('choice_entry_all', {}, 'clacoform')},
@@ -104,7 +104,7 @@ const Display = props =>
       onChange={value => props.updateParameters('display_nb_entries', value)}
     />
     <RadioGroup
-      controlId="params-menu-position"
+      id="params-menu-position"
       label={trans('label_menu_position', {}, 'clacoform')}
       options={[
         {value: 'down', label: trans('choice_menu_position_down', {}, 'clacoform')},
@@ -247,7 +247,7 @@ const List = props =>
       </div>
     </div>
     <RadioGroup
-      controlId="params-default-display-mode"
+      id="params-default-display-mode"
       label={trans('default_display_mode', {}, 'clacoform')}
       options={
         Object.keys(listConstants.DISPLAY_MODES).map(key => {
@@ -306,7 +306,7 @@ List.propTypes = {
 const Metadata = props =>
   <fieldset>
     <RadioGroup
-      controlId="params-display-metadata"
+      id="params-display-metadata"
       label={trans('label_display_metadata', {}, 'clacoform')}
       options={[
         {value: 'all', label: t('yes')},
@@ -328,7 +328,7 @@ Metadata.propTypes = {
 const Locked = props =>
   <fieldset>
     <RadioGroup
-      controlId="params-locked-fields-for"
+      id="params-locked-fields-for"
       label={trans('lock_fields', {}, 'clacoform')}
       options={[
         {value: 'user', label: trans('choice_user_only', {}, 'clacoform')},
@@ -385,7 +385,7 @@ const Comments = props =>
     }
 
     <RadioGroup
-      controlId="params-moderate-comments"
+      id="params-moderate-comments"
       label={trans('label_moderate_comments', {}, 'clacoform')}
       options={[
         {value: 'all', label: t('yes')},
