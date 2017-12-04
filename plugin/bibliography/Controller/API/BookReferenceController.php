@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Icap\BibliographyBundle\Entity\BookReference")
- * @Route("book_reference")
+ * @Route("/book_reference")
  */
 class BookReferenceController extends AbstractCrudController
 {

@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Role")
- * @Route("role")
+ * @Route("/role")
  */
 class RoleController extends AbstractCrudController
 {

@@ -17,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Workspace\Workspace")
- * @Route("workspace")
+ * @Route("/workspace")
  */
 class WorkspaceController extends AbstractCrudController
 {

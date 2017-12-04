@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route as RouteConfig;
 use Symfony\Component\Config\FileLocatorInterface;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
@@ -20,8 +19,8 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class ApiLoader extends Loader
 {
+    /** @var bool */
     private $loaded = false;
-
     /** @var FileLocatorInterface */
     private $locator;
     /** @var ContainerInterface */
@@ -59,8 +58,8 @@ class ApiLoader extends Loader
         }
 
         $path = $this->locator->locate($resource);
+        //this is the default
         $imported = $this->import($resource, 'annotation');
-
         $routes = new RouteCollection();
         $routes->addCollection($imported);
 
@@ -101,21 +100,25 @@ class ApiLoader extends Loader
                         //The route prefix is defined with the sf2 annotations
                         if ($annotation instanceof RouteConfig) {
                             $prefix = $annotation->getPath();
+
+                            if (strpos($prefix, '/') === 0) {
+                                $prefix = substr($prefix, 1);
+                            }
                         }
                     }
 
                     if ($found) {
                         //makeRouteMap is an array of generic routes we want to use
-                        //when ApiMeta us defined
+                        //when ApiMeta is defined
                         foreach ($this->makeRouteMap($controller, $routes, $prefix) as $name => $options) {
                             $pattern = '';
 
                             if ($options[0] !== '') {
-                                $pattern = '/'.$options[0];
+                                $pattern = $options[0];
                             }
 
                             if ($prefix) {
-                                $pattern = '/'.$prefix.$pattern;
+                                $pattern = $prefix.$pattern;
                             }
 
                             $routeDefaults = [
@@ -124,7 +127,8 @@ class ApiLoader extends Loader
                                 'env' => $this->container->getParameter('kernel.environment'),
                             ];
 
-                            $route = new Route($pattern, $routeDefaults, []);
+                            $route = new ApiRoute($pattern, $routeDefaults, []);
+
                             $route->setMethods([$options[1]]);
 
                             // add the new route to the route collection:
@@ -135,17 +139,23 @@ class ApiLoader extends Loader
                 }
             }
         }
+        //remove duplicatas autogenrated by sf2 router
+        foreach ($routes->getIterator() as $key => $route) {
+            if (strpos($key, 'claroline_core_apinew') === 0) {
+                $routes->remove($key);
+            }
+        }
     }
 
     private function makeRouteMap($controller, RouteCollection $routes, $prefix)
     {
         $defaults = [
           'create' => ['', 'POST'],
-          'update' => ['{id}', 'PUT'],
+          'update' => ['/{id}', 'PUT'],
           'deleteBulk' => ['', 'DELETE'],
           'list' => ['', 'GET'],
-          'get' => ['{id}', 'GET'],
-          'exist' => ['exist/{field}/{value}', 'GET']
+          'get' => ['/{id}', 'GET'],
+          'exist' => ['/exist/{field}/{value}', 'GET'],
         ];
 
         $traits = class_uses($controller);
@@ -160,9 +170,6 @@ class ApiLoader extends Loader
 
                     if ($annotation instanceof RouteConfig) {
                         $defaults[$actionName][0] = $annotation->getPath();
-                        $toRemove = $prefix.'_'.strtolower($actionName);
-                        $autoName = 'claroline_core_apinew_';
-                        //todo remove superfluous routes
                     }
 
                     if ($annotation instanceof MethodConfig) {

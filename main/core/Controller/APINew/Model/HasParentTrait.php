@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasParentTrait
 {
     /**
-     * @Route("{parent}/move/{child}")
+     * @Route("/{parent}/move/{child}")
      * @Method("PATCH")
      */
     public function moveAction($child, $parent, $class, Request $request, $env)

@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Icap\OAuthBundle\Entity\OauthUser")
- * @Route("oauth")
+ * @Route("/oauth")
  */
 class OauthController extends AbstractCrudController
 {

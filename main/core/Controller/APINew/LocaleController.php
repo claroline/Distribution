@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * Manages platform locales.
  *
- * @EXT\Route("locale")
+ * @EXT\Route("/locale")
  */
 class LocaleController
 {
@@ -56,6 +56,4 @@ class LocaleController
             $this->manager->getLocales()
         );
     }
-
-
 }

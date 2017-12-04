@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\FieldFacet")
- * @Route("fieldfacet")
+ * @Route("/fieldfacet")
  */
 class FieldFacetController extends AbstractCrudController
 {

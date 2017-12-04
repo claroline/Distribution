@@ -20,7 +20,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Group")
- * @Route("group")
+ * @Route("/group")
  */
 class GroupController extends AbstractCrudController
 {

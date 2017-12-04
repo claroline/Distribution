@@ -12,20 +12,20 @@
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\API\Options;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\User")
- * @Route("user")
+ * @Route("/user")
  */
 class UserController extends AbstractCrudController
 {
@@ -74,7 +74,7 @@ class UserController extends AbstractCrudController
         $create = [
           //maybe move these options in an other class
           Options::SEND_EMAIL,
-          Options::ADD_NOTIFICATIONS
+          Options::ADD_NOTIFICATIONS,
         ];
 
         //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
@@ -87,7 +87,7 @@ class UserController extends AbstractCrudController
 
         return [
             'deleteBulk' => [Options::SOFT_DELETE],
-            'create' => $create
+            'create' => $create,
         ];
     }
 }
