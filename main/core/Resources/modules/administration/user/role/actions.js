@@ -1,6 +1,6 @@
 export const actions = {}
 
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/layout/form/actions'
 
 import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
@@ -11,7 +11,7 @@ actions.open = (formName, id = null) => (dispatch) => {
 
   if (id) {
     dispatch({
-      [REQUEST_SEND]: {
+      [API_REQUEST]: {
         url: ['apiv2_role_get', {id}],
         request: {
           method: 'GET'

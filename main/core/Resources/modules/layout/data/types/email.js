@@ -2,8 +2,6 @@ import {chain, string, email} from '#/main/core/validation'
 
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 
-// TODO implement
-
 const EMAIL_TYPE = 'email'
 
 const emailDefinition = {

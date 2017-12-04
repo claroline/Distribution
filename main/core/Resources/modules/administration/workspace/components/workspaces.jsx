@@ -23,7 +23,7 @@ import {actions} from '#/main/core/administration/workspace/actions'
 import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
 
 const WorkspacesPage = props =>
-  <PageContainer id="workspace-management" hasModal={true}>
+  <PageContainer id="workspace-management">
     <PageHeader title={t('workspaces_management')}>
       <PageActions>
         <PageAction

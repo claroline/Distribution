@@ -17,12 +17,12 @@ It permits to declare new actions that will be caught and transformed in API req
 Managed action example:
 
 ```
-import {REQUEST_SEND} from '[path_to_module]/api/actions'
+import {API_REQUEST} from '#/main/core/api/actions'
 
 // ...
 
 actions.fetchAttempt = quizId => ({
-  [REQUEST_SEND]: {
+  [API_REQUEST]: {
     url: ['exercise_attempt_start', {exerciseId: quizId}],
     request: {method: 'POST'},
     success: (data, dispatch) => {

@@ -34,6 +34,7 @@ const ParametersTab = () =>
         title: t('registration'),
         defaultOpened: true,
         fields: [
+          // auto_logging
           {
             name: 'registration.self',
             type: 'boolean',
@@ -52,7 +53,7 @@ const ParametersTab = () =>
             }
           }, {
             name: 'locales.default',
-            type: 'locale', // todo should be a semantic type
+            type: 'locale',
             label: t('default_language'),
             options: {
               onlyEnabled: true

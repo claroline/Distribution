@@ -8,7 +8,7 @@
     },
     "email": {
       "type": "string",
-      "description": "The user email adress"
+      "description": "The user email address"
     },
     "firstName": {
       "type": "string",
@@ -21,6 +21,10 @@
     "username": {
       "type": "string",
       "description": "The username"
+    },
+    "plainPassword": {
+      "type": "string",
+      "description": "The plain login password"
     },
     "groups": {
       "type": "array",

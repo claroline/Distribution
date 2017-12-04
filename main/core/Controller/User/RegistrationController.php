@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Controller\User;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -42,6 +43,8 @@ class RegistrationController extends Controller
     private $configHandler;
     /** @var UserManager */
     private $userManager;
+    /** @var TermsOfServiceManager */
+    private $tosManager;
 
     /**
      * RegistrationController constructor.
@@ -51,27 +54,31 @@ class RegistrationController extends Controller
      *     "session"       = @DI\Inject("session"),
      *     "translator"    = @DI\Inject("translator"),
      *     "configHandler" = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "userManager"   = @DI\Inject("claroline.manager.user_manager")
+     *     "userManager"   = @DI\Inject("claroline.manager.user_manager"),
+     *     "tosManager"    = @DI\Inject("claroline.common.terms_of_service_manager")
      * })
      *
      * @param TokenStorageInterface        $tokenStorage
-     * @param SessionInterface      $session
+     * @param SessionInterface             $session
      * @param TranslatorInterface          $translator
      * @param PlatformConfigurationHandler $configHandler
      * @param UserManager                  $userManager
+     * @param TermsOfServiceManager        $tosManager
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         SessionInterface $session,
         TranslatorInterface $translator,
         PlatformConfigurationHandler $configHandler,
-        UserManager $userManager
+        UserManager $userManager,
+        TermsOfServiceManager $tosManager
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->session = $session;
         $this->translator = $translator;
         $this->configHandler = $configHandler;
         $this->userManager = $userManager;
+        $this->tosManager = $tosManager;
     }
 
     /**
@@ -87,7 +94,10 @@ class RegistrationController extends Controller
         $this->checkAccess();
 
         return [
+            'termOfService' => $this->configHandler->getParameter('terms_of_service') ?
+                $this->tosManager->getTermsOfService() : null,
             'options' => [
+                'autoLog' => $this->configHandler->getParameter('auto_logging'),
                 'localeLanguage' => $this->configHandler->getParameter('locale_language'),
                 'defaultRole' => $this->configHandler->getParameter('default_role'),
                 'redirectAfterLoginOption' => $this->configHandler->getParameter('redirect_after_login_option'),

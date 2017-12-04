@@ -1,7 +1,208 @@
-const FLYING_ALERTS_MAX     = 5
-const FLYING_ALERTS_TIMEOUT = 1000
+import {t} from '#/main/core/translation'
+
+import {constants as actionConstants} from '#/main/core/layout/action/constants'
+
+const ALERT_DISPLAY_MAX     = 5
+const ALERT_DISPLAY_TIMEOUT = 1000
+
+const ALERT_STATUS_SUCCESS      = 'success'
+const ALERT_STATUS_WARNING      = 'warning'
+const ALERT_STATUS_ERROR        = 'error'
+const ALERT_STATUS_INFO         = 'info'
+const ALERT_STATUS_PENDING      = 'pending'
+const ALERT_STATUS_UNAUTHORIZED = 'unauthorized'
+const ALERT_STATUS_FORBIDDEN    = 'forbidden'
+
+const ALERT_STATUS = {
+  [ALERT_STATUS_PENDING]: {
+    order: 1,
+    icon: 'fa-spinner',
+    removable: false
+  },
+  [ALERT_STATUS_FORBIDDEN]: {
+    order: 2,
+    icon: 'fa-lock',
+    removable: true
+  },
+  [ALERT_STATUS_ERROR]: {
+    order: 3,
+    icon: 'fa-times',
+    removable: true
+  },
+  [ALERT_STATUS_UNAUTHORIZED]: {
+    order: 4,
+    icon: 'fa-lock-alt',
+    removable: true
+  },
+  [ALERT_STATUS_WARNING]: {
+    order: 5,
+    icon: 'fa-exclamation',
+    removable: true
+  },
+  [ALERT_STATUS_SUCCESS]: {
+    order: 6,
+    icon: 'fa-check',
+    removable: true
+  },
+  [ALERT_STATUS_INFO]: {
+    order: 7,
+    icon: 'fa-info',
+    removable: true
+  },
+
+}
+
+/**
+ * Defines available alerts for the app ACTIONS.
+ * NB. If ACTION do not declare one of the ALERT_STATUS, this will disable it.
+ *
+ * @type {object}
+ */
+const ALERT_ACTIONS = {
+  [actionConstants.ACTION_GENERIC]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Chargement en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Succès'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Attention'
+    },
+    [ALERT_STATUS_UNAUTHORIZED]: {
+      title: 'Unauthorized'
+    },
+    [ALERT_STATUS_FORBIDDEN]: {
+      title: 'Forbidden'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Erreur'
+    },
+    [ALERT_STATUS_INFO]: {
+      title: 'Information'
+    }
+  },
+  [actionConstants.ACTION_LOAD]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Chargement en cours'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec du chargement'
+    }
+  },
+  [actionConstants.ACTION_SAVE]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Sauvegarde en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Sauvegarde réussie'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Echec de la sauvegarde'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec de la sauvegarde'
+    }
+  },
+  [actionConstants.ACTION_CREATE]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Création en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Création réussie'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Echec de la création'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec de la création'
+    }
+  },
+  [actionConstants.ACTION_UPDATE]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Mise à jour en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Mise à jour réussie'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Echec de la mise à jour'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec de la mise à jour'
+    }
+  },
+  [actionConstants.ACTION_DELETE]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Suppression en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Suppression réussie'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Echec de la suppression'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec de la suppression'
+    }
+  },
+  [actionConstants.ACTION_SEND]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Envoi en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Envoi réussi'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Echec de l\'envoi'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec de l\'envoi'
+    }
+  },
+  [actionConstants.ACTION_UPLOAD]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Téléchargement en cours'
+    },
+    [ALERT_STATUS_SUCCESS]: {
+      title: 'Téléchargement réussi'
+    },
+    [ALERT_STATUS_WARNING]: {
+      title: 'Echec de l\'envoi'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec de l\'envoi'
+    }
+  }
+}
+
+// remap action on HTTP status code
+const HTTP_ALERT_STATUS = {
+  // success
+  200: ALERT_STATUS_SUCCESS,
+  201: ALERT_STATUS_SUCCESS,
+  204: ALERT_STATUS_SUCCESS,
+  // warning
+  401: ALERT_STATUS_UNAUTHORIZED,
+  403: ALERT_STATUS_FORBIDDEN,
+  422: ALERT_STATUS_WARNING,
+  // error
+  500: ALERT_STATUS_ERROR
+}
 
 export const constants = {
-  FLYING_ALERTS_MAX,
-  FLYING_ALERTS_TIMEOUT
+  // ui config
+  ALERT_DISPLAY_MAX,
+  ALERT_DISPLAY_TIMEOUT,
+  // status
+  ALERT_STATUS,
+  ALERT_STATUS_SUCCESS,
+  ALERT_STATUS_WARNING,
+  ALERT_STATUS_ERROR,
+  ALERT_STATUS_INFO,
+  ALERT_STATUS_PENDING,
+
+  ALERT_ACTIONS,
+  // http mapping
+  HTTP_ALERT_STATUS
 }

@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Validator;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\ValidatorInterface;
+use Claroline\CoreBundle\Repository\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -12,6 +13,11 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class UserValidator implements ValidatorInterface
 {
+    /** @var ObjectManager */
+    private $om;
+    /** @var UserRepository */
+    private $repo;
+
     /**
      * UserValidator constructor.
      *
@@ -30,7 +36,7 @@ class UserValidator implements ValidatorInterface
     public function validate($data)
     {
         //the big chunk of code allows us to know if the identifiers are already taken
-        //and prohibits the use of an already used adress email in a username field
+        //and prohibits the use of an already used address email in a username field
         $errors  = [];
         $qb = $this->om->createQueryBuilder();
         $qb->select('DISTINCT user')
@@ -95,6 +101,9 @@ class UserValidator implements ValidatorInterface
 
     public function getUniqueFields()
     {
-        return ['username', 'email'];
+        return [
+            'username' => 'username',
+            'email' => 'mail',
+        ];
     }
 }

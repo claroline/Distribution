@@ -1,36 +1,20 @@
 import React from 'react'
-import {connect} from 'react-redux'
 
-import {select as modalSelect} from '#/main/core/layout/modal/selectors'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-
-import {TabbedPage as TabbedPageComponent} from '#/main/core/layout/page/components/tabbed-page.jsx'
+import {connectPage} from '#/main/core/layout/page/connect'
+import {TabbedPage} from '#/main/core/layout/page/components/tabbed-page.jsx'
 
 /**
  * Connected container for tabbed pages.
  *
- * Connects the <Page> component to a redux store.
+ * Connects the <TabbedPage> component to a redux store.
  * If you don't use redux in your implementation @see TabbedPage functional component.
  *
- * Requires the following reducers to be registered in your store :
- *   - modal
+ * To use with `makePageReducer()`
  *
  * @param props
  * @constructor
  */
-const TabbedPage = props =>
-  <TabbedPageComponent
-    {...props}
-  />
-
-function mapStateToProps(state) {
-  return {
-    modal: modalSelect.modal(state)
-  }
-}
-
-// connects the container to redux
-const TabbedPageContainer = connect(mapStateToProps, Object.assign({}, modalActions))(TabbedPage)
+const TabbedPageContainer = connectPage()(TabbedPage)
 
 export {
   TabbedPageContainer

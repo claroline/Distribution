@@ -19,7 +19,16 @@ const Optional = () =>
         id: 'general',
         title: t('general'),
         primary: true,
-        fields: []
+        fields: [
+          {
+            name: 'preferences.locale',
+            type: 'locale',
+            label: t('language'),
+            options: {
+              onlyEnabled: true
+            }
+          }
+        ]
       }
     ]}
   />

@@ -1,5 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 
+// todo move in #/main/core/layout/action
+
 /**
  * Definition af an action.
  *

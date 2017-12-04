@@ -3,47 +3,51 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {t} from '#/main/core/translation'
+import {Redirect as RedirectTypes} from '#/main/core/router/prop-types'
 import {Router, Routes, NavLink, withRouter} from '#/main/core/router'
 
-const Step = props =>
-  <NavLink
-    to={props.path}
-    exact={props.exact}
-    className={classes('form-stepper-link', {
-      done: props.done
-    })}
-  >
-    <span className="form-step-badge">{props.number}</span>
-    {props.title}
-  </NavLink>
-
-Step.propTypes = {
-  title: T.string.isRequired,
-  number: T.number.isRequired,
-  done: T.bool,
-}
-
-Step.defaultProps = {
-  done: false
-}
-
+/**
+ * Renders the form navigation.
+ *
+ * @param props
+ * @constructor
+ */
 const FormStepperNav = props =>
   <nav className="form-stepper-nav">
     {props.steps.map((step, stepIndex) =>
-      <Step
-        {...step}
+      <NavLink
         key={stepIndex}
-        number={stepIndex+1}
-        done={props.activeIndex > stepIndex}
-      />
+        to={step.path}
+        exact={step.exact}
+        className={classes('form-stepper-link', {
+          done: props.activeIndex > stepIndex
+        })}
+      >
+        <span className="form-step-badge">{stepIndex+1}</span>
+        {step.title}
+      </NavLink>
     )}
   </nav>
 
 FormStepperNav.propTypes = {
   activeIndex: T.number.isRequired,
-  steps: T.array.isRequired
+  steps: T.arrayOf(T.shape({
+    title: T.string.isRequired,
+    // route part
+    path: T.string.isRequired,
+    component: T.any.isRequired, // todo find better typing
+    exact: T.bool,
+    onEnter: T.func,
+    onLeave: T.func
+  })).isRequired
 }
 
+/**
+ * Renders the form footer (aka. next and submit buttons).
+ *
+ * @param props
+ * @constructor
+ */
 const FormStepperFooter = props =>
   <div className="form-stepper-footer">
     {props.nextStep &&
@@ -58,15 +62,23 @@ const FormStepperFooter = props =>
 
     <button
       className="btn btn-submit btn-primary"
-      onClick={() => this.onCreate()}
+      onClick={props.submit.action}
     >
-      <span className="fa fa-user-plus" />
-      {t('registration_confirm')}
+      {props.submit.icon &&
+        <span className={props.submit.icon} />
+      }
+
+      {props.submit.label || t('save')}
     </button>
   </div>
 
 FormStepperFooter.propTypes = {
-  nextStep: T.string
+  nextStep: T.string,
+  submit: T.shape({
+    icon: T.string,
+    label: T.string,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }).isRequired
 }
 
 const FormStepperComponent = withRouter(props => {
@@ -76,7 +88,7 @@ const FormStepperComponent = withRouter(props => {
   }
 
   return (
-    <div className="form-stepper">
+    <div className={classes('form-stepper', props.className)}>
       <FormStepperNav
         steps={props.steps}
         activeIndex={activeIndex}
@@ -89,20 +101,31 @@ const FormStepperComponent = withRouter(props => {
 
       <FormStepperFooter
         nextStep={props.steps[activeIndex+1] ? props.steps[activeIndex+1].path : undefined}
+        submit={props.submit}
       />
     </div>
   )
 })
 
 FormStepperComponent.propTypes = {
-  blockingSteps: T.bool,
+  className: T.string,
   steps: T.arrayOf(T.shape({
-    // Route type
-    path: T.string.isRequired
+    title: T.string.isRequired,
+    // route part
+    path: T.string.isRequired,
+    component: T.any.isRequired, // todo find better typing
+    exact: T.bool,
+    onEnter: T.func,
+    onLeave: T.func
   })).isRequired,
-  redirect: T.arrayOf(T.shape({
-    // Redirect type
-  }))
+  redirect: T.arrayOf(T.shape(
+    RedirectTypes.propTypes
+  )),
+  submit: T.shape({
+    icon: T.string,
+    label: T.string,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }).isRequired
 }
 
 const FormStepper = props =>
@@ -111,13 +134,24 @@ const FormStepper = props =>
   </Router>
 
 FormStepper.propTypes = {
-  blockingSteps: T.bool,
+  className: T.string,
   steps: T.arrayOf(T.shape({
-    // Route type
+    title: T.string.isRequired,
+    // route part
+    path: T.string.isRequired,
+    component: T.any.isRequired, // todo find better typing
+    exact: T.bool,
+    onEnter: T.func,
+    onLeave: T.func
   })).isRequired,
-  redirect: T.arrayOf(T.shape({
-    // Redirect type
-  }))
+  redirect: T.arrayOf(T.shape(
+    RedirectTypes.propTypes
+  )),
+  submit: T.shape({
+    icon: T.string,
+    label: T.string,
+    action: T.oneOfType([T.string, T.func]).isRequired
+  }).isRequired
 }
 
 FormStepper.defaultProps = {

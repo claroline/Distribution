@@ -1,6 +1,4 @@
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {generateUrl} from '#/main/core/fos-js-router'
-import {t, transChoice} from '#/main/core/translation'
 
 // reducers
 import {reducer as apiReducer} from '#/main/core/api/reducer'
@@ -42,21 +40,6 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => {
     return {
-      /*users: {
-        list: initialData.users
-      },
-      groups: {
-        list: initialData.groups
-      },
-      roles: {
-        list: initialData.roles
-      },
-      locations: {
-        list: initialData.locations
-      },
-      organizations: {
-        list: initialData.organizations
-      },*/
       parameters: {
         data: initialData.parameters
       }

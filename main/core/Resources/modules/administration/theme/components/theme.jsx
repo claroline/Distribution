@@ -329,7 +329,7 @@ class Theme extends Component {
 
   render() {
     return (
-      <PageContainer id="theme-form" hasModals={true}>
+      <PageContainer id="theme-form">
         <PageHeader
           title={t('themes_management')}
           subtitle={this.props.theme.name}

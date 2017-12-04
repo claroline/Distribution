@@ -14,6 +14,18 @@ const Route = {
   }
 }
 
+const Redirect = {
+  propTypes: {
+    from: T.string.isRequired,
+    to: T.string.isRequired,
+    exact: T.bool
+  },
+  defaultProps: {
+    exact: false
+  }
+}
+
 export {
-  Route
+  Route,
+  Redirect
 }
