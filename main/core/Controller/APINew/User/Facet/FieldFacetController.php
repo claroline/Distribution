@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\APINew\User;
+namespace Claroline\CoreBundle\Controller\APINew\User\Facet;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Options;
@@ -17,26 +17,25 @@ use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
- * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\Facet")
- * @Route("facet")
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\FieldFacet")
+ * @Route("fieldfacet")
  */
-class FacetController extends AbstractCrudController
+class FieldFacetController extends AbstractCrudController
 {
     public function getName()
     {
-        return 'facet';
+        return 'fieldfacet';
     }
 
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         $list = [Options::PROFILE_SERIALIZE];
-        $create = [Options::DEEP_SERIALIZE];
-        $update = [Options::DEEP_SERIALIZE];
 
         return [
             'list' => $list,
-            'create' => $create,
-            'update' => $update,
         ];
     }
 }
