@@ -29,6 +29,8 @@ class PanelFacetRole
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"api_facet_admin"})
+     *
+     * @var int
      */
     protected $id;
 
@@ -39,35 +41,49 @@ class PanelFacetRole
      * )
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Groups({"api_facet_admin"})
+     *
+     * @var Role
      */
     protected $role;
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Facet\panelFacet",
+     *     targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacet",
      *     inversedBy="panelFacetsRole"
      * )
      * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     *
+     * @var PanelFacet
      */
     protected $panelFacet;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin"})
+     *
+     * @var bool
      */
     protected $canOpen = false;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin"})
+     *
+     * @var bool
      */
     protected $canEdit = false;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->refreshUuid();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;

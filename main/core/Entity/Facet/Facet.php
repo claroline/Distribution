@@ -34,6 +34,8 @@ class Facet
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var int
      */
     protected $id;
 
@@ -41,12 +43,16 @@ class Facet
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var string
      */
     protected $name;
 
     /**
      * @ORM\Column(type="integer", name="position")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var int
      */
     protected $position;
 
@@ -59,33 +65,42 @@ class Facet
      * @ORM\OrderBy({"position" = "ASC"})
      * @Groups({"api_facet_admin", "api_profile"})
      * @SerializedName("panels")
+     *
+     * @var ArrayCollection
      */
     protected $panelFacets;
 
     /**
-     * @var Role[]|ArrayCollection
-     *
      * @ORM\ManyToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Role",
      *     inversedBy="facets"
      * )
      * @ORM\JoinTable(name="claro_facet_role")
      * @Groups({"api_facet_admin"})
+     *
+     * @var ArrayCollection
      */
     protected $roles;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var bool
      */
     protected $forceCreationForm = false;
 
     /**
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin", "api_profile"})
+     *
+     * @var bool
      */
     protected $isMain = false;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -93,6 +108,9 @@ class Facet
         $this->refreshUuid();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
@@ -107,7 +125,7 @@ class Facet
     }
 
     /**
-     * return string.
+     * @return string
      */
     public function getName()
     {
@@ -138,6 +156,9 @@ class Facet
         return $this->panelFacets;
     }
 
+    /**
+     * Removes all PanelFacet.
+     */
     public function resetPanelFacets()
     {
         foreach ($this->panelFacets as $panelFacet) {
@@ -147,51 +168,81 @@ class Facet
         $this->panelFacets = new ArrayCollection();
     }
 
+    /**
+     * @param int $position
+     */
     public function setPosition($position)
     {
         $this->position = $position;
     }
 
+    /**
+     * @return int
+     */
     public function getPosition()
     {
         return $this->position;
     }
 
+    /**
+     * @param Role $role
+     */
     public function addRole(Role $role)
     {
         $this->roles->add($role);
     }
 
+    /**
+     * @param Role $role
+     */
     public function removeRole(Role $role)
     {
         $this->roles->removeElement($role);
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getRoles()
     {
         return $this->roles;
     }
 
+    /**
+     * @param array $roles
+     */
     public function setRoles(array $roles)
     {
         $this->roles = $roles;
     }
 
+    /**
+     * @param bool|string $boolean
+     */
     public function setForceCreationForm($boolean)
     {
         $this->forceCreationForm = !is_bool($boolean) ? $boolean === 'true' : $boolean;
     }
 
+    /**
+     * @return bool
+     */
     public function getForceCreationForm()
     {
         return $this->forceCreationForm;
     }
 
+    /**
+     * @param bool|string $boolean
+     */
     public function setIsMain($boolean)
     {
         $this->isMain = !is_bool($boolean) ? $boolean === 'true' : $boolean;
     }
 
+    /**
+     * @return bool
+     */
     public function isMain()
     {
         return $this->isMain;
