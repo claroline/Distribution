@@ -24,6 +24,7 @@
 {% block content %}
     <div
         class="page-container import-container"
+        data-explanation="{{ explanation | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}
