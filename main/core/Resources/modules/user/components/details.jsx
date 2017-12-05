@@ -16,7 +16,7 @@ const UserDetails = props =>
       <li className="list-group-item">
         {t('registered_at')}
         <span className="value">
-          {localeDate(props.user.meta.registered)}
+          {localeDate(props.user.meta.created)}
         </span>
       </li>
       <li className="list-group-item">

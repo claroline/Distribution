@@ -1,4 +1,4 @@
-import {makeFormReducer} from '#/main/core/layout/form/reducer'
+import {makeFormReducer} from '#/main/core/data/form/reducer'
 
 const reducer = makeFormReducer('parameters')
 

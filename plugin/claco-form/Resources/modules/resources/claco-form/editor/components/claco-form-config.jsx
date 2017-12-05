@@ -17,7 +17,7 @@ import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.j
 
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {constants as listConstants} from '#/main/core/layout/list/constants'
+import {constants as listConstants} from '#/main/core/data/list/constants'
 import {actions} from '../actions'
 import {Message} from '../../components/message.jsx'
 

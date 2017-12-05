@@ -6,7 +6,7 @@ const alerts = state => state.alerts
 
 const sortedAlerts = createSelector(
   [alerts],
-  (alerts) => alerts.sort((alertA, alertB) => {
+  (alerts) => alerts.slice(0).sort((alertA, alertB) => {
     const orderA = constants.ALERT_STATUS[alertA.status].order
     const orderB = constants.ALERT_STATUS[alertB.status].order
 

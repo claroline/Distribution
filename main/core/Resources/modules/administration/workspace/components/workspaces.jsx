@@ -17,7 +17,7 @@ import {
   PageAction
 } from '#/main/core/layout/page'
 
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {actions} from '#/main/core/administration/workspace/actions'
 import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'

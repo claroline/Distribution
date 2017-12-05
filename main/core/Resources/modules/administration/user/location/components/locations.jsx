@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {actions} from '#/main/core/administration/user/location/actions'
 import {LocationList} from '#/main/core/administration/user/location/components/location-list.jsx'

@@ -17,7 +17,7 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 const ThemesPage = props =>
   <PageContainer id="theme-management">

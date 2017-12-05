@@ -16,7 +16,7 @@ import {
   PageAction
 } from '#/main/core/layout/page'
 import {MODAL_DELETE_CONFIRM, MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/main/core/administration/scheduled-task/actions'

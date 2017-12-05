@@ -4,7 +4,7 @@ import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
 const RolesActions = () =>

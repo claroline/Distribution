@@ -8,7 +8,7 @@ import {UserDetails} from '#/main/core/user/components/details.jsx'
 
 const ProfileShowComponent = props =>
   <div className="row">
-    <div className="col-md-4">
+    <div className="col-md-3">
       <UserDetails
         user={props.user}
       />
@@ -35,7 +35,7 @@ const ProfileShowComponent = props =>
       </ul>
     </div>
 
-    <div className="col-md-8">
+    <div className="col-md-9">
       <h2>Informations générales</h2>
     </div>
   </div>

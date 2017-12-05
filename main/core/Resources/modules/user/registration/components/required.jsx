@@ -2,7 +2,7 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 
-import {FormContainer} from '#/main/core/layout/form/containers/form.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
 /**
  * Registration Form : Required section.

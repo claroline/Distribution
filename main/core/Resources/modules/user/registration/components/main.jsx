@@ -7,7 +7,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageContainer, PageHeader, PageContent} from '#/main/core/layout/page/index'
 import {FormStepper} from '#/main/core/layout/form/components/form-stepper.jsx'
-import {select as formSelect} from '#/main/core/layout/form/selectors'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'

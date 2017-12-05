@@ -1,8 +1,8 @@
 import React from 'react'
 
 import {t, trans} from '#/main/core/translation'
-import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
-import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
+import {FormContainer as Form} from '#/main/core/data/form/containers/form.jsx'
+import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 
 const BookReferenceSaveAction = makeSaveAction('bookReferenceForm', formData => ({

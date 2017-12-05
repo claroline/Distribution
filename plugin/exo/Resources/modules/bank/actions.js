@@ -1,5 +1,5 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
-import {actions as listActions} from '#/main/core/layout/list/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {API_REQUEST} from '#/main/core/api/actions'
 

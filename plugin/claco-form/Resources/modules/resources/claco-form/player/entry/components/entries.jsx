@@ -9,8 +9,8 @@ import {localeDate} from '#/main/core/date'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
-import {constants as listConstants} from '#/main/core/layout/list/constants'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {constants as listConstants} from '#/main/core/data/list/constants'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
 
 import {actions} from '../actions'
@@ -397,7 +397,7 @@ class Entries extends Component {
         <br/>
         {this.props.canSearchEntry ?
           <div>
-            <DataList
+            <DataListContainer
               display={{
                 current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
                 available: Object.keys(listConstants.DISPLAY_MODES)

@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {ipDefinition} from '#/main/core/layout/data/types/ip'
+import {ipDefinition} from '#/main/core/data/types/ip'
 
 // TODO : implement IP v6 input
 

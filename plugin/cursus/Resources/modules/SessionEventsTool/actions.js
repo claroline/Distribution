@@ -1,8 +1,8 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {API_REQUEST} from '#/main/core/api/actions'
-import {actions as listActions} from '#/main/core/layout/list/actions'
-import {select as listSelect} from '#/main/core/layout/list/selectors'
+import {actions as listActions} from '#/main/core/data/list/actions'
+import {select as listSelect} from '#/main/core/data/list/selectors'
 import {trans} from '#/main/core/translation'
 import {VIEW_MANAGER, VIEW_USER, VIEW_EVENT} from './enums'
 

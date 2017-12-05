@@ -7,10 +7,10 @@ const TRACKING_EVENT_BADGE      = 'badge'
 
 const TRACKING_EVENTS = {
   [TRACKING_EVENT_GENERIC]: {
-    icon: ''
+    icon: 'fa fa-flash'
   },
   [TRACKING_EVENT_EVALUATION]: {
-    icon: 'fa fa-check-square'
+    icon: 'fa fa-check-square-o'
   },
   [TRACKING_EVENT_COMMUNITY]: {
     icon: 'fa fa-users'

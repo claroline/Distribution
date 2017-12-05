@@ -3,10 +3,10 @@ import React from 'react'
 import {t} from '#/main/core/translation'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
+import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {FormContainer} from '#/main/core/layout/form/containers/form.jsx'
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
@@ -92,7 +92,6 @@ const Location = props =>
           delete={{
             url: ['apiv2_location_remove_users', {id: props.location.id}],
           }}
-          actions={[]}
           definition={UserList.definition}
           card={UserList.card}
         />
@@ -120,7 +119,6 @@ const Location = props =>
           delete={{
             url: ['apiv2_location_remove_organizations', {id: props.location.id}],
           }}
-          actions={[]}
           definition={OrganizationList.definition}
           card={OrganizationList.card}
         />
