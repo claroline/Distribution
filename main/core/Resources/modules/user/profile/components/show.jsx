@@ -7,7 +7,7 @@ import {t} from '#/main/core/translation'
 import {UserDetails} from '#/main/core/user/components/details.jsx'
 
 const ProfileShowComponent = props =>
-  <div className="row">
+  <div className="user-profile row">
     <div className="col-md-3">
       <UserDetails
         user={props.user}

@@ -4,6 +4,7 @@ import {constants} from '#/main/core/layout/alert/constants'
 
 const FlyingAlert = {
   propTypes: {
+    id: T.string.isRequired,
     action: T.oneOf(
       Object.keys(constants.ALERT_ACTIONS)
     ).isRequired,

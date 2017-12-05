@@ -37,6 +37,9 @@ actions.saveForm = (formName, target) => (dispatch, getState) => {
       },
       success: (response, dispatch) => {
         dispatch(actions.resetForm(formName, response, false))
+      },
+      error: (error, dispatch) => {
+        //.replace(/^\/|\/$/g, '')
       }
     }
   })

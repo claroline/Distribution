@@ -31,7 +31,7 @@ const FlyingAlert = props => {
       className={classes('flying-alert', `flying-alert-${props.status}`, `flying-alert-${props.action}`, {
         removable: status.removable
       })}
-      onClick={() => status.removable && props.removeAlert()}
+      onClick={() => status.removable && props.removeAlert(props.id)}
     >
       <FlyingAlertIcon
         primaryIcon={action.icon ? action.icon : status.icon}

@@ -4,7 +4,7 @@ import {makeReducer} from '#/main/core/utilities/redux'
 
 import {
   REQUEST_SEND,
-  RECEIVE_RESPONSE
+  RESPONSE_RECEIVE
 } from '#/main/core/api/actions'
 import {constants as actionConstants} from '#/main/core/layout/action/constants'
 
@@ -31,7 +31,6 @@ const addAlert = (state, action) => {
 }
 
 const removeAlert = (state, action) => {
-  console.log('remove alert')
   const newState = cloneDeep(state)
 
   const alertIndex = newState.findIndex(alert => action.id === alert.id)
@@ -61,9 +60,7 @@ const reducer = makeReducer([], {
     return state
   },
 
-  [RECEIVE_RESPONSE]: (state, action) => {
-    console.log(state)
-    console.log(action)
+  [RESPONSE_RECEIVE]: (state, action) => {
     if (!action.apiRequest.silent) {
       // remove pending alert
       const newState = removeAlert(state, {
@@ -72,8 +69,12 @@ const reducer = makeReducer([], {
 
       // add new status alert
       const currentAction = action.apiRequest.type || actionConstants.HTTP_ACTIONS[action.apiRequest.request.method]
-      const currentStatus = constants.ALERT_ACTIONS[currentAction][action.response.status]
-      if (currentStatus) {
+      const currentStatus = constants.HTTP_ALERT_STATUS[action.status]
+
+      console.log(currentAction)
+      console.log(currentStatus)
+
+      if (currentStatus && constants.ALERT_ACTIONS[currentAction][currentStatus]) {
         // the current action define a message for the status
         const customMessages = action.apiRequest.messages[currentStatus]
 
@@ -85,6 +86,8 @@ const reducer = makeReducer([], {
           title: customMessages && customMessages.title ? customMessages.title : null
         })
       }
+
+      return newState
     }
 
     return state

@@ -41,6 +41,25 @@
 }
 
 .user-page {
+    .page-header {
+        // todo : check if this can be partially moved on base avatar styles
+        // this should not break anything but it need tests.
+        .user-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            max-width: 100%;
+
+            // make avatar always look has a square
+            &:after {
+                content: "";
+                display: block;
+                padding-bottom: 100%;
+            }
+        }
+    }
+
     .user-details {
         margin-top: 40px; // because of the profile picture
     }
