@@ -67,12 +67,9 @@ class DropzoneController extends Controller
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
         $myDrop = empty($user) ? null : $this->manager->getUserDrop($dropzone, $user);
         $finishedPeerDrops = $this->manager->getUserFinishedPeerDrops($dropzone, $user);
-        $peerDrop = $this->manager->getPeerDrop($dropzone, $user);
+        $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
         $serializedTools = $this->manager->getSerializedTools();
-
-        if (!empty($user)) {
-            $this->manager->generateResourceUserEvaluation($dropzone, $user);
-        }
+        $userEvaluation = !empty($user) ? $this->manager->generateResourceUserEvaluation($dropzone, $user) : null;
 
         return [
             '_resource' => $dropzone,
@@ -81,6 +78,7 @@ class DropzoneController extends Controller
             'nbCorrections' => count($finishedPeerDrops),
             'peerDrop' => !empty($peerDrop) ? $this->manager->serializeDrop($peerDrop) : $peerDrop,
             'tools' => $serializedTools,
+            'userEvaluation' => $userEvaluation,
         ];
     }
 

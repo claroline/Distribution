@@ -13,6 +13,7 @@ import {reducer as configurationReducer} from '#/plugin/drop-zone/plugin/configu
 
 const reducer = {
   user: makeReducer({}, {}),
+  userEvaluation: makeReducer({}, {}),
   dropzone: editorReducer.dropzone,
   dropzoneForm: editorReducer.dropzoneForm,
   myDrop: playerReducer.myDrop,

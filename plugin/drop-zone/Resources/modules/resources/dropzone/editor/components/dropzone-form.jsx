@@ -250,6 +250,8 @@ const NotationSection = props =>
         content={props.formData.display.successMessage || ''}
         onChange={value => props.updateForm('display.successMessage', value)}
         minRows={3}
+        warnOnly={!props.validating}
+        error={get(props.errors, 'successMessage')}
       />
       <HtmlGroup
         controlId="fail-message"
@@ -257,6 +259,8 @@ const NotationSection = props =>
         content={props.formData.display.failMessage || ''}
         onChange={value => props.updateForm('display.failMessage', value)}
         minRows={3}
+        warnOnly={!props.validating}
+        error={get(props.errors, 'failMessage')}
       />
     </ActivableSet>
   </FormSection>

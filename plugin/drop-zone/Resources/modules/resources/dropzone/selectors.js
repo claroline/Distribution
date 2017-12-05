@@ -10,6 +10,8 @@ const userId = createSelector(
   (user) => user && user.id ? user.id : null
 )
 
+const userEvaluation = state => state.userEvaluation
+
 const dropzone = state => state.dropzone
 
 const dropzoneId = createSelector(
@@ -162,6 +164,7 @@ const tools = state => state.tools.data
 export const select = {
   user,
   userId,
+  userEvaluation,
   dropzone,
   dropzoneId,
   dropzoneParameters,

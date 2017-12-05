@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
 import cloneDeep from 'lodash/cloneDeep'
+import moment from 'moment'
 
 import {t, trans} from '#/main/core/translation'
 import {NumberGroup}  from '#/main/core/layout/form/components/group/number-group.jsx'
@@ -87,14 +88,17 @@ export class CorrectionForm extends Component {
   }
 
   validateCorrection() {
+    const correction = cloneDeep(this.state.correction)
+    correction['lastEditionDate'] = moment().format('YYYY-MM-DD\THH:mm:ss')
     const errors = validate(this.state.correction, this.props.dropzone)
-    this.setState({errors: errors}, () => this.saveCorrection())
+    this.setState({correction: correction, errors: errors}, () => this.saveCorrection())
   }
 
   saveCorrection() {
     if (isValid(this.state.correction, this.props.dropzone)) {
       this.props.saveCorrection(this.state.correction)
       this.setState({pendingChanges: false})
+      console.log(this.state.correction)
     }
   }
 

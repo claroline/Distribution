@@ -3,7 +3,6 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {navigate} from '#/main/core/router'
 import {t, trans} from '#/main/core/translation'
 
 import {DropzoneType, DropType, CorrectionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
@@ -18,6 +17,7 @@ const Corrections = props => props.corrections && props.corrections.length > 0 ?
         <th>{t('start_date')}</th>
         <th>{trans('last_edition_date', {}, 'dropzone')}</th>
         <th>{trans('finished', {}, 'dropzone')}</th>
+        <th>{t('end_date')}</th>
         <th>{t('score')}</th>
       </tr>
     </thead>
@@ -29,6 +29,7 @@ const Corrections = props => props.corrections && props.corrections.length > 0 ?
           <td>{moment(c.startDate).format('YYYY-MM-DD HH:mm')}</td>
           <td>{moment(c.lastEditionDate).format('YYYY-MM-DD HH:mm')}</td>
           <td>{c.finished ? <span className='fa fa-fw fa-check true'/> : <span className='fa fa-fw fa-times false'/>}</td>
+          <td>{c.endDate ? moment(c.endDate).format('YYYY-MM-DD HH:mm') : ''}</td>
           <td>{c.score ? `${c.score} / ${props.dropzone.parameters.scoreMax}` : '-'}</td>
         </tr>
       )}

@@ -77,6 +77,11 @@ function validate(dropzone) {
       }
     }
   }
+  if (dropzone.display.displayNotationMessageToLearners) {
+    setIfError(errors, 'successMessage', notBlank(dropzone.display.successMessage))
+    setIfError(errors, 'failMessage', notBlank(dropzone.display.failMessage))
+  }
+
   return errors
 }
 

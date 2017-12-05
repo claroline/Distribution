@@ -64,7 +64,7 @@ class Drops extends Component {
       sortable: false,
       type: 'boolean',
       renderer: (rowData) => {
-        const nbExpectedCorrections = props.dropzone.parameters.peerReview ? 1 : props.dropzone.parameters.expectedCorrectionTotal
+        const nbExpectedCorrections = props.dropzone.parameters.peerReview ? props.dropzone.parameters.expectedCorrectionTotal : 1
         const nbValidCorrections = rowData.corrections.filter(c => c.finished && c.valid).length
         const element = nbValidCorrections >= nbExpectedCorrections ?
           <span className="fa fa-fw fa-check true"/> :

@@ -647,7 +647,7 @@ class DropzoneManager
      *
      * @return Drop | null
      */
-    public function getPeerDrop(Dropzone $dropzone, User $user)
+    public function getPeerDrop(Dropzone $dropzone, User $user, $withCreation = true)
     {
         $peerDrop = null;
         $userDrop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user, 'finished' => true]);
@@ -661,7 +661,7 @@ class DropzoneManager
                 $finishedDrops = $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
                 $nbCorrections = count($finishedDrops);
 
-                if ($dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
+                if ($withCreation && $dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
                     $peerDrop = $this->getAvailableDropForPeer($dropzone, $user);
                 }
             }
@@ -836,6 +836,8 @@ class DropzoneManager
         if (empty($userEval)) {
             $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_NOT_ATTEMPTED);
         }
+
+        return $userEval;
     }
 
     public function generateResourceEvaluation(Dropzone $dropzone, User $user, $status, $score = null, Drop $drop = null)

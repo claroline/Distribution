@@ -1,4 +1,5 @@
 import React from 'react'
+import classes from 'classnames'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
@@ -12,6 +13,24 @@ import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop
 
 const Menu = props =>
   <div id="dropzone-menu">
+    {props.myDrop &&
+    props.myDrop.finished &&
+    props.dropzone.display.displayNotationMessageToLearners &&
+    [constants.EVALUATION_STATUS_PASSED, constants.EVALUATION_STATUS_FAILED].indexOf(props.userEvaluation.status) > -1 &&
+    (!props.isPeerReviewEnabled || props.myDrop.unlockedUser || props.nbCorrections >= props.dropzone.parameters.expectedCorrectionTotal) &&
+      <div className={classes('alert', {
+        'alert-success': props.userEvaluation.status === constants.EVALUATION_STATUS_PASSED,
+        'alert-danger': props.userEvaluation.status === constants.EVALUATION_STATUS_FAILED
+      })}>
+        <HtmlText>
+          {props.userEvaluation.status === constants.EVALUATION_STATUS_PASSED ?
+            props.dropzone.display.successMessage :
+            props.dropzone.display.failMessage
+          }
+        </HtmlText>
+      </div>
+    }
+
     {props.currentState === constants.STATE_NOT_STARTED &&
       <div className="alert alert-info">
         <HtmlText>
@@ -87,6 +106,9 @@ Menu.propTypes = {
   isPeerReviewEnabled: T.bool.isRequired,
   nbCorrections: T.number.isRequired,
   currentState: T.number.isRequired,
+  userEvaluation: T.shape({
+    status: T.string.isRequired
+  }).isRequired,
   initializeMyDrop: T.func.isRequired
 }
 
@@ -97,7 +119,8 @@ function mapStateToProps(state) {
     isDropEnabled: select.isDropEnabled(state),
     isPeerReviewEnabled: select.isPeerReviewEnabled(state),
     nbCorrections: select.nbCorrections(state),
-    currentState: select.currentState(state)
+    currentState: select.currentState(state),
+    userEvaluation: select.userEvaluation(state)
   }
 }
 
