@@ -12,6 +12,7 @@ import {DataListContainer} from '#/main/core/layout/list/containers/data-list.js
 
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
+import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
 
 const UserSaveAction = makeSaveAction('users.current', formData => ({
   create: ['apiv2_user_create'],
@@ -40,11 +41,27 @@ const UserForm = props =>
         title: t('general'),
         primary: true,
         fields: [
-          {name: 'username', type: 'string', label: t('username'), required: true},
-          {name: 'firstName', type: 'string', label: t('first_name'), required: true},
-          {name: 'lastName', type: 'string', label: t('last_name'), required: true},
-          {name: 'email', type: 'string', label: t('email'), required: true},
-          {name: 'plainPassword', type: 'string', label: t('password (needs to be double + hidden)'), required: true},
+          {
+            name: 'username',
+            type: 'username',
+            label: t('username'),
+            required: true
+          }, {
+            name: 'lastName',
+            type: 'string',
+            label: t('last_name'),
+            required: true
+          }, {
+            name: 'firstName',
+            type: 'string',
+            label: t('first_name'),
+            required: true
+          }, {
+            name: 'email',
+            type: 'email',
+            label: t('email'),
+            required: true
+          }
         ]
       }
     ]}
@@ -53,35 +70,8 @@ const UserForm = props =>
       level={3}
     >
       <FormSection
-        id="user-roles"
-        icon="fa fa-fw fa-user"
-        title={t('roles')}
-        actions={[
-          {
-            icon: 'fa fa-fw fa-plus',
-            label: t('add_role'),
-            action: () => true
-          }
-        ]}
-      >
-        <DataListContainer
-          name="users.current.roles"
-          open={RoleList.open}
-          fetch={{
-            url: ['apiv2_user_list_roles', {id: props.user.id}],
-            autoload: true
-          }}
-          delete={{
-            url: ['apiv2_user_remove_roles', {id: props.user.id}],
-          }}
-          definition={RoleList.definition}
-          card={RoleList.card}
-        />
-      </FormSection>
-
-      <FormSection
         id="user-groups"
-        icon="fa fa-fw fa-id-badge"
+        icon="fa fa-fw fa-users"
         title={t('groups')}
         actions={[
           {
@@ -103,6 +93,48 @@ const UserForm = props =>
           }}
           definition={GroupList.definition}
           card={GroupList.card}
+        />
+      </FormSection>
+
+      <FormSection
+        id="group-organizations"
+        icon="fa fa-fw fa-building"
+        title={t('organizations')}
+        actions={[
+          {
+            icon: 'fa fa-fw fa-plus',
+            label: t('add_organization'),
+            action: () => true
+          }
+        ]}
+      >
+        ORGANIZATIONS
+      </FormSection>
+
+      <FormSection
+        id="user-roles"
+        icon="fa fa-fw fa-id-badge"
+        title={t('roles')}
+        actions={[
+          {
+            icon: 'fa fa-fw fa-plus',
+            label: t('add_role'),
+            action: () => true
+          }
+        ]}
+      >
+        <DataListContainer
+          name="users.current.roles"
+          open={RoleList.open}
+          fetch={{
+            url: ['apiv2_user_list_roles', {id: props.user.id}],
+            autoload: true
+          }}
+          delete={{
+            url: ['apiv2_user_remove_roles', {id: props.user.id}],
+          }}
+          definition={RoleList.definition}
+          card={RoleList.card}
         />
       </FormSection>
     </FormSections>

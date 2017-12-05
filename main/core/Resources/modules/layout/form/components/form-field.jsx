@@ -29,6 +29,9 @@ const isCascadeSelect = choices => {
   return choices.filter(c => c.parent).length > 0
 }
 
+// deprecated
+// only used by claco-form
+// todo : rewrite claco-form to use form.jsx
 export const FormField = props => {
   switch (props.type) {
     case 'checkboxes':

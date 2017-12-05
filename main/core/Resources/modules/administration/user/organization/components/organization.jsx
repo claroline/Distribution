@@ -93,6 +93,34 @@ const OrganizationForm = props =>
       level={3}
     >
       <FormSection
+        id="organization-workspaces"
+        icon="fa fa-fw fa-book"
+        title={t('workspaces')}
+        actions={[
+          {
+            icon: 'fa fa-fw fa-plus',
+            label: t('add_workspace'),
+            action: () => true
+          }
+        ]}
+      >
+        <DataListContainer
+          name="organizations.current.workspaces"
+          open={WorkspaceList.open}
+          fetch={{
+            url: ['apiv2_organization_list_workspaces', {id: props.organization.id}],
+            autoload: true
+          }}
+          delete={{
+            url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}],
+          }}
+          actions={[]}
+          definition={WorkspaceList.definition}
+          card={WorkspaceList.card}
+        />
+      </FormSection>
+
+      <FormSection
         id="organization-users"
         icon="fa fa-fw fa-user"
         title={t('users')}
@@ -145,34 +173,6 @@ const OrganizationForm = props =>
           actions={[]}
           definition={GroupList.definition}
           card={GroupList.card}
-        />
-      </FormSection>
-
-      <FormSection
-        id="organization-workspaces"
-        icon="fa fa-fw fa-book"
-        title={t('workspaces')}
-        actions={[
-          {
-            icon: 'fa fa-fw fa-plus',
-            label: t('add_workspace'),
-            action: () => true
-          }
-        ]}
-      >
-        <DataListContainer
-          name="organizations.current.workspaces"
-          open={WorkspaceList.open}
-          fetch={{
-            url: ['apiv2_organization_list_workspaces', {id: props.organization.id}],
-            autoload: true
-          }}
-          delete={{
-            url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}],
-          }}
-          actions={[]}
-          definition={WorkspaceList.definition}
-          card={WorkspaceList.card}
         />
       </FormSection>
     </FormSections>

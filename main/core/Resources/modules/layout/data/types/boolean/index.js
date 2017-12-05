@@ -1,3 +1,5 @@
+import {tval} from '#/main/core/translation'
+
 import {parseBool, translateBool} from '#/main/core/layout/data/types/boolean/utils'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {BooleanSearch} from '#/main/core/layout/data/types/boolean/components/search.jsx'
@@ -12,10 +14,8 @@ const booleanDefinition = {
   validate: (value) => {
     try {
       parseBool(value)
-
-      return true
     } catch (e) {
-      return false
+      return tval('This value should be a valid boolean.')
     }
   },
   components: {

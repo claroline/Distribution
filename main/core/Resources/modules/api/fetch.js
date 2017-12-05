@@ -115,6 +115,8 @@ function getResponseData(response) {
 function apiFetch(apiRequest, dispatch) {
   // add default parameters
   const requestParameters = merge({}, ApiRequestTypes.defaultProps, apiRequest)
+
+  // generate id for the request
   if (!requestParameters.id) {
     requestParameters.id = makeId()
   }

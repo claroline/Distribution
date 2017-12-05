@@ -116,10 +116,12 @@ const ALERT_ACTIONS = {
   },
   [actionConstants.ACTION_CREATE]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Création en cours'
+      title: 'Création en cours',
+      message: 'Veuillez patienter pendant que nous sauvegardons vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
-      title: 'Création réussie'
+      title: 'Création réussie',
+      message: 'Vos données ont correctement été sauvegardée.'
     },
     [ALERT_STATUS_WARNING]: {
       title: 'Echec de la création'
@@ -130,10 +132,12 @@ const ALERT_ACTIONS = {
   },
   [actionConstants.ACTION_UPDATE]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Mise à jour en cours'
+      title: 'Mise à jour en cours',
+      message: 'Veuillez patienter pendant que nous sauvegardons vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
-      title: 'Mise à jour réussie'
+      title: 'Mise à jour réussie',
+      message: 'Vos données ont correctement été sauvegardée.'
     },
     [ALERT_STATUS_WARNING]: {
       title: 'Echec de la mise à jour'
@@ -144,7 +148,8 @@ const ALERT_ACTIONS = {
   },
   [actionConstants.ACTION_DELETE]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Suppression en cours'
+      title: 'Suppression en cours',
+      message: 'Veuillez patienter pendant que nous supprimons vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Suppression réussie'

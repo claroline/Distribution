@@ -26,7 +26,6 @@ const Tool = () =>
         icon: 'fa fa-user',
         title: t('users'),
         path: '/users',
-        exact: true,
         actions: UserTabActions,
         content: UserTab
       }, {
