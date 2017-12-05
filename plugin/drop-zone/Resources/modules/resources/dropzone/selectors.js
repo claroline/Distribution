@@ -153,6 +153,8 @@ const currentState = createSelector(
 
 const drops = state => state.drops
 const currentDrop = state => state.currentDrop
+const correctorDrop = state => state.correctorDrop
+const corrections = state => state.corrections
 const correctionForm = state => state.correctionForm
 const nbCorrections = state => state.nbCorrections
 const tools = state => state.tools.data
@@ -184,6 +186,8 @@ export const select = {
   currentState,
   drops,
   currentDrop,
+  correctorDrop,
+  corrections,
   correctionForm,
   nbCorrections,
   tools

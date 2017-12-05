@@ -5,14 +5,19 @@ import {REQUEST_SEND} from '#/main/core/api/actions'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 import {actions as playerActions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 
+export const DROP_UPDATE = 'DROP_UPDATE'
 export const DROPS_LOAD = 'DROPS_LOAD'
 export const CURRENT_DROP_LOAD = 'CURRENT_DROP_LOAD'
 export const CURRENT_DROP_RESET = 'CURRENT_DROP_RESET'
+export const CORRECTOR_DROP_LOAD = 'CORRECTOR_DROP_LOAD'
+export const CORRECTOR_DROP_RESET = 'CORRECTOR_DROP_RESET'
+export const CORRECTIONS_LOAD = 'CORRECTIONS_LOAD'
 export const CORRECTION_UPDATE = 'CORRECTION_UPDATE'
 export const CORRECTION_REMOVE = 'CORRECTION_REMOVE'
 
 export const actions = {}
 
+actions.updateDrop = makeActionCreator(DROP_UPDATE, 'drop')
 actions.loadDrops = makeActionCreator(DROPS_LOAD, 'drops')
 
 actions.fetchDrops = (dropzoneId) => ({
@@ -30,7 +35,7 @@ actions.fetchDrops = (dropzoneId) => ({
 actions.loadCurrentDrop = makeActionCreator(CURRENT_DROP_LOAD, 'drop')
 actions.resetCurrentDrop = makeActionCreator(CURRENT_DROP_RESET)
 
-actions.fetchDrop = (dropId) => (dispatch, getState) => {
+actions.fetchDrop = (dropId, type = 'current') => (dispatch, getState) => {
   const dropsData = select.drops(getState())
   let drop = null
 
@@ -38,7 +43,14 @@ actions.fetchDrop = (dropId) => (dispatch, getState) => {
     drop = dropsData.data.find(d => d.id === dropId)
   }
   if (drop) {
-    dispatch(actions.loadCurrentDrop(drop))
+    switch (type) {
+      case 'current':
+        dispatch(actions.loadCurrentDrop(drop))
+        break
+      case 'corrector':
+        dispatch(actions.loadCorrectorDrop(drop))
+        break
+    }
   } else {
     dispatch({
       [REQUEST_SEND]: {
@@ -47,13 +59,36 @@ actions.fetchDrop = (dropId) => (dispatch, getState) => {
           method: 'GET'
         },
         success: (data, dispatch) => {
-          dispatch(actions.loadCurrentDrop(data))
+          switch (type) {
+            case 'current':
+              dispatch(actions.loadCurrentDrop(data))
+              break
+            case 'corrector':
+              dispatch(actions.loadCorrectorDrop(data))
+              break
+          }
         }
       }
     })
   }
 }
 
+actions.loadCorrectorDrop = makeActionCreator(CORRECTOR_DROP_LOAD, 'drop')
+actions.resetCorrectorDrop = makeActionCreator(CORRECTOR_DROP_RESET)
+
+actions.fetchCorrections = (dropzoneId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_corrections_fetch', {id: dropzoneId}),
+    request: {
+      method: 'GET'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.loadCorrections(data))
+    }
+  }
+})
+
+actions.loadCorrections = makeActionCreator(CORRECTIONS_LOAD, 'corrections')
 actions.updateCorrection = makeActionCreator(CORRECTION_UPDATE, 'correction')
 actions.removeCorrection = makeActionCreator(CORRECTION_REMOVE, 'correctionId')
 
@@ -114,6 +149,42 @@ actions.executeTool = (toolId, documentId) => ({
     },
     success: (data, dispatch) => {
       dispatch(playerActions.updateDocument(data))
+    }
+  }
+})
+
+actions.unlockDrop = (dropId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_drop_unlock', {id: dropId}),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateDrop(data))
+    }
+  }
+})
+
+actions.unlockDropUser = (dropId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_drop_unlock_user', {id: dropId}),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateDrop(data))
+    }
+  }
+})
+
+actions.cancelDropSubmission = (dropId) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_drop_submission_cancel', {id: dropId}),
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateDrop(data))
     }
   }
 })

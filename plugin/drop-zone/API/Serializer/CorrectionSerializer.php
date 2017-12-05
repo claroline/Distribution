@@ -70,7 +70,7 @@ class CorrectionSerializer
             'comment' => $correction->getComment(),
             'valid' => $correction->isValid(),
             'startDate' => $correction->getStartDate()->format('Y-m-d H:i'),
-            'lastOpenDate' => $correction->getLastOpenDate()->format('Y-m-d H:i'),
+            'lastEditionDate' => $correction->getLastEditionDate()->format('Y-m-d H:i'),
             'endDate' => $correction->getEndDate() ? $correction->getEndDate()->format('Y-m-d H:i') : null,
             'finished' => $correction->isFinished(),
             'editable' => $correction->isEditable(),
@@ -99,7 +99,7 @@ class CorrectionSerializer
             $correction->setDrop($drop);
             $currentDate = new \DateTime();
             $correction->setStartDate($currentDate);
-            $correction->setLastOpenDate($currentDate);
+            $correction->setLastEditionDate($currentDate);
         }
         if (isset($data['user'])) {
             $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;

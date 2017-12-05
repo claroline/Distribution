@@ -109,7 +109,7 @@ const CorrectionType = {
     comment: T.string,
     valid: T.bool.isRequired,
     startDate: T.string.isRequired,
-    lastOpenDate: T.string.isRequired,
+    lastEditionDate: T.string.isRequired,
     endDate: T.string,
     finished: T.bool.isRequired,
     editable: T.bool.isRequired,

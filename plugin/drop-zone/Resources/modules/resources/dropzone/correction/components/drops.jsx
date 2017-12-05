@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
@@ -8,6 +9,7 @@ import {DataListContainer as DataList} from '#/main/core/layout/list/containers/
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
 class Drops extends Component {
   generateColumns(props) {
@@ -27,7 +29,14 @@ class Drops extends Component {
       displayed: true,
       displayable: true,
       filterable: true,
-      type: 'date'
+      type: 'date',
+      renderer: (rowData) => {
+        const element = <a href={`#/drop/${rowData.id}`}>
+          {rowData.dropDate ? moment(rowData.dropDate).format('YYYY-MM-DD') : '-'}
+        </a>
+
+        return element
+      }
     })
     columns.push({
       name: 'user',
@@ -53,26 +62,45 @@ class Drops extends Component {
       displayed: true,
       filterable: false,
       sortable: false,
+      type: 'boolean',
       renderer: (rowData) => {
         const nbExpectedCorrections = props.dropzone.parameters.peerReview ? 1 : props.dropzone.parameters.expectedCorrectionTotal
         const nbValidCorrections = rowData.corrections.filter(c => c.finished && c.valid).length
         const element = nbValidCorrections >= nbExpectedCorrections ?
-          <span className="fa fa-w fa-check true"/> :
-          <span className="fa fa-w fa-times false"/>
+          <span className="fa fa-fw fa-check true"/> :
+          <span className="fa fa-fw fa-times false"/>
 
         return element
       }
+    })
+    columns.push({
+      name: 'unlockedDrop',
+      label: trans('unlocked', {}, 'dropzone'),
+      displayed: true,
+      type: 'boolean'
     })
 
     return columns
   }
 
-  generateActions() {
+  generateActions(props) {
     const actions = []
     actions.push({
-      icon: 'fa fa-w fa-eye',
+      icon: 'fa fa-fw fa-eye',
       label: t('open'),
       action: (rows) => navigate(`/drop/${rows[0].id}`),
+      context: 'row'
+    })
+    actions.push({
+      icon: 'fa fa-fw fa-unlock',
+      label: trans('unlock_drop', {}, 'dropzone'),
+      action: (rows) => props.unlockDrop(rows[0].id),
+      context: 'row'
+    })
+    actions.push({
+      icon: 'fa fa-fw fa-undo',
+      label: trans('cancel_drop_submission', {}, 'dropzone'),
+      action: (rows) => props.cancelDropSubmission(rows[0].id),
       context: 'row'
     })
 
@@ -87,7 +115,7 @@ class Drops extends Component {
           name="drops"
           definition={this.generateColumns(this.props)}
           filterColumns={true}
-          actions={this.generateActions()}
+          actions={this.generateActions(this.props)}
           card={(row) => ({
             onClick: `#/drop/${row.id}/view`,
             poster: null,
@@ -109,7 +137,9 @@ class Drops extends Component {
 
 Drops.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
-  drops: T.object
+  drops: T.object,
+  unlockDrop: T.func.isRequired,
+  cancelDropSubmission: T.func.isRequired
 }
 
 function mapStateToProps(state) {
@@ -119,8 +149,11 @@ function mapStateToProps(state) {
   }
 }
 
-function mapDispatchToProps() {
-  return {}
+function mapDispatchToProps(dispatch) {
+  return {
+    unlockDrop: (dropId) => dispatch(actions.unlockDrop(dropId)),
+    cancelDropSubmission: (dropId) => dispatch(actions.cancelDropSubmission(dropId))
+  }
 }
 
 const ConnectedDrops = connect(mapStateToProps, mapDispatchToProps)(Drops)

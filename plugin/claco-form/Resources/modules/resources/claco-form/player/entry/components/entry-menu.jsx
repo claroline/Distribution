@@ -31,7 +31,7 @@ class EntryMenu extends Component {
             title={trans('add_entry', {}, 'clacoform')}
             onClick={() => this.props.history.push('/entry/create')}
           >
-            <span className="fa fa-w fa-pencil-square-o"></span>
+            <span className="fa fa-fw fa-pencil-square-o"></span>
           </TooltipButton>
         }
         {this.props.canSearchEntry &&
@@ -41,7 +41,7 @@ class EntryMenu extends Component {
             title={trans('entries_list', {}, 'clacoform')}
             onClick={() => this.props.history.push('/entries')}
           >
-            <span className="fa fa-w fa-table"></span>
+            <span className="fa fa-fw fa-table"></span>
           </TooltipButton>
         }
         {this.props.randomEnabled &&
@@ -51,7 +51,7 @@ class EntryMenu extends Component {
             title={trans('random_entry', {}, 'clacoform')}
             onClick={() => this.goToRandomEntry()}
           >
-            <span className="fa fa-w fa-random"></span>
+            <span className="fa fa-fw fa-random"></span>
           </TooltipButton>
         }
       </div>

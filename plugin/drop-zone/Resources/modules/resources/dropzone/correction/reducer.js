@@ -4,9 +4,13 @@ import {makeReducer} from '#/main/core/utilities/redux'
 import {makeListReducer} from '#/main/core/layout/list/reducer'
 
 import {
+  DROP_UPDATE,
   DROPS_LOAD,
   CURRENT_DROP_LOAD,
   CURRENT_DROP_RESET,
+  CORRECTOR_DROP_LOAD,
+  CORRECTOR_DROP_RESET,
+  CORRECTIONS_LOAD,
   CORRECTION_UPDATE,
   CORRECTION_REMOVE
 } from '#/plugin/drop-zone/resources/dropzone/correction/actions'
@@ -14,13 +18,15 @@ import {
   DOCUMENT_UPDATE
 } from '#/plugin/drop-zone/resources/dropzone/player/actions'
 
-
 const currentDropReducer = makeReducer({}, {
   [CURRENT_DROP_LOAD]: (state, action) => {
     return action.drop
   },
   [CURRENT_DROP_RESET]: () => {
     return {}
+  },
+  [DROP_UPDATE]: (state, action) => {
+    return state && state.id === action.drop.id ? action.drop : state
   },
   [CORRECTION_UPDATE]: (state, action) => {
     if (state.id === action.correction.drop) {
@@ -63,6 +69,16 @@ const currentDropReducer = makeReducer({}, {
 const dropsReducer = makeReducer({}, {
   [DROPS_LOAD]: (state, action) => {
     return action.drops.data
+  },
+  [DROP_UPDATE]: (state, action) => {
+    const drops = cloneDeep(state)
+    const index = drops.findIndex(d => d.id === action.drop.id)
+
+    if (index > -1) {
+      drops[index] =  action.drop
+    }
+
+    return drops
   }
 })
 
@@ -77,9 +93,26 @@ const dropsListReducer = makeListReducer({
   totalResults: dropsResultsReducer
 }, {})
 
+const correctorDropReducer = makeReducer(null, {
+  [CORRECTOR_DROP_LOAD]: (state, action) => {
+    return action.drop
+  },
+  [CORRECTOR_DROP_RESET]: () => {
+    return null
+  }
+})
+
+const correctionsReducer = makeReducer(null, {
+  [CORRECTIONS_LOAD]: (state, action) => {
+    return action.corrections
+  }
+})
+
 const reducer = {
   drops: dropsListReducer,
-  currentDrop: currentDropReducer
+  currentDrop: currentDropReducer,
+  correctorDrop: correctorDropReducer,
+  corrections: correctionsReducer
 }
 
 export {

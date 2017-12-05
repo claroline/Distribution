@@ -44,14 +44,14 @@ class Criterion extends Component {
             disabled={!this.props.criterion.instruction}
             onClick={() => this.setState({editMode: !this.state.editMode})}
           >
-            <span className="fa fa-w fa-pencil"/>
+            <span className="fa fa-fw fa-pencil"/>
           </button>
           <button
             className="btn btn-danger btn-sm"
             type="button"
             onClick={() => this.props.handleDelete(this.props.criterion.id)}
           >
-            <span className="fa fa-w fa-trash"/>
+            <span className="fa fa-fw fa-trash"/>
           </button>
         </div>
       </div>
@@ -77,7 +77,7 @@ const Criteria = props =>
       type="button"
       onClick={() => props.addCriterion(props.dropzoneId)}
     >
-      <span className="fa fa-w fa-plus"></span>
+      <span className="fa fa-fw fa-plus"></span>
       {trans('add_criterion', {}, 'dropzone')}
     </button>
     {props.criteria.map(c =>

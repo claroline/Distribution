@@ -14,7 +14,7 @@ export function generateCorrection(dropId, user, dropzone) {
     score: null,
     comment: null,
     startDate: currentDate,
-    lastOpenDate: currentDate,
+    lastEditionDate: currentDate,
     endDate: null,
     finished: false,
     valid: true,

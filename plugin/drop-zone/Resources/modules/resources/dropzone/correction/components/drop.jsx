@@ -22,7 +22,9 @@ const Drop = props =>
         corrections={props.drop.corrections || []}
       />
     }
-    <CorrectionCreation {...props}/>
+    {props.drop.finished &&
+      <CorrectionCreation {...props}/>
+    }
   </div>
 
 Drop.propTypes = {

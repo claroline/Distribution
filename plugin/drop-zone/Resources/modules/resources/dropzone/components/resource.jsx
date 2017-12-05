@@ -15,6 +15,8 @@ import {Menu} from '#/plugin/drop-zone/resources/dropzone/components/menu.jsx'
 import {DropzoneForm} from '#/plugin/drop-zone/resources/dropzone/editor/components/dropzone-form.jsx'
 import {MyDrop} from '#/plugin/drop-zone/resources/dropzone/player/components/my-drop.jsx'
 import {Drops} from '#/plugin/drop-zone/resources/dropzone/correction/components/drops.jsx'
+import {Correctors} from '#/plugin/drop-zone/resources/dropzone/correction/components/correctors.jsx'
+import {Corrector} from '#/plugin/drop-zone/resources/dropzone/correction/components/corrector.jsx'
 import {Drop} from '#/plugin/drop-zone/resources/dropzone/correction/components/drop.jsx'
 import {PeerDrop} from '#/plugin/drop-zone/resources/dropzone/player/components/peer-drop.jsx'
 
@@ -54,12 +56,27 @@ const DropzoneResource = props =>
         }, {
           path: '/drop/:id',
           component: Drop,
-          onEnter: (params) => props.fetchDrop(params.id),
+          onEnter: (params) => props.fetchDrop(params.id, 'current'),
           onLeave: () => props.resetCurrentDrop()
         }, {
           path: '/peer/drop',
           component: PeerDrop,
           onEnter: () => props.fetchPeerDrop()
+        }, {
+          path: '/correctors',
+          component: Correctors,
+          onEnter: () => {
+            props.fetchDrops(props.dropzoneId)
+            props.fetchCorrections(props.dropzoneId)
+          }
+        }, {
+          path: '/corrector/:id',
+          component: Corrector,
+          onEnter: (params) => {
+            props.fetchDrop(params.id, 'corrector')
+            props.fetchCorrections(props.dropzoneId)
+          },
+          onLeave: () => props.resetCorrectorDrop()
         }
       ]}
     />
@@ -82,6 +99,8 @@ DropzoneResource.propTypes = {
   fetchDrops: T.func.isRequired,
   fetchDrop: T.func.isRequired,
   resetCurrentDrop: T.func.isRequired,
+  fetchCorrections: T.func.isRequired,
+  resetCorrectorDrop: T.func.isRequired,
   fetchPeerDrop: T.func.isRequired
 }
 
@@ -105,8 +124,16 @@ function customActions(props) {
   if (props.canEdit) {
     actions.push({
       icon: 'fa fa-fw fa-check-square-o',
-      label: trans('correction', {}, 'dropzone'),
+      label: trans('corrections', {}, 'dropzone'),
       action: '#/drops'
+    })
+  }
+
+  if (props.canEdit && props.dropzone.parameters.peerReview) {
+    actions.push({
+      icon: 'fa fa-fw fa-users',
+      label: trans('correctors', {}, 'dropzone'),
+      action: '#/correctors'
     })
   }
 
@@ -133,8 +160,10 @@ function mapDispatchToProps(dispatch) {
     resetForm: () => dispatch(editorActions.resetForm()),
     saveDropzone: (dropzoneId, data) => dispatch(editorActions.saveDropzone(dropzoneId, data)),
     fetchDrops: (dropzoneId) => dispatch(correctionActions.fetchDrops(dropzoneId)),
-    fetchDrop: (dropId) => dispatch(correctionActions.fetchDrop(dropId)),
+    fetchDrop: (dropId, type) => dispatch(correctionActions.fetchDrop(dropId, type)),
     resetCurrentDrop: () => dispatch(correctionActions.resetCurrentDrop()),
+    fetchCorrections: (dropzoneId) => dispatch(correctionActions.fetchCorrections(dropzoneId)),
+    resetCorrectorDrop: () => dispatch(correctionActions.resetCorrectorDrop()),
     fetchPeerDrop: () => dispatch(playerActions.fetchPeerDrop())
   }
 }

@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\DropZoneBundle\Repository\CorrectionRepository")
  * @ORM\Table(name="claro_dropzonebundle_correction")
  */
 class Correction
@@ -74,9 +74,9 @@ class Correction
     protected $startDate;
 
     /**
-     * @ORM\Column(name="last_open_date", type="datetime", nullable=false)
+     * @ORM\Column(name="last_edition_date", type="datetime", nullable=false)
      */
-    protected $lastOpenDate;
+    protected $lastEditionDate;
 
     /**
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
@@ -208,14 +208,14 @@ class Correction
         $this->startDate = $startDate;
     }
 
-    public function getLastOpenDate()
+    public function getLastEditionDate()
     {
-        return $this->lastOpenDate;
+        return $this->lastEditionDate;
     }
 
-    public function setLastOpenDate(\DateTime $lastOpenDate)
+    public function setLastEditionDate(\DateTime $lastEditionDate)
     {
-        $this->lastOpenDate = $lastOpenDate;
+        $this->lastEditionDate = $lastEditionDate;
     }
 
     public function getEndDate()

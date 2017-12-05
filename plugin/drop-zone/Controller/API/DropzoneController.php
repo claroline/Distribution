@@ -262,6 +262,96 @@ class DropzoneController
     }
 
     /**
+     * Unlocks Drop.
+     *
+     * @EXT\Route("/drop/{id}/unlock", name="claro_dropzone_drop_unlock")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop $drop
+     *
+     * @return JsonResponse
+     */
+    public function dropUnlockAction(Drop $drop)
+    {
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $this->manager->unlockDrop($drop);
+
+            return new JsonResponse($this->manager->serializeDrop($drop));
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * Unlocks Drop user.
+     *
+     * @EXT\Route("/drop/{id}/unlock/user", name="claro_dropzone_drop_unlock_user")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop $drop
+     *
+     * @return JsonResponse
+     */
+    public function dropUserUnlockAction(Drop $drop)
+    {
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $this->manager->unlockDropUser($drop);
+
+            return new JsonResponse($this->manager->serializeDrop($drop));
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * Cancels Drop submission.
+     *
+     * @EXT\Route("/drop/{id}/submission/cancel", name="claro_dropzone_drop_submission_cancel")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "drop",
+     *     class="ClarolineDropZoneBundle:Drop",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Drop $drop
+     *
+     * @return JsonResponse
+     */
+    public function dropSubmissionCancelAction(Drop $drop)
+    {
+        $dropzone = $drop->getDropzone();
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+
+        try {
+            $this->manager->cancelDropSubmission($drop);
+
+            return new JsonResponse($this->manager->serializeDrop($drop));
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
      * @EXT\Route("/{id}/drops/search", name="claro_dropzone_drops_search")
      * @EXT\Method("GET")
      * @EXT\ParamConverter(
@@ -315,6 +405,28 @@ class DropzoneController
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
 
         return new JsonResponse($this->manager->serializeDrop($drop));
+    }
+
+    /**
+     * @EXT\Route("/{id}/corrections/fetch", name="claro_dropzone_corrections_fetch")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "dropzone",
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Dropzone $dropzone
+     *
+     * @return JsonResponse
+     */
+    public function correctionsFetchAction(Dropzone $dropzone)
+    {
+        $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
+        $data = $this->manager->getAllCorrectionsData($dropzone);
+
+        return new JsonResponse($data, 200);
     }
 
     /**

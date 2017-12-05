@@ -400,6 +400,55 @@ class DropzoneManager
     }
 
     /**
+     * Unlocks Drop.
+     *
+     * @param Drop $drop
+     *
+     * @return Drop
+     */
+    public function unlockDrop(Drop $drop)
+    {
+        $drop->setUnlockedDrop(true);
+        $this->om->persist($drop);
+        $this->om->flush();
+
+        return $drop;
+    }
+
+    /**
+     * Unlocks Drop user.
+     *
+     * @param Drop $drop
+     *
+     * @return Drop
+     */
+    public function unlockDropUser(Drop $drop)
+    {
+        $drop->setUnlockedUser(true);
+        $this->om->persist($drop);
+        $this->om->flush();
+
+        return $drop;
+    }
+
+    /**
+     * Cancels Drop submission.
+     *
+     * @param Drop $drop
+     *
+     * @return Drop
+     */
+    public function cancelDropSubmission(Drop $drop)
+    {
+        $drop->setFinished(false);
+        $drop->setDropDate(null);
+        $this->om->persist($drop);
+        $this->om->flush();
+
+        return $drop;
+    }
+
+    /**
      * Updates a Correction.
      *
      * @param array $data
@@ -414,7 +463,7 @@ class DropzoneManager
         $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
 
         if (!$isNew) {
-            $correction->setLastOpenDate(new \DateTime());
+            $correction->setLastEditionDate(new \DateTime());
         }
         $correction = $this->computeCorrectionScore($correction);
         $this->om->persist($correction);
@@ -652,7 +701,7 @@ class DropzoneManager
             $correction->setUser($user);
             $currentDate = new \DateTime();
             $correction->setStartDate($currentDate);
-            $correction->setLastOpenDate($currentDate);
+            $correction->setLastEditionDate($currentDate);
             $peerDrop->addCorrection($correction);
             $this->om->persist($correction);
             $this->om->flush();
@@ -807,6 +856,37 @@ class DropzoneManager
             $data,
             true
         );
+    }
+
+    public function getAllCorrectionsData(Dropzone $dropzone)
+    {
+        $data = [];
+        $corrections = $this->correctionRepo->findAllCorrectionsByDropzone($dropzone);
+
+        foreach ($corrections as $correction) {
+            $user = $correction->getUser();
+            $role = $correction->getRole();
+            $serializedCorrection = $this->serializeCorrection($correction);
+
+            if (!empty($user)) {
+                $userId = $user->getId();
+
+                if (!isset($data[$userId])) {
+                    $data[$userId] = [];
+                }
+                $data[$userId][] = $serializedCorrection;
+            }
+            if (!empty($role)) {
+                $roleName = $role->getName();
+
+                if (!isset($data[$roleName])) {
+                    $data[$roleName] = [];
+                }
+                $data[$roleName][] = $serializedCorrection;
+            }
+        }
+
+        return $data;
     }
 
     private function registerFile(Dropzone $dropzone, UploadedFile $file)

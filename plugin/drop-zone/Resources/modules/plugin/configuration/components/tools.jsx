@@ -125,13 +125,13 @@ class Tools extends Component {
     const dataListActions = []
 
     dataListActions.push({
-      icon: 'fa fa-w fa-pencil',
+      icon: 'fa fa-fw fa-pencil',
       label: trans('edit_tool', {}, 'dropzone'),
       action: (rows) => this.editTool(rows[0]),
       context: 'row'
     })
     dataListActions.push({
-      icon: 'fa fa-w fa-trash',
+      icon: 'fa fa-fw fa-trash',
       label: trans('delete_tool', {}, 'dropzone'),
       action: (rows) => this.deleteTool(rows[0]),
       isDangerous: true,

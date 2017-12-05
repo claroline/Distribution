@@ -102,6 +102,15 @@ export class CorrectionForm extends Component {
     return (
       <form>
         <div className="panel panel-default correction-form-panel">
+          {this.props.dropzone.display.correctionInstruction &&
+            <div id="correction-instruction-container">
+              <h2>{trans('correction_instruction', {}, 'dropzone')}</h2>
+              <HtmlText>
+                {this.props.dropzone.display.correctionInstruction}
+              </HtmlText>
+              <hr/>
+            </div>
+          }
           {this.props.dropzone.parameters.criteriaEnabled ?
             <CriteriaForm
               criteria={this.props.dropzone.criteria}
@@ -135,7 +144,7 @@ export class CorrectionForm extends Component {
             >
               {t('cancel')}
             </button>
-            {this.props.showSubmitButton && this.props.correction.startDate !== this.props.correction.lastOpenDate &&
+            {this.props.showSubmitButton && this.props.correction.startDate !== this.props.correction.lastEditionDate &&
               <button
                 className="btn btn-default"
                 type="button"

@@ -40,7 +40,7 @@ const Document = props =>
     {props.canEdit &&
       <td>
         <span
-          className="fa fa-w fa-trash pointer-hand"
+          className="fa fa-fw fa-trash pointer-hand"
           onClick={() => {
             props.showModal(MODAL_DELETE_CONFIRM, {
               title: trans('delete_document', {}, 'dropzone'),

@@ -12,6 +12,7 @@ import {
   PEER_DROPS_INC
 } from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {
+  DROP_UPDATE,
   CORRECTION_UPDATE
 } from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
@@ -21,6 +22,9 @@ const myDropReducer = makeReducer({}, {
   },
   [MY_DROP_UPDATE]: (state, action) => {
     return Object.assign({}, state, {[action.property]: action.value})
+  },
+  [DROP_UPDATE]: (state, action) => {
+    return state && state.id === action.drop.id ? action.drop : state
   },
   [DOCUMENTS_ADD]: (state, action) => {
     const documents = cloneDeep(state.documents)
@@ -94,6 +98,9 @@ const peerDropReducer = makeReducer({}, {
   },
   [PEER_DROP_RESET]: () => {
     return null
+  },
+  [DROP_UPDATE]: (state, action) => {
+    return state && state.id === action.drop.id ? action.drop : state
   }
 })
 

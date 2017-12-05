@@ -20,6 +20,8 @@ const reducer = {
   nbCorrections: playerReducer.nbCorrections,
   drops: correctionReducer.drops,
   currentDrop: correctionReducer.currentDrop,
+  correctorDrop: correctionReducer.correctorDrop,
+  corrections: correctionReducer.corrections,
   tools: configurationReducer.tools,
 
   // generic reducers

@@ -23,7 +23,7 @@ export const Corrections = props =>
       <tr key={`correction-row-${c.id}`}>
         <td>
           {c.correctionDenied &&
-            <span className="fa fa-w fa-exclamation-triangle"/>
+            <span className="fa fa-fw fa-exclamation-triangle"/>
           }
         </td>
         <td>

@@ -100,7 +100,7 @@ class EntryComments extends Component {
                 className="btn btn-default"
                 onClick={() => this.setState({showNewCommentForm: true, newComment: ''})}
               >
-                <span className="fa fa-w fa-plus-circle margin-right-sm"></span>
+                <span className="fa fa-fw fa-plus-circle margin-right-sm"></span>
                 {trans('add_comment', {}, 'clacoform')}
               </button>
             }
@@ -148,7 +148,7 @@ class EntryComments extends Component {
                             title={t('edit')}
                             onClick={() => this.showCommentForm(c)}
                           >
-                            <span className="fa fa-w fa-pencil"></span>
+                            <span className="fa fa-fw fa-pencil"></span>
                           </TooltipButton>
                         }
                         {this.props.canManage &&
@@ -160,7 +160,7 @@ class EntryComments extends Component {
                                 title={trans('validate', {}, 'clacoform')}
                                 onClick={() => this.props.activateComment(this.props.entry.id, c.id)}
                               >
-                                <span className="fa fa-w fa-check"></span>
+                                <span className="fa fa-fw fa-check"></span>
                               </TooltipButton>
                             }
                             {c.status === 2 ?
@@ -170,7 +170,7 @@ class EntryComments extends Component {
                                 title={t('activate')}
                                 onClick={() => this.props.activateComment(this.props.entry.id, c.id)}
                               >
-                                <span className="fa fa-w fa-eye"></span>
+                                <span className="fa fa-fw fa-eye"></span>
                               </TooltipButton> :
                               <TooltipButton
                                 id={`comment-block-button-${c.id}`}
@@ -178,7 +178,7 @@ class EntryComments extends Component {
                                 title={trans('block', {}, 'clacoform')}
                                 onClick={() => this.props.blockComment(this.props.entry.id, c.id)}
                               >
-                                <span className="fa fa-w fa-ban"></span>
+                                <span className="fa fa-fw fa-ban"></span>
                               </TooltipButton>
                             }
                             <TooltipButton
@@ -187,7 +187,7 @@ class EntryComments extends Component {
                               title={t('delete')}
                               onClick={() => this.deleteComment(c.id)}
                             >
-                              <span className="fa fa-w fa-trash"></span>
+                              <span className="fa fa-fw fa-trash"></span>
                             </TooltipButton>
                           </span>
                         }

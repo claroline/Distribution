@@ -57,11 +57,11 @@ const Menu = props =>
         >
           {!props.myDrop.finished && [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 ?
             <span>
-              <span className="fa fa-w fa-pencil dropzone-button-icon"/>
+              <span className="fa fa-fw fa-pencil dropzone-button-icon"/>
               {trans('complete_my_copy', {}, 'dropzone')}
             </span> :
             <span>
-              <span className="fa fa-w fa-eye dropzone-button-icon"/>
+              <span className="fa fa-fw fa-eye dropzone-button-icon"/>
               {trans('see_my_copy', {}, 'dropzone')}
             </span>
           }
@@ -72,7 +72,7 @@ const Menu = props =>
             href="#/peer/drop"
             className="btn btn-default"
           >
-            <span className="fa fa-w fa-edit dropzone-button-icon"/>
+            <span className="fa fa-fw fa-edit dropzone-button-icon"/>
             {trans('correct_a_copy', {}, 'dropzone')}
           </a>
         }

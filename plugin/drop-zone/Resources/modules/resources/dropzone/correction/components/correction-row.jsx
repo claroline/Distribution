@@ -28,6 +28,13 @@ class CorrectionRow extends Component {
     this.setState({correction: correction, showForm: false})
   }
 
+  showCorrectionEditionForm() {
+    this.setState(
+      {correction: generateCorrectionGrades(this.props.correction, this.props.dropzone)},
+      () => this.setState({showForm: true})
+    )
+  }
+
   cancelCorrection() {
     this.setState({correction: this.props.correction, showForm: false})
   }
@@ -55,7 +62,7 @@ class CorrectionRow extends Component {
       <tr className="correction-row">
         <td>
           {this.props.correction.correctionDenied &&
-            <span className="fa fa-w fa-exclamation-triangle"/>
+            <span className="fa fa-fw fa-exclamation-triangle"/>
           }
         </td>
         <td>
@@ -79,12 +86,12 @@ class CorrectionRow extends Component {
               <button
                 className="btn btn-default btn-sm"
                 type="button"
-                onClick={() => this.setState({showForm: true})}
+                onClick={() => this.showCorrectionEditionForm()}
               >
                 {t('edit')}
               </button>
             }
-            {!this.props.correction.finished &&
+            {!this.props.correction.finished && this.props.correction.startDate !== this.props.correction.lastEditionDate &&
               <button
                 className="btn btn-default btn-sm"
                 type="button"
