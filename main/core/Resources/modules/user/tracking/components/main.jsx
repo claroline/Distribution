@@ -24,13 +24,13 @@ const TrackingComponent = props =>
     ]}
   >
     <div className="row">
-      <div className="col-md-4">
+      <div className="col-md-3">
         <UserDetails
           user={props.user}
         />
       </div>
 
-      <div className="col-md-8">
+      <div className="col-md-9">
         <h2>Suivi des activités</h2>
 
         {/* TODO add search */}
@@ -38,38 +38,94 @@ const TrackingComponent = props =>
         <Timeline
           events={[
             {
+              date: '2017-12-04T15:00:00',
               type: 'evaluation',
               status: 'success',
-              resource: {
-                id: '',
-                icon: '',
-                poster: '',
-                name: 'This is the related resource'
-              },
+              progression: [18, 20],
               workspaces: [
 
               ],
               data: {
+                resourceNode: {
+                  id: '',
+                  icon: '',
+                  poster: '',
+                  name: 'This is the related resource'
+                },
                 duration: 10000,
                 attempts: 10,
               }
             }, {
+              date: '2017-12-04T12:30:00',
               type: 'content',
+              progression: [50, 100],
               data: {
+                resourceNode: {
+                  id: '',
+                  icon: '',
+                  poster: '',
+                  name: 'This is the related resource'
+                },
                 duration: 10000,
-                views: 15,
-                progression: 50,
+                views: 15
               }
             }, {
+              date: '2017-12-04T09:10:00',
               type: 'content',
               data: {
+                resourceNode: {
+                  id: '',
+                  icon: '',
+                  poster: '',
+                  name: 'This is the related resource'
+                },
                 duration: 10000,
                 views: 20
               }
             }, {
-              type: 'badge',
-              data: {
+              date: '2017-12-04T07:00:00',
+              type: 'evaluation',
+              status: 'partial',
+              progression: [12, 20],
+              workspaces: [
 
+              ],
+              data: {
+                resourceNode: {
+                  id: '',
+                  icon: '',
+                  poster: '',
+                  name: 'This is the related resource'
+                },
+                duration: 10000,
+                attempts: 10,
+              }
+            }, {
+              date: '2017-12-03T21:00:00',
+              type: 'evaluation',
+              status: 'failure',
+              progression: [4, 20],
+              workspaces: [
+
+              ],
+              data: {
+                resourceNode: {
+                  id: '',
+                  icon: '',
+                  poster: '',
+                  name: 'This is the related resource'
+                },
+                duration: 10000,
+                attempts: 10,
+              }
+            }, {
+              date: '2017-12-03T19:00:00',
+              type: 'badge',
+              status: 'success',
+              data: {
+                badge: {
+
+                }
               }
             }
           ]}
