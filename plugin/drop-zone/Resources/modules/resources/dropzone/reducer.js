@@ -24,6 +24,7 @@ const reducer = {
   correctorDrop: correctionReducer.correctorDrop,
   corrections: correctionReducer.corrections,
   tools: configurationReducer.tools,
+  teamEnabled: makeReducer({}, {}),
 
   // generic reducers
   currentRequests: apiReducer,

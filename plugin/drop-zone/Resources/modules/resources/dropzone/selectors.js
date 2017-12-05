@@ -160,6 +160,7 @@ const corrections = state => state.corrections
 const correctionForm = state => state.correctionForm
 const nbCorrections = state => state.nbCorrections
 const tools = state => state.tools.data
+const teamEnabled = state => state.teamEnabled
 
 export const select = {
   user,
@@ -193,5 +194,6 @@ export const select = {
   corrections,
   correctionForm,
   nbCorrections,
-  tools
+  tools,
+  teamEnabled
 }

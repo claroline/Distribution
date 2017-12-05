@@ -15,6 +15,7 @@ use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\API\Serializer\CorrectionSerializer;
@@ -70,6 +71,11 @@ class DropzoneManager
      */
     private $resourceEvalManager;
 
+    /**
+     * @var PluginManager
+     */
+    private $pluginManager;
+
     /** @var DropRepository */
     private $dropRepo;
     private $correctionRepo;
@@ -89,7 +95,8 @@ class DropzoneManager
      *     "fileSystem"             = @DI\Inject("filesystem"),
      *     "filesDir"               = @DI\Inject("%claroline.param.files_directory%"),
      *     "om"                     = @DI\Inject("claroline.persistence.object_manager"),
-     *     "resourceEvalManager"    = @DI\Inject("claroline.manager.resource_evaluation_manager")
+     *     "resourceEvalManager"    = @DI\Inject("claroline.manager.resource_evaluation_manager"),
+     *     "pluginManager"          = @DI\Inject("claroline.manager.plugin_manager")
      * })
      *
      * @param Crud                      $crud
@@ -102,6 +109,7 @@ class DropzoneManager
      * @param string                    $filesDir
      * @param ObjectManager             $om
      * @param ResourceEvaluationManager $resourceEvalManager
+     * @param PluginManager             $pluginManager
      */
     public function __construct(
         Crud $crud,
@@ -113,7 +121,8 @@ class DropzoneManager
         Filesystem $fileSystem,
         $filesDir,
         ObjectManager $om,
-        ResourceEvaluationManager $resourceEvalManager
+        ResourceEvaluationManager $resourceEvalManager,
+        PluginManager $pluginManager
     ) {
         $this->crud = $crud;
         $this->dropzoneSerializer = $dropzoneSerializer;
@@ -125,6 +134,7 @@ class DropzoneManager
         $this->filesDir = $filesDir;
         $this->om = $om;
         $this->resourceEvalManager = $resourceEvalManager;
+        $this->pluginManager = $pluginManager;
 
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
@@ -224,6 +234,18 @@ class DropzoneManager
         }
         $this->crud->delete($dropzone, 'Claroline\DropZoneBundle\Entity\Dropzone');
         $this->om->endFlushSuite();
+    }
+
+    /**
+     * Sets Dropzone drop type to default.
+     *
+     * @param Dropzone $dropzone
+     */
+    public function setDefaultDropType(Dropzone $dropzone)
+    {
+        $dropzone->setDropType(Dropzone::DROP_TYPE_USER);
+        $this->om->persist($dropzone);
+        $this->om->flush();
     }
 
     /**
@@ -889,6 +911,13 @@ class DropzoneManager
         }
 
         return $data;
+    }
+
+    public function isTeamBundleEnabled()
+    {
+        $enabledPlugins = $this->pluginManager->getEnabled(true);
+
+        return in_array('ClarolineTeamBundle', $enabledPlugins);
     }
 
     private function registerFile(Dropzone $dropzone, UploadedFile $file)

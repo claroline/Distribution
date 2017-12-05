@@ -22,6 +22,7 @@
         data-nb-corrections="{{ nbCorrections | json_encode | raw | escape }}"
         data-tools="{{ tools | json_encode | raw | escape }}"
         data-user-evaluation="{{ userEvaluation | api_serialize | json_encode | raw | escape }}"
+        data-team-enabled="{{ teamEnabled | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

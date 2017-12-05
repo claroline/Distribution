@@ -35,6 +35,21 @@ const DOCUMENT_TYPES_NAMES = [
   trans('resource_type', {}, 'dropzone')
 ]
 
+const DROP_TYPES = [
+  {value: 0, label: trans('drop_type_user', {}, 'dropzone')},
+  {value: 1, label: trans('drop_type_team', {}, 'dropzone')}
+]
+
+const CORRECTION_TYPES = [
+  {value: 'teacher', label: trans('teacher_correction_info', {}, 'dropzone')},
+  {value: 'peer', label: trans('peer_correction_info', {}, 'dropzone')}
+]
+
+const PLANNING_TYPES = [
+  {value: 'manual', label: trans('manually', {}, 'dropzone')},
+  {value: 'date', label: trans('by_dates', {}, 'dropzone')}
+]
+
 const EVALUATION_STATUS_PASSED = 'passed'
 const EVALUATION_STATUS_FAILED = 'failed'
 const EVALUATION_STATUS_COMPLETED = 'completed'
@@ -51,6 +66,9 @@ export const constants = {
   STATE_ALLOW_WAITING_FOR_PEER_REVIEW,
   TEACHER_PLANNING_STATES,
   PEER_PLANNING_STATES,
+  DROP_TYPES,
+  CORRECTION_TYPES,
+  PLANNING_TYPES,
   DOCUMENT_TYPES,
   DOCUMENT_TYPES_NAMES,
   EVALUATION_STATUS_PASSED,

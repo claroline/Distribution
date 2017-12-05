@@ -35,7 +35,8 @@ bootstrap(
       tools: {
         data: initialData.tools,
         totalResults: initialData.tools.length
-      }
+      },
+      teamEnabled: initialData.teamEnabled
     }
   }
 )

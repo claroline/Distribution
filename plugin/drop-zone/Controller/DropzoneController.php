@@ -65,6 +65,11 @@ class DropzoneController extends Controller
     public function dropzoneOpenAction(Dropzone $dropzone, User $user = null)
     {
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $teamEnabled = $this->manager->isTeamBundleEnabled();
+
+        if (!$teamEnabled && $dropzone->getDropType() === Dropzone::DROP_TYPE_ROLE) {
+            $this->manager->setDefaultDropType($dropzone);
+        }
         $myDrop = empty($user) ? null : $this->manager->getUserDrop($dropzone, $user);
         $finishedPeerDrops = $this->manager->getUserFinishedPeerDrops($dropzone, $user);
         $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
@@ -79,6 +84,7 @@ class DropzoneController extends Controller
             'peerDrop' => !empty($peerDrop) ? $this->manager->serializeDrop($peerDrop) : $peerDrop,
             'tools' => $serializedTools,
             'userEvaluation' => $userEvaluation,
+            'teamEnabled' => $teamEnabled,
         ];
     }
 

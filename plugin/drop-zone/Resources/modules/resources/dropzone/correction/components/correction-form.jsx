@@ -98,7 +98,6 @@ export class CorrectionForm extends Component {
     if (isValid(this.state.correction, this.props.dropzone)) {
       this.props.saveCorrection(this.state.correction)
       this.setState({pendingChanges: false})
-      console.log(this.state.correction)
     }
   }
 

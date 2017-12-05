@@ -89,23 +89,19 @@ const DropCorrectionSection = props =>
     title={trans('drop_and_correction_type', {}, 'dropzone')}
     {...props}
   >
-    <RadioGroup
-      controlId="drop-type"
-      label={trans('drop_type', {}, 'dropzone')}
-      options={[
-        {value: 0, label: trans('drop_type_user', {}, 'dropzone')},
-        {value: 1, label: trans('drop_type_team', {}, 'dropzone')}
-      ]}
-      checkedValue={props.formData.parameters.dropType}
-      onChange={value => props.updateForm('parameters.dropType', parseInt(value))}
-    />
+    {props.teamEnabled &&
+      <RadioGroup
+        controlId="drop-type"
+        label={trans('drop_type', {}, 'dropzone')}
+        options={constants.DROP_TYPES}
+        checkedValue={props.formData.parameters.dropType}
+        onChange={value => props.updateForm('parameters.dropType', parseInt(value))}
+      />
+    }
     <RadioGroup
       controlId="peer-review"
       label={trans('correction_type_info', {}, 'dropzone')}
-      options={[
-        {value: 'teacher', label: trans('teacher_correction_info', {}, 'dropzone')},
-        {value: 'peer', label: trans('peer_correction_info', {}, 'dropzone')}
-      ]}
+      options={constants.CORRECTION_TYPES}
       checkedValue={props.formData.parameters.peerReview ? 'peer' : 'teacher'}
       onChange={value => {
         const peerReview = value === 'peer'
@@ -283,10 +279,7 @@ const PlanningSection = props =>
     <RadioGroup
       controlId="planning"
       label={trans('planning_type_label', {}, 'dropzone')}
-      options={[
-        {value: 'manual', label: trans('manually', {}, 'dropzone')},
-        {value: 'date', label: trans('by_dates', {}, 'dropzone')}
-      ]}
+      options={constants.PLANNING_TYPES}
       inline={true}
       checkedValue={props.formData.parameters.manualPlanning ? 'manual' : 'date'}
       onChange={value => props.updateForm('parameters.manualPlanning', value === 'manual')}
@@ -411,6 +404,7 @@ DropzoneForm.propTypes = {
   formData: T.shape(DropzoneType.propTypes),
   errors: T.object,
   validating: T.bool,
+  teamEnabled: T.bool.isRequired,
   updateForm: T.func.isRequired,
   updateNotifications: T.func.isRequired
 }
@@ -420,7 +414,8 @@ function mapStateToProps(state) {
     canEdit: resourceSelect.editable(state),
     formData: select.formData(state),
     errors: select.formErrors(state),
-    validating: select.formValidating(state)
+    validating: select.formValidating(state),
+    teamEnabled: select.teamEnabled(state)
   }
 }
 
