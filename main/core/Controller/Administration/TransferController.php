@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
+use Claroline\CoreBundle\API\TransferProvider;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
@@ -20,6 +21,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
  */
 class TransferController
 {
+    /** @var TransferProvider */
+    private $transfer;
+
+    /**
+     * @DI\InjectParams({
+     *     "transfer"  = @DI\Inject("claroline.api.transfer")
+     * })
+     *
+     * @param TransferProvider $transfer
+     */
+    public function __construct(TransferProvider $transfer)
+    {
+        $this->transfer = $transfer;
+    }
+
     /**
      * @EXT\Route("/", name="claro_admin_transfer_index")
      * @EXT\Method("GET")
@@ -27,6 +43,6 @@ class TransferController
      */
     public function indexAction()
     {
-        return [];
+        return ['explanation' => $this->transfer->getAvailableActions('csv')];
     }
 }

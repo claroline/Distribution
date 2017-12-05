@@ -6,13 +6,11 @@ use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
-use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class AbstractCrudController extends ContainerAware
+abstract class AbstractCrudController extends AbstractApiController
 {
     /** @var FinderProvider */
     protected $finder;
@@ -107,20 +105,16 @@ abstract class AbstractCrudController extends ContainerAware
      */
     public function createAction(Request $request, $class, $env)
     {
-        try {
-            $object = $this->crud->create(
-                $class,
-                $this->decodeRequest($request),
-                $this->options['create']
-            );
+        $object = $this->crud->create(
+            $class,
+            $this->decodeRequest($request),
+            $this->options['create']
+        );
 
-            return new JsonResponse(
-                $this->serializer->serialize($object, $this->options['get']),
-                201
-            );
-        } catch (\Exception $e) {
-            return $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object, $this->options['get']),
+            201
+        );
     }
 
     /**
@@ -133,19 +127,15 @@ abstract class AbstractCrudController extends ContainerAware
      */
     public function updateAction($id, Request $request, $class, $env)
     {
-        try {
-            $object = $this->crud->update(
-                $class,
-                $this->decodeRequest($request),
-                $this->options['update']
-            );
+        $object = $this->crud->update(
+            $class,
+            $this->decodeRequest($request),
+            $this->options['update']
+        );
 
-            return new JsonResponse(
-                $this->serializer->serialize($object, $this->options['get'])
-            );
-        } catch (\Exception $e) {
-            return $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object, $this->options['get'])
+        );
     }
 
     /**
@@ -157,36 +147,12 @@ abstract class AbstractCrudController extends ContainerAware
      */
     public function deleteBulkAction(Request $request, $class, $env)
     {
-        try {
-            $this->crud->deleteBulk(
-                $this->decodeIdsString($request, $class),
-                $this->options['deleteBulk']
-            );
+        $this->crud->deleteBulk(
+            $this->decodeIdsString($request, $class),
+            $this->options['deleteBulk']
+        );
 
-            return new JsonResponse(null, 204);
-        } catch (\Exception $e) {
-            return $this->handleException($e, $env);
-        }
-    }
-
-    //maybe handle the exception better ?
-    /**
-     * @param \Exception $e
-     * @param string     $env
-     *
-     * @return JsonResponse
-     */
-    protected function handleException(\Exception $e, $env)
-    {
-        if ($e instanceof InvalidDataException) {
-            return new JsonResponse($e->getErrors(), 422);
-        }
-
-        if ($env === 'prod') {
-            return new JsonResponse($e->getMessage(), 422);
-        }
-
-        throw $e;
+        return new JsonResponse(null, 204);
     }
 
     /**
