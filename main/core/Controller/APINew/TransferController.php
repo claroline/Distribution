@@ -11,15 +11,15 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\TransferProvider;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("transfer")
+ * @Route("/transfer")
  */
 class TransferController
 {
@@ -81,14 +81,14 @@ class TransferController
 
             return [
               'data' => file_get_contents($file->getPathname()),
-              'mime_type' => $file->getMimeType()
+              'mime_type' => $file->getMimeType(),
             ];
         }
 
         //maybe it's in the body request, who knows ?
         return [
           'data' => $request->getContent(),
-          'mime_type' => $request->headers->get('content_type')
+          'mime_type' => $request->headers->get('content_type'),
         ];
     }
 

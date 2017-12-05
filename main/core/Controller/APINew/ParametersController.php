@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @Route("parameters")
+ * @Route("/parameters")
  */
 class ParametersController
 {

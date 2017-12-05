@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Organization\Organization")
- * @Route("organization")
+ * @Route("/organization")
  */
 class OrganizationController extends AbstractCrudController
 {

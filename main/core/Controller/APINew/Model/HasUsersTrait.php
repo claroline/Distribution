@@ -15,7 +15,7 @@ trait HasUsersTrait
     /**
      * List users of the collection.
      *
-     * @EXT\Route("{id}/user")
+     * @EXT\Route("/{id}/user")
      * @EXT\Method("GET")
      *
      * @param string  $id
@@ -38,7 +38,7 @@ trait HasUsersTrait
     /**
      * Adds users to the collection.
      *
-     * @EXT\Route("{id}/user")
+     * @EXT\Route("/{id}/user")
      * @EXT\Method("PATCH")
      *
      * @param string  $id
@@ -66,7 +66,7 @@ trait HasUsersTrait
     /**
      * Removes users from the collection.
      *
-     * @EXT\Route("{id}/user")
+     * @EXT\Route("/{id}/user")
      * @EXT\Method("DELETE")
      *
      * @param string  $id

@@ -15,7 +15,7 @@ trait HasGroupsTrait
     /**
      * List groups of the collection.
      *
-     * @EXT\Route("{id}/user")
+     * @EXT\Route("/{id}/user")
      * @EXT\Method("GET")
      *
      * @param string  $id
@@ -38,7 +38,7 @@ trait HasGroupsTrait
     /**
      * Adds groups to the collection.
      *
-     * @EXT\Route("{id}/group")
+     * @EXT\Route("/{id}/group")
      * @EXT\Method("PATCH")
      *
      * @param string  $id
@@ -66,7 +66,7 @@ trait HasGroupsTrait
     /**
      * Removes groups from the collection.
      *
-     * @EXT\Route("{id}/group")
+     * @EXT\Route("/{id}/group")
      * @EXT\Method("DELETE")
      *
      * @param string  $id
@@ -83,9 +83,7 @@ trait HasGroupsTrait
             $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
             $this->crud->patch($object, 'group', Crud::COLLECTION_REMOVE, $groups);
 
-            return new JsonResponse(
-              $this->serializer->serialize($object)
-          );
+            return new JsonResponse($this->serializer->serialize($object));
         } catch (\Exception $e) {
             $this->handleException($e, $env);
         }

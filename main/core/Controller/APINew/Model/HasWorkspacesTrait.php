@@ -15,7 +15,7 @@ trait HasWorkspacesTrait
     /**
      * List workspaces of the collection.
      *
-     * @EXT\Route("{id}/workspace")
+     * @EXT\Route("/{id}/workspace")
      * @EXT\Method("GET")
      *
      * @param string  $id
@@ -38,7 +38,7 @@ trait HasWorkspacesTrait
     /**
      * Adds workspaces to the collection.
      *
-     * @EXT\Route("{id}/workspace")
+     * @EXT\Route("/{id}/workspace")
      * @EXT\Method("PATCH")
      *
      * @param string  $id
@@ -66,7 +66,7 @@ trait HasWorkspacesTrait
     /**
      * Removes workspaces from the collection.
      *
-     * @EXT\Route("{id}/workspace")
+     * @EXT\Route("/{id}/workspace")
      * @EXT\Method("DELETE")
      *
      * @param string  $id

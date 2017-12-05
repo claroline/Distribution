@@ -18,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\PanelFacet")
- * @Route("panelfacet")
+ * @Route("/panelfacet")
  */
 class PanelFacetController extends AbstractCrudController
 {

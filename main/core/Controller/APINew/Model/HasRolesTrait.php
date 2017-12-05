@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasRolesTrait
 {
     /**
-     * @EXT\Route("{id}/role")
+     * @EXT\Route("/{id}/role")
      * @EXT\Method("GET")
      *
      * @param string  $id
@@ -31,7 +31,7 @@ trait HasRolesTrait
     }
 
     /**
-     * @EXT\Route("{id}/role")
+     * @EXT\Route("/{id}/role")
      * @EXT\Method("PATCH")
      *
      * @param string  $id
@@ -57,7 +57,7 @@ trait HasRolesTrait
     }
 
     /**
-     * @EXT\Route("{id}/role")
+     * @EXT\Route("/{id}/role")
      * @EXT\Method("DELETE")
      *
      * @param string  $id

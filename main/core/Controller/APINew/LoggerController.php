@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @EXT\Route("logger")
+ * @EXT\Route("/logger")
  */
 class LoggerController
 {
@@ -38,6 +38,6 @@ class LoggerController
      */
     public function transfer($name)
     {
-        return new Response(file_get_contents($this->logDir . '/' . $name . '.log'));
+        return new Response(file_get_contents($this->logDir.'/'.$name.'.log'));
     }
 }

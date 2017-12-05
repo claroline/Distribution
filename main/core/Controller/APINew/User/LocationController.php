@@ -11,19 +11,19 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
+use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
 use Claroline\CoreBundle\Entity\Organization\Location;
-use Claroline\CoreBundle\Annotations\ApiMeta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Organization\Location")
- * @Route("location")
+ * @Route("/location")
  */
 class LocationController extends AbstractCrudController
 {
