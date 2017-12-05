@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 
 import {t} from '#/main/core/translation'
 import {BaseModal} from './base.jsx'
-import {Form} from '#/main/core/layout/form/components/form.jsx'
+import {Form} from '#/main/core/data/form/components/form.jsx'
 
 const FormModal = props =>
   <BaseModal {...props}>

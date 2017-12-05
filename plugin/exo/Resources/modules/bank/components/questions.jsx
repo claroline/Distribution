@@ -18,7 +18,7 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {getDefinition, listItemNames} from '#/plugin/exo/items/item-types'
 import {Icon as ItemIcon} from '#/plugin/exo/items/components/icon.jsx'

@@ -6,8 +6,8 @@ import {ResourceContainer} from '#/main/core/layout/resource/containers/resource
 import {Routes, Router} from '#/main/core/router'
 import {Player} from './player.jsx'
 import {Editor} from './editor.jsx'
-import {select as formSelect} from '#/main/core/layout/form/selectors'
-import {actions as formActions} from '#/main/core/layout/form/actions'
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as formActions} from '#/main/core/data/form/actions'
 
 const BookReference = props =>
   <ResourceContainer

@@ -1,7 +1,7 @@
 //import cloneDeep from 'lodash/cloneDeep'
 import {makeReducer} from '#/main/core/utilities/redux'
 import {VIEW_MANAGEMENT} from './constants'
-import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
 
 import {
 //  UPDATE_VIEW_MODE,

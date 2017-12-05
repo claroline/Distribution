@@ -41,35 +41,10 @@ const FormGroup = {
   }
 }
 
-const DataFormProperty = {
-  propTypes: {
-    validating: T.bool,
-
-    name: T.string.isRequired,
-    type: T.string,
-    label: T.string.isRequired,
-    help: T.string,
-    hideLabel: T.bool,
-    disabled: T.bool,
-    options: T.object,
-    required: T.bool,
-    onChange: T.func,
-
-    value: T.any,
-    error: T.string
-  },
-  defaultProps: {
-    required: false,
-    hideLabel: false,
-    disabled: false
-  }
-}
-
 const FormGroupWithField = implementPropTypes({}, [FormGroup, FormField])
 
 export {
   FormField,
   FormGroup,
-  FormGroupWithField,
-  DataFormProperty
+  FormGroupWithField
 }

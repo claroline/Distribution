@@ -5,11 +5,11 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
-import {FormContainer} from '#/main/core/layout/form/containers/form.jsx'
+import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {select as formSelect} from '#/main/core/layout/form/selectors'
-import {DataListContainer} from '#/main/core/layout/list/containers/data-list.jsx'
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
@@ -114,7 +114,6 @@ const OrganizationForm = props =>
           delete={{
             url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}],
           }}
-          actions={[]}
           definition={WorkspaceList.definition}
           card={WorkspaceList.card}
         />
@@ -142,7 +141,6 @@ const OrganizationForm = props =>
           delete={{
             url: ['apiv2_organization_remove_users', {id: props.organization.id}],
           }}
-          actions={[]}
           definition={UserList.definition}
           card={UserList.card}
         />
@@ -170,7 +168,6 @@ const OrganizationForm = props =>
           delete={{
             url: ['apiv2_organization_remove_groups', {id: props.organization.id}],
           }}
-          actions={[]}
           definition={GroupList.definition}
           card={GroupList.card}
         />

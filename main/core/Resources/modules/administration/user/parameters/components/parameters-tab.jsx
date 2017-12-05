@@ -2,11 +2,11 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 
-import {select} from '#/main/core/layout/form/selectors'
+import {select} from '#/main/core/data/form/selectors'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {makeSaveAction} from '#/main/core/layout/form/containers/form-save.jsx'
-import {FormContainer as Form} from '#/main/core/layout/form/containers/form.jsx'
+import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
+import {FormContainer as Form} from '#/main/core/data/form/containers/form.jsx'
 
 import {
   REGISTRATION_MAIL_VALIDATION_NONE,

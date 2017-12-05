@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
 
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'

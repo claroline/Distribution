@@ -5,7 +5,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 
 import {TreeView} from '#/main/core/layout/treeview/treeview.jsx'
-import {DataTreeContainer} from '#/main/core/layout/list/containers/data-tree.jsx'
+import {DataTreeContainer} from '#/main/core/data/list/containers/data-tree.jsx'
 
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 

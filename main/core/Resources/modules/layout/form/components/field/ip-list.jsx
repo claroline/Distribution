@@ -6,7 +6,7 @@ import {t} from '#/main/core/translation'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {HelpBlock} from '#/main/core/layout/form/components/help-block.jsx'
 import {Ip} from '#/main/core/layout/form/components/field/ip.jsx'
-import {ipDefinition} from '#/main/core/layout/data/types/ip'
+import {ipDefinition} from '#/main/core/data/types/ip'
 
 class IpList extends Component {
   constructor(props) {

@@ -7,7 +7,7 @@ import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
 
 import {BookReference} from './components/book-reference.jsx'
 import {reducer} from './reducer'
-import { makeFormReducer } from '#/main/core/layout/form/reducer'
+import { makeFormReducer } from '#/main/core/data/form/reducer'
 
 // mount the react application
 bootstrap(

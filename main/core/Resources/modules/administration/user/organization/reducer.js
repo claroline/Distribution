@@ -1,7 +1,7 @@
 import {combineReducers, makeReducer} from '#/main/core/utilities/redux'
 
-import {makeFormReducer} from '#/main/core/layout/form/reducer'
-import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {makeFormReducer} from '#/main/core/data/form/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
 
 const reducer = combineReducers({
   list: makeListReducer('organizations.list', {}, {}, {

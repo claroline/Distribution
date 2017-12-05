@@ -1,8 +1,8 @@
 import {API_REQUEST} from '#/main/core/api/actions'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {actions as listActions} from '#/main/core/layout/list/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 import {User as UserTypes} from '#/main/core/administration/user/user/prop-types'
-import {actions as formActions} from '#/main/core/layout/form/actions'
+import {actions as formActions} from '#/main/core/data/form/actions'
 
 export const actions = {}
 

@@ -1,7 +1,7 @@
 import {combineReducers} from '#/main/core/utilities/redux'
 
-import {makeListReducer} from '#/main/core/layout/list/reducer'
-import {makeFormReducer} from '#/main/core/layout/form/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
+import {makeFormReducer} from '#/main/core/data/form/reducer'
 
 import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
 
