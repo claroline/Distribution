@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\ProfileCreationType;
 use Claroline\CoreBundle\Form\ProfileType;
-use Claroline\CoreBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\AuthenticationManager;
 use Claroline\CoreBundle\Manager\FacetManager;
@@ -29,6 +28,7 @@ use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Security\ObjectCollection;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Post;
@@ -515,6 +515,10 @@ class UserController extends FOSRestController
 
     private function throwExceptionIfNotGranted($action, $users)
     {
+        if (!is_array($users)) {
+            $users = [$users];
+        }
+
         $collection = new ObjectCollection($users);
         $isGranted = $this->isUserGranted($action, $collection);
 

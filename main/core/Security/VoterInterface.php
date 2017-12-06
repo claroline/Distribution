@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Claroline VoterInterface. This is used by the AbstractVoter and contains several utilities
- * methods to handle collections
+ * methods to handle collections.
  */
 interface VoterInterface
 {
@@ -15,7 +15,7 @@ interface VoterInterface
      * @param mixed          $object
      * @param array          $attributes
      * @param array          $options
-
+     *
      * @return int
      */
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options);

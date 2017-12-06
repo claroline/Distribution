@@ -11,14 +11,14 @@
 
 namespace Claroline\CoreBundle\Security;
 
-use Claroline\CoreBundle\Security\VoterInterface as ClarolineVoterInterface;
+use Claroline\CoreBundle\Entity\Group;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Security\VoterInterface as ClarolineVoterInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Entity\Group;
 
 /**
  *  This is the voter we use in the API. It's able to handle the ObjectCollection.
@@ -28,15 +28,15 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     /** @var string */
     const CREATE = 'CREATE';
     /** @var string */
-    const EDIT   = 'EDIT';
+    const EDIT = 'EDIT';
     /** @var string */
     const DELETE = 'DELETE';
     /** @var string */
-    const VIEW   = 'VIEW';
+    const VIEW = 'VIEW';
     /** @var string */
-    const OPEN   = 'OPEN';
+    const OPEN = 'OPEN';
     /** @var string */
-    const PATCH  = 'PATCH';
+    const PATCH = 'PATCH';
 
     /** @var ContainerInterface */
     private $container;
@@ -116,7 +116,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
     }
 
     /**
-     * /!\ Try not to go infinite looping with this
+     * /!\ Try not to go infinite looping with this. Carreful.
      *
      * @param mixed $attributes
      * @param mixed $object
