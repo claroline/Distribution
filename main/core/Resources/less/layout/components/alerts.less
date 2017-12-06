@@ -67,8 +67,23 @@
     .box-shadow(@flying-alert-box-shadow);
 
     .flying-alert-icon {
+        position: relative;
         font-size: @flying-alert-icon-size;
         opacity: .5;
+    }
+
+    .flying-alert-icon-secondary {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        font-size: 14px;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100%;
+        border: 2px solid transparent;
     }
 
     .flying-alert-title {

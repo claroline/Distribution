@@ -29,7 +29,7 @@ actions.fetchAttempt = quizId => ({
       const normalized = normalize(data)
       return dispatch(actions.initPlayer(normalized.paper, normalized.answers))
     },
-    failure: () => navigate('overview')
+    error: () => navigate('overview')
   }
 })
 ```
@@ -43,12 +43,11 @@ Action parameters:
                     (called with dispatch function)
 - `success (func)`: a callback to execute AJAX request is processed without errors
                     (called with response data and dispatch function)
-- `failure (func)`: a callback to execute if something goes wrong
+- `error (func)`: a callback to execute if something goes wrong
                     (called with error object and dispatch function)
 Action only requires a `route` or `url` parameter. All other ones are optional.
 If not set in the `request`, the middleware will make `GET` requests by default.
 
 # Enhancements
-- The error handler should not only manage HTTP errors.
 - The error handler should give access to the detail of the error.
 - The middleware should handle offline mode.

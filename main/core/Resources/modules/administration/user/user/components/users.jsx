@@ -52,18 +52,6 @@ const UsersList = props =>
         action: (rows) => window.location = generateUrl('claro_desktop_open', {_switch: rows[0].username}),
         context: 'row'
       }, {
-        icon: 'fa fa-fw fa-book',
-        label: t('enable_personal_ws'),
-        context: 'row', // todo should be a selection action too
-        displayed: (rows) => !rows[0].meta.personalWorkspace,
-        action: (rows) => props.createWorkspace(rows[0])
-      }, {
-        icon: 'fa fa-fw fa-book',
-        label: t('disable_personal_ws'),
-        context: 'row', // todo should be a selection action too
-        displayed: (rows) => rows[0].meta.personalWorkspace,
-        action: (rows) => props.deleteWorkspace(rows[0])
-      }, {
         icon: 'fa fa-fw fa-check-circle-o',
         label: t('enable_user'),
         context: 'row', // todo should be a selection action too
@@ -74,7 +62,21 @@ const UsersList = props =>
         label: t('disable_user'),
         context: 'row', // todo should be a selection action too
         displayed: (rows) => rows[0].meta.enabled,
-        action: (rows) => props.disable(rows[0])
+        action: (rows) => props.disable(rows[0]),
+        dangerous: true
+      }, {
+        icon: 'fa fa-fw fa-book',
+        label: t('enable_personal_ws'),
+        context: 'row', // todo should be a selection action too
+        displayed: (rows) => !rows[0].meta.personalWorkspace,
+        action: (rows) => props.createWorkspace(rows[0])
+      }, {
+        icon: 'fa fa-fw fa-book',
+        label: t('disable_personal_ws'),
+        context: 'row', // todo should be a selection action too
+        displayed: (rows) => rows[0].meta.personalWorkspace,
+        action: (rows) => props.deleteWorkspace(rows[0]),
+        dangerous: true
       },
       ...Configuration.getUsersAdministrationActions().map(action => action.options.modal ?
         {

@@ -53,6 +53,15 @@ const ALERT_STATUS = {
 }
 
 /**
+ * The list of status that should be stacked when displayed.
+ * (this permits to avoid having lots of loading messages at once)
+ * @type {Array}
+ */
+const ALERT_STACKED_STATUS = [
+  ALERT_STATUS_PENDING
+]
+
+/**
  * Defines available alerts for the app ACTIONS.
  * NB. If ACTION do not declare one of the ALERT_STATUS, this will disable it.
  *
@@ -62,7 +71,7 @@ const ALERT_ACTIONS = {
   [actionConstants.ACTION_GENERIC]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Chargement en cours',
-      message: 'Veuillez patienter pendant que nous chargeons vos données.'
+      message: 'Veuillez patienter pendant le chargement de vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Succès'
@@ -89,7 +98,7 @@ const ALERT_ACTIONS = {
   [actionConstants.ACTION_LOAD]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Chargement en cours',
-      message: 'Veuillez patienter pendant que nous chargeons vos données.'
+      message: 'Veuillez patienter pendant le chargement de vos données.'
     },
     [ALERT_STATUS_ERROR]: {
       title: 'Echec du chargement',
@@ -99,7 +108,7 @@ const ALERT_ACTIONS = {
   [actionConstants.ACTION_SAVE]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Sauvegarde en cours',
-      message: 'Veuillez patienter pendant que nous sauvegardons vos données.'
+      message: 'Veuillez patienter pendant la sauvegarde de vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Sauvegarde réussie',
@@ -107,7 +116,7 @@ const ALERT_ACTIONS = {
     },
     [ALERT_STATUS_WARNING]: {
       title: 'Echec de la sauvegarde',
-      message: 'Veuillez corriger les erreurs dans le formulaire et réessayer.'
+      message: 'Veuillez corriger les erreurs de votre formulaire et réessayer.'
     },
     [ALERT_STATUS_ERROR]: {
       title: 'Echec de la sauvegarde',
@@ -117,14 +126,15 @@ const ALERT_ACTIONS = {
   [actionConstants.ACTION_CREATE]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Création en cours',
-      message: 'Veuillez patienter pendant que nous sauvegardons vos données.'
+      message: 'Veuillez patienter pendant la sauvegarde de vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Création réussie',
       message: 'Vos données ont correctement été sauvegardée.'
     },
     [ALERT_STATUS_WARNING]: {
-      title: 'Echec de la création'
+      title: 'Echec de la création',
+      message: 'Veuillez corriger les erreurs de votre formulaire et réessayer.'
     },
     [ALERT_STATUS_ERROR]: {
       title: 'Echec de la création'
@@ -133,14 +143,15 @@ const ALERT_ACTIONS = {
   [actionConstants.ACTION_UPDATE]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Mise à jour en cours',
-      message: 'Veuillez patienter pendant que nous sauvegardons vos données.'
+      message: 'Veuillez patienter pendant la sauvegarde de vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Mise à jour réussie',
       message: 'Vos données ont correctement été sauvegardée.'
     },
     [ALERT_STATUS_WARNING]: {
-      title: 'Echec de la mise à jour'
+      title: 'Echec de la mise à jour',
+      message: 'Veuillez corriger les erreurs de votre formulaire et réessayer.'
     },
     [ALERT_STATUS_ERROR]: {
       title: 'Echec de la mise à jour'
@@ -149,7 +160,7 @@ const ALERT_ACTIONS = {
   [actionConstants.ACTION_DELETE]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Suppression en cours',
-      message: 'Veuillez patienter pendant que nous supprimons vos données.'
+      message: 'Veuillez patienter pendant la suppression de vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Suppression réussie'
@@ -163,7 +174,8 @@ const ALERT_ACTIONS = {
   },
   [actionConstants.ACTION_SEND]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Envoi en cours'
+      title: 'Envoi en cours',
+      message: 'Veuillez patienter pendant l\'envoi de votre message.'
     },
     [ALERT_STATUS_SUCCESS]: {
       title: 'Envoi réussi'
@@ -177,10 +189,12 @@ const ALERT_ACTIONS = {
   },
   [actionConstants.ACTION_UPLOAD]: {
     [ALERT_STATUS_PENDING]: {
-      title: 'Téléchargement en cours'
+      title: 'Téléchargement en cours',
+      message: 'Veuillez patienter pendant le téléchargement de votre fichier.'
     },
     [ALERT_STATUS_SUCCESS]: {
-      title: 'Téléchargement réussi'
+      title: 'Téléchargement réussi',
+      message: 'Votre fichier a correctement été téléchargé.'
     },
     [ALERT_STATUS_WARNING]: {
       title: 'Echec de l\'envoi'
@@ -211,6 +225,7 @@ export const constants = {
   ALERT_DISPLAY_TIMEOUT,
   // status
   ALERT_STATUS,
+  ALERT_STACKED_STATUS,
   ALERT_STATUS_SUCCESS,
   ALERT_STATUS_WARNING,
   ALERT_STATUS_ERROR,

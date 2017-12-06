@@ -30,10 +30,10 @@ function handleBefore(dispatch, originalRequest, before) {
  * @param {object}   response
  * @param {object}   originalRequest
  *
- * @return {Promise}
+ * @return {object}
  */
 function handleResponse(dispatch, response, originalRequest) {
-  dispatch(actions.receiveResponse(originalRequest, response))
+  dispatch(actions.receiveResponse(originalRequest, response.status, response.statusText))
 
   if (!response.ok) {
     return Promise.reject(response)
@@ -66,7 +66,6 @@ function handleResponseSuccess(dispatch, responseData, success) {
  * @return {mixed}
  */
 function handleResponseError(dispatch, responseError, originalRequest, error) {
-  console.log('handle response error')
   if (typeof responseError.status === 'undefined') {
     // if error isn't related to http response, rethrow it
     throw responseError
@@ -79,7 +78,8 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
         authError => error(authError, dispatch)
       )
   } else {
-    return error(responseError, dispatch)
+    return getResponseData(responseError) // get error data if any
+      .then(errorData => error(errorData, dispatch))
   }
 }
 
