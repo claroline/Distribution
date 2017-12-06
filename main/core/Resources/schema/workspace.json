@@ -17,7 +17,8 @@
     },
     "code": {
       "type": "string",
-      "description": "The workspace code"
+      "description": "The workspace code",
+      "minLength": 1
     },
     "poster": {
       "type": "string"

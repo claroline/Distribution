@@ -8,23 +8,28 @@
     },
     "email": {
       "type": "string",
-      "description": "The user email address"
+      "description": "The user email address",
+      "minLength": 1
     },
     "firstName": {
       "type": "string",
-      "description": "The user first name"
+      "description": "The user first name",
+      "minLength": 1
     },
     "lastName": {
       "type": "string",
-      "description": "The user last name"
+      "description": "The user last name",
+      "minLength": 1
     },
     "username": {
       "type": "string",
-      "description": "The username"
+      "description": "The username",
+      "minLength": 1
     },
     "plainPassword": {
       "type": "string",
-      "description": "The plain login password"
+      "description": "The plain login password",
+      "minLength": 1
     },
     "groups": {
       "type": "array",
