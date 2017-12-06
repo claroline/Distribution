@@ -652,10 +652,12 @@ class RoleRepository extends EntityRepository
             WHERE r.workspace = :workspaceId
             AND rn.parent IS NULL
             AND BIT_AND(rr.mask , {$administrateMask}) = 0
+            AND r.name <> :managerRoleName
         ";
         $query = $this->_em->createQuery($dql);
         $query
-            ->setParameter('workspaceId', $workspace->getId());
+            ->setParameter('workspaceId', $workspace->getId())
+            ->setParameter('managerRoleName', 'ROLE_WS_MANAGER_'.$workspace->getGuid());
 
         return $query->getResult();
     }
