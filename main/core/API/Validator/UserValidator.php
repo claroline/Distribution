@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\API\Validator;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\ValidatorInterface;
 use Claroline\CoreBundle\Repository\UserRepository;
+use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -38,51 +39,41 @@ class UserValidator implements ValidatorInterface
         //the big chunk of code allows us to know if the identifiers are already taken
         //and prohibits the use of an already used address email in a username field
         $errors  = [];
-        $qb = $this->om->createQueryBuilder();
-        $qb->select('DISTINCT user')
-           ->from('Claroline\CoreBundle\Entity\User', 'user')
-           ->where($qb->expr()->orX(
-               $qb->expr()->like('user.username', ':username'),
-               $qb->expr()->like('user.username', ':email')
-           ))
 
-           ->setParameter('username', $data['username'])
-           ->setParameter('email', $data['email']);
-
-        if (isset($data->id)) {
-            $qb->setParameter('uuid', $data['id'])
-            ->andWhere('user.uuid != :uuid');
+        if ($this->exists('username', $data['username'], $data['id'])) {
+            $errors[] = [
+                'path' => 'username',
+                'message' => 'This username already exists.'
+            ];
         }
 
-        $users = $qb->getQuery()->getResult();
-
-        if (count($users) > 0) {
-            $errors[] = ['path' => 'username', 'message' => 'username_exists'];
-        }
-
-        $qb = $this->om->createQueryBuilder();
-
-        $qb->select('DISTINCT user')
-           ->from('Claroline\CoreBundle\Entity\User', 'user')
-           ->where($qb->expr()->orX(
-               $qb->expr()->like('user.mail', ':username'),
-               $qb->expr()->like('user.mail', ':email')
-           ))
-           ->setParameter('username', $data['username'])
-           ->setParameter('email', $data['email']);
-
-        if (isset($data->id)) {
-            $qb->setParameter('uuid', $data['id'])
-               ->andWhere('user.uuid != :uuid');
-        }
-
-        $users = $qb->getQuery()->getResult();
-
-        if (count($users) > 0) {
-            $errors[] = ['path' => 'email', 'message' => 'email_exists'];
+        if ($this->exists('mail', $data['email'], $data['id'])) {
+            $errors[] = [
+                'path' => 'email',
+                'message' => 'This email already exists.'
+            ];
         }
 
         return $errors;
+    }
+
+    private function exists($propName, $propValue, $userId = null)
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->om->createQueryBuilder();
+        $qb
+            ->select('COUNT(DISTINCT user)')
+            ->from('Claroline\CoreBundle\Entity\User', 'user')
+            ->where('user.'.$propName.' = :value')
+            ->setParameter('value', $propValue);
+
+        if (isset($userId)) {
+            $qb
+                ->andWhere('user.uuid != :uuid')
+                ->setParameter('uuid', $userId);
+        }
+
+        return 0 < $qb->getQuery()->getSingleScalarResult();
     }
 
     //not sure yet if using this or deduce from getUnique()

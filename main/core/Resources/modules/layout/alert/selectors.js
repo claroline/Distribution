@@ -19,6 +19,10 @@ const sortedAlerts = createSelector(
   })
 )
 
+const displayedAlerts = createSelector(
+
+)
+
 export const select = {
   alerts,
   sortedAlerts

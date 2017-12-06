@@ -53,6 +53,15 @@ const ALERT_STATUS = {
 }
 
 /**
+ * The list of status that should be stacked when displayed.
+ * (this permits to avoid having lots of loading messages at once)
+ * @type {Array}
+ */
+const ALERT_STACKED_STATUS = [
+  ALERT_STATUS_PENDING
+]
+
+/**
  * Defines available alerts for the app ACTIONS.
  * NB. If ACTION do not declare one of the ALERT_STATUS, this will disable it.
  *
@@ -184,7 +193,8 @@ const ALERT_ACTIONS = {
       message: 'Veuillez patienter pendant le téléchargement de votre fichier.'
     },
     [ALERT_STATUS_SUCCESS]: {
-      title: 'Téléchargement réussi'
+      title: 'Téléchargement réussi',
+      message: 'Votre fichier a correctement été téléchargé.'
     },
     [ALERT_STATUS_WARNING]: {
       title: 'Echec de l\'envoi'
@@ -215,6 +225,7 @@ export const constants = {
   ALERT_DISPLAY_TIMEOUT,
   // status
   ALERT_STATUS,
+  ALERT_STACKED_STATUS,
   ALERT_STATUS_SUCCESS,
   ALERT_STATUS_WARNING,
   ALERT_STATUS_ERROR,

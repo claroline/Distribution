@@ -6,6 +6,27 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 
 export const actions = {}
 
+actions.open = (formName, id = null) => (dispatch) => {
+  if (id) {
+    // todo ugly. only to be able to load list before the end of  group loading
+    dispatch(formActions.resetForm(formName, {id}, false))
+
+    dispatch({
+      [API_REQUEST]: {
+        url: ['apiv2_user_get', {id}],
+        request: {
+          method: 'GET'
+        },
+        success: (response, dispatch) => {
+          dispatch(formActions.resetForm(formName, response, false))
+        }
+      }
+    })
+  } else {
+    dispatch(formActions.resetForm(formName, UserTypes.defaultProps, true))
+  }
+}
+
 actions.enable = (user) => ({
   [API_REQUEST]: {
     url: ['apiv2_user_update', {uuid: user.id}],
@@ -43,24 +64,3 @@ actions.deleteWorkspace = (user) => ({
     success: (data, dispatch) => dispatch(listActions.fetchData('users'))
   }
 })
-
-actions.open = (formName, id = null) => (dispatch) => {
-  // todo ugly. only to be able to load list before the end of  group loading
-  dispatch(formActions.resetForm(formName, {id}, false))
-
-  if (id) {
-    dispatch({
-      [API_REQUEST]: {
-        url: ['apiv2_user_get', {id}],
-        request: {
-          method: 'GET'
-        },
-        success: (response, dispatch) => {
-          dispatch(formActions.resetForm(formName, response, true))
-        }
-      }
-    })
-  } else {
-    dispatch(formActions.resetForm(formName, UserTypes.defaultProps, true))
-  }
-}

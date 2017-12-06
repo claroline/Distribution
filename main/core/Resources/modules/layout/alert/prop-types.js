@@ -2,7 +2,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {constants} from '#/main/core/layout/alert/constants'
 
-const FlyingAlert = {
+const Alert = {
   propTypes: {
     id: T.string.isRequired,
     action: T.oneOf(
@@ -17,5 +17,5 @@ const FlyingAlert = {
 }
 
 export {
-  FlyingAlert
+  Alert
 }

@@ -30,7 +30,7 @@ class OnResponseErrorListener
     }
 
     /**
-     * @param \Exception                   $e
+     * @param \Exception                   $exception
      * @param GetResponseForExceptionEvent $event
      */
     private function handleError(\Exception $exception, GetResponseForExceptionEvent $event)

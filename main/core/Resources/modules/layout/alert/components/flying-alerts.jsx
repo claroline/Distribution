@@ -2,7 +2,7 @@ import React from 'react'
 import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
-import {FlyingAlert as FlyingAlertTypes} from '#/main/core/layout/alert/prop-types'
+import {Alert as AlertTypes} from '#/main/core/layout/alert/prop-types'
 import {constants as actionConstants} from '#/main/core/layout/action/constants'
 import {constants} from '#/main/core/layout/alert/constants'
 
@@ -50,7 +50,7 @@ const FlyingAlert = props => {
   )
 }
 
-implementPropTypes(FlyingAlert, FlyingAlertTypes, {
+implementPropTypes(FlyingAlert, AlertTypes, {
   removeAlert: T.func.isRequired
 })
 
@@ -68,7 +68,7 @@ const FlyingAlerts = props =>
 
 FlyingAlerts.propTypes = {
   alerts: T.arrayOf(T.shape(
-    FlyingAlertTypes.propTypes
+    AlertTypes.propTypes
   )).isRequired,
   removeAlert: T.func.isRequired
 }

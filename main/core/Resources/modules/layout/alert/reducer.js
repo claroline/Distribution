@@ -52,8 +52,8 @@ const reducer = makeReducer([], {
         id: action.apiRequest.id + constants.ALERT_STATUS_PENDING,
         status: constants.ALERT_STATUS_PENDING,
         action: currentAction,
-        message: customMessages && customMessages.message ? customMessages.message : null,
-        title: customMessages && customMessages.title ? customMessages.title : null
+        title: customMessages && customMessages.title ? customMessages.title : null,
+        message: customMessages && customMessages.message ? customMessages.message : null
       })
     }
 
@@ -71,9 +71,6 @@ const reducer = makeReducer([], {
       const currentAction = action.apiRequest.type || actionConstants.HTTP_ACTIONS[action.apiRequest.request.method]
       const currentStatus = constants.HTTP_ALERT_STATUS[action.status]
 
-      console.log(currentAction)
-      console.log(currentStatus)
-
       if (currentStatus && constants.ALERT_ACTIONS[currentAction][currentStatus]) {
         // the current action define a message for the status
         const customMessages = action.apiRequest.messages[currentStatus]
@@ -82,8 +79,8 @@ const reducer = makeReducer([], {
           id: action.apiRequest.id + currentStatus,
           status: currentStatus,
           action: currentAction,
-          message: customMessages && customMessages.message ? customMessages.message : null,
-          title: customMessages && customMessages.title ? customMessages.title : null
+          title: customMessages && customMessages.title ? customMessages.title : null,
+          message: customMessages && customMessages.message ? customMessages.message : null
         })
       }
 

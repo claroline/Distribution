@@ -78,7 +78,8 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
         authError => error(authError, dispatch)
       )
   } else {
-    return error(responseError, dispatch)
+    return getResponseData(responseError) // get error data if any
+      .then(errorData => error(errorData, dispatch))
   }
 }
 
