@@ -37,11 +37,16 @@ class OnResponseErrorListener
     {
         if ($exception instanceof InvalidDataException) {
             $response = new JsonResponse($exception->getErrors(), 422);
-        } else {
-            //the json_encode part could be changed
-            $response = new JsonResponse(json_encode($exception, 16), 500);
-        }
 
-        $event->setResponse($response);
+            $event->setResponse($response);
+        } else {
+            $data = [
+              'message' => $exception->getMessage(),
+              'trace' => $exception->getTrace(),
+            ];
+            $response = new JsonResponse($data, 500);
+
+            $event->setResponse($response);
+        }
     }
 }
