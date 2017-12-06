@@ -2,9 +2,9 @@
 
 namespace Claroline\CoreBundle\API;
 
-use Claroline\CoreBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 

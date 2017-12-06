@@ -12,11 +12,11 @@
 namespace Claroline\CoreBundle\Security\Voter;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Security\AbstractVoter;
+use Claroline\CoreBundle\Security\ObjectCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
-use Claroline\CoreBundle\Security\AbstractVoter;
-use Claroline\CoreBundle\Security\ObjectCollection;
 
 /**
  * @DI\Service
@@ -54,11 +54,11 @@ class UserVoter extends AbstractVoter
         $handler = $this->getContainer()->get('claroline.config.platform_config_handler');
 
         return $handler->getParameter('allow_self_registration') ?
-             VoterInterface::ACCESS_GRANTED: VoterInterface::ACCESS_ABSTAIN;
+             VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_ABSTAIN;
     }
 
     /**
-     * We currently check this manually inside the Controller. This should change and be checked here
+     * We currently check this manually inside the Controller. This should change and be checked here.
      *
      * @param TokenInterface $token
      * @param User           $user
@@ -68,11 +68,11 @@ class UserVoter extends AbstractVoter
     private function checkEdit(TokenInterface $token, User $user)
     {
         return $this->isOrganizationManager($token, $user) ?
-            VoterInterface::ACCESS_GRANTED: VoterInterface::ACCESS_DENIED;
+            VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
     }
 
     /**
-     * We currently check this manually inside the Controller. This should change and be checked here
+     * We currently check this manually inside the Controller. This should change and be checked here.
      *
      * @param TokenInterface $token
      * @param User           $user
@@ -82,7 +82,7 @@ class UserVoter extends AbstractVoter
     private function checkView(TokenInterface $token, User $user)
     {
         return $this->isOrganizationManager($token, $user) ?
-              VoterInterface::ACCESS_GRANTED: VoterInterface::ACCESS_DENIED;
+              VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
     }
 
     /**
@@ -94,12 +94,12 @@ class UserVoter extends AbstractVoter
     private function checkDelete(TokenInterface $token, User $user)
     {
         return $this->isOrganizationManager($token, $user) ?
-              VoterInterface::ACCESS_GRANTED: VoterInterface::ACCESS_DENIED;
+              VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
     }
 
     /**
      * This is not done yet but later a user might be able to edit its roles/groups himself
-     * and it should be checked here
+     * and it should be checked here.
      *
      * @param TokenInterface   $token
      * @param User             $user
