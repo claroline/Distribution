@@ -1,6 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
-import {trans} from '#/main/core/translation'
+import {t, trans} from '#/main/core/translation'
 import {asset} from '#/main/core/asset'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
@@ -15,6 +15,9 @@ const Document = props =>
     <td className="document-type">
       {constants.DOCUMENT_TYPES_NAMES[props.document.type]}
     </td>
+    {props.showUser &&
+      <td>{`${props.document.user.firstName} ${props.document.user.lastName}`}</td>
+    }
     {props.showMeta &&
       <td className="document-date">
         {props.document.dropDate}
@@ -85,6 +88,7 @@ const Document = props =>
 
 Document.propTypes = {
   canEdit: T.bool.isRequired,
+  showUser: T.bool.isRequired,
   showMeta: T.bool.isRequired,
   showTools: T.bool.isRequired,
   document: T.shape(DocumentType.propTypes),
@@ -99,6 +103,24 @@ export const Documents = props =>
     <h2>{trans('documents_added_to_copy', {}, 'dropzone')}</h2>
     {props.documents.length > 0 ?
       <table className="table">
+        <thead>
+          <tr>
+            <th>{trans('drop_type', {}, 'dropzone')}</th>
+            {props.showUser &&
+              <th>{t('user')}</th>
+            }
+            {props.showMeta &&
+              <th>{trans('drop_date', {}, 'dropzone')}</th>
+            }
+            <th>{trans('document', {}, 'dropzone')}</th>
+            {props.canEdit &&
+              <th>{t('actions')}</th>
+            }
+            {props.showTools &&
+              <th>{t('tools')}</th>
+            }
+          </tr>
+        </thead>
         <tbody>
           {props.documents.map(d =>
             <Document
@@ -116,11 +138,16 @@ export const Documents = props =>
   </div>
 
 Documents.propTypes = {
+  canEdit: T.bool.isRequired,
+  showUser: T.bool.isRequired,
+  showMeta: T.bool.isRequired,
+  showTools: T.bool.isRequired,
   documents: T.arrayOf(T.shape(DocumentType.propTypes))
 }
 
 Documents.defaultProps = {
   canEdit: false,
+  showUser: false,
   showMeta: true,
   showTools: false
 }

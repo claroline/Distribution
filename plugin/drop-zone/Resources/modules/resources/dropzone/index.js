@@ -21,7 +21,6 @@ bootstrap(
   (initialData) => {
     return {
       user: initialData.user,
-      userEvaluation: initialData.userEvaluation,
       resourceNode: initialData.resourceNode,
       dropzone: initialData.dropzone,
       myDrop: initialData.myDrop,
@@ -36,7 +35,9 @@ bootstrap(
         data: initialData.tools,
         totalResults: initialData.tools.length
       },
-      teamEnabled: initialData.teamEnabled
+      userEvaluation: initialData.userEvaluation,
+      teams: initialData.teams,
+      errorMessage: initialData.errorMessage
     }
   }
 )

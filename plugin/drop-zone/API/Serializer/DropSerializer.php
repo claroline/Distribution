@@ -2,7 +2,6 @@
 
 namespace Claroline\DropZoneBundle\API\Serializer;
 
-use Claroline\CoreBundle\API\Serializer\RoleSerializer;
 use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Drop;
@@ -17,11 +16,9 @@ class DropSerializer
     private $correctionSerializer;
     private $documentSerializer;
     private $userSerializer;
-    private $roleSerializer;
 
     private $dropRepo;
     private $dropzoneRepo;
-    private $roleRepo;
     private $userRepo;
 
     /**
@@ -31,31 +28,26 @@ class DropSerializer
      *     "correctionSerializer" = @DI\Inject("claroline.serializer.dropzone.correction"),
      *     "documentSerializer"   = @DI\Inject("claroline.serializer.dropzone.document"),
      *     "userSerializer"       = @DI\Inject("claroline.serializer.user"),
-     *     "roleSerializer"       = @DI\Inject("claroline.serializer.role"),
      *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param CorrectionSerializer $correctionSerializer
      * @param DocumentSerializer   $documentSerializer
      * @param UserSerializer       $userSerializer
-     * @param RoleSerializer       $roleSerializer
      * @param ObjectManager        $om
      */
     public function __construct(
         CorrectionSerializer $correctionSerializer,
         DocumentSerializer $documentSerializer,
         UserSerializer $userSerializer,
-        RoleSerializer $roleSerializer,
         ObjectManager $om
     ) {
         $this->correctionSerializer = $correctionSerializer;
         $this->documentSerializer = $documentSerializer;
         $this->userSerializer = $userSerializer;
-        $this->roleSerializer = $roleSerializer;
 
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
         $this->dropzoneRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Dropzone');
-        $this->roleRepo = $om->getRepository('Claroline\CoreBundle\Entity\Role');
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
     }
 
@@ -70,7 +62,6 @@ class DropSerializer
             'id' => $drop->getUuid(),
             'dropzone' => $drop->getDropzone()->getUuid(),
             'user' => $drop->getUser() ? $this->userSerializer->serialize($drop->getUser()) : null,
-            'role' => $drop->getRole() ? $this->roleSerializer->serialize($drop->getRole()) : null,
             'dropDate' => $drop->getDropDate() ? $drop->getDropDate()->format('Y-m-d H:i') : null,
             'score' => $drop->getScore(),
             'reported' => $drop->isReported(),
@@ -79,8 +70,11 @@ class DropSerializer
             'autoClosedDrop' => $drop->getAutoClosedDrop(),
             'unlockedDrop' => $drop->isUnlockedDrop(),
             'unlockedUser' => $drop->isUnlockedUser(),
+            'teamId' => $drop->getTeamId(),
+            'teamName' => $drop->getTeamName(),
             'documents' => $this->getDocuments($drop),
             'corrections' => $this->getCorrections($drop),
+            'users' => $this->getUsers($drop),
         ];
     }
 
@@ -103,10 +97,6 @@ class DropSerializer
         if (isset($data['user'])) {
             $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
             $drop->setUser($user);
-        }
-        if (isset($data['role'])) {
-            $role = isset($data['role']['id']) ? $this->roleRepo->findOneBy(['id' => $data['role']['id']]) : null;
-            $drop->setRole($role);
         }
         if (isset($data['dropDate'])) {
             $dropDate = !empty($data['dropDate']) ? new \DateTime($data['dropDate']) : null;
@@ -133,8 +123,15 @@ class DropSerializer
         if (isset($data['unlockedUser'])) {
             $drop->setUnlockedUser($data['unlockedUser']);
         }
+        if (isset($data['teamId'])) {
+            $drop->setTeamId($data['teamId']);
+        }
+        if (isset($data['teamName'])) {
+            $drop->setTeamName($data['teamName']);
+        }
         $this->deserializeDocuments($drop, $data['documents']);
         $this->deserializeCorrections($drop, $data['corrections']);
+        $this->deserializeUsers($drop, $data['users']);
 
         return $drop;
     }
@@ -161,6 +158,17 @@ class DropSerializer
         return $corrections;
     }
 
+    private function getUsers(Drop $drop)
+    {
+        $users = [];
+
+        foreach ($drop->getUsers() as $user) {
+            $users[] = $this->userSerializer->serialize($user);
+        }
+
+        return $users;
+    }
+
     private function deserializeDocuments(Drop $drop, $documentsData)
     {
         $drop->emptyDocuments();
@@ -178,6 +186,19 @@ class DropSerializer
         foreach ($correctionsData as $correctionData) {
             $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $correctionData);
             $drop->addCorrection($correction);
+        }
+    }
+
+    private function deserializeUsers(Drop $drop, $usersData)
+    {
+        $drop->emptyUsers();
+
+        foreach ($usersData as $userData) {
+            $user = $this->userRepo->findOneBy(['id' => $userData['id']]);
+
+            if (!empty($user)) {
+                $drop->addUser($user);
+            }
         }
     }
 }

@@ -100,11 +100,6 @@ const CorrectionType = {
       firstName: T.string.isRequired,
       lastName: T.string.isRequired
     }),
-    role: T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired,
-      translationKey: T.string.isRequired
-    }),
     score: T.number,
     comment: T.string,
     valid: T.bool.isRequired,
@@ -117,6 +112,7 @@ const CorrectionType = {
     reportedComment: T.string,
     correctionDenied: T.bool.isRequired,
     correctionDeniedComment: T.string,
+    teamId: T.number,
     grades: T.arrayOf(T.shape(GradeType.propTypes))
   }
 }
@@ -131,11 +127,6 @@ const DropType = {
       firstName: T.string.isRequired,
       lastName: T.string.isRequired
     }),
-    role: T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired,
-      translationKey: T.string.isRequired
-    }),
     dropDate: T.string,
     score: T.number,
     reported: T.bool.isRequired,
@@ -144,8 +135,16 @@ const DropType = {
     autoClosedDrop: T.bool.isRequired,
     unlockedDrop: T.bool.isRequired,
     unlockedUser: T.bool.isRequired,
+    teamId: T.number,
+    teamName: T.string,
     documents: T.arrayOf(T.shape(DocumentType.propTypes)),
-    corrections: T.arrayOf(T.shape(CorrectionType.propTypes))
+    corrections: T.arrayOf(T.shape(CorrectionType.propTypes)),
+    users: T.arrayOf(T.shape({
+      id: T.number.isRequired,
+      username: T.string.isRequired,
+      firstName: T.string.isRequired,
+      lastName: T.string.isRequired
+    }))
   }
 }
 

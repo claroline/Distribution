@@ -22,4 +22,9 @@ class ClarolineDropZoneBundle extends DistributionPluginBundle
     {
         return true;
     }
+
+    public function getRequiredPlugins()
+    {
+        return ['Claroline\\TeamBundle\\ClarolineTeamBundle'];
+    }
 }

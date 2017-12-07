@@ -15,11 +15,13 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
+use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @EXT\Route("/dropzone", options={"expose"=true})
@@ -31,18 +33,33 @@ class DropzoneController extends Controller
     /** @var DropzoneManager */
     private $manager;
 
+    /** @var TeamManager */
+    private $teamManager;
+
+    /** @var TranslatorInterface */
+    private $translator;
+
     /**
      * DropzoneController constructor.
      *
      * @DI\InjectParams({
-     *     "manager" = @DI\Inject("claroline.manager.dropzone_manager")
+     *     "manager"     = @DI\Inject("claroline.manager.dropzone_manager"),
+     *     "teamManager" = @DI\Inject("claroline.manager.team_manager"),
+     *     "translator"  = @DI\Inject("translator")
      * })
      *
-     * @param DropzoneManager $manager
+     * @param DropzoneManager     $manager
+     * @param TeamManager         $teamManager
+     * @param TranslatorInterface $translator
      */
-    public function __construct(DropzoneManager $manager)
-    {
+    public function __construct(
+        DropzoneManager $manager,
+        TeamManager $teamManager,
+        TranslatorInterface $translator
+    ) {
         $this->manager = $manager;
+        $this->teamManager = $teamManager;
+        $this->translator = $translator;
     }
 
     /**
@@ -64,27 +81,73 @@ class DropzoneController extends Controller
      */
     public function dropzoneOpenAction(Dropzone $dropzone, User $user = null)
     {
-        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-        $teamEnabled = $this->manager->isTeamBundleEnabled();
+        $resourceNode = $dropzone->getResourceNode();
+        $this->checkPermission('OPEN', $resourceNode, [], true);
+        $teams = empty($user) ?
+            [] :
+            $this->teamManager->getSearializedTeamsByUserAndWorkspace($user, $resourceNode->getWorkspace());
+        $myDrop = null;
+        $peerDrop = null;
+        $finishedPeerDrops = [];
+        $errorMessage = null;
 
-        if (!$teamEnabled && $dropzone->getDropType() === Dropzone::DROP_TYPE_ROLE) {
-            $this->manager->setDefaultDropType($dropzone);
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                $myDrop = $this->manager->getUserDrop($dropzone, $user);
+                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
+                $finishedPeerDrops = $this->manager->getUserFinishedPeerDrops($dropzone, $user);
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                $drops = [];
+                $teamsIds = array_map(function ($team) {
+                    return $team['id'];
+                }, $teams);
+
+                /* Fetches team drops associated to user */
+                $teamDrops = $this->manager->getTeamDrops($dropzone, $user);
+
+                /* Unregisters user from unfinished drops associated to team he doesn't belong to anymore */
+                foreach ($teamDrops as $teamDrop) {
+                    if (!$teamDrop->isFinished() && !in_array($teamDrop->getTeamId(), $teamsIds)) {
+                        /* Unregisters user from unfinished drop */
+                        $this->manager->unregisterUserFromTeamDrop($teamDrop, $user);
+                    } else {
+                        $drops[] = $teamDrop;
+                    }
+                }
+                if (count($drops) === 0) {
+                    /* Checks if there are unfinished drops from teams he belongs but not associated to him */
+                    $unfinishedTeamsDrops = $this->manager->getTeamsUnfinishedDrops($dropzone, $teamsIds);
+
+                    if (count($unfinishedTeamsDrops) > 0) {
+                        $errorMessage = $this->translator->trans('existing_unfinished_team_drop_error', [], 'dropzone');
+                    }
+                } elseif (count($drops) === 1) {
+                    $myDrop = $drops[0];
+                } else {
+                    $errorMessage = $this->translator->trans('more_than_one_drop_error', [], 'dropzone');
+                }
+                if (count($teams) === 0) {
+                    $errorMessage = $this->translator->trans('no_team_error', [], 'dropzone');
+                }
+                $teamId = empty($myDrop) ? null : $myDrop->getTeamId();
+                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
+                $finishedPeerDrops = empty($teamId) ? [] : $this->manager->getTeamFinishedPeerDrops($dropzone, $teamId);
+                break;
         }
-        $myDrop = empty($user) ? null : $this->manager->getUserDrop($dropzone, $user);
-        $finishedPeerDrops = $this->manager->getUserFinishedPeerDrops($dropzone, $user);
-        $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
         $serializedTools = $this->manager->getSerializedTools();
-        $userEvaluation = !empty($user) ? $this->manager->generateResourceUserEvaluation($dropzone, $user) : null;
+        $userEvaluation = empty($user) ? null : $this->manager->generateResourceUserEvaluation($dropzone, $user);
 
         return [
             '_resource' => $dropzone,
             'user' => $user,
             'myDrop' => $myDrop,
             'nbCorrections' => count($finishedPeerDrops),
-            'peerDrop' => !empty($peerDrop) ? $this->manager->serializeDrop($peerDrop) : $peerDrop,
+            'peerDrop' => $peerDrop,
             'tools' => $serializedTools,
             'userEvaluation' => $userEvaluation,
-            'teamEnabled' => $teamEnabled,
+            'teams' => $teams,
+            'errorMessage' => $errorMessage,
         ];
     }
 

@@ -35,7 +35,7 @@ class Dropzone extends AbstractResource
     const AUTO_CLOSED_STATE_CLOSED = 1;
 
     const DROP_TYPE_USER = 0;
-    const DROP_TYPE_ROLE = 1;
+    const DROP_TYPE_TEAM = 1;
 
     /**
      * @ORM\Id

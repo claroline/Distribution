@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
@@ -13,6 +15,12 @@ import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop
 
 const Menu = props =>
   <div id="dropzone-menu">
+    {props.errorMessage &&
+      <div className="alert alert-danger">
+        {props.errorMessage}
+      </div>
+    }
+
     {props.myDrop &&
     props.myDrop.finished &&
     props.dropzone.display.displayNotationMessageToLearners &&
@@ -58,11 +66,38 @@ const Menu = props =>
       </div>
     }
 
-    {!props.myDrop && [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 &&
+    {props.user &&
+    !props.myDrop &&
+    !props.errorMessage &&
+    [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 &&
       <button
         className="btn btn-primary pull-right"
         type="button"
-        onClick={() => props.initializeMyDrop()}
+        onClick={() => {
+          switch (props.dropzone.parameters.dropType) {
+            case constants.DROP_TYPE_USER :
+              props.initializeMyDrop()
+              break
+            case constants.DROP_TYPE_TEAM :
+              if (props.teams.length === 1) {
+                props.initializeMyDrop(props.teams[0].id)
+              } else {
+                props.showModal(MODAL_GENERIC_TYPE_PICKER, {
+                  title: trans('team_selection_title', {}, 'dropzone'),
+                  types: props.teams.map(t => {return {
+                    type: t.id,
+                    name: t.name,
+                    icon: 'fa fa-users'
+                  }}),
+                  handleSelect: (type) => {
+                    props.initializeMyDrop(type.type)
+                    props.fadeModal()
+                  }
+                })
+              }
+              break
+          }
+        }}
       >
         {trans('start_evaluation', {}, 'dropzone')}
       </button>
@@ -100,6 +135,7 @@ const Menu = props =>
   </div>
 
 Menu.propTypes = {
+  user: T.object,
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   myDrop: T.shape(DropType.propTypes),
   isDropEnabled: T.bool.isRequired,
@@ -108,25 +144,37 @@ Menu.propTypes = {
   currentState: T.number.isRequired,
   userEvaluation: T.shape({
     status: T.string.isRequired
-  }).isRequired,
-  initializeMyDrop: T.func.isRequired
+  }),
+  errorMessage: T.string,
+  teams: T.arrayOf(T.shape({
+    id: T.number.isRequired,
+    name: T.string.isRequired
+  })),
+  initializeMyDrop: T.func.isRequired,
+  showModal: T.func.isRequired,
+  fadeModal: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
+    user: select.user(state),
     dropzone: select.dropzone(state),
     myDrop: select.myDrop(state),
     isDropEnabled: select.isDropEnabled(state),
     isPeerReviewEnabled: select.isPeerReviewEnabled(state),
     nbCorrections: select.nbCorrections(state),
     currentState: select.currentState(state),
-    userEvaluation: select.userEvaluation(state)
+    userEvaluation: select.userEvaluation(state),
+    errorMessage: select.errorMessage(state),
+    teams: select.teams(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    initializeMyDrop: () => dispatch(actions.initializeMyDrop())
+    initializeMyDrop: (teamId = null) => dispatch(actions.initializeMyDrop(teamId)),
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
+    fadeModal: () => dispatch(modalActions.fadeModal())
   }
 }
 

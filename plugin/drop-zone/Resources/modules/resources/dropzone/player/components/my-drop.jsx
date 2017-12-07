@@ -10,6 +10,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
@@ -32,6 +33,7 @@ const MyDrop = props =>
     <Documents
       documents={props.myDrop.documents}
       canEdit={props.isDropEnabled && !props.myDrop.finished}
+      showUser={props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM}
       {...props}
     />
 

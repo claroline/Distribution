@@ -2,7 +2,6 @@
 
 namespace Claroline\DropZoneBundle\API\Serializer;
 
-use Claroline\CoreBundle\API\Serializer\RoleSerializer;
 use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Correction;
@@ -15,12 +14,10 @@ use JMS\DiExtraBundle\Annotation as DI;
 class CorrectionSerializer
 {
     private $gradeSerializer;
-    private $roleSerializer;
     private $userSerializer;
 
     private $correctionRepo;
     private $dropRepo;
-    private $roleRepo;
     private $userRepo;
 
     /**
@@ -28,29 +25,24 @@ class CorrectionSerializer
      *
      * @DI\InjectParams({
      *     "gradeSerializer" = @DI\Inject("claroline.serializer.dropzone.grade"),
-     *     "roleSerializer"  = @DI\Inject("claroline.serializer.role"),
      *     "userSerializer"  = @DI\Inject("claroline.serializer.user"),
      *     "om"              = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param GradeSerializer $gradeSerializer
      * @param UserSerializer  $userSerializer
-     * @param RoleSerializer  $roleSerializer
      * @param ObjectManager   $om
      */
     public function __construct(
         GradeSerializer $gradeSerializer,
-        RoleSerializer $roleSerializer,
         UserSerializer $userSerializer,
         ObjectManager $om
     ) {
         $this->gradeSerializer = $gradeSerializer;
-        $this->roleSerializer = $roleSerializer;
         $this->userSerializer = $userSerializer;
 
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
         $this->dropRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Drop');
-        $this->roleRepo = $om->getRepository('Claroline\CoreBundle\Entity\Role');
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
     }
 
@@ -65,7 +57,6 @@ class CorrectionSerializer
             'id' => $correction->getUuid(),
             'drop' => $correction->getDrop()->getUuid(),
             'user' => $correction->getUser() ? $this->userSerializer->serialize($correction->getUser()) : null,
-            'role' => $correction->getRole() ? $this->roleSerializer->serialize($correction->getRole()) : null,
             'score' => $correction->getScore(),
             'comment' => $correction->getComment(),
             'valid' => $correction->isValid(),
@@ -78,6 +69,7 @@ class CorrectionSerializer
             'reportedComment' => $correction->getReportedComment(),
             'correctionDenied' => $correction->isCorrectionDenied(),
             'correctionDeniedComment' => $correction->getCorrectionDeniedComment(),
+            'teamId' => $correction->getTeamId(),
             'grades' => $this->getGrades($correction),
         ];
     }
@@ -113,10 +105,6 @@ class CorrectionSerializer
             $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
             $correction->setUser($user);
         }
-        if (isset($data['role'])) {
-            $role = isset($data['role']['id']) ? $this->roleRepo->findOneBy(['id' => $data['role']['id']]) : null;
-            $correction->setRole($role);
-        }
         if (isset($data['endDate'])) {
             $endDate = !empty($data['endDate']) ? new \DateTime($data['endDate']) : null;
             $correction->setEndDate($endDate);
@@ -147,6 +135,9 @@ class CorrectionSerializer
         }
         if (isset($data['correctionDeniedComment'])) {
             $correction->setCorrectionDeniedComment($data['correctionDeniedComment']);
+        }
+        if (isset($data['teamId'])) {
+            $correction->setTeamId($data['teamId']);
         }
         $this->deserializeGrades($correction, $data['grades']);
 

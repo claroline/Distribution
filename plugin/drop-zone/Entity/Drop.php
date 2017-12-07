@@ -12,14 +12,20 @@
 namespace Claroline\DropZoneBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\DropZoneBundle\Repository\DropRepository")
- * @ORM\Table(name="claro_dropzonebundle_drop")
+ * @ORM\Table(
+ *     name="claro_dropzonebundle_drop",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(
+ *             name="dropzone_drop_unique_dropzone_team",
+ *             columns={"dropzone_id", "team_id"}
+ *         )
+ *     })
  */
 class Drop
 {
@@ -43,12 +49,6 @@ class Drop
      * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="SET NULL")
      */
     protected $user;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinColumn(name="role_id", nullable=true, onDelete="SET NULL")
-     */
-    protected $role;
 
     /**
      * @ORM\OneToMany(
@@ -107,6 +107,16 @@ class Drop
     protected $unlockedUser = false;
 
     /**
+     * @ORM\Column(name="team_id", type="integer", nullable=true)
+     */
+    protected $teamId;
+
+    /**
+     * @ORM\Column(name="team_name", nullable=true)
+     */
+    protected $teamName;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\DropZoneBundle\Entity\Correction",
      *     mappedBy="drop"
@@ -114,11 +124,20 @@ class Drop
      */
     protected $corrections;
 
+    /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\User"
+     * )
+     * @ORM\JoinTable(name="claro_dropzonebundle_drop_users")
+     */
+    protected $users;
+
     public function __construct()
     {
         $this->refreshUuid();
         $this->documents = new ArrayCollection();
         $this->corrections = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId()
@@ -149,16 +168,6 @@ class Drop
     public function setUser(User $user = null)
     {
         $this->user = $user;
-    }
-
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    public function setRole(Role $role = null)
-    {
-        $this->role = $role;
     }
 
     public function getDocuments()
@@ -265,6 +274,26 @@ class Drop
         $this->unlockedUser = $unlockedUser;
     }
 
+    public function getTeamId()
+    {
+        return $this->teamId;
+    }
+
+    public function setTeamId($teamId)
+    {
+        $this->teamId = $teamId;
+    }
+
+    public function getTeamName()
+    {
+        return $this->teamName;
+    }
+
+    public function setTeamName($teamName)
+    {
+        $this->teamName = $teamName;
+    }
+
     public function getCorrections()
     {
         return $this->corrections->toArray();
@@ -287,5 +316,29 @@ class Drop
     public function emptyCorrections()
     {
         $this->corrections->clear();
+    }
+
+    public function getUsers()
+    {
+        return $this->users->toArray();
+    }
+
+    public function addUser(User $user)
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+        }
+    }
+
+    public function removeUser(User $user)
+    {
+        if ($this->users->contains($user)) {
+            $this->users->removeElement($user);
+        }
+    }
+
+    public function emptyUsers()
+    {
+        $this->users->clear();
     }
 }

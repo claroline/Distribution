@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2017/12/05 09:40:56
+ * Generation date: 2017/12/06 04:23:17
  */
-class Version20171205094054 extends AbstractMigration
+class Version20171206162316 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -19,7 +19,6 @@ class Version20171205094054 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 drop_id INT NOT NULL, 
                 user_id INT DEFAULT NULL, 
-                role_id INT DEFAULT NULL, 
                 score DOUBLE PRECISION DEFAULT NULL, 
                 correction_comment LONGTEXT DEFAULT NULL, 
                 is_valid TINYINT(1) NOT NULL, 
@@ -32,11 +31,11 @@ class Version20171205094054 extends AbstractMigration
                 reported_comment LONGTEXT DEFAULT NULL, 
                 correction_denied TINYINT(1) NOT NULL, 
                 correction_denied_comment LONGTEXT DEFAULT NULL, 
+                team_id INT DEFAULT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_CBFA3896D17F50A6 (uuid), 
                 INDEX IDX_CBFA38964D224760 (drop_id), 
                 INDEX IDX_CBFA3896A76ED395 (user_id), 
-                INDEX IDX_CBFA3896D60322AC (role_id), 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ');
@@ -45,7 +44,6 @@ class Version20171205094054 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 dropzone_id INT NOT NULL, 
                 user_id INT DEFAULT NULL, 
-                role_id INT DEFAULT NULL, 
                 drop_date DATETIME DEFAULT NULL, 
                 score DOUBLE PRECISION DEFAULT NULL, 
                 reported TINYINT(1) NOT NULL, 
@@ -54,12 +52,23 @@ class Version20171205094054 extends AbstractMigration
                 auto_closed_drop TINYINT(1) NOT NULL, 
                 unlocked_drop TINYINT(1) NOT NULL, 
                 unlocked_user TINYINT(1) NOT NULL, 
+                team_id INT DEFAULT NULL, 
+                team_name VARCHAR(255) DEFAULT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_97D5DB31D17F50A6 (uuid), 
                 INDEX IDX_97D5DB3154FC3EC3 (dropzone_id), 
                 INDEX IDX_97D5DB31A76ED395 (user_id), 
-                INDEX IDX_97D5DB31D60322AC (role_id), 
+                UNIQUE INDEX dropzone_drop_unique_dropzone_team (dropzone_id, team_id), 
                 PRIMARY KEY(id)
+            ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
+        ');
+        $this->addSql('
+            CREATE TABLE claro_dropzonebundle_drop_users (
+                drop_id INT NOT NULL, 
+                user_id INT NOT NULL, 
+                INDEX IDX_466E34EB4D224760 (drop_id), 
+                INDEX IDX_466E34EBA76ED395 (user_id), 
+                PRIMARY KEY(drop_id, user_id)
             ) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB
         ');
         $this->addSql('
@@ -184,12 +193,6 @@ class Version20171205094054 extends AbstractMigration
             ON DELETE SET NULL
         ');
         $this->addSql('
-            ALTER TABLE claro_dropzonebundle_correction 
-            ADD CONSTRAINT FK_CBFA3896D60322AC FOREIGN KEY (role_id) 
-            REFERENCES claro_role (id) 
-            ON DELETE SET NULL
-        ');
-        $this->addSql('
             ALTER TABLE claro_dropzonebundle_drop 
             ADD CONSTRAINT FK_97D5DB3154FC3EC3 FOREIGN KEY (dropzone_id) 
             REFERENCES claro_dropzonebundle_dropzone (id) 
@@ -202,10 +205,16 @@ class Version20171205094054 extends AbstractMigration
             ON DELETE SET NULL
         ');
         $this->addSql('
-            ALTER TABLE claro_dropzonebundle_drop 
-            ADD CONSTRAINT FK_97D5DB31D60322AC FOREIGN KEY (role_id) 
-            REFERENCES claro_role (id) 
-            ON DELETE SET NULL
+            ALTER TABLE claro_dropzonebundle_drop_users 
+            ADD CONSTRAINT FK_466E34EB4D224760 FOREIGN KEY (drop_id) 
+            REFERENCES claro_dropzonebundle_drop (id) 
+            ON DELETE CASCADE
+        ');
+        $this->addSql('
+            ALTER TABLE claro_dropzonebundle_drop_users 
+            ADD CONSTRAINT FK_466E34EBA76ED395 FOREIGN KEY (user_id) 
+            REFERENCES claro_user (id) 
+            ON DELETE CASCADE
         ');
         $this->addSql('
             ALTER TABLE claro_dropzonebundle_grade 
@@ -274,6 +283,10 @@ class Version20171205094054 extends AbstractMigration
             DROP FOREIGN KEY FK_CBFA38964D224760
         ');
         $this->addSql('
+            ALTER TABLE claro_dropzonebundle_drop_users 
+            DROP FOREIGN KEY FK_466E34EB4D224760
+        ');
+        $this->addSql('
             ALTER TABLE claro_dropzonebundle_document 
             DROP FOREIGN KEY FK_E846CAA84D224760
         ');
@@ -302,6 +315,9 @@ class Version20171205094054 extends AbstractMigration
         ');
         $this->addSql('
             DROP TABLE claro_dropzonebundle_drop
+        ');
+        $this->addSql('
+            DROP TABLE claro_dropzonebundle_drop_users
         ');
         $this->addSql('
             DROP TABLE claro_dropzonebundle_grade

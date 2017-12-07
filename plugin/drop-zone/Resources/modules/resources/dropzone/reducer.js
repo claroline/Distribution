@@ -13,7 +13,6 @@ import {reducer as configurationReducer} from '#/plugin/drop-zone/plugin/configu
 
 const reducer = {
   user: makeReducer({}, {}),
-  userEvaluation: makeReducer({}, {}),
   dropzone: editorReducer.dropzone,
   dropzoneForm: editorReducer.dropzoneForm,
   myDrop: playerReducer.myDrop,
@@ -24,7 +23,9 @@ const reducer = {
   correctorDrop: correctionReducer.correctorDrop,
   corrections: correctionReducer.corrections,
   tools: configurationReducer.tools,
-  teamEnabled: makeReducer({}, {}),
+  userEvaluation: makeReducer({}, {}),
+  teams: makeReducer({}, {}),
+  errorMessage: makeReducer({}, {}),
 
   // generic reducers
   currentRequests: apiReducer,

@@ -12,7 +12,6 @@
 namespace Claroline\DropZoneBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -46,12 +45,6 @@ class Correction
      * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="SET NULL")
      */
     protected $user;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Role")
-     * @ORM\JoinColumn(name="role_id", nullable=true, onDelete="SET NULL")
-     */
-    protected $role;
 
     /**
      * @ORM\Column(name="score", type="float", nullable=true)
@@ -114,6 +107,11 @@ class Correction
     protected $correctionDeniedComment;
 
     /**
+     * @ORM\Column(name="team_id", type="integer", nullable=true)
+     */
+    protected $teamId;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\DropZoneBundle\Entity\Grade",
      *     mappedBy="correction",
@@ -156,16 +154,6 @@ class Correction
     public function setUser(User $user = null)
     {
         $this->user = $user;
-    }
-
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    public function setRole(Role $role = null)
-    {
-        $this->role = $role;
     }
 
     public function getScore()
@@ -286,6 +274,16 @@ class Correction
     public function setCorrectionDeniedComment($correctionDeniedComment)
     {
         $this->correctionDeniedComment = $correctionDeniedComment;
+    }
+
+    public function getTeamId()
+    {
+        return $this->teamId;
+    }
+
+    public function setTeamId($teamId)
+    {
+        $this->teamId = $teamId;
     }
 
     public function getGrades()

@@ -11,158 +11,183 @@
 
 namespace Claroline\DropZoneBundle\Repository;
 
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Doctrine\ORM\EntityRepository;
 
 class DropRepository extends EntityRepository
 {
-    public function findUserDrops(Dropzone $dropzone, User $user)
+    public function findTeamDrops(Dropzone $dropzone, User $user)
     {
-        $roles = $user->getRoles();
-
         $dql = '
             SELECT drop
             FROM Claroline\DropZoneBundle\Entity\Drop drop
             JOIN drop.dropzone d
-            LEFT JOIN drop.user u
-            LEFT JOIN drop.role r
+            JOIN drop.users uu
             WHERE d = :dropzone
-            AND (
-              u = :user
-              OR r IN (:roles)
-            )
+            AND uu = :user
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('dropzone', $dropzone);
         $query->setParameter('user', $user);
-        $query->setParameter('roles', $roles);
 
         return $query->getResult();
     }
 
-    public function findUserFinishedPeerDrops(Dropzone $dropzone, User $user)
-    {
-        $roles = $user->getRoles();
-
-        $dql = '
-            SELECT drop
-            FROM Claroline\DropZoneBundle\Entity\Drop drop
-            JOIN drop.dropzone d
-            JOIN drop.corrections c
-            LEFT JOIN drop.user u
-            LEFT JOIN drop.role r
-            LEFT JOIN c.user cu
-            LEFT JOIN c.role cr
-            WHERE d = :dropzone
-            AND drop.finished = true
-            AND c.finished = true
-            AND (
-              u != :user
-              OR r NOT IN (:roles)
-            )
-            AND (
-              cu = :user
-              OR cr IN (:roles)
-            )
-        ';
-        $query = $this->_em->createQuery($dql);
-        $query->setParameter('dropzone', $dropzone);
-        $query->setParameter('user', $user);
-        $query->setParameter('roles', $roles);
-
-        return $query->getResult();
-    }
-
-    public function findRoleFinishedPeerDrops(Dropzone $dropzone, Role $role)
+    public function findUserFinishedPeerDrops(Dropzone $dropzone, User $user, $teamId = null)
     {
         $dql = '
             SELECT drop
             FROM Claroline\DropZoneBundle\Entity\Drop drop
             JOIN drop.dropzone d
             JOIN drop.corrections c
-            JOIN drop.role r
-            JOIN c.role cr
+            JOIN drop.user u
+            JOIN c.user cu
             WHERE d = :dropzone
             AND drop.finished = true
+            AND drop.teamId IS NULL
             AND c.finished = true
-            AND r != :role
-            AND cr = :role
+            AND u != :user
+            AND cu = :user
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('dropzone', $dropzone);
-        $query->setParameter('role', $role);
+        $query->setParameter('user', $user);
+
+        return $query->getResult();
+    }
+
+    public function findTeamFinishedPeerDrops(Dropzone $dropzone, $teamId)
+    {
+        $dql = '
+            SELECT drop
+            FROM Claroline\DropZoneBundle\Entity\Drop drop
+            JOIN drop.dropzone d
+            JOIN drop.corrections c
+            WHERE d = :dropzone
+            AND drop.finished = true
+            AND drop.teamId IS NOT NULL
+            AND drop.teamId != :teamId
+            AND c.finished = true
+            AND c.teamId = :teamId
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('dropzone', $dropzone);
+        $query->setParameter('teamId', $teamId);
 
         return $query->getResult();
     }
 
     public function findUserUnfinishedPeerDrop(Dropzone $dropzone, User $user)
     {
-        $roles = $user->getRoles();
-
         $dql = '
             SELECT drop
             FROM Claroline\DropZoneBundle\Entity\Drop drop
             JOIN drop.dropzone d
             JOIN drop.corrections c
-            LEFT JOIN drop.user u
-            LEFT JOIN drop.role r
-            LEFT JOIN c.user cu
-            LEFT JOIN c.role cr
+            JOIN drop.user u
+            JOIN c.user cu
             WHERE d = :dropzone
             AND drop.finished = true
+            AND drop.teamId IS NULL
             AND c.finished = false
-            AND (
-              u != :user
-              OR r NOT IN (:roles)
-            )
-            AND (
-              cu = :user
-              OR cr IN (:roles)
-            )
+            AND u != :user
+            AND cu = :user
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('dropzone', $dropzone);
         $query->setParameter('user', $user);
-        $query->setParameter('roles', $roles);
+
+        return $query->getResult();
+    }
+
+    public function findTeamUnfinishedPeerDrop(Dropzone $dropzone, $teamId)
+    {
+        $dql = '
+            SELECT drop
+            FROM Claroline\DropZoneBundle\Entity\Drop drop
+            JOIN drop.dropzone d
+            JOIN drop.corrections c
+            WHERE d = :dropzone
+            AND drop.finished = true
+            AND drop.teamId IS NOT NULL
+            AND drop.teamId != :teamId
+            AND c.finished = false
+            AND c.teamId = :teamId
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('dropzone', $dropzone);
+        $query->setParameter('teamId', $teamId);
 
         return $query->getResult();
     }
 
     public function findUserAvailableDrops(Dropzone $dropzone, User $user)
     {
-        $roles = $user->getRoles();
-
         $dql = '
             SELECT drop
             FROM Claroline\DropZoneBundle\Entity\Drop drop
             JOIN drop.dropzone d
-            LEFT JOIN drop.user u
-            LEFT JOIN drop.role r
+            JOIN drop.user u
             WHERE d = :dropzone
             AND drop.finished = true
-            AND (
-              u != :user
-              OR r NOT IN (:roles)
-            )
+            AND drop.teamId IS NULL
+            AND u != :user
             AND NOT EXISTS (
               SELECT cor
               FROM Claroline\DropZoneBundle\Entity\Correction cor
               JOIN cor.drop cd
-              LEFT JOIN cor.user coru
-              LEFT JOIN cor.role corr
+              JOIN cor.user coru
               WHERE cd = drop
-              AND (
-                coru = :user
-                OR corr IN (:roles)
-              )
+              AND coru = :user
+              AND cor.teamId IS NULL
             )
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('dropzone', $dropzone);
         $query->setParameter('user', $user);
-        $query->setParameter('roles', $roles);
+
+        return $query->getResult();
+    }
+
+    public function findTeamAvailableDrops(Dropzone $dropzone, $teamId)
+    {
+        $dql = '
+            SELECT drop
+            FROM Claroline\DropZoneBundle\Entity\Drop drop
+            JOIN drop.dropzone d
+            WHERE d = :dropzone
+            AND drop.finished = true
+            AND drop.teamId IS NOT NULL
+            AND drop.teamId != :teamId
+            AND NOT EXISTS (
+              SELECT cor
+              FROM Claroline\DropZoneBundle\Entity\Correction cor
+              JOIN cor.drop cd
+              WHERE cd = drop
+              AND cor.teamId != :teamId
+            )
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('dropzone', $dropzone);
+        $query->setParameter('teamId', $teamId);
+
+        return $query->getResult();
+    }
+
+    public function findTeamsUnfinishedDrops(Dropzone $dropzone, array $teamsIds)
+    {
+        $dql = '
+            SELECT drop
+            FROM Claroline\DropZoneBundle\Entity\Drop drop
+            JOIN drop.dropzone d
+            WHERE d = :dropzone
+            AND drop.finished = false
+            AND drop.teamId IN (:teamsIds)
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('dropzone', $dropzone);
+        $query->setParameter('teamsIds', $teamsIds);
 
         return $query->getResult();
     }

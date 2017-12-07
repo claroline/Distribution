@@ -89,15 +89,13 @@ const DropCorrectionSection = props =>
     title={trans('drop_and_correction_type', {}, 'dropzone')}
     {...props}
   >
-    {props.teamEnabled &&
-      <RadioGroup
-        controlId="drop-type"
-        label={trans('drop_type', {}, 'dropzone')}
-        options={constants.DROP_TYPES}
-        checkedValue={props.formData.parameters.dropType}
-        onChange={value => props.updateForm('parameters.dropType', parseInt(value))}
-      />
-    }
+    <RadioGroup
+      controlId="drop-type"
+      label={trans('drop_type', {}, 'dropzone')}
+      options={constants.DROP_TYPES}
+      checkedValue={props.formData.parameters.dropType}
+      onChange={value => props.updateForm('parameters.dropType', parseInt(value))}
+    />
     <RadioGroup
       controlId="peer-review"
       label={trans('correction_type_info', {}, 'dropzone')}
@@ -404,7 +402,6 @@ DropzoneForm.propTypes = {
   formData: T.shape(DropzoneType.propTypes),
   errors: T.object,
   validating: T.bool,
-  teamEnabled: T.bool.isRequired,
   updateForm: T.func.isRequired,
   updateNotifications: T.func.isRequired
 }
@@ -414,8 +411,7 @@ function mapStateToProps(state) {
     canEdit: resourceSelect.editable(state),
     formData: select.formData(state),
     errors: select.formErrors(state),
-    validating: select.formValidating(state),
-    teamEnabled: select.teamEnabled(state)
+    validating: select.formValidating(state)
   }
 }
 

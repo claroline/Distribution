@@ -21,6 +21,7 @@ use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
+use Claroline\TeamBundle\Entity\Team;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -140,6 +141,43 @@ class DropzoneController
 
         try {
             $myDrop = $this->manager->getUserDrop($dropzone, $user, true);
+
+            return new JsonResponse($this->manager->serializeDrop($myDrop));
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * Initializes Team Drop of current user.
+     *
+     * @EXT\Route("/{id}/my/drop/team/{teamId}/initialize", name="claro_dropzone_my_team_drop_initialize")
+     * @EXT\Method("POST")
+     * @EXT\ParamConverter(
+     *     "dropzone",
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter(
+     *     "team",
+     *     class="ClarolineTeamBundle:Team",
+     *     options={"mapping": {"teamId": "id"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Dropzone $dropzone
+     * @param Team     $team
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function myTeamDropInitializeAction(Dropzone $dropzone, Team $team, User $user)
+    {
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkTeamUser($team, $user);
+
+        try {
+            $myDrop = $this->manager->getTeamDrop($dropzone, $team, $user, true);
 
             return new JsonResponse($this->manager->serializeDrop($myDrop));
         } catch (\Exception $e) {
@@ -672,9 +710,7 @@ class DropzoneController
             return;
         }
         if ($dropzone->isDropEnabled()) {
-            $roles = $user->getRoles();
-
-            if ($drop->getUser() === $user || in_array($drop->getRole(), $roles)) {
+            if ($drop->getUser() === $user || in_array($user, $drop->getUsers())) {
                 return;
             }
         }
@@ -682,7 +718,7 @@ class DropzoneController
         throw new AccessDeniedException();
     }
 
-    private function checkCorrectionEdition(Correction $correction, User $user)
+    private function checkCorrectionEdition(Correction $correction, User $user, $teamId = null)
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $collection = new ResourceCollection([$dropzone->getResourceNode()]);
@@ -691,13 +727,18 @@ class DropzoneController
             return;
         }
         if (!$correction->isFinished()) {
-            $roles = $user->getRoles();
-
-            if ($correction->getUser() === $user || in_array($correction->getRole(), $roles)) {
+            if ($correction->getUser() === $user || $correction->getTeamId() === $teamId) {
                 return;
             }
         }
 
         throw new AccessDeniedException();
+    }
+
+    private function checkTeamUser(Team $team, User $user)
+    {
+        if (!in_array($user, $team->getUsers())) {
+            throw new AccessDeniedException();
+        }
     }
 }

@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityRepository;
 
 class CorrectionRepository extends EntityRepository
 {
-    public function findAllCorrectionsByDropzone(Dropzone $dropzone)
+    public function findAllUsersCorrectionsByDropzone(Dropzone $dropzone)
     {
         $dql = '
             SELECT c
@@ -24,6 +24,23 @@ class CorrectionRepository extends EntityRepository
             JOIN c.drop drop
             JOIN drop.dropzone d
             WHERE d = :dropzone
+            AND c.teamId IS NULL
+        ';
+        $query = $this->_em->createQuery($dql);
+        $query->setParameter('dropzone', $dropzone);
+
+        return $query->getResult();
+    }
+
+    public function findAllTeamsCorrectionsByDropzone(Dropzone $dropzone)
+    {
+        $dql = '
+            SELECT c
+            FROM Claroline\DropZoneBundle\Entity\Correction c
+            JOIN c.drop drop
+            JOIN drop.dropzone d
+            WHERE d = :dropzone
+            AND c.teamId IS NOT NULL
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('dropzone', $dropzone);

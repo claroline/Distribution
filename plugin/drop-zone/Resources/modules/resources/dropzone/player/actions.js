@@ -23,21 +23,36 @@ actions.addDocuments = makeActionCreator(DOCUMENTS_ADD, 'documents')
 actions.updateDocument = makeActionCreator(DOCUMENT_UPDATE, 'document')
 actions.removeDocument = makeActionCreator(DOCUMENT_REMOVE, 'documentId')
 
-actions.initializeMyDrop = () => (dispatch, getState) => {
+actions.initializeMyDrop = (teamId = null) => (dispatch, getState) => {
   const dropzoneId = select.dropzoneId(getState())
 
-  dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_dropzone_my_drop_initialize', {id: dropzoneId}),
-      request: {
-        method: 'POST'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.loadMyDrop(data))
-        navigate('/my/drop')
+  if (teamId === null) {
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_dropzone_my_drop_initialize', {id: dropzoneId}),
+        request: {
+          method: 'POST'
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.loadMyDrop(data))
+          navigate('/my/drop')
+        }
       }
-    }
-  })
+    })
+  } else {
+    dispatch({
+      [REQUEST_SEND]: {
+        url: generateUrl('claro_dropzone_my_team_drop_initialize', {id: dropzoneId, teamId: teamId}),
+        request: {
+          method: 'POST'
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.loadMyDrop(data))
+          navigate('/my/drop')
+        }
+      }
+    })
+  }
 }
 
 actions.saveDocument = (dropType, dropData) => (dispatch, getState) => {

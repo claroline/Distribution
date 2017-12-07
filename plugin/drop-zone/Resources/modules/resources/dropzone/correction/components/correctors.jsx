@@ -9,6 +9,7 @@ import {DataListContainer as DataList} from '#/main/core/layout/list/containers/
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
 class Correctors extends Component {
   generateColumns(props) {
@@ -22,18 +23,31 @@ class Correctors extends Component {
       filterable: true,
       type: 'string'
     })
-    columns.push({
-      name: 'user',
-      label: t('user'),
-      displayed: true,
-      renderer: (rowData) => {
-        const link = rowData.user ?
-          <a href={`#/corrector/${rowData.id}`}>{rowData.user.firstName} {rowData.user.lastName}</a> :
-          <a href={`#/corrector/${rowData.id}`}>{t(rowData.role.name)}</a>
 
-        return link
-      }
-    })
+    if (props.dropzone.parameters.dropType === constants.DROP_TYPE_USER) {
+      columns.push({
+        name: 'user',
+        label: t('user'),
+        displayed: true,
+        renderer: (rowData) => {
+          const link = <a href={`#/corrector/${rowData.id}`}>{rowData.user.firstName} {rowData.user.lastName}</a>
+
+          return link
+        }
+      })
+    }
+    if (props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM) {
+      columns.push({
+        name: 'team',
+        label: t('team'),
+        displayed: true,
+        renderer: (rowData) => {
+          const link = <a href={`#/corrector/${rowData.id}`}>{t(rowData.teamName)}</a>
+
+          return link
+        }
+      })
+    }
     columns.push({
       name: 'nbCorrections',
       label: trans('started_corrections', {}, 'dropzone'),
@@ -41,7 +55,7 @@ class Correctors extends Component {
       filterable: false,
       sortable: false,
       renderer: (rowData) => {
-        const currentKey = rowData.user && rowData.user.id ? rowData.user.id : rowData.role.name
+        const currentKey = props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? rowData.user.id : rowData.teamId
 
         return props.corrections && props.corrections[currentKey] ?
           props.corrections[currentKey].length :
@@ -56,7 +70,7 @@ class Correctors extends Component {
       sortable: false,
       renderer: (rowData) => {
         const nbExpectedCorrections = props.dropzone.parameters.expectedCorrectionTotal
-        const currentKey = rowData.user && rowData.user.id ? rowData.user.id : rowData.role.name
+        const currentKey = props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? rowData.user.id : rowData.teamId
         const nbCorrections = props.corrections && props.corrections[currentKey] ?
           props.corrections[currentKey].filter(c => c.finished).length :
           0
@@ -71,7 +85,7 @@ class Correctors extends Component {
       filterable: false,
       sortable: false,
       renderer: (rowData) => {
-        const currentKey = rowData.user && rowData.user.id ? rowData.user.id : rowData.role.name
+        const currentKey = props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? rowData.user.id : rowData.teamId
 
         return props.corrections && props.corrections[currentKey] ?
           props.corrections[currentKey].filter(c => c.correctionDenied).length :
@@ -140,7 +154,7 @@ class Correctors extends Component {
 Correctors.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   drops: T.object,
-  corrections: T.object,
+  corrections: T.oneOfType([T.object, T.array]),
   unlockUser: T.func.isRequired
 }
 
