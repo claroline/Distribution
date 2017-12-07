@@ -1,9 +1,6 @@
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {generateUrl} from '#/main/core/fos-js-router'
 
-// reducers
 import {reducer} from '#/main/core/portal/reducer'
-
 import {Portal} from '#/main/core/portal/components/portal.jsx'
 
 // mount the react application

@@ -6,7 +6,7 @@
     <div
         class="user-profile-container"
         data-user="{{ user | json_encode | raw | escape }}"
-        data-profile="{{ profile | json_encode | raw | escape }}"
+        data-facets="{{ facets | json_encode | raw | escape }}"
     ></div>
 {% endblock %}
 

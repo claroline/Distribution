@@ -12,5 +12,20 @@ bootstrap(
   Profile,
 
   // app store configuration
-  reducer
+  reducer,
+
+  (initialData) => Object.assign({}, initialData, {
+    facets: [
+      {
+        id: 'main',
+        title: 'Informations générales',
+        meta: {
+          main: true
+        }
+      }, {
+        id: 'scol',
+        title: 'Scolarité'
+      }
+    ]
+  })
 )

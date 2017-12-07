@@ -34,7 +34,36 @@ actions.addGroups = (id, groups) => ({
     request: {
       method: 'PATCH'
     },
-    success: (data, dispatch) => dispatch(listActions.invalidateData('users.current.groups'))
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+      dispatch(listActions.invalidateData('users.current.groups'))
+    }
+  }
+})
+
+actions.addRoles = (id, roles) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_user_add_roles', {id: id}) +'?'+ roles.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+      dispatch(listActions.invalidateData('users.current.roles'))
+    }
+  }
+})
+
+actions.addOrganizations = (id, organizations) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_user_add_organizations', {id: id}) +'?'+ organizations.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+      dispatch(listActions.invalidateData('users.current.organizations'))
+    }
   }
 })
 

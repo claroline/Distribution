@@ -10,7 +10,7 @@ import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action
 
 import {DataListAction as DataListActionTypes} from '#/main/core/data/list/prop-types'
 
-// todo force `action` to be a function that generate the final action see we can get urls
+// todo force `action` to be a function that generate the final action so we can get urls
 
 const ListPrimaryAction = props => {
   let disabled = true
@@ -139,13 +139,11 @@ const ListBulkActions = props =>
             'btn-link-default': !action.dangerous,
             'btn-link-danger' :  action.dangerous
           })}
-          title={action.label}
+          icon={action.icon}
+          label={action.label}
           disabled={action.disabled ? action.disabled(props.selectedItems) : false}
           action={action.action === 'function' ? () => action.action(props.selectedItems) : action.action}
-        >
-          <span className={action.icon} />
-          <span className="sr-only">{action.label}</span>
-        </TooltipAction>
+        />
       )}
     </div>
   </div>

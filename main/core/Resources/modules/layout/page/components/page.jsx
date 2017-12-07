@@ -2,6 +2,7 @@ import React from 'react'
 import get from 'lodash/get'
 import classes from 'classnames'
 
+import {Router} from '#/main/core/router'
 import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
@@ -57,6 +58,19 @@ const Page = props =>
   </PageWrapper>
 
 implementPropTypes(Page, PageTypes, {
+  children: T.node.isRequired
+})
+
+const RoutedPage = props =>
+  <Router>
+    <Page
+      {...props}
+    >
+      {props.children}
+    </Page>
+  </Router>
+
+implementPropTypes(RoutedPage, PageTypes, {
   children: T.node.isRequired
 })
 
@@ -135,6 +149,7 @@ PageContent.propTypes = {
 
 export {
   Page,
+  RoutedPage,
   PageHeader,
   PageContent
 }

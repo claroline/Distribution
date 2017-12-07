@@ -11,7 +11,7 @@ const UserList = {
   definition: [
     {
       name: 'username',
-      type: 'string',
+      type: 'username',
       label: t('username'),
       displayed: true,
       primary: true

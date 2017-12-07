@@ -25,7 +25,12 @@ const UserSaveAction = makeSaveAction('users.current', formData => ({
 }))(PageAction)
 
 const UserActions = () =>
-  <PageActions>
+  <PageActions
+    inline={['edit', 'save', 'community']}
+    actions={[
+
+    ]}
+  >
     <UserSaveAction />
 
     <PageAction
@@ -82,12 +87,7 @@ const UserForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_groups'),
-            action: (e) => {
-              props.pickGroups(props.user.id)
-
-              e.preventDefault()
-              e.stopPropagation()
-            }
+            action: () => props.pickGroups(props.user.id)
           }
         ]}
       >
@@ -114,7 +114,7 @@ const UserForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_organizations'),
-            action: () => true
+            action: () => props.pickOrganizations(props.user.id)
           }
         ]}
       >
@@ -129,12 +129,7 @@ const UserForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_roles'),
-            action: (e) => {
-              props.pickGroups()
-
-              e.preventDefault()
-              e.stopPropagation()
-            }
+            action: () => props.pickRoles(props.user.id)
           }
         ]}
       >
@@ -171,7 +166,6 @@ const User = connect(
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-users',
         title: t('add_groups'),
-        confirmText: t('add'),
         name: 'groups.picker',
         open: GroupList.open,
         definition: GroupList.definition,
@@ -183,10 +177,12 @@ const User = connect(
         handleSelect: (selected) => dispatch(actions.addGroups(userId, selected))
       }))
     },
-    addGroup: () => dispatch(),
-    removeGroup: () => dispatch(),
-    addRole: () => dispatch(),
-    removeRole: () => dispatch()
+    pickOrganizations: (userId) => {
+
+    },
+    pickRoles: (userId) => {
+
+    }
   })
 )(UserForm)
 
