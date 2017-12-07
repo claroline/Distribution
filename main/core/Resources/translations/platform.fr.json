@@ -1491,6 +1491,8 @@
     "add_comment": "Commenter",
     "keywords": "Mots clés",
     "objects_delete_title": "Supprimer des objets",
+    "objects_select_title": "Sélectionner des objets",
+    "objects_select_confirm": "Valider la sélection",
     "object_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?",
     "no_item": "Aucun élément.",
     "objects_delete_question": "{1} Êtes-vous sûr de vouloir supprimer l'objet sélectionné ?|[2,Inf[ Êtes-vous sur de vouloir supprimer les %count% objets sélectionnés ?",
@@ -1524,5 +1526,6 @@
     "show_password": "Afficher le mot de passe",
     "accept_term_of_service": "Accepter les conditions d'utilisation",
     "registered_at": "inscrit le",
-    "last_logged_at": "dernière connexion le"
+    "last_logged_at": "dernière connexion le",
+    "add_organizations": "Ajouter des organisations"
 }

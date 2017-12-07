@@ -13,6 +13,8 @@ const isSelectable = (listState) => typeof listState.selected !== 'undefined'
 const isPaginated  = (listState) => typeof listState.page !== 'undefined' && listState.pageSize !== 'undefined'
 
 // access list data
+const loaded       = (listState) => listState.loaded
+const invalidated  = (listState) => listState.invalidated
 const data         = (listState) => listState.data
 const totalResults = (listState) => listState.totalResults
 const filters      = (listState) => listState.filters || []

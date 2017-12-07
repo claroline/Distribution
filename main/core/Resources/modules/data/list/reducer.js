@@ -12,6 +12,7 @@ import {
   LIST_RESET_SELECT,
   LIST_TOGGLE_SELECT,
   LIST_TOGGLE_SELECT_ALL,
+  LIST_DATA_INVALIDATE,
   LIST_DATA_LOAD,
   LIST_DATA_DELETE,
   LIST_PAGE_CHANGE,
@@ -19,6 +20,8 @@ import {
 } from '#/main/core/data/list/actions'
 
 const defaultState = {
+  loaded: false,
+  invalidated: false,
   data: [],
   totalResults: 0,
   filters: [],
@@ -30,6 +33,15 @@ const defaultState = {
   page: 0,
   pageSize: constants.DEFAULT_PAGE_SIZE
 }
+
+const invalidatedReducer = makeInstanceReducer(defaultState.invalidated, {
+  [LIST_DATA_INVALIDATE]: () => true,
+  [LIST_DATA_LOAD]: () => false
+})
+
+const loadedReducer = makeInstanceReducer(defaultState.invalidated, {
+  [LIST_DATA_LOAD]: () => true
+})
 
 /**
  * Reduces list data items.
@@ -146,7 +158,7 @@ const selectedReducer = makeInstanceReducer(defaultState.selected, {
   },
 
   [LIST_TOGGLE_SELECT_ALL]: (state, action) => {
-    return 0 < state.length ? [] : action.rows.map(row => row.id)
+    return 0 < state.length ? [] : [].concat(state, action.rows.map(row => row.id))
   }
 })
 
@@ -199,6 +211,8 @@ const pageSizeReducer = makeInstanceReducer(defaultState.pageSize, {
 })
 
 const baseReducer = {
+  loaded: loadedReducer,
+  invalidated: invalidatedReducer,
   data: dataReducer,
   totalResults: totalResultsReducer,
   filters: filtersReducer,
@@ -235,6 +249,9 @@ function makeListReducer(listName, initialState = {}, customReducer = {}, option
   const listOptions = merge({}, constants.DEFAULT_FEATURES, options)
 
   // adds base list reducers
+  reducer.loaded = baseReducer.loaded(listName, listState.loaded)
+  reducer.invalidated = baseReducer.invalidated(listName, listState.invalidated)
+
   reducer.data = customReducer.data ?
     reduceReducers(baseReducer.data(listName, listState.data), customReducer.data) : baseReducer.data(listName, listState.data)
 

@@ -56,7 +56,7 @@ implementPropTypes(FlyingAlert, AlertTypes, {
 
 const FlyingAlerts = props =>
   <ul className="flying-alerts">
-    {props.alerts.slice(0, constants.ALERT_DISPLAY_MAX).map((alert, alertIndex) =>
+    {props.alerts.map((alert, alertIndex) =>
       <FlyingAlert
         {...alert}
 

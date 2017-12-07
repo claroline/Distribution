@@ -5,8 +5,6 @@ import {localeDate} from '#/main/core/date'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 const WorkspaceCard = (row) => ({
-  onClick: generateUrl('claro_workspace_open', {workspaceId: row.id}),
-  poster: null,
   icon: 'fa fa-book',
   title: row.name,
   subtitle: row.code,

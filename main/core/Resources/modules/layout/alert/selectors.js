@@ -20,10 +20,12 @@ const sortedAlerts = createSelector(
 )
 
 const displayedAlerts = createSelector(
-
+  [sortedAlerts],
+  (sortedAlerts) => sortedAlerts.slice(0, constants.ALERT_DISPLAY_MAX)
 )
 
 export const select = {
   alerts,
-  sortedAlerts
+  sortedAlerts,
+  displayedAlerts
 }
