@@ -78,12 +78,7 @@ const GroupForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_users'),
-            action: (e) => {
-              props.pickUsers()
-
-              e.preventDefault()
-              e.stopPropagation()
-            }
+            action: props.pickUsers
           }
         ]}
       >
@@ -95,7 +90,7 @@ const GroupForm = props =>
             autoload: true
           }}
           delete={{
-            url: ['apiv2_group_remove_users', {id: props.group.id}],
+            url: ['apiv2_group_remove_users', {id: props.group.id}]
           }}
           definition={UserList.definition}
           card={UserList.card}
@@ -150,8 +145,7 @@ GroupForm.propTypes = {
   group: T.shape({
     id: T.string
   }).isRequired,
-  addRole: T.func.isRequired,
-  removeRole: T.func.isRequired
+  pickUsers: T.func.isRequired
 }
 
 const Group = connect(
@@ -173,9 +167,7 @@ const Group = connect(
         },
         handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
       }))
-    },
-    addRole: () => dispatch(),
-    removeRole: () => dispatch()
+    }
   })
 )(GroupForm)
 
