@@ -88,6 +88,7 @@ class ApiLoader extends Loader
                     $class = null;
                     $found = false;
                     $prefix = '';
+                    $ignore = [];
 
                     foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
 
@@ -95,6 +96,7 @@ class ApiLoader extends Loader
                         if ($annotation instanceof ApiMeta) {
                             $found = true;
                             $class = $annotation->class;
+                            $ignore = $annotation->ignore;
                         }
 
                         //The route prefix is defined with the sf2 annotations
@@ -110,7 +112,7 @@ class ApiLoader extends Loader
                     if ($found) {
                         //makeRouteMap is an array of generic routes we want to use
                         //when ApiMeta is defined
-                        foreach ($this->makeRouteMap($controller, $routes, $prefix) as $name => $options) {
+                        foreach ($this->makeRouteMap($controller, $routes, $prefix, $ignore) as $name => $options) {
                             $pattern = '';
 
                             if ($options[0] !== '') {
@@ -147,7 +149,7 @@ class ApiLoader extends Loader
         }
     }
 
-    private function makeRouteMap($controller, RouteCollection $routes, $prefix)
+    private function makeRouteMap($controller, RouteCollection $routes, $prefix, array $ignore)
     {
         $defaults = [
           'create' => ['', 'POST'],
@@ -157,6 +159,10 @@ class ApiLoader extends Loader
           'get' => ['/{id}', 'GET'],
           'exist' => ['/exist/{field}/{value}', 'GET'],
         ];
+
+        foreach ($ignore as $ignored) {
+            unset($defaults[$ignored]);
+        }
 
         $traits = class_uses($controller);
 

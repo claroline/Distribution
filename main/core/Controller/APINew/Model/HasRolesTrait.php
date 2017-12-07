@@ -10,75 +10,67 @@ use Symfony\Component\HttpFoundation\Request;
 trait HasRolesTrait
 {
     /**
-     * @EXT\Route("/{id}/role")
+     * @EXT\Route("/{uuid}/role")
      * @EXT\Method("GET")
      *
-     * @param string  $id
+     * @param string  $uuid
      * @param string  $class
      * @param Request $request
      * @param string  $env
      *
      * @return JsonResponse
      */
-    public function listRolesAction($id, $class, Request $request, $env)
+    public function listRolesAction($uuid, $class, Request $request, $env)
     {
         return new JsonResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
                 $request->query->all(),
-                ['hiddenFilters' => [$this->getName() => [$id]]]
+                ['hiddenFilters' => [$this->getName() => [$uuid]]]
             ))
         );
     }
 
     /**
-     * @EXT\Route("/{id}/role")
+     * @EXT\Route("/{uuid}/role")
      * @EXT\Method("PATCH")
      *
-     * @param string  $id
+     * @param string  $uuid
      * @param string  $class
      * @param Request $request
      * @param string  $env
      *
      * @return JsonResponse
      */
-    public function addRolesAction($id, $class, Request $request, $env)
+    public function addRolesAction($uuid, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
-            $this->crud->patch($object, 'role', Crud::COLLECTION_ADD, $roles);
+        $object = $this->find($class, $uuid);
+        $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
+        $this->crud->patch($object, 'role', Crud::COLLECTION_ADD, $roles);
 
-            return new JsonResponse(
+        return new JsonResponse(
             $this->serializer->serialize($object)
         );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
     }
 
     /**
-     * @EXT\Route("/{id}/role")
+     * @EXT\Route("/{uuid}/role")
      * @EXT\Method("DELETE")
      *
-     * @param string  $id
+     * @param string  $uuid
      * @param string  $class
      * @param Request $request
      * @param string  $env
      *
      * @return JsonResponse
      */
-    public function removeRolesAction($id, $class, Request $request, $env)
+    public function removeRolesAction($uuid, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
-            $this->crud->patch($object, 'role', Crud::COLLECTION_REMOVE, $roles);
+        $object = $this->find($class, $uuid);
+        $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
+        $this->crud->patch($object, 'role', Crud::COLLECTION_REMOVE, $roles);
 
-            return new JsonResponse(
+        return new JsonResponse(
           $this->serializer->serialize($object)
       );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
     }
 }

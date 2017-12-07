@@ -13,7 +13,7 @@
       "import-management": "administration/import",
       "private-profile": "profile/module",
       "plugin-management": "plugins/module",
-      "portal": "portal/module",
+      "portal": "portal/index",
       "tinymce": "tinymce/tinymce",
       "desktop-home": "desktopHome/desktopHome",
       "admin-home-tabs-config": "adminHomeTabsConfig/adminHomeTabsConfig",
@@ -31,7 +31,8 @@
   "styles": {
     "entry": {
       "home": "tools/home.less",
-      "theme-management": "tools/theme-management.less"
+      "theme-management": "tools/theme-management.less",
+      "portal": "portal/portal.less"
     }
   }
 }

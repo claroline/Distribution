@@ -21,7 +21,8 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => {
     return {
-      explanation: initialData.explanation
+      explanation: initialData.explanation,
+      currentTab: 'user'
     }
   }
 )

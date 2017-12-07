@@ -102,7 +102,7 @@ class ResourceNodeSerializer
         $serializedNode = [
             'id' => $resourceNode->getGuid(),
             'name' => $resourceNode->getName(),
-            'poster' => $resourceNode->getThumbnail() ? $resourceNode->getThumbnail()->getRelativeUrl() : null, // todo : add as ResourceNode prop
+            'poster' => $resourceNode->getThumbnail() ? '/'.$resourceNode->getThumbnail()->getRelativeUrl() : null, // todo : add as ResourceNode prop
             'thumbnail' => null,
             'meta' => $this->getMeta($resourceNode),
             'parameters' => $this->getParameters($resourceNode),
@@ -179,6 +179,7 @@ class ResourceNodeSerializer
             'actions' => $this->getActions($resourceNode),
             'accesses' => $resourceNode->getAccesses(),
             'views' => $resourceNode->getViewsCount(),
+            'icon' => $resourceNode->getIcon() ? '/'.$resourceNode->getIcon()->getRelativeUrl() : null,
         ];
     }
 
