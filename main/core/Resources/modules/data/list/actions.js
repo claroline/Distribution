@@ -33,20 +33,18 @@ actions.toggleSelectAll = makeInstanceActionCreator(LIST_TOGGLE_SELECT_ALL, 'row
 
 // data loading
 export const LIST_DATA_LOAD = 'LIST_DATA_LOAD'
+export const LIST_DATA_INVALIDATE = 'LIST_DATA_INVALIDATE'
 
-actions.loadItems = makeInstanceActionCreator(LIST_DATA_LOAD, 'data', 'total')
+actions.loadData = makeInstanceActionCreator(LIST_DATA_LOAD, 'data', 'total')
+actions.invalidateData = makeInstanceActionCreator(LIST_DATA_INVALIDATE)
 actions.fetchData = (listName, url) => (dispatch, getState) => {
   const listState = listSelect.list(getState(), listName)
 
   dispatch({
     [API_REQUEST]: {
       url: (typeof url === 'string' ? url : generateUrl(...url)) + listSelect.queryString(listState),
-      request: {
-        method: 'GET'
-      },
       success: (response, dispatch) => {
-        dispatch(actions.resetSelect(listName))
-        dispatch(actions.loadItems(listName, response.data, response.totalResults))
+        dispatch(actions.loadData(listName, response.data, response.totalResults))
       }
     }
   })

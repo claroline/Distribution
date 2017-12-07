@@ -1,5 +1,8 @@
+import {generateUrl} from '#/main/core/fos-js-router'
+
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {Group as GroupTypes} from '#/main/core/administration/user/group/prop-types'
 
@@ -23,3 +26,13 @@ actions.open = (formName, id = null) => (dispatch) => {
     dispatch(formActions.resetForm(formName, GroupTypes.defaultProps, true))
   }
 }
+
+actions.addUsers = (id, users) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_group_add_users', {id: id}) +'?'+ users.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => dispatch(listActions.fetchData('groups.current.users'))
+  }
+})

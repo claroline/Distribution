@@ -53,7 +53,6 @@ const Section = props =>
   >
     {props.children}
   </Panel>
-
 Section.propTypes = {
   id: T.string.isRequired,
   level: T.number.isRequired,

@@ -63,7 +63,7 @@
     "add_role": "Add a role",
     "add_role_to_groups": "Add a role to %count% group(s)",
     "add_role_to_users": "Add a role to %count% user(s)",
-    "add_roles": "Add role",
+    "add_roles": "Add roles",
     "add_roles_confirm_message": "Do you want to add the following roles to the %count% selected elements",
     "add_subcategory": "Add a subcategory",
     "add_tab": "Add a tab",
@@ -1467,6 +1467,8 @@
     "add_comment": "Comment",
     "keywords": "Keywords",
     "objects_delete_title": "Delete objects",
+    "objects_select_title": "Select objects",
+    "objects_select_confirm": "Confirm selection",
     "object_delete_question": "{1} Do you really want to remove the selected object ?|[2,Inf[ Do you really want to remove the %count% selected objects ?",
     "no_item": "No item.",
     "objects_delete_question": "{1} Do you really want to remove the selected object ?|[2,Inf[ Do you really want to remove the %count% selected objects ?",
@@ -1500,5 +1502,6 @@
     "show_password": "Show password",
     "accept_term_of_service": "Accept terms of service",
     "registered_at": "registered at",
-    "last_logged_at": "last logged at"
+    "last_logged_at": "last logged at",
+    "add_organizations": "Select organizations"
 }

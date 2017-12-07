@@ -7,6 +7,7 @@ import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
 
 const reducer = combineReducers({
+  picker: makeListReducer('groups.picker'),
   list: makeListReducer('groups.list'),
   current: makeFormReducer('groups.current', {}, {
     users: makeListReducer('groups.current.users'),

@@ -5,11 +5,15 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
 import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+
+import {actions} from '#/main/core/administration/user/group/actions'
 
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
@@ -56,7 +60,8 @@ const GroupForm = props =>
           {
             name: 'name',
             type: 'string',
-            label: t('name')
+            label: t('name'),
+            required: true
           }
         ]
       }
@@ -72,8 +77,13 @@ const GroupForm = props =>
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
-            label: t('add_user'),
-            action: () => true
+            label: t('add_users'),
+            action: (e) => {
+              props.pickUsers()
+
+              e.preventDefault()
+              e.stopPropagation()
+            }
           }
         ]}
       >
@@ -99,7 +109,7 @@ const GroupForm = props =>
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
-            label: t('add_role'),
+            label: t('add_roles'),
             action: () => true
           }
         ]}
@@ -126,7 +136,7 @@ const GroupForm = props =>
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
-            label: t('add_organization'),
+            label: t('add_organizations'),
             action: () => true
           }
         ]}
@@ -149,6 +159,21 @@ const Group = connect(
     group: formSelect.data(formSelect.form(state, 'groups.current'))
   }),
   dispatch =>({
+    pickUsers: (groupId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-user',
+        title: t('add_users'),
+        confirmText: t('add'),
+        name: 'users.picker',
+        definition: UserList.definition,
+        card: UserList.card,
+        fetch: {
+          url: ['apiv2_user_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
+      }))
+    },
     addRole: () => dispatch(),
     removeRole: () => dispatch()
   })

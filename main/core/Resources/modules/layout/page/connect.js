@@ -24,7 +24,7 @@ function mapStateToProps(state) {
   // grab data for optional features
   newProps.hasAlerts = pageSelect.hasAlerts(state)
   if (newProps.hasAlerts) {
-    newProps.alerts = alertSelect.sortedAlerts(state)
+    newProps.alerts = alertSelect.displayedAlerts(state)
   }
 
   newProps.hasModals = pageSelect.hasModals(state)
