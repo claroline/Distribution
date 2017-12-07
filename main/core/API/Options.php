@@ -62,4 +62,9 @@ final class Options
     //for serialize, do we want to (de)serialize objects in subtrees ?
     const DEEP_SERIALIZE = 'deep_serialize';
     const DEEP_DESERIALIZE = 'deep_deserialize';
+
+    //file upload options
+    const TEMPORARY_FILE = 'temporary_file';
+    const PUBLIC_FILE = 'public_file';
+    const PRIVATE_FILE = 'private_file';
 }

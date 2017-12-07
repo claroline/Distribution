@@ -6,10 +6,15 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * This controller will probably need to change heavily in the future.
+ */
 class ResourceNodeController extends AbstractCrudController
 {
     /**
      * @Route("/portal", name="apiv2_portal_index", options={ "method_prefix" = false })
+     *
+     * @todo probably move this somewhere else
      *
      * @param Request $request
      *

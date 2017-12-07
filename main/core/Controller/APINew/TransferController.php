@@ -23,10 +23,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TransferController
 {
+    /** @var TransferProvider */
+    private $provider;
+
     /**
      * @DI\InjectParams({
      *    "provider" = @DI\Inject("claroline.api.transfer")
      * })
+     *
+     * @param TransferProvider $provider
      */
     public function __construct(TransferProvider $provider)
     {
@@ -34,6 +39,8 @@ class TransferController
     }
 
     /**
+     * Difference with file controller ?
+     *
      * @Route(
      *    "/execute/{action}",
      *    name="apiv2_transfer_execute",
@@ -72,6 +79,11 @@ class TransferController
         return new JsonResponse($this->provider->getAvailableActions($format));
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
     private function getData(Request $request)
     {
         $files = $request->files->all();
@@ -92,6 +104,11 @@ class TransferController
         ];
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return string
+     */
     private function getLogFile(Request $request)
     {
         return $request->query->get('log');

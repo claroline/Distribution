@@ -9,6 +9,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 /**
  * @DI\Service()
+ * Move this somewhere else
  */
 class OnResponseErrorListener
 {

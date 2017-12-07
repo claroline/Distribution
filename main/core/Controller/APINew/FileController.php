@@ -11,16 +11,61 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\CoreBundle\Event\StrictDispatcher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Manages platform files.
+ * Manages platform uploaded files... sort of.
  *
- * @EXT\Route("/file")
+ * @EXT\Route("/uploadedfile")
+ * @ApiMeta(
+ *     class="Claroline\CoreBundle\Entity\File\PublicFile",
+ *     ignore={"get", "deleteBulk", "update", "exist", "list"}
+ * )
  */
-class FileController
+class FileController extends AbstractCrudController
 {
-    public function uploadAction()
+    /**
+     * @EXT\Route(
+     *    "/upload",
+     *    name="apiv2_uploadedfile",
+     *    options={ "method_prefix" = false }
+     * )
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function uploadAction(Request $request)
     {
+        $files = $request->files->all();
+        $handler = $request->get('handler');
+        //maybe a few mode from the request ?
+        $data = [];
+        /** @var StrictDispatcher */
+        $dispatcher = $this->container->get('claroline.event.event_dispatcher');
+
+        foreach ($files as $file) {
+            $object = $this->crud->create(
+                'Claroline\CoreBundle\Entity\File\PublicFile',
+                [],
+                ['file' => $file]
+            );
+
+            $dispatcher->dispatch(strtolower('upload_file_'.$handler), 'UploadFile', [$object]);
+
+            $data[] = $this->serializer->serialize($object);
+        }
+
+        return new JsonResponse($data, 200);
+    }
+
+    /** @return string */
+    public function getName()
+    {
+        return 'uploadedfile';
     }
 }

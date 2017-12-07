@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "objectUuid": {
+      "type": "string",
+      "format": "string",
+      "description": "The object uuid"
+    },
+    "objectClass": {
+      "type": "string",
+      "format": "string",
+      "description": "The object class"
+    },
+  },
+}
