@@ -321,8 +321,8 @@
             if (that.isActionAvailable(node, 'delete') === 0) that.setButtonEnabledState(that.$('a.delete'), false)
             if (that.isActionAvailable(node, 'copy') === 0) that.setButtonEnabledState(that.$('a.copy'), false)
             if (that.isActionAvailable(node, 'copy') === 0) that.setButtonEnabledState(that.$('a.cut'), false)
-            if (that.isActionAvailable(node, 'download') === 0) that.setButtonEnabledState(that.$('a.download'), false)
-            if (that.isActionAvailable(node, 'download') === 0) that.setButtonEnabledState(that.$('a.export'), false)
+            if (that.isActionAvailable(node, 'export') === 0) that.setButtonEnabledState(that.$('a.download'), false)
+            if (that.isActionAvailable(node, 'export') === 0) that.setButtonEnabledState(that.$('a.export'), false)
           }
 
         })
@@ -331,6 +331,10 @@
     isActionAvailable: function (node, action) {
       var type = this.parameters.resourceTypes[node[1]]
       var act = type.actions[action]
+
+      if ((_.isUndefined(act) || _.isNull(act)) && this.parameters.defaultResourceActionsMask) {
+        act = { mask : this.parameters.defaultResourceActionsMask[action] }
+      }
 
       return act ? node[5] & act.mask: 0
     },

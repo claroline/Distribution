@@ -274,7 +274,17 @@ class RolesController extends Controller
     public function removeUserFromRoleAction(User $user, Role $role, Workspace $workspace)
     {
         $this->checkEditionAccess($workspace);
-
+        if (!$this->isWorkspaceManager($workspace)) {
+            $wsRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
+            if (!in_array($role, $wsRoles)) {
+                return new JsonResponse(
+                    [
+                        'message' => $this->translator->trans('resource_action_denied_message', [], 'platform'),
+                    ],
+                    500
+                );
+            }
+        }
         try {
             $this->roleManager->dissociateWorkspaceRole($user, $workspace, $role);
         } catch (LastManagerDeleteException $e) {
@@ -464,6 +474,17 @@ class RolesController extends Controller
     public function removeGroupFromRoleAction(Group $group, Role $role, Workspace $workspace)
     {
         $this->checkEditionAccess($workspace);
+        if (!$this->isWorkspaceManager($workspace)) {
+            $wsRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
+            if (!in_array($role, $wsRoles)) {
+                return new JsonResponse(
+                    [
+                        'message' => $this->translator->trans('resource_action_denied_message', [], 'platform'),
+                    ],
+                    500
+                );
+            }
+        }
 
         try {
             $this->roleManager->dissociateWorkspaceRole($group, $workspace, $role);
@@ -610,7 +631,12 @@ class RolesController extends Controller
     {
         $this->checkAccess($workspace);
         $canEdit = $this->hasEditionAccess($workspace);
+        $isWsManager = $this->isWorkspaceManager($workspace);
         $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
+        $wsNonAdminRoles = [];
+        if (!$isWsManager) {
+            $wsNonAdminRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
+        }
 
         $pager = ($search === '') ?
             $pager = $this->groupManager->getGroupsByRoles($wsRoles, $page, $max, $order, $direction) :
@@ -632,6 +658,8 @@ class RolesController extends Controller
             'direction' => $direction,
             'canEdit' => $canEdit,
             'externalGroups' => $externalGroups,
+            'isManager' => $isWsManager,
+            'wsNonAdminRoles' => $wsNonAdminRoles,
         ];
     }
 
