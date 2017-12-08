@@ -2,13 +2,12 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Adapter;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
-use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
 use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\ExplanationBuilder;
-use Claroline\CoreBundle\API\Utilities\ObjectHandler;
-use Symfony\Component\Translation\TranslatorInterface;
+use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Property;
 use Claroline\CoreBundle\API\Utils\ArrayUtils;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service()
@@ -16,7 +15,10 @@ use Claroline\CoreBundle\API\Utils\ArrayUtils;
  */
 class CsvAdapter implements AdapterInterface
 {
+    /** @var TranslatorInterface */
     private $translator;
+    /** @var ArrayUtils */
+    private $arrayUtils;
 
     /**
      * @DI\InjectParams({
@@ -32,12 +34,13 @@ class CsvAdapter implements AdapterInterface
     }
 
     /**
-     * Create a php \stdClass object from the schema according to the data passed on.
+     * Create a php array object from the schema according to the data passed on.
      * Each line is a new object.
      *
-     * @todo make this recursive (for object containing other object: max level is 2 now: ie: groups.yolo)
+     * @param string      $content
+     * @param Explanation $explanation
      */
-    public function decodeSchema($content, $explanation)
+    public function decodeSchema($content, Explanation $explanation)
     {
         $data = [];
         $lines = str_getcsv($content, PHP_EOL);
@@ -57,7 +60,14 @@ class CsvAdapter implements AdapterInterface
         return $data;
     }
 
-    private function buildObjectFromLine($properties, array $headers, Explanation $explanation)
+    /**
+     * Build an object from an array of headers and properties path.
+     *
+     * @param array       $properties
+     * @param array       $headers
+     * @param Explanation $explanation
+     */
+    private function buildObjectFromLine(array $properties, array $headers, Explanation $explanation)
     {
         $object = [];
 
@@ -72,6 +82,13 @@ class CsvAdapter implements AdapterInterface
         return $object;
     }
 
+    /**
+     * Build an object from an array of headers and properties path.
+     *
+     * @param Property $property
+     * @param array    &$object
+     * @param mixed    $value
+     */
     private function addPropertyToObject(Property $property, array &$object, $value)
     {
         $propertyName = $property->getName();
@@ -90,13 +107,16 @@ class CsvAdapter implements AdapterInterface
         }
 
         if ($property->getType() === 'integer') {
-            $value = (int)$value;
+            $value = (int) $value;
+        }
+
+        if ($property->getType() === 'boolean') {
         }
 
         $this->arrayUtils->set($object, $propertyName, $value);
     }
 
-    public function explainSchema($data)
+    public function explainSchema(\stdClass $data)
     {
         $builder = new ExplanationBuilder($this->translator);
 
@@ -110,6 +130,74 @@ class CsvAdapter implements AdapterInterface
         return $builder->explainIdentifiers($schemas);
     }
 
+    public function format(array $data, array $options)
+    {
+        $lines = [];
+        $headers = $options['headers'];
+        $lines[] = implode(';', $headers);
+
+        foreach ($data as $object) {
+            $properties = [];
+
+            $object = json_decode(json_encode($object));
+
+            foreach ($headers as $header) {
+                $properties[] = $this->getCsvSerialized($object, $header);
+            }
+
+            $lines[] = implode(';', $properties);
+        }
+
+        $data = implode('</br>', $lines);
+
+        return $data;
+    }
+
+    /**
+     * Returns the property of the object according to the path for the csv export.
+     *
+     * @param \stdClass $object
+     * @param string    $path
+     *
+     * @return string
+     */
+    private function getCsvSerialized(\stdClass $object, $path)
+    {
+        //it's easier to work with objects here
+        $parts = explode('.', $path);
+        $first = array_shift($parts);
+
+        if (property_exists($object, $first) && is_object($object->{$first})) {
+            return $this->getCsvSerialized($object->{$first}, implode($parts, '.'));
+        }
+
+        if (property_exists($object, $first) && is_array($object->{$first})) {
+            return $this->getCsvArraySerialized($object->{$first}, implode($parts, '.'));
+        }
+
+        if (property_exists($object, $first) && !is_array($object->$first)) {
+            return $object->{$first};
+        }
+    }
+
+    /**
+     * Returns the serialized array for the csv export.
+     *
+     * @param array  $elements - the array to serialize
+     * @param string $path     - the property path inside the array
+     *
+     * @return string
+     */
+    private function getCsvArraySerialized(array $elements, $path)
+    {
+        $data = [];
+
+        foreach ($elements as $element) {
+            $data[] = $this->getCsvSerialized($element, $path);
+        }
+
+        return implode($data, ',');
+    }
 
     public function getMimeTypes()
     {

@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Adapter;
 
+use Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -10,7 +11,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class JsonAdapter implements AdapterInterface
 {
-    public function decodeSchema($content, $schema)
+    public function decodeSchema($content, Explanation $schema)
     {
         return json_decode($content, true);
     }
@@ -20,7 +21,7 @@ class JsonAdapter implements AdapterInterface
         return ['application/json', 'json'];
     }
 
-    public function explainSchema($schema)
+    public function explainSchema(\stdClass $schema)
     {
         return $schema;
     }
@@ -33,5 +34,10 @@ class JsonAdapter implements AdapterInterface
     public function decodeIdentifiers($data, array $schemas)
     {
         return json_decode($data);
+    }
+
+    public function format(array $data, array $options)
+    {
+        return $data;
     }
 }

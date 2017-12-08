@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
@@ -80,9 +81,15 @@ class UserSerializer
                     'id' => $role->getUuid(),
                     'type' => $role->getType(),
                     'name' => $role->getName(),
-                    'translationKey' => $role->getTranslationKey()
+                    'translationKey' => $role->getTranslationKey(),
                 ];
             }, $user->getEntityRoles()),
+            'groups' => array_map(function (Group $group) {
+                return [
+                    'id' => $group->getUuid(),
+                    'name' => $group->getName(),
+                ];
+            }, $user->getGroups()->toArray()),
         ];
     }
 
@@ -99,7 +106,7 @@ class UserSerializer
             'mailWarningHidden' => $user->getHideMailWarning(),
             'publicUrlTuned' => $user->hasTunedPublicUrl(),
             'authentication' => $user->getAuthentication(),
-            'personalWorkspace' => !!$user->getPersonalWorkspace(),
+            'personalWorkspace' => (bool) $user->getPersonalWorkspace(),
             'enabled' => $user->isEnabled(),
             'removed' => $user->isRemoved(),
         ];

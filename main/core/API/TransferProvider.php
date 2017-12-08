@@ -2,12 +2,12 @@
 
 namespace Claroline\CoreBundle\API;
 
+use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
+use Claroline\CoreBundle\API\Transfer\Adapter\AdapterInterface;
+use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\API\Transfer\Adapter\AdapterInterface;
-use Claroline\CoreBundle\API\Transfer\Action\AbstractAction;
-use Claroline\CoreBundle\Library\Logger\FileLogger;
-use Claroline\BundleRecorder\Log\LoggableTrait;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -27,7 +27,7 @@ class TransferProvider
      *     "translator" = @DI\Inject("translator")
      * })
      *
-     * @param ObjectManager      $om
+     * @param ObjectManager $om
      */
     public function __construct(
         ObjectManager $om,
@@ -35,13 +35,20 @@ class TransferProvider
         $logDir,
         TranslatorInterface $translator
       ) {
-        $this->adapters   = [];
-        $this->actions    = [];
-        $this->om         = $om;
+        $this->adapters = [];
+        $this->actions = [];
+        $this->om = $om;
         $this->serializer = $serializer;
-        $this->logDir     = $logDir;
+        $this->logDir = $logDir;
         $this->translator = $translator;
-        $this->logger     = FileLogger::get(uniqid() . '.log', 'claroline.transfer.logger');
+        $this->logger = FileLogger::get(uniqid().'.log', 'claroline.transfer.logger');
+    }
+
+    public function format($format, $data, $options)
+    {
+        $adapter = $this->getAdapter($format);
+
+        return $adapter->format($data, $options);
     }
 
     public function execute($data, $action, $mimeType, $logFile = null)
@@ -50,7 +57,7 @@ class TransferProvider
             $logFile = uniqid();
         }
 
-        $logFile = $this->logDir . '/'. $logFile . '.log';
+        $logFile = $this->logDir.'/'.$logFile.'.log';
         $this->logger = FileLogger::get($logFile, 'claroline.transfer.logger');
 
         $executor = $this->getExecutor($action);
@@ -59,7 +66,7 @@ class TransferProvider
 
         $schema = $executor->getSchema();
         //use the translator here
-        $this->log("Building objects from data...");
+        $this->log('Building objects from data...');
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->serializer->getSchema($schema['$root']);
@@ -81,11 +88,11 @@ class TransferProvider
         $i = 0;
         $this->om->startFlushSuite();
         $total = count($data);
-        $this->log("Executing operations...");
+        $this->log('Executing operations...');
 
         foreach ($data as $data) {
-            $i++;
-            $this->log("{$i}/{$total}: " . $this->getActionName($executor));
+            ++$i;
+            $this->log("{$i}/{$total}: ".$this->getActionName($executor));
             $executor->execute($data);
 
             if ($i % $executor->getBatchSize() === 0) {
@@ -96,29 +103,26 @@ class TransferProvider
         $this->om->endFlushSuite();
     }
 
-    public function getData($file)
-    {
-        $mimeType = $file->getMimeType();
-    }
-
     public function getActionName(AbstractAction $action)
     {
-        return $action->getAction()[0] . '_' . $action->getAction()[1];
+        return $action->getAction()[0].'_'.$action->getAction()[1];
     }
 
     public function add($dependency)
     {
         if ($dependency instanceof AdapterInterface) {
             $this->adapters[$dependency->getMimeTypes()[0]] = $dependency;
+
             return;
         }
 
         if ($dependency instanceof AbstractAction) {
             $this->actions[$this->getActionName($dependency)] = $dependency;
+
             return;
         }
 
-        throw new \Exception("Can only add AbstractAction or ActionInterface. Failed to find one for " . get_class($dependency));
+        throw new \Exception('Can only add AbstractAction or ActionInterface. Failed to find one for '.get_class($dependency));
     }
 
     public function getExecutor($action)
@@ -132,7 +136,7 @@ class TransferProvider
         $action = $this->getExecutor($actionName);
 
         if (!$action->supports($format)) {
-            throw new \Exception('This action is not supported for the ' . $format . ' format.');
+            throw new \Exception('This action is not supported for the '.$format.' format.');
         }
 
         $schema = $action->getSchema();
@@ -180,6 +184,6 @@ class TransferProvider
             }
         }
 
-        throw new \Exception('No adapter found for mime type ' . $mimeType);
+        throw new \Exception('No adapter found for mime type '.$mimeType);
     }
 }

@@ -11,12 +11,14 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\TransferProvider;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/transfer")
@@ -26,16 +28,23 @@ class TransferController
     /** @var TransferProvider */
     private $provider;
 
+    /** @var FinderProvider */
+    private $finder;
+
     /**
      * @DI\InjectParams({
-     *    "provider" = @DI\Inject("claroline.api.transfer")
+     *    "provider" = @DI\Inject("claroline.api.transfer"),
+     *    "finder"   = @DI\Inject("claroline.api.finder")
      * })
      *
      * @param TransferProvider $provider
      */
-    public function __construct(TransferProvider $provider)
-    {
+    public function __construct(
+        TransferProvider $provider,
+        FinderProvider $finder
+    ) {
         $this->provider = $provider;
+        $this->finder = $finder;
     }
 
     /**
@@ -59,6 +68,25 @@ class TransferController
         );
 
         return new JsonResponse('done', 200);
+    }
+
+    /**
+     * @Route(
+     *    "/export/{format}",
+     *    name="apiv2_transfer_execute"
+     * )
+     * @Method("GET")
+     */
+    public function exportAction(Request $request, $format)
+    {
+        $results = $this->finder->search(
+            //maybe use a class map because it's the entity one currently
+            $request->query->get('class'),
+            $request->query->all(),
+            []
+        );
+
+        return new Response($this->provider->format($format, $results['data'], $request->query->all()));
     }
 
     /**
