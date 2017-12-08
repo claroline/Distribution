@@ -40,14 +40,28 @@ class UserSerializer
         $this->tokenStorage = $tokenStorage;
     }
 
+    /**
+     * @return string
+     */
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\User';
     }
 
+    /**
+     * @return string
+     */
     public function getSchema()
     {
         return '#/main/core/user.json';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSamples()
+    {
+        return '#/main/core/user';
     }
 
     /**
@@ -93,13 +107,18 @@ class UserSerializer
         ];
     }
 
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
     private function serializeMeta(User $user)
     {
         return [
             'publicUrl' => $user->getPublicUrl(),
             'acceptedTerms' => $user->hasAcceptedTerms(),
             'lastLogin' => $user->getLastLogin() ? $user->getLastLogin()->format('Y-m-d\TH:i:s') : null,
-            'created' => $user->getCreated()->format('Y-m-d\TH:i:s'),
+            'created' => $user->getCreated() ? $user->getCreated()->format('Y-m-d\TH:i:s') : null,
             'description' => $user->getDescription(),
             'mailValidated' => $user->isMailNotified(),
             'mailNotified' => $user->isMailNotified(),
@@ -112,6 +131,11 @@ class UserSerializer
         ];
     }
 
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
     private function serializeRights(User $user)
     {
         // return same structure than ResourceNode
@@ -124,6 +148,11 @@ class UserSerializer
         ];
     }
 
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
     private function serializeRestrictions(User $user)
     {
         return [
@@ -132,6 +161,11 @@ class UserSerializer
         ];
     }
 
+    /**
+     * @param User $user
+     *
+     * @return array
+     */
     private function serializePublic(User $user)
     {
         $settingsProfile = $this->facetManager->getVisiblePublicPreference();
@@ -179,9 +213,9 @@ class UserSerializer
      * Deserialize method.
      * TODO This is only a partial implementation.
      *
-     * @param array $data
-     * @param User  $user
-     * @param array $options
+     * @param array     $data
+     * @param User|null $user
+     * @param array     $options
      *
      * @return User
      */

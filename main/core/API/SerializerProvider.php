@@ -209,6 +209,24 @@ class SerializerProvider
     }
 
     /**
+     * @param string $class
+     *
+     * @return string
+     */
+    public function getSampleDirectory($class)
+    {
+        $serializer = $this->get($class);
+
+        if (method_exists($serializer, 'getSamples')) {
+            $url = $serializer->getSamples();
+            $path = explode('/', $url);
+
+            return $this->rootDir.'/vendor/claroline/distribution/'
+              .$path[1].'/'.$path[2].'/Resources/samples/'.$path[3];
+        }
+    }
+
+    /**
      * Checks if a class has a schema defined.
      *
      * @param string $class
