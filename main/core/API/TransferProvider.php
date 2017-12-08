@@ -29,8 +29,6 @@ class TransferProvider
     private $logDir;
     /** @var TranslatorInterface */
     private $translator;
-    /** @var FileLogger */
-    private $logger;
 
     /**
      * Crud constructor.

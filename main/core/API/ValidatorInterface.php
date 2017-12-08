@@ -4,6 +4,9 @@ namespace Claroline\CoreBundle\API;
 
 interface ValidatorInterface
 {
+    /**
+     * @return string
+     */
     public function getClass();
 
     /**
