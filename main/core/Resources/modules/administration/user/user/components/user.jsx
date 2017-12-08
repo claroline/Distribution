@@ -181,7 +181,19 @@ const User = connect(
 
     },
     pickRoles: (userId) => {
-
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-id-badge',
+        title: t('add_roles'),
+        name: 'roles.picker',
+        open: RoleList.open,
+        definition: RoleList.definition,
+        card: RoleList.card,
+        fetch: {
+          url: ['apiv2_role_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addRoles(userId, selected))
+      }))
     }
   })
 )(UserForm)
