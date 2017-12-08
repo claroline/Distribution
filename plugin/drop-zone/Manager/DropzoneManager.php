@@ -28,6 +28,7 @@ use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Entity\DropzoneToolDocument;
+use Claroline\DropZoneBundle\Repository\CorrectionRepository;
 use Claroline\DropZoneBundle\Repository\DropRepository;
 use Claroline\TeamBundle\Entity\Team;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -73,6 +74,8 @@ class DropzoneManager
 
     /** @var DropRepository */
     private $dropRepo;
+
+    /** @var CorrectionRepository */
     private $correctionRepo;
     private $dropzoneToolRepo;
     private $dropzoneToolDocumentRepo;
@@ -308,7 +311,7 @@ class DropzoneManager
      *
      * @return array
      */
-    public function getTeamDrops(Dropzone $dropzone, User $user, $withCreation = false)
+    public function getTeamDrops(Dropzone $dropzone, User $user)
     {
         $drops = $this->dropRepo->findTeamDrops($dropzone, $user);
 
@@ -418,12 +421,17 @@ class DropzoneManager
      * Terminates a drop.
      *
      * @param Drop $drop
+     * @param User $user
      */
-    public function submitDrop(Drop $drop)
+    public function submitDrop(Drop $drop, User $user)
     {
         $this->om->startFlushSuite();
         $drop->setFinished(true);
         $drop->setDropDate(new \DateTime());
+
+        if ($drop->getTeamId()) {
+            $drop->setUser($user);
+        }
         $this->om->persist($drop);
         $this->checkCompletion($drop->getDropzone(), $drop->getUser(), $drop);
         $this->om->endFlushSuite();
@@ -509,15 +517,17 @@ class DropzoneManager
      * Updates a Correction.
      *
      * @param array $data
+     * @param User  $user
      *
      * @return Correction
      */
-    public function saveCorrection(array $data)
+    public function saveCorrection(array $data, User $user)
     {
         $this->om->startFlushSuite();
         $existingCorrection = $this->correctionRepo->findOneBy(['uuid' => $data['id']]);
         $isNew = empty($existingCorrection);
         $correction = $this->correctionSerializer->deserialize('Claroline\DropZoneBundle\Entity\Correction', $data);
+        $correction->setUser($user);
 
         if (!$isNew) {
             $correction->setLastEditionDate(new \DateTime());
@@ -533,15 +543,17 @@ class DropzoneManager
      * Submits a Correction.
      *
      * @param Correction $correction
+     * @param User       $user
      *
      * @return Correction
      */
-    public function submitCorrection(Correction $correction)
+    public function submitCorrection(Correction $correction, User $user)
     {
         $this->om->startFlushSuite();
 
         $correction->setFinished(true);
         $correction->setEndDate(new \DateTime());
+        $correction->setUser($user);
         $this->om->persist($correction);
         $this->om->forceFlush();
         $drop = $this->computeDropScore($correction->getDrop());
@@ -684,29 +696,95 @@ class DropzoneManager
     }
 
     /**
-     * Gets drops corrected by user.
+     * Gets user|team drop if it is finished.
      *
      * @param Dropzone $dropzone
      * @param User     $user
-     *
-     * @return array
-     */
-    public function getUserFinishedPeerDrops(Dropzone $dropzone, User $user)
-    {
-        return $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
-    }
-
-    /**
-     * Gets drops corrected by team.
-     *
-     * @param Dropzone $dropzone
      * @param int      $teamId
      *
      * @return array
      */
-    public function getTeamFinishedPeerDrops(Dropzone $dropzone, $teamId)
+    public function getFinishedUserDrop(Dropzone $dropzone, User $user = null, $teamId = null)
     {
-        return $this->dropRepo->findTeamFinishedPeerDrops($dropzone, $teamId);
+        $drop = null;
+
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                if (!empty($user)) {
+                    $drop = $this->dropRepo->findOneBy([
+                        'dropzone' => $dropzone,
+                        'user' => $user,
+                        'teamId' => null,
+                        'finished' => true,
+                    ]);
+                }
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                if ($teamId) {
+                    $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'teamId' => $teamId, 'finished' => true]);
+                }
+                break;
+        }
+
+        return $drop;
+    }
+
+    /**
+     * Gets drops corrected by user|team.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     * @param int      $teamId
+     *
+     * @return array
+     */
+    public function getFinishedPeerDrops(Dropzone $dropzone, User $user = null, $teamId = null)
+    {
+        $drops = [];
+
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                if (!empty($user)) {
+                    $drops = $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
+                }
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                if ($teamId) {
+                    $drops = $this->dropRepo->findTeamFinishedPeerDrops($dropzone, $teamId);
+                }
+                break;
+        }
+
+        return $drops;
+    }
+
+    /**
+     * Gets drops corrected by user|team but that are not finished.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     * @param int      $teamId
+     *
+     * @return array
+     */
+    public function getUnfinishedPeerDrops(Dropzone $dropzone, User $user = null, $teamId = null)
+    {
+        $drops = [];
+
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                if (!empty($user)) {
+                    $drops = $this->dropRepo->findUserUnfinishedPeerDrop($dropzone, $user);
+                }
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                if ($teamId) {
+                    $drops = $this->dropRepo->findTeamUnfinishedPeerDrop($dropzone, $teamId);
+                }
+                break;
+        }
+
+        return $drops;
     }
 
     /**
@@ -714,25 +792,34 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
+     * @param int      $teamId
      * @param bool     $withCreation
      *
      * @return Drop | null
      */
-    public function getPeerDrop(Dropzone $dropzone, User $user, $withCreation = true)
+    public function getPeerDrop(Dropzone $dropzone, User $user = null, $teamId = null, $withCreation = true)
     {
         $peerDrop = null;
-        $userDrop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'user' => $user, 'finished' => true]);
 
+        /* Gets user|team drop to check if it is finished before allowing peer review */
+        $userDrop = $this->getFinishedUserDrop($dropzone, $user, $teamId);
+
+        /* user|team drop is finished */
         if (!empty($userDrop)) {
-            $unfinishedDrops = $this->dropRepo->findUserUnfinishedPeerDrop($dropzone, $user);
+            /* Gets drops where user|team has an unfinished correction */
+            $unfinishedDrops = $this->getUnfinishedPeerDrops($dropzone, $user, $teamId);
+
             if (count($unfinishedDrops) > 0) {
+                /* Returns the first drop with an unfinished correction */
                 $peerDrop = $unfinishedDrops[0];
             } else {
-                $finishedDrops = $this->dropRepo->findUserFinishedPeerDrops($dropzone, $user);
+                /* Gets drops where user|team has a finished correction */
+                $finishedDrops = $this->getFinishedPeerDrops($dropzone, $user, $teamId);
                 $nbCorrections = count($finishedDrops);
 
+                /* Fetches a drop for peer correction if user|team has not made the expected number of corrections */
                 if ($withCreation && $dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
-                    $peerDrop = $this->getAvailableDropForPeer($dropzone, $user);
+                    $peerDrop = $this->getAvailableDropForPeer($dropzone, $user, $teamId);
                 }
             }
         }
@@ -745,13 +832,27 @@ class DropzoneManager
      *
      * @param Dropzone $dropzone
      * @param User     $user
+     * @param int      $teamId
      *
      * @return Drop | null
      */
-    public function getAvailableDropForPeer(Dropzone $dropzone, User $user)
+    public function getAvailableDropForPeer(Dropzone $dropzone, User $user = null, $teamId = null)
     {
         $peerDrop = null;
-        $drops = $this->dropRepo->findUserAvailableDrops($dropzone, $user);
+        $drops = [];
+
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                if (!empty($user)) {
+                    $drops = $this->dropRepo->findUserAvailableDrops($dropzone, $user);
+                }
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                if ($teamId) {
+                    $drops = $this->dropRepo->findTeamAvailableDrops($dropzone, $teamId);
+                }
+                break;
+        }
         $validDrops = [];
 
         foreach ($drops as $drop) {
@@ -762,13 +863,14 @@ class DropzoneManager
             }
         }
         if (count($validDrops) > 0) {
-            /* TODO: Randomize choice */
-            $peerDrop = $validDrops[0];
+            /* Selects the drop with the least corrections */
+            $peerDrop = $this->getDropWithTheLeastCorrections($validDrops);
 
             /* Creates empty correction */
             $correction = new Correction();
             $correction->setDrop($peerDrop);
             $correction->setUser($user);
+            $correction->setTeamId($teamId);
             $currentDate = new \DateTime();
             $correction->setStartDate($currentDate);
             $correction->setLastEditionDate($currentDate);
@@ -863,7 +965,7 @@ class DropzoneManager
 
         if (!$isComplete) {
             $expectedCorrectionTotal = $dropzone->getExpectedCorrectionTotal();
-            $finishedPeerDrops = $this->getUserFinishedPeerDrops($dropzone, $user);
+            $finishedPeerDrops = $this->getFinishedPeerDrops($dropzone, $user);
             $isComplete = count($finishedPeerDrops) >= $expectedCorrectionTotal;
         }
         if ($isComplete) {
@@ -977,39 +1079,36 @@ class DropzoneManager
     public function getAllCorrectionsData(Dropzone $dropzone)
     {
         $data = [];
-        $corrections = [];
-        $dropType = $dropzone->getDropType();
-
-        switch ($dropType) {
-            case Dropzone::DROP_TYPE_USER:
-                $corrections = $this->correctionRepo->findAllUsersCorrectionsByDropzone($dropzone);
-                break;
-            case Dropzone::DROP_TYPE_TEAM:
-                $corrections = $this->correctionRepo->findAllTeamsCorrectionsByDropzone($dropzone);
-                break;
-        }
+        $corrections = $this->correctionRepo->findAllCorrectionsByDropzone($dropzone);
 
         foreach ($corrections as $correction) {
-            $key = null;
-            $serializedCorrection = $this->serializeCorrection($correction);
+            $teamId = $correction->getTeamId();
+            $key = empty($teamId) ? 'user_'.$correction->getUser()->getId() : 'team_'.$teamId;
 
-            switch ($dropType) {
-                case Dropzone::DROP_TYPE_USER:
-                    $key = $correction->getUser()->getId();
-                    break;
-                case Dropzone::DROP_TYPE_TEAM:
-                    $key = $correction->getTeamId();
-                    break;
+            if (!isset($data[$key])) {
+                $data[$key] = [];
             }
-            if (!empty($key)) {
-                if (!isset($data[$key])) {
-                    $data[$key] = [];
-                }
-                $data[$key][] = $serializedCorrection;
-            }
+            $data[$key][] = $this->serializeCorrection($correction);
         }
 
         return $data;
+    }
+
+    private function getDropWithTheLeastCorrections(array $drops)
+    {
+        $selectedDrop = null;
+        $min = 0;
+
+        foreach ($drops as $drop) {
+            $nbCorrections = count($drop->getCorrections());
+
+            if ($nbCorrections <= $min) {
+                $selectedDrop = $drop;
+                $min = $nbCorrections;
+            }
+        }
+
+        return $selectedDrop;
     }
 
     private function registerFile(Dropzone $dropzone, UploadedFile $file)

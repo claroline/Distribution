@@ -7,6 +7,7 @@ import {navigate} from '#/main/core/router'
 
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {generateCorrectionGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
@@ -29,7 +30,20 @@ class PeerDrop extends Component {
   }
 
   getCorrection() {
-    return this.props.drop ? this.props.drop.corrections.find(c => !c.finished && c.user.id === this.props.user.id) : null
+    let drop = null
+
+    switch (this.props.dropzone.parameters.dropType) {
+      case constants.DROP_TYPE_USER :
+        drop = this.props.drop.corrections.find(c => !c.finished && c.user.id === this.props.user.id)
+        break
+      case constants.DROP_TYPE_TEAM :
+        if (this.props.myTeamId) {
+          drop = this.props.drop.corrections.find(c => !c.finished && c.teamId === this.props.myTeamId)
+        }
+        break
+    }
+
+    return drop
   }
 
   render() {
@@ -63,6 +77,7 @@ PeerDrop.propTypes = {
   user: T.shape({
     id: T.number.isRequired
   }),
+  myTeamId: T.number,
   isPeerReviewEnabled: T.bool.isRequired,
   saveCorrection: T.func.isRequired,
   submitCorrection: T.func.isRequired
@@ -73,6 +88,7 @@ function mapStateToProps(state) {
     user: select.user(state),
     dropzone: select.dropzone(state),
     drop: select.peerDrop(state),
+    myTeamId: select.myTeamId(state),
     isPeerReviewEnabled: select.isPeerReviewEnabled(state)
   }
 }

@@ -56,6 +56,8 @@ class CorrectionSerializer
         return [
             'id' => $correction->getUuid(),
             'drop' => $correction->getDrop()->getUuid(),
+            'dropUser' => $correction->getDrop()->getUser()->getFullName(),
+            'dropTeam' => $correction->getDrop()->getTeamName(),
             'user' => $correction->getUser() ? $this->userSerializer->serialize($correction->getUser()) : null,
             'score' => $correction->getScore(),
             'comment' => $correction->getComment(),

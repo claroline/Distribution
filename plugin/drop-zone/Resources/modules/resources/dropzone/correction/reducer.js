@@ -18,12 +18,12 @@ import {
   DOCUMENT_UPDATE
 } from '#/plugin/drop-zone/resources/dropzone/player/actions'
 
-const currentDropReducer = makeReducer({}, {
+const currentDropReducer = makeReducer(null, {
   [CURRENT_DROP_LOAD]: (state, action) => {
     return action.drop
   },
   [CURRENT_DROP_RESET]: () => {
-    return {}
+    return null
   },
   [DROP_UPDATE]: (state, action) => {
     return state && state.id === action.drop.id ? action.drop : state

@@ -8,8 +8,9 @@ import {DataListContainer as DataList} from '#/main/core/layout/list/containers/
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
-import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {getCorrectionKey} from '#/plugin/drop-zone/resources/dropzone/utils'
+import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
 class Correctors extends Component {
   generateColumns(props) {
@@ -38,8 +39,8 @@ class Correctors extends Component {
     }
     if (props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM) {
       columns.push({
-        name: 'team',
-        label: t('team'),
+        name: 'teamName',
+        label: trans('team', {}, 'team'),
         displayed: true,
         renderer: (rowData) => {
           const link = <a href={`#/corrector/${rowData.id}`}>{t(rowData.teamName)}</a>
@@ -55,11 +56,9 @@ class Correctors extends Component {
       filterable: false,
       sortable: false,
       renderer: (rowData) => {
-        const currentKey = props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? rowData.user.id : rowData.teamId
+        const key = getCorrectionKey(rowData, props.dropzone)
 
-        return props.corrections && props.corrections[currentKey] ?
-          props.corrections[currentKey].length :
-          0
+        return props.corrections && props.corrections[key] ? props.corrections[key].length : 0
       }
     })
     columns.push({
@@ -70,9 +69,9 @@ class Correctors extends Component {
       sortable: false,
       renderer: (rowData) => {
         const nbExpectedCorrections = props.dropzone.parameters.expectedCorrectionTotal
-        const currentKey = props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? rowData.user.id : rowData.teamId
-        const nbCorrections = props.corrections && props.corrections[currentKey] ?
-          props.corrections[currentKey].filter(c => c.finished).length :
+        const key = getCorrectionKey(rowData, props.dropzone)
+        const nbCorrections = props.corrections && props.corrections[key] ?
+          props.corrections[key].filter(c => c.finished).length :
           0
 
         return `${nbCorrections} / ${nbExpectedCorrections}`
@@ -85,10 +84,10 @@ class Correctors extends Component {
       filterable: false,
       sortable: false,
       renderer: (rowData) => {
-        const currentKey = props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? rowData.user.id : rowData.teamId
+        const key = getCorrectionKey(rowData, props.dropzone)
 
-        return props.corrections && props.corrections[currentKey] ?
-          props.corrections[currentKey].filter(c => c.correctionDenied).length :
+        return props.corrections && props.corrections[key] ?
+          props.corrections[key].filter(c => c.correctionDenied).length :
           0
       }
     })
@@ -112,7 +111,7 @@ class Correctors extends Component {
     })
     actions.push({
       icon: 'fa fa-fw fa-unlock',
-      label: trans('unlock_user', {}, 'dropzone'),
+      label: trans('unlock_corrector', {}, 'dropzone'),
       action: (rows) => props.unlockUser(rows[0].id),
       context: 'row'
     })

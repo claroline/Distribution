@@ -291,7 +291,7 @@ class DropzoneController
         $this->checkDropEdition($drop, $user);
 
         try {
-            $this->manager->submitDrop($drop);
+            $this->manager->submitDrop($drop, $user);
 
             return new JsonResponse($this->manager->serializeDrop($drop));
         } catch (\Exception $e) {
@@ -478,17 +478,19 @@ class DropzoneController
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Drop    $drop
+     * @param User    $user
      * @param Request $request
      *
      * @return JsonResponse
      */
-    public function correctionSaveAction(Drop $drop, Request $request)
+    public function correctionSaveAction(Drop $drop, User $user, Request $request)
     {
         $dropzone = $drop->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        /* TODO: Checks correction rights */
 
         try {
-            $correction = $this->manager->saveCorrection(json_decode($request->getContent(), true));
+            $correction = $this->manager->saveCorrection(json_decode($request->getContent(), true), $user);
 
             return new JsonResponse(
                 $this->manager->serializeCorrection($correction)
@@ -520,7 +522,7 @@ class DropzoneController
         $this->checkCorrectionEdition($correction, $user);
 
         try {
-            $this->manager->submitCorrection($correction);
+            $this->manager->submitCorrection($correction, $user);
 
             return new JsonResponse(
                 $this->manager->serializeCorrection($correction)
@@ -612,6 +614,37 @@ class DropzoneController
     {
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
         $drop = $this->manager->getPeerDrop($dropzone, $user);
+        $data = empty($drop) ? null : $this->manager->serializeDrop($drop);
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @EXT\Route("/{id}/team/{teamId}/peer/drop/fetch", name="claro_dropzone_team_peer_drop_fetch")
+     * @EXT\Method("GET")
+     * @EXT\ParamConverter(
+     *     "dropzone",
+     *     class="ClarolineDropZoneBundle:Dropzone",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter(
+     *     "team",
+     *     class="ClarolineTeamBundle:Team",
+     *     options={"mapping": {"teamId": "id"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Dropzone $dropzone
+     * @param Team     $team
+     * @param User     $user
+     *
+     * @return JsonResponse
+     */
+    public function teamPeerDropFetchAction(Dropzone $dropzone, Team $team, User $user)
+    {
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $this->checkTeamUser($team, $user);
+        $drop = $this->manager->getPeerDrop($dropzone, $user, $team->getId());
         $data = empty($drop) ? null : $this->manager->serializeDrop($drop);
 
         return new JsonResponse($data);

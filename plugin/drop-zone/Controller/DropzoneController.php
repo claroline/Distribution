@@ -83,9 +83,9 @@ class DropzoneController extends Controller
     {
         $resourceNode = $dropzone->getResourceNode();
         $this->checkPermission('OPEN', $resourceNode, [], true);
-        $teams = empty($user) ?
-            [] :
-            $this->teamManager->getSearializedTeamsByUserAndWorkspace($user, $resourceNode->getWorkspace());
+        $teams = !empty($user) ?
+            $this->teamManager->getSearializedTeamsByUserAndWorkspace($user, $resourceNode->getWorkspace()) :
+            [];
         $myDrop = null;
         $peerDrop = null;
         $finishedPeerDrops = [];
@@ -93,9 +93,9 @@ class DropzoneController extends Controller
 
         switch ($dropzone->getDropType()) {
             case Dropzone::DROP_TYPE_USER:
-                $myDrop = $this->manager->getUserDrop($dropzone, $user);
-                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
-                $finishedPeerDrops = $this->manager->getUserFinishedPeerDrops($dropzone, $user);
+                $myDrop = !empty($user) ? $this->manager->getUserDrop($dropzone, $user) : null;
+                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, null, false);
+                $finishedPeerDrops = $this->manager->getFinishedPeerDrops($dropzone, $user);
                 break;
             case Dropzone::DROP_TYPE_TEAM:
                 $drops = [];
@@ -104,7 +104,7 @@ class DropzoneController extends Controller
                 }, $teams);
 
                 /* Fetches team drops associated to user */
-                $teamDrops = $this->manager->getTeamDrops($dropzone, $user);
+                $teamDrops = !empty($user) ? $this->manager->getTeamDrops($dropzone, $user) : [];
 
                 /* Unregisters user from unfinished drops associated to team he doesn't belong to anymore */
                 foreach ($teamDrops as $teamDrop) {
@@ -127,15 +127,13 @@ class DropzoneController extends Controller
                 } else {
                     $errorMessage = $this->translator->trans('more_than_one_drop_error', [], 'dropzone');
                 }
-                if (count($teams) === 0) {
-                    $errorMessage = $this->translator->trans('no_team_error', [], 'dropzone');
-                }
                 $teamId = empty($myDrop) ? null : $myDrop->getTeamId();
-                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, false);
-                $finishedPeerDrops = empty($teamId) ? [] : $this->manager->getTeamFinishedPeerDrops($dropzone, $teamId);
+                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, $teamId, false);
+                $finishedPeerDrops = $this->manager->getFinishedPeerDrops($dropzone, $user, $teamId);
                 break;
         }
         $serializedTools = $this->manager->getSerializedTools();
+        /* TODO: generate ResourceUserEvaluation for team */
         $userEvaluation = empty($user) ? null : $this->manager->generateResourceUserEvaluation($dropzone, $user);
 
         return [

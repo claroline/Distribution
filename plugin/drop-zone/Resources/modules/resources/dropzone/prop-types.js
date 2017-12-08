@@ -100,6 +100,8 @@ const CorrectionType = {
       firstName: T.string.isRequired,
       lastName: T.string.isRequired
     }),
+    dropUser: T.string,
+    dropTeam: T.string,
     score: T.number,
     comment: T.string,
     valid: T.bool.isRequired,

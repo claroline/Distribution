@@ -122,7 +122,6 @@ class TeamManager
 
         foreach ($teams as $team) {
             $this->initializeTeamRights($team);
-//            $this->initializeTeamDirectoryPerms($team);
         }
         $this->om->endFlushSuite();
     }

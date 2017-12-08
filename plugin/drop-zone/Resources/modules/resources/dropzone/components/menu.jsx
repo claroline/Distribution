@@ -15,6 +15,12 @@ import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop
 
 const Menu = props =>
   <div id="dropzone-menu">
+    {props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM && !props.teams &&
+      <div className="alert alert-danger">
+        {trans('no_team_error', {}, 'dropzone')}
+      </div>
+    }
+
     {props.errorMessage &&
       <div className="alert alert-danger">
         {props.errorMessage}
@@ -69,6 +75,7 @@ const Menu = props =>
     {props.user &&
     !props.myDrop &&
     !props.errorMessage &&
+    !(props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM && !props.teams) &&
     [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 &&
       <button
         className="btn btn-primary pull-right"

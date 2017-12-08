@@ -9,6 +9,7 @@ import {DataListContainer as DataList} from '#/main/core/layout/list/containers/
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
 class Drops extends Component {
@@ -38,12 +39,23 @@ class Drops extends Component {
         return element
       }
     })
-    columns.push({
-      name: 'user',
-      label: t('user'),
-      displayed: true,
-      renderer: (rowData) => rowData.user ? `${rowData.user.firstName} ${rowData.user.lastName}` : '-'
-    })
+
+    if (props.dropzone.parameters.dropType === constants.DROP_TYPE_USER) {
+      columns.push({
+        name: 'user',
+        label: t('user'),
+        displayed: true,
+        renderer: (rowData) => rowData.user ? `${rowData.user.firstName} ${rowData.user.lastName}` : '-'
+      })
+    }
+    if (props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM) {
+      columns.push({
+        name: 'teamName',
+        label: trans('team', {}, 'team'),
+        displayed: true,
+        type: 'string'
+      })
+    }
     columns.push({
       name: 'score',
       label: t('score'),

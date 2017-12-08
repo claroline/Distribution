@@ -8,6 +8,7 @@ import {t, trans} from '#/main/core/translation'
 import {DropzoneType, DropType, CorrectionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+import {getCorrectionKey} from '#/plugin/drop-zone/resources/dropzone/utils'
 
 const Corrections = props => props.corrections && props.corrections.length > 0 ?
   <table className="table">
@@ -26,12 +27,7 @@ const Corrections = props => props.corrections && props.corrections.length > 0 ?
       {props.corrections.map(c =>
         <tr key={`corrector-correction-${c.id}`}>
           <td>{c.correctionDenied ? <span className='fa fa-fw fa-warning'/> : ''}</td>
-          <td>
-            {props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ?
-              `${c.user.firstName} ${c.user.lastName}` :
-              c.teamId
-            }
-          </td>
+          <td>{props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM ? c.dropTeam : c.dropUser}</td>
           <td>{moment(c.startDate).format('YYYY-MM-DD HH:mm')}</td>
           <td>{moment(c.lastEditionDate).format('YYYY-MM-DD HH:mm')}</td>
           <td>{c.finished ? <span className='fa fa-fw fa-check true'/> : <span className='fa fa-fw fa-times false'/>}</td>
@@ -54,16 +50,17 @@ const Corrector = props => !props.drop || !props.corrections ?
   <span className="fa fa-fw fa-circle-o-notch fa-spin"></span> :
   <div id="corrector-container">
     <h2>
-      {props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ?
-        `${props.drop.user.firstName} ${props.drop.user.lastName}` :
-        props.drop.teamId
-      }
+      {trans(
+        'corrections_list_from',
+        {'name': props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ?
+          `${props.drop.user.firstName} ${props.drop.user.lastName}` :
+          props.drop.teamName
+        },
+        'dropzone'
+      )}
     </h2>
     <Corrections
-      corrections={props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ?
-        props.corrections[props.drop.user.id] :
-        props.corrections[props.drop.teamId]
-      }
+      corrections={props.corrections[getCorrectionKey(props.drop, props.dropzone)] || []}
       dropzone={props.dropzone}
     />
   </div>

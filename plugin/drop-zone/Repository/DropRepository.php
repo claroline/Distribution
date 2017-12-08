@@ -165,7 +165,7 @@ class DropRepository extends EntityRepository
               FROM Claroline\DropZoneBundle\Entity\Correction cor
               JOIN cor.drop cd
               WHERE cd = drop
-              AND cor.teamId != :teamId
+              AND cor.teamId = :teamId
             )
         ';
         $query = $this->_em->createQuery($dql);

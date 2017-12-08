@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {t, trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
@@ -14,11 +14,75 @@ import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {actions as correctionActions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
-import {Corrections} from '#/plugin/drop-zone/resources/dropzone/player/components/corrections.jsx'
 import {DropForm} from '#/plugin/drop-zone/resources/dropzone/player/components/drop-form.jsx'
+
+const Corrections = props =>
+  <FormSections>
+    <FormSection
+      id="corrections-section"
+      title={trans('corrections_list', {}, 'dropzone')}
+    >
+      <table className="table corrections-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th>{t('start_date')}</th>
+            <th>{t('end_date')}</th>
+            {props.dropzone.display.displayNotationToLearners &&
+              <th>{t('score')}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+        {props.corrections.filter(c => c.finished).map((c, idx) =>
+          <tr key={`correction-row-${c.id}`}>
+            <td>
+              {c.correctionDenied &&
+                <span className="fa fa-fw fa-exclamation-triangle"/>
+              }
+            </td>
+            <td>
+              <a
+                className="pointer-hand"
+                onClick={() => {
+                  props.showModal(
+                    'MODAL_CORRECTION',
+                    {
+                      title: trans('correction', {}, 'dropzone'),
+                      correction: c,
+                      dropzone: props.dropzone,
+                      saveCorrection: (correction) => props.saveCorrection(correction)
+                    }
+                  )
+                }}
+              >
+                {trans('correction_n', {number: idx + 1}, 'dropzone')}
+              </a>
+            </td>
+            <td>{c.startDate}</td>
+            <td>{c.endDate}</td>
+            {props.dropzone.display.displayNotationToLearners &&
+              <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
+            }
+          </tr>
+        )}
+        </tbody>
+      </table>
+    </FormSection>
+  </FormSections>
+
+Corrections.propTypes = {
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  corrections: T.array,
+  saveCorrection: T.func,
+  showModal: T.func
+}
 
 const MyDrop = props =>
   <div className="drop-panel">
+    <h2>{trans('my_drop', {}, 'dropzone')}</h2>
+
     <FormSections>
       <FormSection
         id="instructions-section"

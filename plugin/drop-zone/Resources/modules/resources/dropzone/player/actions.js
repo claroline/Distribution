@@ -24,12 +24,12 @@ actions.updateDocument = makeActionCreator(DOCUMENT_UPDATE, 'document')
 actions.removeDocument = makeActionCreator(DOCUMENT_REMOVE, 'documentId')
 
 actions.initializeMyDrop = (teamId = null) => (dispatch, getState) => {
-  const dropzoneId = select.dropzoneId(getState())
+  const dropzone = select.dropzone(getState())
 
-  if (teamId === null) {
+  if (dropzone.parameters.dropType === constants.DROP_TYPE_USER) {
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('claro_dropzone_my_drop_initialize', {id: dropzoneId}),
+        url: generateUrl('claro_dropzone_my_drop_initialize', {id: dropzone.id}),
         request: {
           method: 'POST'
         },
@@ -39,10 +39,10 @@ actions.initializeMyDrop = (teamId = null) => (dispatch, getState) => {
         }
       }
     })
-  } else {
+  } else if (dropzone.parameters.dropType === constants.DROP_TYPE_TEAM && teamId) {
     dispatch({
       [REQUEST_SEND]: {
-        url: generateUrl('claro_dropzone_my_team_drop_initialize', {id: dropzoneId, teamId: teamId}),
+        url: generateUrl('claro_dropzone_my_team_drop_initialize', {id: dropzone.id, teamId: teamId}),
         request: {
           method: 'POST'
         },
@@ -114,21 +114,38 @@ actions.fetchPeerDrop = () => (dispatch, getState) => {
   const peerDrop = select.peerDrop(state)
 
   if (!peerDrop) {
-    const dropzoneId = select.dropzoneId(state)
+    const dropzone = select.dropzone(state)
+    const myTeamId = select.myTeamId(state)
 
-    dispatch({
-      [REQUEST_SEND]: {
-        url: generateUrl('claro_dropzone_peer_drop_fetch', {id: dropzoneId}),
-        request: {
-          method: 'GET'
-        },
-        success: (data, dispatch) => {
-          if (data && data.id) {
-            dispatch(actions.loadPeerDrop(data))
+    if (dropzone.parameters.dropType === constants.DROP_TYPE_USER) {
+      dispatch({
+        [REQUEST_SEND]: {
+          url: generateUrl('claro_dropzone_peer_drop_fetch', {id: dropzone.id}),
+          request: {
+            method: 'GET'
+          },
+          success: (data, dispatch) => {
+            if (data && data.id) {
+              dispatch(actions.loadPeerDrop(data))
+            }
           }
         }
-      }
-    })
+      })
+    } else if (dropzone.parameters.dropType === constants.DROP_TYPE_TEAM && myTeamId) {
+      dispatch({
+        [REQUEST_SEND]: {
+          url: generateUrl('claro_dropzone_team_peer_drop_fetch', {id: dropzone.id, teamId: myTeamId}),
+          request: {
+            method: 'GET'
+          },
+          success: (data, dispatch) => {
+            if (data && data.id) {
+              dispatch(actions.loadPeerDrop(data))
+            }
+          }
+        }
+      })
+    }
   }
 }
 

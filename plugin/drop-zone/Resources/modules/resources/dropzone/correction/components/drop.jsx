@@ -2,21 +2,70 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {t, trans} from '#/main/core/translation'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 import {Documents} from '#/plugin/drop-zone/resources/dropzone/components/documents.jsx'
-import {Corrections} from '#/plugin/drop-zone/resources/dropzone/correction/components/corrections.jsx'
 import {CorrectionCreation} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-creation.jsx'
+import {CorrectionRow} from '#/plugin/drop-zone/resources/dropzone/correction/components/correction-row.jsx'
 
-const Drop = props =>
+const Corrections = props =>
+  <FormSections>
+    <FormSection
+      id="corrections-section"
+      title={trans('corrections_list', {}, 'dropzone')}
+    >
+      <table className="table corrections-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>{trans('corrector', {}, 'dropzone')}</th>
+            <th>{t('start_date')}</th>
+            <th>{t('end_date')}</th>
+            <th>{t('score')}</th>
+            <th>{t('actions')}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {props.corrections.map(c =>
+          <CorrectionRow
+            key={`correction-row-${c.id}`}
+            correction={c}
+          />
+        )}
+        </tbody>
+      </table>
+    </FormSection>
+  </FormSections>
+
+Corrections.propTypes = {
+  corrections: T.array
+}
+
+const Drop = props => props.drop ?
   <div id="drop-container">
+    <h2>
+      {trans(
+        'drop_from',
+        {'name': props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ?
+          `${props.drop.user.firstName} ${props.drop.user.lastName}` :
+          props.drop.teamName
+        },
+        'dropzone'
+      )}
+    </h2>
     <Documents
       documents={props.drop.documents || []}
+      showUser={props.dropzone.parameters.dropType === constants.DROP_TYPE_TEAM}
       showTools={true}
       tools={props.tools}
       executeTool={props.executeTool}
     />
+
     {props.drop.corrections && props.drop.corrections.length > 0 &&
       <Corrections
         corrections={props.drop.corrections || []}
@@ -25,7 +74,9 @@ const Drop = props =>
     {props.drop.finished &&
       <CorrectionCreation {...props}/>
     }
-  </div>
+  </div> :
+  <span className="fa fa-fw fa-circle-o-notch fa-spin"></span>
+
 
 Drop.propTypes = {
   currentUser: T.object,

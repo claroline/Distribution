@@ -163,6 +163,11 @@ const tools = state => state.tools.data
 const teams = state => state.teams
 const errorMessage = state => state.errorMessage
 
+const myTeamId = createSelector(
+  [myDrop],
+  (myDrop) => myDrop && myDrop.teamId ? myDrop.teamId : null
+)
+
 export const select = {
   user,
   userId,
@@ -197,5 +202,6 @@ export const select = {
   nbCorrections,
   tools,
   teams,
+  myTeamId,
   errorMessage
 }

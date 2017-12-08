@@ -30,7 +30,7 @@ const DropzoneResource = props =>
       save: {
         disabled: !props.formPendingChanges || (props.formValidating && !props.formValid),
         action: () => {
-          props.saveDropzone(props.dropzoneId, props.dropzoneForm)
+          props.saveDropzone(props.dropzone.id, props.dropzoneForm)
         }
       }
     }}
@@ -52,7 +52,7 @@ const DropzoneResource = props =>
         }, {
           path: '/drops',
           component: Drops,
-          onEnter: () => props.fetchDrops(props.dropzoneId)
+          onEnter: () => props.fetchDrops(props.dropzone.id)
         }, {
           path: '/drop/:id',
           component: Drop,
@@ -66,15 +66,15 @@ const DropzoneResource = props =>
           path: '/correctors',
           component: Correctors,
           onEnter: () => {
-            props.fetchDrops(props.dropzoneId)
-            props.fetchCorrections(props.dropzoneId)
+            props.fetchDrops(props.dropzone.id)
+            props.fetchCorrections(props.dropzone.id)
           }
         }, {
           path: '/corrector/:id',
           component: Corrector,
           onEnter: (params) => {
             props.fetchDrop(params.id, 'corrector')
-            props.fetchCorrections(props.dropzoneId)
+            props.fetchCorrections(props.dropzone.id)
           },
           onLeave: () => props.resetCorrectorDrop()
         }
@@ -85,7 +85,6 @@ const DropzoneResource = props =>
 DropzoneResource.propTypes = {
   canEdit: T.bool.isRequired,
   dropzone: T.object.isRequired,
-  dropzoneId: T.string.isRequired,
   dropzoneForm: T.object,
   formOpened: T.bool.isRequired,
   formPendingChanges: T.bool.isRequired,
@@ -144,7 +143,6 @@ function mapStateToProps(state) {
   return {
     canEdit: resourceSelect.editable(state),
     dropzone: state.dropzone,
-    dropzoneId: select.dropzoneId(state),
     dropzoneForm: select.formData(state),
     formOpened: select.formIsOpened(state),
     formPendingChanges: select.formHasPendingChanges(state),

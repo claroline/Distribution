@@ -4,6 +4,7 @@ import {t, trans} from '#/main/core/translation'
 import {asset} from '#/main/core/asset'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {getToolDocumentType} from '#/plugin/drop-zone/resources/dropzone/utils'
@@ -54,7 +55,7 @@ const Document = props =>
         />
       </td>
     }
-    {props.showTools &&
+    {props.showTools && props.tools.length > 0 &&
       <td>
         {props.tools.map(t =>
           <button
@@ -99,50 +100,58 @@ Document.propTypes = {
 }
 
 export const Documents = props =>
-  <div id="drop-documents">
-    <h2>{trans('documents_added_to_copy', {}, 'dropzone')}</h2>
-    {props.documents.length > 0 ?
-      <table className="table">
-        <thead>
-          <tr>
-            <th>{trans('drop_type', {}, 'dropzone')}</th>
-            {props.showUser &&
-              <th>{t('user')}</th>
-            }
-            {props.showMeta &&
-              <th>{trans('drop_date', {}, 'dropzone')}</th>
-            }
-            <th>{trans('document', {}, 'dropzone')}</th>
-            {props.canEdit &&
-              <th>{t('actions')}</th>
-            }
-            {props.showTools &&
-              <th>{t('tools')}</th>
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {props.documents.map(d =>
-            <Document
-              key={`document-${d.id}`}
-              document={d}
-              {...props}
-            />
-          )}
-        </tbody>
-      </table> :
-      <div className="alert alert-warning">
-        {trans('no_document', {}, 'dropzone')}
+  <FormSections>
+    <FormSection
+      id="documents-section"
+      title={trans('documents_added_to_copy', {}, 'dropzone')}
+    >
+      <div id="drop-documents">
+        <h3>{trans('documents_added_to_copy', {}, 'dropzone')}</h3>
+        {props.documents.length > 0 ?
+          <table className="table">
+            <thead>
+              <tr>
+                <th>{trans('drop_type', {}, 'dropzone')}</th>
+                {props.showUser &&
+                  <th>{t('user')}</th>
+                }
+                {props.showMeta &&
+                  <th>{trans('drop_date', {}, 'dropzone')}</th>
+                }
+                <th>{trans('document', {}, 'dropzone')}</th>
+                {props.canEdit &&
+                  <th>{t('actions')}</th>
+                }
+                {props.showTools && props.tools.length > 0 &&
+                  <th>{t('tools')}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              {props.documents.map(d =>
+                <Document
+                  key={`document-${d.id}`}
+                  document={d}
+                  {...props}
+                />
+              )}
+            </tbody>
+          </table> :
+          <div className="alert alert-warning">
+            {trans('no_document', {}, 'dropzone')}
+          </div>
+        }
       </div>
-    }
-  </div>
+    </FormSection>
+  </FormSections>
 
 Documents.propTypes = {
   canEdit: T.bool.isRequired,
   showUser: T.bool.isRequired,
   showMeta: T.bool.isRequired,
   showTools: T.bool.isRequired,
-  documents: T.arrayOf(T.shape(DocumentType.propTypes))
+  documents: T.arrayOf(T.shape(DocumentType.propTypes)),
+  tools: T.array
 }
 
 Documents.defaultProps = {

@@ -1,11 +1,13 @@
 import uuid from 'uuid'
 import moment from 'moment'
 
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
+
 export function generateId() {
   return uuid()
 }
 
-export function generateCorrection(dropId, user, dropzone) {
+export function generateCorrection(dropId, user, dropzone, teamId = null) {
   const currentDate = moment().format('YYYY-MM-DD\THH:mm')
   const correction = {
     id: uuid(),
@@ -21,6 +23,7 @@ export function generateCorrection(dropId, user, dropzone) {
     editable: false,
     reported: false,
     correctionDenied: false,
+    teamId: teamId,
     grades: []
   }
 
@@ -48,6 +51,21 @@ export function generateCorrectionGrades(correction, dropzone) {
   }
 
   return Object.assign({}, correction, {grades: grades})
+}
+
+export function getCorrectionKey(drop, dropzone) {
+  let key = null
+
+  switch (dropzone.parameters.dropType) {
+    case constants.DROP_TYPE_USER :
+      key = `user_${drop.user.id}`
+      break
+    case constants.DROP_TYPE_TEAM :
+      key = `team_${drop.teamId}`
+      break
+  }
+
+  return key
 }
 
 export function getToolDocumentType(toolDocument, tools) {
