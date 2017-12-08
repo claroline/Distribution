@@ -20,14 +20,9 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class FinderProvider
 {
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     private $om;
-
-    /**
-     * @var SerializerProvider
-     */
+    /** @var SerializerProvider */
     private $serializer;
 
     /**
@@ -86,6 +81,15 @@ class FinderProvider
         return $this->finders[$class];
     }
 
+    /**
+     * Builds and fires the query for a given class. The result will be serialized afterwards.
+     *
+     * @param string $class
+     * @param array  $finderParams
+     * @param array  $serializerOptions
+     *
+     * @return array
+     */
     public function search($class, array $finderParams = [], array $serializerOptions = [])
     {
         // get search params
@@ -115,6 +119,18 @@ class FinderProvider
         ];
     }
 
+    /**
+     * Builds and fires the query for a given class. There will be no serialization here.
+     *
+     * @param string     $class
+     * @param int        $page
+     * @param int        $limit
+     * @param array      $filters
+     * @param array|null $sortBy
+     * @param bool       $count
+     *
+     * @return mixed
+     */
     public function fetch($class, $page, $limit, array $filters, array $sortBy = null, $count = false)
     {
         try {
@@ -145,6 +161,10 @@ class FinderProvider
         }
     }
 
+    /**
+     * @param QueryBuilder $qb
+     * @param array|null   $sortBy
+     */
     private function sortResults(QueryBuilder $qb, array $sortBy = null)
     {
         if (!empty($sortBy) && !empty($sortBy['property']) && 0 !== $sortBy['direction']) {
@@ -186,6 +206,13 @@ class FinderProvider
         ];
     }
 
+    /**
+     * Properly convert the filters (boolean or integer for instance when they're displayed as string).
+     *
+     * @param array $filters
+     *
+     * @return array
+     */
     private function parseFilters(array $filters)
     {
         $parsed = [];

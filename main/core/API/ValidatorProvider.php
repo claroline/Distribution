@@ -2,22 +2,24 @@
 
 namespace Claroline\CoreBundle\API;
 
-use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
-use Claroline\CoreBundle\API\Validator\CustomValidationException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use JVal\Validator;
-
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
+use JVal\Validator;
 
 /**
  * @DI\Service("claroline.api.validator")
  */
 class ValidatorProvider
 {
+    /** @var string */
     const CREATE = 'create';
+    /** @var string */
     const UPDATE = 'update';
-
+    /** @var ObjectManager */
     private $om;
+    /** @var SerializerProvider */
+    private $serializer;
 
     /**
      * The list of registered validators in the platform.
@@ -34,11 +36,12 @@ class ValidatorProvider
      *     "serializer" = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param ObjectManager $om
+     * @param ObjectManager      $om
+     * @param SerializerProvider $serializer
      */
     public function __construct(ObjectManager $om, SerializerProvider $serializer)
     {
-        $this->om         = $om;
+        $this->om = $om;
         $this->serializer = $serializer;
     }
 
@@ -89,6 +92,7 @@ class ValidatorProvider
      *
      * @param string $class          - the class of the validator to use
      * @param mixed  $data           - the data to validate
+     * @param string $mode           - 'create' or 'update'
      * @param bool   $throwException - if true an InvalidDataException is thrown instead of returning the errors
      *
      * @return array - the list of validation errors
@@ -102,7 +106,7 @@ class ValidatorProvider
         //schema isn't always there yet
         if ($schema) {
             $validator = Validator::buildDefault();
-            $errors = $validator->validate((object)$data, $schema/*, 3rd param for uri resolution*/);
+            $errors = $validator->validate((object) $data, $schema/*, 3rd param for uri resolution*/);
 
             if (!empty($errors) && $throwException) {
                 throw new InvalidDataException(

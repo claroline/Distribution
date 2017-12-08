@@ -149,6 +149,13 @@ class SerializerProvider
         return $object;
     }
 
+    /**
+     * Gets the json schema of a class.
+     *
+     * @param string $class
+     *
+     * @return \stdClass
+     */
     public function getSchema($class)
     {
         $serializer = $this->get($class);

@@ -17,6 +17,21 @@ class TransferProvider
 {
     use LoggableTrait;
 
+    /** @var AdapterInterface[] */
+    private $adapters;
+    /** @var AbstractAction[] */
+    private $actions;
+    /** @var ObjectManager */
+    private $om;
+    /** @var SerializerProvider */
+    private $serializer;
+    /** @var string */
+    private $logDir;
+    /** @var TranslatorInterface */
+    private $translator;
+    /** @var FileLogger */
+    private $logger;
+
     /**
      * Crud constructor.
      *
@@ -27,7 +42,10 @@ class TransferProvider
      *     "translator" = @DI\Inject("translator")
      * })
      *
-     * @param ObjectManager $om
+     * @param ObjectManager       $om
+     * @param SerializerProvider  $serializer
+     * @param string              $logDir
+     * @param TranslatorInterface $translator
      */
     public function __construct(
         ObjectManager $om,
@@ -44,13 +62,28 @@ class TransferProvider
         $this->logger = FileLogger::get(uniqid().'.log', 'claroline.transfer.logger');
     }
 
-    public function format($format, $data, $options)
+    /**
+     * Format a list of data for the export.
+     *
+     * @param string $format  - The mime type we want to change the data into
+     * @param array  $data    - The data to format
+     * @param array  $options - A list of options
+     *
+     * @return mixed
+     */
+    public function format($format, array $data, $options)
     {
         $adapter = $this->getAdapter($format);
 
         return $adapter->format($data, $options);
     }
 
+    /**
+     * @param mixed       $data
+     * @param string      $action
+     * @param string      $mimeType
+     * @param string|null $logFile
+     */
     public function execute($data, $action, $mimeType, $logFile = null)
     {
         if (!$logFile) {
@@ -103,11 +136,19 @@ class TransferProvider
         $this->om->endFlushSuite();
     }
 
+    /**
+     * @param AbstractAction $action
+     *
+     * @return string
+     */
     public function getActionName(AbstractAction $action)
     {
         return $action->getAction()[0].'_'.$action->getAction()[1];
     }
 
+    /**
+     * @param AdapterInterface|AbstractAction $dependency
+     */
     public function add($dependency)
     {
         if ($dependency instanceof AdapterInterface) {
@@ -125,11 +166,26 @@ class TransferProvider
         throw new \Exception('Can only add AbstractAction or ActionInterface. Failed to find one for '.get_class($dependency));
     }
 
+    /**
+     * Returns the AbstractAction object for an given action.
+     *
+     * @param string $action
+     *
+     * @return AbstractAction
+     */
     public function getExecutor($action)
     {
         return $this->actions[$action];
     }
 
+    /**
+     * Returns the AbstractAction object for an given action.
+     *
+     * @param string $actionName
+     * @param string $format
+     *
+     * @return mixed|array
+     */
     public function explainAction($actionName, $format)
     {
         $adapter = $this->getAdapter($format);
@@ -162,6 +218,13 @@ class TransferProvider
         return $adapter->explainIdentifiers($identifiersSchema);
     }
 
+    /**
+     * Returns a list of available actions for a given format (mime type).
+     *
+     * @param string $format
+     *
+     * @return array
+     */
     public function getAvailableActions($format)
     {
         $availables = [];
@@ -176,6 +239,13 @@ class TransferProvider
         return $availables;
     }
 
+    /**
+     * Returns an adapter for a given mime type.
+     *
+     * @param string $mimeType
+     *
+     * @return AdapterInterface
+     */
     public function getAdapter($mimeType)
     {
         foreach ($this->adapters as $adapter) {
