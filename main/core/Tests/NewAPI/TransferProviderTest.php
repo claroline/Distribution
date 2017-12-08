@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Tests\API\Admin;
+namespace Claroline\CoreBundle\Tests\NewAPI;
 
 use Claroline\CoreBundle\API\TransferProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;

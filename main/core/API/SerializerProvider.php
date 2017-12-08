@@ -22,11 +22,12 @@ class SerializerProvider
      * @var array
      */
     private $serializers = [];
-
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     private $om;
+    /** @var string */
+    private $rootDir;
+    /** @var string */
+    private $baseUri;
 
     /**
      * Injects Serializer service.
@@ -37,6 +38,7 @@ class SerializerProvider
      * })
      *
      * @param ObjectManager $om
+     * @param string        $rootDir
      */
     public function setObjectManager(ObjectManager $om, $rootDir)
     {
@@ -62,6 +64,29 @@ class SerializerProvider
     }
 
     /**
+     * Returns the class handled by the serializer.
+     *
+     * @param mixed $serializer
+     *
+     * @return $string
+     */
+    public function getSerializerHandledClass($serializer)
+    {
+        if (method_exists($serializer, 'getClass')) {
+            // 1. the serializer implements the getClass method, so we just call it
+            //    this is the recommended way because it's more efficient than using reflection
+            return $serializer->getClass();
+        } else {
+            // 2. else, we try to find the correct serializer by using the type hint of the `serialize` method
+            //    this is not always possible, because some serializers can not use type hint (mostly because of an Interface),
+            //    so for this case the `getClass` method is required
+            $p = new \ReflectionParameter([get_class($serializer), 'serialize'], 0);
+
+            return $p->getClass()->getName();
+        }
+    }
+
+    /**
      * Gets a registered serializer instance.
      *
      * @param mixed $object
@@ -74,17 +99,7 @@ class SerializerProvider
     {
         // search for the correct serializer
         foreach ($this->serializers as $serializer) {
-            if (method_exists($serializer, 'getClass')) {
-                // 1. the serializer implements the getClass method, so we just call it
-                //    this is the recommended way because it's more efficient than using reflection
-                $className = $serializer->getClass();
-            } else {
-                // 2. else, we try to find the correct serializer by using the type hint of the `serialize` method
-                //    this is not always possible, because some serializers can not use type hint (mostly because of an Interface),
-                //    so for this case the `getClass` method is required
-                $p = new \ReflectionParameter([get_class($serializer), 'serialize'], 0);
-                $className = $p->getClass()->getName();
-            }
+            $className = $this->getSerializerHandledClass($serializer);
 
             if ($object instanceof $className || $object === $className) {
                 return $serializer;
@@ -96,6 +111,16 @@ class SerializerProvider
         throw new \Exception(
             sprintf('No serializer found for class "%s" Maybe you forgot to add the "claroline.serializer" tag to your serializer.', $className)
         );
+    }
+
+    /**
+     * Return the list of serializers.
+     *
+     * @return mixed[];
+     */
+    public function all()
+    {
+        return $this->serializers;
     }
 
     /**
@@ -181,6 +206,18 @@ class SerializerProvider
 
             return $walker->parseSchema($schema, new Context());
         }
+    }
+
+    /**
+     * Checks if a class has a schema defined.
+     *
+     * @param string $class
+     *
+     * @return bool
+     */
+    public function hasSchema($class)
+    {
+        return method_exists($this->get($class), 'getSchema');
     }
 
     /**
