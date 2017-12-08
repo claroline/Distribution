@@ -83,7 +83,7 @@ class ProfileController extends Controller
 
             return [
                 'user' => $this->serializer->serialize($user),
-                'profile' => []
+                'facets' => []
             ];
         } catch (NoResultException $e) {
             throw new NotFoundHttpException('Page not found');

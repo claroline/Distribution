@@ -6,14 +6,12 @@ import {localeDate} from '#/main/core/date'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
 
 const UserCard = (row) => ({
-  onClick: `#/users/${row.id}`,
-  poster: null,
   icon: <UserAvatar picture={row.picture} alt={true} />,
   title: row.username,
   subtitle: row.firstName + ' ' + row.lastName,
-  contentText: '',
+  contentText: row.meta.description,
   flags: [
-    row.meta.personalWorkspace && ['fa fa-book',  t('has_personal_workspace')],
+    row.meta.personalWorkspace && ['fa fa-book', t('has_personal_workspace')],
     row.meta.enabled           && ['fa fa-check-circle-o', t('user_enabled')]
   ].filter(flag => !!flag),
   footer:

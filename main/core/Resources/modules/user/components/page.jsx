@@ -1,28 +1,13 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 import classes from 'classnames'
 
-import {generateUrl} from '#/main/core/fos-js-router'
-import {t} from '#/main/core/translation'
+import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 
-import {Router} from '#/main/core/router'
-import {
-  PageContainer,
-  PageHeader,
-  PageGroupActions,
-  PageActions,
-  PageAction,
-  MoreAction,
-  PageContent
-} from '#/main/core/layout/page'
+import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
+import {RoutedPage, PageContent} from '#/main/core/layout/page'
 
+import {UserPageActions} from '#/main/core/user/components/page-actions.jsx'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
-
-import {ProfileShow} from '#/main/core/user/profile/components/show.jsx'
-import {ProfileEdit} from '#/main/core/user/profile/components/edit.jsx'
-
-// todo hide `contact` actions group on my profile
 
 const UserPageHeader = props =>
   <header className={classes('page-header', props.className)}>
@@ -44,93 +29,39 @@ const UserPageHeader = props =>
   </header>
 
 UserPageHeader.propTypes = {
-  picture: T.string
+  className: T.string,
+  picture: T.string,
+  title: T.string.isRequired,
+  subtitle: T.string
 }
 
-const UserPage = props => {
-  const moreActions = [].concat(props.customActions, [
-    {
-      icon: 'fa fa-fw fa-lock',
-      label: t('change_password'),
-      group: t('user_management'),
-      displayed: props.user.rights.current.edit,
-      action: () => true
-    }, {
-      icon: 'fa fa-fw fa-trash-o',
-      label: t('delete'),
-      displayed: props.user.rights.current.delete,
-      action: () => true,
-      dangerous: true
-    }
-  ])
+const UserPage = props =>
+  <RoutedPage
+    {...props}
+    className="user-page"
+  >
+    <UserPageHeader
+      picture={props.user.picture}
+      title={props.user.name}
+      subtitle={props.user.username}
+    >
+      <UserPageActions
+        user={props.user}
+        customActions={props.customActions}
+      />
+    </UserPageHeader>
 
-  return (
-    <Router>
-      <PageContainer className="user-page">
-        <UserPageHeader
-          picture={props.user.picture}
-          title={props.user.name}
-          subtitle={props.user.username}
-        >
-          <PageActions>
-            <PageGroupActions>
-              <PageAction
-                id="profile-edit"
-                title={t('edit_profile')}
-                icon={'fa fa-pencil'}
-                primary={true}
-                action="#/edit"
-              />
-            </PageGroupActions>
+    <PageContent>
+      {props.children}
+    </PageContent>
+  </RoutedPage>
 
-            <PageGroupActions>
-              <PageAction
-                id="send-message"
-                title={t('send_message')}
-                icon={'fa fa-paper-plane-o'}
-                action={() => true}
-              />
-              <PageAction
-                id="add-contact"
-                title={t('add_contact')}
-                icon={'fa fa-address-book-o'}
-                action={() => true}
-              />
-            </PageGroupActions>
-
-            {0 !== moreActions.length &&
-              <PageGroupActions>
-                <MoreAction
-                  id="resource-more"
-                  actions={moreActions}
-                />
-              </PageGroupActions>
-            }
-          </PageActions>
-        </UserPageHeader>
-
-        <PageContent>
-          {props.children}
-        </PageContent>
-      </PageContainer>
-    </Router>
-  )
-}
-
-UserPage.propTypes = {
+implementPropTypes(UserPage, PageTypes, {
   user: T.shape({
-    name: T.string.isRequired,
-    meta: T.shape({
-      publicUrl: T.string.isRequired
-    }).isRequired,
-    rights: T.shape({
-      current: T.shape({
-        edit: T.bool.isRequired
-      }).isRequired
-    }).isRequired
+    name: T.string.isRequired
   }).isRequired,
   /**
-   * Custom actions for the resources added by the UI.
+   * Custom actions for the user added by the UI.
    */
   customActions: T.arrayOf(T.shape({
     icon: T.string.isRequired,
@@ -141,12 +72,10 @@ UserPage.propTypes = {
     dangerous: T.bool,
     group: T.string
   })),
-  children: T.element.isRequired
-}
-
-UserPage.defaultProps = {
+  children: T.node.isRequired
+}, {
   customActions: []
-}
+})
 
 export {
   UserPage

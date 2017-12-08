@@ -3,6 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
+
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
@@ -10,10 +13,21 @@ import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
 
+const ProfileSaveAction = makeSaveAction('profile', formData => ({
+  update: ['apiv2_profile_update']
+}))(PageAction)
+
 const ProfileTabActions = () =>
-  <div>
-    page actions
-  </div>
+  <PageActions>
+    <ProfileSaveAction />
+
+    <PageAction
+      id="profile-cancel"
+      icon="fa fa-times"
+      title={t('cancel')}
+      action={() => true}
+    />
+  </PageActions>
 
 const Tabs = props =>
   <ul className="user-profile-sections nav nav-pills nav-stacked">

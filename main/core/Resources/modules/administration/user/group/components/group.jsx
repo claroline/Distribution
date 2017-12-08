@@ -78,7 +78,7 @@ const GroupForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_users'),
-            action: props.pickUsers
+            action: () => props.pickUsers(props.group.id)
           }
         ]}
       >

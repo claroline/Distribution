@@ -35,7 +35,8 @@ const PortalPage = props =>
           {
             name: 'name',
             label: t('name'),
-            displayed: true
+            displayed: true,
+            primary: true
           }, {
             name: 'meta.created',
             label: t('creation_date'),

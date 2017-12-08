@@ -122,6 +122,8 @@ function countPages(totalResults, pageSize) {
 }
 
 function getDataQueryString(dataObjects) {
+  console.log(dataObjects)
+
   return '?' + dataObjects.map(object => 'ids[]='+object.id).join('&')
 }
 
