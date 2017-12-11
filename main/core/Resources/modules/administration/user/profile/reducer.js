@@ -9,9 +9,7 @@ import {
   PROFILE_FACET_ADD,
   PROFILE_FACET_REMOVE,
   PROFILE_ADD_SECTION,
-  PROFILE_REMOVE_SECTION,
-  PROFILE_ADD_FIELD,
-  PROFILE_REMOVE_FIELD
+  PROFILE_REMOVE_SECTION
 } from './actions'
 
 const defaultState = {
@@ -20,6 +18,12 @@ const defaultState = {
 }
 
 const reducer = makeFormReducer('profile', defaultState, {
+  pendingChanges: makeReducer(false, {
+    [PROFILE_FACET_ADD]: () => true,
+    [PROFILE_FACET_REMOVE]: () => true,
+    [PROFILE_ADD_SECTION]: () => true,
+    [PROFILE_REMOVE_SECTION]: () => true
+  }),
   data: makeReducer(defaultState.data, {
     [PROFILE_FACET_ADD]: (state) => {
       const newState = cloneDeep(state)
@@ -72,24 +76,6 @@ const reducer = makeFormReducer('profile', defaultState, {
       }*/
 
       return newState
-    },
-    [PROFILE_ADD_FIELD]: (state, action) => {
-      const newState = cloneDeep(state)
-
-      const currentFacet = newState.find(facet => facet.id === action.facetId)
-      if (currentFacet) {
-        const currentSection = currentFacet.sections.find(section => section.id === action.sectionId)
-        if (currentSection) {
-          currentSection.push({
-            id: makeId(),
-            type: action.fieldType,
-            title: 'New field',
-          })
-        }
-      }
-    },
-    [PROFILE_REMOVE_FIELD]: (state, action) => {
-
     }
   }),
   currentFacet: makeReducer(defaultState.currentFacet, {

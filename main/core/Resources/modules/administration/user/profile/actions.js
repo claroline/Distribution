@@ -11,10 +11,6 @@ export const PROFILE_ADD_SECTION    = 'PROFILE_ADD_SECTION'
 export const PROFILE_UPDATE_SECTION = 'PROFILE_UPDATE_SECTION'
 export const PROFILE_REMOVE_SECTION = 'PROFILE_REMOVE_SECTION'
 
-export const PROFILE_ADD_FIELD    = 'PROFILE_ADD_FIELD'
-export const PROFILE_UPDATE_FIELD = 'PROFILE_UPDATE_FIELD'
-export const PROFILE_REMOVE_FIELD = 'PROFILE_REMOVE_FIELD'
-
 export const actions = {}
 
 actions.openFacet = makeActionCreator(PROFILE_FACET_OPEN, 'id')
@@ -25,10 +21,6 @@ actions.removeFacet = makeActionCreator(PROFILE_FACET_REMOVE, 'id') // todo redi
 actions.addSection = makeActionCreator(PROFILE_ADD_SECTION, 'facetId')
 actions.updateSection = makeActionCreator(PROFILE_UPDATE_SECTION, 'sectionId', 'prop', 'value')
 actions.removeSection = makeActionCreator(PROFILE_REMOVE_SECTION, 'facetId', 'sectionId')
-
-actions.addField = makeActionCreator(PROFILE_ADD_FIELD, 'facetId', 'sectionId', 'fieldType')
-actions.updateField = makeActionCreator(PROFILE_UPDATE_FIELD, 'facetId', 'sectionId')
-actions.removeField = makeActionCreator(PROFILE_REMOVE_FIELD, 'facetId', 'sectionId')
 
 actions.fetchFacets = () => ({
   [API_REQUEST]: {

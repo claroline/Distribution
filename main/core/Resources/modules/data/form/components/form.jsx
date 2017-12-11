@@ -190,7 +190,7 @@ Form.propTypes = {
   setErrors: T.func.isRequired,
   updateProp: T.func.isRequired,
   className: T.string,
-  children: T.element
+  children: T.any
 }
 
 Form.defaultProps = {

@@ -57,20 +57,18 @@ actions.fetchData = (listName, url) => (dispatch, getState) => {
 export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
 
 actions.deleteItems = makeInstanceActionCreator(LIST_DATA_DELETE, 'items')
-actions.deleteData = (listName, url, items) => (dispatch) => {
-  dispatch({
-    [API_REQUEST]: {
-      url: (typeof url === 'string' ? url : generateUrl(...url)) + getDataQueryString(items),
-      request: {
-        method: 'DELETE'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.changePage(listName, 0))
-        dispatch(actions.fetchData(listName))
-      }
+actions.deleteData = (listName, url, items) => ({
+  [API_REQUEST]: {
+    url: (typeof url === 'string' ? url : generateUrl(...url)) + getDataQueryString(items),
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.changePage(listName, 0))
+      dispatch(actions.fetchData(listName))
     }
-  })
-}
+  }
+})
 
 
 // pagination

@@ -1,4 +1,5 @@
 import {isValidDate, localeDate, serverDate} from '#/main/core/date'
+import {t} from '#/main/core/translation'
 
 import {DateGroup} from '#/main/core/layout/form/components/group/date-group.jsx'
 import {DateSearch} from '#/main/core/data/types/date/components/search.jsx'
@@ -6,6 +7,13 @@ import {DateSearch} from '#/main/core/data/types/date/components/search.jsx'
 const DATE_TYPE = 'date'
 
 const dateDefinition = {
+  meta: {
+    creatable: true,
+    icon: 'fa fa-fw fa-calendar',
+    label: t('date'),
+    description: t('date_desc')
+  },
+
   /**
    * Parses display date into ISO 8601 date.
    *

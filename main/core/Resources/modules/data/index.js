@@ -6,6 +6,7 @@ import {DATE_TYPE,     dateDefinition}     from '#/main/core/data/types/date/ind
 import {DATETIME_TYPE, datetimeDefinition} from '#/main/core/data/types/datetime'
 import {EMAIL_TYPE,    emailDefinition}    from '#/main/core/data/types/email'
 import {ENUM_TYPE,     enumDefinition}     from '#/main/core/data/types/enum'
+import {FILE_TYPE,     fileDefinition}     from '#/main/core/data/types/file'
 import {HTML_TYPE,     htmlDefinition}     from '#/main/core/data/types/html'
 import {IP_TYPE,       ipDefinition}       from '#/main/core/data/types/ip'
 import {LOCALE_TYPE,   localeDefinition}   from '#/main/core/data/types/locale'
@@ -24,6 +25,7 @@ registerType(DATE_TYPE,     dateDefinition)
 registerType(DATETIME_TYPE, datetimeDefinition)
 registerType(EMAIL_TYPE,    emailDefinition)
 registerType(ENUM_TYPE,     enumDefinition)
+registerType(FILE_TYPE,     fileDefinition)
 registerType(HTML_TYPE,     htmlDefinition)
 registerType(IP_TYPE,       ipDefinition)
 registerType(LOCALE_TYPE,   localeDefinition)
@@ -56,6 +58,14 @@ function registerType(typeName, typeDefinition) {
  */
 function getTypes() {
   return dataTypes
+}
+
+function getCreatableTypes() {
+  return Object.keys(dataTypes)
+    .map(type => dataTypes[type].meta.creatable)
+    .reduce((creatableTypes, type) => {
+      creatableTypes[type] = dataTypes[type]
+    }, {})
 }
 
 /**
@@ -107,6 +117,10 @@ function validateDefinition(definition) {
   invariant(typeof definition.render === 'function',   'Data type "render" property must be a function.')
   invariant(typeof definition.validate === 'function', 'Data type "validate" property must be a function.')
 
+  if (definition.meta) {
+    invariant(typeof definition.meta === 'object', 'Data type "meta" property must be a object.')
+  }
+
   if (definition.components) {
     invariant(typeof definition.components === 'object', 'Data type "components" property must be a object.')
   }
@@ -122,6 +136,10 @@ function validateDefinition(definition) {
  */
 function setDefinitionDefaults(definition) {
   return Object.assign({
+    meta: {
+      creatable: false
+    },
+
     /**
      * Parses a value.
      *
@@ -158,5 +176,6 @@ export {
   getType,
   getTypeOrDefault,
   getTypes,
+  getCreatableTypes,
   registerType
 }

@@ -44,7 +44,7 @@ Form.defaultProps = {
 const FormContainer = connect(
   (state, ownProps) => {
     // get the root of the form in the store
-    const formState = get(state, ownProps.name)
+    const formState = select.form(state, ownProps.name)
 
     return {
       data: select.data(formState),

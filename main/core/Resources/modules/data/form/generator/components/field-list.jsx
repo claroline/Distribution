@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 
 import {t} from '#/main/core/translation'
 
@@ -81,7 +82,7 @@ class FieldList extends Component {
         {0 !== this.props.fields.length &&
           <button
             type="button"
-            className="btn btn-sm btn-link-danger"
+            className="btn btn-remove-all btn-sm btn-link-danger"
             onClick={this.removeAll}
           >
             {t('delete_all')}
@@ -92,10 +93,12 @@ class FieldList extends Component {
           <ul>
             {this.props.fields.map((field, fieldIndex) =>
               <li key={fieldIndex} className="field-item">
+                <span className={classes('field-item-icon', constants.fieldTypes.find(type => field.type === type.id).icon)} />
+
                 <FieldPreview
                   {...field}
                 />
-
+                
                 <div className="field-item-actions">
                   <TooltipButton
                     id={`${this.props.id}-${fieldIndex}-edit`}
