@@ -243,6 +243,18 @@ class DropzoneManager
     }
 
     /**
+     * Gets all drops for given Dropzone.
+     *
+     * @param Dropzone $dropzone
+     *
+     * @return array
+     */
+    public function getAllDrops(Dropzone $dropzone)
+    {
+        return $this->dropRepo->findBy(['dropzone' => $dropzone]);
+    }
+
+    /**
      * Gets user drop or creates one.
      *
      * @param Dropzone $dropzone
@@ -426,14 +438,17 @@ class DropzoneManager
     public function submitDrop(Drop $drop, User $user)
     {
         $this->om->startFlushSuite();
+
         $drop->setFinished(true);
         $drop->setDropDate(new \DateTime());
 
         if ($drop->getTeamId()) {
             $drop->setUser($user);
         }
+        $users = $drop->getTeamId() ? $drop->getUsers() : [$drop->getUser()];
         $this->om->persist($drop);
-        $this->checkCompletion($drop->getDropzone(), $drop->getUser(), $drop);
+        $this->checkCompletion($drop->getDropzone(), $users, $drop);
+
         $this->om->endFlushSuite();
     }
 
@@ -474,6 +489,7 @@ class DropzoneManager
     public function unlockDrop(Drop $drop)
     {
         $drop->setUnlockedDrop(true);
+        /* TODO: checks for completion */
         $this->om->persist($drop);
         $this->om->flush();
 
@@ -490,6 +506,7 @@ class DropzoneManager
     public function unlockDropUser(Drop $drop)
     {
         $drop->setUnlockedUser(true);
+        /* TODO: checks for completion and success */
         $this->om->persist($drop);
         $this->om->flush();
 
@@ -507,6 +524,7 @@ class DropzoneManager
     {
         $drop->setFinished(false);
         $drop->setDropDate(null);
+        /* TODO: cancels completion */
         $this->om->persist($drop);
         $this->om->flush();
 
@@ -557,7 +575,22 @@ class DropzoneManager
         $this->om->persist($correction);
         $this->om->forceFlush();
         $drop = $this->computeDropScore($correction->getDrop());
-        $this->checkCompletion($drop->getDropzone(), $correction->getUser());
+        $dropzone = $drop->getDropzone();
+        $users = [];
+
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                $users = [$user];
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                $teamDrops = $this->getTeamDrops($dropzone, $user);
+
+                if (count($teamDrops) === 1) {
+                    $users = $teamDrops[0]->getUsers();
+                }
+                break;
+        }
+        $this->checkCompletion($drop->getDropzone(), $users);
         $this->checkSuccess($drop);
 
         $this->om->endFlushSuite();
@@ -945,27 +978,27 @@ class DropzoneManager
      * Computes Complete status for a user.
      *
      * @param Dropzone $dropzone
-     * @param User     $user
+     * @param array    $users
      * @param Drop     $drop
      */
-    public function checkCompletion(Dropzone $dropzone, User $user = null, Drop $drop = null)
+    public function checkCompletion(Dropzone $dropzone, array $users, Drop $drop = null)
     {
         $fixedStatusList = [
             AbstractResourceEvaluation::STATUS_COMPLETED,
             AbstractResourceEvaluation::STATUS_PASSED,
             AbstractResourceEvaluation::STATUS_FAILED,
         ];
+        $teamId = !empty($drop) ? $drop->getTeamId() : null;
 
         $this->om->startFlushSuite();
-        $users = !empty($user) ? [$user] : [];
-        /* TODO: Do the same for Team */
 
-        /* Get nb Correction */
-        $isComplete = !$dropzone->isPeerReview() || (!empty($drop) && $drop->isUnlockedUser());
-
-        if (!$isComplete) {
+        if (!empty($drop)) {
+            /* Drop is complete if teacher review is enabled or drop is unlocked for user */
+            $isComplete = $drop->isFinished() && (!$dropzone->isPeerReview() || $drop->isUnlockedUser());
+        } else {
+            /* If drop is not available checks for the number of finished corrections done by user */
             $expectedCorrectionTotal = $dropzone->getExpectedCorrectionTotal();
-            $finishedPeerDrops = $this->getFinishedPeerDrops($dropzone, $user);
+            $finishedPeerDrops = $this->getFinishedPeerDrops($dropzone, $users[0], $teamId);
             $isComplete = count($finishedPeerDrops) >= $expectedCorrectionTotal;
         }
         if ($isComplete) {
@@ -990,11 +1023,12 @@ class DropzoneManager
         $this->om->startFlushSuite();
 
         $dropzone = $drop->getDropzone();
-        $user = $drop->getUser();
-        $users = !empty($user) ? [$user] : [];
-        /* TODO: Do the same for Team */
+        $users = [$drop->getUser()];
 
-        $computeStatus = !$dropzone->isPeerReview();
+        if ($dropzone->getDropType() === Dropzone::DROP_TYPE_TEAM) {
+            $users = $drop->getUsers();
+        }
+        $computeStatus = $drop->isFinished() && (!$dropzone->isPeerReview() || $drop->isUnlockedDrop());
 
         if (!$computeStatus) {
             $nbValidCorrections = 0;
