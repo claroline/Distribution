@@ -38,7 +38,7 @@ trait HasOrganizationsTrait
     /**
      * Adds organizations to the collection.
      *
-     * @EXT\Route("/{uuid}/organization")
+     * @EXT\Route("/{id}/organization")
      * @EXT\Method("PATCH")
      *
      * @param string  $id
@@ -62,7 +62,7 @@ trait HasOrganizationsTrait
     /**
      * Removes organizations from the collection.
      *
-     * @EXT\Route("/{uuid}/organization")
+     * @EXT\Route("/{id}/organization")
      * @EXT\Method("DELETE")
      *
      * @param string  $id

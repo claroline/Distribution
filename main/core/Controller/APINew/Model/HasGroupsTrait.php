@@ -15,7 +15,7 @@ trait HasGroupsTrait
     /**
      * List groups of the collection.
      *
-     * @EXT\Route("/{id}/user")
+     * @EXT\Route("/{id}/groups")
      * @EXT\Method("GET")
      *
      * @param string  $id
