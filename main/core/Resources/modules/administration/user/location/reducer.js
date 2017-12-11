@@ -7,7 +7,8 @@ const reducer = combineReducers({
   list: makeListReducer('locations.list'),
   current: makeFormReducer('locations.current', {}, {
     users: makeListReducer('locations.current.users'),
-    organizations: makeListReducer('locations.current.organizations')
+    organizations: makeListReducer('locations.current.organizations'),
+    groups: makeListReducer('locations.current.groups')
   })
 })
 

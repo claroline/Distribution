@@ -4,6 +4,7 @@ import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 
 const reducer = combineReducers({
+  picker: makeListReducer('organizations.picker'),
   list: makeListReducer('organizations.list', {}, {}, {
     sortable: false,
     paginated: false

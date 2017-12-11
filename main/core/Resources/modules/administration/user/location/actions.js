@@ -63,3 +63,16 @@ actions.addGroups = (id, groups) => ({
     }
   }
 })
+
+actions.addOrganizations = (id, organizations) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_location_add_organizations', {id: id}) +'?'+ organizations.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('locations.list'))
+      dispatch(listActions.invalidateData('locations.current.organizations'))
+    }
+  }
+})

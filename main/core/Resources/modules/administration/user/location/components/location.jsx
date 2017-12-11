@@ -13,6 +13,7 @@ import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
 import {actions} from '#/main/core/administration/user/location/actions'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
+import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 
 import {connect} from 'react-redux'
 import {locationTypes} from '#/main/core/administration/user/location/constants'
@@ -102,14 +103,41 @@ const LocationForm = props =>
       </FormSection>
 
       <FormSection
-        id="location-organizations"
-        icon="fa fa-fw fa-building"
+        id="location-groups"
+        icon="fa fa-fw fa-users"
         title={t('groups')}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_group'),
             action: () => props.pickGroups(props.location.id)
+          }
+        ]}
+      >
+        <DataListContainer
+          name="locations.current.groups"
+          open={GroupList.open}
+          fetch={{
+            url: ['apiv2_location_list_groups', {id: props.location.id}],
+            autoload: true
+          }}
+          delete={{
+            url: ['apiv2_location_remove_groups', {id: props.location.id}],
+          }}
+          definition={GroupList.definition}
+          card={GroupList.card}
+        />
+      </FormSection>
+
+      <FormSection
+        id="location-organizations"
+        icon="fa fa-fw fa-building"
+        title={t('organizations')}
+        actions={[
+          {
+            icon: 'fa fa-fw fa-plus',
+            label: t('add_organizations'),
+            action: () => props.pickOrganizations(props.location.id)
           }
         ]}
       >
@@ -163,6 +191,21 @@ const Location = connect(
           autoload: true
         },
         handleSelect: (selected) => dispatch(actions.addGroups(groupId, selected))
+      }))
+    },
+    pickOrganizations: (organizationId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-buildings',
+        title: t('add_organizations'),
+        confirmText: t('add'),
+        name: 'organizations.picker',
+        definition: OrganizationList.definition,
+        card: OrganizationList.card,
+        fetch: {
+          url: ['apiv2_organization_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addOrganizations(organizationId, selected))
       }))
     }
   })

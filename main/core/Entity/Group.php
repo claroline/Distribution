@@ -82,11 +82,22 @@ class Group extends AbstractRoleSubject implements OrderableInterface
      */
     protected $organizations;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Location",
+     *     inversedBy="groups"
+     * )
+     */
+    protected $locations;
+
     public function __construct()
     {
         parent::__construct();
         $this->users = new ArrayCollection();
         $this->organizations = new ArrayCollection();
+        $this->locations = new ArrayCollection();
         $this->refreshUuid();
     }
 
@@ -213,6 +224,14 @@ class Group extends AbstractRoleSubject implements OrderableInterface
     public static function getSearchableFields()
     {
         return ['name'];
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getLocations()
+    {
+        return $this->locations;
     }
 
     public function __toString()

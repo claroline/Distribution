@@ -62,7 +62,8 @@ const OrganizationForm = props =>
           {
             name: 'name',
             type: 'string',
-            label: t('name')
+            label: t('name'),
+            required: true
           }, {
             name: 'code',
             type: 'string',

@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Entity\Organization;
 
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Entity\Group;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
@@ -125,11 +126,12 @@ class Location
 
     /**
      * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\User"
+     *     targetEntity="Claroline\CoreBundle\Entity\User",
+     *     mappedBy="locations"
      * )
      * @ORM\JoinTable(name="claro_user_location")
      *
-     * @var User[]|ArrayCollection
+     * @var ArrayCollection
      */
     private $users;
 
@@ -144,12 +146,24 @@ class Location
     private $organizations;
 
     /**
+     * @ORM\ManyToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Group",
+     *     mappedBy="locations"
+     * )
+     * @ORM\JoinTable(name="claro_group_location")
+     *
+     * @var ArrayCollection
+     */
+    private $groups;
+
+    /**
      * Location constructor.
      */
     public function __construct()
     {
         $this->refreshUuid();
 
+        $this->groups = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->organizations = new ArrayCollection();
     }
@@ -360,5 +374,37 @@ class Location
     public function getPhone()
     {
         return $this->phone;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function addUser(User $user)
+    {
+        $user->getLocations()->add($this);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function removeUser(User $user)
+    {
+        $user->getLocations()->removeElement($this);
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function addGroup(Group $group)
+    {
+        $group->getLocations()->add($this);
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function removeGroup(Group $group)
+    {
+        $group->getLocations()->removeElement($this);
     }
 }
