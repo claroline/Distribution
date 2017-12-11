@@ -488,10 +488,13 @@ class DropzoneManager
      */
     public function unlockDrop(Drop $drop)
     {
+        $this->om->startFlushSuite();
+
         $drop->setUnlockedDrop(true);
-        /* TODO: checks for completion */
+        $this->checkSuccess($drop);
         $this->om->persist($drop);
-        $this->om->flush();
+
+        $this->om->endFlushSuite();
 
         return $drop;
     }
@@ -505,10 +508,24 @@ class DropzoneManager
      */
     public function unlockDropUser(Drop $drop)
     {
+        $this->om->startFlushSuite();
+
         $drop->setUnlockedUser(true);
-        /* TODO: checks for completion and success */
+        $dropzone = $drop->getDropzone();
+        $users = [];
+
+        switch ($dropzone->getDropType()) {
+            case Dropzone::DROP_TYPE_USER:
+                $users = [$drop->getUser()];
+                break;
+            case Dropzone::DROP_TYPE_TEAM:
+                $users = $drop->getUsers();
+                break;
+        }
+        $this->checkCompletion($dropzone, $users, $drop);
         $this->om->persist($drop);
-        $this->om->flush();
+
+        $this->om->endFlushSuite();
 
         return $drop;
     }
@@ -992,11 +1009,11 @@ class DropzoneManager
 
         $this->om->startFlushSuite();
 
-        if (!empty($drop)) {
-            /* Drop is complete if teacher review is enabled or drop is unlocked for user */
-            $isComplete = $drop->isFinished() && (!$dropzone->isPeerReview() || $drop->isUnlockedUser());
-        } else {
-            /* If drop is not available checks for the number of finished corrections done by user */
+        /* By default drop is complete if teacher review is enabled or drop is unlocked for user */
+        $isComplete = !empty($drop) ? $drop->isFinished() && (!$dropzone->isPeerReview() || $drop->isUnlockedUser()) : false;
+
+        /* If drop is not complete by default, checks for the number of finished corrections done by user */
+        if (!$isComplete) {
             $expectedCorrectionTotal = $dropzone->getExpectedCorrectionTotal();
             $finishedPeerDrops = $this->getFinishedPeerDrops($dropzone, $users[0], $teamId);
             $isComplete = count($finishedPeerDrops) >= $expectedCorrectionTotal;
