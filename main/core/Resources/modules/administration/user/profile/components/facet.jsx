@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
+import omit from 'lodash/omit'
 
 import {t} from '#/main/core/translation'
 
@@ -8,8 +9,9 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {Form} from '#/main/core/data/form/components/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
 import {FieldList} from '#/main/core/data/form/generator/components/field-list.jsx'
 
@@ -25,9 +27,9 @@ import {select} from '#/main/core/administration/user/profile/selectors'
 
 const FacetSection = props =>
   <FormSection
+    {...omit(props, ['key', 'section', 'remove', 'updateProp', 'showModal'])}
     id={props.section.id}
     title={props.section.title}
-    level={props.level}
     actions={[
       {
         icon: 'fa fa-fw fa-trash-o',
@@ -44,18 +46,22 @@ const FacetSection = props =>
       onChange={() => true}
     />
 
-    <hr/>
+    <div className="form-group">
+      <label className="control-label">
+        Liste des champs
+      </label>
 
-    <FieldList
-      id={`${props.section.id}-field-list`}
-      fields={props.section.fields}
-      onChange={(fields) => props.updateProp('fields', fields)}
-      showModal={props.showModal}
-    />
+      <FieldList
+        id={`${props.section.id}-field-list`}
+        fields={props.section.fields}
+        onChange={(fields) => props.updateProp('fields', fields)}
+        showModal={props.showModal}
+      />
+    </div>
+
   </FormSection>
 
 FacetSection.propTypes = {
-  //level: T.number.isRequired,
   section: T.shape(
     ProfileFacetSectionTypes.propTypes
   ).isRequired,
@@ -65,39 +71,42 @@ FacetSection.propTypes = {
 }
 
 const ProfileFacetComponent = props =>
-  <div className="profile-facet">
-    <FormSections level={2}>
-      <FormSection
-        id="tab-parameters"
-        icon="fa fa-fw fa-cog"
-        title={t('parameters')}
-      >
-        <TextGroup
-          id="tab-name"
-          label={t('title')}
-          value={props.facet.title}
-          onChange={() => true}
-        />
+  <Form
+    level={2}
+    className="profile-facet"
+    data={props.facet}
+    errors={props.errors}
+    pendingChanges={props.pendingChanges}
+    validating={props.validating}
+    sections={[
+      {
+        id: 'profile-facet-parameters',
+        icon: 'fa fa-fw fa-cog',
+        title: t('parameters'),
+        fields: [
+          {
+            name: 'title',
+            type: 'string',
+            label: t('name'),
+            required: true
+          }, {
+            name: 'display.creation',
+            type: 'boolean',
+            label: t('display_on_create')
+          }
+        ]
+      }, {
+        id: 'profile-facet-restrictions',
+        icon: 'fa fa-fw fa-key',
+        title: t('access_restrictions'),
+        fields: [
 
-        <CheckGroup
-          id="tab-on-create"
-          label="Afficher à la création"
-          value={false}
-          onChange={() => true}
-        />
-      </FormSection>
-
-      <FormSection
-        id="tab-restrictions"
-        icon="fa fa-fw fa-key"
-        title={t('access_restrictions')}
-      >
-        Access roles
-      </FormSection>
-    </FormSections>
-
-    <hr />
-
+        ]
+      }
+    ]}
+    updateProp={(propName, propValue) => props.updateProp(`[${props.index}].${propName}`, propValue)}
+    setErrors={props.setErrors}
+  >
     {0 < props.facet.sections.length &&
       <FormSections level={2}>
         {props.facet.sections.map((section, sectionIndex) =>
@@ -125,23 +134,31 @@ const ProfileFacetComponent = props =>
         Créer une nouvelle section
       </button>
     </div>
-  </div>
+  </Form>
 
 ProfileFacetComponent.propTypes = {
   index: T.number.isRequired,
   facet: T.shape(
     ProfileFacetTypes.propTypes
   ).isRequired,
+  errors: T.object,
+  validating: T.bool.isRequired,
+  pendingChanges: T.bool.isRequired,
   addSection: T.func.isRequired,
   removeSection: T.func.isRequired,
   updateProp: T.func.isRequired,
+  setErrors: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
 const ProfileFacet = connect(
   state => ({
     index: select.currentFacetIndex(state),
-    facet: select.currentFacet(state)
+    facet: select.currentFacet(state),
+    // form
+    errors: formSelect.errors(formSelect.form(state, select.formName)),
+    pendingChanges: formSelect.pendingChanges(formSelect.form(state, select.formName)),
+    validating: formSelect.validating(formSelect.form(state, select.formName))
   }),
   dispatch => ({
     addSection(facetId) {
@@ -158,6 +175,9 @@ const ProfileFacet = connect(
     },
     updateProp(propName, propValue) {
       dispatch(formActions.updateProp(select.formName, propName, propValue))
+    },
+    setErrors(errors) {
+      dispatch(formActions.setErrors(select.formName, errors))
     },
     showModal(modalType, modalProps) {
       dispatch(modalActions.showModal(modalType, modalProps))

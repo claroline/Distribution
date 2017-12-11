@@ -1531,5 +1531,6 @@
     "optional": "optionnel",
     "field_optional": "Le champ est optionnel",
     "field_required": "Le champ est obligatoire",
-    "help": "Aide"
+    "help": "Aide",
+    "display_on_create": "Afficher à la création"
 }

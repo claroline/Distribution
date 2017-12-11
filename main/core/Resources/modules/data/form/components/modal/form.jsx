@@ -35,8 +35,14 @@ class DataFormModal extends Component {
   }
 
   save() {
-    this.props.save(this.state.data)
-    this.props.fadeModal()
+    this.setState({
+      validating: true
+    })
+
+    if (isEmpty(this.state.errors)) {
+      this.props.save(this.state.data)
+      this.props.fadeModal()
+    }
   }
 
   setErrors(errors = {}) {

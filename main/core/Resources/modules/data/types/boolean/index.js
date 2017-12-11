@@ -1,4 +1,4 @@
-import {tval} from '#/main/core/translation'
+import {t, tval} from '#/main/core/translation'
 
 import {parseBool, translateBool} from '#/main/core/data/types/boolean/utils'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
@@ -8,6 +8,12 @@ import {BooleanCell} from '#/main/core/data/types/boolean/components/table.jsx'
 const BOOLEAN_TYPE = 'boolean'
 
 const booleanDefinition = {
+  meta: {
+    creatable: true,
+    icon: 'fa fa-fw fa-check-square-o',
+    label: t('boolean'),
+    description: t('boolean_desc')
+  },
   parse: (display) => parseBool(display),
   render: (raw) => translateBool(raw),
 

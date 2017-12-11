@@ -3,14 +3,16 @@ import {t} from '#/main/core/translation'
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {HtmlCell} from '#/main/core/data/types/html/components/table.jsx'
 
-const HTML_TYPE = 'html'
+const FILE_TYPE = 'file'
 
-const htmlDefinition = {
+// todo implement
+
+const fileDefinition = {
   meta: {
     creatable: true,
-    icon: 'fa fa-fw fa fa-code',
-    label: t('html'),
-    description: t('html_desc')
+    icon: 'fa fa-fw fa fa-file-o',
+    label: t('file'),
+    description: t('file_desc')
   },
   // nothing special to do
   parse: (display) => display,
@@ -18,12 +20,12 @@ const htmlDefinition = {
   render: (raw) => raw,
   validate: (value) => typeof value === 'string',
   components: {
-    table: HtmlCell,
-    form: HtmlGroup
+    // todo : add file download in table
+    // todo : add
   }
 }
 
 export {
-  HTML_TYPE,
-  htmlDefinition
+  FILE_TYPE,
+  fileDefinition
 }

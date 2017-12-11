@@ -1,10 +1,18 @@
 import {isValidDate, localeDate, serverDate} from '#/main/core/date'
+import {t} from '#/main/core/translation'
 
 import {DateSearch} from '#/main/core/data/types/date/components/search.jsx'
 
 const DATETIME_TYPE = 'datetime'
 
 const datetimeDefinition = {
+  meta: {
+    creatable: true,
+    icon: 'fa fa-fw fa fa-clock-o',
+    label: t('datetime'),
+    description: t('datetime_desc')
+  },
+
   /**
    * Parses display datetime into ISO 8601 datetime.
    *

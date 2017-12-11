@@ -52,7 +52,9 @@ function handleResponse(dispatch, response, originalRequest) {
  * @return {mixed}
  */
 function handleResponseSuccess(dispatch, responseData, success) {
-  return success(responseData, dispatch)
+  success(responseData, dispatch)
+
+  return responseData
 }
 
 /**
@@ -71,15 +73,23 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
     throw responseError
   }
 
-  if (responseError.status === 401) { // authentication needed
+  if (401 === responseError.status) { // authentication needed
     authenticate()
       .then(
         () => apiFetch(originalRequest, dispatch), // re-execute original request,
-        authError => error(authError, dispatch)
+        authError => {
+          error(authError, dispatch)
+
+          return authError
+        }
       )
   } else {
     return getResponseData(responseError) // get error data if any
-      .then(errorData => error(errorData, dispatch))
+      .then(errorData => {
+        error(errorData, dispatch)
+
+        return errorData
+      })
   }
 }
 
@@ -93,13 +103,15 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
 function getResponseData(response) {
   let data = null
 
-  const contentType = response.headers.get('content-type')
-  if (contentType && contentType.indexOf('application/json') !== -1) {
-    // Decode JSON
-    data = response.json()
-  } else {
-    // Return raw data (maybe someday we will need to also manage files)
-    data = response.text()
+  if (204 !== response.status) {
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.indexOf('application/json') !== -1) {
+      // Decode JSON
+      data = response.json()
+    } else {
+      // Return raw data (maybe someday we will need to also manage files)
+      data = response.text()
+    }
   }
 
   return data // this is a promise
