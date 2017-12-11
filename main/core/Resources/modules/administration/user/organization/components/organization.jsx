@@ -10,6 +10,11 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions} from '#/main/core/administration/user/organization/actions'
+import {generateUrl} from '#/main/core/fos-js-router'
+
+import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
 
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
@@ -100,7 +105,7 @@ const OrganizationForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_workspace'),
-            action: () => true
+            action: () => props.pickWorkspaces(props.organization.id)
           }
         ]}
       >
@@ -127,7 +132,7 @@ const OrganizationForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_user'),
-            action: () => true
+            action: () => props.pickUsers(props.organization.id)
           }
         ]}
       >
@@ -154,7 +159,7 @@ const OrganizationForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_group'),
-            action: () => true
+            action: () => props.pickGroups(props.organization.id)
           }
         ]}
       >
@@ -185,7 +190,53 @@ const Organization = connect(
   state => ({
     organization: formSelect.data(formSelect.form(state, 'organizations.current'))
   }),
-  dispatch => ({})
+  dispatch => ({
+    pickUsers: (organizationId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-user',
+        title: t('add_users'),
+        confirmText: t('add'),
+        name: 'users.picker',
+        definition: UserList.definition,
+        card: UserList.card,
+        fetch: {
+          url: ['apiv2_user_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addUsers(organizationId, selected))
+      }))
+    },
+    pickGroups: (organizationId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-users',
+        title: t('add_groups'),
+        confirmText: t('add'),
+        name: 'groups.picker',
+        definition: GroupList.definition,
+        card: GroupList.card,
+        fetch: {
+          url: ['apiv2_group_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addGroups(organizationId, selected))
+      }))
+    },
+    pickWorkspaces: (organizationId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-books',
+        title: t('add_workspaces'),
+        confirmText: t('add'),
+        name: 'workspaces.picker',
+        definition: WorkspaceList.definition,
+        card: WorkspaceList.card,
+        fetch: {
+          url: ['apiv2_workspace_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addWorkspaces(organizationId, selected))
+      }))
+    },
+  })
 )(OrganizationForm)
 
 export {

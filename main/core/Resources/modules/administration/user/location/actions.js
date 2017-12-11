@@ -1,8 +1,9 @@
-import {API_REQUEST} from '#/main/core/api/actions'
 import {generateUrl} from '#/main/core/fos-js-router'
+
+import {API_REQUEST} from '#/main/core/api/actions'
+import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {Location as LocationTypes} from '#/main/core/administration/user/location/prop-types'
-import {actions as formActions} from '#/main/core/data/form/actions'
 
 export const actions = {}
 
@@ -36,3 +37,29 @@ actions.open = (formName, id = null) => (dispatch) => {
     dispatch(formActions.resetForm(formName, LocationTypes.defaultProps, true))
   }
 }
+
+actions.addUsers = (id, users) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_location_add_users', {id: id}) +'?'+ users.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('locations.list'))
+      dispatch(listActions.invalidateData('locations.current.users'))
+    }
+  }
+})
+
+actions.addGroups = (id, groups) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_location_add_groups', {id: id}) +'?'+ groups.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('locations.list'))
+      dispatch(listActions.invalidateData('locations.current.groups'))
+    }
+  }
+})

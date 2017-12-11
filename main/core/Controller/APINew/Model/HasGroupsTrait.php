@@ -50,17 +50,13 @@ trait HasGroupsTrait
      */
     public function addGroupsAction($id, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
-            $this->crud->patch($object, 'group', Crud::COLLECTION_ADD, $groups);
+        $object = $this->find($class, $id);
+        $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
+        $this->crud->patch($object, 'group', Crud::COLLECTION_ADD, $groups);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object)
+        );
     }
 
     /**
@@ -78,14 +74,10 @@ trait HasGroupsTrait
      */
     public function removeGroupsAction($id, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
-            $this->crud->patch($object, 'group', Crud::COLLECTION_REMOVE, $groups);
+        $object = $this->find($class, $id);
+        $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
+        $this->crud->patch($object, 'group', Crud::COLLECTION_REMOVE, $groups);
 
-            return new JsonResponse($this->serializer->serialize($object));
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse($this->serializer->serialize($object));
     }
 }

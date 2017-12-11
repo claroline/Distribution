@@ -172,7 +172,7 @@ class Crud
 
         if (!method_exists($object, $methodName)) {
             throw new \LogicException(
-                sprintf('You have requested a non implemented action %s on %s', $action, get_class($object))
+                sprintf('You have requested a non implemented action %s on %s', $methodName, get_class($object))
             );
         }
 

@@ -50,17 +50,13 @@ trait HasOrganizationsTrait
      */
     public function addOrganizationsAction($id, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
-            $this->crud->patch($object, 'organization', Crud::COLLECTION_ADD, $organizations);
+        $object = $this->find($class, $id);
+        $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
+        $this->crud->patch($object, 'organization', Crud::COLLECTION_ADD, $organizations);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object)
+        );
     }
 
     /**
@@ -78,16 +74,12 @@ trait HasOrganizationsTrait
      */
     public function removeOrganizationsAction($id, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
-            $this->crud->patch($object, 'organization', Crud::COLLECTION_REMOVE, $organizations);
+        $object = $this->find($class, $id);
+        $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
+        $this->crud->patch($object, 'organization', Crud::COLLECTION_REMOVE, $organizations);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+              $this->serializer->serialize($object)
+          );
     }
 }

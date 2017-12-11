@@ -105,7 +105,7 @@ const GroupForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_roles'),
-            action: () => true
+            action: () => props.pickRoles(props.group.id)
           }
         ]}
       >
@@ -145,7 +145,8 @@ GroupForm.propTypes = {
   group: T.shape({
     id: T.string
   }).isRequired,
-  pickUsers: T.func.isRequired
+  pickUsers: T.func.isRequired,
+  pickGroups: T.func.isRequired
 }
 
 const Group = connect(
@@ -167,7 +168,22 @@ const Group = connect(
         },
         handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
       }))
-    }
+    },
+    pickRoles: (groupId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-id-badge',
+        title: t('add_roles'),
+        confirmText: t('add'),
+        name: 'roles.picker',
+        definition: RoleList.definition,
+        card: RoleList.card,
+        fetch: {
+          url: ['apiv2_role_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addRoles(groupId, selected))
+      }))
+    },
   })
 )(GroupForm)
 

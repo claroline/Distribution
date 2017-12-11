@@ -50,17 +50,13 @@ trait HasUsersTrait
      */
     public function addUsersAction($id, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
-            $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $users);
+        $object = $this->find($class, $id);
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $users);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object)
+        );
     }
 
     /**

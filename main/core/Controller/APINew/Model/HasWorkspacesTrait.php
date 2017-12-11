@@ -50,17 +50,13 @@ trait HasWorkspacesTrait
      */
     public function addWorkspacesAction($id, $class, Request $request, $env)
     {
-        try {
-            $object = $this->find($class, $id);
-            $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
-            $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $workspaces);
+        $object = $this->find($class, $id);
+        $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+        $this->crud->patch($object, 'user', Crud::COLLECTION_ADD, $workspaces);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object)
+        );
     }
 
     /**

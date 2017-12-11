@@ -70,7 +70,6 @@ class Organization
      * @Assert\Email()
      * @Serializer\Groups({"api_organization_tree", "api_organization_list"})
      *
-     *
      * @var string
      */
     protected $email;
@@ -146,7 +145,7 @@ class Organization
      * )
      * @ORM\JoinTable(name="claro_user_organization")
      *
-     * @var User[]|ArrayCollection
+     * @var ArrayCollection
      */
     protected $users;
 
@@ -167,7 +166,7 @@ class Organization
      * )
      * @ORM\JoinTable(name="claro_group_organization")
      *
-     * @var Group[]|ArrayCollection
+     * @var ArrayCollection
      */
     protected $groups;
 
@@ -377,10 +376,46 @@ class Organization
     }
 
     /**
-     * @return Organization[]|ArrayCollection
+     * @return ArrayCollection
      */
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function addUser(User $user)
+    {
+        $this->users->add($user);
+        $user->getUserOrganizations()->add($this);
+    }
+
+    /**
+     * @param User $user
+     */
+    public function removeUser(User $user)
+    {
+        $this->users->remove($user);
+        $user->getUserOrganizations()->removeElement($this);
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function addGroup(Group $group)
+    {
+        $this->groups->add($group);
+        $group->getOrganizations()->add($this);
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function removeGroup(Group $group)
+    {
+        $this->groups->remove($group);
+        $group->getOrganizations()->removeElement($this);
     }
 }

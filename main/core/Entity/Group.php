@@ -13,7 +13,6 @@ namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
-use Claroline\CoreBundle\Entity\Organization\Organization;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
@@ -75,7 +74,7 @@ class Group extends AbstractRoleSubject implements OrderableInterface
     protected $roles;
 
     /**
-     * @var Organization[]|ArrayCollection
+     * @var ArrayCollection
      *
      * @ORM\ManyToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization"
@@ -194,6 +193,11 @@ class Group extends AbstractRoleSubject implements OrderableInterface
         foreach ($platformRoles as $platformRole) {
             $this->roles->add($platformRole);
         }
+    }
+
+    public function getOrganizations()
+    {
+        return $this->organizations;
     }
 
     public function containsUser(User $user)

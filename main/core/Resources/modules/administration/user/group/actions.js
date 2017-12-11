@@ -33,6 +33,22 @@ actions.addUsers = (id, users) => ({
     request: {
       method: 'PATCH'
     },
-    success: (data, dispatch) => dispatch(listActions.fetchData('groups.current.users'))
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('groups.list'))
+      dispatch(listActions.invalidateData('groups.current.users'))
+    }
+  }
+})
+
+actions.addRoles = (id, roles) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_group_add_roles', {id: id}) +'?'+ roles.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('groups.list'))
+      dispatch(listActions.invalidateData('groups.current.roles'))
+    }
   }
 })
