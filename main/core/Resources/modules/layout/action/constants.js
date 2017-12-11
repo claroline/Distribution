@@ -1,6 +1,7 @@
 
 const ACTION_GENERIC  = 'generic'
 const ACTION_LOAD     = 'load'
+const ACTION_REFRESH  = 'refresh'
 const ACTION_SAVE     = 'save'
 const ACTION_CREATE   = 'create'
 const ACTION_UPDATE   = 'update'
@@ -13,6 +14,9 @@ const ACTIONS = {
   [ACTION_GENERIC]: {},
   [ACTION_LOAD]: {
     icon: 'fa fa-search'
+  },
+  [ACTION_REFRESH]: {
+    icon: 'fa fa-recycle'
   },
   [ACTION_SAVE]: {
     icon: 'fa fa-floppy-o'
@@ -54,6 +58,7 @@ export const constants = {
   HTTP_ACTIONS,
   ACTION_GENERIC,
   ACTION_LOAD,
+  ACTION_REFRESH,
   ACTION_SAVE,
   ACTION_CREATE,
   ACTION_UPDATE,

@@ -11,22 +11,34 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
-use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Options;
-use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Claroline\CoreBundle\Controller\APINew\AbstractApiController;
+use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**
- * @ApiMeta(class="Claroline\CoreBundle\Entity\Facet\PanelFacet")
- * @Route("/panelfacet")
+ * @EXT\Route("/profile")
  */
-class PanelFacetController extends AbstractCrudController
+class ProfileController extends AbstractApiController
 {
+    use HasRolesTrait;
+
     public function getName()
     {
-        return 'panelfacet';
+        return 'facet';
     }
 
+    /**
+     *
+     */
+    public function update()
+    {
+
+    }
+
+    /**
+     * @return array
+     */
     public function getOptions()
     {
         $list = [Options::PROFILE_SERIALIZE];

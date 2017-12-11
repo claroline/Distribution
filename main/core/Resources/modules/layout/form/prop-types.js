@@ -32,12 +32,14 @@ const FormGroup = {
     hideLabel: T.bool,
     help: T.string,
     warnOnly: T.bool,
-    error: T.string
+    error: T.string,
+    optional: T.bool
   },
   defaultProps: {
     className: '',
     hideLabel: false,
-    warnOnly: false
+    warnOnly: false,
+    optional: false
   }
 }
 

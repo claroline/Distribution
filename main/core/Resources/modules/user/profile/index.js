@@ -21,10 +21,12 @@ bootstrap(
         title: 'Informations générales',
         meta: {
           main: true
-        }
+        },
+        sections: []
       }, {
         id: 'scol',
-        title: 'Scolarité'
+        title: 'Scolarité',
+        sections: []
       }
     ]
   })

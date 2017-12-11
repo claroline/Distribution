@@ -221,6 +221,8 @@ class PanelFacet
 
     /**
      * @return bool
+     *
+     * @deprecated
      */
     public function getIsDefaultCollapsed()
     {
@@ -253,6 +255,8 @@ class PanelFacet
 
     /**
      * @return string
+     *
+     * @deprecated
      */
     public function isCollapsed()
     {

@@ -25,6 +25,7 @@ FormSection.propTypes = {
 
 const FormSections = props =>
   <Sections
+    className="form-sections"
     level={props.level}
     accordion={props.accordion}
     defaultOpened={props.defaultOpened}

@@ -105,6 +105,16 @@ const ALERT_ACTIONS = {
       message: 'Nous n\'avons pas réussi à charger vos données.'
     }
   },
+  [actionConstants.ACTION_REFRESH]: {
+    [ALERT_STATUS_PENDING]: {
+      title: 'Rechargement en cours',
+      message: 'Veuillez patienter pendant le rafraîchissement de vos données.'
+    },
+    [ALERT_STATUS_ERROR]: {
+      title: 'Echec du rechargement',
+      message: 'Nous n\'avons pas réussi à rafraîchir vos données.'
+    }
+  },
   [actionConstants.ACTION_SAVE]: {
     [ALERT_STATUS_PENDING]: {
       title: 'Sauvegarde en cours',
@@ -163,7 +173,8 @@ const ALERT_ACTIONS = {
       message: 'Veuillez patienter pendant la suppression de vos données.'
     },
     [ALERT_STATUS_SUCCESS]: {
-      title: 'Suppression réussie'
+      title: 'Suppression réussie',
+      message: 'Vos données ont correctement été supprimée.'
     },
     [ALERT_STATUS_WARNING]: {
       title: 'Echec de la suppression'

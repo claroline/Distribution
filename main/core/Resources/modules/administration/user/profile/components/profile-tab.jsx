@@ -5,180 +5,100 @@ import {connect} from 'react-redux'
 import {t} from '#/main/core/translation'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
-import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
+import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
+//import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
+import {ProfileNav} from '#/main/core/user/profile/components/nav.jsx'
+import {ProfileFacets} from '#/main/core/user/profile/components/facets.jsx'
+
+import {ProfileFacet} from '#/main/core/administration/user/profile/components/facet.jsx'
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
 
-const ProfileSaveAction = makeSaveAction('profile', formData => ({
+/*const ProfileSaveAction = makeSaveAction('profile', formData => ({
   update: ['apiv2_profile_update']
-}))(PageAction)
+}))(PageAction)*/
 
 const ProfileTabActions = () =>
   <PageActions>
-    <ProfileSaveAction />
-
-    <PageAction
-      id="profile-cancel"
-      icon="fa fa-times"
-      title={t('cancel')}
-      action={() => true}
+    <FormPageActionsContainer
+      formName={select.formName}
+      opened={true}
     />
   </PageActions>
 
-const Tabs = props =>
-  <ul className="user-profile-sections nav nav-pills nav-stacked">
-    <li role="presentation" className="active">
-      <a href="">Infos personnelles</a>
-    </li>
-    <li role="presentation">
-      <a href="">Scolarité</a>
-    </li>
-    <li className="add-tab" role="presentation">
-      <a
-        role="button"
-        href=""
-        onClick={e => {
-          e.preventDefault()
-          props.addTab()
-        }}
-      >
-        <span className="fa fa-plus" />
-        Ajouter un onglet
-      </a>
-    </li>
-  </ul>
+const Profile = props =>
+  <div className="row user-profile">
+    <div className="user-profile-aside col-md-3">
+      <ProfileNav
+        prefix="/profile"
+        facets={props.facets}
+        actions={[
+          {
+            icon: 'fa fa-fw fa-trash-o',
+            label: t('delete'),
+            displayed: (facet) => !facet.meta || !facet.meta.main,
+            action: (facet) => props.removeFacet(facet.id),
+            dangerous: true
+          }
+        ]}
+      />
 
-Tabs.propTypes = {
-  currentTab: T.string.isRequired,
-  tabs: T.object,
-  addTab: T.func.isRequired,
-  removeTab: T.func.isRequired
-}
-
-const CurrentTab = props =>
-  <form className="col-md-9">
-    <FormSections level={2}>
-      <FormSection
-        id="tab-parameters"
-        icon="fa fa-fw fa-cog"
-        title={t('parameters')}
-      >
-        <TextGroup
-          id="tab-name"
-          label={t('title')}
-          value=""
-          onChange={() => true}
-        />
-
-        <CheckGroup
-          id="tab-on-create"
-          label="Afficher à la création"
-          value={false}
-          onChange={() => true}
-        />
-      </FormSection>
-
-      <FormSection
-        id="tab-restrictions"
-        icon="fa fa-fw fa-key"
-        title={t('access_restrictions')}
-      >
-        Access roles
-      </FormSection>
-    </FormSections>
-
-    <hr />
-
-    {0 < props.sections.length &&
-      <FormSections level={2}>
-        {props.sections.map(section =>
-          <FormSection
-            id={section.id}
-            title={section.title}
-          >
-            fields
-          </FormSection>
-        )}
-      </FormSections>
-    }
-
-    {0 === props.sections.length &&
-      <div className="no-section-info">Aucune section n'est associée à cet onglet.</div>
-    }
-
-    <div className="text-center">
       <button
         type="button"
-        className="add-section btn btn-primary"
-        onClick={props.addSection}
+        className="btn btn-block profile-facet-add"
+        onClick={props.addFacet}
       >
-        Créer une nouvelle section
+        <span className="fa fa-fw fa-plus" />
+        Ajouter une facette
       </button>
     </div>
-  </form>
 
-CurrentTab.propTypes = {
-  sections: T.array,
-  addSection: T.func.isRequired,
-  removeSection: T.func.isRequired
-}
-
-const Profile = props =>
-  <div className="user-profile row">
-    <div className="col-md-3">
-      <Tabs
-        tabs={props.tabs}
-        currentTab={props.currentTab}
-        addTab={props.addTab}
-        removeTab={props.removeTab}
+    <div className="user-profile-content col-md-9">
+      <ProfileFacets
+        prefix="/profile"
+        facets={props.facets}
+        facetComponent={ProfileFacet}
+        openFacet={props.openFacet}
       />
     </div>
-
-    <CurrentTab
-      sections={props.sections}
-    />
   </div>
 
 Profile.propTypes = {
-  currentTab: T.string,
-  tabs: T.arrayOf(T.shape({
+  facets: T.arrayOf(T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
   })).isRequired,
-  addTab: T.func.isRequired,
-  removeTab: T.func.isRequired,
-  addSection: T.func.isRequired
+  addFacet: T.func.isRequired,
+  removeFacet: T.func.isRequired
 }
 
-Profile.defaultProps = {
-  sections: []
-}
-
-function mapStateToProps(state) {
-  return {
-    currentTab: select.currentTab(state),
-    tabs: select.tabs(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    addTab() {
-      dispatch(actions.addTab())
+const ProfileTab = connect(
+  (state) => ({
+    facets: select.facets(state)
+  }),
+  (dispatch) => ({
+    openFacet(id) {
+      dispatch(actions.openFacet(id))
     },
-    removeTab(tabId) {
-      dispatch(actions.removeTab(tabId))
+    addFacet() {
+      dispatch(actions.addFacet())
+    },
+    removeFacet(id) {
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: t('profile_remove_facet'),
+          question: t('profile_remove_facet_question'),
+          handleConfirm: () => dispatch(actions.removeFacet(id))
+        })
+      )
     }
-  }
-}
-
-const ConnectedProfile = connect(mapStateToProps, mapDispatchToProps)(Profile)
+  })
+)(Profile)
 
 export {
   ProfileTabActions,
-  ConnectedProfile as ProfileTab
+  ProfileTab
 }

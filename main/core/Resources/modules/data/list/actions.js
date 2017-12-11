@@ -40,6 +40,8 @@ actions.invalidateData = makeInstanceActionCreator(LIST_DATA_INVALIDATE)
 actions.fetchData = (listName, url) => (dispatch, getState) => {
   const listState = listSelect.list(getState(), listName)
 
+  // todo use ACTION_REFRESH type if we reload because of invalidation
+
   dispatch({
     [API_REQUEST]: {
       url: (typeof url === 'string' ? url : generateUrl(...url)) + listSelect.queryString(listState),

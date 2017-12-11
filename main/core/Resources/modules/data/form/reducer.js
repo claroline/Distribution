@@ -20,7 +20,8 @@ const defaultState = {
   validating: false,
   pendingChanges: false,
   errors: {},
-  data: {}
+  data: {},
+  originalData: {}
 }
 
 const newReducer = makeInstanceReducer(defaultState.new, {
@@ -79,12 +80,17 @@ const dataReducer = makeInstanceReducer(defaultState.data, {
   }
 })
 
+const originalDataReducer = makeInstanceReducer(defaultState.originalData, {
+  [FORM_RESET]: (state, action) => action.data || {}
+})
+
 const baseReducer = {
   new: newReducer,
   validating: validatingReducer,
   pendingChanges: pendingChangesReducer,
   errors: errorsReducer,
-  data: dataReducer
+  data: dataReducer,
+  originalData: originalDataReducer
 }
 
 /**
@@ -104,7 +110,7 @@ function makeFormReducer(formName, initialState = {}, customReducer = {}) {
   // enhance base form reducers with custom ones if any
   Object.keys(baseReducer).map(reducerName => {
     reducer[reducerName] = customReducer[reducerName] ?
-      reduceReducers(baseReducer[reducerName](formName, formState[reducerName]), customReducer[reducerName](formName)) : baseReducer[reducerName](formName, formState[reducerName])
+      reduceReducers(baseReducer[reducerName](formName, formState[reducerName]), customReducer[reducerName]) : baseReducer[reducerName](formName, formState[reducerName])
   })
 
   // get custom keys

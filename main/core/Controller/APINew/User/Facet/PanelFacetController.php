@@ -24,7 +24,7 @@ class PanelFacetController extends AbstractCrudController
 {
     public function getName()
     {
-        return 'facet';
+        return 'panelfacet';
     }
 
     /**

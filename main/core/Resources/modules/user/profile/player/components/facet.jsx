@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {withRouter} from '#/main/core/router'
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import {select} from '#/main/core/user/profile/selectors'
 
 // todo manage differences between main / default / plugin facets
@@ -13,14 +13,16 @@ const ProfileFacetComponent = props =>
   </div>
 
 ProfileFacetComponent.propTypes = {
-  //title: T.string.isRequired
+  facet: T.shape(
+    ProfileFacetTypes.propTypes
+  ).isRequired
 }
 
-const ProfileFacet = withRouter(connect(
+const ProfileFacet = connect(
   state => ({
     facet: select.currentFacet(state)
   })
-)(ProfileFacetComponent))
+)(ProfileFacetComponent)
 
 export {
   ProfileFacet

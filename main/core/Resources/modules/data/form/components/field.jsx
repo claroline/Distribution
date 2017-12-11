@@ -21,6 +21,7 @@ const FormField = props => {
     help: props.help,
     error: props.error,
     warnOnly: !props.validating,
+    optional: !props.required,
     value: props.value,
     onChange: props.onChange
   }))
@@ -29,6 +30,7 @@ const FormField = props => {
 // todo : use the one defined in prop-types
 FormField.propTypes = {
   validating: T.bool,
+  required: T.bool,
 
   name: T.string.isRequired,
   type: T.string,

@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import {select} from '#/main/core/user/profile/selectors'
 
 // todo manage differences between main / default / plugin facets
@@ -12,7 +13,9 @@ const ProfileFacetComponent = props =>
   </div>
 
 ProfileFacetComponent.propTypes = {
-  //title: T.string.isRequired
+  facet: T.shape(
+    ProfileFacetTypes.propTypes
+  ).isRequired
 }
 
 const ProfileFacet = connect(

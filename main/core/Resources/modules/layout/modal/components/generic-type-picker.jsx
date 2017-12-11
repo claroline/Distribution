@@ -38,7 +38,10 @@ class GenericTypePicker extends Component {
                 className={classes('type-entry', {'selected': this.state.currentType === type})}
                 role="option"
                 onMouseOver={() => this.handleItemMouseOver(type)}
-                onClick={() => this.props.handleSelect(type)}
+                onClick={() => {
+                  this.props.fadeModal()
+                  this.props.handleSelect(type)
+                }}
               >
                 {typeof type.icon === 'string' ?
                   <span className={classes('type-icon', type.icon)} /> :
@@ -67,6 +70,7 @@ GenericTypePicker.propTypes = {
     icon: T.node.isRequired, // either a FontAwesome class string or a custom icon component
     description: T.string
   })).isRequired,
+  fadeModal: T.func.isRequired,
   handleSelect: T.func.isRequired
 }
 

@@ -7,6 +7,7 @@ use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\PanelFacet;
+use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -42,23 +43,29 @@ class PanelFacetSerializer
      */
     public function serialize(PanelFacet $panel, array $options = [])
     {
-        $fieldFacetSerializer = $this->serializer
-            ->get('Claroline\CoreBundle\Entity\Facet\FieldFacet');
-        $panelFacetRoleSerializer = $this->serializer
-            ->get('Claroline\CoreBundle\Entity\Facet\PanelFacetRole');
-
         return [
-          'id' => $panel->getUuid(),
-          'title' => $panel->getName(),
-          'position' => $panel->getPosition(),
-          'roles' => array_map(function (PanelFacetRole $panelFacet) use ($panelFacetRoleSerializer) {
-              return $panelFacetRoleSerializer->serializer($panelFacet);
-          }, $panel->getPanelFacetsRole()->toArray()),
-          'meta' => [],
-          'fields' => array_map(function ($fieldFacet) use ($fieldFacetSerializer, $options) {
-              return $fieldFacetSerializer->serialize($fieldFacet, $options);
-          }, $panel->getFieldsFacet()->toArray()),
+            'id' => $panel->getUuid(),
+            'title' => $panel->getName(),
+            'position' => $panel->getPosition(),
+            'roles' => $this->serializeRoles($panel->getPanelFacetsRole()->toArray()),
+            'display' => [
+                'collapsed' => $panel->isDefaultCollapsed(),
+            ],
+            'fields' => array_map(function (FieldFacet $fieldFacet) use ($options) {
+                return $this->serializer->serialize($fieldFacet, $options);
+            }, $panel->getFieldsFacet()->toArray()),
         ];
+    }
+
+    private function serializeRoles(array $panelRoles = [])
+    {
+        return array_map(function (PanelFacetRole $panelRole) {
+            return [
+                'edit' => $panelRole->canEdit(),
+                'open' => $panelRole->canOpen(),
+                'role' => $this->serializer->serialize($panelRole->getRole(), [Options::SERIALIZE_MINIMAL]),
+            ];
+        }, $panelRoles);
     }
 
     /**
@@ -73,6 +80,10 @@ class PanelFacetSerializer
         $this->sipe('title', 'setName', $data, $panel);
         $this->sipe('position', 'setPosition', $data, $panel);
 
+        if (isset($data['roles'])) {
+            $this->deserializeRoles($data['roles'], $panel);
+        }
+
         if (isset($data['fields']) && in_array(Options::DEEP_DESERIALIZE, $options)) {
             $panel->resetFieldFacets();
 
@@ -81,5 +92,10 @@ class PanelFacetSerializer
                 $field->setPanelFacet($panel);
             }
         }
+    }
+
+    private function deserializeRoles(array $roleData = [], PanelFacet $panel)
+    {
+
     }
 }

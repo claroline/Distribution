@@ -37,7 +37,6 @@ const Section = props =>
           {props.actions.map((action, actionIndex) =>
             <TooltipAction
               {...action}
-
               key={`${props.id}-action-${actionIndex}`}
               id={`${props.id}-action-${actionIndex}`}
               className={classes({
@@ -71,6 +70,7 @@ Section.defaultProps = {
 
 const Sections = props =>
   <PanelGroup
+    className={props.className}
     accordion={props.accordion}
     defaultActiveKey={props.defaultOpened}
   >
@@ -84,6 +84,7 @@ const Sections = props =>
   </PanelGroup>
 
 Sections.propTypes = {
+  className: T.string,
   accordion: T.bool,
   level: T.number, // level for panel headings
   defaultOpened: T.string,

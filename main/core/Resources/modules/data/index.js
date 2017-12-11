@@ -8,13 +8,11 @@ import {EMAIL_TYPE,    emailDefinition}    from '#/main/core/data/types/email'
 import {ENUM_TYPE,     enumDefinition}     from '#/main/core/data/types/enum'
 import {HTML_TYPE,     htmlDefinition}     from '#/main/core/data/types/html'
 import {IP_TYPE,       ipDefinition}       from '#/main/core/data/types/ip'
+import {LOCALE_TYPE,   localeDefinition}   from '#/main/core/data/types/locale'
 import {NUMBER_TYPE,   numberDefinition}   from '#/main/core/data/types/number'
 import {PASSWORD_TYPE, passwordDefinition} from '#/main/core/data/types/password'
 import {STRING_TYPE,   stringDefinition}   from '#/main/core/data/types/string'
 import {USERNAME_TYPE, usernameDefinition} from '#/main/core/data/types/username'
-
-// todo do not register it here
-import {LOCALE_TYPE,   localeDefinition}   from '#/main/core/data/types/locale'
 
 // the list of registered data types
 const dataTypes = {}
@@ -28,12 +26,11 @@ registerType(EMAIL_TYPE,    emailDefinition)
 registerType(ENUM_TYPE,     enumDefinition)
 registerType(HTML_TYPE,     htmlDefinition)
 registerType(IP_TYPE,       ipDefinition)
+registerType(LOCALE_TYPE,   localeDefinition)
 registerType(NUMBER_TYPE,   numberDefinition)
 registerType(PASSWORD_TYPE, passwordDefinition)
 registerType(STRING_TYPE,   stringDefinition)
 registerType(USERNAME_TYPE, usernameDefinition)
-
-registerType(LOCALE_TYPE,   localeDefinition)
 
 /**
  * Validates & registers a data type.

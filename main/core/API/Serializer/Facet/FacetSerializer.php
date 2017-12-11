@@ -6,6 +6,7 @@ use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Facet\Facet;
+use Claroline\CoreBundle\Entity\Role;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -32,8 +33,18 @@ class FacetSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/main/core/facet.json';
+    }
+
+    /**
      * @param Facet $facet
      * @param array $options
+     *
+     * @return array
      */
     public function serialize(Facet $facet, array $options = [])
     {
@@ -95,13 +106,5 @@ class FacetSerializer
         }
 
         //deserialize roles here too ?
-    }
-
-    /**
-     * @return string
-     */
-    public function getSchema()
-    {
-        return '#/main/core/facet.json';
     }
 }

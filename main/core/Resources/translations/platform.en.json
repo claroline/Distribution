@@ -1505,5 +1505,9 @@
     "accept_term_of_service": "Accept terms of service",
     "registered_at": "registered at",
     "last_logged_at": "last logged at",
-    "add_organizations": "Select organizations"
+    "add_organizations": "Select organizations",
+    "optional": "optional",
+    "field_optional": "Field is optional",
+    "field_required": "Field is required",
+    "help": "Help"
 }

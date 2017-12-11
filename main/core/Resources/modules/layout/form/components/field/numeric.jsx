@@ -25,7 +25,7 @@ const Numeric = props => props.unit ?
     </span>
   </div>
   :
-  <NumberInput {...props} />
+  <NumericInput {...props} />
 
 implementPropTypes(Numeric, FormFieldTypes, {
   value: T.oneOfType([T.number, T.string]),

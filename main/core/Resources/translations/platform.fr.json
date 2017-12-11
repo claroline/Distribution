@@ -1527,5 +1527,9 @@
     "accept_term_of_service": "Accepter les conditions d'utilisation",
     "registered_at": "inscrit le",
     "last_logged_at": "dernière connexion le",
-    "add_organizations": "Ajouter des organisations"
+    "add_organizations": "Ajouter des organisations",
+    "optional": "optionnel",
+    "field_optional": "Le champ est optionnel",
+    "field_required": "Le champ est obligatoire",
+    "help": "Aide"
 }

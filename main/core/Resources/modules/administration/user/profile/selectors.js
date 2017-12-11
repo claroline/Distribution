@@ -1,25 +1,32 @@
 import {createSelector} from 'reselect'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 
-const profile = state => state.profile
+const formName = 'profile'
+const form =  state => formSelect.form(state, formName)
 
-const currentTab = createSelector(
-  [profile],
-  (profile) => profile.currentTab
+const facets = createSelector(
+  [form],
+  (form) => formSelect.data(form)
 )
 
-const tabs = createSelector(
-  [profile],
-  (profile) => profile.tabs
+const currentFacetId = createSelector(
+  [form],
+  (form) => form.currentFacet
 )
 
-const sections = createSelector(
-  [profile],
-  (profile) => profile.sections
+const currentFacetIndex = createSelector(
+  [facets, currentFacetId],
+  (facets, currentFacetId) => facets.findIndex(facet => facet.id === currentFacetId)
+)
+
+const currentFacet = createSelector(
+  [facets, currentFacetIndex],
+  (facets, currentFacetIndex) => -1 !== currentFacetIndex ? facets[currentFacetIndex] : {}
 )
 
 export const select = {
-  profile,
-  currentTab,
-  tabs,
-  sections
+  formName,
+  facets,
+  currentFacetIndex,
+  currentFacet
 }

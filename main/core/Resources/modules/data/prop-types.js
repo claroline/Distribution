@@ -1,6 +1,6 @@
 import {PropTypes as T} from 'prop-types'
 
-import {getTypes} from '#/main/core/data'
+//import {getTypes} from '#/main/core/data'
 
 const DataProperty = {
   propTypes: {

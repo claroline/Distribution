@@ -72,7 +72,7 @@ class Form extends Component {
     return (
       <form action="#" className={classes('form', this.props.className)}>
         {primarySection &&
-          <div className="panel panel-default">
+          <div className="form-primary-section panel panel-default">
             <fieldset className="panel-body">
               {React.createElement('h'+this.props.level, {
                 className: 'sr-only'
