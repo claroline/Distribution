@@ -1159,6 +1159,13 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         return $this->hideMailWarning;
     }
 
+    /**
+     * @param bool $includedGroups
+     *
+     * @return array
+     *
+     * @todo this should return an array collection
+     */
     public function getOrganizations($includeGroups = true)
     {
         $organizations = [];
@@ -1170,6 +1177,14 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         }
 
         return array_merge($organizations, $this->organizations->toArray());
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getUserOrganizations()
+    {
+        return $this->organizations;
     }
 
     public static function getUserSearchableFields()

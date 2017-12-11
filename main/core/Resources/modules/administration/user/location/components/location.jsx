@@ -7,10 +7,14 @@ import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
+import {actions} from '#/main/core/administration/user/location/actions'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
+import {connect} from 'react-redux'
 import {locationTypes} from '#/main/core/administration/user/location/constants'
 
 const LocationSaveAction = makeSaveAction('locations.current', formData => ({
@@ -30,7 +34,7 @@ const LocationActions = () =>
     />
   </PageActions>
 
-const Location = props =>
+const LocationForm = props =>
   <FormContainer
     level={3}
     name="locations.current"
@@ -78,7 +82,7 @@ const Location = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_user'),
-            action: () => true
+            action: () => props.pickUsers(props.location.id)
           }
         ]}
       >
@@ -104,8 +108,8 @@ const Location = props =>
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
-            label: t('add_organization'),
-            action: () => true
+            label: t('add_group'),
+            action: () => props.pickGroups(props.location.id)
           }
         ]}
       >
@@ -125,6 +129,44 @@ const Location = props =>
       </FormSection>
     </FormSections>
   </FormContainer>
+
+const Location = connect(
+  state => ({
+    location: formSelect.data(formSelect.form(state, 'locations.current'))
+  }),
+  dispatch =>({
+    pickUsers: (userId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-user',
+        title: t('add_users'),
+        confirmText: t('add'),
+        name: 'users.picker',
+        definition: UserList.definition,
+        card: UserList.card,
+        fetch: {
+          url: ['apiv2_user_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addUsers(userId, selected))
+      }))
+    },
+    pickGroups: (groupId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-users',
+        title: t('add_groups'),
+        confirmText: t('add'),
+        name: 'groups.picker',
+        definition: GroupList.definition,
+        card: GroupList.card,
+        fetch: {
+          url: ['apiv2_group_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addGroups(groupId, selected))
+      }))
+    }
+  })
+)(LocationForm)
 
 export {
   LocationActions,
