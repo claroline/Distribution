@@ -82,6 +82,11 @@ class GroupFinder implements FinderInterface
                     $qb->andWhere('l.uuid IN (:locationIds)');
                     $qb->setParameter('locationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
+              case 'role':
+                  $qb->leftJoin('obj.roles', 'r');
+                  $qb->andWhere('r.uuid IN (:roleIds)');
+                  $qb->setParameter('roleIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                  break;
                 default:
                     if (is_bool($filterValue)) {
                         $qb->andWhere("obj.{$filterName} = :{$filterName}");
