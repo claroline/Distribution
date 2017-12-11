@@ -7,6 +7,7 @@ const HTML_TYPE = 'html'
 
 const htmlDefinition = {
   meta: {
+    type: HTML_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-code',
     label: t('html'),

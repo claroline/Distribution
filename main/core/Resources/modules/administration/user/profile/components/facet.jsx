@@ -27,8 +27,7 @@ import {select} from '#/main/core/administration/user/profile/selectors'
 
 const FacetSection = props =>
   <FormSection
-    {...omit(props, ['key', 'section', 'remove', 'updateProp', 'showModal'])}
-    id={props.section.id}
+    {...omit(props, ['section', 'remove', 'updateProp', 'showModal'])}
     title={props.section.title}
     actions={[
       {
@@ -111,6 +110,7 @@ const ProfileFacetComponent = props =>
       <FormSections level={2}>
         {props.facet.sections.map((section, sectionIndex) =>
           <FacetSection
+            id={section.id}
             key={section.id}
             section={section}
             remove={() => props.removeSection(props.facet.id, section.id)}

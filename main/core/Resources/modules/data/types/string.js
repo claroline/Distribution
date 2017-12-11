@@ -7,8 +7,9 @@ const STRING_TYPE = 'string'
 
 const stringDefinition = {
   meta: {
+    type: STRING_TYPE,
     creatable: true,
-    icon: 'fa fa-fw fa fa-list',
+    icon: 'fa fa-fw fa fa-font',
     label: t('string'),
     description: t('string_desc')
   },

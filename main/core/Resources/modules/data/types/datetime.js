@@ -7,6 +7,7 @@ const DATETIME_TYPE = 'datetime'
 
 const datetimeDefinition = {
   meta: {
+    type: DATETIME_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-clock-o',
     label: t('datetime'),

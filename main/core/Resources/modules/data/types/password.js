@@ -7,6 +7,9 @@ const PASSWORD_TYPE = 'password'
 // todo handle password complexity options
 
 const passwordDefinition = {
+  meta: {
+    type: PASSWORD_TYPE
+  },
   // nothing special to do
   parse: (display) => display,
   // nothing special to do

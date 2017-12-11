@@ -7,6 +7,7 @@ const EMAIL_TYPE = 'email'
 
 const emailDefinition = {
   meta: {
+    type: EMAIL_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-at',
     label: t('email'),

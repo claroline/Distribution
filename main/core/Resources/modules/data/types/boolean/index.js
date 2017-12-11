@@ -9,6 +9,7 @@ const BOOLEAN_TYPE = 'boolean'
 
 const booleanDefinition = {
   meta: {
+    type: BOOLEAN_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa-check-square-o',
     label: t('boolean'),

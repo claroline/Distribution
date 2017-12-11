@@ -5,6 +5,12 @@ const LOCALE_TYPE = 'locale'
 import {t} from '#/main/core/translation'
 
 const localeDefinition = {
+  meta: {
+    type: LOCALE_TYPE,
+    creatable: false,
+    label: t('locale'),
+    description: t('locale_desc')
+  },
   parse: (display) => parseFloat(display),
   render: (raw) => t(raw),
   validate: (value) => true,

@@ -9,6 +9,7 @@ const FILE_TYPE = 'file'
 
 const fileDefinition = {
   meta: {
+    type: FILE_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-file-o',
     label: t('file'),

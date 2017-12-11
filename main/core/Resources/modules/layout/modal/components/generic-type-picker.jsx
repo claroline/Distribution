@@ -11,7 +11,7 @@ class GenericTypePicker extends Component {
 
     this.state = {
       currentType: props.types[0],
-      currentName: props.types[0].name,
+      currentLabel: props.types[0].label,
       currentDesc: props.types[0].description
     }
   }
@@ -19,7 +19,7 @@ class GenericTypePicker extends Component {
   handleItemMouseOver(type) {
     this.setState({
       currentType: type,
-      currentName: type.name,
+      currentLabel: type.label,
       currentDesc: type.description
     })
   }
@@ -52,7 +52,7 @@ class GenericTypePicker extends Component {
           </div>
 
           <div className="type-desc">
-            <span className="type-name">{this.state.currentName}</span>
+            <span className="type-name">{this.state.currentLabel}</span>
 
             {this.state.currentDesc &&
               <p>{this.state.currentDesc}</p>
@@ -66,7 +66,7 @@ class GenericTypePicker extends Component {
 
 GenericTypePicker.propTypes = {
   types: T.arrayOf(T.shape({
-    name: T.string.isRequired,
+    label: T.string.isRequired,
     icon: T.node.isRequired, // either a FontAwesome class string or a custom icon component
     description: T.string
   })).isRequired,

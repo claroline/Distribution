@@ -7,6 +7,7 @@ const NUMBER_TYPE = 'number'
 
 const numberDefinition = {
   meta: {
+    type: NUMBER_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-calculator',
     label: t('number'),

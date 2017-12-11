@@ -62,9 +62,11 @@ function getTypes() {
 
 function getCreatableTypes() {
   return Object.keys(dataTypes)
-    .map(type => dataTypes[type].meta.creatable)
+    .filter(type => dataTypes[type].meta.creatable)
     .reduce((creatableTypes, type) => {
       creatableTypes[type] = dataTypes[type]
+
+      return creatableTypes
     }, {})
 }
 
@@ -117,9 +119,8 @@ function validateDefinition(definition) {
   invariant(typeof definition.render === 'function',   'Data type "render" property must be a function.')
   invariant(typeof definition.validate === 'function', 'Data type "validate" property must be a function.')
 
-  if (definition.meta) {
-    invariant(typeof definition.meta === 'object', 'Data type "meta" property must be a object.')
-  }
+  invariant(typeof definition.meta === 'object', 'Data type "meta" property must be a object.')
+  invariant(typeof definition.meta.type === 'string', 'Data type "meta.type" property must be a string.')
 
   if (definition.components) {
     invariant(typeof definition.components === 'object', 'Data type "components" property must be a object.')

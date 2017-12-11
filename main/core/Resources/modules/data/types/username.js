@@ -8,6 +8,10 @@ const USERNAME_TYPE = 'username'
 // todo : handle uniqueness check
 
 const usernameDefinition = {
+  meta: {
+    type: USERNAME_TYPE
+  },
+
   // nothing special to do
   parse: (display) => display,
   // nothing special to do

@@ -10,7 +10,7 @@ import {MODAL_GENERATE_FIELD} from '#/main/core/data/form/generator/components/m
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 
 import {FormField} from '#/main/core/data/form/components/field.jsx'
-import {constants} from '#/main/core/data/form/generator/constants'
+import {getCreatableTypes} from '#/main/core/data'
 
 const FieldPreview = props =>
   <FormField
@@ -93,7 +93,9 @@ class FieldList extends Component {
           <ul>
             {this.props.fields.map((field, fieldIndex) =>
               <li key={fieldIndex} className="field-item">
-                <span className={classes('field-item-icon', constants.fieldTypes.find(type => field.type === type.id).icon)} />
+                <span className={classes('field-item-icon',
+                  getCreatableTypes()[Object.keys(getCreatableTypes()).find(type => field.type === type)].meta.icon
+                )} />
 
                 <FieldPreview
                   {...field}
@@ -134,8 +136,8 @@ class FieldList extends Component {
           className="btn btn-default btn-block"
           onClick={() => this.props.showModal(MODAL_GENERIC_TYPE_PICKER, {
             title: 'Créer un nouveau champ',
-            types: constants.fieldTypes,
-            handleSelect: (type) => this.open({type: type.id}, (data) => {
+            types: Object.keys(getCreatableTypes()).map(type => getCreatableTypes()[type].meta),
+            handleSelect: (type) => this.open({type: type.type}, (data) => {
               this.add(data)
             })
           })}

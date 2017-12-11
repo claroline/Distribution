@@ -7,6 +7,7 @@ const ENUM_TYPE = 'enum'
 
 const enumDefinition = {
   meta: {
+    type: ENUM_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-list',
     label: t('enum'),

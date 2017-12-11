@@ -8,6 +8,7 @@ const DATE_TYPE = 'date'
 
 const dateDefinition = {
   meta: {
+    type: DATE_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa-calendar',
     label: t('date'),

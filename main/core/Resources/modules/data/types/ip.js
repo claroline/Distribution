@@ -3,6 +3,10 @@ import {chain, string, ip} from '#/main/core/validation'
 const IP_TYPE = 'ip'
 
 const ipDefinition = {
+  meta: {
+    type: IP_TYPE
+  },
+
   /**
    * Parses an IP string and return an array of IP parts.
    *
