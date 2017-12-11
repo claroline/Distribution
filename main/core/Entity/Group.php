@@ -77,7 +77,8 @@ class Group extends AbstractRoleSubject implements OrderableInterface
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization"
+     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization",
+     *     inversedBy="groups"
      * )
      */
     protected $organizations;

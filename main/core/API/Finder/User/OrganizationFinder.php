@@ -56,13 +56,13 @@ class OrganizationFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
+        /*
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
-            /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('obj.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
-        }
+        }*/
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
@@ -79,6 +79,16 @@ class OrganizationFinder implements FinderInterface
                         $qb->andWhere('p.uuid IN (:parentIds)');
                         $qb->setParameter('parentIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     }
+                    break;
+                case 'user':
+                    $qb->leftJoin('obj.users', 'u');
+                    $qb->andWhere('u.uuid IN (:userIds)');
+                    $qb->setParameter('userIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'group':
+                    $qb->leftJoin('obj.groups', 'g');
+                    $qb->andWhere('g.uuid IN (:groupIds)');
+                    $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
                 default:
                     if (is_bool($filterValue)) {

@@ -15,6 +15,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {actions} from '#/main/core/administration/user/group/actions'
 
+import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
@@ -132,11 +133,23 @@ const GroupForm = props =>
           {
             icon: 'fa fa-fw fa-plus',
             label: t('add_organizations'),
-            action: () => true
+            action: () => props.pickOrganizations(props.group.id)
           }
         ]}
       >
-        ORGANIZATIONS
+        <DataListContainer
+          name="groups.current.organizations"
+          open={OrganizationList.open}
+          fetch={{
+            url: ['apiv2_group_list_organizations', {id: props.group.id}],
+            autoload: true
+          }}
+          delete={{
+            url: ['apiv2_group_remove_organizations', {id: props.group.id}],
+          }}
+          definition={OrganizationList.definition}
+          card={OrganizationList.card}
+        />
       </FormSection>
     </FormSections>
   </FormContainer>
@@ -184,6 +197,21 @@ const Group = connect(
         handleSelect: (selected) => dispatch(actions.addRoles(groupId, selected))
       }))
     },
+    pickOrganizations: (organizationId) => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-buildings',
+        title: t('add_organizations'),
+        confirmText: t('add'),
+        name: 'organizations.picker',
+        definition: OrganizationList.definition,
+        card: OrganizationList.card,
+        fetch: {
+          url: ['apiv2_organization_list'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.addOrganizations(organizationId, selected))
+      }))
+    }
   })
 )(GroupForm)
 

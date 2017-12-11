@@ -52,3 +52,16 @@ actions.addRoles = (id, roles) => ({
     }
   }
 })
+
+actions.addOrganizations = (id, organizations) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_group_add_organizations', {id: id}) +'?'+ organizations.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('groups.list'))
+      dispatch(listActions.invalidateData('groups.current.organizations'))
+    }
+  }
+})

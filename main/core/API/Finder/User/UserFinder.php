@@ -64,6 +64,7 @@ class UserFinder implements FinderInterface
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
         }
+          
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'hasPersonalWorkspace':

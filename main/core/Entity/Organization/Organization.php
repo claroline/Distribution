@@ -162,7 +162,8 @@ class Organization
 
     /**
      * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Group"
+     *     targetEntity="Claroline\CoreBundle\Entity\Group",
+     *     mappedBy="organizations"
      * )
      * @ORM\JoinTable(name="claro_group_organization")
      *
