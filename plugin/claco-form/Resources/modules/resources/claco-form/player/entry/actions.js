@@ -1,5 +1,6 @@
 import {generateUrl} from '#/main/core/fos-js-router'
 import {makeActionCreator} from '#/main/core/utilities/redux'
+import {getDataQueryString} from '#/main/core/layout/list/utils'
 import {REQUEST_SEND} from '#/main/core/api/actions'
 
 export const actions = {}
@@ -88,6 +89,20 @@ actions.deleteEntry = (entryId) => (dispatch) => {
   })
 }
 
+actions.deleteEntries = (entries) => (dispatch) => {
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entries_delete') + getDataQueryString(entries),
+      request: {
+        method: 'PATCH'
+      },
+      success: (data, dispatch) => {
+        data.forEach(e => dispatch(actions.removeEntry(e.id)))
+      }
+    }
+  })
+}
+
 actions.loadEntry = (entryId) => (dispatch, getState) => {
   const state = getState()
   const currentEntry = state.currentEntry
@@ -134,6 +149,28 @@ actions.switchEntryStatus = (entryId) => (dispatch, getState) => {
   })
 }
 
+actions.switchEntriesStatus = (entries, status) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entries_status_change', {status: status}) + getDataQueryString(entries),
+      request: {
+        method: 'PATCH'
+      },
+      success: (data, dispatch) => {
+        data.forEach(e => {
+          dispatch(actions.updateEntry(e))
+
+          if (currentEntry && currentEntry.id === e.id) {
+            dispatch(actions.loadCurrentEntry(e))
+          }
+        })
+      }
+    }
+  })
+}
+
 actions.switchEntryLock = (entryId) => (dispatch, getState) => {
   const currentEntry = getState().currentEntry
 
@@ -149,6 +186,28 @@ actions.switchEntryLock = (entryId) => (dispatch, getState) => {
         if (currentEntry && currentEntry.id === entryId) {
           dispatch(actions.loadCurrentEntry(data))
         }
+      }
+    }
+  })
+}
+
+actions.switchEntriesLock = (entries, locked) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [REQUEST_SEND]: {
+      url: generateUrl('claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0}) + getDataQueryString(entries),
+      request: {
+        method: 'PATCH'
+      },
+      success: (data, dispatch) => {
+        data.forEach(e => {
+          dispatch(actions.updateEntry(e))
+
+          if (currentEntry && currentEntry.id === e.id) {
+            dispatch(actions.loadCurrentEntry(e))
+          }
+        })
       }
     }
   })

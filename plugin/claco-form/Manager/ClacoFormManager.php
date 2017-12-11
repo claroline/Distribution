@@ -1047,6 +1047,16 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
     }
 
+    public function deleteEntries(array $entries)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($entries as $entry) {
+            $this->deleteEntry($entry);
+        }
+        $this->om->endFlushSuite();
+    }
+
     public function changeEntryStatus(Entry $entry)
     {
         $status = $entry->getStatus();
@@ -1070,6 +1080,26 @@ class ClacoFormManager
         return $entry;
     }
 
+    public function changeEntriesStatus(array $entries, $status)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($entries as $entry) {
+            if ($status === Entry::PUBLISHED) {
+                $entry->setPublicationDate(new \DateTime());
+            }
+            $entry->setStatus($status);
+            $this->persistEntry($entry);
+            $event = new LogEntryStatusChangeEvent($entry);
+            $this->eventDispatcher->dispatch('log', $event);
+            $categories = $entry->getCategories();
+            $this->notifyCategoriesManagers($entry, $categories, $categories);
+        }
+        $this->om->endFlushSuite();
+
+        return $entries;
+    }
+
     public function switchEntryLock(Entry $entry)
     {
         $locked = $entry->isLocked();
@@ -1081,6 +1111,23 @@ class ClacoFormManager
         $this->notifyCategoriesManagers($entry, $categories, $categories);
 
         return $entry;
+    }
+
+    public function switchEntriesLock(array $entries, $locked)
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($entries as $entry) {
+            $entry->setLocked($locked);
+            $this->persistEntry($entry);
+            $event = new LogEntryLockSwitchEvent($entry);
+            $this->eventDispatcher->dispatch('log', $event);
+            $categories = $entry->getCategories();
+            $this->notifyCategoriesManagers($entry, $categories, $categories);
+        }
+        $this->om->endFlushSuite();
+
+        return $entries;
     }
 
     public function changeEntryOwner(Entry $entry, User $user)
