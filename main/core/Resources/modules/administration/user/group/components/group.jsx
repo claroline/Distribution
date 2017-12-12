@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
-import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
 import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
@@ -26,26 +26,14 @@ const GroupSaveAction = makeSaveAction('groups.current', formData => ({
 
 const GroupActions = props =>
   <PageActions>
-    <PageGroupActions>
-      <PageAction
-        id="group-list"
-        icon="fa fa-trash-o"
-        title={t('delete')}
-        action={() => true}
-        dangerous={true}
-      />
-    </PageGroupActions>
+    <GroupSaveAction />
 
-    <PageGroupActions>
-      <GroupSaveAction />
-
-      <PageAction
-        id="group-list"
-        icon="fa fa-list"
-        title={t('back_to_list')}
-        action="#/groups"
-      />
-    </PageGroupActions>
+    <PageAction
+      id="group-list"
+      icon="fa fa-list"
+      title={t('back_to_list')}
+      action="#/groups"
+    />
   </PageActions>
 
 const GroupForm = props =>
@@ -75,6 +63,7 @@ const GroupForm = props =>
         id="group-users"
         icon="fa fa-fw fa-user"
         title={t('users')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -88,7 +77,7 @@ const GroupForm = props =>
           open={UserList.open}
           fetch={{
             url: ['apiv2_group_list_users', {id: props.group.id}],
-            autoload: true
+            autoload: props.group.id && !props.new
           }}
           delete={{
             url: ['apiv2_group_remove_users', {id: props.group.id}]
@@ -102,6 +91,7 @@ const GroupForm = props =>
         id="group-roles"
         icon="fa fa-fw fa-id-badge"
         title={t('roles')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -115,7 +105,7 @@ const GroupForm = props =>
           open={RoleList.open}
           fetch={{
             url: ['apiv2_group_list_roles', {id: props.group.id}],
-            autoload: true
+            autoload: props.group.id && !props.new
           }}
           delete={{
             url: ['apiv2_group_remove_roles', {id: props.group.id}],
@@ -129,6 +119,7 @@ const GroupForm = props =>
         id="group-organizations"
         icon="fa fa-fw fa-building"
         title={t('organizations')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -142,7 +133,7 @@ const GroupForm = props =>
           open={OrganizationList.open}
           fetch={{
             url: ['apiv2_group_list_organizations', {id: props.group.id}],
-            autoload: true
+            autoload: props.group.id && !props.new
           }}
           delete={{
             url: ['apiv2_group_remove_organizations', {id: props.group.id}],
@@ -159,11 +150,13 @@ GroupForm.propTypes = {
     id: T.string
   }).isRequired,
   pickUsers: T.func.isRequired,
-  pickGroups: T.func.isRequired
+  pickRoles: T.func.isRequired,
+  pickOrganizations: T.func.isRequired
 }
 
 const Group = connect(
   state => ({
+    new: formSelect.isNew(formSelect.form(state, 'groups.current')),
     group: formSelect.data(formSelect.form(state, 'groups.current'))
   }),
   dispatch =>({

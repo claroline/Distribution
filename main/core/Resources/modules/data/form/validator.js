@@ -18,14 +18,17 @@ function validateProp(propDef, propValue) {
   // get corresponding type
   const propType = getTypeOrDefault(propDef.type)
 
-  set(errors, propDef.name, chain(propValue, propDef.options || {}, [
-    // checks if not empty when field is required
-    validateIf(propDef.required, notBlank), // todo : there will be problems with html/objects/arrays
-    // execute data type validator if any
-    validateIf(propType.validate, propType.validate),
-    // execute form instance validator if any
-    validateIf(propDef.validate, propDef.validate)
-  ]))
+  if (propDef.displayed) {
+    // only validate displayed props
+    set(errors, propDef.name, chain(propValue, propDef.options || {}, [
+      // checks if not empty when field is required
+      validateIf(propDef.required, notBlank), // todo : there will be problems with html/objects/arrays
+      // execute data type validator if any
+      validateIf(propType.validate, propType.validate),
+      // execute form instance validator if any
+      validateIf(propDef.validate, propDef.validate)
+    ]))
+  }
 
   return errors
 }

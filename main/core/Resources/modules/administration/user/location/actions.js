@@ -10,18 +10,11 @@ export const actions = {}
 //actions.geolocate = makeActionCreator(ROLE_EDIT, 'location')
 //actions.saveRole = makeActionCreator(ROLE_SAVE)
 
-actions.geolocate = (location) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_location_geolocate', {id: location.id}],
-    success: (data, dispatch) => dispatch(listActions.fetchData('locations'))
-  }
-})
-
 actions.open = (formName, id = null) => (dispatch) => {
-  // todo ugly. only to be able to load list before the end of  group loading
-  dispatch(formActions.resetForm(formName, {id}, false))
-
   if (id) {
+    // todo ugly. only to be able to load list before the end of  group loading
+    //dispatch(formActions.resetForm(formName, {id}, false))
+
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_location_get', {id}],
@@ -74,5 +67,12 @@ actions.addOrganizations = (id, organizations) => ({
       dispatch(listActions.invalidateData('locations.list'))
       dispatch(listActions.invalidateData('locations.current.organizations'))
     }
+  }
+})
+
+actions.geolocate = (location) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_location_geolocate', {id: location.id}],
+    success: (data, dispatch) => dispatch(listActions.fetchData('locations'))
   }
 })

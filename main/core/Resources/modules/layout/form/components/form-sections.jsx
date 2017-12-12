@@ -19,8 +19,13 @@ const FormSection = props =>
 
 FormSection.propTypes = {
   children: T.node.isRequired,
+  disabled: T.bool,
   validating: T.bool,
   errors: T.object
+}
+
+FormSection.defaultProps = {
+  validating: false
 }
 
 const FormSections = props =>

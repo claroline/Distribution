@@ -9,6 +9,8 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
 import {validateProp} from '#/main/core/data/form/validator'
 
+import {createFormDefinition} from '#/main/core/data/form/utils'
+import {DataFormSection as DataFormSectionTypes} from '#/main/core/data/form/prop-types'
 import {FormField} from '#/main/core/data/form/components/field.jsx'
 
 const AdvancedSection = props =>
@@ -65,8 +67,10 @@ class Form extends Component {
   }
 
   render() {
-    const primarySection = 1 === this.props.sections.length ? this.props.sections[0] : this.props.sections.find(section => section.primary)
-    const otherSections = this.props.sections.filter(section => section !== primarySection)
+    const sections = createFormDefinition(this.props.sections)
+
+    const primarySection = 1 === sections.length ? sections[0] : sections.find(section => section.primary)
+    const otherSections = sections.filter(section => section !== primarySection)
     const openedSection = otherSections.find(section => section.defaultOpened)
 
     return (
@@ -78,24 +82,27 @@ class Form extends Component {
                 className: 'sr-only'
               }, primarySection.title)}
 
-              {primarySection.fields.map(field =>
-                <FormField
-                  {...field}
-                  key={field.name}
-                  value={get(this.props.data, field.name)}
-                  onChange={(value) => {
-                    if (field.onChange) {
-                      field.onChange(value)
-                    }
+              {primarySection.fields
+                .filter(field => field.displayed)
+                .map(field =>
+                  <FormField
+                    {...field}
+                    key={field.name}
+                    value={get(this.props.data, field.name)}
+                    onChange={(value) => {
+                      if (field.onChange) {
+                        field.onChange(value)
+                      }
 
-                    this.props.updateProp(field.name, value)
-                    this.props.setErrors(validateProp(field, value))
-                  }}
-                  disabled={field.disabled ? field.disabled(this.props.data) : false}
-                  validating={this.props.validating}
-                  error={get(this.props.errors, field.name)}
-                />
-              )}
+                      this.props.updateProp(field.name, value)
+                      this.props.setErrors(validateProp(field, value))
+                    }}
+                    disabled={field.disabled ? field.disabled(this.props.data) : false}
+                    validating={this.props.validating}
+                    error={get(this.props.errors, field.name)}
+                  />
+                )
+              }
 
               {primarySection.advanced &&
                 <AdvancedSection {...primarySection.advanced} />
@@ -118,24 +125,27 @@ class Form extends Component {
                 errors={this.props.errors}
                 validating={this.props.validating}
               >
-                {section.fields.map(field =>
-                  <FormField
-                    {...field}
-                    key={field.name}
-                    value={get(this.props.data, field.name)}
-                    onChange={(value) => {
-                      if (field.onChange) {
-                        field.onChange(value)
-                      }
+                {section.fields
+                  .filter(field => field.displayed)
+                  .map(field =>
+                    <FormField
+                      {...field}
+                      key={field.name}
+                      value={get(this.props.data, field.name)}
+                      onChange={(value) => {
+                        if (field.onChange) {
+                          field.onChange(value)
+                        }
 
-                      this.props.updateProp(field.name, value)
-                      this.props.setErrors(validateProp(field, value))
-                    }}
-                    disabled={field.disabled ? field.disabled(this.props.data) : false}
-                    validating={this.props.validating}
-                    error={get(this.props.errors, field.name)}
-                  />
-                )}
+                        this.props.updateProp(field.name, value)
+                        this.props.setErrors(validateProp(field, value))
+                      }}
+                      disabled={field.disabled}
+                      validating={this.props.validating}
+                      error={get(this.props.errors, field.name)}
+                    />
+                  )
+                }
 
                 {section.advanced &&
                   <AdvancedSection {...section.advanced} />
@@ -161,32 +171,9 @@ Form.propTypes = {
   errors: T.object,
   validating: T.bool,
   pendingChanges: T.bool,
-  sections: T.arrayOf(T.shape({
-    id: T.string.isRequired,
-    icon: T.string,
-    title: T.string.isRequired,
-    primary: T.bool,
-    defaultOpened: T.bool,
-    fields: T.arrayOf(T.shape({
-      name: T.string.isRequired,
-      type: T.string,
-      label: T.string.isRequired,
-      help: T.string,
-      hideLabel: T.bool,
-      disabled: T.func,
-      options: T.object,
-      required: T.bool,
-      onChange: T.func,
-      validate: T.func
-    })).isRequired,
-    advanced: T.shape({
-      showText: T.string,
-      hideText: T.string,
-      fields: T.arrayOf(T.shape({
-        // same as regular fields
-      })).isRequired
-    })
-  })).isRequired,
+  sections: T.arrayOf(T.shape(
+    DataFormSectionTypes.propTypes
+  )).isRequired,
   setErrors: T.func.isRequired,
   updateProp: T.func.isRequired,
   className: T.string,

@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
-import {PageGroupActions, PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
@@ -27,16 +27,14 @@ const OrganizationSaveAction = makeSaveAction('organizations.current', formData 
 
 const OrganizationActions = props =>
   <PageActions>
-    <PageGroupActions>
-      <OrganizationSaveAction />
+    <OrganizationSaveAction />
 
-      <PageAction
-        id="organization-list"
-        icon="fa fa-list"
-        title={t('back_to_list')}
-        action="#/organizations"
-      />
-    </PageGroupActions>
+    <PageAction
+      id="organization-list"
+      icon="fa fa-list"
+      title={t('back_to_list')}
+      action="#/organizations"
+    />
   </PageActions>
 
 const OrganizationForm = props =>
@@ -93,6 +91,7 @@ const OrganizationForm = props =>
         id="organization-workspaces"
         icon="fa fa-fw fa-book"
         title={t('workspaces')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -106,7 +105,7 @@ const OrganizationForm = props =>
           open={WorkspaceList.open}
           fetch={{
             url: ['apiv2_organization_list_workspaces', {id: props.organization.id}],
-            autoload: true
+            autoload: props.organization.id && !props.new
           }}
           delete={{
             url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}],
@@ -120,6 +119,7 @@ const OrganizationForm = props =>
         id="organization-users"
         icon="fa fa-fw fa-user"
         title={t('users')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -133,7 +133,7 @@ const OrganizationForm = props =>
           open={UserList.open}
           fetch={{
             url: ['apiv2_organization_list_users', {id: props.organization.id}],
-            autoload: true
+            autoload: props.organization.id && !props.new
           }}
           delete={{
             url: ['apiv2_organization_remove_users', {id: props.organization.id}],
@@ -147,6 +147,7 @@ const OrganizationForm = props =>
         id="organization-groups"
         icon="fa fa-fw fa-users"
         title={t('groups')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -160,7 +161,7 @@ const OrganizationForm = props =>
           open={GroupList.open}
           fetch={{
             url: ['apiv2_organization_list_groups', {id: props.organization.id}],
-            autoload: true
+            autoload: props.organization.id && !props.new
           }}
           delete={{
             url: ['apiv2_organization_remove_groups', {id: props.organization.id}],
@@ -173,13 +174,18 @@ const OrganizationForm = props =>
   </FormContainer>
 
 OrganizationForm.propTypes = {
+  new: T.bool.isRequired,
   organization: T.shape({
     id: T.string
-  }).isRequired
+  }).isRequired,
+  pickUsers: T.func.isRequired,
+  pickGroups: T.func.isRequired,
+  pickWorkspaces: T.func.isRequired
 }
 
 const Organization = connect(
   state => ({
+    new: formSelect.isNew(formSelect.form(state, 'organizations.current')),
     organization: formSelect.data(formSelect.form(state, 'organizations.current'))
   }),
   dispatch => ({

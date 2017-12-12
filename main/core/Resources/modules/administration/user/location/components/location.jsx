@@ -1,4 +1,6 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
@@ -15,7 +17,6 @@ import {OrganizationList} from '#/main/core/administration/user/organization/com
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 
-import {connect} from 'react-redux'
 import {locationTypes} from '#/main/core/administration/user/location/constants'
 
 const LocationSaveAction = makeSaveAction('locations.current', formData => ({
@@ -79,6 +80,7 @@ const LocationForm = props =>
         id="location-users"
         icon="fa fa-fw fa-user"
         title={t('users')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -92,7 +94,7 @@ const LocationForm = props =>
           open={UserList.open}
           fetch={{
             url: ['apiv2_location_list_users', {id: props.location.id}],
-            autoload: true
+            autoload: props.location.id && !props.new
           }}
           delete={{
             url: ['apiv2_location_remove_users', {id: props.location.id}],
@@ -106,6 +108,7 @@ const LocationForm = props =>
         id="location-groups"
         icon="fa fa-fw fa-users"
         title={t('groups')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -119,7 +122,7 @@ const LocationForm = props =>
           open={GroupList.open}
           fetch={{
             url: ['apiv2_location_list_groups', {id: props.location.id}],
-            autoload: true
+            autoload: props.location.id && !props.new
           }}
           delete={{
             url: ['apiv2_location_remove_groups', {id: props.location.id}],
@@ -133,6 +136,7 @@ const LocationForm = props =>
         id="location-organizations"
         icon="fa fa-fw fa-building"
         title={t('organizations')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -146,7 +150,7 @@ const LocationForm = props =>
           open={OrganizationList.open}
           fetch={{
             url: ['apiv2_location_list_organizations', {id: props.location.id}],
-            autoload: true
+            autoload: props.location.id && !props.new
           }}
           delete={{
             url: ['apiv2_location_remove_organizations', {id: props.location.id}],
@@ -158,8 +162,19 @@ const LocationForm = props =>
     </FormSections>
   </FormContainer>
 
+LocationForm.propTypes = {
+  new: T.bool.isRequired,
+  location: T.shape({
+    id: T.string
+  }).isRequired,
+  pickUsers: T.func.isRequired,
+  pickGroups: T.func.isRequired,
+  pickOrganizations: T.func.isRequired
+}
+
 const Location = connect(
   state => ({
+    new: formSelect.isNew(formSelect.form(state, 'locations.current')),
     location: formSelect.data(formSelect.form(state, 'locations.current'))
   }),
   dispatch =>({

@@ -1,30 +1,54 @@
 import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 
 // todo use layout/form/prop-types
+
 const DataFormProperty = {
   propTypes: {
-    validating: T.bool,
-
     name: T.string.isRequired,
     type: T.string,
     label: T.string.isRequired,
     help: T.string,
     hideLabel: T.bool,
+    displayed: T.bool,
     disabled: T.bool,
     options: T.object,
     required: T.bool,
     onChange: T.func,
-
-    value: T.any,
-    error: T.string
+    validate: T.func
   },
   defaultProps: {
     required: false,
     hideLabel: false,
-    disabled: false
+    disabled: false,
+    displayed: true
+  }
+}
+
+const DataFormSection = {
+  propTypes: {
+    id: T.string.isRequired,
+    icon: T.string,
+    title: T.string.isRequired,
+    primary: T.bool,
+    defaultOpened: T.bool,
+    fields: T.arrayOf(T.shape(
+      DataFormProperty.propTypes
+    )).isRequired,
+    advanced: T.shape({
+      showText: T.string,
+      hideText: T.string,
+      fields: T.arrayOf(T.shape(
+        DataFormProperty.propTypes
+      )).isRequired
+    })
+  },
+  defaultProps: {
+    primary: false,
+    defaultOpened: false
   }
 }
 
 export {
+  DataFormSection,
   DataFormProperty
 }

@@ -47,6 +47,7 @@ const ParametersTab = () =>
             name: 'registration.default_role',
             type: 'enum',
             label: t('default_role'),
+            required: true,
             options: {
               noEmpty: true,
               choices: {} // roles
@@ -55,6 +56,7 @@ const ParametersTab = () =>
             name: 'locales.default',
             type: 'locale',
             label: t('default_language'),
+            required: true,
             options: {
               onlyEnabled: true
             }
@@ -62,6 +64,7 @@ const ParametersTab = () =>
             name: 'registration.validation',
             type: 'enum',
             label: t('registration_mail_validation'),
+            required: true,
             options: {
               noEmpty: true,
               choices: {

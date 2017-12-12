@@ -11,7 +11,7 @@ export const actions = {}
 actions.open = (formName, organizationId = null) => (dispatch) => {
   if (organizationId) {
     // todo ugly. only to be able to load lists before the end of organization loading
-    dispatch(formActions.resetForm(formName, {id: organizationId}, false))
+    //dispatch(formActions.resetForm(formName, {id: organizationId}, false))
 
     dispatch({
       [API_REQUEST]: {

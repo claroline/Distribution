@@ -94,6 +94,16 @@
         }
     }
 
+    // disabled panels
+    .panel-disabled {
+        box-shadow: none;
+        opacity: 0.75;
+
+        .panel-title > a {
+            cursor: not-allowed;
+        }
+    }
+
     .panel-title > a {
         display: block; // make the click zone fill the parent block
         cursor: pointer; // the <a> tag to toggle the panel has no href, so the cursor do not change properly

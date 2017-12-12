@@ -5,7 +5,7 @@ import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 import {Router, Route, Redirect, NavLink, Switch} from '#/main/core/router'
-import {Page} from '#/main/core/layout/page/components/page.jsx'
+import {Page, PageContent} from '#/main/core/layout/page/components/page.jsx'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 
 // todo : use PageTab component
@@ -58,6 +58,8 @@ PageTab.defaultProps = {
   actions: []
 }
 
+// todo add H1 (page title) and H2 (current tab title)
+
 const TabbedPage = props =>
   <Router>
     <Page
@@ -77,22 +79,24 @@ const TabbedPage = props =>
         </Switch>
       </PageTabs>
 
-      <Switch>
-        {props.tabs.map((tab, tabIndex) =>
-          <Route
-            {...tab}
-            key={`tab-actions-${tabIndex}`}
-            component={tab.content}
-          />
-        )}
+      <PageContent>
+        <Switch>
+          {props.tabs.map((tab, tabIndex) =>
+            <Route
+              {...tab}
+              key={`tab-actions-${tabIndex}`}
+              component={tab.content}
+            />
+          )}
 
-        {props.redirect.map((redirect, redirectIndex) =>
-          <Redirect
-            {...redirect}
-            key={`tab-redirect-${redirectIndex}`}
-          />
-        )}
-      </Switch>
+          {props.redirect.map((redirect, redirectIndex) =>
+            <Redirect
+              {...redirect}
+              key={`tab-redirect-${redirectIndex}`}
+            />
+          )}
+        </Switch>
+      </PageContent>
     </Page>
   </Router>
 

@@ -78,6 +78,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       // return the async promise
       return dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
     },
+    invalidateData() {
+      dispatch(listActions.invalidateData(ownProps.name))
+    },
 
     // filtering
     addFilter(property, value) {
@@ -145,7 +148,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         func.apply(null, args)
 
         // refresh list
-        dispatchProps.fetchData()
+        dispatchProps.invalidateData()
       }
     }
 

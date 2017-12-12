@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
+import {getUrl} from '#/main/core/fos-js-router'
 import {makeCancelable} from '#/main/core/api/utils'
 
 import {connectList} from '#/main/core/data/list/connect'
@@ -22,15 +23,26 @@ class DataList extends Component {
   constructor(props) {
     super(props)
 
-    this.reload(this.props.loaded, this.props.invalidated)
+    if (this.isAutoLoaded()) {
+      this.reload()
+    }
+
+    console.log('construct list')
+    console.log(this.props.name)
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.loaded !== nextProps.loaded // data are not loaded
-      || this.props.invalidated !== nextProps.invalidated // data have been invalidated
-      || this.props.url !== nextProps.url // api target have changed (this is mostly for embedded list)
-    ) {
-      this.reload(nextProps.loaded, nextProps.invalidated, this.props.url !== nextProps.url)
+  componentDidUpdate(prevProps) {
+    if (this.props.fetch) {
+      const previousUrl = prevProps.fetch ? getUrl(prevProps.fetch.url) : null
+      const currentUrl = getUrl(this.props.fetch.url)
+      if (previousUrl !== currentUrl && this.isAutoLoaded()) {
+        // Force reload if the target URL have changed
+        this.reload(true)
+      } else if (this.props.loaded !== prevProps.loaded // data are not loaded
+        || this.props.invalidated !== prevProps.invalidated // data have been invalidated
+      ) {
+        this.reload()
+      }
     }
   }
 
@@ -38,8 +50,8 @@ class DataList extends Component {
     return this.props.fetch && this.props.fetch.autoload
   }
 
-  reload(loaded, invalidated, force = false) {
-    if (this.isAutoLoaded() && (force || (!loaded || invalidated))) {
+  reload(force = false) {
+    if (force || !this.props.loaded || this.props.invalidated) {
       if (this.pending) {
         this.pending.cancel()
       }
@@ -48,7 +60,10 @@ class DataList extends Component {
         this.props.fetchData()
       )
 
-      this.pending.promise.then(() => this.pending = null)
+      this.pending.promise.then(
+        () => this.pending = null,
+        () => this.pending = null
+      )
     }
   }
 

@@ -8,10 +8,10 @@ import {actions as listActions} from '#/main/core/data/list/actions'
 import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
 
 actions.open = (formName, id = null) => (dispatch) => {
-  // todo ugly. only to be able to load list before the end of  group loading
-  dispatch(formActions.resetForm(formName, {id}, false))
-
   if (id) {
+    // todo ugly. only to be able to load list before the end of  group loading
+    //dispatch(formActions.resetForm(formName, {id}, false))
+
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_role_get', {id}],

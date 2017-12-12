@@ -3,6 +3,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {asset} from '#/main/core/asset'
 import {t} from '#/main/core/translation'
+import {makeCancelable} from '#/main/core/api/utils'
 import {generateUrl} from '#/main/core/fos-js-router'
 
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
@@ -24,9 +25,17 @@ class LocaleGroup extends Component {
   fetchLocales() {
     let localeUrl = generateUrl('apiv2_locale_list')
 
-    fetch(localeUrl)
-      .then(response => response.json())
-      .then(this.loadLocales.bind(this))
+    this.pending = makeCancelable(
+      fetch(localeUrl)
+        .then(response => response.json())
+        .then(
+          (data) => {
+            this.loadLocales(data)
+            this.pending = null
+          },
+          () => this.pending = null
+        )
+    )
   }
 
   loadLocales(locales) {
@@ -34,6 +43,12 @@ class LocaleGroup extends Component {
       fetched: true,
       locales: locales.filter(locale => !this.props.onlyEnabled || locale.enabled).map(locale => locale.name)
     })
+  }
+
+  componentWillUnmount() {
+    if (this.pending) {
+      this.pending.cancel()
+    }
   }
 
   render() {

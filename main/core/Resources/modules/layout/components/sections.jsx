@@ -19,15 +19,21 @@ const Section = props =>
   <Panel
     {...omit(props, ['level', 'title', 'icon', 'actions', 'children'])}
     collapsible={true}
+    expanded={props.disabled ? false : props.expanded}
+    className={classes(props.className, {
+      'panel-disabled': props.disabled
+    })}
     header={
       React.createElement('h'+props.level, {
-        className: classes({opened: props.expanded})
+        className: classes({
+          opened: !props.disabled && props.expanded
+        })
       }, [
         <span
           key="panel-icon"
           className={classes(props.icon, {
-            'fa fa-fw fa-caret-down': !props.icon && props.expanded,
-            'fa fa-fw fa-caret-right': !props.icon && !props.expanded
+            'fa fa-fw fa-caret-down': !props.icon && !props.disabled && props.expanded,
+            'fa fa-fw fa-caret-right': !props.icon && (props.disabled || !props.expanded)
           })}
           style={{marginRight: 10}}
         />,
@@ -39,6 +45,7 @@ const Section = props =>
               {...action}
               key={`${props.id}-action-${actionIndex}`}
               id={`${props.id}-action-${actionIndex}`}
+              disabled={!!action.disabled || props.disabled}
               className={classes({
                 'btn-link-default': !action.primary && !action.dangerous,
                 'btn-link-danger': action.dangerous,
@@ -53,11 +60,13 @@ const Section = props =>
     {props.children}
   </Panel>
 Section.propTypes = {
+  className: T.string,
   id: T.string.isRequired,
   level: T.number.isRequired,
   icon: T.string,
   title: T.node.isRequired,
   expanded: T.bool,
+  disabled: T.bool,
   actions: T.arrayOf(T.shape(
     ActionTypes.propTypes
   )),
@@ -65,7 +74,8 @@ Section.propTypes = {
 }
 
 Section.defaultProps = {
-  actions: []
+  actions: [],
+  disabled: false
 }
 
 const Sections = props =>

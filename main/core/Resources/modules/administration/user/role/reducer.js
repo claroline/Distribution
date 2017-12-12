@@ -1,7 +1,9 @@
-import {combineReducers} from '#/main/core/utilities/redux'
+import {combineReducers, makeReducer} from '#/main/core/utilities/redux'
 
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
+
+import {FORM_RESET} from '#/main/core/data/form/actions'
 
 import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
 
@@ -13,8 +15,16 @@ const reducer = combineReducers({
     filters: [{property: 'type', value: PLATFORM_ROLE}]
   }),
   current: makeFormReducer('roles.current', {}, {
-    users: makeListReducer('roles.current.users'),
-    groups: makeListReducer('roles.current.groups')
+    users: makeListReducer('roles.current.users', {}, {
+      invalidated: makeReducer(false, {
+        [FORM_RESET+'/roles.current']: (state, action) => true // todo : find better
+      })
+    }),
+    groups: makeListReducer('roles.current.groups', {}, {
+      invalidated: makeReducer(false, {
+        [FORM_RESET+'/roles.current']: (state, action) => true // todo : find better
+      })
+    })
   })
 })
 

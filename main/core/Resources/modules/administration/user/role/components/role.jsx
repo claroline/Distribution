@@ -1,4 +1,5 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
@@ -43,7 +44,12 @@ const RoleForm = props =>
         title: t('general'),
         primary: true,
         fields: [
-          {name: 'translationKey', type: 'string', label: t('name'), required: true}
+          {
+            name: 'translationKey',
+            type: 'string',
+            label: t('name'),
+            required: true
+          }
         ]
       }
     ]}
@@ -55,6 +61,7 @@ const RoleForm = props =>
         id="role-users"
         icon="fa fa-fw fa-user"
         title={t('users')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -68,7 +75,7 @@ const RoleForm = props =>
           open={UserList.open}
           fetch={{
             url: ['apiv2_role_list_users', {id: props.role.id}],
-            autoload: true
+            autoload: props.role.id && !props.new
           }}
           delete={{
             url: ['apiv2_role_remove_users', {id: props.role.id}],
@@ -82,6 +89,7 @@ const RoleForm = props =>
         id="role-groups"
         icon="fa fa-fw fa-id-badge"
         title={t('groups')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -95,7 +103,7 @@ const RoleForm = props =>
           open={GroupList.open}
           fetch={{
             url: ['apiv2_role_list_groups', {id: props.role.id}],
-            autoload: true
+            autoload: props.role.id && !props.new
           }}
           delete={{
             url: ['apiv2_role_remove_groups', {id: props.role.id}],
@@ -108,11 +116,17 @@ const RoleForm = props =>
   </FormContainer>
 
 RoleForm.propTypes = {
-
+  new: T.bool.isRequired,
+  role: T.shape({
+    id: T.string
+  }).isRequired,
+  pickUsers: T.func.isRequired,
+  pickGroups: T.func.isRequired
 }
 
 const Role = connect(
   state => ({
+    new: formSelect.isNew(formSelect.form(state, 'roles.current')),
     role: formSelect.data(formSelect.form(state, 'roles.current'))
   }),
   dispatch =>({

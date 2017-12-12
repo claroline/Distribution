@@ -250,7 +250,9 @@ function makeListReducer(listName, initialState = {}, customReducer = {}, option
 
   // adds base list reducers
   reducer.loaded = baseReducer.loaded(listName, listState.loaded)
-  reducer.invalidated = baseReducer.invalidated(listName, listState.invalidated)
+
+  reducer.invalidated = customReducer.invalidated ?
+    reduceReducers(baseReducer.invalidated(listName, listState.invalidated), customReducer.invalidated) : baseReducer.invalidated(listName, listState.invalidated)
 
   reducer.data = customReducer.data ?
     reduceReducers(baseReducer.data(listName, listState.data), customReducer.data) : baseReducer.data(listName, listState.data)
@@ -277,7 +279,6 @@ function makeListReducer(listName, initialState = {}, customReducer = {}, option
   }
 
   // get custom keys
-  // todo : not used and I'm not sure it works
   const rest = difference(Object.keys(customReducer), Object.keys(baseReducer))
   rest.map(reducerName =>
     reducer[reducerName] = customReducer[reducerName]

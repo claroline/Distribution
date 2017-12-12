@@ -68,28 +68,31 @@ function handleResponseSuccess(dispatch, responseData, success) {
  * @return {mixed}
  */
 function handleResponseError(dispatch, responseError, originalRequest, error) {
-  if (typeof responseError.status === 'undefined') {
-    // if error isn't related to http response, rethrow it
-    throw responseError
-  }
+  console.log(responseError)
+  if (!responseError.isCanceled) {
+    if (typeof responseError.status === 'undefined') {
+      // if error isn't related to http response, rethrow it
+      throw responseError
+    }
 
-  if (401 === responseError.status) { // authentication needed
-    authenticate()
-      .then(
-        () => apiFetch(originalRequest, dispatch), // re-execute original request,
-        authError => {
-          error(authError, dispatch)
+    if (401 === responseError.status) { // authentication needed
+      return authenticate()
+        .then(
+          () => apiFetch(originalRequest, dispatch), // re-execute original request,
+          authError => {
+            error(authError, dispatch)
 
-          return authError
-        }
-      )
-  } else {
-    return getResponseData(responseError) // get error data if any
-      .then(errorData => {
-        error(errorData, dispatch)
+            return authError
+          }
+        )
+    } else {
+      return getResponseData(responseError) // get error data if any
+        .then(errorData => {
+          error(errorData, dispatch)
 
-        return errorData
-      })
+          return errorData
+        })
+    }
   }
 }
 
@@ -102,7 +105,7 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
  */
 function getResponseData(response) {
   if (204 !== response.status) {
-    const contentType = response.headers.get('content-type')
+    const contentType = response.headers && response.headers.get('content-type')
     if (contentType && contentType.indexOf('application/json') !== -1) {
       // Decode JSON
       return response.json()

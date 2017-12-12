@@ -26,12 +26,7 @@ const UserSaveAction = makeSaveAction('users.current', formData => ({
 }))(PageAction)
 
 const UserActions = () =>
-  <PageActions
-    inline={['edit', 'save', 'community']}
-    actions={[
-
-    ]}
-  >
+  <PageActions>
     <UserSaveAction />
 
     <PageAction
@@ -53,11 +48,6 @@ const UserForm = props =>
         primary: true,
         fields: [
           {
-            name: 'username',
-            type: 'username',
-            label: t('username'),
-            required: true
-          }, {
             name: 'lastName',
             type: 'string',
             label: t('last_name'),
@@ -72,6 +62,17 @@ const UserForm = props =>
             type: 'email',
             label: t('email'),
             required: true
+          }, {
+            name: 'username',
+            type: 'username',
+            label: t('username'),
+            required: true
+          }, {
+            name: 'plainPassword',
+            type: 'password',
+            label: t('password'),
+            displayed: props.new,
+            required: true
           }
         ]
       }
@@ -84,6 +85,7 @@ const UserForm = props =>
         id="user-groups"
         icon="fa fa-fw fa-users"
         title={t('groups')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -97,7 +99,7 @@ const UserForm = props =>
           open={GroupList.open}
           fetch={{
             url: ['apiv2_user_list_groups', {id: props.user.id}],
-            autoload: true
+            autoload: props.user.id && !props.new
           }}
           delete={{
             url: ['apiv2_user_remove_groups', {id: props.user.id}],
@@ -111,6 +113,7 @@ const UserForm = props =>
         id="group-organizations"
         icon="fa fa-fw fa-building"
         title={t('organizations')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -124,7 +127,7 @@ const UserForm = props =>
           open={OrganizationList.open}
           fetch={{
             url: ['apiv2_user_list_organizations', {id: props.user.id}],
-            autoload: true
+            autoload: props.user.id && !props.new
           }}
           delete={{
             url: ['apiv2_user_remove_organizations', {id: props.user.id}],
@@ -138,6 +141,7 @@ const UserForm = props =>
         id="user-roles"
         icon="fa fa-fw fa-id-badge"
         title={t('roles')}
+        disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
@@ -151,7 +155,7 @@ const UserForm = props =>
           open={RoleList.open}
           fetch={{
             url: ['apiv2_user_list_roles', {id: props.user.id}],
-            autoload: true
+            autoload: props.user.id && !props.new
           }}
           delete={{
             url: ['apiv2_user_remove_roles', {id: props.user.id}],
@@ -164,14 +168,18 @@ const UserForm = props =>
   </FormContainer>
 
 UserForm.propTypes = {
+  new: T.bool.isRequired,
   user: T.shape({
     id: T.string
   }).isRequired,
-  pickGroups: T.func.isRequired
+  pickGroups: T.func.isRequired,
+  pickOrganizations: T.func.isRequired,
+  pickRoles: T.func.isRequired
 }
 
 const User = connect(
   state => ({
+    new: formSelect.isNew(formSelect.form(state, 'users.current')),
     user: formSelect.data(formSelect.form(state, 'users.current'))
   }),
   dispatch => ({
