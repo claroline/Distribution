@@ -59,9 +59,6 @@ class Version20171211143833 extends AbstractMigration
         $this->addSql("
             DROP TABLE claro_user_location
         ");
-        $this->addSql("
-            CREATE UNIQUE INDEX UNIQ_24C849F7D17F50A6 ON claro__location (uuid)
-        ");
     }
 
     public function down(Schema $schema)
@@ -92,9 +89,6 @@ class Version20171211143833 extends AbstractMigration
         ");
         $this->addSql("
             DROP TABLE group_location
-        ");
-        $this->addSql("
-            DROP INDEX UNIQ_24C849F7D17F50A6 ON claro__location
         ");
     }
 }

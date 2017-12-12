@@ -101,20 +101,18 @@ function handleResponseError(dispatch, responseError, originalRequest, error) {
  * @returns {Promise}
  */
 function getResponseData(response) {
-  let data = null
-
   if (204 !== response.status) {
     const contentType = response.headers.get('content-type')
     if (contentType && contentType.indexOf('application/json') !== -1) {
       // Decode JSON
-      data = response.json()
+      return response.json()
     } else {
       // Return raw data (maybe someday we will need to also manage files)
-      data = response.text()
+      return response.text()
     }
   }
 
-  return data // this is a promise
+  return Promise.resolve(null)
 }
 
 /**
