@@ -4,8 +4,7 @@ import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {reducer} from '#/main/core/administration/import/reducer'
 import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {t, transChoice} from '#/main/core/translation'
-import {Import} from '#/main/core/administration/import/components/import.jsx'
-
+import {Transfer} from '#/main/core/administration/import/components/transfer.jsx'
 
 // mount the react application
 bootstrap(
@@ -13,7 +12,7 @@ bootstrap(
   '.import-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
-  Import,
+  Transfer,
 
   // app store configuration
   reducer,
@@ -21,8 +20,7 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   (initialData) => {
     return {
-      explanation: initialData.explanation,
-      currentTab: 'user'
+      explanation: initialData.explanation
     }
   }
 )
