@@ -186,7 +186,7 @@ const DataGrid = props =>
     {props.selection && 0 < props.selection.current.length &&
       <ListBulkActions
         count={props.selection.current.length}
-        selectedItems={props.selection.current.map(id => props.data.find(row => id === row.id))}
+        selectedItems={props.selection.current.map(id => props.data.find(row => id === row.id) || {id: id})}
         actions={getBulkActions(props.actions)}
       />
     }

@@ -104,8 +104,17 @@ class FinderProvider
 
         $queryFilters = array_merge_recursive($filters, $hiddenFilters);
 
-        $data = $this->fetch($class, $page, $limit, $queryFilters, $sortBy);
+        // count the total results (without pagination)
         $count = $this->fetch($class, $page, $limit, $queryFilters, $sortBy, true);
+        // get the list of data for the current search and page
+        $data = $this->fetch($class, $page, $limit, $queryFilters, $sortBy);
+
+        if (0 < $count && empty($data)) {
+            // search should have returned results, but we have requested a non existent page => get the last page
+            $page = ceil($count / $limit) - 1;
+            // load last page data
+            $data = $this->fetch($class, $page, $limit, $queryFilters, $sortBy);
+        }
 
         return [
             'data' => array_map(function ($result) use ($serializerOptions) {

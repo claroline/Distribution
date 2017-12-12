@@ -28,16 +28,6 @@ const OrganizationSaveAction = makeSaveAction('organizations.current', formData 
 const OrganizationActions = props =>
   <PageActions>
     <PageGroupActions>
-      <PageAction
-        id="organization-delete"
-        icon="fa fa-trash-o"
-        title={t('delete')}
-        action={() => true}
-        dangerous={true}
-      />
-    </PageGroupActions>
-
-    <PageGroupActions>
       <OrganizationSaveAction />
 
       <PageAction
@@ -67,7 +57,8 @@ const OrganizationForm = props =>
           }, {
             name: 'code',
             type: 'string',
-            label: t('code')
+            label: t('code'),
+            required: true
           }, {
             name: 'email',
             type: 'email',

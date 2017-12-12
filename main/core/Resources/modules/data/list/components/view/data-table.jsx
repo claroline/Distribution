@@ -157,7 +157,7 @@ const DataTable = props =>
           <td colSpan={props.columns.length + (props.selection ? 1:0) + (props.actions ? 1:0) }>
             <ListBulkActions
               count={props.selection.current.length}
-              selectedItems={props.selection.current.map(id => props.data.find(row => id === row.id))}
+              selectedItems={props.selection.current.map(id => props.data.find(row => id === row.id) || {id: id})}
               actions={getBulkActions(props.actions)}
             />
           </td>

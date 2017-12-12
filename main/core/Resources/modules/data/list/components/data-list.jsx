@@ -137,11 +137,14 @@ class DataList extends Component {
         displayed: this.props.deleteAction.displayed,
         disabled: this.props.deleteAction.disabled,
         action: typeof this.props.deleteAction.action === 'function' ?
-          (rows) => this.props.deleteAction.action(
-            rows,
-            trans(this.translations.keys.deleteConfirmTitle, {}, this.translations.domain),
-            transChoice(this.translations.keys.deleteConfirmQuestion, rows.length, {count: rows.length}, this.translations.domain)
-          ) :
+          (rows) => {
+            /*console.log(rows)*/
+            return this.props.deleteAction.action(
+              rows,
+              trans(this.translations.keys.deleteConfirmTitle, {}, this.translations.domain),
+              transChoice(this.translations.keys.deleteConfirmQuestion, rows.length, {count: rows.length}, this.translations.domain)
+            )
+          } :
           this.props.deleteAction.action
       })
     }

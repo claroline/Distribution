@@ -23,6 +23,8 @@ function mapStateToProps(state, ownProps) {
   const listState = listSelect.list(state, ownProps.name)
 
   const newProps = {
+    loaded: listSelect.loaded(listState),
+    invalidated: listSelect.invalidated(listState),
     data: listSelect.data(listState),
     totalResults: listSelect.totalResults(listState),
     open: ownProps.open,
@@ -69,10 +71,12 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     // async
     fetchData() {
-      dispatch(listActions.fetchData(ownProps.name, ownProps.fetch.url))
+      // return the async promise
+      return dispatch(listActions.fetchData(ownProps.name, ownProps.fetch.url))
     },
     deleteData(items) {
-      dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
+      // return the async promise
+      return dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
     },
 
     // filtering
@@ -157,6 +161,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     filterColumns: ownProps.filterColumns,
     display:       ownProps.display,
     translations:  ownProps.translations,
+    loaded:        stateProps.loaded,
+    invalidated:   stateProps.invalidated,
     data:          stateProps.data,
     totalResults:  stateProps.totalResults,
 

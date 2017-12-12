@@ -1,5 +1,4 @@
 import get from 'lodash/get'
-import {createSelector} from 'reselect'
 
 import {t, transChoice} from '#/main/core/translation'
 
@@ -22,13 +21,6 @@ const sortBy       = (listState) => listState.sortBy || {}
 const selected     = (listState) => listState.selected || []
 const pageSize     = (listState) => listState.pageSize || -1
 const currentPage  = (listState) => listState.page || 0
-
-// ATTENTION : we assume all data object have an unique `id` prop
-// maybe one day we will decorate data on load with ids if missing...
-const selectedRows = createSelector(
-  [data, selected],
-  (data, selected) => selected.map(id => data.find(row => id === row.id))
-)
 
 /**
  * Creates an URL query sting based on the list current config.
@@ -69,6 +61,8 @@ export const select = {
   isSortable,
   isSelectable,
   isPaginated,
+  loaded,
+  invalidated,
   data,
   totalResults,
   filters,
@@ -76,6 +70,5 @@ export const select = {
   selected,
   currentPage,
   pageSize,
-  selectedRows,
   queryString
 }

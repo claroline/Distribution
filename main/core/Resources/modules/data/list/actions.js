@@ -32,7 +32,7 @@ actions.toggleSelectAll = makeInstanceActionCreator(LIST_TOGGLE_SELECT_ALL, 'row
 
 
 // data loading
-export const LIST_DATA_LOAD = 'LIST_DATA_LOAD'
+export const LIST_DATA_LOAD       = 'LIST_DATA_LOAD'
 export const LIST_DATA_INVALIDATE = 'LIST_DATA_INVALIDATE'
 
 actions.loadData = makeInstanceActionCreator(LIST_DATA_LOAD, 'data', 'total')
@@ -42,10 +42,16 @@ actions.fetchData = (listName, url) => (dispatch, getState) => {
 
   // todo use ACTION_REFRESH type if we reload because of invalidation
 
-  dispatch({
+  return dispatch({
     [API_REQUEST]: {
       url: (typeof url === 'string' ? url : generateUrl(...url)) + listSelect.queryString(listState),
       success: (response, dispatch) => {
+        if (listSelect.currentPage(listState) !== response.page) {
+          // we reset current page because if we request a non existing page,
+          // finder will return us the last existing one
+          dispatch(actions.changePage(listName, response.page))
+        }
+
         dispatch(actions.loadData(listName, response.data, response.totalResults))
       }
     }
@@ -64,8 +70,7 @@ actions.deleteData = (listName, url, items) => ({
       method: 'DELETE'
     },
     success: (data, dispatch) => {
-      dispatch(actions.changePage(listName, 0))
-      dispatch(actions.fetchData(listName))
+      dispatch(actions.invalidateData(listName))
     }
   }
 })

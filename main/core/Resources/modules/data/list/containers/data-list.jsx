@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
+import {makeCancelable} from '#/main/core/api/utils'
+
 import {connectList} from '#/main/core/data/list/connect'
 
 import {
@@ -20,9 +22,33 @@ class DataList extends Component {
   constructor(props) {
     super(props)
 
-    if (this.props.fetch && this.props.fetch.autoload) {
-      // todo find better
-      this.props.fetchData()
+    this.reload(this.props.loaded, this.props.invalidated)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.loaded !== nextProps.loaded // data are not loaded
+      || this.props.invalidated !== nextProps.invalidated // data have been invalidated
+      || this.props.url !== nextProps.url // api target have changed (this is mostly for embedded list)
+    ) {
+      this.reload(nextProps.loaded, nextProps.invalidated, this.props.url !== nextProps.url)
+    }
+  }
+
+  isAutoLoaded() {
+    return this.props.fetch && this.props.fetch.autoload
+  }
+
+  reload(loaded, invalidated, force = false) {
+    if (this.isAutoLoaded() && (force || (!loaded || invalidated))) {
+      if (this.pending) {
+        this.pending.cancel()
+      }
+
+      this.pending = makeCancelable(
+        this.props.fetchData()
+      )
+
+      this.pending.promise.then(() => this.pending = null)
     }
   }
 
@@ -117,6 +143,8 @@ DataList.propTypes = {
   }),
 
   // calculated from redux store
+  loaded: T.bool,
+  invalidated: T.bool,
   data: T.array.isRequired,
   totalResults: T.number.isRequired,
   filters: T.object,

@@ -344,7 +344,7 @@ class DataTree extends Component {
             {this.props.selection && 0 < this.props.selection.current.length &&
               <ListBulkActions
                 count={this.props.selection.current.length}
-                selectedItems={this.props.selection.current.map(id => this.props.data.find(row => id === row.id))}
+                selectedItems={this.props.selection.current.map(id => this.props.data.find(row => id === row.id) || {id: id})}
                 actions={getBulkActions(actions)}
               />
             }
