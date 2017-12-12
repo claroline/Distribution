@@ -1,6 +1,9 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import {getUrl} from '#/main/core/fos-js-router'
+import {makeCancelable} from '#/main/core/api/utils'
+
 import {connectList} from '#/main/core/data/list/connect'
 
 import {
@@ -24,9 +27,44 @@ class DataTree extends Component {
   constructor(props) {
     super(props)
 
-    if (this.props.fetch && this.props.fetch.autoload) {
-      // todo find better
-      this.props.fetchData()
+    if (this.isAutoLoaded()) {
+      this.reload()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.fetch) {
+      const previousUrl = prevProps.fetch ? getUrl(prevProps.fetch.url) : null
+      const currentUrl = getUrl(this.props.fetch.url)
+      if (previousUrl !== currentUrl && this.isAutoLoaded()) {
+        // Force reload if the target URL have changed
+        this.reload(true)
+      } else if (this.props.loaded !== prevProps.loaded // data are not loaded
+        || this.props.invalidated !== prevProps.invalidated // data have been invalidated
+      ) {
+        this.reload()
+      }
+    }
+  }
+
+  isAutoLoaded() {
+    return this.props.fetch && this.props.fetch.autoload
+  }
+
+  reload(force = false) {
+    if (force || !this.props.loaded || this.props.invalidated) {
+      if (this.pending) {
+        this.pending.cancel()
+      }
+
+      this.pending = makeCancelable(
+        this.props.fetchData()
+      )
+
+      this.pending.promise.then(
+        () => this.pending = null,
+        () => this.pending = null
+      )
     }
   }
 

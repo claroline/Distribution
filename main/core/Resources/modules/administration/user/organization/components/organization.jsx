@@ -58,28 +58,18 @@ const OrganizationForm = props =>
             label: t('code'),
             required: true
           }, {
+            name: 'parent',
+            type: 'organization',
+            label: t('parent')
+          },  {
             name: 'email',
             type: 'email',
             label: t('email')
-          }, {
+          }/*, {
             name: 'managers',
             type: 'users',
             label: t('managers')
-          }
-        ]
-      }, {
-        id: 'position',
-        title: t('position'),
-        fields: [
-          {
-            name: 'meta.parent',
-            type: 'organization',
-            label: t('parent')
-          }, {
-            name: 'meta.position',
-            type: 'number',
-            label: t('position')
-          }
+          }*/
         ]
       }
     ]}

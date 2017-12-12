@@ -7,6 +7,7 @@ use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -16,6 +17,23 @@ use JMS\DiExtraBundle\Annotation as DI;
 class OrganizationSerializer
 {
     use SerializerTrait;
+
+    /** @var ObjectManager */
+    private $om;
+
+    /**
+     * OrganizationSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *      "om" = @DI\Inject("claroline.persistence.object_manager")
+     * })
+     *
+     * @param ObjectManager $om
+     */
+    public function __construct(ObjectManager $om)
+    {
+        $this->om = $om;
+    }
 
     /**
      * Serializes an Organization entity for the JSON api.
@@ -32,13 +50,13 @@ class OrganizationSerializer
             'name' => $organization->getName(),
             'code' => $organization->getCode(),
             'email' => $organization->getEmail(),
+            'parent' => !empty($organization->getParent()) ? [
+                'id' => $organization->getParent()->getUuid(),
+                'name' => $organization->getParent()->getName(),
+            ] : null,
             'meta' => [
                 'default' => $organization->getDefault(),
-                'position' => $organization->getPosition(),
-                'parent' => !empty($organization->getParent()) ? [
-                    'id' => $organization->getParent()->getUuid(),
-                    'name' => $organization->getParent()->getName(),
-                ] : [],
+                'position' => $organization->getPosition()
             ],
             'managers' => array_map(function (User $administrator) {
                 return [
@@ -63,8 +81,31 @@ class OrganizationSerializer
         return $data;
     }
 
+    public function deserialize($data, Organization $organization = null, array $options = [])
+    {
+        $this->setIfPropertyExists('name', 'setName', $data, $organization);
+        $this->setIfPropertyExists('code', 'setCode', $data, $organization);
+        $this->setIfPropertyExists('code', 'setEmail', $data, $organization);
+
+        if (isset($data['parent'])) {
+            if (empty($data['parent'])) {
+                $organization->setParent(null);
+            } else {
+                $parent = $this->om->getRepository($this->getClass())->findOneBy([
+                    'uuid' => $data['parent']['id']
+                ]);
+                $organization->setParent($parent);
+            }
+        }
+    }
+
     public function getIdentifiers()
     {
         return ['id', 'uuid', 'name', 'code'];
+    }
+
+    public function getClass()
+    {
+        return 'Claroline\CoreBundle\Entity\Organization\Organization';
     }
 }

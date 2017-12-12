@@ -30,6 +30,8 @@ function validateProp(propDef, propValue) {
     ]))
   }
 
+  console.log(errors)
+
   return errors
 }
 

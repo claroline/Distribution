@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {t} from '#/main/core/translation'
 import {getUrl} from '#/main/core/fos-js-router'
 import {makeCancelable} from '#/main/core/api/utils'
 
@@ -26,9 +25,6 @@ class DataList extends Component {
     if (this.isAutoLoaded()) {
       this.reload()
     }
-
-    console.log('construct list')
-    console.log(this.props.name)
   }
 
   componentDidUpdate(prevProps) {

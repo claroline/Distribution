@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import difference from 'lodash/difference'
+import isEmpty from 'lodash/isEmpty'
 import isNull from 'lodash/isNull'
 import omitBy from 'lodash/omitBy'
 import merge from 'lodash/merge'
@@ -62,7 +63,7 @@ const errorsReducer = makeInstanceReducer(defaultState.errors, {
    * @param state
    * @param action
    */
-  [FORM_SET_ERRORS]: (state, action) => omitBy(mergeWith({}, state, action.errors, (objV, srcV) => srcV || null), isNull)
+  [FORM_SET_ERRORS]: (state, action) => omitBy(mergeWith({}, state, action.errors, (objV, srcV) => srcV || null), isEmpty)
 })
 
 /**
