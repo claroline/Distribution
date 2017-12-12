@@ -7,6 +7,19 @@ import {select} from '#/main/core/data/form/selectors'
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormContainer as Form} from '#/main/core/data/form/containers/form.jsx'
+import {generateUrl} from '#/main/core/fos-js-router'
+
+/*
+var yolo = fetch(
+  generateUrl('apiv2_role_list') + '?filters[type]=platform',
+  {method: 'GET', credentials: 'include'}
+).then(response => response.json())
+.then(json => json.data.reduce((o, key) => Object.assign(o, {['translationKey']: o.translationKey}, {})))
+
+setTimeout(function(){console.log(yolo)}, 2000);
+
+console.log(yolo)
+*/
 
 import {
   REGISTRATION_MAIL_VALIDATION_NONE,
@@ -49,7 +62,7 @@ const ParametersTab = () =>
             label: t('default_role'),
             options: {
               noEmpty: true,
-              choices: {} // roles
+              choices: {}
             }
           }, {
             name: 'locales.default',
@@ -62,6 +75,7 @@ const ParametersTab = () =>
             name: 'registration.validation',
             type: 'enum',
             label: t('registration_mail_validation'),
+            required: true,
             options: {
               noEmpty: true,
               choices: {
