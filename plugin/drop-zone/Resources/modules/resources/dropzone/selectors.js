@@ -137,7 +137,7 @@ const currentState = createSelector(
         if (currentDate > dropEndDate && currentDate > reviewEndDate) {
           currentState = constants.STATE_FINISHED
         } else if (currentDate > dropEndDate && currentDate < reviewStartDate) {
-          currentState = constants.STATE_ALLOW_WAITING_FOR_PEER_REVIEW
+          currentState = constants.STATE_WAITING_FOR_PEER_REVIEW
         } else {
           if (dropStartDate <= currentDate && currentDate <= dropEndDate) {
             currentState += constants.STATE_ALLOW_DROP

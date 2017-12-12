@@ -4,6 +4,7 @@
     "add_document": "Add a document",
     "allowed_document_types": "Allowed document types",
     "allowed_document_types_info": "Select the types of documents the learners will be allowed to render :",
+    "assign_correction": "Assign a correction",
     "auto_close_drops_at_drop_end_date": "Automatically validate the unfinished copies when the dropped period is over.",
     "by_dates": "By dates",
     "cancel_drop_submission": "Cancel drop submission",

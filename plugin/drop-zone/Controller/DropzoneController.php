@@ -91,6 +91,14 @@ class DropzoneController extends Controller
         $finishedPeerDrops = [];
         $errorMessage = null;
 
+        if (!$dropzone->getDropClosed() && $dropzone->getAutoCloseDropsAtDropEndDate() && !$dropzone->getManualPlanning()) {
+            $dropEndDate = $dropzone->getDropEndDate();
+
+            if ($dropEndDate < new \DateTime()) {
+                $this->manager->closeAllUnfinishedDrops($dropzone);
+            }
+        }
+
         switch ($dropzone->getDropType()) {
             case Dropzone::DROP_TYPE_USER:
                 $myDrop = !empty($user) ? $this->manager->getUserDrop($dropzone, $user) : null;
@@ -134,7 +142,7 @@ class DropzoneController extends Controller
         }
         $serializedTools = $this->manager->getSerializedTools();
         /* TODO: generate ResourceUserEvaluation for team */
-        $userEvaluation = empty($user) ? null : $this->manager->generateResourceUserEvaluation($dropzone, $user);
+        $userEvaluation = !empty($user) ? $this->manager->generateResourceUserEvaluation($dropzone, $user) : null;
 
         return [
             '_resource' => $dropzone,

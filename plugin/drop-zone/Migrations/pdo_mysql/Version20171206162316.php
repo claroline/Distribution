@@ -129,6 +129,7 @@ class Version20171206162316 extends AbstractMigration
                 criteria_total SMALLINT NOT NULL, 
                 auto_close_drops_at_drop_end_date TINYINT(1) NOT NULL, 
                 auto_close_state INT NOT NULL, 
+                drop_closed TINYINT(1) NOT NULL,
                 notify_on_drop TINYINT(1) NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 resourceNode_id INT DEFAULT NULL, 

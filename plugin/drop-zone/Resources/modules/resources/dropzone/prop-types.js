@@ -34,7 +34,8 @@ const DropzoneType = {
       criteriaEnabled: T.bool.isRequired,
       criteriaTotal: T.number.isRequired,
       autoCloseDropsAtDropEndDate: T.bool.isRequired,
-      autoCloseState: T.number.isRequired
+      autoCloseState: T.number.isRequired,
+      dropClosed: T.bool.isRequired
     }).isRequired,
     display: T.shape({
       instruction: T.string,

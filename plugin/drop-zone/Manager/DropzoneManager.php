@@ -549,6 +549,30 @@ class DropzoneManager
     }
 
     /**
+     * Closes all unfinished drops.
+     *
+     * @param Dropzone $dropzone
+     */
+    public function closeAllUnfinishedDrops(Dropzone $dropzone)
+    {
+        $this->om->startFlushSuite();
+
+        $currentDate = new \DateTime();
+        $drops = $this->dropRepo->findBy(['dropzone' => $dropzone, 'finished' => false]);
+
+        foreach ($drops as $drop) {
+            $drop->setFinished(true);
+            $drop->setDropDate($currentDate);
+            $drop->setAutoClosedDrop(true);
+            $this->om->persist($drop);
+        }
+        $dropzone->setDropClosed(true);
+        $this->om->persist($dropzone);
+
+        $this->om->endFlushSuite();
+    }
+
+    /**
      * Updates a Correction.
      *
      * @param array $data

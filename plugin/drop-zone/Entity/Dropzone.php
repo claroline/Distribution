@@ -29,7 +29,7 @@ class Dropzone extends AbstractResource
     const STATE_FINISHED = 2;
     const STATE_PEER_REVIEW = 3;
     const STATE_ALLOW_DROP_AND_PEER_REVIEW = 4;
-    const STATE_ALLOW_WAITING_FOR_PEER_REVIEW = 5;
+    const STATE_WAITING_FOR_PEER_REVIEW = 5;
 
     const AUTO_CLOSED_STATE_WAITING = 0;
     const AUTO_CLOSED_STATE_CLOSED = 1;
@@ -205,6 +205,11 @@ class Dropzone extends AbstractResource
      * @ORM\Column(name="auto_close_state", type="integer", nullable=false)
      */
     protected $autoCloseState = self::AUTO_CLOSED_STATE_WAITING;
+
+    /**
+     * @ORM\Column(name="drop_closed", type="boolean", nullable=false)
+     */
+    protected $dropClosed = false;
 
     /**
      * Notify Evaluation admins when a someone made a drop.
@@ -539,6 +544,16 @@ class Dropzone extends AbstractResource
     public function setAutoCloseState($autoCloseState)
     {
         $this->autoCloseState = $autoCloseState;
+    }
+
+    public function getDropClosed()
+    {
+        return $this->dropClosed;
+    }
+
+    public function setDropClosed($dropClosed)
+    {
+        $this->dropClosed = $dropClosed;
     }
 
     public function getNotifyOnDrop()

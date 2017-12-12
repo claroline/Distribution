@@ -82,9 +82,17 @@ class DropzoneController
         try {
             $this->manager->update($dropzone, json_decode($request->getContent(), true));
 
-            return new JsonResponse(
-                $this->manager->serialize($dropzone)
-            );
+            $closedDropStates = [
+                Dropzone::STATE_FINISHED,
+                Dropzone::STATE_PEER_REVIEW,
+                Dropzone::STATE_WAITING_FOR_PEER_REVIEW,
+            ];
+
+            if (!$dropzone->getDropClosed() && $dropzone->getManualPlanning() && in_array($dropzone->getManualState(), $closedDropStates)) {
+                $this->manager->closeAllUnfinishedDrops($dropzone);
+            }
+
+            return new JsonResponse($this->manager->serialize($dropzone));
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
@@ -213,18 +221,20 @@ class DropzoneController
         $documents = [];
 
         try {
-            switch ($type) {
-                case Document::DOCUMENT_TYPE_FILE:
-                    $files = $request->files->all();
-                    $documents = $this->manager->createFilesDocuments($drop, $user, $files);
-                    break;
-                case Document::DOCUMENT_TYPE_TEXT:
-                case Document::DOCUMENT_TYPE_URL:
-                case Document::DOCUMENT_TYPE_RESOURCE:
-                    $dropData = $request->request->get('dropData', false);
-                    $document = $this->manager->createDocument($drop, $user, intval($type), $dropData);
-                    $documents[] = $this->manager->serializeDocument($document);
-                    break;
+            if (!$drop->isFinished()) {
+                switch ($type) {
+                    case Document::DOCUMENT_TYPE_FILE:
+                        $files = $request->files->all();
+                        $documents = $this->manager->createFilesDocuments($drop, $user, $files);
+                        break;
+                    case Document::DOCUMENT_TYPE_TEXT:
+                    case Document::DOCUMENT_TYPE_URL:
+                    case Document::DOCUMENT_TYPE_RESOURCE:
+                        $dropData = $request->request->get('dropData', false);
+                        $document = $this->manager->createDocument($drop, $user, intval($type), $dropData);
+                        $documents[] = $this->manager->serializeDocument($document);
+                        break;
+                }
             }
 
             return new JsonResponse($documents);

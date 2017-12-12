@@ -143,6 +143,9 @@ class DropzoneSerializer
             if (isset($data['parameters']['autoCloseState'])) {
                 $dropzone->setAutoCloseState($data['parameters']['autoCloseState']);
             }
+            if (isset($data['parameters']['dropClosed'])) {
+                $dropzone->setDropClosed($data['parameters']['dropClosed']);
+            }
         }
         if (isset($data['display'])) {
             if (isset($data['display']['instruction'])) {
@@ -210,6 +213,7 @@ class DropzoneSerializer
         $parameters['criteriaTotal'] = $dropzone->getCriteriaTotal();
         $parameters['autoCloseDropsAtDropEndDate'] = $dropzone->getAutoCloseDropsAtDropEndDate();
         $parameters['autoCloseState'] = $dropzone->getAutoCloseState();
+        $parameters['dropClosed'] = $dropzone->getDropClosed();
 
         return $parameters;
     }

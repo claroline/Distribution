@@ -91,6 +91,12 @@ class Drops extends Component {
       displayed: true,
       type: 'boolean'
     })
+    columns.push({
+      name: 'autoClosedDrop',
+      label: t('incomplete'),
+      displayed: true,
+      type: 'boolean'
+    })
 
     return columns
   }
@@ -106,12 +112,14 @@ class Drops extends Component {
     actions.push({
       icon: 'fa fa-fw fa-unlock',
       label: trans('unlock_drop', {}, 'dropzone'),
+      displayed: (rows) => !rows[0].unlockedDrop,
       action: (rows) => props.unlockDrop(rows[0].id),
       context: 'row'
     })
     actions.push({
       icon: 'fa fa-fw fa-undo',
       label: trans('cancel_drop_submission', {}, 'dropzone'),
+      displayed: (rows) => rows[0].finished,
       action: (rows) => props.cancelDropSubmission(rows[0].id),
       context: 'row'
     })

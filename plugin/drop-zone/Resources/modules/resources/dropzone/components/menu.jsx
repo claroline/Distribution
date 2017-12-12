@@ -30,6 +30,7 @@ const Menu = props =>
     {props.myDrop &&
     props.myDrop.finished &&
     props.dropzone.display.displayNotationMessageToLearners &&
+    props.userEvaluation &&
     [constants.EVALUATION_STATUS_PASSED, constants.EVALUATION_STATUS_FAILED].indexOf(props.userEvaluation.status) > -1 &&
     (!props.isPeerReviewEnabled || props.myDrop.unlockedUser || props.nbCorrections >= props.dropzone.parameters.expectedCorrectionTotal) &&
       <div className={classes('alert', {

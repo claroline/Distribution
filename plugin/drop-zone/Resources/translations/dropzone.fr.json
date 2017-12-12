@@ -4,6 +4,7 @@
     "add_document": "Ajouter un document",
     "allowed_document_types": "Types de document autorisés",
     "allowed_document_types_info": "Sélectionnez les types de documents que les apprenants pourront rendre :",
+    "assign_correction": "Assigner une correction",
     "auto_close_drops_at_drop_end_date": "Valider automatiquement les copies non terminées lorsque la date de fin du dépôt est atteinte",
     "by_dates": "Par dates",
     "cancel_drop_submission": "Annuler la soumission de la copie",

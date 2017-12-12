@@ -4,7 +4,7 @@ import {generateUrl} from '#/main/core/fos-js-router'
 
 import {reducer} from '#/plugin/drop-zone/resources/dropzone/reducer'
 import {DropzoneResource} from '#/plugin/drop-zone/resources/dropzone/components/resource.jsx'
-import {CorrectionModal} from '#/plugin/drop-zone/resources/dropzone/player/components/correction-modal.jsx'
+import {CorrectionModal} from '#/plugin/drop-zone/resources/dropzone/player/components/modal/correction-modal.jsx'
 
 // mount the react application
 bootstrap(
