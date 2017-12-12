@@ -252,6 +252,12 @@ class Entries extends Component {
         action: (rows) => this.props.downloadEntryPdf(rows[0].id),
         context: 'row'
       })
+      dataListActions.push({
+        icon: 'fa fa-w fa-print',
+        label: trans('print_selected_entries', {}, 'clacoform'),
+        action: (rows) => this.props.downloadEntriesPdf(rows),
+        context: 'selection'
+      })
     }
     dataListActions.push({
       icon: 'fa fa-w fa-pencil',
@@ -475,6 +481,7 @@ Entries.propTypes = {
   displayKeywords: T.bool.isRequired,
   isCategoryManager: T.bool.isRequired,
   downloadEntryPdf: T.func.isRequired,
+  downloadEntriesPdf: T.func.isRequired,
   switchEntriesStatus: T.func.isRequired,
   switchEntriesLock: T.func.isRequired,
   deleteEntry: T.func.isRequired,
@@ -523,6 +530,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
+    downloadEntriesPdf: entries => dispatch(actions.downloadEntriesPdf(entries)),
     switchEntriesStatus: (entries, status) => dispatch(actions.switchEntriesStatus(entries, status)),
     switchEntriesLock: (entries, locked) => dispatch(actions.switchEntriesLock(entries, locked)),
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),

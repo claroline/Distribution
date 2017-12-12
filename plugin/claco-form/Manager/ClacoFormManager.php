@@ -1813,6 +1813,31 @@ class ClacoFormManager
         return $this->pdfManager->create($html, $entry->getTitle(), $user, 'clacoform_entries');
     }
 
+    public function generateArchiveForEntries(array $entries, User $user)
+    {
+        $pdfs = [];
+        $ds = DIRECTORY_SEPARATOR;
+
+        foreach ($entries as $entry) {
+            $pdfs[] = $this->generatePdfForEntry($entry, $user);
+        }
+
+        $archive = new \ZipArchive();
+        $pathArch = $this->configHandler->getParameter('tmp_dir').$ds.Uuid::uuid4()->toString().'.zip';
+        $archive->open($pathArch, \ZipArchive::CREATE);
+
+        foreach ($pdfs as $pdf) {
+            $archive->addFromString(
+                $pdf->getName().'.pdf',
+                file_get_contents($this->filesDir.$ds.'pdf'.$ds.$pdf->getPath())
+            );
+        }
+        $archive->close();
+        file_put_contents($this->archiveDir, $pathArch."\n", FILE_APPEND);
+
+        return $pathArch;
+    }
+
     public function removeQuote($str)
     {
         return str_replace('\'', ' ', $str);

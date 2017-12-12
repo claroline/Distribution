@@ -217,6 +217,10 @@ actions.downloadEntryPdf = (entryId) => () => {
   window.location.href = generateUrl('claro_claco_form_entry_pdf_download', {entry: entryId})
 }
 
+actions.downloadEntriesPdf = (entries) => () => {
+  window.location.href = generateUrl('claro_claco_form_entries_pdf_download') + getDataQueryString(entries)
+}
+
 actions.createComment = (entryId, content) => (dispatch) => {
   const formData = new FormData()
   formData.append('commentData', content)
