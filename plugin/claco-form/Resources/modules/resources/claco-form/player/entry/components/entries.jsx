@@ -9,14 +9,18 @@ import {localeDate} from '#/main/core/date'
 import {generateUrl} from '#/main/core/fos-js-router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+
+import {asset} from '#/main/core/asset'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {constants as listConstants} from '#/main/core/data/list/constants'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
 
-import {actions} from '../actions'
-import {selectors} from '../../../selectors'
-import {getFieldType, getCountry} from '../../../utils'
 import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {getFieldType, getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 class Entries extends Component {
   deleteEntry(entry) {
@@ -24,6 +28,14 @@ class Entries extends Component {
       title: trans('delete_entry', {}, 'clacoform'),
       question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
       handleConfirm: () => this.props.deleteEntry(entry.id)
+    })
+  }
+
+  deleteEntries(entries) {
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: trans('delete_selected_entries', {}, 'clacoform'),
+      question: trans('delete_selected_entries_confirm_message', {}, 'clacoform'),
+      handleConfirm: () => this.props.deleteEntries(entries)
     })
   }
 
@@ -244,6 +256,12 @@ class Entries extends Component {
         action: (rows) => this.props.downloadEntryPdf(rows[0].id),
         context: 'row'
       })
+      dataListActions.push({
+        icon: 'fa fa-w fa-print',
+        label: trans('print_selected_entries', {}, 'clacoform'),
+        action: (rows) => this.props.downloadEntriesPdf(rows),
+        context: 'selection'
+      })
     }
     dataListActions.push({
       icon: 'fa fa-w fa-pencil',
@@ -255,31 +273,30 @@ class Entries extends Component {
     dataListActions.push({
       icon: 'fa fa-w fa-eye',
       label: t('publish'),
-      action: (rows) => this.props.switchEntryStatus(rows[0].id),
-      displayed: (rows) => !rows[0].locked && this.canManageEntry(rows[0]) && rows[0].status !== 1,
-      context: 'row'
+      action: (rows) => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_PUBLISHED),
+      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
+        rows.filter(e => e.status === constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
     })
     dataListActions.push({
       icon: 'fa fa-w fa-eye-slash',
       label: t('unpublish'),
-      action: (rows) => this.props.switchEntryStatus(rows[0].id),
-      displayed: (rows) => !rows[0].locked && this.canManageEntry(rows[0]) && rows[0].status === 1,
-      context: 'row'
+      action: (rows) => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_UNPUBLISHED),
+      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
+        rows.filter(e => e.status !== constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
     })
+
     if (this.props.canAdministrate) {
       dataListActions.push({
         icon: 'fa fa-w fa-lock',
-        label: trans('lock_entry', {}, 'clacoform'),
-        action: (rows) => this.props.switchEntryLock(rows[0].id),
-        displayed: (rows) => !rows[0].locked,
-        context: 'row'
+        label: t('lock'),
+        action: (rows) => this.props.switchEntriesLock(rows, true),
+        displayed: (rows) => rows.filter(e => e.locked).length !== rows.length
       })
       dataListActions.push({
         icon: 'fa fa-w fa-unlock',
-        label: trans('unlock_entry', {}, 'clacoform'),
-        action: (rows) => this.props.switchEntryLock(rows[0].id),
-        displayed: (rows) => rows[0].locked,
-        context: 'row'
+        label: t('unlock'),
+        action: (rows) => this.props.switchEntriesLock(rows, false),
+        displayed: (rows) => rows.filter(e => !e.locked).length !== rows.length
       })
     }
     dataListActions.push({
@@ -289,6 +306,14 @@ class Entries extends Component {
       displayed: (rows) => !rows[0].locked && this.canManageEntry(rows[0]),
       dangerous: true,
       context: 'row'
+    })
+    dataListActions.push({
+      icon: 'fa fa-w fa-trash',
+      label: t('delete'),
+      action: (rows) => this.deleteEntries(rows),
+      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length,
+      dangerous: true,
+      context: 'selection'
     })
 
     return dataListActions
@@ -456,9 +481,11 @@ Entries.propTypes = {
   displayKeywords: T.bool.isRequired,
   isCategoryManager: T.bool.isRequired,
   downloadEntryPdf: T.func.isRequired,
-  switchEntryStatus: T.func.isRequired,
-  switchEntryLock: T.func.isRequired,
+  downloadEntriesPdf: T.func.isRequired,
+  switchEntriesStatus: T.func.isRequired,
+  switchEntriesLock: T.func.isRequired,
   deleteEntry: T.func.isRequired,
+  deleteEntries: T.func.isRequired,
   showModal: T.func.isRequired,
   entries: T.shape({
     data: T.array,
@@ -503,9 +530,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
-    switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
-    switchEntryLock: entryId => dispatch(actions.switchEntryLock(entryId)),
+    downloadEntriesPdf: entries => dispatch(actions.downloadEntriesPdf(entries)),
+    switchEntriesStatus: (entries, status) => dispatch(actions.switchEntriesStatus(entries, status)),
+    switchEntriesLock: (entries, locked) => dispatch(actions.switchEntriesLock(entries, locked)),
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
+    deleteEntries: entries => dispatch(actions.deleteEntries(entries)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }
