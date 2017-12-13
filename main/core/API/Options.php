@@ -51,6 +51,7 @@ final class Options
     //in user crud so the user can be logged automatically after creation
     //but it's probably not where the option should be located
     const USER_SELF_LOG = 'user_self_log';
+    const ADD_PERSONAL_WORKSPACE = 'add_personal_workspace';
 
     //move me ? it's related to the facets
     const PROFILE_SERIALIZE = 'profile_serialize';

@@ -6,6 +6,7 @@ import {actions} from '#/main/core/administration/import/actions'
 import has from 'lodash/has'
 import {Select} from '#/main/core/layout/form/components/field/select.jsx'
 import {t} from '#/main/core/translation'
+import {Form as FormComponent} from '#/main/core/data/form/components/form.jsx'
 import {Routes} from '#/main/core/router'
 
 const Tabs = props =>
@@ -52,8 +53,24 @@ const RoutedExplain = props => {
     <div>
       <h3>{entity}</h3>
       <div>
-        form dynamique
-        mettre file upload + options headers & co
+        <FormComponent
+          level={3}
+          name="transfer.import"
+          sections={[
+            {
+              id: 'general',
+              title: t('general'),
+              primary: true,
+              fields: [
+                {
+                  name: 'headers',
+                  type: 'boolean',
+                  label: t('show_headers')
+                }
+              ]
+            }
+          ]}
+        />
       </div>
       <Select
         id="select-action"
