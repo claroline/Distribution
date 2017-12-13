@@ -11,7 +11,7 @@ import {Routes} from '#/main/core/router'
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
     {Object.keys(props.explanation).map((key) =>
-      <li role="presentation" className="active">
+      <li role="presentation" className="">
         <a href={"#/import/" + key}>{key}</a>
       </li>
     )}
@@ -47,7 +47,6 @@ const Field = props => {
 }
 
 const Explain = props => {
-  console.log(props)
   return (
     <div>
       {props.properties.map(prop => <Field {...prop}/> )}
@@ -59,7 +58,7 @@ const RoutedExplain = props => {
   const entity = props.match.params.entity
   const action = props.match.params.action
 
-  return <Explain {...props.explanation[entity][action]}/>
+  return <Explain {...props.explanation[entity][action]} />
 }
 
 const ConnectedExplain = connect(
@@ -69,29 +68,42 @@ const ConnectedExplain = connect(
 
 const ExplainTitle = props => <span>{props.title}</span>
 
-const Tab = props => {
-  console.log(props)
-  const choices = Object.keys(props.explanation).reduce((o, key) => Object.assign(o, {[key]: key}), {})
+class Tab extends Component
+{
+  constructor(props) {
+    super(props)
+  }
 
-  return (
-    <div>
-      <h3>{props.entity}</h3>
+  componentDidMount() {
+  }
+
+  render() {
+    const choices = Object.keys(this.props.explanation).reduce((o, key) => Object.assign(o, {[key]: key}), {})
+
+    return (
       <div>
-        <Select
-          onChange={(value) => window.location.hash = '#import/' + props.entity + '/' + value}
-          choices={choices}
-        />
-        <div> {t('import_headers')} </div>
-        <Routes
-          routes={[{
-              path: "/import/:entity/:action",
-              exact: true,
-              component: ConnectedExplain
-            }]}
-        />
+        <h3>{this.props.entity}</h3>
+        <div>
+          <Select
+            onChange={(value) => {
+              this.setState({action: value})
+              window.location.hash = '#import/' + this.props.entity + '/' + value
+            }}
+            value={has(this.state) ? this.state.value: null}
+            choices={choices}
+          />
+          <div> {t('import_headers')} </div>
+          <Routes
+            routes={[{
+                path: "/import/:entity/:action",
+                exact: true,
+                component: ConnectedExplain
+              }]}
+          />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 const CurrentTab = props => {
