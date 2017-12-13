@@ -11,29 +11,18 @@ import {Routes} from '#/main/core/router'
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
     {Object.keys(props.explanation).map((key) =>
-      <li role="presentation" className="">
-        <a href={"#/import/" + key}>{key}</a>
+      <li key={key} role="presentation" className="">
+        <a href={"#/import/" + key + '/none'}>{key}</a>
       </li>
     )}
   </ul>
-
-const Action = props => {
-  return (
-    <div>
-      <div>{props.title}</div>
-      {props.properties.map((property) => {
-        return (<Field field={property}/>)
-      })}
-    </div>
-  )
-}
 
 const Field = props => {
   if (has(props, 'oneOf')) {
     return (
       <div className="panel panel-body">
         {t('one_of_field_list')} {props.oneOf.required ? t('required'): t('optional')}
-        {props.oneOf.map(oneOf => <Explain properties={oneOf.properties}/>)}
+        {props.oneOf.map(oneOf => <Fields properties={oneOf.properties}/>)}
       </div>
     )
   } else {
@@ -46,7 +35,7 @@ const Field = props => {
   }
 }
 
-const Explain = props => {
+const Fields = props => {
   return (
     <div>
       {props.properties.map(prop => <Field {...prop}/> )}
@@ -57,8 +46,29 @@ const Explain = props => {
 const RoutedExplain = props => {
   const entity = props.match.params.entity
   const action = props.match.params.action
+  const choices = Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[key]: key}), {})
 
-  return <Explain {...props.explanation[entity][action]} />
+  return (
+    <div>
+      <h3>{entity}</h3>
+      <div>
+        form dynamique
+        mettre file upload + options headers & co
+      </div>
+      <Select
+        id="select-action"
+        onChange={value => window.location.hash = '#import/' + entity + '/' + value}
+        value={action}
+        choices={choices}
+      />
+      {props.explanation[entity][action] &&
+        <div>
+          <div> {t('import_headers')} </div>
+          <Fields {...props.explanation[entity][action]} />
+        </div>
+      }
+    </div>
+  )
 }
 
 const ConnectedExplain = connect(
@@ -67,55 +77,6 @@ const ConnectedExplain = connect(
 )(RoutedExplain)
 
 const ExplainTitle = props => <span>{props.title}</span>
-
-class Tab extends Component
-{
-  constructor(props) {
-    super(props)
-  }
-
-  componentDidMount() {
-  }
-
-  render() {
-    const choices = Object.keys(this.props.explanation).reduce((o, key) => Object.assign(o, {[key]: key}), {})
-
-    return (
-      <div>
-        <h3>{this.props.entity}</h3>
-        <div>
-          <Select
-            onChange={(value) => {
-              this.setState({action: value})
-              window.location.hash = '#import/' + this.props.entity + '/' + value
-            }}
-            value={has(this.state) ? this.state.value: null}
-            choices={choices}
-          />
-          <div> {t('import_headers')} </div>
-          <Routes
-            routes={[{
-                path: "/import/:entity/:action",
-                exact: true,
-                component: ConnectedExplain
-              }]}
-          />
-        </div>
-      </div>
-    )
-  }
-}
-
-const CurrentTab = props => {
-  const entity = props.match.params.entity
-
-  return <Tab {...props} explanation={props.explanation[entity]} entity={entity}/>
-}
-
-const ConnectedCurrentTab = connect(
-  state => ({explanation: select.explanation(state)}),
-  dispatch =>({})
-)(CurrentTab)
 
 class Import extends Component
 {
@@ -132,9 +93,9 @@ class Import extends Component
             <div className="col-md-9">
               <Routes
                 routes={[{
-                    path: '/import/:entity',
+                    path: '/import/:entity/:action',
                     exact: false,
-                    component: ConnectedCurrentTab
+                    component: ConnectedExplain
                   }]}
               />
             </div>

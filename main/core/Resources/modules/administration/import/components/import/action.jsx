@@ -5,12 +5,11 @@ import {t} from '#/main/core/translation'
 
 const Action = props =>
   <PageActions>
-    <span><input type="file"></input></span>
     <PageAction
       id="execute-action"
       icon="fa fa-save"
       title={t('execute')}
-      action="#"
+      action=""
     />
   </PageActions>
 
