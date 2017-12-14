@@ -21,7 +21,7 @@ const FacetSection = props =>
   <FormSection
     {...omit(props, ['parentIndex', 'index', 'remove'])}
     title={props.title || t('profile_facet_section')}
-    className="form-section"
+    className="embedded-form-section"
     actions={[
       {
         icon: 'fa fa-fw fa-trash-o',

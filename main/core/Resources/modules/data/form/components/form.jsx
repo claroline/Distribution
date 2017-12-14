@@ -130,7 +130,7 @@ class Form extends Component {
           </div>
         }
 
-        {0 !== otherSections &&
+        {0 !== otherSections.length &&
           <FormSections
             level={this.props.level}
             defaultOpened={openedSection ? openedSection.id : undefined}
