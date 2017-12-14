@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {getUrl} from '#/main/core/fos-js-router'
 import {makeCancelable} from '#/main/core/api/utils'
 
 import {connectList} from '#/main/core/data/list/connect'
@@ -71,6 +70,19 @@ class DataTree extends Component {
 }
 
 DataTree.propTypes = {
+  // calculated from redux store
+  loaded: T.bool,
+  invalidated: T.bool,
+  data: T.array.isRequired,
+  totalResults: T.number.isRequired,
+  filters: T.object,
+  selection: T.object,
+  fetchData: T.func
+}
+
+const DataTreeContainer = connectList()(DataTree)
+
+DataTreeContainer.propTypes = {
   /**
    * The name of the data in the tree.
    *
@@ -121,19 +133,8 @@ DataTree.propTypes = {
    */
   actions: T.arrayOf(
     T.shape(DataListActionTypes.propTypes)
-  ),
-
-  // calculated from redux store
-  loaded: T.bool,
-  invalidated: T.bool,
-  data: T.array.isRequired,
-  totalResults: T.number.isRequired,
-  filters: T.object,
-  selection: T.object,
-  fetchData: T.func
+  )
 }
-
-const DataTreeContainer = connectList()(DataTree)
 
 export {
   DataTreeContainer

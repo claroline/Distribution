@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {getUrl} from '#/main/core/fos-js-router'
 import {makeCancelable} from '#/main/core/api/utils'
 
 import {connectList} from '#/main/core/data/list/connect'
@@ -68,6 +67,26 @@ class DataList extends Component {
 }
 
 DataList.propTypes = {
+  // calculated from redux store
+  loaded: T.bool,
+  invalidated: T.bool,
+  data: T.array.isRequired,
+  totalResults: T.number.isRequired,
+  filters: T.object,
+  sorting: T.object,
+  pagination: T.object,
+  selection: T.object,
+  fetchData: T.func
+}
+
+DataList.defaultProps = {
+  actions: []
+}
+
+// connect list to redux
+const DataListContainer = connectList()(DataList)
+
+DataListContainer.propTypes = {
   /**
    * The name of the data in the list.
    *
@@ -146,26 +165,8 @@ DataList.propTypes = {
       deleteConfirm: T.string,
       deleteConfirmMessage: T.string
     })
-  }),
-
-  // calculated from redux store
-  loaded: T.bool,
-  invalidated: T.bool,
-  data: T.array.isRequired,
-  totalResults: T.number.isRequired,
-  filters: T.object,
-  sorting: T.object,
-  pagination: T.object,
-  selection: T.object,
-  fetchData: T.func
+  })
 }
-
-DataList.defaultProps = {
-  actions: []
-}
-
-// connect list to redux
-const DataListContainer = connectList()(DataList)
 
 export {
   DataListContainer

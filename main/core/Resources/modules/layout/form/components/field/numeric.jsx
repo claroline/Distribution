@@ -13,8 +13,20 @@ const NumericInput = props =>
     disabled={props.disabled}
     min={props.min}
     max={props.max}
+    placeholder={props.placeholder}
     onChange={(e) => props.onChange(Number(e.target.value))}
   />
+
+NumericInput.propTypes = {
+  id: T.string.isRequired,
+  className: T.string,
+  disabled: T.bool,
+  placeholder: T.string,
+  value: T.oneOfType([T.number, T.string]),
+  min: T.number,
+  max: T.number,
+  onChange: T.func.isRequired
+}
 
 // it's called Numeric to not override the default JS math object `Number`
 const Numeric = props => props.unit ?

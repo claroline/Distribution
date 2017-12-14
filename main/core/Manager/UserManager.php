@@ -21,14 +21,12 @@ use Claroline\CoreBundle\Entity\UserOptions;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\Exception\AddRoleException;
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
-use Claroline\CoreBundle\Security\PlatformRoles;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Pagerfanta;
@@ -155,6 +153,7 @@ class UserManager
     /**
      * Create a user.
      * Its basic properties (name, username,... ) must already be set.
+     *
      * @todo use crud instead
      * @todo REMOVE ME (caution: this is used to create users in Command\User\CreateCommand)
      *
@@ -240,6 +239,7 @@ class UserManager
 
     /**
      * Removes users from a csv file.
+     *
      * @todo use the csv from the api transfer
      * @todo REMOVE ME
      */
@@ -301,9 +301,10 @@ class UserManager
 
     /**
      * Rename a user.
+     *
      * @todo use crud instead
      * @todo REMOVE ME
-     * It renames the user role and its personal WS if needed.
+     * It renames the user role and its personal WS if needed
      *
      * @param User   $user
      * @param string $previousUsername
@@ -345,9 +346,9 @@ class UserManager
      * Removes a user.
      *
      * @param \Claroline\CoreBundle\Entity\User $user
+     *
      * @todo use crud instead
      * @todo REMOVE ME
-     *
      */
     public function deleteUser(User $user)
     {
@@ -381,6 +382,7 @@ class UserManager
      * @internal param string $authentication an authentication source
      * @internal param bool $mail do the users need to be mailed
 
+     *
      * @todo use api transfer instead
      * @todo REMOVE ME
      */
@@ -718,6 +720,7 @@ class UserManager
      *
      * @todo use crud instead
      * @todo REMOVE ME
+     *
      * @param User            $user
      * @param ArrayCollection $roles
      */
@@ -773,6 +776,7 @@ class UserManager
 
     /**
      * @param string $username
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -831,6 +835,7 @@ class UserManager
      * @param int    $page
      * @param int    $max
      * @param string $orderedBy
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -846,6 +851,7 @@ class UserManager
     /**
      * @param string $firstName
      * @param string $lastName
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -921,9 +927,9 @@ class UserManager
      * @param int         $max
      * @param bool        $withPager
      *
-     *
      * @todo use finder instead
      * @todo REMOVE ME
+     *
      * @return User[]|Pagerfanta
      */
     public function getUsersByWorkspaces(array $workspaces, $page = 1, $max = 20, $withPager = true)
@@ -945,6 +951,7 @@ class UserManager
      *
      * @todo use finder instead
      * @todo REMOVE ME
+     *
      * @return Pagerfanta
      */
     public function getAllUsersByWorkspaceAndName(Workspace $workspace, $search, $page, $max = 20)
@@ -995,6 +1002,7 @@ class UserManager
 
     /**
      * @param string $guid
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1027,6 +1035,7 @@ class UserManager
 
     /**
      * @param int $userId
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1043,6 +1052,7 @@ class UserManager
      * @param int    $max
      * @param string $orderedBy
      * @param null   $order
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1057,6 +1067,7 @@ class UserManager
 
     /**
      * @param Role[] $roles
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1087,6 +1098,7 @@ class UserManager
      * @param int    $page
      * @param int    $max
      * @param string $orderedBy
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1103,6 +1115,7 @@ class UserManager
      * @param Role[] $roles
      * @param int    $page
      * @param int    $max
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1117,6 +1130,7 @@ class UserManager
 
     /**
      * @param string $email
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1131,6 +1145,7 @@ class UserManager
      * @todo Please describe me. I couldn't find findOneByResetPasswordHash
      *
      * @param string $resetPassword
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1143,6 +1158,7 @@ class UserManager
 
     /**
      * @param string $validationHash
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      *
@@ -1164,6 +1180,7 @@ class UserManager
 
     /**
      * @return User[]
+     *
      * @todo use finder instead
      * @todo REMOVE ME
      */
@@ -1190,6 +1207,7 @@ class UserManager
 
     /**
      * Set the user locale.
+     *
      * @todo use crud instead
      * @todo REMOVE ME
      *

@@ -75,7 +75,7 @@ class UserController extends AbstractCrudController
           //maybe move these options in an other class
           Options::SEND_EMAIL,
           Options::ADD_NOTIFICATIONS,
-          Options::ADD_PERSONAL_WORKSPACE
+          Options::ADD_PERSONAL_WORKSPACE,
         ];
 
         //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)

@@ -1,5 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 import omit from 'lodash/omit'
 
 import {Section, Sections} from '#/main/core/layout/components/sections.jsx'
@@ -13,11 +14,13 @@ import {Section, Sections} from '#/main/core/layout/components/sections.jsx'
 const FormSection = props =>
   <Section
     {...omit(props, ['validating', 'errors'])}
+    className={classes('form-section', props.className)}
   >
     {props.children}
   </Section>
 
 FormSection.propTypes = {
+  className: T.string,
   children: T.node.isRequired,
   disabled: T.bool,
   validating: T.bool,

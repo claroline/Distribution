@@ -37,6 +37,25 @@ AdvancedSection.defaultProps = {
   hideText: t('hide_advanced_options')
 }
 
+const FormWrapper = props => props.embedded ?
+  <fieldset className={classes('form', props.className)}>
+    {props.children}
+  </fieldset>
+  :
+  <form action="#" className={classes('form', props.className)}>
+    {props.children}
+  </form>
+
+FormWrapper.propTypes = {
+  className: T.string,
+  embedded: T.bool,
+  children: T.node.isRequired
+}
+
+FormWrapper.defaultProps = {
+  embedded: false
+}
+
 class Form extends Component {
   constructor(props) {
     super(props)
@@ -74,7 +93,7 @@ class Form extends Component {
     const openedSection = otherSections.find(section => section.defaultOpened)
 
     return (
-      <form action="#" className={classes('form', this.props.className)}>
+      <FormWrapper embedded={this.props.embedded} className={this.props.className}>
         {primarySection &&
           <div className="form-primary-section panel panel-default">
             <fieldset className="panel-body">
@@ -140,7 +159,7 @@ class Form extends Component {
                         this.props.updateProp(field.name, value)
                         this.props.setErrors(validateProp(field, value))
                       }}
-                      disabled={field.disabled}
+                      disabled={this.props.disabled || field.disabled}
                       validating={this.props.validating}
                       error={get(this.props.errors, field.name)}
                     />
@@ -160,12 +179,18 @@ class Form extends Component {
         }
 
         {this.props.children}
-      </form>
+      </FormWrapper>
     )
   }
 }
 
 Form.propTypes = {
+  /**
+   * Is the form embed into another ?
+   *
+   * Permits to know if we use a <main> or a <section> tag.
+   */
+  embedded: T.bool,
   level: T.number,
   data: T.object,
   errors: T.object,
@@ -177,10 +202,12 @@ Form.propTypes = {
   setErrors: T.func.isRequired,
   updateProp: T.func.isRequired,
   className: T.string,
+  disabled: T.bool,
   children: T.any
 }
 
 Form.defaultProps = {
+  disabled: false,
   data: {},
   level: 2,
   errors: {},

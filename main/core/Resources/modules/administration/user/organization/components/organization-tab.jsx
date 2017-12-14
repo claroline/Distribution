@@ -27,7 +27,7 @@ const OrganizationTabActions = () =>
     ]}
   />
 
-const OrganizationTab = props =>
+const OrganizationTabComponent = props =>
   <Routes
     routes={[
       {
@@ -47,20 +47,20 @@ const OrganizationTab = props =>
     ]}
   />
 
-OrganizationTab.propTypes = {
+OrganizationTabComponent.propTypes = {
   openForm: T.func.isRequired
 }
 
-const ConnectedOrganizationTab = connect(
+const OrganizationTab = connect(
   null,
   dispatch => ({
     openForm(id = null) {
       dispatch(actions.open('organizations.current', id))
     }
   })
-)(OrganizationTab)
+)(OrganizationTabComponent)
 
 export {
   OrganizationTabActions,
-  ConnectedOrganizationTab as OrganizationTab
+  OrganizationTab
 }

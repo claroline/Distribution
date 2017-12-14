@@ -21,7 +21,7 @@ const PageWrapper = props => !props.embedded ?
 PageWrapper.propTypes = {
   className: T.string,
   embedded: T.bool.isRequired,
-  children: T.any
+  children: T.node
 }
 
 /**

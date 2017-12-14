@@ -30,7 +30,7 @@ const reducer = makeFormReducer('profile', defaultState, {
 
       newState.push({
         id: makeId(),
-        title: 'New tab',
+        title: '',
         sections: []
       })
 
@@ -55,7 +55,7 @@ const reducer = makeFormReducer('profile', defaultState, {
       if (currentFacet) {
         currentFacet.sections.push({
           id: makeId(),
-          title: 'New section',
+          title: '',
           fields: []
         })
       }

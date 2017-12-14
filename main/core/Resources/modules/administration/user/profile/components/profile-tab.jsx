@@ -24,7 +24,7 @@ const ProfileTabActions = () =>
     />
   </PageActions>
 
-const Profile = props =>
+const ProfileTabComponent = props =>
   <div className="row user-profile">
     <div className="user-profile-aside col-md-3">
       <ProfileNav
@@ -47,7 +47,7 @@ const Profile = props =>
         onClick={props.addFacet}
       >
         <span className="fa fa-fw fa-plus" />
-        Ajouter une facette
+        {t('profile_facet_add')}
       </button>
     </div>
 
@@ -61,7 +61,7 @@ const Profile = props =>
     </div>
   </div>
 
-Profile.propTypes = {
+ProfileTabComponent.propTypes = {
   facets: T.arrayOf(T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
@@ -92,7 +92,7 @@ const ProfileTab = connect(
       )
     }
   })
-)(Profile)
+)(ProfileTabComponent)
 
 export {
   ProfileTabActions,

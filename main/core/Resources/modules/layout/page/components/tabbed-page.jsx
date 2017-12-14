@@ -33,7 +33,7 @@ PageTabs.propTypes = {
     icon: T.string.isRequired,
     title: T.string.isRequired
   })).isRequired,
-  children: T.node,
+  children: T.node
 }
 
 // todo add H1 (page title) and H2 (current tab)

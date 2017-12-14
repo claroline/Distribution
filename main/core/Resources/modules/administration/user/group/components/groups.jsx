@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
@@ -24,12 +23,11 @@ const Groups = () =>
     name="groups.list"
     open={GroupList.open}
     fetch={{
-      url: generateUrl('apiv2_group_list'),
+      url: ['apiv2_group_list'],
       autoload: true
     }}
     delete={{
-      url: generateUrl('apiv2_group_delete_bulk'),
-      disabled: (rows) => false
+      url: ['apiv2_group_delete_bulk']
     }}
     definition={GroupList.definition}
     card={GroupList.card}

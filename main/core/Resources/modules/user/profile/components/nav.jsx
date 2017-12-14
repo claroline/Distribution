@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {t} from '#/main/core/translation'
 import {NavLink} from '#/main/core/router'
 
 import {Action as ActionTypes} from '#/main/core/layout/button/prop-types'
@@ -19,7 +20,7 @@ const ProfileNav = props =>
           <span className={facet.icon} />
         }
 
-        {facet.title}
+        {facet.title || t('profile_facet')}
 
         {0 !== props.actions.length &&
           <div className="user-profile-nav-actions">

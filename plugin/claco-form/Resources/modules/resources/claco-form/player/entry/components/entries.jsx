@@ -10,7 +10,6 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
-import {asset} from '#/main/core/asset'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {constants as listConstants} from '#/main/core/data/list/constants'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'

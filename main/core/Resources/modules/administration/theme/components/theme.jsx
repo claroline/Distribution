@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import cloneDeep from 'lodash/cloneDeep'
@@ -300,7 +301,7 @@ class Theme extends Component {
     })
 
     if (isEmpty(errors)) {
-      this.props.save(this.state.theme)
+      this.props.saveTheme(this.state.theme)
     }
   }
 
@@ -398,6 +399,7 @@ Theme.propTypes = {
       extendDefault: T.bool
     }).isRequired
   }).isRequired,
+  saveTheme: T.func.isRequired,
   rebuildTheme: T.func.isRequired,
   removeTheme: T.func.isRequired
 }

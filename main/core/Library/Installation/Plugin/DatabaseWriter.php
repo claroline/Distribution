@@ -280,7 +280,7 @@ class DatabaseWriter
         });
 
         foreach ($toRemove as $tool) {
-            $this->log('Removing tool ' . $tool->getName());
+            $this->log('Removing tool '.$tool->getName());
             $this->em->remove($tool);
         }
 

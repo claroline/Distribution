@@ -91,7 +91,7 @@ actions.deleteEntry = (entryId) => (dispatch) => {
 
 actions.deleteEntries = (entries) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: generateUrl('claro_claco_form_entries_delete') + getDataQueryString(entries),
       request: {
         method: 'PATCH'
@@ -153,7 +153,7 @@ actions.switchEntriesStatus = (entries, status) => (dispatch, getState) => {
   const currentEntry = getState().currentEntry
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: generateUrl('claro_claco_form_entries_status_change', {status: status}) + getDataQueryString(entries),
       request: {
         method: 'PATCH'
@@ -195,7 +195,7 @@ actions.switchEntriesLock = (entries, locked) => (dispatch, getState) => {
   const currentEntry = getState().currentEntry
 
   dispatch({
-    [REQUEST_SEND]: {
+    [API_REQUEST]: {
       url: generateUrl('claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0}) + getDataQueryString(entries),
       request: {
         method: 'PATCH'

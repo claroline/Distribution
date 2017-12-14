@@ -1,16 +1,20 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 import classes from 'classnames'
 
 import {t} from '#/main/core/translation'
 
-import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
-import {MODAL_GENERATE_FIELD} from '#/main/core/data/form/generator/components/modal/generate-field.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_GENERIC_TYPE_PICKER, registerModalType} from '#/main/core/layout/modal'
+import {MODAL_CONFIGURE_FIELD, ConfigureFieldModal} from '#/main/core/data/form/components/modal/configure-field.jsx'
 
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 
 import {FormField} from '#/main/core/data/form/components/field.jsx'
 import {getCreatableTypes} from '#/main/core/data'
+
+registerModalType(MODAL_CONFIGURE_FIELD, ConfigureFieldModal)
 
 const FieldPreview = props =>
   <FormField
@@ -39,7 +43,7 @@ class FieldList extends Component {
   }
 
   add(newField) {
-    const fields = this.props.fields.slice()
+    const fields = this.props.value.slice()
 
     // add
     fields.push(newField)
@@ -48,7 +52,7 @@ class FieldList extends Component {
   }
 
   update(index, field) {
-    const fields = this.props.fields.slice()
+    const fields = this.props.value.slice()
 
     // update
     fields[index] = field
@@ -57,7 +61,7 @@ class FieldList extends Component {
   }
 
   remove(index) {
-    const fields = this.props.fields.slice()
+    const fields = this.props.value.slice()
 
     // remove
     fields.splice(index, 1)
@@ -70,7 +74,7 @@ class FieldList extends Component {
   }
 
   open(field, callback) {
-    this.props.showModal(MODAL_GENERATE_FIELD, {
+    this.props.showModal(MODAL_CONFIGURE_FIELD, {
       data: field,
       save: callback
     })
@@ -79,63 +83,63 @@ class FieldList extends Component {
   render() {
     return (
       <div className="field-list-control">
-        {0 !== this.props.fields.length &&
-          <button
-            type="button"
-            className="btn btn-remove-all btn-sm btn-link-danger"
-            onClick={this.removeAll}
-          >
-            {t('delete_all')}
-          </button>
+        {0 !== this.props.value.length &&
+        <button
+          type="button"
+          className="btn btn-remove-all btn-sm btn-link-danger"
+          onClick={this.removeAll}
+        >
+          {t('delete_all')}
+        </button>
         }
 
-        {0 < this.props.fields.length &&
-          <ul>
-            {this.props.fields.map((field, fieldIndex) =>
-              <li key={fieldIndex} className="field-item">
+        {0 < this.props.value.length &&
+        <ul>
+          {this.props.value.map((field, fieldIndex) =>
+            <li key={fieldIndex} className="field-item">
                 <span className={classes('field-item-icon',
                   getCreatableTypes()[Object.keys(getCreatableTypes()).find(type => field.type === type)].meta.icon
                 )} />
 
-                <FieldPreview
-                  {...field}
-                />
-                
-                <div className="field-item-actions">
-                  <TooltipButton
-                    id={`${this.props.id}-${fieldIndex}-edit`}
-                    title={t('edit')}
-                    className="btn-link-default"
-                    onClick={() => this.open(field, (data) => {
-                      this.update(fieldIndex, data)
-                    })}
-                  >
-                    <span className="fa fa-fw fa-pencil" />
-                  </TooltipButton>
+              <FieldPreview
+                {...field}
+              />
 
-                  <TooltipButton
-                    id={`${this.props.id}-${fieldIndex}-delete`}
-                    title={t('delete')}
-                    className="btn-link-danger"
-                    onClick={() => this.remove(fieldIndex)}
-                  >
-                    <span className="fa fa-fw fa-trash-o" />
-                  </TooltipButton>
-                </div>
-              </li>
-            )}
-          </ul>
+              <div className="field-item-actions">
+                <TooltipButton
+                  id={`${this.props.id}-${fieldIndex}-edit`}
+                  title={t('edit')}
+                  className="btn-link-default"
+                  onClick={() => this.open(field, (data) => {
+                    this.update(fieldIndex, data)
+                  })}
+                >
+                  <span className="fa fa-fw fa-pencil" />
+                </TooltipButton>
+
+                <TooltipButton
+                  id={`${this.props.id}-${fieldIndex}-delete`}
+                  title={t('delete')}
+                  className="btn-link-danger"
+                  onClick={() => this.remove(fieldIndex)}
+                >
+                  <span className="fa fa-fw fa-trash-o" />
+                </TooltipButton>
+              </div>
+            </li>
+          )}
+        </ul>
         }
 
-        {0 === this.props.fields.length &&
-          <div className="no-field-info">{this.props.placeholder}</div>
+        {0 === this.props.value.length &&
+        <div className="no-field-info">{this.props.placeholder}</div>
         }
 
         <button
           type="button"
           className="btn btn-default btn-block"
           onClick={() => this.props.showModal(MODAL_GENERIC_TYPE_PICKER, {
-            title: 'Créer un nouveau champ',
+            title: t('create_field'),
             types: Object.keys(getCreatableTypes()).map(type => getCreatableTypes()[type].meta),
             handleSelect: (type) => this.open({type: type.type}, (data) => {
               this.add(data)
@@ -143,7 +147,7 @@ class FieldList extends Component {
           })}
         >
           <span className="fa fa-plus icon-with-text-right"/>
-          Ajouter un champ
+          {t('add_field')}
         </button>
       </div>
     )
@@ -161,10 +165,19 @@ FieldList.propTypes = {
 }
 
 FieldList.defaultProps = {
-  placeholder: 'Aucun champ n\'est associé à cette section.',
+  placeholder: t('empty_fields_list'),
   fields: []
 }
 
+const Fields = connect(
+  null,
+  (dispatch) => ({
+    showModal(modalType, modalProps) {
+      dispatch(modalActions.showModal(modalType, modalProps))
+    }
+  })
+)(FieldList)
+
 export {
-  FieldList
+  Fields
 }

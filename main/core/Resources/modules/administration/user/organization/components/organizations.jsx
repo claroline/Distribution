@@ -18,7 +18,7 @@ const OrganizationsActions = () =>
     />
   </PageActions>
 
-const Organizations = props =>
+const Organizations = () =>
   <DataTreeContainer
     name="organizations.list"
     open={OrganizationList.open}

@@ -61,7 +61,7 @@ const ipDefinition = {
    *
    * @return {boolean}
    */
-  validate: (value, options) => chain(value, options, [string, ip])
+  validate: (value, options = {}) => chain(value, options, [string, ip])
 }
 
 export {

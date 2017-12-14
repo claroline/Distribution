@@ -200,9 +200,9 @@ const AccessesSection = (props) =>
     >
       <IpList
         id="resource-access-ips"
-        ips={props.meta.accesses.ip.ips}
+        value={props.meta.accesses.ip.ips}
         onChange={ips => props.updateParameter('meta.accesses.ip.ips', ips)}
-        emptyText={t_res('resource_no_allowed_ip')}
+        placeholder={t_res('resource_no_allowed_ip')}
       />
     </ActivableSet>
   </FormSection>

@@ -1,4 +1,3 @@
-import {generateUrl} from '#/main/core/fos-js-router'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {trans} from '#/main/core/translation'
 import {actions as clacoFormActions} from '../../actions'

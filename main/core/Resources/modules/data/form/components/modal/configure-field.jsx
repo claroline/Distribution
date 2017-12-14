@@ -5,12 +5,12 @@ import {t} from '#/main/core/translation'
 
 import {DataFormModal} from '#/main/core/data/form/components/modal/form.jsx'
 
-const MODAL_GENERATE_FIELD = 'MODAL_GENERATE_FIELD'
+const MODAL_CONFIGURE_FIELD = 'MODAL_CONFIGURE_FIELD'
 
-const GenerateFieldModal = props =>
+const ConfigureFieldModal = props =>
   <DataFormModal
     {...props}
-    title="Editer le champ"
+    title={t('edit_field')}
     sections={[
       {
         id: 'general',
@@ -63,7 +63,7 @@ const GenerateFieldModal = props =>
     ]}
   />
 
-GenerateFieldModal.propTypes = {
+ConfigureFieldModal.propTypes = {
   data: T.shape({
     type: T.string.isRequired
     //
@@ -73,6 +73,6 @@ GenerateFieldModal.propTypes = {
 }
 
 export {
-  MODAL_GENERATE_FIELD,
-  GenerateFieldModal
+  MODAL_CONFIGURE_FIELD,
+  ConfigureFieldModal
 }

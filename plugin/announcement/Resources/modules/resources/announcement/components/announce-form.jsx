@@ -81,7 +81,7 @@ const AnnounceForm = props =>
         >
           <div className="row">
             <DateGroup
-              controlId="announcement-visible-from"
+              id="announcement-visible-from"
               className="col-md-6 col-xs-6 form-last"
               label={trans('announcement_visible_from', {}, 'announcement')}
               value={props.announcement.restrictions.visibleFrom || ''}
@@ -90,7 +90,7 @@ const AnnounceForm = props =>
             />
 
             <DateGroup
-              controlId="announcement-visible-until"
+              id="announcement-visible-until"
               className="col-md-6 col-xs-6 form-last"
               label={trans('announcement_visible_until', {}, 'announcement')}
               value={props.announcement.restrictions.visibleUntil || ''}
@@ -126,7 +126,7 @@ const AnnounceForm = props =>
         />
         {props.announcement.meta.notifyUsers === 2 &&
           <DateGroup
-            controlId="announcement-sending-date"
+            id="announcement-sending-date"
             label={trans('announcement_sending_date', {}, 'announcement')}
             value={props.announcement.meta.notificationDate || null}
             onChange={(date) => props.updateProperty('meta.notificationDate', date)}
