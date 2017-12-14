@@ -1,5 +1,4 @@
 import {t} from '#/main/core/translation'
-import {chain, number, inRange} from '#/main/core/validation'
 
 import {FieldsGroup} from '#/main/core/data/form/components/group/fields-group.jsx'
 

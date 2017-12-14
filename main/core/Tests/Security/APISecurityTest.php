@@ -57,7 +57,6 @@ class APISecurityTest extends TransactionalTestCase
         $this->client->request('GET', $request);
         $data = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertTrue(array_key_exists('access_token', $data));
-        $token = $data['access_token'];
         $this->persister->user('user');
     }
 

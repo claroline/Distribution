@@ -23,6 +23,27 @@ const FormComponent = props =>
   </Form>
 
 FormComponent.propTypes = {
+  /**
+   * The name of the data in the form.
+   *
+   * It should be the key in the store where the list has been mounted
+   * (aka where `makeFormReducer()` has been called).
+   */
+  name: T.string.isRequired,
+
+  /**
+   * Permits to connect the form on a sub-part of the data.
+   * This is useful when the form is broken in multiple steps/pages
+   *
+   * It MUST be a valid lodash/get selector.
+   */
+  dataPart: T.string,
+
+  /**
+   * Custom parts of the form.
+   */
+  children: T.node,
+
   // retrieved from store
   data: T.object,
   errors: T.object,
@@ -77,29 +98,6 @@ const FormContainer = connect(
     }
   })
 )(FormComponent)
-
-FormContainer.propTypes = {
-  /**
-   * The name of the data in the form.
-   *
-   * It should be the key in the store where the list has been mounted
-   * (aka where `makeFormReducer()` has been called).
-   */
-  name: T.string.isRequired,
-
-  /**
-   * Permits to connect the form on a sub-part of the data.
-   * This is useful when the form is broken in multiple steps/pages
-   *
-   * It MUST be a valid lodash/get selector.
-   */
-  dataPart: T.string,
-
-  /**
-   * Custom parts of the form.
-   */
-  children: T.node
-}
 
 export {
   FormContainer

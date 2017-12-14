@@ -116,7 +116,7 @@ class Form extends Component {
                       this.props.updateProp(field.name, value)
                       this.props.setErrors(validateProp(field, value))
                     }}
-                    disabled={field.disabled ? field.disabled(this.props.data) : false}
+                    disabled={this.props.disabled || (field.disabled ? field.disabled(this.props.data) : false)}
                     validating={this.props.validating}
                     error={get(this.props.errors, field.name)}
                   />
@@ -159,7 +159,7 @@ class Form extends Component {
                         this.props.updateProp(field.name, value)
                         this.props.setErrors(validateProp(field, value))
                       }}
-                      disabled={this.props.disabled || field.disabled}
+                      disabled={this.props.disabled || (field.disabled ? field.disabled(this.props.data) : false)}
                       validating={this.props.validating}
                       error={get(this.props.errors, field.name)}
                     />

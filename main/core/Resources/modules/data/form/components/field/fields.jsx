@@ -157,7 +157,7 @@ class FieldList extends Component {
 FieldList.propTypes = {
   id: T.string.isRequired,
   placeholder: T.string,
-  fields: T.arrayOf(T.shape({
+  value: T.arrayOf(T.shape({
 
   })),
   onChange: T.func.isRequired,
@@ -166,7 +166,7 @@ FieldList.propTypes = {
 
 FieldList.defaultProps = {
   placeholder: t('empty_fields_list'),
-  fields: []
+  value: []
 }
 
 const Fields = connect(

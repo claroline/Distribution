@@ -70,19 +70,6 @@ class DataTree extends Component {
 }
 
 DataTree.propTypes = {
-  // calculated from redux store
-  loaded: T.bool,
-  invalidated: T.bool,
-  data: T.array.isRequired,
-  totalResults: T.number.isRequired,
-  filters: T.object,
-  selection: T.object,
-  fetchData: T.func
-}
-
-const DataTreeContainer = connectList()(DataTree)
-
-DataTreeContainer.propTypes = {
   /**
    * The name of the data in the tree.
    *
@@ -133,8 +120,19 @@ DataTreeContainer.propTypes = {
    */
   actions: T.arrayOf(
     T.shape(DataListActionTypes.propTypes)
-  )
+  ),
+
+  // calculated from redux store
+  loaded: T.bool,
+  invalidated: T.bool,
+  data: T.array.isRequired,
+  totalResults: T.number.isRequired,
+  filters: T.object,
+  selection: T.object,
+  fetchData: T.func
 }
+
+const DataTreeContainer = connectList()(DataTree)
 
 export {
   DataTreeContainer
