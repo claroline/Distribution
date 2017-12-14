@@ -92,7 +92,9 @@ class UserCrud
             $nManager->processUpdate($notifications, $user);
         }
 
-        $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
+        if (in_array(Options::ADD_PERSONAL_WORKSPACE, $options)) {
+            $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
+        }
         //we need this line for the log system
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners

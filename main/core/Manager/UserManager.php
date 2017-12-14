@@ -175,7 +175,6 @@ class UserManager
         $model = null,
         $publicUrl = null,
         $organizations = [],
-        //this param is not used anymore anywhere
         $forcePersonalWorkspace = null,
         $addNotifications = true
     ) {
@@ -190,6 +189,10 @@ class UserManager
 
         if ($addNotifications) {
             $options[] = Options::ADD_NOTIFICATIONS;
+        }
+
+        if ($forcePersonalWorkspace) {
+            $options[] = Options::ADD_PERSONAL_WORKSPACE;
         }
 
         $this->container->get('claroline.crud.user')->create(

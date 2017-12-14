@@ -17,13 +17,13 @@ const Transfer = () =>
 
   tabs={[
     {
-      icon: 'fa fa-user',
+      icon: 'fa fa-save',
       title: t('import'),
       path: '/import',
       actions: ImportAction,
       content: ImportTab
     }, {
-      icon: 'fa fa-users',
+      icon: 'fa fa-download',
       title: t('export'),
       path: '/export',
       actions: ExportAction,
