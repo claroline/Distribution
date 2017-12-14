@@ -54,6 +54,11 @@ class Grade
      */
     protected $criterion;
 
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+
     public function getId()
     {
         return $this->id;

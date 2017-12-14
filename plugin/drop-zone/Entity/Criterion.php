@@ -43,6 +43,11 @@ class Criterion
      */
     protected $dropzone;
 
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+
     public function getId()
     {
         return $this->id;

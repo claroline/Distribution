@@ -401,7 +401,7 @@ class DropzoneManager
             $document->setUser($user);
             $document->setDropDate($currentDate);
             $document->setType(Document::DOCUMENT_TYPE_FILE);
-            $data = $this->registerFile($dropzone, $file);
+            $data = $this->registerUplodadedFile($dropzone, $file);
             $document->setFile($data);
             $this->om->persist($document);
             $documents[] = $this->serializeDocument($document);
@@ -1186,7 +1186,7 @@ class DropzoneManager
         return $selectedDrop;
     }
 
-    private function registerFile(Dropzone $dropzone, UploadedFile $file)
+    private function registerUplodadedFile(Dropzone $dropzone, UploadedFile $file)
     {
         $ds = DIRECTORY_SEPARATOR;
         $hashName = Uuid::uuid4()->toString();

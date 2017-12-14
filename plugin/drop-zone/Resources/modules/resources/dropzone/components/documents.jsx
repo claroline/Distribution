@@ -1,5 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+
+import {generateUrl} from '#/main/core/fos-js-router'
 import {t, trans} from '#/main/core/translation'
 import {asset} from '#/main/core/asset'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
@@ -37,7 +39,9 @@ const Document = props =>
           props.document.type === constants.DOCUMENT_TYPES.url.value ?
             <a href={props.document.data}>{props.document.data}</a> :
             props.document.type === constants.DOCUMENT_TYPES.resource.value ?
-              'resource' :
+              <a href={generateUrl('claro_resource_open_short', {node: props.document.data.actualId})}>
+                {props.document.data.name}
+              </a> :
               ''
       }
     </td>

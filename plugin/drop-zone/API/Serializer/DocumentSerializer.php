@@ -2,6 +2,7 @@
 
 namespace Claroline\DropZoneBundle\API\Serializer;
 
+use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\UserSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Document;
@@ -15,6 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class DocumentSerializer
 {
     private $dropzoneToolDocumentSerializer;
+    private $resourceSerializer;
     private $userSerializer;
     private $tokenStorage;
 
@@ -27,23 +29,27 @@ class DocumentSerializer
      *
      * @DI\InjectParams({
      *     "dropzoneToolDocumentSerializer" = @DI\Inject("claroline.serializer.dropzone.tool.document"),
+     *     "resourceSerializer"             = @DI\Inject("claroline.serializer.resource_node"),
      *     "userSerializer"                 = @DI\Inject("claroline.serializer.user"),
      *     "tokenStorage"                   = @DI\Inject("security.token_storage"),
      *     "om"                             = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param DropzoneToolDocumentSerializer $dropzoneToolDocumentSerializer
+     * @param ResourceNodeSerializer         $resourceSerializer
      * @param UserSerializer                 $userSerializer
      * @param TokenStorageInterface          $tokenStorage
      * @param ObjectManager                  $om
      */
     public function __construct(
         DropzoneToolDocumentSerializer $dropzoneToolDocumentSerializer,
+        ResourceNodeSerializer $resourceSerializer,
         UserSerializer $userSerializer,
         TokenStorageInterface $tokenStorage,
         ObjectManager $om
     ) {
         $this->dropzoneToolDocumentSerializer = $dropzoneToolDocumentSerializer;
+        $this->resourceSerializer = $resourceSerializer;
         $this->userSerializer = $userSerializer;
         $this->tokenStorage = $tokenStorage;
 
@@ -64,7 +70,9 @@ class DocumentSerializer
         return [
             'id' => $document->getUuid(),
             'type' => $type,
-            'data' => $type === Document::DOCUMENT_TYPE_RESOURCE ? $document->getData()->getUuid() : $document->getData(),
+            'data' => $type === Document::DOCUMENT_TYPE_RESOURCE ?
+                $this->resourceSerializer->serialize($document->getData()) :
+                $document->getData(),
             'drop' => $document->getDrop()->getUuid(),
             'user' => $document->getUser() ? $this->userSerializer->serialize($document->getUser()) : null,
             'dropDate' => $document->getDropDate() ? $document->getDropDate()->format('Y-m-d H:i') : null,
