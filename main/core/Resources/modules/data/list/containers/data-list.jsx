@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {getUrl} from '#/main/core/fos-js-router'
 import {makeCancelable} from '#/main/core/api/utils'
 
 import {connectList} from '#/main/core/data/list/connect'

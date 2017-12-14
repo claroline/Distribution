@@ -2,14 +2,13 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
 
 import {actions} from '#/main/core/administration/user/location/actions'
 import {Location,  LocationActions}  from '#/main/core/administration/user/location/components/location.jsx'
 import {Locations, LocationsActions} from '#/main/core/administration/user/location/components/locations.jsx'
 
-const LocationTabActions = props =>
+const LocationTabActions = () =>
   <Routes
     routes={[
       {
@@ -29,7 +28,7 @@ const LocationTabActions = props =>
   >
   </Routes>
 
-const LocationTab = props =>
+const LocationTabComponent = props =>
   <Routes
     routes={[
       {
@@ -50,20 +49,20 @@ const LocationTab = props =>
     ]}
   />
 
-LocationTab.propTypes = {
+LocationTabComponent.propTypes = {
   openForm: T.func.isRequired
 }
 
-const ConnectedLocationTab = connect(
+const LocationTab = connect(
   null,
   dispatch => ({
     openForm(id = null) {
       dispatch(actions.open('locations.current', id))
     }
   })
-)(LocationTab)
+)(LocationTabComponent)
 
 export {
   LocationTabActions,
-  ConnectedLocationTab as LocationTab
+  LocationTab
 }

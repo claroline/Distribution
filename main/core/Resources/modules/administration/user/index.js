@@ -1,8 +1,10 @@
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
+import {registerType} from '#/main/core/data'
+import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
+
 import {registerModalType} from '#/main/core/layout/modal'
 import {MODAL_DATA_PICKER, DataPickerModal} from '#/main/core/data/modal/containers/picker.jsx'
-import {MODAL_GENERATE_FIELD, GenerateFieldModal} from '#/main/core/data/form/generator/components/modal/generate-field.jsx'
 import {registerUserTypes} from '#/main/core/user/data'
 
 import {reducer} from '#/main/core/administration/user/reducer'
@@ -10,7 +12,9 @@ import {UserTool} from '#/main/core/administration/user/components/tool.jsx'
 
 // register custom modals
 registerModalType(MODAL_DATA_PICKER, DataPickerModal)
-registerModalType(MODAL_GENERATE_FIELD, GenerateFieldModal)
+
+// register dynamic fields type
+registerType(FIELDS_TYPE,  fieldsDefinition)
 
 // register user form fields
 registerUserTypes()

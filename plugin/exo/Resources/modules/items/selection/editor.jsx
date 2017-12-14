@@ -289,6 +289,7 @@ class SelectionForm extends Component {
 
 SelectionForm.propTypes = {
   item: T.shape({
+    feedback: T.string,
     _selectionId: T.string,
     _selectionPopover: T.bool,
     score: T.shape({

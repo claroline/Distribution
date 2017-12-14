@@ -2,7 +2,7 @@ import React from 'react'
 
 const MODAL_SEND_MESSAGE = 'MODAL_SEND_MESSAGE'
 
-const SendMessageModal = props =>
+const SendMessageModal = () =>
   <div>
 
   </div>

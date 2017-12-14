@@ -26,7 +26,7 @@ const RoleTabActions = () =>
     ]}
   />
 
-const RoleTab = props =>
+const RoleTabComponent = props =>
   <Routes
     routes={[
       {
@@ -46,20 +46,20 @@ const RoleTab = props =>
     ]}
   />
 
-RoleTab.propTypes = {
+RoleTabComponent.propTypes = {
   openForm: T.func.isRequired
 }
 
-const ConnectedRoleTab = connect(
+const RoleTab = connect(
   null,
   dispatch => ({
     openForm(id = null) {
       dispatch(actions.open('roles.current', id))
     }
   })
-)(RoleTab)
+)(RoleTabComponent)
 
 export {
   RoleTabActions,
-  ConnectedRoleTab as RoleTab
+  RoleTab
 }

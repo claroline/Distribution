@@ -4,20 +4,26 @@ import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
 import {FormGroup as FormGroupWithFieldTypes} from '#/main/core/layout/form/prop-types'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 
-import {Password} from '#/main/core/layout/form/components/field/password.jsx'
+import {Fields} from '#/main/core/data/form/components/field/fields.jsx'
 
-// todo : show current value complexity
-
-const PasswordGroup = props =>
-  <FormGroup {...props}>
-    <Password {...props} />
+const FieldsGroup = props =>
+  <FormGroup
+    {...props}
+  >
+    <Fields
+      {...props}
+    />
   </FormGroup>
 
-implementPropTypes(PasswordGroup, FormGroupWithFieldTypes, {
+implementPropTypes(FieldsGroup, FormGroupWithFieldTypes, {
   // more precise value type
-  value: T.string
+  value: T.array,
+  // custom props
+  min: T.number
+}, {
+  value: []
 })
 
 export {
-  PasswordGroup
+  FieldsGroup
 }

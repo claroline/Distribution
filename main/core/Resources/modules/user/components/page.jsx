@@ -32,7 +32,8 @@ UserPageHeader.propTypes = {
   className: T.string,
   picture: T.string,
   title: T.string.isRequired,
-  subtitle: T.string
+  subtitle: T.string,
+  children: T.node.isRequired
 }
 
 const UserPage = props =>

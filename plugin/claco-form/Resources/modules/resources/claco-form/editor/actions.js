@@ -1,4 +1,3 @@
-import {generateUrl} from '#/main/core/fos-js-router'
 import {trans} from '#/main/core/translation'
 import {makeActionCreator} from '#/main/core/utilities/redux'
 import {API_REQUEST} from '#/main/core/api/actions'

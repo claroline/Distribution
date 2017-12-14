@@ -26,7 +26,7 @@ const GroupTabActions = () =>
     ]}
   />
 
-const GroupTab = props =>
+const GroupTabComponent = props =>
   <Routes
     routes={[
       {
@@ -46,20 +46,20 @@ const GroupTab = props =>
     ]}
   />
 
-GroupTab.propTypes = {
+GroupTabComponent.propTypes = {
   openForm: T.func.isRequired
 }
 
-const ConnectedGroupTab = connect(
+const GroupTab = connect(
   null,
   dispatch => ({
     openForm(id = null) {
       dispatch(actions.open('groups.current', id))
     }
   })
-)(GroupTab)
+)(GroupTabComponent)
 
 export {
   GroupTabActions,
-  ConnectedGroupTab as GroupTab
+  GroupTab
 }

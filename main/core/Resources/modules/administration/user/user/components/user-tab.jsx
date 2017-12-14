@@ -1,17 +1,14 @@
-import React, {Component} from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-
-import {t} from '#/main/core/translation'
 
 import {Routes} from '#/main/core/router'
 import {User,  UserActions}  from '#/main/core/administration/user/user/components/user.jsx'
 import {Users, UsersActions} from '#/main/core/administration/user/user/components/users.jsx'
 
-
 import {actions} from '#/main/core/administration/user/user/actions'
 
-const UserTabActions = props =>
+const UserTabActions = () =>
   <Routes
     routes={[
       {
@@ -29,7 +26,7 @@ const UserTabActions = props =>
     ]}
   />
 
-const UserTab = props =>
+const UserTabComponent = props =>
   <Routes
     routes={[
       {
@@ -49,20 +46,20 @@ const UserTab = props =>
     ]}
   />
 
-UserTab.propTypes = {
+UserTabComponent.propTypes = {
   openForm: T.func.isRequired
 }
 
-const ConnectedUserTab = connect(
+const UserTab = connect(
   null,
   dispatch => ({
     openForm(id = null) {
       dispatch(actions.open('users.current', id))
     }
   })
-)(UserTab)
+)(UserTabComponent)
 
 export {
   UserTabActions,
-  ConnectedUserTab as UserTab
+  UserTab
 }

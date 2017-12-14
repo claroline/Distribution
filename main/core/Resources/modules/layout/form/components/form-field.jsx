@@ -17,7 +17,6 @@ import {FileGroup} from '#/main/core/layout/form/components/group/file-group.jsx
 
 import {Radios} from '#/main/core/layout/form/components/field/radios.jsx'
 import {Checkboxes} from '#/main/core/layout/form/components/field/checkboxes.jsx'
-import {Select} from '#/main/core/layout/form/components/field/select.jsx'
 import {CascadeSelect} from '#/main/core/layout/form/components/field/cascade-select.jsx'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {DatePicker} from '#/main/core/layout/form/components/field/date-picker.jsx'
@@ -236,7 +235,7 @@ export const FormField = props => {
           }
         </div> :
         <DateGroup
-          controlId={props.controlId}
+          id={props.controlId}
           label={props.label}
           dateFormat="DD/MM/YYYY"
           minDate={moment.utc('1900-01-01T12:00:00')}

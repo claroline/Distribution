@@ -8,18 +8,10 @@ import {t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
-import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
-import {Form} from '#/main/core/data/form/components/form.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
-import {TextGroup} from '#/main/core/layout/form/components/group/text-group.jsx'
-import {FieldList} from '#/main/core/data/form/generator/components/field-list.jsx'
 
-import {
-  ProfileFacet as ProfileFacetTypes,
-  ProfileFacetSection as ProfileFacetSectionTypes
-} from '#/main/core/user/profile/prop-types'
-
+import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
 
@@ -27,8 +19,9 @@ import {select} from '#/main/core/administration/user/profile/selectors'
 
 const FacetSection = props =>
   <FormSection
-    {...omit(props, ['section', 'remove', 'updateProp', 'showModal'])}
-    title={props.section.title}
+    {...omit(props, ['parentIndex', 'index', 'remove'])}
+    title={props.title || t('profile_facet_section')}
+    className="embedded-form-section"
     actions={[
       {
         icon: 'fa fa-fw fa-trash-o',
@@ -38,45 +31,51 @@ const FacetSection = props =>
       }
     ]}
   >
-    <TextGroup
-      id={`section-${props.section.id}-name`}
-      label={t('title')}
-      value={props.section.title}
-      onChange={() => true}
+    <FormContainer
+      embedded={true}
+      level={3}
+      name="profile"
+      dataPart={`[${props.parentIndex}].sections[${props.index}]`}
+      sections={[
+        {
+          id: 'profile-facet-parameters',
+          icon: 'fa fa-fw fa-cog',
+          title: t('general'),
+          primary: true,
+          fields: [
+            {
+              name: 'title',
+              type: 'string',
+              label: t('title'),
+              required: true
+            }, {
+              name: 'fields',
+              type: 'fields',
+              label: t('fields_list'),
+              required: true,
+              options: {
+                min: 1
+              }
+            }
+          ]
+        }
+      ]}
     />
-
-    <div className="form-group">
-      <label className="control-label">
-        Liste des champs
-      </label>
-
-      <FieldList
-        id={`${props.section.id}-field-list`}
-        fields={props.section.fields}
-        onChange={(fields) => props.updateProp('fields', fields)}
-        showModal={props.showModal}
-      />
-    </div>
-
   </FormSection>
 
 FacetSection.propTypes = {
-  section: T.shape(
-    ProfileFacetSectionTypes.propTypes
-  ).isRequired,
-  remove: T.func.isRequired,
-  updateProp: T.func.isRequired,
-  showModal: T.func.isRequired
+  index: T.number.isRequired,
+  parentIndex: T.number.isRequired,
+  title: T.string,
+  remove: T.func.isRequired
 }
 
 const ProfileFacetComponent = props =>
-  <Form
+  <FormContainer
     level={2}
     className="profile-facet"
-    data={props.facet}
-    errors={props.errors}
-    pendingChanges={props.pendingChanges}
-    validating={props.validating}
+    name="profile"
+    dataPart={`[${props.index}]`}
     sections={[
       {
         id: 'profile-facet-parameters',
@@ -86,7 +85,7 @@ const ProfileFacetComponent = props =>
           {
             name: 'title',
             type: 'string',
-            label: t('name'),
+            label: t('title'),
             required: true
           }, {
             name: 'display.creation',
@@ -99,12 +98,9 @@ const ProfileFacetComponent = props =>
         icon: 'fa fa-fw fa-key',
         title: t('access_restrictions'),
         fields: [
-
         ]
       }
     ]}
-    updateProp={(propName, propValue) => props.updateProp(`[${props.index}].${propName}`, propValue)}
-    setErrors={props.setErrors}
   >
     {0 < props.facet.sections.length &&
       <FormSections level={2}>
@@ -112,17 +108,17 @@ const ProfileFacetComponent = props =>
           <FacetSection
             id={section.id}
             key={section.id}
-            section={section}
+            index={sectionIndex}
+            parentIndex={props.index}
+            title={section.title}
             remove={() => props.removeSection(props.facet.id, section.id)}
-            updateProp={(propName, propValue) => props.updateProp(`[${props.index}].sections[${sectionIndex}].${propName}`, propValue)}
-            showModal={props.showModal}
           />
         )}
       </FormSections>
     }
 
     {0 === props.facet.sections.length &&
-      <div className="no-section-info">Aucune section n'est associée à cet onglet.</div>
+      <div className="no-section-info">{t('profile_facet_no_section')}</div>
     }
 
     <div className="text-center">
@@ -131,34 +127,24 @@ const ProfileFacetComponent = props =>
         className="add-section btn btn-primary"
         onClick={() => props.addSection(props.facet.id)}
       >
-        Créer une nouvelle section
+        {t('profile_facet_section_add')}
       </button>
     </div>
-  </Form>
+  </FormContainer>
 
 ProfileFacetComponent.propTypes = {
   index: T.number.isRequired,
   facet: T.shape(
     ProfileFacetTypes.propTypes
   ).isRequired,
-  errors: T.object,
-  validating: T.bool.isRequired,
-  pendingChanges: T.bool.isRequired,
   addSection: T.func.isRequired,
-  removeSection: T.func.isRequired,
-  updateProp: T.func.isRequired,
-  setErrors: T.func.isRequired,
-  showModal: T.func.isRequired
+  removeSection: T.func.isRequired
 }
 
 const ProfileFacet = connect(
   state => ({
     index: select.currentFacetIndex(state),
-    facet: select.currentFacet(state),
-    // form
-    errors: formSelect.errors(formSelect.form(state, select.formName)),
-    pendingChanges: formSelect.pendingChanges(formSelect.form(state, select.formName)),
-    validating: formSelect.validating(formSelect.form(state, select.formName))
+    facet: select.currentFacet(state)
   }),
   dispatch => ({
     addSection(facetId) {
@@ -172,15 +158,6 @@ const ProfileFacet = connect(
           handleConfirm: () => dispatch(actions.removeSection(facetId, sectionId))
         })
       )
-    },
-    updateProp(propName, propValue) {
-      dispatch(formActions.updateProp(select.formName, propName, propValue))
-    },
-    setErrors(errors) {
-      dispatch(formActions.setErrors(select.formName, errors))
-    },
-    showModal(modalType, modalProps) {
-      dispatch(modalActions.showModal(modalType, modalProps))
     }
   })
 )(ProfileFacetComponent)

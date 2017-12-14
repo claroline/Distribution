@@ -487,7 +487,7 @@ const generateDisplayList = (props) => {
     date: t('date'),
     user: t('user'),
     categories: t('categories'),
-    keywords: trans('keywords', {}, 'clacoform'),
+    keywords: trans('keywords', {}, 'clacoform')
   }
 
   props.fields.filter(f => !f.hidden).map(field => {

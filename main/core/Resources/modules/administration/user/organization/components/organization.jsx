@@ -221,7 +221,7 @@ const Organization = connect(
         },
         handleSelect: (selected) => dispatch(actions.addWorkspaces(organizationId, selected))
       }))
-    },
+    }
   })
 )(OrganizationForm)
 

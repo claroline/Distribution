@@ -9,10 +9,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 
-import {
-  DataListAction,
-  DataListProperty
-} from '#/main/core/data/list/prop-types'
+import {DataListProperty} from '#/main/core/data/list/prop-types'
 
 const MODAL_DATA_PICKER = 'MODAL_DATA_PICKER'
 
@@ -51,6 +48,9 @@ DataPicker.propTypes = {
   icon: T.string,
   title: T.string,
   confirmText: T.string,
+  fetch: T.object,
+  card: T.func.isRequired,
+
   /**
    * Definition of the data properties.
    */
@@ -59,6 +59,7 @@ DataPicker.propTypes = {
   ).isRequired,
   handleSelect: T.func.isRequired,
 
+  fadeModal: T.func.isRequired,
   // retrieved from store
   selected: T.array.isRequired,
   resetSelect: T.func.isRequired

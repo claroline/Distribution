@@ -132,6 +132,7 @@ form .global-error {
 // -
 // Modals
 // ---
+
 .form-modal {
     .form-primary-section {
         // removes panel styles
@@ -151,6 +152,40 @@ form .global-error {
     }
 }
 
+
+// -
+// Embedded forms
+// ---
+
+// todo : maybe merge with override made for modals
+.embedded-form-section {
+    .form {
+        margin: -@panel-body-padding; // maybe not the best way to handle it
+    }
+
+    .form-primary-section {
+        // removes panel styles
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 0;
+    }
+
+    .form-sections {
+        margin: 0;
+        .panel {
+            box-shadow: none; // this may be applied to all panels in modals
+            border-radius: 0;
+            border-left: 0;
+            border-right: 0;
+
+            + .panel {
+                border-top: none;
+                margin: 0;
+            }
+        }
+    }
+}
 
 // -
 // Utilities

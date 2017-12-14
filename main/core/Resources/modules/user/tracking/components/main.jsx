@@ -146,9 +146,7 @@ const Tracking = connect(
   state => ({
     user: state.user
   }),
-  dispatch => ({
-
-  })
+  null
 )(TrackingComponent)
 
 export {

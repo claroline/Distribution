@@ -160,6 +160,7 @@ class LocaleManager
 
     /**
      * @deprecated
+     *
      * @return array
      */
     public function getLocaleListForSelect()
@@ -180,6 +181,7 @@ class LocaleManager
 
     /**
      * @deprecated
+     *
      * @return array
      */
     public function getLocalesLabels()
