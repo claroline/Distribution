@@ -103,7 +103,7 @@ class RegistrationController extends Controller
                 'redirectAfterLoginOption' => $this->configHandler->getParameter('redirect_after_login_option'),
                 'redirectAfterLoginUrl' => $this->configHandler->getParameter('redirect_after_login_url'),
                 'userNameRegex' => $this->configHandler->getParameter('username_regex'),
-            ]
+            ],
         ];
     }
 

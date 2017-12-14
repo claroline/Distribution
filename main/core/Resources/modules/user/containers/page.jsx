@@ -37,9 +37,7 @@ const UserPageContainer = connectPage(
   state => ({
     user: state.user
   }),
-  dispatch => ({
-
-  })
+  null
 )(UserPage)
 
 export {

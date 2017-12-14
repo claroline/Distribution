@@ -1,4 +1,3 @@
-import React from 'react'
 
 const GroupCard = (row) => ({
   onClick: `#/groups/${row.id}`,

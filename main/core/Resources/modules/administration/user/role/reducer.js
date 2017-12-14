@@ -17,12 +17,12 @@ const reducer = combineReducers({
   current: makeFormReducer('roles.current', {}, {
     users: makeListReducer('roles.current.users', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/roles.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/roles.current']: () => true // todo : find better
       })
     }),
     groups: makeListReducer('roles.current.groups', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/roles.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/roles.current']: () => true // todo : find better
       })
     })
   })

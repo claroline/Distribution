@@ -10,17 +10,17 @@ const reducer = combineReducers({
   current: makeFormReducer('locations.current', {}, {
     users: makeListReducer('locations.current.users', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/locations.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/locations.current']: () => true // todo : find better
       })
     }),
     organizations: makeListReducer('locations.current.organizations', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/locations.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/locations.current']: () => true // todo : find better
       })
     }),
     groups: makeListReducer('locations.current.groups', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/locations.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/locations.current']: () => true // todo : find better
       })
     })
   })

@@ -4,28 +4,22 @@ import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
-/*import {Group as GroupTypes} from '#/main/core/administration/user/group/prop-types'*/
+import {Organization as OrganizationTypes} from '#/main/core/administration/user/organization/prop-types'
 
 export const actions = {}
 
-actions.open = (formName, organizationId = null) => (dispatch) => {
-  if (organizationId) {
-    // todo ugly. only to be able to load lists before the end of organization loading
-    //dispatch(formActions.resetForm(formName, {id: organizationId}, false))
-
+actions.open = (formName, id = null) => (dispatch) => {
+  if (id) {
     dispatch({
       [API_REQUEST]: {
-        url: ['apiv2_organization_get', {id: organizationId}],
-        request: {
-          method: 'GET'
-        },
+        url: ['apiv2_organization_get', {id}],
         success: (response, dispatch) => {
           dispatch(formActions.resetForm(formName, response, false))
         }
       }
     })
   } else {
-    dispatch(formActions.resetForm(formName, {}, true))
+    dispatch(formActions.resetForm(formName, OrganizationTypes.defaultProps, true))
   }
 }
 

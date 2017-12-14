@@ -97,7 +97,7 @@ const LocationForm = props =>
             autoload: props.location.id && !props.new
           }}
           delete={{
-            url: ['apiv2_location_remove_users', {id: props.location.id}],
+            url: ['apiv2_location_remove_users', {id: props.location.id}]
           }}
           definition={UserList.definition}
           card={UserList.card}
@@ -125,7 +125,7 @@ const LocationForm = props =>
             autoload: props.location.id && !props.new
           }}
           delete={{
-            url: ['apiv2_location_remove_groups', {id: props.location.id}],
+            url: ['apiv2_location_remove_groups', {id: props.location.id}]
           }}
           definition={GroupList.definition}
           card={GroupList.card}
@@ -153,7 +153,7 @@ const LocationForm = props =>
             autoload: props.location.id && !props.new
           }}
           delete={{
-            url: ['apiv2_location_remove_organizations', {id: props.location.id}],
+            url: ['apiv2_location_remove_organizations', {id: props.location.id}]
           }}
           definition={OrganizationList.definition}
           card={OrganizationList.card}
@@ -178,7 +178,7 @@ const Location = connect(
     location: formSelect.data(formSelect.form(state, 'locations.current'))
   }),
   dispatch =>({
-    pickUsers: (userId) => {
+    pickUsers(locationId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-user',
         title: t('add_users'),
@@ -190,10 +190,10 @@ const Location = connect(
           url: ['apiv2_user_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addUsers(userId, selected))
+        handleSelect: (selected) => dispatch(actions.addUsers(locationId, selected))
       }))
     },
-    pickGroups: (groupId) => {
+    pickGroups(locationId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-users',
         title: t('add_groups'),
@@ -205,10 +205,10 @@ const Location = connect(
           url: ['apiv2_group_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addGroups(groupId, selected))
+        handleSelect: (selected) => dispatch(actions.addGroups(locationId, selected))
       }))
     },
-    pickOrganizations: (organizationId) => {
+    pickOrganizations(locationId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-buildings',
         title: t('add_organizations'),
@@ -220,7 +220,7 @@ const Location = connect(
           url: ['apiv2_organization_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addOrganizations(organizationId, selected))
+        handleSelect: (selected) => dispatch(actions.addOrganizations(locationId, selected))
       }))
     }
   })

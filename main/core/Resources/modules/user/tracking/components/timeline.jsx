@@ -63,7 +63,8 @@ EventWrapper.propTypes = {
   progression: T.array,
   type: T.oneOf(
     Object.keys(constants.TRACKING_EVENTS)
-  ).isRequired
+  ).isRequired,
+  children: T.node.isRequired
 }
 
 const EvaluationEvent = props =>
@@ -78,6 +79,16 @@ const EvaluationEvent = props =>
   >
     EVENT CONTENT
   </EventWrapper>
+
+EvaluationEvent.propTypes = {
+  level: T.number.isRequired,
+  date: T.string.isRequired,
+  status: T.oneOf(['success', 'partial', 'failure']),
+  type: T.oneOf(
+    Object.keys(constants.TRACKING_EVENTS)
+  ).isRequired,
+  progression: T.array
+}
 
 const Timeline = props =>
   <ul className="user-timeline">

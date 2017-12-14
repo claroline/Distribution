@@ -2,32 +2,13 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 
-import {select} from '#/main/core/data/form/selectors'
-
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
-import {FormContainer as Form} from '#/main/core/data/form/containers/form.jsx'
-import {generateUrl} from '#/main/core/fos-js-router'
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
-/*
-var yolo = fetch(
-  generateUrl('apiv2_role_list') + '?filters[type]=platform',
-  {method: 'GET', credentials: 'include'}
-).then(response => response.json())
-.then(json => json.data.reduce((o, key) => Object.assign(o, {['translationKey']: o.translationKey}, {})))
+import {constants} from '#/main/core/administration/user/parameters/constants'
 
-setTimeout(function(){console.log(yolo)}, 2000);
-
-console.log(yolo)
-*/
-
-import {
-  REGISTRATION_MAIL_VALIDATION_NONE,
-  REGISTRATION_MAIL_VALIDATION_FULL,
-  REGISTRATION_MAIL_VALIDATION_PARTIAL
-} from '#/main/core/administration/user/parameters/constants'
-
-const ParametersSaveAction = makeSaveAction('parameters', formData => ({
+const ParametersSaveAction = makeSaveAction('parameters', () => ({
   update: ['apiv2_user_parameters_update']
 }))(PageAction)
 
@@ -37,7 +18,7 @@ const ParametersTabActions = () =>
   </PageActions>
 
 const ParametersTab = () =>
-  <Form
+  <FormContainer
     level={3}
     name="parameters"
     sections={[
@@ -80,11 +61,7 @@ const ParametersTab = () =>
             required: true,
             options: {
               noEmpty: true,
-              choices: {
-                [REGISTRATION_MAIL_VALIDATION_NONE]: t('none'),
-                [REGISTRATION_MAIL_VALIDATION_FULL]: t('force_mail_validation'),
-                [REGISTRATION_MAIL_VALIDATION_PARTIAL]: t('send_mail_info')
-              }
+              choices: constants.registrationValidationTypes
             }
           }
         ]
@@ -132,7 +109,7 @@ const ParametersTab = () =>
             name: 'tos.enabled',
             type: 'boolean',
             label: t('term_of_service_activation_message'),
-            help: t('term_of_service_activation_help'),
+            help: t('term_of_service_activation_help')
           }, { // todo should be hidden if not enabled
             name: 'tos.content',
             type: 'html', // todo : create a new localized content type

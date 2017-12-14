@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
@@ -6,14 +6,11 @@ import {Page as PageTypes} from '#/main/core/layout/page/prop-types'
 
 import {Router, Route, Redirect, NavLink, Switch} from '#/main/core/router'
 import {Page, PageContent} from '#/main/core/layout/page/components/page.jsx'
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-
-// todo : use PageTab component
 
 const PageTabs = props =>
   <header className={classes('page-header', props.className)}>
     <nav className="page-tabs">
-      {props.sections.map((section, sectionIndex) =>
+      {props.tabs.map((section, sectionIndex) =>
         <NavLink
           key={`section-link-${sectionIndex}`}
           to={section.path}
@@ -30,7 +27,7 @@ const PageTabs = props =>
 
 PageTabs.propTypes = {
   className: T.string,
-  sections: T.arrayOf(T.shape({
+  tabs: T.arrayOf(T.shape({
     path: T.string.isRequired,
     exact: T.bool,
     icon: T.string.isRequired,
@@ -39,26 +36,7 @@ PageTabs.propTypes = {
   children: T.node,
 }
 
-const PageTab = props =>
-  <div className="page-content page-tab">
-    <h1 className="sr-only">{props.title}</h1>
-
-    {props.children}
-  </div>
-
-PageTab.propTypes = {
-  path: T.string.isRequired,
-  icon: T.string.isRequired,
-  exact: T.bool,
-  children: T.any.isRequired
-}
-
-PageTab.defaultProps = {
-  exact: false,
-  actions: []
-}
-
-// todo add H1 (page title) and H2 (current tab title)
+// todo add H1 (page title) and H2 (current tab)
 
 const TabbedPage = props =>
   <Router>
@@ -66,7 +44,7 @@ const TabbedPage = props =>
       {...props}
     >
       <PageTabs
-        sections={props.tabs}
+        tabs={props.tabs}
       >
         <Switch>
           {props.tabs.map((tab, tabIndex) =>
@@ -79,7 +57,7 @@ const TabbedPage = props =>
         </Switch>
       </PageTabs>
 
-      <PageContent>
+      <PageContent className="page-tab">
         <Switch>
           {props.tabs.map((tab, tabIndex) =>
             <Route
@@ -102,10 +80,15 @@ const TabbedPage = props =>
 
 implementPropTypes(TabbedPage, PageTypes, {
   tabs: T.arrayOf(T.shape({
-
+    path: T.string.isRequired,
+    exact: T.bool,
+    icon: T.string.isRequired,
+    title: T.string.isRequired
   })).isRequired,
   redirect: T.arrayOf(T.shape({
-
+    exact: T.bool,
+    from: T.string.isRequired,
+    to: T.string.isRequired
   }))
 }, {
   redirect: []

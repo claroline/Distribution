@@ -8,9 +8,8 @@ import {Organization, OrganizationActions} from '#/main/core/administration/user
 import {Organizations, OrganizationsActions} from '#/main/core/administration/user/organization/components/organizations.jsx'
 
 import {actions} from '#/main/core/administration/user/organization/actions'
-import {select} from '#/main/core/administration/user/organization/selectors'
 
-const OrganizationTabActions = props =>
+const OrganizationTabActions = () =>
   <Routes
     routes={[
       {
@@ -38,7 +37,7 @@ const OrganizationTab = props =>
       }, {
         path: '/organizations/add',
         exact: true,
-        onEnter: () => props.openForm(null),
+        onEnter: () => props.openForm(),
         component: Organization
       }, {
         path: '/organizations/:id',
@@ -55,7 +54,9 @@ OrganizationTab.propTypes = {
 const ConnectedOrganizationTab = connect(
   null,
   dispatch => ({
-    openForm: (id = null) => dispatch(actions.open('organizations.current', id))
+    openForm(id = null) {
+      dispatch(actions.open('organizations.current', id))
+    }
   })
 )(OrganizationTab)
 

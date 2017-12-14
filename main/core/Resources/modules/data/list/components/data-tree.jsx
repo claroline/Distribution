@@ -155,7 +155,7 @@ DataTreeItemContainer.propTypes = {
   children: T.any.isRequired
 }
 
-const DataPreview = props =>
+const DataPreview = () =>
   <div className="data-tree-item">
     IM A DRAG PREVIEW !!!! SEE ME
   </div>
@@ -171,7 +171,7 @@ DataTreeItemContainer = makeDroppable(
   'TREE_ITEM'
 )
 
-class DataTreeItem extends Component {
+class DataTreeItemComponent extends Component {
   constructor(props) {
     super(props)
 
@@ -228,17 +228,7 @@ class DataTreeItem extends Component {
   }
 }
 
-DataTreeItem = makeDraggable(
-  DataTreeItem,
-  'TREE_ITEM'
-)
-
-DataTreeItem = makeDroppable(
-  DataTreeItem,
-  'TREE_ITEM'
-)
-
-DataTreeItem.propTypes = {
+DataTreeItemComponent.propTypes = {
   expanded: T.bool,
   selected: T.array,
   data: T.shape({
@@ -253,16 +243,26 @@ DataTreeItem.propTypes = {
   onSelect: T.func,
 
   onDrop: T.func,
-  /*connectDragSource: T.func.isRequired,
-  connectDropTarget: T.func.isRequired,*/
+  connectDragSource: T.func.isRequired,
+  connectDropTarget: T.func.isRequired,
 
   card: T.func.isRequired
 }
 
-DataTreeItem.defaultProps = {
+DataTreeItemComponent.defaultProps = {
   expanded: false,
   selected: []
 }
+
+let DataTreeItem = makeDraggable(
+  DataTreeItemComponent,
+  'TREE_ITEM'
+)
+
+DataTreeItem = makeDroppable(
+  DataTreeItem,
+  'TREE_ITEM'
+)
 
 class DataTree extends Component {
   constructor(props) {
@@ -361,7 +361,7 @@ class DataTree extends Component {
                   card={this.props.card}
 
                   onDrop={() => {
-                    console.log('coucou')
+
                   }}
                 />
               )}

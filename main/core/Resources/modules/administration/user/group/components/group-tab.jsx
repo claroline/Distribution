@@ -53,7 +53,9 @@ GroupTab.propTypes = {
 const ConnectedGroupTab = connect(
   null,
   dispatch => ({
-    openForm: (id = null) => dispatch(actions.open('groups.current', id))
+    openForm(id = null) {
+      dispatch(actions.open('groups.current', id))
+    }
   })
 )(GroupTab)
 

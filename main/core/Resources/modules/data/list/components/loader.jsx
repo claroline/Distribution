@@ -1,6 +1,6 @@
 import React from 'react'
 
-const DataListLoader = props =>
+const DataListLoader = () =>
   <div className="data-list-loader">
     LOADING PLEASE...
   </div>

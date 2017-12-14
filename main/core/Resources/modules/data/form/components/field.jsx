@@ -5,7 +5,7 @@ import merge from 'lodash/merge'
 
 import {getTypeOrDefault} from '#/main/core/data'
 
-import {validateProp} from '#/main/core/data/form/validator'
+//import {validateProp} from '#/main/core/data/form/validator'
 
 // todo use validate prop here
 

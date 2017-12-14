@@ -1,7 +1,5 @@
 import get from 'lodash/get'
 
-import {t, transChoice} from '#/main/core/translation'
-
 // retrieves a list instance in the store
 const list = (state, listName) => get(state, listName)
 

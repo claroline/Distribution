@@ -56,13 +56,12 @@ class OrganizationFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
-        /*
         if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('obj.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
-        }*/
+        }
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {

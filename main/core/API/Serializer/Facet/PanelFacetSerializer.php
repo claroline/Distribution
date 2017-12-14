@@ -94,8 +94,7 @@ class PanelFacetSerializer
         }
     }
 
-    private function deserializeRoles(array $roleData = [], PanelFacet $panel)
+    private function deserializeRoles(array $roleData, PanelFacet $panel)
     {
-
     }
 }

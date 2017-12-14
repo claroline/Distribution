@@ -5,7 +5,7 @@ import {getUrl} from '#/main/core/fos-js-router'
 import {authenticate} from '#/main/core/authentication'
 import {makeId} from '#/main/core/utilities/id'
 
-import {API_REQUEST, actions} from '#/main/core/api/actions'
+import {actions} from '#/main/core/api/actions'
 import {ApiRequest as ApiRequestTypes} from '#/main/core/api/prop-types'
 
 /**
@@ -68,7 +68,6 @@ function handleResponseSuccess(dispatch, responseData, success) {
  * @return {mixed}
  */
 function handleResponseError(dispatch, responseError, originalRequest, error) {
-  console.log(responseError)
   if (!responseError.isCanceled) {
     if (typeof responseError.status === 'undefined') {
       // if error isn't related to http response, rethrow it

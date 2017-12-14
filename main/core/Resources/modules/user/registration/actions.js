@@ -27,9 +27,9 @@ actions.createUser = (user, onCreated) => ({
       method: 'POST',
       body: JSON.stringify(user)
     },
-    success: (data, dispatch) => {
+    success: () => {
       onCreated()
-    },
+    }
 
     /*error: (data, dispatch) => {
       /!*data.json().then(errors => {

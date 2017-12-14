@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {t} from '#/main/core/translation'
 
 import {locationTypes} from '#/main/core/administration/user/location/constants'

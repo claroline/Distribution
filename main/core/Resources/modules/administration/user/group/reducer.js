@@ -1,5 +1,4 @@
 import {combineReducers, makeReducer} from '#/main/core/utilities/redux'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
@@ -14,19 +13,19 @@ const reducer = combineReducers({
   current: makeFormReducer('groups.current', {}, {
     users: makeListReducer('groups.current.users', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/groups.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/groups.current']: () => true // todo : find better
       })
     }),
     roles: makeListReducer('groups.current.roles', {
       filters: [{property: 'type', value: PLATFORM_ROLE}]
     }, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/groups.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/groups.current']: () => true // todo : find better
       })
     }),
     organizations: makeListReducer('groups.current.organizations', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/groups.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/groups.current']: () => true // todo : find better
       })
     })
   })

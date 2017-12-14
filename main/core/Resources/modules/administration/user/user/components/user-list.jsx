@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {t} from '#/main/core/translation'
 
 import {UserCard} from '#/main/core/administration/user/user/components/user-card.jsx'

@@ -1,23 +1,18 @@
-import {API_REQUEST} from '#/main/core/api/actions'
 import {generateUrl} from '#/main/core/fos-js-router'
-import {getDataQueryString} from '#/main/core/data/list/utils'
+
+import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
-import {User as UserTypes} from '#/main/core/administration/user/user/prop-types'
 import {actions as formActions} from '#/main/core/data/form/actions'
+
+import {User as UserTypes} from '#/main/core/administration/user/user/prop-types'
 
 export const actions = {}
 
 actions.open = (formName, id = null) => (dispatch) => {
   if (id) {
-    // todo ugly. only to be able to load list before the end of  group loading
-    //dispatch(formActions.resetForm(formName, {id}, false))
-
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_user_get', {id}],
-        request: {
-          method: 'GET'
-        },
         success: (response, dispatch) => {
           dispatch(formActions.resetForm(formName, response, false))
         }

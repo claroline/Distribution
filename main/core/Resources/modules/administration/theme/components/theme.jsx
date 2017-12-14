@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
 import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
 import set from 'lodash/set'

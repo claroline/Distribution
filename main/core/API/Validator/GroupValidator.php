@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\API\Validator;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\ValidatorInterface;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -36,15 +36,12 @@ class GroupValidator implements ValidatorInterface
     //note to myself: it should be deduced from getUnique
     public function validateBulk(array $users)
     {
-        foreach ($users as $user) {
-            //check if there isn't any duplicate of unique fields
-        }
     }
 
     public function getUniqueFields()
     {
         return [
-          'name' => 'name'
+          'name' => 'name',
         ];
     }
 

@@ -34,12 +34,7 @@ class DataTree extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.fetch) {
-      const previousUrl = prevProps.fetch ? getUrl(prevProps.fetch.url) : null
-      const currentUrl = getUrl(this.props.fetch.url)
-      if (previousUrl !== currentUrl && this.isAutoLoaded()) {
-        // Force reload if the target URL have changed
-        this.reload(true)
-      } else if (this.props.loaded !== prevProps.loaded // data are not loaded
+      if (this.props.loaded !== prevProps.loaded // data are not loaded
         || this.props.invalidated !== prevProps.invalidated // data have been invalidated
       ) {
         this.reload()
@@ -48,11 +43,11 @@ class DataTree extends Component {
   }
 
   isAutoLoaded() {
-    return this.props.fetch && this.props.fetch.autoload
+    return this.props.fetch && !!this.props.fetch.autoload
   }
 
-  reload(force = false) {
-    if (force || !this.props.loaded || this.props.invalidated) {
+  reload() {
+    if (!this.props.loaded || this.props.invalidated) {
       if (this.pending) {
         this.pending.cancel()
       }
@@ -129,10 +124,13 @@ DataTree.propTypes = {
   ),
 
   // calculated from redux store
+  loaded: T.bool,
+  invalidated: T.bool,
   data: T.array.isRequired,
   totalResults: T.number.isRequired,
   filters: T.object,
-  selection: T.object
+  selection: T.object,
+  fetchData: T.func
 }
 
 const DataTreeContainer = connectList()(DataTree)

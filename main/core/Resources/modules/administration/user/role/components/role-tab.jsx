@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
 
 import {actions} from '#/main/core/administration/user/role/actions'
@@ -37,11 +36,11 @@ const RoleTab = props =>
       }, {
         path: '/roles/add',
         exact: true,
-        onEnter: () => props.openForm(null),
+        onEnter: () => props.openForm(),
         component: Role
       }, {
         path: '/roles/:id',
-        onEnter: (params) => props.openForm('roles.current', params.id),
+        onEnter: (params) => props.openForm(params.id),
         component: Role
       }
     ]}
@@ -51,13 +50,14 @@ RoleTab.propTypes = {
   openForm: T.func.isRequired
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
-  }
-}
-
-const ConnectedRoleTab = connect(null, mapDispatchToProps)(RoleTab)
+const ConnectedRoleTab = connect(
+  null,
+  dispatch => ({
+    openForm(id = null) {
+      dispatch(actions.open('roles.current', id))
+    }
+  })
+)(RoleTab)
 
 export {
   RoleTabActions,

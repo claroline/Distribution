@@ -1,7 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import get from 'lodash/get'
 
 import {Form as FormComponent} from '#/main/core/data/form/components/form.jsx'
 import {actions} from '#/main/core/data/form/actions'

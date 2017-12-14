@@ -18,7 +18,6 @@ import {actions} from '#/main/core/administration/user/user/actions'
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
-import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
 
 const UserSaveAction = makeSaveAction('users.current', formData => ({
   create: ['apiv2_user_create'],
@@ -102,7 +101,7 @@ const UserForm = props =>
             autoload: props.user.id && !props.new
           }}
           delete={{
-            url: ['apiv2_user_remove_groups', {id: props.user.id}],
+            url: ['apiv2_user_remove_groups', {id: props.user.id}]
           }}
           definition={GroupList.definition}
           card={GroupList.card}
@@ -130,7 +129,7 @@ const UserForm = props =>
             autoload: props.user.id && !props.new
           }}
           delete={{
-            url: ['apiv2_user_remove_organizations', {id: props.user.id}],
+            url: ['apiv2_user_remove_organizations', {id: props.user.id}]
           }}
           definition={OrganizationList.definition}
           card={OrganizationList.card}
@@ -158,7 +157,7 @@ const UserForm = props =>
             autoload: props.user.id && !props.new
           }}
           delete={{
-            url: ['apiv2_user_remove_roles', {id: props.user.id}],
+            url: ['apiv2_user_remove_roles', {id: props.user.id}]
           }}
           definition={RoleList.definition}
           card={RoleList.card}
@@ -183,7 +182,7 @@ const User = connect(
     user: formSelect.data(formSelect.form(state, 'users.current'))
   }),
   dispatch => ({
-    pickGroups: (userId) => {
+    pickGroups(userId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-users',
         title: t('add_groups'),
@@ -198,7 +197,7 @@ const User = connect(
         handleSelect: (selected) => dispatch(actions.addGroups(userId, selected))
       }))
     },
-    pickOrganizations: (organizationId) => {
+    pickOrganizations(userId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-buildings',
         title: t('add_organizations'),
@@ -210,10 +209,10 @@ const User = connect(
           url: ['apiv2_organization_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addOrganizations(organizationId, selected))
+        handleSelect: (selected) => dispatch(actions.addOrganizations(userId, selected))
       }))
     },
-    pickRoles: (userId) => {
+    pickRoles(userId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-id-badge',
         title: t('add_roles'),

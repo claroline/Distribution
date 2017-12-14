@@ -4,9 +4,8 @@ import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
 
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
-//import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
@@ -16,10 +15,6 @@ import {ProfileFacets} from '#/main/core/user/profile/components/facets.jsx'
 import {ProfileFacet} from '#/main/core/administration/user/profile/components/facet.jsx'
 import {actions} from '#/main/core/administration/user/profile/actions'
 import {select} from '#/main/core/administration/user/profile/selectors'
-
-/*const ProfileSaveAction = makeSaveAction('profile', formData => ({
-  update: ['apiv2_profile_update']
-}))(PageAction)*/
 
 const ProfileTabActions = () =>
   <PageActions>
@@ -71,6 +66,7 @@ Profile.propTypes = {
     id: T.string.isRequired,
     title: T.string.isRequired
   })).isRequired,
+  openFacet: T.func.isRequired,
   addFacet: T.func.isRequired,
   removeFacet: T.func.isRequired
 }

@@ -1,5 +1,3 @@
-import {t} from '#/main/core/translation'
-
 import {constants as actionConstants} from '#/main/core/layout/action/constants'
 
 const ALERT_DISPLAY_MAX     = 5
@@ -48,8 +46,7 @@ const ALERT_STATUS = {
     order: 7,
     icon: 'fa-info',
     removable: true
-  },
-
+  }
 }
 
 /**

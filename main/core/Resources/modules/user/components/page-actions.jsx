@@ -12,7 +12,7 @@ import {
 
 // todo hide `contact` actions group on my profile
 
-const EditGroupActions = props =>
+const EditGroupActions = () =>
   <PageGroupActions>
     <PageAction
       id="profile-edit"
@@ -87,7 +87,8 @@ UserPageActions.propTypes = {
     }).isRequired,
     rights: T.shape({
       current: T.shape({
-        edit: T.bool.isRequired
+        edit: T.bool.isRequired,
+        delete: T.bool.isRequired
       }).isRequired
     }).isRequired
   }).isRequired,

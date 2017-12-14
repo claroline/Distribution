@@ -4,7 +4,7 @@
  * @return {{promise: Promise, cancel: (function())}}
  */
 const makeCancelable = (promise) => {
-  let hasCanceled_ = false;
+  let hasCanceled_ = false
 
   const wrappedPromise = new Promise((resolve, reject) => {
     promise.then(
@@ -16,7 +16,6 @@ const makeCancelable = (promise) => {
   return {
     promise: wrappedPromise,
     cancel() {
-      console.log('CANCEL promise')
       hasCanceled_ = true
     }
   }

@@ -1,5 +1,4 @@
 import {connect} from 'react-redux'
-import {withRouter} from '#/main/core/router'
 
 import {actions} from '#/main/core/user/profile/actions'
 

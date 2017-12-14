@@ -56,7 +56,7 @@ class OrganizationSerializer
             ] : null,
             'meta' => [
                 'default' => $organization->getDefault(),
-                'position' => $organization->getPosition()
+                'position' => $organization->getPosition(),
             ],
             'managers' => array_map(function (User $administrator) {
                 return [
@@ -92,7 +92,7 @@ class OrganizationSerializer
                 $organization->setParent(null);
             } else {
                 $parent = $this->om->getRepository($this->getClass())->findOneBy([
-                    'uuid' => $data['parent']['id']
+                    'uuid' => $data['parent']['id'],
                 ]);
                 $organization->setParent($parent);
             }

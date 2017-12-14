@@ -1,5 +1,6 @@
 import uuid from 'uuid'
 import isArray from 'lodash/isArray'
+import isObject from 'lodash/isObject'
 
 // counter for id generation (test purpose)
 let lastGeneratedIds = []

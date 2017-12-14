@@ -26,14 +26,14 @@ class UserCrud
     public function __construct(ContainerInterface $container)
     {
         //too many dependencies, simplify this when we can
-        $this->container    = $container;
-        $this->om           = $container->get('claroline.persistence.object_manager');
-        $this->roleManager  = $container->get('claroline.manager.role_manager');
-        $this->toolManager  = $container->get('claroline.manager.tool_manager');
-        $this->mailManager  = $container->get('claroline.manager.mail_manager');
-        $this->userManager  = $container->get('claroline.manager.user_manager');
-        $this->dispatcher   = $container->get('claroline.event.event_dispatcher');
-        $this->config       = $container->get('claroline.config.platform_config_handler');
+        $this->container = $container;
+        $this->om = $container->get('claroline.persistence.object_manager');
+        $this->roleManager = $container->get('claroline.manager.role_manager');
+        $this->toolManager = $container->get('claroline.manager.tool_manager');
+        $this->mailManager = $container->get('claroline.manager.mail_manager');
+        $this->userManager = $container->get('claroline.manager.user_manager');
+        $this->dispatcher = $container->get('claroline.event.event_dispatcher');
+        $this->config = $container->get('claroline.config.platform_config_handler');
         $this->registration = $container->get('claroline.manager.registration_manager');
     }
 
@@ -83,7 +83,6 @@ class UserCrud
             }
         }
 
-
         $this->om->persist($user);
 
         if (in_array(Options::ADD_NOTIFICATIONS, $options)) {
@@ -93,7 +92,7 @@ class UserCrud
             $nManager->processUpdate($notifications, $user);
         }
 
-        $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model']: null);
+        $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
         //we need this line for the log system
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners

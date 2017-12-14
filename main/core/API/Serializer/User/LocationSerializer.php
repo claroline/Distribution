@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\Organization\Location;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.serializer.location")
@@ -28,7 +28,7 @@ class LocationSerializer
             'phone' => $location->getPhone(),
             'gps' => [
                 'latitude' => $location->getLatitude(),
-                'longitude' => $location->getLongitude()
+                'longitude' => $location->getLongitude(),
             ],
         ];
     }

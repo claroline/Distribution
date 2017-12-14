@@ -24,7 +24,7 @@ const GroupSaveAction = makeSaveAction('groups.current', formData => ({
   update: ['apiv2_group_update', {id: formData.id}]
 }))(PageAction)
 
-const GroupActions = props =>
+const GroupActions = () =>
   <PageActions>
     <GroupSaveAction />
 
@@ -108,7 +108,7 @@ const GroupForm = props =>
             autoload: props.group.id && !props.new
           }}
           delete={{
-            url: ['apiv2_group_remove_roles', {id: props.group.id}],
+            url: ['apiv2_group_remove_roles', {id: props.group.id}]
           }}
           definition={RoleList.definition}
           card={RoleList.card}
@@ -136,7 +136,7 @@ const GroupForm = props =>
             autoload: props.group.id && !props.new
           }}
           delete={{
-            url: ['apiv2_group_remove_organizations', {id: props.group.id}],
+            url: ['apiv2_group_remove_organizations', {id: props.group.id}]
           }}
           definition={OrganizationList.definition}
           card={OrganizationList.card}
@@ -146,6 +146,7 @@ const GroupForm = props =>
   </FormContainer>
 
 GroupForm.propTypes = {
+  new: T.bool.isRequired,
   group: T.shape({
     id: T.string
   }).isRequired,
@@ -160,7 +161,7 @@ const Group = connect(
     group: formSelect.data(formSelect.form(state, 'groups.current'))
   }),
   dispatch =>({
-    pickUsers: (groupId) => {
+    pickUsers(groupId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-user',
         title: t('add_users'),
@@ -175,7 +176,7 @@ const Group = connect(
         handleSelect: (selected) => dispatch(actions.addUsers(groupId, selected))
       }))
     },
-    pickRoles: (groupId) => {
+    pickRoles(groupId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-id-badge',
         title: t('add_roles'),
@@ -190,7 +191,7 @@ const Group = connect(
         handleSelect: (selected) => dispatch(actions.addRoles(groupId, selected))
       }))
     },
-    pickOrganizations: (organizationId) => {
+    pickOrganizations(groupId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-buildings',
         title: t('add_organizations'),
@@ -202,7 +203,7 @@ const Group = connect(
           url: ['apiv2_organization_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addOrganizations(organizationId, selected))
+        handleSelect: (selected) => dispatch(actions.addOrganizations(groupId, selected))
       }))
     }
   })

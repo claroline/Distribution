@@ -14,17 +14,17 @@ const reducer = combineReducers({
   current: makeFormReducer('organizations.current', {}, {
     workspaces: makeListReducer('organizations.current.workspaces', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/organizations.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/organizations.current']: () => true // todo : find better
       })
     }),
     users: makeListReducer('organizations.current.users', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/organizations.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/organizations.current']: () => true // todo : find better
       })
     }),
     groups: makeListReducer('organizations.current.groups', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/organizations.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/organizations.current']: () => true // todo : find better
       })
     })
   })

@@ -2,9 +2,6 @@
 
 namespace Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv;
 
-/**
- *
- */
 class Explanation
 {
     public function __construct(array $properties = [])
