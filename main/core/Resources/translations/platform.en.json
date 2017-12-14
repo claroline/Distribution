@@ -1511,5 +1511,6 @@
     "field_optional": "Field is optional",
     "field_required": "Field is required",
     "help": "Help",
-    "display_on_create": "Display on create"
+    "display_on_create": "Display on create",
+    "remove_user": "Remove a user"
 }

@@ -1533,5 +1533,9 @@
     "field_optional": "Le champ est optionnel",
     "field_required": "Le champ est obligatoire",
     "help": "Aide",
-    "display_on_create": "Afficher à la création"
+    "display_on_create": "Afficher à la création",
+    "import_headers": "Liste des en-têtes requis pour l'import",
+    "one_of_field_list": "Une des structures parmi la liste de champs suivante",
+    "show_headers": "Afficher les headers",
+    "remove_user": "Supprimer un utilisateur"
 }

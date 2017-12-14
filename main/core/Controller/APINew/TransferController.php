@@ -38,6 +38,7 @@ class TransferController
      * })
      *
      * @param TransferProvider $provider
+     * @param FinderProvider   $finder
      */
     public function __construct(
         TransferProvider $provider,
@@ -73,7 +74,7 @@ class TransferController
     /**
      * @Route(
      *    "/export/{format}",
-     *    name="apiv2_transfer_execute"
+     *    name="apiv2_transfer_export"
      * )
      * @Method("GET")
      */

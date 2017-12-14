@@ -1,18 +1,12 @@
 import {makeReducer} from '#/main/core/utilities/redux'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
-import {UPDATE_IMPORT_DATA} from './actions'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
 
-const reducer = {
+const reducer = makePageReducer({}, {
   explanation: makeReducer({}, {}),
-  transfer: makeFormReducer('transfer.import', {}, {
-    import: makeReducer(false, {
-      [UPDATE_IMPORT_DATA]: (state, action) => {
-        console.log("fit")
-        return state
-      }
-    })
-  })
-}
+  import: makeFormReducer('import'),
+  export: makeFormReducer('export')
+})
 
 export {
   reducer
