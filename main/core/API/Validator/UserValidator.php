@@ -40,23 +40,29 @@ class UserValidator implements ValidatorInterface
         //and prohibits the use of an already used address email in a username field
         $errors = [];
 
-        if ($this->exists('username', $data['username'], $data['id'])) {
+        if ($this->exists('username', $data['username'], isset($data['id']) ? $data['id'] : null)) {
             $errors[] = [
                 'path' => 'username',
-                'message' => 'This username already exists.',
+                'message' => 'The username '.$data['username'].' already exists.',
             ];
         }
 
-        if ($this->exists('mail', $data['email'], $data['id'])) {
+        if ($this->exists('mail', $data['email'], isset($data['id']) ? $data['id'] : null)) {
             $errors[] = [
                 'path' => 'email',
-                'message' => 'This email already exists.',
+                'message' => 'The email '.$data['email'].' already exists.',
             ];
         }
 
         return $errors;
     }
 
+    /**
+     * @param string      $propName
+     * @param string      $propValue
+     * @param string|null $userId
+     *                               Check if a user exists with the given data
+     */
     private function exists($propName, $propValue, $userId = null)
     {
         /** @var QueryBuilder $qb */

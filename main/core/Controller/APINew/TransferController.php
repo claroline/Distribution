@@ -61,6 +61,7 @@ class TransferController
     public function executeAction($action, Request $request)
     {
         $data = $this->getData($request);
+
         $this->provider->execute(
             $data['data'],
             $action,

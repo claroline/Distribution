@@ -75,7 +75,10 @@ class CsvAdapter implements AdapterInterface
             //idiot condition proof in case something is wrong with the csv (like more lines or columns)
             if ($properties[$index]) {
                 $explainedProperty = $explanation->getProperty($property);
-                $this->addPropertyToObject($explainedProperty, $object, $properties[$index]);
+
+                if ($explainedProperty) {
+                    $this->addPropertyToObject($explainedProperty, $object, $properties[$index]);
+                }
             }
         }
 
