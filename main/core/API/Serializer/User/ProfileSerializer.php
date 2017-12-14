@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
-use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\Entity\Role;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -13,7 +12,6 @@ class ProfileSerializer
 {
     public function __construct()
     {
-
     }
 
     /**
@@ -25,6 +23,8 @@ class ProfileSerializer
      */
     public function serialize(array $options = [])
     {
+        $this->serializeMainFacet();
+
         return [
 
         ];
@@ -32,7 +32,6 @@ class ProfileSerializer
 
     private function serializeMainFacet()
     {
-
     }
 
     /**
@@ -46,7 +45,6 @@ class ProfileSerializer
      */
     public function deserialize($data, Role $role = null, array $options = [])
     {
-
         return $role;
     }
 }

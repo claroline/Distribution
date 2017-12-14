@@ -2,7 +2,7 @@ import React from 'react'
 
 const MODAL_CHANGE_PASSWORD = 'MODAL_CHANGE_PASSWORD'
 
-const ChangePasswordModal = props =>
+const ChangePasswordModal = () =>
   <div>
 
   </div>

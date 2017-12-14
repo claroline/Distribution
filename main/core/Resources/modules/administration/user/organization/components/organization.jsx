@@ -11,11 +11,9 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {actions} from '#/main/core/administration/user/organization/actions'
-import {generateUrl} from '#/main/core/fos-js-router'
-
 import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
 
+import {actions} from '#/main/core/administration/user/organization/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 import {WorkspaceList} from '#/main/core/administration/workspace/components/workspace-list.jsx'
@@ -25,7 +23,7 @@ const OrganizationSaveAction = makeSaveAction('organizations.current', formData 
   update: ['apiv2_organization_update', {id: formData.id}]
 }))(PageAction)
 
-const OrganizationActions = props =>
+const OrganizationActions = () =>
   <PageActions>
     <OrganizationSaveAction />
 
@@ -98,7 +96,7 @@ const OrganizationForm = props =>
             autoload: props.organization.id && !props.new
           }}
           delete={{
-            url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}],
+            url: ['apiv2_organization_remove_workspaces', {id: props.organization.id}]
           }}
           definition={WorkspaceList.definition}
           card={WorkspaceList.card}
@@ -126,7 +124,7 @@ const OrganizationForm = props =>
             autoload: props.organization.id && !props.new
           }}
           delete={{
-            url: ['apiv2_organization_remove_users', {id: props.organization.id}],
+            url: ['apiv2_organization_remove_users', {id: props.organization.id}]
           }}
           definition={UserList.definition}
           card={UserList.card}
@@ -154,7 +152,7 @@ const OrganizationForm = props =>
             autoload: props.organization.id && !props.new
           }}
           delete={{
-            url: ['apiv2_organization_remove_groups', {id: props.organization.id}],
+            url: ['apiv2_organization_remove_groups', {id: props.organization.id}]
           }}
           definition={GroupList.definition}
           card={GroupList.card}
@@ -179,7 +177,7 @@ const Organization = connect(
     organization: formSelect.data(formSelect.form(state, 'organizations.current'))
   }),
   dispatch => ({
-    pickUsers: (organizationId) => {
+    pickUsers(organizationId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-user',
         title: t('add_users'),
@@ -194,7 +192,7 @@ const Organization = connect(
         handleSelect: (selected) => dispatch(actions.addUsers(organizationId, selected))
       }))
     },
-    pickGroups: (organizationId) => {
+    pickGroups(organizationId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-users',
         title: t('add_groups'),
@@ -209,7 +207,7 @@ const Organization = connect(
         handleSelect: (selected) => dispatch(actions.addGroups(organizationId, selected))
       }))
     },
-    pickWorkspaces: (organizationId) => {
+    pickWorkspaces(organizationId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-books',
         title: t('add_workspaces'),

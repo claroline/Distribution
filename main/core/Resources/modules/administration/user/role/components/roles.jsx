@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {t} from '#/main/core/translation'
 
 import {enumRole, PLATFORM_ROLE} from '#/main/core/user/role/constants'

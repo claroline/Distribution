@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {UserDetails} from '#/main/core/user/components/details.jsx'
 import {connectProfile} from '#/main/core/user/profile/connect'
-import {ProfileLayout} from '#/main/core/user/profile/components/layout.jsx'
 import {ProfileNav} from '#/main/core/user/profile/components/nav.jsx'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets.jsx'
 

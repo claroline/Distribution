@@ -3,9 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
 
-import {PageContainer, PageHeader, PageContent} from '#/main/core/layout/page/index'
+import {PageContainer, PageHeader} from '#/main/core/layout/page/index'
 import {FormStepper} from '#/main/core/layout/form/components/form-stepper.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 

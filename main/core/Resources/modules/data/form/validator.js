@@ -1,8 +1,9 @@
 import get from 'lodash/get'
 import set from 'lodash/set'
+import merge from 'lodash/merge'
 
 import {chain, notBlank, validateIf} from '#/main/core/validation'
-import {getTypeOrDefault} from '#/main/core/data/index'
+import {getTypeOrDefault} from '#/main/core/data'
 
 /**
  * Validates a value based on a definition object.
@@ -29,8 +30,6 @@ function validateProp(propDef, propValue) {
       validateIf(propDef.validate, propDef.validate)
     ]))
   }
-
-  console.log(errors)
 
   return errors
 }

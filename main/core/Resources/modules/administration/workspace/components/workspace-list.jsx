@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {t} from '#/main/core/translation'
 
 import {WorkspaceCard} from '#/main/core/administration/workspace/components/workspace-card.jsx'

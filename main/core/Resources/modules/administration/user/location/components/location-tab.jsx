@@ -40,7 +40,7 @@ const LocationTab = props =>
         path: '/locations/add',
         exact: true,
         component: Location,
-        onEnter: () => props.openForm(null)
+        onEnter: () => props.openForm()
       }, {
         path: '/locations/:id',
         exact: true,
@@ -54,13 +54,14 @@ LocationTab.propTypes = {
   openForm: T.func.isRequired
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    openForm: (formName, id = null) => dispatch(actions.open(formName, id))
-  }
-}
-
-const ConnectedLocationTab = connect(null, mapDispatchToProps)(LocationTab)
+const ConnectedLocationTab = connect(
+  null,
+  dispatch => ({
+    openForm(id = null) {
+      dispatch(actions.open('locations.current', id))
+    }
+  })
+)(LocationTab)
 
 export {
   LocationTabActions,

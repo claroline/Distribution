@@ -1,7 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import difference from 'lodash/difference'
 import isEmpty from 'lodash/isEmpty'
-import isNull from 'lodash/isNull'
 import omitBy from 'lodash/omitBy'
 import merge from 'lodash/merge'
 import mergeWith from 'lodash/mergeWith'

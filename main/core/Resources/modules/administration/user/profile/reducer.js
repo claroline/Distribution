@@ -66,14 +66,13 @@ const reducer = makeFormReducer('profile', defaultState, {
     [PROFILE_REMOVE_SECTION]: (state, action) => {
       const newState = cloneDeep(state)
 
-      /*const currentFacet = newState.find(facet => facet.id === action.facetId)
+      const currentFacet = newState.find(facet => facet.id === action.facetId)
       if (currentFacet) {
-        currentFacet.sections.push({
-          id: makeId(),
-          title: 'New tab',
-          fields: []
-        })
-      }*/
+        const pos = currentFacet.sections.findIndex(section => section.id === action.sectionId)
+        if (-1 !== pos) {
+          currentFacet.sections.splice(pos, 1)
+        }
+      }
 
       return newState
     }

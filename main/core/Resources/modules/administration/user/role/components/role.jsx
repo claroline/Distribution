@@ -22,7 +22,7 @@ const RoleSaveAction = makeSaveAction('roles.current', formData => ({
   update: ['apiv2_role_update', {id: formData.id}]
 }))(PageAction)
 
-const RoleActions = props =>
+const RoleActions = () =>
   <PageActions>
     <RoleSaveAction />
 
@@ -78,7 +78,7 @@ const RoleForm = props =>
             autoload: props.role.id && !props.new
           }}
           delete={{
-            url: ['apiv2_role_remove_users', {id: props.role.id}],
+            url: ['apiv2_role_remove_users', {id: props.role.id}]
           }}
           definition={UserList.definition}
           card={UserList.card}
@@ -106,7 +106,7 @@ const RoleForm = props =>
             autoload: props.role.id && !props.new
           }}
           delete={{
-            url: ['apiv2_role_remove_groups', {id: props.role.id}],
+            url: ['apiv2_role_remove_groups', {id: props.role.id}]
           }}
           definition={GroupList.definition}
           card={GroupList.card}
@@ -130,7 +130,7 @@ const Role = connect(
     role: formSelect.data(formSelect.form(state, 'roles.current'))
   }),
   dispatch =>({
-    pickUsers: (userId) => {
+    pickUsers(roleId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-user',
         title: t('add_users'),
@@ -142,10 +142,10 @@ const Role = connect(
           url: ['apiv2_user_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addUsers(userId, selected))
+        handleSelect: (selected) => dispatch(actions.addUsers(roleId, selected))
       }))
     },
-    pickGroups: (groupId) => {
+    pickGroups(roleId){
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-users',
         title: t('add_groups'),
@@ -157,7 +157,7 @@ const Role = connect(
           url: ['apiv2_group_list'],
           autoload: true
         },
-        handleSelect: (selected) => dispatch(actions.addGroups(groupId, selected))
+        handleSelect: (selected) => dispatch(actions.addGroups(roleId, selected))
       }))
     }
   })

@@ -13,7 +13,7 @@ const localeDefinition = {
   },
   parse: (display) => parseFloat(display),
   render: (raw) => t(raw),
-  validate: (value) => true,
+  validate: () => undefined,
   components: {
     form: LocaleGroup
   }

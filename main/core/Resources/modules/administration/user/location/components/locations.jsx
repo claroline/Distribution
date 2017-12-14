@@ -41,7 +41,7 @@ const LocationsList = props =>
       autoload: true
     }}
     delete={{
-      url: ['apiv2_location_delete_bulk'],
+      url: ['apiv2_location_delete_bulk']
     }}
     definition={LocationList.definition}
     actions={[{

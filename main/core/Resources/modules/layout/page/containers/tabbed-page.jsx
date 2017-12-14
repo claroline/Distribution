@@ -1,4 +1,3 @@
-import React from 'react'
 
 import {connectPage} from '#/main/core/layout/page/connect'
 import {TabbedPage} from '#/main/core/layout/page/components/tabbed-page.jsx'

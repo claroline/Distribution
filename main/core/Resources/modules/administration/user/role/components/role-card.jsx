@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {enumRole} from '#/main/core/user/role/constants'
 
 const RoleCard = (row) => ({

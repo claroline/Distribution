@@ -11,18 +11,14 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
-use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\Group;
-use Claroline\CoreBundle\Library\Security\Collection\GroupCollection;
 use Claroline\CoreBundle\Manager\GroupManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 

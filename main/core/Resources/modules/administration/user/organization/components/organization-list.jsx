@@ -1,5 +1,3 @@
-import React from 'react'
-
 import {t} from '#/main/core/translation'
 
 import {OrganizationCard} from '#/main/core/administration/user/organization/components/organization-card.jsx'
@@ -31,9 +29,9 @@ const OrganizationList = {
       name: 'code',
       type: 'string',
       label: t('code')
-    }, { // find better
+    }, {
       name: 'parent',
-      type: 'string',
+      type: 'organization',
       label: t('parent')
     }
   ],

@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\API\Validator;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\ValidatorInterface;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -38,19 +38,19 @@ class UserValidator implements ValidatorInterface
     {
         //the big chunk of code allows us to know if the identifiers are already taken
         //and prohibits the use of an already used address email in a username field
-        $errors  = [];
+        $errors = [];
 
         if ($this->exists('username', $data['username'], $data['id'])) {
             $errors[] = [
                 'path' => 'username',
-                'message' => 'This username already exists.'
+                'message' => 'This username already exists.',
             ];
         }
 
         if ($this->exists('mail', $data['email'], $data['id'])) {
             $errors[] = [
                 'path' => 'email',
-                'message' => 'This email already exists.'
+                'message' => 'This email already exists.',
             ];
         }
 
@@ -80,9 +80,6 @@ class UserValidator implements ValidatorInterface
     //deduce from getUnique
     public function validateBulk(array $users)
     {
-        foreach ($users as $user) {
-            //check if there isn't any duplicate of unique fields
-        }
     }
 
     public function getClass()

@@ -133,7 +133,7 @@ PageHeader.defaultTypes = {
  * @constructor
  */
 const PageContent = props =>
-  <div className="page-content">
+  <div className={classes('page-content', props.className)}>
     {props.children ?
       props.children :
       <div className="placeholder">This page has no content for now.</div>
@@ -141,6 +141,7 @@ const PageContent = props =>
   </div>
 
 PageContent.propTypes = {
+  className: T.string,
   /**
    * Content to display in the page.
    */

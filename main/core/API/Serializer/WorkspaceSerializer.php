@@ -117,8 +117,6 @@ class WorkspaceSerializer
         ];
     }
 
-
-
     public function getSchema()
     {
         return '#/main/core/workspace.json';

@@ -2,7 +2,6 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 import {localeDate} from '#/main/core/date'
-import {generateUrl} from '#/main/core/fos-js-router'
 
 const WorkspaceCard = (row) => ({
   icon: 'fa fa-book',

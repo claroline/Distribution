@@ -20,7 +20,7 @@ class ExplanationBuilder
         }
 
         foreach ($data->properties as $name => $property) {
-            $whereAmI = $currentPath === '' ? $name: $currentPath . '.' . $name;
+            $whereAmI = $currentPath === '' ? $name : $currentPath.'.'.$name;
 
             if ($property->type === 'array') {
                 $this->explainSchema($property->items, $explanation, $whereAmI, true);
@@ -29,7 +29,7 @@ class ExplanationBuilder
             }
 
             if (!in_array($property->type, ['array', 'object'])) {
-                $required = isset($data->required) ? in_array($name, $data->required): false;
+                $required = isset($data->required) ? in_array($name, $data->required) : false;
                 $explanation->addProperty(
                   $whereAmI,
                   $property->type,
@@ -42,7 +42,7 @@ class ExplanationBuilder
     }
 
     /**
-     * A oneOf is simply an other schema that needs to be explained
+     * A oneOf is simply an other schema that needs to be explained.
      */
     private function explainOneOf($data, $explanation, $currentPath, $isArray = false)
     {
@@ -54,7 +54,7 @@ class ExplanationBuilder
     /**
      * Explain how to import according to the json-schema for a given mime type (csv)
      * Here, we'll give a csv description according to the schema
-     * This is only a first version because not everything will be supported by csv
+     * This is only a first version because not everything will be supported by csv.
      */
     public function explainSchema(
       $data,
@@ -90,7 +90,7 @@ class ExplanationBuilder
                 foreach ($identifiers as $property) {
                     $data = $schema->properties->{$property};
                     $oneOfs[] = new Explanation([new Property(
-                        $prop . '.' . $property,
+                        $prop.'.'.$property,
                         $data->type,
                         $this->translator->trans($this->getDescription($data), [], 'schema'),
                         false,

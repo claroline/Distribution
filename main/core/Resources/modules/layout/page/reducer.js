@@ -1,7 +1,7 @@
 import merge from 'lodash/merge'
 import difference from 'lodash/difference'
 
-import {reduceReducers, combineReducers} from '#/main/core/utilities/redux'
+import {combineReducers} from '#/main/core/utilities/redux'
 
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as alertReducer} from '#/main/core/layout/alert/reducer'
@@ -29,7 +29,7 @@ const baseReducer = {
 function makePageReducer(initialState = {}, customReducer = {}, options = {}) {
   const reducer = {}
 
-  const pageState = merge({}, initialState) // todo use
+  //const pageState = merge({}, initialState) // todo use
   const pageOptions = merge({}, constants.DEFAULT_FEATURES, options)
 
   reducer.currentRequests = apiReducer

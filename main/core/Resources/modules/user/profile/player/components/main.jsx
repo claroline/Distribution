@@ -1,8 +1,6 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {t} from '#/main/core/translation'
-
 import {UserDetails} from '#/main/core/user/components/details.jsx'
 
 import {connectProfile} from '#/main/core/user/profile/connect'

@@ -13,9 +13,9 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
+use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
-use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Entity\Organization\Location;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;

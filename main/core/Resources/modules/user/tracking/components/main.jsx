@@ -53,7 +53,7 @@ const TrackingComponent = props =>
                   name: 'This is the related resource'
                 },
                 duration: 10000,
-                attempts: 10,
+                attempts: 10
               }
             }, {
               date: '2017-12-04T12:30:00',
@@ -98,7 +98,7 @@ const TrackingComponent = props =>
                   name: 'This is the related resource'
                 },
                 duration: 10000,
-                attempts: 10,
+                attempts: 10
               }
             }, {
               date: '2017-12-03T21:00:00',
@@ -116,7 +116,7 @@ const TrackingComponent = props =>
                   name: 'This is the related resource'
                 },
                 duration: 10000,
-                attempts: 10,
+                attempts: 10
               }
             }, {
               date: '2017-12-03T19:00:00',

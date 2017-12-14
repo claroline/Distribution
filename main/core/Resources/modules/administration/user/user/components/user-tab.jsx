@@ -40,7 +40,7 @@ const UserTab = props =>
         path: '/users/add',
         exact: true,
         component: User,
-        onEnter: () => props.openForm(null)
+        onEnter: () => props.openForm()
       }, {
         path: '/users/:id',
         component: User,
@@ -56,7 +56,9 @@ UserTab.propTypes = {
 const ConnectedUserTab = connect(
   null,
   dispatch => ({
-    openForm: (id = null) => dispatch(actions.open('users.current', id))
+    openForm(id = null) {
+      dispatch(actions.open('users.current', id))
+    }
   })
 )(UserTab)
 

@@ -1,6 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
 
-import {tval} from '#/main/core/translation'
 import {setIfError, notBlank, email} from '#/main/core/validation'
 
 /**

@@ -1,4 +1,4 @@
-import {PropTypes as T, implementPropTypes} from '#/main/core/prop-types'
+import {PropTypes as T} from 'prop-types'
 
 // todo use layout/form/prop-types
 

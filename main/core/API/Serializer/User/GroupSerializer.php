@@ -2,11 +2,11 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
+use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\Role;
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Entity\Group;
-use Claroline\CoreBundle\API\SerializerProvider;
 
 /**
  * @DI\Service("claroline.serializer.group")
@@ -56,7 +56,7 @@ class GroupSerializer
             }, $group->getEntityRoles()->toArray()),
             'organizations' => array_map(function (Organization $organization) use ($options) {
                 return $this->serializer->serialize($organization, $options);
-            }, $group->getOrganizations()->toArray())
+            }, $group->getOrganizations()->toArray()),
         ];
     }
 
@@ -64,8 +64,8 @@ class GroupSerializer
      * Deserializes data into a Group entity.
      *
      * @param \stdClass $data
-     * @param Group $group
-     * @param array $options
+     * @param Group     $group
+     * @param array     $options
      *
      * @return Group
      */

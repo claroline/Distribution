@@ -3,24 +3,16 @@ import {generateUrl} from '#/main/core/fos-js-router'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
+
 import {Location as LocationTypes} from '#/main/core/administration/user/location/prop-types'
 
 export const actions = {}
 
-//actions.geolocate = makeActionCreator(ROLE_EDIT, 'location')
-//actions.saveRole = makeActionCreator(ROLE_SAVE)
-
 actions.open = (formName, id = null) => (dispatch) => {
   if (id) {
-    // todo ugly. only to be able to load list before the end of  group loading
-    //dispatch(formActions.resetForm(formName, {id}, false))
-
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_location_get', {id}],
-        request: {
-          method: 'GET'
-        },
         success: (response, dispatch) => {
           dispatch(formActions.resetForm(formName, response, true))
         }
@@ -73,6 +65,8 @@ actions.addOrganizations = (id, organizations) => ({
 actions.geolocate = (location) => ({
   [API_REQUEST]: {
     url: ['apiv2_location_geolocate', {id: location.id}],
-    success: (data, dispatch) => dispatch(listActions.fetchData('locations'))
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('locations.list'))
+    }
   }
 })

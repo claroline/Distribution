@@ -19,7 +19,6 @@ use Doctrine\ORM\NoResultException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -83,7 +82,7 @@ class TrackingController extends Controller
 
             return [
                 'user' => $this->serializer->serialize($user),
-                'tracking' => []
+                'tracking' => [],
             ];
         } catch (NoResultException $e) {
             throw new NotFoundHttpException('Page not found');
@@ -93,9 +92,5 @@ class TrackingController extends Controller
     private function checkAccess()
     {
         // todo check access
-        /*$isAccessibleForAnon = $this->configHandler->getParameter('anonymous_public_profile');
-        if (!$isAccessibleForAnon && $this->tokenStorage->getToken()->getUser() === 'anon.') {
-            throw new AccessDeniedHttpException();
-        }*/
     }
 }

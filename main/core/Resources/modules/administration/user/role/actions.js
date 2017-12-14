@@ -1,23 +1,18 @@
-export const actions = {}
-
 import {generateUrl} from '#/main/core/fos-js-router'
 
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
+
 import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
+
+export const actions = {}
 
 actions.open = (formName, id = null) => (dispatch) => {
   if (id) {
-    // todo ugly. only to be able to load list before the end of  group loading
-    //dispatch(formActions.resetForm(formName, {id}, false))
-
     dispatch({
       [API_REQUEST]: {
         url: ['apiv2_role_get', {id}],
-        request: {
-          method: 'GET'
-        },
         success: (response, dispatch) => {
           dispatch(formActions.resetForm(formName, response, false))
         }

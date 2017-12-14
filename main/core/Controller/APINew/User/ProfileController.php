@@ -28,12 +28,8 @@ class ProfileController extends AbstractApiController
         return 'facet';
     }
 
-    /**
-     *
-     */
     public function update()
     {
-
     }
 
     /**

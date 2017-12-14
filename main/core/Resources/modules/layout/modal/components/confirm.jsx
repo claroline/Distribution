@@ -3,6 +3,8 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {t} from '#/main/core/translation'
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+
 import {BaseModal} from './base.jsx'
 
 const ConfirmModal = props =>

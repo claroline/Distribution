@@ -16,7 +16,7 @@ import {
 
 const MODAL_DATA_PICKER = 'MODAL_DATA_PICKER'
 
-const DataPickerModal = props =>
+const DataPicker = props =>
   <BaseModal
     {...props}
     className="data-picker-modal"
@@ -46,7 +46,7 @@ const DataPickerModal = props =>
     </button>
   </BaseModal>
 
-DataPickerModal.propTypes = {
+DataPicker.propTypes = {
   name: T.string.isRequired,
   icon: T.string,
   title: T.string,
@@ -64,22 +64,24 @@ DataPickerModal.propTypes = {
   resetSelect: T.func.isRequired
 }
 
-DataPickerModal.defaultProps = {
+DataPicker.defaultProps = {
   title: t('objects_select_title'),
   confirmText: t('objects_select_confirm'),
   icon: 'fa fa-fw fa-hand-pointer-o'
 }
 
-const ConnectedDataPickerModal = connect(
+const DataPickerModal = connect(
   (state, ownProps) => ({
     selected: listSelect.selected(listSelect.list(state, ownProps.name))
   }),
   (dispatch, ownProps) => ({
-    resetSelect: () => dispatch(listActions.resetSelect(ownProps.name))
-  }),
-)(DataPickerModal)
+    resetSelect() {
+      dispatch(listActions.resetSelect(ownProps.name))
+    }
+  })
+)(DataPicker)
 
 export {
   MODAL_DATA_PICKER,
-  ConnectedDataPickerModal as DataPickerModal
+  DataPickerModal
 }

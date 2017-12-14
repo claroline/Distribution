@@ -13,24 +13,24 @@ const reducer = combineReducers({
   current: makeFormReducer('users.current', {}, {
     workspaces: makeListReducer('users.current.workspaces', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/users.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/users.current']: () => true // todo : find better
       })
     }),
     groups: makeListReducer('users.current.groups', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/users.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/users.current']: () => true // todo : find better
       })
     }),
     organizations: makeListReducer('users.current.organizations', {}, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/user.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/user.current']: () => true // todo : find better
       })
     }),
     roles: makeListReducer('users.current.roles', {
       filters: [{property: 'type', value: PLATFORM_ROLE}]
     }, {
       invalidated: makeReducer(false, {
-        [FORM_RESET+'/users.current']: (state, action) => true // todo : find better
+        [FORM_RESET+'/users.current']: () => true // todo : find better
       })
     })
   })

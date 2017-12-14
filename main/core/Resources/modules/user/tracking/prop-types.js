@@ -1,6 +1,0 @@
-
-const GenericTrackingEvent = {
-  propTypes: {
-
-  },
-}
