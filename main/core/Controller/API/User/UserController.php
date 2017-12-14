@@ -144,45 +144,6 @@ class UserController extends FOSRestController
         return $this->container->get('claroline.serializer.user')->serialize($user, ['public' => true]);
     }
 
-    /**
-     * what is this ?
-     *
-     * @View()
-     */
-    public function usersPasswordInitializeAction()
-    {
-        $users = $this->apiManager->getParameters('userIds', 'Claroline\CoreBundle\Entity\User');
-        $this->throwExceptionIfNotGranted('edit', $users);
-
-        foreach ($users as $user) {
-            $this->mailManager->sendForgotPassword($user);
-        }
-
-        return ['success'];
-    }
-
-    /**
-     * @View(serializerGroups={"api_user"})
-     * @Post("/users/csv/remove")
-     */
-    public function csvRemoveUserAction()
-    {
-        $this->throwsExceptionIfNotAdmin();
-
-        $this->userManager->csvRemove($this->request->files->get('csv'));
-    }
-
-    /**
-     * @View(serializerGroups={"api_user"})
-     * @Post("/users/csv/facets")
-     */
-    public function csvImportFacetsAction()
-    {
-        $this->throwsExceptionIfNotAdmin();
-
-        $this->userManager->csvFacets($this->request->files->get('csv'));
-    }
-
     private function isAdmin()
     {
         return $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN');

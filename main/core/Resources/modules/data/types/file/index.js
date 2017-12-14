@@ -1,5 +1,7 @@
 import {t} from '#/main/core/translation'
 
+import {File} from '#/main/core/layout/form/components/field/file.jsx'
+
 const FILE_TYPE = 'file'
 
 // todo implement
@@ -18,7 +20,7 @@ const fileDefinition = {
   render: (raw) => raw,
   validate: (value) => typeof value === 'string',
   components: {
-
+    form: File
   }
 }
 
