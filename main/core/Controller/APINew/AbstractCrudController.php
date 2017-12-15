@@ -221,6 +221,7 @@ abstract class AbstractCrudController extends AbstractApiController
     {
         return [
             'get' => ['id' => '^(?!.*(schema)$).*'],
+            'update' => ['id' => '^(?!.*(schema)$).*'],
             'exist' => [],
         ];
     }
@@ -238,7 +239,7 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     public function mergeRequirements()
     {
-        return array_merge_recursive($this->getDefaultRequirements(), $this->getRequirements());
+        return array_merge($this->getDefaultRequirements(), $this->getRequirements());
     }
 
     /**
