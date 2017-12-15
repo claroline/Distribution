@@ -26,7 +26,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Convert Icap Dropzone resources to Claroline Dropzone resources.
+ * Converts Icap Dropzone resources to Claroline Dropzone resources.
  */
 class ConvertDropzoneCommand extends ContainerAwareCommand
 {
