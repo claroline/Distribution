@@ -7,10 +7,8 @@
       "format": "string",
       "description": "The action to use"
     },
-    "uploadedfile": {
-      "type": "string",
-      "format": "string",
-      "description": "The uploadedfile id"
+    "publicFile": {
+        "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schema/publicFile.json"
     }
   }
 }

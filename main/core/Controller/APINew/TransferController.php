@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Controller\APINew;
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\API\TransferProvider;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -43,46 +44,56 @@ class TransferController
      *    "provider"   = @DI\Inject("claroline.api.transfer"),
      *    "finder"     = @DI\Inject("claroline.api.finder"),
      *    "serializer" = @DI\Inject("claroline.api.serializer"),
-     *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%")
+     *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
+     *    "fileUt"     = @DI\Inject("claroline.utilities.file")
      * })
      *
      * @param TransferProvider   $provider
      * @param FinderProvider     $finder
      * @param SerializerProvider $serializer
+     * @param FileUtilities      $fileUt
      * @param string             $schemaDir
      */
     public function __construct(
         TransferProvider $provider,
         FinderProvider $finder,
         SerializerProvider $serializer,
+        FileUtilities $fileUt,
         $schemaDir
     ) {
         $this->provider = $provider;
         $this->finder = $finder;
         $this->serializer = $serializer;
         $this->schemaDir = $schemaDir;
+        $this->fileUt = $fileUt;
     }
 
     /**
      * Difference with file controller ?
      *
      * @Route(
-     *    "/execute/{action}",
-     *    name="apiv2_transfer_execute",
-     *    defaults={"action" = "json"},
+     *    "",
+     *    name="apiv2_transfer_execute"
      * )
      * @Method("POST")
+     *
+     * @param Request $request
      */
-    public function executeAction($action, Request $request)
+    public function executeAction(Request $request)
     {
-        $data = $this->decodeRequest($request);
+        $data = json_decode($request->getContent(), true);
 
-        //from then blabla bla
+        $publicFile = $this->serializer->deserialize(
+          'Claroline\CoreBundle\Entity\File\PublicFile',
+          $data['publicFile']
+        );
+
+        $content = $this->fileUt->getContents($publicFile);
 
         $this->provider->execute(
-            $data['data'],
-            $action,
-            $data['mime_type'],
+            $content,
+            $data['action'],
+            $publicFile->getMimeType(),
             $this->getLogFile($request)
         );
 
@@ -93,7 +104,7 @@ class TransferController
      * Difference with file controller ?
      *
      * @Route(
-     *    "/schema/show",
+     *    "/schema",
      *    name="apiv2_transfer_schema"
      * )
      * @Method("GET")
