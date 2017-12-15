@@ -76,8 +76,15 @@ const RoutedExplain = props => {
                   name: 'file',
                   type: 'file',
                   label: t('file'),
-                  //this will not work yet
-                  autoUpload: true
+                  options: {
+                    autoUpload: true,
+                    onUpload: (/*file, response*/) => {
+                      //preview could go here with the "save being available"
+                      //console.log(file, response)
+                    },
+                    //this is only a test with the autoupload
+                    uploadUrl: ['apiv2_transfer_execute', {action: entity + '_' + action}]
+                  }
                 }
               ]
             }

@@ -49,8 +49,8 @@ actions.uploadFile = (file, uploadUrl = ['apiv2_uploadedfile'], callback = () =>
           method: 'POST',
           body: formData
         },
-        success: () => {
-          callback(file)
+        success: (response) => {
+          callback(file, response[0])
         }
       }
     })
