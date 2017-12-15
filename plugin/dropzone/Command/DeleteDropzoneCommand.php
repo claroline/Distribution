@@ -44,12 +44,13 @@ class DeleteDropzoneCommand extends ContainerAwareCommand
 
                 $resourceManager->delete($node);
 
+                $output->writeln('<info>  Resource deleted.</info>');
+
                 if ($i % 100 === 0) {
+                    $output->writeln('<info>  Flushing...</info>');
                     $om->forceFlush();
                 }
                 ++$i;
-
-                $output->writeln('<info>  Resource deleted.</info>');
             }
         }
         $om->endFlushSuite();

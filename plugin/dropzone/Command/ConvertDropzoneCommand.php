@@ -215,10 +215,13 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
 
                                     if (!empty($fileResource)) {
                                         $fileName = $fileResource->getHashName();
-                                        $fileSystem->copy(
-                                            $filesDir.$ds.$fileResource->getHashName(),
-                                            $filesDir.$ds.'dropzone'.$ds.$newDropzone->getUuid().$ds.$fileName
-                                        );
+
+                                        if ($fileSystem->exists($filesDir.$ds.$fileResource->getHashName())) {
+                                            $fileSystem->copy(
+                                                $filesDir.$ds.$fileResource->getHashName(),
+                                                $filesDir.$ds.'dropzone'.$ds.$newDropzone->getUuid().$ds.$fileName
+                                            );
+                                        }
                                         $data = [
                                             'url' => '../files/dropzone'.$ds.$newDropzone->getUuid().$ds.$fileName,
                                             'name' => $documentResource->getName(),
@@ -317,12 +320,13 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                 $node->setActive(false);
                 $om->persist($node);
 
+                $output->writeln('<info>  Conversion of resource ['.$node->getName().'] is finished.</info>');
+
                 if ($i % 20 === 0) {
+                    $output->writeln('<info>  Flushing...</info>');
                     $om->forceFlush();
                 }
                 ++$i;
-
-                $output->writeln('<info>  Conversion of resource ['.$node->getName().'] is finished.</info>');
             }
         }
         $om->endFlushSuite();
