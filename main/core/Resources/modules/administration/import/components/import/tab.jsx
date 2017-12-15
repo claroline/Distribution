@@ -75,7 +75,9 @@ const RoutedExplain = props => {
                 {
                   name: 'file',
                   type: 'file',
-                  label: t('file')
+                  label: t('file'),
+                  //this will not work yet
+                  autoUpload: true
                 }
               ]
             }

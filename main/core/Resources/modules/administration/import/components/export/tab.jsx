@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
+import React from 'react'
 
 const Export = () =>
   <div>

@@ -2,8 +2,11 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
+//this is not pretty
+import {connect} from 'react-redux'
+import {actions} from '#/main/core/data/form/actions.js'
 
-export class File extends Component {
+class File extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -67,7 +70,19 @@ export class File extends Component {
           className="form-control"
           accept={`${this.props.types.join(',')}`}
           ref={input => this.input = input}
-          onChange={() => this.addFile(this.input.files[0])}
+          onChange={() => {
+
+            if (this.input.files[0]) {
+              const file = this.input.files[0]
+              //this is default from Le Grand Maitre upload
+              this.addFile(file)
+              //this is copy pasted from content-input.jsx from exo bundle
+              if (this.props.autoUpload) {
+                this.props.uploadFile(file, this.props.uploadUrl, this.props.onUpload)
+              }
+            }
+          }
+        }
         />
         <div className="file-thumbnails">
           {this.state.files.map((f, idx) =>
@@ -93,12 +108,32 @@ File.propTypes = {
   disabled: T.bool.isRequired,
   types: T.arrayOf(T.string).isRequired,
   max: T.number.isRequired,
-  onChange: T.func.isRequired
+  onChange: T.func.isRequired,
+  autoUpload: T.bool.isRequired,
+  onUpload: T.func.isRequired,
+  uploadUrl: T.array.isRequired,
+  uploadFile: T.func.isRequired
 }
 
 File.defaultProps = {
   disabled: false,
   types: [],
   max: 1,
-  onChange: () => {}
+  autoUpload: false,
+  onChange: () => {},
+  onUpload: () => {},
+  uploadFile: () => {},
+  uploadUrl: ['apiv2_uploadedfile']
+}
+
+//this is not pretty
+const ConnectedFile = connect(
+  () => ({}),
+  dispatch => ({uploadFile(file, url, callback) {
+    dispatch(actions.uploadFile(file, url, callback))
+  }})
+)(File)
+
+export {
+  ConnectedFile as File
 }
