@@ -66,7 +66,7 @@ const RoutedExplain = props => {
                 name: 'action',
                 type: 'enum',
                 label: t('action'),
-                onChange: (value) => navigate('/import/' + entity + '/' +  value.split('_')[1]),
+                onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
                 required: true,
                 options: {
                   noEmpty: true,
