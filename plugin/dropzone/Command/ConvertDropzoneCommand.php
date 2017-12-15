@@ -22,6 +22,7 @@ use Claroline\DropZoneBundle\Entity\Grade;
 use Icap\DropzoneBundle\Entity\Dropzone as IcapDropzone;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -33,6 +34,13 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
     {
         $this->setName('claroline:dropzone:convert')
             ->setDescription('Converts Dropzone resources from IcapDropzoneBundle to Dropzone resources from ClarolineDropZoneBundle');
+
+        $this->addOption(
+            'logs',
+            'l',
+            InputOption::VALUE_NONE,
+            'When set to true, all associated logs are also copied'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -53,7 +61,6 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
 
         $om = $this->getContainer()->get('claroline.persistence.object_manager');
         $resourceManager = $this->getContainer()->get('claroline.manager.resource_manager');
-        $dropzoneManager = $this->getContainer()->get('claroline.manager.dropzone_manager');
         $filesDir = $this->getContainer()->getParameter('claroline.param.files_directory');
         $fileSystem = $this->getContainer()->get('filesystem');
         $icapDropzoneRepo = $om->getRepository('Icap\DropzoneBundle\Entity\Dropzone');
@@ -283,7 +290,18 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                     $om->persist($newDrop);
                 }
 
-                /* TODO: Copies logs ? */
+                $withLogs = $input->getOption('logs');
+
+                if ($withLogs) {
+                    $output->writeln('<info>      Updating logs...</info>');
+
+                    /* Updates logs */
+                    foreach ($node->getLogs()->toArray() as $log) {
+                        $log->setResourceNode($newNode);
+                        $log->setResourceType($dropzoneType);
+                        $om->persist($log);
+                    }
+                }
 
                 $om->persist($newDropzone);
 
