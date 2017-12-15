@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "action": {
+      "type": "string",
+      "format": "string",
+      "description": "The action to use"
+    },
+    "uploadedfile": {
+      "type": "string",
+      "format": "string",
+      "description": "The uploadedfile id"
+    }
+  }
+}

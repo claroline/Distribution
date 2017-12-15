@@ -76,7 +76,9 @@ const RoutedExplain = props => {
                   name: 'file',
                   type: 'file',
                   label: t('file'),
+                  //required: true,
                   options: {
+
                     autoUpload: true,
                     onUpload: (/*file, response*/) => {
                       //preview could go here with the "save being available"

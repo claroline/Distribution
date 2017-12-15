@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\API\TransferProvider;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,21 +32,35 @@ class TransferController
     /** @var FinderProvider */
     private $finder;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var string */
+    private $schemaDir;
+
     /**
      * @DI\InjectParams({
-     *    "provider" = @DI\Inject("claroline.api.transfer"),
-     *    "finder"   = @DI\Inject("claroline.api.finder")
+     *    "provider"   = @DI\Inject("claroline.api.transfer"),
+     *    "finder"     = @DI\Inject("claroline.api.finder"),
+     *    "serializer" = @DI\Inject("claroline.api.serializer"),
+     *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%")
      * })
      *
-     * @param TransferProvider $provider
-     * @param FinderProvider   $finder
+     * @param TransferProvider   $provider
+     * @param FinderProvider     $finder
+     * @param SerializerProvider $serializer
+     * @param string             $schemaDir
      */
     public function __construct(
         TransferProvider $provider,
-        FinderProvider $finder
+        FinderProvider $finder,
+        SerializerProvider $serializer,
+        $schemaDir
     ) {
         $this->provider = $provider;
         $this->finder = $finder;
+        $this->serializer = $serializer;
+        $this->schemaDir = $schemaDir;
     }
 
     /**
@@ -60,7 +75,9 @@ class TransferController
      */
     public function executeAction($action, Request $request)
     {
-        $data = $this->getData($request);
+        $data = $this->decodeRequest($request);
+
+        //from then blabla bla
 
         $this->provider->execute(
             $data['data'],
@@ -70,6 +87,22 @@ class TransferController
         );
 
         return new JsonResponse('done', 200);
+    }
+
+    /**
+     * Difference with file controller ?
+     *
+     * @Route(
+     *    "/schema/show",
+     *    name="apiv2_transfer_schema"
+     * )
+     * @Method("GET")
+     */
+    public function schemaAction()
+    {
+        $file = $this->schemaDir.'/transfer.json';
+
+        return new JsonResponse($this->serializer->loadSchema($file));
     }
 
     /**
@@ -107,31 +140,6 @@ class TransferController
     public function getAvailableActions($format)
     {
         return new JsonResponse($this->provider->getAvailableActions($format));
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    private function getData(Request $request)
-    {
-        $files = $request->files->all();
-
-        if (count($files) > 1) {
-            $file = $files[0];
-
-            return [
-              'data' => file_get_contents($file->getPathname()),
-              'mime_type' => $file->getMimeType(),
-            ];
-        }
-
-        //maybe it's in the body request, who knows ?
-        return [
-          'data' => $request->getContent(),
-          'mime_type' => $request->headers->get('content_type'),
-        ];
     }
 
     /**
