@@ -52,6 +52,7 @@ final class Options
     //but it's probably not where the option should be located
     const USER_SELF_LOG = 'user_self_log';
     const ADD_PERSONAL_WORKSPACE = 'add_personal_workspace';
+    const DESERIALIZE_FACET = 'deserialize_facet';
     const SERIALIZE_FACET = 'serialize_facet';
 
     //move me ? it's related to the facets

@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Group;
@@ -9,6 +10,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -29,27 +31,34 @@ class UserSerializer
     /** @var FacetManager */
     private $facetManager;
 
+    /** @var FinderProvider */
+    private $finder;
+
     /**
      * UserManager constructor.
      *
      * @DI\InjectParams({
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
      *     "authChecker"  = @DI\Inject("security.authorization_checker"),
-     *     "facetManager" = @DI\Inject("claroline.manager.facet_manager")
+     *     "facetManager" = @DI\Inject("claroline.manager.facet_manager"),
+     *     "container"       = @DI\Inject("service_container")
      * })
      *
      * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authChecker
      * @param FacetManager                  $facetManager
+     * @param ContainerInterface            $container
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthorizationCheckerInterface $authChecker,
-        FacetManager $facetManager
+        FacetManager $facetManager,
+        ContainerInterface $container
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authChecker = $authChecker;
         $this->facetManager = $facetManager;
+        $this->container = $container;
     }
 
     /**
@@ -90,7 +99,7 @@ class UserSerializer
             return $this->serializePublic($user);
         }
 
-        return [
+        $serialized = [
             'id' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
             'firstName' => $user->getFirstName(),
@@ -117,6 +126,24 @@ class UserSerializer
                 ];
             }, $user->getGroups()->toArray()),
         ];
+
+        // todo deserialize facets
+        if (in_array(Options::SERIALIZE_FACET, $options)) {
+            //avoid recursive dependencies
+            $finder = $this->container->get('claroline.api.finder');
+            $fields = $finder->search(
+                'Claroline\CoreBundle\Entity\Facet\FieldFacetValue',
+                ['filters' => ['user' => $user->getUuid()]],
+                //should be an option but claco form messes thubgs up
+                ['minimal']
+              );
+
+            foreach ($fields['data'] as $field) {
+                $serialized[$field['name']] = $field['value'];
+            }
+        }
+
+        return $serialized;
     }
 
     /**
@@ -254,10 +281,50 @@ class UserSerializer
             $object->setEnabled($data['enabled']);
         }
 
-        // todo deserialize facets
-        if (in_array(Options::SERIALIZE_FACET)) {
+        //avoid recursive dependencies
+        $finder = $this->container->get('claroline.api.finder');
+        $serializer = $this->container->get('claroline.api.serializer');
+        $fieldFacets = $finder->search('Claroline\CoreBundle\Entity\Facet\FieldFacet');
+
+        foreach ($fieldFacets['data'] as $fieldFacet) {
+            foreach (array_keys($data) as $propertyName) {
+                if ($this->getPrettyName($propertyName) === $this->getPrettyName($fieldFacet['name'])) {
+                    $fieldFacetValue = [
+                        'name' => $propertyName,
+                        'value' => $data[$propertyName],
+                        'user' => ['id' => $data['id']],
+                        'fieldFacet' => ['id' => $fieldFacet['id']],
+                    ];
+
+                    //if the fieldFacetValue exists, we'll find it's id so we don't have to create a new one
+                    $fieldFacetValues = $finder->search('Claroline\CoreBundle\Entity\Facet\FieldFacetValue', [
+                        'filters' => ['user' => $data['id'], 'fieldFacet' => $fieldFacet['id']],
+                    ]);
+
+                    if (count($fieldFacetValues['data']) > 0) {
+                        $fieldFacetValue['id'] = $fieldFacetValues['data'][0]['id'];
+                    }
+
+                    $fieldFacetValue = $serializer->deserialize('Claroline\CoreBundle\Entity\Facet\FieldFacetValue', $fieldFacetValue);
+                    $user->addFieldFacet($fieldFacetValue);
+                }
+            }
         }
 
         return $object;
+    }
+
+    /**
+     * @return string
+     *
+     * Maybe move this somewhere else or in a trait
+     */
+    private function getPrettyName($name)
+    {
+        $string = str_replace(' ', '-', $name); // Replaces all spaces with hyphens.
+        $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
+        $string = preg_replace('/-+/', '-', $string); // Replaces multiple hyphens with single one.
+
+        return strtolower($string);
     }
 }

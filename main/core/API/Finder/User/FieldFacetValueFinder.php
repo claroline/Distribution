@@ -55,6 +55,23 @@ class FieldFacetValueFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
+        //use oauthChecker & tokenStorage to fetch exactly what's needed according to the permissions
+
+        foreach ($searches as $filterName => $filterValue) {
+            switch ($filterName) {
+                case 'user':
+                    $qb->leftJoin('obj.user', 'user');
+                    $qb->andWhere('user.uuid = :userId');
+                    $qb->setParameter('userId', $filterValue);
+                    break;
+                case 'fieldFacet':
+                    $qb->leftJoin('obj.fieldFacet', 'fieldFacet');
+                    $qb->andWhere('fieldFacet.id = :fieldFacetId');
+                    $qb->setParameter('fieldFacetId', $filterValue);
+                    break;
+            }
+        }
+
         return $qb;
     }
 }
