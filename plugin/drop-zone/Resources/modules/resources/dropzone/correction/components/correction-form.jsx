@@ -10,7 +10,7 @@ import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.js
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
-import {DropzoneType, CorrectionType, GradeType, CriterionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+import {DropzoneType, CorrectionType, GradeType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {computeScoreFromGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {validate, isValid} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
 
