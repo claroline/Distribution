@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
@@ -254,6 +255,8 @@ class UserSerializer
         }
 
         // todo deserialize facets
+        if (in_array(Options::SERIALIZE_FACET)) {
+        }
 
         return $object;
     }

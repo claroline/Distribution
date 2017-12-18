@@ -15,6 +15,7 @@ use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Controller\APINew\AbstractApiController;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,8 +44,8 @@ class ProfileController extends AbstractApiController
      */
     public function __construct(
         Crud $crud,
-        ProfileSerializer $serializer)
-    {
+        ProfileSerializer $serializer
+    ) {
         $this->crud = $crud;
         $this->serializer = $serializer;
     }
