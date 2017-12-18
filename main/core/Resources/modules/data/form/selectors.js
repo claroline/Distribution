@@ -10,6 +10,7 @@ const validating = (formState) => formState.validating
 const pendingChanges = (formState) => formState.pendingChanges
 const errors = (formState) => formState.errors
 const data = (formState) => formState.data
+const originalData = (formState) => formState.originalData
 
 const valid = createSelector(
   [errors],
@@ -28,6 +29,7 @@ export const select = {
   pendingChanges,
   errors,
   data,
+  originalData,
   valid,
   saveEnabled
 }

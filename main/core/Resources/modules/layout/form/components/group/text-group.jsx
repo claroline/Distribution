@@ -36,7 +36,9 @@ implementPropTypes(TextGroup, FormGroupWithFieldTypes, {
   value: T.string,
   // custom props
   long: T.bool,
-  minRows: T.number
+  minRows: T.number,
+  minLength: T.number, // todo implement
+  maxLength: T.number // todo implement
 }, {
   value: '',
   long: false,

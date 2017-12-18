@@ -45,6 +45,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Controller of the user profile.
+ *
+ * @todo check what is still used
  */
 class ProfileController extends Controller
 {
@@ -186,7 +188,7 @@ class ProfileController extends Controller
         if ($user === 'anon.') {
             return ['isAnon' => true];
         } else {
-            $facets = $this->facetManager->getVisibleFacets(5);
+            $facets = $this->facetManager->getVisibleFacets();
             $fieldFacetValues = $this->facetManager->getFieldValuesByUser($user);
             $fieldFacets = $this->facetManager->getVisibleFieldForCurrentUserFacets();
             $profileLinksEvent = new ProfileLinksEvent($user, $request->getLocale());

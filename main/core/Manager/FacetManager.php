@@ -478,13 +478,13 @@ class FacetManager
     /**
      * Used by public profile application.
      *
-     * @deprecated ?
+     * @deprecated remove when ProfileWidget is rewritten
      */
-    public function getVisibleFacets($max = null)
+    public function getVisibleFacets()
     {
         $token = $this->tokenStorage->getToken();
         $data = [];
-        $entities = $this->om->getRepository('ClarolineCoreBundle:Facet\Facet')->findVisibleFacets($token, $max);
+        $entities = $this->om->getRepository('ClarolineCoreBundle:Facet\Facet')->findVisibleFacets($token);
 
         foreach ($entities as $entity) {
             $data[] = [

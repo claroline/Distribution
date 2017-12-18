@@ -1520,5 +1520,12 @@
     "profile_facet_section": "Tab section",
     "profile_facet_section_add": "Create a new section",
     "profile_facet_no_section": "No section is associated with this tab.",
-    "profile_section_no_field": "No field is associated with this section."
+    "profile_section_no_field": "No field is associated with this section.",
+    "min_value": "Minimum value",
+    "max_value": "Maximum value",
+    "unit": "Unit",
+    "profile_remove_facet": "Delete profile tab",
+    "profile_remove_facet_question": "Do you really want to remove the selected profile tab ?",
+    "profile_remove_section": "Delete tab section",
+    "profile_remove_section_question": "Do you really want to remove the selected tab section ?"
 }

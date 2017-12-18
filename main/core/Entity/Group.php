@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *  )
  * @DoctrineAssert\UniqueEntity("name")
  */
-class Group extends AbstractRoleSubject implements OrderableInterface
+class Group extends AbstractRoleSubject
 {
     use UuidTrait;
     use OrganizationsTrait;
@@ -165,23 +165,6 @@ class Group extends AbstractRoleSubject implements OrderableInterface
         return $return;
     }
 
-    public function setPlatformRole($platformRole)
-    {
-        $roles = $this->getEntityRoles();
-
-        foreach ($roles as $role) {
-            if ($role->getType() !== Role::WS_ROLE) {
-                $removedRole = $role;
-            }
-        }
-
-        if (isset($removedRole)) {
-            $this->roles->removeElement($removedRole);
-        }
-
-        $this->roles->add($platformRole);
-    }
-
     /**
      * Replace the old platform roles of a user by a new array.
      *
@@ -215,16 +198,6 @@ class Group extends AbstractRoleSubject implements OrderableInterface
     public function containsUser(User $user)
     {
         return $this->users->contains($user);
-    }
-
-    public function getOrderableFields()
-    {
-        return ['name', 'id'];
-    }
-
-    public static function getSearchableFields()
-    {
-        return ['name'];
     }
 
     /**

@@ -1,12 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
 import difference from 'lodash/difference'
-import isEmpty from 'lodash/isEmpty'
-import omitBy from 'lodash/omitBy'
 import merge from 'lodash/merge'
-import mergeWith from 'lodash/mergeWith'
 import set from 'lodash/set'
 
 import {makeInstanceReducer, combineReducers, reduceReducers} from '#/main/core/utilities/redux'
+import {cleanErrors} from '#/main/core/data/form/utils'
 
 import {
   FORM_RESET,
@@ -56,13 +54,10 @@ const errorsReducer = makeInstanceReducer(defaultState.errors, {
    * Sets form validation errors.
    * It MUST receive `undefined` value for fixed errors in order to remove them from store.
    *
-   * Internal :
-   * We replace `undefined` values by `null` because lodash `merge` function just skip `undefined`
-   *
    * @param state
    * @param action
    */
-  [FORM_SET_ERRORS]: (state, action) => omitBy(mergeWith({}, state, action.errors, (objV, srcV) => srcV || null), isEmpty)
+  [FORM_SET_ERRORS]: (state, action) => cleanErrors(state, action.errors)
 })
 
 /**

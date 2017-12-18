@@ -7,7 +7,6 @@ import {t} from '#/main/core/translation'
 
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {ToggleableSet} from '#/main/core/layout/form/components/fieldset/toggleable-set.jsx'
-import {validateProp} from '#/main/core/data/form/validator'
 
 import {createFormDefinition} from '#/main/core/data/form/utils'
 import {DataFormSection as DataFormSectionTypes} from '#/main/core/data/form/prop-types'
@@ -85,6 +84,26 @@ class Form extends Component {
     window.removeEventListener('beforeunload', this.warnPendingChanges)
   }
 
+  renderFields(fields) {
+    return fields.filter(field => !!field.displayed)
+      .map(field =>
+        <FormField
+          {...field}
+          key={field.name}
+          value={get(this.props.data, field.name)}
+          disabled={this.props.disabled || field.disabled}
+          validating={this.props.validating}
+          error={get(this.props.errors, field.name)}
+          updateProp={this.props.updateProp}
+          setErrors={this.props.setErrors}
+        />
+      )
+  }
+
+  hasFields(section) {
+    return section.fields && 0 < section.fields.filter(field => !!field.displayed).length
+  }
+
   render() {
     const sections = createFormDefinition(this.props.sections)
 
@@ -94,34 +113,14 @@ class Form extends Component {
 
     return (
       <FormWrapper embedded={this.props.embedded} className={this.props.className}>
-        {primarySection &&
+        {primarySection && this.hasFields(primarySection) &&
           <div className="form-primary-section panel panel-default">
             <fieldset className="panel-body">
               {React.createElement('h'+this.props.level, {
                 className: 'sr-only'
               }, primarySection.title)}
 
-              {primarySection.fields
-                .filter(field => field.displayed)
-                .map(field =>
-                  <FormField
-                    {...field}
-                    key={field.name}
-                    value={get(this.props.data, field.name)}
-                    onChange={(value) => {
-                      if (field.onChange) {
-                        field.onChange(value)
-                      }
-
-                      this.props.updateProp(field.name, value)
-                      this.props.setErrors(validateProp(field, value))
-                    }}
-                    disabled={this.props.disabled || (field.disabled ? field.disabled(this.props.data) : false)}
-                    validating={this.props.validating}
-                    error={get(this.props.errors, field.name)}
-                  />
-                )
-              }
+              {this.renderFields(primarySection.fields)}
 
               {primarySection.advanced &&
                 <AdvancedSection {...primarySection.advanced} />
@@ -135,7 +134,7 @@ class Form extends Component {
             level={this.props.level}
             defaultOpened={openedSection ? openedSection.id : undefined}
           >
-            {otherSections.map(section =>
+            {otherSections.map(section => this.hasFields(section) &&
               <FormSection
                 key={section.id}
                 id={section.id}
@@ -144,27 +143,7 @@ class Form extends Component {
                 errors={this.props.errors}
                 validating={this.props.validating}
               >
-                {section.fields
-                  .filter(field => field.displayed)
-                  .map(field =>
-                    <FormField
-                      {...field}
-                      key={field.name}
-                      value={get(this.props.data, field.name)}
-                      onChange={(value) => {
-                        if (field.onChange) {
-                          field.onChange(value)
-                        }
-
-                        this.props.updateProp(field.name, value)
-                        this.props.setErrors(validateProp(field, value))
-                      }}
-                      disabled={this.props.disabled || (field.disabled ? field.disabled(this.props.data) : false)}
-                      validating={this.props.validating}
-                      error={get(this.props.errors, field.name)}
-                    />
-                  )
-                }
+                {this.renderFields(section.fields)}
 
                 {section.advanced &&
                   <AdvancedSection {...section.advanced} />
