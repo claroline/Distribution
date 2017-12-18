@@ -664,8 +664,8 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     /**
      * Checks if the user has a given role.
      *
-     * @param string  $roleName
-     * @param boolean $includeGroup
+     * @param bool   $includeGroup
+     * @param string $roleName
      *
      * @return bool
      */

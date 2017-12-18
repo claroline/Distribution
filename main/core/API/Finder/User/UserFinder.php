@@ -68,7 +68,7 @@ class UserFinder implements FinderInterface
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'hasPersonalWorkspace':
-                    $qb->andWhere("obj.personalWorkspace IS NOT NULL");
+                    $qb->andWhere('obj.personalWorkspace IS NOT NULL');
                     break;
                 case 'group':
                     $qb->leftJoin('obj.groups', 'g');
@@ -102,7 +102,7 @@ class UserFinder implements FinderInterface
         }
 
         if (!in_array('isRemoved', array_keys($searches))) {
-            $qb->andWhere("obj.isRemoved = FALSE");
+            $qb->andWhere('obj.isRemoved = FALSE');
         }
 
         return $qb;
