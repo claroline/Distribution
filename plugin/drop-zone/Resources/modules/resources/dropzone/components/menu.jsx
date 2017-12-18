@@ -10,8 +10,21 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
+import {computeDropCompletion} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+
+const MenuScore = props =>
+  <div className="menu-score-box">
+    <span className="user-score">{props.score}</span>
+    <span className="sr-only">/</span>
+    <span className="max-score">{props.scoreMax}</span>
+  </div>
+
+MenuScore.propTypes = {
+  score: T.number.isRequired,
+  scoreMax: T.number.isRequired
+}
 
 const Menu = props =>
   <div id="dropzone-menu">
@@ -28,11 +41,10 @@ const Menu = props =>
     }
 
     {props.myDrop &&
-    props.myDrop.finished &&
     props.dropzone.display.displayNotationMessageToLearners &&
     props.userEvaluation &&
     [constants.EVALUATION_STATUS_PASSED, constants.EVALUATION_STATUS_FAILED].indexOf(props.userEvaluation.status) > -1 &&
-    (!props.isPeerReviewEnabled || props.myDrop.unlockedUser || props.nbCorrections >= props.dropzone.parameters.expectedCorrectionTotal) &&
+    computeDropCompletion(props.dropzone, props.myDrop, props.nbCorrections) &&
       <div className={classes('alert', {
         'alert-success': props.userEvaluation.status === constants.EVALUATION_STATUS_PASSED,
         'alert-danger': props.userEvaluation.status === constants.EVALUATION_STATUS_FAILED
@@ -60,6 +72,16 @@ const Menu = props =>
           {trans('state_finished', {}, 'dropzone')}
         </HtmlText>
       </div>
+    }
+
+    {props.myDrop &&
+    props.myDrop.score !== null &&
+    props.dropzone.display.displayNotationToLearners &&
+    computeDropCompletion(props.dropzone, props.myDrop, props.nbCorrections) &&
+      <MenuScore
+        score={props.myDrop.score}
+        scoreMax={props.dropzone.parameters.scoreMax}
+      />
     }
 
     {props.dropzone.display.instruction &&

@@ -29,7 +29,7 @@ const currentDropReducer = makeReducer(null, {
     return state && state.id === action.drop.id ? action.drop : state
   },
   [CORRECTION_UPDATE]: (state, action) => {
-    if (state.id === action.correction.drop) {
+    if (state && state.id === action.correction.drop) {
       const corrections = cloneDeep(state.corrections)
       const index = corrections.findIndex(c => c.id === action.correction.id)
 

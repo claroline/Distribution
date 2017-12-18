@@ -103,7 +103,7 @@ const MyDrop = props =>
 
     {props.dropzone.display.displayCorrectionsToLearners && props.myDrop.finished && props.myDrop.corrections.filter(c => c.finished).length > 0 &&
       <Corrections
-        corrections={props.myDrop.corrections.filter(c => c.finished)}
+        corrections={props.myDrop.corrections.filter(c => c.finished && c.valid)}
         {...props}
       />
     }

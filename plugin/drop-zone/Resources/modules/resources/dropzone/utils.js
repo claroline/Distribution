@@ -61,6 +61,17 @@ export function computeScoreFromGrades(grades, gradeMax, scoreMax) {
   return Math.round((score / total) * scoreMax * 100) / 100
 }
 
+export function computeDropCompletion(dropzone, drop, nbFinishedCorrections) {
+  const nbExpected = dropzone.parameters.expectedCorrectionTotal
+
+  return drop.finished && (
+    !dropzone.parameters.peerReview || (
+      (drop.unlockedDrop || drop.corrections.filter(c => c.finished && c.valid).length >= nbExpected) &&
+      (drop.unlockedUser || nbFinishedCorrections >= nbExpected)
+    )
+  )
+}
+
 export function getCorrectionKey(drop, dropzone) {
   let key = null
 
