@@ -2,11 +2,8 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import cloneDeep from 'lodash/cloneDeep'
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
-//this is not pretty
-import {connect} from 'react-redux'
-import {actions} from '#/main/core/data/form/actions.js'
 
-class File extends Component {
+export class File extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -76,10 +73,6 @@ class File extends Component {
               const file = this.input.files[0]
               //this is default from Le Grand Maitre upload
               this.addFile(file)
-              //this is copy pasted from content-input.jsx from exo bundle
-              if (this.props.autoUpload) {
-                this.props.uploadFile(file, this.props.uploadUrl, this.props.onUpload)
-              }
             }
           }
         }
@@ -118,22 +111,5 @@ File.propTypes = {
 File.defaultProps = {
   disabled: false,
   types: [],
-  max: 1,
-  autoUpload: false,
-  onChange: () => {},
-  onUpload: () => {},
-  uploadFile: () => {},
-  uploadUrl: ['apiv2_uploadedfile']
-}
-
-//this is not pretty
-const ConnectedFile = connect(
-  () => ({}),
-  dispatch => ({uploadFile(file, url, callback) {
-    dispatch(actions.uploadFile(file, url, callback))
-  }})
-)(File)
-
-export {
-  ConnectedFile as File
+  max: 1
 }

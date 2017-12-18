@@ -40,7 +40,7 @@ actions.uploadFile = (file, uploadUrl = ['apiv2_uploadedfile'], callback = () =>
     const formData = new FormData()
     formData.append('file', file)
     formData.append('fileName', file.name)
-    formData.append('sourceType', 'exo_item_object')
+    formData.append('sourceType', 'uploadedfile')
 
     dispatch({
       [API_REQUEST]: {
@@ -50,7 +50,7 @@ actions.uploadFile = (file, uploadUrl = ['apiv2_uploadedfile'], callback = () =>
           body: formData
         },
         success: (response) => {
-          callback(file, response[0])
+          callback(response[0])
         }
       }
     })
