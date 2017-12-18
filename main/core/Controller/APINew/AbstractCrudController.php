@@ -54,7 +54,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function getAction($id, $class, $env)
+    public function getAction($id, $class)
     {
         $object = $this->find($class, $id);
 
@@ -67,13 +67,23 @@ abstract class AbstractCrudController extends AbstractApiController
 
     /**
      * @param string $class
+     *
+     * @return JsonResponse
+     */
+    public function schemaAction($class)
+    {
+        return new JsonResponse($this->serializer->getSchema($class));
+    }
+
+    /**
+     * @param string $class
      * @param string $field
      * @param string $value
      * @param string $env
      *
      * @return JsonResponse
      */
-    public function existAction($class, $field, $value, $env)
+    public function existAction($class, $field, $value)
     {
         $objects = $this->om->getRepository($class)->findBy([$field => $value]);
 
@@ -87,7 +97,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function listAction(Request $request, $class, $env)
+    public function listAction(Request $request, $class)
     {
         return new JsonResponse($this->finder->search(
             $class,
@@ -103,7 +113,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function createAction(Request $request, $class, $env)
+    public function createAction(Request $request, $class)
     {
         $object = $this->crud->create(
             $class,
@@ -125,7 +135,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function updateAction($id, Request $request, $class, $env)
+    public function updateAction($id, Request $request, $class)
     {
         $object = $this->crud->update(
             $class,
@@ -145,7 +155,7 @@ abstract class AbstractCrudController extends AbstractApiController
      *
      * @return JsonResponse
      */
-    public function deleteBulkAction(Request $request, $class, $env)
+    public function deleteBulkAction(Request $request, $class)
     {
         $this->crud->deleteBulk(
             $this->decodeIdsString($request, $class),
@@ -200,7 +210,36 @@ abstract class AbstractCrudController extends AbstractApiController
             'update' => [],
             'deleteBulk' => [],
             'exist' => [],
+            'schema' => [],
         ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getDefaultRequirements()
+    {
+        return [
+            'get' => ['id' => '^(?!.*(schema)$).*'],
+            'update' => ['id' => '^(?!.*(schema)$).*'],
+            'exist' => [],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getRequirements()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function mergeRequirements()
+    {
+        return array_merge($this->getDefaultRequirements(), $this->getRequirements());
     }
 
     /**

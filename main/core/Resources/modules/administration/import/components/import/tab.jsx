@@ -1,20 +1,18 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import {select} from '#/main/core/administration/import/selector'
 import {actions} from '#/main/core/administration/import/actions'
 import has from 'lodash/has'
-import {Select} from '#/main/core/layout/form/components/field/select.jsx'
 import {t} from '#/main/core/translation'
-import {Form as FormComponent} from '#/main/core/data/form/components/form.jsx'
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
-import {actions as formActions} from '#/main/core/data/form/actions'
+import {navigate} from '#/main/core/router'
 
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
     {Object.keys(props.explanation).map((key) =>
       <li key={key} role="presentation" className="">
-        <a href={"#/import/" + key + '/none'}>{key}</a>
+        <a href={'#/import/' + key + '/none'}>{t(key)}</a>
       </li>
     )}
   </ul>
@@ -50,19 +48,15 @@ const RoutedExplain = props => {
   const action = props.match.params.action
   const choices = {}
   choices['none'] = ''
-  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[key]: key}), choices)
-
-  formActions.resetForm('transfer.import', {'action': action}, true)
+  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: t(key)}), choices)
 
   return (
     <div>
-      <h3>{entity}</h3>
+      <h3>{t(entity)}</h3>
       <div>
-        <FormComponent
+        <FormContainer
           level={3}
-          name="transfer.import"
-          updateProp={(field, value) => props.updateProp(field, value, 'transfer.import', entity)}
-          setErrors={() => {}}
+          name="import"
           sections={[
             {
               id: 'general',
@@ -72,33 +66,32 @@ const RoutedExplain = props => {
                 name: 'action',
                 type: 'enum',
                 label: t('action'),
+                onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
                 required: true,
                 options: {
                   noEmpty: true,
                   choices: choices
                 }},
                 {
-                  name: 'headers',
-                  type: 'boolean',
-                  label: t('show_headers')
-                },
-                {
-                  file: 'file',
+                  name: 'file',
                   type: 'file',
-                  label: t('file')
+                  label: t('file'),
+                  //required: true,
+                  options: {
+
+                    autoUpload: true,
+                    onUpload: (/*file, response*/) => {
+                      //preview could go here with the "save being available"
+                      //console.log(file, response)
+                    }
+                  }
                 }
               ]
             }
           ]}
         />
       </div>
-      {/*
-      <Select
-        id="select-action"
-        onChange={value => window.location.hash = '#import/' + entity + '/' + value}
-        value={action}
-        choices={choices}
-      />*/}
+
       {props.explanation[entity][action] &&
         <div>
           <div> {t('import_headers')} </div>
@@ -116,37 +109,38 @@ const ConnectedExplain = connect(
   })
 )(RoutedExplain)
 
-const ExplainTitle = props => <span>{props.title}</span>
-
 class Import extends Component
 {
-    constructor(props) {
-      super(props)
-    }
+  constructor(props) {
+    super(props)
+  }
 
-    render() {
-        return (
-          <div className="user-profile container row">
-            <div className="col-md-3">
-                <Tabs {...this.props}></Tabs>
-            </div>
-            <div className="col-md-9">
-              <Routes
-                routes={[{
-                    path: '/import/:entity/:action',
-                    exact: false,
-                    component: ConnectedExplain
-                  }]}
-              />
-            </div>
-          </div>
-        )
-    }
+  render() {
+    return (
+      <div className="user-profile container row">
+        <div className="col-md-3">
+            <Tabs {...this.props}></Tabs>
+        </div>
+        <div className="col-md-9">
+          <Routes
+            routes={[{
+              path: '/import/:entity/:action',
+              exact: true,
+              component: ConnectedExplain,
+              onEnter: (params) => this.props.openForm(params)
+            }]}
+          />
+        </div>
+      </div>
+    )
+  }
 }
 
 const ConnectedImport = connect(
   state => ({explanation: select.explanation(state)}),
-  dispatch =>({})
+  dispatch =>({openForm(params) {
+    dispatch(actions.open('import', params))
+  }})
 )(Import)
 
 export {

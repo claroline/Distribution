@@ -126,12 +126,16 @@ class ApiLoader extends Loader
                             $routeDefaults = [
                                 '_controller' => $controller.'::'.$name.'Action',
                                 'class' => $class,
-                                'env' => $this->container->getParameter('kernel.environment'),
                             ];
 
                             $route = new ApiRoute($pattern, $routeDefaults, []);
 
                             $route->setMethods([$options[1]]);
+                            $requirements = $refClass->newInstanceWithoutConstructor()->mergeRequirements();
+
+                            if (isset($requirements[$name])) {
+                                $route->setRequirements($requirements[$name]);
+                            }
 
                             // add the new route to the route collection:
                             $routeName = 'apiv2_'.$prefix.'_'.$this->toUnderscore($name);
@@ -152,6 +156,7 @@ class ApiLoader extends Loader
     private function makeRouteMap($controller, RouteCollection $routes, $prefix, array $ignore)
     {
         $defaults = [
+          'schema' => ['/schema', 'GET'],
           'create' => ['', 'POST'],
           'update' => ['/{id}', 'PUT'],
           'deleteBulk' => ['', 'DELETE'],

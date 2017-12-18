@@ -2,8 +2,6 @@ import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
 // reducers
 import {reducer} from '#/main/core/administration/import/reducer'
-import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
-import {t, transChoice} from '#/main/core/translation'
 import {Transfer} from '#/main/core/administration/import/components/transfer.jsx'
 
 // mount the react application

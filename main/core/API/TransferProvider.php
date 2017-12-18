@@ -244,11 +244,15 @@ class TransferProvider
      *
      * @return AdapterInterface
      */
-    public function getAdapter($mimeType)
+    public function getAdapter($mimeTypes)
     {
-        foreach ($this->adapters as $adapter) {
-            if (in_array($mimeType, $adapter->getMimeTypes())) {
-                return $adapter;
+        $mimeTypes = explode(';', $mimeTypes);
+
+        foreach ($mimeTypes as $mimeType) {
+            foreach ($this->adapters as $adapter) {
+                if (in_array(ltrim($mimeType), $adapter->getMimeTypes())) {
+                    return $adapter;
+                }
             }
         }
 

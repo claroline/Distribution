@@ -191,21 +191,33 @@ class SerializerProvider
             $absolutePath = $this->rootDir.'/vendor/claroline/distribution/'
             .$path[1].'/'.$path[2].'/Resources/schema/'.$path[3];
 
-            $schema = Utils::LoadJsonFromFile($absolutePath);
-
-            $hook = function ($uri) {
-                return $this->resolveRef($uri);
-            };
-
-            //this is the resolution of the $ref thingy with Jval classes
-            //resolver can take a Closure parameter to change the $ref value
-            $resolver = new Resolver();
-            $resolver->setPreFetchHook($hook);
-            $walker = new Walker(new Registry(), $resolver);
-            $schema = $walker->resolveReferences($schema, new Uri(''));
-
-            return $walker->parseSchema($schema, new Context());
+            return $this->loadSchema($absolutePath);
         }
+    }
+
+    /**
+     * Loads a json schema.
+     *
+     * @param string $path
+     *
+     * @return \stdClass
+     */
+    public function loadSchema($path)
+    {
+        $schema = Utils::LoadJsonFromFile($path);
+
+        $hook = function ($uri) {
+            return $this->resolveRef($uri);
+        };
+
+        //this is the resolution of the $ref thingy with Jval classes
+        //resolver can take a Closure parameter to change the $ref value
+        $resolver = new Resolver();
+        $resolver->setPreFetchHook($hook);
+        $walker = new Walker(new Registry(), $resolver);
+        $schema = $walker->resolveReferences($schema, new Uri(''));
+
+        return $walker->parseSchema($schema, new Context());
     }
 
     /**

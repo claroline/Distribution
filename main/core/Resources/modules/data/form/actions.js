@@ -32,6 +32,31 @@ actions.resetForm = (formName, data = {}, isNew = false) => ({
   isNew: isNew
 })
 
+/*
+ * Copy pasted from plugin/exo/Resources/modules/quiz/editor/actions.js
+ */
+actions.uploadFile = (file, uploadUrl = ['apiv2_uploadedfile'], callback = () => {}) => {
+  return (dispatch) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('fileName', file.name)
+    formData.append('sourceType', 'exo_item_object')
+
+    dispatch({
+      [API_REQUEST]: {
+        url: uploadUrl,
+        request: {
+          method: 'POST',
+          body: formData
+        },
+        success: (response) => {
+          callback(file, response[0])
+        }
+      }
+    })
+  }
+}
+
 actions.saveForm = (formName, target) => (dispatch, getState) => {
   const formNew = formSelect.isNew(formSelect.form(getState(), formName))
   const formData = formSelect.data(formSelect.form(getState(), formName))

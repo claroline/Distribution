@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @EXT\Route("/uploadedfile")
  * @ApiMeta(
  *     class="Claroline\CoreBundle\Entity\File\PublicFile",
- *     ignore={"get", "deleteBulk", "update", "exist", "list"}
+ *     ignore={"update", "exist", "list"}
  * )
  */
 class FileController extends AbstractCrudController
@@ -34,6 +34,7 @@ class FileController extends AbstractCrudController
      *    name="apiv2_uploadedfile",
      *    options={ "method_prefix" = false }
      * )
+     * @EXT\Method("POST")
      *
      * @param Request $request
      *

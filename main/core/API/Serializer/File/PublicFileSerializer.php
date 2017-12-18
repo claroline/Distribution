@@ -30,12 +30,14 @@ class PublicFileSerializer
         $creator = [];
 
         return [
+            'id' => $file->getId(),
             'size' => $file->getSize(),
             'filename' => $file->getFilename(),
             'directory' => $file->getDirectoryName(),
             'creator' => $creator,
             'mimeType' => $file->getMimeType(),
             'sourceType' => $file->getSourceType(),
+            'url' => $file->getUrl(),
           ];
     }
 
@@ -52,5 +54,10 @@ class PublicFileSerializer
     {
         //this is currently done in FileUtilities
         return $file;
+    }
+
+    public function getSchema()
+    {
+        return '#/main/core/publicFile.json';
     }
 }

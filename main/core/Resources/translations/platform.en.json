@@ -1509,6 +1509,7 @@
     "field_required": "Field is required",
     "help": "Help",
     "display_on_create": "Display on create",
+    "remove_user": "Remove a user",
     "fields_list": "Fields list",
     "empty_fields_list": "No fields found.",
     "create_field": "Create a new field",

@@ -91,4 +91,16 @@ class UserController extends AbstractCrudController
             'create' => $create,
         ];
     }
+
+    /**
+     * @return array
+     */
+    protected function getRequirements()
+    {
+        return [
+          'get' => ['id' => '^(?!.*(schema|parameters)$).*'],
+          'update' => ['id' => '^(?!.*(schema|parameters)$).*'],
+          'exist' => [],
+      ];
+    }
 }

@@ -121,7 +121,7 @@ class Crud
     }
 
     /**
-     * Deletes an entry `object` of `class`.
+     * Deletes an entry `object`.
      *
      * @param object $object  - the entity to delete
      * @param array  $options - additional delete options

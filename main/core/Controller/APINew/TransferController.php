@@ -12,7 +12,9 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\API\TransferProvider;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -31,39 +33,67 @@ class TransferController
     /** @var FinderProvider */
     private $finder;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var string */
+    private $schemaDir;
+
     /**
      * @DI\InjectParams({
-     *    "provider" = @DI\Inject("claroline.api.transfer"),
-     *    "finder"   = @DI\Inject("claroline.api.finder")
+     *    "provider"   = @DI\Inject("claroline.api.transfer"),
+     *    "finder"     = @DI\Inject("claroline.api.finder"),
+     *    "serializer" = @DI\Inject("claroline.api.serializer"),
+     *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
+     *    "fileUt"     = @DI\Inject("claroline.utilities.file")
      * })
      *
-     * @param TransferProvider $provider
+     * @param TransferProvider   $provider
+     * @param FinderProvider     $finder
+     * @param SerializerProvider $serializer
+     * @param FileUtilities      $fileUt
+     * @param string             $schemaDir
      */
     public function __construct(
         TransferProvider $provider,
-        FinderProvider $finder
+        FinderProvider $finder,
+        SerializerProvider $serializer,
+        FileUtilities $fileUt,
+        $schemaDir
     ) {
         $this->provider = $provider;
         $this->finder = $finder;
+        $this->serializer = $serializer;
+        $this->schemaDir = $schemaDir;
+        $this->fileUt = $fileUt;
     }
 
     /**
      * Difference with file controller ?
      *
      * @Route(
-     *    "/execute/{action}",
-     *    name="apiv2_transfer_execute",
-     *    defaults={"action" = "json"},
+     *    "",
+     *    name="apiv2_transfer_execute"
      * )
      * @Method("POST")
+     *
+     * @param Request $request
      */
-    public function executeAction($action, Request $request)
+    public function executeAction(Request $request)
     {
-        $data = $this->getData($request);
+        $data = json_decode($request->getContent(), true);
+
+        $publicFile = $this->serializer->deserialize(
+          'Claroline\CoreBundle\Entity\File\PublicFile',
+          $data['publicFile']
+        );
+
+        $content = $this->fileUt->getContents($publicFile);
+
         $this->provider->execute(
-            $data['data'],
-            $action,
-            $data['mime_type'],
+            $content,
+            $data['action'],
+            $publicFile->getMimeType(),
             $this->getLogFile($request)
         );
 
@@ -71,9 +101,25 @@ class TransferController
     }
 
     /**
+     * Difference with file controller ?
+     *
+     * @Route(
+     *    "/schema",
+     *    name="apiv2_transfer_schema"
+     * )
+     * @Method("GET")
+     */
+    public function schemaAction()
+    {
+        $file = $this->schemaDir.'/transfer.json';
+
+        return new JsonResponse($this->serializer->loadSchema($file));
+    }
+
+    /**
      * @Route(
      *    "/export/{format}",
-     *    name="apiv2_transfer_execute"
+     *    name="apiv2_transfer_export"
      * )
      * @Method("GET")
      */
@@ -105,31 +151,6 @@ class TransferController
     public function getAvailableActions($format)
     {
         return new JsonResponse($this->provider->getAvailableActions($format));
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     */
-    private function getData(Request $request)
-    {
-        $files = $request->files->all();
-
-        if (count($files) > 1) {
-            $file = $files[0];
-
-            return [
-              'data' => file_get_contents($file->getPathname()),
-              'mime_type' => $file->getMimeType(),
-            ];
-        }
-
-        //maybe it's in the body request, who knows ?
-        return [
-          'data' => $request->getContent(),
-          'mime_type' => $request->headers->get('content_type'),
-        ];
     }
 
     /**
