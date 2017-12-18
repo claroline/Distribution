@@ -3,18 +3,18 @@ import React from 'react'
 import {t} from '#/main/core/translation'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
-import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {constants} from '#/main/core/administration/user/parameters/constants'
 
-const ParametersSaveAction = makeSaveAction('parameters', () => ({
-  update: ['apiv2_user_parameters_update']
-}))(PageAction)
-
 const ParametersTabActions = () =>
   <PageActions>
-    <ParametersSaveAction />
+    <FormPageActionsContainer
+      formName="parameters"
+      opened={true}
+      target={['apiv2_user_parameters_update']}
+    />
   </PageActions>
 
 const ParametersTab = () =>
@@ -28,7 +28,8 @@ const ParametersTab = () =>
         title: t('registration'),
         defaultOpened: true,
         fields: [
-          // auto_logging
+          // todo auto_logging
+          // todo self unregistration
           {
             name: 'registration.self',
             type: 'boolean',

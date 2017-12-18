@@ -31,6 +31,10 @@ const reducer = makeFormReducer('profile', defaultState, {
       newState.push({
         id: makeId(),
         title: '',
+        position: newState.length,
+        meta: {
+          main: false,
+        },
         sections: []
       })
 
@@ -45,6 +49,13 @@ const reducer = makeFormReducer('profile', defaultState, {
         newState.splice(pos, 1)
       }
 
+      // reorder facets
+      newState.map((facet, facetIndex) => {
+        facet.position = facetIndex
+
+        return facet
+      })
+
       return newState
     },
 
@@ -56,6 +67,7 @@ const reducer = makeFormReducer('profile', defaultState, {
         currentFacet.sections.push({
           id: makeId(),
           title: '',
+          position: newState.length,
           fields: []
         })
       }
@@ -72,6 +84,13 @@ const reducer = makeFormReducer('profile', defaultState, {
         if (-1 !== pos) {
           currentFacet.sections.splice(pos, 1)
         }
+
+        // reorder sections
+        currentFacet.sections.map((section, sectionIndex) => {
+          section.position = sectionIndex
+
+          return section
+        })
       }
 
       return newState

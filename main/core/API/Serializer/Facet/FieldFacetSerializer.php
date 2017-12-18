@@ -48,8 +48,11 @@ class FieldFacetSerializer
               'type' => $fieldFacet->getFieldType(),
               'label' => $fieldFacet->getName(),
               'required' => $fieldFacet->isRequired(),
-              'options' => $fieldFacet->getOptions(),
             ];
+
+            if (!empty($fieldFacet->getOptions())) {
+                $serialized['options'] = $fieldFacet->getOptions();
+            }
 
             if (in_array($fieldFacet->getType(), [
                 FieldFacet::SELECT_TYPE,
@@ -78,6 +81,7 @@ class FieldFacetSerializer
 
     public function deserialize(array $data, FieldFacet $field = null, array $options = [])
     {
+        $this->sipe('id', 'setUuid', $data, $field);
         $this->sipe('name', 'setName', $data, $field);
         $this->sipe('type', 'setType', $data, $field);
         $this->sipe('required', 'setRequired', $data, $field);

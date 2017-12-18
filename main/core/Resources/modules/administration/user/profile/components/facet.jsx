@@ -91,7 +91,8 @@ const ProfileFacetComponent = props =>
           }, {
             name: 'display.creation',
             type: 'boolean',
-            label: t('display_on_create')
+            label: t('display_on_create'),
+            displayed: !props.facet.meta.main
           }
         ]
       }, {

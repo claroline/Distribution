@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
+import {navigate, withRouter, matchPath} from '#/main/core/router'
 
 import {
   PageGroupActions,
@@ -9,26 +10,34 @@ import {
   PageAction,
   MoreAction
 } from '#/main/core/layout/page'
+import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 // todo hide `contact` actions group on my profile
 
-const EditGroupActions = () =>
-  <PageGroupActions>
-    <PageAction
-      id="profile-edit"
-      title={t('edit_profile')}
-      icon={'fa fa-pencil'}
-      primary={true}
-      action="#/edit"
-    />
+const EditGroupActionsComponent = props => {
+  const isEditorOpened = !!matchPath(props.location.pathname, {
+    path: '/edit'
+  })
 
-    <PageAction
-      id="profile-edit-cancel"
-      title={t('cancel')}
-      icon={'fa fa-times'}
-      action="#/show"
-    />
-  </PageGroupActions>
+  return (
+    <PageGroupActions>
+      <FormPageActionsContainer
+        formName="user"
+        opened={isEditorOpened}
+        target={(user) => ['apiv2_user_update', {id: user.id}]}
+        open={{
+          label: t('edit_profile'),
+          action: '#/edit'
+        }}
+        cancel={{
+          action: () => navigate('/show')
+        }}
+      />
+    </PageGroupActions>
+  )
+}
+
+const EditGroupActions = withRouter(EditGroupActionsComponent)
 
 const UserPageActions = props => {
   const moreActions = [].concat(props.customActions, [

@@ -74,9 +74,10 @@ class FacetSerializer
      */
     public function deserialize(array $data, Facet $facet = null, array $options = [])
     {
+        $this->sipe('id', 'setUuid', $data, $facet);
         $this->sipe('title', 'setName', $data, $facet);
-        $this->sipe('meta.main', 'setIsMain', $data, $facet);
         $this->sipe('position', 'setPosition', $data, $facet);
+        $this->sipe('meta.main', 'setMain', $data, $facet);
         $this->sipe('display.creation', 'setForceCreationForm', $data, $facet);
 
         if (isset($data['sections']) && in_array(Options::DEEP_DESERIALIZE, $options)) {

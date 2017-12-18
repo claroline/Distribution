@@ -83,11 +83,11 @@ class Facet
     protected $forceCreationForm = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(name="isMain", type="boolean")
      *
      * @var bool
      */
-    protected $isMain = false;
+    protected $main = false;
 
     /**
      * Constructor.
@@ -225,10 +225,22 @@ class Facet
 
     /**
      * @param bool|string $boolean
+     *
+     * @deprecated
      */
     public function setIsMain($boolean)
     {
-        $this->isMain = !is_bool($boolean) ? $boolean === 'true' : $boolean;
+        $this->setMain(
+            !is_bool($boolean) ? $boolean === 'true' : $boolean
+        );
+    }
+
+    /**
+     * @param bool $main
+     */
+    public function setMain($main)
+    {
+        $this->main = $main;
     }
 
     /**
@@ -236,6 +248,6 @@ class Facet
      */
     public function isMain()
     {
-        return $this->isMain;
+        return $this->main;
     }
 }

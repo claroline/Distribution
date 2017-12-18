@@ -64,18 +64,4 @@ class ProfileSerializer
             return $this->facetSerializer->serialize($facet, [Options::PROFILE_SERIALIZE]);
         }, $facets);
     }
-
-    /**
-     * Deserializes data into Profile facets entities.
-     *
-     * @param \stdClass $data
-     * @param array     $facets
-     * @param array     $options
-     *
-     * @return Role
-     */
-    public function deserialize($data, array $facets = [], array $options = [])
-    {
-        return $facets;
-    }
 }

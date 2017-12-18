@@ -77,6 +77,7 @@ class PanelFacetSerializer
      */
     public function deserialize(array $data, PanelFacet $panel = null, array $options = [])
     {
+        $this->sipe('id', 'setUuid', $data, $panel);
         $this->sipe('title', 'setName', $data, $panel);
         $this->sipe('position', 'setPosition', $data, $panel);
 

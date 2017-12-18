@@ -13,6 +13,8 @@ namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
+use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\Action\AdditionalAction;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
@@ -47,6 +49,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
+ * @todo rename UserController (without s)
+ *
  * @DI\Tag("security.secure_service")
  * @SEC\PreAuthorize("canOpenAdminTool('user_management')")
  */
@@ -71,8 +75,9 @@ class UsersController extends Controller
     private $authorization;
     private $groupManager;
     private $tokenStorage;
+    private $finder;
     private $parametersSerializer;
-
+    private $profileSerializer;
     /**
      * @DI\InjectParams({
      *     "authenticationManager"  = @DI\Inject("claroline.common.authentication_manager"),
@@ -95,7 +100,8 @@ class UsersController extends Controller
      *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
      *     "groupManager"           = @DI\Inject("claroline.manager.group_manager"),
      *     "finder"                 = @DI\Inject("claroline.api.finder"),
-     *     "parametersSerializer"   = @DI\Inject("claroline.serializer.parameters")
+     *     "parametersSerializer"   = @DI\Inject("claroline.serializer.parameters"),
+     *     "profileSerializer"      = @DI\Inject("claroline.serializer.profile")
      * })
      */
     public function __construct(
@@ -119,7 +125,8 @@ class UsersController extends Controller
         WorkspaceManager $workspaceManager,
         GroupManager $groupManager,
         FinderProvider $finder,
-        $parametersSerializer
+        ParametersSerializer $parametersSerializer,
+        ProfileSerializer $profileSerializer
     ) {
         $this->authenticationManager = $authenticationManager;
         $this->configHandler = $configHandler;
@@ -143,6 +150,7 @@ class UsersController extends Controller
         $this->tokenStorage = $tokenStorage;
         $this->finder = $finder;
         $this->parametersSerializer = $parametersSerializer;
+        $this->profileSerializer = $profileSerializer;
     }
 
     /**
@@ -160,8 +168,9 @@ class UsersController extends Controller
     public function indexAction()
     {
         return [
-          // todo : put it in the async load of form
-          'parameters' => $this->parametersSerializer->serialize(),
+            // todo : put it in the async load of form
+            'parameters' => $this->parametersSerializer->serialize(),
+            'profile' => $this->profileSerializer->serialize(),
         ];
     }
 

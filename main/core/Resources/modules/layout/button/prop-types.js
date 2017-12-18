@@ -23,7 +23,7 @@ const Action = {
      *
      * @type {string|function}
      */
-    action: T.oneOfType([T.string, T.func]).isRequired,
+    action: T.oneOfType([T.string, T.func]).isRequired, // todo should also accept url array
 
     /**
      * Is the action disabled ?

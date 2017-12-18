@@ -31,26 +31,16 @@ bootstrap(
   reducer,
 
   // remap data-attributes set on the app DOM container
+  // todo load remaining through ajax
   (initialData) => {
     return {
       parameters: {
-        data: initialData.parameters
+        data: initialData.parameters,
+        originalData: initialData.parameters
       },
       profile: {
-        data: [
-          {
-            id: 'main',
-            title: 'Informations générales',
-            meta: {
-              main: true
-            },
-            sections: []
-          }, {
-            id: 'scol',
-            title: 'Scolarité',
-            sections: []
-          }
-        ]
+        data: initialData.profile,
+        originalData: initialData.profile
       }
     }
   }

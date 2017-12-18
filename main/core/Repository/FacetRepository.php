@@ -30,7 +30,7 @@ class FacetRepository extends EntityRepository
             // filter query to only get accessible facets for the current roles
             $qb
                 ->join('f.roles', 'r')
-                ->where('r.nam IN (:roles)')
+                ->where('r.name IN (:roles)')
                 ->setParameter('roles', $roleNames);
         }
 
@@ -38,7 +38,7 @@ class FacetRepository extends EntityRepository
             $qb->andWhere('f.forceCreationForm = true');
         }
 
-        $qb->orderBy('f.isMain, f.position');
+        $qb->orderBy('f.main, f.position');
 
         return $qb->getQuery()->getResult();
     }
@@ -74,7 +74,7 @@ class FacetRepository extends EntityRepository
         $isMain = !is_bool($isMain) ? $isMain === 'true' : $isMain;
         $dql = '
             SELECT COUNT(facet) FROM Claroline\CoreBundle\Entity\Facet\Facet facet
-            WHERE facet.isMain = :isMain
+            WHERE facet.main = :isMain
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('isMain', $isMain);

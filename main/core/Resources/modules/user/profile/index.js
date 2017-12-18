@@ -19,20 +19,6 @@ bootstrap(
       data: initialData.user,
       originalData: initialData.user
     },
-    facets: [
-      {
-        id: 'main',
-        title: 'Informations générales',
-        meta: {
-          main: true
-        },
-        sections: []
-      }, {
-        id: 'scol',
-        title: 'Scolarité',
-        meta: {},
-        sections: []
-      }
-    ]
+    facets: initialData.facets
   })
 )

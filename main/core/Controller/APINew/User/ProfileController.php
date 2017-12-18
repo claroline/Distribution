@@ -58,7 +58,7 @@ class ProfileController extends AbstractApiController
     /**
      * Gets the profile configuration for the current platform.
      *
-     * @EXT\Route("")
+     * @EXT\Route("", name="apiv2_profile_get")
      * @EXT\Method("GET")
      */
     public function getAction()
@@ -71,7 +71,7 @@ class ProfileController extends AbstractApiController
     /**
      * Updates the profile configuration for the current platform.
      *
-     * @EXT\Route("")
+     * @EXT\Route("", name="apiv2_profile_update")
      * @EXT\Method("PUT")
      *
      * @param Request $request
@@ -90,6 +90,8 @@ class ProfileController extends AbstractApiController
                 [Options::DEEP_DESERIALIZE]
             );
         }
+
+        // todo remove deleted
 
         return new JsonResponse(
             $this->serializer->serialize()

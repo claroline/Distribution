@@ -21,6 +21,7 @@ const ProfileTabActions = () =>
     <FormPageActionsContainer
       formName={select.formName}
       opened={true}
+      target={['apiv2_profile_update']}
     />
   </PageActions>
 

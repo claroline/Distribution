@@ -54,17 +54,20 @@ const CancelAction = props =>
     title={props.label}
     icon={props.icon}
     action={props.action}
+    disabled={props.disabled}
   />
 
 CancelAction.propTypes = {
   icon: T.string,
   label: T.string,
+  disabled: T.bool,
   action: T.oneOfType([T.string, T.func]).isRequired
 }
 
 CancelAction.defaultProps = {
   icon: 'fa fa-times',
-  label: t('cancel')
+  label: t('cancel'),
+  disabled: false
 }
 
 const OpenedPageActions = props =>

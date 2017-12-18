@@ -102,7 +102,7 @@ class RegistrationController extends Controller
         $this->checkAccess();
 
         return [
-            'facets' => $this->profileSerializer->serialize(Options::REGISTRATION),
+            'facets' => $this->profileSerializer->serialize([Options::REGISTRATION]),
             'termOfService' => $this->configHandler->getParameter('terms_of_service') ?
                 $this->tosManager->getTermsOfService() : null,
             'options' => [
