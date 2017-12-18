@@ -15,8 +15,6 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Role;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -33,7 +31,6 @@ class Facet
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_facet_admin", "api_profile"})
      *
      * @var int
      */
@@ -42,7 +39,6 @@ class Facet
     /**
      * @ORM\Column(unique=true)
      * @Assert\NotBlank()
-     * @Groups({"api_facet_admin", "api_profile"})
      *
      * @var string
      */
@@ -50,7 +46,6 @@ class Facet
 
     /**
      * @ORM\Column(type="integer", name="position")
-     * @Groups({"api_facet_admin", "api_profile"})
      *
      * @var int
      */
@@ -63,10 +58,8 @@ class Facet
      *     cascade={"persist"}
      * )
      * @ORM\OrderBy({"position" = "ASC"})
-     * @Groups({"api_facet_admin", "api_profile"})
-     * @SerializedName("panels")
      *
-     * @var ArrayCollection
+     * @var ArrayCollection|PanelFacet[]
      */
     protected $panelFacets;
 
@@ -76,15 +69,13 @@ class Facet
      *     inversedBy="facets"
      * )
      * @ORM\JoinTable(name="claro_facet_role")
-     * @Groups({"api_facet_admin"})
      *
-     * @var ArrayCollection
+     * @var ArrayCollection|Role[]
      */
     protected $roles;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"api_facet_admin", "api_profile"})
      *
      * @var bool
      */
@@ -92,7 +83,6 @@ class Facet
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"api_facet_admin", "api_profile"})
      *
      * @var bool
      */
@@ -149,7 +139,7 @@ class Facet
     }
 
     /**
-     * @return PanelFacet
+     * @return ArrayCollection|PanelFacet[]
      */
     public function getPanelFacets()
     {

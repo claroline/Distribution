@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\FacetManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service("claroline.serializer.user")
@@ -18,26 +19,36 @@ class UserSerializer
 {
     use SerializerTrait;
 
-    private $facetManager;
+    /** @var TokenStorageInterface */
     private $tokenStorage;
+
+    /** @var AuthorizationCheckerInterface */
+    private $authChecker;
+
+    /** @var FacetManager */
+    private $facetManager;
 
     /**
      * UserManager constructor.
      *
      * @DI\InjectParams({
-     *     "facetManager" = @DI\Inject("claroline.manager.facet_manager"),
-     *     "tokenStorage" = @DI\Inject("security.token_storage")
+     *     "tokenStorage" = @DI\Inject("security.token_storage"),
+     *     "authChecker"  = @DI\Inject("security.authorization_checker"),
+     *     "facetManager" = @DI\Inject("claroline.manager.facet_manager")
      * })
      *
-     * @param FacetManager          $facetManager
-     * @param TokenStorageInterface $tokenStorage
+     * @param TokenStorageInterface         $tokenStorage
+     * @param AuthorizationCheckerInterface $authChecker
+     * @param FacetManager                  $facetManager
      */
     public function __construct(
-        FacetManager $facetManager,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        AuthorizationCheckerInterface $authChecker,
+        FacetManager $facetManager
     ) {
-        $this->facetManager = $facetManager;
         $this->tokenStorage = $tokenStorage;
+        $this->authChecker = $authChecker;
+        $this->facetManager = $facetManager;
     }
 
     /**
@@ -138,12 +149,17 @@ class UserSerializer
      */
     private function serializeRights(User $user)
     {
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+
+        $isOwner = $currentUser instanceof User && $currentUser->getUuid() === $user->getUuid();
+        $isAdmin = $this->authChecker->isGranted('ROLE_ADMIN'); // todo maybe add those who have access to UserManagement tool
+
         // return same structure than ResourceNode
         return [
             'current' => [
-                'edit' => true, // todo owner of profile + admins
-                'administrate' => true, // todo admins
-                'delete' => true, // todo owner of profile + admins
+                'edit' => $isOwner || $isAdmin,
+                'administrate' => $isAdmin,
+                'delete' => $isOwner || $isAdmin, // todo check platform param to now if current user can destroy is account
             ],
         ];
     }
@@ -221,10 +237,10 @@ class UserSerializer
      */
     public function deserialize(array $data, User $user = null, array $options = [])
     {
-        //remove this later (with the Trait)
+        // remove this later (with the Trait)
         $object = $this->genericSerializer->deserialize($data, $user, $options);
 
-        //@todo rename mail into email later
+        // todo rename mail into email later
         if (isset($data['email'])) {
             $object->setMail($data['email']);
         }
@@ -234,7 +250,7 @@ class UserSerializer
         }
 
         if (isset($data['enabled'])) {
-            $object->setIsEnabled($data['enabled']);
+            $object->setEnabled($data['enabled']);
         }
 
         return $object;

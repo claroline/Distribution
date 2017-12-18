@@ -2,7 +2,7 @@ import get from 'lodash/get'
 import set from 'lodash/set'
 import merge from 'lodash/merge'
 
-import {chain, notBlank, validateIf} from '#/main/core/validation'
+import {chain, notEmpty, validateIf} from '#/main/core/validation'
 import {getTypeOrDefault} from '#/main/core/data'
 
 /**
@@ -23,7 +23,7 @@ function validateProp(propDef, propValue) {
     // only validate displayed props
     set(errors, propDef.name, chain(propValue, propDef.options || {}, [
       // checks if not empty when field is required
-      validateIf(propDef.required, notBlank), // todo : there will be problems with html/objects/arrays
+      validateIf(propDef.required, notEmpty),
       // execute data type validator if any
       validateIf(propType.validate, propType.validate),
       // execute form instance validator if any

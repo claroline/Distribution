@@ -2,6 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+
 import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import {select} from '#/main/core/user/profile/selectors'
 
@@ -10,6 +12,11 @@ import {select} from '#/main/core/user/profile/selectors'
 const ProfileFacetComponent = props =>
   <div className="profile-facet">
     <h2>{props.facet.title}</h2>
+
+    <FormContainer
+      name="user"
+      sections={props.facet.sections}
+    />
   </div>
 
 ProfileFacetComponent.propTypes = {

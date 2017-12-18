@@ -5,9 +5,7 @@ import merge from 'lodash/merge'
 
 import {getTypeOrDefault} from '#/main/core/data'
 
-//import {validateProp} from '#/main/core/data/form/validator'
-
-// todo use validate prop here
+import {validateProp} from '#/main/core/data/form/validator'
 
 const FormField = props => {
   const typeDef = getTypeOrDefault(props.type)
@@ -23,15 +21,19 @@ const FormField = props => {
     warnOnly: !props.validating,
     optional: !props.required,
     value: props.value,
-    onChange: props.onChange
+    onChange: (value) => {
+      if (props.onChange) {
+        props.onChange(value)
+      }
+
+      props.updateProp(props.name, value)
+      props.setErrors(validateProp(props, value))
+    }
   }))
 }
 
 // todo : use the one defined in prop-types
 FormField.propTypes = {
-  validating: T.bool,
-  required: T.bool,
-
   name: T.string.isRequired,
   type: T.string,
   label: T.string.isRequired,
@@ -39,10 +41,14 @@ FormField.propTypes = {
   hideLabel: T.bool,
   disabled: T.bool,
   options: T.object,
-  onChange: T.func,
-
+  required: T.bool,
   value: T.any,
-  error: T.string
+  error: T.string,
+  validating: T.bool,
+  onChange: T.func,
+  validate: T.func,
+  updateProp: T.func,
+  setErrors: T.func
 }
 
 export {

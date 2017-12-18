@@ -54,6 +54,7 @@ const FacetSection = props =>
               label: t('fields_list'),
               required: true,
               options: {
+                placeholder: t('profile_section_no_field'),
                 min: 1
               }
             }

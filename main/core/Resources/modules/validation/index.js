@@ -4,7 +4,12 @@ import set from 'lodash/set'
 import {trans, tval} from '#/main/core/translation'
 
 function notEmpty(value) {
-  if (isEmpty(value)) {
+  if (
+    undefined === value
+    || null === value
+    || (typeof value === 'object' && isEmpty(value)) // objects and arrays
+    || (typeof value === 'string' && ('' === value || '' === value.trim() || isHtmlEmpty(value))) // strings and HTML
+  ) {
     return tval('This value should not be blank.')
   }
 }
@@ -27,7 +32,7 @@ function isHtmlEmpty(html, allowedTags = ['img', 'audio', 'iframe', 'video']) {
   }
 
   const wrapper = document.createElement('div')
-  wrapper.innerHTML = html
+  wrapper.innerHTML = html.trim()
 
   return !(wrapper.textContent || allowedTags.some((tag) => {
     return html.indexOf(tag) >= 0
@@ -78,6 +83,30 @@ function ltMax(value, options) {
 
 function inRange(value, options) {
   return chain(value, options, [gtMin, ltMax])
+}
+
+function lengthMin(value, options) {
+  if (undefined !== options.minLength && value.length < options.minLength) {
+    return trans(
+      'This value should be greater than {{ limit }}.',
+      {},
+      'validators'
+    ).replace('{{ limit }}', options.minLength)
+  }
+}
+
+function lengthMax(value, options) {
+  if (undefined !== options.minLength && value.length > options.maxLength) {
+    return trans(
+      'This value should be lower than {{ limit }}.',
+      {},
+      'validators'
+    ).replace('{{ limit }}', options.maxLength)
+  }
+}
+
+function lengthInRange(value, options) {
+  return chain(value, options, [lengthMin, lengthMax])
 }
 
 function ip(value) {
@@ -172,5 +201,8 @@ export {
   gtZero,
   email,
   gteZero,
+  lengthMin,
+  lengthMax,
+  lengthInRange,
   notEmpty
 }

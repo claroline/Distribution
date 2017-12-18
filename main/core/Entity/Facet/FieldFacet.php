@@ -99,6 +99,8 @@ class FieldFacet
      * @ORM\JoinColumn(onDelete="CASCADE", nullable=true)
      *
      * @var PanelFacet
+     *
+     * @todo should not be declared here (not used in Profile)
      */
     protected $panelFacet;
 
@@ -173,6 +175,8 @@ class FieldFacet
      * @ORM\JoinColumn(name="resource_node", onDelete="CASCADE", nullable=true)
      *
      * @var ResourceNode
+     *
+     * @todo should not be declared here (not used in Profile)
      */
     protected $resourceNode;
 
@@ -181,7 +185,7 @@ class FieldFacet
      *
      * @var array
      */
-    protected $options;
+    protected $options = [];
 
     /**
      * Constructor.
@@ -190,7 +194,6 @@ class FieldFacet
     {
         $this->fieldsFacetValue = new ArrayCollection();
         $this->fieldFacetChoices = new ArrayCollection();
-        $this->options = [];
         $this->refreshUuid();
     }
 
@@ -207,7 +210,7 @@ class FieldFacet
     }
 
     /**
-     * @return Facet
+     * @return PanelFacet
      */
     public function getPanelFacet()
     {

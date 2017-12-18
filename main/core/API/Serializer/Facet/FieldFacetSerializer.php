@@ -17,6 +17,8 @@ class FieldFacetSerializer
 {
     use SerializerTrait;
 
+    private $serializer;
+
     /**
      * @DI\InjectParams({
      *     "serializer" = @DI\Inject("claroline.api.serializer")
@@ -41,37 +43,35 @@ class FieldFacetSerializer
     {
         if (in_array(Options::PROFILE_SERIALIZE, $options)) {
             $serialized = [
-              //no uuid yet
               'id' => $fieldFacet->getUuid(),
-              'name' => $fieldFacet->getName(),
+              'name' => $fieldFacet->getPrettyName(),
               'type' => $fieldFacet->getFieldType(),
-              //maybe translate this
               'label' => $fieldFacet->getName(),
               'required' => $fieldFacet->isRequired(),
               'options' => $fieldFacet->getOptions(),
             ];
 
-            $fieldFacetChoiceSerializer = $this->serializer
-                ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice');
-            $choiceType = [FieldFacet::SELECT_TYPE, FieldFacet::CHECKBOXES_TYPE, FieldFacet::CASCADE_SELECT_TYPE];
-
-            if (in_array($fieldFacet->getType(), $choiceType)) {
-                $choices = array_map(function (FieldFacetChoice $choice) use ($fieldFacetChoiceSerializer) {
-                    return $fieldFacetChoiceSerializer->serialize($choice);
+            if (in_array($fieldFacet->getType(), [
+                FieldFacet::SELECT_TYPE,
+                FieldFacet::CHECKBOXES_TYPE,
+                FieldFacet::CASCADE_SELECT_TYPE
+            ])) {
+                $serialized['options']['choices'] = array_map(function (FieldFacetChoice $choice) {
+                    return $this->serializer
+                        ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice')
+                        ->serialize($choice);
                 }, $fieldFacet->getFieldFacetChoices()->toArray());
-
-                $serialized['options']['choices'] = $choices;
             }
+        } else {
+            //could be used by the clacoform. It should change later. The default one should be
+            //PROFILE_SERIALIZE. See with @kitan
+            $serialized = [
+                'id' => $fieldFacet->getId(),
+                'name' => $fieldFacet->getName(),
+                'type' => $fieldFacet->getType(),
+                'translationKey' => $fieldFacet->getTypeTranslationKey(),
+            ];
         }
-
-        //could be used by the clacoform. It should change later. The default one should be
-        //PROFILE_SERIALIZE. See with @kitan
-        $serialized = [
-            'id' => $fieldFacet->getId(),
-            'name' => $fieldFacet->getName(),
-            'type' => $fieldFacet->getType(),
-            'translationKey' => $fieldFacet->getTypeTranslationKey(),
-        ];
 
         return $serialized;
     }
@@ -80,7 +80,6 @@ class FieldFacetSerializer
     {
         $this->sipe('name', 'setName', $data, $field);
         $this->sipe('type', 'setType', $data, $field);
-        $this->sipe('label', 'setName', $data, $field);
         $this->sipe('required', 'setRequired', $data, $field);
         $this->sipe('options', 'setOptions', $data, $field);
     }

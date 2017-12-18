@@ -4,19 +4,14 @@ import classes from 'classnames'
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEmpty from 'lodash/isEmpty'
-import isNull from 'lodash/isNull'
-import mergeWith from 'lodash/mergeWith'
-import omitBy from 'lodash/omitBy'
 import set from 'lodash/set'
 
 import {t} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {Form} from '#/main/core/data/form/components/form.jsx'
+import {cleanErrors} from '#/main/core/data/form/utils'
 
 const MODAL_DATA_FORM = 'MODAL_DATA_FORM'
-
-// todo handle validation
-// todo try to merge with the reducer logic
 
 class DataFormModal extends Component {
   constructor(props) {
@@ -47,7 +42,7 @@ class DataFormModal extends Component {
 
   setErrors(errors = {}) {
     this.setState({
-      errors: omitBy(mergeWith({}, this.state.errors, errors, (objV, srcV) => srcV || null), isNull)
+      errors: cleanErrors(this.state.errors, errors)
     })
   }
 

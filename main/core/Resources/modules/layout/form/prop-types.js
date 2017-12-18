@@ -10,7 +10,7 @@ const FormField = {
     id: T.string.isRequired,
     className: T.string,
     value: T.any,
-    placeholder: T.string, // todo : not yet implemented
+    placeholder: T.string,
     disabled: T.bool.isRequired,
     onChange: T.func.isRequired
   },

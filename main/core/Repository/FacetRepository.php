@@ -14,40 +14,29 @@ namespace Claroline\CoreBundle\Repository;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 class FacetRepository extends EntityRepository
 {
-    public function findVisibleFacets(TokenInterface $token, $max = null)
+    public function findVisibleFacets(TokenInterface $token)
     {
-        $roleNames = [];
+        // retrieves current user roles
+        $roleNames = array_map(function (Role $role) {
+            return $role->getRole();
+        }, $token->getRoles());
 
-        foreach ($token->getRoles() as $role) {
-            $roleNames[] = $role->getRole();
+        $qb = $this->createQueryBuilder('f');
+        if (!in_array('ROLE_ADMIN', $roleNames)) {
+            // filter query to only get accessible facets for the current roles
+            $qb
+                ->join('f.roles', 'r')
+                ->where('r.nam IN (:roles)')
+                ->setParameter('roles', $roleNames);
         }
 
-        //the mighty admin can do anything in our world
-        if (in_array('ROLE_ADMIN', $roleNames)) {
-            $dql = "
-            SELECT facet FROM Claroline\CoreBundle\Entity\Facet\Facet facet
-            ORDER BY facet.isMain, facet.position
-        ";
-            $query = $this->_em->createQuery($dql);
-        } else {
-            $dql = "
-            SELECT facet FROM Claroline\CoreBundle\Entity\Facet\Facet facet
-            JOIN facet.roles role
-            WHERE role.name IN (:rolenames)
-            ORDER BY facet.isMain, facet.position
-        ";
+        $qb->orderBy('f.isMain, f.position');
 
-            $query = $this->_em->createQuery($dql);
-            $query->setParameter('rolenames', $roleNames);
-        }
-        if ($max !== null) {
-            $query->setMaxResults($max);
-        }
-
-        return $query->getResult();
+        return $qb->getQuery()->getResult();
     }
 
     public function findByUser(User $user, $showAll = false)
@@ -70,6 +59,12 @@ class FacetRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param bool $isMain
+     * @return mixed
+     *
+     * @deprecated
+     */
     public function countFacets($isMain = false)
     {
         $isMain = !is_bool($isMain) ? $isMain === 'true' : $isMain;

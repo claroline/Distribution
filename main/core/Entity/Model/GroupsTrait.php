@@ -52,7 +52,7 @@ trait GroupsTrait
     /**
      * Get the groups.
      *
-     * @return Group[]
+     * @return ArrayCollection|Group[]
      */
     public function getGroups()
     {

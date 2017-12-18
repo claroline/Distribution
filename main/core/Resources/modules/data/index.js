@@ -121,6 +121,7 @@ function validateDefinition(definition) {
 
   invariant(typeof definition.meta === 'object', 'Data type "meta" property must be a object.')
   invariant(typeof definition.meta.type === 'string', 'Data type "meta.type" property must be a string.')
+  invariant(typeof definition.configure === 'function', 'Data type "configure" property must be a function.')
 
   if (definition.components) {
     invariant(typeof definition.components === 'object', 'Data type "components" property must be a object.')
@@ -142,6 +143,14 @@ function setDefinitionDefaults(definition) {
     },
 
     /**
+     * The list of configuration fields for the data type.
+     * It gets the current options values as param.
+     *
+     * @return {array}
+     */
+    configure: () => [],
+
+    /**
      * Parses a value.
      *
      * @param value
@@ -158,7 +167,7 @@ function setDefinitionDefaults(definition) {
     /**
      * Validates a value provided for the data type.
      */
-    validate: () => true,
+    validate: () => undefined,
 
     /**
      * Custom components for the data type.
