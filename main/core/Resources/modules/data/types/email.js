@@ -21,7 +21,8 @@ const emailDefinition = {
   validate: (value) => chain(value, {}, [string, email]),
   components: {
     form: TextGroup,
-    details: EmailLink
+    details: EmailLink,
+    table: EmailLink
   }
 }
 

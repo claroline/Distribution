@@ -31,10 +31,10 @@ const DataDetailsField = props => {
               id: props.name,
               label: props.label,
               hideLabel: props.hideLabel,
-              value: props.data
+              data: props.data
             }))
             :
-            typeDef.render ? typeDef.render(props.data, props.options) : props.data
+            typeDef.render ? typeDef.render(props.data, props.options || {}) : props.data
         )
         }
       </div>

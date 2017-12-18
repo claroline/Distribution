@@ -14,7 +14,7 @@ function createDetailsDefinition(sections) {
   return sections
     .map(section => {
       // adds defaults to the section configuration
-      const defaultedSection = merge({}, DataDetailsProperty.defaultProps, section)
+      const defaultedSection = merge({}, DataDetailsSection.defaultProps, section)
       if (!!defaultedSection.displayed && defaultedSection.fields) {
         // adds defaults to the field configuration
         const defaultedFields = defaultedSection.fields.map(field => merge({}, DataDetailsProperty.defaultProps, field))

@@ -2,7 +2,7 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 

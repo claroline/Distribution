@@ -33,7 +33,7 @@ const reducer = makeFormReducer('profile', defaultState, {
         title: '',
         position: newState.length,
         meta: {
-          main: false,
+          main: false
         },
         sections: []
       })

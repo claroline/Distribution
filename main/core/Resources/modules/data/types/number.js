@@ -15,7 +15,7 @@ const numberDefinition = {
     creatable: true,
     icon: 'fa fa-fw fa fa-calculator',
     label: t('number'),
-    description: t('number_desc'),
+    description: t('number_desc')
   },
 
   /**
@@ -49,11 +49,12 @@ const numberDefinition = {
    * Displays a number value.
    * NB. trans typing to string permits to avoid React interpret 0 value as falsy and display nothing.
    *
-   * @param {number} raw
+   * @param {number}  raw
+   * @param {options} options
    *
    * @return {string}
    */
-  render: (raw) => raw+'',
+  render: (raw, options) => raw + (options.unit ? ' ' + options.unit : ''),
 
   /**
    * Validates a number value.

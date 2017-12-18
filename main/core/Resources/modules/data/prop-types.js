@@ -50,6 +50,15 @@ const DataCell = {
   }
 }
 
+const DataDetails = {
+  propTypes: {
+    data: T.any
+  },
+  defaultTypes: {
+    data: null
+  }
+}
+
 const DataSearch = {
   propTypes: {
     search: T.string.isRequired,
@@ -77,6 +86,7 @@ const DataForm = {
 export {
   DataProperty,
   DataCell,
+  DataDetails,
   DataForm,
   DataSearch
 }
