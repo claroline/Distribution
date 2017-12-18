@@ -73,9 +73,9 @@ class FacetManager
     }
 
     /**
-     * Creates a new facet.
+     * @deprecated
      *
-     * @param $name
+     * @todo remove me
      */
     public function createFacet($name, $forceCreationForm = false, $isMain = false)
     {
@@ -93,62 +93,12 @@ class FacetManager
     }
 
     /**
-     * Removes an existing facet.
+     * used by clacoForm Manager.
      *
-     * @param Facet $facet
+     * @deprecated
+     *
+     * @todo remove me
      */
-    public function removeFacet(Facet $facet)
-    {
-        $this->om->remove($facet);
-        $this->om->flush();
-        $this->reorderFacets();
-    }
-
-    public function editFacet(Facet $facet, $name, $forceCreationForm = false, $isMain = false)
-    {
-        $facet->setName($name);
-        $facet->setForceCreationForm($forceCreationForm);
-        $facet->setIsMain($isMain);
-        $this->om->persist($facet);
-        $this->om->flush();
-
-        return $facet;
-    }
-
-    /**
-     * Fixes gaps beteween facet orders.
-     */
-    public function reorderFacets()
-    {
-        $facets = $this->getFacets();
-        $order = 0;
-
-        foreach ($facets as $facet) {
-            $facet->setPosition($order);
-            ++$order;
-            $this->om->persist($facet);
-        }
-
-        $this->om->flush();
-    }
-
-    /**
-     * Fixes gaps beteween fields orders.
-     */
-    public function reorderFields(PanelFacet $panelFacet)
-    {
-        $fields = $panelFacet->getFieldsFacet();
-        $order = 0;
-
-        foreach ($fields as $field) {
-            $field->setPosition($order);
-            ++$order;
-            $this->om->persist($field);
-        }
-
-        $this->om->flush();
-    }
-
     public function createField($name, $isRequired, $type, ResourceNode $resourceNode = null)
     {
         $fieldFacet = new FieldFacet();
@@ -168,6 +118,10 @@ class FacetManager
      * @param PanelFacet $facet
      * @param string     $name
      * @param int        $type
+     *
+     * @deprecated
+     *
+     * @todo remove me
      */
     public function addField(PanelFacet $panelFacet, $name, $isRequired, $type)
     {
@@ -202,61 +156,6 @@ class FacetManager
         $this->om->flush();
 
         return $panelFacet;
-    }
-
-    /**
-     * Persists and flush a panel.
-     *
-     * @param FacetPanel $panel
-     *
-     * @return FacetPanel
-     */
-    public function editPanel(PanelFacet $panelFacet, $name, $collapse)
-    {
-        $panelFacet->setName($name);
-        $panelFacet->setIsDefaultCollapsed($collapse);
-        $this->om->persist($panelFacet);
-        $this->om->flush();
-
-        return $panelFacet;
-    }
-
-    /**
-     * Removes a panel.
-     *
-     * @param FacetPanel $panel
-     */
-    public function removePanel(PanelFacet $panel)
-    {
-        //some reordering have to happen here...
-        $panels = $this->panelRepo->findPanelsAfter($panel);
-
-        foreach ($panels as $afterPanel) {
-            $afterPanel->setPosition($afterPanel->getPosition() - 1);
-            $this->om->persist($afterPanel);
-        }
-
-        $this->om->remove($panel);
-        $this->om->flush();
-        //reorder the fields for the still standing panels
-        $panels = $this->panelRepo->findAll();
-
-        foreach ($panels as $panel) {
-            $this->reorderFields($panel);
-        }
-    }
-
-    /**
-     * Removes a field from a facet.
-     *
-     * @param FieldFacet $field
-     */
-    public function removeField(FieldFacet $field)
-    {
-        $panel = $field->getPanelFacet();
-        $this->om->remove($field);
-        $this->om->flush();
-        $this->reorderFields($panel);
     }
 
     /**

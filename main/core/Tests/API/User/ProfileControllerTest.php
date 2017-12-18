@@ -22,43 +22,6 @@ class ProfileControllerTest extends TransactionalTestCase
         $this->persister = $this->client->getContainer()->get('claroline.library.testing.persister');
     }
 
-    public function testGetFacetsAction()
-    {
-        //look at creation fields method
-        $this->createFields();
-        $user = $this->persister->user('user');
-        $this->login($user);
-        $this->client->request('GET', "/api/profile/{$user->getId()}/facets");
-        $data = $this->client->getResponse()->getContent();
-        $data = json_decode($data, true);
-
-        //only facetA is visible for user
-        $this->assertEquals(1, count($data));
-        $this->assertEquals('facetA', $data[0]['name']);
-
-        /*
-         * panelA is editable
-         * panelB is read only
-         * panelC is hidden
-         * panelD is self editable
-         * => only 2 panels should be there
-         */
-
-        $this->assertEquals(3, count($data[0]['panels']));
-
-        //fieldA is editable
-        $this->assertEquals('fieldA', $data[0]['panels'][0]['fields'][0]['name']);
-        $this->assertEquals(true, $data[0]['panels'][0]['fields'][0]['is_editable']);
-
-        //fieldB is readonly
-        $this->assertEquals('fieldB', $data[0]['panels'][1]['fields'][0]['name']);
-        $this->assertEquals(false, $data[0]['panels'][1]['fields'][0]['is_editable']);
-
-        //fieldC is editable
-        $this->assertEquals('fieldD', $data[0]['panels'][3]['fields'][0]['name']);
-        $this->assertEquals(true, $data[0]['panels'][3]['fields'][0]['is_editable']);
-    }
-
     public function testGetProfileLinksAction()
     {
         $user = $this->persister->user('user');

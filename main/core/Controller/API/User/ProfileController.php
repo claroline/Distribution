@@ -11,19 +11,17 @@
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations\View;
-use JMS\DiExtraBundle\Annotation as DI;
-use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\Profile\ProfileLinksEvent;
+use Claroline\CoreBundle\Library\Security\Collection\FieldFacetCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
 use FOS\RestBundle\Controller\Annotations\Get;
-use FOS\RestBundle\Controller\Annotations\Put;
-use Claroline\CoreBundle\Event\Profile\ProfileLinksEvent;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Claroline\CoreBundle\Entity\User;
+use FOS\RestBundle\Controller\Annotations\NamePrefix;
+use FOS\RestBundle\Controller\Annotations\View;
+use FOS\RestBundle\Controller\FOSRestController;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Request;
-use Claroline\CoreBundle\Library\Security\Collection\FieldFacetCollection;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @NamePrefix("api_")
@@ -66,7 +64,7 @@ class ProfileController extends FOSRestController
                         foreach ($ffvs as $ffv) {
                             if ($ffv->getFieldFacet()->getId() === $field->getId()) {
                                 //for serialization
-                            $field->setUserFieldValue($ffv);
+                                $field->setUserFieldValue($ffv);
                             }
                         }
 
@@ -94,32 +92,5 @@ class ProfileController extends FOSRestController
         );
 
         return $profileLinksEvent->getLinks();
-    }
-
-    /**
-     * @Put("/profile/{user}/fields", name="put_profile_fields", options={ "method_prefix" = false })
-     * @View(serializerGroups={"api_profile"})
-     */
-    public function putFieldsAction(User $user)
-    {
-        $fields = $this->request->request->get('fields');
-
-        $entities = array_map(
-            function ($el) { return $this->facetManager->getFieldFacet($el['id']); },
-            $fields
-        );
-
-        $collection = new FieldFacetCollection($entities, $user);
-
-        if (!$this->isGranted('EDIT', $collection)) {
-            throw new AccessDeniedException('You do not have the permission to edit these fields.');
-        }
-
-        foreach ($fields as $key => $field) {
-            $value = isset($field['user_field_value']) ? $field['user_field_value'] : null;
-            $this->facetManager->setFieldValue($user, $entities[$key], $value);
-        }
-
-        return $user;
     }
 }
