@@ -69,6 +69,13 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
         $dropzoneType = $resourceManager->getResourceTypeByName('claroline_dropzone');
         $allDropzones = $icapDropzoneRepo->findAll();
 
+        $startDate = new \DateTime();
+        $nbResources = 0;
+        $nbDrops = 0;
+        $nbDocuments = 0;
+        $nbFiles = 0;
+        $nbFoundFiles = 0;
+        $nbLogs = 0;
         $om->startFlushSuite();
         $i = 1;
 
@@ -221,6 +228,7 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                                                 $filesDir.$ds.$fileResource->getHashName(),
                                                 $filesDir.$ds.'dropzone'.$ds.$newDropzone->getUuid().$ds.$fileName
                                             );
+                                            ++$nbFoundFiles;
                                         }
                                         $data = [
                                             'url' => '../files/dropzone'.$ds.$newDropzone->getUuid().$ds.$fileName,
@@ -230,6 +238,7 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                                     }
                                     $documentResource->setActive(false);
                                     $om->persist($documentResource);
+                                    ++$nbFiles;
                                 }
                                 break;
                             case Document::DOCUMENT_TYPE_TEXT:
@@ -258,6 +267,7 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                         }
                         $newDocument->setUser($drop->getUser());
                         $om->persist($newDocument);
+                        ++$nbDocuments;
                     }
 
                     /* Copies Corrections */
@@ -291,6 +301,7 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                     }
 
                     $om->persist($newDrop);
+                    ++$nbDrops;
                 }
 
                 $withLogs = $input->getOption('logs');
@@ -303,10 +314,12 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
                         $log->setResourceNode($newNode);
                         $log->setResourceType($dropzoneType);
                         $om->persist($log);
+                        ++$nbLogs;
                     }
                 }
 
                 $om->persist($newDropzone);
+                ++$nbResources;
 
                 $output->writeln('<info>      Soft deleting old resource and associated hidden directory...</info>');
 
@@ -330,5 +343,17 @@ class ConvertDropzoneCommand extends ContainerAwareCommand
             }
         }
         $om->endFlushSuite();
+
+        $timeDiff = $startDate->diff(new \DateTime());
+        $hours = ($timeDiff->days * 24) + $timeDiff->h;
+        $minutes = $timeDiff->i;
+        $seconds = $timeDiff->s;
+        $output->writeln("<info>  Execution time : $hours hours $minutes minutes $seconds seconds</info>");
+        $output->writeln("<info>  Number of resources : $nbResources</info>");
+        $output->writeln("<info>  Number of drops : $nbDrops</info>");
+        $output->writeln("<info>  Number of documents : $nbDocuments</info>");
+        $output->writeln("<info>  Number of files : $nbFiles</info>");
+        $output->writeln("<info>  Number of found files : $nbFoundFiles</info>");
+        $output->writeln("<info>  Number of logs : $nbLogs</info>");
     }
 }

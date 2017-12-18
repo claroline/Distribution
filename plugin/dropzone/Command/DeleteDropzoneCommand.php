@@ -32,6 +32,8 @@ class DeleteDropzoneCommand extends ContainerAwareCommand
         $resourceManager = $this->getContainer()->get('claroline.manager.resource_manager');
         $dropzoneRepo = $om->getRepository('Icap\DropzoneBundle\Entity\Dropzone');
         $allDropzones = $dropzoneRepo->findAll();
+        $startDate = new \DateTime();
+        $nbResources = 0;
 
         $om->startFlushSuite();
         $i = 1;
@@ -45,6 +47,7 @@ class DeleteDropzoneCommand extends ContainerAwareCommand
                 $resourceManager->delete($node);
 
                 $output->writeln('<info>  Resource deleted.</info>');
+                ++$nbResources;
 
                 if ($i % 100 === 0) {
                     $output->writeln('<info>  Flushing...</info>');
@@ -54,5 +57,12 @@ class DeleteDropzoneCommand extends ContainerAwareCommand
             }
         }
         $om->endFlushSuite();
+
+        $timeDiff = $startDate->diff(new \DateTime());
+        $hours = ($timeDiff->days * 24) + $timeDiff->h;
+        $minutes = $timeDiff->i;
+        $seconds = $timeDiff->s;
+        $output->writeln("<info>  Execution time : $hours hours $minutes minutes $seconds seconds</info>");
+        $output->writeln("<info>  Number of resources : $nbResources</info>");
     }
 }

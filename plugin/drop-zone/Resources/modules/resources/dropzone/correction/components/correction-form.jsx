@@ -11,14 +11,31 @@ import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {DropzoneType, CorrectionType, GradeType, CriterionType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
+import {computeScoreFromGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {validate, isValid} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
+
+const CriteriaScoreBox = props =>
+  <div className="criteria-score-box">
+    <span className="user-score">{props.score}</span>
+    <span className="sr-only">/</span>
+    <span className="max-score">{props.scoreMax}</span>
+  </div>
+
+CriteriaScoreBox.propTypes = {
+  score: T.number.isRequired,
+  scoreMax: T.number.isRequired
+}
 
 const CriteriaForm = props =>
   <div id="criteria-form">
-    {props.criteria.length > 0 ?
+    <CriteriaScoreBox
+      score={computeScoreFromGrades(props.grades, props.dropzone.parameters.criteriaTotal, props.dropzone.parameters.scoreMax)}
+      scoreMax={props.dropzone.parameters.scoreMax}
+    />
+    {props.dropzone.criteria.length > 0 ?
       <table className="table">
         <tbody>
-        {props.criteria.map(c =>
+        {props.dropzone.criteria.map(c =>
           <tr key={`criterion-form-${c.id}`}>
             <td>
               <HtmlText>
@@ -29,7 +46,7 @@ const CriteriaForm = props =>
               <RadioGroup
                 controlId={`criterion-form-${c.id}-radio`}
                 label="criterion_form_radio"
-                options={[...Array(props.total).keys()].map((idx) => {
+                options={[...Array(props.dropzone.parameters.criteriaTotal).keys()].map((idx) => {
                   return {
                     label: '',
                     value: idx
@@ -52,8 +69,7 @@ const CriteriaForm = props =>
   </div>
 
 CriteriaForm.propTypes = {
-  criteria: T.arrayOf(T.shape(CriterionType.propTypes)).isRequired,
-  total: T.number.isRequired,
+  dropzone: T.shape(DropzoneType.propTypes),
   grades: T.arrayOf(T.shape(GradeType.propTypes)),
   handleUpdate: T.func.isRequired
 }
@@ -116,8 +132,7 @@ export class CorrectionForm extends Component {
           }
           {this.props.dropzone.parameters.criteriaEnabled ?
             <CriteriaForm
-              criteria={this.props.dropzone.criteria}
-              total={this.props.dropzone.parameters.criteriaTotal}
+              dropzone={this.props.dropzone}
               grades={this.state.correction.grades}
               handleUpdate={this.updateCorrectionCriterion}
             /> :

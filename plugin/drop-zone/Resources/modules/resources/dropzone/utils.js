@@ -53,6 +53,14 @@ export function generateCorrectionGrades(correction, dropzone) {
   return Object.assign({}, correction, {grades: grades})
 }
 
+export function computeScoreFromGrades(grades, gradeMax, scoreMax) {
+  let score = 0
+  const total = (gradeMax - 1) * grades.length
+  grades.forEach(g => score += g.value)
+
+  return Math.round((score / total) * scoreMax * 100) / 100
+}
+
 export function getCorrectionKey(drop, dropzone) {
   let key = null
 
