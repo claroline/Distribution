@@ -1,6 +1,6 @@
 import {t} from '#/main/core/translation'
 
-import {File} from '#/main/core/layout/form/components/field/file.jsx'
+import {File} from '#/main/core/layout/form/components/field/file-upload.jsx'
 
 const FILE_TYPE = 'file'
 
