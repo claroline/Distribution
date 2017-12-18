@@ -52,6 +52,7 @@ const Corrections = props =>
                       title: trans('correction', {}, 'dropzone'),
                       correction: c,
                       dropzone: props.dropzone,
+                      showDenialBox: props.dropzone.parameters.correctionDenialEnabled,
                       saveCorrection: (correction) => props.saveCorrection(correction)
                     }
                   )

@@ -18,6 +18,7 @@
     "correct_a_copy": "Corriger une copie",
     "correction": "Correction",
     "correction_denial_label": "Autoriser les apprenants à signaler une correction qu'ils trouvent injuste",
+    "correction_from": "Correction de «%name%»",
     "correction_instruction": "Consignes spécifiques aux correcteurs",
     "correction_n": "Correction n°%number%",
     "correction_type_info": "Sélectionnez la façon dont les copies seront corrigées :",

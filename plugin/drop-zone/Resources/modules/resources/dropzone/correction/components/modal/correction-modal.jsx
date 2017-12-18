@@ -8,6 +8,7 @@ import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.js
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
+import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {validateNotBlank} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
 
 export const MODAL_CORRECTION = 'MODAL_CORRECTION'
@@ -161,7 +162,7 @@ export class CorrectionModal extends Component {
               </HtmlText>
             </div>
           }
-          {this.props.dropzone.parameters.correctionDenialEnabled &&
+          {this.props.showDenialBox &&
             <DenialBox {...this.props}/>
           }
         </Modal.Body>
@@ -181,16 +182,13 @@ export class CorrectionModal extends Component {
 
 CorrectionModal.propTypes = {
   correction: T.object.isRequired,
-  dropzone: T.shape({
-    parameters: T.shape({
-      criteriaEnabled: T.bool.isRequired,
-      criteriaTotal: T.number.isRequired,
-      correctionDenialEnabled: T.bool.isRequired
-    }).isRequired,
-    criteria: T.arrayOf(T.shape({
-      id: T.string.isRequired,
-      instruction: T.string.isRequired
-    }))
-  }).isRequired,
+  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  showDenialBox: T.bool.isRequired,
+  saveCorrection: T.func.isRequired,
   fadeModal: T.func.isRequired
+}
+
+CorrectionModal.defaultProps = {
+  showDenialBox: false,
+  saveCorrection: () => {}
 }

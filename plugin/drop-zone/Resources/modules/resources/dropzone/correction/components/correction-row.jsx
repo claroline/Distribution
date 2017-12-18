@@ -66,7 +66,25 @@ class CorrectionRow extends Component {
           }
         </td>
         <td>
-          {`${this.props.correction.user.firstName} ${this.props.correction.user.lastName}`}
+          <a
+            className="pointer-hand"
+            onClick={() => {
+              this.props.showModal(
+                'MODAL_CORRECTION',
+                {
+                  title: trans(
+                    'correction_from',
+                    {name: `${this.props.correction.user.firstName} ${this.props.correction.user.lastName}`},
+                    'dropzone'
+                  ),
+                  correction: this.props.correction,
+                  dropzone: this.props.dropzone
+                }
+              )
+            }}
+          >
+            {`${this.props.correction.user.firstName} ${this.props.correction.user.lastName}`}
+          </a>
         </td>
         <td>{this.props.correction.startDate}</td>
         <td>{this.props.correction.endDate}</td>

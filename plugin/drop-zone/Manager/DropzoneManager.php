@@ -1171,13 +1171,13 @@ class DropzoneManager
 
     private function getDropWithTheLeastCorrections(array $drops)
     {
-        $selectedDrop = null;
-        $min = 0;
+        $selectedDrop = count($drops) > 0 ? $drops[0] : null;
+        $min = !empty($selectedDrop) ? count($selectedDrop->getCorrections()) : null;
 
         foreach ($drops as $drop) {
             $nbCorrections = count($drop->getCorrections());
 
-            if ($nbCorrections <= $min) {
+            if ($nbCorrections < $min) {
                 $selectedDrop = $drop;
                 $min = $nbCorrections;
             }

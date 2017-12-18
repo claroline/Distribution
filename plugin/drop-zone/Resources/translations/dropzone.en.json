@@ -18,6 +18,7 @@
     "correct_a_copy": "Correct a copy",
     "correction": "Correction",
     "correction_denial_label": "Allow the learners to report a correction they perceive to be unfair.",
+    "correction_from": "Correction from «%name%»",
     "correction_instruction": "Specific instructions for the examiners",
     "correction_n": "Correction n°%number%",
     "correction_type_info": "Select the way the copies will be corrected :",
