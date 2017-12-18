@@ -61,7 +61,7 @@ class FacetSerializer
           'meta' => [
               'main' => $facet->isMain(),
           ],
-          'sections' => array_map(function ($panel) use ($options) {
+          'sections' => array_map(function ($panel) use ($options) { // todo check user rights
               return $this->serializer->serialize($panel, $options);
           }, $facet->getPanelFacets()->toArray()),
         ];

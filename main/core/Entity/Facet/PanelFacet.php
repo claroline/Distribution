@@ -60,7 +60,8 @@ class PanelFacet
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Facet\FieldFacet",
      *     mappedBy="panelFacet",
-     *     cascade={"persist"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
      * @ORM\OrderBy({"position" = "ASC"})
      * @Groups({"api_facet_admin", "api_profile"})

@@ -100,7 +100,7 @@ class FieldFacet
      *
      * @var PanelFacet
      *
-     * @todo should not be declared here (not used in Profile)
+     * @todo should not be declared here (not used in ClacoForm)
      */
     protected $panelFacet;
 

@@ -51,7 +51,7 @@ class PanelFacetSerializer
             'display' => [
                 'collapsed' => $panel->isDefaultCollapsed(),
             ],
-            'fields' => array_map(function (FieldFacet $fieldFacet) use ($options) {
+            'fields' => array_map(function (FieldFacet $fieldFacet) use ($options) { // todo check user rights
                 return $this->serializer->serialize($fieldFacet, $options);
             }, $panel->getFieldsFacet()->toArray()),
         ];

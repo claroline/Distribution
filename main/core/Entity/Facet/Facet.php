@@ -55,7 +55,8 @@ class Facet
      * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacet",
      *     mappedBy="facet",
-     *     cascade={"persist"}
+     *     cascade={"persist", "remove"},
+     *     orphanRemoval=true
      * )
      * @ORM\OrderBy({"position" = "ASC"})
      *
