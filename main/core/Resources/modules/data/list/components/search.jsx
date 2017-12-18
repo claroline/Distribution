@@ -87,7 +87,8 @@ AvailableFilterFlag.propTypes = {
 
 const AvailableFilter = props => {
   const typeDef = getTypeOrDefault(props.type)
-  const isValidSearch = !typeDef.validate || typeDef.validate(props.currentSearch, props.options)
+
+  const isValidSearch = !typeDef.validate || !typeDef.validate(props.currentSearch, props.options)
 
   return (
     <li role="presentation">

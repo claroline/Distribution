@@ -24,6 +24,11 @@ const UserList = {
       label: t('first_name'),
       displayed: true
     }, {
+      name: 'email',
+      type: 'email',
+      label: t('email'),
+      displayed: true
+    }, {
       name: 'meta.personalWorkspace',
       alias: 'hasPersonalWorkspace',
       type: 'boolean',

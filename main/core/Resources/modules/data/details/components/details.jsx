@@ -14,14 +14,8 @@ import {createDetailsDefinition} from '#/main/core/data/details/utils'
 
 const DataDetailsField = props => {
   const typeDef = getTypeOrDefault(props.type)
-  return typeDef.components.details ?
-    React.createElement(typeDef.components.details, merge({}, props.options, {
-      id: props.name,
-      label: props.label,
-      hideLabel: props.hideLabel,
-      value: props.data
-    }))
-    :
+
+  return (
     <div className="form-group">
       {!props.hideLabel &&
         <label className="control-label" htmlFor={props.name}>{props.label}</label>
@@ -29,14 +23,23 @@ const DataDetailsField = props => {
 
       <div id={props.name}>
         {!props.data &&
-          <span className="data-details-empty">{t('empty_value')}</span>
+        <span className="data-details-empty">{t('empty_value')}</span>
         }
         {props.data &&
-          (typeDef.render ? typeDef.render(props.data, props.options) : props.data)
+        (typeDef.components.details ?
+            React.createElement(typeDef.components.details, merge({}, props.options, {
+              id: props.name,
+              label: props.label,
+              hideLabel: props.hideLabel,
+              value: props.data
+            }))
+            :
+            typeDef.render ? typeDef.render(props.data, props.options) : props.data
+        )
         }
       </div>
     </div>
-
+  )
 }
 
 DataDetailsField.propTypes = {
