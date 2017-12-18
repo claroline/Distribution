@@ -4,13 +4,21 @@ function getMainFacet(facets) {
   return facets.find(facet => facet.meta.main) || facets[0]
 }
 
-function getDetailsDefaultSection(userData) {
+function getDetailsDefaultSection() {
   return {
     id: 'default-props',
     title: t('general'),
     primary: true,
     fields: [
-
+      {
+        name: 'email',
+        type: 'email',
+        label: t('email')
+      }, {
+        name: 'meta.description',
+        type: 'html',
+        label: t('description')
+      }
     ]
   }
 }
@@ -48,6 +56,10 @@ function getFormDefaultSection(userData, isNew = false) {
         label: t('password'),
         displayed: isNew,
         required: true
+      }, {
+        name: 'meta.description',
+        type: 'html',
+        label: t('description')
       }
     ]
   }

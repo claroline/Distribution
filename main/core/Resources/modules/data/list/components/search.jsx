@@ -126,6 +126,10 @@ AvailableFilter.propTypes = {
   options: T.object
 }
 
+AvailableFilter.defaultProps = {
+  options: {}
+}
+
 const FiltersList = props =>
   <menu className="search-available-filters">
     {props.available.map(filter =>

@@ -4,7 +4,8 @@ import classes from 'classnames'
 import get from 'lodash/get'
 import merge from 'lodash/merge'
 
-import {Sections} from '#/main/core/layout/components/sections.jsx'
+import {t} from '#/main/core/translation'
+import {Sections, Section} from '#/main/core/layout/components/sections.jsx'
 import {getTypeOrDefault} from '#/main/core/data'
 import {DataDetailsSection as DataDetailsSectionTypes} from '#/main/core/data/details/prop-types'
 import {createDetailsDefinition} from '#/main/core/data/details/utils'
@@ -27,7 +28,12 @@ const DataDetailsField = props => {
       }
 
       <div id={props.name}>
-        {typeDef.render ? typeDef.render(props.data, props.options) : props.data}
+        {!props.data &&
+          <span className="data-details-empty">{t('empty_value')}</span>
+        }
+        {props.data &&
+          (typeDef.render ? typeDef.render(props.data, props.options) : props.data)
+        }
       </div>
     </div>
 
@@ -44,7 +50,7 @@ DataDetailsField.propTypes = {
 }
 
 const DataDetails = props => {
-  const sections = createDetailsDefinition(this.props.sections)
+  const sections = createDetailsDefinition(props.sections)
 
   const primarySection = 1 === sections.length ? sections[0] : sections.find(section => section.primary)
   const otherSections = sections.filter(section => section !== primarySection)
@@ -58,6 +64,7 @@ const DataDetails = props => {
             {primarySection.fields.map(field =>
               <DataDetailsField
                 {...field}
+                key={field.name}
                 data={get(props.data, field.name)}
               />
             )}
@@ -80,6 +87,7 @@ const DataDetails = props => {
               {section.fields.map(field =>
                 <DataDetailsField
                   {...field}
+                  key={field.name}
                   data={get(props.data, field.name)}
                 />
               )}

@@ -1552,5 +1552,6 @@
     "profile_remove_facet": "Supprimer l'onglet du profil",
     "profile_remove_facet_question": "Êtes-vous sûr de vouloir supprimer l'onglet du profil ?",
     "profile_remove_section": "Supprimer la section de l'onglet",
-    "profile_remove_section_question": "Êtes-vous sûr de vouloir supprimer la section de l'onglet ?"
+    "profile_remove_section_question": "Êtes-vous sûr de vouloir supprimer la section de l'onglet ?",
+    "empty_value": "non renseigné"
 }

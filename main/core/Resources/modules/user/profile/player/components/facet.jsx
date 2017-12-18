@@ -22,7 +22,7 @@ const ProfileFacetComponent = props => {
 
       <DataDetailsContainer
         name="user"
-        sections={props.facet.sections}
+        sections={sections}
       />
     </div>
   )

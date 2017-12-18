@@ -1527,5 +1527,6 @@
     "profile_remove_facet": "Delete profile tab",
     "profile_remove_facet_question": "Do you really want to remove the selected profile tab ?",
     "profile_remove_section": "Delete tab section",
-    "profile_remove_section_question": "Do you really want to remove the selected tab section ?"
+    "profile_remove_section_question": "Do you really want to remove the selected tab section ?",
+    "empty_value": "not specified"
 }
