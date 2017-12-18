@@ -167,14 +167,6 @@ abstract class AbstractCrudController extends AbstractApiController
 
     /**
      * @param Request $request
-     */
-    protected function decodeRequest(Request $request)
-    {
-        return json_decode($request->getContent(), true);
-    }
-
-    /**
-     * @param Request $request
      * @param string  $class
      */
     protected function decodeIdsString(Request $request, $class)

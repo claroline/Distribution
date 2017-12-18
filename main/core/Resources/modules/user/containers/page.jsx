@@ -27,6 +27,8 @@ const UserPage = props =>
   </UserPageComponent>
 
 UserPage.propTypes = {
+  user: T.object,
+
   /**
    * Application of the user.
    */
@@ -34,7 +36,9 @@ UserPage.propTypes = {
 }
 
 const UserPageContainer = connectPage(
-  state => ({
+  (state, ownProps) => ownProps.user ? ({
+    user: ownProps.user
+  }) : ({
     user: state.user
   }),
   null

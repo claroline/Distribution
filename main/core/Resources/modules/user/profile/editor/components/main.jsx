@@ -6,6 +6,7 @@ import {connectProfile} from '#/main/core/user/profile/connect'
 import {ProfileNav} from '#/main/core/user/profile/components/nav.jsx'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets.jsx'
 
+import {select} from '#/main/core/data/form/selectors'
 import {ProfileFacet} from '#/main/core/user/profile/editor/components/facet.jsx'
 
 const ProfileEditComponent = props =>
@@ -37,7 +38,11 @@ ProfileEditComponent.propTypes = {
   openFacet: T.func.isRequired
 }
 
-const ProfileEdit = connectProfile()(ProfileEditComponent)
+const ProfileEdit = connectProfile(
+  state => ({
+    user: select.data(select.form(state, 'user'))
+  })
+)(ProfileEditComponent)
 
 export {
   ProfileEdit

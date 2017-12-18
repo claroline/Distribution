@@ -11,40 +11,83 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
+use Claroline\CoreBundle\API\Crud;
 use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Controller\APINew\AbstractApiController;
-use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/profile")
  */
 class ProfileController extends AbstractApiController
 {
-    use HasRolesTrait;
+    /** @var Crud */
+    private $crud;
+
+    /** @var ProfileSerializer */
+    private $serializer;
+
+    /**
+     * ProfileController constructor.
+     *
+     * @DI\InjectParams({
+     *     "crud"       = @DI\Inject("claroline.api.crud"),
+     *     "serializer" = @DI\Inject("claroline.serializer.profile")
+     * })
+     *
+     * @param Crud              $crud
+     * @param ProfileSerializer $serializer
+     */
+    public function __construct(
+        Crud $crud,
+        ProfileSerializer $serializer)
+    {
+        $this->crud = $crud;
+        $this->serializer = $serializer;
+    }
 
     public function getName()
     {
-        return 'facet';
-    }
-
-    public function update()
-    {
+        return 'profile';
     }
 
     /**
-     * @return array
+     * @EXT\Route("")
+     * @EXT\Method("GET")
      */
-    public function getOptions()
+    public function getAction()
     {
-        $list = [Options::PROFILE_SERIALIZE];
-        $create = [Options::DEEP_SERIALIZE];
-        $update = [Options::DEEP_SERIALIZE];
+        return new JsonResponse(
+            $this->serializer->serialize()
+        );
+    }
 
-        return [
-            'list' => $list,
-            'create' => $create,
-            'update' => $update,
-        ];
+    /**
+     * @EXT\Route("")
+     * @EXT\Method("PUT")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function updateAction(Request $request)
+    {
+        $formData = $this->decodeRequest($request);
+
+        $updatedFacets = [];
+        foreach ($formData as $facetData) {
+            $updatedFacets[] = $this->crud->update(
+                'Claroline\CoreBundle\Entity\Facet\Facet',
+                $facetData,
+                [Options::DEEP_DESERIALIZE]
+            );
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize()
+        );
     }
 }

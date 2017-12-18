@@ -15,6 +15,10 @@ bootstrap(
   reducer,
 
   (initialData) => Object.assign({}, initialData, {
+    user: {
+      data: initialData.user,
+      originalData: initialData.user
+    },
     facets: [
       {
         id: 'main',
@@ -26,6 +30,7 @@ bootstrap(
       }, {
         id: 'scol',
         title: 'Scolarité',
+        meta: {},
         sections: []
       }
     ]

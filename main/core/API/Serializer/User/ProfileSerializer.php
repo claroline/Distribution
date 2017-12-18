@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\Facet\FacetSerializer;
 use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\CoreBundle\Entity\Role;
@@ -50,60 +51,31 @@ class ProfileSerializer
     /**
      * Serializes the profile configuration.
      *
+     * @param array $options
+     *
      * @return array
      */
-    public function serialize()
+    public function serialize(array $options = [])
     {
         $facets = $this->repository
-            ->findVisibleFacets($this->tokenStorage->getToken());
+            ->findVisibleFacets($this->tokenStorage->getToken(), in_array(Options::REGISTRATION, $options));
 
-        $serializedFacets = array_map(function (Facet $facet) {
-            return $this->facetSerializer->serialize($facet);
+        return array_map(function (Facet $facet) {
+            return $this->facetSerializer->serialize($facet, [Options::PROFILE_SERIALIZE]);
         }, $facets);
-
-        if (!$this->hasMainFacet($serializedFacets)) {
-            array_unshift($facets, $this->serializeMainFacet());
-        }
-
-        return $serializedFacets;
-    }
-
-    private function hasMainFacet(array $facets)
-    {
-        foreach ($facets as $facet) {
-
-        }
-
-        return true;
-    }
-
-    private function serializeMainFacet()
-    {
-        return [
-
-        ];
-    }
-
-    private function serializeDefaultPanel()
-    {
-        return [
-            'id' => 'default',
-            'title' => '',
-            'position' => 0,
-        ];
     }
 
     /**
-     * Deserializes data into a Role entity.
+     * Deserializes data into Profile facets entities.
      *
      * @param \stdClass $data
-     * @param Role      $role
+     * @param array     $facets
      * @param array     $options
      *
      * @return Role
      */
-    public function deserialize($data, Role $role = null, array $options = [])
+    public function deserialize($data, array $facets = [], array $options = [])
     {
-        return $role;
+        return $facets;
     }
 }

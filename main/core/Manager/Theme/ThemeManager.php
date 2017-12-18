@@ -15,7 +15,7 @@ use Claroline\CoreBundle\API\Serializer\ThemeSerializer;
 use Claroline\CoreBundle\Entity\Theme\Theme;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Library\Validation\Exception\InvalidDataException;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\Theme\ThemeRepository;
 use JMS\DiExtraBundle\Annotation as DI;

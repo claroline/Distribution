@@ -37,11 +37,11 @@ AdvancedSection.defaultProps = {
 }
 
 const FormWrapper = props => props.embedded ?
-  <fieldset className={classes('form', props.className)}>
+  <fieldset className={classes('form data-form', props.className)}>
     {props.children}
   </fieldset>
   :
-  <form action="#" className={classes('form', props.className)}>
+  <form action="#" className={classes('form data-form', props.className)}>
     {props.children}
   </form>
 
@@ -85,23 +85,18 @@ class Form extends Component {
   }
 
   renderFields(fields) {
-    return fields.filter(field => !!field.displayed)
-      .map(field =>
-        <FormField
-          {...field}
-          key={field.name}
-          value={get(this.props.data, field.name)}
-          disabled={this.props.disabled || field.disabled}
-          validating={this.props.validating}
-          error={get(this.props.errors, field.name)}
-          updateProp={this.props.updateProp}
-          setErrors={this.props.setErrors}
-        />
-      )
-  }
-
-  hasFields(section) {
-    return section.fields && 0 < section.fields.filter(field => !!field.displayed).length
+    return fields.map(field =>
+      <FormField
+        {...field}
+        key={field.name}
+        value={get(this.props.data, field.name)}
+        disabled={this.props.disabled || field.disabled}
+        validating={this.props.validating}
+        error={get(this.props.errors, field.name)}
+        updateProp={this.props.updateProp}
+        setErrors={this.props.setErrors}
+      />
+    )
   }
 
   render() {
@@ -113,7 +108,7 @@ class Form extends Component {
 
     return (
       <FormWrapper embedded={this.props.embedded} className={this.props.className}>
-        {primarySection && this.hasFields(primarySection) &&
+        {primarySection &&
           <div className="form-primary-section panel panel-default">
             <fieldset className="panel-body">
               {React.createElement('h'+this.props.level, {
@@ -134,7 +129,7 @@ class Form extends Component {
             level={this.props.level}
             defaultOpened={openedSection ? openedSection.id : undefined}
           >
-            {otherSections.map(section => this.hasFields(section) &&
+            {otherSections.map(section =>
               <FormSection
                 key={section.id}
                 id={section.id}

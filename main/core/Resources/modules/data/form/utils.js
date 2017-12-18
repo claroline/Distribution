@@ -8,20 +8,33 @@ import {DataFormSection, DataFormProperty} from '#/main/core/data/form/prop-type
 
 /**
  * Fills definition with missing default values.
+ * (It excludes sections with no fields)
+ *
+ * @todo todo add defaults to advanced sections
  *
  * @param {Array} sections
  *
  * @return {Array} - the defaulted definition
  */
 function createFormDefinition(sections) {
-  return sections.map(section => {
+  return sections
+    .map(section => {
+      // adds defaults to the section configuration
+      const defaultedSection = merge({}, DataFormSection.defaultProps, section)
+      if (!!defaultedSection.displayed && defaultedSection.fields) {
+        // adds defaults to the field configuration
+        const defaultedFields = defaultedSection.fields.map(field => merge({}, DataFormProperty.defaultProps, field))
+        const displayedFields = defaultedFields.filter(field => !!field.displayed)
+        if (0 < displayedFields.length) {
+          defaultedSection.fields = displayedFields
 
-    // todo add defaults to advanced section
+          return defaultedSection
+        }
+      }
 
-    return merge({}, DataFormSection.defaultProps, section, {
-      fields: section.fields.map(field => merge({}, DataFormProperty.defaultProps, field))
+      return null
     })
-  })
+    .filter(section => null !== section)
 }
 
 /**

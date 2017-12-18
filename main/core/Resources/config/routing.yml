@@ -75,14 +75,17 @@ claro_profile:
 claro_user_profile:
     resource: "@ClarolineCoreBundle/Controller/User/ProfileController.php"
     type: annotation
+    options: { expose: true }
 
 claro_user_registration:
     resource: "@ClarolineCoreBundle/Controller/User/RegistrationController.php"
     type: annotation
+    options: { expose: true }
 
 claro_user_tracking:
     resource: "@ClarolineCoreBundle/Controller/User/TrackingController.php"
     type: annotation
+    options: { expose: true }Fa
 
 claro_desktop:
     resource: "@ClarolineCoreBundle/Controller/DesktopController.php"

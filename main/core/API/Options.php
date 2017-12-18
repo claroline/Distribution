@@ -55,6 +55,7 @@ final class Options
 
     //move me ? it's related to the facets
     const PROFILE_SERIALIZE = 'profile_serialize';
+    const REGISTRATION = 'registration';
 
     //maybe move this somewhere else: like UserOptions for Crud ?
     const SEND_EMAIL = 'send_email';

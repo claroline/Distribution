@@ -48,12 +48,6 @@ class FacetSerializer
      */
     public function serialize(Facet $facet, array $options = [])
     {
-        $panelFacetSerializer = $this->serializer
-          ->get('Claroline\CoreBundle\Entity\Facet\PanelFacet');
-
-        $roleSerializer = $this->serializer
-          ->get('Claroline\CoreBundle\Entity\Role');
-
         return [
           'id' => $facet->getUuid(),
           'title' => $facet->getName(),
@@ -61,25 +55,15 @@ class FacetSerializer
           'display' => [
             'creation' => $facet->getForceCreationForm(),
           ],
-          'roles' => array_map(function (Role $role) use ($roleSerializer) {
-              return $roleSerializer->serializer($role, [Options::SERIALIZE_MINIMAL]);
+          'roles' => array_map(function (Role $role) {
+              return $this->serializer->serialize($role, [Options::SERIALIZE_MINIMAL]);
           }, $facet->getRoles()->toArray()),
-          'meta' => $this->getMeta($facet),
-          'sections' => array_map(function ($panel) use ($panelFacetSerializer, $options) {
-              return $panelFacetSerializer->serialize($panel, $options);
+          'meta' => [
+              'main' => $facet->isMain(),
+          ],
+          'sections' => array_map(function ($panel) use ($options) {
+              return $this->serializer->serialize($panel, $options);
           }, $facet->getPanelFacets()->toArray()),
-        ];
-    }
-
-    /**
-     * @param Facet $facet
-     *
-     * @return array
-     */
-    public function getMeta(Facet $facet)
-    {
-        return [
-          'main' => $facet->isMain(),
         ];
     }
 
@@ -105,6 +89,6 @@ class FacetSerializer
             }
         }
 
-        //deserialize roles here too ?
+        // todo deserialize roles here too
     }
 }

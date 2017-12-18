@@ -8,11 +8,13 @@ import {Routes} from '#/main/core/router'
 
 import {UserPageContainer} from '#/main/core/user/containers/page.jsx'
 
+import {select} from '#/main/core/data/details/selectors'
 import {ProfileEdit} from '#/main/core/user/profile/editor/components/main.jsx'
 import {ProfileShow} from '#/main/core/user/profile/player/components/main.jsx'
 
 const ProfileComponent = props =>
   <UserPageContainer
+    user={props.user}
     customActions={[
       {
         icon: 'fa fa-fw fa-line-chart',
@@ -53,7 +55,7 @@ ProfileComponent.propTypes = {
 
 const Profile = connect(
   state => ({
-    user: state.user
+    user: select.data(select.details(state, 'user'))
   }),
   null
 )(ProfileComponent)

@@ -23,7 +23,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @EXT\Route("/user/tracking", options={"expose"=true})
+ * @EXT\Route("/user/tracking")
  */
 class TrackingController extends Controller
 {

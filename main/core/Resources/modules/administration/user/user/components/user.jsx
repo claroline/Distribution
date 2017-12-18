@@ -72,6 +72,14 @@ const UserForm = props =>
             label: t('password'),
             displayed: props.new,
             required: true
+          }, {
+            name: 'administrativeCode',
+            type: 'string',
+            label: t('administrativeCode²')
+          }, {
+            name: 'administrativeCode',
+            type: 'string',
+            label: t('administrativeCode²')
           }
         ]
       }

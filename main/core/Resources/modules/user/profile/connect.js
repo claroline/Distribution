@@ -4,7 +4,6 @@ import {actions} from '#/main/core/user/profile/actions'
 
 function mapStateToProps(state) {
   return {
-    user: state.user,
     facets: state.facets
   }
 }

@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller\User;
 
+use Claroline\CoreBundle\API\Options;
+use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\TermsOfServiceManager;
@@ -29,7 +31,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  * that the user is anonymous and the self-registration is allowed by the
  * platform configuration.
  *
- * @EXT\Route("/register", options={"expose"=true})
+ * @EXT\Route("/register")
  */
 class RegistrationController extends Controller
 {
@@ -41,6 +43,8 @@ class RegistrationController extends Controller
     private $translator;
     /** @var PlatformConfigurationHandler */
     private $configHandler;
+    /** @var ProfileSerializer */
+    private $profileSerializer;
     /** @var UserManager */
     private $userManager;
     /** @var TermsOfServiceManager */
@@ -50,18 +54,20 @@ class RegistrationController extends Controller
      * RegistrationController constructor.
      *
      * @DI\InjectParams({
-     *     "tokenStorage"  = @DI\Inject("security.token_storage"),
-     *     "session"       = @DI\Inject("session"),
-     *     "translator"    = @DI\Inject("translator"),
-     *     "configHandler" = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "userManager"   = @DI\Inject("claroline.manager.user_manager"),
-     *     "tosManager"    = @DI\Inject("claroline.common.terms_of_service_manager")
+     *     "tokenStorage"      = @DI\Inject("security.token_storage"),
+     *     "session"           = @DI\Inject("session"),
+     *     "translator"        = @DI\Inject("translator"),
+     *     "configHandler"     = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "profileSerializer" = @DI\Inject("claroline.serializer.profile"),
+     *     "userManager"       = @DI\Inject("claroline.manager.user_manager"),
+     *     "tosManager"        = @DI\Inject("claroline.common.terms_of_service_manager")
      * })
      *
      * @param TokenStorageInterface        $tokenStorage
      * @param SessionInterface             $session
      * @param TranslatorInterface          $translator
      * @param PlatformConfigurationHandler $configHandler
+     * @param ProfileSerializer            $profileSerializer
      * @param UserManager                  $userManager
      * @param TermsOfServiceManager        $tosManager
      */
@@ -70,6 +76,7 @@ class RegistrationController extends Controller
         SessionInterface $session,
         TranslatorInterface $translator,
         PlatformConfigurationHandler $configHandler,
+        ProfileSerializer $profileSerializer,
         UserManager $userManager,
         TermsOfServiceManager $tosManager
     ) {
@@ -77,6 +84,7 @@ class RegistrationController extends Controller
         $this->session = $session;
         $this->translator = $translator;
         $this->configHandler = $configHandler;
+        $this->profileSerializer = $profileSerializer;
         $this->userManager = $userManager;
         $this->tosManager = $tosManager;
     }
@@ -94,6 +102,7 @@ class RegistrationController extends Controller
         $this->checkAccess();
 
         return [
+            'facets' => $this->profileSerializer->serialize(Options::REGISTRATION),
             'termOfService' => $this->configHandler->getParameter('terms_of_service') ?
                 $this->tosManager->getTermsOfService() : null,
             'options' => [

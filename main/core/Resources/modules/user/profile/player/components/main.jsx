@@ -7,6 +7,7 @@ import {connectProfile} from '#/main/core/user/profile/connect'
 import {ProfileNav} from '#/main/core/user/profile/components/nav.jsx'
 import {ProfileFacets} from '#/main/core/user/profile/components/facets.jsx'
 
+import {select} from '#/main/core/data/details/selectors'
 import {ProfileFacet} from '#/main/core/user/profile/player/components/facet.jsx'
 
 const ProfileShowComponent = props =>
@@ -38,7 +39,11 @@ ProfileShowComponent.propTypes = {
   openFacet: T.func.isRequired
 }
 
-const ProfileShow = connectProfile()(ProfileShowComponent)
+const ProfileShow = connectProfile(
+  state => ({
+    user: select.data(select.details(state, 'user'))
+  })
+)(ProfileShowComponent)
 
 export {
   ProfileShow

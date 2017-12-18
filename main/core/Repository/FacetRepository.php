@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Role\Role;
 
 class FacetRepository extends EntityRepository
 {
-    public function findVisibleFacets(TokenInterface $token)
+    public function findVisibleFacets(TokenInterface $token, $isRegistration = false)
     {
         // retrieves current user roles
         $roleNames = array_map(function (Role $role) {
@@ -32,6 +32,10 @@ class FacetRepository extends EntityRepository
                 ->join('f.roles', 'r')
                 ->where('r.nam IN (:roles)')
                 ->setParameter('roles', $roleNames);
+        }
+
+        if ($isRegistration) {
+            $qb->andWhere('f.forceCreationForm = true');
         }
 
         $qb->orderBy('f.isMain, f.position');

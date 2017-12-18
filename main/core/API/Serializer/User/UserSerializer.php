@@ -253,6 +253,8 @@ class UserSerializer
             $object->setEnabled($data['enabled']);
         }
 
+        // todo deserialize facets
+
         return $object;
     }
 }

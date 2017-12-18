@@ -36,6 +36,8 @@ class UserValidator implements ValidatorInterface
 
     public function validate($data)
     {
+        // todo validate Facet values
+
         //the big chunk of code allows us to know if the identifiers are already taken
         //and prohibits the use of an already used address email in a username field
         $errors = [];

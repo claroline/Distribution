@@ -1,4 +1,5 @@
 import {makeReducer} from '#/main/core/utilities/redux/reducer'
+import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {makePageReducer} from '#/main/core/layout/page/reducer'
 
 import {
@@ -10,9 +11,7 @@ const reducer = makePageReducer({}, {
     [PROFILE_FACET_OPEN]: (state, action) => action.id
   }),
   facets: makeReducer([], {}),
-  user: makeReducer({}, {
-
-  })
+  user: makeFormReducer('user', {})
 })
 
 export {
