@@ -9,7 +9,6 @@ class File extends Component {
     super(props)
   }
 
-
   render() {
     return (
       <fieldset>
@@ -20,10 +19,9 @@ class File extends Component {
           accept={`${this.props.types.join(',')}`}
           ref={input => this.input = input}
           onChange={() => {
-
             if (this.input.files[0]) {
               const file = this.input.files[0]
-              //this is copy pasted from content-input.jsx from exo bundle
+              //this.props.value = 'publicFile'
               if (this.props.autoUpload) {
                 this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
               }
@@ -54,7 +52,7 @@ File.defaultProps = {
   max: 1,
   autoUpload: true,
   onChange: () => {},
-  uploadUrl: ['apiv2_uploadedfile']
+  uploadUrl: ['apiv2_file_upload']
 }
 
 //this is not pretty

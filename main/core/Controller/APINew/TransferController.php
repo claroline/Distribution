@@ -85,7 +85,7 @@ class TransferController
 
         $publicFile = $this->serializer->deserialize(
           'Claroline\CoreBundle\Entity\File\PublicFile',
-          $data['publicFile']
+          $data['file']
         );
 
         $content = $this->fileUt->getContents($publicFile);

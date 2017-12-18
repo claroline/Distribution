@@ -75,9 +75,7 @@ const RoutedExplain = props => {
                 {
                   name: 'file',
                   type: 'file',
-                  label: t('file'),
-                  onChange: (/*file*/) => {
-                  }
+                  label: t('file')
                 }
               ]
             }

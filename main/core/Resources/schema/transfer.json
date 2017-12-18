@@ -7,7 +7,7 @@
       "format": "string",
       "description": "The action to use"
     },
-    "publicFile": {
+    "file": {
         "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schema/publicFile.json"
     }
   }

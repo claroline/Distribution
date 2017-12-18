@@ -31,7 +31,7 @@ class FileController extends AbstractCrudController
     /**
      * @EXT\Route(
      *    "/upload",
-     *    name="apiv2_uploadedfile",
+     *    name="apiv2_file_upload",
      *    options={ "method_prefix" = false }
      * )
      * @EXT\Method("POST")
