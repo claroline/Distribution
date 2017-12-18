@@ -7,10 +7,13 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
+ *
+ * @TODO REMOVE ME
  */
 
 namespace Claroline\CoreBundle\Controller\API\User;
 
+use Claroline\CoreBundcreateFacetle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
@@ -18,7 +21,6 @@ use Claroline\CoreBundle\Entity\Facet\PanelFacet;
 use Claroline\CoreBundle\Entity\ProfileProperty;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\ProfilePropertyManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use FOS\RestBundle\Controller\Annotations\Delete;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;

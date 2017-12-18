@@ -44,8 +44,8 @@ class ProfileController extends AbstractApiController
      */
     public function __construct(
         Crud $crud,
-        ProfileSerializer $serializer)
-    {
+        ProfileSerializer $serializer
+    ) {
         $this->crud = $crud;
         $this->serializer = $serializer;
     }
