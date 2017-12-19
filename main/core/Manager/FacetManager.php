@@ -17,7 +17,6 @@ use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
 use Claroline\CoreBundle\Entity\Facet\GeneralFacetPreference;
 use Claroline\CoreBundle\Entity\Facet\PanelFacet;
-use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -122,6 +121,8 @@ class FacetManager
      * @deprecated
      *
      * @todo remove me
+     *
+     * Used by claco form widget config
      */
     public function addField(PanelFacet $panelFacet, $name, $isRequired, $type)
     {
@@ -138,6 +139,8 @@ class FacetManager
 
     /**
      * Adds a panel in a facet.
+     * Used by persister and Updater04000
+     * Can be removed.
      *
      * @param Facet  $facet
      * @param string $name
@@ -164,6 +167,11 @@ class FacetManager
      * @param User       $user
      * @param FieldFacet $field
      * @param mixed      $value
+     *
+     * Has some use at the registration/csv import.
+     * Should be removed eventually
+     *
+     * @deprecated
      *
      * @throws \Exception
      */
@@ -203,6 +211,11 @@ class FacetManager
         $this->om->flush();
     }
 
+    /**
+     * Used by a widget.
+     *
+     * @deprecated
+     */
     public function getFieldValuesByUser(User $user)
     {
         return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacetValue')
@@ -210,49 +223,10 @@ class FacetManager
     }
 
     /**
-     * Moves a facet down.
+     * Used by clacoform manager.
      *
-     * @param Facet $facet
+     * @deprecated
      */
-    public function moveFacetDown(Facet $facet)
-    {
-        $currentPosition = $facet->getPosition();
-
-        if ($currentPosition < $this->facetRepo->count($facet->isMain()) - 1) {
-            $nextPosition = $currentPosition + 1;
-            $nextFacet = $this->om
-                ->getRepository('ClarolineCoreBundle:Facet\Facet')
-                ->findOneBy(['position' => $nextPosition, 'isMain' => $facet->isMain()]);
-            $nextFacet->setPosition($currentPosition);
-            $facet->setPosition($nextPosition);
-            $this->om->persist($nextFacet);
-            $this->om->persist($facet);
-            $this->om->flush();
-        }
-    }
-
-    /**
-     * Moves a facet up.
-     *
-     * @param Facet $facet
-     */
-    public function moveFacetUp(Facet $facet)
-    {
-        $currentPosition = $facet->getPosition();
-
-        if ($currentPosition > 0) {
-            $prevPosition = $currentPosition - 1;
-            $prevFacet = $this->om
-                ->getRepository('ClarolineCoreBundle:Facet\Facet')
-                ->findOneBy(['position' => $prevPosition, 'isMain' => $facet->isMain()]);
-            $prevFacet->setPosition($currentPosition);
-            $facet->setPosition($prevPosition);
-            $this->om->persist($prevFacet);
-            $this->om->persist($facet);
-            $this->om->flush();
-        }
-    }
-
     public function editField(FieldFacet $fieldFacet, $name, $isRequired, $type)
     {
         $fieldFacet->setName($name);
@@ -262,101 +236,6 @@ class FacetManager
         $this->om->flush();
 
         return $fieldFacet;
-    }
-
-    /**
-     * Order the fields of a panel according to the $ids order.
-     *
-     * @param array      $ids
-     * @param PanelFacet $facet
-     */
-    public function orderFields(array $ids, PanelFacet $panel)
-    {
-        $fields = $panel->getFieldsFacet();
-
-        foreach ($fields as $field) {
-            foreach ($ids as $key => $id) {
-                if ((int) $id === $field->getId()) {
-                    $field->setPosition($key + 1);
-                    $this->om->persist($field);
-                }
-            }
-        }
-
-        $this->om->flush();
-    }
-
-    /**
-     * Order the panels of a facet according to the $ids order.
-     *
-     * @param array      $ids
-     * @param PanelFacet $facet
-     */
-    public function orderPanels(array $ids, Facet $facet)
-    {
-        $panels = $facet->getPanelFacets();
-
-        foreach ($panels as $panel) {
-            foreach ($ids as $key => $id) {
-                if ((int) $id === $panel->getId()) {
-                    $panel->setPosition($key + 1);
-                    $this->om->persist($panel);
-                }
-            }
-        }
-
-        $this->om->flush();
-    }
-
-    /**
-     * Get the ordered fields of facet.
-     * unused.
-     *
-     * @param Facet $facet
-     *
-     * @deprecated
-     */
-    public function getFields(Facet $facet)
-    {
-        return $this->om
-            ->getRepository('ClarolineCoreBundle:Facet\FieldFacet')
-            ->findBy(['facet' => $facet], ['position' => 'ASC']);
-    }
-
-    /**
-     * Get the ordered facet list.
-     */
-    public function getFacets()
-    {
-        return $this->om
-            ->getRepository('ClarolineCoreBundle:Facet\Facet')
-            ->findBy([], ['position' => 'ASC']);
-    }
-
-    public function setFacetRoles(Facet $facet, array $roles)
-    {
-        $facet->setRoles($roles);
-        $this->om->persist($facet);
-        $this->om->flush();
-
-        return $facet;
-    }
-
-    public function setPanelFacetRole(PanelFacet $panelFacet, Role $role, $canOpen, $canEdit)
-    {
-        $panelFacetRole = $this->panelRoleRepo->findOneBy(['role' => $role, 'panelFacet' => $panelFacet]);
-
-        if (!$panelFacetRole) {
-            $panelFacetRole = new PanelFacetRole();
-            $panelFacetRole->setRole($role);
-            $panelFacetRole->setPanelFacet($panelFacet);
-        }
-
-        $panelFacetRole->setCanEdit($canEdit);
-        $panelFacetRole->setCanOpen($canOpen);
-
-        $this->om->persist($panelFacetRole);
-        $this->om->flush();
     }
 
     public function getFieldFacet($id)
@@ -542,23 +421,9 @@ class FacetManager
         $this->om->flush();
     }
 
-    public function resetFacetOrder()
-    {
-        $facets = $this->facetRepo->findAll();
-        $facetMain = 0;
-        $facetTab = 0;
-
-        foreach ($facets as $facet) {
-            if ($facet->isMain()) {
-                $facet->setPosition($facetMain);
-                ++$facetMain;
-            } else {
-                $facet->setPosition($facetTab);
-                ++$facetTab;
-            }
-        }
-    }
-
+    /**
+     * Used by claco form.
+     */
     public function isTypeWithChoices($type)
     {
         $withChoices = false;
@@ -573,16 +438,29 @@ class FacetManager
         return $withChoices;
     }
 
+    /**
+     * Used by claco form.
+     */
     public function isFileType($type)
     {
         return $type === FieldFacet::FILE_TYPE;
     }
 
+    /**
+     * Used by claco form.
+     *
+     * @deprecated
+     */
     public function getFieldFacetChoiceById($id)
     {
         return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacetChoice')->findOneById($id);
     }
 
+    /**
+     * Used by claco form.
+     *
+     * @deprecated
+     */
     public function getChoiceByFieldFacetAndValueAndParent(FieldFacet $fieldFacet, $value, FieldFacetChoice $parent = null)
     {
         return $this->om->getRepository('ClarolineCoreBundle:Facet\FieldFacetChoice')->findOneBy(

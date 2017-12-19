@@ -91,6 +91,8 @@ class WorkspaceController extends FOSRestController
      * @Get("/workspaces", name="get_connected_user_workspaces", options={ "method_prefix" = false })
      * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
+     * @deprecated
+     *
      * @param User $user
      *
      * @return array
@@ -105,6 +107,8 @@ class WorkspaceController extends FOSRestController
     /**
      * @View(serializerGroups={"api_workspace"})
      * @SEC\PreAuthorize("canOpenAdminTool('workspace_management')")
+     *
+     * @todo move into api
      *
      * @param bool $isModel
      *

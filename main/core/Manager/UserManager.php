@@ -1681,6 +1681,9 @@ class UserManager
 
     /**
      * Big user search method ! hell yeah !
+     *
+     * @deprecated Use finder instead
+     * used in a cli tool
      */
     public function searchPartialList($searches, $page, $limit, $count = false)
     {

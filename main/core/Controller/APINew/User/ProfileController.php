@@ -22,6 +22,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/profile")
+ *
+ * There is a thing named Link wich work through an event. See older version on github so we can
+ * add it again
  */
 class ProfileController extends AbstractApiController
 {
