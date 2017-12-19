@@ -15,7 +15,7 @@ class ExplanationBuilder
 
     private function explainObject($data, $explanation, $currentPath, $isArray = false)
     {
-        if (!isset($data->properties)) {
+        if (!isset($data->properties) || isset($data->transferable) && $data->transferable === false) {
             return;
         }
 
