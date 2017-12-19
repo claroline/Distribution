@@ -84,7 +84,7 @@ class ProfileController extends Controller
      */
     public function redirectAction(User $user)
     {
-        return $this->indexAction($user->getPublicUrl);
+        return $this->indexAction($user->getPublicUrl());
     }
 
     /**
