@@ -14,7 +14,7 @@ trait HasParentTrait
      * @Route("/{parent}/move/{child}")
      * @Method("PATCH")
      */
-    public function moveAction($child, $parent, $class, Request $request, $env)
+    public function moveAction($child, $parent, $class, Request $request)
     {
         $child = $this->find($class, $child);
         $parent = $this->find($class, $parent);

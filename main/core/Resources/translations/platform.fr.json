@@ -1530,7 +1530,7 @@
     "field_required": "Le champ est obligatoire",
     "help": "Aide",
     "display_on_create": "Afficher à la création",
-    "import_headers": "Liste des en-têtes requis pour l'import",
+    "import_headers": "Liste des en-têtes possible pour l'import",
     "one_of_field_list": "Une des structures parmi la liste de champs suivante",
     "show_headers": "Afficher les headers",
     "remove_user": "Supprimer un utilisateur",
@@ -1559,5 +1559,6 @@
     "user_management": "Gestion",
     "add_contact": "Ajouter aux contacts",
     "remove_contact": "Retirer des contacts",
-    "never": "jamais"
+    "never": "jamais",
+    "required": "requis"
 }

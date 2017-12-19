@@ -71,6 +71,6 @@
       }
     }
   },
-  "required": ["email", "firstName", "lastName", "username"],
+  "required": ["email", "firstName", "lastName", "username", "plainPassword"],
   "claroIds": ["id", "email", "username"]
 }

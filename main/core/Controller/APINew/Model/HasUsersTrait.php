@@ -21,11 +21,10 @@ trait HasUsersTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function listUsersAction($id, $class, Request $request, $env)
+    public function listUsersAction($id, $class, Request $request)
     {
         return new JsonResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\User', array_merge(
@@ -44,11 +43,10 @@ trait HasUsersTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function addUsersAction($id, $class, Request $request, $env)
+    public function addUsersAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
@@ -68,22 +66,17 @@ trait HasUsersTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function removeUsersAction($id, $class, Request $request, $env)
+    public function removeUsersAction($id, $class, Request $request)
     {
-        try {
-            $object = $this->find($class, $id);
-            $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
-            $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $users);
+        $object = $this->find($class, $id);
+        $users = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\User');
+        $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $users);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object)
+        );
     }
 }

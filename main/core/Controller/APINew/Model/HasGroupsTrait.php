@@ -21,11 +21,10 @@ trait HasGroupsTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function listGroupsAction($id, $class, Request $request, $env)
+    public function listGroupsAction($id, $class, Request $request)
     {
         return new JsonResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Group', array_merge(
@@ -44,11 +43,10 @@ trait HasGroupsTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function addGroupsAction($id, $class, Request $request, $env)
+    public function addGroupsAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');
@@ -68,11 +66,10 @@ trait HasGroupsTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function removeGroupsAction($id, $class, Request $request, $env)
+    public function removeGroupsAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $groups = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Group');

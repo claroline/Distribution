@@ -1533,5 +1533,7 @@
     "user_management": "Management",
     "add_contact": "Add to contacts",
     "remove_contact": "Remove from contacts",
-    "never": "never"
+    "never": "never",
+    "required": "required",
+    "import_headers": "List of available headers"
 }
