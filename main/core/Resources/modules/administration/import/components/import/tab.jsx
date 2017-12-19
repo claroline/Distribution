@@ -7,6 +7,7 @@ import {t} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
 import {navigate} from '#/main/core/router'
+import classes from 'classnames'
 
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
@@ -21,14 +22,14 @@ const Field = props => {
   if (has(props, 'oneOf')) {
     return (
       <div className="panel panel-body">
-        {t('one_of_field_list')} {props.oneOf.required ? t('required'): t('optional')}
+        {t('one_of_field_list')} <span className={classes('label', {'label-danger': props.oneOf.required}, {'label-warning': !props.oneOf.required})}>{props.oneOf.required ? t('required'): t('optional')}</span>
         {props.oneOf.map(oneOf => <Fields properties={oneOf.properties}/>)}
       </div>
     )
   } else {
     return(
       <div className="well">
-        <div>{props.name} {props.required ? t('required'): t('optional')}</div>
+        <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? t('required'): t('optional')}</span></div>
         <div>{props.description}</div>
       </div>
     )
