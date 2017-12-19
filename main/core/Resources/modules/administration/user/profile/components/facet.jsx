@@ -74,8 +74,8 @@ FacetSection.propTypes = {
 const ProfileFacetComponent = props =>
   <FormContainer
     level={2}
-    className="profile-facet"
     name="profile"
+    className="profile-facet"
     dataPart={`[${props.index}]`}
     sections={[
       {

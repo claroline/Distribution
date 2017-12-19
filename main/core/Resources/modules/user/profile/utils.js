@@ -1,7 +1,20 @@
 import {t} from '#/main/core/translation'
 
 function getMainFacet(facets) {
-  return facets.find(facet => facet.meta.main) || facets[0]
+  return facets.find(facet => facet.meta.main)
+}
+
+function getDefaultFacet() {
+  return {
+    id: 'main',
+    title: t('general'),
+    meta: {
+      main: true
+    },
+    sections: [
+
+    ]
+  }
 }
 
 function getDetailsDefaultSection() {
@@ -68,5 +81,6 @@ function getFormDefaultSection(userData, isNew = false) {
 export {
   getDetailsDefaultSection,
   getFormDefaultSection,
-  getMainFacet
+  getMainFacet,
+  getDefaultFacet
 }

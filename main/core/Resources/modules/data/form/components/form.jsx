@@ -108,10 +108,14 @@ class Form extends Component {
 
     return (
       <FormWrapper embedded={this.props.embedded} className={this.props.className}>
+        {this.props.title &&
+          React.createElement('h'+this.props.level, {}, this.props.title)
+        }
+
         {primarySection &&
           <div className="form-primary-section panel panel-default">
             <fieldset className="panel-body">
-              {React.createElement('h'+this.props.level, {
+              {React.createElement('h'+(this.props.level + (this.props.title ? 1 : 0)), {
                 className: 'sr-only'
               }, primarySection.title)}
 
@@ -126,7 +130,7 @@ class Form extends Component {
 
         {0 !== otherSections.length &&
           <FormSections
-            level={this.props.level}
+            level={this.props.level + (this.props.title ? 1 : 0)}
             defaultOpened={openedSection ? openedSection.id : undefined}
           >
             {otherSections.map(section =>
@@ -166,6 +170,7 @@ Form.propTypes = {
    */
   embedded: T.bool,
   level: T.number,
+  title: T.string,
   data: T.object,
   errors: T.object,
   validating: T.bool,

@@ -1,5 +1,6 @@
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 
+import {decorate} from '#/main/core/user/profile/decorator'
 import {reducer} from '#/main/core/user/profile/reducer'
 import {Profile} from '#/main/core/user/profile/components/main.jsx'
 
@@ -19,6 +20,6 @@ bootstrap(
       data: initialData.user,
       originalData: initialData.user
     },
-    facets: initialData.facets
+    facets: decorate(initialData.facets)
   })
 )

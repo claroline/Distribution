@@ -17,10 +17,12 @@ const ProfileShowComponent = props =>
         user={props.user}
       />
 
-      <ProfileNav
-        prefix="/show"
-        facets={props.facets}
-      />
+      {1 < props.facets.length &&
+        <ProfileNav
+          prefix="/show"
+          facets={props.facets}
+        />
+      }
     </div>
 
     <div className="user-profile-content col-md-9">

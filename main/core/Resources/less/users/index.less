@@ -51,7 +51,7 @@
             font-size: 72px;
             max-width: 100%;
 
-            // make avatar always look has a square
+            // make avatar always look as a square
             &:after {
                 content: "";
                 display: block;
@@ -61,7 +61,7 @@
     }
 
     .user-profile-aside {
-        margin-top: 40px; // because of the profile picture
+        margin-top: floor((@font-size-h2 * @headings-line-height) + (@line-height-computed / 2)); // because of the profile picture
     }
 
     h2:first-of-type {

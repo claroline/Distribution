@@ -7,6 +7,8 @@ import {registerModalType} from '#/main/core/layout/modal'
 import {MODAL_DATA_PICKER, DataPickerModal} from '#/main/core/data/modal/containers/picker.jsx'
 import {registerUserTypes} from '#/main/core/user/data'
 
+import {decorate} from '#/main/core/user/profile/decorator'
+
 import {reducer} from '#/main/core/administration/user/reducer'
 import {UserTool} from '#/main/core/administration/user/components/tool.jsx'
 
@@ -33,14 +35,16 @@ bootstrap(
   // remap data-attributes set on the app DOM container
   // todo load remaining through ajax
   (initialData) => {
+    const profileFacets = decorate(initialData.profile)
+
     return {
       parameters: {
         data: initialData.parameters,
         originalData: initialData.parameters
       },
       profile: {
-        data: initialData.profile,
-        originalData: initialData.profile
+        data: profileFacets,
+        originalData: profileFacets
       }
     }
   }
