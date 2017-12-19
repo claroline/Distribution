@@ -484,7 +484,6 @@
     "fullscreen_off": "Close fullscreen",
     "fullscreen_on": "Show in fullscreen",
     "fullscreen_text_editor": "You can use the full screen version of the text editor to include HTML",
-    "general": "General",
     "general_parameters": "General settings",
     "general_parameters_portfolio_url_help": "start with http://",
     "general_parameters_updated_success": "General settings updated with success.",
@@ -617,7 +616,6 @@
     "is_already_in_category": "is already in category",
     "is_already_in_use": "is already in use",
     "is_mail_displayed": "Display email?",
-    "is_main_facet_label": "Put in general tab",
     "is_not_writable": "is not writable",
     "is_not_writable_recursive": "is not writable recursively",
     "is_visible": "Is visible",
@@ -1528,5 +1526,6 @@
     "profile_remove_facet_question": "Do you really want to remove the selected profile tab ?",
     "profile_remove_section": "Delete tab section",
     "profile_remove_section_question": "Do you really want to remove the selected tab section ?",
-    "empty_value": "not specified"
+    "empty_value": "not specified",
+    "general": "General information"
 }
