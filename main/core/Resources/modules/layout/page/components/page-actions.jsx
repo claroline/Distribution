@@ -149,7 +149,7 @@ const MoreAction = props => {
         pullRight={true}
       >
         {0 !== unclassifiedActions.length &&
-          <MenuItem header={true}>{props.label}</MenuItem>
+          <MenuItem header={true}>{props.title}</MenuItem>
         }
 
         {unclassifiedActions.map((action, actionIndex) =>
@@ -186,7 +186,7 @@ const MoreAction = props => {
 }
 
 MoreAction.propTypes = {
-  label: T.string,
+  title: T.string,
   actions: T.arrayOf(T.shape({
     icon: T.string,
     label: T.string.isRequired,
@@ -199,7 +199,7 @@ MoreAction.propTypes = {
 }
 
 MoreAction.defaultProps = {
-  label: t('more_actions')
+  title: t('more_actions')
 }
 
 /**

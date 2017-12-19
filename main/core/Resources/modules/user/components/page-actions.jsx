@@ -37,6 +37,12 @@ const EditGroupActionsComponent = props => {
   )
 }
 
+EditGroupActionsComponent.propTypes = {
+  location: T.shape({
+    pathname: T.string
+  }).isRequired
+}
+
 const EditGroupActions = withRouter(EditGroupActionsComponent)
 
 const UserPageActions = props => {
@@ -62,25 +68,28 @@ const UserPageActions = props => {
         <EditGroupActions />
       }
 
-      <PageGroupActions>
-        <PageAction
-          id="send-message"
-          title={t('send_message')}
-          icon={'fa fa-paper-plane-o'}
-          action={() => true}
-        />
-        <PageAction
-          id="add-contact"
-          title={t('add_contact')}
-          icon={'fa fa-address-book-o'}
-          action={() => true}
-        />
-      </PageGroupActions>
+      {props.user.rights.current.contact &&
+        <PageGroupActions>
+          <PageAction
+            id="send-message"
+            title={t('send_message')}
+            icon="fa fa-paper-plane-o"
+            action={() => true}
+          />
+          <PageAction
+            id="add-contact"
+            title={t('add_contact')}
+            icon="fa fa-address-book-o"
+            action={() => true}
+          />
+        </PageGroupActions>
+      }
 
       {0 !== moreActions.length &&
         <PageGroupActions>
           <MoreAction
             id="user-more"
+            title={t('user')}
             actions={moreActions}
           />
         </PageGroupActions>
@@ -96,6 +105,7 @@ UserPageActions.propTypes = {
     }).isRequired,
     rights: T.shape({
       current: T.shape({
+        contact: T.bool.isRequired,
         edit: T.bool.isRequired,
         delete: T.bool.isRequired
       }).isRequired

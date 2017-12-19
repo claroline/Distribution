@@ -75,11 +75,7 @@ const UserForm = props =>
           }, {
             name: 'administrativeCode',
             type: 'string',
-            label: t('administrativeCode²')
-          }, {
-            name: 'administrativeCode',
-            type: 'string',
-            label: t('administrativeCode²')
+            label: t('administrativeCode')
           }
         ]
       }

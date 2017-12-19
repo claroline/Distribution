@@ -185,6 +185,7 @@ class UserSerializer
         // return same structure than ResourceNode
         return [
             'current' => [
+                'contact' => !$isOwner,
                 'edit' => $isOwner || $isAdmin,
                 'administrate' => $isAdmin,
                 'delete' => $isOwner || $isAdmin, // todo check platform param to now if current user can destroy is account

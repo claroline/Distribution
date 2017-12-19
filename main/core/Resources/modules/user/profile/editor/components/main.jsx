@@ -16,10 +16,12 @@ const ProfileEditComponent = props =>
         user={props.user}
       />
 
-      <ProfileNav
-        prefix="/edit"
-        facets={props.facets}
-      />
+      {1 < props.facets.length &&
+        <ProfileNav
+          prefix="/edit"
+          facets={props.facets}
+        />
+      }
     </div>
 
     <div className="user-profile-content col-md-9">

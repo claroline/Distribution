@@ -1553,5 +1553,11 @@
     "profile_remove_section": "Supprimer la section de l'onglet",
     "profile_remove_section_question": "Êtes-vous sûr de vouloir supprimer la section de l'onglet ?",
     "empty_value": "non renseigné",
-    "general": "Informations générales"
+    "general": "Informations générales",
+    "change_password": "Changer le mot de passe",
+    "show_tracking": "Voir le suivi",
+    "user_management": "Gestion",
+    "add_contact": "Ajouter aux contacts",
+    "remove_contact": "Retirer des contacts",
+    "never": "jamais"
 }

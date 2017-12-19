@@ -1527,5 +1527,11 @@
     "profile_remove_section": "Delete tab section",
     "profile_remove_section_question": "Do you really want to remove the selected tab section ?",
     "empty_value": "not specified",
-    "general": "General information"
+    "general": "General information",
+    "change_password": "Change password",
+    "show_tracking": "Show tracking",
+    "user_management": "Management",
+    "add_contact": "Add to contacts",
+    "remove_contact": "Remove from contacts",
+    "never": "never"
 }
