@@ -5,7 +5,6 @@ namespace Claroline\CoreBundle\API\Serializer\User;
 use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\Facet\FacetSerializer;
 use Claroline\CoreBundle\Entity\Facet\Facet;
-use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\FacetRepository;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -41,8 +40,8 @@ class ProfileSerializer
     public function __construct(
         TokenStorageInterface $tokenStorage,
         ObjectManager $om,
-        FacetSerializer $facetSerializer)
-    {
+        FacetSerializer $facetSerializer
+    ) {
         $this->tokenStorage = $tokenStorage;
         $this->repository = $om->getRepository('ClarolineCoreBundle:Facet\Facet');
         $this->facetSerializer = $facetSerializer;

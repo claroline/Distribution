@@ -5,6 +5,7 @@ namespace Claroline\CoreBundle\Tests\NewAPI;
 use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\Corebundle\API\ValidatorProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
 class SerializerProviderTest extends TransactionalTestCase
 {
@@ -19,6 +20,10 @@ class SerializerProviderTest extends TransactionalTestCase
         $this->provider = $this->client->getContainer()->get('claroline.api.serializer');
         $this->validator = $this->client->getContainer()->get('claroline.api.validator');
         $this->sampleDir = $this->client->getContainer()->getParameter('claroline.api.sample.dir');
+
+        $tokenStorage = $this->client->getContainer()->get('security.token_storage');
+        $token = new AnonymousToken('key', 'anon.');
+        $tokenStorage->setToken($token);
     }
 
     /**
@@ -45,6 +50,7 @@ class SerializerProviderTest extends TransactionalTestCase
      */
     public function testSerializer($class)
     {
+        //login
         if ($this->provider->hasSchema($class) && $this->provider->getSampleDirectory($class)) {
             $iterator = new \DirectoryIterator($this->provider->getSampleDirectory($class).'/valid/create');
 

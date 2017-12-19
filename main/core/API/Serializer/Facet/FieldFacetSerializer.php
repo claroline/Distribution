@@ -57,7 +57,7 @@ class FieldFacetSerializer
             if (in_array($fieldFacet->getType(), [
                 FieldFacet::SELECT_TYPE,
                 FieldFacet::CHECKBOXES_TYPE,
-                FieldFacet::CASCADE_SELECT_TYPE
+                FieldFacet::CASCADE_SELECT_TYPE,
             ])) {
                 $serialized['options']['choices'] = array_map(function (FieldFacetChoice $choice) {
                     return $this->serializer

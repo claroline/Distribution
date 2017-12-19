@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\User;
 
+use Claroline\CoreBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -89,7 +90,7 @@ class ProfileController extends Controller
             $user = $this->repository->findOneByIdOrPublicUrl($publicUrl);
 
             return [
-                'user' => $this->userSerializer->serialize($user),
+                'user' => $this->userSerializer->serialize($user, [Options::SERIALIZE_FACET]),
                 'facets' => $this->profileSerializer->serialize(),
             ];
         } catch (NoResultException $e) {
