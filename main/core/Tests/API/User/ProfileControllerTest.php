@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\Tests\API\User;
 
-use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\Persister;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
@@ -30,59 +29,5 @@ class ProfileControllerTest extends TransactionalTestCase
         $data = $this->client->getResponse()->getContent();
         $data = json_decode($data, true);
         $this->assertEquals($data[0]['name'], 'socialmedia_wall');
-    }
-
-    public function testPutFieldsAction()
-    {
-        $fields = $this->createFields();
-        $user = $this->persister->user('user');
-        $this->login($user);
-
-        $values = [
-            [
-                'id' => $fields[0]->getId(),
-                'user_field_value' => 'value',
-            ],
-        ];
-
-        $data['fields'] = $values;
-
-        $this->client->request('PUT', "/api/profile/{$user->getId()}/fields", $data);
-        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
-
-        $values = [
-            [
-                'id' => $fields[1]->getId(),
-                'user_field_value' => 'value',
-            ],
-        ];
-
-        $data['fields'] = $values;
-
-        $this->client->request('PUT', "/api/profile/{$user->getId()}/fields", $data);
-        $this->assertEquals(403, $this->client->getResponse()->getStatusCode());
-    }
-
-    private function createFields()
-    {
-        $facetA = $this->persister->facet('facetA', true, true);
-        $panelA = $this->persister->panelFacet($facetA, 'panelA', false);
-        $panelB = $this->persister->panelFacet($facetA, 'panelB', false);
-        $panelC = $this->persister->panelFacet($facetA, 'panelC', false);
-        $panelD = $this->persister->panelFacet($facetA, 'panelD', false, true);
-        $fieldA = $this->persister->fieldFacet($panelA, 'fieldA', FieldFacet::STRING_TYPE);
-        $fieldB = $this->persister->fieldFacet($panelB, 'fieldB', FieldFacet::STRING_TYPE);
-        $fieldC = $this->persister->fieldFacet($panelC, 'fieldC', FieldFacet::STRING_TYPE);
-        $this->persister->fieldFacet($panelD, 'fieldD', FieldFacet::STRING_TYPE);
-
-        $container = $this->client->getContainer();
-        $role = $this->persister->role('ROLE_USER');
-        $container->get('claroline.manager.facet_manager')->setFacetRoles($facetA, [$role]);
-        $container->get('claroline.manager.facet_manager')->setPanelFacetRole($panelA, $role, true, true);
-        $container->get('claroline.manager.facet_manager')->setPanelFacetRole($panelB, $role, true, false);
-        $container->get('claroline.manager.facet_manager')->setPanelFacetRole($panelC, $role, false, false);
-        $container->get('claroline.manager.facet_manager')->setPanelFacetRole($panelD, $role, true, false);
-
-        return [$fieldA, $fieldB, $fieldC];
     }
 }
