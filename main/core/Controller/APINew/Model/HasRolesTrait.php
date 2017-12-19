@@ -16,11 +16,10 @@ trait HasRolesTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function listRolesAction($id, $class, Request $request, $env)
+    public function listRolesAction($id, $class, Request $request)
     {
         return new JsonResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Role', array_merge(
@@ -41,7 +40,7 @@ trait HasRolesTrait
      *
      * @return JsonResponse
      */
-    public function addRolesAction($id, $class, Request $request, $env)
+    public function addRolesAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');
@@ -59,11 +58,10 @@ trait HasRolesTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function removeRolesAction($id, $class, Request $request, $env)
+    public function removeRolesAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $roles = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Role');

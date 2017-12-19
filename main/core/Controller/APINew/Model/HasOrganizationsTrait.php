@@ -21,11 +21,10 @@ trait HasOrganizationsTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function listOrganizationsAction($id, $class, Request $request, $env)
+    public function listOrganizationsAction($id, $class, Request $request)
     {
         return new JsonResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Organization\Organization', array_merge(
@@ -44,11 +43,10 @@ trait HasOrganizationsTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function addOrganizationsAction($id, $class, Request $request, $env)
+    public function addOrganizationsAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');
@@ -68,11 +66,10 @@ trait HasOrganizationsTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function removeOrganizationsAction($id, $class, Request $request, $env)
+    public function removeOrganizationsAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $organizations = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Organization\Organization');

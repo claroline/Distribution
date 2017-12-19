@@ -21,11 +21,10 @@ trait HasWorkspacesTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function listWorkspacesAction($id, $class, Request $request, $env)
+    public function listWorkspacesAction($id, $class, Request $request)
     {
         return new JsonResponse(
             $this->finder->search('Claroline\CoreBundle\Entity\Workspace\Workspace', array_merge(
@@ -44,11 +43,10 @@ trait HasWorkspacesTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function addWorkspacesAction($id, $class, Request $request, $env)
+    public function addWorkspacesAction($id, $class, Request $request)
     {
         $object = $this->find($class, $id);
         $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
@@ -68,22 +66,17 @@ trait HasWorkspacesTrait
      * @param string  $id
      * @param string  $class
      * @param Request $request
-     * @param string  $env
      *
      * @return JsonResponse
      */
-    public function removeWorkspacesAction($id, $class, Request $request, $env)
+    public function removeWorkspacesAction($id, $class, Request $request)
     {
-        try {
-            $object = $this->find($class, $id);
-            $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
-            $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $workspaces);
+        $object = $this->find($class, $id);
+        $workspaces = $this->decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+        $this->crud->patch($object, 'user', Crud::COLLECTION_REMOVE, $workspaces);
 
-            return new JsonResponse(
-                $this->serializer->serialize($object)
-            );
-        } catch (\Exception $e) {
-            $this->handleException($e, $env);
-        }
+        return new JsonResponse(
+            $this->serializer->serialize($object)
+        );
     }
 }
