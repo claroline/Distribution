@@ -21,10 +21,6 @@ claro_theme:
     resource: "@ClarolineCoreBundle/Controller/Administration/ThemeController.php"
     type: annotation
 
-claro_theme_api:
-    resource: "@ClarolineCoreBundle/Controller/API/ThemeController.php"
-    type: annotation
-
 claro_content_typeerror:
     pattern: /content/typeerror
     options: { expose: true }
@@ -359,7 +355,3 @@ claro_new_api:
     type: api
     options:
         expose: true
-
-claro_admin_scheduled_task_api:
-    resource: "@ClarolineCoreBundle/Controller/API/Admin/ScheduledTaskController.php"
-    type: annotation

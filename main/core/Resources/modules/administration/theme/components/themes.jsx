@@ -26,7 +26,7 @@ const ThemesPage = props =>
       <DataListContainer
         name="themes"
         fetch={{
-          url: generateUrl('claro_theme_list')
+          url: generateUrl('apiv2_theme_list')
         }}
         definition={[
           {

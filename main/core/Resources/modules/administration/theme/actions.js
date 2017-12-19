@@ -1,4 +1,5 @@
 import {makeActionCreator} from '#/main/core/utilities/redux'
+import {getDataQueryString} from '#/main/core/data/list/utils'
 
 import {API_REQUEST} from '#/main/core/api/actions'
 
@@ -18,7 +19,7 @@ actions.resetThemeForm = makeActionCreator(THEME_FORM_RESET)
 
 actions.saveTheme = (theme) => ({
   [API_REQUEST]: {
-    url: ['claro_theme_update', {id: theme.id}],
+    url: ['apiv2_theme_update', {id: theme.id}],
     request: {
       method: 'PUT',
       body: JSON.stringify(theme)
@@ -32,10 +33,9 @@ actions.deleteThemes = (themes) => {
 
   return {
     [API_REQUEST]: {
-      url: ['claro_themes_delete'],
+      url: ['apiv2_theme_delete_bulk'] + getDataQueryString(themes),
       request: {
-        method: 'DELETE',
-        body: JSON.stringify(themeIds)
+        method: 'DELETE'
       },
       success: (data, dispatch) => dispatch(actions.removeThemes(themeIds))
     }
