@@ -6,7 +6,7 @@ import {t} from '#/main/core/translation'
 
 import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
+import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {makeSaveAction} from '#/main/core/data/form/containers/form-save.jsx'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'

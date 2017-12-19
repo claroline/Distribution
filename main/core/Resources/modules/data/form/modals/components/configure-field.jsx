@@ -6,7 +6,7 @@ import set from 'lodash/set'
 import {t} from '#/main/core/translation'
 
 import {getTypeOrDefault} from '#/main/core/data'
-import {DataFormModal} from '#/main/core/data/form/components/modal/form.jsx'
+import {DataFormModal} from '#/main/core/data/form/modals/components/data-form.jsx'
 
 const MODAL_CONFIGURE_FIELD = 'MODAL_CONFIGURE_FIELD'
 

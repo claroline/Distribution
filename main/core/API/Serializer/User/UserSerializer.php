@@ -159,7 +159,7 @@ class UserSerializer
             'lastLogin' => $user->getLastLogin() ? $user->getLastLogin()->format('Y-m-d\TH:i:s') : null,
             'created' => $user->getCreated() ? $user->getCreated()->format('Y-m-d\TH:i:s') : null,
             'description' => $user->getDescription(),
-            'mailValidated' => $user->isMailNotified(),
+            'mailValidated' => $user->isMailValidated(),
             'mailNotified' => $user->isMailNotified(),
             'mailWarningHidden' => $user->getHideMailWarning(),
             'publicUrlTuned' => $user->hasTunedPublicUrl(),

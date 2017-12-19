@@ -48,6 +48,7 @@ const UserPage = props =>
     >
       <UserPageActions
         user={props.user}
+        showModal={props.showModal}
         customActions={props.customActions}
       />
     </UserPageHeader>

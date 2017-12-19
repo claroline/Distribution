@@ -5,7 +5,7 @@ import {
 } from 'react-router-dom'
 
 import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {registerModalTypes} from '#/main/core/layout/modal'
+import {registerModals} from '#/main/core/layout/modal'
 import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
 import {reducer as resourceNodeReducer} from '#/main/core/layout/resource/reducer'
 import {reducer as apiReducer} from '#/main/core/api/reducer'
@@ -29,7 +29,7 @@ import {KeywordFormModal} from './editor/keyword/components/keyword-form-modal.j
 import {FieldFormModal} from './editor/field/components/field-form-modal.jsx'
 
 // register custom modals
-registerModalTypes([
+registerModals([
   ['MODAL_CATEGORY_FORM', CategoryFormModal],
   ['MODAL_KEYWORD_FORM', KeywordFormModal],
   ['MODAL_FIELD_FORM', FieldFormModal]

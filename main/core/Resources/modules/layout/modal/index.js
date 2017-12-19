@@ -27,13 +27,13 @@ const modals = {
   [MODAL_IFRAME]: IframeModal
 }
 
-export function registerModalType(type, component) {
+export function registerModal(type, component) {
   invariant(!modals[type], `Modal type ${type} is already registered`)
   modals[type] = component
 }
 
-export function registerModalTypes(types) {
-  types.map(type => registerModalType(type[0], type[1]))
+export function registerModals(types) {
+  types.map(type => registerModal(type[0], type[1]))
 }
 
 export function makeModal(type, props, fading, fadeCallback = () => true, hideCallback = () => true) {

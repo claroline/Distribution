@@ -105,7 +105,8 @@ DataFormModal.propTypes = {
 DataFormModal.defaultProps = {
   icon: 'fa fa-fw fa-pencil',
   title: t('edit'),
-  saveButtonText: t('save')
+  saveButtonText: t('save'),
+  data: {}
 }
 
 export {
