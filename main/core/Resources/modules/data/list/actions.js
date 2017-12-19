@@ -1,4 +1,4 @@
-import {generateUrl} from '#/main/core/fos-js-router'
+import {getUrl} from '#/main/core/fos-js-router'
 import {makeInstanceActionCreator} from '#/main/core/utilities/redux'
 
 import {API_REQUEST} from '#/main/core/api/actions'
@@ -44,7 +44,7 @@ actions.fetchData = (listName, url) => (dispatch, getState) => {
 
   return dispatch({
     [API_REQUEST]: {
-      url: (typeof url === 'string' ? url : generateUrl(...url)) + listSelect.queryString(listState),
+      url: getUrl(url) + listSelect.queryString(listState),
       success: (response, dispatch) => {
         if (listSelect.currentPage(listState) !== response.page) {
           // we reset current page because if we request a non existing page,
@@ -65,7 +65,7 @@ export const LIST_DATA_DELETE = 'LIST_DATA_DELETE'
 actions.deleteItems = makeInstanceActionCreator(LIST_DATA_DELETE, 'items')
 actions.deleteData = (listName, url, items) => ({
   [API_REQUEST]: {
-    url: (typeof url === 'string' ? url : generateUrl(...url)) + getDataQueryString(items),
+    url: getUrl(url) + getDataQueryString(items),
     request: {
       method: 'DELETE'
     },

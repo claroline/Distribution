@@ -6,15 +6,13 @@ import classes from 'classnames'
 import {t} from '#/main/core/translation'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_GENERIC_TYPE_PICKER, registerModalType} from '#/main/core/layout/modal'
-import {MODAL_CONFIGURE_FIELD, ConfigureFieldModal} from '#/main/core/data/form/components/modal/configure-field.jsx'
+import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
+import {MODAL_CONFIGURE_FIELD} from '#/main/core/data/form/modals'
 
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 
 import {FormField} from '#/main/core/data/form/components/field.jsx'
 import {getCreatableTypes} from '#/main/core/data'
-
-registerModalType(MODAL_CONFIGURE_FIELD, ConfigureFieldModal)
 
 const FieldPreview = props =>
   <FormField

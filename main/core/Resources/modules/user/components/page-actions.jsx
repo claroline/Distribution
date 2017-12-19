@@ -4,6 +4,8 @@ import {PropTypes as T} from 'prop-types'
 import {t} from '#/main/core/translation'
 import {navigate, withRouter, matchPath} from '#/main/core/router'
 
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {MODAL_CHANGE_PASSWORD, MODAL_SEND_MESSAGE} from '#/main/core/user/modals'
 import {
   PageGroupActions,
   PageActions,
@@ -11,8 +13,6 @@ import {
   MoreAction
 } from '#/main/core/layout/page'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
-
-// todo hide `contact` actions group on my profile
 
 const EditGroupActionsComponent = props => {
   const isEditorOpened = !!matchPath(props.location.pathname, {
@@ -52,12 +52,16 @@ const UserPageActions = props => {
       label: t('change_password'),
       group: t('user_management'),
       displayed: props.user.rights.current.edit,
-      action: () => true
+      action: () => props.showModal(MODAL_CHANGE_PASSWORD, {
+
+      })
     }, {
       icon: 'fa fa-fw fa-trash-o',
       label: t('delete'),
       displayed: props.user.rights.current.delete,
-      action: () => true,
+      action: () =>  props.showModal(MODAL_DELETE_CONFIRM, {
+
+      }),
       dangerous: true
     }
   ])
@@ -74,7 +78,9 @@ const UserPageActions = props => {
             id="send-message"
             title={t('send_message')}
             icon="fa fa-paper-plane-o"
-            action={() => true}
+            action={() => props.showModal(MODAL_SEND_MESSAGE, {
+
+            })}
           />
           <PageAction
             id="add-contact"
@@ -111,7 +117,8 @@ UserPageActions.propTypes = {
       }).isRequired
     }).isRequired
   }).isRequired,
-  customActions: T.array
+  customActions: T.array,
+  showModal: T.func.isRequired
 }
 
 UserPageActions.defaultProps = {

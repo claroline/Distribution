@@ -11,7 +11,7 @@ import {FormSections, FormSection} from '#/main/core/layout/form/components/form
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DATA_PICKER} from '#/main/core/data/modal/containers/picker.jsx'
+import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
 import {actions} from '#/main/core/administration/user/organization/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
