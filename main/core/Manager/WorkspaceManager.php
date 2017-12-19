@@ -1088,17 +1088,6 @@ class WorkspaceManager
         );
     }
 
-    public function toArray(Workspace $workspace)
-    {
-        $data = [];
-        $data['id'] = $workspace->getId();
-        $data['name'] = $workspace->getName();
-        $data['code'] = $workspace->getCode();
-        $data['expiration_date'] = $workspace->getEndDate()->getTimeStamp();
-
-        return $data;
-    }
-
     public function getFirstOpenableTool(Workspace $workspace)
     {
         $token = $this->container->get('security.token_storage')->getToken();
