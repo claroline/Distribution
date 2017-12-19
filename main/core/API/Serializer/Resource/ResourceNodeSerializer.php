@@ -101,6 +101,7 @@ class ResourceNodeSerializer
     {
         $serializedNode = [
             'id' => $resourceNode->getGuid(),
+            'actualId' => $resourceNode->getId(),
             'name' => $resourceNode->getName(),
             'poster' => null, // todo : add as ResourceNode prop
             'thumbnail' => null,

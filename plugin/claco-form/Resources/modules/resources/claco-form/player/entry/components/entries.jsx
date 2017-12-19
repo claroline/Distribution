@@ -113,13 +113,13 @@ class Entries extends Component {
       renderer: (rowData) => {
         const status = rowData.status === 1 ? '' : rowData.status === 0 ?
           <span
-            className="fa fa-w fa-info-circle"
+            className="fa fa-fw fa-info-circle"
             data-toggle="tooltip"
             title={t('pending')}
           >
           </span> :
           <span
-            className="fa fa-w fa-exclamation-triangle"
+            className="fa fa-fw fa-exclamation-triangle"
             data-toggle="tooltip"
             title={t('unpublished')}
           >
@@ -200,7 +200,7 @@ class Entries extends Component {
           if (getFieldType(f.type).name === 'rich_text') {
             const value = fieldValue && fieldValue.fieldFacetValue && fieldValue.fieldFacetValue.value ?
               <span
-                className="fa fa-w fa-exclamation-circle"
+                className="fa fa-fw fa-exclamation-circle"
                 data-toggle="tooltip"
                 title={trans('rich_text_field_info', {}, 'clacoform')}
               /> :
@@ -221,7 +221,7 @@ class Entries extends Component {
 
   generateActions() {
     const dataListActions = [{
-      icon: 'fa fa-w fa-eye',
+      icon: 'fa fa-fw fa-eye',
       label: trans('view_entry', {}, 'clacoform'),
       action: (rows) => this.navigateTo(`/entry/${rows[0].id}/view`),
       context: 'row'
@@ -229,35 +229,35 @@ class Entries extends Component {
 
     if (this.props.canGeneratePdf) {
       dataListActions.push({
-        icon: 'fa fa-w fa-print',
+        icon: 'fa fa-fw fa-print',
         label: trans('print_entry', {}, 'clacoform'),
         action: (rows) => this.props.downloadEntryPdf(rows[0].id),
         context: 'row'
       })
     }
     dataListActions.push({
-      icon: 'fa fa-w fa-pencil',
+      icon: 'fa fa-fw fa-pencil',
       label: trans('edit_entry', {}, 'clacoform'),
       action: (rows) => this.navigateTo(`/entry/${rows[0].id}/edit`),
       displayed: (rows) => this.canEditEntry(rows[0]),
       context: 'row'
     })
     dataListActions.push({
-      icon: 'fa fa-w fa-eye',
+      icon: 'fa fa-fw fa-eye',
       label: t('publish'),
       action: (rows) => this.props.switchEntryStatus(rows[0].id),
       displayed: (rows) => this.canManageEntry(rows[0]) && rows[0].status !== 1,
       context: 'row'
     })
     dataListActions.push({
-      icon: 'fa fa-w fa-eye-slash',
+      icon: 'fa fa-fw fa-eye-slash',
       label: t('unpublish'),
       action: (rows) => this.props.switchEntryStatus(rows[0].id),
       displayed: (rows) => this.canManageEntry(rows[0]) && rows[0].status === 1,
       context: 'row'
     })
     dataListActions.push({
-      icon: 'fa fa-w fa-trash',
+      icon: 'fa fa-fw fa-trash',
       label: trans('delete_entry', {}, 'clacoform'),
       action: (rows) => this.deleteEntry(rows[0]),
       displayed: (rows) => this.canManageEntry(rows[0]),

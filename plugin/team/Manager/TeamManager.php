@@ -20,6 +20,7 @@ use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\TeamBundle\API\Serializer\TeamSerializer;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -35,8 +36,10 @@ class TeamManager
     private $resourceManager;
     private $rightsManager;
     private $roleManager;
-    private $teamRepo;
+    private $teamSerializer;
     private $translator;
+
+    private $teamRepo;
     private $workspaceTeamParamsRepo;
 
     /**
@@ -46,6 +49,7 @@ class TeamManager
      *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
      *     "rightsManager"   = @DI\Inject("claroline.manager.rights_manager"),
      *     "roleManager"     = @DI\Inject("claroline.manager.role_manager"),
+     *     "teamSerializer"  = @DI\Inject("claroline.serializer.team"),
      *     "translator"      = @DI\Inject("translator")
      * })
      */
@@ -55,6 +59,7 @@ class TeamManager
         ResourceManager $resourceManager,
         RightsManager $rightsManager,
         RoleManager $roleManager,
+        TeamSerializer $teamSerializer,
         TranslatorInterface $translator
     ) {
         $this->om = $om;
@@ -62,10 +67,11 @@ class TeamManager
         $this->resourceManager = $resourceManager;
         $this->rightsManager = $rightsManager;
         $this->roleManager = $roleManager;
-        $this->teamRepo = $om->getRepository('ClarolineTeamBundle:Team');
+        $this->teamSerializer = $teamSerializer;
         $this->translator = $translator;
-        $this->workspaceTeamParamsRepo =
-            $om->getRepository('ClarolineTeamBundle:WorkspaceTeamParameters');
+
+        $this->teamRepo = $om->getRepository('ClarolineTeamBundle:Team');
+        $this->workspaceTeamParamsRepo = $om->getRepository('ClarolineTeamBundle:WorkspaceTeamParameters');
     }
 
     public function createMultipleTeams(
@@ -79,11 +85,11 @@ class TeamManager
         $selfRegistration,
         $selfUnregistration,
         ResourceNode $resource = null,
-        array $creatableResources = array()
+        array $creatableResources = []
     ) {
         $this->om->startFlushSuite();
-        $teams = array();
-        $nodes = array();
+        $teams = [];
+        $nodes = [];
         $index = 1;
 
         for ($i = 0; $i < $nbTeams; ++$i) {
@@ -116,7 +122,6 @@ class TeamManager
 
         foreach ($teams as $team) {
             $this->initializeTeamRights($team);
-//            $this->initializeTeamDirectoryPerms($team);
         }
         $this->om->endFlushSuite();
     }
@@ -126,7 +131,7 @@ class TeamManager
         Workspace $workspace,
         User $user,
         ResourceNode $resource = null,
-        array $creatableResources = array()
+        array $creatableResources = []
     ) {
         $this->om->startFlushSuite();
         $team->setWorkspace($workspace);
@@ -189,16 +194,16 @@ class TeamManager
 
         if (!is_null($resourceNode)) {
             $workspaceRoles = $this->roleManager->getRolesByWorkspace($workspace);
-            $rights = array();
+            $rights = [];
 
             foreach ($workspaceRoles as $role) {
                 if ($role->getId() !== $teamRole->getId() &&
                     $role->getId() !== $teamManagerRole->getId() &&
                     !is_null($resourceNode)) {
                     $roleName = $role->getName();
-                    $rights[$roleName] = array();
+                    $rights[$roleName] = [];
                     $rights[$roleName]['role'] = $role;
-                    $rights[$roleName]['create'] = array();
+                    $rights[$roleName]['create'] = [];
 
                     if ($isPublic) {
                         $rights[$roleName]['open'] = true;
@@ -302,7 +307,7 @@ class TeamManager
     public function deleteTeams(array $teams, $withDirectory = false)
     {
         $this->om->startFlushSuite();
-        $nodes = array();
+        $nodes = [];
 
         foreach ($teams as $team) {
             if ($withDirectory) {
@@ -417,7 +422,7 @@ class TeamManager
             $directory = $team->getDirectory();
 
             if ($team->getIsPublic() && !is_null($directory)) {
-                $rights = array();
+                $rights = [];
                 $rights['open'] = true;
                 $this->rightsManager->editPerms(
                     $rights,
@@ -482,7 +487,7 @@ class TeamManager
                 ->findTeamsByWorkspaceAndName($workspace, $name);
         }
 
-        return array('name' => $name, 'index' => $index);
+        return ['name' => $name, 'index' => $index];
     }
 
     private function createTeamDirectory(
@@ -492,7 +497,7 @@ class TeamManager
         Role $teamRole,
         Role $teamManagerRole,
         ResourceNode $resource = null,
-        array $creatableResources = array()
+        array $creatableResources = []
     ) {
         $rootDirectory = $this->resourceManager->getWorkspaceRoot($workspace);
         $directoryType = $this->resourceManager->getResourceTypeByName('directory');
@@ -504,22 +509,22 @@ class TeamManager
         );
         $teamRoleName = $teamRole->getName();
         $teamManagerRoleName = $teamManagerRole->getName();
-        $rights = array();
-        $rights[$teamRoleName] = array();
+        $rights = [];
+        $rights[$teamRoleName] = [];
         $rights[$teamRoleName]['role'] = $teamRole;
-        $rights[$teamRoleName]['create'] = array();
-        $rights[$teamManagerRoleName] = array();
+        $rights[$teamRoleName]['create'] = [];
+        $rights[$teamManagerRoleName] = [];
         $rights[$teamManagerRoleName]['role'] = $teamManagerRole;
-        $rights[$teamManagerRoleName]['create'] = array();
+        $rights[$teamManagerRoleName]['create'] = [];
 
         foreach ($resourceTypes as $resourceType) {
             $rights[$teamManagerRoleName]['create'][] =
-                array('name' => $resourceType->getName());
+                ['name' => $resourceType->getName()];
         }
 
         foreach ($creatableResources as $creatableResource) {
             $rights[$teamRoleName]['create'][] =
-                array('name' => $creatableResource->getName());
+                ['name' => $creatableResource->getName()];
         }
         $decoders = $directoryType->getMaskDecoders();
 
@@ -623,7 +628,7 @@ class TeamManager
             foreach ($workspaceRoles as $role) {
                 if ($role->getId() !== $teamRole->getId() &&
                     $role->getId() !== $teamManagerRole->getId()) {
-                    $rights = array();
+                    $rights = [];
 
                     if ($isPublic) {
                         $rights['open'] = true;
@@ -667,26 +672,26 @@ class TeamManager
         );
     }
 
-    public function getTeamsWithUsersByWorkspace(
-        Workspace $workspace,
-        $executeQuery = true
-    ) {
-        return $this->teamRepo->findTeamsWithUsersByWorkspace(
-            $workspace,
-            $executeQuery
-        );
+    public function getTeamsWithUsersByWorkspace(Workspace $workspace, $executeQuery = true)
+    {
+        return $this->teamRepo->findTeamsWithUsersByWorkspace($workspace, $executeQuery);
     }
 
-    public function getTeamsByUserAndWorkspace(
-        User $user,
-        Workspace $workspace,
-        $executeQuery = true
-    ) {
-        return $this->teamRepo->findTeamsByUserAndWorkspace(
-            $user,
-            $workspace,
-            $executeQuery
-        );
+    public function getTeamsByUserAndWorkspace(User $user, Workspace $workspace, $executeQuery = true)
+    {
+        return $this->teamRepo->findTeamsByUserAndWorkspace($user, $workspace, $executeQuery);
+    }
+
+    public function getSearializedTeamsByUserAndWorkspace(User $user, Workspace $workspace)
+    {
+        $serializedTeams = [];
+        $teams = $this->teamRepo->findTeamsByUserAndWorkspace($user, $workspace);
+
+        foreach ($teams as $team) {
+            $serializedTeams[] = $this->teamSerializer->serialize($team);
+        }
+
+        return $serializedTeams;
     }
 
     public function getUnregisteredUsersByTeam(
@@ -739,12 +744,7 @@ class TeamManager
         $max = 50,
         $executeQuery = true
     ) {
-        $users = $this->teamRepo->findWorkspaceUsers(
-            $workspace,
-            $orderedBy,
-            $order,
-            $executeQuery
-        );
+        $users = $this->teamRepo->findWorkspaceUsers($workspace, $orderedBy, $order, $executeQuery);
 
         return $executeQuery ?
             $this->pagerFactory->createPagerFromArray($users, $page, $max) :
@@ -815,18 +815,11 @@ class TeamManager
             $this->pagerFactory->createPager($users, $page, $max);
     }
 
-    public function getNbTeamsByUsers(
-        Workspace $workspace,
-        array $users,
-        $executeQuery = true
-    ) {
+    public function getNbTeamsByUsers(Workspace $workspace, array $users, $executeQuery = true)
+    {
         return count($users) > 0 ?
-            $this->teamRepo->findNbTeamsByUsers(
-                $workspace,
-                $users,
-                $executeQuery
-            ) :
-            array();
+            $this->teamRepo->findNbTeamsByUsers($workspace, $users, $executeQuery) :
+            [];
     }
 
     public function getTeamsWithExclusionsByWorkspace(
@@ -845,12 +838,7 @@ class TeamManager
                 $executeQuery
             );
         } else {
-            return $this->teamRepo->findTeamsByWorkspace(
-                $workspace,
-                $orderedBy,
-                $order,
-                $executeQuery
-            );
+            return $this->teamRepo->findTeamsByWorkspace($workspace, $orderedBy, $order, $executeQuery);
         }
     }
 
@@ -858,13 +846,8 @@ class TeamManager
      * Access to WorkspaceTeamParametersRepository methods *
      *******************************************************/
 
-    public function getParametersByWorkspace(
-        Workspace $workspace,
-        $executeQuery = true
-    ) {
-        return $this->workspaceTeamParamsRepo->findParametersByWorkspace(
-            $workspace,
-            $executeQuery
-        );
+    public function getParametersByWorkspace(Workspace $workspace, $executeQuery = true)
+    {
+        return $this->workspaceTeamParamsRepo->findParametersByWorkspace($workspace, $executeQuery);
     }
 }

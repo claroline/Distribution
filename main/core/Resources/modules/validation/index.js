@@ -1,4 +1,5 @@
 import set from 'lodash/set'
+import moment from 'moment'
 
 import {trans, tval} from '#/main/core/translation'
 
@@ -40,6 +41,46 @@ export function gteZero(value) {
       {},
       'validators'
     ).replace('{{ limit }}', 0)
+  }
+}
+
+export function greaterOrEqual(value, limit) {
+  if (value < limit) {
+    return trans(
+      'value_greater_or_equal_to',
+      {limit: limit},
+      'validators'
+    )
+  }
+}
+
+export function lowerOrEqual(value, limit) {
+  if (value > limit) {
+    return trans(
+      'value_lower_or_equal_to',
+      {limit: limit},
+      'validators'
+    )
+  }
+}
+
+export function between(value, min, max) {
+  if (value < min || value > max) {
+    return trans(
+      'value_between',
+      {min: min, max: max},
+      'validators'
+    )
+  }
+}
+
+export function dateAfter(value, limit) {
+  if (moment(value) <= moment(limit)) {
+    return trans(
+      'date_after',
+      {limit: moment(limit).format('YYYY-MM-DD')},
+      'validators'
+    )
   }
 }
 

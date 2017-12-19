@@ -166,7 +166,7 @@ const Random = props =>
         />
       </div>
       <div className="col-md-1 text-center">
-        <i className="fa fa-w fa-long-arrow-right"></i>
+        <i className="fa fa-fw fa-long-arrow-right"></i>
       </div>
       <div className="col-md-2">
         <DatePicker
@@ -589,7 +589,7 @@ class ClacoFormConfig extends Component {
               className="btn btn-danger btn-sm margin-right-sm"
               onClick={() => this.showAllEntriesDeletion()}
             >
-              <span className="fa fa-w fa-trash"></span>
+              <span className="fa fa-fw fa-trash"></span>
               &nbsp;
               {trans('delete_all_entries', {}, 'clacoform')}
             </button>
@@ -599,7 +599,7 @@ class ClacoFormConfig extends Component {
               title={trans('export_all_entries', {}, 'clacoform')}
               onClick={() => this.props.exportAllEntries()}
             >
-              <span className="fa fa-w fa-sign-out"></span>
+              <span className="fa fa-fw fa-sign-out"></span>
             </TooltipButton>
           </span>
         </h2>

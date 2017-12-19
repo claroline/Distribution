@@ -289,7 +289,7 @@ class EntryView extends Component {
                         }
                         onClick={() => this.switchEntryNotification()}
                       >
-                        <span className={`fa fa-w fa-${this.isNotificationsEnabled() ? 'bell-slash-o' : 'bell-o'}`}></span>
+                        <span className={`fa fa-fw fa-${this.isNotificationsEnabled() ? 'bell-slash-o' : 'bell-o'}`}></span>
                       </TooltipButton>
                       {this.props.displayComments &&
                         <button type="button" className="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -324,7 +324,7 @@ class EntryView extends Component {
                         title={trans('change_entry_owner', {}, 'clacoform')}
                         onClick={() => this.showOwnerForm()}
                       >
-                        <span className="fa fa-w fa-user"></span>
+                        <span className="fa fa-fw fa-user"></span>
                       </TooltipButton>
                     }
                     {this.props.canGeneratePdf &&
@@ -334,7 +334,7 @@ class EntryView extends Component {
                         title={trans('print_entry', {}, 'clacoform')}
                         onClick={() => this.props.downloadEntryPdf(this.props.entry.id)}
                       >
-                        <span className="fa fa-w fa-print"></span>
+                        <span className="fa fa-fw fa-print"></span>
                       </TooltipButton>
                     }
                     {this.canShare() &&
@@ -344,7 +344,7 @@ class EntryView extends Component {
                         title={trans('share_entry', {}, 'clacoform')}
                         onClick={() => this.showSharingForm()}
                       >
-                        <span className="fa fa-w fa-share-alt"></span>
+                        <span className="fa fa-fw fa-share-alt"></span>
                       </TooltipButton>
                     }
                     {this.canManageEntry &&
@@ -354,7 +354,7 @@ class EntryView extends Component {
                         title={this.props.entry.status === 1 ? t('unpublish') : t('publish')}
                         onClick={() => this.props.switchEntryStatus(this.props.entry.id)}
                       >
-                        <span className={`fa fa-w fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
+                        <span className={`fa fa-fw fa-${this.props.entry.status === 1 ? 'eye-slash' : 'eye'}`}></span>
                       </TooltipButton>
                     }
                     {this.props.canEditEntry &&
@@ -362,7 +362,7 @@ class EntryView extends Component {
                         className="btn btn-default btn-sm margin-right-sm"
                         href={`#/entry/${this.props.entry.id}/edit`}
                       >
-                        <span className="fa fa-w fa-pencil"></span>
+                        <span className="fa fa-fw fa-pencil"></span>
                       </a>
                     }
                     {this.canManageEntry &&
@@ -370,7 +370,7 @@ class EntryView extends Component {
                         className="btn btn-danger btn-sm margin-right-sm"
                         onClick={() => this.deleteEntry()}
                       >
-                        <span className="fa fa-w fa-trash"></span>
+                        <span className="fa fa-fw fa-trash"></span>
                       </button>
                     }
                   </span>
@@ -418,7 +418,7 @@ class EntryView extends Component {
                   >
                     {trans('keywords', {}, 'clacoform')}
                     &nbsp;
-                    <span className={`fa fa-w ${this.state.isKeywordsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
+                    <span className={`fa fa-fw ${this.state.isKeywordsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
                     </span>
                   </span>
                 </div>
@@ -445,7 +445,7 @@ class EntryView extends Component {
                   >
                     {t('categories')}
                     &nbsp;
-                    <span className={`fa fa-w ${this.state.isCategoriesPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
+                    <span className={`fa fa-fw ${this.state.isCategoriesPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
                     </span>
                   </span>
                 </div>
@@ -483,7 +483,7 @@ class EntryView extends Component {
                       }
                     </span>
                     &nbsp;
-                    <span className={`fa fa-w ${this.state.isCommentsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
+                    <span className={`fa fa-fw ${this.state.isCommentsPanelOpen ? 'fa-chevron-circle-down' : 'fa-chevron-circle-right'}`}>
                     </span>
                   </span>
                 </div>

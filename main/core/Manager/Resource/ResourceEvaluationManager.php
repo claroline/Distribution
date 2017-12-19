@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager\Resource;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
@@ -46,11 +47,11 @@ class ResourceEvaluationManager
         $this->resourceEvaluationRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceEvaluation');
     }
 
-    public function getResourceUserEvaluation(ResourceNode $node, User $user)
+    public function getResourceUserEvaluation(ResourceNode $node, User $user, $withCreation = true)
     {
         $evaluation = $this->resourceUserEvaluationRepo->findOneBy(['resourceNode' => $node, 'user' => $user]);
 
-        if (empty($evaluation)) {
+        if ($withCreation && empty($evaluation)) {
             $evaluation = $this->createResourceUserEvaluation($node, $user);
         }
 
@@ -90,7 +91,8 @@ class ResourceEvaluationManager
         $customScore = null,
         $duration = null,
         $comment = null,
-        $data = null
+        $data = null,
+        $forceStatus = false
     ) {
         $this->om->startFlushSuite();
         $resourceUserEvaluation = $this->getResourceUserEvaluation($node, $user);
@@ -107,27 +109,33 @@ class ResourceEvaluationManager
         $evaluation->setComment($comment);
         $evaluation->setData($data);
         $this->persistResourceEvaluation($evaluation);
-        $this->updateResourceUserEvaluation($evaluation);
+        $this->updateResourceUserEvaluation($evaluation, $forceStatus);
         $this->eventDispatcher->dispatch('resource_evaluation', new ResourceEvaluationEvent($resourceUserEvaluation));
         $this->om->endFlushSuite();
 
         return $evaluation;
     }
 
-    private function updateResourceUserEvaluation(ResourceEvaluation $evaluation)
+    private function updateResourceUserEvaluation(ResourceEvaluation $evaluation, $forceStatus = false)
     {
         $reu = $evaluation->getResourceUserEvaluation();
         $reu->setDate($evaluation->getDate());
         $duration = $evaluation->getDuration();
         $score = $evaluation->getScore();
+        $scoreMax = $evaluation->getScoreMax();
+        $scoreMin = $evaluation->getScoreMin();
+        $statusPriority = AbstractResourceEvaluation::STATUS_PRORITY;
 
         if (!empty($duration)) {
             $reuDuration = $reu->getDuration() ? $reu->getDuration() : 0;
             $reuDuration += $duration;
             $reu->setDuration($reuDuration);
         }
-        if (!empty($score)) {
-            $scoreMax = $evaluation->getScoreMax();
+        if ($forceStatus) {
+            $reu->setScore($score);
+            $reu->setScoreMax($scoreMax);
+            $reu->setScoreMin($scoreMin);
+        } elseif (!empty($score)) {
             $newScore = empty($scoreMax) ? $score : $score / $scoreMax;
 
             $reuScore = $reu->getScore() ? $reu->getScore() : 0;
@@ -137,12 +145,13 @@ class ResourceEvaluationManager
             if ($newScore >= $oldScore) {
                 $reu->setScore($score);
                 $reu->setScoreMax($scoreMax);
-                $reu->setScoreMin($evaluation->getScoreMin());
+                $reu->setScoreMin($scoreMin);
             }
         }
-        if (($evaluation->isSuccessful() && !$reu->isSuccessful()) ||
-            ($evaluation->isTerminated() && !$reu->isTerminated() && !$reu->isSuccessful()) ||
-            empty($reu->getStatus())
+        if ($forceStatus ||
+            empty($reu->getStatus()) ||
+            ($evaluation->isSuccessful() && !$reu->isSuccessful()) ||
+            $statusPriority[$evaluation->getStatus()] > $statusPriority[$reu->getStatus()]
         ) {
             $reu->setStatus($evaluation->getStatus());
         }

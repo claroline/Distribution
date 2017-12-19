@@ -985,4 +985,9 @@ class ResourceNode
             return $this->getAccesses()['code'];
         }
     }
+
+    public function getLogs()
+    {
+        return $this->logs;
+    }
 }
