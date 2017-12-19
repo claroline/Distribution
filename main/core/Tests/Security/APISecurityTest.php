@@ -104,15 +104,6 @@ class APISecurityTest extends TransactionalTestCase
         $this->assertEquals($data['error'], 'authentication_error');
     }
 
-    public function testAnonymousAuthentication()
-    {
-        $this->client->request('GET', '/api/locales/available');
-        $data = $this->client->getResponse()->getContent();
-        $data = json_decode($data, true);
-        $expected = ['value' => 'fr', 'label' => 'Français'];
-        $this->assertEquals($data[0], $expected);
-    }
-
     /**
      * Allowed grant types: authorization_code, password, refresh_token, token, client_credentials.
      */
