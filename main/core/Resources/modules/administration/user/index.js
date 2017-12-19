@@ -3,7 +3,6 @@ import {bootstrap} from '#/main/core/utilities/app/bootstrap'
 import {registerType} from '#/main/core/data'
 import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
 
-import {registerModal} from '#/main/core/layout/modal'
 import {registerUserTypes} from '#/main/core/user/data'
 
 import {decorate} from '#/main/core/user/profile/decorator'

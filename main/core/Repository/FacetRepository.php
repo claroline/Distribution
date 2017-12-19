@@ -64,10 +64,11 @@ class FacetRepository extends EntityRepository
     }
 
     /**
-     * @param bool $isMain
-     * @return mixed
-     *
      * @deprecated
+     *
+     * @param bool $isMain
+     *
+     * @return mixed
      */
     public function countFacets($isMain = false)
     {

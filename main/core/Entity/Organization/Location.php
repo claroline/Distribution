@@ -20,7 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Organization\LocationRepository")
+ * @ORM\Entity()
  * @ORM\Table(name="claro__location")
  * @DoctrineAssert\UniqueEntity("name")
  */
