@@ -73,6 +73,21 @@ class ProfileController extends Controller
     }
 
     /**
+     * Redirect to user profile when only the id is known.
+     *
+     * @EXT\Route("/id/{user}", name="claro_user_profile_id")
+     * @EXT\Template("ClarolineCoreBundle:User:profile.html.twig")
+     *
+     * @param User $user
+     *
+     * @return array
+     */
+    public function redirectAction(User $user)
+    {
+        return $this->indexAction($user->getPublicUrl);
+    }
+
+    /**
      * Displays a user profile.
      *
      * @EXT\Route("/{publicUrl}", name="claro_user_profile")
