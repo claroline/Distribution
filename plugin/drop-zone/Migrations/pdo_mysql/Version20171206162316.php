@@ -32,6 +32,7 @@ class Version20171206162316 extends AbstractMigration
                 correction_denied TINYINT(1) NOT NULL, 
                 correction_denied_comment LONGTEXT DEFAULT NULL, 
                 team_id INT DEFAULT NULL, 
+                team_name VARCHAR(255) DEFAULT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_CBFA3896D17F50A6 (uuid), 
                 INDEX IDX_CBFA38964D224760 (drop_id), 

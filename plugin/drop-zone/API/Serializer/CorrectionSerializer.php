@@ -72,6 +72,7 @@ class CorrectionSerializer
             'correctionDenied' => $correction->isCorrectionDenied(),
             'correctionDeniedComment' => $correction->getCorrectionDeniedComment(),
             'teamId' => $correction->getTeamId(),
+            'teamName' => $correction->getTeamName(),
             'grades' => $this->getGrades($correction),
         ];
     }
@@ -140,6 +141,9 @@ class CorrectionSerializer
         }
         if (isset($data['teamId'])) {
             $correction->setTeamId($data['teamId']);
+        }
+        if (isset($data['teamName'])) {
+            $correction->setTeamName($data['teamName']);
         }
         $this->deserializeGrades($correction, $data['grades']);
 

@@ -529,7 +529,8 @@ class DropzoneController
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-        $this->checkCorrectionEdition($correction, $user);
+        $teamId = $this->manager->getUserTeamId($dropzone, $user);
+        $this->checkCorrectionEdition($correction, $user, $teamId);
 
         try {
             $this->manager->submitCorrection($correction, $user);
@@ -561,7 +562,8 @@ class DropzoneController
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-        $this->checkCorrectionEdition($correction, $user);
+        $teamId = $this->manager->getUserTeamId($dropzone, $user);
+        $this->checkCorrectionEdition($correction, $user, $teamId);
 
         try {
             $this->manager->switchCorrectionValidation($correction);
@@ -593,13 +595,50 @@ class DropzoneController
     {
         $dropzone = $correction->getDrop()->getDropzone();
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-        $this->checkCorrectionEdition($correction, $user);
+        $teamId = $this->manager->getUserTeamId($dropzone, $user);
+        $this->checkCorrectionEdition($correction, $user, $teamId);
 
         try {
             $serializedCorrection = $this->manager->serializeCorrection($correction);
             $this->manager->deleteCorrection($correction);
 
             return new JsonResponse($serializedCorrection);
+        } catch (\Exception $e) {
+            return new JsonResponse($e->getMessage(), 422);
+        }
+    }
+
+    /**
+     * @EXT\Route("/correction/{id}/deny", name="claro_dropzone_correction_deny")
+     * @EXT\Method("PUT")
+     * @EXT\ParamConverter(
+     *     "correction",
+     *     class="ClarolineDropZoneBundle:Correction",
+     *     options={"mapping": {"id": "uuid"}}
+     * )
+     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Correction $correction
+     * @param User       $user
+     * @param Request    $request
+     *
+     * @return JsonResponse
+     */
+    public function correctionDenyAction(Correction $correction, User $user, Request $request)
+    {
+        $dropzone = $correction->getDrop()->getDropzone();
+        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
+        $teamId = $this->manager->getUserTeamId($dropzone, $user);
+        $this->checkCorrectionDenial($correction, $user, $teamId);
+        $data = json_decode($request->getContent(), true);
+        $comment = $data['comment'];
+
+        try {
+            $this->manager->denyCorrection($correction, $comment);
+
+            return new JsonResponse(
+                $this->manager->serializeCorrection($correction)
+            );
         } catch (\Exception $e) {
             return new JsonResponse($e->getMessage(), 422);
         }
@@ -654,7 +693,7 @@ class DropzoneController
     {
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
         $this->checkTeamUser($team, $user);
-        $drop = $this->manager->getPeerDrop($dropzone, $user, $team->getId());
+        $drop = $this->manager->getPeerDrop($dropzone, $user, $team->getId(), $team->getName());
         $data = empty($drop) ? null : $this->manager->serializeDrop($drop);
 
         return new JsonResponse($data);
@@ -773,6 +812,22 @@ class DropzoneController
             if ($correction->getUser() === $user || $correction->getTeamId() === $teamId) {
                 return;
             }
+        }
+
+        throw new AccessDeniedException();
+    }
+
+    private function checkCorrectionDenial(Correction $correction, User $user, $teamId = null)
+    {
+        $drop = $correction->getDrop();
+        $dropzone = $drop->getDropzone();
+        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
+
+        if ($this->authorization->isGranted('EDIT', $collection)) {
+            return;
+        }
+        if ($drop->getUser() === $user || $drop->getTeamId() === $teamId) {
+            return;
         }
 
         throw new AccessDeniedException();

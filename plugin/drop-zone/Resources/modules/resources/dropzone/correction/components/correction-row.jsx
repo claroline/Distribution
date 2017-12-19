@@ -74,7 +74,9 @@ class CorrectionRow extends Component {
                 {
                   title: trans(
                     'correction_from',
-                    {name: `${this.props.correction.user.firstName} ${this.props.correction.user.lastName}`},
+                    {name: `${this.props.correction.teamName ? `[${this.props.correction.teamName}] ` : ''}
+                      ${this.props.correction.user.firstName} ${this.props.correction.user.lastName}
+                    `},
                     'dropzone'
                   ),
                   correction: this.props.correction,
@@ -83,6 +85,7 @@ class CorrectionRow extends Component {
               )
             }}
           >
+            {this.props.correction.teamName ? `[${this.props.correction.teamName}] ` : ''}
             {`${this.props.correction.user.firstName} ${this.props.correction.user.lastName}`}
           </a>
         </td>

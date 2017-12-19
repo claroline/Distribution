@@ -49,11 +49,11 @@ const Corrections = props =>
                   props.showModal(
                     'MODAL_CORRECTION',
                     {
-                      title: trans('correction', {}, 'dropzone'),
+                      title: trans('correction_n', {number: idx + 1}, 'dropzone'),
                       correction: c,
                       dropzone: props.dropzone,
                       showDenialBox: props.dropzone.parameters.correctionDenialEnabled,
-                      saveCorrection: (correction) => props.saveCorrection(correction)
+                      denyCorrection: (correctionId, comment) => props.denyCorrection(correctionId, comment)
                     }
                   )
                 }}
@@ -76,7 +76,7 @@ const Corrections = props =>
 Corrections.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   corrections: T.array,
-  saveCorrection: T.func,
+  denyCorrection: T.func,
   showModal: T.func
 }
 
@@ -135,7 +135,7 @@ MyDrop.propTypes = {
   myDrop: T.shape(DropType.propTypes).isRequired,
   isDropEnabled: T.bool.isRequired,
   renderMyDrop: T.func.isRequired,
-  saveCorrection: T.func.isRequired,
+  denyCorrection: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
@@ -152,7 +152,7 @@ function mapDispatchToProps(dispatch) {
     saveDocument: (dropType, dropData) => dispatch(actions.saveDocument(dropType, dropData)),
     deleteDocument: (documentId) => dispatch(actions.deleteDocument(documentId)),
     renderMyDrop: () => dispatch(actions.renderMyDrop()),
-    saveCorrection: (correction) => dispatch(correctionActions.saveCorrection(correction)),
+    denyCorrection: (correctionId, comment) => dispatch(correctionActions.denyCorrection(correctionId, comment)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }

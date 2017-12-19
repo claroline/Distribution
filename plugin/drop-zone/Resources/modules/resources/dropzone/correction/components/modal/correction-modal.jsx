@@ -10,6 +10,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {validateNotBlank} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
+import {ScoreBox} from '#/plugin/drop-zone/resources/dropzone/correction/components/score-box.jsx'
 
 export const MODAL_CORRECTION = 'MODAL_CORRECTION'
 
@@ -37,7 +38,7 @@ class DenialBox extends Component {
       const correction = Object.assign({}, this.state.correction, {correctionDenied: true})
       this.setState(
         {correction: correction, error: null, showForm: false},
-        () => this.props.saveCorrection(this.state.correction)
+        () => this.props.denyCorrection(this.state.correction.id, this.state.correction.correctionDeniedComment)
       )
     }
   }
@@ -103,7 +104,7 @@ class DenialBox extends Component {
 
 DenialBox.propTypes = {
   correction: T.object.isRequired,
-  saveCorrection: T.func.isRequired,
+  denyCorrection: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 
@@ -119,6 +120,13 @@ export class CorrectionModal extends Component {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
+          {this.props.dropzone.display.displayNotationToLearners &&
+            <ScoreBox
+              score={this.props.correction.score}
+              scoreMax={this.props.dropzone.parameters.scoreMax}
+              large={true}
+            />
+          }
           {this.props.dropzone.parameters.criteriaEnabled && this.props.dropzone.criteria.length > 0 &&
             <table className="table">
               <tbody>
@@ -184,11 +192,11 @@ CorrectionModal.propTypes = {
   correction: T.object.isRequired,
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   showDenialBox: T.bool.isRequired,
-  saveCorrection: T.func.isRequired,
+  denyCorrection: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 
 CorrectionModal.defaultProps = {
   showDenialBox: false,
-  saveCorrection: () => {}
+  denyCorrection: () => {}
 }

@@ -116,6 +116,7 @@ const CorrectionType = {
     correctionDenied: T.bool.isRequired,
     correctionDeniedComment: T.string,
     teamId: T.number,
+    teamName: T.string,
     grades: T.arrayOf(T.shape(GradeType.propTypes))
   }
 }

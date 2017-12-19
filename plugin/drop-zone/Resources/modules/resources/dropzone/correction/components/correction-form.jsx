@@ -13,22 +13,11 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {DropzoneType, CorrectionType, GradeType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {computeScoreFromGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {validate, isValid} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
-
-const CriteriaScoreBox = props =>
-  <div className="criteria-score-box">
-    <span className="user-score">{props.score}</span>
-    <span className="sr-only">/</span>
-    <span className="max-score">{props.scoreMax}</span>
-  </div>
-
-CriteriaScoreBox.propTypes = {
-  score: T.number.isRequired,
-  scoreMax: T.number.isRequired
-}
+import {ScoreBox} from '#/plugin/drop-zone/resources/dropzone/correction/components/score-box.jsx'
 
 const CriteriaForm = props =>
   <div id="criteria-form">
-    <CriteriaScoreBox
+    <ScoreBox
       score={computeScoreFromGrades(props.grades, props.dropzone.parameters.criteriaTotal, props.dropzone.parameters.scoreMax)}
       scoreMax={props.dropzone.parameters.scoreMax}
     />

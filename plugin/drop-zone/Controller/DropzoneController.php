@@ -90,6 +90,8 @@ class DropzoneController extends Controller
         $peerDrop = null;
         $finishedPeerDrops = [];
         $errorMessage = null;
+        $teamId = null;
+        $teamName = null;
 
         if (!$dropzone->getDropClosed() && $dropzone->getAutoCloseDropsAtDropEndDate() && !$dropzone->getManualPlanning()) {
             $dropEndDate = $dropzone->getDropEndDate();
@@ -102,7 +104,7 @@ class DropzoneController extends Controller
         switch ($dropzone->getDropType()) {
             case Dropzone::DROP_TYPE_USER:
                 $myDrop = !empty($user) ? $this->manager->getUserDrop($dropzone, $user) : null;
-                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, null, false);
+                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, null, null, false);
                 $finishedPeerDrops = $this->manager->getFinishedPeerDrops($dropzone, $user);
                 break;
             case Dropzone::DROP_TYPE_TEAM:
@@ -135,8 +137,11 @@ class DropzoneController extends Controller
                 } else {
                     $errorMessage = $this->translator->trans('more_than_one_drop_error', [], 'dropzone');
                 }
-                $teamId = empty($myDrop) ? null : $myDrop->getTeamId();
-                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, $teamId, false);
+                if (!empty($myDrop)) {
+                    $teamId = $myDrop->getTeamId();
+                    $teamName = $myDrop->getTeamName();
+                }
+                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, $teamId, $teamName, false);
                 $finishedPeerDrops = $this->manager->getFinishedPeerDrops($dropzone, $user, $teamId);
                 break;
         }

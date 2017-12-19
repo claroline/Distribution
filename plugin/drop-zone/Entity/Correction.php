@@ -112,6 +112,11 @@ class Correction
     protected $teamId;
 
     /**
+     * @ORM\Column(name="team_name", nullable=true)
+     */
+    protected $teamName;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="Claroline\DropZoneBundle\Entity\Grade",
      *     mappedBy="correction",
@@ -284,6 +289,16 @@ class Correction
     public function setTeamId($teamId)
     {
         $this->teamId = $teamId;
+    }
+
+    public function getTeamName()
+    {
+        return $this->teamName;
+    }
+
+    public function setTeamName($teamName)
+    {
+        $this->teamName = $teamName;
     }
 
     public function getGrades()

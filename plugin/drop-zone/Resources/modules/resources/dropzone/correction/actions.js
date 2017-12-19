@@ -141,6 +141,19 @@ actions.deleteCorrection = (correctionId) => ({
   }
 })
 
+actions.denyCorrection = (correctionId, comment) => ({
+  [REQUEST_SEND]: {
+    url: generateUrl('claro_dropzone_correction_deny', {id: correctionId}),
+    request: {
+      method: 'PUT',
+      body: JSON.stringify({comment: comment})
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateCorrection(data))
+    }
+  }
+})
+
 actions.executeTool = (toolId, documentId) => ({
   [REQUEST_SEND]: {
     url: generateUrl('claro_dropzone_tool_execute', {tool: toolId, document: documentId}),

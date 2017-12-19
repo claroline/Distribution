@@ -295,21 +295,29 @@ class DropzoneManager
     {
         $drop = $this->dropRepo->findOneBy(['dropzone' => $dropzone, 'teamId' => $team->getId()]);
 
-        if (empty($drop) && $withCreation) {
-            $this->om->startFlushSuite();
-            $drop = new Drop();
-            $drop->setUser($user);
-            $drop->setDropzone($dropzone);
-            $drop->setTeamId($team->getId());
-            $drop->setTeamName($team->getName());
+        if ($withCreation) {
+            if (empty($drop)) {
+                $this->om->startFlushSuite();
+                $drop = new Drop();
+                $drop->setUser($user);
+                $drop->setDropzone($dropzone);
+                $drop->setTeamId($team->getId());
+                $drop->setTeamName($team->getName());
 
-            foreach ($team->getUsers() as $teamUser) {
-                $drop->addUser($teamUser);
-                /* TODO: checks that a valid status is not overwritten */
-                $this->generateResourceEvaluation($dropzone, $teamUser, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+                foreach ($team->getUsers() as $teamUser) {
+                    $drop->addUser($teamUser);
+                    /* TODO: checks that a valid status is not overwritten */
+                    $this->generateResourceEvaluation($dropzone, $teamUser, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+                }
+                $this->om->persist($drop);
+                $this->om->endFlushSuite();
+            } elseif (!$drop->hasUser($user)) {
+                $this->om->startFlushSuite();
+                $drop->addUser($user);
+                $this->generateResourceEvaluation($dropzone, $user, AbstractResourceEvaluation::STATUS_INCOMPLETE);
+                $this->om->persist($drop);
+                $this->om->endFlushSuite();
             }
-            $this->om->persist($drop);
-            $this->om->endFlushSuite();
         }
 
         return $drop;
@@ -345,6 +353,29 @@ class DropzoneManager
         }
         $this->om->remove($drop);
         $this->om->endFlushSuite();
+    }
+
+    /**
+     * Retrieves teamId of user.
+     *
+     * @param Dropzone $dropzone
+     * @param User     $user
+     *
+     * @return int|null
+     */
+    public function getUserTeamId(Dropzone $dropzone, User $user)
+    {
+        $teamId = null;
+
+        if ($dropzone->getDropType() === Dropzone::DROP_TYPE_TEAM) {
+            $teamDrops = $this->getTeamDrops($dropzone, $user);
+
+            if (count($teamDrops) === 1) {
+                $teamId = $teamDrops[0]->getTeamId();
+            }
+        }
+
+        return $teamId;
     }
 
     public function unregisterUserFromTeamDrop(Drop $drop, User $user)
@@ -679,6 +710,24 @@ class DropzoneManager
     }
 
     /**
+     * Denies a Correction.
+     *
+     * @param Correction $correction
+     * @param string     $comment
+     *
+     * @return Correction
+     */
+    public function denyCorrection(Correction $correction, $comment = null)
+    {
+        $correction->setCorrectionDenied(true);
+        $correction->setCorrectionDeniedComment($comment);
+        $this->om->persist($correction);
+        $this->om->flush();
+
+        return $correction;
+    }
+
+    /**
      * Computes Correction score from criteria grades.
      *
      * @param Correction $correction
@@ -867,11 +916,12 @@ class DropzoneManager
      * @param Dropzone $dropzone
      * @param User     $user
      * @param int      $teamId
+     * @param string   $teamName
      * @param bool     $withCreation
      *
      * @return Drop | null
      */
-    public function getPeerDrop(Dropzone $dropzone, User $user = null, $teamId = null, $withCreation = true)
+    public function getPeerDrop(Dropzone $dropzone, User $user = null, $teamId = null, $teamName = null, $withCreation = true)
     {
         $peerDrop = null;
 
@@ -893,7 +943,7 @@ class DropzoneManager
 
                 /* Fetches a drop for peer correction if user|team has not made the expected number of corrections */
                 if ($withCreation && $dropzone->isReviewEnabled() && $nbCorrections < $dropzone->getExpectedCorrectionTotal()) {
-                    $peerDrop = $this->getAvailableDropForPeer($dropzone, $user, $teamId);
+                    $peerDrop = $this->getAvailableDropForPeer($dropzone, $user, $teamId, $teamName);
                 }
             }
         }
@@ -907,10 +957,11 @@ class DropzoneManager
      * @param Dropzone $dropzone
      * @param User     $user
      * @param int      $teamId
+     * @param string   $teamName
      *
      * @return Drop | null
      */
-    public function getAvailableDropForPeer(Dropzone $dropzone, User $user = null, $teamId = null)
+    public function getAvailableDropForPeer(Dropzone $dropzone, User $user = null, $teamId = null, $teamName = null)
     {
         $peerDrop = null;
         $drops = [];
@@ -945,6 +996,7 @@ class DropzoneManager
             $correction->setDrop($peerDrop);
             $correction->setUser($user);
             $correction->setTeamId($teamId);
+            $correction->setTeamName($teamName);
             $currentDate = new \DateTime();
             $correction->setStartDate($currentDate);
             $correction->setLastEditionDate($currentDate);
@@ -1089,7 +1141,7 @@ class DropzoneManager
             $status = $score >= $scoreToPass ? AbstractResourceEvaluation::STATUS_PASSED : AbstractResourceEvaluation::STATUS_FAILED;
 
             foreach ($users as $user) {
-                $this->generateResourceEvaluation($dropzone, $user, $status, $score, $drop);
+                $this->generateResourceEvaluation($dropzone, $user, $status, $score, $drop, true);
             }
         }
 
@@ -1123,9 +1175,16 @@ class DropzoneManager
      * @param string   $status
      * @param float    $score
      * @param Drop     $drop
+     * @param bool     $forceStatus
      */
-    public function generateResourceEvaluation(Dropzone $dropzone, User $user, $status, $score = null, Drop $drop = null)
-    {
+    public function generateResourceEvaluation(
+        Dropzone $dropzone,
+        User $user,
+        $status,
+        $score = null,
+        Drop $drop = null,
+        $forceStatus = false
+    ) {
         $data = !empty($drop) ? $this->serializeDrop($drop) : null;
 
         $this->resourceEvalManager->createResourceEvaluation(
@@ -1140,7 +1199,7 @@ class DropzoneManager
             null,
             null,
             $data,
-            true
+            $forceStatus
         );
     }
 

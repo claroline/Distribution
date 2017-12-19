@@ -323,6 +323,11 @@ class Drop
         return $this->users->toArray();
     }
 
+    public function hasUser(User $user)
+    {
+        return $this->users->contains($user);
+    }
+
     public function addUser(User $user)
     {
         if (!$this->users->contains($user)) {
