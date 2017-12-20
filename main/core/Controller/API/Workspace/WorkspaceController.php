@@ -12,12 +12,10 @@
 namespace Claroline\CoreBundle\Controller\API\Workspace;
 
 use Claroline\CoreBundle\API\FinderProvider;
-use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
-use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\NamePrefix;
 use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -63,23 +61,6 @@ class WorkspaceController extends FOSRestController
         $this->finder = $finder;
         $this->apiManager = $apiManager;
         $this->workspaceManager = $workspaceManager;
-    }
-
-    /**
-     * Gets the list of workspaces of a User.
-     * (used by user admin tool).
-     *
-     * @View(serializerGroups={"api_workspace"})
-     * @Get("/user/{user}/workspaces", name="get_user_workspaces", options={ "method_prefix" = false })
-     * @SEC\PreAuthorize("hasRole('ROLE_ADMIN')")
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    public function getUserWorkspacesAction(User $user)
-    {
-        return $this->workspaceManager->getWorkspacesByUser($user);
     }
 
     /**
