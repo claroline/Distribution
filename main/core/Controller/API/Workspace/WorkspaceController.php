@@ -23,7 +23,6 @@ use FOS\RestBundle\Controller\Annotations\View;
 use FOS\RestBundle\Controller\FOSRestController;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @NamePrefix("api_")
@@ -81,31 +80,6 @@ class WorkspaceController extends FOSRestController
     public function getUserWorkspacesAction(User $user)
     {
         return $this->workspaceManager->getWorkspacesByUser($user);
-    }
-
-    /**
-     * Gets the list of online users in workspaces of a User.
-     * (used by dashboard tool).
-     *
-     * @View(serializerGroups={"api_workspace"})
-     * @Get("/workspaces", name="get_connected_user_workspaces", options={ "method_prefix" = false })
-     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     *
-     * Use the method from the api instead !
-     *
-     * @deprecated
-     *
-     * @todo remove me !
-     *
-     * @param User $user
-     *
-     * @return array
-     */
-    public function getConnectedUserWorkspacesAction(User $user)
-    {
-        return array_map(function ($workspace) {
-            return $this->workspaceManager->exportWorkspace($workspace);
-        }, $this->workspaceManager->getWorkspacesByUser($user));
     }
 
     /**

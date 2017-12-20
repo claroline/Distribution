@@ -100,6 +100,8 @@ class UserSerializer
         }
 
         $serialized = [
+            //for old compatibility purposes
+            'autoId' => $user->getId(),
             'id' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
             'firstName' => $user->getFirstName(),

@@ -94,6 +94,27 @@ class UserController extends AbstractCrudController
     }
 
     /**
+     * @Route(
+     *    "/currentworkspaces",
+     *    name="apiv2_user_currentworkspace"
+     * )
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     * @Method("GET")
+     *
+     * @param User $user
+     *
+     * @return JsonResponse
+     */
+    public function getCurrentWorkspacesAction(User $user)
+    {
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            ['filters' => ['user' => $user->getUuid()]],
+            $this->options['list']
+        ));
+    }
+
+    /**
      * @return array
      */
     protected function getRequirements()
@@ -102,6 +123,6 @@ class UserController extends AbstractCrudController
           'get' => ['id' => '^(?!.*(schema|parameters)$).*'],
           'update' => ['id' => '^(?!.*(schema|parameters)$).*'],
           'exist' => [],
-      ];
+        ];
     }
 }

@@ -39,7 +39,7 @@ class SerializerProviderTest extends TransactionalTestCase
             $schema = $this->provider->getSchema($class);
             $this->assertTrue(is_object($schema));
         } else {
-            $this->markTestSkipped('No schema defined');
+            $this->markTestSkipped('No schema defined for class '.$class);
         }
     }
 
@@ -68,7 +68,7 @@ class SerializerProviderTest extends TransactionalTestCase
                 }
             }
         } else {
-            $this->markTestSkipped('No schema defined');
+            $this->markTestSkipped('No schema defined for class'.$class);
         }
     }
 
