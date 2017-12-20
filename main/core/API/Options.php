@@ -54,14 +54,13 @@ final class Options
     const ADD_PERSONAL_WORKSPACE = 'add_personal_workspace';
     const DESERIALIZE_FACET = 'deserialize_facet';
     const SERIALIZE_FACET = 'serialize_facet';
-
-    //move me ? it's related to the facets
+    const SEND_EMAIL = 'send_email';
+    const ADD_NOTIFICATIONS = 'add_notifications';
     const PROFILE_SERIALIZE = 'profile_serialize';
     const REGISTRATION = 'registration';
 
-    //maybe move this somewhere else: like UserOptions for Crud ?
-    const SEND_EMAIL = 'send_email';
-    const ADD_NOTIFICATIONS = 'add_notifications';
+    //for workspace
+    const WORKSPACE_MODEL = 'workspace_model';
 
     //for serialize, do we want to (de)serialize objects in subtrees ?
     const DEEP_SERIALIZE = 'deep_serialize';

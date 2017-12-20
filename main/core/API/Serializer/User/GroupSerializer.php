@@ -94,4 +94,12 @@ class GroupSerializer
     {
         return '#/main/core/group.json';
     }
+
+    /**
+     * @return string
+     */
+    public function getSamples()
+    {
+        return '#/main/core/group';
+    }
 }
