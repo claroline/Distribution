@@ -1,18 +1,17 @@
 import cloneDeep from 'lodash/cloneDeep'
 
+import {makeReducer} from '#/main/core/utilities/redux'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
-
-import {reducer as apiReducer} from '#/main/core/api/reducer'
-import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 
 import {
   THEME_UPDATE,
   THEMES_REMOVE
 } from './actions'
 
-const reducer = {
+const reducer = makePageReducer({}, {
   themes: makeListReducer('themes', {}, {
-    data: {
+    data: makeReducer([], {
       [THEME_UPDATE]: (state, action) => {
         const newState = cloneDeep(state)
 
@@ -28,12 +27,9 @@ const reducer = {
 
         return newState.filter(theme => -1 !== action.themeIds.indexOf(theme.id))
       }
-    }
-  }),
-  // generic reducers
-  currentRequests: apiReducer,
-  modal: modalReducer
-}
+    })
+  })
+})
 
 export {
   reducer
