@@ -369,14 +369,6 @@ class WorkspaceManager
     }
 
     /**
-     * @return Workspace
-     */
-    public function getNonPersonalWorkspaces()
-    {
-        return $this->workspaceRepo->findNonPersonal();
-    }
-
-    /**
      * @param int $orderedToolType
      *
      * @return Workspace[]
@@ -846,6 +838,8 @@ class WorkspaceManager
      * @param array    $workspaces
      * @param callable $logger
      * @param bool     $update
+     *
+     * @deprecated
      */
     public function importWorkspaces(array $workspaces, $logger = null, $update = false)
     {
@@ -1265,6 +1259,10 @@ class WorkspaceManager
             },
             $token->getRoles()
         );
+
+        if (in_array('ROLE_ADMIN', $roles)) {
+            return true;
+        }
 
         $managerRole = $this->roleManager->getManagerRole($workspace);
 
