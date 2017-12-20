@@ -21,16 +21,11 @@ bootstrap(
     }, {
       path: '/:id',
       component: Theme,
-      onEnter: (nextState) => actions.editTheme(nextState.params.id),
+      onEnter: (params) => actions.editTheme(params.id),
       onLeave: () => actions.resetThemeForm()
     }
   ]),
 
   // app store configuration
-  reducer,
-
-  // remap data-attributes set on the app DOM container
-  (initialData) => ({
-    themes: initialData.themes
-  })
+  reducer
 )
