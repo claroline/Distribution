@@ -229,8 +229,8 @@ abstract class AbstractCrudController extends AbstractApiController
     private function getDefaultRequirements()
     {
         return [
-          'get' => ['id' => '^(?!.*(schema|copy|\/)).*'],
-          'update' => ['id' => '^(?!.*(schema|\/)).*'],
+          'get' => ['id' => '^(?!.*(schema|copy|parameters|\/)).*'],
+          'update' => ['id' => '^(?!.*(schema|parameters|\/)).*'],
           'exist' => [],
         ];
     }

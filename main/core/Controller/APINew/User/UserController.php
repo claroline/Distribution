@@ -113,16 +113,4 @@ class UserController extends AbstractCrudController
             $this->options['list']
         ));
     }
-
-    /**
-     * @return array
-     */
-    protected function getRequirements()
-    {
-        return [
-          'get' => ['id' => '^(?!.*(schema|parameters)$).*'],
-          'update' => ['id' => '^(?!.*(schema|parameters)$).*'],
-          'exist' => [],
-        ];
-    }
 }
