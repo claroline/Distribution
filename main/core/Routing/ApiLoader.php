@@ -160,6 +160,7 @@ class ApiLoader extends Loader
           'create' => ['', 'POST'],
           'update' => ['/{id}', 'PUT'],
           'deleteBulk' => ['', 'DELETE'],
+          'copyBulk' => ['/copy', 'GET'],
           'list' => ['', 'GET'],
           'get' => ['/{id}', 'GET'],
           'exist' => ['/exist/{field}/{value}', 'GET'],

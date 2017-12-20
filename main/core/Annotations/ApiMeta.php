@@ -17,7 +17,7 @@ final class ApiMeta extends Annotation
      */
     public $class;
 
-    public $ignore = [];
+    public $ignore = ['copyBulk'];
 
     /**
      * @return string

@@ -12,11 +12,11 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use FOS\RestBundle\Controller\Annotations\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @ApiMeta(class="Claroline\CoreBundle\Entity\Workspace\Workspace")
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Workspace\Workspace", ignore={})
  * @Route("/workspace")
  */
 class WorkspaceController extends AbstractCrudController
@@ -24,5 +24,13 @@ class WorkspaceController extends AbstractCrudController
     public function getName()
     {
         return 'workspace';
+    }
+
+    public function copyBulkAction(Request $request, $class)
+    {
+        //add params for the copy here
+        $this->options['copyBulk'] = [];
+
+        return parent::copyBulkAction($request, $class);
     }
 }

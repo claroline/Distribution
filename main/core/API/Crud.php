@@ -158,6 +158,42 @@ class Crud
     }
 
     /**
+     * Copy an entry `object` of `class`.
+     *
+     * @param object $object  - the entity to copy
+     * @param string $class   - the class of the entity to copy
+     * @param array  $options - additional copy options
+     */
+    public function copy($object, $class, array $options = [])
+    {
+        $this->checkPermission('COPY', $object, [], true);
+        $event = $this->dispatcher->dispatch('crud_pre_copy_object', 'Crud', [$object]);
+
+        if ($event->isAllowed()) {
+            $this->dispatcher->dispatch('crud_post_copy_object', 'Crud', [$object]);
+        }
+    }
+
+    /**
+     * Copy a list of entries of `class`.
+     *
+     * @param string $class   - the class of the entries to copy
+     * @param array  $data    - the list of entries to copy
+     * @param array  $options - additional copy options
+     */
+    public function copyBulk($class, array $data, array $options = [])
+    {
+        $this->om->startFlushSuite();
+
+        foreach ($data as $el) {
+            //get the element
+            $this->copy($el, $class, $options);
+        }
+
+        $this->om->endFlushSuite();
+    }
+
+    /**
      * Patches a collection in `object`. It will also work for collection with the add/delete method.
      *
      * @param object $object   - the entity to update

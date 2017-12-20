@@ -168,6 +168,22 @@ abstract class AbstractCrudController extends AbstractApiController
     /**
      * @param Request $request
      * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function copyBulkAction(Request $request, $class)
+    {
+        $this->crud->copyBulk(
+            $this->decodeIdsString($request, $class),
+            $this->options['copyBulk']
+        );
+
+        return new JsonResponse(null, 204);
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
      */
     protected function decodeIdsString(Request $request, $class)
     {
@@ -201,6 +217,7 @@ abstract class AbstractCrudController extends AbstractApiController
             'create' => [],
             'update' => [],
             'deleteBulk' => [],
+            'copyBulk' => [],
             'exist' => [],
             'schema' => [],
         ];
@@ -212,7 +229,7 @@ abstract class AbstractCrudController extends AbstractApiController
     private function getDefaultRequirements()
     {
         return [
-          'get' => ['id' => '^(?!.*(schema|\/)).*'],
+          'get' => ['id' => '^(?!.*(schema|copy|\/)).*'],
           'update' => ['id' => '^(?!.*(schema|\/)).*'],
           'exist' => [],
         ];
