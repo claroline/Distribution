@@ -23,7 +23,8 @@
       "scheduled-task-management": "administration/scheduled-task/index",
       "user-registration": "user/registration/index.js",
       "user-profile": "user/profile/index.js",
-      "user-tracking": "user/tracking/index.js"
+      "user-tracking": "user/tracking/index.js",
+      "contacts-tool": "contact/tool/index.js"
     }
   },
 
