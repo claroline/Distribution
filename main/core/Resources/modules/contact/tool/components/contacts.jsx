@@ -8,6 +8,7 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
 import {select} from '#/main/core/contact/tool/selectors'
+import {OptionsDataType} from '#/main/core/contact/prop-types'
 
 const ContactsActions = () =>
   <PageActions>
@@ -18,12 +19,12 @@ const ContactsActions = () =>
      action={() => {}}
      primary={true}
    />
-   {/*<PageAction*/}
-     {/*id="contacts-configure"*/}
-     {/*icon="fa fa-fw fa-pencil"*/}
-     {/*title={t('configure')}*/}
-     {/*action={() => {}}*/}
-   {/*/>*/}
+   <PageAction
+     id="contacts-configure"
+     icon="fa fa-fw fa-pencil"
+     title={t('configure')}
+     action={() => {}}
+   />
   </PageActions>
 
 const Contacts = props =>
@@ -49,8 +50,9 @@ const Contacts = props =>
       {
         icon: 'fa fa-fw fa-envelope-o',
         label: t('send_message'),
-        action: (rows) => window.location = `${generateUrl('claro_message_show', {'message': 0})}?userIds[]=${rows[0].data.autoId}`,
-        context: 'row'
+        action: (rows) => {
+          window.location = `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(c => `userIds[]=${c.data.autoId}`).join('&')}`
+        }
       }
     ]}
     definition={[
@@ -102,6 +104,7 @@ const Contacts = props =>
   />
 
 Contacts.propTypes = {
+  options: T.shape(OptionsDataType.propTypes)
 }
 
 function mapStateToProps(state) {

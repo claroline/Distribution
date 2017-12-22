@@ -22,14 +22,13 @@ class ContactController extends Controller
     private $contactManager;
 
     /**
-     * ContactController constructor
+     * ContactController constructor.
      *
      * @DI\InjectParams({
      *     "contactManager" = @DI\Inject("claroline.manager.contact_manager")
      * })
      *
      * @param ContactManager $contactManager
-     *
      */
     public function __construct(ContactManager $contactManager)
     {

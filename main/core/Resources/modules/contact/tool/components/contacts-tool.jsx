@@ -6,7 +6,7 @@ import {TabbedPageContainer} from '#/main/core/layout/page/containers/tabbed-pag
 import {ContactsTab, ContactsTabActions} from '#/main/core/contact/tool/components/contacts-tab.jsx'
 import {VisibleUsersTab, VisibleUsersTabActions} from '#/main/core/contact/tool/components/visible-users-tab.jsx'
 
-export const ContactsTool = props =>
+export const ContactsTool = () =>
   <TabbedPageContainer
     redirect={[
       {from: '/', exact: true, to: '/contacts'}
@@ -24,11 +24,10 @@ export const ContactsTool = props =>
         icon: 'fa fa-fw fa-user',
         title: t('all_visible_users'),
         path: '/users',
-        actions: () => <span/>,
+        actions: VisibleUsersTabActions,
         content: VisibleUsersTab
       }
     ]}
   />
 
-ContactsTool.propTypes = {
-}
+ContactsTool.propTypes = {}

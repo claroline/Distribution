@@ -1,5 +1,6 @@
 import {generateUrl} from '#/main/core/fos-js-router'
 import {API_REQUEST} from '#/main/core/api/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 export const actions = {}
 
@@ -10,7 +11,7 @@ actions.createContacts = (users) => ({
       method: 'PATCH'
     },
     success: (data, dispatch) => {
-      console.log(data)
+      dispatch(listActions.invalidateData('contacts'))
     }
   }
 })

@@ -9,6 +9,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserAvatar} from '#/main/core/layout/user/components/user-avatar.jsx'
 import {select} from '#/main/core/contact/tool/selectors'
 import {actions} from '#/main/core/contact/tool/actions'
+import {OptionsDataType} from '#/main/core/contact/prop-types'
 
 const VisibleUsersActions = () =>
   <PageActions>
@@ -45,8 +46,9 @@ const VisibleUsers = props =>
       {
         icon: 'fa fa-fw fa-envelope-o',
         label: t('send_message'),
-        action: (rows) => window.location = `${generateUrl('claro_message_show', {'message': 0})}?userIds[]=${rows[0].autoId}`,
-        context: 'row'
+        action: (rows) => {
+          window.location = `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(u => `userIds[]=${u.autoId}`).join('&')}`
+        }
       }
     ]}
     definition={[
@@ -98,6 +100,7 @@ const VisibleUsers = props =>
   />
 
 VisibleUsers.propTypes = {
+  options: T.shape(OptionsDataType.propTypes)
 }
 
 function mapStateToProps(state) {

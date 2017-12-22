@@ -16,7 +16,7 @@ const VisibleUsersTabActions = () =>
     ]}
   />
 
-const VisibleUsersTabComponent = props =>
+const VisibleUsersTabComponent = () =>
   <Routes
     routes={[
       {

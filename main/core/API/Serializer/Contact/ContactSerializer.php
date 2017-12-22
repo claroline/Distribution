@@ -44,7 +44,6 @@ class ContactSerializer
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
     }
 
-
     public function serialize(Contact $contact)
     {
         return [

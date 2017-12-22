@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew\Contact;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\API\Serializer\Contact\ContactSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
@@ -28,36 +29,46 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class ContactController extends AbstractCrudController
 {
+    /* var ApiManager */
     private $apiManager;
+    /* var ContactManager */
     private $contactManager;
+    /* var ContactSerializer */
     private $contactSerializer;
+    /* var TokenStorageInterface */
     private $tokenStorage;
+    /* var UserSerializer */
+    private $userSerializer;
 
     /**
-     * ContactController constructor
+     * ContactController constructor.
      *
      * @DI\InjectParams({
      *     "apiManager"        = @DI\Inject("claroline.manager.api_manager"),
      *     "contactManager"    = @DI\Inject("claroline.manager.contact_manager"),
      *     "contactSerializer" = @DI\Inject("claroline.serializer.contact"),
-     *     "tokenStorage"      = @DI\Inject("security.token_storage")
+     *     "tokenStorage"      = @DI\Inject("security.token_storage"),
+     *     "userSerializer"    = @DI\Inject("claroline.serializer.user")
      * })
      *
      * @param ApiManager            $apiManager
      * @param ContactManager        $contactManager
      * @param ContactSerializer     $contactSerializer
      * @param TokenStorageInterface $tokenStorage
+     * @param UserSerializer        $userSerializer
      */
     public function __construct(
         ApiManager $apiManager,
         ContactManager $contactManager,
         ContactSerializer $contactSerializer,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        UserSerializer $userSerializer
     ) {
         $this->apiManager = $apiManager;
         $this->contactManager = $contactManager;
         $this->contactSerializer = $contactSerializer;
         $this->tokenStorage = $tokenStorage;
+        $this->userSerializer = $userSerializer;
     }
 
     public function getName()
@@ -85,7 +96,7 @@ class ContactController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function recursiveListAction(User $currentUser)
+    public function contactsCreateAction(User $currentUser)
     {
         $serializedContacts = [];
         $users = $this->apiManager->getParameters('ids', 'Claroline\CoreBundle\Entity\User');

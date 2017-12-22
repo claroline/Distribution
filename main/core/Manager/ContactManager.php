@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use Claroline\CoreBundle\Entity\Contact\Category;
 use Claroline\CoreBundle\Entity\Contact\Contact;
 use Claroline\CoreBundle\Entity\Contact\Options;
 use Claroline\CoreBundle\Entity\User;
@@ -30,7 +29,7 @@ class ContactManager
     private $optionsRepo;
 
     /**
-     * ContactManager constructor
+     * ContactManager constructor.
      *
      * @DI\InjectParams({
      *     "om" = @DI\Inject("claroline.persistence.object_manager")
@@ -48,7 +47,7 @@ class ContactManager
     }
 
     /**
-     * Fetches user options
+     * Fetches user options.
      *
      * @param User $user
      *
@@ -61,14 +60,14 @@ class ContactManager
         if (is_null($options)) {
             $options = new Options();
             $options->setUser($user);
-            $defaultValues = array(
+            $defaultValues = [
                 'show_all_my_contacts' => true,
                 'show_all_visible_users' => true,
                 'show_username' => true,
                 'show_mail' => false,
                 'show_phone' => false,
                 'show_picture' => true,
-            );
+            ];
             $options->setOptions($defaultValues);
             $this->om->persist($options);
             $this->om->flush();
@@ -78,7 +77,7 @@ class ContactManager
     }
 
     /**
-     * Creates contacts from a list of user
+     * Creates contacts from a list of user.
      *
      * @param User   $currentUser
      * @param User[] $users
@@ -107,7 +106,7 @@ class ContactManager
     }
 
     /**
-     * Removes a contact
+     * Removes a contact.
      *
      * @param Contact $contact
      */

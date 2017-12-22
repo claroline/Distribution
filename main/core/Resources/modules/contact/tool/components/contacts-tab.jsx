@@ -16,7 +16,7 @@ const ContactsTabActions = () =>
     ]}
   />
 
-const ContactsTabComponent = props =>
+const ContactsTabComponent = () =>
   <Routes
     routes={[
       {
