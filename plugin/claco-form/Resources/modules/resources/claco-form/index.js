@@ -60,7 +60,7 @@ bootstrap(
     cascadeLevelMax: mainReducers,
     message: messageReducers,
     roles: mainReducers,
-    myRoles: mainReducers,
+    myRoles: mainReducers
   }),
 
   // transform data attributes for redux store
