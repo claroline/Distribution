@@ -33,7 +33,6 @@
     "svg4everybody": "^2.1.2",
     "tinycolor2": "^1.4.1",
     "uuid": "^3.0.1",
-    "wavesurfer.js": "^1.2.7",
     "whatwg-fetch": "^2.0.1"
   },
   "files": [
