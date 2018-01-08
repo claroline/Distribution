@@ -127,10 +127,7 @@
         "innova/media-resource-bundle": "*",
         "ujm/exo-bundle": "*",
         "icap/lesson-bundle": "*",
-        "icap/inwicast-plugin-bundle": "*",
-        "claroline/music-book-bundle": "*",
-        "claroline/music-instrument-bundle": "*",
-        "claroline/music-theory-bundle": "*"
+        "icap/inwicast-plugin-bundle": "*"
     },
     "autoload": {
         "psr-4": {
@@ -193,10 +190,7 @@
             "Icap\\BibliographyBundle\\": "plugin/bibliography",
             "Claroline\\ExternalSynchronizationBundle\\": "plugin/external-user-group-synchronization",
             "Claroline\\BigBlueButtonBundle\\": "plugin/big-blue-button",
-            "Icap\\InwicastBundle\\": "plugin/inwicast",
-            "Claroline\\MusicBookBundle\\": "plugin/music-book",
-            "Claroline\\MusicInstrumentBundle\\": "plugin/music-instrument",
-            "Claroline\\MusicTheoryBundle\\": "plugin/music-theory"
+            "Icap\\InwicastBundle\\": "plugin/inwicast"
         }
     },
     "extra": {
@@ -258,10 +252,7 @@
             "Icap\\BibliographyBundle\\IcapBibliographyBundle",
             "Claroline\\ExternalSynchronizationBundle\\ClarolineExternalSynchronizationBundle",
             "Claroline\\BigBlueButtonBundle\\ClarolineBigBlueButtonBundle",
-            "Icap\\InwicastBundle\\IcapInwicastBundle",
-            "Claroline\\MusicBookBundle\\ClarolineMusicBookBundle",
-            "Claroline\\MusicInstrumentBundle\\ClarolineMusicInstrumentBundle",
-            "Claroline\\MusicTheoryBundle\\ClarolineMusicTheoryBundle"
+            "Icap\\InwicastBundle\\IcapInwicastBundle"
         ]
     }
 }
