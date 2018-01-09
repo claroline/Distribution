@@ -9,9 +9,10 @@
 
 {% if app.environment == 'prod' %}
     <script src="{{ hotAsset('dist/commons.js') }}"></script>
-    {# Polyfills #}
-    <script src="{{ hotAsset('dist/claroline-distribution-main-core-polyfills.js') }}"></script>
 {% endif %}
+
+{# Polyfills #}
+<script src="{{ hotAsset('dist/claroline-distribution-main-core-polyfills.js') }}"></script>
 
 <script>
     if (window.sessionStorage.getItem('hide_brower_warning')) {
