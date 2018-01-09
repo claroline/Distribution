@@ -3,6 +3,7 @@ import {generateUrl} from '#/main/core/api/router'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as userActions} from '#/main/core/user/actions'
 
 import {User as UserTypes} from '#/main/core/administration/user/user/prop-types'
 
@@ -88,18 +89,11 @@ actions.disable = (user) => ({
   }
 })
 
-actions.changePassword = (user, plainPassword) => ({
-  [API_REQUEST]: {
-    url: ['apiv2_user_update', {id: user.id}],
-    request: {
-      method: 'PUT',
-      body: JSON.stringify(Object.assign({}, user, {plainPassword}))
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-    }
-  }
-})
+actions.changePassword = (user, plainPassword) => userActions.changePassword(
+  user,
+  plainPassword,
+  (data, dispatch) => dispatch(listActions.invalidateData('users.list'))
+)
 
 actions.createWorkspace = (user) => ({
   [API_REQUEST]: {
