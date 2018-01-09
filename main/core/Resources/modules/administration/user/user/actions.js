@@ -64,23 +64,40 @@ actions.addOrganizations = (id, organizations) => ({
 
 actions.enable = (user) => ({
   [API_REQUEST]: {
-    url: ['apiv2_user_update', {uuid: user.id}],
+    url: ['apiv2_user_update', {id: user.id}],
     request: {
-      body: JSON.stringify({isEnabled: true, uuid: user.id}),
+      body: JSON.stringify(Object.assign({}, user, {meta: {enabled:true}})),
       method: 'PUT'
     },
-    success: (data, dispatch) => dispatch(listActions.fetchData('users'))
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+    }
   }
 })
 
 actions.disable = (user) => ({
   [API_REQUEST]: {
-    url: ['apiv2_user_update', {uuid: user.id}],
+    url: ['apiv2_user_update', {id: user.id}],
     request: {
       method: 'PUT',
-      body: JSON.stringify({isEnabled: false, uuid: user.id})
+      body: JSON.stringify(Object.assign({}, user, {meta: {enabled:false}}))
     },
-    success: (data, dispatch) => dispatch(listActions.fetchData('users'))
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+    }
+  }
+})
+
+actions.changePassword = (user, plainPassword) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_user_update', {id: user.id}],
+    request: {
+      method: 'PUT',
+      body: JSON.stringify(Object.assign({}, user, {plainPassword}))
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+    }
   }
 })
 
