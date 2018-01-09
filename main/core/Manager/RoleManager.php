@@ -504,6 +504,11 @@ class RoleManager
         );
     }
 
+    public function getWorkspaceNonAdministrateRoles(Workspace $workspace)
+    {
+        return $this->roleRepo->findByWorkspaceNonAdministrate($workspace);
+    }
+
     /**
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
      *
@@ -1280,5 +1285,11 @@ class RoleManager
         }
 
         return $operationExecuted;
+    }
+
+    public function save(Role $role)
+    {
+        $this->om->persist($role);
+        $this->om->flush();
     }
 }

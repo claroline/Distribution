@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 import {setIfError, notBlank, number, gteZero, chain} from '#/main/core/validation'
-import {makeActionCreator} from '#/main/core/utilities/redux'
+import {makeActionCreator} from '#/main/core/scaffolding/actions'
 
 import {Open as component} from './editor.jsx'
 import {ITEM_CREATE} from './../../quiz/editor/actions'
@@ -45,8 +45,8 @@ function reduce(item = {}, action) {
 
 function validate(item) {
   const errors = {}
-  setIfError(errors, 'maxScore', chain(item.score.max, [notBlank, number, gteZero]))
-  setIfError(errors, 'maxLength', chain(item.maxLength, [notBlank, number, gteZero]))
+  setIfError(errors, 'maxScore', chain(item.score.max, {}, [notBlank, number, gteZero]))
+  setIfError(errors, 'maxLength', chain(item.maxLength, {}, [notBlank, number, gteZero]))
 
   return errors
 }

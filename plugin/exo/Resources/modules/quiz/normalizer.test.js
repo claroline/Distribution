@@ -1,5 +1,5 @@
 import freeze from 'deep-freeze'
-import {ensure} from '#/main/core/tests'
+import {ensure} from '#/main/core/scaffolding/tests'
 import {normalize} from './normalizer'
 
 describe('Normalizer', () => {
@@ -9,6 +9,7 @@ describe('Normalizer', () => {
       title: 'Quiz title',
       description: 'Quiz desc',
       parameters: {},
+      picking: {},
       meta: {},
       steps: [
         {
@@ -43,6 +44,7 @@ describe('Normalizer', () => {
         title: 'Quiz title',
         description: 'Quiz desc',
         parameters: {},
+        picking: {},
         meta: {},
         steps: ['a', 'b']
       },

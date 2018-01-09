@@ -4,15 +4,14 @@ import {PropTypes as T} from 'prop-types'
 import {Route, Switch, withRouter} from 'react-router-dom'
 
 import {trans} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
+import {generateUrl} from '#/main/core/api/router'
 
-import {ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
+import {ResourceContainer} from '#/main/core/resource/containers/resource.jsx'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 
-import {actions} from '../actions'
 import {actions as editorActions} from '../editor/actions'
 import {selectors} from '../selectors'
 
@@ -151,7 +150,7 @@ function mapDispatchToProps(dispatch) {
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title: trans('delete_all_entries', {}, 'clacoform'),
           question: trans('delete_all_entries_confirm', {}, 'clacoform'),
-          handleConfirm: () => dispatch(actions.deleteAllEntries())
+          handleConfirm: () => dispatch(editorActions.deleteAllEntries())
         })
       )
 

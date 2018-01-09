@@ -794,7 +794,8 @@ class ResourceController extends Controller
             }
 
             $path = $this->resourceManager->getAncestors($node);
-            $nodes = $this->resourceManager->getChildren($node, $currentRoles, $user, true, $canAdministrate);
+            // Disable lastOpenDate for now, until a better logging system is implemented
+            $nodes = $this->resourceManager->getChildren($node, $currentRoles, $user, false, $canAdministrate);
 
             //set "admin" mask if someone is the creator of a resource or the resource workspace owner.
             //if someone needs admin rights, the resource type list will go in this array
@@ -1169,7 +1170,10 @@ class ResourceController extends Controller
         if ($this->authorization->isGranted('ROLE_USER')) {
             $json = $this->templating->render(
                 'ClarolineCoreBundle:Resource:managerParameters.json.twig',
-                ['resourceTypes' => $this->resourceManager->getAllResourceTypes()]
+                [
+                    'resourceTypes' => $this->resourceManager->getAllResourceTypes(),
+                    'defaultResourceActionsMask' => $this->maskManager->getDefaultResourceActionsMask(),
+                ]
             );
             $response
                 ->setContent($json)

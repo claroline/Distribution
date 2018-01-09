@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
 use Claroline\CoreBundle\Entity\Tool\PwsToolConfig;
@@ -81,6 +80,8 @@ class Role implements RoleInterface
      *     targetEntity="Claroline\CoreBundle\Entity\User",
      *     mappedBy="roles"
      * )
+     *
+     * @var ArrayCollection
      */
     protected $users;
 
@@ -91,14 +92,6 @@ class Role implements RoleInterface
      * )
      */
     protected $facets;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacetRole",
-     *     mappedBy="role"
-     * )
-     */
-    protected $panelFacetsRole;
 
     /**
      * @ORM\OneToMany(
@@ -121,6 +114,8 @@ class Role implements RoleInterface
      *     targetEntity="Claroline\CoreBundle\Entity\Group",
      *     mappedBy="roles"
      * )
+     *
+     * @var ArrayCollection
      */
     protected $groups;
 
@@ -193,7 +188,6 @@ class Role implements RoleInterface
         $this->resourceContext = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->facets = new ArrayCollection();
-        $this->panelFacetsRole = new ArrayCollection();
         $this->toolRights = new ArrayCollection();
         $this->pwsToolConfig = new ArrayCollection();
         $this->profileProperties = new ArrayCollection();
@@ -281,33 +275,42 @@ class Role implements RoleInterface
         return $this->users;
     }
 
+    /**
+     * @param User $user
+     */
     public function addUser(User $user)
     {
         $this->users->add($user);
 
-        if ($user->hasRole($this)) {
+        if (!$user->hasRole($this)) {
             $user->addRole($this);
         }
     }
 
+    /**
+     * @param Group $group
+     */
     public function addGroup(Group $group)
     {
         $this->groups->add($group);
 
-        if ($group->hasRole($this)) {
+        if (!$group->hasRole($this)) {
             $group->addRole($this);
         }
     }
 
+    /**
+     * @param User $user
+     */
     public function removeUser(User $user)
     {
         $this->users->removeElement($user);
-
-        if ($user->hasRole($this)) {
-            $user->removeRole($this);
-        }
+        $user->removeRole($this);
     }
 
+    /**
+     * @param Group $group
+     */
     public function removeGroup(Group $group)
     {
         $this->groups->removeElement($group);
@@ -421,11 +424,6 @@ class Role implements RoleInterface
         $name = $this->workspace ? '['.$this->workspace->getName().'] '.$this->name : $this->name;
 
         return "[{$this->getId()}]".$name;
-    }
-
-    public function addPanelFacetRole(PanelFacetRole $pfr)
-    {
-        $this->panelFacetsRole->add($pfr);
     }
 
     public function getIsReadOnly()

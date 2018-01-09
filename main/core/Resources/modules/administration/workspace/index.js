@@ -1,17 +1,7 @@
-import merge from 'lodash/merge'
+import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 
-import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-import {generateUrl} from '#/main/core/fos-js-router'
-
-// reducers
-import {reducer as apiReducer} from '#/main/core/api/reducer'
-import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
-import {reducer} from '#/main/core/administration/workspace/reducer'
-
-
-import {t, transChoice} from '#/main/core/translation'
-
-import {Workspaces} from '#/main/core/administration/workspace/components/workspaces.jsx'
+import {reducer} from '#/main/core/administration/workspace/workspace/reducer'
+import {WorkspaceTool} from '#/main/core/administration/workspace/components/tool.jsx'
 
 // mount the react application
 bootstrap(
@@ -19,31 +9,8 @@ bootstrap(
   '.workspaces-container',
 
   // app main component (accepts either a `routedApp` or a `ReactComponent`)
-  Workspaces,
+  WorkspaceTool,
 
   // app store configuration
-  {
-    // app reducers
-    workspaces: reducer,
-
-    // generic reducers
-    currentRequests: apiReducer,
-    modal: modalReducer
-  },
-
-  // remap data-attributes set on the app DOM container
-  (initialData) => ({
-    workspaces: merge({}, initialData.workspaces, {
-      fetchUrl: generateUrl('apiv2_workspace_list'),
-      delete: {
-        title: (workspaces) => transChoice('remove_workspaces', workspaces.length, {count: workspaces.length}, 'platform'),
-        question: (workspaces) => t('remove_workspaces_confirm', {
-          workspace_list: workspaces.map(workspace => workspace.name).join(', ')
-        }),
-        displayed: (workspaces) => {
-          return 0 < workspaces.filter(workspace => workspace.code !== 'default_personal' && workspace.code !== 'default_workspace' ).length
-        }
-      }
-    })
-  })
+  reducer
 )

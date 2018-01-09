@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import cloneDeep from 'lodash/cloneDeep'
+import moment from 'moment'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
@@ -10,7 +11,7 @@ import {SelectInput} from '#/main/core/layout/form/components/field/select-input
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {getFieldType} from '../../../utils'
 import {selectors} from '../../../selectors'
-import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions} from '../actions'
 
 const InfosList = props =>
@@ -45,7 +46,13 @@ class EntryCreateForm extends Component {
       entry_title: ''
     }
     props.fields.map(f => {
-      fieldsValues[f.id] = getFieldType(f.type).answerType === 'array' ? [] : ''
+      if (getFieldType(f.type).answerType === 'array') {
+        fieldsValues[f.id] = []
+      } else if (getFieldType(f.type).answerType === 'date') {
+        fieldsValues[f.id] = moment().format('YYYY-MM-DD')
+      } else {
+        fieldsValues[f.id] = ''
+      }
       errors[f.id] = ''
     })
     this.state = {
@@ -81,6 +88,7 @@ class EntryCreateForm extends Component {
           controlId="field-title"
           type="text"
           label={t('title')}
+          noLabel={true}
           value={this.state.entry.entry_title}
           error={this.state.errors.entry_title}
           onChange={value => this.updateEntryValue('entry_title', value)}

@@ -122,7 +122,7 @@ class ExerciseManager
         if (count($errors) > 0) {
             throw new ValidationException('Exercise is not valid', $errors);
         }
-        // Start flush suite to avoid persisting and flushing tags before quizz
+        // Start flush suite to avoid persisting and flushing tags before quiz
         $this->om->startFlushSuite();
         // Update Exercise with new data
         $this->serializer->deserialize($data, $exercise, [Transfer::PERSIST_TAG]);
@@ -164,6 +164,9 @@ class ExerciseManager
 
         // Populate new entities with original data
         $newExercise = $this->createCopy($exerciseData, null);
+
+        // need to init publishedOnce according to current publication state
+        $newExercise->setPublishedOnce($exercise->getResourceNode()->isPublished());
 
         // Save copy to db
         $this->om->flush();
@@ -292,7 +295,8 @@ class ExerciseManager
             $user = $paper->getUser();
             $score = $this->paperManager->calculateScore($paper, $totalScoreOn);
             fputcsv($handle, [
-                $user && !$paper->isAnonymized() ? $user->getFirstName().' - '.$user->getLastName() : '',
+                $user && !$paper->isAnonymized() ? $user->getLastName() : '',
+                $user && !$paper->isAnonymized() ? $user->getFirstName() : '',
                 $paper->getNumber(),
                 $paper->getStart()->format('Y-m-d H:i:s'),
                 $paper->getEnd() ? $paper->getEnd()->format('Y-m-d H:i:s') : '',
@@ -312,13 +316,18 @@ class ExerciseManager
         $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
 
         $dataPapers = [];
-        $titles = [['username'], ['firstname'], ['lastname']];
+        $titles = [['username'], ['lastname'], ['firstname']];
         $items = [];
+        $questions = [];
 
+        //get the list of titles for the csv (the headers)
+        //this is an array of array because some question types will return...
+        //more than 1 title (ie clozes)
         foreach ($exercise->getSteps() as $step) {
             foreach ($step->getStepQuestions() as $stepQ) {
                 $item = $stepQ->getQuestion();
-                $items[$item->getUuid()] = $item;
+                $items[$item->getId()] = $item;
+                $questions[$stepQ->getQuestion()->getUuid()] = $stepQ->getQuestion();
                 $itemType = $item->getInteraction();
 
                 if ($this->definitions->has($item->getMimeType())) {
@@ -328,29 +337,57 @@ class ExerciseManager
             }
         }
 
+        //this is the same reason why we use an array of array here
         $repo = $this->om->getRepository('UJMExoBundle:Attempt\Paper');
-        $papers = $repo->findBy([
-            'exercise' => $exercise,
-        ]);
+        $papers = $repo->findBy(['exercise' => $exercise]);
 
         foreach ($papers as $paper) {
             $answers = $paper->getAnswers();
             $csv = [];
             $user = $paper->getUser();
+
             if ($user) {
                 $csv['username'] = [$user->getUsername()];
                 $csv['firstname'] = [$user->getFirstName()];
                 $csv['lastname'] = [$user->getLastName()];
             } else {
-                $csv['username'] = $csv['firstname'] = $csv['lastname'] = 'none';
+                $csv['username'] = ['none'];
+                $csv['lastname'] = ['none'];
+                $csv['firstname'] = ['none'];
             }
 
-            foreach ($answers as $answer) {
-                $item = $items[$answer->getQuestionId()];
+            $notFound = [];
+            foreach ($questions as $question) {
+                $item = $items[$question->getId()];
+                $found = false;
 
-                if ($this->definitions->has($item->getMimeType())) {
-                    $definition = $this->definitions->get($item->getMimeType());
-                    $csv[$answer->getQuestionId()] = $definition->getCsvAnswers($item->getInteraction(), $answer);
+                foreach ($answers as $answer) {
+                    if ($answer->getQuestionId() === $question->getUuid()) {
+                        if ($this->definitions->has($item->getMimeType())) {
+                            $found = true;
+                            $definition = $this->definitions->get($item->getMimeType());
+                            $csv[$answer->getQuestionId()] = $definition->getCsvAnswers($item->getInteraction(), $answer);
+                        }
+                    }
+                }
+
+                if (!$found) {
+                    $notFound[] = $question->getUuid();
+                    $items[$question->getId()];
+                    $itemType = $item->getInteraction();
+                    $countBlank = 0;
+
+                    if ($this->definitions->has($item->getMimeType())) {
+                        $definition = $this->definitions->get($item->getMimeType());
+                        $countBlank = count($definition->getCsvTitles($itemType));
+                    }
+
+                    $blankData = [];
+                    for ($i = 0; $i < $countBlank; ++$i) {
+                        $blankData[] = '';
+                    }
+
+                    $csv[$item->getUuid()] = $blankData;
                 }
             }
 
@@ -371,7 +408,7 @@ class ExerciseManager
         foreach ($dataPapers as $paper) {
             $flattenedAnswers = [];
             foreach ($paper as $paperItem) {
-                if ($paperItem) {
+                if (is_array($paperItem)) {
                     foreach ($paperItem as $paperEl) {
                         $flattenedAnswers[] = $paperEl;
                     }

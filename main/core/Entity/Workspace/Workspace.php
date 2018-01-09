@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Entity\Workspace;
 
 use Claroline\CoreBundle\Entity\Calendar\Event;
 use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
-use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
@@ -33,6 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Workspace
 {
     use OrganizationsTrait;
+    use UuidTrait;
 
     const DEFAULT_MAX_STORAGE_SIZE = '1 TB';
     const DEFAULT_MAX_FILE_COUNT = 10000;
@@ -184,16 +185,6 @@ class Workspace
     protected $creator;
 
     /**
-     * @ORM\Column(unique=true)
-     *
-     * @Serializer\Groups({"api_workspace", "api_workspace_min"})
-     * @Serializer\SerializedName("guid")
-     *
-     * @var string
-     */
-    protected $guid;
-
-    /**
      * @ORM\Column(name="self_registration", type="boolean")
      *
      * @Serializer\Groups({"api_workspace", "api_workspace_min"})
@@ -287,6 +278,16 @@ class Workspace
     protected $workspaceType;
 
     /**
+     * @ORM\Column(name="disabled_notifications", type="boolean")
+     *
+     * @Serializer\Groups({"api_workspace", "api_workspace_min"})
+     * @Serializer\SerializedName("disabledNotifications")
+     *
+     * @var bool
+     */
+    protected $disabledNotifications = false;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Workspace\WorkspaceOptions",
      *     inversedBy="workspace"
@@ -325,7 +326,7 @@ class Workspace
      *     inversedBy="workspaces"
      * )
      *
-     * @var Organization[]|ArrayCollection
+     * @var ArrayCollection
      */
     protected $organizations;
 
@@ -382,7 +383,7 @@ class Workspace
      */
     public function getDescription()
     {
-        return $this->description;
+        return $this->description ? $this->description : '';
     }
 
     /**
@@ -514,7 +515,7 @@ class Workspace
      */
     public function setGuid($guid)
     {
-        $this->guid = $guid;
+        $this->uuid = $guid;
     }
 
     /**
@@ -524,7 +525,7 @@ class Workspace
      */
     public function getGuid()
     {
-        return $this->guid;
+        return $this->uuid;
     }
 
     /**
@@ -793,5 +794,21 @@ class Workspace
     public function isModel()
     {
         return $this->model;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabledNotifications()
+    {
+        return $this->disabledNotifications;
+    }
+
+    /**
+     * @param bool $disabledNotifications
+     */
+    public function setDisabledNotifications($disabledNotifications)
+    {
+        $this->disabledNotifications = $disabledNotifications;
     }
 }

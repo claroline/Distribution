@@ -5,13 +5,13 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 import {trans, t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
+import {generateUrl} from '#/main/core/api/router'
 import {FormField} from '#/main/core/layout/form/components/form-field.jsx'
 import {SelectInput} from '#/main/core/layout/form/components/field/select-input.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {getFieldType} from '../../../utils'
 import {selectors} from '../../../selectors'
-import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions} from '../actions'
 
 const InfosList = props =>
@@ -123,6 +123,7 @@ class EntryEditForm extends Component {
           controlId="field-title"
           type="text"
           label={t('title')}
+          noLabel={true}
           value={this.state.entry.entry_title}
           error={this.state.errors.entry_title}
           onChange={value => this.updateEntryValue('entry_title', value)}
@@ -297,7 +298,7 @@ class EntryEditForm extends Component {
       <div>
         <h2>{trans('entry_edition', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.entry && this.props.entry.id > 0 && this.state.id > 0 && this.props.canEditEntry ?
+        {this.props.entry && this.props.entry.id > 0 && this.state.id > 0 && this.props.canEditEntry && !this.props.entry.locked ?
           <div>
             {this.props.template && this.props.useTemplate ?
               <HtmlText>
@@ -425,7 +426,8 @@ EntryEditForm.propTypes = {
   entryId: T.number,
   canEdit: T.bool.isRequired,
   entry: T.shape({
-    id: T.number
+    id: T.number,
+    locked: T.bool
   }),
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,

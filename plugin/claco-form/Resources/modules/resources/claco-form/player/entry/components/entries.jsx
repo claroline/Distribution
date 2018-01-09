@@ -1,19 +1,25 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
-import moment from 'moment'
 import classes from 'classnames'
 import {PropTypes as T} from 'prop-types'
+
 import {trans, t} from '#/main/core/translation'
+import {localeDate} from '#/main/core/scaffolding/date'
+import {generateUrl} from '#/main/core/api/router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {DataListContainer as DataList} from '#/main/core/layout/list/containers/data-list.jsx'
-import {constants as listConstants} from '#/main/core/layout/list/constants'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {asset} from '#/main/core/asset'
-import {actions} from '../actions'
-import {selectors} from '../../../selectors'
-import {getFieldType, getCountry} from '../../../utils'
-import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {constants as listConstants} from '#/main/core/data/list/constants'
+import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
+
+import {select as resourceSelect} from '#/main/core/resource/selectors'
+
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {getFieldType, getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 class Entries extends Component {
   deleteEntry(entry) {
@@ -21,6 +27,14 @@ class Entries extends Component {
       title: trans('delete_entry', {}, 'clacoform'),
       question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
       handleConfirm: () => this.props.deleteEntry(entry.id)
+    })
+  }
+
+  deleteEntries(entries) {
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: trans('delete_selected_entries', {}, 'clacoform'),
+      question: trans('delete_selected_entries_confirm_message', {}, 'clacoform'),
+      handleConfirm: () => this.props.deleteEntries(entries)
     })
   }
 
@@ -93,7 +107,7 @@ class Entries extends Component {
           displayed: false,
           type: 'enum',
           options: {
-            enum: options
+            choices: options
           }
         })
       }
@@ -122,6 +136,20 @@ class Entries extends Component {
       }
     })
     columns.push({
+      name: 'locked',
+      label: t('locked'),
+      displayed: false,
+      type: 'boolean',
+      renderer: (rowData) => {
+        const lockCell = <span className={classes('fa fa-fw', {
+          'fa-lock true': rowData.locked,
+          'fa-unlock false': !rowData.locked
+        })}/>
+
+        return lockCell
+      }
+    })
+    columns.push({
       name: 'title',
       label: t('title'),
       displayed: this.isDisplayedField('title'),
@@ -139,7 +167,7 @@ class Entries extends Component {
         type: 'date',
         filterable: false,
         displayed: this.isDisplayedField('creationDateString'),
-        renderer: (rowData) => this.canViewEntryMetadata(rowData) ? moment(rowData.creationDate).format('DD/MM/YYYY') : '-'
+        renderer: (rowData) => this.canViewEntryMetadata(rowData) ? localeDate(rowData.creationDate) : '-'
       })
       columns.push({
         name: 'createdAfter',
@@ -227,35 +255,64 @@ class Entries extends Component {
         action: (rows) => this.props.downloadEntryPdf(rows[0].id),
         context: 'row'
       })
+      dataListActions.push({
+        icon: 'fa fa-w fa-print',
+        label: trans('print_selected_entries', {}, 'clacoform'),
+        action: (rows) => this.props.downloadEntriesPdf(rows),
+        context: 'selection'
+      })
     }
     dataListActions.push({
       icon: 'fa fa-w fa-pencil',
       label: t('edit'),
       action: (rows) => this.navigateTo(`/entry/${rows[0].id}/edit`),
-      displayed: (rows) => this.canEditEntry(rows[0]),
+      displayed: (rows) => !rows[0].locked && this.canEditEntry(rows[0]),
       context: 'row'
     })
     dataListActions.push({
       icon: 'fa fa-w fa-eye',
       label: t('publish'),
-      action: (rows) => this.props.switchEntryStatus(rows[0].id),
-      displayed: (rows) => this.canManageEntry(rows[0]) && rows[0].status !== 1,
-      context: 'row'
+      action: (rows) => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_PUBLISHED),
+      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
+        rows.filter(e => e.status === constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
     })
     dataListActions.push({
       icon: 'fa fa-w fa-eye-slash',
       label: t('unpublish'),
-      action: (rows) => this.props.switchEntryStatus(rows[0].id),
-      displayed: (rows) => this.canManageEntry(rows[0]) && rows[0].status === 1,
+      action: (rows) => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_UNPUBLISHED),
+      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
+        rows.filter(e => e.status !== constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
+    })
+
+    if (this.props.canAdministrate) {
+      dataListActions.push({
+        icon: 'fa fa-w fa-lock',
+        label: t('lock'),
+        action: (rows) => this.props.switchEntriesLock(rows, true),
+        displayed: (rows) => rows.filter(e => e.locked).length !== rows.length
+      })
+      dataListActions.push({
+        icon: 'fa fa-w fa-unlock',
+        label: t('unlock'),
+        action: (rows) => this.props.switchEntriesLock(rows, false),
+        displayed: (rows) => rows.filter(e => !e.locked).length !== rows.length
+      })
+    }
+    dataListActions.push({
+      icon: 'fa fa-w fa-trash',
+      label: t('delete'),
+      action: (rows) => this.deleteEntry(rows[0]),
+      displayed: (rows) => !rows[0].locked && this.canManageEntry(rows[0]),
+      dangerous: true,
       context: 'row'
     })
     dataListActions.push({
       icon: 'fa fa-w fa-trash',
       label: t('delete'),
-      action: (rows) => this.deleteEntry(rows[0]),
-      displayed: (rows) => this.canManageEntry(rows[0]),
+      action: (rows) => this.deleteEntries(rows),
+      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length,
       dangerous: true,
-      context: 'row'
+      context: 'selection'
     })
 
     return dataListActions
@@ -280,7 +337,7 @@ class Entries extends Component {
   }
 
   isDisplayedField(key) {
-    return this.props.searchColumns.indexOf(key) > -1
+    return this.props.searchColumns ? this.props.searchColumns.indexOf(key) > -1 : false
   }
 
   formatFieldValue(entry, field, value) {
@@ -294,10 +351,10 @@ class Entries extends Component {
       if (value !== undefined && value !== null && value !== '') {
         switch (getFieldType(field.type).name) {
           case 'date':
-            formattedValue = value.date ? moment(value.date).format('DD/MM/YYYY') : moment(value).format('DD/MM/YYYY')
+            formattedValue = value.date ? localeDate(value.date) : localeDate(value)
             break
           case 'country':
-            formattedValue = getCountry(value).label
+            formattedValue = getCountry(value)
             break
           case 'checkboxes':
             formattedValue = value.join(', ')
@@ -364,29 +421,25 @@ class Entries extends Component {
         <br/>
         {this.props.canSearchEntry ?
           <div>
-            <DataList
+            <DataListContainer
               display={{
                 current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
                 available: Object.keys(listConstants.DISPLAY_MODES)
               }}
               name="entries"
+              fetch={{
+                url: generateUrl('claro_claco_form_entries_search', {clacoForm: this.props.resourceId})
+              }}
               definition={this.generateColumns()}
               filterColumns={this.props.searchColumnEnabled}
               actions={this.generateActions()}
               card={(row) => ({
                 onClick: `#/entry/${row.id}/view`,
                 poster: null,
-                icon: row.user && row.user.id > 0 && row.user.picture ?
-                  <img src={asset('uploads/pictures/' + row.user.picture)} /> :
-                  'fa fa-user',
+                icon: <UserAvatar picture={row.user ? row.user.picture : undefined} alt={true} />,
                 title: this.getCardValue(row, 'title'),
                 subtitle: this.getCardValue(row, 'subtitle'),
-                contentText: this.getCardValue(row, 'content'),
-                flags: [].filter(flag => !!flag),
-                footer:
-                  <span></span>,
-                footerLong:
-                  <span></span>
+                contentText: this.getCardValue(row, 'content')
               })}
             />
           </div> :
@@ -401,6 +454,7 @@ class Entries extends Component {
 
 Entries.propTypes = {
   canEdit: T.bool.isRequired,
+  canAdministrate: T.bool.isRequired,
   isAnon: T.bool.isRequired,
   user: T.object,
   fields: T.arrayOf(T.shape({
@@ -426,8 +480,11 @@ Entries.propTypes = {
   displayKeywords: T.bool.isRequired,
   isCategoryManager: T.bool.isRequired,
   downloadEntryPdf: T.func.isRequired,
-  switchEntryStatus: T.func.isRequired,
+  downloadEntriesPdf: T.func.isRequired,
+  switchEntriesStatus: T.func.isRequired,
+  switchEntriesLock: T.func.isRequired,
   deleteEntry: T.func.isRequired,
+  deleteEntries: T.func.isRequired,
   showModal: T.func.isRequired,
   entries: T.shape({
     data: T.array,
@@ -446,6 +503,7 @@ Entries.propTypes = {
 function mapStateToProps(state) {
   return {
     canEdit: resourceSelect.editable(state),
+    canAdministrate: resourceSelect.administrable(state),
     isAnon: state.isAnon,
     user: state.user,
     fields: state.fields,
@@ -471,8 +529,11 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
-    switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
+    downloadEntriesPdf: entries => dispatch(actions.downloadEntriesPdf(entries)),
+    switchEntriesStatus: (entries, status) => dispatch(actions.switchEntriesStatus(entries, status)),
+    switchEntriesLock: (entries, locked) => dispatch(actions.switchEntriesLock(entries, locked)),
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
+    deleteEntries: entries => dispatch(actions.deleteEntries(entries)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   }
 }

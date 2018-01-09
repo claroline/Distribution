@@ -7,8 +7,8 @@ import {listItemNames, getDefinition} from './../../../../items/item-types'
 import {Icon} from './../../../../items/components/icon.jsx'
 import {t, tex, trans} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {REQUEST_SEND} from './../../../../api/actions'
-import {generateUrl} from '#/main/core/fos-js-router'
+import {API_REQUEST} from '#/main/core/api/actions'
+import {generateUrl} from '#/main/core/api/router'
 
 
 export const MODAL_IMPORT_ITEMS = 'MODAL_IMPORT_ITEMS'
@@ -24,7 +24,7 @@ actions.getQuestions = (filter, onSuccess) => {
 
   return (dispatch) => {
     dispatch({
-      [REQUEST_SEND]: {
+      [API_REQUEST]: {
         url: generateUrl('question_list') + queryString,
         request: {
           method: 'GET'

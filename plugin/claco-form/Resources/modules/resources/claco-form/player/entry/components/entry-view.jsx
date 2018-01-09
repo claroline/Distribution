@@ -2,25 +2,24 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
-import moment from 'moment'
 
 import {trans, t} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/fos-js-router'
-import {localeDate} from '#/main/core/layout/data/types/date/utils'
+import {generateUrl} from '#/main/core/api/router'
+import {localeDate} from '#/main/core/scaffolding/date'
 
-import {select as resourceSelect} from '#/main/core/layout/resource/selectors'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx'
 
-import {UserMicro} from '#/main/core/layout/user/components/user-micro.jsx'
+import {UserMicro} from '#/main/core/user/components/micro.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
-import {getFieldType, getCountry, getFileType} from '../../../utils'
+import {getFieldType, getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
 
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
@@ -77,16 +76,16 @@ const EntryActions = props =>
         <ul className="dropdown-menu dropdown-menu-right notifications-buttons">
           <li>
             <CheckGroup
-              checkId="notify-edition-chk"
-              checked={props.notifyEdition}
+              id="notify-edition-chk"
+              value={props.notifyEdition}
               label={trans('editions', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyEdition: checked})}
             />
           </li>
           <li>
             <CheckGroup
-              checkId="notify-comment-chk"
-              checked={props.notifyComment}
+              id="notify-comment-chk"
+              value={props.notifyComment}
               label={trans('comments', {}, 'clacoform')}
               onChange={checked => props.updateNotification({notifyComment: checked})}
             />
@@ -128,7 +127,7 @@ const EntryActions = props =>
       </TooltipButton>
     }
 
-    {props.canEdit &&
+    {!props.locked && props.canEdit &&
       <TooltipLink
         id="entry-edit"
         className="btn-link-default"
@@ -139,7 +138,7 @@ const EntryActions = props =>
       </TooltipLink>
     }
 
-    {props.canManage &&
+    {!props.locked && props.canManage &&
       <TooltipButton
         id="tooltip-button-status"
         className="btn-link-default"
@@ -150,7 +149,29 @@ const EntryActions = props =>
       </TooltipButton>
     }
 
-    {props.canManage &&
+    {!props.locked && props.canAdministrate &&
+      <TooltipButton
+        id="tooltip-button-lock"
+        className="btn-link-default"
+        title={trans('lock_entry', {}, 'clacoform')}
+        onClick={props.toggleLock}
+      >
+        <span className="fa fa-fw fa-lock" />
+      </TooltipButton>
+    }
+
+    {props.locked && props.canAdministrate &&
+      <TooltipButton
+        id="tooltip-button-lock"
+        className="btn-link-default"
+        title={trans('unlock_entry', {}, 'clacoform')}
+        onClick={props.toggleLock}
+      >
+        <span className="fa fa-fw fa-unlock" />
+      </TooltipButton>
+    }
+
+    {!props.locked && props.canManage &&
       <TooltipButton
         id="entry-delete"
         className="btn-link-danger"
@@ -166,6 +187,7 @@ EntryActions.propTypes = {
   // data
   entryId: T.number.isRequired,
   status: T.number.isRequired,
+  locked: T.bool.isRequired,
   notificationsEnabled: T.bool.isRequired,
 
   // current user rights
@@ -185,6 +207,7 @@ EntryActions.propTypes = {
   share: T.func.isRequired,
   delete: T.func.isRequired,
   toggleStatus: T.func.isRequired,
+  toggleLock: T.func.isRequired,
   updateNotification: T.func.isRequired
 }
 
@@ -251,10 +274,6 @@ class EntryView extends Component {
       (this.props.displayMetadata === 'manager' && this.props.isManager)
   }
 
-  canComment() {
-    return this.props.commentsEnabled && (!this.props.isAnon || this.props.anonymousCommentsEnabled)
-  }
-
   canManageEntry() {
     return this.props.canEdit || this.props.isManager
   }
@@ -281,11 +300,11 @@ class EntryView extends Component {
         case 'select':
           return Array.isArray(value) ? value.join(', ') : value
         case 'country':
-          return getCountry(value) ? getCountry(value).label : ''
+          return getCountry(value) || ''
         case 'date' :
           return value != undefined && value !== null && value.date ?
-            moment(value.date).format('DD/MM/YYYY') :
-            value ? moment(value).format('DD/MM/YYYY') : ''
+            localeDate(value.date) :
+            value ? localeDate(value) : ''
         case 'rich_text':
           return (<div dangerouslySetInnerHTML={{ __html: value}}/>)
         case 'file':
@@ -371,11 +390,11 @@ class EntryView extends Component {
             break
           case 'date':
             replacedField = fieldValue && fieldValue.date ?
-              moment(fieldValue.date).format('DD/MM/YYYY') :
-              fieldValue ? moment(fieldValue).format('DD/MM/YYYY') : ''
+              localeDate(fieldValue.date) :
+              fieldValue ? localeDate(fieldValue) : ''
             break
           case 'country':
-            replacedField = fieldValue && getCountry(fieldValue) ? getCountry(fieldValue).label : ''
+            replacedField = getCountry(fieldValue) || ''
             break
           case 'file':
             replacedField = fieldValue && Array.isArray(fieldValue) ?
@@ -427,6 +446,7 @@ class EntryView extends Component {
                   <EntryActions
                     entryId={this.props.entry.id}
                     status={this.props.entry.status}
+                    locked={this.props.entry.locked}
                     notificationsEnabled={this.isNotificationsEnabled()}
                     displayComments={this.props.displayComments}
                     notifyEdition={this.state.entryUser.notifyEdition}
@@ -442,6 +462,7 @@ class EntryView extends Component {
                     share={() => this.showSharingForm()}
                     delete={() => this.props.deleteEntry(this.props.entry)}
                     toggleStatus={() => this.props.switchEntryStatus(this.props.entry.id)}
+                    toggleLock={() => this.props.switchEntryLock(this.props.entry.id)}
                     updateNotification={this.updateNotification}
                   />
                 }
@@ -494,11 +515,12 @@ class EntryView extends Component {
             <EntryMenu />
           }
 
-          {(this.props.displayComments || this.canComment()) &&
+          {(this.props.canViewComments || this.props.canComment) &&
             <EntryComments
               opened={this.props.openComments}
-              canComment={this.canComment()}
+              canComment={this.props.canComment}
               canManage={this.canManageEntry()}
+              canViewComments={this.props.canViewComments}
             />
           }
         </div> :
@@ -522,6 +544,8 @@ EntryView.propTypes = {
   canGeneratePdf: T.bool.isRequired,
   canEditEntry: T.bool,
   canViewEntry: T.bool,
+  canComment: T.bool,
+  canViewComments: T.bool,
 
   isAnon: T.bool.isRequired,
   isOwner: T.bool,
@@ -545,6 +569,7 @@ EntryView.propTypes = {
     id: T.number,
     title: T.string,
     status: T.number,
+    locked: T.bool,
     creationDate: T.string,
     publicationDate: T.string,
     editionDate: T.string,
@@ -607,6 +632,7 @@ EntryView.propTypes = {
   loadEntry: T.func.isRequired,
   deleteEntry: T.func.isRequired,
   switchEntryStatus: T.func.isRequired,
+  switchEntryLock: T.func.isRequired,
   downloadEntryPdf: T.func.isRequired,
   saveEntryUser: T.func.isRequired,
   changeEntryOwner: T.func.isRequired,
@@ -628,6 +654,8 @@ function mapStateToProps(state, ownProps) {
     canViewEntry: selectors.canOpenCurrentEntry(state),
     canAdministrate: selectors.canAdministrate(state),
     canGeneratePdf: state.canGeneratePdf,
+    canComment: selectors.canComment(state),
+    canViewComments: selectors.canViewComments(state),
 
     isAnon: state.isAnon,
     entry: state.currentEntry,
@@ -642,7 +670,6 @@ function mapStateToProps(state, ownProps) {
 
     commentsEnabled: selectors.getParam(state, 'comments_enabled'),
     anonymousCommentsEnabled: selectors.getParam(state, 'anonymous_comments_enabled'),
-
 
     menuPosition: selectors.getParam(state, 'menu_position'),
     isOwner: selectors.isCurrentEntryOwner(state),
@@ -669,6 +696,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
     },
     switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
+    switchEntryLock: entryId => dispatch(actions.switchEntryLock(entryId)),
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
     saveEntryUser: (entryId, entryUser) => dispatch(actions.saveEntryUser(entryId, entryUser)),
     changeEntryOwner: (entryId, userId) => dispatch(actions.changeEntryOwner(entryId, userId)),

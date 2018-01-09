@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
-import {makeReducer} from '#/main/core/utilities/redux'
-import {makeListReducer} from '#/main/core/layout/list/reducer'
+import {makeReducer} from '#/main/core/scaffolding/reducer'
+import {makeListReducer} from '#/main/core/data/list/reducer'
 import {
   ENTRY_ADD,
   ENTRY_UPDATE,
@@ -40,8 +40,8 @@ const entriesReducers = makeReducer({}, {
 
     return entries
   },
-  [ALL_ENTRIES_REMOVE]: () => {
-    return []
+  [ALL_ENTRIES_REMOVE]: (state) => {
+    return state.filter(e => e.locked)
   },
   [ENTRY_COMMENT_ADD]: (state, action) => {
     const entries = cloneDeep(state)
@@ -149,7 +149,9 @@ const currentEntryReducers = makeReducer({}, {
   }
 })
 
-const reducer = makeListReducer({data: entriesReducers}, {selectable: false})
+const reducer = makeListReducer('entries', {}, {
+  data: entriesReducers
+})
 
 export {
   reducer,

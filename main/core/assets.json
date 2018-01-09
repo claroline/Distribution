@@ -1,34 +1,34 @@
 {
   "webpack": {
     "entry": {
+      "polyfills": "scaffolding/shim",
       "translator": "translation/browser",
       "organization-field": "symfony/form/organization/index",
-      "user-management": "users/module",
-      "facet-management": "facets/module",
+      "user-management": "administration/user",
       "workspace-management": "administration/workspace",
-      "theme-management": "administration/theme",
-      "private-profile": "profile/module",
-      "organization-management": "organization/module",
-      "plugin-management": "plugins/module",
-      "portal": "portal/module",
+      "theme-management": "administration/appearance/theme",
+      "transfer-management": "administration/transfer",
+      "plugin-management": "administration/plugins/module",
+      "portal": "resource/portal",
       "tinymce": "tinymce/tinymce",
       "desktop-home": "desktopHome/desktopHome",
       "admin-home-tabs-config": "adminHomeTabsConfig/adminHomeTabsConfig",
       "workspace-home": "workspace/tools/home/workspaceHome",
-      "modernizr": "modernizr/modernizr",
-      "core-js": "core-js",
-      "whatwg-fetch": "fetch-shim",
-      "resource-icon-set-list": "icon/resource-icon-set-list/module",
-      "resource-icon-item-list": "icon/resource-icon-item-list/module",
+      "resource-icon-set-list": "administration/appearance/icon/resource-icon-set-list/module",
+      "resource-icon-item-list": "administration/appearance/icon/resource-icon-item-list/module",
       "copy-text-to-clipboard": "copy-text-to-clipboard/copy-text-to-clipboard",
-      "scheduled-task-management": "administration/scheduled-task/index"
+      "scheduled-task-management": "administration/scheduled-task",
+      "user-registration": "user/registration",
+      "user-profile": "user/profile",
+      "user-tracking": "user/tracking"
     }
   },
 
   "styles": {
     "entry": {
       "home": "tools/home.less",
-      "theme-management": "tools/theme-management.less"
+      "theme-management": "tools/theme-management.less",
+      "portal": "portal/portal.less"
     }
   }
 }

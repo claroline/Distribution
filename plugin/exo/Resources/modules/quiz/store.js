@@ -2,17 +2,13 @@
 
 import {
   applyMiddleware,
-  combineReducers,
   compose,
   createStore as baseCreate
 } from 'redux'
 import thunk from 'redux-thunk'
 
-import {reducer as modalReducer}    from '#/main/core/layout/modal/reducer'
-import {reducer as resourceReducer} from '#/main/core/layout/resource/reducer'
-
-import {apiMiddleware} from './../api/middleware'
-import {reducers as apiReducers} from './../api/reducers'
+import {apiMiddleware} from '#/main/core/api/middleware'
+import {makeResourceReducer} from '#/main/core/resource/reducer'
 import {reducers as quizReducers} from './reducers'
 import {reducers as editorReducers} from './editor/reducers'
 import {reducers as playerReducers} from './player/reducers'
@@ -29,12 +25,8 @@ if (process.env.NODE_ENV !== 'production') {
 const identity = (state = null) => state
 
 export function makeReducer(editable) {
-  return combineReducers({
-    resourceNode: resourceReducer,
-
+  return makeResourceReducer({}, {
     noServer: identity,
-    modal: modalReducer,
-    currentRequests: apiReducers.currentRequests,
     viewMode: quizReducers.viewMode,
     quiz: editable ? editorReducers.quiz : identity,
     steps: editable ? editorReducers.steps : identity,

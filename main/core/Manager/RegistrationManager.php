@@ -12,6 +12,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\CoreBundle\Form\BaseProfileType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Listener\AuthenticationSuccessListener;
@@ -130,6 +131,7 @@ class RegistrationManager
 
     public function registerNewUser($user, $form)
     {
+        /** @var Facet[] $facets */
         $facets = $this->facetManager->findForcedRegistrationFacet();
         $user = $this->userManager->createUser(
             $user,
@@ -141,18 +143,25 @@ class RegistrationManager
         foreach ($facets as $facet) {
             foreach ($facet->getPanelFacets() as $panel) {
                 foreach ($panel->getFieldsFacet() as $field) {
-                    $this->facetManager->setFieldValue($user, $field, $form->get($field->getPrettyName())->getData(), true);
+                    $this->facetManager->setFieldValue($user, $field, $form->get($field->getName())->getData(), true);
                 }
             }
         }
     }
 
-    public function loginUser($user, Request $request)
+    public function login($user)
     {
         //this is bad but I don't know any other way (yet)
         $providerKey = 'main';
         $token = new UsernamePasswordToken($user, $user->getPassword(), $providerKey, $user->getRoles());
         $this->tokenStorage->setToken($token);
+
+        return $token;
+    }
+
+    public function loginUser($user, Request $request)
+    {
+        $token = $this->login($user);
         //a bit hacky I know ~
         return $this->authenticationHandler->onAuthenticationSuccess($request, $token);
     }

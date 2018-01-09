@@ -8,8 +8,8 @@ import {t, trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
-import {UserMessage} from '#/main/core/layout/user/components/user-message.jsx'
-import {UserMessageForm} from '#/main/core/layout/user/components/user-message-form.jsx'
+import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
 
 import {selectors} from '../../../selectors'
 import {actions} from '../actions'
@@ -117,7 +117,7 @@ class EntryComments extends Component {
           </section>
         }
 
-        {this.state.opened &&
+        {this.state.opened && this.props.canViewComments &&
           <section className="comments-section">
             <h4>{trans('all_comments', {}, 'clacoform')}</h4>
 
@@ -144,7 +144,7 @@ class EntryComments extends Component {
                     'user-message-inactive': 0 === comment.status,
                     'user-message-blocked': 2 === comment.status
                   })}
-                  user={this.props.displayCommentAuthor ? comment.user : undefined}
+                  user={this.props.displayCommentAuthor && comment.user ? comment.user : undefined}
                   date={this.props.displayCommentDate ? comment.creationDate : ''}
                   content={comment.content}
                   allowHtml={true}
@@ -190,6 +190,7 @@ EntryComments.propTypes = {
   opened: T.bool.isRequired,
   entry: T.object.isRequired,
   canComment: T.bool.isRequired,
+  canViewComments: T.bool.isRequired,
   canManage: T.bool.isRequired,
   displayCommentAuthor: T.bool.isRequired,
   displayCommentDate: T.bool.isRequired,

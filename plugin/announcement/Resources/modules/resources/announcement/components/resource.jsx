@@ -4,8 +4,8 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 
-import {Router} from '#/main/core/router/components/router.jsx'
-import {ResourceContainer} from '#/main/core/layout/resource/containers/resource.jsx'
+import {Routes} from '#/main/core/router'
+import {ResourceContainer} from '#/main/core/resource/containers/resource.jsx'
 
 import {Announces} from './announces.jsx'
 import {Announce} from './announce.jsx'
@@ -37,10 +37,11 @@ const Resource = props =>
       }
     ]}
   >
-    <Router
+    <Routes
       routes={[
         {
           path: '/',
+          exact: true,
           component: Announces
         }, {
           path: '/add',
@@ -79,7 +80,7 @@ Resource.propTypes = {
   formValidating: T.bool.isRequired,
   formValid: T.bool.isRequired,
   roles: T.arrayOf(T.shape({
-    id: T.number.isRequired
+    id: T.string.isRequired
   })),
 
   save: T.func.isRequired,

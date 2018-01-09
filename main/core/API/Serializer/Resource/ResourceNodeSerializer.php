@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Resource;
 
-use Claroline\CoreBundle\API\Serializer\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
@@ -102,7 +102,7 @@ class ResourceNodeSerializer
         $serializedNode = [
             'id' => $resourceNode->getGuid(),
             'name' => $resourceNode->getName(),
-            'poster' => null, // todo : add as ResourceNode prop
+            'poster' => $resourceNode->getThumbnail() ? '/'.$resourceNode->getThumbnail()->getRelativeUrl() : null, // todo : add as ResourceNode prop
             'thumbnail' => null,
             'meta' => $this->getMeta($resourceNode),
             'parameters' => $this->getParameters($resourceNode),
@@ -139,13 +139,20 @@ class ResourceNodeSerializer
      */
     private function decorate(ResourceNode $resourceNode, array $serializedNode)
     {
+        $unauthorizedKeys = array_keys($serializedNode);
+
+        // 'poster' is a key that can be overridden by another plugin. For example: UrlBundle
+        if (($key = array_search('poster', $unauthorizedKeys)) !== false) {
+            unset($unauthorizedKeys[$key]);
+        }
+
         /** @var DecorateResourceNodeEvent $event */
         $event = $this->eventDispatcher->dispatch(
             'serialize_resource_node',
             'Resource\DecorateResourceNode',
             [
                 $resourceNode,
-                array_keys($serializedNode),
+                $unauthorizedKeys,
             ]
         );
 
@@ -172,6 +179,7 @@ class ResourceNodeSerializer
             'actions' => $this->getActions($resourceNode),
             'accesses' => $resourceNode->getAccesses(),
             'views' => $resourceNode->getViewsCount(),
+            'icon' => $resourceNode->getIcon() ? '/'.$resourceNode->getIcon()->getRelativeUrl() : null,
         ];
     }
 

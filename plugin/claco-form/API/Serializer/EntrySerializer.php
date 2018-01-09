@@ -7,7 +7,7 @@ use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Entity\Keyword;
-use Claroline\CoreBundle\API\Serializer\UserSerializer;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -80,6 +80,7 @@ class EntrySerializer
             'id' => $entry->getId(),
             'title' => $entry->getTitle(),
             'status' => $entry->getStatus(),
+            'locked' => $entry->isLocked(),
             'creationDate' => $entry->getCreationDate() ? $entry->getCreationDate()->format('Y-m-d H:i:s') : null,
             'editionDate' => $entry->getEditionDate() ? $entry->getEditionDate()->format('Y-m-d H:i:s') : null,
             'publicationDate' => $entry->getPublicationDate() ? $entry->getPublicationDate()->format('Y-m-d H:i:s') : null,

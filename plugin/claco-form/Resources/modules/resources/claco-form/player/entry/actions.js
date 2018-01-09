@@ -1,6 +1,7 @@
-import {generateUrl} from '#/main/core/fos-js-router'
-import {makeActionCreator} from '#/main/core/utilities/redux'
-import {REQUEST_SEND} from '#/main/core/api/actions'
+import {generateUrl} from '#/main/core/api/router'
+import {makeActionCreator} from '#/main/core/scaffolding/actions'
+import {getDataQueryString} from '#/main/core/data/list/utils'
+import {API_REQUEST} from '#/main/core/api/actions'
 
 export const actions = {}
 
@@ -35,8 +36,8 @@ actions.createEntry = (entry, keywords, files) => (dispatch, getState) => {
   })
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_create', {clacoForm: resourceId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_create', {clacoForm: resourceId}],
       request: {
         method: 'POST',
         body: formData
@@ -60,8 +61,8 @@ actions.editEntry = (entryId, entry, keywords, categories, files) => (dispatch) 
   })
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_edit', {entry: entryId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_edit', {entry: entryId}],
       request: {
         method: 'POST',
         body: formData
@@ -76,13 +77,27 @@ actions.editEntry = (entryId, entry, keywords, categories, files) => (dispatch) 
 
 actions.deleteEntry = (entryId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_delete', {entry: entryId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_delete', {entry: entryId}],
       request: {
         method: 'DELETE'
       },
       success: (data, dispatch) => {
         dispatch(actions.removeEntry(entryId))
+      }
+    }
+  })
+}
+
+actions.deleteEntries = (entries) => (dispatch) => {
+  dispatch({
+    [API_REQUEST]: {
+      url: generateUrl('claro_claco_form_entries_delete') + getDataQueryString(entries),
+      request: {
+        method: 'PATCH'
+      },
+      success: (data, dispatch) => {
+        data.forEach(e => dispatch(actions.removeEntry(e.id)))
       }
     }
   })
@@ -100,8 +115,8 @@ actions.loadEntry = (entryId) => (dispatch, getState) => {
       dispatch(actions.loadCurrentEntry(entry))
     } else {
       dispatch({
-        [REQUEST_SEND]: {
-          url: generateUrl('claro_claco_form_entry_retrieve', {entry: entryId}),
+        [API_REQUEST]: {
+          url: ['claro_claco_form_entry_retrieve', {entry: entryId}],
           request: {
             method: 'GET'
           },
@@ -118,8 +133,8 @@ actions.switchEntryStatus = (entryId) => (dispatch, getState) => {
   const currentEntry = getState().currentEntry
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_status_change', {entry: entryId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_status_change', {entry: entryId}],
       request: {
         method: 'PUT'
       },
@@ -134,8 +149,76 @@ actions.switchEntryStatus = (entryId) => (dispatch, getState) => {
   })
 }
 
+actions.switchEntriesStatus = (entries, status) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [API_REQUEST]: {
+      url: generateUrl('claro_claco_form_entries_status_change', {status: status}) + getDataQueryString(entries),
+      request: {
+        method: 'PATCH'
+      },
+      success: (data, dispatch) => {
+        data.forEach(e => {
+          dispatch(actions.updateEntry(e))
+
+          if (currentEntry && currentEntry.id === e.id) {
+            dispatch(actions.loadCurrentEntry(e))
+          }
+        })
+      }
+    }
+  })
+}
+
+actions.switchEntryLock = (entryId) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_lock_switch', {entry: entryId}],
+      request: {
+        method: 'PUT'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.updateEntry(data))
+
+        if (currentEntry && currentEntry.id === entryId) {
+          dispatch(actions.loadCurrentEntry(data))
+        }
+      }
+    }
+  })
+}
+
+actions.switchEntriesLock = (entries, locked) => (dispatch, getState) => {
+  const currentEntry = getState().currentEntry
+
+  dispatch({
+    [API_REQUEST]: {
+      url: generateUrl('claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0}) + getDataQueryString(entries),
+      request: {
+        method: 'PATCH'
+      },
+      success: (data, dispatch) => {
+        data.forEach(e => {
+          dispatch(actions.updateEntry(e))
+
+          if (currentEntry && currentEntry.id === e.id) {
+            dispatch(actions.loadCurrentEntry(e))
+          }
+        })
+      }
+    }
+  })
+}
+
 actions.downloadEntryPdf = (entryId) => () => {
   window.location.href = generateUrl('claro_claco_form_entry_pdf_download', {entry: entryId})
+}
+
+actions.downloadEntriesPdf = (entries) => () => {
+  window.location.href = generateUrl('claro_claco_form_entries_pdf_download') + getDataQueryString(entries)
 }
 
 actions.createComment = (entryId, content) => (dispatch) => {
@@ -143,14 +226,14 @@ actions.createComment = (entryId, content) => (dispatch) => {
   formData.append('commentData', content)
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_comment_create', {entry: entryId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_comment_create', {entry: entryId}],
       request: {
         method: 'POST',
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.addEntryComment(entryId, JSON.parse(data)))
+        dispatch(actions.addEntryComment(entryId, data))
       }
     }
   })
@@ -161,14 +244,14 @@ actions.editComment = (entryId, commentId, content) => (dispatch) => {
   formData.append('commentData', content)
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_comment_edit', {comment: commentId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_comment_edit', {comment: commentId}],
       request: {
         method: 'POST',
         body: formData
       },
       success: (data, dispatch) => {
-        dispatch(actions.updateEntryComment(entryId, JSON.parse(data)))
+        dispatch(actions.updateEntryComment(entryId, data))
       }
     }
   })
@@ -176,8 +259,8 @@ actions.editComment = (entryId, commentId, content) => (dispatch) => {
 
 actions.deleteComment = (entryId, commentId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_comment_delete', {comment: commentId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_comment_delete', {comment: commentId}],
       request: {
         method: 'DELETE'
       },
@@ -190,8 +273,8 @@ actions.deleteComment = (entryId, commentId) => (dispatch) => {
 
 actions.activateComment = (entryId, commentId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_comment_activate', {comment: commentId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_comment_activate', {comment: commentId}],
       request: {
         method: 'PUT'
       },
@@ -204,8 +287,8 @@ actions.activateComment = (entryId, commentId) => (dispatch) => {
 
 actions.blockComment = (entryId, commentId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_comment_block', {comment: commentId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_comment_block', {comment: commentId}],
       request: {
         method: 'PUT'
       },
@@ -221,8 +304,8 @@ actions.saveEntryUser = (entryId, entryUser) => (dispatch) => {
   formData.append('entryUserData', JSON.stringify(entryUser))
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_user_save', {entry: entryId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_user_save', {entry: entryId}],
       request: {
         method: 'POST',
         body: formData
@@ -235,8 +318,8 @@ actions.changeEntryOwner = (entryId, userId) => (dispatch, getState) => {
   const currentEntry = getState().currentEntry
 
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_user_change', {entry: entryId, user: userId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_user_change', {entry: entryId, user: userId}],
       request: {
         method: 'PUT'
       },
@@ -253,8 +336,8 @@ actions.changeEntryOwner = (entryId, userId) => (dispatch, getState) => {
 
 actions.shareEntry = (entryId, userId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_user_share', {entry: entryId, user: userId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_user_share', {entry: entryId, user: userId}],
       request: {
         method: 'PUT'
       }
@@ -264,8 +347,8 @@ actions.shareEntry = (entryId, userId) => (dispatch) => {
 
 actions.unshareEntry = (entryId, userId) => (dispatch) => {
   dispatch({
-    [REQUEST_SEND]: {
-      url: generateUrl('claro_claco_form_entry_user_unshare', {entry: entryId, user: userId}),
+    [API_REQUEST]: {
+      url: ['claro_claco_form_entry_user_unshare', {entry: entryId, user: userId}],
       request: {
         method: 'PUT'
       }
