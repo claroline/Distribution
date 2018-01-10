@@ -84,7 +84,7 @@ class AuthenticationSuccessListener implements AuthenticationSuccessHandlerInter
      *     "router"                 = @DI\Inject("router"),
      *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
      *     "requestStack"           = @DI\Inject("request_stack"),
-     *     "kernelRootDir"         = @DI\Inject("%kernel.root_dir%")
+     *     "kernelRootDir"          = @DI\Inject("%kernel.root_dir%")
      * })
      */
     public function __construct(
