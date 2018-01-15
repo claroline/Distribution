@@ -125,6 +125,7 @@ class CursusManager
     private $cursusUserRepo;
     private $cursusWordRepo;
     private $documentModelRepo;
+    private $organizationRepo;
     private $reservationResourceRepo;
     private $sessionEventRepo;
     private $sessionEventSetRepo;
@@ -133,6 +134,7 @@ class CursusManager
     private $sessionQueueRepo;
     private $sessionUserRepo;
     private $fu;
+    private $locationRepo;
 
 /**
  * @DI\InjectParams({
@@ -225,6 +227,7 @@ class CursusManager
         $this->cursusUserRepo = $om->getRepository('ClarolineCursusBundle:CursusUser');
         $this->cursusWordRepo = $om->getRepository('ClarolineCursusBundle:CursusDisplayedWord');
         $this->documentModelRepo = $om->getRepository('ClarolineCursusBundle:DocumentModel');
+        $this->organizationRepo = $om->getRepository('ClarolineCoreBundle:Organization\Organization');
         $this->reservationResourceRepo = $om->getRepository('FormaLibre\ReservationBundle\Entity\Resource');
         $this->sessionEventCommentRepo = $om->getRepository('ClarolineCursusBundle:SessionEventComment');
         $this->sessionEventRepo = $om->getRepository('ClarolineCursusBundle:SessionEvent');
@@ -233,6 +236,7 @@ class CursusManager
         $this->sessionGroupRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionGroup');
         $this->sessionQueueRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionRegistrationQueue');
         $this->sessionUserRepo = $om->getRepository('ClarolineCursusBundle:CourseSessionUser');
+        $this->locationRepo = $om->getRepository('ClarolineCoreBundle:Organization\Location');
     }
 
     public function persistCursusDisplayedWord(CursusDisplayedWord $word)
@@ -5763,6 +5767,30 @@ class CursusManager
         }
 
         return $sessions;
+    }
+
+    /*************************
+     * Organizations methods *
+     *************************/
+
+    public function getAllOrganizations()
+    {
+        return $this->organizationRepo->findAll();
+    }
+
+    public function getOrganizationsByIds(array $ids)
+    {
+        return $this->om->findList('Claroline\CoreBundle\Entity\Organization\Organization', 'id', $ids);
+    }
+
+    public function getLocationsByTypes(array $types)
+    {
+        return $this->locationRepo->findLocationsByTypes($types);
+    }
+
+    public function getLocationByUuid($uuid)
+    {
+        return $this->locationRepo->findOneByUuid($uuid);
     }
 
     /*******************

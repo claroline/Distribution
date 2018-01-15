@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Entity;
 
-use Claroline\CoreBundle\Entity\Facet\PanelFacetRole;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
+use Claroline\CoreBundle\Entity\Tool\AdminTool;
 use Claroline\CoreBundle\Entity\Tool\PwsToolConfig;
 use Claroline\CoreBundle\Entity\Tool\ToolRights;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -96,14 +96,6 @@ class Role implements RoleInterface
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Facet\PanelFacetRole",
-     *     mappedBy="role"
-     * )
-     */
-    protected $panelFacetsRole;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\Facet\GeneralFacetPreference",
      *     mappedBy="role"
      * )
@@ -115,6 +107,8 @@ class Role implements RoleInterface
      *     targetEntity="Claroline\CoreBundle\Entity\Tool\AdminTool",
      *     mappedBy="roles"
      * )
+     *
+     * @var ArrayCollection|AdminTool[]
      */
     protected $adminTools;
 
@@ -150,6 +144,8 @@ class Role implements RoleInterface
      *     inversedBy="roles"
      * )
      * @ORM\JoinColumn(onDelete="CASCADE")
+     *
+     * @var Workspace
      */
     protected $workspace;
 
@@ -197,7 +193,6 @@ class Role implements RoleInterface
         $this->resourceContext = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->facets = new ArrayCollection();
-        $this->panelFacetsRole = new ArrayCollection();
         $this->toolRights = new ArrayCollection();
         $this->pwsToolConfig = new ArrayCollection();
         $this->profileProperties = new ArrayCollection();
@@ -280,6 +275,11 @@ class Role implements RoleInterface
         $this->isReadOnly = $value;
     }
 
+    /**
+     * Get the users property.
+     *
+     * @return ArrayCollection
+     */
     public function getUsers()
     {
         return $this->users;
@@ -315,10 +315,7 @@ class Role implements RoleInterface
     public function removeUser(User $user)
     {
         $this->users->removeElement($user);
-
-        if ($user->hasRole($this)) {
-            $user->removeRole($this);
-        }
+        $user->removeRole($this);
     }
 
     /**
@@ -383,8 +380,7 @@ class Role implements RoleInterface
 
     public function getMaxUsers()
     {
-        //2147483647 is the maximium integer in the database field.
-        return ($this->maxUsers === null) ? 2147483647 : $this->maxUsers;
+        return $this->maxUsers;
     }
 
     public function addToolRights(ToolRights $tr)
@@ -432,6 +428,21 @@ class Role implements RoleInterface
         $this->profileProperties->add($property);
     }
 
+    /**
+     * Get the adminTools property.
+     *
+     * @return ArrayCollection
+     */
+    public function getAdminTools()
+    {
+        return $this->adminTools;
+    }
+
+    /**
+     * Debug purpose.
+     *
+     * @return string
+     */
     public function __toString()
     {
         $name = $this->workspace ? '['.$this->workspace->getName().'] '.$this->name : $this->name;
@@ -439,11 +450,11 @@ class Role implements RoleInterface
         return "[{$this->getId()}]".$name;
     }
 
-    public function addPanelFacetRole(PanelFacetRole $pfr)
-    {
-        $this->panelFacetsRole->add($pfr);
-    }
-
+    /**
+     * Get the isReadOnly property.
+     *
+     * @return bool
+     */
     public function getIsReadOnly()
     {
         return $this->isReadOnly;
