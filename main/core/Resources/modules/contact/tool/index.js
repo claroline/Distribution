@@ -1,5 +1,4 @@
-import {bootstrap} from '#/main/core/utilities/app/bootstrap'
-
+import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 import {reducer} from '#/main/core/contact/tool/reducer'
 import {ContactsTool} from '#/main/core/contact/tool/components/contacts-tool.jsx'
 
