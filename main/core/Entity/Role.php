@@ -380,7 +380,7 @@ class Role implements RoleInterface
 
     public function getMaxUsers()
     {
-        return $this->maxUsers ? $this->maxUsers : PHP_INT_MAX;
+        return $this->maxUsers;
     }
 
     public function addToolRights(ToolRights $tr)
