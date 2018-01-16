@@ -4,15 +4,30 @@ import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
+import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
-import {select} from '#/main/core/contact/tool/selectors'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/main/core/contact/tool/actions'
-import {OptionsDataType} from '#/main/core/contact/prop-types'
+import {select} from '#/main/core/contact/tool/selectors'
+import {OptionsType} from '#/main/core/contact/prop-types'
+import {MODAL_CONTACTS_OPTIONS_FORM} from '#/main/core/contact/tool/components/modal/contacts-options-form.jsx'
 
-const VisibleUsersActions = () =>
-  <span>
-  </span>
+const VisibleUsersActions = props =>
+  <PageActions>
+    <PageAction
+     id="options-edit"
+     icon="fa fa-fw fa-pencil"
+     title={t('configure')}
+     action={() => props.configure(props.options)}
+     primary={false}
+   />
+  </PageActions>
+
+VisibleUsersActions.propTypes = {
+  options: T.object.isRequired,
+  configure: T.func.isRequired
+}
 
 const VisibleUsers = props =>
   <DataListContainer
@@ -49,15 +64,15 @@ const VisibleUsers = props =>
         name: 'username',
         type: 'username',
         label: t('username'),
-        displayed: props.options.show_username,
-        primary: props.options.show_username
+        displayed: props.options.data.show_username,
+        primary: props.options.data.show_username
       },
       {
         name: 'lastName',
         type: 'string',
         label: t('last_name'),
         displayed: true,
-        primary: !props.options.show_username
+        primary: !props.options.data.show_username
       },
       {
         name: 'firstName',
@@ -66,16 +81,16 @@ const VisibleUsers = props =>
         displayed: true
       },
       {
-        name: 'mail',
+        name: 'email',
         type: 'string',
         label: t('mail'),
-        displayed: props.options.show_mail
+        displayed: props.options.data.show_mail
       },
       {
         name: 'phone',
         type: 'string',
         label: t('phone'),
-        displayed: props.options.show_phone
+        displayed: props.options.data.show_phone
       }
     ]}
     card={(row) => ({
@@ -93,25 +108,32 @@ const VisibleUsers = props =>
   />
 
 VisibleUsers.propTypes = {
-  options: T.shape(OptionsDataType.propTypes),
+  options: T.shape(OptionsType.propTypes),
   createContacts: T.func.isRequired
 }
 
 function mapStateToProps(state) {
   return {
-    options: select.optionsData(state)
+    options: select.options(state)
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    createContacts: (users) => dispatch(actions.createContacts(users))
+    createContacts: users => dispatch(actions.createContacts(users)),
+    configure: options => {
+      dispatch(modalActions.showModal(MODAL_CONTACTS_OPTIONS_FORM, {
+        data: options,
+        save: options => dispatch(actions.saveOptions(options))
+      }))
+    }
   }
 }
 
 const ConnectedVisibleUsers = connect(mapStateToProps, mapDispatchToProps)(VisibleUsers)
+const ConnectedVisibleUsersActions = connect(mapStateToProps, mapDispatchToProps)(VisibleUsersActions)
 
 export {
   ConnectedVisibleUsers as VisibleUsers,
-  VisibleUsersActions
+  ConnectedVisibleUsersActions as VisibleUsersActions
 }

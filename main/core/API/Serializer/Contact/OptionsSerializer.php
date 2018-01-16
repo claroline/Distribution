@@ -66,7 +66,7 @@ class OptionsSerializer
             $options = new Options();
         }
         if (isset($data['user'])) {
-            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
+            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['uuid' => $data['user']['id']]) : null;
             $options->setUser($user);
         }
         if (isset($data['data'])) {

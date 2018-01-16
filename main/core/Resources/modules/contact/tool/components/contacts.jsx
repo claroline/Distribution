@@ -8,11 +8,12 @@ import {PageActions, PageAction} from '#/main/core/layout/page/components/page-a
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 import {select} from '#/main/core/contact/tool/selectors'
-import {OptionsDataType} from '#/main/core/contact/prop-types'
+import {OptionsType} from '#/main/core/contact/prop-types'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {actions} from '#/main/core/contact/tool/actions'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {MODAL_CONTACTS_OPTIONS_FORM} from '#/main/core/contact/tool/components/modal/contacts-options-form.jsx'
 
 const ContactsActions = props =>
   <PageActions>
@@ -23,10 +24,19 @@ const ContactsActions = props =>
      action={props.pickUsers}
      primary={true}
    />
+    <PageAction
+     id="options-edit"
+     icon="fa fa-fw fa-pencil"
+     title={t('configure')}
+     action={() => props.configure(props.options)}
+     primary={false}
+   />
   </PageActions>
 
 ContactsActions.propTypes = {
-  pickUsers: T.func.isRequired
+  options: T.object.isRequired,
+  pickUsers: T.func.isRequired,
+  configure: T.func.isRequired
 }
 
 const Contacts = props =>
@@ -66,15 +76,15 @@ const Contacts = props =>
         name: 'data.username',
         type: 'username',
         label: t('username'),
-        displayed: props.options.show_username,
-        primary: props.options.show_username
+        displayed: props.options.data.show_username,
+        primary: props.options.data.show_username
       },
       {
         name: 'data.lastName',
         type: 'string',
         label: t('last_name'),
         displayed: true,
-        primary: !props.options.show_username
+        primary: !props.options.data.show_username
       },
       {
         name: 'data.firstName',
@@ -86,16 +96,16 @@ const Contacts = props =>
         name: 'data.email',
         type: 'string',
         label: t('mail'),
-        displayed: props.options.show_mail
+        displayed: props.options.data.show_mail
       },
       {
         name: 'data.phone',
         type: 'string',
         label: t('phone'),
-        displayed: props.options.show_phone
+        displayed: props.options.data.show_phone
       }
     ]}
-    card={(row) => ({
+    card={row => ({
       icon: <UserAvatar picture={row.data.picture} alt={true}/>,
       title: row.data.username,
       subtitle: row.data.firstName + ' ' + row.data.lastName,
@@ -110,12 +120,12 @@ const Contacts = props =>
   />
 
 Contacts.propTypes = {
-  options: T.shape(OptionsDataType.propTypes)
+  options: T.shape(OptionsType.propTypes)
 }
 
 function mapStateToProps(state) {
   return {
-    options: select.optionsData(state)
+    options: select.options(state)
   }
 }
 
@@ -147,7 +157,7 @@ function mapDispatchToProps(dispatch) {
             displayed: true
           }
         ],
-        card: (row) => ({
+        card: row => ({
           icon: <UserAvatar picture={row.data.picture} alt={true}/>,
           title: row.data.username,
           subtitle: row.data.firstName + ' ' + row.data.lastName,
@@ -163,16 +173,22 @@ function mapDispatchToProps(dispatch) {
           url: generateUrl('apiv2_visible_users_list', {picker: 1}),
           autoload: true
         },
-        handleSelect: (selected) => {
+        handleSelect: selected => {
           dispatch(actions.createContacts(selected))
         }
+      }))
+    },
+    configure: options => {
+      dispatch(modalActions.showModal(MODAL_CONTACTS_OPTIONS_FORM, {
+        data: options,
+        save: options => dispatch(actions.saveOptions(options))
       }))
     }
   }
 }
 
 const ConnectedContacts = connect(mapStateToProps, {})(Contacts)
-const ConnectedContactsActions = connect(() => {return {}}, mapDispatchToProps)(ContactsActions)
+const ConnectedContactsActions = connect(mapStateToProps, mapDispatchToProps)(ContactsActions)
 
 export {
   ConnectedContacts as Contacts,
