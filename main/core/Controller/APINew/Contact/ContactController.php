@@ -140,7 +140,7 @@ class ContactController extends AbstractCrudController
         $params['hiddenFilters']['contactable'] = true;
 
         if (intval($picker)) {
-            $params['hiddenFilters']['blacklist'] = array_map(function(User $user) {
+            $params['hiddenFilters']['blacklist'] = array_map(function (User $user) {
                 return $user->getUuid();
             }, $this->contactManager->getContactsUser($currentUser));
         }

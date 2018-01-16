@@ -1,6 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
 
 import {Routes} from '#/main/core/router'
 import {Contacts, ContactsActions} from '#/main/core/contact/tool/components/contacts.jsx'
@@ -27,20 +25,7 @@ const ContactsTabComponent = () =>
     ]}
   />
 
-ContactsTabComponent.propTypes = {
-  openForm: T.func.isRequired
-}
-
-const ContactsTab = connect(
-  null,
-  dispatch => ({
-    openForm(id = null) {
-      // dispatch(actions.open('users.current', id))
-    }
-  })
-)(ContactsTabComponent)
-
 export {
   ContactsTabActions,
-  ContactsTab
+  ContactsTabComponent as ContactsTab
 }

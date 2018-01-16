@@ -1,5 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
 import {TabbedPageContainer} from '#/main/core/layout/page/containers/tabbed-page.jsx'
@@ -29,5 +28,3 @@ export const ContactsTool = () =>
       }
     ]}
   />
-
-ContactsTool.propTypes = {}

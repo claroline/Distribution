@@ -39,7 +39,7 @@ class ContactsOptionsFormModal extends Component {
                 name: 'data.show_phone',
                 type: 'boolean',
                 label: t('show_phone')
-              },
+              }
             ]
           }
         ]}
