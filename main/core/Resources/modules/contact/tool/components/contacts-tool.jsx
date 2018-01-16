@@ -2,8 +2,12 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 import {TabbedPageContainer} from '#/main/core/layout/page/containers/tabbed-page.jsx'
-import {ContactsTab, ContactsTabActions} from '#/main/core/contact/tool/components/contacts-tab.jsx'
-import {VisibleUsersTab, VisibleUsersTabActions} from '#/main/core/contact/tool/components/visible-users-tab.jsx'
+import {
+  ContactsTab,
+  ContactsTabActions,
+  VisibleUsersTab,
+  VisibleUsersTabActions
+} from '#/main/core/contact/tool/components/contacts-tab.jsx'
 
 export const ContactsTool = () =>
   <TabbedPageContainer
