@@ -66,15 +66,15 @@ class UserFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
-        if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
+        if (isset($searches['contactable'])) {
+            $qb = $this->getContactableUsers($qb);
+        } elseif (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('obj.organizations', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
-        } elseif (isset($searches['contactable'])) {
-            $qb = $this->getContactableUsers($qb);
         }
 
         foreach ($searches as $filterName => $filterValue) {
