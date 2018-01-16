@@ -69,11 +69,11 @@ class ContactSerializer
             $contact = new Contact();
         }
         if (isset($data['user'])) {
-            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
+            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['uuid' => $data['user']['id']]) : null;
             $contact->setUser($user);
         }
         if (isset($data['data'])) {
-            $contactUser = isset($data['data']['id']) ? $this->userRepo->findOneBy(['id' => $data['data']['id']]) : null;
+            $contactUser = isset($data['data']['id']) ? $this->userRepo->findOneBy(['uuid' => $data['data']['id']]) : null;
             $contact->setContact($contactUser);
         }
         $this->deserializeCategories($contact, $data['categories']);

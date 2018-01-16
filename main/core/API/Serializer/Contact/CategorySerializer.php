@@ -67,7 +67,7 @@ class CategorySerializer
             $category = new Category();
         }
         if (isset($data['user'])) {
-            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['id' => $data['user']['id']]) : null;
+            $user = isset($data['user']['id']) ? $this->userRepo->findOneBy(['uuid' => $data['user']['id']]) : null;
             $category->setUser($user);
         }
         $this->addIfPropertyExists('name', 'setName', $data, $category);
