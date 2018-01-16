@@ -115,4 +115,19 @@ class ContactManager
         $this->om->remove($contact);
         $this->om->flush();
     }
+
+
+    /**
+     * Gets all contacts (User property) from given user.
+     *
+     * @param User $user
+     *
+     * @return User[]
+     */
+    public function getContactsUser(User $user)
+    {
+        return array_map(function(Contact $contact) {
+            return $contact->getContact();
+        }, $this->contactRepo->findBy(['user' => $user]));
+    }
 }

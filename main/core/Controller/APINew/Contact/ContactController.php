@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew\Contact;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\Serializer\Contact\ContactSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
@@ -21,6 +22,7 @@ use Claroline\CoreBundle\Manager\ContactManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -35,6 +37,8 @@ class ContactController extends AbstractCrudController
     private $contactManager;
     /* var ContactSerializer */
     private $contactSerializer;
+    /* var FinderProvider */
+    protected $finder;
     /* var TokenStorageInterface */
     private $tokenStorage;
     /* var UserSerializer */
@@ -47,6 +51,7 @@ class ContactController extends AbstractCrudController
      *     "apiManager"        = @DI\Inject("claroline.manager.api_manager"),
      *     "contactManager"    = @DI\Inject("claroline.manager.contact_manager"),
      *     "contactSerializer" = @DI\Inject("claroline.serializer.contact"),
+     *     "finder"            = @DI\Inject("claroline.api.finder"),
      *     "tokenStorage"      = @DI\Inject("security.token_storage"),
      *     "userSerializer"    = @DI\Inject("claroline.serializer.user")
      * })
@@ -54,6 +59,7 @@ class ContactController extends AbstractCrudController
      * @param ApiManager            $apiManager
      * @param ContactManager        $contactManager
      * @param ContactSerializer     $contactSerializer
+     * @param FinderProvider        $finder
      * @param TokenStorageInterface $tokenStorage
      * @param UserSerializer        $userSerializer
      */
@@ -61,12 +67,14 @@ class ContactController extends AbstractCrudController
         ApiManager $apiManager,
         ContactManager $contactManager,
         ContactSerializer $contactSerializer,
+        FinderProvider $finder,
         TokenStorageInterface $tokenStorage,
         UserSerializer $userSerializer
     ) {
         $this->apiManager = $apiManager;
         $this->contactManager = $contactManager;
         $this->contactSerializer = $contactSerializer;
+        $this->finder = $finder;
         $this->tokenStorage = $tokenStorage;
         $this->userSerializer = $userSerializer;
     }
@@ -99,7 +107,7 @@ class ContactController extends AbstractCrudController
     public function contactsCreateAction(User $currentUser)
     {
         $serializedContacts = [];
-        $users = $this->apiManager->getParameters('ids', 'Claroline\CoreBundle\Entity\User');
+        $users = $this->apiManager->getParametersByUuid('ids', 'Claroline\CoreBundle\Entity\User');
         $contacts = $this->contactManager->createContacts($currentUser, $users);
 
         foreach ($contacts as $contact) {
@@ -107,5 +115,37 @@ class ContactController extends AbstractCrudController
         }
 
         return new JsonResponse($serializedContacts);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/visible/users/list/{picker}",
+     *     name="apiv2_visible_users_list"
+     * )
+     * @EXT\ParamConverter("currentUser", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param User    $currentUser
+     * @param Request $request
+     * @param int     $picker
+     *
+     * @return JsonResponse
+     */
+    public function visibleUsersListAction(User $currentUser, Request $request, $picker = 0)
+    {
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['contactable'] = true;
+
+        if (intval($picker)) {
+            $params['hiddenFilters']['blacklist'] = array_map(function(User $user) {
+                return $user->getUuid();
+            }, $this->contactManager->getContactsUser($currentUser));
+        }
+        $data = $this->finder->search('Claroline\CoreBundle\Entity\User', $params);
+
+        return new JsonResponse($data, 200);
     }
 }

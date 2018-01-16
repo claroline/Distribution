@@ -6,12 +6,13 @@ export const actions = {}
 
 actions.createContacts = (users) => ({
   [API_REQUEST]: {
-    url: generateUrl('apiv2_contacts_create') +'?'+ users.map(u => 'ids[]='+u.autoId).join('&'),
+    url: generateUrl('apiv2_contacts_create') +'?'+ users.map(u => 'ids[]='+u).join('&'),
     request: {
       method: 'PATCH'
     },
     success: (data, dispatch) => {
       dispatch(listActions.invalidateData('contacts'))
+      dispatch(listActions.invalidateData('users.picker'))
     }
   }
 })

@@ -4,7 +4,6 @@ import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
-import {PageActions, PageAction} from '#/main/core/layout/page/components/page-actions.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 import {select} from '#/main/core/contact/tool/selectors'
@@ -12,30 +11,24 @@ import {actions} from '#/main/core/contact/tool/actions'
 import {OptionsDataType} from '#/main/core/contact/prop-types'
 
 const VisibleUsersActions = () =>
-  <PageActions>
-   <PageAction
-     id="contacts-configure"
-     icon="fa fa-fw fa-pencil"
-     title={t('configure')}
-     action={() => {}}
-   />
-  </PageActions>
+  <span>
+  </span>
 
 const VisibleUsers = props =>
   <DataListContainer
-    name="users"
+    name="users.contactable"
     open={{
       action: (row) => generateUrl('claro_user_profile', {'publicUrl': row.meta.publicUrl})
     }}
     fetch={{
-      url: ['apiv2_user_list'],
+      url: ['apiv2_visible_users_list'],
       autoload: true
     }}
     actions={[
       {
         icon: 'fa fa-fw fa-address-book-o',
         label: t('add_contact'),
-        action: (rows) => props.createContacts(rows)
+        action: (rows) => props.createContacts(rows.map(r => r.id))
       },
       {
         icon: 'fa fa-fw fa-eye',
@@ -100,7 +93,8 @@ const VisibleUsers = props =>
   />
 
 VisibleUsers.propTypes = {
-  options: T.shape(OptionsDataType.propTypes)
+  options: T.shape(OptionsDataType.propTypes),
+  createContacts: T.func.isRequired
 }
 
 function mapStateToProps(state) {

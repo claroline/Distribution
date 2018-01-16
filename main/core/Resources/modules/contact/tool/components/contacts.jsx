@@ -9,29 +9,35 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 import {select} from '#/main/core/contact/tool/selectors'
 import {OptionsDataType} from '#/main/core/contact/prop-types'
+import {constants as listConst} from '#/main/core/data/list/constants'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {actions} from '#/main/core/contact/tool/actions'
+import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
-const ContactsActions = () =>
+const ContactsActions = props =>
   <PageActions>
     <PageAction
      id="contact-add"
      icon="fa fa-fw fa-plus"
      title={t('add_contacts')}
-     action={() => {}}
+     action={props.pickUsers}
      primary={true}
    />
-   <PageAction
-     id="contacts-configure"
-     icon="fa fa-fw fa-pencil"
-     title={t('configure')}
-     action={() => {}}
-   />
   </PageActions>
+
+ContactsActions.propTypes = {
+  pickUsers: T.func.isRequired
+}
 
 const Contacts = props =>
   <DataListContainer
     name="contacts"
     open={{
       action: (row) => generateUrl('claro_user_profile', {'publicUrl': row.data.meta.publicUrl})
+    }}
+    display={{
+      current: listConst.DISPLAY_TILES_SM,
+      available: Object.keys(listConst.DISPLAY_MODES)
     }}
     fetch={{
       url: ['apiv2_contact_list'],
@@ -114,12 +120,61 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {
+    pickUsers: () => {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-user',
+        title: t('add_contacts'),
+        confirmText: t('add_contact'),
+        name: 'users.picker',
+        definition: [
+          {
+            name: 'username',
+            type: 'username',
+            label: t('username'),
+            displayed: true
+          },
+          {
+            name: 'lastName',
+            type: 'string',
+            label: t('last_name'),
+            displayed: true
+          },
+          {
+            name: 'firstName',
+            type: 'string',
+            label: t('first_name'),
+            displayed: true
+          }
+        ],
+        card: (row) => ({
+          icon: <UserAvatar picture={row.data.picture} alt={true}/>,
+          title: row.data.username,
+          subtitle: row.data.firstName + ' ' + row.data.lastName,
+          contentText: '',
+          footer:
+            <span>
+            </span>,
+          footerLong:
+            <span>
+            </span>
+        }),
+        fetch: {
+          url: generateUrl('apiv2_visible_users_list', {picker: 1}),
+          autoload: true
+        },
+        handleSelect: (selected) => {
+          dispatch(actions.createContacts(selected))
+        }
+      }))
+    }
+  }
 }
 
-const ConnectedContacts = connect(mapStateToProps, mapDispatchToProps)(Contacts)
+const ConnectedContacts = connect(mapStateToProps, {})(Contacts)
+const ConnectedContactsActions = connect(() => {return {}}, mapDispatchToProps)(ContactsActions)
 
 export {
   ConnectedContacts as Contacts,
-  ContactsActions
+  ConnectedContactsActions as ContactsActions
 }
