@@ -68,7 +68,6 @@ class Image extends Component {
 
 implementPropTypes(Image, FormFieldTypes, {
   value: T.object,
-  disabled: T.bool.isRequired,
   autoUpload: T.bool.isRequired,
   onDelete: T.func,
   deleteFile: T.func.isRequired,
