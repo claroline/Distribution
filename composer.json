@@ -4,7 +4,7 @@
     "keywords": ["Claroline", "Distribution"],
     "homepage": "http://www.claroline.net",
     "type": "claroline-core",
-    "license": "GPL-3.0-or-laterhttps://spdx.org/licenses/GPL-3.0+.html",
+    "license": "GPL-3.0-or-later",
     "authors": [{
         "name": "Claroline development team",
         "email": "dev@claroline.net",
