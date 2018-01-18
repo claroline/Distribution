@@ -298,7 +298,12 @@ class UserSerializer
         $this->sipe('meta.enabled', 'setIsEnabled', $data, $object);
         $this->sipe('meta.locale', 'setLocale', $data, $object);
         $this->sipe('picture.url', 'setPicture', $data, $object);
-        $this->sipe('restrictions.accessibleUntil', 'setExpirationDate', $data, $object);
+
+        if (isset($data['restrictions']['accessibleUntil'])) {
+            if ($date = \DateTime::createFromFormat('Y-m-d\TH:i:s', $data['restrictions']['accessibleUntil'])) {
+                $object->setExpirationDate($date);
+            }
+        }
 
         if (isset($data['plainPassword'])) {
             $password = $this->container->get('security.encoder_factory')
