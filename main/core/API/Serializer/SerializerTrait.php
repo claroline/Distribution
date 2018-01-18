@@ -62,11 +62,6 @@ trait SerializerTrait
         try {
             $value = $this->arrayUtils->get($data, $prop);
 
-            //see how to deal with it from the front end because the date format is kinda wrong atm
-            if ($date = \DateTime::createFromFormat('Y-m-d\TH:i:s', $value)) {
-                $value = $date;
-            }
-
             $object->{$setter}($value);
         } catch (\Exception $e) {
         }
