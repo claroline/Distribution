@@ -70,15 +70,12 @@ implementPropTypes(Image, FormFieldTypes, {
   value: T.object,
   disabled: T.bool.isRequired,
   autoUpload: T.bool.isRequired,
-  onChange: T.func.isRequired,
   onDelete: T.func,
   deleteFile: T.func.isRequired,
   uploadUrl: T.array.isRequired,
   uploadFile: T.func.isRequired
 }, {
-  disabled: false,
   autoUpload: true,
-  onChange: () => {},
   onDelete: () => {},
   uploadUrl: ['apiv2_file_upload']
 })

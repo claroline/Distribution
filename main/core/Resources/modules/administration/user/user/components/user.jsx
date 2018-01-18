@@ -80,15 +80,13 @@ const UserForm = props =>
             name: 'meta.locale',
             type: 'locale',
             label: t('default_language'),
-            required: false,
             options: {
               onlyEnabled: true
             }
           }, {
             name: 'picture',
             type: 'image',
-            label: t('picture'),
-            required: false
+            label: t('picture')
           }
         ]
       },
@@ -99,8 +97,7 @@ const UserForm = props =>
         fields: [{
           name: 'restrictions.accessibleUntil',
           type: 'date',
-          label: t('expiration_date'),
-          required: false
+          label: t('expiration_date')
         }]
       }
     ]}

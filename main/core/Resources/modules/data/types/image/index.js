@@ -10,8 +10,8 @@ const imageDefinition = {
   meta: {
     type: IMAGE_TYPE,
     creatable: true,
-    icon: 'fa fa-fw fa fa-file-o',
-    label: t('file'),
+    icon: 'fa fa-fw fa fa-picture-o',
+    label: t('image'),
     description: t('image_desc')
   },
   // nothing special to do

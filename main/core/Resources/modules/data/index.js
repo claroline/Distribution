@@ -136,7 +136,7 @@ function validateDefinition(definition) {
 
 /**
  * Sets default values in a data type definition.
- * NB : this method does not mutate the fileoriginal definition object.
+ * NB : this method does not mutate the original definition object.
  *
  * @param {object} definition
  *
