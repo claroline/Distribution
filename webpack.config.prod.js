@@ -34,12 +34,13 @@ Object.keys(collectedEntries).forEach(key => Encore.addEntry(key, collectedEntri
 
 config = Encore.getWebpackConfig()
 
-config.resolve.modules = ['./node_modules', './web/packages']
+config.resolve.modules = ['./web/packages', './node_modules']
 //in that order it solves some issues... if we start with bower.json, many packages don't work
 config.resolve.descriptionFiles = ['package.json', '.bower.json', 'bower.json']
 config.resolve.mainFields = ['main', 'browser']
 config.resolve.aliasFields = ['browser']
-config.cache = false
+config.resolve.alias = shared.aliases()
+//config.externals = shared.externals()
 
 // export the final configuration
 module.exports = config

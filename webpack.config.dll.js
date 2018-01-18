@@ -10,17 +10,17 @@ Encore
   .setPublicPath('/dist')
   .cleanupOutputBeforeBuild()
   .enableBuildNotifications()
-  .enableVersioning()
+  //.enableVersioning()
   .enableSourceMaps(true)
-  .configureManifestPlugin(options => options.fileName = 'manifest.dll.json')
-  .addPlugin(plugins.dlls())
+  //.configureManifestPlugin(options => options.fileName = 'manifest.dll.json')
+  //.addPlugin(plugins.dlls())
   .addPlugin(plugins.assetsInfoFile('webpack-dlls.json'))
 
 Object.keys(libraries).forEach(key => Encore.addEntry(key, libraries[key]))
 
 config = Encore.getWebpackConfig()
 
-config.resolve.modules = ['./node_modules', './web/packages']
+config.resolve.modules = ['./web/packages', './node_modules']
 //in that order it solves some issues... if we start with bower.json, many packages don't work
 config.resolve.descriptionFiles = ['package.json', '.bower.json', 'bower.json']
 config.resolve.mainFields = ['main', 'browser']
