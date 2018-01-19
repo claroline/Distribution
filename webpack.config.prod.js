@@ -19,14 +19,15 @@ Encore
     //.cleanupOutputBeforeBuild()
     .enableBuildNotifications()
     .enableVersioning(true)
+    .configureManifestPlugin(options => options.fileName = 'manifest.lib.json')
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.assetsInfoFile())
   //  .enablePostCssLoader()
-/*
-dll references are buggy atm
+
+//dll references are buggy atm
 const references = plugins.dllReferences(manifests)
 references.forEach(reference => Encore.addPlugin(reference))
-*/
+
 //allow url rewriting for '#/'
 Encore.addLoader({test: /\.html$/, loader: 'html-loader'})
 
@@ -34,7 +35,7 @@ Object.keys(collectedEntries).forEach(key => Encore.addEntry(key, collectedEntri
 
 config = Encore.getWebpackConfig()
 
-config.resolve.modules = ['./web/packages', './node_modules']
+config.resolve.modules = ['./node_modules', './web/packages']
 //in that order it solves some issues... if we start with bower.json, many packages don't work
 config.resolve.descriptionFiles = ['package.json', '.bower.json', 'bower.json']
 config.resolve.mainFields = ['main', 'browser']
