@@ -25,7 +25,8 @@
     }],
     "react/prop-types": [2, {
       "skipUndeclared": true
-    }]
+    }],
+    "react/display-name": [1]
   },
   "plugins": ["react"]
 }
