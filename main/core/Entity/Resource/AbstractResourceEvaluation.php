@@ -25,6 +25,15 @@ class AbstractResourceEvaluation
     const STATUS_NOT_ATTEMPTED = 'not_attempted';
     const STATUS_UNKNOWN = 'unknown';
 
+    const STATUS_PRORITY = [
+        self::STATUS_NOT_ATTEMPTED => 0,
+        self::STATUS_UNKNOWN => 1,
+        self::STATUS_INCOMPLETE => 2,
+        self::STATUS_COMPLETED => 3,
+        self::STATUS_FAILED => 4,
+        self::STATUS_PASSED => 5,
+    ];
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
