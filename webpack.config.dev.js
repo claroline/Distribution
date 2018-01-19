@@ -19,6 +19,8 @@ Encore
     .enableBuildNotifications()
     .enableSourceMaps(true)
     .addPlugin(plugins.distributionShortcut())
+    .addPlugin(plugins.reactDllReference())
+    .addPlugin(plugins.angularDllReference())
   //  .enablePostCssLoader()
 /*
 dll references are buggy atm

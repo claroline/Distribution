@@ -90,6 +90,22 @@ const dllReferences = manifests => {
   }))
 }
 
+const reactDllReference = () => {
+  return new webpack.DllReferencePlugin({
+    context: paths.output(),
+    manifest: require(paths.output() + '/react_dll.manifest.json'),
+    name: 'react_dll.js'
+  })
+}
+
+const angularDllReference = () => {
+  return new webpack.DllReferencePlugin({
+    context: paths.output(),
+    manifest: require(paths.output() + '/angular_dll.manifest.json'),
+    name: 'angular_dll.js'
+  })
+}
+
 const clarolineConfiguration = () => {
   return new ConfigurationPlugin()
 }
@@ -152,5 +168,7 @@ module.exports = {
   dllReferences,
   configShortcut,
   clarolineConfiguration,
-  assetsInfoFile
+  assetsInfoFile,
+  reactDllReference,
+  angularDllReference
 }

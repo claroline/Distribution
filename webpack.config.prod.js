@@ -22,11 +22,20 @@ Encore
     .configureManifestPlugin(options => options.fileName = 'manifest.lib.json')
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.assetsInfoFile())
+    .addPlugin(plugins.reactDllReference())
+    .addPlugin(plugins.angularDllReference())
   //  .enablePostCssLoader()
 
 //dll references are buggy atm
+
+/*
 const references = plugins.dllReferences(manifests)
+references.forEach(reference => {
+  console.log(reference.options.manifest.content)
+})
 references.forEach(reference => Encore.addPlugin(reference))
+*/
+
 
 //allow url rewriting for '#/'
 Encore.addLoader({test: /\.html$/, loader: 'html-loader'})
