@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {trans} from '#/main/core/translation'
 import {localeDate} from '#/main/core/scaffolding/date'
 import {constants} from '#/main/core/user/tracking/constants'
 
@@ -9,9 +10,9 @@ import {ScoreGauge} from '#/main/core/layout/progression/components/score-gauge.
 
 const EventWrapper = props =>
   <li className={classes('timeline-event-container', {
-    'timeline-event-success': 'success' === props.status,
-    'timeline-event-partial': 'partial' === props.status,
-    'timeline-event-failure': 'failure' === props.status
+    'timeline-event-success': constants.STATUS_PASSED === props.status,
+    'timeline-event-partial': [constants.STATUS_PASSED, constants.STATUS_FAILED].indexOf(props.status) === -1,
+    'timeline-event-failure': constants.STATUS_FAILED === props.status
   })}>
     <span className={classes('timeline-event-icon', constants.TRACKING_EVENTS[props.type].icon)} />
 
@@ -21,9 +22,9 @@ const EventWrapper = props =>
       </span>
 
       {props.status && <span className={classes('timeline-event-status', {
-        'fa fa-fw fa-check': 'success' === props.status,
-        'fa fa-fw fa-minus': 'partial' === props.status,
-        'fa fa-fw fa-times': 'failure' === props.status
+        'fa fa-fw fa-check': constants.STATUS_PASSED === props.status,
+        'fa fa-fw fa-minus': [constants.STATUS_PASSED, constants.STATUS_FAILED].indexOf(props.status) === -1,
+        'fa fa-fw fa-times': constants.STATUS_FAILED === props.status
       })} />}
 
       <div className="timeline-event-block">
@@ -43,12 +44,12 @@ const EventWrapper = props =>
         </div>
 
         {props.progression &&
-        <div className="timeline-event-progression">
-          <ScoreGauge
-            userScore={props.progression[0]}
-            maxScore={props.progression[1]}
-          />
-        </div>
+          <div className="timeline-event-progression">
+            <ScoreGauge
+              userScore={Math.round(props.progression[0])}
+              maxScore={props.progression[1]}
+            />
+          </div>
         }
       </div>
     </div>
@@ -59,7 +60,7 @@ EventWrapper.propTypes = {
   date: T.string.isRequired,
   title: T.string.isRequired,
   subtitle: T.string,
-  status: T.oneOf(['success', 'partial', 'failure']),
+  status: T.oneOf(constants.TRACKING_STATUS),
   progression: T.array,
   type: T.oneOf(
     Object.keys(constants.TRACKING_EVENTS)
@@ -69,8 +70,8 @@ EventWrapper.propTypes = {
 
 const EvaluationEvent = props =>
   <EventWrapper
-    title="Name of my resource"
-    subtitle="Questionnaire"
+    title={props.data.resourceNode.name}
+    subtitle={trans(props.data.resourceNode.meta.type, {}, 'resource')}
     level={props.level}
     date={props.date}
     status={props.status}
@@ -83,7 +84,7 @@ const EvaluationEvent = props =>
 EvaluationEvent.propTypes = {
   level: T.number.isRequired,
   date: T.string.isRequired,
-  status: T.oneOf(['success', 'partial', 'failure']),
+  status: T.oneOf(constants.TRACKING_STATUS),
   type: T.oneOf(
     Object.keys(constants.TRACKING_EVENTS)
   ).isRequired,
@@ -92,7 +93,9 @@ EvaluationEvent.propTypes = {
 
 const Timeline = props =>
   <ul className="user-timeline">
-    <li className="timeline-endpoint timeline-event-date">aujourd'hui</li>
+    <li className="timeline-endpoint timeline-event-date">
+      {trans('today', {}, 'platform')}
+    </li>
     {props.events.map((event, eventIndex) =>
       <EvaluationEvent
         key={eventIndex}
@@ -100,7 +103,11 @@ const Timeline = props =>
         {...event}
       />
     )}
-    <li className="timeline-endpoint timeline-event-date">03/12/2017</li>
+    {props.events.length > 0 &&
+      <li className="timeline-endpoint timeline-event-date">
+        {localeDate(props.events[props.events.length - 1].date, false)}
+      </li>
+    }
   </ul>
 
 Timeline.propTypes = {
