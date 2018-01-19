@@ -49,9 +49,17 @@ const RoleList = {
       label: t('workspace'),
       displayed: true,
       filterable: false,
-      renderer: (rowData) => rowData.workspace ?
-        <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.workspace.id})}>rowData.workspace.name</a>:
-        '-'
+      renderer: (rowData) => {
+        let WorkspaceLink
+
+        if (rowData.workspace) {
+          WorkspaceLink = <a href={generateUrl('claro_workspace_open', {workspaceId: rowData.workspace.id})}>{rowData.workspace.name}</a>
+        } else {
+          WorkspaceLink = '-'
+        }
+
+        return WorkspaceLink
+      }
     }
   ],
 
