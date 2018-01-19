@@ -17,10 +17,16 @@ Encore
     .enableReactPreset()
     .setManifestKeyPrefix('/dist')
     .enableBuildNotifications()
-    .enableSourceMaps(true)
+    //.enableSourceMaps(true)
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())
+    //fixes performance issues
+    /*
+    .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
+        options.compress = false
+        options.beautify = false
+    })*/
   //  .enablePostCssLoader()
 /*
 dll references are buggy atm
@@ -33,8 +39,6 @@ Encore.addLoader({test: /\.html$/, loader: 'html-loader'})
 Object.keys(collectedEntries).forEach(key => Encore.addEntry(key, collectedEntries[key]))
 
 config = Encore.getWebpackConfig()
-
-console.error(config)
 
 config.resolve.modules = ['./node_modules', './web/packages']
 //in that order it solves some issues... if we start with bower.json, many packages don't work

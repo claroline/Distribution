@@ -24,6 +24,11 @@ Encore
     .addPlugin(plugins.assetsInfoFile())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())
+    //fixes performance issues
+    .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
+        options.compress = false
+        options.beautify = false
+    })
   //  .enablePostCssLoader()
 
 //dll references are buggy atm
