@@ -88,7 +88,15 @@ EvaluationEvent.propTypes = {
   type: T.oneOf(
     Object.keys(constants.TRACKING_EVENTS)
   ).isRequired,
-  progression: T.array
+  progression: T.array,
+  data: T.shape({
+    resourceNode: T.shape({
+      name: T.string.isRequired,
+      meta: T.shape({
+        type: T.string.isRequired
+      }).isRequired
+    })
+  })
 }
 
 const Timeline = props =>
@@ -113,7 +121,11 @@ const Timeline = props =>
 Timeline.propTypes = {
   level: T.number,
   events: T.arrayOf(T.shape({
-
+    date: T.string.isRequired,
+    type: T.string.isRequired,
+    status: T.string.isRequired,
+    progression: T.array,
+    data: T.object
   })).isRequired
 }
 
