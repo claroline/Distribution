@@ -22,12 +22,12 @@ const TRACKING_EVENTS = {
   }
 }
 
-const STATUS_PASSED = 'passed';
-const STATUS_FAILED = 'failed';
-const STATUS_COMPLETED = 'completed';
-const STATUS_INCOMPLETE = 'incomplete';
-const STATUS_NOT_ATTEMPTED = 'not_attempted';
-const STATUS_UNKNOWN = 'unknown';
+const STATUS_PASSED = 'passed'
+const STATUS_FAILED = 'failed'
+const STATUS_COMPLETED = 'completed'
+const STATUS_INCOMPLETE = 'incomplete'
+const STATUS_NOT_ATTEMPTED = 'not_attempted'
+const STATUS_UNKNOWN = 'unknown'
 
 const TRACKING_STATUS = [
   STATUS_PASSED,
