@@ -17,17 +17,18 @@ Encore
     .enableReactPreset()
     .setManifestKeyPrefix('/dist')
     .enableBuildNotifications()
-    .enableSourceMaps(true)
+    //sourcemaps are slow as hell
+    //.enableSourceMaps(true)
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())
     .addPlugin(plugins.configShortcut())
     //fixes performance issues
-    /*
+
     .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
         options.compress = false
         options.beautify = false
-    })*/
+    })
   //  .enablePostCssLoader()
 /*
 dll references are buggy atm
