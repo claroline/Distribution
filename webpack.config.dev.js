@@ -19,6 +19,8 @@ Encore
     .enableBuildNotifications()
     //sourcemaps are slow as hell
     //.enableSourceMaps(true)
+    .enableVersioning(true)
+    .addPlugin(plugins.assetsInfoFile())
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())

@@ -18,14 +18,14 @@ Encore
     .enableSourceMaps(false)
     //.cleanupOutputBeforeBuild()
     .enableBuildNotifications()
-    //.enableVersioning(true)
+    .enableVersioning(true)
     .configureManifestPlugin(options => options.fileName = 'manifest.lib.json')
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.assetsInfoFile())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())
     .addPlugin(plugins.configShortcut())
-    .addPlugin(plugins.commonsChunk())
+    //.addPlugin(plugins.commonsChunk())
     //fixes performance issues
     .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
         options.compress = false
