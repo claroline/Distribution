@@ -29,6 +29,9 @@ Encore
         options.compress = false
         options.beautify = false
     })
+    .configureBabel(babelConfig => {
+        babelConfig.compact = false
+    })
   //  .enablePostCssLoader()
 /*
 dll references are buggy atm

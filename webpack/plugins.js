@@ -145,6 +145,17 @@ const rethrowCompilationErrors = () => {
 }
 
 /**
+ * Builds a independent bundle for frequently requested modules (might require
+ * minChunks adjustments).
+ */
+const commonsChunk = () => {
+  return new webpack.optimize.CommonsChunkPlugin({
+    name: 'commons',
+    minChunks: 5
+  })
+}
+
+/**
  * Outputs information about generated assets in a dedicated file
  * ("webpack-assets.json" by default). This is useful to retrieve assets names
  * when a hash has been used for cache busting.
@@ -161,6 +172,7 @@ module.exports = {
   distributionShortcut,
   dedupeModules,
   dlls,
+  commonsChunk,
   defineProdEnv,
   rejectBuildErrors,
   noCircularDependencies,
