@@ -15,6 +15,7 @@ Encore
   .configureManifestPlugin(options => options.fileName = 'manifest.dll.json')
   .addPlugin(plugins.dlls())
   .addPlugin(plugins.assetsInfoFile('webpack-dlls.json'))
+  .addPlugin(plugins.clarolineConfiguration())
 
 Object.keys(libraries).forEach(key => Encore.addEntry(key, libraries[key]))
 
