@@ -15,7 +15,7 @@ Encore
     .setPublicPath('/dist')
     .autoProvidejQuery()
     .enableReactPreset()
-    .enableSourceMaps(true)
+    .enableSourceMaps(false)
     //.cleanupOutputBeforeBuild()
     .enableBuildNotifications()
     .enableVersioning(true)
