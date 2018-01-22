@@ -17,7 +17,7 @@ Encore
     .enableReactPreset()
     .setManifestKeyPrefix('/dist')
     .enableBuildNotifications()
-    //.enableSourceMaps(true)
+    .enableSourceMaps(true)
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())
