@@ -15,7 +15,7 @@ Encore
     .setPublicPath('/dist')
     .autoProvidejQuery()
     .enableReactPreset()
-    .enableSourceMaps(!Encore.isProduction())
+    .enableSourceMaps(true)
     //.cleanupOutputBeforeBuild()
     .enableBuildNotifications()
     .enableVersioning(true)
@@ -24,6 +24,7 @@ Encore
     .addPlugin(plugins.assetsInfoFile())
     .addPlugin(plugins.reactDllReference())
     .addPlugin(plugins.angularDllReference())
+    .addPlugin(plugins.configShortcut())
     //fixes performance issues
     .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
         options.compress = false
