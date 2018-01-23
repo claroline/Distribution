@@ -46,7 +46,7 @@ class UserSerializer extends AbstractSerializer
     {
         $userData = new \stdClass();
 
-        $userData->id = (string) $user->getId();
+        $userData->id = (int) $user->getId();
         $userData->name = trim($user->getFirstName().' '.$user->getLastName());
 
         if (!$this->hasOption(Transfer::MINIMAL, $options)) {
