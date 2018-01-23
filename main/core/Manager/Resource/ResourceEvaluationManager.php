@@ -165,7 +165,7 @@ class ResourceEvaluationManager
             $rue->setStatus($status);
         }
         if ($incAttempts) {
-            $nbAttempts = $rue->getNbAttempts() || 0;
+            $nbAttempts = $rue->getNbAttempts() ? $rue->getNbAttempts() : 0;
             ++$nbAttempts;
             $rue->setNbAttempts($nbAttempts);
         }
@@ -216,7 +216,7 @@ class ResourceEvaluationManager
             $rue->setStatus($evaluation->getStatus());
         }
         if ($incAttempts) {
-            $nbAttempts = $rue->getNbAttempts() || 0;
+            $nbAttempts = $rue->getNbAttempts() ? $rue->getNbAttempts() : 0;
             ++$nbAttempts;
             $rue->setNbAttempts($nbAttempts);
         }
