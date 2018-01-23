@@ -2,6 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {asset} from '#/main/core/scaffolding/asset'
+import {generateUrl} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {localeDate} from '#/main/core/scaffolding/date'
 import {constants} from '#/main/core/user/tracking/constants'
@@ -29,7 +31,12 @@ const EventWrapper = props =>
 
       <div className="timeline-event-block">
         <div className="timeline-event-header">
-
+          <a href={generateUrl('claro_resource_open_short', {node: props.resource.id})}>
+            <img
+              src={props.resource.thumbnail ? asset(props.resource.thumbnail) : asset(props.resource.meta.icon)}
+              alt="resource_icon"
+            />
+          </a>
         </div>
 
         <div className="timeline-event-content">
@@ -65,7 +72,16 @@ EventWrapper.propTypes = {
   type: T.oneOf(
     Object.keys(constants.TRACKING_EVENTS)
   ).isRequired,
-  children: T.node.isRequired
+  children: T.node.isRequired,
+  resource: T.shape({
+    id: T.string.isRequired,
+    name: T.string.isRequired,
+    thumbnail: T.string,
+    meta: T.shape({
+      type: T.string.isRequired,
+      icon: T.string.isRequired
+    }).isRequired
+  })
 }
 
 const EvaluationEvent = props =>
@@ -77,6 +93,7 @@ const EvaluationEvent = props =>
     status={props.status}
     type={props.type}
     progression={props.progression}
+    resource={props.data.resourceNode}
   >
     EVENT CONTENT
   </EventWrapper>
