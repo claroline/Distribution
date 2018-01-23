@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\User")
@@ -69,6 +70,23 @@ class UserController extends AbstractCrudController
         return new JsonResponse($this->serializer->get('Claroline\CoreBundle\Entity\User')->serialize($user));
     }
 
+    /**
+     * @Route("/user/login", name="apiv2_user_create_and_login")
+     * @Method("POST")
+     */
+    public function createAndLoginAction(Request $request)
+    {
+      //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
+      //but keep it easy for now because an other route could be relevant
+      $selfLog = true;
+
+      if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
+          $this->options['create'][] = Options::USER_SELF_LOG;
+      }
+
+      return parent::createAction($request, 'Claroline\CoreBundle\Entity\User');
+    }
+
     public function getOptions()
     {
         $create = [
@@ -77,14 +95,6 @@ class UserController extends AbstractCrudController
           Options::ADD_NOTIFICATIONS,
           Options::ADD_PERSONAL_WORKSPACE,
         ];
-
-        //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
-        //but keep it easy for now because an other route could be relevant
-        $selfLog = true;
-
-        if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
-            $create[] = Options::USER_SELF_LOG;
-        }
 
         return [
             'deleteBulk' => [Options::SOFT_DELETE],
