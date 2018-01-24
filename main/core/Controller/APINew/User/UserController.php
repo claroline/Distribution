@@ -76,24 +76,24 @@ class UserController extends AbstractCrudController
      */
     public function createAndLoginAction(Request $request)
     {
-      //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
-      //but keep it easy for now because an other route could be relevant
-      $selfLog = true;
+        //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
+        //but keep it easy for now because an other route could be relevant
+        $selfLog = true;
 
-      if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
-          $this->options['create'][] = Options::USER_SELF_LOG;
-      }
+        if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
+            $this->options['create'][] = Options::USER_SELF_LOG;
+        }
 
-      return parent::createAction($request, 'Claroline\CoreBundle\Entity\User');
+        return parent::createAction($request, 'Claroline\CoreBundle\Entity\User');
     }
 
     public function getOptions()
     {
         $create = [
-          //maybe move these options in an other class
-          Options::SEND_EMAIL,
-          Options::ADD_NOTIFICATIONS,
-          Options::ADD_PERSONAL_WORKSPACE,
+            //maybe move these options in an other class
+            Options::SEND_EMAIL,
+            Options::ADD_NOTIFICATIONS,
+            Options::ADD_PERSONAL_WORKSPACE,
         ];
 
         return [
