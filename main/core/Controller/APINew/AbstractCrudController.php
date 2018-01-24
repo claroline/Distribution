@@ -55,22 +55,21 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     public function findAction(Request $request, $class)
     {
-      $query = $request->query->all();
-      $data = $this->finder->fetch($class, 0, 2, $query['filters']);
+        $query = $request->query->all();
+        $data = $this->finder->fetch($class, 0, 2, $query['filters']);
 
-      switch(count($data)) {
-        case 0:
-          return new JsonResponse('No object found', 404);
-          break;
-        case 1:
-          return new JsonResponse(
-              $this->serializer->serialize($data[0], $this->options['get'])
-          );
-          break;
-        default:
-          return new JsonResponse('Multiple results, use "list" instead', 400);
-
-      }
+        switch(count($data)) {
+            case 0:
+                return new JsonResponse('No object found', 404);
+                break;
+            case 1:
+                return new JsonResponse(
+                    $this->serializer->serialize($data[0], $this->options['get'])
+                );
+                break;
+            default:
+                return new JsonResponse('Multiple results, use "list" instead', 400);
+        }
     }
 
     /**
