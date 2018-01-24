@@ -31,7 +31,7 @@ const EventWrapper = props =>
 
       <div className="timeline-event-block">
         <div className="timeline-event-header">
-          <a href={generateUrl('claro_resource_open_short', {node: props.resource.id})}>
+          <a href={generateUrl('claro_resource_open_short', {'node': props.resource.autoId})}>
             <img
               src={props.resource.thumbnail ? asset(props.resource.thumbnail) : asset(props.resource.meta.icon)}
               alt="resource_icon"
@@ -74,6 +74,7 @@ EventWrapper.propTypes = {
   ).isRequired,
   children: T.node.isRequired,
   resource: T.shape({
+    autoId: T.number.isRequired,
     id: T.string.isRequired,
     name: T.string.isRequired,
     thumbnail: T.string,
@@ -95,7 +96,9 @@ const EvaluationEvent = props =>
     progression={props.progression}
     resource={props.data.resourceNode}
   >
-    EVENT CONTENT
+    Nb attempts : {props.data.nbAttempts}
+    <br/>
+    Nb openings : {props.data.nbOpenings}
   </EventWrapper>
 
 EvaluationEvent.propTypes = {
