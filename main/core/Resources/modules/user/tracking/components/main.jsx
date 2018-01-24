@@ -44,7 +44,9 @@ const TrackingComponent = props =>
             status: e.status,
             progression: e.score !== null && e.scoreMax !== null ? [e.score, e.scoreMax] : null,
             data: {
-              resourceNode: e.resourceNode
+              resourceNode: e.resourceNode,
+              nbAttempts: e.nbAttempts,
+              nbOpenings: e.nbOpenings,
             }
           }})}
         />
