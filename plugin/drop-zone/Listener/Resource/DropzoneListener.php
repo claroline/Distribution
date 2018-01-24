@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\DropZoneBundle\Listener;
+namespace Claroline\DropZoneBundle\Listener\Resource;
 
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
@@ -25,6 +25,7 @@ use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -33,56 +34,46 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class DropzoneListener
 {
+    /** @var DropzoneManager */
     private $dropzoneManager;
+    /** @var FormFactory */
     private $formFactory;
+    /** @var HttpKernelInterface */
     private $httpKernel;
-    private $om;
-    private $platformConfigHandler;
+    /** @var Request */
     private $request;
+    /** @var TwigEngine */
     private $templating;
 
     /**
+     * DropzoneListener constructor.
+     *
      * @DI\InjectParams({
      *     "dropzoneManager"       = @DI\Inject("claroline.manager.dropzone_manager"),
      *     "formFactory"           = @DI\Inject("form.factory"),
      *     "httpKernel"            = @DI\Inject("http_kernel"),
-     *     "om"                    = @DI\Inject("claroline.persistence.object_manager"),
-     *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
      *     "requestStack"          = @DI\Inject("request_stack"),
      *     "templating"            = @DI\Inject("templating")
      * })
+     *
+     * @param DropzoneManager $dropzoneManager
+     * @param FormFactory $formFactory
+     * @param HttpKernelInterface $httpKernel
+     * @param RequestStack $requestStack
+     * @param TwigEngine $templating
      */
     public function __construct(
         DropzoneManager $dropzoneManager,
         FormFactory $formFactory,
         HttpKernelInterface $httpKernel,
-        ObjectManager $om,
-        PlatformConfigurationHandler $platformConfigHandler,
         RequestStack $requestStack,
         TwigEngine $templating
     ) {
         $this->dropzoneManager = $dropzoneManager;
         $this->formFactory = $formFactory;
         $this->httpKernel = $httpKernel;
-        $this->om = $om;
-        $this->platformConfigHandler = $platformConfigHandler;
         $this->request = $requestStack->getCurrentRequest();
         $this->templating = $templating;
-    }
-
-    /**
-     * @DI\Observe("plugin_options_dropzonebundle")
-     *
-     * @param PluginOptionsEvent $event
-     */
-    public function onPluginOptionsOpen(PluginOptionsEvent $event)
-    {
-        $params = [];
-        $params['_controller'] = 'ClarolineDropZoneBundle:Dropzone:pluginConfigure';
-        $subRequest = $this->request->duplicate([], null, $params);
-        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setResponse($response);
-        $event->stopPropagation();
     }
 
     /**

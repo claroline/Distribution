@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\DropZoneBundle\API\Finder;
+namespace Claroline\DropZoneBundle\Finder;
 
 use Claroline\CoreBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;

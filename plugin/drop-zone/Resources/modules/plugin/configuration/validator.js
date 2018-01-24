@@ -1,6 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
 
-
 import {setIfError, notBlank} from '#/main/core/validation'
 
 import {constants} from '#/plugin/drop-zone/plugin/configuration/constants'

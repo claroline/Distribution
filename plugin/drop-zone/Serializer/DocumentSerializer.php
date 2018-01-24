@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\DropZoneBundle\API\Serializer;
+namespace Claroline\DropZoneBundle\Serializer;
 
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;

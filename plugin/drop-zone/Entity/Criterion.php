@@ -26,11 +26,15 @@ class Criterion
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(name="instruction", type="text", nullable=false)
+     *
+     * @var string
      */
     protected $instruction;
 
@@ -40,39 +44,62 @@ class Criterion
      *      inversedBy="criteria"
      * )
      * @ORM\JoinColumn(name="dropzone_id", nullable=false, onDelete="CASCADE")
+     *
+     * @var Dropzone
      */
     protected $dropzone;
 
+    /**
+     * Criterion constructor.
+     */
     public function __construct()
     {
         $this->refreshUuid();
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @param int $id
+     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
+    /**
+     * @return string
+     */
     public function getInstruction()
     {
         return $this->instruction;
     }
 
+    /**
+     * @param string $instruction
+     */
     public function setInstruction($instruction)
     {
         $this->instruction = $instruction;
     }
 
+    /**
+     * @return Dropzone
+     */
     public function getDropzone()
     {
         return $this->dropzone;
     }
 
+    /**
+     * @param Dropzone $dropzone
+     */
     public function setDropzone(Dropzone $dropzone)
     {
         $this->dropzone = $dropzone;

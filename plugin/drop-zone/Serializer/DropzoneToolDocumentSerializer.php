@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\DropZoneBundle\API\Serializer;
+namespace Claroline\DropZoneBundle\Serializer;
 
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\DropzoneToolDocument;
