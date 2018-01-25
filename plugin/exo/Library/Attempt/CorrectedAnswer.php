@@ -103,7 +103,7 @@ class CorrectedAnswer
      */
     public function addMissing(AnswerPartInterface $missing)
     {
-          $this->missing[] = $missing;
+        $this->missing[] = $missing;
     }
 
     /**
@@ -121,7 +121,7 @@ class CorrectedAnswer
      */
     public function addUnexpected(AnswerPartInterface $unexpected)
     {
-        $this->unexpected = $unexpected;
+        $this->unexpected[] = $unexpected;
     }
 
     /**
