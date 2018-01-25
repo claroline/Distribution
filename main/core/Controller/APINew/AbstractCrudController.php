@@ -253,7 +253,7 @@ abstract class AbstractCrudController extends AbstractApiController
             'copyBulk' => [],
             'exist' => [],
             'schema' => [],
-            'find' => []
+            'find' => [],
         ];
     }
 
