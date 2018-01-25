@@ -58,7 +58,7 @@ abstract class AbstractCrudController extends AbstractApiController
         $query = $request->query->all();
         $data = $this->finder->fetch($class, 0, 2, $query['filters']);
 
-        switch(count($data)) {
+        switch (count($data)) {
             case 0:
                 return new JsonResponse('No object found', 404);
                 break;
