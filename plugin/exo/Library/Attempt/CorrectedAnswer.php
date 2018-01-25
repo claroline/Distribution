@@ -70,7 +70,22 @@ class CorrectedAnswer
      */
     public function addExpected(AnswerPartInterface $expected)
     {
-        $this->expected[] = $expected;
+        $found = false;
+
+        if (method_exists($expected, 'getUuid')) {
+            foreach($this->expected as $data) {
+                if ($data->getUuid() === $expected->getUuid()) {
+                    $found = true;
+                }
+            }
+        }
+
+        //avoid duplicatas here
+        if (!$found) {
+            $this->expected[] = $expected;
+        } else {
+            $this->addMissing($expected);
+        }
     }
 
     /**
@@ -88,7 +103,7 @@ class CorrectedAnswer
      */
     public function addMissing(AnswerPartInterface $missing)
     {
-        $this->missing[] = $missing;
+          $this->missing[] = $missing;
     }
 
     /**
@@ -106,7 +121,7 @@ class CorrectedAnswer
      */
     public function addUnexpected(AnswerPartInterface $unexpected)
     {
-        $this->unexpected[] = $unexpected;
+        $this->unexpected = $unexpected;
     }
 
     /**
