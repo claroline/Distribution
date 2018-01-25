@@ -91,7 +91,7 @@ class GenerateResourceTrackingCommand extends ContainerAwareCommand
                     $dispatcher->dispatch(
                         'generate_resource_user_evaluation_'.$resourceType->getName(),
                         new GenericDataEvent([
-                            'resource' => $node,
+                            'resourceNode' => $node,
                             'user' => $user,
                             'startDate' => $startDate,
                         ])

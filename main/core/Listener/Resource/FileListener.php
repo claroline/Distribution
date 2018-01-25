@@ -13,6 +13,7 @@
 
 namespace Claroline\CoreBundle\Listener\Resource;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -23,6 +24,7 @@ use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\DownloadResourceEvent;
+use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Form\FileType;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
@@ -49,6 +51,7 @@ class FileListener implements ContainerAwareInterface
     private $httpKernel;
     private $filesDir;
     private $tokenStorage;
+    private $resourceEvalManager;
 
     /**
      * @DI\InjectParams({
@@ -67,6 +70,7 @@ class FileListener implements ContainerAwareInterface
         $this->request = $container->get('request_stack');
         $this->httpKernel = $container->get('httpKernel');
         $this->filesDir = $container->getParameter('claroline.param.files_directory');
+        $this->resourceEvalManager = $container->get('claroline.manager.resource_evaluation_manager');
     }
 
     /**
@@ -189,6 +193,7 @@ class FileListener implements ContainerAwareInterface
     {
         $ds = DIRECTORY_SEPARATOR;
         $resource = $event->getResource();
+        $user = $this->tokenStorage->getToken()->getUser();
 
         $playEvent = $this->container->get('claroline.event.event_dispatcher')
             ->dispatch(
@@ -235,7 +240,22 @@ class FileListener implements ContainerAwareInterface
                 );
             }
         }
-
+        if ($user !== 'anon.') {
+            $this->resourceEvalManager->updateResourceUserEvaluationData(
+                $resource->getResourceNode(),
+                $user,
+                new \DateTime(),
+                AbstractResourceEvaluation::STATUS_COMPLETED,
+                null,
+                null,
+                null,
+                null,
+                null,
+                false,
+                true,
+                true
+            );
+        }
         $event->setResponse($response);
         $event->stopPropagation();
     }
@@ -335,6 +355,39 @@ class FileListener implements ContainerAwareInterface
         }
 
         return $newFile;
+    }
+
+    /**
+     * @DI\Observe("generate_resource_user_evaluation_file")
+     *
+     * @param GenericDataEvent $event
+     */
+    public function onGenerateResourceTracking(GenericDataEvent $event)
+    {
+        $data = $event->getData();
+        $node = $data['resourceNode'];
+        $user = $data['user'];
+        $startDate = $data['startDate'];
+
+        $logs = $this->resourceEvalManager->getLogsForResourceTracking(
+            $node,
+            $user,
+            ['resource-read'],
+            $startDate
+        );
+        $nbLogs = count($logs);
+
+        if ($nbLogs > 0) {
+            $this->om->startFlushSuite();
+            $tracking = $this->resourceEvalManager->getResourceUserEvaluation($node, $user);
+            $tracking->setDate($logs[0]->getDateLog());
+            $tracking->setStatus(AbstractResourceEvaluation::STATUS_COMPLETED);
+            $tracking->setNbAttempts($nbLogs);
+            $tracking->setNbOpenings($nbLogs);
+            $this->om->persist($tracking);
+            $this->om->endFlushSuite();
+        }
+        $event->stopPropagation();
     }
 
     private function unzip($archivePath, ResourceNode $root, $published = true)

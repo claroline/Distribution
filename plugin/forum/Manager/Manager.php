@@ -18,6 +18,7 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -76,6 +77,7 @@ class Manager
     private $tokenStorage;
     private $translator;
     private $workspaceManager;
+    private $resourceEvalManager;
 
     private $forumRepo;
     private $lastMessageWidgetConfigRepo;
@@ -89,21 +91,22 @@ class Manager
      * Constructor.
      *
      * @DI\InjectParams({
-     *     "authorization"     = @DI\Inject("security.authorization_checker"),
-     *     "container"         = @DI\Inject("service_container"),
-     *     "dispatcher"        = @DI\Inject("event_dispatcher"),
-     *     "mailManager"       = @DI\Inject("claroline.manager.mail_manager"),
-     *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
-     *     "messageManager"    = @DI\Inject("claroline.manager.message_manager"),
-     *     "om"                = @DI\Inject("claroline.persistence.object_manager"),
-     *     "pagerFactory"      = @DI\Inject("claroline.pager.pager_factory"),
-     *     "resourceManager"   = @DI\Inject("claroline.manager.resource_manager"),
-     *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
-     *     "router"            = @DI\Inject("router"),
-     *     "securityUtilities" = @DI\Inject("claroline.security.utilities"),
-     *     "tokenStorage"      = @DI\Inject("security.token_storage"),
-     *     "translator"        = @DI\Inject("translator"),
-     *     "workspaceManager"  = @DI\Inject("claroline.manager.workspace_manager")
+     *     "authorization"       = @DI\Inject("security.authorization_checker"),
+     *     "container"           = @DI\Inject("service_container"),
+     *     "dispatcher"          = @DI\Inject("event_dispatcher"),
+     *     "mailManager"         = @DI\Inject("claroline.manager.mail_manager"),
+     *     "maskManager"         = @DI\Inject("claroline.manager.mask_manager"),
+     *     "messageManager"      = @DI\Inject("claroline.manager.message_manager"),
+     *     "om"                  = @DI\Inject("claroline.persistence.object_manager"),
+     *     "pagerFactory"        = @DI\Inject("claroline.pager.pager_factory"),
+     *     "resourceManager"     = @DI\Inject("claroline.manager.resource_manager"),
+     *     "rightsManager"       = @DI\Inject("claroline.manager.rights_manager"),
+     *     "router"              = @DI\Inject("router"),
+     *     "securityUtilities"   = @DI\Inject("claroline.security.utilities"),
+     *     "tokenStorage"        = @DI\Inject("security.token_storage"),
+     *     "translator"          = @DI\Inject("translator"),
+     *     "workspaceManager"    = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "resourceEvalManager" = @DI\Inject("claroline.manager.resource_evaluation_manager")
      * })
      */
     public function __construct(
@@ -121,7 +124,8 @@ class Manager
         Utilities $securityUtilities,
         TokenStorageInterface $tokenStorage,
         TranslatorInterface $translator,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        ResourceEvaluationManager $resourceEvalManager
     ) {
         $this->authorization = $authorization;
         $this->container = $container;
@@ -138,6 +142,7 @@ class Manager
         $this->tokenStorage = $tokenStorage;
         $this->translator = $translator;
         $this->workspaceManager = $workspaceManager;
+        $this->resourceEvalManager = $resourceEvalManager;
         $this->forumRepo = $om->getRepository('ClarolineForumBundle:Forum');
         $this->lastMessageWidgetConfigRepo = $om->getRepository('ClarolineForumBundle:Widget\LastMessageWidgetConfig');
         $this->messageRepo = $om->getRepository('ClarolineForumBundle:Message');
@@ -145,6 +150,7 @@ class Manager
         $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
         $this->subjectRepo = $om->getRepository('ClarolineForumBundle:Subject');
         $this->userRepo = $om->getRepository('ClarolineCoreBundle:User');
+        $this->resourceEvalManager = $resourceEvalManager;
     }
 
     /**
@@ -247,6 +253,11 @@ class Manager
         $this->om->flush();
         $this->dispatch(new CreateMessageEvent($message));
         $this->sendMessageNotification($message, $message->getCreator());
+        $this->resourceEvalManager->updateResourceUserEvaluationData(
+            $forum->getResourceNode(),
+            $user,
+            new \DateTime()
+        );
 
         return $message;
     }
