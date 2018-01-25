@@ -29,6 +29,10 @@ class ResourceEvaluationManager
     private $eventDispatcher;
     private $om;
 
+    private $resourceUserEvaluationRepo;
+    private $resourceEvaluationRepo;
+    private $logRepo;
+
     /**
      * @DI\InjectParams({
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
@@ -45,6 +49,7 @@ class ResourceEvaluationManager
 
         $this->resourceUserEvaluationRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceUserEvaluation');
         $this->resourceEvaluationRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceEvaluation');
+        $this->logRepo = $this->om->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
     public function getResourceUserEvaluation(ResourceNode $node, User $user, $withCreation = true)
@@ -127,7 +132,8 @@ class ResourceEvaluationManager
         $customScore = null,
         $duration = null,
         $forceStatus = false,
-        $incAttempts = true
+        $incAttempts = true,
+        $incOpenings = false
     ) {
         $rue = $this->getResourceUserEvaluation($node, $user);
         $statusPriority = AbstractResourceEvaluation::STATUS_PRORITY;
@@ -168,6 +174,11 @@ class ResourceEvaluationManager
             $nbAttempts = $rue->getNbAttempts() ? $rue->getNbAttempts() : 0;
             ++$nbAttempts;
             $rue->setNbAttempts($nbAttempts);
+        }
+        if ($incOpenings) {
+            $nbOpenings = $rue->getNbOpenings() ? $rue->getNbOpenings() : 0;
+            ++$nbOpenings;
+            $rue->setNbOpenings($nbOpenings);
         }
         $this->persistResourceUserEvaluation($rue);
     }
@@ -221,5 +232,10 @@ class ResourceEvaluationManager
             $rue->setNbAttempts($nbAttempts);
         }
         $this->persistResourceUserEvaluation($rue);
+    }
+
+    public function getLogsForResourceTracking(ResourceNode $node, User $user, array $actions, \DateTime $startDate = null)
+    {
+        return $this->logRepo->findLogsForResourceTracking($node, $user, $actions, $startDate);
     }
 }

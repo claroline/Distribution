@@ -19,7 +19,7 @@ const ResourceUserEvaluation = {
     id: T.number.isRequired,
     userName: T.string.isRequired,
     date: T.string.isRequired,
-    status: T.string.isRequired,
+    status: T.string,
     duration: T.number,
     score: T.number,
     scoreMin: T.number,

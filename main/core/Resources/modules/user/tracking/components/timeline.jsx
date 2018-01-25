@@ -12,8 +12,8 @@ import {ScoreGauge} from '#/main/core/layout/progression/components/score-gauge.
 
 const EventWrapper = props =>
   <li className={classes('timeline-event-container', {
-    'timeline-event-success': constants.STATUS_PASSED === props.status,
-    'timeline-event-partial': [constants.STATUS_PASSED, constants.STATUS_FAILED].indexOf(props.status) === -1,
+    'timeline-event-success': [constants.STATUS_PASSED, constants.STATUS_COMPLETED].indexOf(props.status) > -1,
+    'timeline-event-partial': [constants.STATUS_PASSED, constants.STATUS_FAILED, constants.STATUS_COMPLETED].indexOf(props.status) === -1,
     'timeline-event-failure': constants.STATUS_FAILED === props.status
   })}>
     <span className={classes('timeline-event-icon', constants.TRACKING_EVENTS[props.type].icon)} />
@@ -24,8 +24,8 @@ const EventWrapper = props =>
       </span>
 
       {props.status && <span className={classes('timeline-event-status', {
-        'fa fa-fw fa-check': constants.STATUS_PASSED === props.status,
-        'fa fa-fw fa-minus': [constants.STATUS_PASSED, constants.STATUS_FAILED].indexOf(props.status) === -1,
+        'fa fa-fw fa-check': [constants.STATUS_PASSED, constants.STATUS_COMPLETED].indexOf(props.status) > -1,
+        'fa fa-fw fa-minus': [constants.STATUS_PASSED, constants.STATUS_FAILED, constants.STATUS_COMPLETED].indexOf(props.status) === -1,
         'fa fa-fw fa-times': constants.STATUS_FAILED === props.status
       })} />}
 
@@ -143,7 +143,7 @@ Timeline.propTypes = {
   events: T.arrayOf(T.shape({
     date: T.string.isRequired,
     type: T.string.isRequired,
-    status: T.string.isRequired,
+    status: T.string,
     progression: T.array,
     data: T.object
   })).isRequired
