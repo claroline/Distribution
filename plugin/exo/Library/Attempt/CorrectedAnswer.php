@@ -73,7 +73,7 @@ class CorrectedAnswer
         $found = false;
 
         if (method_exists($expected, 'getUuid')) {
-            foreach($this->expected as $data) {
+            foreach ($this->expected as $data) {
                 if ($data->getUuid() === $expected->getUuid()) {
                     $found = true;
                 }
