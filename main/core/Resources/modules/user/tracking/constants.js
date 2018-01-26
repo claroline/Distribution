@@ -28,6 +28,8 @@ const STATUS_COMPLETED = 'completed'
 const STATUS_INCOMPLETE = 'incomplete'
 const STATUS_NOT_ATTEMPTED = 'not_attempted'
 const STATUS_UNKNOWN = 'unknown'
+const STATUS_OPENED = 'opened'
+const STATUS_PARTICIPATED = 'participated'
 
 const TRACKING_STATUS = [
   STATUS_PASSED,
@@ -35,7 +37,9 @@ const TRACKING_STATUS = [
   STATUS_COMPLETED,
   STATUS_INCOMPLETE,
   STATUS_NOT_ATTEMPTED,
-  STATUS_UNKNOWN
+  STATUS_UNKNOWN,
+  STATUS_OPENED,
+  STATUS_PARTICIPATED
 ]
 
 export const constants = {
@@ -51,5 +55,7 @@ export const constants = {
   STATUS_INCOMPLETE,
   STATUS_NOT_ATTEMPTED,
   STATUS_UNKNOWN,
+  STATUS_OPENED,
+  STATUS_PARTICIPATED,
   TRACKING_STATUS
 }

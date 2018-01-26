@@ -245,7 +245,7 @@ class FileListener implements ContainerAwareInterface
                 $resource->getResourceNode(),
                 $user,
                 new \DateTime(),
-                AbstractResourceEvaluation::STATUS_COMPLETED,
+                AbstractResourceEvaluation::STATUS_OPENED,
                 null,
                 null,
                 null,
@@ -381,7 +381,7 @@ class FileListener implements ContainerAwareInterface
             $this->om->startFlushSuite();
             $tracking = $this->resourceEvalManager->getResourceUserEvaluation($node, $user);
             $tracking->setDate($logs[0]->getDateLog());
-            $tracking->setStatus(AbstractResourceEvaluation::STATUS_COMPLETED);
+            $tracking->setStatus(AbstractResourceEvaluation::STATUS_OPENED);
             $tracking->setNbAttempts($nbLogs);
             $tracking->setNbOpenings($nbLogs);
             $this->om->persist($tracking);

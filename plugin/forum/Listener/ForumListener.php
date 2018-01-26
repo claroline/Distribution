@@ -11,6 +11,7 @@
 
 namespace Claroline\ForumBundle\Listener;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
@@ -89,7 +90,6 @@ class ForumListener extends ContainerAware
 
     public function onCopy(CopyResourceEvent $event)
     {
-        $em = $this->container->get('doctrine.orm.entity_manager');
         $resource = $event->getResource();
         $event->setCopy($this->container->get('claroline.manager.forum_manager')->copy($resource));
         $event->stopPropagation();
@@ -136,7 +136,7 @@ class ForumListener extends ContainerAware
             $om->startFlushSuite();
             $tracking = $resourceEvalManager->getResourceUserEvaluation($node, $user);
             $tracking->setDate($logs[0]->getDateLog());
-//            $tracking->setStatus(AbstractResourceEvaluation::STATUS_COMPLETED);
+            $status = AbstractResourceEvaluation::STATUS_UNKNOWN;
             $nbAttempts = 0;
             $nbOpenings = 0;
 
@@ -144,12 +144,18 @@ class ForumListener extends ContainerAware
                 switch ($log->getAction()) {
                     case 'resource-read':
                         ++$nbOpenings;
+
+                        if ($status === AbstractResourceEvaluation::STATUS_UNKNOWN) {
+                            $status = AbstractResourceEvaluation::STATUS_OPENED;
+                        }
                         break;
                     case 'resource-claroline_forum-create_message':
                         ++$nbAttempts;
+                        $status = AbstractResourceEvaluation::STATUS_PARTICIPATED;
                         break;
                 }
             }
+            $tracking->setStatus($status);
             $tracking->setNbAttempts($nbAttempts);
             $tracking->setNbOpenings($nbOpenings);
             $om->persist($tracking);
