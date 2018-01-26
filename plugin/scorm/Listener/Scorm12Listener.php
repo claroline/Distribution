@@ -137,7 +137,6 @@ class Scorm12Listener
         try {
             if ($form->isValid()) {
                 $tmpFile = $form->get('file')->getData();
-                $workspace = $event->getParent()->getWorkspace();
 
                 if ($this->isScormArchive($tmpFile)) {
                     $scormResource = $this->container
@@ -356,7 +355,7 @@ class Scorm12Listener
      *
      * @param UploadedFile $file
      *
-     * @return boolean
+     * @return bool
      */
     private function isScormArchive(UploadedFile $file)
     {
