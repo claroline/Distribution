@@ -11,6 +11,7 @@
 
 namespace Claroline\ForumBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
@@ -256,7 +257,8 @@ class Manager
         $this->resourceEvalManager->updateResourceUserEvaluationData(
             $forum->getResourceNode(),
             $user,
-            new \DateTime()
+            new \DateTime(),
+            AbstractResourceEvaluation::STATUS_PARTICIPATED
         );
 
         return $message;

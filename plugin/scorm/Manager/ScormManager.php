@@ -233,6 +233,9 @@ class ScormManager
             case 'not attempted':
                 $status = 'not_attempted';
                 break;
+            case 'browsed':
+                $status = 'opened';
+                break;
             default:
                 $status = 'unknown';
         }

@@ -50,7 +50,7 @@ const EventWrapper = props =>
           {props.children}
         </div>
 
-        {props.progression &&
+        {props.progression && (!!props.progression[0] || !!props.progression[1]) &&
           <div className="timeline-event-progression">
             <ScoreGauge
               userScore={Math.round(props.progression[0])}
@@ -99,6 +99,8 @@ const EvaluationEvent = props =>
     Nb attempts : {props.data.nbAttempts}
     <br/>
     Nb openings : {props.data.nbOpenings}
+    <br/>
+    Duration : {props.data.duration ? `${props.data.duration}s` : '-'}
   </EventWrapper>
 
 EvaluationEvent.propTypes = {
@@ -115,7 +117,10 @@ EvaluationEvent.propTypes = {
       meta: T.shape({
         type: T.string.isRequired
       }).isRequired
-    })
+    }),
+    nbAttempts: T.number,
+    nbOpenings: T.number,
+    duration: T.number
   })
 }
 

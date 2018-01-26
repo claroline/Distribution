@@ -47,6 +47,7 @@ const TrackingComponent = props =>
               resourceNode: e.resourceNode,
               nbAttempts: e.nbAttempts,
               nbOpenings: e.nbOpenings,
+              duration: e.duration
             }
           }})}
         />
