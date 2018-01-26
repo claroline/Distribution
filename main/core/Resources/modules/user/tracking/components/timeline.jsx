@@ -96,11 +96,11 @@ const EvaluationEvent = props =>
     progression={props.progression}
     resource={props.data.resourceNode}
   >
-    Nb attempts : {props.data.nbAttempts}
+    {trans('nb_attempts_participations', {}, 'platform')} : {props.data.nbAttempts}
     <br/>
-    Nb openings : {props.data.nbOpenings}
+    {trans('nb_openings', {}, 'platform')} : {props.data.nbOpenings}
     <br/>
-    Duration : {props.data.duration ? `${props.data.duration}s` : '-'}
+    {trans('total_time', {}, 'platform')} : {props.data.duration ? `${props.data.duration} ${trans('seconds', {}, 'platform')}` : '-'}
   </EventWrapper>
 
 EvaluationEvent.propTypes = {

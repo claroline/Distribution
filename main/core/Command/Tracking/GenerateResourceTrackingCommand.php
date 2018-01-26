@@ -76,6 +76,7 @@ class GenerateResourceTrackingCommand extends ContainerAwareCommand
         $om->startFlushSuite();
 
         $output->writeln('--------------------');
+        $i = 0;
 
         foreach ($users as $user) {
             $output->writeln('<info>User "'.$user->getFirstName().' '.$user->getLastName().'" : starting...</info>');
@@ -98,6 +99,12 @@ class GenerateResourceTrackingCommand extends ContainerAwareCommand
                     );
                     $output->writeln('<info>        Resource "'.$node->getName().'" : finished.</info>');
                     $output->writeln('        --------------------');
+                    ++$i;
+
+                    if ($i % 200 === 0) {
+                        $om->forceFlush();
+                        $output->writeln('Processed');
+                    }
                 }
                 $output->writeln('<info>    Resource type "'.$resourceType->getName().'" : finished.</info>');
             }
