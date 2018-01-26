@@ -15,6 +15,7 @@ Encore
     .setPublicPath('/dist')
     .autoProvidejQuery()
     .enableReactPreset()
+    .setManifestKeyPrefix('/dist')
     .enableSourceMaps(false)
     //.cleanupOutputBeforeBuild()
     .enableBuildNotifications()
@@ -34,20 +35,7 @@ Encore
     .configureBabel(babelConfig => {
         babelConfig.compact = false
     })
-  //  .enablePostCssLoader()
 
-//dll references are buggy atm
-
-/*
-const references = plugins.dllReferences(manifests)
-references.forEach(reference => {
-  console.log(reference.options.manifest.content)
-})
-references.forEach(reference => Encore.addPlugin(reference))
-*/
-
-
-//allow url rewriting for '#/'
 Encore.addLoader({test: /\.html$/, loader: 'html-loader'})
 
 Object.keys(collectedEntries).forEach(key => Encore.addEntry(key, collectedEntries[key]))
@@ -60,7 +48,7 @@ config.resolve.descriptionFiles = ['package.json', '.bower.json', 'bower.json']
 config.resolve.mainFields = ['main', 'browser']
 config.resolve.aliasFields = ['browser']
 config.resolve.alias = shared.aliases()
-//config.externals = shared.externals()
+config.externals = shared.externals()
 
 // export the final configuration
 module.exports = config

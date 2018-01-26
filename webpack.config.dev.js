@@ -16,10 +16,11 @@ Encore
     .autoProvidejQuery()
     .enableReactPreset()
     .setManifestKeyPrefix('/dist')
+    .enableSourceMaps(true)//false si plus rapide
+    //.cleanupOutputBeforeBuild()
     .enableBuildNotifications()
-    //sourcemaps are slow as hell
-    //.enableSourceMaps(true)
     .enableVersioning(true)
+    .configureManifestPlugin(options => options.fileName = 'manifest.lib.json')
     .addPlugin(plugins.assetsInfoFile())
     .addPlugin(plugins.distributionShortcut())
     .addPlugin(plugins.reactDllReference())
@@ -34,13 +35,7 @@ Encore
     .configureBabel(babelConfig => {
         babelConfig.compact = false
     })
-  //  .enablePostCssLoader()
-/*
-dll references are buggy atm
-const references = plugins.dllReferences(manifests)
-references.forEach(reference => Encore.addPlugin(reference))
-*/
-//allow url rewriting for '#/'
+
 Encore.addLoader({test: /\.html$/, loader: 'html-loader'})
 
 Object.keys(collectedEntries).forEach(key => Encore.addEntry(key, collectedEntries[key]))
