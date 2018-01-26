@@ -193,7 +193,6 @@ class FileListener implements ContainerAwareInterface
     {
         $ds = DIRECTORY_SEPARATOR;
         $resource = $event->getResource();
-        $user = $this->tokenStorage->getToken()->getUser();
 
         $playEvent = $this->container->get('claroline.event.event_dispatcher')
             ->dispatch(
@@ -239,22 +238,6 @@ class FileListener implements ContainerAwareInterface
                     'close'
                 );
             }
-        }
-        if ($user !== 'anon.') {
-            $this->resourceEvalManager->updateResourceUserEvaluationData(
-                $resource->getResourceNode(),
-                $user,
-                new \DateTime(),
-                AbstractResourceEvaluation::STATUS_OPENED,
-                null,
-                null,
-                null,
-                null,
-                null,
-                false,
-                true,
-                true
-            );
         }
         $event->setResponse($response);
         $event->stopPropagation();
@@ -321,7 +304,8 @@ class FileListener implements ContainerAwareInterface
     /**
      * Copies a file (no persistence).
      *
-     * @param File $resource
+     * @param File         $resource
+     * @param ResourceNode $destParent
      *
      * @return File
      */
@@ -382,7 +366,6 @@ class FileListener implements ContainerAwareInterface
             $tracking = $this->resourceEvalManager->getResourceUserEvaluation($node, $user);
             $tracking->setDate($logs[0]->getDateLog());
             $tracking->setStatus(AbstractResourceEvaluation::STATUS_OPENED);
-            $tracking->setNbAttempts($nbLogs);
             $tracking->setNbOpenings($nbLogs);
             $this->om->persist($tracking);
             $this->om->endFlushSuite();
