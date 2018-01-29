@@ -2,6 +2,8 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+
 const AlertBlock = props =>
   <div className={classes('alert alert-detailed', 'alert-'+props.type)}>
     <span className={classes('fa fa-fw', {
@@ -12,14 +14,14 @@ const AlertBlock = props =>
     })} />
     <div className="alert-content">
       <b>{props.title}</b>
-      {props.description}
+      <HtmlText>{props.message}</HtmlText>
     </div>
   </div>
 
 AlertBlock.propTypes = {
   type: T.oneOf(['info', 'success', 'warning', 'danger']),
   title: T.string.isRequired,
-  description: T.string
+  message: T.string.isRequired
 }
 
 AlertBlock.defaultProps = {

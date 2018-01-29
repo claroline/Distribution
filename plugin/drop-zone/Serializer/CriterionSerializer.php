@@ -39,8 +39,7 @@ class CriterionSerializer
     {
         return [
             'id' => $criterion->getUuid(),
-            'instruction' => $criterion->getInstruction(),
-            'dropzone' => $criterion->getDropzone()->getUuid(),
+            'instruction' => $criterion->getInstruction()
         ];
     }
 
@@ -53,13 +52,11 @@ class CriterionSerializer
     public function deserialize($class, $data)
     {
         $criterion = $this->criterionRepo->findOneBy(['uuid' => $data['id']]);
-
         if (empty($criterion)) {
             $criterion = new Criterion();
             $criterion->setUuid($data['id']);
-            $dropzone = $this->dropzoneRepo->findOneBy(['uuid' => $data['dropzone']]);
-            $criterion->setDropzone($dropzone);
         }
+
         if (isset($data['instruction'])) {
             $criterion->setInstruction($data['instruction']);
         }

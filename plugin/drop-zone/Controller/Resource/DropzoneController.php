@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\DropZoneBundle\Controller;
+namespace Claroline\DropZoneBundle\Controller\Resource;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
@@ -17,10 +17,8 @@ use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use Claroline\TeamBundle\Manager\TeamManager;
 use JMS\DiExtraBundle\Annotation as DI;
-use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -63,23 +61,20 @@ class DropzoneController extends Controller
     }
 
     /**
-     * Updates a Dropzone resource.
+     * Opens a Dropzone resource.
      *
      * @EXT\Route("/{id}/open", name="claro_dropzone_open")
      * @EXT\Method("GET")
-     * @EXT\ParamConverter(
-     *     "dropzone",
-     *     class="ClarolineDropZoneBundle:Dropzone"
-     * )
+     * @EXT\ParamConverter("dropzone", class="ClarolineDropZoneBundle:Dropzone")
      * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=true})
-     * @EXT\Template()
+     * @EXT\Template("ClarolineDropZoneBundle:Dropzone:open.html.twig")
      *
      * @param Dropzone $dropzone
      * @param User     $user
      *
-     * @return JsonResponse
+     * @return array
      */
-    public function dropzoneOpenAction(Dropzone $dropzone, User $user = null)
+    public function openAction(Dropzone $dropzone, User $user = null)
     {
         $resourceNode = $dropzone->getResourceNode();
         $this->checkPermission('OPEN', $resourceNode, [], true);
@@ -87,7 +82,6 @@ class DropzoneController extends Controller
             $this->teamManager->getSearializedTeamsByUserAndWorkspace($user, $resourceNode->getWorkspace()) :
             [];
         $myDrop = null;
-        $peerDrop = null;
         $finishedPeerDrops = [];
         $errorMessage = null;
         $teamId = null;
@@ -104,7 +98,6 @@ class DropzoneController extends Controller
         switch ($dropzone->getDropType()) {
             case Dropzone::DROP_TYPE_USER:
                 $myDrop = !empty($user) ? $this->manager->getUserDrop($dropzone, $user) : null;
-                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, null, null, false);
                 $finishedPeerDrops = $this->manager->getFinishedPeerDrops($dropzone, $user);
                 break;
             case Dropzone::DROP_TYPE_TEAM:
@@ -139,9 +132,7 @@ class DropzoneController extends Controller
                 }
                 if (!empty($myDrop)) {
                     $teamId = $myDrop->getTeamId();
-                    $teamName = $myDrop->getTeamName();
                 }
-                $peerDrop = $this->manager->getPeerDrop($dropzone, $user, $teamId, $teamName, false);
                 $finishedPeerDrops = $this->manager->getFinishedPeerDrops($dropzone, $user, $teamId);
                 break;
         }
@@ -154,21 +145,10 @@ class DropzoneController extends Controller
             'user' => $user,
             'myDrop' => $myDrop,
             'nbCorrections' => count($finishedPeerDrops),
-            'peerDrop' => $peerDrop,
             'tools' => $serializedTools,
             'userEvaluation' => $userEvaluation,
             'teams' => $teams,
             'errorMessage' => $errorMessage,
         ];
-    }
-
-    /**
-     * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
-     * @EXT\Route("/plugin/configure", name="claro_dropzone_plugin_configure")
-     * @EXT\Template()
-     */
-    public function pluginConfigureAction()
-    {
-        return [];
     }
 }

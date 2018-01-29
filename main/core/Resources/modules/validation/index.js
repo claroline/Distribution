@@ -40,6 +40,12 @@ function isHtmlEmpty(html, allowedTags = ['img', 'audio', 'iframe', 'video']) {
   }))
 }
 
+function array(value) {
+  if (!Array.isArray(value)) {
+    return tval('This value should be an array.')
+  }
+}
+
 function string(value) {
   if (typeof value !== 'string') {
     return tval('This value should be a string.')
@@ -231,6 +237,7 @@ export {
   setIfError,
 
   // validators
+  array,
   string,
   notBlank,
   ip,

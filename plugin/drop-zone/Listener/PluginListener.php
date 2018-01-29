@@ -66,7 +66,7 @@ class PluginListener
     public function onPluginOptionsOpen(PluginOptionsEvent $event)
     {
         $params = [];
-        $params['_controller'] = 'ClarolineDropZoneBundle:Dropzone:pluginConfigure';
+        $params['_controller'] = 'ClarolineDropZoneBundle:Plugin:configure';
         $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 

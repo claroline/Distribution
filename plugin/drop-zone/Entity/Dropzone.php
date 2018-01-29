@@ -24,23 +24,25 @@ class Dropzone extends AbstractResource
 {
     use UuidTrait;
 
-    const STATE_NOT_STARTED = 0;
-    const STATE_ALLOW_DROP = 1;
-    const STATE_FINISHED = 2;
-    const STATE_PEER_REVIEW = 3;
-    const STATE_ALLOW_DROP_AND_PEER_REVIEW = 4;
-    const STATE_WAITING_FOR_PEER_REVIEW = 5;
+    const STATE_NOT_STARTED = 'not_started';
+    const STATE_ALLOW_DROP = 'drop';
+    const STATE_FINISHED = 'finished';
+    const STATE_PEER_REVIEW = 'review';
+    const STATE_ALLOW_DROP_AND_PEER_REVIEW = 'drop_review';
+    const STATE_WAITING_FOR_PEER_REVIEW = 'review_standby';
 
     const AUTO_CLOSED_STATE_WAITING = 0;
     const AUTO_CLOSED_STATE_CLOSED = 1;
 
-    const DROP_TYPE_USER = 0;
-    const DROP_TYPE_TEAM = 1;
+    const DROP_TYPE_USER = 'user';
+    const DROP_TYPE_TEAM = 'team';
 
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     protected $id;
 
@@ -51,101 +53,143 @@ class Dropzone extends AbstractResource
      * 4 = finished.
      *
      * @ORM\Column(name="edition_state", type="smallint", nullable=false)
+     *
+     * @var int
+     *
+     * @todo remove me. it's not used anymore.
      */
     protected $editionState = 1;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     *
+     * @var string
      */
     protected $instruction = null;
 
     /**
-     * @ORM\Column(name="correction_instruction",type="text", nullable=true)
+     * @ORM\Column(name="correction_instruction", type="text", nullable=true)
+     *
+     * @var string
      */
     protected $correctionInstruction = null;
 
     /**
-     * @ORM\Column(name="success_message",type="text", nullable=true)
+     * @ORM\Column(name="success_message", type="text", nullable=true)
+     *
+     * @var string
      */
     protected $successMessage = null;
 
     /**
      * @ORM\Column(name="fail_message",type="text", nullable=true)
+     *
+     * @var string
      */
     protected $failMessage = null;
 
     /**
      * @ORM\Column(name="workspace_resource_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $workspaceResourceEnabled = false;
 
     /**
      * @ORM\Column(name="upload_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $uploadEnabled = true;
 
     /**
      * @ORM\Column(name="url_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $urlEnabled = false;
 
     /**
      * @ORM\Column(name="rich_text_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $richTextEnabled = false;
 
     /**
      * @ORM\Column(name="peer_review", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $peerReview = false;
 
     /**
      * @ORM\Column(name="expected_correction_total", type="smallint", nullable=false)
+     *
+     * @var int
      */
     protected $expectedCorrectionTotal = 3;
 
     /**
      * @ORM\Column(name="display_notation_to_learners", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $displayNotationToLearners = true;
 
     /**
      * @ORM\Column(name="display_notation_message_to_learners", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $displayNotationMessageToLearners = false;
 
     /**
      * @ORM\Column(name="score_to_pass", type="float", nullable=false)
+     *
+     * @var float
      */
     protected $scoreToPass = 50;
 
     /**
      * @ORM\Column(name="score_max", type="integer", nullable=false)
+     *
+     * @var int
      */
     protected $scoreMax = 100;
 
     /**
-     * @ORM\Column(name="drop_type", type="integer", nullable=false)
+     * @ORM\Column(name="drop_type", type="text", nullable=false)
+     *
+     * @var string
      */
     protected $dropType = self::DROP_TYPE_USER;
 
     /**
      * @ORM\Column(name="manual_planning", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $manualPlanning = true;
 
     /**
-     * @ORM\Column(name="manual_state", type="integer", nullable=false)
+     * @ORM\Column(name="manual_state", type="text", nullable=false)
+     *
+     * @var string
      */
     protected $manualState = self::STATE_NOT_STARTED;
 
     /**
      * @ORM\Column(name="drop_start_date", type="datetime", nullable=true)
+     *
+     * @var \DateTime
      */
     protected $dropStartDate = null;
 
     /**
      * @ORM\Column(name="drop_end_date", type="datetime", nullable=true)
+     *
+     * @var \DateTime
      */
     protected $dropEndDate = null;
 
@@ -156,21 +200,29 @@ class Dropzone extends AbstractResource
 
     /**
      * @ORM\Column(name="review_end_date", type="datetime", nullable=true)
+     *
+     * @var \DateTime
      */
     protected $reviewEndDate = null;
 
     /**
      * @ORM\Column(name="comment_in_correction_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $commentInCorrectionEnabled = false;
 
     /**
      * @ORM\Column(name="comment_in_correction_forced",type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $commentInCorrectionForced = false;
 
     /**
      * @ORM\Column(name="display_corrections_to_learners", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $displayCorrectionsToLearners = false;
 
@@ -178,17 +230,23 @@ class Dropzone extends AbstractResource
      * Depend on diplayCorrectionsToLearners, need diplayCorrectionsToLearners to be true in order to work.
      * Allow users to flag that they are not agree with the correction.
      *
-     * @ORM\Column(name="correction_denial_enabled",type="boolean",nullable=false)
+     * @ORM\Column(name="correction_denial_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $correctionDenialEnabled = false;
 
     /**
      * @ORM\Column(name="criteria_enabled", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $criteriaEnabled = false;
 
     /**
      * @ORM\Column(name="criteria_total", type="smallint", nullable=false)
+     *
+     * @var bool
      */
     protected $criteriaTotal = 4;
 
@@ -198,16 +256,27 @@ class Dropzone extends AbstractResource
      * That will allow them to access the next step ( correction by users or admins ).
      *
      * @ORM\Column(name="auto_close_drops_at_drop_end_date", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $autoCloseDropsAtDropEndDate = true;
 
     /**
      * @ORM\Column(name="auto_close_state", type="integer", nullable=false)
+     *
+     * @var int
+     *
+     * @todo remove me. it's not used anymore.
      */
     protected $autoCloseState = self::AUTO_CLOSED_STATE_WAITING;
 
     /**
+     * Becomes true when all the drops have been force closed at the end of the evaluation.
+     * (Used when `autoCloseDropsAtDropEndDate` = true)
+     *
      * @ORM\Column(name="drop_closed", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $dropClosed = false;
 
@@ -215,6 +284,8 @@ class Dropzone extends AbstractResource
      * Notify Evaluation admins when a someone made a drop.
      *
      * @ORM\Column(name="notify_on_drop", type="boolean", nullable=false)
+     *
+     * @var bool
      */
     protected $notifyOnDrop = false;
 
@@ -224,6 +295,8 @@ class Dropzone extends AbstractResource
      *     mappedBy="dropzone",
      *     cascade={"persist", "remove"}
      * )
+     *
+     * @var ArrayCollection|Criterion[]
      */
     protected $criteria;
 
@@ -294,46 +367,6 @@ class Dropzone extends AbstractResource
     public function setFailMessage($failMessage)
     {
         $this->failMessage = $failMessage;
-    }
-
-    public function isWorkspaceResourceEnabled()
-    {
-        return $this->workspaceResourceEnabled;
-    }
-
-    public function setWorkspaceResourceEnabled($workspaceResourceEnabled)
-    {
-        $this->workspaceResourceEnabled = $workspaceResourceEnabled;
-    }
-
-    public function isUploadEnabled()
-    {
-        return $this->uploadEnabled;
-    }
-
-    public function setUploadEnabled($uploadEnabled)
-    {
-        $this->uploadEnabled = $uploadEnabled;
-    }
-
-    public function isUrlEnabled()
-    {
-        return $this->urlEnabled;
-    }
-
-    public function setUrlEnabled($urlEnabled)
-    {
-        $this->urlEnabled = $urlEnabled;
-    }
-
-    public function isRichTextEnabled()
-    {
-        return $this->richTextEnabled;
-    }
-
-    public function setRichTextEnabled($richTextEnabled)
-    {
-        $this->richTextEnabled = $richTextEnabled;
     }
 
     public function isPeerReview()
@@ -575,6 +608,7 @@ class Dropzone extends AbstractResource
     {
         if (!$this->criteria->contains($criterion)) {
             $this->criteria->add($criterion);
+            $criterion->setDropzone($this);
         }
     }
 
@@ -585,9 +619,31 @@ class Dropzone extends AbstractResource
         }
     }
 
-    public function emptyCriteria()
+    public function getAllowedDocuments()
     {
-        $this->criteria->clear();
+        $allowed = [];
+        if ($this->uploadEnabled) {
+            $allowed[] = 'file';
+        }
+        if ($this->richTextEnabled) {
+            $allowed[] = 'text';
+        }
+        if ($this->urlEnabled) {
+            $allowed[] = 'url';
+        }
+        if ($this->workspaceResourceEnabled) {
+            $allowed[] = 'resource';
+        }
+
+        return $allowed;
+    }
+
+    public function setAllowedDocuments(array $allowedDocuments)
+    {
+        $this->uploadEnabled = in_array('file', $allowedDocuments);
+        $this->richTextEnabled = in_array('text', $allowedDocuments);
+        $this->urlEnabled = in_array('url', $allowedDocuments);
+        $this->workspaceResourceEnabled = in_array('resource', $allowedDocuments);
     }
 
     public function isDropEnabled()

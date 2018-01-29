@@ -74,7 +74,7 @@ class DropzoneController
      *
      * @return JsonResponse
      */
-    public function dropzoneUpdateAction(Dropzone $dropzone, Request $request)
+    public function updateAction(Dropzone $dropzone, Request $request)
     {
         $this->checkPermission('EDIT', $dropzone->getResourceNode(), [], true);
 
@@ -98,79 +98,13 @@ class DropzoneController
     }
 
     /**
-     * Deletes a Dropzone resource.
+     * Initializes a Drop for the current User or Team.
      *
-     * @EXT\Route("/{id}", name="claro_dropzone_delete")
-     * @EXT\Method("DELETE")
-     * @EXT\ParamConverter(
-     *     "dropzone",
-     *     class="ClarolineDropZoneBundle:Dropzone",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
-     *
-     * @param Dropzone $dropzone
-     *
-     * @return JsonResponse
-     */
-    public function dropzoneDeleteAction(Dropzone $dropzone)
-    {
-        $this->checkPermission('DELETE', $dropzone->getResourceNode(), [], true);
-
-        try {
-            $this->manager->delete($dropzone);
-
-            return new JsonResponse(null, 204);
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
-    }
-
-    /**
-     * Initializes Drop of current user.
-     *
-     * @EXT\Route("/{id}/my/drop/initialize", name="claro_dropzone_my_drop_initialize")
+     * @EXT\Route("/{id}/drops/{teamId}", name="claro_dropzone_drop_create", defaults={"teamId"=null})
+     * @EXT\ParamConverter("dropzone", class="ClarolineDropZoneBundle:Dropzone", options={"mapping": {"id": "uuid"}})
+     * @EXT\ParamConverter("team",     class="ClarolineTeamBundle:Team",         options={"mapping": {"teamId": "id"}})
+     * @EXT\ParamConverter("user",     converter="current_user",                 options={"allowAnonymous"=false})
      * @EXT\Method("POST")
-     * @EXT\ParamConverter(
-     *     "dropzone",
-     *     class="ClarolineDropZoneBundle:Dropzone",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
-     *
-     * @param Dropzone $dropzone
-     * @param User     $user
-     *
-     * @return JsonResponse
-     */
-    public function myDropInitializeAction(Dropzone $dropzone, User $user)
-    {
-        $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-
-        try {
-            $myDrop = $this->manager->getUserDrop($dropzone, $user, true);
-
-            return new JsonResponse($this->manager->serializeDrop($myDrop));
-        } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), 422);
-        }
-    }
-
-    /**
-     * Initializes Team Drop of current user.
-     *
-     * @EXT\Route("/{id}/my/drop/team/{teamId}/initialize", name="claro_dropzone_my_team_drop_initialize")
-     * @EXT\Method("POST")
-     * @EXT\ParamConverter(
-     *     "dropzone",
-     *     class="ClarolineDropZoneBundle:Dropzone",
-     *     options={"mapping": {"id": "uuid"}}
-     * )
-     * @EXT\ParamConverter(
-     *     "team",
-     *     class="ClarolineTeamBundle:Team",
-     *     options={"mapping": {"teamId": "id"}}
-     * )
-     * @EXT\ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
      *
      * @param Dropzone $dropzone
      * @param Team     $team
@@ -178,13 +112,21 @@ class DropzoneController
      *
      * @return JsonResponse
      */
-    public function myTeamDropInitializeAction(Dropzone $dropzone, Team $team, User $user)
+    public function createDropAction(Dropzone $dropzone, User $user, Team $team = null)
     {
         $this->checkPermission('OPEN', $dropzone->getResourceNode(), [], true);
-        $this->checkTeamUser($team, $user);
+        if (!empty($team)) {
+            $this->checkTeamUser($team, $user);
+        }
 
         try {
-            $myDrop = $this->manager->getTeamDrop($dropzone, $team, $user, true);
+            if (empty($team)) {
+                // creates a User drop
+                $myDrop = $this->manager->getUserDrop($dropzone, $user, true);
+            } else {
+                // creates a Team drop
+                $myDrop = $this->manager->getTeamDrop($dropzone, $team, $user, true);
+            }
 
             return new JsonResponse($this->manager->serializeDrop($myDrop));
         } catch (\Exception $e) {

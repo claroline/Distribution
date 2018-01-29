@@ -29,7 +29,7 @@ const Corrections = props =>
             <th></th>
             <th>{trans('start_date', {}, 'platform')}</th>
             <th>{trans('end_date', {}, 'platform')}</th>
-            {props.dropzone.display.displayNotationToLearners &&
+            {props.dropzone.display.showScore &&
               <th>{trans('score', {}, 'platform')}</th>
             }
           </tr>
@@ -63,7 +63,7 @@ const Corrections = props =>
             </td>
             <td>{c.startDate}</td>
             <td>{c.endDate}</td>
-            {props.dropzone.display.displayNotationToLearners &&
+            {props.dropzone.display.showScore &&
               <td>{c.score} / {props.dropzone.parameters.scoreMax}</td>
             }
           </tr>
@@ -80,7 +80,7 @@ Corrections.propTypes = {
   showModal: T.func
 }
 
-const MyDrop = props =>
+const MyDropComponent = props =>
   <div className="drop-panel">
     <h2>{trans('my_drop', {}, 'dropzone')}</h2>
 
@@ -90,7 +90,7 @@ const MyDrop = props =>
         title={trans('instructions', {}, 'dropzone')}
       >
         <HtmlText>
-          {props.dropzone.display.instruction}
+          {props.dropzone.instruction}
         </HtmlText>
       </FormSection>
     </FormSections>
@@ -110,7 +110,10 @@ const MyDrop = props =>
     }
 
     {props.isDropEnabled && !props.myDrop.finished &&
-      <DropForm {...props}/>
+      <DropForm
+        allowedDocuments={props.dropzone.parameters.documents}
+        saveDocument={props.saveDocument}
+      />
     }
 
     {props.isDropEnabled && !props.myDrop.finished &&
@@ -130,33 +133,31 @@ const MyDrop = props =>
     }
   </div>
 
-MyDrop.propTypes = {
+MyDropComponent.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
   myDrop: T.shape(DropType.propTypes).isRequired,
   isDropEnabled: T.bool.isRequired,
   renderMyDrop: T.func.isRequired,
   denyCorrection: T.func.isRequired,
-  showModal: T.func.isRequired
+  showModal: T.func.isRequired,
+  saveDocument: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const MyDrop = connect(
+  (state) => ({
     dropzone: select.dropzone(state),
     myDrop: select.myDrop(state),
     isDropEnabled: select.isDropEnabled(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     saveDocument: (dropType, dropData) => dispatch(actions.saveDocument(dropType, dropData)),
     deleteDocument: (documentId) => dispatch(actions.deleteDocument(documentId)),
     renderMyDrop: () => dispatch(actions.renderMyDrop()),
     denyCorrection: (correctionId, comment) => dispatch(correctionActions.denyCorrection(correctionId, comment)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
+  })
+)(MyDropComponent)
+
+export {
+  MyDrop
 }
-
-const ConnectedMyDrop = connect(mapStateToProps, mapDispatchToProps)(MyDrop)
-
-export {ConnectedMyDrop as MyDrop}

@@ -1,5 +1,4 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {generateUrl} from '#/main/core/api/router'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {navigate} from '#/main/core/router'
 
@@ -23,44 +22,25 @@ actions.addDocuments = makeActionCreator(DOCUMENTS_ADD, 'documents')
 actions.updateDocument = makeActionCreator(DOCUMENT_UPDATE, 'document')
 actions.removeDocument = makeActionCreator(DOCUMENT_REMOVE, 'documentId')
 
-actions.initializeMyDrop = (teamId = null) => (dispatch, getState) => {
-  const dropzone = select.dropzone(getState())
-
-  if (dropzone.parameters.dropType === constants.DROP_TYPE_USER) {
-    dispatch({
-      [API_REQUEST]: {
-        url: generateUrl('claro_dropzone_my_drop_initialize', {id: dropzone.id}),
-        request: {
-          method: 'POST'
-        },
-        success: (data, dispatch) => {
-          dispatch(actions.loadMyDrop(data))
-          navigate('/my/drop')
-        }
-      }
-    })
-  } else if (dropzone.parameters.dropType === constants.DROP_TYPE_TEAM && teamId) {
-    dispatch({
-      [API_REQUEST]: {
-        url: generateUrl('claro_dropzone_my_team_drop_initialize', {id: dropzone.id, teamId: teamId}),
-        request: {
-          method: 'POST'
-        },
-        success: (data, dispatch) => {
-          dispatch(actions.loadMyDrop(data))
-          navigate('/my/drop')
-        }
-      }
-    })
+actions.initializeMyDrop = (dropzone, teamId = null) => ({
+  [API_REQUEST]: {
+    url: ['claro_dropzone_drop_create', {id: dropzone.id, teamId: teamId}],
+    request: {
+      method: 'POST'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.loadMyDrop(data))
+      navigate('/my/drop')
+    }
   }
-}
+})
 
 actions.saveDocument = (dropType, dropData) => (dispatch, getState) => {
   const state = getState()
   const myDropId = select.myDropId(state)
   const formData = new FormData()
 
-  if (dropType === constants.DOCUMENT_TYPES.file.value) {
+  if (dropType === constants.DOCUMENT_TYPE_FILE) {
     dropData.forEach((file, idx) => formData.append(`fileDrop${idx}`, file))
   } else {
     formData.append('dropData', dropData)
@@ -68,7 +48,7 @@ actions.saveDocument = (dropType, dropData) => (dispatch, getState) => {
 
   dispatch({
     [API_REQUEST]: {
-      url: generateUrl('claro_dropzone_documents_add', {id: myDropId, type: dropType}),
+      url: ['claro_dropzone_documents_add', {id: myDropId, type: dropType}],
       request: {
         method: 'POST',
         body: formData
@@ -82,7 +62,7 @@ actions.saveDocument = (dropType, dropData) => (dispatch, getState) => {
 
 actions.deleteDocument = (documentId) => ({
   [API_REQUEST]: {
-    url: generateUrl('claro_dropzone_document_delete', {id: documentId}),
+    url: ['claro_dropzone_document_delete', {id: documentId}],
     request: {
       method: 'DELETE'
     },
@@ -97,7 +77,7 @@ actions.renderMyDrop = () => (dispatch, getState) => {
 
   dispatch({
     [API_REQUEST]: {
-      url: generateUrl('claro_dropzone_drop_submit', {id: myDropId}),
+      url: ['claro_dropzone_drop_submit', {id: myDropId}],
       request: {
         method: 'PUT'
       },
@@ -120,10 +100,7 @@ actions.fetchPeerDrop = () => (dispatch, getState) => {
     if (dropzone.parameters.dropType === constants.DROP_TYPE_USER) {
       dispatch({
         [API_REQUEST]: {
-          url: generateUrl('claro_dropzone_peer_drop_fetch', {id: dropzone.id}),
-          request: {
-            method: 'GET'
-          },
+          url: ['claro_dropzone_peer_drop_fetch', {id: dropzone.id}],
           success: (data, dispatch) => {
             if (data && data.id) {
               dispatch(actions.loadPeerDrop(data))
@@ -134,10 +111,7 @@ actions.fetchPeerDrop = () => (dispatch, getState) => {
     } else if (dropzone.parameters.dropType === constants.DROP_TYPE_TEAM && myTeamId) {
       dispatch({
         [API_REQUEST]: {
-          url: generateUrl('claro_dropzone_team_peer_drop_fetch', {id: dropzone.id, teamId: myTeamId}),
-          request: {
-            method: 'GET'
-          },
+          url: ['claro_dropzone_team_peer_drop_fetch', {id: dropzone.id, teamId: myTeamId}],
           success: (data, dispatch) => {
             if (data && data.id) {
               dispatch(actions.loadPeerDrop(data))
@@ -155,7 +129,7 @@ actions.incPeerDrop = makeActionCreator(PEER_DROPS_INC)
 
 actions.submitCorrection = (correctionId) => ({
   [API_REQUEST]: {
-    url: generateUrl('claro_dropzone_correction_submit', {id: correctionId}),
+    url: ['claro_dropzone_correction_submit', {id: correctionId}],
     request: {
       method: 'PUT'
     },

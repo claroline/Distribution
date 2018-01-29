@@ -1,56 +1,65 @@
 import {PropTypes as T} from 'prop-types'
 
-const CriterionType = {
-  propTypes: {
-    id: T.string.isRequired,
-    dropzone: T.string.isRequired,
-    instruction: T.string
-  }
-}
+import {Criterion} from '#/plugin/drop-zone/data/types/criteria/prop-types'
+
+import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
 const DropzoneType = {
   propTypes: {
     id: T.string.isRequired,
+    instruction: T.string,
     parameters: T.shape({
+      reviewType: T.oneOf(
+        Object.keys(constants.REVIEW_TYPES)
+      ).isRequired,
+      dropType: T.oneOf(
+        Object.keys(constants.DROP_TYPES)
+      ).isRequired,
+
+      /**
+       * The list of allowed documents.
+       */
+      documents: T.arrayOf(
+        T.oneOf(Object.keys(constants.DOCUMENT_TYPES))
+      ).isRequired,
       autoCloseDropsAtDropEndDate: T.bool.isRequired,
-      autoCloseState: T.number.isRequired,
       commentInCorrectionEnabled: T.bool.isRequired,
       commentInCorrectionForced: T.bool.isRequired,
       correctionDenialEnabled: T.bool.isRequired,
       criteriaEnabled: T.bool.isRequired,
       criteriaTotal: T.number.isRequired,
-      dropClosed: T.bool.isRequired,
-      dropEndDate: T.string,
-      dropStartDate: T.string,
-      dropType: T.number.isRequired,
-      editionState: T.number.isRequired,
+
       expectedCorrectionTotal: T.number.isRequired,
-      manualPlanning: T.bool.isRequired,
-      manualState: T.number.isRequired,
-      peerReview: T.bool.isRequired,
-      reviewEndDate: T.string,
-      reviewStartDate: T.string,
-      richTextEnabled: T.bool.isRequired,
       scoreMax: T.number.isRequired,
-      scoreToPass: T.number.isRequired,
-      uploadEnabled: T.bool.isRequired,
-      urlEnabled: T.bool.isRequired,
-      workspaceResourceEnabled: T.bool.isRequired
+      scoreToPass: T.number.isRequired
     }).isRequired,
     display: T.shape({
       correctionInstruction: T.string,
       displayCorrectionsToLearners: T.bool.isRequired,
       displayNotationMessageToLearners: T.bool.isRequired,
-      displayNotationToLearners: T.bool.isRequired,
+      showScore: T.bool.isRequired,
       failMessage: T.string,
-      instruction: T.string,
       successMessage: T.string
+    }).isRequired,
+    planning: T.shape({
+      type: T.oneOf(
+        Object.keys(constants.PLANNING_TYPES)
+      ).isRequired,
+      state: T.oneOf(
+        Object.keys(constants.PLANNING_STATES)
+      ),
+      // drop date range
+      drop: T.arrayOf(T.string),
+      // review date range
+      review: T.arrayOf(T.string),
     }).isRequired,
     notifications: T.shape({
       actions: T.arrayOf(T.string),
       enabled: T.bool.isRequired
     }).isRequired,
-    criteria: T.arrayOf(T.shape(CriterionType.propTypes))
+    criteria: T.arrayOf(
+      T.shape(Criterion.propTypes)
+    )
   }
 }
 
@@ -79,7 +88,9 @@ const DocumentType = {
       lastName: T.string.isRequired
     }),
     dropDate: T.string,
-    toolDocuments: T.arrayOf(T.shape(DropzoneToolDocumentType.propTypes))
+    toolDocuments: T.arrayOf(
+      T.shape(DropzoneToolDocumentType.propTypes)
+    )
   }
 }
 
@@ -144,8 +155,12 @@ const DropType = {
     unlockedUser: T.bool.isRequired,
     teamId: T.number,
     teamName: T.string,
-    documents: T.arrayOf(T.shape(DocumentType.propTypes)),
-    corrections: T.arrayOf(T.shape(CorrectionType.propTypes)),
+    documents: T.arrayOf(
+      T.shape(DocumentType.propTypes)
+    ),
+    corrections: T.arrayOf(
+      T.shape(CorrectionType.propTypes)
+    ),
     users: T.arrayOf(T.shape({
       autoId: T.number.isRequired,
       id: T.string.isRequired,
@@ -157,7 +172,6 @@ const DropType = {
 }
 
 export {
-  CriterionType,
   DropzoneType,
   DropzoneToolDocumentType,
   DocumentType,

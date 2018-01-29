@@ -2,13 +2,12 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {RadioGroup} from '#/main/core/layout/form/components/group/radio-group.jsx'
+import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.jsx'
 import {FileGroup}  from '#/main/core/layout/form/components/group/file-group.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
-import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
 class DropTextForm extends Component {
   constructor(props) {
@@ -119,26 +118,12 @@ DropFileForm.propTypes = {
   handleSubmit: T.func.isRequired
 }
 
-export class DropForm extends Component {
+class DropForm extends Component {
   constructor(props) {
     super(props)
-    const availableTypes = []
 
-    if (props.dropzone.parameters.uploadEnabled) {
-      availableTypes.push(constants.DOCUMENT_TYPES.file)
-    }
-    if (props.dropzone.parameters.richTextEnabled) {
-      availableTypes.push(constants.DOCUMENT_TYPES.text)
-    }
-    if (props.dropzone.parameters.urlEnabled) {
-      availableTypes.push(constants.DOCUMENT_TYPES.url)
-    }
-    if (props.dropzone.parameters.workspaceResourceEnabled) {
-      availableTypes.push(constants.DOCUMENT_TYPES.resource)
-    }
     this.state = {
       dropType: '',
-      availableDropTypes: availableTypes
     }
     this.submitDocument = this.submitDocument.bind(this)
   }
@@ -152,26 +137,30 @@ export class DropForm extends Component {
     return (
       <div id="drop-form">
         <h2>{trans('add_document', {}, 'dropzone')}</h2>
-        {this.state.availableDropTypes.length > 0 &&
-          <RadioGroup
+        {this.props.allowedDocuments.length > 0 &&
+          <SelectGroup
             id="drop-type"
             label={trans('drop_type', {}, 'dropzone')}
-            options={this.state.availableDropTypes}
-            checkedValue={this.state.dropType}
+            choices={this.props.allowedDocuments.reduce((acc, current) => {
+              acc[current] = constants.DOCUMENT_TYPES[current]
+
+              return acc
+            }, {})}
+            value={this.state.dropType}
             onChange={value => this.setState({dropType: value})}
           />
         }
-        {this.state.dropType === constants.DOCUMENT_TYPES.file.value &&
+        {this.state.dropType === constants.DOCUMENT_TYPE_FILE &&
           <DropFileForm
             handleSubmit={this.submitDocument}
           />
         }
-        {this.state.dropType === constants.DOCUMENT_TYPES.text.value &&
+        {this.state.dropType === constants.DOCUMENT_TYPE_TEXT &&
           <DropTextForm
             handleSubmit={this.submitDocument}
           />
         }
-        {this.state.dropType === constants.DOCUMENT_TYPES.url.value &&
+        {this.state.dropType === constants.DOCUMENT_TYPE_URL &&
           <DropUrlForm
             handleSubmit={this.submitDocument}
           />
@@ -182,6 +171,10 @@ export class DropForm extends Component {
 }
 
 DropForm.propTypes = {
-  dropzone: T.shape(DropzoneType.propTypes).isRequired,
+  allowedDocuments: T.arrayOf(T.string).isRequired,
   saveDocument: T.func.isRequired
+}
+
+export {
+  DropForm
 }

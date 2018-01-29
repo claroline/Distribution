@@ -8,7 +8,7 @@
 
   "styles": {
     "entry": {
-      "resource": "resource.less"
+      "dropzone-resource": "dropzone/index.less"
     }
   }
 }

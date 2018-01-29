@@ -1,16 +1,12 @@
-import uuid from 'uuid'
 import moment from 'moment'
 
+import {makeId} from '#/main/core/scaffolding/id'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
-export function generateId() {
-  return uuid()
-}
-
-export function generateCorrection(dropId, user, dropzone, teamId = null) {
+function generateCorrection(dropId, user, dropzone, teamId = null) {
   const currentDate = moment().format('YYYY-MM-DD\THH:mm')
   const correction = {
-    id: uuid(),
+    id: makeId(),
     drop: dropId,
     user: user,
     score: null,
@@ -30,7 +26,7 @@ export function generateCorrection(dropId, user, dropzone, teamId = null) {
   return generateCorrectionGrades(correction, dropzone)
 }
 
-export function generateCorrectionGrades(correction, dropzone) {
+function generateCorrectionGrades(correction, dropzone) {
   const grades = []
 
   if (dropzone.parameters.criteriaEnabled) {
@@ -53,7 +49,7 @@ export function generateCorrectionGrades(correction, dropzone) {
   return Object.assign({}, correction, {grades: grades})
 }
 
-export function computeScoreFromGrades(grades, gradeMax, scoreMax) {
+function computeScoreFromGrades(grades, gradeMax, scoreMax) {
   let score = 0
   const total = (gradeMax - 1) * grades.length
   grades.forEach(g => score += g.value)
@@ -61,18 +57,18 @@ export function computeScoreFromGrades(grades, gradeMax, scoreMax) {
   return Math.round((score / total) * scoreMax * 100) / 100
 }
 
-export function computeDropCompletion(dropzone, drop, nbFinishedCorrections) {
+function computeDropCompletion(dropzone, drop, nbFinishedCorrections) {
   const nbExpected = dropzone.parameters.expectedCorrectionTotal
 
   return drop.finished && (
-    !dropzone.parameters.peerReview || (
+      constants.REVIEW_TYPE_PEER !== dropzone.parameters.reviewType || (
       (drop.unlockedDrop || drop.corrections.filter(c => c.finished && c.valid).length >= nbExpected) &&
       (drop.unlockedUser || nbFinishedCorrections >= nbExpected)
     )
   )
 }
 
-export function getCorrectionKey(drop, dropzone) {
+function getCorrectionKey(drop, dropzone) {
   let key = null
 
   switch (dropzone.parameters.dropType) {
@@ -87,8 +83,17 @@ export function getCorrectionKey(drop, dropzone) {
   return key
 }
 
-export function getToolDocumentType(toolDocument, tools) {
+function getToolDocumentType(toolDocument, tools) {
   const tool = tools.find(t => t.id === toolDocument.tool)
 
   return tool ? tool.type : null
+}
+
+export {
+  generateCorrection,
+  generateCorrectionGrades,
+  computeScoreFromGrades,
+  computeDropCompletion,
+  getCorrectionKey,
+  getToolDocumentType
 }

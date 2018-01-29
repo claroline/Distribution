@@ -1,60 +1,83 @@
 import {createSelector} from 'reselect'
 
+import {trans} from '#/main/core/translation'
+import {now} from '#/main/core/scaffolding/date'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
-const user = state => state.user
-
-const userEvaluation = state => state.userEvaluation
-
 const dropzone = state => state.dropzone
-const dropzoneId = createSelector(
-  [dropzone],
-  (dropzone) => dropzone.id
+const user = state => state.user
+const teams = state => state.teams
+const userEvaluation = state => state.userEvaluation
+const errorMessage = state => state.errorMessage
+const myDrop = state => state.myDrop
+
+const drops = state => state.drops
+const currentDrop = state => state.currentDrop
+const correctorDrop = state => state.correctorDrop
+const corrections = state => state.corrections
+const correctionForm = state => state.correctionForm
+const nbCorrections = state => state.nbCorrections
+const tools = state => state.tools.data
+const myDrops = state => state.myDrops
+const peerDrop = state => state.peerDrop
+
+const userHasTeam = createSelector(
+  [teams],
+  (teams) => teams && 0 < teams.length
 )
 
-const myDrop = state => state.myDrop
-const myDrops = state => state.myDrops
+const dropzoneRequireTeam = createSelector(
+  [dropzone],
+  (dropzone) => constants.DROP_TYPE_TEAM === dropzone.parameters.dropType
+)
 
 const myDropId = createSelector(
   [myDrop],
   (myDrop) => myDrop && myDrop.id ? myDrop.id : null
 )
 
-const peerDrop = state => state.peerDrop
+const myTeamId = createSelector(
+  [myDrop],
+  (myDrop) => myDrop && myDrop.teamId ? myDrop.teamId : null
+)
 
-const isDropEnabled = createSelector(
+const isDropEnabledManual = createSelector(
+  [dropzone],
+  (dropzone) => [
+    constants.STATE_ALLOW_DROP,
+    constants.STATE_ALLOW_DROP_AND_PEER_REVIEW
+  ].indexOf(dropzone.planning.state) > -1
+)
+
+const isDropEnabledAuto = createSelector(
   [dropzone],
   (dropzone) => {
-    const currentDate = new Date()
+    return dropzone.planning.drop && now() >= dropzone.planning.drop[0] && now() <= dropzone.planning.drop[1]
+  }
+)
 
-    return (
-      dropzone.parameters.manualPlanning &&
-      [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
-    ) ||
-    (
-      !dropzone.parameters.manualPlanning &&
-      currentDate >= new Date(dropzone.parameters.dropStartDate) &&
-      currentDate <= new Date(dropzone.parameters.dropEndDate)
-    )
+const isDropEnabled = createSelector(
+  [user, dropzone, isDropEnabledManual, isDropEnabledAuto, userHasTeam, dropzoneRequireTeam],
+  (user, dropzone, isDropEnabledManual, isDropEnabledAuto, userHasTeam, dropzoneRequireTeam) => {
+    return !!user
+      && (!dropzoneRequireTeam || userHasTeam)
+      && (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type ? isDropEnabledManual : isDropEnabledAuto)
   }
 )
 
 const isPeerReviewEnabled = createSelector(
   [dropzone],
   (dropzone) => {
-    const currentDate = new Date()
+    let planningReviewAllowed = false
+    if (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type) {
+      // manual planing, checks state
+      planningReviewAllowed = [constants.STATE_PEER_REVIEW, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.planning.state) > -1
+    } else {
+      // auto planning, checks dates
+      planningReviewAllowed = now() >= dropzone.planning.review[0] && now() <= dropzone.planning.review[1]
+    }
 
-    return dropzone.parameters.peerReview && (
-      (
-        dropzone.parameters.manualPlanning &&
-        [constants.STATE_PEER_REVIEW, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.parameters.manualState) > -1
-      ) ||
-      (
-        !dropzone.parameters.manualPlanning &&
-        currentDate >= new Date(dropzone.parameters.reviewStartDate) &&
-        currentDate <= new Date(dropzone.parameters.reviewEndDate)
-      )
-    )
+    return dropzone.parameters.reviewType && planningReviewAllowed
   }
 )
 
@@ -63,26 +86,24 @@ const currentState = createSelector(
   (dropzone) => {
     let currentState = constants.STATE_NOT_STARTED
 
-    if (dropzone.parameters.manualPlanning) {
-      currentState = dropzone.parameters.manualState
+    if (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type) {
+      // manual planning, just get the state defined by managers
+      currentState = dropzone.planning.state
     } else {
-      const currentDate = new Date()
-      const dropStartDate = new Date(dropzone.parameters.dropStartDate)
-      const dropEndDate = new Date(dropzone.parameters.dropEndDate)
-      const reviewStartDate = new Date(dropzone.parameters.reviewStartDate)
-      const reviewEndDate = new Date(dropzone.parameters.reviewEndDate)
+      // auto planning, calculate state from date ranges
+      const currentDate = now()
 
-      if (currentDate >= dropStartDate) {
-        if (currentDate > dropEndDate && currentDate > reviewEndDate) {
+      if (currentDate >= dropzone.planning.drop[0]) {
+        if (currentDate > dropzone.planning.drop[1] && currentDate > dropzone.planning.review[1]) {
           currentState = constants.STATE_FINISHED
-        } else if (currentDate > dropEndDate && currentDate < reviewStartDate) {
+        } else if (currentDate > dropzone.planning.drop[1] && currentDate < dropzone.planning.review[0]) {
           currentState = constants.STATE_WAITING_FOR_PEER_REVIEW
         } else {
-          if (dropStartDate <= currentDate && currentDate <= dropEndDate) {
-            currentState += constants.STATE_ALLOW_DROP
+          if (dropzone.planning.drop[0] <= currentDate && currentDate <= dropzone.planning.drop[1]) {
+            currentState = constants.STATE_ALLOW_DROP
           }
-          if (reviewStartDate <= currentDate && currentDate <= reviewEndDate) {
-            currentState += constants.STATE_PEER_REVIEW
+          if (dropzone.planning.review[0] <= currentDate && currentDate <= dropzone.planning.review[1]) {
+            currentState = constants.STATE_PEER_REVIEW
           }
         }
       }
@@ -92,26 +113,71 @@ const currentState = createSelector(
   }
 )
 
-const drops = state => state.drops
-const currentDrop = state => state.currentDrop
-const correctorDrop = state => state.correctorDrop
-const corrections = state => state.corrections
-const correctionForm = state => state.correctionForm
-const nbCorrections = state => state.nbCorrections
-const tools = state => state.tools.data
-const teams = state => state.teams
-const errorMessage = state => state.errorMessage
+// get why drop is disabled
+const dropDisabledMessages = createSelector(
+  [user, dropzone, currentState, dropzoneRequireTeam, userHasTeam, isDropEnabledManual],
+  (user, dropzone, currentState, dropzoneRequireTeam, userHasTeam, isDropEnabledManual) => {
+    const messages = []
 
-const myTeamId = createSelector(
+    // anonymous user error
+    if (!user) {
+      messages.push(trans('user_required', {}, 'dropzone'))
+    }
+
+    // no team error
+    if (dropzoneRequireTeam && !userHasTeam) {
+        messages.push(trans('team_required', {}, 'dropzone'))
+    }
+
+    // state error
+    switch (currentState) {
+      // not started error
+      case constants.STATE_NOT_STARTED:
+        messages.push(trans('state_not_started', {}, 'dropzone'))
+        break
+
+      // finished error
+      case constants.STATE_FINISHED:
+        messages.push(trans('state_finished', {}, 'dropzone'))
+        break
+
+      // otherwise checks drop date boundaries
+      default:
+        if (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type) {
+          if (!isDropEnabledManual) {
+            messages.push(trans('drop_not_active', {}, 'dropzone'))
+          }
+        } else {
+          if (now() < dropzone.planning.drop[0]) {
+            // drop has not already started
+            messages.push(trans('drop_not_started', {}, 'dropzone'))
+          } else if (now() > dropzone.planning.drop[1]) {
+            // drop has already finished
+            messages.push(trans('drop_finished', {}, 'dropzone'))
+          }
+        }
+
+        break
+    }
+
+    return messages
+  }
+)
+
+const reviewDisabledMessages = createSelector(
   [myDrop],
-  (myDrop) => myDrop && myDrop.teamId ? myDrop.teamId : null
+  (myDrop) => {
+    // all corrections done
+    [
+      !myDrop.finished && trans('drop_not_finished', {}, 'dropzone')
+    ]
+  }
 )
 
 export const select = {
   user,
   userEvaluation,
   dropzone,
-  dropzoneId,
   myDrop,
   myDrops,
   myDropId,
@@ -128,5 +194,7 @@ export const select = {
   tools,
   teams,
   myTeamId,
-  errorMessage
+  errorMessage,
+  dropDisabledMessages,
+  reviewDisabledMessages
 }

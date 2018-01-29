@@ -132,7 +132,7 @@ class DropzoneListener
     public function onOpen(OpenResourceEvent $event)
     {
         $params = [];
-        $params['_controller'] = 'ClarolineDropZoneBundle:Dropzone:dropzoneOpen';
+        $params['_controller'] = 'ClarolineDropZoneBundle:Resource\Dropzone:open';
         $params['dropzone'] = $event->getResource()->getId();
         $subRequest = $this->request->duplicate([], null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);

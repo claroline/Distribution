@@ -16,7 +16,7 @@ import {DocumentType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 const Document = props =>
   <tr className="drop-document">
     <td className="document-type">
-      {constants.DOCUMENT_TYPES_NAMES[props.document.type]}
+      {constants.DOCUMENT_TYPES[props.document.type]}
     </td>
     {props.showUser &&
       <td>{`${props.document.user.firstName} ${props.document.user.lastName}`}</td>
@@ -27,18 +27,18 @@ const Document = props =>
       </td>
     }
     <td className="document-data">
-      {props.document.type === constants.DOCUMENT_TYPES.file.value ?
+      {props.document.type === constants.DOCUMENT_TYPE_FILE ?
         <a
           href={asset(props.document.data.url)}
           download={props.document.data.name}
         >
           {props.document.data.name}
         </a> :
-        props.document.type === constants.DOCUMENT_TYPES.text.value ?
+        props.document.type === constants.DOCUMENT_TYPE_TEXT ?
           <HtmlText>{props.document.data}</HtmlText> :
-          props.document.type === constants.DOCUMENT_TYPES.url.value ?
+          props.document.type === constants.DOCUMENT_TYPE_URL ?
             <a href={props.document.data}>{props.document.data}</a> :
-            props.document.type === constants.DOCUMENT_TYPES.resource.value ?
+            props.document.type === constants.DOCUMENT_TYPE_RESOURCE ?
               <a href={generateUrl('claro_resource_open_short', {node: props.document.data.actualId})}>
                 {props.document.data.name}
               </a> :

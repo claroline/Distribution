@@ -591,6 +591,7 @@ class DropzoneManager
         $currentDate = new \DateTime();
         $drops = $this->dropRepo->findBy(['dropzone' => $dropzone, 'finished' => false]);
 
+        /** @var Drop $drop */
         foreach ($drops as $drop) {
             $drop->setFinished(true);
             $drop->setDropDate($currentDate);
@@ -1176,6 +1177,8 @@ class DropzoneManager
      * @param float    $score
      * @param Drop     $drop
      * @param bool     $forceStatus
+     *
+     * @return ResourceUserEvaluation
      */
     public function generateResourceEvaluation(
         Dropzone $dropzone,

@@ -60,7 +60,6 @@ class DropSerializer
     {
         return [
             'id' => $drop->getUuid(),
-            'dropzone' => $drop->getDropzone()->getUuid(),
             'user' => $drop->getUser() ? $this->userSerializer->serialize($drop->getUser()) : null,
             'dropDate' => $drop->getDropDate() ? $drop->getDropDate()->format('Y-m-d H:i') : null,
             'score' => $drop->getScore(),

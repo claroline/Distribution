@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
+import {makeId} from '#/main/core/scaffolding/id'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
 import {constants as listConstants} from '#/main/core/data/list/constants'
@@ -17,13 +18,12 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {constants} from '#/plugin/drop-zone/plugin/configuration/constants'
 import {actions} from '#/plugin/drop-zone/plugin/configuration/actions'
-import {generateId} from '#/plugin/drop-zone/resources/dropzone/utils'
 
 class Tools extends Component {
   showCompilatioForm(tool = null) {
     const toolForm = !tool ?
     {
-      id: generateId(),
+      id: make(),
       name: '',
       type: constants.compilatioValue,
       data: {

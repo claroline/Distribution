@@ -7,10 +7,10 @@ import {trans} from '#/main/core/translation'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {ScoreBox} from '#/main/core/layout/progression/components/score-box.jsx'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {validateNotBlank} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
-import {ScoreBox} from '#/plugin/drop-zone/resources/dropzone/correction/components/score-box.jsx'
 
 export const MODAL_CORRECTION = 'MODAL_CORRECTION'
 
@@ -120,11 +120,11 @@ export class CorrectionModal extends Component {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
-          {this.props.dropzone.display.displayNotationToLearners &&
+          {this.props.dropzone.display.showScore &&
             <ScoreBox
               score={this.props.correction.score}
               scoreMax={this.props.dropzone.parameters.scoreMax}
-              large={true}
+              size="lg"
             />
           }
           {this.props.dropzone.parameters.criteriaEnabled && this.props.dropzone.criteria.length > 0 &&

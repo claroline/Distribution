@@ -69,7 +69,7 @@ class Drops extends Component {
       sortable: false,
       type: 'boolean',
       renderer: (rowData) => {
-        const nbExpectedCorrections = props.dropzone.parameters.peerReview ? props.dropzone.parameters.expectedCorrectionTotal : 1
+        const nbExpectedCorrections = constants.REVIEW_TYPE_PEER === props.dropzone.parameters.reviewType ? props.dropzone.parameters.expectedCorrectionTotal : 1
         const nbValidCorrections = rowData.corrections.filter(c => c.finished && c.valid).length
         const element = nbValidCorrections >= nbExpectedCorrections ?
           <span className="fa fa-fw fa-check true"/> :
@@ -138,13 +138,7 @@ class Drops extends Component {
             poster: null,
             icon: null,
             title: '',
-            subtitle: '',
-            contentText: '',
-            flags: [].filter(flag => !!flag),
-            footer:
-              <span></span>,
-            footerLong:
-              <span></span>
+            subtitle: ''
           })}
         />
       </div>

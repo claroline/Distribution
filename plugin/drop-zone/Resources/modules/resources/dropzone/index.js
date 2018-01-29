@@ -2,8 +2,16 @@ import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 import {registerModals} from '#/main/core/layout/modal'
 
 import {reducer} from '#/plugin/drop-zone/resources/dropzone/reducer'
+
+import {registerDropzoneTypes} from '#/plugin/drop-zone/data/types'
 import {DropzoneResource} from '#/plugin/drop-zone/resources/dropzone/components/resource.jsx'
 import {CorrectionModal} from '#/plugin/drop-zone/resources/dropzone/correction/components/modal/correction-modal.jsx'
+
+registerDropzoneTypes()
+
+registerModals([
+  ['MODAL_CORRECTION', CorrectionModal]
+])
 
 // mount the react application
 bootstrap(
@@ -23,7 +31,6 @@ bootstrap(
       resourceNode: initialData.resourceNode,
       dropzone: initialData.dropzone,
       myDrop: initialData.myDrop,
-      peerDrop: initialData.peerDrop,
       nbCorrections: initialData.nbCorrections,
       tools: {
         data: initialData.tools,
@@ -35,7 +42,3 @@ bootstrap(
     }
   }
 )
-
-registerModals([
-  ['MODAL_CORRECTION', CorrectionModal]
-])

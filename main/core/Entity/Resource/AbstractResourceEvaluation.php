@@ -25,7 +25,7 @@ class AbstractResourceEvaluation
     const STATUS_NOT_ATTEMPTED = 'not_attempted';
     const STATUS_UNKNOWN = 'unknown';
 
-    const STATUS_PRORITY = [
+    const STATUS_PRIORITY = [
         self::STATUS_NOT_ATTEMPTED => 0,
         self::STATUS_UNKNOWN => 1,
         self::STATUS_INCOMPLETE => 2,

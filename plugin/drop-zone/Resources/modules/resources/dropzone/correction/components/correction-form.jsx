@@ -9,11 +9,11 @@ import {NumberGroup}  from '#/main/core/layout/form/components/group/number-grou
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {ScoreBox} from '#/main/core/layout/progression/components/score-box.jsx'
 
 import {DropzoneType, CorrectionType, GradeType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {computeScoreFromGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {validate, isValid} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
-import {ScoreBox} from '#/plugin/drop-zone/resources/dropzone/correction/components/score-box.jsx'
 
 const CriteriaForm = props =>
   <div id="criteria-form">

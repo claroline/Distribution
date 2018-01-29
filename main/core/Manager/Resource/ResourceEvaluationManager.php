@@ -124,7 +124,7 @@ class ResourceEvaluationManager
         $score = $evaluation->getScore();
         $scoreMax = $evaluation->getScoreMax();
         $scoreMin = $evaluation->getScoreMin();
-        $statusPriority = AbstractResourceEvaluation::STATUS_PRORITY;
+        $statusPriority = AbstractResourceEvaluation::STATUS_PRIORITY;
 
         if (!empty($duration)) {
             $reuDuration = $reu->getDuration() ? $reu->getDuration() : 0;

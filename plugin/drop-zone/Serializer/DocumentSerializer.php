@@ -4,8 +4,10 @@ namespace Claroline\DropZoneBundle\Serializer;
 
 use Claroline\CoreBundle\API\Serializer\Resource\ResourceNodeSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Document;
+use Claroline\DropZoneBundle\Entity\Drop;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -65,12 +67,10 @@ class DocumentSerializer
      */
     public function serialize(Document $document)
     {
-        $type = $document->getType();
-
         return [
             'id' => $document->getUuid(),
-            'type' => $type,
-            'data' => $type === Document::DOCUMENT_TYPE_RESOURCE ?
+            'type' => $document->getType(),
+            'data' => $document->getType() === Document::DOCUMENT_TYPE_RESOURCE ?
                 $this->resourceSerializer->serialize($document->getData()) :
                 $document->getData(),
             'drop' => $document->getDrop()->getUuid(),
@@ -104,6 +104,8 @@ class DocumentSerializer
         if (empty($document)) {
             $document = new Document();
             $document->setUuid($data['id']);
+
+            /** @var Drop $drop */
             $drop = $this->dropRepo->findOneBy(['uuid' => $data['drop']]);
             $document->setDrop($drop);
             $currentUser = $this->tokenStorage->getToken()->getUser();
@@ -117,7 +119,7 @@ class DocumentSerializer
             $document->setType($data['type']);
 
             if (isset($data['data'])) {
-                $documentData = $data['type'] === Document::DOCUMENT_TYPE_RESOURCE ?
+                $documentData = $document->getType() === Document::DOCUMENT_TYPE_RESOURCE ?
                     $this->resourceNodeRepo->findOneBy(['uuid' => $data['data']]) :
                     $data['data'];
                 $document->setData($documentData);
