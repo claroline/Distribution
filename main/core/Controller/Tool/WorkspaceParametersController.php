@@ -336,7 +336,8 @@ class WorkspaceParametersController extends Controller
 
             return $this->redirect(
                 $this->generateUrl(
-                    'claro_workspace_open', ['workspaceId' => $workspace->getId()]
+                    'claro_workspace_open',
+                    ['workspaceId' => $workspace->getId()]
                 )
             );
         }
@@ -374,7 +375,8 @@ class WorkspaceParametersController extends Controller
 
             return $this->redirect(
                 $this->generateUrl(
-                    'claro_workspace_open', ['workspaceId' => $workspace->getId()]
+                    'claro_workspace_open',
+                    ['workspaceId' => $workspace->getId()]
                 )
             );
         }
