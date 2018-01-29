@@ -288,15 +288,16 @@ class WorkspaceParametersController extends Controller
                     ]
                 )
             );
+        } else {
+            return $this->redirect(
+                $this->generateUrl(
+                    'claro_workspace_subscription_url_generate_user',
+                    [
+                        'workspace' => $workspace->getId()
+                    ]
+                )
+            );
         }
-
-        $this->workspaceManager->addUserAction($workspace, $user);
-
-        return $this->redirect(
-            $this->generateUrl(
-                'claro_workspace_open_tool', ['workspaceId' => $workspace->getId(), 'toolName' => 'home']
-            )
-        );
     }
 
     /**
@@ -355,10 +356,11 @@ class WorkspaceParametersController extends Controller
      * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:url_subscription_user_login.html.twig")
      *
      * @param Workspace $workspace
+     * @param Request   $request
      *
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
-    public function userSubscriptionAction(Workspace $workspace)
+    public function userSubscriptionAction(Workspace $workspace, Request $request)
     {
         if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw new AccessDeniedException();
@@ -367,7 +369,7 @@ class WorkspaceParametersController extends Controller
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         // If user is admin or registration validation is disabled, subscribe user
-        if ($this->isGranted('ROLE_ADMIN') || !$workspace->getRegistrationValidation()) {
+        if (/*$this->isGranted('ROLE_ADMIN') ||*/ !$workspace->getRegistrationValidation()) {
             $this->workspaceManager->addUserAction($workspace, $user);
 
             return $this->redirect(
@@ -380,6 +382,10 @@ class WorkspaceParametersController extends Controller
         if (!$this->workspaceManager->isUserInValidationQueue($workspace, $user)) {
             $this->workspaceManager->addUserQueue($workspace, $user);
         }
+
+        $flashBag = $request->getSession()->getFlashBag();
+        $translator = $this->get('translator');
+        $flashBag->set('warning', $translator->trans('workspace_awaiting_validation', [], 'platform'));
 
         return $this->redirect($this->generateUrl('claro_desktop_open'));
     }
