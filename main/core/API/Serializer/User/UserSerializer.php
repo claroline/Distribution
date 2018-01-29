@@ -142,7 +142,7 @@ class UserSerializer
             $fields = $finder->search(
                 'Claroline\CoreBundle\Entity\Facet\FieldFacetValue',
                 ['filters' => ['user' => $user->getUuid()]],
-                //should be an option but claco form messes thubgs up
+                //should be an option but claco form messes things up
                 ['minimal']
               );
 
