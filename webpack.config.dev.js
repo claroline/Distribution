@@ -12,7 +12,8 @@ const manifests = shared.dllManifests()
 
 Encore
     .setOutputPath(paths.output())
-    .setPublicPath('http://localhost:8080/dist')
+    //localhost***1080 doesn't work properly
+    .setPublicPath('/dist')
     .autoProvidejQuery()
     .enableReactPreset()
     .setManifestKeyPrefix('/dist')

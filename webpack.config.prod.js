@@ -29,11 +29,11 @@ Encore
     //.addPlugin(plugins.commonsChunk())
     //fixes performance issues
     .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
-        options.compress = false
-        options.beautify = false
+        options.compress = true
+        options.beautify = true
     })
     .configureBabel(babelConfig => {
-        babelConfig.compact = false
+        babelConfig.compact = true
     })
 
 Encore.addLoader({test: /\.html$/, loader: 'html-loader'})

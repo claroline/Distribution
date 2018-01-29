@@ -16,6 +16,16 @@ Encore
   .addPlugin(plugins.dlls())
   .addPlugin(plugins.assetsInfoFile('webpack-dlls.json'))
   .addPlugin(plugins.clarolineConfiguration())
+  
+  //fixes performance issues
+  .configureUglifyJsPlugin(uglifyJsPluginOptionsCallback = (options) => {
+      options.compress = true
+      options.beautify = true
+  })
+  .configureBabel(babelConfig => {
+      babelConfig.compact = true
+  })
+
 
 Object.keys(libraries).forEach(key => Encore.addEntry(key, libraries[key]))
 
