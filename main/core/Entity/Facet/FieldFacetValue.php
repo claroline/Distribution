@@ -121,7 +121,7 @@ class FieldFacetValue
             return !empty($this->dateValue) ? $this->dateValue->format('Y-m-d\TH:i:s') : null;
         }
 
-        return $this->dateValue; 
+        return $this->dateValue;
     }
 
     /**
