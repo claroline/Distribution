@@ -369,7 +369,7 @@ class WorkspaceParametersController extends Controller
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         // If user is admin or registration validation is disabled, subscribe user
-        if (/*$this->isGranted('ROLE_ADMIN') ||*/ !$workspace->getRegistrationValidation()) {
+        if ($this->isGranted('ROLE_ADMIN') || !$workspace->getRegistrationValidation()) {
             $this->workspaceManager->addUserAction($workspace, $user);
 
             return $this->redirect(
