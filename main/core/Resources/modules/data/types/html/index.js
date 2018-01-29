@@ -1,7 +1,10 @@
+import React from 'react'
+
 import {t} from '#/main/core/translation'
 
 import {HtmlGroup} from '#/main/core/layout/form/components/group/html-group.jsx'
 import {HtmlCell} from '#/main/core/data/types/html/components/table.jsx'
+import {HtmlRenderer} from '#/main/core/data/types/html/components/htmlRenderer.jsx'
 
 const HTML_TYPE = 'html'
 
@@ -15,8 +18,11 @@ const htmlDefinition = {
   },
   // nothing special to do
   parse: (display) => display,
-  // nothing special to do
-  render: (raw) => raw,
+  render: (raw) => {
+    const htmlRendered = React.createElement(HtmlRenderer, {html: raw})
+    
+    return htmlRendered
+  },
   validate: (value) => typeof value === 'string',
   components: {
     table: HtmlCell,
