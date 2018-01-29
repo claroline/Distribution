@@ -1545,5 +1545,5 @@
     "role_personalWorkspaceCreation_help": "A new Personal Workspace will be automatically generated for users created with this Role.",
     "access_max_users": "Restrict number of users",
     "maxUsers": "Maximum number of users",
-        "workspace_awaiting_validation": "An administrator must accept your registration to the workspace."
+    "workspace_awaiting_validation": "An administrator must accept your registration to the workspace."
 }
