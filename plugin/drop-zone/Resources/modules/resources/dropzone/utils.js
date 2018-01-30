@@ -30,7 +30,7 @@ function generateCorrectionGrades(correction, dropzone) {
   const grades = []
 
   if (dropzone.parameters.criteriaEnabled) {
-    dropzone.criteria.forEach(c => {
+    dropzone.parameters.criteria.forEach(c => {
       const grade = correction.grades.find(g => g.criterion === c.id)
 
       if (grade) {

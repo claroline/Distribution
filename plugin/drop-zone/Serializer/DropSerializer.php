@@ -5,6 +5,7 @@ namespace Claroline\DropZoneBundle\Serializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Drop;
+use Claroline\DropZoneBundle\Entity\Dropzone;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -65,7 +66,6 @@ class DropSerializer
             'score' => $drop->getScore(),
             'reported' => $drop->isReported(),
             'finished' => $drop->isFinished(),
-            'number' => $drop->getNumber(),
             'autoClosedDrop' => $drop->getAutoClosedDrop(),
             'unlockedDrop' => $drop->isUnlockedDrop(),
             'unlockedUser' => $drop->isUnlockedUser(),
@@ -90,6 +90,7 @@ class DropSerializer
         if (empty($drop)) {
             $drop = new Drop();
             $drop->setUuid($data['id']);
+            /** @var Dropzone $dropzone */
             $dropzone = $this->dropzoneRepo->findOneBy(['uuid' => $data['drop']]);
             $drop->setDropzone($dropzone);
         }
@@ -109,9 +110,6 @@ class DropSerializer
         }
         if (isset($data['finished'])) {
             $drop->setFinished($data['finished']);
-        }
-        if (isset($data['number'])) {
-            $drop->setNumber($data['number']);
         }
         if (isset($data['autoClosedDrop'])) {
             $drop->setAutoClosedDrop($data['autoClosedDrop']);

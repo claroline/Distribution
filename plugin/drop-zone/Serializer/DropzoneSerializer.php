@@ -77,8 +77,8 @@ class DropzoneSerializer
             if (isset($data['display']['showScore'])) {
                 $dropzone->setDisplayNotationToLearners($data['display']['showScore']);
             }
-            if (isset($data['display']['displayNotationMessageToLearners'])) {
-                $dropzone->setDisplayNotationMessageToLearners($data['display']['displayNotationMessageToLearners']);
+            if (isset($data['display']['showFeedback'])) {
+                $dropzone->setDisplayNotationMessageToLearners($data['display']['showFeedback']);
             }
             if (isset($data['display']['displayCorrectionsToLearners'])) {
                 $dropzone->setDisplayCorrectionsToLearners($data['display']['displayCorrectionsToLearners']);
@@ -215,7 +215,7 @@ class DropzoneSerializer
             'successMessage' => $dropzone->getSuccessMessage(),
             'failMessage' => $dropzone->getFailMessage(),
             'showScore' => $dropzone->getDisplayNotationToLearners(),
-            'displayNotationMessageToLearners' => $dropzone->getDisplayNotationMessageToLearners(),
+            'showFeedback' => $dropzone->getDisplayNotationMessageToLearners(),
             'displayCorrectionsToLearners' => $dropzone->getDisplayCorrectionsToLearners(),
         ];
     }

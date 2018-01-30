@@ -7,7 +7,7 @@ import {trans} from '#/main/core/translation'
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {ScoreBox} from '#/main/core/layout/progression/components/score-box.jsx'
+import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
 
 import {DropzoneType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {validateNotBlank} from '#/plugin/drop-zone/resources/dropzone/correction/validator'
@@ -127,10 +127,10 @@ export class CorrectionModal extends Component {
               size="lg"
             />
           }
-          {this.props.dropzone.parameters.criteriaEnabled && this.props.dropzone.criteria.length > 0 &&
+          {this.props.dropzone.parameters.criteriaEnabled && this.props.dropzone.parameters.criteria.length > 0 &&
             <table className="table">
               <tbody>
-                {this.props.dropzone.criteria.map(c =>
+                {this.props.dropzone.parameters.criteria.map(c =>
                   <tr key={`correction-criterion-${c.id}`}>
                     <td>
                       <HtmlText>

@@ -1,14 +1,12 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {constants as progressionConstants} from '#/main/core/layout/progression/constants'
 
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'
 
@@ -19,6 +17,7 @@ import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
 import {Parameters} from '#/plugin/drop-zone/resources/dropzone/overview/components/parameters.jsx'
+import {Timeline} from '#/plugin/drop-zone/resources/dropzone/overview/components/timeline.jsx'
 
 const OverviewComponent = props =>
   <ResourceOverview
@@ -26,12 +25,19 @@ const OverviewComponent = props =>
       <span className="empty-text">{trans('no_instruction', {}, 'dropzone')}</span>
     }
     progression={{
-      status: 'not_attempted',
-      statusText: 'Vous n\'avez jamais soumis de travaux.',
+      status: 'opened',
+      statusTexts: {
+        opened: 'Vous n\'avez jamais soumis de travaux.'
+      },
       score: {
         displayed: props.dropzone.display.showScore,
         current: props.myDrop ? props.myDrop.score : null,
         total: props.dropzone.parameters.scoreMax
+      },
+      feedback: {
+        displayed: props.dropzone.display.showFeedback,
+        success: props.dropzone.display.successMessage,
+        failure: props.dropzone.display.failMessage
       },
       details: [
         [
@@ -53,40 +59,37 @@ const OverviewComponent = props =>
         icon: 'fa fa-fw fa-upload icon-with-text-right',
         label: trans('submit_my_copy', {}, 'dropzone'),
         action: '#/drop',
-        primary: true,
+        primary: !props.myDrop || !props.myDrop.finished,
         disabled: !props.dropEnabled,
         disabledMessages: props.dropDisabledMessages
+      }, {
+        icon: 'fa fa-fw fa-check-square-o icon-with-text-right',
+        label: trans('correct_a_copy', {}, 'dropzone'),
+        action: '#/review',
+        primary: props.myDrop && props.myDrop.finished,
+        disabled: !props.peerReviewEnabled,
+        disabledMessages: props.peerReviewDisabledMessages
       }
     ]}
   >
-    <Parameters
-      state={props.currentState}
-      planningType={props.dropzone.planning.type}
-      dropType={props.dropzone.parameters.dropType}
-      reviewType={props.dropzone.parameters.reviewType}
-    />
+    <section className="resource-parameters">
+      <h3 className="h2">{trans('evaluation_configuration', {}, 'dropzone')}</h3>
+
+      <Parameters
+        dropType={props.dropzone.parameters.dropType}
+        reviewType={props.dropzone.parameters.reviewType}
+      />
+
+      <Timeline
+        state={props.currentState}
+        planning={props.dropzone.planning}
+        reviewType={props.dropzone.parameters.reviewType}
+      />
+    </section>
 
     {props.errorMessage &&
     <div className="alert alert-danger">
       {props.errorMessage}
-    </div>
-    }
-
-    {props.myDrop &&
-    props.dropzone.display.displayNotationMessageToLearners &&
-    props.userEvaluation &&
-    [progressionConstants.EVALUATION_STATUS_PASSED, progressionConstants.EVALUATION_STATUS_FAILED].indexOf(props.userEvaluation.status) > -1 &&
-    computeDropCompletion(props.dropzone, props.myDrop, props.nbCorrections) &&
-    <div className={classes('alert', {
-      'alert-success': props.userEvaluation.status === progressionConstants.EVALUATION_STATUS_PASSED,
-      'alert-danger': props.userEvaluation.status === progressionConstants.EVALUATION_STATUS_FAILED
-    })}>
-      <HtmlText>
-        {props.userEvaluation.status === progressionConstants.EVALUATION_STATUS_PASSED ?
-          props.dropzone.display.successMessage :
-          props.dropzone.display.failMessage
-        }
-      </HtmlText>
     </div>
     }
 
@@ -110,24 +113,24 @@ const OverviewComponent = props =>
         >
           {!props.myDrop.finished && [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 ?
             <span>
-                <span className="fa fa-fw fa-pencil dropzone-button-icon"/>
+              <span className="fa fa-fw fa-pencil dropzone-button-icon"/>
               {trans('complete_my_copy', {}, 'dropzone')}
               </span> :
             <span>
-                <span className="fa fa-fw fa-eye dropzone-button-icon"/>
+            <span className="fa fa-fw fa-eye dropzone-button-icon"/>
               {trans('see_my_copy', {}, 'dropzone')}
-              </span>
+            </span>
           }
         </a>
 
         {props.myDrop.finished && props.peerReviewEnabled && props.nbCorrections < props.dropzone.parameters.expectedCorrectionTotal &&
-        <a
-          href="#/peer/drop"
-          className="btn btn-default"
-        >
-          <span className="fa fa-fw fa-edit dropzone-button-icon"/>
-          {trans('correct_a_copy', {}, 'dropzone')}
-        </a>
+          <a
+            href="#/peer/drop"
+            className="btn btn-default"
+          >
+            <span className="fa fa-fw fa-edit dropzone-button-icon"/>
+            {trans('correct_a_copy', {}, 'dropzone')}
+          </a>
         }
       </div>
     }
@@ -140,6 +143,7 @@ OverviewComponent.propTypes = {
   dropEnabled: T.bool.isRequired,
   dropDisabledMessages: T.arrayOf(T.string).isRequired,
   peerReviewEnabled: T.bool.isRequired,
+  peerReviewDisabledMessages: T.arrayOf(T.string).isRequired,
   nbCorrections: T.number.isRequired,
   currentState: T.oneOf(
     Object.keys(constants.PLANNING_STATES.all)
@@ -167,6 +171,7 @@ const Overview = connect(
     dropEnabled: select.isDropEnabled(state),
     dropDisabledMessages: select.dropDisabledMessages(state),
     peerReviewEnabled: select.isPeerReviewEnabled(state),
+    peerReviewDisabledMessages: select.peerReviewDisabledMessages(state),
     nbCorrections: select.nbCorrections(state),
     currentState: select.currentState(state),
     userEvaluation: select.userEvaluation(state),

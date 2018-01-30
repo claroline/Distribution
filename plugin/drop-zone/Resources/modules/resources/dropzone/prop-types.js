@@ -36,7 +36,7 @@ const DropzoneType = {
     display: T.shape({
       correctionInstruction: T.string,
       displayCorrectionsToLearners: T.bool.isRequired,
-      displayNotationMessageToLearners: T.bool.isRequired,
+      showFeedback: T.bool.isRequired,
       showScore: T.bool.isRequired,
       failMessage: T.string,
       successMessage: T.string
@@ -46,7 +46,7 @@ const DropzoneType = {
         Object.keys(constants.PLANNING_TYPES)
       ).isRequired,
       state: T.oneOf(
-        Object.keys(constants.PLANNING_STATES)
+        Object.keys(constants.PLANNING_STATES.all)
       ),
       // drop date range
       drop: T.arrayOf(T.string),
@@ -78,7 +78,9 @@ const DropzoneToolDocumentType = {
 const DocumentType = {
   propTypes: {
     id: T.string.isRequired,
-    type: T.number.isRequired,
+    type: T.oneOf(
+      Object.keys(constants.DOCUMENT_TYPES)
+    ).isRequired,
     drop: T.string.isRequired,
     user: T.shape({
       autoId: T.number.isRequired,
@@ -137,7 +139,6 @@ const CorrectionType = {
 const DropType = {
   propTypes: {
     id: T.string.isRequired,
-    dropzone: T.string.isRequired,
     user: T.shape({
       autoId: T.number.isRequired,
       id: T.string.isRequired,

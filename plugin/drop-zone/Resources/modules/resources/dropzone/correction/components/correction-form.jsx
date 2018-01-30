@@ -9,7 +9,7 @@ import {NumberGroup}  from '#/main/core/layout/form/components/group/number-grou
 import {HtmlGroup}  from '#/main/core/layout/form/components/group/html-group.jsx'
 import {RadioGroup}  from '#/main/core/layout/form/components/group/radio-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {ScoreBox} from '#/main/core/layout/progression/components/score-box.jsx'
+import {ScoreBox} from '#/main/core/layout/evaluation/components/score-box.jsx'
 
 import {DropzoneType, CorrectionType, GradeType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 import {computeScoreFromGrades} from '#/plugin/drop-zone/resources/dropzone/utils'
@@ -21,10 +21,10 @@ const CriteriaForm = props =>
       score={computeScoreFromGrades(props.grades, props.dropzone.parameters.criteriaTotal, props.dropzone.parameters.scoreMax)}
       scoreMax={props.dropzone.parameters.scoreMax}
     />
-    {props.dropzone.criteria.length > 0 ?
+    {props.dropzone.parameters.criteria.length > 0 ?
       <table className="table">
         <tbody>
-        {props.dropzone.criteria.map(c =>
+        {props.dropzone.parameters.criteria.map(c =>
           <tr key={`criterion-form-${c.id}`}>
             <td>
               <HtmlText>

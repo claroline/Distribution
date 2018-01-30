@@ -6,7 +6,12 @@ import {Routes} from '#/main/core/router/components/router.jsx'
 const Player = props =>
   <Routes
     routes={[
-
+      {
+        path: '/submit',
+        component: Editor
+      }, {
+        path: '/review'
+      }
     ]}
   />
 

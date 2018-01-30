@@ -78,7 +78,6 @@ PeerDrop.propTypes = {
     id: T.string.isRequired
   }),
   myTeamId: T.number,
-  isPeerReviewEnabled: T.bool.isRequired,
   saveCorrection: T.func.isRequired,
   submitCorrection: T.func.isRequired
 }
@@ -89,7 +88,6 @@ function mapStateToProps(state) {
     dropzone: select.dropzone(state),
     drop: select.peerDrop(state),
     myTeamId: select.myTeamId(state),
-    isPeerReviewEnabled: select.isPeerReviewEnabled(state)
   }
 }
 

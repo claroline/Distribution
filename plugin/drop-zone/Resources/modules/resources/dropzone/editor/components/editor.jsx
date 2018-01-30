@@ -207,7 +207,7 @@ const EditorComponent = props =>
             type: 'boolean',
             label: trans('display_notation_to_learners', {}, 'dropzone')
           }, {
-            name: 'display.displayNotationMessageToLearners',
+            name: 'display.showFeedback',
             type: 'boolean',
             label: trans('display_notation_message_to_learners', {}, 'dropzone'),
             linked: [
@@ -215,13 +215,13 @@ const EditorComponent = props =>
                 name: 'display.successMessage',
                 type: 'html',
                 label: trans('success_message', {}, 'dropzone'),
-                displayed: props.dropzone.display.displayNotationMessageToLearners,
+                displayed: props.dropzone.display.showFeedback,
                 required: true
               }, {
                 name: 'display.failMessage',
                 type: 'html',
                 label: trans('fail_message', {}, 'dropzone'),
-                displayed: props.dropzone.display.displayNotationMessageToLearners,
+                displayed: props.dropzone.display.showFeedback,
                 required: true
               }
             ]

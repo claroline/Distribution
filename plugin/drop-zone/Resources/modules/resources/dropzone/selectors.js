@@ -65,19 +65,27 @@ const isDropEnabled = createSelector(
   }
 )
 
-const isPeerReviewEnabled = createSelector(
+const isPeerReviewEnabledManual = createSelector(
   [dropzone],
-  (dropzone) => {
-    let planningReviewAllowed = false
-    if (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type) {
-      // manual planing, checks state
-      planningReviewAllowed = [constants.STATE_PEER_REVIEW, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(dropzone.planning.state) > -1
-    } else {
-      // auto planning, checks dates
-      planningReviewAllowed = now() >= dropzone.planning.review[0] && now() <= dropzone.planning.review[1]
-    }
+  (dropzone) => [
+    constants.STATE_PEER_REVIEW,
+    constants.STATE_ALLOW_DROP_AND_PEER_REVIEW
+  ].indexOf(dropzone.planning.state) > -1
+)
 
-    return dropzone.parameters.reviewType && planningReviewAllowed
+const isPeerReviewEnabledAuto = createSelector(
+  [dropzone],
+  (dropzone) => dropzone.planning.review && now() >= dropzone.planning.review[0] && now() <= dropzone.planning.review[1]
+)
+
+const isPeerReviewEnabled = createSelector(
+  [user, dropzone, isPeerReviewEnabledManual, isPeerReviewEnabledAuto, myDrop, nbCorrections],
+  (user, dropzone, isPeerReviewEnabledManual, isPeerReviewEnabledAuto, myDrop, nbCorrections) => {
+    return !!user
+      && constants.REVIEW_TYPE_PEER === dropzone.parameters.reviewType
+      && (myDrop && myDrop.finished)
+      && (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type ? isPeerReviewEnabledManual : isPeerReviewEnabledAuto)
+      && nbCorrections < dropzone.parameters.expectedCorrectionTotal
   }
 )
 
@@ -121,39 +129,39 @@ const dropDisabledMessages = createSelector(
 
     // anonymous user error
     if (!user) {
-      messages.push(trans('user_required', {}, 'dropzone'))
+      messages.push(trans('drop_state_user_required', {}, 'dropzone'))
     }
 
     // no team error
     if (dropzoneRequireTeam && !userHasTeam) {
-      messages.push(trans('team_required', {}, 'dropzone'))
+      messages.push(trans('drop_state_team_required', {}, 'dropzone'))
     }
 
     // state error
     switch (currentState) {
       // not started error
       case constants.STATE_NOT_STARTED:
-        messages.push(trans('state_not_started', {}, 'dropzone'))
+        messages.push(trans('drop_state_not_started', {}, 'dropzone'))
         break
 
       // finished error
       case constants.STATE_FINISHED:
-        messages.push(trans('state_finished', {}, 'dropzone'))
+        messages.push(trans('drop_state_finished', {}, 'dropzone'))
         break
 
       // otherwise checks drop date boundaries
       default:
         if (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type) {
           if (!isDropEnabledManual) {
-            messages.push(trans('drop_not_active', {}, 'dropzone'))
+            messages.push(trans('drop_state_not_active', {}, 'dropzone'))
           }
         } else {
           if (now() < dropzone.planning.drop[0]) {
             // drop has not already started
-            messages.push(trans('drop_not_started', {}, 'dropzone'))
+            messages.push(trans('drop_state_not_started', {}, 'dropzone'))
           } else if (now() > dropzone.planning.drop[1]) {
             // drop has already finished
-            messages.push(trans('drop_finished', {}, 'dropzone'))
+            messages.push(trans('drop_state_finished', {}, 'dropzone'))
           }
         }
 
@@ -164,13 +172,59 @@ const dropDisabledMessages = createSelector(
   }
 )
 
-const reviewDisabledMessages = createSelector(
-  [myDrop],
-  (myDrop) => {
-    // all corrections done
-    [
-      !myDrop.finished && trans('drop_not_finished', {}, 'dropzone')
-    ]
+const peerReviewDisabledMessages = createSelector(
+  [user, dropzone, isPeerReviewEnabledManual, myDrop, nbCorrections],
+  (user, dropzone, isPeerReviewEnabledManual, myDrop, nbCorrections) => {
+    const messages = []
+
+    // if peer review is disabled, just skip errors
+    if (constants.REVIEW_TYPE_PEER === dropzone.parameters.reviewType) {
+      // anonymous user error
+      if (!user) {
+        messages.push(trans('review_state_user_required', {}, 'dropzone'))
+      }
+
+      if (!myDrop || !myDrop.finished) {
+        messages.push(trans('review_state_drop_not_finished', {}, 'dropzone'))
+      }
+
+      if (nbCorrections === dropzone.parameters.expectedCorrectionTotal) {
+        messages.push(trans('review_state_corrections_done', {}, 'dropzone'))
+      }
+
+      // state error
+      switch (currentState) {
+        // not started error
+        case constants.STATE_NOT_STARTED:
+          messages.push(trans('review_state_not_started', {}, 'dropzone'))
+          break
+
+        // finished error
+        case constants.STATE_FINISHED:
+          messages.push(trans('review_state_finished', {}, 'dropzone'))
+          break
+
+        // otherwise checks drop date boundaries
+        default:
+          if (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type) {
+            if (!isPeerReviewEnabledManual) {
+              messages.push(trans('review_state_not_active', {}, 'dropzone'))
+            }
+          } else {
+            if (now() < dropzone.planning.review[0]) {
+              // drop has not already started
+              messages.push(trans('review_state_not_started', {}, 'dropzone'))
+            } else if (now() > dropzone.planning.review[1]) {
+              // drop has already finished
+              messages.push(trans('review_state_finished', {}, 'dropzone'))
+            }
+          }
+
+          break
+      }
+    }
+
+    return messages
   }
 )
 
@@ -196,5 +250,5 @@ export const select = {
   myTeamId,
   errorMessage,
   dropDisabledMessages,
-  reviewDisabledMessages
+  peerReviewDisabledMessages
 }
