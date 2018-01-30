@@ -96,6 +96,7 @@
                 var isSvg = (file.type) ? file.type.indexOf('svg+xml') !== -1 : false;
                 file.xhr = FileAPI.upload({
                     url: Routing.generate('claro_file_upload_with_ajax', {'parent': currentDirectoryId}),
+                    //if we don't comment this line, every image becomes a png.
                     //imageAutoOrientation: !isSvg,
                     data: { fileName: file.name },
                     files: { file: file },
