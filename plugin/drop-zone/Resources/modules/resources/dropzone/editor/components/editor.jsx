@@ -229,7 +229,7 @@ const EditorComponent = props =>
             name: 'display.displayCorrectionsToLearners',
             type: 'boolean',
             label: trans('display_corrections_to_learners', {}, 'dropzone')
-          },
+          }
         ]
       }, {
         id: 'notification',
@@ -253,7 +253,7 @@ EditorComponent.propTypes = {
 
 const Editor = connect(
   state => ({
-    dropzone: formSelect.data(formSelect.form(state, 'dropzoneForm')),
+    dropzone: formSelect.data(formSelect.form(state, 'dropzoneForm'))
   }),
   dispatch => ({
     updateProp(propName, propValue) {

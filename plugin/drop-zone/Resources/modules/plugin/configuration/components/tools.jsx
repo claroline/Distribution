@@ -23,7 +23,7 @@ class Tools extends Component {
   showCompilatioForm(tool = null) {
     const toolForm = !tool ?
     {
-      id: make(),
+      id: makeId(),
       name: '',
       type: constants.compilatioValue,
       data: {

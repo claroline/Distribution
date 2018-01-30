@@ -8,7 +8,6 @@ import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {ScoreBox} from '#/main/core/layout/progression/components/score-box.jsx'
 import {constants as progressionConstants} from '#/main/core/layout/progression/constants'
 
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'

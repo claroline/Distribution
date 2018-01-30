@@ -1,18 +1,21 @@
-import {isValidDate, localeDate, serverDate} from '#/main/core/scaffolding/date'
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {DateRangeGroup} from '#/main/core/layout/form/components/group/date-range-group.jsx'
-import {DateSearch} from '#/main/core/data/types/date/components/search.jsx'
 
 const DATE_RANGE_TYPE = 'date-range'
+
+// todo implements Search
+// todo implements render()
+// todo implements parse()
+// todo implements validate()
 
 const dateRangeDefinition = {
   meta: {
     type: DATE_RANGE_TYPE,
     creatable: false,
     icon: 'fa fa-fw fa-calendar',
-    label: t('date_range'),
-    description: t('date_range_desc')
+    label: trans('date_range'),
+    description: trans('date_range_desc')
   },
 
   /**
@@ -29,8 +32,7 @@ const dateRangeDefinition = {
   },
 
   components: {
-    form: DateRangeGroup,
-    //search: DateSearch
+    form: DateRangeGroup
   }
 }
 

@@ -42,7 +42,8 @@ class DateNormalizer
                 $dateTime = \DateTime::createFromFormat(static::DATE_FORMAT, $dateString);
 
                 return $dateTime;
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
         return null;

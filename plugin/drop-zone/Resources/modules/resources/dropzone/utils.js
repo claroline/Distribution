@@ -37,7 +37,7 @@ function generateCorrectionGrades(correction, dropzone) {
         grades.push(grade)
       } else {
         grades.push({
-          id: uuid(),
+          id: makeId(),
           value: 0,
           correction: correction.id,
           criterion: c.id

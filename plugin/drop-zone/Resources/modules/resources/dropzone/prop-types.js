@@ -51,7 +51,7 @@ const DropzoneType = {
       // drop date range
       drop: T.arrayOf(T.string),
       // review date range
-      review: T.arrayOf(T.string),
+      review: T.arrayOf(T.string)
     }).isRequired,
     notifications: T.shape({
       actions: T.arrayOf(T.string),

@@ -56,7 +56,7 @@ class Dropzone extends AbstractResource
      *
      * @var int
      *
-     * @todo remove me. it's not used anymore.
+     * @todo remove me. it's not used anymore
      */
     protected $editionState = 1;
 
@@ -266,13 +266,13 @@ class Dropzone extends AbstractResource
      *
      * @var int
      *
-     * @todo remove me. it's not used anymore.
+     * @todo remove me. it's not used anymore
      */
     protected $autoCloseState = self::AUTO_CLOSED_STATE_WAITING;
 
     /**
      * Becomes true when all the drops have been force closed at the end of the evaluation.
-     * (Used when `autoCloseDropsAtDropEndDate` = true)
+     * (Used when `autoCloseDropsAtDropEndDate` = true).
      *
      * @ORM\Column(name="drop_closed", type="boolean", nullable=false)
      *

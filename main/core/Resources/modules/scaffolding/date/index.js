@@ -11,10 +11,6 @@ function getFormat(withTime) {
   return t(withTime ? 'date_range.js_format.with_hours':'date_range.js_format')
 }
 
-function isValidDate(value) {
-  return moment(value).isValid()
-}
-
 function localeDate(date, withTime = false) {
   return moment(date).format(getFormat(withTime))
 }

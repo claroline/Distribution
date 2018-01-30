@@ -16,10 +16,7 @@ use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\PluginOptionsEvent;
 use Claroline\CoreBundle\Form\ResourceNameType;
-use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Dropzone;
 use Claroline\DropZoneBundle\Manager\DropzoneManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -56,11 +53,11 @@ class DropzoneListener
      *     "templating"            = @DI\Inject("templating")
      * })
      *
-     * @param DropzoneManager $dropzoneManager
-     * @param FormFactory $formFactory
+     * @param DropzoneManager     $dropzoneManager
+     * @param FormFactory         $formFactory
      * @param HttpKernelInterface $httpKernel
-     * @param RequestStack $requestStack
-     * @param TwigEngine $templating
+     * @param RequestStack        $requestStack
+     * @param TwigEngine          $templating
      */
     public function __construct(
         DropzoneManager $dropzoneManager,

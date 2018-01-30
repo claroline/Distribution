@@ -126,7 +126,7 @@ const dropDisabledMessages = createSelector(
 
     // no team error
     if (dropzoneRequireTeam && !userHasTeam) {
-        messages.push(trans('team_required', {}, 'dropzone'))
+      messages.push(trans('team_required', {}, 'dropzone'))
     }
 
     // state error
