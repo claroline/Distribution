@@ -293,7 +293,7 @@ class WorkspaceParametersController extends Controller
                 $this->generateUrl(
                     'claro_workspace_subscription_url_generate_user',
                     [
-                        'workspace' => $workspace->getId()
+                        'workspace' => $workspace->getId(),
                     ]
                 )
             );
