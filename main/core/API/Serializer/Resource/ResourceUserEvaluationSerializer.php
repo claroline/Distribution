@@ -53,6 +53,8 @@ class ResourceUserEvaluationSerializer
             'resourceNode' => $this->resourceNodeSerializer->serialize($resourceUserEvaluation->getResourceNode()),
             'user' => $this->userSerializer->serialize($resourceUserEvaluation->getUser()),
             'userName' => $resourceUserEvaluation->getUserName(),
+            'nbAttempts' => $resourceUserEvaluation->getNbAttempts(),
+            'nbOpenings' => $resourceUserEvaluation->getNbOpenings(),
         ];
 
         return $serialized;

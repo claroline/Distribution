@@ -29,6 +29,10 @@ class ResourceEvaluationManager
     private $eventDispatcher;
     private $om;
 
+    private $resourceUserEvaluationRepo;
+    private $resourceEvaluationRepo;
+    private $logRepo;
+
     /**
      * @DI\InjectParams({
      *     "eventDispatcher" = @DI\Inject("event_dispatcher"),
@@ -45,6 +49,7 @@ class ResourceEvaluationManager
 
         $this->resourceUserEvaluationRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceUserEvaluation');
         $this->resourceEvaluationRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceEvaluation');
+        $this->logRepo = $this->om->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
     public function getResourceUserEvaluation(ResourceNode $node, User $user, $withCreation = true)
@@ -116,45 +121,123 @@ class ResourceEvaluationManager
         return $evaluation;
     }
 
-    private function updateResourceUserEvaluation(ResourceEvaluation $evaluation, $forceStatus = false)
-    {
-        $reu = $evaluation->getResourceUserEvaluation();
-        $reu->setDate($evaluation->getDate());
+    public function updateResourceUserEvaluationData(
+        ResourceNode $node,
+        User $user = null,
+        \DateTime $date = null,
+        $status = null,
+        $score = null,
+        $scoreMin = null,
+        $scoreMax = null,
+        $customScore = null,
+        $duration = null,
+        $forceStatus = false,
+        $incAttempts = true,
+        $incOpenings = false
+    ) {
+        $rue = $this->getResourceUserEvaluation($node, $user);
+        $statusPriority = AbstractResourceEvaluation::STATUS_PRORITY;
+
+        if (!empty($date)) {
+            $rue->setDate($date);
+        }
+        if (!empty($duration)) {
+            $rueDuration = $rue->getDuration() ? $rue->getDuration() : 0;
+            $rueDuration += $duration;
+            $rue->setDuration($rueDuration);
+        }
+        if ($forceStatus) {
+            $rue->setScore($score);
+            $rue->setScoreMax($scoreMax);
+            $rue->setScoreMin($scoreMin);
+            $rue->setCustomScore($customScore);
+        } elseif (!empty($score)) {
+            $newScore = empty($scoreMax) ? $score : $score / $scoreMax;
+
+            $rueScore = $rue->getScore() ? $rue->getScore() : 0;
+            $rueScoreMax = $rue->getScoreMax();
+            $oldScore = empty($rueScoreMax) ? $rueScore : $rueScore / $rueScoreMax;
+
+            if ($newScore >= $oldScore) {
+                $rue->setScore($score);
+                $rue->setScoreMax($scoreMax);
+                $rue->setScoreMin($scoreMin);
+            }
+        }
+        if ($forceStatus ||
+            empty($rue->getStatus()) ||
+            $statusPriority[$status] > $statusPriority[$rue->getStatus()]
+        ) {
+            $rue->setStatus($status);
+        }
+        if ($incAttempts) {
+            $nbAttempts = $rue->getNbAttempts() ? $rue->getNbAttempts() : 0;
+            ++$nbAttempts;
+            $rue->setNbAttempts($nbAttempts);
+        }
+        if ($incOpenings) {
+            $nbOpenings = $rue->getNbOpenings() ? $rue->getNbOpenings() : 0;
+            ++$nbOpenings;
+            $rue->setNbOpenings($nbOpenings);
+        }
+        $this->persistResourceUserEvaluation($rue);
+    }
+
+    private function updateResourceUserEvaluation(
+        ResourceEvaluation $evaluation,
+        $forceStatus = false,
+        $incAttempts = true
+    ) {
+        $rue = $evaluation->getResourceUserEvaluation();
+        $rue->setDate($evaluation->getDate());
+
         $duration = $evaluation->getDuration();
         $score = $evaluation->getScore();
         $scoreMax = $evaluation->getScoreMax();
         $scoreMin = $evaluation->getScoreMin();
+
         $statusPriority = AbstractResourceEvaluation::STATUS_PRIORITY;
 
         if (!empty($duration)) {
-            $reuDuration = $reu->getDuration() ? $reu->getDuration() : 0;
-            $reuDuration += $duration;
-            $reu->setDuration($reuDuration);
+            $rueDuration = $rue->getDuration() ? $rue->getDuration() : 0;
+            $rueDuration += $duration;
+            $rue->setDuration($rueDuration);
         }
         if ($forceStatus) {
-            $reu->setScore($score);
-            $reu->setScoreMax($scoreMax);
-            $reu->setScoreMin($scoreMin);
+            $rue->setScore($score);
+            $rue->setScoreMax($scoreMax);
+            $rue->setScoreMin($scoreMin);
+            $rue->setCustomScore($evaluation->getCustomScore());
         } elseif (!empty($score)) {
             $newScore = empty($scoreMax) ? $score : $score / $scoreMax;
 
-            $reuScore = $reu->getScore() ? $reu->getScore() : 0;
-            $reuScoreMax = $reu->getScoreMax();
-            $oldScore = empty($reuScoreMax) ? $reuScore : $reuScore / $reuScoreMax;
+            $rueScore = $rue->getScore() ? $rue->getScore() : 0;
+            $rueScoreMax = $rue->getScoreMax();
+            $oldScore = empty($rueScoreMax) ? $rueScore : $rueScore / $rueScoreMax;
 
             if ($newScore >= $oldScore) {
-                $reu->setScore($score);
-                $reu->setScoreMax($scoreMax);
-                $reu->setScoreMin($scoreMin);
+                $rue->setScore($score);
+                $rue->setScoreMax($scoreMax);
+                $rue->setScoreMin($evaluation->getScoreMin());
             }
         }
         if ($forceStatus ||
-            empty($reu->getStatus()) ||
-            ($evaluation->isSuccessful() && !$reu->isSuccessful()) ||
-            $statusPriority[$evaluation->getStatus()] > $statusPriority[$reu->getStatus()]
+            empty($rue->getStatus()) ||
+            ($evaluation->isSuccessful() && !$rue->isSuccessful()) ||
+            $statusPriority[$evaluation->getStatus()] > $statusPriority[$rue->getStatus()]
         ) {
-            $reu->setStatus($evaluation->getStatus());
+            $rue->setStatus($evaluation->getStatus());
         }
-        $this->persistResourceUserEvaluation($reu);
+        if ($incAttempts) {
+            $nbAttempts = $rue->getNbAttempts() ? $rue->getNbAttempts() : 0;
+            ++$nbAttempts;
+            $rue->setNbAttempts($nbAttempts);
+        }
+        $this->persistResourceUserEvaluation($rue);
+    }
+
+    public function getLogsForResourceTracking(ResourceNode $node, User $user, array $actions, \DateTime $startDate = null)
+    {
+        return $this->logRepo->findLogsForResourceTracking($node, $user, $actions, $startDate);
     }
 }

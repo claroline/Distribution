@@ -100,6 +100,7 @@ class ResourceNodeSerializer
     public function serialize(ResourceNode $resourceNode)
     {
         $serializedNode = [
+            'autoId' => $resourceNode->getId(),
             'id' => $resourceNode->getGuid(),
             'actualId' => $resourceNode->getId(),
             'name' => $resourceNode->getName(),
