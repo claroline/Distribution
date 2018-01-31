@@ -1,6 +1,5 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 
-import {reducer} from '#/main/core/tools/workspace/logs/reducer'
 import {LogTool} from '#/main/core/tools/workspace/logs/components/tool.jsx'
 
 
@@ -13,7 +12,7 @@ bootstrap(
   LogTool,
 
   // app store configuration
-  reducer,
+  () => {},
 
   // remap data-attributes set on the app DOM container
   (initialData) => {
