@@ -57,9 +57,10 @@ const isDropEnabledAuto = createSelector(
 )
 
 const isDropEnabled = createSelector(
-  [user, dropzone, isDropEnabledManual, isDropEnabledAuto, userHasTeam, dropzoneRequireTeam],
-  (user, dropzone, isDropEnabledManual, isDropEnabledAuto, userHasTeam, dropzoneRequireTeam) => {
+  [user, errorMessage, dropzone, isDropEnabledManual, isDropEnabledAuto, userHasTeam, dropzoneRequireTeam],
+  (user, errorMessage, dropzone, isDropEnabledManual, isDropEnabledAuto, userHasTeam, dropzoneRequireTeam) => {
     return !!user
+      && !errorMessage
       && (!dropzoneRequireTeam || userHasTeam)
       && (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type ? isDropEnabledManual : isDropEnabledAuto)
   }
@@ -83,7 +84,7 @@ const isPeerReviewEnabled = createSelector(
   (user, dropzone, isPeerReviewEnabledManual, isPeerReviewEnabledAuto, myDrop, nbCorrections) => {
     return !!user
       && constants.REVIEW_TYPE_PEER === dropzone.parameters.reviewType
-      && (myDrop && myDrop.finished)
+      && (!!myDrop && myDrop.finished)
       && (constants.PLANNING_TYPE_MANUAL === dropzone.planning.type ? isPeerReviewEnabledManual : isPeerReviewEnabledAuto)
       && nbCorrections < dropzone.parameters.expectedCorrectionTotal
   }
@@ -123,9 +124,13 @@ const currentState = createSelector(
 
 // get why drop is disabled
 const dropDisabledMessages = createSelector(
-  [user, dropzone, currentState, dropzoneRequireTeam, userHasTeam, isDropEnabledManual],
-  (user, dropzone, currentState, dropzoneRequireTeam, userHasTeam, isDropEnabledManual) => {
+  [user, errorMessage, dropzone, currentState, dropzoneRequireTeam, userHasTeam, isDropEnabledManual],
+  (user, errorMessage, dropzone, currentState, dropzoneRequireTeam, userHasTeam, isDropEnabledManual) => {
     const messages = []
+
+    if (errorMessage) {
+      messages.push(errorMessage)
+    }
 
     // anonymous user error
     if (!user) {

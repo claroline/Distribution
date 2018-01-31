@@ -48,6 +48,7 @@ const UserProgression = props =>
   </section>
 
 UserProgression.propTypes = {
+  unlocked: T.bool,
   status: T.string,
   statusTexts: T.object,
   score: T.shape({
@@ -61,6 +62,7 @@ UserProgression.propTypes = {
 }
 
 UserProgression.defaultProps = {
+  unlocked: false,
   status: evaluationConstants.EVALUATION_STATUS_NOT_ATTEMPTED,
   statusTexts: {},
   details: []
@@ -181,6 +183,11 @@ const ResourceOverview = props =>
 ResourceOverview.propTypes = {
   contentText: T.string,
   progression: T.shape({
+    /**
+     * Permits to show notation & feedback before the end of evaluation.
+     * (Some resources like DropZone implement it)
+     */
+    unlocked: T.bool,
     status: T.string,
     statusTexts: T.object,
     feedback: T.shape({

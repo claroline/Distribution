@@ -25,7 +25,7 @@ const OverviewComponent = props =>
       <span className="empty-text">{trans('no_instruction', {}, 'dropzone')}</span>
     }
     progression={{
-      status: 'opened',
+      status: props.userEvaluation ? props.userEvaluation.status : undefined,
       statusTexts: {
         opened: 'Vous n\'avez jamais soumis de travaux.'
       },
@@ -45,27 +45,30 @@ const OverviewComponent = props =>
           props.myDrop && props.myDrop.dropDate ?
             displayDate(props.myDrop.dropDate, false, true) :
             trans('not_submitted', {}, 'dropzone')
-        ], [
-          'Nbre de corrections reçus',
-          `${props.myDrop ? props.myDrop.corrections.length : '0'}/4`
-        ], [
+        ],
+        constants.REVIEW_TYPE_PEER === props.dropzone.parameters.reviewType && [
+          'Nbre de corrections reçues',
+          `${props.myDrop ? props.myDrop.corrections.length : '0'} / ${props.dropzone.parameters.expectedCorrectionTotal}`
+        ],
+        constants.REVIEW_TYPE_PEER === props.dropzone.parameters.reviewType && [
           'Nbre de corrections faîtes',
-          '2/4'
+          `${props.nbCorrections} / ${props.dropzone.parameters.expectedCorrectionTotal}`
         ]
-      ]
+      ].filter(value => !!value)
     }}
     actions={[
+      // todo add show Drop
       {
         icon: 'fa fa-fw fa-upload icon-with-text-right',
         label: trans('submit_my_copy', {}, 'dropzone'),
-        action: '#/drop',
+        action: !props.myDrop || !props.myDrop.finished ? () => props.startDrop(props.dropzone.parameters.dropType, props.teams) : '#/my/drop',
         primary: !props.myDrop || !props.myDrop.finished,
         disabled: !props.dropEnabled,
         disabledMessages: props.dropDisabledMessages
       }, {
         icon: 'fa fa-fw fa-check-square-o icon-with-text-right',
         label: trans('correct_a_copy', {}, 'dropzone'),
-        action: '#/review',
+        action: '#/peer/drop',
         primary: props.myDrop && props.myDrop.finished,
         disabled: !props.peerReviewEnabled,
         disabledMessages: props.peerReviewDisabledMessages
@@ -86,54 +89,6 @@ const OverviewComponent = props =>
         reviewType={props.dropzone.parameters.reviewType}
       />
     </section>
-
-    {props.errorMessage &&
-    <div className="alert alert-danger">
-      {props.errorMessage}
-    </div>
-    }
-
-    {false && !props.myDrop &&
-    !props.errorMessage &&
-    props.dropEnabled &&
-    <button
-      className="btn btn-primary"
-      type="button"
-      onClick={() => props.startDrop(props.dropzone.parameters.dropType, props.teams)}
-    >
-      {trans('start_evaluation', {}, 'dropzone')}
-    </button>
-    }
-
-    {props.myDrop &&
-      <div className="btn-group btn-group-justified">
-        <a
-          href="#/my/drop"
-          className="btn btn-default"
-        >
-          {!props.myDrop.finished && [constants.STATE_ALLOW_DROP, constants.STATE_ALLOW_DROP_AND_PEER_REVIEW].indexOf(props.currentState) > -1 ?
-            <span>
-              <span className="fa fa-fw fa-pencil dropzone-button-icon"/>
-              {trans('complete_my_copy', {}, 'dropzone')}
-              </span> :
-            <span>
-            <span className="fa fa-fw fa-eye dropzone-button-icon"/>
-              {trans('see_my_copy', {}, 'dropzone')}
-            </span>
-          }
-        </a>
-
-        {props.myDrop.finished && props.peerReviewEnabled && props.nbCorrections < props.dropzone.parameters.expectedCorrectionTotal &&
-          <a
-            href="#/peer/drop"
-            className="btn btn-default"
-          >
-            <span className="fa fa-fw fa-edit dropzone-button-icon"/>
-            {trans('correct_a_copy', {}, 'dropzone')}
-          </a>
-        }
-      </div>
-    }
   </ResourceOverview>
 
 OverviewComponent.propTypes = {

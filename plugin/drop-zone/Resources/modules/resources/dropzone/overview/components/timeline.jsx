@@ -5,6 +5,8 @@ import classes from 'classnames'
 import {trans} from '#/main/core/translation'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 
+// todo display period dates
+
 // https://momentjs.com/docs/#/durations/locale/
 const EvaluationStatus = props =>
   <li className={classes('evaluation-status', {
@@ -16,7 +18,7 @@ const EvaluationStatus = props =>
     </h3>
 
     <div className="evaluation-planning">
-      {props.children}
+      {false && props.children}
     </div>
   </li>
 
@@ -34,12 +36,9 @@ const Timeline = props =>
       title={constants.PLANNING_STATES.all[constants.STATE_NOT_STARTED]}
       active={constants.STATE_NOT_STARTED === props.state}
     >
-      {constants.PLANNING_TYPE_MANUAL === props.planning.type
-
-      }
       <span>
-          L'évaluation commencera le : <b>08/02/2018 08:30</b>
-        </span>
+        L'évaluation commencera le : <b>08/02/2018 08:30</b>
+      </span>
     </EvaluationStatus>
 
     <EvaluationStatus
