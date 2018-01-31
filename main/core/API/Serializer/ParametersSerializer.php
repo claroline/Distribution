@@ -2,8 +2,12 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
+use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfiguration;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\CoreBundle\API\FinderProvider;
+
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -18,19 +22,33 @@ class ParametersSerializer
     /** @var PlatformConfigurationHandler */
     private $config;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
+    /** @var FinderProvider */
+    private $finder;
+
     /**
      * ParametersSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "config"         = @DI\Inject("claroline.config.platform_config_handler")
+     *     "config"     = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "finder"     = @DI\Inject("claroline.api.finder")
      * })
      *
      * @param PlatformConfigurationHandler $config
+     * @param SerializerProvider           $serializer
+     * @param FinderProvider               $finder
      */
     public function __construct(
-        PlatformConfigurationHandler $config
+        PlatformConfigurationHandler $config,
+        SerializerProvider $serializer,
+        FinderProvider $finder
     ) {
-        $this->config = $config;
+        $this->config     = $config;
+        $this->serializer = $serializer;
+        $this->finder     = $finder;
     }
 
     /**
@@ -108,7 +126,7 @@ class ParametersSerializer
           ],
           'tos' => [
               'enabled' => $parameters['terms_of_service'],
-              'text' => ['fr' => '123', 'en' => '456'], //better fetch required
+              'text' => $this->serializeTos()
           ],
           'registration' => [
               'username_regex' => $parameters['username_regex'],
@@ -187,6 +205,24 @@ class ParametersSerializer
         }
 
         return $serialized;
+    }
+
+    public function serializeTos()
+    {
+        $result = $this->finder->search(
+            'Claroline\CoreBundle\Entity\Content',
+            ['filters' => ['type' => 'termsOfService']],
+            ['property' => 'content']
+        )['data'];
+
+        if (count($result) > 0) {
+            return $result[0];
+        } else {
+            $content = new Content();
+            $content->setType('termsOfService');
+
+            return $this->serializer->serialize($content);
+        }
     }
 
     public function deserializeUser(array $data)
@@ -440,8 +476,17 @@ class ParametersSerializer
     {
         if (isset($data['tos'])) {
             $this->buildParameter('tos.enabled', 'terms_of_service', $parameters, $data);
-            // todo handle the text here
-            //'text' => ['fr' => '123', 'en' => '456']
+            $contentTos = $this->finder->fetch('Claroline\CoreBundle\Entity\Content', 0, 10, ['type' => 'termsOfService']);
+
+            if (count($contentTos) === 0) {
+                $contentTos = new Content();
+                $contentTos->setType('termsOfService');
+            } else {
+                $contentTos = $contentTos[0];
+            }
+
+            $serializer = $this->serializer->get('Claroline\CoreBundle\Entity\Content');
+            $serializer->deserialize($data['tos']['text'], $contentTos, ['property' => 'content']);
         }
     }
 
