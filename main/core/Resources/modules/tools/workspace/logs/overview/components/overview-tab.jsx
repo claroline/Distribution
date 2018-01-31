@@ -2,7 +2,7 @@ import React from 'react'
 
 import {Routes} from '#/main/core/router'
 import {Logs, LogsActions} from '#/main/core/tools/workspace/logs/overview/components/logs.jsx'
-import {LogDetails, LogDetailsActions} from '#/main/core/administration/user/user/components/log-details.jsx'
+import {LogDetails, LogDetailsActions} from '#/main/core/tools/workspace/logs/overview/components/log-details.jsx'
 
 const OverviewTabActions = () =>
   <Routes
