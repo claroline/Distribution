@@ -56,7 +56,7 @@
     "state_finished": "De evaluatie is voltooid. Niemand kan eraan deelnemen.",
     "state_not_started": "De evaluatie is nog niet begonnen.",
     "state_peer_review": "De lerenden mogen de kopieën corrigeren. (Peer review)",
-    "submit_my_copy": "Mijn kopie weergeven",
+    "submit_my_drop": "Mijn kopie weergeven",
     "submit_my_copy_confirm_message": "U bent op het punt om uw exemplaar te weer te geven. Deze actie is definitief. Bent u er zeker van dat u klaar bent ?",
     "success_message": "Bericht in geval van succes",
     "text_type": "Rich text zone",

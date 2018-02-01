@@ -60,7 +60,7 @@ const OverviewComponent = props =>
       // todo add show Drop
       {
         icon: 'fa fa-fw fa-upload icon-with-text-right',
-        label: trans('submit_my_copy', {}, 'dropzone'),
+        label: trans('submit_my_drop', {}, 'dropzone'),
         action: !props.myDrop || !props.myDrop.finished ? () => props.startDrop(props.dropzone.id, props.dropzone.parameters.dropType, props.teams) : '#/my/drop',
         primary: !props.myDrop || !props.myDrop.finished,
         disabled: !props.dropEnabled,

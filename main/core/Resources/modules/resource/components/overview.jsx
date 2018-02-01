@@ -125,7 +125,7 @@ UserFeedback.defaultProps = {
 }
 
 const ResourceOverview = props =>
-  <section className="resource-overview">
+  <section className="resource-section resource-overview">
     <h2 className="sr-only">{t_res('resource_overview')}</h2>
 
     <div className="row">

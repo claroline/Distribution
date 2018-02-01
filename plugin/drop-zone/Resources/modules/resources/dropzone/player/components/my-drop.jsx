@@ -81,8 +81,8 @@ Corrections.propTypes = {
 }
 
 const MyDropComponent = props =>
-  <div className="drop-panel">
-    <h2>{trans('my_drop', {}, 'dropzone')}</h2>
+  <section className="resource-section drop-panel">
+    <h2 className="h-first">{trans('my_drop', {}, 'dropzone')}</h2>
 
     <FormSections>
       <FormSection
@@ -128,10 +128,10 @@ const MyDropComponent = props =>
           })
         }}
       >
-        {trans('submit_my_copy', {}, 'dropzone')}
+        {trans('submit_my_drop', {}, 'dropzone')}
       </button>
     }
-  </div>
+  </section>
 
 MyDropComponent.propTypes = {
   dropzone: T.shape(DropzoneType.propTypes).isRequired,
