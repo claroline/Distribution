@@ -18,7 +18,7 @@ const EvaluationStatus = props =>
     </h3>
 
     <div className="evaluation-planning">
-      {false && props.children}
+      {props.children}
     </div>
   </li>
 

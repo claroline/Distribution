@@ -22,9 +22,9 @@ actions.addDocuments = makeActionCreator(DOCUMENTS_ADD, 'documents')
 actions.updateDocument = makeActionCreator(DOCUMENT_UPDATE, 'document')
 actions.removeDocument = makeActionCreator(DOCUMENT_REMOVE, 'documentId')
 
-actions.initializeMyDrop = (dropzone, teamId = null) => ({
+actions.initializeMyDrop = (dropzoneId, teamId = null) => ({
   [API_REQUEST]: {
-    url: ['claro_dropzone_drop_create', {id: dropzone.id, teamId: teamId}],
+    url: ['claro_dropzone_drop_create', {id: dropzoneId, teamId: teamId}],
     request: {
       method: 'POST'
     },

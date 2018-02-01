@@ -27,7 +27,7 @@ class AbstractResourceEvaluation
     const STATUS_OPENED = 'opened';
     const STATUS_PARTICIPATED = 'participated';
 
-    const STATUS_PRORITY = [
+    const STATUS_PRIORITY = [
         self::STATUS_NOT_ATTEMPTED => 0,
         self::STATUS_UNKNOWN => 1,
         self::STATUS_OPENED => 2,
@@ -36,15 +36,6 @@ class AbstractResourceEvaluation
         self::STATUS_COMPLETED => 5,
         self::STATUS_FAILED => 6,
         self::STATUS_PASSED => 7,
-    ];
-
-    const STATUS_PRIORITY = [
-        self::STATUS_NOT_ATTEMPTED => 0,
-        self::STATUS_UNKNOWN => 1,
-        self::STATUS_INCOMPLETE => 2,
-        self::STATUS_COMPLETED => 3,
-        self::STATUS_FAILED => 4,
-        self::STATUS_PASSED => 5,
     ];
 
     /**
