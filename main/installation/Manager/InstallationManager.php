@@ -63,12 +63,11 @@ class InstallationManager
         $additionalInstaller = $this->getAdditionalInstaller($bundle);
 
         if ($additionalInstaller) {
-            $this->log('Launching pre-installation actions...');
             $additionalInstaller->preInstall();
         }
 
         if ($bundle->hasMigrations()) {
-            $this->log('Executing migrations...');
+            $this->log('Executing migrations for ...');
             $this->migrationManager->upgradeBundle($bundle, Migrator::VERSION_FARTHEST);
         }
 
