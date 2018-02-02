@@ -180,7 +180,7 @@ abstract class PluginBundle extends InstallableBundle implements PluginBundleInt
      */
     public function isHidden()
     {
-        return true;
+        return false;
     }
 
     /**
