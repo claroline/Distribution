@@ -2,11 +2,11 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Translatable;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Manager\LocaleManager;
 use Claroline\CoreBundle\Persistence\ObjectManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -58,10 +58,10 @@ class TranslatableSerializer
 
             foreach ($locales as $locale) {
                 //there is an inconcistency here atm.
-                if ($locale === 'fr') {
+                if ('fr' === $locale) {
                     $locale = 'fr_FR';
                 }
-                
+
                 $translations[$locale] = null;
             }
         }
@@ -73,7 +73,7 @@ class TranslatableSerializer
     {
         foreach ($data as $locale => $text) {
             //not handled by the crud for now
-            $method = 'set' . ucfirst($options['property']);
+            $method = 'set'.ucfirst($options['property']);
             $content->$method(null);
             $content->setTranslatableLocale($locale);
             $content->setModified();
@@ -83,9 +83,8 @@ class TranslatableSerializer
 
         if (isset($options['property'])) {
             foreach ($data as $locale => $text) {
-
                 //not handled by the crud for now
-                $method = 'set' . ucfirst($options['property']);
+                $method = 'set'.ucfirst($options['property']);
                 $content->$method($text);
                 $content->setTranslatableLocale($locale);
                 $content->setModified();

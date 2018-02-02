@@ -2,12 +2,11 @@
 
 namespace Claroline\CoreBundle\API\Serializer;
 
+use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\CoreBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfiguration;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\CoreBundle\API\FinderProvider;
-
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -46,9 +45,9 @@ class ParametersSerializer
         SerializerProvider $serializer,
         FinderProvider $finder
     ) {
-        $this->config     = $config;
+        $this->config = $config;
         $this->serializer = $serializer;
-        $this->finder     = $finder;
+        $this->finder = $finder;
     }
 
     /**
@@ -126,7 +125,7 @@ class ParametersSerializer
           ],
           'tos' => [
               'enabled' => $parameters['terms_of_service'],
-              'text' => $this->serializeTos()
+              'text' => $this->serializeTos(),
           ],
           'registration' => [
               'username_regex' => $parameters['username_regex'],
@@ -478,7 +477,7 @@ class ParametersSerializer
             $this->buildParameter('tos.enabled', 'terms_of_service', $parameters, $data);
             $contentTos = $this->finder->fetch('Claroline\CoreBundle\Entity\Content', 0, 10, ['type' => 'termsOfService']);
 
-            if (count($contentTos) === 0) {
+            if (0 === count($contentTos)) {
                 $contentTos = new Content();
                 $contentTos->setType('termsOfService');
             } else {
