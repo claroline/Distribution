@@ -15,7 +15,6 @@ use Claroline\CoreBundle\API\FinderProvider;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
-use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;
 use Claroline\DropZoneBundle\Entity\Dropzone;
@@ -245,7 +244,7 @@ class DropController
                     case Document::DOCUMENT_TYPE_URL:
                     case Document::DOCUMENT_TYPE_RESOURCE:
                         $dropData = $request->request->get('dropData', false);
-                        $document = $this->manager->createDocument($drop, $user, intval($type), $dropData);
+                        $document = $this->manager->createDocument($drop, $user, $type, $dropData);
                         $documents[] = $this->manager->serializeDocument($document);
                         break;
                 }
@@ -397,39 +396,6 @@ class DropController
             if ($drop->getUser() === $user || in_array($user, $drop->getUsers())) {
                 return;
             }
-        }
-
-        throw new AccessDeniedException();
-    }
-
-    private function checkCorrectionEdition(Correction $correction, User $user, $teamId = null)
-    {
-        $dropzone = $correction->getDrop()->getDropzone();
-        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
-
-        if ($this->authorization->isGranted('EDIT', $collection)) {
-            return;
-        }
-        if (!$correction->isFinished()) {
-            if ($correction->getUser() === $user || $correction->getTeamId() === $teamId) {
-                return;
-            }
-        }
-
-        throw new AccessDeniedException();
-    }
-
-    private function checkCorrectionDenial(Correction $correction, User $user, $teamId = null)
-    {
-        $drop = $correction->getDrop();
-        $dropzone = $drop->getDropzone();
-        $collection = new ResourceCollection([$dropzone->getResourceNode()]);
-
-        if ($this->authorization->isGranted('EDIT', $collection)) {
-            return;
-        }
-        if ($drop->getUser() === $user || $drop->getTeamId() === $teamId) {
-            return;
         }
 
         throw new AccessDeniedException();

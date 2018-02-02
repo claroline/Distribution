@@ -82,7 +82,6 @@
     "rich_text_online_edition": "Rich text box",
     "see_my_copy": "See my copy",
     "score_max": "Maximum score",
-    "start_evaluation": "Start the evaluation",
     "started_corrections": "Started corrections",
     "state_allow_drop": "Users can submit their work.",
     "state_allow_drop_and_peer_review": "Users can submit AND evaluate the work.",
@@ -90,7 +89,7 @@
     "state_not_started": "Evaluation has not begun.",
     "state_peer_review": "Users can evaluate the work.",
     "submit_correction": "Submit the correction",
-    "submit_my_drop": "Participate in the evaluation",
+    "start_evaluation": "Participate in the evaluation",
     "submit_my_copy_confirm_message": "You are about to submit your copy. This action is definitive. By submitting your copy you are considering it as finished. No more change will be possible. Have you checked that all your documents are present in the section « Documents added to the copy » ? Are you sure you want to submit your copy ?",
     "submitted": "Submitted",
     "score_to_pass": "Minimum score to succeed",
@@ -128,5 +127,8 @@
     "drops_done_by": "Submissions are done : ",
     "evaluation_configuration": "Progress of the evaluation",
     "evaluated": "Evaluated",
-    "show_my_drop": "Show my submission"
+    "show_evaluation": "Show my evaluation",
+    "continue_evaluation": "Continue my evaluation",
+    "submit_my_drop": "Submit my participation",
+    "submit_my_drop_confirm": "Are you sure you want to submit your participation? This action is final and no further modifications will be possible."
 }

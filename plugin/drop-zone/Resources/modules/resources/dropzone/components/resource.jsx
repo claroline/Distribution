@@ -42,7 +42,7 @@ const Resource = props =>
         action: '#/'
       }, {
         icon: 'fa fa-fw fa-upload',
-        label: trans('show_my_drop', {}, 'dropzone'),
+        label: trans('show_evaluation', {}, 'dropzone'),
         action: '#/my/drop',
         displayed: !!props.myDrop
       }, {
