@@ -5,7 +5,7 @@ import {WorkspaceCard} from '#/main/core/administration/workspace/workspace/comp
 
 const WorkspaceList = {
   open: {
-    action: (row) => location.href = generateUrl('claro_workspace_open', {workspaceId: row.id})
+    action: (row) => generateUrl('claro_workspace_open', {workspaceId: row.id})
   },
   definition: [
     {
