@@ -7,14 +7,13 @@ import {trans} from '#/main/core/translation'
 import {asset} from '#/main/core/scaffolding/asset'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {UserMicro} from '#/main/core/user/components/micro.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {getToolDocumentType} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {constants as configConstants} from '#/plugin/drop-zone/plugin/configuration/constants'
 import {DocumentType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 
-const DocumentActions = props =>
+const DocumentActions = () =>
   <div className="document-actions">
   </div>
 
@@ -39,7 +38,8 @@ const Document = props =>
   </li>
 
 Document.propTypes = {
-  user: T.shape({})
+  user: T.shape({}),
+  type: T.string.isRequired
 }
 
 const DocumentRow = props =>

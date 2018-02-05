@@ -6,13 +6,11 @@ import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {ResourceOverview} from '#/main/core/resource/components/overview.jsx'
 
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
-import {computeDropCompletion} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/player/actions'
 import {DropzoneType, DropType} from '#/plugin/drop-zone/resources/dropzone/prop-types'
 

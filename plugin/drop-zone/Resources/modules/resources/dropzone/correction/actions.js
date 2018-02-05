@@ -1,5 +1,4 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {generateUrl} from '#/main/core/api/router'
 import {API_REQUEST} from '#/main/core/api/actions'
 
 import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'

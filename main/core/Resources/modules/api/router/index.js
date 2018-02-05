@@ -51,14 +51,14 @@ function getQueryString(queryParams = {}, prefix = null) {
     const params = []
 
     Object.keys(queryParams).map(p => {
-      const paramKey = prefix ? prefix + "[" + p + "]" : p
+      const paramKey = prefix ? prefix + '[' + p + ']' : p
       const paramValue = queryParams[p]
 
       let paramString
-      if (paramValue && typeof paramValue === "object") {
+      if (paramValue && typeof paramValue === 'object') {
         paramString = getQueryString(paramValue, paramKey)
       } else {
-        paramString = encodeURIComponent(paramKey) + "=" + encodeURIComponent(paramValue)
+        paramString = encodeURIComponent(paramKey) + '=' + encodeURIComponent(paramValue)
       }
 
       params.push(paramString)
@@ -66,7 +66,7 @@ function getQueryString(queryParams = {}, prefix = null) {
 
 
     if (0 !== params.length) {
-      return '?' + params.join("&")
+      return '?' + params.join('&')
     }
   }
 

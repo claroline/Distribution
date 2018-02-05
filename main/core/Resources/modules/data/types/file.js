@@ -14,13 +14,7 @@ const fileDefinition = {
     label: trans('file'),
     description: trans('file_desc')
   },
-  validate: (value, options = {}) => {
-    if (options.multiple) {
-
-    } else {
-
-    }
-  },
+  validate: () => {},
   components: {
     form: FileGroup
   }
