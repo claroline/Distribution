@@ -34,4 +34,4 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => true,
         'array_syntax' => ['syntax' => 'short'],
     ])
-    ->finder($finder);
+    ->setFinder($finder);
