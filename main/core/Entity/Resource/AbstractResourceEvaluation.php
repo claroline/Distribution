@@ -99,6 +99,7 @@ class AbstractResourceEvaluation
     {
         $this->date = $date;
     }
+    
     public function getStatus()
     {
         return $this->status;
