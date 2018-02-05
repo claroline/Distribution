@@ -26,7 +26,7 @@ $files = array_map(function ($filePath) use ($pkgDir) {
     return "{$pkgDir}/".trim($filePath);
 }, $targets);
 
-$finder = Symfony\CS\Finder\DefaultFinder::create()->append($files);
+$finder = PhpCsFixer\Finder::create()->append($files);
 
 return PhpCsFixer\Config::create()
     ->setRules([
