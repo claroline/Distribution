@@ -99,7 +99,7 @@ class AbstractResourceEvaluation
     {
         $this->date = $date;
     }
-    
+
     public function getStatus()
     {
         return $this->status;
@@ -162,14 +162,14 @@ class AbstractResourceEvaluation
 
     public function isTerminated()
     {
-        return $this->status !== self::STATUS_NOT_ATTEMPTED &&
-            $this->status !== self::STATUS_INCOMPLETE &&
-            $this->status !== self::STATUS_UNKNOWN;
+        return self::STATUS_NOT_ATTEMPTED !== $this->status &&
+            self::STATUS_INCOMPLETE !== $this->status &&
+            self::STATUS_UNKNOWN !== $this->status;
     }
 
     public function isSuccessful()
     {
-        return $this->status === self::STATUS_PASSED ||
-            $this->status === self::STATUS_COMPLETED;
+        return self::STATUS_PASSED === $this->status ||
+            self::STATUS_COMPLETED === $this->status;
     }
 }
