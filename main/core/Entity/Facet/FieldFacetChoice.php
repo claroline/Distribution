@@ -195,4 +195,14 @@ class FieldFacetChoice
     {
         return $this->name;
     }
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName()
+    {
+        $this->name = $name;
+    }
 }
