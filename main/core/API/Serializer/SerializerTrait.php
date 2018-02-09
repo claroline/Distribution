@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\API\Serializer;
 
 use Claroline\CoreBundle\API\Utils\ArrayUtils;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait SerializerTrait
 {
@@ -33,6 +34,20 @@ trait SerializerTrait
     public function setSerializer(GenericSerializer $serializer)
     {
         $this->genericSerializer = $serializer;
+    }
+
+    /**
+     * Injects Container service (allow to fetch api.serializer without recursive deps).
+     *
+     * @DI\InjectParams({
+     *      "container" = @DI\Inject("service_container")
+     * })
+     *
+     * @param ContainerInterface $serializer
+     */
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
     }
 
     public function serialize($object, array $options = [])
@@ -78,5 +93,15 @@ trait SerializerTrait
     public function sipe($prop, $setter, $data, $object)
     {
         $this->setIfPropertyExists($prop, $setter, $data, $object);
+    }
+
+    /**
+     * Get the identifier list from the json schema.
+     */
+    public function getIdentifiers()
+    {
+        $schema = $this->container->get('claroline.api.serializer')->getSchema($this->getClass());
+
+        return $schema->claroIds;
     }
 }
