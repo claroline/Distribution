@@ -43,5 +43,5 @@
       }
     }
   },
-  "claroIds": ["id", "mail", "username"]
+  "claroIds": ["id", "email", "username"]
 }
