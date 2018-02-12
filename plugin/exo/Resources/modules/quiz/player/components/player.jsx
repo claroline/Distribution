@@ -89,6 +89,7 @@ PlayerComponent.propTypes = {
   quizId: T.string.isRequired,
   numbering: T.string.isRequired,
   number: T.number.isRequired,
+  stepIndex: T.number,
   step: T.shape({
     id: T.string.isRequired,
     title: T.string,
