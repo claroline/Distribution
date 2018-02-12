@@ -153,7 +153,7 @@ class Updater030000 extends Updater
         $conn = $this->om->getConnection();
         $sm = $conn->getSchemaManager();
 
-        if ($sm->tablesExist(array('claro_user_public_profile_preferences')) == true) {
+        if (true == $sm->tablesExist(array('claro_user_public_profile_preferences'))) {
             $fromSchema = $sm->createSchema();
             $toSchema = clone $fromSchema;
             $toSchema->dropTable('claro_user_public_profile_preferences');

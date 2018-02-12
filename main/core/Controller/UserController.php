@@ -290,11 +290,11 @@ class UserController extends Controller
         $attachName = 1,
         $filterAdminOrgas = 0
     ) {
-        $withAllUsers = intval($showAllUsers) === 1;
-        $withUsername = intval($showUsername) === 1;
-        $withMail = intval($showMail) === 1;
-        $withCode = intval($showCode) === 1;
-        $withAdminOrgas = intval($filterAdminOrgas) === 1;
+        $withAllUsers = 1 === intval($showAllUsers);
+        $withUsername = 1 === intval($showUsername);
+        $withMail = 1 === intval($showMail);
+        $withCode = 1 === intval($showCode);
+        $withAdminOrgas = 1 === intval($filterAdminOrgas);
         $profilePreferences = $this->facetManager->getVisiblePublicPreference();
         $shownWorkspaceIds = [];
 
@@ -510,7 +510,6 @@ class UserController extends Controller
                     null :
                     $user->getPersonalWorkspace()->getId(),
                 'user_role_id' => is_null($userRole) ? null : $userRole->getId(),
-
             ];
         }
 

@@ -11,14 +11,14 @@
 
 namespace Claroline\CoreBundle\Form;
 
+use Claroline\CoreBundle\Entity\Content;
+use Claroline\CoreBundle\Form\Profile\ProfileFacetFieldsType;
+use Claroline\CoreBundle\Manager\LocaleManager;
+use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Claroline\CoreBundle\Manager\LocaleManager;
-use Claroline\CoreBundle\Manager\TermsOfServiceManager;
-use Claroline\CoreBundle\Entity\Content;
 use Symfony\Component\Translation\TranslatorInterface;
-use Claroline\CoreBundle\Form\Profile\ProfileFacetFieldsType;
 
 class BaseProfileType extends AbstractType
 {

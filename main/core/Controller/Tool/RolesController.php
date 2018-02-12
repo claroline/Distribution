@@ -110,6 +110,7 @@ class RolesController extends Controller
         $this->wksUqmanager = $wksUqmanager;
         $this->eventDispatcher = $eventDispatcher;
     }
+
     /**
      * @EXT\Route(
      *     "/{workspace}/roles/config",
@@ -325,7 +326,7 @@ class RolesController extends Controller
         }
         $preferences = $this->facetManager->getVisiblePublicPreference();
 
-        $pager = $search === '' ?
+        $pager = '' === $search ?
             $this->userManager->getAllUsers($page, $max, $order, $direction) :
             $this->userManager->getUsersByName($search, $page, $max, $order, $direction);
 
@@ -366,7 +367,7 @@ class RolesController extends Controller
             $wsRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
         }
 
-        $pager = ($search === '') ?
+        $pager = ('' === $search) ?
             $this->groupManager->getGroups($page, $max, $order, $direction) :
             $this->groupManager->getGroupsByName($search, $page, $max, $order, $direction);
 
@@ -403,7 +404,7 @@ class RolesController extends Controller
         $wsRoles = $this->roleManager->getRolesByWorkspace($workspace);
         $preferences = $this->facetManager->getVisiblePublicPreference();
 
-        $pager = $search === '' ?
+        $pager = '' === $search ?
             $this->userManager->getUsersByGroup($group, $page, $max, $orderedBy, $order) :
             $this->userManager->getUsersByNameAndGroup($search, $group, $page, $max, $orderedBy, $order);
 
@@ -543,7 +544,7 @@ class RolesController extends Controller
         $currentUser = $this->tokenStorage->getToken()->getUser();
         $preferences = $this->facetManager->getVisiblePublicPreference();
 
-        $pager = $search === '' ?
+        $pager = '' === $search ?
             $this->userManager->getByRolesIncludingGroups($wsRoles, $page, $max, $order, $direction) :
             $this->userManager->getByRolesAndNameIncludingGroups($wsRoles, $search, $page, $max, $order, $direction);
 
@@ -618,7 +619,7 @@ class RolesController extends Controller
             $wsNonAdminRoles = $this->roleManager->getWorkspaceNonAdministrateRoles($workspace);
         }
 
-        $pager = ($search === '') ?
+        $pager = ('' === $search) ?
             $pager = $this->groupManager->getGroupsByRoles($wsRoles, $page, $max, $order, $direction) :
             $pager = $this->groupManager->getGroupsByRolesAndName($wsRoles, $search, $page, $max, $order, $direction);
         $externalGroups = '';
@@ -671,7 +672,7 @@ class RolesController extends Controller
 
         $canEdit = $this->hasEditionAccess($workspace);
         $preferences = $this->facetManager->getVisiblePublicPreference();
-        $pager = ($search === '') ?
+        $pager = ('' === $search) ?
             $this->userManager->getUsersByGroup($group, $page, $max, $order, $direction) :
             $this->userManager->getUsersByNameAndGroup($search, $group, $page, $max, $order, $direction);
 

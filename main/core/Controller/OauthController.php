@@ -11,18 +11,18 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use FOS\OAuthServerBundle\Event\OAuthEvent;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
-use Symfony\Component\HttpFoundation\Request;
-use FOS\OAuthServerBundle\Controller\AuthorizeController as BaseAuthorizeController;
-use FOS\OAuthServerBundle\Form\Handler\AuthorizeFormHandler;
-use Symfony\Component\Security\Core\SecurityContext;
 use Claroline\CoreBundle\Entity\User;
+use FOS\OAuthServerBundle\Controller\AuthorizeController as BaseAuthorizeController;
+use FOS\OAuthServerBundle\Event\OAuthEvent;
+use FOS\OAuthServerBundle\Form\Handler\AuthorizeFormHandler;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * Controller handling basic authorization.
@@ -219,7 +219,7 @@ class OauthController extends BaseAuthorizeController
         $userRepo = $this->container->get('doctrine.orm.entity_manager')->getRepository('ClarolineCoreBundle:User');
         $users = $userRepo->findByMail($email);
 
-        if (count($users) === 0) {
+        if (0 === count($users)) {
             $username = $data['username'];
             $users = $userRepo->findByUsername($username);
 
@@ -251,7 +251,7 @@ class OauthController extends BaseAuthorizeController
     {
         if (null === $this->client) {
             $clientId = $this->container->get('request')->get('client_id');
-            if ($clientId === null) {
+            if (null === $clientId) {
                 $clientId = $this->container->get('session')->get('client_id');
             }
 
