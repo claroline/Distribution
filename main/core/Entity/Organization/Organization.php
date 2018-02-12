@@ -11,8 +11,6 @@
 
 namespace Claroline\CoreBundle\Entity\Organization;
 
-use Claroline\CoreBundle\Entity\Calendar\TimeSlot;
-use Claroline\CoreBundle\Entity\Calendar\Year;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Model\CodeTrait;
 use Claroline\CoreBundle\Entity\Model\GroupsTrait;
@@ -37,6 +35,9 @@ class Organization
     use UuidTrait;
     use CodeTrait;
     use GroupsTrait;
+
+    const TYPE_EXTERNAL = 'external';
+    const TYPE_INTERNAL = 'internal';
 
     /**
      * @ORM\Id
@@ -180,32 +181,24 @@ class Organization
     protected $administrators;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Calendar\TimeSlot",
-     *     mappedBy="organization",
-     *     cascade={"persist"}
-     * )
-     *
-     * @var TimeSlot[]|ArrayCollection
-     */
-    protected $timeSlots;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Calendar\Year",
-     *     mappedBy="organization",
-     *     cascade={"persist"}
-     * )
-     *
-     * @var Year[]|ArrayCollection
-     */
-    protected $years;
-
-    /**
      * @ORM\Column(name="is_default", type="boolean")
      * @Serializer\Groups({"api_user", "api_user_min", "api_workspace_min", "api_group_min", "api_organization_tree", "api_organization_list"})
      */
     protected $default = false;
+
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @var string
+     */
+    protected $vat;
+
+    /**
+     * @ORM\Column(type="string")
+     *
+     * @var string
+     */
+    protected $type;
 
     public function __construct()
     {
@@ -217,9 +210,8 @@ class Organization
         $this->workspaces = new ArrayCollection();
         $this->groups = new ArrayCollection();
         $this->administrators = new ArrayCollection();
-        $this->timeSlots = new ArrayCollection();
-        $this->years = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->type = self::TYPE_INTERNAL;
     }
 
     public function getId()
@@ -262,7 +254,7 @@ class Organization
      *
      * @param Organization $parent
      */
-    public function setParent(Organization $parent = null)
+    public function setParent(self $parent = null)
     {
         $this->parent = $parent;
     }
@@ -311,54 +303,6 @@ class Organization
     public function setAdministrators(ArrayCollection $users)
     {
         $this->administrators = $users;
-    }
-
-    public function getTimeSlots()
-    {
-        return $this->timeSlots;
-    }
-
-    public function addTimeSlot(TimeSlot $timeSlot)
-    {
-        if (!$this->timeSlots->contains($timeSlot)) {
-            $this->timeSlots->add($timeSlot);
-        }
-    }
-
-    public function removeTimeSlot(TimeSlot $timeSlot)
-    {
-        if ($this->timeSlots->contains($timeSlot)) {
-            $this->timeSlots->removeElement($timeSlot);
-        }
-    }
-
-    public function setTimeSlots(ArrayCollection $timeSlots)
-    {
-        $this->timeSlots = $timeSlots;
-    }
-
-    public function getYears()
-    {
-        return $this->years;
-    }
-
-    public function addYear(Year $year)
-    {
-        if (!$this->years->contains($year)) {
-            $this->years->add($year);
-        }
-    }
-
-    public function removeYear(Year $year)
-    {
-        if ($this->years->contains($year)) {
-            $this->years->removeElement($year);
-        }
-    }
-
-    public function setYears(ArrayCollection $years)
-    {
-        $this->years = $years;
     }
 
     public function setDefault($default)
@@ -426,5 +370,37 @@ class Organization
     public function getWorkspaces()
     {
         return $this->workspaces;
+    }
+
+    /**
+     * @param string $vat
+     */
+    public function setVat($vat)
+    {
+        $this->vat = $vat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

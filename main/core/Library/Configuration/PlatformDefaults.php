@@ -135,6 +135,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'icap_lesson' => ['visible'],
             ],
             'default_root_anon_id' => null,
+            'force_organization_creation' => false,
         ];
     }
 }

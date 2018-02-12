@@ -411,13 +411,15 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     protected $organizations;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Calendar\Event",
-     *     mappedBy="user",
+     * @var Organization\Organization
+     *
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization",
      *     cascade={"persist"}
      * )
+     * @ORM\JoinColumn(name="main_organization_id", onDelete="SET NULL")
      */
-    protected $events;
+    protected $mainOrganization;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization", inversedBy="administrators")
@@ -447,7 +449,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->orderedTools = new ArrayCollection();
         $this->fieldsFacetValue = new ArrayCollection();
         $this->organizations = new ArrayCollection();
-        $this->events = new ArrayCollection();
         $this->administratedOrganizations = new ArrayCollection();
         $this->refreshUuid();
         $this->setEmailValidationHash(uniqid('', true));
@@ -1209,6 +1210,16 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function setAdministratedOrganizations($organizations)
     {
         $this->administratedOrganizations = $organizations;
+    }
+
+    public function setMainOrganization(Organization $organization)
+    {
+        $this->mainOrganization = $organization;
+    }
+
+    public function getMainOrganization()
+    {
+        return $this->mainOrganization;
     }
 
     public function setIsRemoved($isRemoved)
