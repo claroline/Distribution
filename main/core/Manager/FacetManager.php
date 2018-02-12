@@ -289,7 +289,7 @@ class FacetManager
 
         $profilePref = $profilePref === null ? new GeneralFacetPreference() : $profilePref;
         $profilePref->setBaseData($baseData);
-        $profilePref->setMail($mail);
+        $profilePref->setEmail($mail);
         $profilePref->setPhone($phone);
         $profilePref->setSendMail($sendMail);
         $profilePref->setSendMessage($sendMessage);

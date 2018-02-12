@@ -546,7 +546,7 @@ class UserManager
             }
 
             $userEntity->setUsername($username);
-            $userEntity->setMail($email);
+            $userEntity->setEmail($email);
             $userEntity->setFirstName($firstName);
             $userEntity->setLastName($lastName);
             $userEntity->setAdministrativeCode($code);
@@ -1231,7 +1231,7 @@ class UserManager
                 $userArray = [];
                 $userArray['id'] = $user->getId();
                 $userArray['name'] = $user->getFirstName().' '.$user->getLastName();
-                $userArray['mail'] = $user->getMail();
+                $userArray['mail'] = $user->getEmail();
                 $userArray['avatar'] = $user->getPicture();
                 array_push($resultArray['users'], $userArray);
             }
@@ -1876,7 +1876,7 @@ class UserManager
             $user->setUsername('claroline-connect');
             $user->setFirstName('claroline-connect');
             $user->setLastName('claroline-connect');
-            $user->setMail('claroline-connect');
+            $user->setEmail('claroline-connect');
             $user->setPlainPassword(uniqid('', true));
             $user->disable();
             $user->remove();

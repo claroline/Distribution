@@ -96,7 +96,7 @@ class BlogManager
 
                 $comments[] = [
                     'message' => $commentUid,
-                    'author' => $comment->getAuthor()->getMail(),
+                    'author' => $comment->getAuthor()->getEmail(),
                     'creation_date' => $comment->getCreationDate()->format('Y-m-d H:i:s'),
                     'update_date' => (null !== $comment->getUpdateDate()) ? $comment->getUpdateDate()->format('Y-m-d H:i:s') : null,
                     'publication_date' => (null !== $comment->getPublicationDate()) ? $comment->getPublicationDate()->format('Y-m-d H:i:s') : null,
@@ -107,7 +107,7 @@ class BlogManager
             $postArray = [
                 'title' => $post->getTitle(),
                 'content' => $postUid,
-                'author' => $post->getAuthor()->getMail(),
+                'author' => $post->getAuthor()->getEmail(),
                 'status' => $post->getStatus(),
                 'creation_date' => $post->getCreationDate()->format('Y-m-d H:i:s'),
                 'modification_date' => (null !== $post->getModificationDate()) ? $post->getModificationDate()->format('Y-m-d H:i:s') : null,

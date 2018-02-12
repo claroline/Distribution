@@ -319,7 +319,7 @@ class AuthenticationController
         $user = $users[0];
         $this->request->getSession()
             ->getFlashBag()
-            ->add('success', $this->translator->trans('email_sent', ['%email%' => $user->getMail()], 'platform'));
+            ->add('success', $this->translator->trans('email_sent', ['%email%' => $user->getEmail()], 'platform'));
 
         return new RedirectResponse($this->router->generate('claro_desktop_open'));
     }

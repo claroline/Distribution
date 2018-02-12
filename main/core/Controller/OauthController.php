@@ -229,7 +229,7 @@ class OauthController extends BaseAuthorizeController
 
             $user = new User();
             $user->setUsername($username);
-            $user->setMail($email);
+            $user->setEmail($email);
             $user->setFirstName($data['first_name']);
             $user->setLastName($data['last_name']);
             $pw = uniqid();

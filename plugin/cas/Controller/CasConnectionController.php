@@ -123,7 +123,7 @@ class CasConnectionController extends Controller
         }
         $user = new User();
         if ($this->isValidMail($casLogin)) {
-            $user->setMail($casLogin);
+            $user->setEmail($casLogin);
         } else {
             $user->setUsername($casLogin);
         }

@@ -140,7 +140,7 @@ class Installer
         $user->setLastName($this->adminSettings->getLastName());
         $user->setUsername($this->adminSettings->getUsername());
         $user->setPlainPassword($this->adminSettings->getPassword());
-        $user->setMail($this->adminSettings->getEmail());
+        $user->setEmail($this->adminSettings->getEmail());
         $roleAdmin = $container->get('claroline.manager.role_manager')->getRoleByName('ROLE_ADMIN');
         $userManager->createUser($user, false, array($roleAdmin));
     }

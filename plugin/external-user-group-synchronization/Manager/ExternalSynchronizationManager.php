@@ -325,7 +325,7 @@ class ExternalSynchronizationManager
             );
             $existingPlatformUserMails = array_map(
                 function (User $user) {
-                    return strtoupper($user->getMail());
+                    return strtoupper($user->getEmail());
                 },
                 $existingPlatformUsers
             );
@@ -450,7 +450,7 @@ class ExternalSynchronizationManager
                 // Update or set user values
                 $user->setFirstName($this->utilities->stringToUtf8($externalSourceUser['first_name']));
                 $user->setLastName($this->utilities->stringToUtf8($externalSourceUser['last_name']));
-                $user->setMail($externalSourceUser['email']);
+                $user->setEmail($externalSourceUser['email']);
                 if (!empty($externalSourceUser['code'])) {
                     $user->setAdministrativeCode($this->utilities->stringToUtf8($externalSourceUser['code']));
                 }

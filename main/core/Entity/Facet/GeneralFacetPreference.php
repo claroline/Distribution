@@ -92,12 +92,12 @@ class GeneralFacetPreference
         return $this->baseData;
     }
 
-    public function setMail($boolean)
+    public function setEmail($boolean)
     {
         $this->mail = $boolean;
     }
 
-    public function getMail()
+    public function getEmail()
     {
         return $this->mail;
     }

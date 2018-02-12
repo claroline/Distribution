@@ -137,7 +137,7 @@ class LdapManager
             $claroUser->setUsername($userName);
             $claroUser->setFirstName($user['first_name']);
             $claroUser->setLastName($user['last_name']);
-            $claroUser->setMail($user['email']);
+            $claroUser->setEmail($user['email']);
             $claroUser->setPassword($user['password']);
         }
 

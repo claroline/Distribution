@@ -214,7 +214,7 @@ class SupportController extends Controller
     {
         $ticket = new Ticket();
         $ticket->setUser($user);
-        $ticket->setContactMail($user->getMail());
+        $ticket->setContactMail($user->getEmail());
         $phone = $user->getPhone();
 
         if (!is_null($phone)) {
