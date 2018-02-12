@@ -17,13 +17,13 @@ class GeneralFacetPreferenceRepository extends EntityRepository
     public function getAdminPublicProfilePreferenceByRole(array $roles)
     {
         if (in_array('ROLE_ADMIN', $roles)) {
-            return array(
+            return [
                 'baseData' => true,
                 'email' => true,
                 'phone' => true,
                 'sendMail' => true,
                 'sendMessage' => true,
-            );
+            ];
         }
 
         $dql = "SELECT

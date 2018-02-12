@@ -49,11 +49,11 @@ class OauthController extends BaseAuthorizeController
         }
 
         if ($user && !$user->isAccountNonExpired()) {
-            return array(
+            return [
                 'last_username' => $lastUsername,
                 'error' => false,
                 'is_expired' => true,
-            );
+            ];
         }
 
         if ($request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
@@ -62,11 +62,11 @@ class OauthController extends BaseAuthorizeController
             $error = $request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
         }
 
-        return array(
+        return [
             'last_username' => $lastUsername,
             'error' => $error,
             'is_expired' => false,
-        );
+        ];
     }
 
     /**
@@ -104,10 +104,10 @@ class OauthController extends BaseAuthorizeController
 
         return $this->container->get('templating')->renderResponse(
             'ClarolineCoreBundle:Authentication:oauth_authorize.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'client' => $this->getClient(),
-            )
+            ]
         );
     }
 

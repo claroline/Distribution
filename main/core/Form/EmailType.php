@@ -23,11 +23,11 @@ class EmailType extends AbstractType
         $builder->add(
             'email',
             'email',
-            array(
+            [
                 'required' => true,
                 'constraints' => new Email(),
                 'label' => 'email',
-            )
+            ]
         );
     }
 
@@ -38,6 +38,6 @@ class EmailType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('translation_domain' => 'platform'));
+        $resolver->setDefaults(['translation_domain' => 'platform']);
     }
 }
