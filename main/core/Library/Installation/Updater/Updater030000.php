@@ -50,8 +50,6 @@ class Updater030000 extends Updater
 
         //if there is no primary resource, then we are using the old activities
         if (!array_key_exists('primaryresource_id', $columns)) {
-            $resourceType = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')
-                ->findOneByName('activity');
             $this->log('removing old activities...');
             //find old nodes
             $rows = $conn->query("SELECT id from claro_resource_type rt WHERE rt.name = 'activity'");
