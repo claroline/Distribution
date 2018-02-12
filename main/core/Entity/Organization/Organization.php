@@ -187,7 +187,7 @@ class Organization
     protected $default = false;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      *
      * @var string
      */
