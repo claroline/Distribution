@@ -158,7 +158,7 @@ class UserManager
      * @todo REMOVE ME (caution: this is used to create users in Command\User\CreateCommand)
      *
      * @param User      $user
-     * @param bool      $sendMail               do we need to mail the new user ?
+     * @param bool      $sendMail               do we need to email the new user ?
      * @param array     $rolesToAdd
      * @param Workspace $model                  a model to create workspace
      * @param string    $publicUrl
@@ -380,7 +380,7 @@ class UserManager
      * @throws \Claroline\CoreBundle\Persistence\NoFlushSuiteStartedException
      *
      * @internal param string $authentication an authentication source
-     * @internal param bool $mail do the users need to be mailed
+     * @internal param bool $email do the users need to be mailed
 
      *
      * @todo use api transfer instead
@@ -1138,7 +1138,7 @@ class UserManager
      */
     public function getUserByEmail($email)
     {
-        return $this->userRepo->findOneBy(['mail' => $email]);
+        return $this->userRepo->findOneBy(['email' => $email]);
     }
 
     /**
@@ -1231,7 +1231,7 @@ class UserManager
                 $userArray = [];
                 $userArray['id'] = $user->getId();
                 $userArray['name'] = $user->getFirstName().' '.$user->getLastName();
-                $userArray['mail'] = $user->getEmail();
+                $userArray['email'] = $user->getEmail();
                 $userArray['avatar'] = $user->getPicture();
                 array_push($resultArray['users'], $userArray);
             }
@@ -1370,11 +1370,11 @@ class UserManager
         return $this->userRepo->findOneUserByUsername($username, $executeQuery);
     }
 
-    public function getUserByUsernameOrMail($username, $mail, $executeQuery = true)
+    public function getUserByUsernameOrMail($username, $email, $executeQuery = true)
     {
         return $this->userRepo->findUserByUsernameOrMail(
             $username,
-            $mail,
+            $email,
             $executeQuery
         );
     }
@@ -1384,20 +1384,20 @@ class UserManager
         return $this->userRepo->findUsersByUsernamesOrMails($usernames, $mails, $executeQuery);
     }
 
-    public function getUserByUsernameOrMailOrCode($username, $mail, $code)
+    public function getUserByUsernameOrMailOrCode($username, $email, $code)
     {
         if (empty($code) || !$this->platformConfigHandler->getParameter('is_user_admin_code_unique')) {
-            return $this->getUserByUsernameOrMail($username, $mail, true);
+            return $this->getUserByUsernameOrMail($username, $email, true);
         }
 
-        return $this->userRepo->findUserByUsernameOrMailOrCode($username, $mail, $code);
+        return $this->userRepo->findUserByUsernameOrMailOrCode($username, $email, $code);
     }
 
-    public function getUserByUsernameAndMail($username, $mail, $executeQuery = true)
+    public function getUserByUsernameAndMail($username, $email, $executeQuery = true)
     {
         return $this->userRepo->findUserByUsernameAndMail(
             $username,
-            $mail,
+            $email,
             $executeQuery
         );
     }

@@ -185,7 +185,7 @@ class LdapManager
      *
      * @param server An array containing LDAP informations as host, port or dn
      * @param filter Simple or advanced ldap filter
-     * @param attributes An array of the required attributes, e.g. array("mail", "sn", "cn")
+     * @param attributes An array of the required attributes, e.g. array("email", "sn", "cn")
      *
      * @return Returns a search result identifier or FALSE on error
      */
@@ -613,7 +613,7 @@ class LdapManager
         $server['userName'] = 'uid';
         $server['firstName'] = 'givenname';
         $server['lastName'] = 'displayname';
-        $server['email'] = 'mail';
+        $server['email'] = 'email';
         $server['code'] = '';
         $server['locale'] = '';
 

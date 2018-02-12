@@ -337,7 +337,7 @@ class RolesController extends Controller
             'max' => $max,
             'order' => $order,
             'direction' => $direction,
-            'showMail' => $preferences['mail'],
+            'showMail' => $preferences['email'],
         ];
     }
 
@@ -416,7 +416,7 @@ class RolesController extends Controller
             'max' => $max,
             'orderedBy' => $orderedBy,
             'order' => $order,
-            'showMail' => $preferences['mail'],
+            'showMail' => $preferences['email'],
         ];
     }
 
@@ -579,7 +579,7 @@ class RolesController extends Controller
             'order' => $order,
             'direction' => $direction,
             'currentUser' => $currentUser,
-            'showMail' => $preferences['mail'],
+            'showMail' => $preferences['email'],
             'canEdit' => $canEdit,
             'groupsRoles' => $groupsRoles,
             'isManager' => $isWsManager,
@@ -683,7 +683,7 @@ class RolesController extends Controller
             'max' => $max,
             'order' => $order,
             'direction' => $direction,
-            'showMail' => $preferences['mail'],
+            'showMail' => $preferences['email'],
             'canEdit' => $canEdit,
         ];
     }

@@ -296,11 +296,11 @@ class CsvUserValidator extends ConstraintValidator
             }
         }
 
-        foreach ($mails as $mail => $lines) {
+        foreach ($mails as $email => $lines) {
             if (count($lines) > 1) {
                 $msg = $this->translator->trans(
                     'email_found_at',
-                    ['%email%' => $mail, '%lines%' => $this->getLines($lines)],
+                    ['%email%' => $email, '%lines%' => $this->getLines($lines)],
                     'platform'
                 ).' ';
                 $this->context->addViolation($msg);

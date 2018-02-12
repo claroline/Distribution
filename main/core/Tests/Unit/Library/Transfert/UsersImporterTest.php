@@ -75,7 +75,7 @@ class UsersImporterTest extends MockeryTestCase
             array(
                 'path' => __DIR__.'/../../../Stub/transfert/valid/full/users01.yml',
                 'usernames' => array(),
-                'emails' => array(array('mail' => 'mail1@gmail.com')),
+                'emails' => array(array('email' => 'mail1@gmail.com')),
                 'codes' => array(),
                 'isExceptionThrow' => true,
                 'manifest' => __DIR__.'/../../../Stub/transfert/valid/full/roles01.yml',

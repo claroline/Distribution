@@ -42,7 +42,7 @@ class GeneralFacetPreference
      * @ORM\Column(type="boolean")
      * @Groups({"api_facet_admin"})
      */
-    protected $mail;
+    protected $email;
 
     /**
      * @ORM\Column(type="boolean")
@@ -94,12 +94,12 @@ class GeneralFacetPreference
 
     public function setEmail($boolean)
     {
-        $this->mail = $boolean;
+        $this->email = $boolean;
     }
 
     public function getEmail()
     {
-        return $this->mail;
+        return $this->email;
     }
 
     public function setPhone($boolean)

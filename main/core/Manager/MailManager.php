@@ -208,19 +208,19 @@ class MailManager
             }
 
             foreach ($users as $user) {
-                $mail = $user->getEmail();
+                $email = $user->getEmail();
 
                 if ($user->isMailValidated() || $force) {
-                    if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-                        $to[] = $mail;
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $to[] = $email;
                     }
                 }
             }
 
             if (isset($extra['to'])) {
-                foreach ($extra['to'] as $mail) {
-                    if (filter_var($mail, FILTER_VALIDATE_EMAIL)) {
-                        $to[] = $mail;
+                foreach ($extra['to'] as $email) {
+                    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        $to[] = $email;
                     }
                 }
             }

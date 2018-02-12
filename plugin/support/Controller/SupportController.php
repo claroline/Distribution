@@ -490,12 +490,12 @@ class SupportController extends Controller
         $ticket = new Ticket();
         $ticket->setUser($user);
         $title = $this->request->request->get('title', false);
-        $mail = $this->request->request->get('mail', false);
+        $email = $this->request->request->get('email', false);
         $phone = $this->request->request->get('phone', false);
         $description = $this->request->request->get('description', false);
         $infos = $this->request->request->get('infos', false);
         $ticket->setTitle($title);
-        $ticket->setContactMail($mail);
+        $ticket->setContactMail($email);
         $completeDescription = '';
 
         if ($phone) {

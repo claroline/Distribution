@@ -465,7 +465,7 @@ class UserController extends Controller
             'firstName' => $user->getFirstName(),
             'lastName' => $user->getLastName(),
             'username' => $user->getUsername(),
-            'mail' => $user->getEmail(),
+            'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
             'picture' => $user->getPicture(),
         ];
@@ -501,7 +501,7 @@ class UserController extends Controller
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
                 'username' => $user->getUsername(),
-                'mail' => $user->getEmail(),
+                'email' => $user->getEmail(),
                 'phone' => $user->getPhone(),
                 'picture' => $user->getPicture(),
                 'administrative_code' => $user->getAdministrativeCode(),

@@ -32,7 +32,7 @@ class Persister
         $user->setLastName($username);
         $user->setUsername($username);
         $user->setPassword($username);
-        $user->setEmail($username.'@mail.com');
+        $user->setEmail($username.'@email.com');
         $this->om->persist($user);
         if (!$this->userRole) {
             $this->userRole = new Role();

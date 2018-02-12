@@ -959,7 +959,7 @@ class ImportCsvManager
         $users = [];
         $userTxt = $this->translator->trans('user', [], 'platform');
         $usernameTxt = $this->translator->trans('username', [], 'platform');
-        $mailTxt = $this->translator->trans('mail', [], 'platform');
+        $mailTxt = $this->translator->trans('email', [], 'platform');
         $usedTxt = $this->translator->trans(
             'is_already_in_use',
             [],
@@ -976,16 +976,16 @@ class ImportCsvManager
                 $logs[] = $lineDatas['error'];
             } else {
                 $username = $lineDatas[2];
-                $mail = $lineDatas[4];
+                $email = $lineDatas[4];
                 $code = $lineDatas[5];
                 $user = $this->userManager
-                    ->getUserByUsernameOrMailOrCode($username, $mail, $code);
+                    ->getUserByUsernameOrMailOrCode($username, $email, $code);
 
                 if (is_null($user)) {
                     $users[] = $lineDatas;
                     $logs[] = "$userTxt [$username] : $creatingTxt...";
                 } else {
-                    $logs[] = "[$lineNb] $usernameTxt [$username] | $mailTxt [$mail] $usedTxt";
+                    $logs[] = "[$lineNb] $usernameTxt [$username] | $mailTxt [$email] $usedTxt";
                 }
             }
         }

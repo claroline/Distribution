@@ -303,7 +303,7 @@ class AdminSupportController extends Controller
                 'id' => $user->getId(),
                 'firstName' => $user->getFirstName(),
                 'lastName' => $user->getLastName(),
-                'mail' => $user->getEmail(),
+                'email' => $user->getEmail(),
             ];
         }
 

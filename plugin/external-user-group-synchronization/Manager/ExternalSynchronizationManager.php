@@ -313,7 +313,7 @@ class ExternalSynchronizationManager
                 },
                 $alreadyImportedUsers
             );
-            // Get already existing users by username or mail in platform
+            // Get already existing users by username or email in platform
             $existingPlatformUsers = $this
                 ->userManager
                 ->getUsersByUsernamesOrMails($externalSourceUserUsernames, $externalSourceUserEmails, true);
@@ -416,7 +416,7 @@ class ExternalSynchronizationManager
                         $updateReferenceUsers
                     );
                 }
-                // If user mail exists already in platform then link with this account
+                // If user email exists already in platform then link with this account
                 if (
                     is_null($alreadyImportedUser) &&
                     !empty($existingPlatformUserMails) &&

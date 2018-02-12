@@ -181,7 +181,7 @@ class AuthenticationController
 
         if ($form->isValid()) {
             $data = $form->getData();
-            $user = $this->userManager->getUserbyEmail($data['mail']);
+            $user = $this->userManager->getUserbyEmail($data['email']);
 
             if (!empty($user)) {
                 $user->setHashTime(time());

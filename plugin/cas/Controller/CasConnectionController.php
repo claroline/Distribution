@@ -212,9 +212,9 @@ class CasConnectionController extends Controller
         return $this->casManager->linkAccount($request, $casLogin, $casLogin);
     }
 
-    private function isValidMail($mail)
+    private function isValidMail($email)
     {
-        $errors = $this->get('validator')->validate($mail, [new Email()]);
+        $errors = $this->get('validator')->validate($email, [new Email()]);
 
         return count($errors) === 0;
     }

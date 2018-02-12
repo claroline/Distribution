@@ -73,7 +73,7 @@ class OwnerImporterTest extends MockeryTestCase
             array(
                 'path' => __DIR__.'/../../../Stub/transfert/valid/full/manifest.yml',
                 'usernames' => array(),
-                'emails' => array(array('mail' => 'owner@owner.com')),
+                'emails' => array(array('email' => 'owner@owner.com')),
                 'codes' => array(),
                 'isExceptionThrow' => true,
             ),

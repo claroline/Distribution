@@ -215,7 +215,7 @@ class OauthController extends BaseAuthorizeController
         $url = $friendRequest->getHost().'/api/connected_user?access_token='.$accessToken;
         $data = $curlManager->exec($url);
         $data = json_decode($data, true);
-        $email = $data['mail'];
+        $email = $data['email'];
         $userRepo = $this->container->get('doctrine.orm.entity_manager')->getRepository('ClarolineCoreBundle:User');
         $users = $userRepo->findByMail($email);
 

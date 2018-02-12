@@ -234,14 +234,14 @@ class BlogManager
     }
 
     /**
-     * @param string $mail
+     * @param string $email
      * @param User   $owner
      *
      * @return User|null
      */
-    protected function retrieveUser($mail, User $owner)
+    protected function retrieveUser($email, User $owner)
     {
-        $user = $this->objectManager->getRepository('ClarolineCoreBundle:User')->findOneByMail($mail);
+        $user = $this->objectManager->getRepository('ClarolineCoreBundle:User')->findOneByMail($email);
 
         if (null === $user) {
             $user = $owner;

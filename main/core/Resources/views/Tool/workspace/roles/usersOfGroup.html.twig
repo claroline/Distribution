@@ -173,7 +173,7 @@
                             </th>
                             
                             {% if canEdit and showMail %}
-                                <th><a href="{{ sortUrl(max, search, group.getId(), workspace.getId(), 'mail', direction) }}">{{ 'mail'|trans({}, 'platform') }}</a></th>
+                                <th><a href="{{ sortUrl(max, search, group.getId(), workspace.getId(), 'email', direction) }}">{{ 'email'|trans({}, 'platform') }}</a></th>
                             {% endif %}
                         </tr>
                     </thead>
