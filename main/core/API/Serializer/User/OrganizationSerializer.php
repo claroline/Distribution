@@ -86,6 +86,8 @@ class OrganizationSerializer
         $this->sipe('name', 'setName', $data, $organization);
         $this->sipe('code', 'setCode', $data, $organization);
         $this->sipe('code', 'setEmail', $data, $organization);
+        $this->sipe('type', 'setType', $data, $organization);
+        $this->sipe('vat', 'setVat', $data, $organization);
 
         if (isset($data['parent'])) {
             if (empty($data['parent'])) {

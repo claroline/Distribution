@@ -37,6 +37,20 @@ const OrganizationForm = props =>
             label: t('code'),
             required: true
           }, {
+            name: 'type',
+            type: 'enum',
+            label: t('type'),
+            required: true,
+            options: {choices: {
+              'external': 'external',
+              'internal': 'internal'
+            }}
+          }, {
+            name: 'vat',
+            label: t('vat_number'),
+            type: 'string',
+            required: false
+          }, {
             name: 'parent',
             type: 'organization',
             label: t('parent')
