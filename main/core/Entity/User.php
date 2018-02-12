@@ -148,7 +148,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @Groups({"api_user", "api_user_min"})
      * @SerializedName("mail")
      */
-    protected $mail;
+    protected $email;
 
     /**
      * @var string
@@ -731,9 +731,9 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     /**
      * @return string
      */
-    public function getMail()
+    public function getEmail()
     {
-        return $this->mail;
+        return $this->email;
     }
 
     /**
@@ -741,9 +741,9 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      *
      * @return User
      */
-    public function setMail($mail)
+    public function setEmail($email)
     {
-        $this->mail = $mail;
+        $this->email = $email;
 
         return $this;
     }
