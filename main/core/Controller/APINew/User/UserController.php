@@ -78,12 +78,48 @@ class UserController extends AbstractCrudController
         //there is a little bit of computation involved here (ie, do we need to validate the account or stuff like this)
         //but keep it easy for now because an other route could be relevant
         $selfLog = true;
+        $autoOrganization = $this->container
+            ->get('claroline.configuration.claroline.config.platform_config_handler')
+            ->getParameter('force_organization_creation');
+
+        //step one: creation the organization if it's here. If it exists, we fetch it.
+        $data = $this->decodeRequest($request);
+
+        if ($autoOrganization) {
+            $organization = $this->crud->create(
+                'Claroline\CoreBundle\Entity\Organization\Organization',
+                $data['mainOrganization']
+            );
+
+            //error handling
+            if (is_array($organization)) {
+                return new JsonResponse($organization, 400);
+            }
+        }
 
         if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
             $this->options['create'][] = Options::USER_SELF_LOG;
         }
 
-        return parent::createAction($request, 'Claroline\CoreBundle\Entity\User');
+        $user = $this->crud->create(
+            $class,
+            $this->decodeRequest($request),
+            'Claroline\CoreBundle\Entity\User'
+        );
+
+        //error handling
+        if (is_array($user)) {
+            return new JsonResponse($user, 400);
+        }
+
+        if ($autoOrganization) {
+            $this->crud->replace($user, 'mainOrganization', $organization);
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($user, $this->options['get']),
+            201
+        );
     }
 
     public function getOptions()

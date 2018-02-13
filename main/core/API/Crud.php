@@ -21,6 +21,8 @@ class Crud
     const COLLECTION_ADD = 'add';
     /** @var string */
     const COLLECTION_REMOVE = 'remove';
+    /** @var string */
+    const NO_VALIDATE = 'no_validate';
 
     /** @var ObjectManager */
     private $om;
@@ -73,10 +75,12 @@ class Crud
     public function create($class, $data, array $options = [])
     {
         // validates submitted data.
-        $errors = $this->validate($class, $data, ValidatorProvider::CREATE);
+        if (!in_array($options, self::NO_VALIDATE)) {
+            $errors = $this->validate($class, $data, ValidatorProvider::CREATE);
 
-        if (count($errors) > 0) {
-            return $errors;
+            if (count($errors) > 0) {
+                return $errors;
+            }
         }
 
         // gets entity from raw data.
@@ -105,7 +109,14 @@ class Crud
     public function update($class, $data, array $options = [])
     {
         // validates submitted data.
-        $this->validate($class, $data, ValidatorProvider::UPDATE);
+        if (!in_array($options, self::NO_VALIDATE)) {
+            $errors = $this->validate($class, $data, ValidatorProvider::UPDATE);;
+
+            if (count($errors) > 0) {
+                return $errors;
+            }
+        }
+
         // gets entity from raw data.
         $object = $this->serializer->deserialize($class, $data, $options);
 
