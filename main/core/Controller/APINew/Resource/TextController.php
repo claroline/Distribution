@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @EXT\Route("resource/text")
@@ -30,6 +31,8 @@ class TextController
      */
     public function getContentAction(Text $text)
     {
-        return $text->getContent();
+        return new Response(
+            $text->getContent()
+        );
     }
 }
