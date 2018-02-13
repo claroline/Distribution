@@ -8,8 +8,5 @@ export const reducer = makePageReducer({}, {
   options: (state = {}) => state,
   user: makeFormReducer('user', {
     new: true
-  }),
-  organization: makeFormReducer('user.mainOrganization', {
-    new: true
   })
 })

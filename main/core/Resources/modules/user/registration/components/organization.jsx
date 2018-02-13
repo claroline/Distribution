@@ -10,7 +10,7 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 const Organization = () =>
   <FormContainer
     level={2}
-    name="organization"
+    name="user"
     sections={[
       {
         id: 'general',
@@ -18,17 +18,17 @@ const Organization = () =>
         primary: true,
         fields: [
           {
-            name: 'name',
+            name: 'mainOrganization.name',
             type: 'string',
             label: t('name'),
             required: true
           }, {
-            name: 'code',
+            name: 'mainOrganization.code',
             type: 'string',
             label: t('code'),
             required: true
           }, {
-            name: 'type',
+            name: 'mainOrganization.type',
             type: 'enum',
             label: t('type'),
             required: true,
@@ -37,16 +37,16 @@ const Organization = () =>
               'internal': 'internal'
             }}
           }, {
-            name: 'vat',
+            name: 'mainOrganization.vat',
             label: t('vat_number'),
             type: 'string',
             required: false
           }, {
-            name: 'parent',
+            name: 'mainOrganization.parent',
             type: 'organization',
             label: t('parent')
           },  {
-            name: 'email',
+            name: 'mainOrganization.email',
             type: 'email',
             label: t('email')
           }

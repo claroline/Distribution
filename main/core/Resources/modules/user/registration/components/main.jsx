@@ -90,7 +90,6 @@ RegistrationForm.propTypes = {
 const UserRegistration = connect(
   (state) => ({
     user: formSelect.data(formSelect.form(state, 'user')),
-    organization: formSelect.data(formSelect.form(state, 'organization')),
     facets: select.facets(state),
     termOfService: select.termOfService(state),
     options: select.options(state)

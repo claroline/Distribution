@@ -140,7 +140,6 @@ class ValidatorProvider
         $uniqueFields = $validator->getUniqueFields();
         $errors = $this->validateUnique($uniqueFields, $data, $mode, $class);
 
-        var_dump($uniqueFields);
         //custom validation
         $errors = array_merge($errors, $validator->validate($data));
 
