@@ -25,6 +25,7 @@ class TextController
      *     "/{id}/content",
      *     name="apiv2_resource_text_content"
      * )
+     *
      * @param Text $text
      *
      * @return string
