@@ -241,7 +241,6 @@ class Crud
      * @param string $property - the property to update
      * @param mixed  $data     - the data that must be set
      * @param array  $options  - an array of options
-
      */
     public function replace($object, $property, $data, array $options = [])
     {
@@ -273,14 +272,7 @@ class Crud
      */
     public function validate($class, $data, $mode)
     {
-        $errors = [];
-
-        if ($this->validator->has($class)) {
-            // calls the validator for class. It will throw exception on error
-            $errors = $this->validator->validate($class, $data, $mode, true);
-        }
-
-        return $errors;
+        return $this->validator->validate($class, $data, $mode, true);
     }
 
     /**

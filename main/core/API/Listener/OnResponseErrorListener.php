@@ -26,7 +26,7 @@ class OnResponseErrorListener
         $class = substr($controller, 0, strpos($controller, ':'));
 
         if (is_subclass_of($class, 'Claroline\CoreBundle\Controller\APINew\AbstractApiController')) {
-            $this->handleError($event->getException(), $event);
+          //  $this->handleError($event->getException(), $event);
         }
     }
 

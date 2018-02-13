@@ -85,7 +85,7 @@ class OrganizationSerializer
     {
         $this->sipe('name', 'setName', $data, $organization);
         $this->sipe('code', 'setCode', $data, $organization);
-        $this->sipe('code', 'setEmail', $data, $organization);
+        $this->sipe('email', 'setEmail', $data, $organization);
         $this->sipe('type', 'setType', $data, $organization);
         $this->sipe('vat', 'setVat', $data, $organization);
 
@@ -101,13 +101,24 @@ class OrganizationSerializer
         }
     }
 
-    public function getIdentifiers()
-    {
-        return ['id', 'uuid', 'name', 'code'];
-    }
-
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Organization\Organization';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/main/core/organization.json';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSamples()
+    {
+        return '#/main/core/organization';
     }
 }
