@@ -125,7 +125,7 @@ UserFeedback.defaultProps = {
 }
 
 const ResourceOverview = props =>
-  <section className="resource-overview">
+  <section className="resource-section resource-overview">
     <h2 className="sr-only">{t_res('resource_overview')}</h2>
 
     <div className="row">
@@ -145,6 +145,7 @@ const ResourceOverview = props =>
                 {...action}
                 key={index}
                 className={classes('btn-block', {
+                  'btn-default': !action.primary && !action.dangerous,
                   'btn-primary': action.primary,
                   'btn-danger': action.dangerous
                 })}
@@ -170,7 +171,11 @@ const ResourceOverview = props =>
             <h3 className="h2 h-first">{t_res('resource_overview_info')}</h3>
 
             <div className="panel panel-default">
-              <HtmlText className="panel-body">{props.contentText}</HtmlText>
+              {typeof props.contentText === 'string' ?
+                <HtmlText className="panel-body">{props.contentText}</HtmlText>
+                :
+                <div className="panel-body">{props.contentText}</div>
+              }
             </div>
           </section>
         }
@@ -181,7 +186,7 @@ const ResourceOverview = props =>
   </section>
 
 ResourceOverview.propTypes = {
-  contentText: T.string,
+  contentText: T.node, // can be a string or an empty placeholder
   progression: T.shape({
     /**
      * Permits to show notation & feedback before the end of evaluation.
