@@ -92,11 +92,11 @@ const ScheduledTaskForm = props => {
             name="task.users"
             open={UserList.open}
             fetch={{
-              url: ['apiv2_task_list_users', {id: props.task.id}],
-              autoload: false
+              url: ['apiv2_scheduledtask_list_users', {id: props.task.id}],
+              autoload: props.task.id && !props.new
             }}
             delete={{
-              url: ['apiv2_task_remove_users', {id: props.task.id}]
+              url: ['apiv2_scheduledtask_remove_users', {id: props.task.id}]
             }}
             definition={UserList.definition}
             card={UserList.card}
