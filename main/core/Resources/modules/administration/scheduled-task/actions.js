@@ -22,3 +22,16 @@ actions.open = (formName, id = null) => (dispatch) => {
     }, true))
   }
 }
+
+actions.addUsers = (id, users) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_task_add_users', {id: id}) +'?'+ users.map(id => 'ids[]='+id).join('&'),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('task'))
+      dispatch(listActions.invalidateData('task.users'))
+    }
+  }
+})

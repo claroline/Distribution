@@ -7,9 +7,10 @@ import {FORM_RESET, FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 const reducer = makePageReducer({}, {
   isCronConfigured: makeReducer(false, {}),
+  picker: makeListReducer('users.picker'),
   tasks: makeListReducer('tasks'),
   task: makeFormReducer('task', {}, {
-    users: makeListReducer('task.message.users', {}, {
+    users: makeListReducer('task.users', {}, {
       invalidated: makeReducer(false, {
         [FORM_RESET+'/task.users']: () => true // todo : find better
       })
