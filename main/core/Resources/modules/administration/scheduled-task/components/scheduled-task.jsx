@@ -88,7 +88,7 @@ const ScheduledTaskForm = props => {
           ]}
         >
           <DataListContainer
-            name="task.message.users"
+            name="task.users"
             open={UserList.open}
             fetch={{
               url: ['apiv2_task_list_users', {id: props.task.id}],
