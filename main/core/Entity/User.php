@@ -1083,6 +1083,8 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     public function addFieldFacet(FieldFacetValue $fieldFacetValue)
     {
         $this->fieldsFacetValue->add($fieldFacetValue);
+
+        $fieldFacetValue->setUser($this);
     }
 
     public function setInitDate($initDate)
