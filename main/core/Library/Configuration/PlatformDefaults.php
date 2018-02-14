@@ -135,7 +135,7 @@ class PlatformDefaults implements ParameterProviderInterface
               'icap_lesson' => ['visible'],
             ],
             'default_root_anon_id' => null,
-            'is_cron_configured' => false
+            'is_cron_configured' => false,
         ];
     }
 }

@@ -110,7 +110,11 @@ const ScheduledTaskForm = props => {
 }
 
 ScheduledTaskForm.propTypes = {
-  new: T.bool.isRequired
+  new: T.bool.isRequired,
+  task: T.shape({
+    id: T.string,
+  }).isRequired,
+  pickUsers: T.func.isRequired
 }
 
 const ScheduledTask = connect(

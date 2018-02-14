@@ -1,4 +1,3 @@
-import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {generateUrl} from '#/main/core/api/router'
 
 import {now} from '#/main/core/scaffolding/date'
