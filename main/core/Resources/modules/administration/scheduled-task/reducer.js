@@ -7,7 +7,7 @@ import {FORM_RESET, FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 const reducer = makePageReducer({}, {
   isCronConfigured: makeReducer(false, {}),
-  picker: makeListReducer('users.picker'),
+  picker: makeListReducer('picker'),
   tasks: makeListReducer('tasks'),
   task: makeFormReducer('task', {}, {
     users: makeListReducer('task.users', {}, {

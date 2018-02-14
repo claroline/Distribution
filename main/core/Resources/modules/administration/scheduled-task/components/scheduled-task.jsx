@@ -9,6 +9,7 @@ import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
 import {constants} from '#/main/core/administration/scheduled-task/constants'
+import {actions} from '#/main/core/administration/scheduled-task/actions'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
@@ -123,7 +124,7 @@ const ScheduledTask = connect(
         icon: 'fa fa-fw fa-user',
         title: trans('add_users'),
         confirmText: trans('add'),
-        name: 'users.picker',
+        name: 'picker',
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
