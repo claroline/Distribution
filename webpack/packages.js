@@ -55,6 +55,7 @@ function extractPackageInfo(rootDir) {
     var data
 
     if (isMetaPackage(path)) {
+      console.log(path)
       newDef.assets = getMetaEntries(path)
       newDef.meta = true
     } else {
@@ -101,7 +102,7 @@ function getMetaEntries (targetDir) {
 }
 
 function isMetaPackage(rootDir) {
-  return fs.existsSync(rootDir + '/main')
+  return fs.existsSync(rootDir + '/main') || fs.existsSync(rootDir + '/plugin')
 }
 
 function getMetaBundles(targetDir) {
