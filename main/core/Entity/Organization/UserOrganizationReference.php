@@ -1,4 +1,3 @@
-
 <?php
 
 /*
@@ -21,6 +20,15 @@ use Doctrine\ORM\Mapping as ORM;
 class UserOrganizationReference
 {
     /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
+     */
+    private $id;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -31,4 +39,9 @@ class UserOrganizationReference
      * @ORM\JoinColumn(nullable=false)
      */
     private $organizations;
+
+    /**
+     * @ORM\Column(name="is_main")
+     */
+    private $isMain;
 }
