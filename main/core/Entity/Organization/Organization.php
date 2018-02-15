@@ -140,11 +140,10 @@ class Organization
     private $children;
 
     /**
-     * @ORM\ManyToMany(
+     * @ORM\OneToMany(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
      *     mappedBy="organizations"
      * )
-     * @ORM\JoinTable(name="claro_user_organization")
      *
      * @var ArrayCollection
      */

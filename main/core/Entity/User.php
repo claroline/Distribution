@@ -403,23 +403,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization",
-     *     inversedBy="users"
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference",
+     *     mappedBy="users"
      * )
      */
-    protected $organizations;
-
-    /**
-     * @var Organization\Organization
-     *
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Organization\Organization",
-     *     cascade={"persist"}
-     * )
-     * @ORM\JoinColumn(name="main_organization_id", onDelete="SET NULL")
-     */
-    protected $mainOrganization;
+    protected $userOrganizationReferences;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization", inversedBy="administrators")
