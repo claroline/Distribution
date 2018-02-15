@@ -55,7 +55,6 @@ function extractPackageInfo(rootDir) {
     var data
 
     if (isMetaPackage(path)) {
-      console.log(path)
       newDef.assets = getMetaEntries(path)
       newDef.meta = true
     } else {
