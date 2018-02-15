@@ -401,16 +401,6 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     protected $emailValidationHash;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference",
-     *     mappedBy="users"
-     * )
-     */
-    protected $userOrganizationReferences;
-
-    /**
      * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization", inversedBy="administrators")
      * @ORM\JoinTable(name="claro_user_administrator")
      * @Groups({"api_user"})
@@ -426,6 +416,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * )
      */
     protected $locations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference", mappedBy="user")
+     * @ORM\JoinColumn(name="user_id", nullable=false)
+     */
+    protected $userOrganizationReferences;
 
     public function __construct()
     {
@@ -1172,15 +1168,12 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
             }
         }
 
-        return array_merge($organizations, $this->organizations->toArray());
-    }
+        $userOrgas = $this->userOrganizationReferences->toArray();
+        $userOrgas = array_map(function ($ref) {
+            return $ref->getOrganization();
+        }, $userOrgas);
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getUserOrganizations()
-    {
-        return $this->organizations;
+        return array_merge($organizations, $userOrgas);
     }
 
     public function getAdministratedOrganizations()
@@ -1203,14 +1196,13 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->administratedOrganizations = $organizations;
     }
 
-    public function setMainOrganization(Organization $organization)
-    {
-        $this->mainOrganization = $organization;
-    }
-
     public function getMainOrganization()
     {
-        return $this->mainOrganization;
+        foreach ($this->userOrganizationReferences as $ref) {
+            if ($ref->isMain()) {
+                return $ref->getOrganization();
+            }
+        }
     }
 
     public function setIsRemoved($isRemoved)

@@ -44,4 +44,9 @@ class UserOrganizationReference
      * @ORM\Column(name="is_main")
      */
     private $isMain;
+
+    public function isMain()
+    {
+        return $this->isMain;
+    }
 }

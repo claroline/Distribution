@@ -199,6 +199,12 @@ class Organization
      */
     protected $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference", mappedBy="organization")
+     * @ORM\JoinColumn(name="organization_id", nullable=false)
+     */
+    private $userOrganizationReference;
+
     public function __construct()
     {
         $this->type = self::TYPE_EXTERNAL;
@@ -327,24 +333,6 @@ class Organization
     public function getChildren()
     {
         return $this->children;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function addUser(User $user)
-    {
-        $this->users->add($user);
-        $user->getUserOrganizations()->add($this);
-    }
-
-    /**
-     * @param User $user
-     */
-    public function removeUser(User $user)
-    {
-        $this->users->remove($user);
-        $user->getUserOrganizations()->removeElement($this);
     }
 
     /**
