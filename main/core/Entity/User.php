@@ -16,6 +16,7 @@ use Claroline\CoreBundle\Entity\Model\GroupsTrait;
 use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\Organization\UserOrganizationReference;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Validator\Constraints as ClaroAssert;
@@ -203,7 +204,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
      * @ORM\OneToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Workspace\Workspace",
      *     inversedBy="personalUser",
-     *     cascade={"persist"}
+     *     cascade={"persist", "remove"}
      * )
      * @ORM\JoinColumn(name="workspace_id", onDelete="SET NULL")
      * @Groups({"api_user"})
@@ -418,7 +419,13 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
     protected $locations;
 
     /**
-     * @ORM\OneToMany(targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\CoreBundle\Entity\Organization\UserOrganizationReference",
+     *     mappedBy="user",
+     *     cascade={"persist"},
+     *
+     *     orphanRemoval=true
+     *  )
      * @ORM\JoinColumn(name="user_id", nullable=false)
      */
     protected $userOrganizationReferences;
@@ -1174,6 +1181,29 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         }, $userOrgas);
 
         return array_merge($organizations, $userOrgas);
+    }
+
+    public function addOrganization(Organization $organization)
+    {
+        $ref = new UserOrganizationReference();
+        $ref->setOrganization($organization);
+        $ref->setUser($this);
+        $this->userOrganizationReferences->add($ref);
+    }
+
+    public function removeOrganization(Organization $organization)
+    {
+        $found = null;
+
+        foreach ($this->userOrganizationReferences as $ref) {
+            if ($ref->getOrganization()->getId() === $organization->getId()) {
+                $found = $ref;
+            }
+        }
+
+        if ($found) {
+            $this->userOrganizationReferences->removeElement($found);
+        }
     }
 
     public function getAdministratedOrganizations()

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Organization;
 
+use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,24 +30,47 @@ class UserOrganizationReference
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", nullable=false)
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\User",
+     *     inversedBy="userOrganizationReferences"
+     * )
+     * @ORM\JoinColumn(name="user_id", nullable=false, onDelete="CASCADE")
      */
     private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization")
-     * @ORM\JoinColumn(name="oganization_id", nullable=false)
+     * @ORM\JoinColumn(name="oganization_id", nullable=false, onDelete="CASCADE")
      */
     private $organization;
 
     /**
      * @ORM\Column(name="is_main")
      */
-    private $isMain;
+    private $isMain = false;
 
     public function isMain()
     {
         return $this->isMain;
+    }
+
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    public function setOrganization(Organization $organization)
+    {
+        $this->organization = $organization;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function getOrganization()
+    {
+        return $this->organization;
     }
 }
