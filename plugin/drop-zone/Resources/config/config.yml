@@ -1,5 +1,6 @@
 plugin:
   has_options: true
+  icon: dropzone_icon.png
 
   resources:
     - name: claroline_dropzone
