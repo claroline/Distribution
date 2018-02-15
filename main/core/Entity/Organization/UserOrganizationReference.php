@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\Organization\OrganizationRepository")
- * @ORM\Table(name="claro_user_organization")
+ * @ORM\Table(name="user_organization")
  */
 class UserOrganizationReference
 {
@@ -30,15 +30,15 @@ class UserOrganizationReference
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="user_id", nullable=false)
      */
-    private $users;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Organization\Organization")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="oganization_id", nullable=false)
      */
-    private $organizations;
+    private $organization;
 
     /**
      * @ORM\Column(name="is_main")
