@@ -75,7 +75,7 @@ class Crud
     public function create($class, $data, array $options = [])
     {
         // validates submitted data.
-        if (!in_array($options, self::NO_VALIDATE)) {
+        if (!in_array(self::NO_VALIDATE, $options)) {
             $errors = $this->validate($class, $data, ValidatorProvider::CREATE);
 
             if (count($errors) > 0) {
@@ -109,8 +109,8 @@ class Crud
     public function update($class, $data, array $options = [])
     {
         // validates submitted data.
-        if (!in_array($options, self::NO_VALIDATE)) {
-            $errors = $this->validate($class, $data, ValidatorProvider::UPDATE);;
+        if (!in_array(self::NO_VALIDATE, $options)) {
+            $errors = $this->validate($class, $data, ValidatorProvider::UPDATE);
 
             if (count($errors) > 0) {
                 return $errors;

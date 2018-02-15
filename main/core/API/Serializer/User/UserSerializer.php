@@ -167,6 +167,10 @@ class UserSerializer
                     ];
                 }, $user->getGroups()->toArray()),
             ]);
+
+            if ($user->getMainOrganization()) {
+                $serialized['mainOrganization'] = $this->container->get('claroline.api.serializer')->serialize($user->getMainOrganization());
+            }
         }
 
         if (in_array(Options::SERIALIZE_FACET, $options)) {

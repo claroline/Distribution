@@ -3,6 +3,7 @@
 namespace Claroline\CoreBundle\API\Crud\User;
 
 use Claroline\CoreBundle\Entity\Organization\Organization;
+use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Crud\CreateEvent;
 use Claroline\CoreBundle\Event\Crud\DeleteEvent;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -35,7 +36,10 @@ class OrganizationCrud
     {
         $organization = $event->getObject();
         $user = $this->tokenStorage->getToken()->getUser();
-        $organization->addAdministrator($user);
+
+        if ($user instanceof User) {
+            $organization->addAdministrator($user);
+        }
     }
 
     /**

@@ -171,6 +171,25 @@ class FinderProvider
     }
 
     /**
+     * Find an object of class $class according to its unique identifiers.
+     *
+     * @return mixed
+     */
+    public function findByIdentifiers($class, $data)
+    {
+        $identifiers = $this->serializer->getIdentifiers($class);
+        $findBy = [];
+
+        foreach ($data as $key => $value) {
+            if (in_array($key, $identifiers)) {
+                $finBy[$key] = $value;
+            }
+        }
+
+        return $this->om->getRepository($class)->findOneBy($findBy);
+    }
+
+    /**
      * @param QueryBuilder $qb
      * @param array|null   $sortBy
      */

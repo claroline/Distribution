@@ -79,32 +79,36 @@ class UserController extends AbstractCrudController
         //but keep it easy for now because an other route could be relevant
         $selfLog = true;
         $autoOrganization = $this->container
-            ->get('claroline.configuration.claroline.config.platform_config_handler')
+            ->get('claroline.config.platform_config_handler')
             ->getParameter('force_organization_creation');
 
         //step one: creation the organization if it's here. If it exists, we fetch it.
         $data = $this->decodeRequest($request);
 
         if ($autoOrganization) {
-            $organization = $this->crud->create(
-                'Claroline\CoreBundle\Entity\Organization\Organization',
-                $data['mainOrganization']
-            );
+            //try to find orga first
+            $organization = $this->finder
+              ->findByIdentifiers('Claroline\CoreBundle\Entity\Organization\Organization', $data['mainOrganization']);
 
+            if (!$organization) {
+                $organization = $this->crud->create(
+                    'Claroline\CoreBundle\Entity\Organization\Organization',
+                    $data['mainOrganization']
+                );
+            }
             //error handling
             if (is_array($organization)) {
                 return new JsonResponse($organization, 400);
             }
         }
 
-        if ($selfLog && $this->container->get('security.token_storage')->getToken()->getUser() === 'anon.') {
+        if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
             $this->options['create'][] = Options::USER_SELF_LOG;
         }
 
         $user = $this->crud->create(
-            $class,
-            $this->decodeRequest($request),
-            'Claroline\CoreBundle\Entity\User'
+           'Claroline\CoreBundle\Entity\User',
+            $this->decodeRequest($request)
         );
 
         //error handling

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
@@ -14,41 +14,28 @@ const Organization = () =>
     sections={[
       {
         id: 'general',
-        title: t('general'),
+        title: trans('general'),
         primary: true,
         fields: [
           {
             name: 'mainOrganization.name',
             type: 'string',
-            label: t('name'),
+            label: trans('name'),
             required: true
           }, {
             name: 'mainOrganization.code',
             type: 'string',
-            label: t('code'),
+            label: trans('code'),
             required: true
           }, {
-            name: 'mainOrganization.type',
-            type: 'enum',
-            label: t('type'),
-            required: true,
-            options: {choices: {
-              'external': 'external',
-              'internal': 'internal'
-            }}
-          }, {
             name: 'mainOrganization.vat',
-            label: t('vat_number'),
+            label: trans('vat_number'),
             type: 'string',
             required: false
           }, {
-            name: 'mainOrganization.parent',
-            type: 'organization',
-            label: t('parent')
-          },  {
             name: 'mainOrganization.email',
             type: 'email',
-            label: t('email')
+            label: trans('email')
           }
         ]
       }

@@ -202,6 +202,8 @@ class Organization
 
     public function __construct()
     {
+        $this->type = self::TYPE_EXTERNAL;
+
         $this->refreshUuid();
         $this->refreshCode();
 
