@@ -11,7 +11,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 use Claroline\InstallationBundle\Updater\Updater;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class Updater110201 extends Updater
+class Updater110200 extends Updater
 {
     const BATCH_SIZE = 500;
 
@@ -29,25 +29,36 @@ class Updater110201 extends Updater
     public function postUpdate()
     {
         $users = $this->om->getRepository('ClarolineCoreBundle:User')->findAll();
+        $count = count($users);
         $i = 0;
+
+        $this->log('Setting user main organization...');
 
         foreach ($users as $user) {
             ++$i;
 
             $administratedOrganizations = $user->getAdministratedOrganizations()->toArray();
 
-            if (count($administratedOrganizations) > 0) {
-                $user->setMainOrganization($administratedOrganizations[0]);
-            } else {
-                $organizations = $user->getOrganizations();
-                $user->setMainOrganization($organizations[0]);
+            if (!$user->getMainOrganization()) {
+                $this->log("Set {$user->getUsername()} main organization {$i}/{$count}");
+
+                if (count($administratedOrganizations) > 0) {
+                    $user->setMainOrganization($administratedOrganizations[0]);
+                } else {
+                    $organizations = $user->getOrganizations();
+                    $user->setMainOrganization($organizations[0]);
+                }
+
+                $this->om->persist($user);
             }
 
-            $this->om->persist($user);
-
             if (0 === $i % self::BATCH_SIZE) {
+                $this->log('Flushing...');
                 $this->om->flush();
             }
         }
+
+        $this->log('Flushing...');
+        $this->om->flush();
     }
 }
