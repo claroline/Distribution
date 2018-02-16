@@ -99,7 +99,11 @@ class UserCrud
 
         if (null === $user->getMainOrganization()) {
             //we want a min organization
-            $user->setMainOrganization($user->getOrganizations()[0]);
+            if (isset($user->getOrganizations()[0])) {
+                $user->setMainOrganization($user->getOrganizations()[0]);
+            } else {
+                $user->setMainOrganization($this->container->get('claroline.manager.organization.organization_manager')->getDefault());
+            }
         }
 
         //we need this line for the log system
