@@ -60,7 +60,7 @@ const DocumentRow = props =>
 
     <td className="document-data">
       {props.document.type === constants.DOCUMENT_TYPE_FILE &&
-        <a href={asset(props.document.data.url)} download={props.document.data.name}>
+        <a href={generateUrl('claro_dropzone_document_download', {document: props.document.id})}>
           {props.document.data.name}
         </a>
       }
