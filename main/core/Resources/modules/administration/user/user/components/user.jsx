@@ -14,8 +14,6 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {actions} from '#/main/core/administration/user/user/actions'
 
-import {getOrganizationListDefinition} from '#/main/core/administration/user/user/components/user-organization-list.jsx'
-
 import {OrganizationList} from '#/main/core/administration/user/organization/components/organization-list.jsx'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
@@ -56,6 +54,11 @@ const UserForm = props =>
             label: t('password'),
             displayed: props.new,
             required: true
+          },
+          {
+            name: 'mainOrganization',
+            type: 'organization',
+            label: t('main_organization')
           }
         ]
       }, {
@@ -186,7 +189,7 @@ const UserForm = props =>
           delete={{
             url: ['apiv2_user_remove_organizations', {id: props.user.id}]
           }}
-          definition={getOrganizationListDefinition(props.user)}
+          definition={OrganizationList.definition}
           card={OrganizationList.card}
         />
       </FormSection>

@@ -70,20 +70,6 @@ class UserController extends AbstractCrudController
     }
 
     /**
-     * @Route("/{id}/setmainorga/{organization}", name="apiv2_user_pws_delete")
-     * @Method("DELETE")
-     * @ParamConverter("user", options={"mapping": {"id": "uuid"}})
-     */
-    public function setMainOrganization(User $user, Organization $organization)
-    {
-        $this->crud->replace($object, 'organization', Crud::COLLECTION_ADD, $organizations);
-
-        return new JsonResponse(
-          $this->serializer->serialize($user)
-      );
-    }
-
-    /**
      * @Route("/user/login", name="apiv2_user_create_and_login")
      * @Method("POST")
      */

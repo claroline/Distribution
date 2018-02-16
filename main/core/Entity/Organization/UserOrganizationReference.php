@@ -54,6 +54,11 @@ class UserOrganizationReference
         return $this->isMain;
     }
 
+    public function setIsMain($boolean)
+    {
+        return $this->isMain = $boolean;
+    }
+
     public function setUser(User $user)
     {
         $this->user = $user;

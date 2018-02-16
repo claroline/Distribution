@@ -1235,6 +1235,31 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         }
     }
 
+    public function setMainOrganization(Organization $organization)
+    {
+        $found = false;
+
+        foreach ($this->userOrganizationReferences as $ref) {
+            if ($ref->isMain()) {
+                $ref->setIsMain(false);
+            }
+
+            if ($ref->getOrganization()->getUuid() === $organization->getUuid()) {
+                $found = true;
+                $ref->setIsMain(true);
+            }
+        }
+
+        //if it's not in the organization list, we add it
+        if (!$found) {
+            $ref = new UserOrganizationReference();
+            $ref->setOrganization($organization);
+            $ref->setUser($this);
+            $ref->setIsMain(true);
+            $this->userOrganizationReferences->add($ref);
+        }
+    }
+
     public function setIsRemoved($isRemoved)
     {
         $this->isRemoved = $isRemoved;

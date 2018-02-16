@@ -172,6 +172,13 @@ class FinderProvider
 
     /**
      * Find an object of class $class according to its unique identifiers.
+     * the $data array can contains properties that aren't identifiers, we just
+     * won't take them into account.
+     *
+     * It's a way to validate and retrieve an objet at it's creation.
+     * It's currently used for the organization because we ask a user to create one (if the platform is configured that way)
+     * From then we fetch the db according the the vat number (or organization code) and if it exists, we don't create a new
+     * one but we can simply add the existing one to the user
      *
      * @return mixed
      */
