@@ -4,7 +4,6 @@ import classes from 'classnames'
 
 import {generateUrl} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
-import {asset} from '#/main/core/scaffolding/asset'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 

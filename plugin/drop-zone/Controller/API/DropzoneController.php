@@ -465,6 +465,5 @@ class DropzoneController
         if (!$this->authorization->isGranted('OPEN', $collection)) {
             throw new AccessDeniedException();
         }
-
     }
 }
