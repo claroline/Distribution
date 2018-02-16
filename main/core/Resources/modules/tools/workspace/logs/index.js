@@ -12,12 +12,5 @@ bootstrap(
   LogTool,
 
   // app store configuration
-  () => {},
-
-  // remap data-attributes set on the app DOM container
-  (initialData) => {
-    return {
-      logs: initialData.logs
-    }
-  }
+  () => {}
 )

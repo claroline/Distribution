@@ -1,35 +1,45 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {TabbedPageContainer} from '#/main/core/layout/page/containers/tabbed-page.jsx'
+import {navigate, matchPath, withRouter} from '#/main/core/router'
+import {
+    PageActions,
+    PageHeader
+} from '#/main/core/layout/page'
+import {
+    RoutedPageContainer,
+    RoutedPageContent
+} from '#/main/core/layout/router'
 
 // app sections
-import {OverviewTab, OverviewTabActions} from '#/main/core/tools/workspace/logs/overview/components/overview-tab.jsx'
-import {UserTab, UserTabActions} from '#/main/core/tools/workspace/logs/user/components/user-tab.jsx'
 
 const Tool = () =>
-  <TabbedPageContainer
-    redirect={[
-      {from: '/', exact: true, to: '/overview'}
-    ]}
+    <RoutedPageContainer>
+      <PageHeader
+          title={trans('logs', {}, 'tools')}
+      >
+      </PageHeader>
 
-    tabs={[
-      {
-        icon: 'fa fa-list',
-        title: trans('users'),
-        path: '/overview',
-        actions: OverviewTabActions,
-        content: OverviewTab
-      }, {
-        icon: 'fa fa-user',
-        title: trans('groups'),
-        path: '/users',
-        actions: UserTabActions,
-        content: UserTab
-      }
-    ]}
-  />
+        <PageActions> </PageActions>
+
+
+    </RoutedPageContainer>
 
 export {
   Tool as LogTool
 }
+
+/*<RoutedPageContent
+ routes={[
+ {
+ path: '/',
+ component: ScheduledTasks,
+ exact: true
+ }, {
+ path: '/users',
+ component: ScheduledTask,
+ }
+ ]}
+ />*/

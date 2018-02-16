@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Form\DataTransformer\DateRangeToTextTransformer;
-use Doctrine\ORM\EntityManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Adapter\FixedAdapter;
@@ -38,9 +38,9 @@ class LogManager
     private $container;
 
     /**
-     * @var EntityManager
+     * @var ObjectManager
      */
-    private $em;
+    private $om;
 
     /** @var \CLaroline\CoreBundle\Repository\Log\LogRepository $logRepository */
     private $logRepository;
@@ -48,29 +48,33 @@ class LogManager
     /**
      * @DI\InjectParams({
      *     "container"          = @DI\Inject("service_container"),
-     *     "entityManager"      = @DI\Inject("doctrine.orm.entity_manager")
+     *     "objectManager"      = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param $container
-     * @param $entityManager
+     * @param $objectManager
      */
-    public function __construct($container, $entityManager)
+    public function __construct($container, $objectManager)
     {
         $this->container = $container;
-        $this->em = $entityManager;
-        $this->logRepository = $entityManager->getRepository('ClarolineCoreBundle:Log\Log');
+        $this->om = $objectManager;
+        $this->logRepository = $objectManager->getRepository('ClarolineCoreBundle:Log\Log');
     }
 
     public function detach($obj)
     {
-        $this->em->detach($obj);
+        $this->om->detach($obj);
+    }
+
+    public function getLog($id) {
+        return $this->logRepository->findOneBy(['id' => $id]);
     }
 
     public function getDesktopWidgetList(WidgetInstance $instance)
     {
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
-        $hiddenConfigs = $this->em
+        $hiddenConfigs = $this->om
             ->getRepository('ClarolineCoreBundle:Log\LogHiddenWorkspaceWidgetConfig')
             ->findBy(['user' => $user]);
 
@@ -82,7 +86,7 @@ class LogManager
 
         // Get manager and collaborator workspaces config
         /** @var \Claroline\CoreBundle\Entity\Workspace\Workspace[] $workspaces */
-        $workspaces = $this->em
+        $workspaces = $this->om
             ->getRepository('ClarolineCoreBundle:Workspace\Workspace')
             ->findByUserAndRoleNamesNotIn($user, ['ROLE_WS_COLLABORATOR', 'ROLE_WS_MANAGER'], $workspaceIds);
 
@@ -90,11 +94,11 @@ class LogManager
 
         if (count($workspaces) > 0) {
             //add this method to the repository @see ligne 68
-            $configs = $this->em
+            $configs = $this->om
                 ->getRepository('ClarolineCoreBundle:Log\LogWidgetConfig')->findByWorkspaces($workspaces);
         }
 
-        $defaultInstance = $this->em
+        $defaultInstance = $this->om
             ->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
             ->findOneBy(
             [
@@ -188,7 +192,7 @@ class LogManager
         $config = $this->getLogConfig($instance);
 
         if ($config === null) {
-            $defaultConfig = $this->em->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
+            $defaultConfig = $this->om->getRepository('ClarolineCoreBundle:Widget\WidgetInstance')
                 ->findOneBy(['isDesktop' => false, 'isAdmin' => true]);
 
             $config = new LogWidgetConfig();
@@ -601,7 +605,7 @@ class LogManager
             $workspacesVisibility[$workspace->getId()] = true;
         }
 
-        $hiddenWorkspaceConfigs = $this->em
+        $hiddenWorkspaceConfigs = $this->om
             ->getRepository('ClarolineCoreBundle:Log\LogHiddenWorkspaceWidgetConfig')
             ->findBy(['user' => $user]);
 
@@ -634,7 +638,7 @@ class LogManager
 
     public function getLogConfig(WidgetInstance $config = null)
     {
-        return $this->em
+        return $this->om
             ->getRepository('ClarolineCoreBundle:Log\LogWidgetConfig')
             ->findOneBy(['widgetInstance' => $config]);
     }
@@ -785,7 +789,7 @@ class LogManager
     {
         $workspaceIds = [];
         $loggedUser = $this->container->get('security.token_storage')->getToken()->getUser();
-        $workspaceIdsResult = $this->em
+        $workspaceIdsResult = $this->om
             ->getRepository('ClarolineCoreBundle:Workspace\Workspace')
             ->findIdsByUserAndRoleNames($loggedUser, ['ROLE_WS_COLLABORATOR', 'ROLE_WS_MANAGER']);
 
