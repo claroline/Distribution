@@ -442,6 +442,7 @@ class User extends AbstractRoleSubject implements Serializable, AdvancedUserInte
         $this->fieldsFacetValue = new ArrayCollection();
         $this->organizations = new ArrayCollection();
         $this->administratedOrganizations = new ArrayCollection();
+        $this->userOrganizationReferences = new ArrayCollection();
         $this->refreshUuid();
         $this->setEmailValidationHash(uniqid('', true));
     }

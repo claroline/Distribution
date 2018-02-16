@@ -72,7 +72,7 @@ class UserFinder implements FinderInterface
             /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
             $qb->leftJoin('obj.userOrganizationReferences', 'oaref');
-            $qb->leftJoin('oaref.organization uo');
+            $qb->leftJoin('oaref.organization', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
