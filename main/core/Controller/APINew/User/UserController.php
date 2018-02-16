@@ -82,13 +82,24 @@ class UserController extends AbstractCrudController
             ->get('claroline.config.platform_config_handler')
             ->getParameter('force_organization_creation');
 
+        $organizationRepository = $this->container->get('claroline.persistence.object_manager')
+            ->getRepository('ClarolineCoreBundle:Organization\Organization');
+
         //step one: creation the organization if it's here. If it exists, we fetch it.
         $data = $this->decodeRequest($request);
+        $organization = null;
 
         if ($autoOrganization) {
             //try to find orga first
-            $organization = $this->finder
-              ->findByIdentifiers('Claroline\CoreBundle\Entity\Organization\Organization', $data['mainOrganization']);
+            //first find by vat
+            if ($data['mainOrganization']['vat'] !== null) {
+                $organization = $organizationRepository
+                    ->findOneByVat($data['mainOrganization']['vat']);
+            //then by code
+            } else {
+                $organization = $organizationRepository
+                    ->findOneByCode($data['mainOrganization']['code']);
+            }
 
             if (!$organization) {
                 $organization = $this->crud->create(

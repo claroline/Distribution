@@ -99,7 +99,7 @@ class UserCrud
 
         if (null === $user->getMainOrganization()) {
             //we want a min organization
-            $user->setMainOrganization($user->getOrganizations[0]);
+            $user->setMainOrganization($user->getOrganizations()[0]);
         }
 
         //we need this line for the log system
