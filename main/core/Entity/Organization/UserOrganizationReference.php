@@ -45,7 +45,7 @@ class UserOrganizationReference
     private $organization;
 
     /**
-     * @ORM\Column(name="is_main")
+     * @ORM\Column(name="is_main", type="boolean")
      */
     private $isMain = false;
 

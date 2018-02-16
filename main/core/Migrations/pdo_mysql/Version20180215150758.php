@@ -37,7 +37,7 @@ class Version20180215150758 extends AbstractMigration
         ');
         $this->addSql('
             ALTER TABLE user_organization
-            ADD is_main VARCHAR(255) NOT NULL,
+            ADD is_main TINYINT(1) NOT NULL,
             CHANGE organization_id oganization_id INT NOT NULL
         ');
         $this->addSql('
