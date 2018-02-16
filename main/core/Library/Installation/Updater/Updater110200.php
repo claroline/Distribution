@@ -28,6 +28,12 @@ class Updater110200 extends Updater
 
     public function postUpdate()
     {
+        $this->setMainOrganizations();
+        $this->createRoleAdminOrga();
+    }
+
+    public function setMainOrganizations()
+    {
         $users = $this->om->getRepository('ClarolineCoreBundle:User')->findAll();
         $count = count($users);
         $i = 0;
@@ -60,5 +66,16 @@ class Updater110200 extends Updater
 
         $this->log('Flushing...');
         $this->om->flush();
+    }
+
+    public function createRoleAdminOrga()
+    {
+        $this->log('Create role admin organization...');
+
+        $roleManager = $this->container->get('claroline.manager.role_manager');
+        $role = $roleManager->createBaseRole('ROLE_ADMIN_ORGANIZATION', 'admin_organization');
+        $usermanagement = $manager->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('user_management');
+        $usermanagement->addRole($role);
+        $om->persist($usermanagement);
     }
 }
