@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
@@ -23,23 +23,23 @@ const OrganizationForm = props =>
     sections={[
       {
         id: 'general',
-        title: t('general'),
+        title: trans('general'),
         primary: true,
         fields: [
           {
             name: 'name',
             type: 'string',
-            label: t('name'),
+            label: trans('name'),
             required: true
           }, {
             name: 'code',
             type: 'string',
-            label: t('code'),
+            label: trans('code'),
             required: true
           }, {
             name: 'type',
             type: 'enum',
-            label: t('type'),
+            label: trans('type'),
             required: true,
             options: {choices: {
               'external': 'external',
@@ -47,17 +47,17 @@ const OrganizationForm = props =>
             }}
           }, {
             name: 'vat',
-            label: t('vat_number'),
+            label: trans('vat_number'),
             type: 'string',
             required: false
           }, {
             name: 'parent',
             type: 'organization',
-            label: t('parent')
+            label: trans('parent')
           },  {
             name: 'email',
             type: 'email',
-            label: t('email')
+            label: trans('email')
           }
         ]
       }
