@@ -73,7 +73,6 @@ class OrganizationCrud
         $action = $event->getAction();
         $users = $event->getValue();
         $property = $event->getProperty();
-        $organization = $event->getObject();
 
         if ('administrator' === $property) {
             $roleAdminOrga = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION');

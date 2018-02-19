@@ -84,9 +84,9 @@ RegistrationForm.propTypes = {
   })),
   termOfService: T.string,
   register: T.func.isRequired,
-  organization: T.shape({
+  options: T.shape({
     forceOrganizationCreation: T.bool
-  }).isRequired,
+  }).isRequired
 }
 
 const UserRegistration = connect(

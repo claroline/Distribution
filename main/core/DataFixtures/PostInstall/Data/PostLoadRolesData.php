@@ -47,7 +47,7 @@ class PostLoadRolesData implements RequiredFixture
         $usermanagement->addRole($adminOrganization);
         $workspacemanagement->addRole($adminOrganization);
         $om->persist($usermanagement);
-
+        $om->persist($workspacemanagement);
         $om->flush();
     }
 }
