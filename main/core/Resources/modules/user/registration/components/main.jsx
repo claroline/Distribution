@@ -84,16 +84,17 @@ RegistrationForm.propTypes = {
   })),
   termOfService: T.string,
   register: T.func.isRequired,
-  options: T.shape({
+  organization: T.shape({
     forceOrganizationCreation: T.bool
-  })
+  }).isRequired,
 }
 
 const UserRegistration = connect(
   (state) => ({
     user: formSelect.data(formSelect.form(state, 'user')),
     facets: select.facets(state),
-    termOfService: select.termOfService(state)
+    termOfService: select.termOfService(state),
+    options: select.options(state)
   }),
   (dispatch) => ({
     register(user, termOfService) {

@@ -22,6 +22,8 @@ class Crud
     /** @var string */
     const COLLECTION_REMOVE = 'remove';
     /** @var string */
+    const PROPERTY_SET = 'set';
+    /** @var string */
     const NO_VALIDATE = 'no_validate';
 
     /** @var ObjectManager */
@@ -234,14 +236,15 @@ class Crud
         //add the options to pass on here
         $this->checkPermission('PATCH', $object, ['collection' => new ObjectCollection($elements)], true);
         //we'll need to pass the $action and $data here aswell later
+        $actions = in_array(self::COLLECTION_ADD, $options) ? self::COLLECTION_ADD : self::COLLECTION_REMOVE;
 
-        if ($this->dispatch('patch', 'pre', [$object, $options])) {
+        if ($this->dispatch('patch', 'pre', [$object, $options, $property, $data, $action])) {
             foreach ($elements as $element) {
                 $object->$methodName($element);
             }
 
             $this->om->save($object);
-            $this->dispatch('patch', 'post', [$object, $options]);
+            $this->dispatch('patch', 'post', [$object, $options, $property, $data, $action]);
         }
     }
 
@@ -266,11 +269,11 @@ class Crud
         //add the options to pass on here
         $this->checkPermission('PATCH', $object, [], true);
         //we'll need to pass the $action and $data here aswell later
-        if ($this->dispatch('patch', 'pre', [$object, $options])) {
+        if ($this->dispatch('patch', 'pre', [$object, $options, $property, $data, self::PROPERTY_SET])) {
             $object->$methodName($data);
 
             $this->om->save($object);
-            $this->dispatch('patch', 'post', [$object, $options]);
+            $this->dispatch('patch', 'post', [$object, $options, $property, $data, self::PROPERTY_SET]);
         }
     }
 

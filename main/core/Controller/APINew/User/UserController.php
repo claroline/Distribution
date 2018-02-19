@@ -92,23 +92,13 @@ class UserController extends AbstractCrudController
             $this->options['create'][] = Options::USER_SELF_LOG;
         }
 
-        $user = $this->crud->create(
-           'Claroline\CoreBundle\Entity\User',
-            $this->decodeRequest($request)
-        );
-
-        //error handling
-        if (is_array($user)) {
-            return new JsonResponse($user, 400);
-        }
-
         $organization = null;
 
         if ($autoOrganization) {
             //try to find orga first
             //first find by vat
             if (isset($data['mainOrganization'])) {
-                if ($data['mainOrganization']['vat'] !== null) {
+                if (isset($data['mainOrganization']['vat']) && $data['mainOrganization']['vat'] !== null) {
                     $organization = $organizationRepository
                       ->findOneByVat($data['mainOrganization']['vat']);
                 //then by code
@@ -124,14 +114,25 @@ class UserController extends AbstractCrudController
                     $data['mainOrganization']
                 );
             }
+
             //error handling
             if (is_array($organization)) {
                 return new JsonResponse($organization, 400);
             }
+        }
 
-            if ($organization) {
-                $this->crud->replace($user, 'mainOrganization', $organization);
-            }
+        $user = $this->crud->create(
+           'Claroline\CoreBundle\Entity\User',
+            $this->decodeRequest($request)
+        );
+
+        //error handling
+        if (is_array($user)) {
+            return new JsonResponse($user, 400);
+        }
+
+        if ($organization) {
+            $this->crud->replace($user, 'mainOrganization', $organization);
         }
 
         return new JsonResponse(
