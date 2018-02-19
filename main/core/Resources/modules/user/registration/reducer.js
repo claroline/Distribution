@@ -18,9 +18,9 @@ export const reducer = makePageReducer({}, {
      */
     [FORM_SUBMIT_SUCCESS+'/user']: (state) => {
       if (state.redirectAfterLoginUrl) {
-        window.location = options.redirectAfterLoginUrl
+        window.location = state.redirectAfterLoginUrl
       } else {
-        switch (options.redirectAfterLoginOption) {
+        switch (state.redirectAfterLoginOption) {
           case 'DESKTOP':
             window.location = url(['claro_desktop_open'])
         }
