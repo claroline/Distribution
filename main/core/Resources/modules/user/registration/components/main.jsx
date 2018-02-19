@@ -6,8 +6,8 @@ import {t} from '#/main/core/translation'
 
 import {PageContainer, PageHeader} from '#/main/core/layout/page/index'
 import {FormStepper} from '#/main/core/layout/form/components/form-stepper.jsx'
+import {actions as formActions} from '#/main/core/data/form/actions'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-import {generateUrl} from '#/main/core/api/router'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'
@@ -18,7 +18,6 @@ import {Optional} from '#/main/core/user/registration/components/optional.jsx'
 import {Organization} from '#/main/core/user/registration/components/organization.jsx'
 
 import {select} from '#/main/core/user/registration/selectors'
-import {actions} from '#/main/core/user/registration/actions'
 
 const RegistrationForm = props => {
   const steps = [].concat([
@@ -61,7 +60,7 @@ const RegistrationForm = props => {
         submit={{
           icon: 'fa fa-user-plus',
           label: t('registration_confirm'),
-          action: () => props.register(props.user, props.termOfService, props.options)
+          action: () => props.register(props.user, props.termOfService)
         }}
         steps={steps}
         redirect={[
@@ -94,11 +93,10 @@ const UserRegistration = connect(
   (state) => ({
     user: formSelect.data(formSelect.form(state, 'user')),
     facets: select.facets(state),
-    termOfService: select.termOfService(state),
-    options: select.options(state)
+    termOfService: select.termOfService(state)
   }),
   (dispatch) => ({
-    register(user, termOfService, options) {
+    register(user, termOfService) {
       if (termOfService) {
         // show terms before create new account
         dispatch(modalActions.showModal(MODAL_CONFIRM, {
@@ -109,21 +107,12 @@ const UserRegistration = connect(
           confirmButtonText: t('accept_term_of_service'),
           handleConfirm: () => {
             // todo : set acceptedTerms flag
-            dispatch(actions.createUser(user, this.onCreated(options)))
+            dispatch(formActions.saveForm('user', ['apiv2_user_create_and_login']))
           }
         }))
       } else {
         // create new account
-        dispatch(actions.createUser(user, this.onCreated(options)))
-      }
-    },
-    onCreated(options) {
-      if (options.redirectAfterLoginUrl) {
-        window.location = options.redirectAfterLoginUrl
-      }
-
-      switch (options.redirectAfterLoginOption) {
-        case 'DESKTOP': window.location = generateUrl('claro_desktop_open')
+        dispatch(formActions.saveForm('user', ['apiv2_user_create_and_login']))
       }
     }
   })
