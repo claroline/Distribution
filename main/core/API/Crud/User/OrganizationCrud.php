@@ -8,7 +8,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Crud\CreateEvent;
 use Claroline\CoreBundle\Event\Crud\DeleteEvent;
 use Claroline\CoreBundle\Event\Crud\PatchEvent;
-use Claroline\Persistence\ObjectManager;
+use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
