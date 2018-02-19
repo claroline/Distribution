@@ -51,7 +51,7 @@ class PatchEvent extends CrudEvent
 
     public function getAction()
     {
-        return $this->mode;
+        return $this->action;
     }
 
     public function getMethodName()

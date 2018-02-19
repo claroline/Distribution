@@ -238,13 +238,13 @@ class Crud
         //we'll need to pass the $action and $data here aswell later
         $actions = in_array(self::COLLECTION_ADD, $options) ? self::COLLECTION_ADD : self::COLLECTION_REMOVE;
 
-        if ($this->dispatch('patch', 'pre', [$object, $options, $property, $data, $action])) {
+        if ($this->dispatch('patch', 'pre', [$object, $options, $property, $elements, $action])) {
             foreach ($elements as $element) {
                 $object->$methodName($element);
             }
 
             $this->om->save($object);
-            $this->dispatch('patch', 'post', [$object, $options, $property, $data, $action]);
+            $this->dispatch('patch', 'post', [$object, $options, $property, $elements, $action]);
         }
     }
 

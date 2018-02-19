@@ -71,19 +71,39 @@ class OrganizationCrud
     public function postPatch(PatchEvent $event)
     {
         $action = $event->getAction();
-        $user = $event->getValue();
+        $users = $event->getValue();
         $property = $event->getProperty();
         $organization = $event->getObject();
 
         if ('administrator' === $property) {
             $roleAdminOrga = $this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION');
             if (Crud::COLLECTION_ADD === $action) {
-                $user->addRole($roleAdminOrga);
+                if (is_array($users)) {
+                    foreach ($users as $user) {
+                        $user->addRole($roleAdminOrga);
+                        $this->om->persist($user);
+                    }
+                } else {
+                    $users->addRole($roleAdminOrga);
+                    $this->om->persist($users);
+                }
             } elseif (Crud::COLLECTION_REMOVE === $action) {
-                if (0 === count($user->getAdministratedOrganizations())) {
-                    $user->removeRole($roleAdminOrga);
+                if (is_array($users)) {
+                    foreach ($users as $user) {
+                        if (0 === count($user->getAdministratedOrganizations())) {
+                            $user->removeRole($roleAdminOrga);
+                            $this->om->persist($user);
+                        }
+                    }
+                } else {
+                    if (0 === count($user->getAdministratedOrganizations())) {
+                        $user->removeRole($roleAdminOrga);
+                        $this->om->persist($users);
+                    }
                 }
             }
         }
+
+        $this->om->flush();
     }
 }
