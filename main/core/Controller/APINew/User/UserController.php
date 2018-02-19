@@ -87,31 +87,6 @@ class UserController extends AbstractCrudController
 
         //step one: creation the organization if it's here. If it exists, we fetch it.
         $data = $this->decodeRequest($request);
-        $organization = null;
-
-        if ($autoOrganization) {
-            //try to find orga first
-            //first find by vat
-            if ($data['mainOrganization']['vat'] !== null) {
-                $organization = $organizationRepository
-                    ->findOneByVat($data['mainOrganization']['vat']);
-            //then by code
-            } else {
-                $organization = $organizationRepository
-                    ->findOneByCode($data['mainOrganization']['code']);
-            }
-
-            if (!$organization) {
-                $organization = $this->crud->create(
-                    'Claroline\CoreBundle\Entity\Organization\Organization',
-                    $data['mainOrganization']
-                );
-            }
-            //error handling
-            if (is_array($organization)) {
-                return new JsonResponse($organization, 400);
-            }
-        }
 
         if ($selfLog && 'anon.' === $this->container->get('security.token_storage')->getToken()->getUser()) {
             $this->options['create'][] = Options::USER_SELF_LOG;
@@ -127,8 +102,36 @@ class UserController extends AbstractCrudController
             return new JsonResponse($user, 400);
         }
 
+        $organization = null;
+
         if ($autoOrganization) {
-            $this->crud->replace($user, 'mainOrganization', $organization);
+            //try to find orga first
+            //first find by vat
+            if (isset($data['mainOrganization'])) {
+                if ($data['mainOrganization']['vat'] !== null) {
+                    $organization = $organizationRepository
+                      ->findOneByVat($data['mainOrganization']['vat']);
+                //then by code
+                } else {
+                    $organization = $organizationRepository
+                      ->findOneByCode($data['mainOrganization']['code']);
+                }
+            }
+
+            if (!$organization && isset($data['mainOrganization'])) {
+                $organization = $this->crud->create(
+                    'Claroline\CoreBundle\Entity\Organization\Organization',
+                    $data['mainOrganization']
+                );
+            }
+            //error handling
+            if (is_array($organization)) {
+                return new JsonResponse($organization, 400);
+            }
+
+            if ($organization) {
+                $this->crud->replace($user, 'mainOrganization', $organization);
+            }
         }
 
         return new JsonResponse(
