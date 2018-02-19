@@ -39,7 +39,7 @@ class PostManager
     /**
      * @param Blog $blog
      * @param int  $page
-     * @param bool $isAmdin
+     * @param bool $isAdmin
      *
      * @return array
      */
