@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\AppBundle\Event;
 
 /**
  * Interface of the events which are supposed to have at least one

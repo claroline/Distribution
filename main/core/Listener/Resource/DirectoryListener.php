@@ -27,7 +27,7 @@ use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 
 /**
  * @DI\Service

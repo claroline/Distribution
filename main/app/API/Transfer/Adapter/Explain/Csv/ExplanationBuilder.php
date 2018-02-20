@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv;
+namespace Claroline\AppBundle\API\Transfer\Adapter\Explain\Csv;
 
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -15,16 +15,16 @@ class ExplanationBuilder
 
     private function explainObject($data, $explanation, $currentPath, $isArray = false)
     {
-        if (!isset($data->properties) || isset($data->transferable) && $data->transferable === false) {
+        if (!isset($data->properties) || isset($data->transferable) && false === $data->transferable) {
             return;
         }
 
         foreach ($data->properties as $name => $property) {
-            $whereAmI = $currentPath === '' ? $name : $currentPath.'.'.$name;
+            $whereAmI = '' === $currentPath ? $name : $currentPath.'.'.$name;
 
-            if ($property->type === 'array') {
+            if ('array' === $property->type) {
                 $this->explainSchema($property->items, $explanation, $whereAmI, true);
-            } elseif ($property->type === 'object') {
+            } elseif ('object' === $property->type) {
                 $this->explainObject($property, $explanation, $whereAmI, $isArray);
             }
 
@@ -90,7 +90,7 @@ class ExplanationBuilder
         foreach ($schemas as $prop => $schema) {
             $identifiers = $schema->claroIds;
 
-            if (isset($schema->type) && $schema->type === 'object') {
+            if (isset($schema->type) && 'object' === $schema->type) {
                 $oneOfs = [];
                 foreach ($identifiers as $property) {
                     $data = $schema->properties->{$property};

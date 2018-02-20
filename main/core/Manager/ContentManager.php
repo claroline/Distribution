@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class ContentManager
 {
     /**
-     * @var \Claroline\CoreBundle\Persistence\ObjectManager
+     * @var \Claroline\AppBundle\Persistence\ObjectManager
      */
     private $manager;
 

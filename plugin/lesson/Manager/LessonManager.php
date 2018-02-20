@@ -15,7 +15,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 class LessonManager
 {
     /**
-     * @var \Claroline\CoreBundle\Persistence\ObjectManager
+     * @var \Claroline\AppBundle\Persistence\ObjectManager
      */
     private $om;
     private $ch;

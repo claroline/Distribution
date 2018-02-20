@@ -6,7 +6,7 @@ use Claroline\AgendaBundle\Entity\Event;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\GenericDataEvent;
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use FormaLibre\ReservationBundle\Controller\ReservationController;

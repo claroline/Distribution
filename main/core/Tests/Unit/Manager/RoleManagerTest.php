@@ -33,7 +33,7 @@ class RoleManagerTest extends MockeryTestCase
         $this->userRepo = m::mock('Claroline\CoreBundle\Repository\UserRepository');
         $this->groupRepo = m::mock('Claroline\CoreBundle\Repository\GroupRepository');
         $this->securityContext = m::mock('Symfony\Component\Security\Core\SecurityContextInterface');
-        $this->om = m::mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = m::mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->dispatcher = m::mock('Claroline\CoreBundle\Event\StrictDispatcher');
     }
 

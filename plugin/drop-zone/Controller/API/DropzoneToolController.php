@@ -12,7 +12,7 @@
 namespace Claroline\DropZoneBundle\Controller\API;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\AppBundle\Controller\APINew\AbstractCrudController;
+use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 
 /**

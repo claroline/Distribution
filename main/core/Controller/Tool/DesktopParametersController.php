@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\Tool\OrderedTool;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\UserOptions;
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\UserOptionsType;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\AppBundle\Persistence\ObjectManager;

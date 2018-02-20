@@ -38,7 +38,7 @@ class RightsManagerTest extends MockeryTestCase
         $this->resourceTypeRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceTypeRepository');
         $this->translator = $this->mock('Symfony\Component\Translation\Translator');
         $this->dispatcher = $this->mock('Claroline\CoreBundle\Event\StrictDispatcher');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
     }
 
     public function testUpdateRightsTree()

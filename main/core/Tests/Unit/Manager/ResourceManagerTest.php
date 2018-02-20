@@ -42,7 +42,7 @@ class ResourceManagerTest extends MockeryTestCase
         $this->rightsRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceRightsRepository');
         $this->iconManager = $this->mock('Claroline\CoreBundle\Manager\IconManager');
         $this->eventDispatcher = $this->mock('Claroline\CoreBundle\Event\StrictDispatcher');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->ut = $this->mock('Claroline\CoreBundle\Library\Utilities\ClaroUtilities');
         $this->sc = $this->mock('Symfony\Component\Security\Core\SecurityContextInterface');
     }

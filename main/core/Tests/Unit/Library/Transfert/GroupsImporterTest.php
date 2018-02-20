@@ -24,7 +24,7 @@ class GroupsImporterTest extends MockeryTestCase
     {
         parent::setUp();
 
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->importer = new GroupsImporter($this->om);
     }
 

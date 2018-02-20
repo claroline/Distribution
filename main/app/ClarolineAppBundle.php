@@ -1,7 +1,5 @@
 <?php
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-
 /*
  * This file is part of the Claroline Connect package.
  *
@@ -13,6 +11,27 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 namespace Claroline\AppBundle;
 
-class ClarolineAppBundle extends Bundle
+use Claroline\AppBundle\DependencyInjection\Compiler\ApiConfigPass;
+use Claroline\CoreBundle\Library\DistributionPluginBundle;
+use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+class ClarolineAppBundle extends DistributionPluginBundle
 {
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(new ApiConfigPass());
+    }
+
+    public function supports($environment)
+    {
+        return true;
+    }
+
+    public function getConfiguration($environment)
+    {
+        return new ConfigurationBuilder();
+    }
 }

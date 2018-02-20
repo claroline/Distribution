@@ -46,7 +46,7 @@ class LogWidgetListener
     private $logWorkspaceWidgetConfigForm;
 
     /**
-     * @var \Claroline\CoreBundle\Persistence\ObjectManager
+     * @var \Claroline\AppBundle\Persistence\ObjectManager
      */
     private $om;
 

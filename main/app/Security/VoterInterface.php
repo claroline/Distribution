@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Security;
+namespace Claroline\AppBundle\Security;
 
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 

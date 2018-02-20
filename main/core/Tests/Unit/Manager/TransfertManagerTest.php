@@ -27,7 +27,7 @@ class TransfertManagerTest extends MockeryTestCase
     {
         parent::setUp();
 
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
 
         //workspace properties
         $this->workspacePropertiesImporter = $this

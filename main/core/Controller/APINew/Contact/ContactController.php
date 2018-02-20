@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\Serializer\Contact\ContactSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
-use Claroline\AppBundle\Controller\APINew\AbstractCrudController;
+use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
 use Claroline\CoreBundle\Manager\ContactManager;

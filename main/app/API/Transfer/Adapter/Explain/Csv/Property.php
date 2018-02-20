@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Adapter\Explain\Csv;
+namespace Claroline\AppBundle\API\Transfer\Adapter\Explain\Csv;
 
 class Property
 {

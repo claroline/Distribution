@@ -12,7 +12,7 @@
 namespace FormaLibre\ReservationBundle\Controller\API;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\AppBundle\Controller\APINew\AbstractCrudController;
+use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Manager\ApiManager;

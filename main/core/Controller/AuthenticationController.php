@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\EmailType;
 use Claroline\CoreBundle\Form\ResetPasswordType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;

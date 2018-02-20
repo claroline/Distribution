@@ -2,6 +2,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

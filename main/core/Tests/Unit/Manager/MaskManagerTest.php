@@ -26,7 +26,7 @@ class MaskManagerTest extends MockeryTestCase
 
         $this->maskRepo = $this->mock('Doctrine\ORM\EntityRepository');
         $this->menuRepo = $this->mock('Doctrine\ORM\EntityRepository');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:Resource\MaskDecoder')
             ->andReturn($this->maskRepo);
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:Resource\MenuAction')

@@ -34,7 +34,7 @@ class IconManagerTest extends MockeryTestCase
         $this->thumbDir = 'path/to/thumbdir';
         $this->rootDor = 'path/to/rootDir';
         $this->ut = $this->mock('Claroline\CoreBundle\Library\Utilities\ClaroUtilities');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
     }
 
     /**

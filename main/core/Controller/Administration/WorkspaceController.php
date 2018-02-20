@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\AppBundle\API\FinderProvider;
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\AppBundle\Persistence\ObjectManager;

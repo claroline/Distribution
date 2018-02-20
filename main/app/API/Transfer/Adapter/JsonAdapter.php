@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Adapter;
+namespace Claroline\AppBundle\API\Transfer\Adapter;
 
 use Claroline\AppBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
 use JMS\DiExtraBundle\Annotation as DI;

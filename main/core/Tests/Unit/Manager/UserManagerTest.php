@@ -48,7 +48,7 @@ class UserManagerTest extends MockeryTestCase
         $this->ch = $this->mock('Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler');
         $this->sc = $this->mock('Symfony\Component\Security\Core\SecurityContext');
         $this->pagerFactory = $this->mock('Claroline\CoreBundle\Pager\PagerFactory');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->validator = $this->mock('Symfony\Component\Validator\ValidatorInterface');
     }
 

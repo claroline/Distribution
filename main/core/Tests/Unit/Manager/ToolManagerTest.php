@@ -40,7 +40,7 @@ class ToolManagerTest extends MockeryTestCase
         $this->utilities = $this->mock('Claroline\CoreBundle\Library\Utilities\ClaroUtilities');
         $this->roleRepo = $this->mock('Claroline\CoreBundle\Repository\RoleRepository');
         $this->translator = $this->mock('Symfony\Component\Translation\Translator');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->roleManager = $this->mock('Claroline\CoreBundle\Manager\RoleManager');
     }
 

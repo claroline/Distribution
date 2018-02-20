@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AppBundle\Controller\APINew;
+namespace Claroline\AppBundle\Controller;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;

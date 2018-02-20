@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\AppBundle\Event;
 
-class NotPopulatedEventException extends \Exception
+class MandatoryEventException extends \Exception
 {
 }

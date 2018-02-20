@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
-use Claroline\AppBundle\Controller\APINew\AbstractApiController;
+use Claroline\AppBundle\Controller\AbstractApiController;
 use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;

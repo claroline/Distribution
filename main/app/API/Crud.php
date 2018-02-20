@@ -2,7 +2,7 @@
 
 namespace Claroline\AppBundle\API;
 
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\AppBundle\Security\ObjectCollection;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
@@ -302,9 +302,9 @@ class Crud
     {
         $name = 'crud_'.$when.'_'.$action.'_object';
         $eventClass = ucfirst($action);
-        $generic = $this->dispatcher->dispatch($name, 'Crud\\'.$eventClass, $args);
+        $generic = $this->dispatcher->dispatch($name, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
         $serializedName = $name.'_'.strtolower(str_replace('\\', '_', get_class($args[0])));
-        $specific = $this->dispatcher->dispatch($serializedName, 'Crud\\'.$eventClass, $args);
+        $specific = $this->dispatcher->dispatch($serializedName, 'Claroline\\AppBundle\\Event\\Crud\\'.$eventClass.'Event', $args);
 
         return $generic->isAllowed() && $specific->isAllowed();
     }

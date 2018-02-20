@@ -11,6 +11,7 @@
 
 namespace Claroline\AppBundle\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 /**
@@ -18,4 +19,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class ClarolineAppExtension extends Extension
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function load(array $configs, ContainerBuilder $container)
+    {
+    }
 }

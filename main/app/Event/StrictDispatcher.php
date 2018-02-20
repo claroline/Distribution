@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\AppBundle\Event;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Basic event dispatcher, wrapping the base Symfony dispatcher and adding checks
@@ -56,8 +56,9 @@ class StrictDispatcher
      * @throws MandatoryEventException    if the event is mandatory but have no listener observing it
      * @throws NotPopulatedEventException if the event is supposed to be populated with data but it isn't
      */
-    public function dispatch($eventName, $shortEventClassName, array $eventArgs = array())
+    public function dispatch($eventName, $shortEventClassName, array $eventArgs = [])
     {
+        //@todo CoreBundle should be removed from that code
         $className = class_exists($shortEventClassName) ?
             $shortEventClassName :
             "Claroline\CoreBundle\Event\\{$shortEventClassName}Event";

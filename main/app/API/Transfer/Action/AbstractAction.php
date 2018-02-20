@@ -1,15 +1,16 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action;
+namespace Claroline\AppBundle\API\Transfer\Action;
 
-use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\BundleRecorder\Log\LoggableTrait;
 
 abstract class AbstractAction
 {
     use LoggableTrait;
 
     abstract public function execute(array $data);
+
     //better explain the structure
     abstract public function getSchema();
 

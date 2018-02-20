@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\AppBundle\Controller\APINew;
+namespace Claroline\AppBundle\Controller;
 
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use Symfony\Component\DependencyInjection\ContainerAware;

@@ -17,7 +17,7 @@ use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Symfony\Component\HttpFoundation\File\File as SfFile;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

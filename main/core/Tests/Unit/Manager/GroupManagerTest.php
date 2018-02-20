@@ -27,7 +27,7 @@ class GroupManagerTest extends MockeryTestCase
     {
         parent::setUp();
 
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->groupRepo = $this->mock('Claroline\CoreBundle\Repository\GroupRepository');
         $this->userRepo = $this->mock('Claroline\CoreBundle\Repository\UserRepository');
         $this->pagerFactory = $this->mock('Claroline\CoreBundle\Pager\PagerFactory');

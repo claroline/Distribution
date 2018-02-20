@@ -24,7 +24,7 @@ class CategoryManagerTest extends TransactionalTestCase
     {
         parent::setUp();
 
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->validator = $this->mock('UJM\ExoBundle\Validator\JsonSchema\Item\CategoryValidator');
         $this->serializer = $this->mock('UJM\ExoBundle\Serializer\Item\CategorySerializer');
 

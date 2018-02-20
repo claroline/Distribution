@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Adapter;
+namespace Claroline\AppBundle\API\Transfer\Adapter;
 
 use Claroline\AppBundle\API\Transfer\Adapter\Explain\Csv\Explanation;
 use Claroline\AppBundle\API\Transfer\Adapter\Explain\Csv\ExplanationBuilder;
@@ -48,7 +48,7 @@ class CsvAdapter implements AdapterInterface
         $headers = array_filter(
           str_getcsv($header, ';'),
           function ($header) {
-              return $header !== '';
+              return '' !== $header;
           }
         );
 
@@ -109,11 +109,11 @@ class CsvAdapter implements AdapterInterface
             $propertyName = implode('.', $keys);
         }
 
-        if ($property->getType() === 'integer') {
+        if ('integer' === $property->getType()) {
             $value = (int) $value;
         }
 
-        if ($property->getType() === 'boolean') {
+        if ('boolean' === $property->getType()) {
         }
 
         $this->arrayUtils->set($object, $propertyName, $value);

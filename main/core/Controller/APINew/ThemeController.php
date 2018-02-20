@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Annotations\ApiMeta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 

@@ -36,7 +36,7 @@ class HomeManagerTest extends MockeryTestCase
         parent::setUp();
 
         $this->graph = $this->mock('Claroline\CoreBundle\Library\Home\GraphService');
-        $this->manager = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->manager = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->registry = $this->mock('Doctrine\Bundle\DoctrineBundle\Registry');
         $this->homeService = $this->mock('Claroline\CoreBundle\Library\Home\HomeService');
         $this->repository = $this->mock('Doctrine\ORM\EntityRepository');

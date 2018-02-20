@@ -60,7 +60,7 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->workspaceRepo = $this->mock('Claroline\CoreBundle\Repository\WorkspaceRepository');
         $this->rightsRepo = $this->mock('Claroline\CoreBundle\Repository\ResourceRightsRepository');
         $this->strictDispatcher = $this->mock('Claroline\CoreBundle\Event\StrictDispatcher');
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->ut = $this->mock('Claroline\CoreBundle\Library\Utilities\ClaroUtilities');
         $this->templateDir = vfsStream::url('template');
         $this->pagerFactory = $this->mock('Claroline\CoreBundle\Pager\PagerFactory');

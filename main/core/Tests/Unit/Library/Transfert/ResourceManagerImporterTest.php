@@ -29,7 +29,7 @@ class ResourceManagerImporterTest extends MockeryTestCase
     {
         parent::setUp();
 
-        $this->om = $this->mock('Claroline\CoreBundle\Persistence\ObjectManager');
+        $this->om = $this->mock('Claroline\AppBundle\Persistence\ObjectManager');
         $this->importer = new ResourceManagerImporter($this->om);
         $this->fileImporter = $this->mock('Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders\Tools\Resources\FileImporter');
         $this->fileImporter->shouldReceive('getName')->andReturn('file');
