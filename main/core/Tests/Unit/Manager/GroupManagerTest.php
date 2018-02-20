@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\CoreBundle\Entity\Role;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Testing\MockeryTestCase;
 use Doctrine\ORM\Query;
 use Mockery as m;
@@ -267,7 +269,7 @@ class GroupManagerTest extends MockeryTestCase
     {
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new Query($em);
-        $role = new \Claroline\CoreBundle\Entity\Role();
+        $role = new Role();
         $roles = [$role];
 
         $this->groupRepo->shouldReceive('findByRoles')
@@ -287,9 +289,9 @@ class GroupManagerTest extends MockeryTestCase
     {
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new Query($em);
-        $role = new \Claroline\CoreBundle\Entity\Role();
+        $role = new Role();
         $roles = [$role];
-        $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
+        $workspace = new Workspace();
 
         $this->groupRepo->shouldReceive('findOutsidersByWorkspaceRoles')
             ->with($roles, $workspace, true)
@@ -308,7 +310,7 @@ class GroupManagerTest extends MockeryTestCase
     {
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new Query($em);
-        $role = new \Claroline\CoreBundle\Entity\Role();
+        $role = new Role();
         $roles = [$role];
 
         $this->groupRepo->shouldReceive('findByRolesAndName')
@@ -328,9 +330,9 @@ class GroupManagerTest extends MockeryTestCase
     {
         $em = $this->mock('Doctrine\ORM\EntityManager');
         $query = new Query($em);
-        $role = new \Claroline\CoreBundle\Entity\Role();
+        $role = new Role();
         $roles = [$role];
-        $workspace = new \Claroline\CoreBundle\Entity\Workspace\Workspace();
+        $workspace = new Workspace();
 
         $this->groupRepo->shouldReceive('findOutsidersByWorkspaceRolesAndName')
             ->with($roles, 'name', $workspace, true)
