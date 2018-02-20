@@ -197,11 +197,11 @@
     },
     "extra": {
         "bundles": [
-            "Claroline\\AppBundle\\ClarolineAppBundle",
             "Claroline\\InstallationBundle\\ClarolineInstallationBundle",
             "Claroline\\MigrationBundle\\ClarolineMigrationBundle",
             "Claroline\\KernelBundle\\ClarolineKernelBundle",
             "Claroline\\CoreBundle\\ClarolineCoreBundle",
+            "Claroline\\AppBundle\\ClarolineAppBundle",
             "Claroline\\AgendaBundle\\ClarolineAgendaBundle",
             "FormaLibre\\ReservationBundle\\FormaLibreReservationBundle",
             "Claroline\\ImagePlayerBundle\\ClarolineImagePlayerBundle",
