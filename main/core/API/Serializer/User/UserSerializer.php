@@ -12,6 +12,8 @@ use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Event\User\DecorateUserEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\FacetManager;
@@ -53,18 +55,22 @@ class UserSerializer
     /** @var ContainerInterface */
     private $container;
 
+    /** @var StrictDispatcher */
+    private $eventDispatcher;
+
     /**
      * UserManager constructor.
      *
      * @DI\InjectParams({
-     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
-     *     "authChecker"    = @DI\Inject("security.authorization_checker"),
-     *     "encoderFactory" = @DI\Inject("security.encoder_factory"),
-     *     "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *     "config"         = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "facetManager"   = @DI\Inject("claroline.manager.facet_manager"),
-     *     "fileSerializer" = @DI\Inject("claroline.serializer.public_file"),
-     *     "container"      = @DI\Inject("service_container")
+     *     "tokenStorage"    = @DI\Inject("security.token_storage"),
+     *     "authChecker"     = @DI\Inject("security.authorization_checker"),
+     *     "encoderFactory"  = @DI\Inject("security.encoder_factory"),
+     *     "om"              = @DI\Inject("claroline.persistence.object_manager"),
+     *     "config"          = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "facetManager"    = @DI\Inject("claroline.manager.facet_manager"),
+     *     "fileSerializer"  = @DI\Inject("claroline.serializer.public_file"),
+     *     "container"       = @DI\Inject("service_container"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
      * })
      *
      * @param TokenStorageInterface         $tokenStorage
@@ -75,6 +81,7 @@ class UserSerializer
      * @param FacetManager                  $facetManager
      * @param PublicFileSerializer          $fileSerializer
      * @param ContainerInterface            $container
+     * @param StrictDispatcher              $eventDispatcher
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
@@ -84,7 +91,8 @@ class UserSerializer
         PlatformConfigurationHandler $config,
         FacetManager $facetManager,
         PublicFileSerializer $fileSerializer,
-        ContainerInterface $container
+        ContainerInterface $container,
+        StrictDispatcher $eventDispatcher
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->authChecker = $authChecker;
@@ -94,6 +102,7 @@ class UserSerializer
         $this->facetManager = $facetManager;
         $this->fileSerializer = $fileSerializer;
         $this->container = $container;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -134,7 +143,7 @@ class UserSerializer
             return $this->serializePublic($user);
         }
 
-        $serialized = [
+        $serializedUser = [
             'autoId' => $user->getId(), //for old compatibility purposes
             'id' => $user->getUuid(),
             'name' => $user->getFirstName().' '.$user->getLastName(),
@@ -148,7 +157,7 @@ class UserSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
-            $serialized = array_merge($serialized, [
+            $serializedUser = array_merge($serializedUser, [
                 'meta' => $this->serializeMeta($user),
                 'restrictions' => $this->serializeRestrictions($user),
                 'rights' => $this->serializeRights($user),
@@ -188,11 +197,40 @@ class UserSerializer
             /** @var FieldFacetValue $field */
             foreach ($fields as $field) {
                 // we just flatten field facets in the base user structure
-                $serialized[$field->getFieldFacet()->getName()] = $field->getValue();
+                $serializedUser[$field->getFieldFacet()->getName()] = $field->getValue();
             }
         }
 
-        return $serialized;
+        return $this->decorate($user, $serializedUser);
+    }
+
+    /**
+     * Dispatches an event to let plugins add some custom data to the serialized user.
+     * For example: .
+     *
+     * @param User  $user           - the original user entity
+     * @param array $serializedUser - the serialized version of the user
+     *
+     * @return array - the decorated user
+     */
+    private function decorate(User $user, array $serializedUser)
+    {
+        $unauthorizedKeys = array_keys($serializedUser);
+
+        /** @var DecorateUserEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            'serialize_user',
+            'User\DecorateUser',
+            [
+                $user,
+                $unauthorizedKeys,
+            ]
+        );
+
+        return array_merge(
+            $serializedUser,
+            $event->getInjectedData()
+        );
     }
 
     /**
