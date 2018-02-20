@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
-use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;

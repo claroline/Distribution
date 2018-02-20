@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Contact;
 
-use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 

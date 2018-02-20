@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Annotations;
+namespace Claroline\AppBundle\Annotations;
 
 use Doctrine\Common\Annotations\Annotation;
 

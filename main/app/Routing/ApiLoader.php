@@ -4,7 +4,7 @@
 
 namespace Claroline\AppBundle\Routing;
 
-use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\Annotations\ApiMeta;
 use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method as MethodConfig;

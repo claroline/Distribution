@@ -10,7 +10,7 @@
 
 namespace Icap\BibliographyBundle\Controller\API;
 
-use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 

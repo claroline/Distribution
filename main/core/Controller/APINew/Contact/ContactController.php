@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Contact;
 
-use Claroline\CoreBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\API\Serializer\Contact\ContactSerializer;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
