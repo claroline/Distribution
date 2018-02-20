@@ -3,8 +3,8 @@
 namespace Claroline\CoreBundle\API\Crud\File;
 
 use Claroline\AppBundle\Event\Crud\CreateEvent;
-use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFileSystem;
@@ -75,7 +75,7 @@ class PublicFile
         $publicFile->setCreationDate(new \DateTime());
         $publicFile->setUrl($url);
 
-        if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser() !== 'anon.') {
+        if ($this->tokenStorage->getToken() && $user = 'anon.' !== $this->tokenStorage->getToken()->getUser()) {
             $user = $this->tokenStorage->getToken()->getUser();
             $publicFile->setCreator($user);
         }

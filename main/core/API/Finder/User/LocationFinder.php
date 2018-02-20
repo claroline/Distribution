@@ -30,7 +30,7 @@ class LocationFinder implements FinderInterface
     {
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
-              case 'address': {
+              case 'address':
                 // address query goes here
                 $qb->andWhere($qb->expr()->orX(
                     $qb->expr()->like('obj.pc', ':address'),
@@ -45,7 +45,7 @@ class LocationFinder implements FinderInterface
                 $qb->setParameter('number', $filterValue);
 
                 break;
-              }
+
               default:
                 $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                 $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');

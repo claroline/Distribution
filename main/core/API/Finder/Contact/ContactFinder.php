@@ -80,7 +80,7 @@ class ContactFinder implements FinderInterface
         }
         if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
             $sortByProperty = $sortBy['property'];
-            $sortByDirection = $sortBy['direction'] === 1 ? 'ASC' : 'DESC';
+            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
 
             switch ($sortByProperty) {
                 case 'data.username':

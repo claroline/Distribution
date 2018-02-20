@@ -3,9 +3,9 @@
 namespace Claroline\CoreBundle\API\Serializer\User;
 
 use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\Facet\FacetSerializer;
 use Claroline\CoreBundle\Entity\Facet\Facet;
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\Facet\FacetRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

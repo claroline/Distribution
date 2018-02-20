@@ -72,7 +72,6 @@ class RoleFinder implements FinderInterface
                         case 'platform':
                             $filterValue = Role::PLATFORM_ROLE;
                             break;
-
                     }
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");
                     $qb->setParameter($filterName, $filterValue);
