@@ -12,11 +12,12 @@
 namespace Claroline\AppBundle;
 
 use Claroline\AppBundle\DependencyInjection\Compiler\ApiConfigPass;
-use Claroline\CoreBundle\Library\DistributionPluginBundle;
+use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ClarolineAppBundle extends DistributionPluginBundle
+class ClarolineAppBundle extends Bundle implements AutoConfigurableInterface
 {
     public function build(ContainerBuilder $container)
     {
@@ -27,7 +28,7 @@ class ClarolineAppBundle extends DistributionPluginBundle
 
     public function supports($environment)
     {
-        return true;
+        return 'prod' !== $environment;
     }
 
     public function getConfiguration($environment)
