@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Tests\Manager\Item;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Manager\Item\CategoryManager;
 use UJM\ExoBundle\Serializer\Item\CategorySerializer;

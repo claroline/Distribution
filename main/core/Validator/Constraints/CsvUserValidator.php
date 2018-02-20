@@ -18,7 +18,7 @@ use Claroline\CoreBundle\Manager\AuthenticationManager;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\ORM\NonUniqueResultException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;

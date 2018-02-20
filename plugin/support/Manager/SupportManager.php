@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\MailManager;
 use Claroline\CoreBundle\Manager\UserManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use FormaLibre\SupportBundle\Entity\Comment;
 use FormaLibre\SupportBundle\Entity\Configuration;

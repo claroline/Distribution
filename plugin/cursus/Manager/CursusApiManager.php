@@ -13,7 +13,7 @@ namespace Claroline\CursusBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\ApiManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

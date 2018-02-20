@@ -53,7 +53,7 @@ use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\FacetManager;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\MessageBundle\Manager\MessageManager;
 use Claroline\PdfGeneratorBundle\Manager\PdfManager;
 use JMS\DiExtraBundle\Annotation as DI;

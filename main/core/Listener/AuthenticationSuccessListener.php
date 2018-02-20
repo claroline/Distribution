@@ -20,7 +20,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
 use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Manager\TermsOfServiceManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LogLevel;
 use Symfony\Component\Form\FormFactory;

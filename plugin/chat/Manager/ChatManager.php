@@ -23,7 +23,7 @@ use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\CurlManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Fabiang\Xmpp\Client;
 use Fabiang\Xmpp\Options;
 use Fabiang\Xmpp\Protocol\Message;

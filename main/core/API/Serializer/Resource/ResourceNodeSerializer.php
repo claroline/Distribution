@@ -13,7 +13,7 @@ use Claroline\CoreBundle\Manager\BreadcrumbManager;
 use Claroline\CoreBundle\Manager\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceMenuManager;
 use Claroline\CoreBundle\Manager\RightsManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 

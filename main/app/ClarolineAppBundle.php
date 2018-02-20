@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  * file that was distributed with this source code.
  */
 
-namespace Claroline\App;
+namespace Claroline\AppBundle;
 
 class ClarolineAppBundle extends Bundle
 {

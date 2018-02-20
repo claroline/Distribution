@@ -4,7 +4,7 @@ namespace Icap\BlogBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\BlogOptions;

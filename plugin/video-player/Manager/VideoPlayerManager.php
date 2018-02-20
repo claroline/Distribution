@@ -13,7 +13,7 @@ namespace Claroline\VideoPlayerBundle\Manager;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Manager\FileManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Symfony\Component\HttpFoundation\File\UploadedFile;

@@ -5,7 +5,7 @@ namespace Innova\PathBundle\Controller\Api;
 use Claroline\CoreBundle\Entity\Resource\Activity;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\GroupManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\TeamBundle\Manager\TeamManager;
 use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Entity\Step;

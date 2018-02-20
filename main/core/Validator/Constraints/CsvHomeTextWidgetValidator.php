@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Validator\Constraints;
 
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;

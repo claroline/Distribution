@@ -17,7 +17,7 @@ use Claroline\CoreBundle\Event\CopyWidgetConfigurationEvent;
 use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Form\SimpleTextType;
 use Claroline\CoreBundle\Manager\SimpleTextManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Form\FormFactory;

@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use Claroline\CoreBundle\API\FinderProvider;
-use Claroline\CoreBundle\API\Options;
+use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\ParametersSerializer;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\Action\AdditionalAction;

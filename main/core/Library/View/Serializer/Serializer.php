@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Library\View\Serializer;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 

@@ -20,7 +20,7 @@ use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\ToolRightsManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\TeamBundle\API\Serializer\TeamSerializer;
 use Claroline\TeamBundle\Entity\Team;
 use Claroline\TeamBundle\Entity\WorkspaceTeamParameters;

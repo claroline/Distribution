@@ -15,7 +15,7 @@ namespace Claroline\ScormBundle\Manager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ScormBundle\Entity\Scorm12Resource;
 use Claroline\ScormBundle\Entity\Scorm12Sco;
 use Claroline\ScormBundle\Entity\Scorm12ScoTracking;

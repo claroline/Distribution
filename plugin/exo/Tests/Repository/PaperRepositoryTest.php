@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Tests\Repository;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;

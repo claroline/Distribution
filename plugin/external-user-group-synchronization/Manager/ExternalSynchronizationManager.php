@@ -20,7 +20,7 @@ use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\GroupManager;
 use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ExternalSynchronizationBundle\Entity\ExternalGroup;
 use Claroline\ExternalSynchronizationBundle\Entity\ExternalUser;
 use Claroline\ExternalSynchronizationBundle\Repository\ExternalResourceSynchronizationRepository;

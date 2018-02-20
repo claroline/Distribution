@@ -34,7 +34,7 @@ use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Transfert\Resolver;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\OrderedToolRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;

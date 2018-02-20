@@ -5,7 +5,7 @@ namespace HeVinci\CompetencyBundle\Manager;
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use HeVinci\CompetencyBundle\Entity\Ability;
 use HeVinci\CompetencyBundle\Entity\Competency;
 use HeVinci\CompetencyBundle\Entity\Objective;

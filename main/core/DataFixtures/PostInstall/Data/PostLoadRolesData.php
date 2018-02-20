@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\DataFixtures\PostInstall\Data;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 
 class PostLoadRolesData implements RequiredFixture
 {

@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Manager\Attempt;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use UJM\ExoBundle\Entity\Attempt\Paper;

@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\CoreBundle\API\Options;
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;

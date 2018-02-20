@@ -11,11 +11,11 @@
 
 namespace Claroline\CoreBundle\Controller\Administration;
 
-use Claroline\CoreBundle\API\FinderProvider;
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Form\WorkspaceImportType;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;

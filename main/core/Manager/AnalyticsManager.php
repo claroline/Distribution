@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Event\Log\LogResourceExportEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\AbstractResourceRepository;
 use Claroline\CoreBundle\Repository\Log\LogRepository;
 use Claroline\CoreBundle\Repository\UserRepository;

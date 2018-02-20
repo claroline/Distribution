@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Content;
 use Claroline\CoreBundle\Entity\ContentTranslation;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;

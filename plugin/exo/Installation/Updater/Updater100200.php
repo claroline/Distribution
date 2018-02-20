@@ -4,7 +4,7 @@ namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Updater\Updater;
 
 class Updater100200 extends Updater

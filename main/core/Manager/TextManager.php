@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\CoreBundle\Entity\Resource\Revision;
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

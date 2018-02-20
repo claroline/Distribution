@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Library\Utilities;
 
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\File\PublicFileUse;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFileSystem;
 use Symfony\Component\Finder\Finder;

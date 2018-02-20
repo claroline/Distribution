@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Library\PluginBundle;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\KernelBundle\Manager\BundleManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpKernel\KernelInterface;

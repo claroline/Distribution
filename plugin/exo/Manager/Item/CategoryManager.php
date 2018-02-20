@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Manager\Item;
 
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Item\Category;
 use UJM\ExoBundle\Library\Options\Validation;

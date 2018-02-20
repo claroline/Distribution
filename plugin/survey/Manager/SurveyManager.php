@@ -14,7 +14,7 @@ namespace Claroline\SurveyBundle\Manager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\SurveyBundle\Entity\Answer\MultipleChoiceQuestionAnswer;
 use Claroline\SurveyBundle\Entity\Answer\OpenEndedQuestionAnswer;
 use Claroline\SurveyBundle\Entity\Answer\QuestionAnswer;

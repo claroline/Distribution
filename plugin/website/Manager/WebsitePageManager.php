@@ -8,7 +8,7 @@
 
 namespace Icap\WebsiteBundle\Manager;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\WebsiteBundle\Form\WebsitePageType;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;

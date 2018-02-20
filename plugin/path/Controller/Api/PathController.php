@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\Resource\Activity;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Innova\PathBundle\Entity\Path\Path;
 use Innova\PathBundle\Form\Type\PathType;
 use Innova\PathBundle\Manager\PathManager;

@@ -17,7 +17,7 @@ use Claroline\AgendaBundle\Form\EventInvitationType;
 use Claroline\AgendaBundle\Form\ImportAgendaType;
 use Claroline\AgendaBundle\Manager\AgendaManager;
 use Claroline\CoreBundle\Event\GenericDataEvent;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;

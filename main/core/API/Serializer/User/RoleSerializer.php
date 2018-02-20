@@ -2,12 +2,12 @@
 
 namespace Claroline\CoreBundle\API\Serializer\User;
 
-use Claroline\CoreBundle\API\Options;
-use Claroline\CoreBundle\API\Serializer\SerializerTrait;
-use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Tool\AdminTool;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

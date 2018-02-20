@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\InstallationBundle\Updater\Updater;
 

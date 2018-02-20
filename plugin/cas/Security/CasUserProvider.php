@@ -15,7 +15,7 @@ namespace Claroline\CasBundle\Security;
 use Claroline\CasBundle\Entity\CasUser;
 use Claroline\CasBundle\Repository\CasUserRepository;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\Session;

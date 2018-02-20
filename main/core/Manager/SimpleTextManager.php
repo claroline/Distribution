@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 
 /**

@@ -21,7 +21,7 @@ use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Entity\Log\LogWidgetConfig;
 use Claroline\CoreBundle\Event\ConfigureWidgetEvent;
 use Claroline\CoreBundle\Event\CopyWidgetConfigurationEvent;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

@@ -11,13 +11,13 @@
 
 namespace Claroline\DropZoneBundle\Manager;
 
-use Claroline\CoreBundle\API\Crud;
+use Claroline\AppBundle\API\Crud;
 use Claroline\CoreBundle\Entity\Resource\AbstractResourceEvaluation;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Correction;
 use Claroline\DropZoneBundle\Entity\Document;
 use Claroline\DropZoneBundle\Entity\Drop;

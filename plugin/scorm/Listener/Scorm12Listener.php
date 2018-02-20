@@ -21,7 +21,7 @@ use Claroline\CoreBundle\Event\GenericDataEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\CoreBundle\Manager\Resource\ResourceEvaluationManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ScormBundle\Entity\Scorm12Resource;
 use Claroline\ScormBundle\Entity\Scorm12Sco;
 use Claroline\ScormBundle\Form\ScormType;

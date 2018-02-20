@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Entity\Home\HomeTab;
 use Claroline\CoreBundle\Entity\Home\HomeTabConfig;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 
 /**
  * Platform Home tabs data fixture.

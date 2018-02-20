@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\Tests\NewAPI;
 
-use Claroline\CoreBundle\API\TransferProvider;
+use Claroline\AppBundle\API\TransferProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 
 class TransferProviderTest extends TransactionalTestCase

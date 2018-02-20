@@ -5,7 +5,7 @@ namespace UJM\ExoBundle\Tests\Controller\Resource;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Testing\RequestTrait;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Testing\Persister;
 

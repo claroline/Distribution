@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use HeVinci\CompetencyBundle\Adapter\OrmArrayAdapter;
 use HeVinci\CompetencyBundle\Entity\Competency;
 use HeVinci\CompetencyBundle\Entity\Level;

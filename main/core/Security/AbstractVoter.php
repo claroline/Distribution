@@ -13,8 +13,8 @@ namespace Claroline\CoreBundle\Security;
 
 use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Security\VoterInterface as ClarolineVoterInterface;
+use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Security\VoterInterface as ClarolineVoterInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

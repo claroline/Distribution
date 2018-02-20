@@ -17,7 +17,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceTag;
 use Claroline\CoreBundle\Entity\Workspace\WorkspaceTagHierarchy;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\RelWorkspaceTagRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use Claroline\CoreBundle\Repository\WorkspaceTagHierarchyRepository;

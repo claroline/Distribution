@@ -14,7 +14,7 @@ namespace Claroline\ExternalSynchronizationBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ExternalSynchronizationBundle\Entity\ExternalUser;
 use Claroline\ExternalSynchronizationBundle\Repository\ExternalUserRepository;
 use JMS\DiExtraBundle\Annotation as DI;

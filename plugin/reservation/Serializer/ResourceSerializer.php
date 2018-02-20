@@ -3,7 +3,7 @@
 namespace FormaLibre\ReservationBundle\Serializer;
 
 use Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\DiExtraBundle\Annotation as DI;
 

@@ -197,6 +197,7 @@
     },
     "extra": {
         "bundles": [
+            "Claroline\\AppBundle\\ClarolineAppBundle",
             "Claroline\\InstallationBundle\\ClarolineInstallationBundle",
             "Claroline\\MigrationBundle\\ClarolineMigrationBundle",
             "Claroline\\KernelBundle\\ClarolineKernelBundle",

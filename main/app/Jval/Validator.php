@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\App\Jval;
+namespace Claroline\AppBundle\Jval;
 
 class Validator
 {

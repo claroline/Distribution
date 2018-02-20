@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\SurveyBundle\Entity\Choice;
 use Claroline\SurveyBundle\Entity\MultipleChoiceQuestion;
 use Claroline\SurveyBundle\Entity\Question;

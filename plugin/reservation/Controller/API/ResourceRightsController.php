@@ -12,7 +12,7 @@
 namespace FormaLibre\ReservationBundle\Controller\API;
 
 use Claroline\CoreBundle\Annotations\ApiMeta;
-use Claroline\CoreBundle\Controller\APINew\AbstractCrudController;
+use Claroline\AppBundle\Controller\APINew\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**

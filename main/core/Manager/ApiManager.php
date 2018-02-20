@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Oauth\FriendRequest;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use FOS\RestBundle\View\View;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\SerializationContext;

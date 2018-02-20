@@ -3,7 +3,7 @@
 namespace Innova\VideoRecorderBundle\Manager;
 
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Claroline\CoreBundle\Entity\User;
 use Innova\VideoRecorderBundle\Testing\Persister;

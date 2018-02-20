@@ -14,7 +14,7 @@ namespace Claroline\CoreBundle\Manager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Update\Version;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\VersionRepository;
 use Claroline\InstallationBundle\Bundle\InstallableInterface;
 use Composer\Json\JsonFile;

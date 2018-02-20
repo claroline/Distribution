@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Entity\SecurityToken;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

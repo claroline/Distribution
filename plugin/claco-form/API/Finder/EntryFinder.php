@@ -12,12 +12,12 @@
 namespace Claroline\ClacoFormBundle\API\Finder;
 
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
-use Claroline\CoreBundle\API\FinderInterface;
+use Claroline\AppBundle\API\FinderInterface;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
 use Claroline\CoreBundle\Manager\Organization\LocationManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;

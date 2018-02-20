@@ -3,7 +3,7 @@
 namespace Icap\SocialmediaBundle\Listener;
 
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

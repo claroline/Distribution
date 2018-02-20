@@ -6,7 +6,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\RichTextFormatEvent;
 use Claroline\CoreBundle\Library\Transfert\RichTextFormatter;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 

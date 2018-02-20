@@ -2,7 +2,7 @@
 
 namespace UJM\ExoBundle\Tests\Manager\Attempt;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Paper;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Manager\Attempt\PaperManager;

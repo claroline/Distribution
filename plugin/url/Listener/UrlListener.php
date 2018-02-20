@@ -10,7 +10,7 @@ use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use HeVinci\UrlBundle\Entity\Url;
 use HeVinci\UrlBundle\Form\UrlChangeType;
 use HeVinci\UrlBundle\Form\UrlType;

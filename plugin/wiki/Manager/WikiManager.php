@@ -12,7 +12,7 @@
 namespace Icap\WikiBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\WikiBundle\Entity\Contribution;
 use Icap\WikiBundle\Entity\Section;
 use Icap\WikiBundle\Entity\Wiki;

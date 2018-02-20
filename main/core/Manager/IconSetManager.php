@@ -22,7 +22,7 @@ use Claroline\CoreBundle\Library\Icon\ResourceIconSetIconItemList;
 use Claroline\CoreBundle\Library\Utilities\ExtensionNotSupportedException;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
 use Claroline\CoreBundle\Library\Utilities\ThumbnailCreator;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\Icon\IconItemRepository;
 use Claroline\CoreBundle\Repository\Icon\IconSetRepository;
 use JMS\DiExtraBundle\Annotation as DI;

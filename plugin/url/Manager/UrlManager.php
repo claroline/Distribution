@@ -2,7 +2,7 @@
 
 namespace HeVinci\UrlBundle\Manager;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use HeVinci\UrlBundle\Entity\Url;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;

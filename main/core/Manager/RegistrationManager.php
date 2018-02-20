@@ -16,7 +16,7 @@ use Claroline\CoreBundle\Entity\Facet\Facet;
 use Claroline\CoreBundle\Form\BaseProfileType;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Listener\AuthenticationSuccessListener;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Security\PlatformRoles;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;

@@ -12,7 +12,7 @@ namespace Claroline\CoreBundle\Library\Installation\Updater;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Claroline\InstallationBundle\Updater\Updater;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 
 class Updater040500 extends Updater
 {

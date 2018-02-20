@@ -4,7 +4,7 @@ namespace Claroline\CoreBundle\Manager;
 
 use Claroline\CoreBundle\Event\BuildBreadcrumbEvent;
 use Claroline\CoreBundle\Event\StrictDispatcher;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;

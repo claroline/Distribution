@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Tests\Manager\Attempt;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Manager\Attempt\AnswerManager;
 use UJM\ExoBundle\Serializer\Attempt\AnswerSerializer;

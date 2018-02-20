@@ -19,7 +19,7 @@ use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Library\Utilities\ThumbnailCreator;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\ResourceIconRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;

@@ -14,7 +14,7 @@ namespace Claroline\ResultBundle\Manager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ResultBundle\Entity\Mark;
 use Claroline\ResultBundle\Entity\Result;
 use Claroline\ResultBundle\Event\Log\LogResultsDeleteMarkEvent;

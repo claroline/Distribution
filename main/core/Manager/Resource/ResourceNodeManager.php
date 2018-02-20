@@ -8,7 +8,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RightsManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

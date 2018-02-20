@@ -4,7 +4,7 @@ namespace Icap\LessonBundle\Manager;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\LessonBundle\Entity\Chapter;
 use Icap\LessonBundle\Entity\Lesson;
 use JMS\DiExtraBundle\Annotation as DI;

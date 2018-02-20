@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\Tests\NewAPI;
 
-use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\Corebundle\API\ValidatorProvider;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 

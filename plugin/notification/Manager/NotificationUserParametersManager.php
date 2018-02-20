@@ -13,7 +13,7 @@ namespace Icap\NotificationBundle\Manager;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Notification\NotificationUserParametersEvent;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\NotificationBundle\Entity\NotificationUserParameters;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

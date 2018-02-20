@@ -3,7 +3,7 @@
 namespace FormaLibre\PresenceBundle\Manager;
 
 use JMS\DiExtraBundle\Annotation as DI;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use FormaLibre\PresenceBundle\Entity\PresenceRights;
 use Claroline\CoreBundle\Entity\User;

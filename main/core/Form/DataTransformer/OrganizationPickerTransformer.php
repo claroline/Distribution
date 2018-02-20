@@ -12,7 +12,7 @@
 namespace Claroline\CoreBundle\Form\DataTransformer;
 
 use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use JMS\DiExtraBundle\Annotation\Inject;

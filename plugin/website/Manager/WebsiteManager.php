@@ -14,7 +14,7 @@ namespace Icap\WebsiteBundle\Manager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Utilities\FileSystem;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\WebsiteBundle\Entity\Website;
 use Icap\WebsiteBundle\Entity\WebsiteOptions;
 use Icap\WebsiteBundle\Entity\WebsitePage;

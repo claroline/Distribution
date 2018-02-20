@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Required;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 
 interface RequiredFixture
 {

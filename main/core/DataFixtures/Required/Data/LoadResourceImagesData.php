@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 
 /**
  * Resource images data fixture.

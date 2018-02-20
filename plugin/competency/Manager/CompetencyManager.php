@@ -2,7 +2,7 @@
 
 namespace HeVinci\CompetencyBundle\Manager;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use HeVinci\CompetencyBundle\Entity\Ability;
 use HeVinci\CompetencyBundle\Entity\Competency;

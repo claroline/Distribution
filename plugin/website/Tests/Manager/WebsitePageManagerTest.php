@@ -9,7 +9,7 @@
 namespace Icap\WebsiteBundle\Tests;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Icap\WebsiteBundle\Entity\Website;
 use Icap\WebsiteBundle\Entity\WebsitePageTypeEnum;
 use Icap\WebsiteBundle\Manager\WebsitePageManager;

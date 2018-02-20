@@ -16,7 +16,7 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Installation\Plugin\Installer;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Manager\VersionManager;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use JMS\DiExtraBundle\Annotation as DI;

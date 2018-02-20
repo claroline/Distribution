@@ -31,7 +31,7 @@ use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\RightsException;
 use Claroline\CoreBundle\Manager\Exception\WrongClassException;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\DirectoryRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;

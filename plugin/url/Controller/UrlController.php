@@ -3,7 +3,7 @@
 namespace HeVinci\UrlBundle\Controller;
 
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use HeVinci\UrlBundle\Form\UrlChangeType;
 use HeVinci\UrlBundle\Manager\UrlManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

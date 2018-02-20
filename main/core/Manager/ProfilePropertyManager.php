@@ -15,7 +15,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\ProfileProperty;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Library\Security\Utilities;
 
 /**

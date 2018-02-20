@@ -24,7 +24,7 @@ use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\CoreBundle\Manager\RightsManager;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use Claroline\CoreBundle\Pager\PagerFactory;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ForumBundle\Entity\Category;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Entity\Message;

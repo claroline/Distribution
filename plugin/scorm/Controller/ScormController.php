@@ -13,7 +13,7 @@ namespace Claroline\ScormBundle\Controller;
 
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ScormBundle\Entity\Scorm12Resource;
 use Claroline\ScormBundle\Entity\Scorm12Sco;
 use Claroline\ScormBundle\Entity\Scorm2004Resource;

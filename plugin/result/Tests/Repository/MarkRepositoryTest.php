@@ -12,7 +12,7 @@
 namespace Claroline\ResultBundle\Repository;
 
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ResultBundle\Testing\Persister;
 
 class MarkRepositoryTest extends TransactionalTestCase

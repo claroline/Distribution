@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Installation\Updater;
 
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
 use UJM\ExoBundle\Entity\Attempt\Answer;
 use UJM\ExoBundle\Entity\Attempt\Paper;
