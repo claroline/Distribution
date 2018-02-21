@@ -1,6 +1,7 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 
 import {LogTool} from '#/main/core/tools/workspace/logs/components/tool.jsx'
+import {reducer} from '#/main/core/tools/workspace/logs/reducer'
 
 
 // mount the react application
@@ -12,5 +13,9 @@ bootstrap(
   LogTool,
 
   // app store configuration
-  () => {}
+  reducer,
+  // initial data
+  initialData => ({
+    workspaceId: initialData.workspaceId
+  })
 )

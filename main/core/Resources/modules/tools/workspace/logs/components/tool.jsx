@@ -1,11 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import {connect} from 'react-redux'
-
 import {trans} from '#/main/core/translation'
-import {navigate, matchPath, withRouter} from '#/main/core/router'
 import {
     PageActions,
+    MoreAction,
     PageHeader
 } from '#/main/core/layout/page'
 import {
@@ -13,33 +10,45 @@ import {
     RoutedPageContent
 } from '#/main/core/layout/router'
 
-// app sections
+// app pages
+import {Logs} from '#/main/core/tools/workspace/logs/components/overview/list.jsx'
+import {UserLogs} from '#/main/core/tools/workspace/logs/components/users/list.jsx'
+import {LogDetails} from '#/main/core/tools/workspace/logs/components/overview/detail.jsx'
 
 const Tool = () =>
-    <RoutedPageContainer>
-      <PageHeader
-          title={trans('logs', {}, 'tools')}
-      >
-      </PageHeader>
-
-        <PageActions> </PageActions>
-
-
-    </RoutedPageContainer>
+  <RoutedPageContainer>
+    <PageHeader title={trans('logs', {}, 'tools')}>
+      <PageActions>
+        <MoreAction
+          actions = {[
+            {
+              action: '#/users',
+              label: trans('user_tracking', {}, 'log'),
+              icon: 'fa fa-users'
+            }
+          ]}
+        />
+      </PageActions>
+    </PageHeader>
+    <RoutedPageContent
+      routes={[
+        {
+          path: '/',
+          component: Logs,
+          exact: true
+        }, {
+          path: '/log/:id',
+          component: LogDetails,
+          exact: true
+        }, {
+          path: '/users',
+          component: UserLogs,
+          exact: true
+        }
+      ]}
+    />
+  </RoutedPageContainer>
 
 export {
   Tool as LogTool
 }
-
-/*<RoutedPageContent
- routes={[
- {
- path: '/',
- component: ScheduledTasks,
- exact: true
- }, {
- path: '/users',
- component: ScheduledTask,
- }
- ]}
- />*/

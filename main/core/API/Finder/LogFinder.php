@@ -25,7 +25,7 @@ class LogFinder implements FinderInterface
     public function configureQueryBuilder(QueryBuilder $qb, array $searches, array $sortBy = null)
     {
         $qb->join('obj.resourceType', 'ort');
-
+        $userJoin = false;
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'resourceType':
@@ -36,6 +36,19 @@ class LogFinder implements FinderInterface
                     }
                     $qb->setParameter($filterName, $filterValue);
                     break;
+                case 'doer.name':
+                    $userJoin = true;
+                    $qb->join('obj.doer', 'doer');
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->like('UPPER(doer.firstName)', ':doer'),
+                        $qb->expr()->like('UPPER(doer.lastName)', ':doer'),
+                        $qb->expr()->like('UPPER(doer.username)', ':doer'),
+                        $qb->expr()->like('UPPER(doer.email)', ':doer')
+                    ));
+                    $qb->setParameter('doer', '%'.strtoupper($filterValue).'%');
+                    break;
+                case 'dateLog':
+
                 default:
                     if (is_string($filterValue)) {
                         $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
@@ -46,6 +59,15 @@ class LogFinder implements FinderInterface
                     }
                     break;
             }
+        }
+
+        if (!empty($sortBy) && $sortBy['property'] === 'doer.name') {
+            if (!$userJoin) {
+                $qb->join('obj.doer', 'doer');
+            }
+            $direction = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
+            $qb->addOrderBy('doer.lastName', $direction);
+            $qb->addOrderBy('doer.firstName', $direction);
         }
 
         return $qb;
