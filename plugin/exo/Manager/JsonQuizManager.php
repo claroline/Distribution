@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Manager;
 
-use Claroline\CoreBundle\Manager\ResourceManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Manager\ResourceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Library\Options\Transfer;

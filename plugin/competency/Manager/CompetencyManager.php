@@ -364,7 +364,7 @@ class CompetencyManager
         $link = $this->competencyAbilityRepo->findOneByTerms($parent, $ability);
         $this->om->remove($link);
 
-        if ($linkCount === 1) {
+        if (1 === $linkCount) {
             $this->om->remove($ability);
         }
 

@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Transfert\ConfigurationBuilders;
 
-use Claroline\CoreBundle\Library\Transfert\Importer;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Library\Transfert\Importer;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

@@ -11,9 +11,9 @@
 
 namespace Claroline\ChatBundle\Listener;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ChatBundle\Manager\ChatManager;
 use Claroline\CoreBundle\Event\DeleteUserEvent;
-use Claroline\AppBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

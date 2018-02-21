@@ -547,7 +547,7 @@ class ToolManagerTest extends MockeryTestCase
         $this->om->shouldReceive('getRepository')->once()
             ->with('ClarolineCoreBundle:Role')->andReturn($this->roleRepo);
 
-        if (count($mockedMethods) === 0) {
+        if (0 === count($mockedMethods)) {
             return new ToolManager(
                 $this->ed,
                 $this->utilities,

@@ -43,17 +43,17 @@ class RolesImporterTest extends MockeryTestCase
 
     public function validateProvider()
     {
-        return array(
+        return [
             //valid
-            array(
+            [
                 'path' => __DIR__.'/../../../Stub/transfert/valid/full/roles01.yml',
                 'isExceptionExpected' => false,
-            ),
+            ],
             //roles have the same name twice
-            array(
+            [
                 'path' => __DIR__.'/../../../Stub/transfert/invalid/roles/existing_name.yml',
                 'isExceptionExpected' => true,
-            ),
-        );
+            ],
+        ];
     }
 }

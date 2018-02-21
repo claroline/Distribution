@@ -87,7 +87,7 @@ class MultipleIdsConverter implements ParamConverterInterface
     {
         $options = $configuration->getOptions();
 
-        if (isset($options['multipleIds']) && $options['multipleIds'] === true) {
+        if (isset($options['multipleIds']) && true === $options['multipleIds']) {
             return true;
         }
 

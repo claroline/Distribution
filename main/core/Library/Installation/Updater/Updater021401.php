@@ -36,7 +36,7 @@ class Updater021401 extends Updater
     {
         $this->log('updating icons...');
 
-        $mimetypes = array('application/illustrator', 'application/ai');
+        $mimetypes = ['application/illustrator', 'application/ai'];
 
         foreach ($mimetypes as $mimetype) {
             $icon = new ResourceIcon();

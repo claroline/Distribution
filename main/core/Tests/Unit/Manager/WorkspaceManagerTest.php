@@ -609,7 +609,7 @@ class WorkspaceManagerTest extends MockeryTestCase
         $this->om->shouldReceive('getRepository')->with('ClarolineCoreBundle:Workspace\WorkspaceFavourite')
             ->andReturn($this->userRepo);
 
-        if (count($mockedMethods) === 0) {
+        if (0 === count($mockedMethods)) {
             return new WorkspaceManager(
                 $this->homeTabManager,
                 $this->roleManager,

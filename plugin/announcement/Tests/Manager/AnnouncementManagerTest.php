@@ -102,7 +102,7 @@ class AnnouncementManagerTest extends MockeryTestCase
             ->once()
             ->andReturn($this->announcementRepo);
 
-        if (count($mockedMethods) === 0) {
+        if (0 === count($mockedMethods)) {
             return new AnnouncementManager($this->om);
         }
 

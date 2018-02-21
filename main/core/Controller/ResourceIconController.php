@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\Controller;
 
-use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;

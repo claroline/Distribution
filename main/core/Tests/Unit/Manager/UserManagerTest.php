@@ -430,7 +430,7 @@ class UserManagerTest extends MockeryTestCase
         $this->om->shouldReceive('getRepository')->once()
             ->with('ClarolineCoreBundle:User')->andReturn($this->userRepo);
 
-        if (count($mockedMethods) === 0) {
+        if (0 === count($mockedMethods)) {
             return new UserManager(
                 $this->personalWsTemplateFile,
                 $this->mailManager,

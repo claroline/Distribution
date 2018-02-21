@@ -292,7 +292,7 @@ class ExerciseManager
         $iteration = 0;
         $papers = [];
 
-        while ($iteration === 0 || count($papers) >= $limit) {
+        while (0 === $iteration || count($papers) >= $limit) {
             $papers = $repo->findBy(['exercise' => $exercise], [], $limit, $iteration * $limit);
             ++$iteration;
 
@@ -365,7 +365,7 @@ class ExerciseManager
         $iteration = 0;
         $papers = [];
 
-        while ($iteration === 0 || count($papers) >= $limit) {
+        while (0 === $iteration || count($papers) >= $limit) {
             $papers = $repo->findBy(['exercise' => $exercise], [], $limit, $iteration * $limit);
             ++$iteration;
             $dataPapers = [];

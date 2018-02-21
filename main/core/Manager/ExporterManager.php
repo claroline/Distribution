@@ -47,7 +47,7 @@ class ExporterManager
      */
     public function export($class, $exporter, array $extra = [])
     {
-        if ($class === 'Claroline\CoreBundle\Entity\User') {
+        if ('Claroline\CoreBundle\Entity\User' === $class) {
             return $this->exportUsers($exporter, $extra);
         }
 
@@ -134,7 +134,7 @@ class ExporterManager
     private function formatValue($value)
     {
         //the only object support is DateTime for now
-        if (gettype($value) === 'object') {
+        if ('object' === gettype($value)) {
             return $value->format($this->trans->trans('date_range.format.with_hours', [], 'platform'));
         }
 

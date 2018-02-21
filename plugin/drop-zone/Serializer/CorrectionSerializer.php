@@ -2,8 +2,8 @@
 
 namespace Claroline\DropZoneBundle\Serializer;
 
-use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\DropZoneBundle\Entity\Correction;
 use JMS\DiExtraBundle\Annotation as DI;
 

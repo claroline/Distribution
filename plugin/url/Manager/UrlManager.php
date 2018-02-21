@@ -36,7 +36,7 @@ class UrlManager
         $baseUrl = null;
         $url->setInternalUrl(false);
 
-        if ($this->request->getCurrentRequest() !== null) {
+        if (null !== $this->request->getCurrentRequest()) {
             $baseUrl = $this->request->getCurrentRequest()->getSchemeAndHttpHost().$this->request->getCurrentRequest()->getScriptName();
             $baseUrlEscapeQuote = preg_quote($baseUrl);
 

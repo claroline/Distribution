@@ -12,9 +12,9 @@
 namespace Claroline\CoreBundle\Controller\User;
 
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceUserEvaluation;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Doctrine\ORM\NoResultException;
 use JMS\DiExtraBundle\Annotation as DI;

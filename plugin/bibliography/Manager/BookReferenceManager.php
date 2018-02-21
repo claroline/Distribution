@@ -2,8 +2,8 @@
 
 namespace Icap\BibliographyBundle\Manager;
 
-use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Icap\BibliographyBundle\Entity\BookReference;
 use Icap\BibliographyBundle\Entity\BookReferenceConfiguration;
 use JMS\DiExtraBundle\Annotation as DI;

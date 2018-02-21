@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\DataFixtures\PostInstall\Data;
 
-use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 
 /**
  * Platform widgets data fixture.

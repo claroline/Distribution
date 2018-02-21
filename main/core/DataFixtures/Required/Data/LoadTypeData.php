@@ -12,14 +12,14 @@
 namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
-use Claroline\CoreBundle\Entity\Home\Type;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
+use Claroline\CoreBundle\Entity\Home\Type;
 
 class LoadTypeData implements RequiredFixture
 {
     public function load(ObjectManager $manager)
     {
-        $fixtures = array('home', 'menu');
+        $fixtures = ['home', 'menu'];
 
         foreach ($fixtures as $i => $fixture) {
             $types[$i] = new Type();

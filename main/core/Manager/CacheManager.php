@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Manager;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use Claroline\AppBundle\Event\StrictDispatcher;
+use JMS\DiExtraBundle\Annotation as DI;
 
 /**
  * @DI\Service("claroline.manager.cache_manager")
