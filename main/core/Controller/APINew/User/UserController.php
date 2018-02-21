@@ -19,6 +19,8 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
+use Claroline\CoreBundle\Event\StrictDispatcher;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -31,6 +33,23 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UserController extends AbstractCrudController
 {
+    /** @var StrictDispatcher */
+    private $eventDispatcher;
+
+    /**
+     * UserController constructor.
+     *
+     * @DI\InjectParams({
+     *    "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
+     * })
+     *
+     * @param StrictDispatcher $eventDispatcher
+     */
+    public function __construct(StrictDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function getName()
     {
         return 'user';
@@ -220,14 +239,43 @@ class UserController extends AbstractCrudController
     public function listManagedAction(User $user, Request $request)
     {
         $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
-          [] :
-          ['organization' => array_map(function (Organization $organization) {
-              return $organization->getUuid();
-          }, $user->getAdministratedOrganizations()->toArray())];
+            [] :
+            ['organization' => array_map(function (Organization $organization) {
+                return $organization->getUuid();
+            }, $user->getAdministratedOrganizations()->toArray())];
 
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\User',
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
+    }
+
+    /**
+     * @Route(
+     *    "/{keep}/{remove}/merge",
+     *    name="apiv2_user_merge"
+     * )
+     * @Method("POST")
+     * @ParamConverter("keep", options={"mapping": {"keep": "uuid"}})
+     * @ParamConverter("remove", options={"mapping": {"remove": "uuid"}})
+     *
+     * @param User $keep
+     * @param User $remove
+     *
+     * @return JsonResponse
+     */
+    public function mergeUsersAction(User $keep, User $remove)
+    {
+        /** @var MergeUserEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            'merge_user',
+            'User\MergeUser',
+            [
+                $keep,
+                $remove,
+            ]
+        );
+
+        return new JsonResponse($event->getMessages());
     }
 }
