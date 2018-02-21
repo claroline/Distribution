@@ -5,14 +5,14 @@ import {scaleLinear, scaleBand} from 'd3-scale'
 import {axisLeft, axisBottom} from 'd3-axis'
 
 import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
-import {DataSeries} from './data-series.jsx'
-import {Axis} from './axis.jsx'
+import {DataSeries} from '#/main/core/layout/chart/bar/components/data-series.jsx'
+import {Axis} from '#/main/core/layout/chart/components/axis.jsx'
 import {
   AXIS_TYPE_X,
   AXIS_TYPE_Y,
   AXIS_TYPE_LABEL_X,
   AXIS_TYPE_LABEL_Y
-} from './../enums'
+} from '#/main/core/layout/chart/enums'
 
 /**
  * Draws a Bar chart

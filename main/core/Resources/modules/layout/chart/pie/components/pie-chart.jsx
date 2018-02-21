@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
-import {DataSeries} from './data-series.jsx'
+import {DataSeries} from '#/main/core/layout/chart/pie/components/data-series.jsx'
 
 /**
  * Draws a Bar chart

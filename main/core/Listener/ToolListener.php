@@ -180,13 +180,15 @@ class ToolListener
 
     public function workspaceLogs($workspaceId)
     {
-        /** @var \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace */
-        $workspace = $this->workspaceManager->getWorkspaceById($workspaceId);
+        $params = [
+            '_controller' => 'ClarolineCoreBundle:Log\Tool\Workspace:logList',
+            'workspaceId' => $workspaceId,
+        ];
 
-        return $this->templating->render(
-            'ClarolineCoreBundle:Tool/workspace/logs:logList.html.twig',
-            $this->container->get('claroline.log.manager')->getWorkspaceList($workspace, 1)
-        );
+        $subRequest = $this->container->get('request')->duplicate([], null, $params);
+        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+
+        return $response->getContent();
     }
 
     public function workspaceAnalytics($workspace)

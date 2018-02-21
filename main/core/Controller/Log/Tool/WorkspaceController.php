@@ -39,59 +39,41 @@ class WorkspaceController extends Controller
     /**
      * @EXT\Route(
      *     "/{workspaceId}/tool/logs",
-     *     name="claro_workspace_logs_show",
-     *     requirements={"workspaceId" = "\d+"},
-     *     defaults={"page" = 1}
+     *     name="claro_workspace_tools_log_list",
+     *     requirements={"workspaceId" = "\d+"}
      * )
-     * @EXT\Route(
-     *     "/{workspaceId}/tool/logs/{page}",
-     *     name="claro_workspace_logs_show_paginated",
-     *     requirements={"workspaceId" = "\d+", "page" = "\d+"},
-     *     defaults={"page" = 1}
-     * )
-     *
-     *
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
      *      options={"id" = "workspaceId", "strictId" = true}
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/logs:logList.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/logs:list.html.twig")
      *
      * Displays logs list using filter parameteres and page number
      *
      * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     * @param $page int The requested page number
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      *
-     * @return Response
+     * @return array
      */
-    public function logListAction(Workspace $workspace, $page)
+    public function logListAction(Workspace $workspace)
     {
         if (!$this->get('security.authorization_checker')->isGranted('logs', $workspace)) {
             throw new AccessDeniedException();
         }
 
-        return $this->get('claroline.log.manager')->getWorkspaceList($workspace, $page);
+        //return $this->get('claroline.log.manager')->getWorkspaceList($workspace, $page);
+        return ['workspace' => $workspace];
     }
 
     /**
      * @EXT\Route(
      *     "/{workspaceId}/tool/logs/user",
      *     name="claro_workspace_logs_by_user_show",
-     *     requirements={"workspaceId" = "\d+"},
-     *     defaults={"page" = 1}
+     *     requirements={"workspaceId" = "\d+"}
      * )
-     * @EXT\Route(
-     *     "/{workspaceId}/tool/logs/user/{page}",
-     *     name="claro_workspace_logs_by_user_show_paginated",
-     *     requirements={"workspaceId" = "\d+", "page" = "\d+"},
-     *     defaults={"page" = 1}
-     * )
-     *
-     *
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
@@ -107,15 +89,16 @@ class WorkspaceController extends Controller
      *
      * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
      *
-     * @return Response
+     * @return array
      */
-    public function logByUserAction(Workspace $workspace, $page)
+    public function logByUserAction(Workspace $workspace)
     {
         if (!$this->get('security.authorization_checker')->isGranted('logs', $workspace)) {
             throw new AccessDeniedException();
         }
 
-        return $this->get('claroline.log.manager')->countByUserWorkspaceList($workspace, $page);
+        // return $this->get('claroline.log.manager')->countByUserWorkspaceList($workspace, $page);
+        return ['workspace' => $workspace];
     }
 
     /**

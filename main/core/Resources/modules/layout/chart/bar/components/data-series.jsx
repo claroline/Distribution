@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {Bar} from './bar.jsx'
+import {Bar} from '#/main/core/layout/chart/bar/components/bar.jsx'
 
 /**
  * Represents data on a Bar chart.

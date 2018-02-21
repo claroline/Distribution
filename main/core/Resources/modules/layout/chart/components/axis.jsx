@@ -7,7 +7,7 @@ import {
   AXIS_TYPE_Y,
   AXIS_TYPE_LABEL_X,
   AXIS_TYPE_LABEL_Y
-} from './../enums'
+} from '#/main/core/layout/chart/enums'
 
 class Axis extends Component {
 
@@ -21,7 +21,7 @@ class Axis extends Component {
 
   renderAxis() {
     if (this.props.axis) {
-      const node = this.refs.axis
+      const node = this.axisNode
       select(node).call(this.props.axis)
     }
   }
@@ -44,7 +44,7 @@ class Axis extends Component {
     }
 
     return (
-      <g className="axis" ref="axis" transform={transform}>
+      <g className="axis" ref={(node) => {this.axisNode = node}} transform={transform}>
         {this.props.label &&
           <text className="axis-label">{this.props.label}</text>
         }

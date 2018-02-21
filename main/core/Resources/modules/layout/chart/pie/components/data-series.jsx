@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 import {pie} from 'd3-shape'
 
-import {Arc} from './arc.jsx'
+import {Arc} from '#/main/core/layout/chart/pie/components/arc.jsx'
 
 class DataSeries extends Component {
   render() {
