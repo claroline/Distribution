@@ -78,8 +78,8 @@ class Updater110200 extends Updater
         $this->log('Create role admin organization...');
 
         $roleManager = $this->container->get('claroline.manager.role_manager');
-	
-	if (!$this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION')) {
+
+        if (!$this->om->getRepository('ClarolineCoreBundle:Role')->findOneByName('ROLE_ADMIN_ORGANIZATION')) {
             $role = $roleManager->createBaseRole('ROLE_ADMIN_ORGANIZATION', 'admin_organization');
 
             $workspacemanagement = $this->om->getRepository('ClarolineCoreBundle:Tool\AdminTool')->findOneByName('workspace_management');
