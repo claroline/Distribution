@@ -53,7 +53,7 @@ class AdditionalInstaller extends BaseInstaller
             $updater = new Updater\Updater110000($this->container);
             $updater->lnPictureDirectory();
             $updater->lnPackageDirectory();
-        } catch (\Exception $e) {
+        } catch (\Exceuuidption $e) {
             $this->log($e->getMessage(), LogLevel::ERROR);
         }
 
@@ -368,6 +368,11 @@ class AdditionalInstaller extends BaseInstaller
             // no break
             case version_compare($currentVersion, '11.2.0', '<'):
                 $updater = new Updater\Updater110200($this->container, $this->logger);
+                $updater->setLogger($this->logger);
+                $updater->postUpdate();
+                // no break
+            case version_compare($currentVersion, '11.3.0', '<'):
+                $updater = new Updater\Updater110300($this->container, $this->logger);
                 $updater->setLogger($this->logger);
                 $updater->postUpdate();
         }
