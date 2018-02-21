@@ -11,8 +11,8 @@
 
 namespace Claroline\CoreBundle\Form\DataTransformer;
 
-use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Manager\Organization\OrganizationManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use JMS\DiExtraBundle\Annotation\Inject;

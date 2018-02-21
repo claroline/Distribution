@@ -2,8 +2,8 @@
 
 namespace FormaLibre\ReservationBundle\Serializer;
 
-use Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\API\Serializer\User\OrganizationSerializer;
 use FormaLibre\ReservationBundle\Entity\Resource;
 use JMS\DiExtraBundle\Annotation as DI;
 
