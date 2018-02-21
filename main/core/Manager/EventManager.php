@@ -225,7 +225,7 @@ class EventManager
             $tempResourceEvents[$type['name']] = [];
         }
 
-        foreach ($tempResourceEvents as $sortedKey => $sortedEvent) {
+        foreach (array_keys($tempResourceEvents) as $sortedKey) {
             $keyTrans = $this->translator->trans($sortedKey, [], 'resource');
 
             foreach ($genericResourceEvents as $genericEvent) {

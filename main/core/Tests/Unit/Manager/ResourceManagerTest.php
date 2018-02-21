@@ -420,7 +420,6 @@ class ResourceManagerTest extends MockeryTestCase
         $descendant = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $parent = new Directory();
         $node->shouldReceive('getParent')->andReturn($parent);
-        $resource = new Directory();
         $dirType = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceType');
         $node->shouldReceive('getResourceType')->andReturn($dirType);
         $dirType->shouldReceive('getName')->andReturn('directory');

@@ -169,15 +169,6 @@ class RightsManagerTest extends MockeryTestCase
         $original = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $resource = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $role = new Role();
-
-        $perms = [
-            'copy' => true,
-            'open' => false,
-            'delete' => true,
-            'edit' => false,
-            'export' => true,
-        ];
-
         $this->rightsRepo
             ->shouldReceive('findBy')
             ->once()

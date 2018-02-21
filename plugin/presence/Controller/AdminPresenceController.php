@@ -413,7 +413,6 @@ class AdminPresenceController extends Controller
                     $end->modify('next '.$oneDay); //dernier jour du mois
                     $period = new \DatePeriod($begin, $interval, $end);
                     foreach ($period as $date) {
-                        $dateFormat = $date->format('Y-m-d');
                         $dayNameFormat = $date->format('l');
 
                         $actualPeriod = new Period();

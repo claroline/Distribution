@@ -88,12 +88,6 @@ class ResourceController extends FOSRestController
         $collection = new ResourceCollection([$parent]);
         $collection->setAttributes(['type' => $resourceType]);
 
-        if (!$this->authorization->isGranted('CREATE', $collection)) {
-            $errors = $collection->getErrors();
-            //gotta think about error handling later
-        }
-        //end of oauth not working
-
         //maybe init this from the form. I don't know. It could be removed imo.
         $isPublished = true;
         $nodes = [];
