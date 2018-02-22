@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: panos
- * Date: 9/12/17
- * Time: 3:30 PM.
- */
 
 namespace Claroline\CoreBundle\Library\Installation\Updater;
 
