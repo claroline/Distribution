@@ -2,15 +2,18 @@
 
 namespace Claroline\AppBundle\API\Transfer\Adapter\Explain\Csv;
 
+use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Symfony\Component\Translation\TranslatorInterface;
 
 class ExplanationBuilder
 {
     private $translator;
+    private $mode;
 
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, $mode = 'default')
     {
         $this->translator = $translator;
+        $this->mode = $mode;
     }
 
     private function explainObject($data, $explanation, $currentPath, $isArray = false)
@@ -29,7 +32,11 @@ class ExplanationBuilder
             }
 
             if (!in_array($property->type, ['array', 'object'])) {
-                $required = isset($data->required) ? in_array($name, $data->required) : false;
+                if (AbstractAction::MODE_CREATE === $this->mode) {
+                    $required = isset($data->requiredAtCreation) ? in_array($name, $data->requiredAtCreation) : false;
+                } else {
+                    $required = isset($data->required) ? in_array($name, $data->required) : false;
+                }
                 $explanation->addProperty(
                   $whereAmI,
                   $property->type,
@@ -98,6 +105,8 @@ class ExplanationBuilder
                         $prop.'.'.$property,
                         $data->type,
                         $this->translator->trans($this->getDescription($data), [], 'schema'),
+                        false,
+                        false,
                         false,
                         true
                     )]);

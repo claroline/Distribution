@@ -66,6 +66,11 @@ class Create extends AbstractAction
         return 100;
     }
 
+    public function getMode()
+    {
+        return self::MODE_CREATE;
+    }
+
     public function clear(ObjectManager $om)
     {
     }
