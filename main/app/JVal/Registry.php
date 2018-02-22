@@ -9,11 +9,53 @@
 
 namespace Claroline\AppBundle\JVal;
 
+use JVal\Exception\UnsupportedVersionException;
 use JVal\Registry as JValRegistry;
 
 /**
- * JSON Schema validation entry point.
+ * Stores and exposes validation constraints per version.
  */
 class Registry extends JValRegistry
 {
+    public function __construct(array $constraints, array $options)
+    {
+        $this->constraints = $constraints;
+        $this->options = $options;
+    }
+
+    /**
+     * Loads the constraints associated with a given JSON Schema version.
+     *
+     * @param string $version
+     *
+     * @return Constraint[]
+     *
+     * @throws UnsupportedVersionException if the version is not supported
+     */
+    protected function createConstraints($version)
+    {
+        switch ($version) {
+            case self::VERSION_CURRENT:
+            case self::VERSION_DRAFT_4:
+                return array_merge($this->createBuiltInConstraints(
+                    array_merge(
+                        self::$commonConstraints,
+                        self::$draft4Constraints
+                    )
+                ), $this->constraints);
+            default:
+                throw new UnsupportedVersionException(
+                    "Schema version '{$version}' not supported"
+                );
+        }
+    }
+
+    private function createBuiltInConstraints(array $constraintNames)
+    {
+        return array_map(function ($name) {
+            $class = "JVal\\Constraint\\{$name}Constraint";
+
+            return new $class();
+        }, $constraintNames);
+    }
 }
