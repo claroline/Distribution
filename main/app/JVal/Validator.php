@@ -12,15 +12,14 @@ namespace Claroline\AppBundle\JVal;
 use Claroline\AppBundle\JVal\Constraint\RequiredAtCreation;
 use Claroline\AppBundle\JVal\Constraint\RequiredAtUpdate;
 use Closure;
-use JVal\Registry;
+use JVal\Context;
 use JVal\Resolver;
-use JVal\Validator as JValValidator;
-use JVal\Walker;
+use JVal\Uri;
 
 /**
  * JSON Schema validation entry point.
  */
-class Validator extends JValValidator
+class Validator
 {
     /**
      * @var Walker
@@ -62,6 +61,16 @@ class Validator extends JValValidator
     }
 
     /**
+     * Constructor.
+     *
+     * @param Walker $walker
+     */
+    public function __construct(Walker $walker)
+    {
+        $this->walker = $walker;
+    }
+
+    /**
      * Validates an instance against a given schema and returns a list
      * of violations, if any. If the schema contains relative remote
      * references, its (absolute) URI must be passed as argument.
@@ -73,7 +82,7 @@ class Validator extends JValValidator
      *
      * @return array
      */
-    public function validate($instance, stdClass $schema, $schemaUri = '', array $options = [])
+    public function validate($instance, \stdClass $schema, $schemaUri = '', array $options = [])
     {
         $parseContext = new Context();
         $constraintContext = new Context();

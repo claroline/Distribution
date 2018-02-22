@@ -2,10 +2,10 @@
 
 namespace Claroline\AppBundle\API;
 
+use Claroline\AppBundle\JVal\Validator;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
-use JVal\Validator;
 
 /**
  * @DI\Service("claroline.api.validator")
@@ -106,7 +106,7 @@ class ValidatorProvider
         //schema isn't always there yet
         if ($schema) {
             $validator = Validator::buildDefault();
-            $errors = $validator->validate($this->toObject($data), $schema/*, 3rd param for uri resolution*/);
+            $errors = $validator->validate($this->toObject($data), $schema, '', [$mode]);
 
             if (!empty($errors) && $throwException) {
                 throw new InvalidDataException(

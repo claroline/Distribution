@@ -7,7 +7,7 @@
  * file that was distributed with this source code.
  */
 
-namespace JVal\Constraint;
+namespace Claroline\AppBundle\JVal\Constraint;
 
 use JVal\Constraint;
 use JVal\Context;
@@ -21,7 +21,7 @@ use stdClass;
 /**
  * Constraint for the "required" keyword.
  */
-class RequiredConstraint implements Constraint
+class RequiredAtUpdate implements Constraint
 {
     /**
      * {@inheritdoc}
@@ -42,19 +42,19 @@ class RequiredConstraint implements Constraint
     /**
      * {@inheritdoc}
      */
-    public function normalize(stdClass $schema, Context $context, Walker $walker, array $options = [])
+    public function normalize(stdClass $schema, Context $context, Walker $walker)
     {
         $context->enterNode('requiredAtUpdate');
 
-        if (!is_array($schema->required)) {
+        if (!is_array($schema->requiredAtUpdate)) {
             throw new InvalidTypeException($context, Types::TYPE_ARRAY);
         }
 
-        if (0 === $requiredCount = count($schema->required)) {
+        if (0 === $requiredCount = count($schema->requiredAtUpdate)) {
             throw new EmptyArrayException($context);
         }
 
-        foreach ($schema->required as $index => $property) {
+        foreach ($schema->requiredAtUpdate as $index => $property) {
             if (!is_string($property)) {
                 $context->enterNode($index);
 
@@ -62,7 +62,7 @@ class RequiredConstraint implements Constraint
             }
         }
 
-        if ($requiredCount !== count(array_unique($schema->required))) {
+        if ($requiredCount !== count(array_unique($schema->requiredAtUpdate))) {
             throw new NotUniqueException($context);
         }
 
@@ -72,12 +72,13 @@ class RequiredConstraint implements Constraint
     /**
      * {@inheritdoc}
      */
-    public function apply($instance, stdClass $schema, Context $context, Walker $walker)
+    public function apply($instance, stdClass $schema, Context $context, Walker $walker, array $options = [])
     {
-        foreach ($schema->required as $property) {
+        /*
+        foreach ($schema->requiredAtUpdate as $property) {
             if (!property_exists($instance, $property)) {
                 $context->addViolation('property "%s" is missing', [$property]);
             }
-        }
+        }*/
     }
 }

@@ -17,10 +17,39 @@ use JVal\Registry as JValRegistry;
  */
 class Registry extends JValRegistry
 {
-    public function __construct(array $constraints, array $options)
+    private static $commonConstraints = [
+        'Maximum',
+        'Minimum',
+        'MaxLength',
+        'MinLength',
+        'Pattern',
+        'Items',
+        'MaxItems',
+        'MinItems',
+        'UniqueItems',
+        'Required',
+        'Properties',
+        'Dependencies',
+        'Enum',
+        'Type',
+        'Format',
+    ];
+
+    private static $draft4Constraints = [
+        'MultipleOf',
+        'MinProperties',
+        'MaxProperties',
+        'AllOf',
+        'AnyOf',
+        'OneOf',
+        'Not',
+    ];
+
+    private $customConstraints;
+
+    public function __construct(array $constraints = [])
     {
-        $this->constraints = $constraints;
-        $this->options = $options;
+        $this->customConstraints = $constraints;
     }
 
     /**
@@ -42,7 +71,7 @@ class Registry extends JValRegistry
                         self::$commonConstraints,
                         self::$draft4Constraints
                     )
-                ), $this->constraints);
+                ), $this->customConstraints);
             default:
                 throw new UnsupportedVersionException(
                     "Schema version '{$version}' not supported"

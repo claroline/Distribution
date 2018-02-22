@@ -43,5 +43,7 @@
       }
     }
   },
+  "requiredAtCreation": ["email", "firstName", "lastName", "username", "plainPassword"],
+  "requiredAtUpdate": ["id", "email", "username"],
   "claroIds": ["id", "email", "username"]
 }
