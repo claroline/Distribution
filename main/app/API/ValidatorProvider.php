@@ -178,8 +178,9 @@ class ValidatorProvider
                ->setParameter($entityProp, $data[$dataProp]);
 
                 if (self::UPDATE === $mode) {
-                    $qb->setParameter('uuid', $data['id'])
-                   ->andWhere('o.uuid != :uuid');
+                    $parameter = is_numeric($data['id']) ? 'id' : 'uuid';
+                    $value = is_numeric($data['id']) ? (int) $data['id'] : $data['id'];
+                    $qb->setParameter($parameter, $value)->andWhere("o.{$parameter} != :{$parameter}");
                 }
 
                 $objects = $qb->getQuery()->getResult();

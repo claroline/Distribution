@@ -76,8 +76,12 @@ class ClarolineConstraint implements Constraint
      */
     public function apply($instance, stdClass $schema, Context $context, Walker $walker, array $options = [])
     {
-        if (isset($schema->claroline) && isset($schema->claroline->requiredAtCreation)) {
-            $this->applyRequired($instance, $schema->claroline, $context, $walker, $options);
+        if (isset($schema->claroline)) {
+            if (isset($schema->claroline->requiredAtCreation) && in_array('create', $options)) {
+                $this->applyRequired($instance, $schema->claroline, $context, $walker, $options);
+            }
+            if (isset($schema->claroline->ids) && in_array('update', $options)) {
+            }
         }
     }
 
