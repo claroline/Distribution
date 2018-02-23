@@ -12,5 +12,7 @@
       "minLength": 1
     }
   },
-  "claroIds": ["id", "name"]
+  "claroline": {
+    "ids":  ["id", "name"]
+  }
 }

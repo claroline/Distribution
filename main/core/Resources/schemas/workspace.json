@@ -149,6 +149,8 @@
       }
     }
   },
-  "claroIds": ["id", "code"],
+  "claroline": {
+    "ids": ["id", "code"]
+  },
   "required": ["code"]
 }

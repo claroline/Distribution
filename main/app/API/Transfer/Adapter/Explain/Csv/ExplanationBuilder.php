@@ -33,7 +33,7 @@ class ExplanationBuilder
 
             if (!in_array($property->type, ['array', 'object'])) {
                 if (AbstractAction::MODE_CREATE === $this->mode) {
-                    $required = isset($data->requiredAtCreation) ? in_array($name, $data->requiredAtCreation) : false;
+                    $required = isset($data->claroline) && isset($data->claroline->requiredAtCreation) ? in_array($name, $data->claroline->requiredAtCreation) : false;
                 } else {
                     $required = isset($data->required) ? in_array($name, $data->required) : false;
                 }
@@ -95,7 +95,11 @@ class ExplanationBuilder
         $explanation = new Explanation();
 
         foreach ($schemas as $prop => $schema) {
-            $identifiers = $schema->claroIds;
+            if (isset($schema->claroline)) {
+                $identifiers = $schema->claroline->ids;
+            } else {
+                $identifiers = [];
+            }
 
             if (isset($schema->type) && 'object' === $schema->type) {
                 $oneOfs = [];

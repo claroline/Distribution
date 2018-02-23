@@ -21,14 +21,14 @@ use stdClass;
 /**
  * Constraint for the "required" keyword.
  */
-class RequiredAtCreation implements Constraint
+class ClarolineConstraint implements Constraint
 {
     /**
      * {@inheritdoc}
      */
     public function keywords()
     {
-        return ['requiredAtCreation'];
+        return ['claroline'];
     }
 
     /**
@@ -44,26 +44,28 @@ class RequiredAtCreation implements Constraint
      */
     public function normalize(stdClass $schema, Context $context, Walker $walker)
     {
-        $context->enterNode('requiredAtCreation');
+        $context->enterNode('claroline');
 
-        if (!is_array($schema->requiredAtCreation)) {
-            throw new InvalidTypeException($context, Types::TYPE_ARRAY);
-        }
-
-        if (0 === $requiredCount = count($schema->requiredAtCreation)) {
-            throw new EmptyArrayException($context);
-        }
-
-        foreach ($schema->requiredAtCreation as $index => $property) {
-            if (!is_string($property)) {
-                $context->enterNode($index);
-
-                throw new InvalidTypeException($context, Types::TYPE_STRING);
+        if (isset($schema->requiredAtCreation)) {
+            if (!is_array($schema->requiredAtCreation)) {
+                throw new InvalidTypeException($context, Types::TYPE_ARRAY);
             }
-        }
 
-        if ($requiredCount !== count(array_unique($schema->requiredAtCreation))) {
-            throw new NotUniqueException($context);
+            if (0 === $requiredCount = count($schema->requiredAtCreation)) {
+                throw new EmptyArrayException($context);
+            }
+
+            foreach ($schema->requiredAtCreation as $index => $property) {
+                if (!is_string($property)) {
+                    $context->enterNode($index);
+
+                    throw new InvalidTypeException($context, Types::TYPE_STRING);
+                }
+            }
+
+            if ($requiredCount !== count(array_unique($schema->requiredAtCreation))) {
+                throw new NotUniqueException($context);
+            }
         }
 
         $context->leaveNode();
@@ -73,6 +75,13 @@ class RequiredAtCreation implements Constraint
      * {@inheritdoc}
      */
     public function apply($instance, stdClass $schema, Context $context, Walker $walker, array $options = [])
+    {
+        if (isset($schema->claroline) && isset($schema->claroline->requiredAtCreation)) {
+            $this->applyRequired($instance, $schema->claroline, $context, $walker, $options);
+        }
+    }
+
+    private function applyRequired($instance, stdClass $schema, Context $context, Walker $walker, array $options = [])
     {
         foreach ($schema->requiredAtCreation as $property) {
             if (in_array('create', $options) && !property_exists($instance, $property)) {
