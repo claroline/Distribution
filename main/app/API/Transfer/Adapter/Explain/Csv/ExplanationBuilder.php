@@ -101,6 +101,8 @@ class ExplanationBuilder
                 $identifiers = [];
             }
 
+            $explanation->setIdentifiers($identifiers);
+
             if (isset($schema->type) && 'object' === $schema->type) {
                 $oneOfs = [];
                 foreach ($identifiers as $property) {
