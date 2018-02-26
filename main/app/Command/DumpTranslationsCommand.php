@@ -74,7 +74,6 @@ class DumpTranslationsCommand extends ContainerAwareCommand
 
     private function buildTranslations($translation, array $builtTranslations)
     {
-        $translationDir = $this->getContainer()->getParameter('kernel.root_dir').'/../web/js/translations';
         $file = pathinfo($translation, PATHINFO_BASENAME);
         //we need to concatenate translations here
         if (isset($builtTranslations[$file])) {
