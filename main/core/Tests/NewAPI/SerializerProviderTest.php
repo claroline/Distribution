@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\Tests\NewAPI;
 
-use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\Corebundle\API\ValidatorProvider;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\ValidatorProvider;
 use Claroline\CoreBundle\Library\Testing\TransactionalTestCase;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 
@@ -61,9 +61,14 @@ class SerializerProviderTest extends TransactionalTestCase
                     $object = $this->provider->deserialize($class, json_decode($data, true));
                     //can we serialize it ?
                     $data = $this->provider->serialize($object);
+
+                    if ('Claroline\CoreBundle\Entity\User' === $class) {
+                        $data['plainPassword'] = '123';
+                    }
                     //is the result... valid ?
                     $errors = $this->validator->validate($class, $data, ValidatorProvider::CREATE);
-                    $this->assertTrue(count($errors) === 0/*, print_r([$this->validator->toObject($data), $errors], true)*/);
+
+                    $this->assertTrue(0 === count($errors));
                 }
             }
         } else {

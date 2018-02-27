@@ -48,6 +48,21 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $this->platformConfigHandler = $platformConfigHandler;
     }
 
+    public function findOneBy(array $criteria = null, array $orderBy = null)
+    {
+        $trueFilter = [];
+
+        foreach ($criteria as $prop => $value) {
+            if ('email' === $prop) {
+                $trueFilter['email'] = $value;
+            } else {
+                $trueFilter[$prop] = $value;
+            }
+        }
+
+        return parent::findOneBy($trueFilter, $orderBy);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -58,7 +73,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $dql = '
             SELECT u FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username LIKE :username
-            OR u.mail LIKE :username
+            OR u.email LIKE :username
         ';
 
         if ($isUserAdminCodeUnique) {
@@ -167,7 +182,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             OR UPPER(u.firstName) LIKE :search
             OR UPPER(u.username) LIKE :search
             OR UPPER(u.administrativeCode) LIKE :search
-            OR UPPER(u.mail) LIKE :search
+            OR UPPER(u.email) LIKE :search
             OR CONCAT(UPPER(u.firstName), CONCAT(' ', UPPER(u.lastName))) LIKE :search
             OR CONCAT(UPPER(u.lastName), CONCAT(' ', UPPER(u.firstName))) LIKE :search
             )
@@ -726,7 +741,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                     UPPER(u1.last_name) LIKE :search
                     OR UPPER(u1.first_name) LIKE :search
                     OR UPPER(u1.username) LIKE :search
-                    OR UPPER (u1.mail) LIKE :search
+                    OR UPPER (u1.email) LIKE :search
                   )
                   UNION
                   SELECT u2.id AS id FROM claro_user u2
@@ -739,7 +754,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
                     UPPER(u2.last_name) LIKE :search
                     OR UPPER(u2.first_name) LIKE :search
                     OR UPPER(u2.username) LIKE :search
-                    OR UPPER (u2.mail) LIKE :search
+                    OR UPPER (u2.email) LIKE :search
                   )
                   ) u
                 ';
@@ -806,7 +821,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             SELECT u
             FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username = :username
-            OR u.mail = :email
+            OR u.email = :email
             AND u.isRemoved = false
         ';
 
@@ -846,7 +861,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function extract($params)
     {
         $search = $params['search'];
-        if ($search !== null) {
+        if (null !== $search) {
             $query = $this->findByName($search, false);
 
             return $query
@@ -868,7 +883,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
     public function findEmails()
     {
-        $dql = "SELECT u.mail as mail FROM Claroline\CoreBundle\Entity\User u";
+        $dql = "SELECT u.email as email FROM Claroline\CoreBundle\Entity\User u";
         $query = $this->_em->createQuery($dql);
 
         return $query->getResult();
@@ -1228,18 +1243,18 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $executeQuery ? $query->getOneOrNullResult() : $query;
     }
 
-    public function findUserByUsernameOrMail($username, $mail, $executeQuery = true)
+    public function findUserByUsernameOrMail($username, $email, $executeQuery = true)
     {
         $dql = '
             SELECT u
             FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username = :username
-            OR u.mail = :mail
+            OR u.email = :email
         ';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('username', $username);
-        $query->setParameter('mail', $mail);
+        $query->setParameter('email', $email);
 
         return $executeQuery ? $query->getOneOrNullResult() : $query;
     }
@@ -1250,7 +1265,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             SELECT u
             FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username IN (:usernames)
-            OR u.mail IN (:mails)
+            OR u.email IN (:mails)
         ';
 
         $query = $this->_em->createQuery($dql);
@@ -1260,36 +1275,36 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         return $executeQuery ? $query->getResult() : $query;
     }
 
-    public function findUserByUsernameOrMailOrCode($username, $mail, $code)
+    public function findUserByUsernameOrMailOrCode($username, $email, $code)
     {
         $dql = '
             SELECT u
             FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username = :username
-            OR u.mail = :mail
+            OR u.email = :email
             OR u.administrativeCode = :code
         ';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('username', $username);
-        $query->setParameter('mail', $mail);
+        $query->setParameter('email', $email);
         $query->setParameter('code', $code);
 
         return $query->getOneOrNullResult();
     }
 
-    public function findUserByUsernameAndMail($username, $mail, $executeQuery = true)
+    public function findUserByUsernameAndMail($username, $email, $executeQuery = true)
     {
         $dql = '
             SELECT u
             FROM Claroline\CoreBundle\Entity\User u
             WHERE u.username = :username
-            AND u.mail = :mail
+            AND u.email = :email
         ';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('username', $username);
-        $query->setParameter('mail', $mail);
+        $query->setParameter('email', $email);
 
         return $executeQuery ? $query->getOneOrNullResult() : $query;
     }
@@ -1506,7 +1521,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
             if ($withMail) {
                 $dql .= '
-                    OR UPPER(u.mail) LIKE :search
+                    OR UPPER(u.email) LIKE :search
                 ';
             }
 
@@ -1569,7 +1584,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
         $dql = 'SELECT u FROM Claroline\CoreBundle\Entity\User u
             WHERE u.id = :data
             OR u.username LIKE :data
-            OR u.mail LIKE :data';
+            OR u.email LIKE :data';
 
         $query = $this->_em->createQuery($dql);
         $query->setParameter('data', $data);
@@ -1587,7 +1602,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function findAllUserBySearch($search)
     {
         $upperSearch = strtoupper(trim($search));
-        if ($search !== '') {
+        if ('' !== $search) {
             $dql = '
                 SELECT u
                 FROM Claroline\CoreBundle\Entity\User u
@@ -1633,6 +1648,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
         return $executeQuery ? $query->getResult() : $query;
     }
+
     /**
      * Returns the users who are not members of a group and whose first name, last
      * name or username match a given search string.
@@ -1670,6 +1686,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 
         return $executeQuery ? $query->getResult() : $query;
     }
+
     /**
      * Returns all the users except a given one.
      *

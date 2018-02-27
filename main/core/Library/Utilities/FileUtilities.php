@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Library\Utilities;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\File\PublicFileUse;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFileSystem;
 use Symfony\Component\Finder\Finder;
@@ -105,7 +105,7 @@ class FileUtilities
         $publicFile->setUrl($url);
         $publicFile->setSourceType($sourceType);
 
-        if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser() !== 'anon.') {
+        if ($this->tokenStorage->getToken() && $user = 'anon.' !== $this->tokenStorage->getToken()->getUser()) {
             $user = $this->tokenStorage->getToken()->getUser();
             $publicFile->setCreator($user);
         }
@@ -171,7 +171,7 @@ class FileUtilities
         $publicFile->setUrl($url);
         $publicFile->setSourceType($sourceType);
 
-        if ($this->tokenStorage->getToken() && $user = $this->tokenStorage->getToken()->getUser() !== 'anon.') {
+        if ($this->tokenStorage->getToken() && $user = 'anon.' !== $this->tokenStorage->getToken()->getUser()) {
             $user = $this->tokenStorage->getToken()->getUser();
             $publicFile->setCreator($user);
         }
@@ -220,7 +220,7 @@ class FileUtilities
         $finder->depth('== 0');
         $finder->directories()->in($this->publicFilesDir)->name('/^[a-zA-Z]{20}$/');
         $finder->sortByName();
-        if ($finder->count() === 0) {
+        if (0 === $finder->count()) {
             $activeDirectoryName = $this->generateNextDirectoryName();
         } else {
             $i = 0;
@@ -254,7 +254,7 @@ class FileUtilities
     {
         if (is_null($name)) {
             $next = 'aaaaaaaaaaaaaaaaaaaa';
-        } elseif (strtolower($name) === 'zzzzzzzzzzzzzzzzzzzz') {
+        } elseif ('zzzzzzzzzzzzzzzzzzzz' === strtolower($name)) {
             $next = $name;
         } else {
             $next = ++$name;
@@ -266,6 +266,11 @@ class FileUtilities
         }
 
         return $next;
+    }
+
+    public function getOneBy($filters)
+    {
+        return $this->om->getRepository('ClarolineCoreBundle:File\PublicFile')->findOneBy($filters);
     }
 
     public function getPublicFileByType($type)

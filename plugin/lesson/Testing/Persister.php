@@ -2,12 +2,12 @@
 
 namespace Icap\Lessonbundle\Testing;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Icap\LessonBundle\Entity\Chapter;
 use Icap\LessonBundle\Entity\Lesson;
 
@@ -32,7 +32,7 @@ class Persister
         $user->setLastName($username);
         $user->setUsername($username);
         $user->setPassword($username);
-        $user->setMail($username.'@mail.com');
+        $user->setEmail($username.'@email.com');
         $this->om->persist($user);
         if (!$this->userRole) {
             $this->userRole = new Role();

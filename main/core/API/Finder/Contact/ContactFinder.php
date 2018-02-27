@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\API\Finder\Contact;
 
-use Claroline\CoreBundle\API\FinderInterface;
+use Claroline\AppBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -73,14 +73,14 @@ class ContactFinder implements FinderInterface
                     $qb->setParameter($shortFilterName, '%'.strtoupper($filterValue).'%');
                     break;
                 case 'data.email':
-                    $qb->andWhere('UPPER(c.mail) LIKE :mail');
-                    $qb->setParameter('mail', '%'.strtoupper($filterValue).'%');
+                    $qb->andWhere('UPPER(c.email) LIKE :email');
+                    $qb->setParameter('email', '%'.strtoupper($filterValue).'%');
                     break;
             }
         }
         if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
             $sortByProperty = $sortBy['property'];
-            $sortByDirection = $sortBy['direction'] === 1 ? 'ASC' : 'DESC';
+            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
 
             switch ($sortByProperty) {
                 case 'data.username':
@@ -91,7 +91,7 @@ class ContactFinder implements FinderInterface
                     $qb->orderBy("c.{$shortProperty}", $sortByDirection);
                     break;
                 case 'data.email':
-                    $qb->orderBy('c.mail', $sortByDirection);
+                    $qb->orderBy('c.email', $sortByDirection);
                     break;
             }
         }

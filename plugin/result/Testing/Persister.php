@@ -11,12 +11,12 @@
 
 namespace Claroline\ResultBundle\Testing;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Testing\Persister as ClarolinePersister;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use Claroline\ResultBundle\Entity\Mark;
 use Claroline\ResultBundle\Entity\Result;
 
@@ -39,7 +39,7 @@ class Persister extends ClarolinePersister
         $user->setLastName($username);
         $user->setUsername($username);
         $user->setPassword($username);
-        $user->setMail($username.'@mail.com');
+        $user->setEmail($username.'@email.com');
         $user->setPublicUrl($username);
         $user->setIsMailValidated(true);
         $this->om->persist($user);

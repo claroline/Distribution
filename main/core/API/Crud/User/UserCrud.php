@@ -2,11 +2,11 @@
 
 namespace Claroline\CoreBundle\API\Crud\User;
 
-use Claroline\CoreBundle\API\Options;
+use Claroline\AppBundle\API\Options;
+use Claroline\AppBundle\Event\Crud\CreateEvent;
+use Claroline\AppBundle\Event\Crud\DeleteEvent;
+use Claroline\AppBundle\Event\Crud\UpdateEvent;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\Crud\CreateEvent;
-use Claroline\CoreBundle\Event\Crud\DeleteEvent;
-use Claroline\CoreBundle\Event\Crud\UpdateEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformDefaults;
 use Claroline\CoreBundle\Security\PlatformRoles;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -73,12 +73,12 @@ class UserCrud
         if ($this->mailManager->isMailerAvailable() && in_array(Options::SEND_EMAIL, $options)) {
             //send a validation by hash
             $mailValidation = $this->config->getParameter('registration_mail_validation');
-            if ($mailValidation === PlatformDefaults::REGISTRATION_MAIL_VALIDATION_FULL) {
+            if (PlatformDefaults::REGISTRATION_MAIL_VALIDATION_FULL === $mailValidation) {
                 $password = sha1(rand(1000, 10000).$user->getUsername().$user->getSalt());
                 $user->setResetPasswordHash($password);
                 $user->setIsEnabled(false);
                 $this->mailManager->sendEnableAccountMessage($user);
-            } elseif ($mailValidation === PlatformDefaults::REGISTRATION_MAIL_VALIDATION_PARTIAL) {
+            } elseif (PlatformDefaults::REGISTRATION_MAIL_VALIDATION_PARTIAL === $mailValidation) {
                 //don't change anything
                 $this->mailManager->sendCreationMessage($user);
             }
@@ -96,6 +96,16 @@ class UserCrud
         if (in_array(Options::ADD_PERSONAL_WORKSPACE, $options)) {
             $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
         }
+
+        if (null === $user->getMainOrganization()) {
+            //we want a min organization
+            if (isset($user->getOrganizations()[0])) {
+                $user->setMainOrganization($user->getOrganizations()[0]);
+            } else {
+                $user->setMainOrganization($this->container->get('claroline.manager.organization.organization_manager')->getDefault());
+            }
+        }
+
         //we need this line for the log system
         //dispatch some events but they should be listening the same as we are imo.
         //something should be done for event listeners
@@ -117,7 +127,7 @@ class UserCrud
 
         //soft delete~
         $user->setIsRemoved(true);
-        $user->setMail('mail#'.$user->getId());
+        $user->setEmail('email#'.$user->getId());
         $user->setFirstName('firstname#'.$user->getId());
         $user->setLastName('lastname#'.$user->getId());
         $user->setPlainPassword(uniqid());

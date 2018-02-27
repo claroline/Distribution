@@ -11,9 +11,9 @@
 
 namespace Claroline\CoreBundle\Validator\Constraints;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraint;
@@ -54,8 +54,8 @@ class UsernameValidator extends ConstraintValidator
             $this->context->addViolation($constraint->error);
         }
 
-        if ($username !== $user->getMail()) {
-            $user = $this->om->getRepository('ClarolineCoreBundle:User')->findOneByMail($username);
+        if ($username !== $user->getEmail()) {
+            $user = $this->om->getRepository('ClarolineCoreBundle:User')->findOneByEmail($username);
 
             if ($user) {
                 $this->context->addViolation($this->translator->trans('username_already_used', ['%username%' => $username], 'platform'));

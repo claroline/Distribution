@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Facet;
 
-use Claroline\CoreBundle\API\Options;
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
@@ -96,13 +96,7 @@ class FieldFacetValueSerializer
           $data['fieldFacet']
         );
 
-        $user = $this->container->get('claroline.api.serializer')->deserialize(
-            'Claroline\CoreBundle\Entity\User',
-            $data['user']
-        );
-
         $fieldFacetValue->setFieldFacet($fieldFacet);
-        $fieldFacetValue->setUser($user);
         $value = $data['value'];
 
         switch ($fieldFacet->getType()) {

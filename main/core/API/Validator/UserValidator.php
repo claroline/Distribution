@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\API\Validator;
 
-use Claroline\CoreBundle\API\ValidatorInterface;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\API\ValidatorInterface;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -49,7 +49,7 @@ class UserValidator implements ValidatorInterface
             ];
         }
 
-        if ($this->exists('mail', $data['email'], isset($data['id']) ? $data['id'] : null)) {
+        if ($this->exists('email', $data['email'], isset($data['id']) ? $data['id'] : null)) {
             $errors[] = [
                 'path' => 'email',
                 'message' => 'The email '.$data['email'].' already exists.',
@@ -76,9 +76,8 @@ class UserValidator implements ValidatorInterface
             ->setParameter('value', $propValue);
 
         if (isset($userId)) {
-            $qb
-                ->andWhere('user.uuid != :uuid')
-                ->setParameter('uuid', $userId);
+            $parameter = is_numeric($userId) ? 'id' : 'uuid';
+            $qb->andWhere("user.{$parameter} != :{$parameter}")->setParameter($parameter, $userId);
         }
 
         return 0 < $qb->getQuery()->getSingleScalarResult();
@@ -99,7 +98,7 @@ class UserValidator implements ValidatorInterface
     {
         return [
             'username' => 'username',
-            'email' => 'mail',
+            'email' => 'email',
         ];
     }
 }

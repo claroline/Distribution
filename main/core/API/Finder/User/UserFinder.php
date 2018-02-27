@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\API\Finder\User;
 
-use Claroline\CoreBundle\API\FinderInterface;
+use Claroline\AppBundle\API\FinderInterface;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -71,7 +71,8 @@ class UserFinder implements FinderInterface
         } elseif (!$this->authChecker->isGranted('ROLE_ADMIN')) {
             /** @var User $currentUser */
             $currentUser = $this->tokenStorage->getToken()->getUser();
-            $qb->leftJoin('obj.organizations', 'uo');
+            $qb->leftJoin('obj.userOrganizationReferences', 'oaref');
+            $qb->leftJoin('oaref.organization', 'uo');
             $qb->leftJoin('uo.administrators', 'ua');
             $qb->andWhere('ua.id = :userId');
             $qb->setParameter('userId', $currentUser->getId());
@@ -79,6 +80,10 @@ class UserFinder implements FinderInterface
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
+                case 'isDisabled':
+                    $qb->andWhere('obj.isEnabled = :isEnabled');
+                    $qb->setParameter('isEnabled', !$filterValue);
+                    break;
                 case 'hasPersonalWorkspace':
                     $qb->andWhere('obj.personalWorkspace IS NOT NULL');
                     break;
@@ -87,13 +92,19 @@ class UserFinder implements FinderInterface
                     $qb->andWhere('g.uuid IN (:groupIds)');
                     $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
+                case 'scheduledtask':
+                    $qb->leftJoin('obj.scheduledTasks', 'st');
+                    $qb->andWhere('st.id IN (:scheduledTasks)');
+                    $qb->setParameter('scheduledTasks', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
                 case 'role':
                     $qb->leftJoin('obj.roles', 'r');
                     $qb->andWhere('r.uuid IN (:roleIds)');
                     $qb->setParameter('roleIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
                 case 'organization':
-                    $qb->leftJoin('obj.organizations', 'o');
+                    $qb->leftJoin('obj.userOrganizationReferences', 'oref');
+                    $qb->leftJoin('oref.organization', 'o');
                     $qb->andWhere('o.uuid IN (:organizationIds)');
                     $qb->setParameter('organizationIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
@@ -126,6 +137,10 @@ class UserFinder implements FinderInterface
 
         if (!in_array('isRemoved', array_keys($searches))) {
             $qb->andWhere('obj.isRemoved = FALSE');
+        }
+
+        if (!empty($sortBy) && 'isDisabled' === $sortBy['property'] && 0 !== $sortBy['direction']) {
+            $qb->orderBy('obj.isEnabled ', 1 === $sortBy['direction'] ? 'ASC' : 'DESC');
         }
 
         return $qb;

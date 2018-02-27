@@ -11,7 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\User;
 
-use Claroline\CoreBundle\API\Options;
+use Claroline\AppBundle\API\Options;
 use Claroline\CoreBundle\API\Serializer\User\ProfileSerializer;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
@@ -112,6 +112,7 @@ class RegistrationController extends Controller
                 'redirectAfterLoginOption' => $this->configHandler->getParameter('redirect_after_login_option'),
                 'redirectAfterLoginUrl' => $this->configHandler->getParameter('redirect_after_login_url'),
                 'userNameRegex' => $this->configHandler->getParameter('username_regex'),
+                'forceOrganizationCreation' => $this->configHandler->getParameter('force_organization_creation'),
             ],
         ];
     }

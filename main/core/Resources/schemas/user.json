@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The user id"
+    },
+    "email": {
+      "type": "string",
+      "description": "The user email adress",
+      "minLength": 1
+    },
+    "firstName": {
+      "type": "string",
+      "description": "The user first name",
+      "minLength": 1
+    },
+    "lastName": {
+      "type": "string",
+      "description": "The user last name",
+      "minLength": 1
+    },
+    "username": {
+      "type": "string",
+      "description": "The user username",
+      "minLength": 1
+    },
+    "plainPassword": {
+      "type": "string",
+      "description": "The plain login password",
+      "minLength": 1
+    },
+    "groups": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "oneOf": [
+          {
+              "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schemas/group.json"
+          }
+        ]
+      }
+    }
+  },
+  "claroline": {
+    "requiredAtCreation": ["email", "firstName", "lastName", "username", "plainPassword"],
+    "ids": ["id", "email", "username"]
+  }
+}

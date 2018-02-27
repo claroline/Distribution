@@ -2,7 +2,7 @@
 
 namespace Claroline\DropZoneBundle\Serializer;
 
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\DropZoneBundle\Entity\Criterion;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -39,7 +39,7 @@ class CriterionSerializer
     {
         return [
             'id' => $criterion->getUuid(),
-            'instruction' => $criterion->getInstruction()
+            'instruction' => $criterion->getInstruction(),
         ];
     }
 

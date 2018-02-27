@@ -2,8 +2,8 @@
 
 namespace UJM\ExoBundle\Serializer;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Persistence\ObjectManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\AbstractSerializer;
@@ -50,7 +50,7 @@ class UserSerializer extends AbstractSerializer
         $userData->name = trim($user->getFirstName().' '.$user->getLastName());
 
         if (!$this->hasOption(Transfer::MINIMAL, $options)) {
-            $userData->email = $user->getMail();
+            $userData->email = $user->getEmail();
         }
 
         return $userData;

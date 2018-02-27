@@ -11,9 +11,10 @@
 
 namespace Claroline\CoreBundle\DataFixtures\Required\Data;
 
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\DataFixtures\Required\RequiredFixture;
 use Claroline\CoreBundle\Library\Installation\Updater\Updater100000;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Library\Installation\Updater\Updater110000;
 
 class CreatePublicFilesData implements RequiredFixture
 {
@@ -42,5 +43,9 @@ class CreatePublicFilesData implements RequiredFixture
         //when everything concerning files is done properly, these lines should be removed
         $updater = new Updater100000($this->container);
         $updater->moveUploadsDirectory();
+
+        $updater = new Updater110000($this->container);
+        $updater->lnPictureDirectory($this->container);
+        $updater->lnPackageDirectory($this->container);
     }
 }

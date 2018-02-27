@@ -8,7 +8,7 @@
 
 namespace Icap\BibliographyBundle\API\Serializer;
 
-use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\SerializerProvider;
 use Icap\BibliographyBundle\Entity\BookReference;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -35,11 +35,6 @@ class BookReferenceSerializer
     public function getClass()
     {
         return 'Icap\BibliographyBundle\Entity\BookReference';
-    }
-
-    public function getIdentifiers()
-    {
-        return ['id'];
     }
 
     /**

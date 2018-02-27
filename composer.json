@@ -72,7 +72,6 @@
         "innova/angular-js-bundle": "5.1.0",
         "innova/angular-ui-resource-picker-bundle": "6.0.0",
         "innova/angular-ui-tinymce-bundle": "5.1.1",
-        "claroline/front-end-bundle": "dev-7.x-test",
         "ocramius/proxy-manager": "1.0.2",
         "ramsey/uuid": "~3.5",
         "postal/postal": "*"
@@ -133,6 +132,7 @@
     "autoload": {
         "psr-4": {
             "Claroline\\CoreBundle\\": "main/core/",
+            "Claroline\\AppBundle\\": "main/app/",
             "Claroline\\BundleRecorder\\": "main/recorder/",
             "Claroline\\InstallationBundle\\": "main/installation/",
             "Claroline\\MigrationBundle\\": "main/migration/",
@@ -201,6 +201,7 @@
             "Claroline\\MigrationBundle\\ClarolineMigrationBundle",
             "Claroline\\KernelBundle\\ClarolineKernelBundle",
             "Claroline\\CoreBundle\\ClarolineCoreBundle",
+            "Claroline\\AppBundle\\ClarolineAppBundle",
             "Claroline\\AgendaBundle\\ClarolineAgendaBundle",
             "FormaLibre\\ReservationBundle\\FormaLibreReservationBundle",
             "Claroline\\ImagePlayerBundle\\ClarolineImagePlayerBundle",
