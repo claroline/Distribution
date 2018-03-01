@@ -2,7 +2,7 @@
 
 namespace Claroline\CoreBundle\API\Finder;
 
-use Claroline\CoreBundle\API\FinderInterface;
+use Claroline\AppBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -12,13 +12,12 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class LogFinder implements FinderInterface
 {
-
     /**
      * The queried object is already named "obj".
      *
      * @param QueryBuilder $qb
-     * @param array $searches
-     * @param array|null $sortBy
+     * @param array        $searches
+     * @param array|null   $sortBy
      *
      * @return QueryBuilder
      */

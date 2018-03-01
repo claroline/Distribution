@@ -11,15 +11,14 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Tool\Workspace;
 
-use Claroline\CoreBundle\API\FinderProvider;
-use Claroline\CoreBundle\API\SerializerProvider;
-use Claroline\CoreBundle\Controller\APINew\AbstractApiController;
+use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\LogManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -28,27 +27,45 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * @Route("/tools/workspace/{workspaceId}/logs", name="workspace_tool_logs", requirements={"workspaceId"="\d+"})
  */
-class LogController extends AbstractApiController
+class LogController
 {
     /** @var AuthorizationCheckerInterface */
     private $authorizationChecker;
 
-    /** @var  FinderProvider */
+    /** @var FinderProvider */
     private $finder;
 
-    /** @var  SerializerProvider */
+    /** @var SerializerProvider */
     private $serializer;
 
     /** @var LogManager */
     private $logManager;
 
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-        $this->authorizationChecker = $container->get('security.authorization_checker');
-        $this->finder = $container->get('claroline.api.finder');
-        $this->serializer = $container->get('claroline.api.serializer');
-        $this->logManager = $container->get('claroline.log.manager');
+    /**
+     * @DI\InjectParams({
+     *     "authorizationChecker"   = @DI\Inject("security.authorization_checker"),
+     *     "finder"                 = @DI\Inject("claroline.api.finder"),
+     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
+     *     "logManager"             = @DI\Inject("claroline.log.manager")
+     * })
+     *
+     * LogController constructor.
+     *
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     * @param FinderProvider                $finder
+     * @param SerializerProvider            $serializer
+     * @param LogManager                    $logManager
+     */
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        FinderProvider $finder,
+        SerializerProvider $serializer,
+        LogManager $logManager
+    ) {
+        $this->authorizationChecker = $authorizationChecker;
+        $this->finder = $finder;
+        $this->serializer = $serializer;
+        $this->logManager = $logManager;
     }
 
     /**
@@ -62,8 +79,9 @@ class LogController extends AbstractApiController
     }
 
     /**
-     * @param Request $request
+     * @param Request   $request
      * @param Workspace $workspace
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/", name="apiv2_workspace_tool_logs_list")
      * @Method("GET")
@@ -89,6 +107,7 @@ class LogController extends AbstractApiController
 
     /**
      * @param Workspace $workspace
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/{id}", name="apiv2_workspace_tool_logs_get", requirements={"id"="\d+"})
      * @Method("GET")
@@ -106,7 +125,8 @@ class LogController extends AbstractApiController
         return new JsonResponse($this->serializer->serialize($log, []));
     }
 
-    public function getClass() {
+    public function getClass()
+    {
         return 'Claroline\CoreBundle\Entity\Log\Log';
     }
 }

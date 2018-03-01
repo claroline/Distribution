@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import { implementPropTypes } from '#/main/core/scaffolding/prop-types'
+import {Chart as ChartTypes} from '#/main/core/layout/chart/prop-types'
 import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
 import {DataSeries} from '#/main/core/layout/chart/pie/components/data-series.jsx'
 
@@ -17,6 +19,10 @@ class CircularGauge extends Component {
       <Chart
         width={this.props.width}
         height={this.props.width}
+        margin={{
+          'top': radius,
+          'left': radius
+        }}
       >
         <g
           transform={`translate(${ this.props.width / 2 }, ${ this.props.width / 2 })`}
@@ -52,24 +58,21 @@ class CircularGauge extends Component {
   }
 }
 
-CircularGauge.propTypes = {
+implementPropTypes(CircularGauge, ChartTypes, {
   value: T.number,
   max: T.number.isRequired,
   color: T.string,
   label: T.string,
-  width: T.number,
   size: T.number,
   showValue: T.bool.isRequired
-}
-
-CircularGauge.defaultProps = {
+}, {
   value: 0,
   color: '#337ab7', // Default bootstrap primary color
   label: null,
   width: 200,
   size: 30,
   showValue: true
-}
+})
 
 export {
   CircularGauge
