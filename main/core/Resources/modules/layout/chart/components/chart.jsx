@@ -1,21 +1,18 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
+import { implementPropTypes } from '#/main/core/scaffolding/prop-types'
+import {Chart as ChartTypes} from '#/main/core/layout/chart/prop-types'
 
 const Chart = props =>
   <svg className="chart" width={props.width} height={props.height}>
-    {props.children}
+    <g transform={`translate(${props.margin.left}, ${props.margin.top})`}>
+      {props.children}
+    </g>
   </svg>
 
-Chart.propTypes = {
-  width: T.number,
-  height: T.number,
+implementPropTypes(Chart, ChartTypes, {
   children: T.node.isRequired
-}
-
-Chart.defaultProps = {
-  width: 400,
-  height: 400
-}
+})
 
 export {
   Chart

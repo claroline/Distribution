@@ -2,8 +2,8 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Log;
 
-use Claroline\CoreBundle\API\Serializer\SerializerTrait;
-use Claroline\CoreBundle\API\SerializerProvider;
+use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -73,7 +73,7 @@ class LogSerializer
         if (!is_null($log->getDoer())) {
             $doer = [
                 'id' => $log->getDoer()->getId(),
-                'name' => $details['doer']['firstName']." ".$details['doer']['lastName'],
+                'name' => $details['doer']['firstName'].' '.$details['doer']['lastName'],
             ];
         }
 
@@ -102,7 +102,6 @@ class LogSerializer
         $eventName = 'create_log_list_item_'.$log->getAction();
         if (!$this->dispatcher->hasListeners($eventName)) {
             $eventName = 'create_log_list_item';
-
         }
         $event = new LogCreateDelegateViewEvent($log);
         $description = $this->processContent($this->dispatcher->dispatch($eventName, $event)->getResponseContent());
@@ -120,7 +119,8 @@ class LogSerializer
         ];
     }
 
-    private function processContent($response) {
+    private function processContent($response)
+    {
         return trim(preg_replace('/\s\s+/', ' ', $response));
     }
 }

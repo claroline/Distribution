@@ -10,7 +10,7 @@ class DataSeries extends Component {
     const arcData = pieInstance(this.props.data)
 
     return (
-      <g transform={`translate(${ this.props.outerRadius }, ${ this.props.outerRadius })`}>
+      <g>
         {arcData.map((arc, index) => (
           <Arc
             key={index}

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 
+import { implementPropTypes } from '#/main/core/scaffolding/prop-types'
+import {Chart as ChartTypes} from '#/main/core/layout/chart/prop-types'
 import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
 import {DataSeries} from '#/main/core/layout/chart/pie/components/data-series.jsx'
 
@@ -9,16 +11,21 @@ import {DataSeries} from '#/main/core/layout/chart/pie/components/data-series.js
  */
 class PieChart extends Component {
   render() {
+    let radius = this.props.width/2
     return (
       <Chart
         width={this.props.width}
         height={this.props.width}
+        margin={{
+          'top': radius,
+          'left': radius
+        }}
       >
         <DataSeries
           data={this.props.data}
           colors={this.props.colors}
           innerRadius={0}
-          outerRadius={this.props.width/2}
+          outerRadius={radius}
           showValue={this.props.showValue}
         />
       </Chart>
@@ -26,17 +33,14 @@ class PieChart extends Component {
   }
 }
 
-PieChart.propTypes = {
+implementPropTypes(PieChart, ChartTypes, {
   data: T.array.isRequired,
   colors: T.arrayOf(T.string).isRequired,
-  width: T.number,
   showValue: T.bool.isRequired
-}
-
-PieChart.defaultProps = {
+}, {
   width: 550,
   showValue: true
-}
+})
 
 export {
   PieChart

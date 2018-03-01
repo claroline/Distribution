@@ -7,5 +7,3 @@ export const AXIS_POSITION_MIDDLE = 'middle'
 
 export const AXIS_TYPE_X = 'x'
 export const AXIS_TYPE_Y = 'y'
-export const AXIS_TYPE_LABEL_X = 'labelX'
-export const AXIS_TYPE_LABEL_Y = 'labelY'
