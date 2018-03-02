@@ -4,6 +4,7 @@ import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 
 import {FORM_RESET, FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
+import {COMPARE_OPEN} from '#/main/core/data/comparisonTable/actions'
 
 const reducer = combineReducers({
   picker: makeListReducer('users.picker'),
@@ -33,6 +34,9 @@ const reducer = combineReducers({
         [FORM_RESET+'/users.current']: () => true // todo : find better
       })
     })
+  }),
+  compare: makeReducer([], {
+    [COMPARE_OPEN]: (state, action) => action.data
   })
 })
 

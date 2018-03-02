@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * Event dispatched when two users are merged.
  */
-class MergeUserEvent extends Event
+class MergeUsersEvent extends Event
 {
     /** @var User */
     private $kept;
@@ -20,7 +20,7 @@ class MergeUserEvent extends Event
     private $messages = [];
 
     /**
-     * DecorateUserEvent constructor.
+     * MergeUsersEvent constructor.
      *
      * @param User  $kept
      * @param User  $removed
@@ -37,7 +37,7 @@ class MergeUserEvent extends Event
     }
 
     /**
-     * Gets the user being serialized.
+     * Gets the user whose account will be kept.
      *
      * @return User
      */
@@ -46,6 +46,21 @@ class MergeUserEvent extends Event
         return $this->kept;
     }
 
+    /**
+     * Gets the user whose account will be removed.
+     *
+     * @return User
+     */
+    public function getRemoved()
+    {
+        return $this->removed;
+    }
+
+    /**
+     * Get cutom messages added to the event.
+     *
+     * @return array
+     */
     public function getMessages()
     {
         return $this->messages;

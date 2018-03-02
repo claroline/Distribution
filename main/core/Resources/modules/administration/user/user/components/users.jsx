@@ -77,6 +77,14 @@ const UsersList = props =>
         action: (rows) => props.deleteWorkspace(rows[0]),
         dangerous: true
       },
+      {
+        icon: 'fa fa-fw fa-compress',
+        label: t('merge_users'),
+        context: 'selection',
+        action: (rows) => window.location = `#/users/merge/${rows[0].id}/${rows[1].id}`,
+        displayed: (rows) => rows.length === 2,
+        dangerous: true
+      },
       ...Configuration.getUsersAdministrationActions().map(action => action.options.modal ? {
         icon: action.icon,
         label: action.name(Translator),
