@@ -97,12 +97,12 @@ class UserCrud
             $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
         }
 
-        $currentUser = $this->container->get('security.token_storage')->getToken()->getUser();
+        $token = $this->container->get('security.token_storage')->getToken();
 
         if (null === $user->getMainOrganization()) {
             //we want a min organization
-            if ($currentUser instanceof User) {
-                $user->setMainOrganization($currentUser->getMainOrganization());
+            if ($token && $token->getUser() instanceof User) {
+                $user->setMainOrganization($token->getUser()->getMainOrganization());
             } else {
                 $user->setMainOrganization($this->container->get('claroline.manager.organization.organization_manager')->getDefault());
             }
