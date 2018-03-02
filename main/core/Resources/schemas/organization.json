@@ -17,9 +17,8 @@
       "minLength": 1
     },
     "email": {
-      "type": "string",
-      "description": "The organization email",
-      "minLength": 1
+      "type": ["null", "string"],
+      "description": "The organization email"
     }
   },
   "claroline": {
