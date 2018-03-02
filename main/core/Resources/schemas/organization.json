@@ -7,11 +7,11 @@
       "description": "The organization id"
     },
     "name": {
-      "type": "string",
+      "type": ["null", "string"],
       "description": "The organization name",
       "minLength": 1
     },
-    "name": {
+    "code": {
       "type": "string",
       "description": "The organization code",
       "minLength": 1
