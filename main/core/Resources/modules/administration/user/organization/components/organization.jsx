@@ -53,7 +53,10 @@ const OrganizationForm = props =>
           }, {
             name: 'parent',
             type: 'organization',
-            label: trans('parent')
+            label: trans('parent'),
+            options: {
+              filterChoices: (value, key) => props.organization.id !== key
+            }
           },  {
             name: 'email',
             type: 'email',
