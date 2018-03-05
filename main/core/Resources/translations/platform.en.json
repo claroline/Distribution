@@ -1561,5 +1561,6 @@
     "vat_number": "Vat number",
     "open_url": "Open url",
     "external": "External",
-    "internal": "Internal"
+    "internal": "Internal",
+    "force_organization_creation": "Force the organization creation at the user registration"
 }

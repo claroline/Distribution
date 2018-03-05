@@ -1587,5 +1587,6 @@
     "vat_number": "Numéro de TVA",
     "open_url": "Url d'ouverture",
     "external": "Externe",
-    "internal": "Interne"
+    "internal": "Interne",
+    "force_organization_creation": "Forcer l'ajout d'une organization à l'utilisateur lors de l'inscription"
 }
