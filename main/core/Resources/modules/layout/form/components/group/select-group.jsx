@@ -15,7 +15,6 @@ const SelectGroup = props =>
       onChange={props.onChange}
       multiple={props.multiple}
       noEmpty={props.noEmpty}
-      filterChoices={props.filterChoices}
     />
   </FormGroup>
 
@@ -24,13 +23,11 @@ implementPropTypes(SelectGroup, FormGroupWithFieldTypes, {
   value: T.oneOfType([T.string, T.number, T.array]),
   // custom props
   choices: T.object.isRequired,
-  filterChoices: T.func,
   multiple: T.bool,
   noEmpty: T.bool
 }, {
   multiple: false,
-  noEmpty: false,
-  filterChoices: () =>  true
+  noEmpty: false
 })
 
 export {
