@@ -1,4 +1,4 @@
-import {flatten} from '#/main/core/scaffolfing/tree'
+import {flatten} from '#/main/core/scaffolding/tree'
 
 import {createSelector} from 'reselect'
 
