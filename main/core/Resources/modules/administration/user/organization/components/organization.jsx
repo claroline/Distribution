@@ -42,8 +42,8 @@ const OrganizationForm = props =>
             label: trans('type'),
             required: true,
             options: {choices: {
-              'external': 'external',
-              'internal': 'internal'
+              'external': trans('external'),
+              'internal': trans('internal')
             }}
           }, {
             name: 'vat',
