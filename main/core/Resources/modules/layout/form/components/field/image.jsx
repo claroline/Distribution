@@ -27,15 +27,14 @@ class Image extends Component {
             accept="image"
             ref={input => this.input = input}
             onChange={() => {
-                if (this.input.files[0]) {
-                  const file = this.input.files[0]
+              if (this.input.files[0]) {
+                const file = this.input.files[0]
 
-                  if (this.props.autoUpload) {
-                    this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
-                  }
+                if (this.props.autoUpload) {
+                  this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
                 }
               }
-            }
+            }}
           />
         }
 

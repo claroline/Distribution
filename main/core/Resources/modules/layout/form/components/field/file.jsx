@@ -9,6 +9,7 @@ import {actions} from '#/main/core/api/actions'
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
 
 class FileComponent extends Component {
+
   constructor(props) {
     super(props)
   }
@@ -51,21 +52,20 @@ class FileComponent extends Component {
           accept={this.props.types.join(',')}
           ref={input => this.input = input}
           onChange={() => {
-              if (this.input.files[0]) {
-                const file = this.input.files[0]
+            if (this.input.files[0]) {
+              const file = this.input.files[0]
 
-                if (this.props.autoUpload) {
-                  this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
-                }
+              if (this.props.autoUpload) {
+                this.props.uploadFile(file, this.props.uploadUrl, this.props.onChange)
               }
-            }
+            }}
           }
         />
 
         {has(this.props.value, 'id') &&
           <div className="file-thumbnails">
             <FileThumbnail
-              type={!file.mimeType ? 'file' : this.getFileType(this.props.value.mimeType)}
+              type={this.getFileType(this.props.value.mimeType)}
               data={this.props.value}
               canEdit={false}
               canExpand={false}
