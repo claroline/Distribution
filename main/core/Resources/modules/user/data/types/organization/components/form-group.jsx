@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import pickBy from 'lodash/pickBy'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 
 import {t} from '#/main/core/translation'
@@ -64,11 +65,11 @@ class OrganizationGroup extends Component {
         {this.state.fetched &&
           <Select
             id={this.props.id}
-            choices={this.state.organizations.reduce((choices, organization) => {
+            choices={pickBy(this.state.organizations.reduce((choices, organization) => {
               choices[organization.id] = organization.name
 
               return choices
-            }, {})}
+            }, {}), this.props.filterChoices)}
             value={this.props.value ? this.props.value.id : ''}
             onChange={(value) => this.props.onChange({
               id: value,
@@ -86,9 +87,11 @@ implementPropTypes(OrganizationGroup, FormGroupWithFieldTypes, {
   value: T.shape({
     id: T.string.isRequired,
     name: T.string.isRequired
-  })
+  }),
+  filterChoices: T.func
 }, {
-  label: t('organization')
+  label: t('organization'),
+  filterChoices: () => true
 })
 
 export {
