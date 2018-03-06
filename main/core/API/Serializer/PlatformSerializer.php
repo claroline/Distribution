@@ -74,7 +74,7 @@ class PlatformSerializer
         if ($currentUser instanceof User) {
             // Get the locale for the logged user
             $locale = $currentUser->getLocale();
-        } elseif ($this->config->getParameter('locales')[$request->getLocale()]) {
+        } elseif (!empty($this->config->getParameter('locales')) && array_key_exists($request->getLocale(), $this->config->getParameter('locales'))) {
             // The current request locale is implemented so we use it
             $locale = $request->getLocale();
         }
