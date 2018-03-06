@@ -92,6 +92,10 @@ class ExerciseControllerTest extends TransactionalTestCase
         $crawler = $this->request('GET', "/exercises/{$this->exercise->getUuid()}");
 
         // The user must not have access to the exercise
+
+        // Why the fuck travis fails and not me ????
+        var_dump($this->client->getResponse()->getContent());
+
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($crawler->filter('html')->count() > 0);
     }
