@@ -69,6 +69,7 @@ class PlatformSerializer
         $currentUser = $this->tokenStorage->getToken()->getUser();
         $request = $this->requestStack->getCurrentRequest();
 
+
         // retrieve the current platform locale
         $locale = $this->config->getParameter('locale_language');
         if ($currentUser instanceof User) {
