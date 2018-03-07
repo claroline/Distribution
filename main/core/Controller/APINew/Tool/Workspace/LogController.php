@@ -13,6 +13,7 @@ namespace Claroline\CoreBundle\Controller\APINew\Tool\Workspace;
 
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\LogManager;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -90,37 +91,48 @@ class LogController
      */
     public function listAction(Request $request, Workspace $workspace)
     {
-        if (!$this->authorizationChecker->isGranted('logs', $workspace)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $query = $request->query->all();
-        $hiddenFilters = isset($query['hiddenFilters']) ? $query['hiddenFilters'] : [];
-        $query['hiddenFilters'] = array_merge($hiddenFilters, ['workspace' => $workspace]);
+        $this->checkLogToolAcces($workspace);
 
         return new JsonResponse($this->finder->search(
             $this->getClass(),
-            $query,
+            $this->getWorkspaceFilteredQuery($request, $workspace),
             []
         ));
     }
 
     /**
+     * @param Request   $request
      * @param Workspace $workspace
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @Route("/{id}", name="apiv2_workspace_tool_logs_get", requirements={"id"="\d+"})
+     * @Route("/chart", name="apiv2_workspace_tool_logs_list_chart")
      * @Method("GET")
      *
      * @ParamConverter("workspace", class="Claroline\CoreBundle\Entity\Workspace\Workspace", options={"mapping": {"workspaceId": "id"}})
      */
-    public function getAction(Workspace $workspace, $id)
+    public function listChartAction(Request $request, Workspace $workspace)
     {
-        if (!$this->authorizationChecker->isGranted('logs', $workspace)) {
-            throw new AccessDeniedHttpException();
-        }
+        $this->checkLogToolAcces($workspace);
 
-        $log = $this->logManager->getLog($id);
+        $chartData = $this->logManager->getChartData($this->getWorkspaceFilteredQuery($request, $workspace));
+
+        return new JsonResponse($chartData);
+    }
+
+    /**
+     * @param Log $log
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/{id}", name="apiv2_workspace_tool_logs_get", requirements={"id"="\d+"})
+     * @Method("GET")
+     *
+     * @ParamConverter("log", class="Claroline\CoreBundle\Entity\Log\Log", options={
+     *     "mapping": {"workspaceId": "workspace",
+     *     "id": "id"
+     * }})
+     */
+    public function getAction(Log $log)
+    {
+        $this->checkLogToolAcces($log->getWorkspace());
 
         return new JsonResponse($this->serializer->serialize($log, []));
     }
@@ -128,5 +140,33 @@ class LogController
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Log\Log';
+    }
+
+    /**
+     * Add workspace filter to request
+     *
+     * @param Request $request
+     * @param Workspace $workspace
+     * @return array
+     */
+    private function getWorkspaceFilteredQuery(Request $request, Workspace $workspace)
+    {
+        $query = $request->query->all();
+        $hiddenFilters = isset($query['hiddenFilters']) ? $query['hiddenFilters'] : [];
+        $query['hiddenFilters'] = array_merge($hiddenFilters, ['workspace' => $workspace]);
+
+        return $query;
+    }
+
+    /**
+     * Checks user rights to access logs tool
+     *
+     * @param Workspace $workspace
+     */
+    private function checkLogToolAcces(Workspace $workspace)
+    {
+        if (!$this->authorizationChecker->isGranted('logs', $workspace)) {
+            throw new AccessDeniedHttpException();
+        }
     }
 }

@@ -12,6 +12,11 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class LogFinder implements FinderInterface
 {
+    public function __construct()
+    {
+
+    }
+
     /**
      * The queried object is already named "obj".
      *
@@ -70,6 +75,15 @@ class LogFinder implements FinderInterface
         }
 
         return $qb;
+    }
+
+    public function fetchChartData(array $finderParams = [])
+    {
+        // get filters
+        $filters = array_merge_recursive($finderParams['filters'], $finderParams['hiddenFilters']);
+        $qb = $this->om->createQueryBuilder();
+        $qb->select('DISTINCT obj')
+            ->from($class, 'obj');
     }
 
     /** @return $string */
