@@ -66,9 +66,18 @@ class LogManager
         $this->om->detach($obj);
     }
 
-    public function getLog($id) {
+    // New api
+    public function getLog($id)
+    {
         return $this->logRepository->findOneBy(['id' => $id]);
     }
+
+    public function getChartData(array $finderParams = [])
+    {
+        return $this->logRepository->fetchChartData($finderParams);
+    }
+
+    // Old Methods
 
     public function getDesktopWidgetList(WidgetInstance $instance)
     {

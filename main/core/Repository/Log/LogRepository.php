@@ -11,15 +11,60 @@
 
 namespace Claroline\CoreBundle\Repository\Log;
 
+use Claroline\AppBundle\API\FinderInterface;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use JMS\DiExtraBundle\Annotation as DI;
 
 class LogRepository extends EntityRepository
 {
+    /** @var FinderInterface */
+    private $finder;
+
+    /**
+     * @DI\InjectParams({
+     *     "finder" = @DI\Inject("claroline.api.finder.log")
+     * })
+     * @param FinderInterface $finder
+     */
+    public function setFinder(FinderInterface $finder)
+    {
+        $this->finder = $finder;
+    }
+
+    /**
+     * Fetches data for line chart
+     *
+     * @param array $finderParams
+     * @param bool $unique
+     * @return array
+     */
+    public function fetchChartData(array $finderParams = [], $unique = false)
+    {
+        // get filters
+        $filters = isset($finderParams['filters']) ? $finderParams['filters'] : [];
+        $hiddenFilters = isset($finderParams['hiddenFilters']) ? $finderParams['hiddenFilters'] : [];
+        $filters = array_merge_recursive($filters, $hiddenFilters);
+        $qb = $this->createQueryBuilder('obj');
+
+        if ($unique === true) {
+            $qb->select('obj.shortDateLog as shortDate, count(DISTINCT obj.doer) as total');
+        } else {
+            $qb->select('obj.shortDateLog as shortDate, count(obj.id) as total');
+        }
+        $qb
+            ->orderBy('shortDate', 'ASC')
+            ->groupBy('shortDate');
+
+        $this->finder->configureQueryBuilder($qb, $filters);
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @param $configs
      * @param $range

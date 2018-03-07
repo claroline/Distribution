@@ -338,6 +338,28 @@ class LogListener
         $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("create_log_details")
+     *
+     * @param LogCreateDelegateViewEvent $event
+     */
+    public function onLogDetails(LogCreateDelegateViewEvent $event)
+    {
+        $content = $this->container->get('templating')->render(
+            'ClarolineCoreBundle:Log:view_list_item_sentence.html.twig',
+            array(
+                'log' => $event->getLog(),
+                'listItemView' => $this->container->get('templating')->render(
+                    'IcapBlogBundle:Log:log_list_item.html.twig',
+                    array('log' => $event->getLog())
+                ),
+            )
+        );
+
+        $event->setResponseContent($content);
+        $event->stopPropagation();
+    }
+
     public function disable()
     {
         $this->enabledLog = false;

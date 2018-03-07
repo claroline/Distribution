@@ -106,17 +106,36 @@ class LogSerializer
         $event = new LogCreateDelegateViewEvent($log);
         $description = $this->processContent($this->dispatcher->dispatch($eventName, $event)->getResponseContent());
 
-        return [
+        $serialized = [
             'id' => $log->getId(),
             'action' => $this->translator->trans('log_'.$log->getAction().'_shortname', [], 'log'),
             'dateLog' => $log->getDateLog()->format('Y-m-d\TH:i:s'),
-            'details' => $log->getDetails(),
             'description' => $description,
             'doer' => $doer,
             'workspace' => $workspace,
             'resourceNode' => $resourceNode,
             'resourceType' => $resourceType,
         ];
+
+        if (isset($options['details']) && $options['details']) {
+            $this->addDetails($serialized, $log);
+        }
+
+        return $serialized;
+    }
+
+    private function addDetails(array &$serialized, Log $log)
+    {
+        // Get log details text (depending on plugin rendering)
+        $eventName = 'create_log_details_'.$log->getAction();
+        if (!$this->dispatcher->hasListeners($eventName)) {
+            $eventName = 'create_log_details';
+        }
+        $event = new LogCreateDelegateViewEvent($log);
+        $description = $this->processContent($this->dispatcher->dispatch($eventName, $event)->getResponseContent());
+        $serialized['details'] = $log->getDetails();
+        $serialized['detailedDescription'] = $description;
+        $serialized['doerType'] = $log->getDoerType();
     }
 
     private function processContent($response)
