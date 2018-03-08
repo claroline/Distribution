@@ -1,31 +1,29 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {pie} from 'd3-shape'
 
 import {Arc} from '#/main/core/layout/chart/pie/components/arc.jsx'
 
-class DataSeries extends Component {
-  render() {
-    const pieInstance = pie().sort(null)
-    const arcData = pieInstance(this.props.data)
+const DataSeries = props => {
+  const pieInstance = pie().sort(null)
+  const arcData = pieInstance(props.data)
 
-    return (
-      <g>
-        {arcData.map((arc, index) => (
-          <Arc
-            key={index}
-            color={this.props.colors[index]}
-            innerRadius={this.props.innerRadius}
-            outerRadius={this.props.outerRadius}
-            startAngle={arc.startAngle}
-            endAngle={arc.endAngle}
-            value={arc.value}
-            showValue={this.props.showValue}
-          />
-        ))}
-      </g>
-    )
-  }
+  return (
+    <g>
+      {arcData.map((arc, index) => (
+        <Arc
+          key={index}
+          color={props.colors[index]}
+          innerRadius={props.innerRadius}
+          outerRadius={props.outerRadius}
+          startAngle={arc.startAngle}
+          endAngle={arc.endAngle}
+          value={arc.value}
+          showValue={props.showValue}
+        />
+      ))}
+    </g>
+  )
 }
 
 DataSeries.propTypes = {

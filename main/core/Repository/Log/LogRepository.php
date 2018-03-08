@@ -29,6 +29,7 @@ class LogRepository extends EntityRepository
      * @DI\InjectParams({
      *     "finder" = @DI\Inject("claroline.api.finder.log")
      * })
+     *
      * @param FinderInterface $finder
      */
     public function setFinder(FinderInterface $finder)
@@ -37,10 +38,11 @@ class LogRepository extends EntityRepository
     }
 
     /**
-     * Fetches data for line chart
+     * Fetches data for line chart.
      *
      * @param array $finderParams
-     * @param bool $unique
+     * @param bool  $unique
+     *
      * @return array
      */
     public function fetchChartData(array $finderParams = [], $unique = false)
@@ -52,13 +54,13 @@ class LogRepository extends EntityRepository
         $qb = $this->createQueryBuilder('obj');
 
         if ($unique === true) {
-            $qb->select('obj.shortDateLog as shortDate, count(DISTINCT obj.doer) as total');
+            $qb->select('obj.shortDateLog as date, count(DISTINCT obj.doer) as total');
         } else {
-            $qb->select('obj.shortDateLog as shortDate, count(obj.id) as total');
+            $qb->select('obj.shortDateLog as date, count(obj.id) as total');
         }
         $qb
-            ->orderBy('shortDate', 'ASC')
-            ->groupBy('shortDate');
+            ->orderBy('date', 'ASC')
+            ->groupBy('date');
 
         $this->finder->configureQueryBuilder($qb, $filters);
 
