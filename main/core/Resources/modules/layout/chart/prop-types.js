@@ -34,7 +34,9 @@ const AxisChart = {
       text: T.string.isRequired
     }),
     ticksAsYValues: T.bool,
-    minMaxAsYDomain:T.bool
+    minMaxAsYDomain:T.bool,
+    color: T.string,
+    altColor: T.string
   }),
   defaultProps: Object.assign({}, Chart.defaultProps, {
     xAxisLabel: T.shape({
@@ -46,11 +48,31 @@ const AxisChart = {
       text: 'Y Axis DATA'
     }),
     ticksAsYValues: false,
-    minMaxAsYDomain: false
+    minMaxAsYDomain: false,
+    color: '#337ab7',
+    altColor: 'brown'
   })
+}
+
+const DataSeries = {
+  propTypes: {
+    data: T.object.isRequired,
+    yScale: T.func.isRequired,
+    xScale: T.func.isRequired,
+    xValues: T.array.isRequired,
+    yValues: T.array.isRequired,
+    height: T.number.isRequired,
+    color: T.string.isRequired,
+    altColor: T.string.isRequired
+  },
+  defaultProps: {
+    color: '#337ab7',
+    altColor: 'brown'
+  }
 }
 
 export {
   Chart,
-  AxisChart
+  AxisChart,
+  DataSeries
 }

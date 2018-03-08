@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import { implementPropTypes } from '#/main/core/scaffolding/prop-types'
@@ -9,28 +9,26 @@ import {DataSeries} from '#/main/core/layout/chart/pie/components/data-series.js
 /**
  * Draws a Bar chart
  */
-class PieChart extends Component {
-  render() {
-    let radius = this.props.width/2
-    return (
-      <Chart
-        width={this.props.width}
-        height={this.props.width}
-        margin={{
-          'top': radius,
-          'left': radius
-        }}
-      >
-        <DataSeries
-          data={this.props.data}
-          colors={this.props.colors}
-          innerRadius={0}
-          outerRadius={radius}
-          showValue={this.props.showValue}
-        />
-      </Chart>
-    )
-  }
+const PieChart = props => {
+  let radius = props.width/2
+  return (
+    <Chart
+      width={props.width}
+      height={props.width}
+      margin={{
+        'top': radius,
+        'left': radius
+      }}
+    >
+      <DataSeries
+        data={props.data}
+        colors={props.colors}
+        innerRadius={0}
+        outerRadius={radius}
+        showValue={props.showValue}
+      />
+    </Chart>
+  )
 }
 
 implementPropTypes(PieChart, ChartTypes, {

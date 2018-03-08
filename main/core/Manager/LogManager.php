@@ -74,7 +74,23 @@ class LogManager
 
     public function getChartData(array $finderParams = [])
     {
-        return $this->logRepository->fetchChartData($finderParams);
+        $data = $this->logRepository->fetchChartData($finderParams);
+        $chartData = [];
+        $prevDate = null;
+        $idx = 0;
+        foreach ($data as $value) {
+            // Fill in with zeros from previous date till this date
+            while ($prevDate !== null && $prevDate < $value['date']) {
+                $chartData["c${idx}"] = ['xData' => $prevDate->format('Y-m-d\TH:i:s'), 'yData' => 0];
+                $prevDate->add(new \DateInterval('P1D'));
+                ++$idx;
+            }
+            $chartData["c${idx}"] = ['xData' => $value['date']->format('Y-m-d\TH:i:s'), 'yData' => $value['total']];
+            $prevDate = $value['date']->add(new \DateInterval('P1D'));
+            ++$idx;
+        }
+
+        return $chartData;
     }
 
     // Old Methods

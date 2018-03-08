@@ -1,3 +1,6 @@
+import {DataSeries as BarDataSeries} from '#/main/core/layout/chart/bar/components/data-series'
+import {DataSeries as LineDataSeries} from '#/main/core/layout/chart/line/components/data-series'
+import {DataSeries as PieDataSeries} from '#/main/core/layout/chart/pie/components/data-series'
 
 export const AXIS_POSITION_LEFT = 'left'
 export const AXIS_POSITION_TOP = 'top'
@@ -7,3 +10,16 @@ export const AXIS_POSITION_MIDDLE = 'middle'
 
 export const AXIS_TYPE_X = 'x'
 export const AXIS_TYPE_Y = 'y'
+
+export const LINE_CHART = 'LINE'
+export const BAR_CHART = 'BAR'
+export const PIE_CHART = 'PIE'
+export const GAUGE_CHART = 'GAUGE'
+
+export const CHART_TYPES = [LINE_CHART, BAR_CHART, PIE_CHART, GAUGE_CHART]
+
+export const DATA_SERIES = {
+  LINE: LineDataSeries,
+  BAR: BarDataSeries,
+  PIE: PieDataSeries
+}
