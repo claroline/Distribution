@@ -328,10 +328,11 @@ class LogListener
      *
      * @param LogCreateDelegateViewEvent $event
      */
-    public function onLogListItem(LogCreateDelegateViewEvent $event) {
+    public function onLogListItem(LogCreateDelegateViewEvent $event)
+    {
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Log:view_list_item_sentence.html.twig',
-            [ 'log' => $event->getLog() ]
+            ['log' => $event->getLog()]
         );
 
         $event->setResponseContent($content);
@@ -346,14 +347,8 @@ class LogListener
     public function onLogDetails(LogCreateDelegateViewEvent $event)
     {
         $content = $this->container->get('templating')->render(
-            'ClarolineCoreBundle:Log:view_list_item_sentence.html.twig',
-            array(
-                'log' => $event->getLog(),
-                'listItemView' => $this->container->get('templating')->render(
-                    'IcapBlogBundle:Log:log_list_item.html.twig',
-                    array('log' => $event->getLog())
-                ),
-            )
+            'ClarolineCoreBundle:Log:view_details.html.twig',
+            ['log' => $event->getLog()]
         );
 
         $event->setResponseContent($content);
