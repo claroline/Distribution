@@ -8,7 +8,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text'
 
 const DetailsField = (props) =>
   <Row>
-    <Col xs={12} sm={4} md={2}>{props.label}</Col>
+    <Col xs={12} sm={4} md={2}><strong>{props.label}</strong></Col>
     <Col xs={12} sm={8} md={10}>{isArray(props.value) ? props.value.join(', ') : props.value}</Col>
   </Row>
 
