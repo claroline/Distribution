@@ -121,6 +121,7 @@ class LogController
 
     /**
      * @param Log $log
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      * @Route("/{id}", name="apiv2_workspace_tool_logs_get", requirements={"id"="\d+"})
      * @Method("GET")
@@ -134,7 +135,7 @@ class LogController
     {
         $this->checkLogToolAcces($log->getWorkspace());
 
-        return new JsonResponse($this->serializer->serialize($log, []));
+        return new JsonResponse($this->serializer->serialize($log, ['details' => true]));
     }
 
     public function getClass()
@@ -143,10 +144,11 @@ class LogController
     }
 
     /**
-     * Add workspace filter to request
+     * Add workspace filter to request.
      *
-     * @param Request $request
+     * @param Request   $request
      * @param Workspace $workspace
+     *
      * @return array
      */
     private function getWorkspaceFilteredQuery(Request $request, Workspace $workspace)
@@ -159,7 +161,7 @@ class LogController
     }
 
     /**
-     * Checks user rights to access logs tool
+     * Checks user rights to access logs tool.
      *
      * @param Workspace $workspace
      */
