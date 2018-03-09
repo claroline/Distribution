@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
@@ -12,6 +12,7 @@ import {User}    from '#/main/core/administration/user/user/components/user.jsx'
 import {Users}   from '#/main/core/workspace/user/user/components/users.jsx'
 import {actions} from '#/main/core/workspace/user/user/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
+import {PageAction} from '#/main/core/layout/page'
 
 const UserTabActionsComponent = props =>
   <PageActions>
@@ -24,16 +25,25 @@ const UserTabActionsComponent = props =>
       opened={!!matchPath(props.location.pathname, {path: '/users/form'})}
       open={{
         icon: 'fa fa-plus',
-        label: t('add_user'),
+        label: trans('add_user'),
         action: '#/users/form'
       }}
       cancel={{
         action: () => navigate('/users')
       }}
     />
+    <PageAction
+      id='add-role'
+      title={trans('add_role')}
+      icon={'fa fa-badge'}
+      disabled={false}
+      action={() => alert('yolo')}
+      primary={false}
+    />
   </PageActions>
 
 UserTabActionsComponent.propTypes = {
+  location: T.object
 }
 
 const UserTabActions = withRouter(UserTabActionsComponent)
@@ -59,7 +69,10 @@ const UserTabComponent = props =>
   />
 
 UserTabComponent.propTypes = {
-  openForm: T.func.isRequired
+  openForm: T.func.isRequired,
+  workspace: T.object,
+  restrictions: T.object,
+  collaboratorRole: T.object
 }
 
 const UserTab = connect(

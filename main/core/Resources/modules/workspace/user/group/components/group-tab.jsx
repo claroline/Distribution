@@ -2,10 +2,11 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
+import {t, trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageAction} from '#/main/core/layout/page'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {Group}    from '#/main/core/administration/user/group/components/group.jsx'
@@ -31,9 +32,18 @@ const GroupTabActionsComponent = props =>
         action: () => navigate('/groups')
       }}
     />
+    <PageAction
+      id='add-role'
+      title={trans('add_role')}
+      icon={'fa fa-badge'}
+      disabled={false}
+      action={() => alert('yolo')}
+      primary={false}
+    />
   </PageActions>
 
 GroupTabActionsComponent.propTypes = {
+  location: T.object
 }
 
 const GroupTabActions = withRouter(GroupTabActionsComponent)
@@ -54,7 +64,10 @@ const GroupTabComponent = props =>
   />
 
 GroupTabComponent.propTypes = {
-  openForm: T.func.isRequired
+  openForm: T.func.isRequired,
+  workspace: T.object,
+  restrictions: T.object,
+  collaboratorRole: T.object
 }
 
 const GroupTab = connect(
