@@ -10,7 +10,7 @@ import {PageAction} from '#/main/core/layout/page'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {Group}    from '#/main/core/administration/user/group/components/group.jsx'
-import {Groups}   from '#/main/core/workspace/user/group/components/group-list.jsx'
+import {Groups}   from '#/main/core/workspace/user/group/components/groups.jsx'
 import {actions} from '#/main/core/workspace/user/group/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
 
