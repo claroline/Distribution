@@ -14,7 +14,7 @@ import {Groups}   from '#/main/core/workspace/user/group/components/group-list.j
 import {actions} from '#/main/core/workspace/user/group/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
 
-import {MODAL_ADD_ROLES} from '#/main/core/workspace/user/modals/components/add-roles.jsx'
+import {MODAL_ADD_ROLES_GROUPS} from '#/main/core/workspace/user/modals/components/add-roles-groups.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 import {currentUser} from '#/main/core/user/current'
@@ -62,7 +62,7 @@ const ConnectedActions = connect(
   dispatch => ({
     register(workspace) {
       dispatch(
-        modalActions.showModal(MODAL_ADD_ROLES, {
+        modalActions.showModal(MODAL_ADD_ROLES_GROUPS, {
           title: trans('add_roles'),
           question: trans('add_roles'),
           workspace: workspace,

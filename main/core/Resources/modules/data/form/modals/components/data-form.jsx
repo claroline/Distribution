@@ -73,8 +73,9 @@ class DataFormModal extends Component {
           sections={this.props.sections}
           setErrors={this.setErrors}
           updateProp={this.updateProp}
-        />
-
+        >
+        {this.props.children}
+      </Form>
         <button
           className="modal-btn btn btn-primary"
           disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}

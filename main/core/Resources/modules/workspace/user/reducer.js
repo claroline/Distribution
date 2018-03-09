@@ -6,6 +6,7 @@ import {reducer as usersReducer} from '#/main/core/workspace/user/user/reducer'
 import {reducer as groupsReducer} from '#/main/core/workspace/user/group/reducer'
 import {reducer as rolesReducer} from '#/main/core/workspace/user/role/reducer'
 import {reducer as workspaceReducer} from '#/main/core/workspace/user/parameters/reducer'
+import {reducer as modalReducer} from '#/main/core/workspace/user/modals/reducer'
 
 const reducer = makePageReducer({}, {
   users: usersReducer,
@@ -14,7 +15,8 @@ const reducer = makePageReducer({}, {
   pending: pendingReducer,
   workspace: makeReducer({}, {}),
   parameters: workspaceReducer,
-  restrictions: makeReducer({}, {})
+  restrictions: makeReducer({}, {}),
+  modals: modalReducer
 })
 
 export {

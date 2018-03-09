@@ -7,7 +7,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 
-const MODAL_ADD_ROLES = 'MODAL_ADD_ROLES'
+const MODAL_ADD_ROLES_GROUPS = 'MODAL_ADD_ROLES_GROUPS'
 
 function getRoleEnum(roles) {
   const data = {}
@@ -22,13 +22,13 @@ function getRoleEnum(roles) {
 
   return data
 }
-//{this.props.children}
-const AddRolesModal = props =>
+
+const AddRolesGroupsModal = props =>
   <DataFormModal
     {...props}
     icon="fa fa-fw fa-id-card-o"
     title={t('add_roles')}
-    save={(data) => alert(data)}
+    save={(data) => console.log(data)}
     sections={[
       {
         id: 'general',
@@ -59,10 +59,10 @@ const AddRolesModal = props =>
         actions={[]}
       >
         <DataListContainer
-          name="all.groups"
+          name="modals.groups"
           open={GroupList.open}
           fetch={{
-            url: ['apiv2_groups'],
+            url: ['apiv2_group_list'],
             autoload: true
           }}
           definition={GroupList.definition}
@@ -72,13 +72,13 @@ const AddRolesModal = props =>
     </FormSections>
   </DataFormModal>
 
-AddRolesModal.propTypes = {
+AddRolesGroupsModal.propTypes = {
   workspace: T.object.isRequired,
   register: T.func.isRequired,
   roles: T.array.isRequired
 }
 
 export {
-  MODAL_ADD_ROLES,
-  AddRolesModal
+  MODAL_ADD_ROLES_GROUPS,
+  AddRolesGroupsModal
 }
