@@ -51,11 +51,11 @@ class UserSerializer
      *     "container"    = @DI\Inject("service_container")
      * })
      *
-     * @param TokenStorageInterface $tokenStorage
+     * @param TokenStorageInterface         $tokenStorage
      * @param AuthorizationCheckerInterface $authChecker
-     * @param ObjectManager $om
-     * @param FacetManager $facetManager
-     * @param ContainerInterface $container
+     * @param ObjectManager                 $om
+     * @param FacetManager                  $facetManager
+     * @param ContainerInterface            $container
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
