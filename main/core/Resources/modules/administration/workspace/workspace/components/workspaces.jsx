@@ -63,6 +63,7 @@ const WorkspacesList = props =>
 
 WorkspacesList.propTypes = {
   copyWorkspaces: T.func.isRequired,
+  deleteWorkspaces: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
