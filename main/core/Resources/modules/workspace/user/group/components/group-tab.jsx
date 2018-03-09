@@ -14,6 +14,8 @@ import {Groups}   from '#/main/core/workspace/user/group/components/group-list.j
 import {actions} from '#/main/core/workspace/user/group/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
 
+import {MODAL_ADD_ROLES} from '#/main/core/workspace/user/modals/components/add-roles.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 import {currentUser} from '#/main/core/user/current'
 
@@ -42,21 +44,33 @@ const GroupTabActionsComponent = props =>
       title={trans('add_role')}
       icon={'fa fa-id-badge'}
       disabled={false}
-      action={() => alert('yolo')}
+      action={() => props.register(props.workspace)}
       primary={false}
     />
   </PageActions>
 
 GroupTabActionsComponent.propTypes = {
   location: T.object,
-  workspace: T.object
+  workspace: T.object,
+  register: T.func
 }
 
 const ConnectedActions = connect(
   state => ({
     workspace: select.workspace(state)
   }),
-  null
+  dispatch => ({
+    register(workspace) {
+      dispatch(
+        modalActions.showModal(MODAL_ADD_ROLES, {
+          title: trans('add_roles'),
+          question: trans('add_roles'),
+          workspace: workspace,
+          handleConfirm: (roles, users) => dispatch(actions.register(roles, users, workspace))
+        })
+      )
+    }
+  })
 )(GroupTabActionsComponent)
 
 const GroupTabActions = withRouter(ConnectedActions)
