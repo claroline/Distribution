@@ -10,7 +10,7 @@ import {PendingTab} from '#/main/core/workspace/user/pending/components/pending-
 import {connect} from 'react-redux'
 import {currentUser} from '#/main/core/user/current'
 import {select}  from '#/main/core/workspace/user/selectors'
-import {READ_ONLY, ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
+import {READ_ONLY, MANAGER, ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 
 const Tool = (props) => {
   const permLevel = getPermissionLevel(currentUser(), props.workspace)
@@ -21,7 +21,7 @@ const Tool = (props) => {
       path: '/users',
       content: UserTab,
       //perm check here for creation
-      actions: permLevel === ADMIN ? UserTabActions: null
+      actions: permLevel === MANAGER || permLevel === ADMIN ? UserTabActions: null
     },
     {
       icon: 'fa fa-users',
@@ -29,7 +29,7 @@ const Tool = (props) => {
       path: '/groups',
       content: GroupTab,
       //perm check here for creation
-      actions: permLevel === ADMIN ? GroupTabActions: null
+      actions: permLevel === MANAGER || permLevel === ADMIN ? GroupTabActions: null
     },
     {
       icon: 'fa fa-id-badge',

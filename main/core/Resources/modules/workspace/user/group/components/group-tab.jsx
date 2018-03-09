@@ -14,28 +14,33 @@ import {Groups}   from '#/main/core/workspace/user/group/components/group-list.j
 import {actions} from '#/main/core/workspace/user/group/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
 
+import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
+import {currentUser} from '#/main/core/user/current'
+
 const GroupTabActionsComponent = props =>
   <PageActions>
-    <FormPageActionsContainer
-      formName="groups.current"
-      target={(user, isNew) => isNew ?
-        ['apiv2_group_create'] :
-        ['apiv2_group_update', {id: user.id}]
-      }
-      opened={!!matchPath(props.location.pathname, {path: '/groups/form'})}
-      open={{
-        icon: 'fa fa-plus',
-        label: t('add_group'),
-        action: '#/groups/form'
-      }}
-      cancel={{
-        action: () => navigate('/groups')
-      }}
-    />
+    {getPermissionLevel(currentUser(), props.workspace) === ADMIN &&
+      <FormPageActionsContainer
+        formName="groups.current"
+        target={(user, isNew) => isNew ?
+          ['apiv2_group_create'] :
+          ['apiv2_group_update', {id: user.id}]
+        }
+        opened={!!matchPath(props.location.pathname, {path: '/groups/form'})}
+        open={{
+          icon: 'fa fa-plus',
+          label: t('add_group'),
+          action: '#/groups/form'
+        }}
+        cancel={{
+          action: () => navigate('/groups')
+        }}
+      />
+    }
     <PageAction
       id='add-role'
       title={trans('add_role')}
-      icon={'fa fa-badge'}
+      icon={'fa fa-id-badge'}
       disabled={false}
       action={() => alert('yolo')}
       primary={false}
@@ -43,10 +48,18 @@ const GroupTabActionsComponent = props =>
   </PageActions>
 
 GroupTabActionsComponent.propTypes = {
-  location: T.object
+  location: T.object,
+  workspace: T.object
 }
 
-const GroupTabActions = withRouter(GroupTabActionsComponent)
+const ConnectedActions = connect(
+  state => ({
+    workspace: select.workspace(state)
+  }),
+  null
+)(GroupTabActionsComponent)
+
+const GroupTabActions = withRouter(ConnectedActions)
 
 const GroupTabComponent = props =>
   <Routes

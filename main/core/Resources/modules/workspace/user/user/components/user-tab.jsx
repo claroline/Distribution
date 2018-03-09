@@ -14,28 +14,33 @@ import {actions} from '#/main/core/workspace/user/user/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
 import {PageAction} from '#/main/core/layout/page'
 
+import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
+import {currentUser} from '#/main/core/user/current'
+
 const UserTabActionsComponent = props =>
   <PageActions>
-    <FormPageActionsContainer
-      formName="users.current"
-      target={(user, isNew) => isNew ?
-        ['apiv2_user_create'] :
-        ['apiv2_user_update', {id: user.id}]
-      }
-      opened={!!matchPath(props.location.pathname, {path: '/users/form'})}
-      open={{
-        icon: 'fa fa-plus',
-        label: trans('add_user'),
-        action: '#/users/form'
-      }}
-      cancel={{
-        action: () => navigate('/users')
-      }}
-    />
+    {getPermissionLevel(currentUser(), props.workspace) === ADMIN &&
+      <FormPageActionsContainer
+        formName="users.current"
+        target={(user, isNew) => isNew ?
+          ['apiv2_user_create'] :
+          ['apiv2_user_update', {id: user.id}]
+        }
+        opened={!!matchPath(props.location.pathname, {path: '/users/form'})}
+        open={{
+          icon: 'fa fa-plus',
+          label: trans('add_user'),
+          action: '#/users/form'
+        }}
+        cancel={{
+          action: () => navigate('/users')
+        }}
+      />
+    }
     <PageAction
       id='add-role'
       title={trans('add_role')}
-      icon={'fa fa-badge'}
+      icon={'fa fa-id-badge'}
       disabled={false}
       action={() => alert('yolo')}
       primary={false}
@@ -43,10 +48,18 @@ const UserTabActionsComponent = props =>
   </PageActions>
 
 UserTabActionsComponent.propTypes = {
-  location: T.object
+  location: T.object,
+  workspace: T.object
 }
 
-const UserTabActions = withRouter(UserTabActionsComponent)
+const ConnectedActions = connect(
+  state => ({
+    workspace: select.workspace(state)
+  }),
+  null
+)(UserTabActionsComponent)
+
+const UserTabActions = withRouter(ConnectedActions)
 
 const UserTabComponent = props =>
   <Routes

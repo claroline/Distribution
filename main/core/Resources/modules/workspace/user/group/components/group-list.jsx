@@ -32,7 +32,7 @@ const GroupsList = props =>
 
 GroupsList.propTypes = {
   workspace: T.object,
-  unregister: T.function
+  unregister: T.func
 }
 
 const Groups = connect(
