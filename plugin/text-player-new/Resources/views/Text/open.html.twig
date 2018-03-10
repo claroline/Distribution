@@ -1,0 +1,16 @@
+{% extends "ClarolineCoreBundle:Resource:layout.html.twig" %}
+
+{% block content %}
+    <div
+        class="page-container text-container"
+        data-text="{{ _resource | api_serialize | json_encode | raw | escape }}"
+        //data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
+    >
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-plugin-text-player-text-resource.js') }}"></script>
+{% endblock %}
