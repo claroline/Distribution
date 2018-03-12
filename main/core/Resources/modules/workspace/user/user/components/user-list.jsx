@@ -1,23 +1,19 @@
-import {connect} from 'react-redux'
-
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {UserCard} from '#/main/core/administration/user/user/components/user-card.jsx'
-import {select}  from '#/main/core/workspace/user/selectors'
 
 function getRoles(user, workspace) {
-    return user.roles.filter(role => role.workspace && role.workspace.id === workspace.uuid).map(role => role.translationKey).join(',')
+  return user.roles.filter(role => role.workspace && role.workspace.id === workspace.uuid).map(role => role.translationKey).join(',')
 }
 
-function getWorkspaceRoles(workspace)
-{
-    const roles = {}
+function getWorkspaceRoles(workspace) {
+  const roles = {}
 
-    workspace.roles.forEach(role => {
-      roles[role.id] = role.translationKey
-    })
+  workspace.roles.forEach(role => {
+    roles[role.id] = role.translationKey
+  })
 
-    return roles
+  return roles
 }
 
 function getUserList(workspace)
@@ -30,34 +26,34 @@ function getUserList(workspace)
       {
         name: 'username',
         type: 'username',
-        label: t('username'),
+        label: trans('username'),
         displayed: true,
         primary: true
       }, {
         name: 'lastName',
         type: 'string',
-        label: t('last_name'),
+        label: trans('last_name'),
         displayed: true
       }, {
         name: 'firstName',
         type: 'string',
-        label: t('first_name'),
+        label: trans('first_name'),
         displayed: true
       }, {
         name: 'email',
         alias: 'mail',
         type: 'email',
-        label: t('email'),
+        label: trans('email'),
         displayed: true
       }, {
         name: 'administrativeCode',
         type: 'string',
-        label: t('code')
+        label: trans('code')
       }, {
         name: 'meta.lastLogin',
         type: 'date',
         alias: 'lastLogin',
-        label: t('last_login'),
+        label: trans('last_login'),
         displayed: true,
         options: {
           time: true
@@ -69,7 +65,7 @@ function getUserList(workspace)
         options: {
           choices: getWorkspaceRoles(workspace)
         },
-        label: t('roles'),
+        label: trans('roles'),
         displayed: true,
         filterable: true,
         renderer: (rowData) => getRoles(rowData, workspace)

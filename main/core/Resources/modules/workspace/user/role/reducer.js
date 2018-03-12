@@ -5,8 +5,6 @@ import {makeFormReducer} from '#/main/core/data/form/reducer'
 
 import {FORM_RESET, FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
-import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
-
 const reducer = combineReducers({
   picker: makeListReducer('roles.picker', {}),
   workspacePicker: makeListReducer('roles.workspacePicker', {}, {}, {filterable: false, paginated: false}),

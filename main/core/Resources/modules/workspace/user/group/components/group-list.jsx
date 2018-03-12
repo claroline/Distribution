@@ -1,21 +1,20 @@
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {GroupCard} from '#/main/core/administration/user/group/components/group-card.jsx'
 
 function getRoles(user) {
-    return user.roles.filter(role => true).map(role => role.translationKey).join(',')
+  return user.roles.map(role => role.translationKey).join(',')
 }
 
-function getWorkspaceRoles(workspace)
-{
-    const roles = {}
+function getWorkspaceRoles(workspace) {
+  const roles = {}
 
-    workspace.roles.forEach(role => {
-      roles[role.id] = role.translationKey
-    })
+  workspace.roles.forEach(role => {
+    roles[role.id] = role.translationKey
+  })
 
-    return roles
+  return roles
 }
 
 const getGroupList = (workspace) => {
@@ -27,7 +26,7 @@ const getGroupList = (workspace) => {
       {
         name: 'name',
         type: 'string',
-        label: t('name'),
+        label: trans('name'),
         displayed: true,
         primary: true
       },
@@ -38,7 +37,7 @@ const getGroupList = (workspace) => {
         options: {
           choices: getWorkspaceRoles(workspace)
         },
-        label: t('roles'),
+        label: trans('roles'),
         displayed: true,
         filterable: true,
         renderer: (rowData) => getRoles(rowData)

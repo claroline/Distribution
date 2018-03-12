@@ -21,14 +21,13 @@ const PendingList = props =>
       url: ['apiv2_workspace_list_pending', {id: props.workspace.uuid}],
       autoload: true
     }}
-  actions={[
-    {
-      icon: 'fa fa-fw fa-id-card-o',
-      label: trans('validate'),
-      action: (rows) => props.register(rows, props.workspace)
-    }]}
-    definition={UserList.definition}
-    card={UserList.card}
+  actions={[{
+    icon: 'fa fa-fw fa-id-card-o',
+    label: trans('validate'),
+    action: (rows) => props.register(rows, props.workspace)
+  }]}
+  definition={UserList.definition}
+  card={UserList.card}
   />
 
 PendingList.propTypes = {

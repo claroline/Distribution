@@ -21,8 +21,7 @@ const UsersList = props =>
       url: ['apiv2_workspace_list_users', {id: props.workspace.uuid}],
       autoload: true
     }}
-  actions={[
-    {
+    actions={[{
       icon: 'fa fa-fw fa-trash-o',
       label: trans('unregister'),
       action: (rows) => props.unregister(rows, props.workspace),

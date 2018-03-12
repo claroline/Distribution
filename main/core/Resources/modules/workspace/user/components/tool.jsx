@@ -76,6 +76,7 @@ const Tool = (props) => {
     ]}
     tabs={tabs}
   />
+
 )}
 
 const UserTool = connect(

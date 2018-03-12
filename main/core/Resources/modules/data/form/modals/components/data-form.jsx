@@ -74,14 +74,14 @@ class DataFormModal extends Component {
           setErrors={this.setErrors}
           updateProp={this.updateProp}
         >
-        {this.props.children}
-      </Form>
-        <button
-          className="modal-btn btn btn-primary"
-          disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
-          onClick={this.save}
-        >
-          {this.props.saveButtonText}
+          {this.props.children}
+        </Form>
+          <button
+            className="modal-btn btn btn-primary"
+            disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
+            onClick={this.save}
+          >
+            {this.props.saveButtonText}
         </button>
       </BaseModal>
     )
@@ -94,6 +94,7 @@ DataFormModal.propTypes = {
   saveButtonText: T.string,
   className: T.string,
   fadeModal: T.func.isRequired,
+  children: T.object,
 
   // form configuration
   data: T.any,

@@ -1,20 +1,17 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import classes from 'classnames'
 
-import {t, trans} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
-import {enumRole, PLATFORM_ROLE} from '#/main/core/user/role/constants'
 import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
 import {actions} from '#/main/core/administration/user/role/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
@@ -27,17 +24,17 @@ const RoleForm = props =>
     sections={[
       {
         id: 'general',
-        title: t('general'),
+        title: trans('general'),
         primary: true,
         fields: [
           {
             name: 'translationKey',
             type: 'translation',
-            label: t('name'),
+            label: trans('name'),
             required: true,
             disabled: props.role.meta && props.role.meta.readOnly
-          },
-        ],
+          }
+        ]
       }
     ]}
   >
@@ -45,12 +42,12 @@ const RoleForm = props =>
       <FormSection
         id="role-users"
         icon="fa fa-fw fa-user"
-        title={t('users')}
+        title={trans('users')}
         disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
-            label: t('add_user'),
+            label: trans('add_user'),
             action: () => props.pickUsers(props.role.id),
             disabled: props.role.restrictions && null !== props.role.restrictions.maxUsers && props.role.restrictions.maxUsers <= props.role.meta.users
           }
@@ -74,12 +71,12 @@ const RoleForm = props =>
       <FormSection
         id="role-groups"
         icon="fa fa-fw fa-id-badge"
-        title={t('groups')}
+        title={trans('groups')}
         disabled={props.new}
         actions={[
           {
             icon: 'fa fa-fw fa-plus',
-            label: t('add_group'),
+            label: trans('add_group'),
             action: () => props.pickGroups(props.role.id)
           }
         ]}
@@ -132,8 +129,8 @@ const Role = connect(
     pickUsers(roleId) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-user',
-        title: t('add_users'),
-        confirmText: t('add'),
+        title: trans('add_users'),
+        confirmText: trans('add'),
         name: 'users.picker',
         definition: UserList.definition,
         card: UserList.card,
@@ -147,8 +144,8 @@ const Role = connect(
     pickGroups(roleId){
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-users',
-        title: t('add_groups'),
-        confirmText: t('add'),
+        title: trans('add_groups'),
+        confirmText: trans('add'),
         name: 'groups.picker',
         definition: GroupList.definition,
         card: GroupList.card,

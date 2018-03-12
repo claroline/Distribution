@@ -5,7 +5,6 @@ import {connect} from 'react-redux'
 import {t, trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
 import {currentUser} from '#/main/core/user/current'
-import {generateUrl} from '#/main/core/api/router'
 import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
@@ -20,7 +19,6 @@ import {select}  from '#/main/core/workspace/user/selectors'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
-import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
 
 const GroupTabActionsComponent = props =>

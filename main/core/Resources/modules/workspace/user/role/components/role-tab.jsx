@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
@@ -24,7 +24,7 @@ const RoleTabActionsComponent = props =>
       opened={!!matchPath(props.location.pathname, {path: '/roles/form'})}
       open={{
         icon: 'fa fa-plus',
-        label: t('add_role'),
+        label: trans('add_role'),
         action: '#/roles/form'
       }}
       cancel={{
@@ -34,6 +34,7 @@ const RoleTabActionsComponent = props =>
   </PageActions>
 
 RoleTabActionsComponent.propTypes = {
+  location: T.object
 }
 
 const RoleTabActions = withRouter(RoleTabActionsComponent)
@@ -48,22 +49,23 @@ const RoleTabComponent = props =>
       }, {
         path: '/roles/form/:id?',
         component: Role,
-        onEnter: (params) => props.openForm(params.id || null, props.workspace, props.restrictions)
+        onEnter: (params) => props.openForm(params.id || null, props.workspace)
       }
     ]}
   />
 
 RoleTabComponent.propTypes = {
-  openForm: T.func.isRequired
+  openForm: T.func.isRequired,
+  workspace: T.object.isRequired,
+  restrictions: T.object.isRequired
 }
 
 const RoleTab = connect(
   state => ({
-    workspace: select.workspace(state),
-    restrictions: select.restrictions(state)
+    workspace: select.workspace(state)
   }),
   dispatch => ({
-    openForm(id = null, workspace, restrictions) {
+    openForm(id = null, workspace) {
 
       const defaultValue = {
         type: 2, //workspace

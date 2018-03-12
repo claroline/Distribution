@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
-import {generateUrl} from '#/main/core/api/router'
 import {currentUser} from '#/main/core/user/current'
 import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 
@@ -21,7 +20,6 @@ import {select}  from '#/main/core/workspace/user/selectors'
 import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
 
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
-import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
@@ -56,7 +54,9 @@ const UserTabActionsComponent = props =>
   </PageActions>
 
 UserTabActionsComponent.propTypes = {
-  workspace: T.object
+  workspace: T.object,
+  location: T.object,
+  register: T.func
 }
 
 const ConnectedActions = connect(
