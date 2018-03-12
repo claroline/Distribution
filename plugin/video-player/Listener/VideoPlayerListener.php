@@ -71,7 +71,7 @@ class VideoPlayerListener extends ContainerAware
         $canExport = $authorization->isGranted('EXPORT', $collection);
         $path = $this->fileDir.DIRECTORY_SEPARATOR.$event->getResource()->getHashName();
         $content = $this->templating->render(
-            'ClarolineVideoPlayerBundle::video.html.twig',
+            'ClarolineVideoPlayerBundle::videoreact.html.twig',
             [
                 'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
                 'path' => $path,
