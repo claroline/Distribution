@@ -81,10 +81,10 @@ class DataFormModal extends Component {
           disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
           onClick={this.save}
         >
-          {this.props.saveButtonText}
-      </button>
-    </BaseModal>
-  )}
+            {this.props.saveButtonText}
+        </button>
+      </BaseModal>
+    )}
 }
 
 DataFormModal.propTypes = {
