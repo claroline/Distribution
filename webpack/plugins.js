@@ -1,9 +1,8 @@
 const webpack = require('webpack')
-//const CircularDependencyPlugin = require('circular-dependency-plugin')
+
 const paths = require('./paths')
 const ConfigurationPlugin = require('./build/configuration/plugin')
 const AssetsPlugin = require('assets-webpack-plugin')
-
 
 /**
  * Adds a custom resolver that will try to convert internal webpack requests for
@@ -42,35 +41,6 @@ const configShortcut = () => {
 }
 
 /**
- * Removes equal or similar files from the final output.
- */
-const dedupeModules = () => {
-  return new webpack.optimize.DedupePlugin()
-}
-
-/**
- * Allows to freely define variables inside built files. Here it is used to set
- * the node environment variable to "production", so that libraries that make
- * use of that flag for debug purposes are silent.
- */
-const defineProdEnv = () => {
-  return new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify('production')
-    }
-  })
-}
-
-/**
- * Ensures no assets are emitted that include errors.
- */
-const rejectBuildErrors = () => {
-  return new webpack.NoErrorsPlugin({
-    bail: true
-  })
-}
-
-/**
  * Bundles entries in separate DLLs to improve build performance.
  */
 const dlls = () => {
@@ -88,6 +58,14 @@ const dllReferences = manifests => {
     context: '.',
     manifest
   }))
+}
+
+const scaffoldingDllReference = () => {
+  return new webpack.DllReferencePlugin({
+    context: paths.output(),
+    manifest: require(paths.output() + '/scaffolding_dll.manifest.json'),
+    name: 'scaffolding_dll.js'
+  })
 }
 
 const reactDllReference = () => {
@@ -108,19 +86,6 @@ const angularDllReference = () => {
 
 const clarolineConfiguration = () => {
   return new ConfigurationPlugin()
-}
-
-/**
- * Detects circular dependencies in modules and issues warnings or errors.
- * Circular dependencies can be a source of mysterious bugs:
- *
- * @see http://stackoverflow.com/questions/35240716/webpack-import-returns-undefined-depending-on-the-order-of-imports
- */
-const noCircularDependencies = () => {
-  return new CircularDependencyPlugin({
-    exclude: /web\/packages|node_modules/,
-    failOnError: false // default: only warnings
-  })
 }
 
 /**
@@ -171,17 +136,14 @@ const assetsInfoFile = filename => {
 
 module.exports = {
   distributionShortcut,
-  dedupeModules,
   dlls,
   commonsChunk,
-  defineProdEnv,
-  rejectBuildErrors,
-  noCircularDependencies,
   rethrowCompilationErrors,
   dllReferences,
   configShortcut,
   clarolineConfiguration,
   assetsInfoFile,
   reactDllReference,
-  angularDllReference
+  angularDllReference,
+  scaffoldingDllReference
 }
