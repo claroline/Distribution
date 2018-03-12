@@ -12,14 +12,16 @@ import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-ac
 
 import {User}    from '#/main/core/administration/user/user/components/user.jsx'
 import {Users}   from '#/main/core/workspace/user/user/components/users.jsx'
-import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
-import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
 import {actions} from '#/main/core/workspace/user/user/actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {PageAction} from '#/main/core/layout/page'
 import {select}  from '#/main/core/workspace/user/selectors'
+import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
+
+import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
+import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
@@ -75,21 +77,10 @@ const ConnectedActions = connect(
           autoload: true
         },
         handleSelect: (users) => {
-          dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
-            icon: 'fa fa-fw fa-buildings',
-            title: trans('add_roles'),
-            confirmText: trans('add'),
-            name: 'roles.workspacePicker',
-            definition: RoleList.definition,
-            card: RoleList.card,
-            fetch: {
-              url: generateUrl('apiv2_workspace_list_roles', {id: workspace.uuid}),
-              autoload: true
-            },
-            handleSelect: (roles) => {
-              roles.forEach(role => dispatch(actions.addUsersToRole(role, users)))
-            }
-          }))
+          dispatch(modalActions.showModal(MODAL_DATA_PICKER, getModalDefinition(
+            workspace,
+            (roles) => roles.forEach(role => dispatch(actions.addUsersToRole(role, users)))
+          )))
         }
       }))
     }

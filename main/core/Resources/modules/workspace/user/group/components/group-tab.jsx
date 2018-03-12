@@ -21,7 +21,7 @@ import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
-
+import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
 
 const GroupTabActionsComponent = props =>
   <PageActions>
@@ -77,21 +77,10 @@ const ConnectedActions = connect(
           autoload: true
         },
         handleSelect: (groups) => {
-          dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
-            icon: 'fa fa-fw fa-buildings',
-            title: trans('add_roles'),
-            confirmText: trans('add'),
-            name: 'roles.workspacePicker',
-            definition: RoleList.definition,
-            card: RoleList.card,
-            fetch: {
-              url: generateUrl('apiv2_workspace_list_roles', {id: workspace.uuid}),
-              autoload: true
-            },
-            handleSelect: (roles) => {
-              roles.forEach(role => dispatch(actions.addGroupsToRole(role, groups)))
-            }
-          }))
+          dispatch(modalActions.showModal(MODAL_DATA_PICKER, getModalDefinition(
+            workspace,
+            (roles) => roles.forEach(role => dispatch(actions.addGroupsToRole(role, groups)))
+          )))
         }
       }))
     }
