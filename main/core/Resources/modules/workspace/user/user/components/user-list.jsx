@@ -5,8 +5,8 @@ import {t} from '#/main/core/translation'
 import {UserCard} from '#/main/core/administration/user/user/components/user-card.jsx'
 import {select}  from '#/main/core/workspace/user/selectors'
 
-function getRoles(user) {
-    return user.roles.filter(role => true).map(role => role.translationKey).join(',')
+function getRoles(user, workspace) {
+    return user.roles.filter(role => role.workspace && role.workspace.id === workspace.uuid).map(role => role.translationKey).join(',')
 }
 
 function getWorkspaceRoles(workspace)
@@ -72,7 +72,7 @@ function getUserList(workspace)
         label: t('roles'),
         displayed: true,
         filterable: true,
-        renderer: (rowData) => getRoles(rowData)
+        renderer: (rowData) => getRoles(rowData, workspace)
       }
     ],
     card: UserCard

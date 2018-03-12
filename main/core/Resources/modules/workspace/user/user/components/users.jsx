@@ -34,7 +34,7 @@ const UsersList = props =>
 
 UsersList.propTypes = {
   workspace: T.object,
-  unregister: T.function
+  unregister: T.func
 }
 
 const Users = connect(

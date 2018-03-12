@@ -4,6 +4,9 @@ import {connect} from 'react-redux'
 
 import {t, trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
+import {currentUser} from '#/main/core/user/current'
+import {generateUrl} from '#/main/core/api/router'
+import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {PageAction} from '#/main/core/layout/page'
@@ -14,10 +17,11 @@ import {Groups}   from '#/main/core/workspace/user/group/components/groups.jsx'
 import {actions} from '#/main/core/workspace/user/group/actions'
 import {select}  from '#/main/core/workspace/user/selectors'
 
-import {MODAL_ADD_ROLES_GROUPS} from '#/main/core/workspace/user/modals/components/add-roles-groups.jsx'
+import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
-import {currentUser} from '#/main/core/user/current'
+import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
+import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
+
 
 const GroupTabActionsComponent = props =>
   <PageActions>
@@ -61,14 +65,35 @@ const ConnectedActions = connect(
   }),
   dispatch => ({
     register(workspace) {
-      dispatch(
-        modalActions.showModal(MODAL_ADD_ROLES_GROUPS, {
-          title: trans('add_roles'),
-          question: trans('add_roles'),
-          workspace: workspace,
-          handleConfirm: (roles, users) => dispatch(actions.register(roles, users, workspace))
-        })
-      )
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-users',
+        title: trans('add_groups'),
+        confirmText: trans('add'),
+        name: 'groups.picker',
+        definition: GroupList.definition,
+        card: GroupList.card,
+        fetch: {
+          url: ['apiv2_group_list'],
+          autoload: true
+        },
+        handleSelect: (selectedGroups) => {
+          dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+            icon: 'fa fa-fw fa-buildings',
+            title: trans('add_roles'),
+            confirmText: trans('add'),
+            name: 'roles.workspacePicker',
+            definition: RoleList.definition,
+            card: RoleList.card,
+            fetch: {
+              url: generateUrl('apiv2_workspace_list_roles', {id: workspace.uuid}),
+              autoload: true
+            },
+            handleSelect: (selectedRoles) => {
+              alert('done')
+            }
+          }))
+        }
+      }))
     }
   })
 )(GroupTabActionsComponent)

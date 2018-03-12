@@ -4,18 +4,24 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {navigate, matchPath, Routes, withRouter} from '#/main/core/router'
+import {generateUrl} from '#/main/core/api/router'
+import {currentUser} from '#/main/core/user/current'
+import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
 
-import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {User}    from '#/main/core/administration/user/user/components/user.jsx'
 import {Users}   from '#/main/core/workspace/user/user/components/users.jsx'
-import {actions} from '#/main/core/workspace/user/user/actions'
-import {select}  from '#/main/core/workspace/user/selectors'
-import {PageAction} from '#/main/core/layout/page'
+import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
+import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
 
-import {ADMIN, getPermissionLevel} from  '#/main/core/workspace/user/restrictions'
-import {currentUser} from '#/main/core/user/current'
+import {actions} from '#/main/core/workspace/user/user/actions'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
+import {PageAction} from '#/main/core/layout/page'
+import {select}  from '#/main/core/workspace/user/selectors'
+
+import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
 const UserTabActionsComponent = props =>
   <PageActions>
@@ -42,13 +48,12 @@ const UserTabActionsComponent = props =>
       title={trans('add_role')}
       icon={'fa fa-id-badge'}
       disabled={false}
-      action={() => alert('yolo')}
+      action={() => props.register(props.workspace)}
       primary={false}
     />
   </PageActions>
 
 UserTabActionsComponent.propTypes = {
-  location: T.object,
   workspace: T.object
 }
 
@@ -56,7 +61,39 @@ const ConnectedActions = connect(
   state => ({
     workspace: select.workspace(state)
   }),
-  null
+  dispatch => ({
+    register(workspace) {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-user',
+        title: trans('add_user'),
+        confirmText: trans('add'),
+        name: 'users.picker',
+        definition: UserList.definition,
+        card: UserList.card,
+        fetch: {
+          url: ['apiv2_user_list'],
+          autoload: true
+        },
+        handleSelect: (selectedGroups) => {
+          dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+            icon: 'fa fa-fw fa-buildings',
+            title: trans('add_roles'),
+            confirmText: trans('add'),
+            name: 'roles.workspacePicker',
+            definition: RoleList.definition,
+            card: RoleList.card,
+            fetch: {
+              url: generateUrl('apiv2_workspace_list_roles', {id: workspace.uuid}),
+              autoload: true
+            },
+            handleSelect: (selectedRoles) => {
+              alert('done')
+            }
+          }))
+        }
+      }))
+    }
+  })
 )(UserTabActionsComponent)
 
 const UserTabActions = withRouter(ConnectedActions)

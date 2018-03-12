@@ -9,6 +9,7 @@ import {PLATFORM_ROLE} from '#/main/core/user/role/constants'
 
 const reducer = combineReducers({
   picker: makeListReducer('roles.picker', {}),
+  workspacePicker: makeListReducer('roles.workspacePicker', {}, {}, {filterable: false, paginated: false}),
   list: makeListReducer('roles.list', {}, {
     invalidated: makeReducer(false, {
       [FORM_SUBMIT_SUCCESS+'/roles.current']: () => true // todo : find better
