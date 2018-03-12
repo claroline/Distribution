@@ -20,7 +20,7 @@
     }}
 {% endblock %}
 
-{% block section_content %}
+{% block content %}
     <div
       class="page-container workspaces-container"
       data-workspace="{{ workspace | api_serialize | json_encode | raw | escape }}"
