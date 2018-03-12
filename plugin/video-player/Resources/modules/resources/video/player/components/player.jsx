@@ -1,8 +1,8 @@
 import React from 'react'
-// import {PropTypes as T} from 'prop-types'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-// import {trans} from '#/main/core/translation'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 
 const PlayerComponent = props =>
   <video
@@ -10,19 +10,27 @@ const PlayerComponent = props =>
     height="auto"
     width="320"
     controls
-    data-download="true"
-    data-setup={{}}
+    data-download={props.canDownload}
+    data-setup={[]}
   >
-    {/*<source src="{{ url('claro_file_get_media', {'node': video.resourceNode.id}) }}" type="{{ video.resourceNode.mimeType }}" />*/}
+    <source src={props.url} type={props.resource.meta.mimeType} />
   </video>
 
 PlayerComponent.propTypes = {
-  // video: T.object.isRequired
+  resource: T.shape({
+    meta: T.shape({
+      mimeType: T.string.isRequired
+    }).isRequired
+  }).isRequired,
+  url: T.string.isRequired,
+  canDownload: T.bool.isRequired
 }
 
 const Player = connect(
   state => ({
-    // video: state.resource
+    resource: state.resourceNode,
+    url: state.url,
+    canDownload: resourceSelect.exportable(state)
   })
 )(PlayerComponent)
 

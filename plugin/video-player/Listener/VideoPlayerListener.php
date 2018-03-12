@@ -58,6 +58,34 @@ class VideoPlayerListener extends ContainerAware
         $this->container = $container;
     }
 
+//    /**
+//     * @DI\Observe("play_file_video")
+//     * @DI\Observe("play_file_audio")
+//     *
+//     * @param PlayFileEvent $event
+//     */
+//    public function onOpenOldVideo(PlayFileEvent $event)
+//    {
+//        $authorization = $this->container->get('security.authorization_checker');
+//        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
+//        $canExport = $authorization->isGranted('EXPORT', $collection);
+//        $path = $this->fileDir.DIRECTORY_SEPARATOR.$event->getResource()->getHashName();
+//        $content = $this->templating->render(
+//            'ClarolineVideoPlayerBundle::video_old.html.twig',
+//            [
+//                'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
+//                'path' => $path,
+//                'video' => $event->getResource(),
+//                '_resource' => $event->getResource(),
+//                'tracks' => $this->container->get('claroline.manager.video_player_manager')->getTracksByVideo($event->getResource()),
+//                'canExport' => $canExport,
+//            ]
+//        );
+//
+//        $event->setResponse(new Response($content));
+//        $event->stopPropagation();
+//    }
+
     /**
      * @DI\Observe("play_file_video")
      * @DI\Observe("play_file_audio")
@@ -66,19 +94,12 @@ class VideoPlayerListener extends ContainerAware
      */
     public function onOpenVideo(PlayFileEvent $event)
     {
-        $authorization = $this->container->get('security.authorization_checker');
-        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
-        $canExport = $authorization->isGranted('EXPORT', $collection);
-        $path = $this->fileDir.DIRECTORY_SEPARATOR.$event->getResource()->getHashName();
         $content = $this->templating->render(
-            'ClarolineVideoPlayerBundle::videoreact.html.twig',
+            'ClarolineVideoPlayerBundle::video.html.twig',
             [
                 'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
-                'path' => $path,
-                'video' => $event->getResource(),
                 '_resource' => $event->getResource(),
                 'tracks' => $this->container->get('claroline.manager.video_player_manager')->getTracksByVideo($event->getResource()),
-                'canExport' => $canExport,
             ]
         );
 
