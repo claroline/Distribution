@@ -69,15 +69,16 @@ const Tool = (props) => {
     tabs.splice(iuser, 1)
   }
 
-  return (<TabbedPageContainer
-    title={trans('workspace_management', {}, 'tools')}
-    redirect={[
-      {from: '/', exact: true, to: '/users'}
-    ]}
-    tabs={tabs}
-  />
-
-)}
+  return (
+    <TabbedPageContainer
+      title={trans('workspace_management', {}, 'tools')}
+      redirect={[
+        {from: '/', exact: true, to: '/users'}
+      ]}
+      tabs={tabs}
+    />
+  )
+}
 
 const UserTool = connect(
   state => ({

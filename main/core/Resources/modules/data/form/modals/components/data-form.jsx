@@ -76,16 +76,15 @@ class DataFormModal extends Component {
         >
           {this.props.children}
         </Form>
-          <button
-            className="modal-btn btn btn-primary"
-            disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
-            onClick={this.save}
-          >
-            {this.props.saveButtonText}
-        </button>
-      </BaseModal>
-    )
-  }
+        <button
+          className="modal-btn btn btn-primary"
+          disabled={!this.state.pendingChanges || (this.state.validating && !isEmpty(this.state.errors))}
+          onClick={this.save}
+        >
+          {this.props.saveButtonText}
+      </button>
+    </BaseModal>
+  )}
 }
 
 DataFormModal.propTypes = {
