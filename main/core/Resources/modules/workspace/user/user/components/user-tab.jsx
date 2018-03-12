@@ -74,7 +74,7 @@ const ConnectedActions = connect(
           url: ['apiv2_user_list'],
           autoload: true
         },
-        handleSelect: (selectedGroups) => {
+        handleSelect: (users) => {
           dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
             icon: 'fa fa-fw fa-buildings',
             title: trans('add_roles'),
@@ -86,8 +86,8 @@ const ConnectedActions = connect(
               url: generateUrl('apiv2_workspace_list_roles', {id: workspace.uuid}),
               autoload: true
             },
-            handleSelect: (selectedRoles) => {
-              alert('done')
+            handleSelect: (roles) => {
+              roles.forEach(role => dispatch(actions.addUsersToRole(role, users)))
             }
           }))
         }

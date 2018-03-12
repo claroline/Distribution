@@ -19,22 +19,9 @@ actions.open = (formName, id = null, defaultProps) => {
   }
 }
 
-actions.addGroups = (id, groups) => ({
+actions.addUsersToRole = (role, users)  => ({
   [API_REQUEST]: {
-    url: url(['apiv2_user_add_groups', {id: id}], {ids: groups}),
-    request: {
-      method: 'PATCH'
-    },
-    success: (data, dispatch) => {
-      dispatch(listActions.invalidateData('users.list'))
-      dispatch(listActions.invalidateData('users.current.groups'))
-    }
-  }
-})
-
-actions.addRoles = (id, roles) => ({
-  [API_REQUEST]: {
-    url: url(['apiv2_user_add_roles', {id: id}], {ids: roles}),
+    url: url(['apiv2_role_add_users', {id: role}], {ids: users}),
     request: {
       method: 'PATCH'
     },
