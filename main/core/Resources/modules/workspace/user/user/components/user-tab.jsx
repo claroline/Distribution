@@ -18,9 +18,9 @@ import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {PageAction} from '#/main/core/layout/page'
 import {select}  from '#/main/core/workspace/user/selectors'
 import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
-
-import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
-
+//we have an issue because we a have to use the same definition for both selection modal.
+//grouplist only displays name so it's ok as a workaround
+import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
 const UserTabActionsComponent = props =>
@@ -70,8 +70,9 @@ const ConnectedActions = connect(
         title: trans('add_user'),
         confirmText: trans('add'),
         name: 'users.picker',
-        definition: UserList.definition,
-        card: UserList.card,
+        //only the name goes here
+        definition: GroupList.definition,
+        card: GroupList.card,
         fetch: {
           url: ['apiv2_user_list'],
           autoload: true
