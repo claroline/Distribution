@@ -5,6 +5,10 @@ import {UserTool} from '#/main/core/workspace/user/components/tool.jsx'
 
 import '#/main/core/workspace/user/modals'
 
+import {registerUserTypes} from '#/main/core/user/data'
+
+registerUserTypes()
+
 // mount the react application
 bootstrap(
   // app DOM container (also holds initial app data as data attributes)
