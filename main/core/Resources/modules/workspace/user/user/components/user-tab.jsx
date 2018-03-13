@@ -23,26 +23,27 @@ import {getModalDefinition} from '#/main/core/workspace/user/role/modal'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
-const UserTabActionsComponent = props =>
-  <PageActions>
-    {getPermissionLevel(currentUser(), props.workspace) === ADMIN &&
-      <FormPageActionsContainer
-        formName="users.current"
-        target={(user, isNew) => isNew ?
-          ['apiv2_user_create'] :
-          ['apiv2_user_update', {id: user.id}]
-        }
-        opened={!!matchPath(props.location.pathname, {path: '/users/form'})}
-        open={{
-          icon: 'fa fa-plus',
-          label: trans('add_user'),
-          action: '#/users/form'
-        }}
-        cancel={{
-          action: () => navigate('/users')
-        }}
-      />
-    }
+const UserTabActionsComponent = props => {
+  return(
+    <PageActions>
+      {getPermissionLevel(currentUser(), props.workspace) === ADMIN &&
+        <FormPageActionsContainer
+          formName="users.current"
+          target={(user, isNew) => isNew ?
+            ['apiv2_user_create'] :
+            ['apiv2_user_update', {id: user.id}]
+          }
+          opened={!!matchPath(props.location.pathname, {path: '/users/form'})}
+          open={{
+            icon: 'fa fa-plus',
+            label: trans('add_user'),
+            action: '#/users/form'
+          }}
+          cancel={{
+            action: () => navigate('/users')
+          }}
+        />
+      }
     <PageAction
       id='add-role'
       title={trans('add_role')}
@@ -51,7 +52,8 @@ const UserTabActionsComponent = props =>
       action={() => props.register(props.workspace)}
       primary={false}
     />
-  </PageActions>
+  </PageActions>)
+}
 
 UserTabActionsComponent.propTypes = {
   workspace: T.object,

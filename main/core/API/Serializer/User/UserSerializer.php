@@ -401,8 +401,11 @@ class UserSerializer
         //it's usefull if we want to create a user with a list of roles
         if (isset($data['roles'])) {
             foreach ($data['roles'] as $role) {
-                $role = $this->container->get('claroline.api.serializer')->deserialize('Claroline\CoreBundle\Entity\Role', $data);
-                $user->addRole($role);
+                $role = $this->container->get('claroline.api.serializer')
+                    ->deserialize('Claroline\CoreBundle\Entity\Role', $data);
+                if ($role->getId()) {
+                    $user->addRole($role);
+                }
             }
         }
 
