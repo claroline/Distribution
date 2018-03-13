@@ -44,15 +44,16 @@ const UserTabActionsComponent = props => {
           }}
         />
       }
-    <PageAction
-      id='add-role'
-      title={trans('add_role')}
-      icon={'fa fa-id-badge'}
-      disabled={false}
-      action={() => props.register(props.workspace)}
-      primary={false}
-    />
-  </PageActions>)
+      <PageAction
+        id='add-role'
+        title={trans('add_role')}
+        icon={'fa fa-id-badge'}
+        disabled={false}
+        action={() => props.register(props.workspace)}
+        primary={false}
+      />
+    </PageActions>
+  )
 }
 
 UserTabActionsComponent.propTypes = {
