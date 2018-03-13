@@ -27,24 +27,24 @@ const Parameters = () =>
         {
           name: 'registration.validation',
           type: 'boolean',
-          label: trans('validation')
+          label: trans('registration_validation')
         }, {
           name: 'registration.selfRegistration',
           type: 'boolean',
-          label: trans('selfRegistration')
+          label: trans('public_registration')
         }, {
           name: 'registration.selfUnregistration',
           type: 'boolean',
-          label: trans('selfUnregistration')
+          label: trans('public_unregistration')
         }, {
           name: 'display.displayable',
           type: 'boolean',
-          label: trans('displayable')
+          label: trans('displayable_in_workspace_list')
         },
         {
           name: 'restrictions.maxUsers',
           type: 'number',
-          label: trans('max_users')
+          label: trans('workspace_max_users')
         }
       ]
     }]}
