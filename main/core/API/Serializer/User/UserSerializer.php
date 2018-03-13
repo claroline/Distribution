@@ -217,13 +217,13 @@ class UserSerializer
                         $publicUser['description'] = $user->getDescription();
                         break;
                     case 'email':
-                        $publicUser['mail'] = $user->getMail();
+                        $publicUser['mail'] = $user->getEmail();
                         break;
                     case 'phone':
                         $publicUser['phone'] = $user->getPhone();
                         break;
                     case 'sendMail':
-                        $publicUser['mail'] = $user->getMail();
+                        $publicUser['mail'] = $user->getEmail();
                         $publicUser['allowSendMail'] = true;
                         break;
                     case 'sendMessage':
