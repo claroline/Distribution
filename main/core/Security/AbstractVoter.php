@@ -154,7 +154,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
      */
     private function supportsAction($action)
     {
-        if (!$this->getSupportedActions()) {
+        if (null === $this->getSupportedActions()) {
             return true;
         }
 
