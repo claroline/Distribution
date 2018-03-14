@@ -4,7 +4,9 @@
     <div
         class="page-container video-player-container"
         data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
+        data-video="{{ _resource | api_serialize | json_encode | raw | escape }}"
         data-url="{{ url('claro_file_get_media', {'node': _resource.resourceNode.id}) | json_encode | raw | escape }}"
+        data-tracks="{{ tracks | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

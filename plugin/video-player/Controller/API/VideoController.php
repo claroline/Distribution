@@ -79,7 +79,7 @@ class VideoController extends FOSRestController
         $data = $this->request->request->get('track');
         $isDefault = isset($data['is_default']) ? $data['is_default'] : false;
 
-        return $this->videoManager->editTrack($track,  $data['lang'], $data['label'], $isDefault);
+        return $this->videoManager->editTrack($track, $data['lang'], $data['label'], $isDefault);
     }
 
     /**
