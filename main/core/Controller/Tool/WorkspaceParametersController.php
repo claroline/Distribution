@@ -150,7 +150,7 @@ class WorkspaceParametersController extends Controller
         if ($workspace->getSelfRegistration()) {
             $url = $this->router->generate(
                 'claro_workspace_subscription_url_generate',
-                ['workspace' => $workspace->getId()],
+                ['slug' => $workspace->getSlug()],
                 true
             );
         } else {
@@ -221,20 +221,9 @@ class WorkspaceParametersController extends Controller
 
         $user = $this->tokenStorage->getToken()->getUser();
 
-        if ($workspace->getSelfRegistration()) {
-            $url = $this->router->generate(
-                'claro_workspace_subscription_url_generate',
-                ['workspace' => $workspace->getId()],
-                true
-            );
-        } else {
-            $url = '';
-        }
-
         return [
             'form' => $form->createView(),
             'workspace' => $workspace,
-            'url' => $url,
             'user' => $user,
         ];
     }
@@ -260,44 +249,6 @@ class WorkspaceParametersController extends Controller
         );
 
         return new Response($event->getContent());
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspace}/subscription/url/generate",
-     *     name="claro_workspace_subscription_url_generate"
-     * )
-     *
-     * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:generate_url_subscription.html.twig")
-     *
-     * @param Workspace $workspace
-     *
-     * @return Response
-     */
-    public function urlSubscriptionGenerateAction(Workspace $workspace)
-    {
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if ('anon.' === $user) {
-            return $this->redirect(
-                $this->generateUrl(
-                    'claro_workspace_subscription_url_generate_anonymous',
-                    [
-                        'workspace' => $workspace->getId(),
-                        'toolName' => 'home',
-                    ]
-                )
-            );
-        } else {
-            return $this->redirect(
-                $this->generateUrl(
-                    'claro_workspace_subscription_url_generate_user',
-                    [
-                        'workspace' => $workspace->getId(),
-                    ]
-                )
-            );
-        }
     }
 
     /**
