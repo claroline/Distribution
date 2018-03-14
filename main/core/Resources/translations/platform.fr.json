@@ -1592,5 +1592,6 @@
     "external": "Externe",
     "internal": "Interne",
     "force_organization_creation": "Forcer l'ajout d'une organization à l'utilisateur lors de l'inscription",
+    "allow_workspace_registration": "Permettre l'inscription aux workspaces lors de l'inscription",
     "workspace_user_register_validation_message": "Voulez-vous vraiment inscrire les utilisateurs suivants: [%users%] ?"
 }
