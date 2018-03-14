@@ -59,15 +59,15 @@ const DataSeries = {
     data: T.object.isRequired,
     yScale: T.func.isRequired,
     xScale: T.func.isRequired,
-    xValues: T.array.isRequired,
-    yValues: T.array.isRequired,
     height: T.number.isRequired,
     color: T.string.isRequired,
-    altColor: T.string.isRequired
+    altColor: T.string.isRequired,
+    showArea: T.bool
   },
   defaultProps: {
     color: '#337ab7',
-    altColor: 'brown'
+    altColor: 'brown',
+    showArea: false
   }
 }
 

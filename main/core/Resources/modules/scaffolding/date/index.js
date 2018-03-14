@@ -38,6 +38,40 @@ function getDisplayFormat(long = false, withTime = false) {
   return displayFormat
 }
 
+/**
+ * Gets the display format for d3 date charts
+ * Converts between Moment formats to d3 formats
+ *
+ * @return {string} - the d3 date format according to locale
+ */
+function getD3DisplayFormat() {
+  let displayFormat = moment.localeData().longDateFormat('L')
+  let d3Format = [], dateSeparator = '/'
+  let dateChunks = displayFormat.split(dateSeparator)
+  if (dateChunks.length < 3) {
+    dateSeparator = '-'
+    dateChunks = displayFormat.split(dateSeparator)
+  }
+  for (let chunk of dateChunks) {
+    switch (chunk) {
+      case 'YYYY': {
+        d3Format.push('%Y')
+        break
+      }
+      case 'MM': {
+        d3Format.push('%m')
+        break
+      }
+      case 'DD': {
+        d3Format.push('%d')
+        break
+      }
+    }
+  }
+  
+  return d3Format.join(dateSeparator)
+}
+
 function isValidDate(value, format = null) {
   if (format) {
     return moment(value, format, true).isValid()
@@ -78,6 +112,15 @@ function displayDate(apiDate, long = false, withTime = false) {
 }
 
 /**
+ * Returns a date object based on api received date
+ * @param {String} apiDate
+ * @returns {Date | false} - Returns a date object or false if apiDate is not valid
+ */
+function apiToDateObject(apiDate) {
+  return isValidDate(apiDate, getApiFormat()) && moment(apiDate, getApiFormat()).toDate()
+}
+
+/**
  * Gets API now value.
  *
  * @return {string}
@@ -92,5 +135,7 @@ export {
   isValidDate,
   apiDate,
   displayDate,
-  now
+  now,
+  apiToDateObject,
+  getD3DisplayFormat
 }
