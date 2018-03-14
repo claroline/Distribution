@@ -16,6 +16,7 @@ import {Facet} from '#/main/core/user/registration/components/facet.jsx'
 import {Required} from '#/main/core/user/registration/components/required.jsx'
 import {Optional} from '#/main/core/user/registration/components/optional.jsx'
 import {Organization} from '#/main/core/user/registration/components/organization.jsx'
+import {Workspace} from '#/main/core/user/registration/components/workspace.jsx'
 
 import {select} from '#/main/core/user/registration/selectors'
 
@@ -45,6 +46,14 @@ const RegistrationForm = props => {
       path: '/organization',
       title: 'Organization',
       component: Organization
+    })
+  }
+
+  if (props.options.allowWorkspace) {
+    steps.push({
+      path: '/workspace',
+      title: 'Workspace',
+      component: Workspace
     })
   }
 

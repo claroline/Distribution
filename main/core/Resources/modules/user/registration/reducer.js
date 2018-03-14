@@ -9,6 +9,7 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 export const reducer = makePageReducer({}, {
   termOfService: (state = null) => state,
   facets: (state = []) => state,
+  workspaces: (state = []) => state,
   options: makeReducer({}, {
     /**
      * Redirects user after successful registration.
