@@ -16,6 +16,10 @@ export const BAR_CHART = 'BAR'
 export const PIE_CHART = 'PIE'
 export const GAUGE_CHART = 'GAUGE'
 
+export const DATE_DATA_TYPE = 'DATE'
+export const NUMBER_DATA_TYPE = 'NUMBER'
+export const STRING_DATA_TYPE = 'STRING'
+
 export const CHART_TYPES = [LINE_CHART, BAR_CHART, PIE_CHART, GAUGE_CHART]
 
 export const DATA_SERIES = {

@@ -19,7 +19,7 @@ import {
 import {Logs} from '#/main/core/tools/workspace/logs/components/overview/list.jsx'
 import {UserLogs} from '#/main/core/tools/workspace/logs/components/users/list.jsx'
 import {LogDetails} from '#/main/core/tools/workspace/logs/components/overview/details.jsx'
-import {actions as logActions} from  '#/main/core/tools/workspace/logs/actions.js'
+import {actions as logActions} from  '#/main/core/tools/workspace/logs/actions'
 
 const Actions = (props) =>
   <PageActions>

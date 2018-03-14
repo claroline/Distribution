@@ -85,7 +85,7 @@ class LogManager
                 $prevDate->add(new \DateInterval('P1D'));
                 ++$idx;
             }
-            $chartData["c${idx}"] = ['xData' => $value['date']->format('Y-m-d\TH:i:s'), 'yData' => $value['total']];
+            $chartData["c${idx}"] = ['xData' => $value['date']->format('Y-m-d\TH:i:s'), 'yData' => floatval($value['total'])];
             $prevDate = $value['date']->add(new \DateInterval('P1D'));
             ++$idx;
         }

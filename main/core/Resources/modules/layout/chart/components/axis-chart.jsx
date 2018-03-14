@@ -5,7 +5,7 @@ import { implementPropTypes } from '#/main/core/scaffolding/prop-types'
 import {AxisChart as ChartTypes} from '#/main/core/layout/chart/prop-types'
 import {Chart} from '#/main/core/layout/chart/components/chart.jsx'
 import {Axis} from '#/main/core/layout/chart/components/axis.jsx'
-import {scaleAxis} from '#/main/core/layout/chart/utils'
+import {scaleAxis, formatData} from '#/main/core/layout/chart/utils'
 import {
   AXIS_TYPE_X,
   AXIS_TYPE_Y,
@@ -23,14 +23,12 @@ import {
  * }
  */
 const AxisChart = props => {
-  const yValues = Object.keys(props.data).map(key => { return props.data[key].yData })
-  const xValues = Object.keys(props.data).map(key => { return props.data[key].xData })
-
+  const formattedData = formatData(props.data)
   const width = props.width - props.margin.left - props.margin.right
   const height = props.height - props.margin.top - props.margin.bottom
 
-  const yScale = scaleAxis(yValues, AXIS_TYPE_Y, height, props.minMaxAsYDomain)
-  const xScale = scaleAxis(xValues, AXIS_TYPE_X, width)
+  const yScale = scaleAxis(formattedData.y.values, AXIS_TYPE_Y, formattedData.y.type, height, props.minMaxAsYDomain)
+  const xScale = scaleAxis(formattedData.x.values, AXIS_TYPE_X, formattedData.x.type, width)
 
   return (
     <Chart
@@ -39,32 +37,33 @@ const AxisChart = props => {
       margin={props.margin}
     >
       {React.createElement(DATA_SERIES[props.type], {
-        data: props.data,
+        data: formattedData,
         height: height,
         yScale: yScale,
         xScale: xScale,
-        xValues: xValues,
-        yValues: yValues,
         color: props.color,
-        altColor: props.altColor
+        altColor: props.altColor,
+        showArea: props.showArea
       })}
 
       <Axis
         height={height}
         width={width}
         margin={props.margin}
-        values={xValues}
+        values={formattedData.x.values}
         scale={xScale}
         type={AXIS_TYPE_X}
+        dataType={formattedData.x.type}
         label={props.xAxisLabel}
       />
       <Axis
         height={height}
         width={width}
         margin={props.margin}
-        values={yValues}
+        values={formattedData.y.values}
         scale={yScale}
         type={AXIS_TYPE_Y}
+        dataType={formattedData.y.type}
         label={props.yAxisLabel}
         ticksAsValues={props.ticksAsYValues}
       />
@@ -73,7 +72,6 @@ const AxisChart = props => {
 }
 
 implementPropTypes(AxisChart, ChartTypes, {
-  data: T.object.isRequired,
   type: T.oneOf(CHART_TYPES).isRequired
 }, {
   width: 550,

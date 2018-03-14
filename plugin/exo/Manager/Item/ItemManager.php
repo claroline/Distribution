@@ -339,7 +339,7 @@ class ItemManager
                 }
 
                 // for each answer get corresponding correction
-                if ($definition instanceof AnswerableItemDefinitionInterface) {
+                if ($definition instanceof AnswerableItemDefinitionInterface && isset($answersData[$i])) {
                     $corrected = $definition->correctAnswer($question->getInteraction(), $answersData[$i]);
                     $correctedAnswers[] = $corrected;
                 }

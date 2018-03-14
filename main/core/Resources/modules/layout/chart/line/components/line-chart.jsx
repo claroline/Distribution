@@ -1,5 +1,4 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 
 import { implementPropTypes } from '#/main/core/scaffolding/prop-types'
 import {AxisChart as ChartTypes} from '#/main/core/layout/chart/prop-types'
@@ -23,16 +22,14 @@ const LineChart = props =>
     type={LINE_CHART}
   />
 
-implementPropTypes(LineChart, ChartTypes, {
-  data: T.object.isRequired
-}, {
+implementPropTypes(LineChart, ChartTypes, {}, {
   width: 550,
   height: 400,
   margin: {
     top: 20,
     right: 20,
     bottom: 20,
-    left: 30
+    left: 60
   }
 })
 
