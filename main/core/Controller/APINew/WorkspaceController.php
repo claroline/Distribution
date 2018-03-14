@@ -19,11 +19,14 @@ use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasUsersTrait;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Manager\ResourceManager;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @ApiMeta(class="Claroline\CoreBundle\Entity\Workspace\Workspace", ignore={})
@@ -35,6 +38,23 @@ class WorkspaceController extends AbstractCrudController
     use HasRolesTrait;
     use HasUsersTrait;
     use HasGroupsTrait;
+
+    protected $resourceManager;
+    private $translator;
+
+    /**
+     * @DI\InjectParams({
+     *     "resourceManager" = @DI\Inject("claroline.manager.resource_manager"),
+     *     "translator"      = @DI\Inject("translator")
+     * })
+     *
+     * @param ResourceManager $resourceManager
+     */
+    public function __construct(ResourceManager $resourceManager, TranslatorInterface $translator)
+    {
+        $this->resourceManager = $resourceManager;
+        $this->translator = $translator;
+    }
 
     public function getName()
     {
@@ -155,6 +175,54 @@ class WorkspaceController extends AbstractCrudController
         $this->om->endFlushSuite();
 
         return new JsonResponse('success');
+    }
+
+    /**
+     * @Route(
+     *    "/workspaces/delete",
+     *    name="apiv2_workspace_delete_bulk_override"
+     * )
+     * @Method("DELETE")
+     *
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function deleBulkAction(Request $request)
+    {
+        $workspaces = parent::decodeIdsString($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+        $errors = [];
+
+        foreach ($workspaces as $workspace) {
+            $notDeletableResources = $this->resourceManager->getNotDeletableResourcesByWorkspace($workspace);
+
+            if (count($notDeletableResources)) {
+                $errors[$workspace->getUuid()] = $this->translator->trans(
+                    'workspace_not_deletable_resources_error_message',
+                    ['%workspaceName%' => $workspace->getName()],
+                    'platform'
+                );
+            }
+        }
+        if (empty($errors)) {
+            return parent::deleteBulkAction($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+        } else {
+            $validIds = [];
+            $ids = $request->query->get('ids');
+
+            foreach ($ids as $id) {
+                if (!isset($errors[$id])) {
+                    $validIds[] = $id;
+                }
+            }
+            if (count($validIds) > 0) {
+                $request->query->set('ids', $validIds);
+                parent::deleteBulkAction($request, 'Claroline\CoreBundle\Entity\Workspace\Workspace');
+            }
+
+            return new JsonResponse(['errors' => $errors], 422);
+        }
     }
 
     /**
