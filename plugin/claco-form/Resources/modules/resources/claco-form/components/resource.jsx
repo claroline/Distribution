@@ -107,7 +107,8 @@ const Resource = props =>
       routes={[
         {
           path: '/',
-          component: getHome(props.defaultHome)
+          component: getHome(props.defaultHome),
+          exact: true
         }, {
           path: '/menu',
           component: ClacoFormMainMenu
