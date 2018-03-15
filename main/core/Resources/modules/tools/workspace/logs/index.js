@@ -16,6 +16,7 @@ bootstrap(
   reducer,
   // initial data
   initialData => ({
-    workspaceId: initialData.workspaceId
+    workspaceId: initialData.workspaceId,
+    actions: initialData.actions
   })
 )

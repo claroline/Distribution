@@ -4,6 +4,7 @@
     <div
             class="page-container logs-container"
             data-workspace-id="{{ workspace.id | json_encode | raw | escape }}"
+            data-actions="{{ actions | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}
