@@ -403,7 +403,7 @@ class UserSerializer
             foreach ($data['roles'] as $role) {
                 $role = $this->container->get('claroline.api.serializer')
                     ->deserialize('Claroline\CoreBundle\Entity\Role', $data);
-                if ($role->getId()) {
+                if ($role && $role->getId()) {
                     $user->addRole($role);
                 }
             }

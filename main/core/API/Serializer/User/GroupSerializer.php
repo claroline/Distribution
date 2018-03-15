@@ -93,7 +93,9 @@ class GroupSerializer
                 $role = $this->om
                   ->getRepository('Claroline\CoreBundle\Entity\Role')
                   ->findOneBy(['id' => $role['id']]);
-                $group->addRole($role);
+                if ($role && $role->getId()) {
+                    $group->addRole($role);
+                }
             }
         }
 
