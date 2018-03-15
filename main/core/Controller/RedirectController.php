@@ -47,7 +47,7 @@ class RedirectController extends Controller
      */
     public function urlSubscriptionGenerateAction(Workspace $workspace)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         if ('anon.' === $user) {
             return $this->redirect(

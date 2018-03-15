@@ -25,10 +25,10 @@
     </div>
     <div class="panel-body">
         <div class="well">
-            {% set url = '<a href="' ~ path('claro_workspace_subscription_url_generate_user', {'slug': workspace.getSlug()}) ~ '">' ~ 'here'|trans({}, 'platform') ~ '</a>' %}
+            {% set url = '<a href="' ~ path('claro_workspace_subscription_url_generate_user', {'workspace': workspace.getId()}) ~ '">' ~ 'here'|trans({}, 'platform') ~ '</a>' %}
             {{ 'register_to_workspace_account_exists'|trans({'%link%': url}, 'platform') | raw }}
         </div>
-        <form role="form" method="post" action="{{ path('claro_workspace_subscription_url_generate_anonymous',{'slug':workspace.getSlug()}) }}" {{ form_enctype(form) }}>
+        <form role="form" method="post" action="{{ path('claro_workspace_subscription_url_generate_anonymous',{'workspace':workspace.getId()}) }}" {{ form_enctype(form) }}>
             {{ form_widget(form) }}
             <button type="submit" class="btn btn-primary">{{ 'ok'|trans({}, 'platform') }}</button>
         </form>
