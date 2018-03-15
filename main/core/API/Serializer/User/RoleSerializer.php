@@ -153,7 +153,8 @@ class RoleSerializer
             if (empty($data['workspace'])) {
                 $role->setWorkspace(null);
             } else {
-                $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')->findOneBy(['uuid' => $data['workspace']['uuid']]);
+                $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')
+                    ->findOneBy(['uuid' => $data['workspace']['uuid']]);
                 $role->setWorkspace($workspace);
             }
         }
@@ -180,5 +181,13 @@ class RoleSerializer
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Role';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/main/core/role.json';
     }
 }
