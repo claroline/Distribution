@@ -358,7 +358,11 @@ class DataTree extends Component {
                   actions={getRowActions(actions)}
                   primaryAction={this.props.primaryAction}
                   selected={this.props.selection ? this.props.selection.current : []}
-                  onSelect={this.props.selection ? this.props.selection.toggle : undefined}
+                  onSelect={
+                    props.selection ? () => {
+                      props.selection.toggle(row, !isRowSelected(row, props.selection ? props.selection.current : []))
+                    }: undefined
+                  }
                   card={this.props.card}
 
                   onDrop={() => {

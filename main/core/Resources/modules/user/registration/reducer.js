@@ -5,8 +5,10 @@ import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {url} from '#/main/core/api/router'
 import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
-import {LIST_TOGGLE_SELECT} from '#/main/core/data/list/actions'
+import {LIST_TOGGLE_SELECT, LIST_TOGGLE_SELECT_ALL} from '#/main/core/data/list/actions'
+import cloneDeep from 'lodash/cloneDeep'
 
+const getRoleCollaboratorRole = (workspace) => workspace.roles.find(role => role.name.indexOf('COLLABORATOR') > -1)
 
 export const reducer = makePageReducer({}, {
   workspaces: makeListReducer('workspaces',
@@ -33,12 +35,23 @@ export const reducer = makePageReducer({}, {
     }
   }),
   user: makeFormReducer('user', {
-    new: true
+    new: true,
+    data: {roles: []}
   }, {
     data: makeReducer({}, {
       [LIST_TOGGLE_SELECT+'/workspaces']: (state, action) => {
+        const user = cloneDeep(state)
+
+        action.selected ?
+          user.roles.push(getRoleCollaboratorRole(action.row)):
+          user.roles.splice(user.roles.indexOf(role => role.id === getRoleCollaboratorRole(action.row).id))
+
+        return user
+      },
+      [LIST_TOGGLE_SELECT_ALL+'workspaces']: (state, action) => {
+        const user = cloneDeep(state)
         console.log(action)
-        return state
+        return user
       }
     })
   })

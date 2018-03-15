@@ -182,7 +182,11 @@ const DataTable = props =>
           primaryAction={props.primaryAction}
           actions={getRowActions(props.actions)}
           selected={isRowSelected(row, props.selection ? props.selection.current : [])}
-          onSelect={props.selection ? () => props.selection.toggle(row) : null}
+          onSelect={
+            props.selection ? () => {
+              props.selection.toggle(row, !isRowSelected(row, props.selection ? props.selection.current : []))
+            }: null
+          }
         />
       )}
     </tbody>
