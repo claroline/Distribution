@@ -12,7 +12,8 @@ const reducer = makePageReducer([], {
     [RESET_LOG]: (state, action) => action.log,
     [LOAD_LOG]: (state, action) => action.log
   }),
-  workspaceId: makeReducer(null, {}, {}),
+  workspaceId: makeReducer(null, {}),
+  actions: makeReducer([], {}),
   chart: combineReducers({
     invalidated: makeReducer(true, {
       [LIST_FILTER_ADD+'/logs'] : () => true,

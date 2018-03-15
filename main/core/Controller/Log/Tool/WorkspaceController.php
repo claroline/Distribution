@@ -12,6 +12,8 @@
 namespace Claroline\CoreBundle\Controller\Log\Tool;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\Log\LogGenericEvent;
+use Claroline\CoreBundle\Manager\EventManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -26,14 +28,19 @@ class WorkspaceController extends Controller
 {
     private $translator;
 
+    /** @var \Claroline\CoreBundle\Manager\EventManager */
+    private $eventManager;
+
     /**
      * @DI\InjectParams({
-     *     "translator"     = @DI\Inject("translator")
+     *     "translator"     = @DI\Inject("translator"),
+     *     "eventManager" = @DI\Inject("claroline.event.manager")
      * })
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, EventManager $eventManager)
     {
         $this->translator = $translator;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -65,8 +72,10 @@ class WorkspaceController extends Controller
             throw new AccessDeniedException();
         }
 
-        //return $this->get('claroline.log.manager')->getWorkspaceList($workspace, $page);
-        return ['workspace' => $workspace];
+        return [
+            'workspace' => $workspace,
+            'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
+        ];
     }
 
     /**
@@ -99,7 +108,6 @@ class WorkspaceController extends Controller
             throw new AccessDeniedException();
         }
 
-        // return $this->get('claroline.log.manager')->countByUserWorkspaceList($workspace, $page);
         return ['workspace' => $workspace];
     }
 

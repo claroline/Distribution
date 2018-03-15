@@ -68,9 +68,12 @@ class LogsList extends Component {
               }
             }, {
               name: 'action',
-              type: 'string',
+              type: 'enum-plus',
               label: trans('action'),
-              displayed: true
+              displayed: true,
+              options: {
+                choices: props.actions
+              }
             }, {
               name: 'doer.name',
               type: 'string',
@@ -104,6 +107,7 @@ class LogsList extends Component {
 
 LogsList.propTypes = {
   workspaceId: T.number.isRequired,
+  actions: T.array.isRequired,
   chart: T.object.isRequired,
   getChartData: T.func.isRequired,
   queryString: T.string
@@ -113,6 +117,7 @@ const LogsListContainer = connect(
   state => ({
     workspaceId: state.workspaceId,
     chart: state.chart,
+    actions: state.actions,
     queryString: select.queryString(select.list(state, 'logs'))
   }),
   dispatch => ({
