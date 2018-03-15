@@ -174,7 +174,9 @@ const DataGrid = props =>
           label={t('list_select_all')}
           labelChecked={t('list_deselect_all')}
           checked={0 < props.selection.current.length}
-          onChange={() => props.selection.toggleAll(props.data)}
+          onChange={(val) => {
+            val.target.checked ? props.selection.toggleAll(props.data): props.selection.toggleAll([])
+          }}
         />
       }
 
