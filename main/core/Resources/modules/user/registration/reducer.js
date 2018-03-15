@@ -1,5 +1,5 @@
 
-import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
+import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makePageReducer} from '#/main/core/layout/page/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
@@ -48,9 +48,9 @@ export const reducer = makePageReducer({}, {
 
         return user
       },
-      [LIST_TOGGLE_SELECT_ALL+'workspaces']: (state, action) => {
+      [LIST_TOGGLE_SELECT_ALL+'workspaces']: (state) => {
         const user = cloneDeep(state)
-        console.log(action)
+        //console.log(action)
         return user
       }
     })

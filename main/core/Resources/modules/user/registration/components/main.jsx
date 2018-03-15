@@ -94,7 +94,8 @@ RegistrationForm.propTypes = {
   termOfService: T.string,
   register: T.func.isRequired,
   options: T.shape({
-    forceOrganizationCreation: T.bool
+    forceOrganizationCreation: T.bool,
+    allowWorkspace: T.bool
   }).isRequired
 }
 

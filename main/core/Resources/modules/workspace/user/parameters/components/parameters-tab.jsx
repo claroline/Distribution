@@ -1,4 +1,5 @@
 import React from 'react'
+import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {generateUrl} from '#/main/core/api/router'
@@ -56,7 +57,7 @@ const Parameters = props =>
       }]}
     />
     <div className="panel panel-body">
-      <h4 class="panel-title">{trans('generate_url')}</h4> <br />
+      <h4 className="panel-title">{trans('generate_url')}</h4> <br />
       <div className="alert alert-info">
         {generateUrl('claro_workspace_subscription_url_generate', {slug: props.workspace.meta.slug}, true)}
       </div>
@@ -64,6 +65,11 @@ const Parameters = props =>
   </div>
 
 Parameters.propTypes = {
+  workspace: T.shape({
+    meta: T.shape({
+      slug: T.bool.isRequired
+    }).isRequired
+  }).isRequired
 }
 
 const ParametersTab = connect(
