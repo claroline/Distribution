@@ -103,7 +103,8 @@ const UserRegistration = connect(
     user: formSelect.data(formSelect.form(state, 'user')),
     facets: select.facets(state),
     termOfService: select.termOfService(state),
-    options: select.options(state)
+    options: select.options(state),
+    workspaces: select.workspaces(state)
   }),
   (dispatch) => ({
     register(user, termOfService) {
