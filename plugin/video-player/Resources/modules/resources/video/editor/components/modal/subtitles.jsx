@@ -146,7 +146,7 @@ class Subtitles extends Component {
     })
   }
 
-  cancelTrackForm(id) {
+  cancelTrackForm() {
     this.setState({
       track: {},
       showForm: false,

@@ -13,6 +13,7 @@ namespace Claroline\VideoPlayerBundle\Controller\APINew;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,18 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TrackController extends AbstractCrudController
 {
+    private $fileDir;
+
+    /**
+     * @DI\InjectParams({
+     *      "fileDir" = @DI\Inject("%claroline.param.files_directory%")
+     * })
+     */
+    public function __construct($fileDir)
+    {
+        $this->fileDir = $fileDir;
+    }
+
     /**
      * @param Request $request
      * @param string  $class
@@ -49,6 +62,30 @@ class TrackController extends AbstractCrudController
             $this->serializer->serialize($object, $this->options['get']),
             201
         );
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function deleteBulkAction(Request $request, $class)
+    {
+        $tracks = parent::decodeIdsString($request, $class);
+
+        foreach ($tracks as $track) {
+            $trackFile = $track->getTrackFile();
+            $path = $this->fileDir.DIRECTORY_SEPARATOR.$trackFile->getHashName();
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+
+            $this->om->remove($trackFile);
+        }
+
+        return parent::deleteBulkAction($request, $class);
     }
 
     public function getName()

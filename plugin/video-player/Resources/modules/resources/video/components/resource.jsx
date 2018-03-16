@@ -63,7 +63,8 @@ Resource.propTypes = {
   }).isRequired,
   url: T.string.isRequired,
   canEdit: T.bool.isRequired,
-  canDownload: T.bool.isRequired
+  canDownload: T.bool.isRequired,
+  showModal: T.func.isRequired
 }
 
 const VideoPlayerResource = connect(
