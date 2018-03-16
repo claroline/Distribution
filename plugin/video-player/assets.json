@@ -5,5 +5,11 @@
       "watcher": "watcher/watch-video",
       "resource": "resources/video"
     }
+  },
+
+  "styles": {
+    "entry": {
+      "subtitles": "video/subtitles.less"
+    }
   }
 }

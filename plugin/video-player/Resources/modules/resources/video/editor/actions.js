@@ -23,12 +23,16 @@ actions.saveSubtitle = (track) => (dispatch) => {
       }
     })
   } else {
+    const formData = new FormData()
+    formData.append('track', JSON.stringify(track))
+    formData.append('file', track.file)
+
     dispatch({
       [API_REQUEST]: {
         url: generateUrl('apiv2_videotrack_create'),
         request: {
           method: 'POST',
-          body: JSON.stringify(track)
+          body: formData
         },
         success: (data, dispatch) => {
           dispatch(actions.addSubtitle(data))

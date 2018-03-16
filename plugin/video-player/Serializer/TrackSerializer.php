@@ -13,6 +13,7 @@ namespace Claroline\VideoPlayerBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Resource\File;
 use Claroline\CoreBundle\Manager\FileManager;
 use Claroline\VideoPlayerBundle\Entity\Track;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -95,6 +96,18 @@ class TrackSerializer
         $this->sipe('meta.lang', 'setLang', $data, $track);
         $this->sipe('meta.kind', 'setKind', $data, $track);
         $this->sipe('meta.default', 'setIsDefault', $data, $track);
+
+        if (isset($data['file'])) {
+            $trackFile = $this->fileManager->create(
+                new File(),
+                $data['file'],
+                $data['file']->getClientOriginalName(),
+                $data['file']->getMimeType(),
+                $video->getResourceNode()->getWorkspace()
+            );
+            $this->om->persist($trackFile);
+            $track->setTrackFile($trackFile);
+        }
 
         return $track;
     }

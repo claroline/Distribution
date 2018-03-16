@@ -28,7 +28,7 @@ function generateLangs() {
 }
 
 const SubtitleForm = props =>
-  <form>
+  <form className="video-subtitle-form">
     <SelectGroup
       id="lang-select"
       label={trans('lang')}
@@ -44,28 +44,34 @@ const SubtitleForm = props =>
       value={props.track.meta.default}
       onChange={value => props.updateProperty('default', value)}
     />
-    <FileGroup
-      id="subtitle-file-input"
-      label={trans('subtitle_file')}
-      value={null}
-      multiple={false}
-      error={null}
-      onChange={(file) => props.updateProperty('file', value)}
-    />
-    <button
-      className="btn btn-primary"
-      type="button"
-      onClick={() => props.save(props.track)}
-    >
-      {trans('save')}
-    </button>
-    <button
-      className="btn btn-default"
-      type="button"
-      onClick={() => props.cancel()}
-    >
-      {trans('cancel')}
-    </button>
+    {!props.track.autoId &&
+      <FileGroup
+        id="subtitle-file-input"
+        label={trans('subtitle_file')}
+        value={null}
+        autoUpload={false}
+        multiple={false}
+        error={null}
+        onChange={(file) => props.updateProperty('file', file)}
+      />
+    }
+    <div className="subtitle-form-btn-group">
+      <button
+        className="btn btn-primary"
+        type="button"
+        disabled={!props.track.meta.lang || (!props.track.autoId && !props.track.file)}
+        onClick={() => props.save(props.track)}
+      >
+        {trans('save')}
+      </button>
+      <button
+        className="btn btn-default"
+        type="button"
+        onClick={() => props.cancel()}
+      >
+        {trans('cancel')}
+      </button>
+    </div>
   </form>
 
 SubtitleForm.propTypes = {
@@ -83,10 +89,6 @@ class Subtitles extends Component {
       track: {},
       showForm: false,
       currentTrack: null
-      // theme: cloneDeep(props.theme),
-      // pendingChanges: false,
-      // validating: false,
-      // errors: {}
     }
     this.updateProperty = this.updateProperty.bind(this)
     this.saveTrackForm = this.saveTrackForm.bind(this)
@@ -97,14 +99,14 @@ class Subtitles extends Component {
 
     switch (property) {
       case 'lang':
-        track['meta']['lang'] = value
-        track['meta']['label'] = formConst.LANGS[value]['nativeName']
+        track['meta']['lang'] = value || ''
+        track['meta']['label'] = value ? formConst.LANGS[value]['nativeName'] : ''
         break
       case 'default':
         track['meta']['default'] = value
         break
       case 'file':
-        console.log(value)
+        track['file'] = value
         break
     }
     this.setState({track: track})
@@ -164,68 +166,78 @@ class Subtitles extends Component {
             {trans('subtitle_format_message')}
           </div>
 
-          {this.props.tracks.length > 0 ?
-            <div className="table-responsive">
-              <table className="table table-bordered">
-                <thead>
-                  <tr>
-                    <th>{trans('lang')}</th>
-                    <th className="text-center">{trans('is_default')}</th>
-                    <th className="text-center">{trans('actions')}</th>
+          <div className="table-responsive">
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th>{trans('lang')}</th>
+                  <th className="text-center">{trans('is_default')}</th>
+                  <th className="text-center">{trans('actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.props.tracks.length === 0 &&
+                  <tr key="track-row-empty">
+                    <td colSpan="3">
+                      <div className="alert alert-warning">
+                        {trans('no_subtitle')}
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {this.props.tracks.map(t => this.state.showForm && this.state.currentTrack === t.id ?
-                    <tr key={`track-row-${t.id}`}>
-                      <td colSpan="3">
-                        <SubtitleForm
-                          track={this.state.track}
-                          updateProperty={(prop, value) => this.updateProperty(prop, value)}
-                          save={this.saveTrackForm}
-                          cancel={() => this.cancelTrackForm()}
-                        />
-                      </td>
-                    </tr> :
-                    <tr key={`track-row-${t.id}`}>
-                      <td>{t.meta.label}</td>
-                      <td className="boolean-cell">
-                        {t.meta.default ?
-                          <span className="fa fa-fw fa-check true"/> :
-                          <span className="fa fa-fw fa-times false"/>
-                        }
-                      </td>
-                      <td className="text-center">
-                        <TooltipAction
-                          id="subtitle-edit"
-                          className="btn-link-default"
-                          icon="fa fa-fw fa-pencil"
-                          label={trans('edit_subtitle')}
-                          action={() => this.showTrackForm(t.id)}
-                        />
-                        <TooltipAction
-                          id="subtitle-remove"
-                          className="btn-link-danger"
-                          icon="fa fa-fw fa-trash-o"
-                          label={trans('delete_subtitle')}
-                          action={() => this.props.deleteSubtitle(t.id)}
-                        />
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div> :
-            <div className="alert alert-warning">
-              {trans('no_subtitle')}
-            </div>
-          }
-          {this.state.showForm && this.state.currentTrack === 'new' ?
-            <SubtitleForm
-              track={this.state.track}
-              updateProperty={(prop, value) => this.updateProperty(prop, value)}
-              save={this.saveTrackForm}
-              cancel={() => this.cancelTrackForm()}
-            /> :
+                }
+                {this.props.tracks.length > 0 && this.props.tracks.map(t => this.state.showForm && this.state.currentTrack === t.id ?
+                  <tr key={`track-row-${t.id}`}>
+                    <td colSpan="3">
+                      <SubtitleForm
+                        track={this.state.track}
+                        updateProperty={(prop, value) => this.updateProperty(prop, value)}
+                        save={this.saveTrackForm}
+                        cancel={() => this.cancelTrackForm()}
+                      />
+                    </td>
+                  </tr> :
+                  <tr key={`track-row-${t.id}`}>
+                    <td>{t.meta.label}</td>
+                    <td className="boolean-cell">
+                      {t.meta.default ?
+                        <span className="fa fa-fw fa-check true"/> :
+                        <span className="fa fa-fw fa-times false"/>
+                      }
+                    </td>
+                    <td className="text-center">
+                      <TooltipAction
+                        id="subtitle-edit"
+                        className="btn-link-default"
+                        icon="fa fa-fw fa-pencil"
+                        label={trans('edit_subtitle')}
+                        action={() => this.showTrackForm(t.id)}
+                      />
+                      <TooltipAction
+                        id="subtitle-remove"
+                        className="btn-link-danger"
+                        icon="fa fa-fw fa-trash-o"
+                        label={trans('delete_subtitle')}
+                        action={() => this.props.deleteSubtitle(t.id)}
+                      />
+                    </td>
+                  </tr>
+                )}
+                {this.state.showForm && this.state.currentTrack === 'new' &&
+                  <tr key="track-row-new">
+                    <td colSpan="3">
+                      <SubtitleForm
+                        track={this.state.track}
+                        updateProperty={(prop, value) => this.updateProperty(prop, value)}
+                        save={this.saveTrackForm}
+                        cancel={() => this.cancelTrackForm()}
+                      />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          {(!this.state.showForm || this.state.currentTrack !== 'new') &&
             <button
               className="btn btn-primary"
               onClick={() => this.showTrackForm('new')}

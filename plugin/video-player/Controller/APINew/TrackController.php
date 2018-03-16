@@ -14,6 +14,8 @@ namespace Claroline\VideoPlayerBundle\Controller\APINew;
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @ApiMeta(class="Claroline\VideoPlayerBundle\Entity\Track")
@@ -21,6 +23,34 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class TrackController extends AbstractCrudController
 {
+    /**
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function createAction(Request $request, $class)
+    {
+        $trackData = json_decode($request->request->get('track', false), true);
+        $files = $request->files->all();
+        $trackData['file'] = $files['file'];
+
+        $object = $this->crud->create(
+            $class,
+            $trackData,
+            $this->options['create']
+        );
+
+        if (is_array($object)) {
+            return new JsonResponse($object, 400);
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($object, $this->options['get']),
+            201
+        );
+    }
+
     public function getName()
     {
         return 'video_track';
