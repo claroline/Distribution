@@ -22,8 +22,8 @@ const Registration = props => {
           )}
         </ul>
       </div>
-
-  </div>)
+    </div>
+  )
 }
 
 Registration.propTypes = {

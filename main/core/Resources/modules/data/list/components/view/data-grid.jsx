@@ -29,9 +29,7 @@ const DataGridItem = props =>
     }}>
       <span className="item-icon-container">
         {typeof props.data.icon === 'string' ?
-          <span className={props.data.icon} />
-         :
-          props.data.icon
+          <span className={props.data.icon} />: props.data.icon
         }
       </span>
 
