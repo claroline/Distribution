@@ -72,7 +72,8 @@ class LogsList extends Component {
               label: trans('action'),
               displayed: true,
               options: {
-                choices: props.actions
+                choices: props.actions,
+                transDomain: 'log'
               }
             }, {
               name: 'doer.name',
