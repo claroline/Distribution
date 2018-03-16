@@ -377,8 +377,8 @@ class EventManager
     private function formatEventEntryForApi($key, $value)
     {
         return [
-            'label' => $key,
-            'value' => is_string($value) ? $value : '',
+            'label' => $this->translator->trans($key, [], 'resource'),
+            'value' => is_string($value) ? $value : uniqid('group', true),
             'choices' => is_array($value) ? $this->formatEventsTableForApi($value) : [],
         ];
     }

@@ -2,6 +2,7 @@ import {trans} from '#/main/core/translation'
 
 //import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {EnumPlusSearch} from '#/main/core/data/types/enum-plus/components/search.jsx'
+import {extractChoice, parseChoice, renderChoice} from '#/main/core/data/types/enum-plus/utils'
 
 const ENUM_PLUS_TYPE = 'enum-plus'
 
@@ -13,9 +14,9 @@ const enumPlusDefinition = {
     label: trans('enum_plus'),
     description: trans('enum_plus_desc')
   },
-  parse: (display, options) => Object.keys(options.choices).find(enumValue => display === options.choices[enumValue]),
-  render: (raw, options) => options.choices[raw],
-  validate: (value, options) => !!options.choices[value],
+  parse: (display, options) => parseChoice(display, options.choices, options.transDomain),
+  render: (raw, options) => renderChoice(raw, options.choices, options.transDomain),
+  validate: (value, options) => extractChoice(value, options.choices) !== null,
   components: {
     search: EnumPlusSearch
     //form: SelectGroup

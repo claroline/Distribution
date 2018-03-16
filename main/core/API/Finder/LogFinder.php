@@ -14,7 +14,6 @@ class LogFinder implements FinderInterface
 {
     public function __construct()
     {
-
     }
 
     /**
@@ -28,7 +27,7 @@ class LogFinder implements FinderInterface
      */
     public function configureQueryBuilder(QueryBuilder $qb, array $searches, array $sortBy = null)
     {
-        $qb->join('obj.resourceType', 'ort');
+        $qb->leftJoin('obj.resourceType', 'ort');
         $userJoin = false;
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
@@ -52,7 +51,13 @@ class LogFinder implements FinderInterface
                     $qb->setParameter('doer', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'dateLog':
-
+                    $qb->andWhere('obj.dateLog > :date')
+                        ->setParameter('date', $filterValue);
+                    break;
+                case 'action':
+                    $qb->andWhere('obj.action = :action')
+                        ->setParameter('action', $filterValue);
+                    break;
                 default:
                     if (is_string($filterValue)) {
                         $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
@@ -75,15 +80,6 @@ class LogFinder implements FinderInterface
         }
 
         return $qb;
-    }
-
-    public function fetchChartData(array $finderParams = [])
-    {
-        // get filters
-        $filters = array_merge_recursive($finderParams['filters'], $finderParams['hiddenFilters']);
-        $qb = $this->om->createQueryBuilder();
-        $qb->select('DISTINCT obj')
-            ->from($class, 'obj');
     }
 
     /** @return $string */
