@@ -14,6 +14,7 @@ export const reducer = makePageReducer({}, {
   workspaces: makeListReducer('workspaces',
     {filters: [{property: 'displayable', value: true}, {property: 'selfRegistration', value: true}]}
   ),
+  defaultWorkspaces: (state = null) => state,
   termOfService: (state = null) => state,
   facets: (state = []) => state,
   options: makeReducer({}, {

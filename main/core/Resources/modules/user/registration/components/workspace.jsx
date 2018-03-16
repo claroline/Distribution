@@ -17,8 +17,9 @@ const Workspace = () =>
     definition={WorkspaceList.definition}
     actions={[]}
     card={WorkspaceList.card}
+    selection={[23]}
   />
 
 export {
-Workspace
+  Workspace
 }

@@ -9,5 +9,10 @@ import {UserRegistration} from '#/main/core/user/registration/components/main.js
 bootstrap(
   '.user-registration-container',
   UserRegistration,
-  reducer
+  reducer,
+  (initialData) => Object.assign({}, initialData, {
+    workspaces: {
+      selected: initialData.defaultWorkspaces
+    }
+  })
 )

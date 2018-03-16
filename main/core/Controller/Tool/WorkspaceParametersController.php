@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Controller\Tool;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Entity\Tool\Tool;
 use Claroline\CoreBundle\Entity\User;
@@ -30,7 +31,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -266,37 +266,43 @@ class WorkspaceParametersController extends Controller
      */
     public function anonymousSubscriptionAction(Request $request, Workspace $workspace)
     {
-        if (!$workspace->getSelfRegistration()) {
-            throw new AccessDeniedHttpException();
+        $configHandler = $this->container->get('claroline.config.platform_config_handler');
+        $profilerSerializer = $this->container->get('claroline.serializer.profile');
+        $tosManager = $this->container->get('claroline.common.terms_of_service_manager');
+        $finder = $this->container->get('claroline.api.finder');
+
+        $allowWorkspace = $configHandler->getParameter('allow_workspace_at_registration');
+
+        $data = [
+          'facets' => $profilerSerializer->serialize([Options::REGISTRATION]),
+          'termOfService' => $configHandler->getParameter('terms_of_service') ?
+              $tosManager->getTermsOfService() : null,
+          'options' => [
+              'autoLog' => $configHandler->getParameter('auto_logging'),
+              'localeLanguage' => $configHandler->getParameter('locale_language'),
+              'defaultRole' => $configHandler->getParameter('default_role'),
+              'redirectAfterLoginOption' => $configHandler->getParameter('redirect_after_login_option'),
+              'redirectAfterLoginUrl' => $configHandler->getParameter('redirect_after_login_url'),
+              'userNameRegex' => $configHandler->getParameter('username_regex'),
+              'forceOrganizationCreation' => $configHandler->getParameter('force_organization_creation'),
+              'allowWorkspace' => $allowWorkspace,
+          ],
+      ];
+
+        if ($allowWorkspace) {
+            $data['workspaces'] = $finder->search('Claroline\CoreBundle\Entity\Workspace\Workspace', [
+              'filters' => [
+                  'displayable' => true,
+                  'selfRegistration' => true,
+              ],
+          ])['data'];
+        } else {
+            $data['workspaces'] = [];
         }
 
-        $form = $this->get('claroline.manager.registration_manager')->getRegistrationForm(new User());
-        $form->handleRequest($this->request);
+        $data['workspace'] = $workspace;
 
-        if ($form->isValid()) {
-            $user = $form->getData();
-            $this->userManager->createUser($user);
-            if ($workspace->getRegistrationValidation()) {
-                $this->workspaceManager->addUserQueue($workspace, $user);
-                $flashBag = $request->getSession()->getFlashBag();
-                $translator = $this->get('translator');
-                $flashBag->set('warning', $translator->trans('account_created_awaiting_validation', [], 'platform'));
-            } else {
-                $this->workspaceManager->addUserAction($workspace, $user);
-            }
-
-            return $this->redirect(
-                $this->generateUrl(
-                    'claro_workspace_open',
-                    ['workspaceId' => $workspace->getId()]
-                )
-            );
-        }
-
-        return [
-            'form' => $form->createView(),
-            'workspace' => $workspace,
-        ];
+        return $data;
     }
 
     /**
