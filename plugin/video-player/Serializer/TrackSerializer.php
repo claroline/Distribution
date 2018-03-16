@@ -55,6 +55,14 @@ class TrackSerializer
     }
 
     /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/plugin/video-player/track.json';
+    }
+
+    /**
      * @param Track $track
      *
      * @return array
