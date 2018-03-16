@@ -22,7 +22,17 @@ import {Registration} from '#/main/core/user/registration/components/registratio
 import {select} from '#/main/core/user/registration/selectors'
 
 const RegistrationForm = props => {
-  const steps = [].concat([
+  let steps = []
+
+  if (!props.options.allowWorkspace && props.defaultWorkspaces) {
+    steps.push({
+      path: '/registration',
+      title: 'Registration',
+      component: Registration
+    })
+  }
+
+  steps = steps.concat([
     {
       path: '/account',
       title: 'Compte utilisateur',
@@ -55,14 +65,6 @@ const RegistrationForm = props => {
       path: '/workspace',
       title: 'Workspace',
       component: Workspace
-    })
-  }
-
-  if (!props.options.allowWorkspace && props.defaultWorkspaces) {
-    steps.push({
-      path: '/registration',
-      title: 'Registration',
-      component: Registration
     })
   }
 
