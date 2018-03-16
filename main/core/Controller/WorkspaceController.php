@@ -425,7 +425,7 @@ class WorkspaceController extends Controller
         $notDeletableNodes = $this->resourceManager->getNotDeletableResourcesByWorkspace($workspace);
         $sessionFlashBag = $this->session->getFlashBag();
 
-        if (count($notDeletableNodes) === 0) {
+        if (0 === count($notDeletableNodes)) {
             $this->eventDispatcher->dispatch('log', new LogWorkspaceDeleteEvent($workspace));
             $this->workspaceManager->deleteWorkspace($workspace);
 
