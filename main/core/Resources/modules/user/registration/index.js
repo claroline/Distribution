@@ -12,7 +12,7 @@ bootstrap(
   reducer,
   (initialData) => Object.assign({}, initialData, {
     workspaces: {
-      selected: initialData.defaultWorkspaces
+      selected: initialData.defaultWorkspaces.map(workspace => workspace.id)
     }
   })
 )

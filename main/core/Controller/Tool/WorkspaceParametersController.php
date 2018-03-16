@@ -308,7 +308,8 @@ class WorkspaceParametersController extends Controller
     /**
      * @EXT\Route(
      *     "/user/subscribe/workspace/{workspace}",
-     *     name="claro_workspace_subscription_url_generate_user"
+     *     name="claro_workspace_subscription_url_generate_user",
+     *     options={"expose"=true}
      * )
      *
      * @EXT\Template("ClarolineCoreBundle:Tool\workspace\parameters:url_subscription_user_login.html.twig")

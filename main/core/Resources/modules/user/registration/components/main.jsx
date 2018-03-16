@@ -17,6 +17,7 @@ import {Required} from '#/main/core/user/registration/components/required.jsx'
 import {Optional} from '#/main/core/user/registration/components/optional.jsx'
 import {Organization} from '#/main/core/user/registration/components/organization.jsx'
 import {Workspace} from '#/main/core/user/registration/components/workspace.jsx'
+import {Registration} from '#/main/core/user/registration/components/registration.jsx'
 
 import {select} from '#/main/core/user/registration/selectors'
 
@@ -54,6 +55,14 @@ const RegistrationForm = props => {
       path: '/workspace',
       title: 'Workspace',
       component: Workspace
+    })
+  }
+
+  if (!props.options.allowWorkspace && props.defaultWorkspaces) {
+    steps.push({
+      path: '/registration',
+      title: 'Registration',
+      component: Registration
     })
   }
 
@@ -96,7 +105,8 @@ RegistrationForm.propTypes = {
   options: T.shape({
     forceOrganizationCreation: T.bool,
     allowWorkspace: T.bool
-  }).isRequired
+  }).isRequired,
+  defaultWorkspaces: T.array
 }
 
 const UserRegistration = connect(
@@ -105,7 +115,8 @@ const UserRegistration = connect(
     facets: select.facets(state),
     termOfService: select.termOfService(state),
     options: select.options(state),
-    workspaces: select.workspaces(state)
+    workspaces: select.workspaces(state),
+    defaultWorkspaces: select.defaultWorkspaces(state)
   }),
   (dispatch) => ({
     register(user, termOfService) {
