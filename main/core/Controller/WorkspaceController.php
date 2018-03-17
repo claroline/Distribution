@@ -749,20 +749,18 @@ class WorkspaceController extends Controller
         }
 
         $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
+        //small hack for administrators otherwise they can't open it
+        $toolName = $tool ? $tool->getName() : 'home';
 
-        if ($tool) {
-            $route = $this->router->generate(
-                'claro_workspace_open_tool',
-                [
-                    'workspaceId' => $workspace->getId(),
-                    'toolName' => $tool->getName(),
-                ]
-            );
+        $route = $this->router->generate(
+            'claro_workspace_open_tool',
+            [
+                'workspaceId' => $workspace->getId(),
+                'toolName' => $toolName,
+            ]
+        );
 
-            return new RedirectResponse($route);
-        }
-
-        $this->throwWorkspaceDeniedException($workspace);
+        return new RedirectResponse($route);
     }
 
     /**
