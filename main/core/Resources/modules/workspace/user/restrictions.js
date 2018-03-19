@@ -21,4 +21,4 @@ export const getPermissionLevel = (user, workspace) => {
 /**
  * Parse the user and check if he has the ROLE_ADMIN
  */
-export const isAdmin = (user) => !!user.roles.find(role => role.name === 'ROLE_ADMIN'
+export const isAdmin = (user) => !!user.roles.find(role => role.name === 'ROLE_ADMIN')
