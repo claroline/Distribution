@@ -289,17 +289,6 @@ class WorkspaceParametersController extends Controller
           ],
       ];
 
-        if ($allowWorkspace) {
-            $data['workspaces'] = $finder->search('Claroline\CoreBundle\Entity\Workspace\Workspace', [
-              'filters' => [
-                  'displayable' => true,
-                  'selfRegistration' => true,
-              ],
-          ])['data'];
-        } else {
-            $data['workspaces'] = [];
-        }
-
         $data['workspace'] = $workspace;
 
         return $data;
