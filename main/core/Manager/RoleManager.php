@@ -1223,6 +1223,18 @@ class RoleManager
             $creator->addRole($manager);
         }
 
+        $this->log('Setting workspace to roles for uuid '.$workspace->getUuid().'...');
+
+        $roles = $this->container->get('claroline.api.finder')->fetch('Claroline\CoreBundle\Entity\Role', 0, -1, ['name' => $workspace->getUuid()]);
+
+        foreach ($roles as $role) {
+            if (!$role->getWorkspace()) {
+                $role->setWorkspace($workspace);
+                $this->log('Restoring workspace link for role . '.$role->getName().'...');
+                $operationExecuted = true;
+            }
+        }
+
         return $operationExecuted;
     }
 
