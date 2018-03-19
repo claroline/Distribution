@@ -1194,7 +1194,7 @@ class RoleManager
         $collaborator = $this->getCollaboratorRole($workspace);
         $manager = $this->getManagerRole($workspace);
         $operationExecuted = false;
-
+/*
         if (!$collaborator) {
             // Create collaborator role
             $this->log('Adding collaborator role for workspace '.$workspace->getCode().'...', LogLevel::DEBUG);
@@ -1225,7 +1225,7 @@ class RoleManager
         if ($creator = $workspace->getCreator()) {
             $creator->addRole($manager);
         }
-        
+        */
         
         $roles = $this->container->get('claroline.api.finder')->fetch('Claroline\CoreBundle\Entity\Role', 0, -1, ['name' => $workspace->getUuid()]);
 
