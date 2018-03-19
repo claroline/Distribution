@@ -269,8 +269,6 @@ class WorkspaceParametersController extends Controller
         $configHandler = $this->container->get('claroline.config.platform_config_handler');
         $profilerSerializer = $this->container->get('claroline.serializer.profile');
         $tosManager = $this->container->get('claroline.common.terms_of_service_manager');
-        $finder = $this->container->get('claroline.api.finder');
-
         $allowWorkspace = $configHandler->getParameter('allow_workspace_at_registration');
 
         $data = [
