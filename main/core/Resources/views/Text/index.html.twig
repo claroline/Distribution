@@ -5,7 +5,6 @@
         class="page-container text-resource-container"
         data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
         data-text="{{ text | api_serialize | json_encode | raw | escape }}"
-        data-resource-notification="{{ resourceNotification | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

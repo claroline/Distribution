@@ -60,8 +60,7 @@ class ResourcePage extends Component {
             togglePublication={this.props.togglePublication}
             showModal={this.props.showModal}
             updateNode={this.props.updateNode}
-            resourceNotification={this.props.resourceNotification}
-            changeResourceNotification={this.props.changeResourceNotification}
+            toggleNotifications={this.props.toggleNotifications}
           />
         </PageHeader>
 
@@ -81,7 +80,10 @@ ResourcePage.propTypes = {
     }).isRequired,
     parameters: T.shape({
       fullscreen: T.bool.isRequired
-    }).isRequired
+    }).isRequired,
+    notifications: T.shape({
+      enabled: T.bool
+    })
   }).isRequired,
   customActions: T.array,
 
@@ -122,8 +124,7 @@ ResourcePage.propTypes = {
   removeAlert: T.func,
 
   // resource notification
-  resourceNotification: T.bool,
-  changeResourceNotification: T.func
+  toggleNotifications: T.func
 }
 
 ResourcePage.defaultProps = {

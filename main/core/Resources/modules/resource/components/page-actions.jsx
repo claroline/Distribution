@@ -131,14 +131,14 @@ function getMoreActions(resourceNode, props) {
       icon: 'fa fa-fw fa-bell-o',
       label: trans('follow'),
       group: trans('notification'),
-      displayed: authenticatedUser && props.resourceNotification !== null && !props.resourceNotification,
-      action: () => props.changeResourceNotification(resourceNode.autoId, resourceNode.meta.class, true)
+      displayed: authenticatedUser && !resourceNode.notifications.enabled,
+      action: () => props.toggleNotifications(resourceNode)
     }, {
       icon: 'fa fa-fw fa-bell',
       label: trans('unfollow'),
       group: trans('notification'),
-      displayed: authenticatedUser && props.resourceNotification !== null && props.resourceNotification,
-      action: () => props.changeResourceNotification(resourceNode.autoId, resourceNode.meta.class, false)
+      displayed: authenticatedUser && resourceNode.notifications.enabled,
+      action: () => props.toggleNotifications(resourceNode)
     }
   ]
 
@@ -407,6 +407,7 @@ ResourcePageActions.propTypes = {
 
   togglePublication: T.func.isRequired,
   updateNode: T.func.isRequired,
+  toggleNotifications: T.func.isRequired,
 
   /**
    * If provided, this permits to manage the resource editor in the header (aka. open, save actions).
