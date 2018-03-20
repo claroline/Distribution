@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder;
+namespace Claroline\CoreBundle\API\Finder\Workspace;
 
 use Claroline\AppBundle\API\FinderInterface;
 use Claroline\CoreBundle\Entity\User;

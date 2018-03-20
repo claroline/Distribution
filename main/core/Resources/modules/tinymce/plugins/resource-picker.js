@@ -12,7 +12,6 @@ const resourceManager = window.Claroline.ResourceManager
 function openResourcePicker(editor) {
   if (!resourceManager.hasPicker('tinyMcePicker')) {
     resourceManager.createPicker('tinyMcePicker', {
-      isTinyMce: true,
       isPickerMultiSelectAllowed: false,
       callback: (nodes = {}) => {
         // embed resourceNode
@@ -24,7 +23,6 @@ function openResourcePicker(editor) {
         fetch(
           url(['claro_resource_embed', {node: nodeId, type: typeParts[0], extension: typeParts[1]}]),
           {
-            method: 'GET',
             credentials: 'include'
           }
         )

@@ -155,7 +155,7 @@ class RoleSerializer
                 $role->setWorkspace(null);
             } else {
                 $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')
-                    ->findOneBy(['uuid' => $data['workspace']['uuid']]);
+                    ->findOneBy(['uuid' => $data['workspace']['id']]);
                 $role->setWorkspace($workspace);
 
                 //this is if it's a workspace and we send the translationKey role

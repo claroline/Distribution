@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\API\Finder\User;
+namespace Claroline\CoreBundle\API\Finder\Workspace;
 
 use Claroline\AppBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -19,7 +19,7 @@ use JMS\DiExtraBundle\Annotation as DI;
  * @DI\Service("claroline.api.finder.pending")
  * @DI\Tag("claroline.finder")
  */
-class PendingFinder implements FinderInterface
+class PendingRegistrationFinder implements FinderInterface
 {
     public function getClass()
     {

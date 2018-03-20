@@ -30,7 +30,7 @@ class ResourceNodeFinder implements FinderInterface
     private $tokenStorage;
 
     /**
-     * WorkspaceFinder constructor.
+     * ResourceNodeFinder constructor.
      *
      * @DI\InjectParams({
      *     "authChecker"  = @DI\Inject("security.authorization_checker"),

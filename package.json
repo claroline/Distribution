@@ -35,7 +35,6 @@
     "bootstrap-datepicker": "1.6.0",
     "bootstrap-daterangepicker": "2.1.17",
     "checklist-model": "^0.10.0",
-    "claroline-tinymce-mention": "git://github.com/iCAPLyon1/tinymceMentionPlugin.git#9baea090feca3c53dd3019adefda2a37932c97d6",
     "classnames": "^2.2.5",
     "codemirror": "^5.34.0",
     "confirm-bootstrap": "git://github.com/maxailloud/confirm-bootstrap.git#1.0.0",

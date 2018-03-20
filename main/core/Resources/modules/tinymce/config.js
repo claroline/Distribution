@@ -4,7 +4,7 @@ import '#/main/core/tinymce/themes'
 
 import {locale} from '#/main/core/intl/locale'
 import {platformConfig} from '#/main/core/platform'
-import {theme} from '#/main/core/scaffolding/asset'
+import {asset, theme} from '#/main/core/scaffolding/asset'
 
 const config = {
   language: locale(),
@@ -46,24 +46,16 @@ const config = {
     '%D'
   ],
 
-  // plugin : mentions
-  /*mentions: {
-    delay: 200,
-    source: mentionsSource,
-    render: mentionsItem,
-    insert: mentionsInsert
-  },*/
-
   // plugin : codemirror
   codemirror: {
     path: 'codemirror'
-    //asset('packages/tinymce-codemirror/plugins/codemirror/codemirror-4.8')
+    //path: asset('packages/tinymce-codemirror/plugins/codemirror/codemirror-4.8')
   },
 
-  'extended_valid_elements': 'user[id], a[data-toggle|data-parent], span[*]',
-  'relative_urls': false,
-  'remove_script_host': false,
-  'browser_spellcheck': true,
+  extended_valid_elements: 'user[id], a[data-toggle|data-parent], span[*]',
+  relative_urls: false,
+  remove_script_host: false,
+  browser_spellcheck: true,
 
   // toolbars & buttons
   insert_button_items: 'resource-picker file-upload link media image | anchor charmap inserttable insertdatetime',

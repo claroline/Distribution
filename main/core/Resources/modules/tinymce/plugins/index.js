@@ -32,6 +32,7 @@ import 'tinymce/plugins/wordcount'
 import '#/main/core/tinymce/plugins/advanced-toolbar'
 import '#/main/core/tinymce/plugins/advanced-fullscreen'
 import '#/main/core/tinymce/plugins/file-upload'
+import '#/main/core/tinymce/plugins/mentions'
 import '#/main/core/tinymce/plugins/resource-picker'
 
 const plugins = [
@@ -51,6 +52,7 @@ const plugins = [
   'link',
   'lists',
   'media',
+  'mentions',
   'paste',
   'preview',
   'resource-picker',
