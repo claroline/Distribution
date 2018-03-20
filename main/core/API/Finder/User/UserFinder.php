@@ -69,14 +69,6 @@ class UserFinder implements FinderInterface
         if (isset($searches['contactable'])) {
             $qb = $this->getContactableUsers($qb);
             unset($searches['contactable']);
-        } elseif (!$this->authChecker->isGranted('ROLE_ADMIN')) {
-            /** @var User $currentUser */
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-            $qb->leftJoin('obj.userOrganizationReferences', 'oaref');
-            $qb->leftJoin('oaref.organization', 'uo');
-            $qb->leftJoin('uo.administrators', 'ua');
-            $qb->andWhere('ua.id = :userId');
-            $qb->setParameter('userId', $currentUser->getId());
         }
 
         foreach ($searches as $filterName => $filterValue) {
