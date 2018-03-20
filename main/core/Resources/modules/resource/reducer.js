@@ -37,7 +37,7 @@ const reducer = makeReducer({}, {
     notifications: {
       enabled: !state.notifications.enabled
     }
-  }),
+  })
 })
 
 /**
