@@ -411,9 +411,10 @@ class UserSerializer
 
         //only add role here. If we want to remove them, use the crud remove method instead
         //it's usefull if we want to create a user with a list of roles
+
         if (isset($data['groups'])) {
             foreach ($data['groups'] as $group) {
-                $role = $this->container->get('claroline.api.serializer')
+                $group = $this->container->get('claroline.api.serializer')
                     ->deserialize('Claroline\CoreBundle\Entity\Group', $group);
                 if ($group && $group->getId()) {
                     $user->addGroup($group);
