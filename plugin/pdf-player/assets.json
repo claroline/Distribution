@@ -1,7 +1,8 @@
 {
   "webpack": {
     "entry": {
-      "pdf-viewer": "pdf/module"
+      "pdf-viewer": "pdf_old/module",
+      "resource": "resources/pdf"
     }
   },
 

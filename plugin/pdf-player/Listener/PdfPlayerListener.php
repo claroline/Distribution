@@ -18,20 +18,38 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PdfPlayerListener extends ContainerAware
 {
+//    public function onOpenPdf(PlayFileEvent $event)
+//    {
+//        $canDownload = $this->container->get('security.authorization_checker')->isGranted('EXPORT', $event->getResource()->getResourceNode());
+//
+//        $path = $this->container->getParameter('claroline.param.files_directory')
+//            .DIRECTORY_SEPARATOR
+//            .$event->getResource()->getHashName();
+//        $content = $this->container->get('templating')->render(
+//            'ClarolinePdfPlayerBundle::pdf_old.html.twig',
+//            [
+//                'path' => $path,
+//                'pdf' => $event->getResource(),
+//                'canDownload' => $canDownload,
+//                '_resource' => $event->getResource(),
+//            ]
+//        );
+//        $response = new Response($content);
+//        $event->setResponse($response);
+//        $event->stopPropagation();
+//    }
+
     public function onOpenPdf(PlayFileEvent $event)
     {
-        $canDownload = $this->container->get('security.authorization_checker')->isGranted('EXPORT', $event->getResource()->getResourceNode());
-
         $path = $this->container->getParameter('claroline.param.files_directory')
             .DIRECTORY_SEPARATOR
             .$event->getResource()->getHashName();
         $content = $this->container->get('templating')->render(
             'ClarolinePdfPlayerBundle::pdf.html.twig',
             [
-                'path' => $path,
-                'pdf' => $event->getResource(),
-                'canDownload' => $canDownload,
+                'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
                 '_resource' => $event->getResource(),
+                'path' => $path,
             ]
         );
         $response = new Response($content);
