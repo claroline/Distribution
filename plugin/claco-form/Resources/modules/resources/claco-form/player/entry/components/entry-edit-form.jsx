@@ -146,7 +146,7 @@ class EntryEditForm extends Component {
               disabled={this.isFieldLocked(f)}
               noLabel={true}
               choices={f.fieldFacet ?
-                f.fieldFacet.field_facet_choices.map(ffc => Object.assign({}, ffc, {value: ffc.label})) :
+                f.fieldFacet.field_facet_choices.map(ffc => Object.assign({}, ffc, {label: ffc.name})) :
                 []
               }
               value={this.state.entry[f.id]}
@@ -322,7 +322,7 @@ class EntryEditForm extends Component {
                     disabled={this.isFieldLocked(f)}
                     noLabel={false}
                     choices={f.fieldFacet ?
-                      f.fieldFacet.field_facet_choices.map(ffc => Object.assign({}, ffc, {value: ffc.label})) :
+                      f.fieldFacet.field_facet_choices.map(ffc => Object.assign({}, ffc, {label: ffc.name})) :
                       []
                     }
                     value={this.state.entry[f.id]}
@@ -443,8 +443,8 @@ EntryEditForm.propTypes = {
       name: T.string.isRequired,
       type: T.number.isRequired,
       field_facet_choices: T.arrayOf(T.shape({
-        id: T.number.isRequired,
-        label: T.string.isRequired,
+        id: T.string.isRequired,
+        name: T.string.isRequired,
         parent: T.shape({
           id: T.number.isRequired,
           label: T.string.isRequired

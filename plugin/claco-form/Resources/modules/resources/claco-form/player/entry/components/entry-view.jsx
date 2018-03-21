@@ -620,8 +620,8 @@ EntryView.propTypes = {
       name: T.string.isRequired,
       type: T.number.isRequired,
       field_facet_choices: T.arrayOf(T.shape({
-        id: T.number.isRequired,
-        label: T.string.isRequired,
+        id: T.string.isRequired,
+        name: T.string.isRequired,
         parent: T.shape({
           id: T.number.isRequired,
           label: T.string.isRequired
