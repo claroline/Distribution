@@ -18,15 +18,15 @@ const InfosList = props =>
   <span className="entry-form-infos-list">
     {props.infos.map(info =>
       <div key={info} className="btn-group margin-right-sm margin-bottom-sm">
-          <button className="btn btn-default">
-            {info}
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => props.removeInfo(info)}
-          >
-              <span className="fa fa-times-circle"></span>
-          </button>
+        <button className="btn btn-default">
+          {info}
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={() => props.removeInfo(info)}
+        >
+          <span className="fa fa-times-circle"></span>
+        </button>
       </div>
     )}
   </span>
@@ -79,8 +79,8 @@ class EntryEditForm extends Component {
         generateUrl('claro_claco_form_entry_retrieve', {entry: this.props.entryId}),
         {method: 'GET', credentials: 'include'}
       )
-      .then(response => response.json())
-      .then(results => this.initializeEntry(results))
+        .then(response => response.json())
+        .then(results => this.initializeEntry(results))
     }
   }
 
@@ -265,8 +265,8 @@ class EntryEditForm extends Component {
           (Array.isArray(this.state.entry[f.id]) && this.state.entry[f.id].length === 0)  ||
           !this.isValidCascade(this.state.entry[f.id])
         ) ?
-          trans('form_not_blank_error', {}, 'clacoform') :
-          ''
+        trans('form_not_blank_error', {}, 'clacoform') :
+        ''
     })
     Object.values(errors).forEach(e => {
       if (e) {
@@ -364,7 +364,7 @@ class EntryEditForm extends Component {
                     className="btn btn-default margin-bottom-sm"
                     onClick={() => this.setState({showKeywordForm: true, currentKeyword: ''})}
                   >
-                      <span className="fa fa-fw fa-plus"></span>
+                    <span className="fa fa-fw fa-plus"></span>
                   </button>
                 }
               </div>
@@ -398,7 +398,7 @@ class EntryEditForm extends Component {
                     className="btn btn-default margin-bottom-sm"
                     onClick={() => this.setState({showCategoryForm: true, currentCategory: ''})}
                   >
-                      <span className="fa fa-fw fa-plus"></span>
+                    <span className="fa fa-fw fa-plus"></span>
                   </button>
                 }
               </div>

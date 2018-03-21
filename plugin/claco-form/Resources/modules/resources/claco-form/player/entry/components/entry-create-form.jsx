@@ -18,15 +18,15 @@ const InfosList = props =>
   <span className="entry-form-infos-list">
     {props.infos.map(info =>
       <div key={info} className="btn-group margin-right-sm margin-bottom-sm">
-          <button className="btn btn-default">
-            {info}
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => props.removeInfo(info)}
-          >
-              <span className="fa fa-times-circle"></span>
-          </button>
+        <button className="btn btn-default">
+          {info}
+        </button>
+        <button
+          className="btn btn-danger"
+          onClick={() => props.removeInfo(info)}
+        >
+          <span className="fa fa-times-circle"></span>
+        </button>
       </div>
     )}
   </span>
@@ -282,7 +282,7 @@ class EntryCreateForm extends Component {
                     className="btn btn-default margin-bottom-sm"
                     onClick={() => this.setState({showKeywordForm: true, currentKeyword: ''})}
                   >
-                      <span className="fa fa-fw fa-plus" />
+                    <span className="fa fa-fw fa-plus" />
                   </button>
                 }
               </div>
