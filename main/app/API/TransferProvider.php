@@ -4,6 +4,7 @@ namespace Claroline\AppBundle\API;
 
 use Claroline\AppBundle\API\Transfer\Action\AbstractAction;
 use Claroline\AppBundle\API\Transfer\Adapter\AdapterInterface;
+use Claroline\AppBundle\Logger\JsonLogger;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\Logger\FileLogger;
@@ -57,7 +58,6 @@ class TransferProvider
         $this->serializer = $serializer;
         $this->logDir = $logDir;
         $this->translator = $translator;
-        $this->logger = FileLogger::get(uniqid().'.log', 'claroline.transfer.logger');
     }
 
     /**
@@ -88,8 +88,9 @@ class TransferProvider
             $logFile = uniqid();
         }
 
-        $logFile = $this->logDir.'/'.$logFile.'.log';
-        $this->logger = FileLogger::get($logFile, 'claroline.transfer.logger');
+        $logFile = $this->logDir.'/'.$logFile;
+        $this->logger = FileLogger::get($logFile.'.log', 'claroline.transfer.logger');
+        $jsonLogger = new JsonLogger($logFile.'.json');
 
         $executor = $this->getExecutor($action);
         $executor->setLogger($this->logger);
@@ -120,6 +121,7 @@ class TransferProvider
         $this->om->startFlushSuite();
         $total = count($data);
         $this->log('Executing operations...');
+        $jsonLogger->set('processed', $total);
 
         foreach ($data as $data) {
             ++$i;
