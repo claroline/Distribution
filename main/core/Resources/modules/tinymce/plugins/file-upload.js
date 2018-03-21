@@ -1,5 +1,8 @@
+import $ from 'jquery'
 import tinymce from 'tinymce/tinymce'
+import invariant from 'invariant'
 
+import {url} from '#/main/core/api'
 import {trans} from '#/main/core/translation'
 
 const common = window.Claroline.Common
@@ -7,7 +10,7 @@ const modal = window.Claroline.Modal
 const resourceManager = window.Claroline.ResourceManager
 
 /**
- * Open a resource picker from a TinyMCE editor.
+ * Open a directory picker from a TinyMCE editor.
  */
 function openDirectoryPicker() {
   if (!resourceManager.hasPicker('tinyMceDirectoryPicker')) {
@@ -38,13 +41,10 @@ function openDirectoryPicker() {
 function uploadFile(editor) {
   modal.fromRoute('claro_upload_modal', null, function(element) {
     element
-      .on('click', '.resourcePicker', function() {
-        tinymce.claroline.buttons.resourcePickerOpen()
-      })
       .on('click', '.filePicker', function() {
         $('#file_form_file').click()
       })
-      .on('change', '#file_form_destination', function(event) {
+      .on('change', '#file_form_destination', function() {
         if ($('#file_form_destination').val() === 'others') {
           openDirectoryPicker()
         }
@@ -54,7 +54,32 @@ function uploadFile(editor) {
           this,
           element,
           $('#file_form_destination').val(),
-          tinymce.claroline.buttons.resourcePickerCallBack
+          (nodes = {}) => {
+            // embed resourceNode
+            const nodeId = Object.keys(nodes)[0]
+            const mimeType = nodes[nodeId][2] !== '' ? nodes[nodeId][2] : 'unknown/mimetype'
+
+            const typeParts = mimeType.split('/')
+
+            fetch(
+              url(['claro_resource_embed', {node: nodeId, type: typeParts[0], extension: typeParts[1]}]),
+              {
+                credentials: 'include'
+              }
+            )
+              .then(response => {
+                if (response.ok) {
+                  return response.text()
+                }
+              })
+              .then(responseText => editor.insertContent(responseText))
+              .catch((error) => {
+                // creates log error
+                invariant(false, error.message)
+                // displays generic error in ui
+                editor.notificationManager.open({type: 'error', text: trans('error_occured')})
+              })
+          }
         )
       })
   })

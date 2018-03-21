@@ -6,7 +6,7 @@ import {url} from '#/main/core/api'
 import {trans} from '#/main/core/translation'
 import {asset} from '#/main/core/scaffolding/asset'
 
-var AutoComplete = function (editor) {
+const AutoComplete = function (editor) {
   this.editor = editor
 
   this.query = ''
@@ -26,7 +26,7 @@ AutoComplete.prototype = {
   constructor: AutoComplete,
 
   renderInput: function () {
-    var rawHtml =  '<span id="autocomplete">' +
+    const rawHtml =  '<span id="autocomplete">' +
       '<span id="autocomplete-delimiter">' + this.options.delimiter + '</span>' +
       '<span id="autocomplete-searchtext"><span class="dummy">\uFEFF</span></span>' +
       '</span>'
@@ -174,7 +174,7 @@ AutoComplete.prototype = {
   },
 
   show: function () {
-    var rtePosition = $(this.editor.getContainer()).offset(),
+    const rtePosition = $(this.editor.getContainer()).offset(),
       contentAreaPosition = $(this.editor.getContentAreaContainer()).position(),
       nodePosition = $(this.editor.dom.select('span#autocomplete')).position(),
       top = rtePosition.top + contentAreaPosition.top + nodePosition.top + $(this.editor.selection.getNode()).innerHeight() - $(this.editor.getDoc()).scrollTop() + 5,
@@ -219,7 +219,7 @@ AutoComplete.prototype = {
 
   highlight: function (text, query) {
     return text
-    // replaces spaces by unbreakable ones to avoid trailing to be trimmed by highlight tag
+      // replaces spaces by unbreakable ones to avoid trailing to be trimmed by highlight tag
       .replace(' ', '&nbsp;')
       .replace(new RegExp('(' + query + ')', 'ig'), function ($1, match) {
         return `<strong class="highlight-search">${match}</strong>`
@@ -255,23 +255,25 @@ AutoComplete.prototype = {
   },
 
   highlightPreviousResult: function () {
-    var currentIndex = this.$dropdown.find('li.active').index(),
-      index = (currentIndex === 0) ? this.$dropdown.find('li').length - 1 : --currentIndex
+    let currentIndex = this.$dropdown.find('li.active').index()
+    const index = (currentIndex === 0) ? this.$dropdown.find('li').length - 1 : --currentIndex
 
     this.$dropdown.find('li').removeClass('active').eq(index).addClass('active')
   },
 
   highlightNextResult: function () {
-    var currentIndex = this.$dropdown.find('li.active').index(),
-      index = (currentIndex === this.$dropdown.find('li').length - 1) ? 0 : ++currentIndex
+    let currentIndex = this.$dropdown.find('li.active').index()
+    const index = (currentIndex === this.$dropdown.find('li').length - 1) ? 0 : ++currentIndex
 
     this.$dropdown.find('li').removeClass('active').eq(index).addClass('active')
   },
 
   select: function (item) {
     this.editor.focus()
-    var selection = this.editor.dom.select('span#autocomplete')[0]
-    this.editor.dom.remove(selection)
+
+    this.editor.dom.remove(
+      this.editor.dom.select('span#autocomplete')[0]
+    )
     this.editor.execCommand('mceInsertContent', false, this.insert(item) + '&nbsp;')
   },
 
@@ -310,7 +312,7 @@ AutoComplete.prototype = {
 };
 
 tinymce.PluginManager.add('mentions', (editor) => {
-  var autoComplete
+  let autoComplete
 
   function prevCharIsSpace() {
     var isLink = $(editor.selection.getNode()).is('a'),
@@ -322,7 +324,7 @@ tinymce.PluginManager.add('mentions', (editor) => {
   }
 
   editor.on('keypress', function (e) {
-    var delimiterIndex = $.inArray(String.fromCharCode(e.which || e.keyCode), '@')
+    const delimiterIndex = $.inArray(String.fromCharCode(e.which || e.keyCode), '@')
 
     if (delimiterIndex > -1 && prevCharIsSpace()) {
       if (autoComplete === undefined || (autoComplete.hasFocus !== undefined && !autoComplete.hasFocus)) {

@@ -29,15 +29,15 @@ import 'tinymce/plugins/wordcount'
 //import 'tinymce-codemirror/plugins/codemirror/source.html'
 
 // claroline
-import '#/main/core/tinymce/plugins/advanced-toolbar'
 import '#/main/core/tinymce/plugins/advanced-fullscreen'
+import '#/main/core/tinymce/plugins/advanced-toolbar'
 import '#/main/core/tinymce/plugins/file-upload'
 import '#/main/core/tinymce/plugins/mentions'
 import '#/main/core/tinymce/plugins/resource-picker'
 
 const plugins = [
-  'advanced-toolbar',
   'advanced-fullscreen',
+  'advanced-toolbar',
   'anchor',
   'autolink',
   'autoresize',
