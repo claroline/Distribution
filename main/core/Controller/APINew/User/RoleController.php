@@ -46,7 +46,7 @@ class RoleController extends AbstractCrudController
     /**
      * List platform roles.
      *
-     * @Route("platform", name="apiv2_platform_roles_list")
+     * @Route("platform", name="apiv2_role_platform_list")
      * @Method("GET")
      *
      * @param Request $request
