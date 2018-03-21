@@ -4,11 +4,12 @@ import '#/main/core/tinymce/themes'
 
 import {locale} from '#/main/core/intl/locale'
 import {platformConfig} from '#/main/core/platform'
-import {theme} from '#/main/core/scaffolding/asset'
+import {asset, theme} from '#/main/core/scaffolding/asset'
 
 const config = {
   language: locale(),
   theme: 'modern',
+  skin: false, // we provide it through theme system
   content_css: [
     // reuse current platform theme for content
     theme()
@@ -48,8 +49,8 @@ const config = {
 
   // plugin : codemirror
   codemirror: {
-    path: 'codemirror'
-    //path: asset('packages/tinymce-codemirror/plugins/codemirror/codemirror-4.8')
+    // todo : find a way to reuse our instance of codemirror
+    path: asset('packages/tinymce-codemirror/plugins/codemirror/codemirror-4.8')
   },
 
   extended_valid_elements: 'user[id], a[data-toggle|data-parent], span[*]',

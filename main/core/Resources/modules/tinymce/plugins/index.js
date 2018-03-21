@@ -24,13 +24,10 @@ import 'tinymce/plugins/textcolor'
 import 'tinymce/plugins/visualblocks'
 import 'tinymce/plugins/wordcount'
 
-// others
-//import 'tinymce-codemirror/plugins/codemirror/plugin'
-//import 'tinymce-codemirror/plugins/codemirror/source.html'
-
 // claroline
 import '#/main/core/tinymce/plugins/advanced-fullscreen'
 import '#/main/core/tinymce/plugins/advanced-toolbar'
+import '#/main/core/tinymce/plugins/codemirror'
 import '#/main/core/tinymce/plugins/file-upload'
 import '#/main/core/tinymce/plugins/mentions'
 import '#/main/core/tinymce/plugins/resource-picker'
@@ -44,6 +41,7 @@ const plugins = [
   'advlist',
   'charmap',
   'code',
+  'codemirror',
   'contextmenu',
   'file-upload',
   'fullscreen',

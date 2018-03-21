@@ -3,6 +3,7 @@ import tinymce from 'tinymce/tinymce'
 import {asset} from '#/main/core/scaffolding/asset'
 
 // Most of this is copy-pasted from original plugin only to fix template URL.
+// TODO : either make tinymce-codemirror work without this, or implement our own plugin.
 
 function showSourceEditor(editor) {
   // Insert caret marker
@@ -36,7 +37,7 @@ function showSourceEditor(editor) {
 }
 
 // Register new plugin
-tinymce.PluginManager.requireLangPack('codemirror')
+tinymce.PluginManager.requireLangPack('codemirror') // todo make translations work
 tinymce.PluginManager.add('codemirror', function (editor) {
   // Add a button to the button bar
   editor.addButton('code', {
