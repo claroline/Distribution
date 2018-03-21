@@ -5,7 +5,7 @@
         class="page-container pdf-player-container"
         data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
         data-pdf="{{ _resource | api_serialize | json_encode | raw | escape }}"
-        data-url="{{ path('claro_pdf', {node: _resource.resourceNode.id}) | json_encode | raw | escape }}"
+        data-url="{{ url('claro_pdf', {node: _resource.resourceNode.id}) | json_encode | raw | escape }}"
     >
     </div>
 {% endblock %}

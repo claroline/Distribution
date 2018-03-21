@@ -41,15 +41,11 @@ class PdfPlayerListener extends ContainerAware
 
     public function onOpenPdf(PlayFileEvent $event)
     {
-        $path = $this->container->getParameter('claroline.param.files_directory')
-            .DIRECTORY_SEPARATOR
-            .$event->getResource()->getHashName();
         $content = $this->container->get('templating')->render(
             'ClarolinePdfPlayerBundle::pdf.html.twig',
             [
                 'workspace' => $event->getResource()->getResourceNode()->getWorkspace(),
                 '_resource' => $event->getResource(),
-                'path' => $path,
             ]
         );
         $response = new Response($content);

@@ -5,14 +5,9 @@ import {connect} from 'react-redux'
 import {generateUrl} from '#/main/core/api/router'
 
 const PlayerComponent = props =>
-  <video
-    className="video-js vjs-big-play-centered vjs-default-skin vjs-16-9 vjs-waiting"
-    controls
-    data-download={props.canDownload}
-    data-setup={[]}
-  >
-    <source src={props.url} type={props.resource.meta.mimeType} />
-  </video>
+  <div className="pdf-player">
+      <canvas id="the-canvas" className="pdf-player-page"></canvas>
+  </div>
 
 PlayerComponent.propTypes = {
   resource: T.shape({

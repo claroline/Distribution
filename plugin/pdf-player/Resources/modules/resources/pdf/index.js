@@ -1,6 +1,6 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 
-import {reducer} from '#/plugin/video-player/resources/video/reducer'
+import {reducer} from '#/plugin/pdf-player/resources/pdf/reducer'
 import {PdfPlayerResource} from '#/plugin/pdf-player/resources/pdf/components/resource.jsx'
 
 // mount the react application
