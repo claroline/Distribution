@@ -20,7 +20,7 @@ const AutoComplete = function (editor) {
 
   this.renderInput()
   this.bindEvents()
-};
+}
 
 AutoComplete.prototype = {
   constructor: AutoComplete,
@@ -42,7 +42,7 @@ AutoComplete.prototype = {
     this.editor.on('keydown', this.editorKeyDownProxy = $.proxy(this.rteKeyDown, this))
     this.editor.on('click', this.editorClickProxy = $.proxy(this.rteClicked, this))
 
-    $(this.editor.getWin()).on('scroll', this.rteScroll = $.proxy(function () { this.cleanUp(true); }, this))
+    $(this.editor.getWin()).on('scroll', this.rteScroll = $.proxy(function () { this.cleanUp(true) }, this))
     $('body').on('click', this.bodyClickProxy = $.proxy(this.rteLostFocus, this))
   },
 
@@ -55,6 +55,7 @@ AutoComplete.prototype = {
   },
 
   rteKeyUp: function (e) {
+    let item
     switch (e.which || e.keyCode) {
       case 40: //DOWN ARROW
       case 38: //UP ARROW
@@ -73,7 +74,7 @@ AutoComplete.prototype = {
 
       case 9: //TAB
       case 13: //ENTER
-        const item = this.$dropdown !== undefined ? this.$dropdown.find('li.active') : []
+        item = this.$dropdown !== undefined ? this.$dropdown.find('li.active') : []
         if (item.length) {
           this.select(item.data('item'))
           this.cleanUp(false)
@@ -137,7 +138,7 @@ AutoComplete.prototype = {
       this.show()
     }
 
-    clearTimeout(this.searchTimeout);
+    clearTimeout(this.searchTimeout)
     this.searchTimeout = setTimeout($.proxy(function () {
       this.search(this.query, $.proxy(this.process, this))
     }, this), this.options.delay)
@@ -186,9 +187,9 @@ AutoComplete.prototype = {
       left: left
     })
 
-    $('body').append(this.$dropdown);
+    $('body').append(this.$dropdown)
 
-    this.$dropdown.on('click', $.proxy(this.autoCompleteClick, this));
+    this.$dropdown.on('click', $.proxy(this.autoCompleteClick, this))
   },
 
   process: function (items) {
@@ -308,8 +309,7 @@ AutoComplete.prototype = {
       }
     }
   }
-
-};
+}
 
 tinymce.PluginManager.add('mentions', (editor) => {
   let autoComplete

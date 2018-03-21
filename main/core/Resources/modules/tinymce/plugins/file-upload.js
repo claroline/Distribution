@@ -39,17 +39,17 @@ function openDirectoryPicker() {
 }
 
 function uploadFile(editor) {
-  modal.fromRoute('claro_upload_modal', null, function(element) {
+  modal.fromRoute('claro_upload_modal', null, function (element) {
     element
-      .on('click', '.filePicker', function() {
+      .on('click', '.filePicker', function () {
         $('#file_form_file').click()
       })
-      .on('change', '#file_form_destination', function() {
+      .on('change', '#file_form_destination', function () {
         if ($('#file_form_destination').val() === 'others') {
           openDirectoryPicker()
         }
       })
-      .on('change', '#file_form_file', function() {
+      .on('change', '#file_form_file', function () {
         common.uploadfile(
           this,
           element,
