@@ -5,7 +5,7 @@ import {
 } from './actions'
 
 const reducer = makeReducer('', {
-  [LOG_REFRESH]: (state, action) => action.file
+  [LOG_REFRESH]: (state, action) => action.content
 })
 
 export {

@@ -20,13 +20,14 @@ class LogModal extends Component {
           className="modal-btn btn btn-primary"
           onClick={() => this.props.fadeModal()}
         >
-          {trans('Ok')}
+          {trans('hide')}
         </button>
       </BaseModal>
     )
   }
 
   componentDidMount() {
+    //la boucle
     this.props.load(this.props.file)
   }
 }
@@ -44,7 +45,9 @@ LogModal.defaultProps = {
 }
 
 const ConnectedModal = connect(
-  null,
+  state => ({
+    message: state.log
+  }),
   dispatch => ({
     load(file) {
       dispatch(actions.load(file))
