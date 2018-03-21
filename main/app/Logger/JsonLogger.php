@@ -13,9 +13,13 @@ namespace Claroline\AppBundle\Logger;
 
 class JsonLogger
 {
+    private $file;
+    private $cache;
+
     public function __construct($file)
     {
         $this->file = $file;
+        $this->cache = null;
 
         if (!file_exists($file)) {
             touch($file);
@@ -67,6 +71,7 @@ class JsonLogger
 
     public function write($data)
     {
+        $this->cache = $data;
         file_put_contents($this->file, json_encode($data));
     }
 
@@ -82,7 +87,7 @@ class JsonLogger
 
     public function get()
     {
-        $data = json_decode(file_get_contents($this->file));
+        $data = $this->cache ? $this->cache : json_decode(file_get_contents($this->file));
 
         return $data ? $data : new \stdClass();
     }
