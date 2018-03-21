@@ -13,5 +13,6 @@
 {% block javascripts %}
     {{ parent() }}
 
+    <script src="{{ asset('packages/pdfjs-dist/build/pdf.combined.js') }}"></script>
     <script src="{{ hotAsset('dist/claroline-distribution-plugin-pdf-player-resource.js') }}"></script>
 {% endblock %}
