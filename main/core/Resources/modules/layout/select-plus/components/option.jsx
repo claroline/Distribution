@@ -3,15 +3,30 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 
 class Option extends Component {
+  constructor(props) {
+    super(props)
+    
+    this.handleOnClick = this.handleOnClick.bind(this)
+  }
+  
+  handleOnClick(evt) {
+    evt.preventDefault()
+    evt.stopPropagation()
+    this.props.onSelect(this.props.value, evt)
+  }
+  
   render() {
     const props = this.props
     return (
-      <option value={props.value}>
+      <div
+        className="select-plus-option"
+        onClick={this.handleOnClick}
+      >
         { props.transDomain ?
           trans(props.label, {}, props.transDomain) :
           props.label
         }
-        </option>
+      </div>
     )
   }
 }
@@ -19,6 +34,7 @@ class Option extends Component {
 Option.propTypes = {
   label: T.string.isRequired,
   value: T.any.isRequired,
+  onSelect: T.func.isRequired,
   transDomain: T.string
 }
 
