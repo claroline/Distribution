@@ -3,6 +3,7 @@ import invariant from 'invariant'
 import tinymce from 'tinymce/tinymce'
 
 import {url} from '#/main/core/api'
+import {trans} from '#/main/core/translation'
 import {asset} from '#/main/core/scaffolding/asset'
 
 var AutoComplete = function (editor) {
@@ -28,29 +29,29 @@ AutoComplete.prototype = {
     var rawHtml =  '<span id="autocomplete">' +
       '<span id="autocomplete-delimiter">' + this.options.delimiter + '</span>' +
       '<span id="autocomplete-searchtext"><span class="dummy">\uFEFF</span></span>' +
-      '</span>';
+      '</span>'
 
-    this.editor.execCommand('mceInsertContent', false, rawHtml);
-    this.editor.focus();
-    this.editor.selection.select(this.editor.selection.dom.select('span#autocomplete-searchtext span')[0]);
-    this.editor.selection.collapse(0);
+    this.editor.execCommand('mceInsertContent', false, rawHtml)
+    this.editor.focus()
+    this.editor.selection.select(this.editor.selection.dom.select('span#autocomplete-searchtext span')[0])
+    this.editor.selection.collapse(0)
   },
 
   bindEvents: function () {
-    this.editor.on('keyup', this.editorKeyUpProxy = $.proxy(this.rteKeyUp, this));
-    this.editor.on('keydown', this.editorKeyDownProxy = $.proxy(this.rteKeyDown, this));
-    this.editor.on('click', this.editorClickProxy = $.proxy(this.rteClicked, this));
+    this.editor.on('keyup', this.editorKeyUpProxy = $.proxy(this.rteKeyUp, this))
+    this.editor.on('keydown', this.editorKeyDownProxy = $.proxy(this.rteKeyDown, this))
+    this.editor.on('click', this.editorClickProxy = $.proxy(this.rteClicked, this))
 
-    $(this.editor.getWin()).on('scroll', this.rteScroll = $.proxy(function () { this.cleanUp(true); }, this));
-    $('body').on('click', this.bodyClickProxy = $.proxy(this.rteLostFocus, this));
+    $(this.editor.getWin()).on('scroll', this.rteScroll = $.proxy(function () { this.cleanUp(true); }, this))
+    $('body').on('click', this.bodyClickProxy = $.proxy(this.rteLostFocus, this))
   },
 
   unbindEvents: function () {
-    this.editor.off('keyup', this.editorKeyUpProxy);
-    this.editor.off('keydown', this.editorKeyDownProxy);
-    this.editor.on('click', this.editorClickProxy);
-    $(this.editor.getWin()).off('scroll', this.rteScroll);
-    $('body').off('click', this.bodyClickProxy);
+    this.editor.off('keyup', this.editorKeyUpProxy)
+    this.editor.off('keydown', this.editorKeyDownProxy)
+    this.editor.on('click', this.editorClickProxy)
+    $(this.editor.getWin()).off('scroll', this.rteScroll)
+    $('body').off('click', this.bodyClickProxy)
   },
 
   rteKeyUp: function (e) {
@@ -60,33 +61,34 @@ AutoComplete.prototype = {
       case 16: //SHIFT
       case 17: //CTRL
       case 18: //ALT
-        break;
+        break
 
       case 8: //BACKSPACE
         if (this.query === '') {
-          this.cleanUp(true);
+          this.cleanUp(true)
         } else {
-          this.lookup();
+          this.lookup()
         }
-        break;
+        break
 
       case 9: //TAB
       case 13: //ENTER
-        var item = (this.$dropdown !== undefined) ? this.$dropdown.find('li.active') : [];
+        const item = this.$dropdown !== undefined ? this.$dropdown.find('li.active') : []
         if (item.length) {
-          this.select(item.data('item'));
-          this.cleanUp(false);
+          this.select(item.data('item'))
+          this.cleanUp(false)
         } else {
-          this.cleanUp(true);
+          this.cleanUp(true)
         }
-        break;
+        break
 
       case 27: //ESC
-        this.cleanUp(true);
-        break;
+        this.cleanUp(true)
+        break
 
       default:
-        this.lookup();
+        this.lookup()
+        break
     }
   },
 
@@ -95,46 +97,44 @@ AutoComplete.prototype = {
       case 9: //TAB
       case 13: //ENTER
       case 27: //ESC
-        e.preventDefault();
-        break;
+        e.preventDefault()
+        break
 
       case 38: //UP ARROW
-        e.preventDefault();
+        e.preventDefault()
         if (this.$dropdown !== undefined) {
-          this.highlightPreviousResult();
+          this.highlightPreviousResult()
         }
-        break;
+        break
 
       case 40: //DOWN ARROW
-        e.preventDefault();
+        e.preventDefault()
         if (this.$dropdown !== undefined) {
-          this.highlightNextResult();
+          this.highlightNextResult()
         }
-        break;
+        break
     }
 
-    e.stopPropagation();
+    e.stopPropagation()
   },
 
   rteClicked: function (e) {
-    var $target = $(e.target);
-
-    if (this.hasFocus && $target.parent().attr('id') !== 'autocomplete-searchtext') {
-      this.cleanUp(true);
+    if (this.hasFocus && $(e.target).parent().attr('id') !== 'autocomplete-searchtext') {
+      this.cleanUp(true)
     }
   },
 
   rteLostFocus: function () {
     if (this.hasFocus) {
-      this.cleanUp(true);
+      this.cleanUp(true)
     }
   },
 
   lookup: function () {
-    this.query = $.trim($(this.editor.getBody()).find("#autocomplete-searchtext").text()).replace('\ufeff', '');
+    this.query = $.trim($(this.editor.getBody()).find('#autocomplete-searchtext').text()).replace('\ufeff', '')
 
     if (this.$dropdown === undefined) {
-      this.show();
+      this.show()
     }
 
     clearTimeout(this.searchTimeout);
@@ -178,7 +178,7 @@ AutoComplete.prototype = {
       contentAreaPosition = $(this.editor.getContentAreaContainer()).position(),
       nodePosition = $(this.editor.dom.select('span#autocomplete')).position(),
       top = rtePosition.top + contentAreaPosition.top + nodePosition.top + $(this.editor.selection.getNode()).innerHeight() - $(this.editor.getDoc()).scrollTop() + 5,
-      left = rtePosition.left + contentAreaPosition.left + nodePosition.left;
+      left = rtePosition.left + contentAreaPosition.left + nodePosition.left
 
     this.$dropdown = $(this.renderDropdown())
     this.$dropdown.css({
@@ -245,34 +245,34 @@ AutoComplete.prototype = {
   },
 
   autoCompleteClick: function (e) {
-    var item = $(e.target).closest('li').data('item');
+    const item = $(e.target).closest('li').data('item')
     if (!$.isEmptyObject(item)) {
-      this.select(item);
-      this.cleanUp(false);
+      this.select(item)
+      this.cleanUp(false)
     }
-    e.stopPropagation();
-    e.preventDefault();
+    e.stopPropagation()
+    e.preventDefault()
   },
 
   highlightPreviousResult: function () {
     var currentIndex = this.$dropdown.find('li.active').index(),
-      index = (currentIndex === 0) ? this.$dropdown.find('li').length - 1 : --currentIndex;
+      index = (currentIndex === 0) ? this.$dropdown.find('li').length - 1 : --currentIndex
 
-    this.$dropdown.find('li').removeClass('active').eq(index).addClass('active');
+    this.$dropdown.find('li').removeClass('active').eq(index).addClass('active')
   },
 
   highlightNextResult: function () {
     var currentIndex = this.$dropdown.find('li.active').index(),
-      index = (currentIndex === this.$dropdown.find('li').length - 1) ? 0 : ++currentIndex;
+      index = (currentIndex === this.$dropdown.find('li').length - 1) ? 0 : ++currentIndex
 
-    this.$dropdown.find('li').removeClass('active').eq(index).addClass('active');
+    this.$dropdown.find('li').removeClass('active').eq(index).addClass('active')
   },
 
   select: function (item) {
-    this.editor.focus();
-    var selection = this.editor.dom.select('span#autocomplete')[0];
-    this.editor.dom.remove(selection);
-    this.editor.execCommand('mceInsertContent', false, this.insert(item) + '&nbsp;');
+    this.editor.focus()
+    var selection = this.editor.dom.select('span#autocomplete')[0]
+    this.editor.dom.remove(selection)
+    this.editor.execCommand('mceInsertContent', false, this.insert(item) + '&nbsp;')
   },
 
   insert: function (item) {
@@ -284,25 +284,25 @@ AutoComplete.prototype = {
   },
 
   cleanUp: function (rollback) {
-    this.unbindEvents();
-    this.hasFocus = false;
+    this.unbindEvents()
+    this.hasFocus = false
 
     if (this.$dropdown !== undefined) {
-      this.$dropdown.remove();
-      delete this.$dropdown;
+      this.$dropdown.remove()
+      delete this.$dropdown
     }
 
     if (rollback) {
       var text = this.query,
         $selection = $(this.editor.dom.select('span#autocomplete')),
         replacement = $('<p>' + this.options.delimiter + text + '</p>')[0].firstChild,
-        focus = $(this.editor.selection.getNode()).offset().top === ($selection.offset().top + (($selection.outerHeight() - $selection.height()) / 2));
+        focus = $(this.editor.selection.getNode()).offset().top === ($selection.offset().top + (($selection.outerHeight() - $selection.height()) / 2))
 
-      this.editor.dom.replace(replacement, $selection[0]);
+      this.editor.dom.replace(replacement, $selection[0])
 
       if (focus) {
-        this.editor.selection.select(replacement);
-        this.editor.selection.collapse();
+        this.editor.selection.select(replacement)
+        this.editor.selection.collapse()
       }
     }
   }
@@ -310,13 +310,13 @@ AutoComplete.prototype = {
 };
 
 tinymce.PluginManager.add('mentions', (editor) => {
-  var autoComplete;
+  var autoComplete
 
   function prevCharIsSpace() {
     var isLink = $(editor.selection.getNode()).is('a'),
       start = editor.selection.getRng().startOffset,
       text = editor.selection.getRng().startContainer.textContent,
-      character = text.substr(start - 1, 1);
+      character = text.substr(start - 1, 1)
 
     return !(isLink || !!$.trim(character).length)
   }

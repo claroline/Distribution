@@ -1,6 +1,6 @@
 import tinymce from 'tinymce/tinymce'
 
-import {trans} from '#/main/core/translation'
+//import {trans} from '#/main/core/translation'
 
 function getMenubar(editor) {
   return editor.theme.panel.find('menubar')[0]

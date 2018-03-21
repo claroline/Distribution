@@ -4,7 +4,7 @@ import '#/main/core/tinymce/themes'
 
 import {locale} from '#/main/core/intl/locale'
 import {platformConfig} from '#/main/core/platform'
-import {asset, theme} from '#/main/core/scaffolding/asset'
+import {theme} from '#/main/core/scaffolding/asset'
 
 const config = {
   language: locale(),
