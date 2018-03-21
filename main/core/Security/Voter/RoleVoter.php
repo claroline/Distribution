@@ -24,9 +24,10 @@ class RoleVoter extends AbstractVoter
 {
     public function checkPermission(TokenInterface $token, $object, array $attributes, array $options)
     {
+        //probably do the check from the UserVoter or a security issue will arise
         if (!$object->getWorkspace()) {
             return $this->hasAdminToolAccess($token, 'user_management') ?
-            VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
+                VoterInterface::ACCESS_GRANTED : VoterInterface::ACCESS_DENIED;
         }
 
         //if it's a workspace role, we must be able be granted the edit perm on the workspace users tool
