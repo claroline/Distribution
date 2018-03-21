@@ -16,6 +16,10 @@ class JsonLogger
     public function __construct($file)
     {
         $this->file = $file;
+
+        if (!file_exists($file)) {
+            touch($file);
+        }
     }
 
     public function set($property, $value)
@@ -37,7 +41,7 @@ class JsonLogger
         $this->write($data);
     }
 
-    public function append($property, $value, $separator = null)
+    public function append($property, $value, $separator = "\n")
     {
         $data = $this->get();
 
@@ -45,13 +49,35 @@ class JsonLogger
             throw new \RuntimeException($property.' is not an array');
         }
 
-        $data->{$property} = $data[$property].$separator.$value;
+        $data->{$property} = $data->{$property}.$separator.$value;
+        $this->write($data);
+    }
+
+    public function increment($property)
+    {
+        $data = $this->get();
+
+        if (!is_int($data->{$property})) {
+            throw new \RuntimeException($property.' is not an integer');
+        }
+
+        $data->{$property} = $data->{$property} + 1;
         $this->write($data);
     }
 
     public function write($data)
     {
         file_put_contents($this->file, json_encode($data));
+    }
+
+    public function log($message, $separator = '\\\\n')
+    {
+        $data = $this->get();
+        $time = date('m-d-y h:i:s').': ';
+        $line = $time.$message;
+        $data->log .= $separator.$line;
+
+        $this->write($data);
     }
 
     public function get()

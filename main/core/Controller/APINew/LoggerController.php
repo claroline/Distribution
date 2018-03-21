@@ -38,6 +38,6 @@ class LoggerController
      */
     public function getAction($name)
     {
-        return new Response(file_get_contents($this->logDir.'/'.$name.'.log'));
+        return new Response(file_get_contents($this->logDir.'/'.$name.'.json'));
     }
 }

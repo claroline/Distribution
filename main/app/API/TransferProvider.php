@@ -7,7 +7,6 @@ use Claroline\AppBundle\API\Transfer\Adapter\AdapterInterface;
 use Claroline\AppBundle\Logger\JsonLogger;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
-use Claroline\CoreBundle\Library\Logger\FileLogger;
 use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -90,7 +89,6 @@ class TransferProvider
         }
 
         $logFile = $this->logDir.'/'.$logFile;
-        $this->logger = FileLogger::get($logFile.'.log', 'claroline.transfer.logger');
         $jsonLogger = new JsonLogger($logFile.'.json');
 
         $executor = $this->getExecutor($action);
@@ -99,7 +97,7 @@ class TransferProvider
 
         $schema = $executor->getSchema();
         //use the translator here
-        $this->log('Building objects from data...');
+        $jsonLogger->log('Building objects from data...');
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->serializer->getSchema($schema['$root']);
@@ -121,8 +119,12 @@ class TransferProvider
         $i = 0;
         $this->om->startFlushSuite();
         $total = count($data);
-        $this->log('Executing operations...');
-        $jsonLogger->set('processed', $total);
+        $jsonLogger->log('Executing operations...');
+
+        $jsonLogger->set('total', $total);
+        $jsonLogger->set('processed', 0);
+        $jsonLogger->set('error', 0);
+        $jsonLogger->set('success', 0);
 
         foreach ($data as $data) {
             ++$i;
@@ -130,13 +132,17 @@ class TransferProvider
 
             try {
                 $executor->execute($data);
+                $jsonLogger->increment('success');
             } catch (InvalidDataException $e) {
-                $this->log($e->getMessage());
+                $jsonLogger->log($e->getMessage());
+                $jsonLogger->increment('error');
             }
 
             if (0 === $i % $executor->getBatchSize()) {
                 $this->om->forceFlush();
             }
+
+            $jsonLogger->increment('processed');
         }
 
         $this->om->endFlushSuite();
