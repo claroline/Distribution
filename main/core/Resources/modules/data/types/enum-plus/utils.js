@@ -1,66 +1,43 @@
 import {trans} from '#/main/core/translation'
+import {searchChoice} from '#/main/core/layout/select-plus/utils'
 
 /**
- * Extracts a choice by value from choices nested object
+ * Checks if a choice is valid
  *
- * @param value
  * @param choices
- * @return {string | null} - the choice if one is found, null otherwise
+ * @param value
+ * @return {boolean} - is choice valid or not
  */
-const extractChoice = (value, choices) => {
+const isChoiceValid = (choices, value, transDomain) => {
   if (!value) {
-    return null
+    return false
   }
-  
-  let found = null
-  function searchChoice(choices) {
-    choices.forEach(choice => {
-      if (found) {
-        return true
-      }
-      if (choice.value === value || choice.label.toUpperCase() === value.toUpperCase()) {
-        found = choice
-      } else if (choice.choices.length > 0) {
-        searchChoice(choice.choices)
-      }
-    })
-  }
-  searchChoice(choices)
-  
-  return found
+
+  return searchChoice(choices, value, transDomain, true).length > 0
 }
 
 /**
  * Parses a displayed text and matches it to its proper choice
  *
- * @param display
  * @param choices
+ * @param display
  * @param transDomain
  * @return {string | null} - return choice if one was found, null otherwise
  */
-const parseChoice = (display, choices, transDomain) => {
+const parseChoice = (choices, display, transDomain) => {
   if (!display) {
     return null
   }
   let parsed = null
-  function searchChoice(choices) {
-    choices.forEach(choice => {
-      if (parsed) {
-        return true
-      }
-      if (choice.choices.length > 0) {
-        searchChoice(choice.choices)
-      } else if (
-        choice.value === display ||
-        choice.label.toUpperCase().includes(display.toUpperCase()) ||
-        (transDomain && trans(choice.label, {}, transDomain).toUpperCase().includes(display.toUpperCase()))
-      ) {
-        parsed = choice.value
-      }
-    })
+  let choice = searchChoice(choices, display, transDomain)
+  if (choice.length === 1) {
+    choice = choice[0]
+    while(choice.choices.length > 0) {
+      choice = choice.choices[0]
+    }
+    parsed = choice.value
   }
-  searchChoice(choices)
-  
+
   return parsed
 }
 
@@ -72,34 +49,29 @@ const parseChoice = (display, choices, transDomain) => {
  * @param transDomain
  * @return {string} - raw if choice was not found, formatted found choice text otherwise
  */
-const renderChoice = (raw, choices, transDomain) => {
+const renderChoice = (choices, raw, transDomain) => {
   if (!raw) {
     return null
   }
-  
-  let found = null
-  function searchChoice(choices) {
-    choices.forEach(choice => {
-      if (found) {
-        return true
-      }
-      if (choice.value === raw || choice.label.toUpperCase() === raw.toUpperCase()) {
-        found = transDomain ? trans(choice.label, {}, transDomain) : choice.label
-      } else if (choice.choices.length > 0) {
-        searchChoice(choice.choices)
-        if (found) {
-          found = `${transDomain ? trans(choice.label, {}, transDomain) : choice.label} : ${found}`
-        }
-      }
-    })
+  let rendered = null
+  let choice = searchChoice(choices, raw, transDomain, true)
+  if (choice.length === 1) {
+    choice = choice[0]
+    rendered = ''
+    let i = 0
+    while(choice.choices.length > 0) {
+      rendered += `${i===0 ? '' : ' : '}${transDomain ? trans(choice.label, {}, transDomain) : choice.label}`
+      choice = choice.choices[0]
+      i++
+    }
+    rendered += `${i > 0 ? ' : ' : ''}${transDomain ? trans(choice.label, {}, transDomain) : choice.label}`
   }
-  searchChoice(choices)
-  
-  return found || raw
+
+  return rendered || raw
 }
 
 export {
-  extractChoice,
+  isChoiceValid,
   parseChoice,
   renderChoice
 }

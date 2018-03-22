@@ -2,10 +2,8 @@ import React, { Component } from 'react'
 import {PropTypes as T} from 'prop-types'
 import {select} from 'd3-selection'
 import {axisLeft, axisBottom} from 'd3-axis'
-import {timeFormat} from 'd3-time-format'
 import {timeDay} from 'd3-time'
-import {isString, isDate} from 'lodash'
-import {getD3DisplayFormat} from '#/main/core/scaffolding/date'
+import {dateToDisplayFormat} from '#/main/core/scaffolding/date'
 
 import {
   AXIS_TYPE_X,
@@ -29,13 +27,19 @@ class Axis extends Component {
     if (this.props.values && this.props.scale) {
       const node = this.axisNode
       const rotate = this.axisLabelRotate()
-      const axis = select(node).call(this.formatAxis())
+      const axisFormat = this.formatAxis()
+      const axis = select(node).call(axisFormat)
       if (rotate !== '') {
         axis.selectAll('g.tick text')
           .attr('transform', () => rotate)
           .style('text-anchor', 'end')
           .attr('dx', '-.8em')
           .attr('dy', '.15em')
+      }
+      if (this.props.label.grid) {
+        select(node).append('g')
+          .attr('class', 'grid')
+          .call(this.formatGrid(axisFormat))
       }
     }
   }
@@ -46,7 +50,7 @@ class Axis extends Component {
         let axis = axisBottom(this.props.scale)
         switch (this.props.dataType) {
           case DATE_DATA_TYPE: {
-            axis.tickFormat(timeFormat(getD3DisplayFormat()))
+            axis.tickFormat(dateToDisplayFormat)
             let dist = Math.floor(this.props.values.length/10)
             return this.props.values.length > 10 ?
               axis.ticks(timeDay.filter(d => timeDay.count(0, d) % dist === 2)) :
@@ -66,6 +70,17 @@ class Axis extends Component {
         return this.props.ticksAsValues ? axis.tickValues(this.props.values) : axis.ticks(Math.min(10, this.props.height/20))
       }
 
+    }
+  }
+
+  formatGrid(axis) {
+    axis.tickFormat('')
+    switch (this.props.type) {
+      case AXIS_TYPE_X:
+        return axis.tickSize(-this.props.height)
+      case AXIS_TYPE_Y: {
+        return axis.tickSize(-this.props.width)
+      }
     }
   }
   
@@ -120,7 +135,8 @@ Axis.propTypes = {
   dataType: T.oneOf([DATE_DATA_TYPE, NUMBER_DATA_TYPE, STRING_DATA_TYPE]).isRequired,
   label: T.shape({
     show: T.bool.isRequired,
-    text: T.string.isRequired
+    text: T.string.isRequired,
+    grid: T.bool
   }),
   margin: T.shape({
     top: T.number.isRequired,
@@ -133,7 +149,8 @@ Axis.propTypes = {
 Axis.defaultProps = {
   label: {
     show: false,
-    label: ''
+    label: '',
+    grid: false
   },
   ticksAsValues: false
 }

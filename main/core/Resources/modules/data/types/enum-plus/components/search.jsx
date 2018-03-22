@@ -11,6 +11,8 @@ const EnumPlusSearch = (props) =>
       onChange={props.updateSearch}
       transDomain={props.transDomain}
       value={props.search}
+      isValid={props.isValid}
+      searchable={true}
     />
 
 implementPropTypes(EnumPlusSearch, DataSearchTypes, {

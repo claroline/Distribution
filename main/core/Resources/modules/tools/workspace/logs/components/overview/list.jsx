@@ -28,11 +28,13 @@ class LogsList extends Component {
             data={props.chart.data}
             xAxisLabel={{
               show: true,
-              text: trans('date')
+              text: trans('date'),
+              grid: true
             }}
             yAxisLabel={{
               show: true,
-              text: trans('actions')
+              text: trans('actions'),
+              grid: true
             }}
             height={250}
             width={700}

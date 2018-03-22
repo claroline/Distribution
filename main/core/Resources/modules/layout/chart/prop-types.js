@@ -27,11 +27,13 @@ const AxisChart = {
   propTypes: Object.assign({}, Chart.propTypes, {
     xAxisLabel: T.shape({
       show: T.bool.isRequired,
-      text: T.string.isRequired
+      text: T.string.isRequired,
+      grid: T.bool
     }),
     yAxisLabel: T.shape({
       show: T.bool.isRequired,
-      text: T.string.isRequired
+      text: T.string.isRequired,
+      grid: T.bool
     }),
     ticksAsYValues: T.bool,
     minMaxAsYDomain:T.bool,
@@ -41,11 +43,13 @@ const AxisChart = {
   defaultProps: Object.assign({}, Chart.defaultProps, {
     xAxisLabel: T.shape({
       show: false,
-      text: 'X Axis DATA'
+      text: 'X Axis DATA',
+      grid: false
     }),
     yAxisLabel: T.shape({
       show: false,
-      text: 'Y Axis DATA'
+      text: 'Y Axis DATA',
+      grid: false
     }),
     ticksAsYValues: false,
     minMaxAsYDomain: false,

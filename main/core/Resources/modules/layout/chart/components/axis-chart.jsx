@@ -36,16 +36,6 @@ const AxisChart = props => {
       height={props.height}
       margin={props.margin}
     >
-      {React.createElement(DATA_SERIES[props.type], {
-        data: formattedData,
-        height: height,
-        yScale: yScale,
-        xScale: xScale,
-        color: props.color,
-        altColor: props.altColor,
-        showArea: props.showArea
-      })}
-
       <Axis
         height={height}
         width={width}
@@ -67,6 +57,16 @@ const AxisChart = props => {
         label={props.yAxisLabel}
         ticksAsValues={props.ticksAsYValues}
       />
+
+      {React.createElement(DATA_SERIES[props.type], {
+        data: formattedData,
+        height: height,
+        yScale: yScale,
+        xScale: xScale,
+        color: props.color,
+        altColor: props.altColor,
+        showArea: props.showArea
+      })}
     </Chart>
   )
 }
