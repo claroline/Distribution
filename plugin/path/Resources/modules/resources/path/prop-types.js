@@ -16,6 +16,9 @@ const Step = {
       meta: T.shape({
         type: T.string.isRequired
       })
+    }),
+    userProgression: T.shape({
+      status: T.string
     })
   },
   defaultProps: {
@@ -30,7 +33,8 @@ const Path = {
       showOverview: T.bool,
       showSummary: T.bool,
       openSummary: T.bool,
-      numbering: T.oneOf(['none', 'numeric', 'literal', 'custom'])
+      numbering: T.oneOf(['none', 'numeric', 'literal', 'custom']),
+      manualProgressionAllowed: T.bool
     }).isRequired,
     steps: T.arrayOf(T.shape(
       Step.propTypes

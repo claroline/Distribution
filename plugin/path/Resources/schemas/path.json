@@ -28,9 +28,13 @@
         "numbering": {
           "enum": ["none", "numeric", "literal", "custom"],
           "description": "Numbering of the steps"
+        },
+        "manualProgressionAllowed": {
+          "type": "boolean",
+          "description": "Wether setting progression manually is allowed or not"
         }
       },
-      "required": ["showOverview", "showSummary", "openSummary"]
+      "required": ["showOverview", "showSummary", "openSummary", "manualProgressionAllowed"]
     },
     "steps": {
       "type": "array",

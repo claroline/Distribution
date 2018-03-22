@@ -1,11 +1,15 @@
 import React, {Component} from 'react'
+import classes from 'classnames'
 
 import {asset} from '#/main/core/scaffolding/asset'
 import {url} from '#/main/core/api/router'
+import {currentUser} from '#/main/core/user/current'
+import {trans} from '#/main/core/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
+import {constants} from '#/plugin/path/resources/path/constants'
 
 class PrimaryResource extends Component {
   constructor(props) {
@@ -54,6 +58,53 @@ PrimaryResource.propTypes = {
   type: T.string.isRequired
 }
 
+const authenticatedUser = currentUser()
+
+const ManualStepProgressionControl = props =>
+  <div className="dropdown">
+    <span
+      className="dropdown-toggle step-manual-progression"
+      role="button"
+      data-toggle="dropdown"
+      aria-haspopup={true}
+      aria-expanded={true}
+    >
+      {trans('user_progression', {}, 'path')} : <b>{constants.STEP_STATUS[props.status]}</b> <span className="fa fa-fw fa-caret-down"/>
+    </span>
+    <ul className="dropdown-menu">
+      <li className={classes({'active': props.status === constants.STATUS_TO_DO})}>
+        <a
+          className="pointer-hand"
+          onClick={() => props.updateProgression(props.stepId, constants.STATUS_TO_DO)}
+        >
+          {constants.STEP_STATUS[constants.STATUS_TO_DO]}
+        </a>
+      </li>
+      <li className={classes({'active': props.status === constants.STATUS_DONE})}>
+        <a
+          className="pointer-hand"
+          onClick={() => props.updateProgression(props.stepId, constants.STATUS_DONE)}
+        >
+          {constants.STEP_STATUS[constants.STATUS_DONE]}
+        </a>
+      </li>
+      <li className={classes({'active': props.status === constants.STATUS_TO_REVIEW})}>
+        <a
+          className="pointer-hand"
+          onClick={() => props.updateProgression(props.stepId, constants.STATUS_TO_REVIEW)}
+        >
+          {constants.STEP_STATUS[constants.STATUS_TO_REVIEW]}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+ManualStepProgressionControl.propTypes = {
+  status: T.string.isRequired,
+  stepId: T.string.isRequired,
+  updateProgression: T.func.isRequired
+}
+
 /**
  * Renders step content.
  */
@@ -69,6 +120,14 @@ const Step = props =>
       }
 
       {props.title}
+
+      {props.manualProgressionAllowed && authenticatedUser &&
+        <ManualStepProgressionControl
+          status={props.userProgression.status}
+          stepId={props.id}
+          updateProgression={props.updateProgression}
+        />
+      }
     </h3>
 
     {props.description &&
@@ -86,7 +145,9 @@ const Step = props =>
   </div>
 
 implementPropTypes(Step, StepTypes, {
-  numbering: T.string
+  numbering: T.string,
+  manualProgressionAllowed: T.bool.isRequired,
+  updateProgression: T.func.isRequired
 })
 
 export {
