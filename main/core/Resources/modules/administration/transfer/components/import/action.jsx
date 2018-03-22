@@ -11,16 +11,16 @@ const Action = props =>
   <PageActions>
     <FormPageActionsContainer
       formName="import"
-      target={['apiv2_transfer_execute', {log: '123'}]}
+      target={['apiv2_transfer_start', {log: '123'}]}
       opened={true}
-      save={{action: (obj) => props.openLog('123')}}
+      save={{action: () => props.openLog('123')}}
     />
   </PageActions>
 
 const ConnectedAction = connect(
   null,
   dispatch => ({
-    openLog(file) {
+    openLog() {
       dispatch(
         modalActions.showModal(MODAL_LOG, {
           file: '123'

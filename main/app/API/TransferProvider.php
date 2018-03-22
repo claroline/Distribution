@@ -126,6 +126,8 @@ class TransferProvider
         $jsonLogger->set('error', 0);
         $jsonLogger->set('success', 0);
 
+        sleep(10);
+
         foreach ($data as $data) {
             ++$i;
             $this->log("{$i}/{$total}: ".$this->getActionName($executor));

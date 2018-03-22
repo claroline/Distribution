@@ -29,7 +29,7 @@ class JsonLogger
     public function set($property, $value)
     {
         $data = $this->get();
-        $data->{$property} = $value;
+        $data[$property] = $value;
         $this->write($data);
     }
 
@@ -37,11 +37,11 @@ class JsonLogger
     {
         $data = $this->get();
 
-        if (!is_array($data->{$property})) {
+        if (isset($data[$property]) && !is_array($data[$property])) {
             throw new \RuntimeException($property.' is not an array');
         }
 
-        $data->{$property}[] = $value;
+        $data[$property][] = $value;
         $this->write($data);
     }
 
@@ -49,11 +49,11 @@ class JsonLogger
     {
         $data = $this->get();
 
-        if (!is_string($data->{$property})) {
+        if (isset($data[$property]) && !is_string($data[$property])) {
             throw new \RuntimeException($property.' is not an array');
         }
 
-        $data->{$property} = $data->{$property}.$separator.$value;
+        $data[$property] = $data[$property].$separator.$value;
         $this->write($data);
     }
 
@@ -61,11 +61,11 @@ class JsonLogger
     {
         $data = $this->get();
 
-        if (!is_int($data->{$property})) {
+        if (isset($data[$property]) && !is_int($data[$property])) {
             throw new \RuntimeException($property.' is not an integer');
         }
 
-        $data->{$property} = $data->{$property} + 1;
+        $data[$property] = $data[$property] + 1;
         $this->write($data);
     }
 
@@ -80,15 +80,17 @@ class JsonLogger
         $data = $this->get();
         $time = date('m-d-y h:i:s').': ';
         $line = $time.$message;
-        $data->log .= $separator.$line;
+        isset($data['log']) ?
+          $data['log'] .= $separator.$line :
+          $data['log'] = $line;
 
         $this->write($data);
     }
 
     public function get()
     {
-        $data = $this->cache ? $this->cache : json_decode(file_get_contents($this->file));
+        $data = $this->cache ? $this->cache : json_decode(file_get_contents($this->file), true);
 
-        return $data ? $data : new \stdClass();
+        return $data ? $data : [];
     }
 }

@@ -12,8 +12,9 @@ class LogModal extends Component {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
+          {this.props.data.processed}
           <pre id="log-content">
-            {this.props.message}
+            {this.props.data.log}
           </pre>
         </Modal.Body>
         <button
@@ -27,13 +28,12 @@ class LogModal extends Component {
   }
 
   componentDidMount() {
-    //la boucle
-    this.props.load(this.props.file)
+    setInterval(() => this.props.load(this.props.file), 2000)
   }
 }
 
 LogModal.propTypes = {
-  message: T.string.isRequired,
+  data: T.obj.isRequired,
   fadeModal: T.func.isRequired,
   file: T.string.isRequired,
   load: T.func.isRequired
@@ -46,7 +46,7 @@ LogModal.defaultProps = {
 
 const ConnectedModal = connect(
   state => ({
-    message: state.log
+    data: state.log
   }),
   dispatch => ({
     load(file) {

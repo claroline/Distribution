@@ -4,8 +4,8 @@ import {
   LOG_REFRESH
 } from './actions'
 
-const reducer = makeReducer('', {
-  [LOG_REFRESH]: (state, action) => action.content
+const reducer = makeReducer({}, {
+  [LOG_REFRESH]: (state, action) => JSON.parse(action.content)
 })
 
 export {

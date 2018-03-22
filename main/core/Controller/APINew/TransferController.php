@@ -14,6 +14,7 @@ namespace Claroline\CoreBundle\Controller\APINew;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
+use Claroline\AppBundle\Async\AsyncRequest;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -21,6 +22,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @Route("/transfer")
@@ -42,6 +45,7 @@ class TransferController
     /**
      * @DI\InjectParams({
      *    "provider"   = @DI\Inject("claroline.api.transfer"),
+     *    "router"     = @DI\Inject("router"),
      *    "finder"     = @DI\Inject("claroline.api.finder"),
      *    "serializer" = @DI\Inject("claroline.api.serializer"),
      *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
@@ -59,6 +63,7 @@ class TransferController
         FinderProvider $finder,
         SerializerProvider $serializer,
         FileUtilities $fileUt,
+        RouterInterface $router,
         $schemaDir
     ) {
         $this->provider = $provider;
@@ -66,13 +71,35 @@ class TransferController
         $this->serializer = $serializer;
         $this->schemaDir = $schemaDir;
         $this->fileUt = $fileUt;
+        $this->router = $router;
     }
 
     /**
-     * Difference with file controller ?
-     *
      * @Route(
-     *    "",
+     *    "/start",
+     *    name="apiv2_transfer_start"
+     * )
+     * @Method("POST")
+     *
+     * @param Request $request
+     */
+    public function startAction(Request $request)
+    {
+        $request = new AsyncRequest(
+          $this->router->generate(
+            'apiv2_transfer_execute',
+            ['log' => $request->query->get('log')],
+             UrlGeneratorInterface::ABSOLUTE_URL
+          ),
+          file_get_contents('php://input')
+        );
+
+        return new JsonResponse('started', 200);
+    }
+
+    /**
+     * @Route(
+     *    "/execute",
      *    name="apiv2_transfer_execute"
      * )
      * @Method("POST")
