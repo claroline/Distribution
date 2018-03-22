@@ -1,5 +1,4 @@
 import moment from 'moment'
-
 import {getLocale} from '#/main/core/intl/locale'
 
 // configure moment
@@ -39,37 +38,12 @@ function getDisplayFormat(long = false, withTime = false) {
 }
 
 /**
- * Gets the display format for d3 date charts
- * Converts between Moment formats to d3 formats
- *
- * @return {string} - the d3 date format according to locale
+ * Gets formated date from Date object
+ * @param {Date} date
+ * @returns {string} formatted date
  */
-function getD3DisplayFormat() {
-  let displayFormat = moment.localeData().longDateFormat('L')
-  let d3Format = [], dateSeparator = '/'
-  let dateChunks = displayFormat.split(dateSeparator)
-  if (dateChunks.length < 3) {
-    dateSeparator = '-'
-    dateChunks = displayFormat.split(dateSeparator)
-  }
-  for (let chunk of dateChunks) {
-    switch (chunk) {
-      case 'YYYY': {
-        d3Format.push('%Y')
-        break
-      }
-      case 'MM': {
-        d3Format.push('%m')
-        break
-      }
-      case 'DD': {
-        d3Format.push('%d')
-        break
-      }
-    }
-  }
-  
-  return d3Format.join(dateSeparator)
+function dateToDisplayFormat(date) {
+  return moment(date).format(getDisplayFormat())
 }
 
 function isValidDate(value, format = null) {
@@ -137,5 +111,5 @@ export {
   displayDate,
   now,
   apiToDateObject,
-  getD3DisplayFormat
+  dateToDisplayFormat
 }

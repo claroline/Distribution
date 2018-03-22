@@ -313,6 +313,9 @@ class EventManager
                 if ($allOption !== $resourceType) {
                     $eventPrefix = "${resourceOption}::${resourceType}::";
                 }
+                if ($allOption === $resourceType && $genericEventName === $allOption) {
+                    $eventPrefix = "${resourceOption}::";
+                }
                 $sortedEvents[$resourceOption][$resourceType][$genericEventKey] = $eventPrefix.$genericEventName;
             }
 

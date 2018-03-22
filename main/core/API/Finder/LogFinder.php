@@ -55,8 +55,7 @@ class LogFinder implements FinderInterface
                         ->setParameter('date', $filterValue);
                     break;
                 case 'action':
-                    $qb->andWhere('obj.action = :action')
-                        ->setParameter('action', $filterValue);
+                    $this->filterAction($filterValue, $qb);
                     break;
                 default:
                     if (is_string($filterValue)) {
@@ -86,5 +85,37 @@ class LogFinder implements FinderInterface
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Log\Log';
+    }
+
+    private function filterAction($action, QueryBuilder $qb)
+    {
+        if ($action === 'all') {
+            return;
+        }
+
+        $actionChunks = explode('::', $action);
+        if (count($actionChunks) < 2) {
+            $qb
+                ->andWhere('obj.action = :action')
+                ->setParameter('action', $action);
+
+            return;
+        }
+        if (count($actionChunks) === 2 && $actionChunks[1] === 'all') {
+            $qb
+                ->andWhere('obj.action LIKE :action')
+                ->setParameter('action', $actionChunks[0].'%');
+
+            return;
+        }
+        if ($actionChunks[0] === 'resource') {
+            $qb
+                ->andWhere('ort.name = :type')
+                ->setParameter('type', $actionChunks[1]);
+            if ($actionChunks[2] !== 'all') {
+                $qb->andWhere('obj.action = :action')
+                    ->setParameter('action', $actionChunks[2]);
+            }
+        }
     }
 }

@@ -12,7 +12,7 @@ class Option extends Component {
   handleOnClick(evt) {
     evt.preventDefault()
     evt.stopPropagation()
-    this.props.onSelect(this.props.value, evt)
+    this.props.onSelect(this.props.value, this.props.label, evt)
   }
   
   render() {
