@@ -93,7 +93,7 @@ class UserCrud
             $nManager->processUpdate($notifications, $user);
         }
 
-        if (in_array(Options::ADD_PERSONAL_WORKSPACE, $options) || $roleUser->isPersonalWorkspaceCreationEnabled()) {
+        if (in_array(Options::ADD_PERSONAL_WORKSPACE, $options) || ($user->isEnabled() && $roleUser->isPersonalWorkspaceCreationEnabled())) {
             $this->userManager->setPersonalWorkspace($user, isset($extra['model']) ? $extra['model'] : null);
         }
         //we need this line for the log system
