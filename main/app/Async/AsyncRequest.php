@@ -18,6 +18,7 @@ class AsyncRequest
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $route);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        //we don't need to wait the return
         curl_setopt($ch, CURLOPT_TIMEOUT, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
         curl_exec($ch);

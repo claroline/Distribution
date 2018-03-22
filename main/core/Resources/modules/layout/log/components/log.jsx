@@ -33,7 +33,7 @@ class LogModal extends Component {
 }
 
 LogModal.propTypes = {
-  data: T.obj.isRequired,
+  data: T.object.isRequired,
   fadeModal: T.func.isRequired,
   file: T.string.isRequired,
   load: T.func.isRequired
