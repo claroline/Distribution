@@ -138,7 +138,11 @@ class TransferProvider
             }
 
             if (0 === $i % $executor->getBatchSize()) {
-                $this->om->forceFlush();
+                try {
+                    $this->om->forceFlush();
+                } catch (\Exception $e) {
+                    $jsonLogger->log($e->getMessage());
+                }
             }
 
             $jsonLogger->increment('processed');
