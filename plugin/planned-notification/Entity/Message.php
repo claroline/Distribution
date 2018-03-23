@@ -44,6 +44,13 @@ class Message
     protected $workspace;
 
     /**
+     * @ORM\Column(name="title", nullable=false)
+     *
+     * @var string
+     */
+    protected $title;
+
+    /**
      * @ORM\Column(name="content", type="text", nullable=false)
      *
      * @var string
@@ -100,6 +107,22 @@ class Message
     public function setWorkspace($workspace)
     {
         $this->workspace = $workspace;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
     }
 
     /**

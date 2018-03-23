@@ -8,9 +8,9 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated migration based on mapping information: modify it with caution.
  *
- * Generation date: 2018/03/22 09:15:58
+ * Generation date: 2018/03/23 09:07:27
  */
-class Version20180322091556 extends AbstractMigration
+class Version20180323090725 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -34,6 +34,7 @@ class Version20180322091556 extends AbstractMigration
             CREATE TABLE claro_plannednotificationbundle_message (
                 id INT AUTO_INCREMENT NOT NULL, 
                 workspace_id INT NOT NULL, 
+                title VARCHAR(255) NOT NULL, 
                 content LONGTEXT NOT NULL, 
                 uuid VARCHAR(36) NOT NULL, 
                 UNIQUE INDEX UNIQ_6897C1B7D17F50A6 (uuid), 
