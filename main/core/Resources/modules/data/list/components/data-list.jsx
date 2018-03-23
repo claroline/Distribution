@@ -33,8 +33,8 @@ class DataList extends Component {
 
     // processes list display configuration
     const definition = createListDefinition(this.props.definition)
-    const currentDisplay = this.computeDisplay(this.props.display && this.props.display.current ?
-      this.props.display.current : listConst.DEFAULT_DISPLAY_MODE,
+    const currentDisplay = this.computeDisplay(
+      this.props.display && this.props.display.current ? this.props.display.current : listConst.DEFAULT_DISPLAY_MODE,
       definition
     )
 
@@ -51,8 +51,8 @@ class DataList extends Component {
     if (!isEqual(this.props.definition, nextProps.definition)
       || isEqual(this.props.display, nextProps.display)) {
       const definition = createListDefinition(nextProps.definition)
-      const currentDisplay = this.computeDisplay(nextProps.display && nextProps.display.current ?
-        nextProps.display.current : listConst.DEFAULT_DISPLAY_MODE,
+      const currentDisplay = this.computeDisplay(
+        nextProps.display && nextProps.display.current ? nextProps.display.current : listConst.DEFAULT_DISPLAY_MODE,
         definition
       )
 
