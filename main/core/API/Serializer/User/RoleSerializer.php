@@ -99,7 +99,7 @@ class RoleSerializer
            'personalWorkspaceCreationEnabled' => $role->getPersonalWorkspaceCreationEnabled(),
        ];
 
-        if (in_array(Options::SERIALIZE_COUNT_USER, $options) && Role::USER_ROLE !== $role->getType()) {
+        if (in_array(Options::SERIALIZE_COUNT_USER, $options)) {
             if (Role::USER_ROLE !== $role->getType()) {
                 $meta['users'] = $this->om->getRepository('ClarolineCoreBundle:User')->countUsersByRoleIncludingGroup($role);
             } else {
@@ -154,11 +154,13 @@ class RoleSerializer
             if (empty($data['workspace'])) {
                 //don't set workspace to null here or some bad things will happen
             } else {
-                $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')
-                    ->findOneBy(['uuid' => $data['workspace']['id']]);
+                if (isset($data['workspace']['uuid'])) {
+                    $workspace = $this->om->getRepository('ClarolineCoreBundle:Workspace\Workspace')
+                      ->findOneBy(['uuid' => $data['workspace']['uuid']]);
 
-                if ($workspace) {
-                    $role->setWorkspace($workspace);
+                    if ($workspace) {
+                        $role->setWorkspace($workspace);
+                    }
                 }
 
                 //this is if it's a workspace and we send the translationKey role
