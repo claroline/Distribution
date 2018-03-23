@@ -55,9 +55,11 @@ class Mailer
         try {
             $client->send($message);
             $logger->info('Email sent to '.$to);
+
             return true;
         } catch (\Exception $e) {
             $logger->error('Fail to send email to '.$to);
+
             return false;
         }
     }

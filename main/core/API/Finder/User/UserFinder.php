@@ -114,7 +114,7 @@ class UserFinder implements FinderInterface
                     $qb->setParameter($filterName, $filterValue);
                     break;
                 case 'email':
-                    $qb->andWhere("UPPER(obj.mail) LIKE :email");
+                    $qb->andWhere('UPPER(obj.mail) LIKE :email');
                     $qb->setParameter('email', '%'.strtoupper($filterValue).'%');
                     break;
                 default:
