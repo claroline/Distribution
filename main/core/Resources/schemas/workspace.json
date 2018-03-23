@@ -15,9 +15,6 @@
       "description": "The workspace code",
       "minLength": 1
     },
-    "poster": {
-      "type": "string"
-    },
     "meta": {
       "type": "object",
       "properties": {
@@ -103,6 +100,9 @@
         "oneOf": [
           {
               "$ref": "https://github.com/claroline/Distribution/tree/master/main/core/Resources/schemas/role.json"
+          },
+          {
+              "type": "null"
           }
         ]
       }

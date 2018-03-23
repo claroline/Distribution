@@ -73,6 +73,11 @@ const Parameters = () => {
                 type: 'html',
                 label: trans('description'),
                 required: false
+              },
+              {
+                name: 'poster',
+                type: 'image',
+                label: trans('image')
               }
             ]
           },

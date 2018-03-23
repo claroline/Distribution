@@ -72,7 +72,7 @@ class WorkspaceSerializer
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serializer = $this->container->get('claroline.api.serializer');
             $serialized = array_merge($serialized, [
-                'poster' => '', // todo : add as Workspace prop
+                'poster' => $workspace->getPoster() ? $this->container->get('claroline.serializer.public_file')->serialize($workspace->getPoster()) : null,
                 'meta' => $this->getMeta($workspace),
                 'display' => $this->getDisplay($workspace),
                 'restrictions' => $this->getRestrictions($workspace),
@@ -171,6 +171,17 @@ class WorkspaceSerializer
      */
     public function deserialize(array $data, Workspace $workspace, array $options = [])
     {
+        // remove this later (with the Trait)
+        $this->genericSerializer->deserialize($data, $workspace, $options);
+
+        if (isset($data['poster']) && isset($data['poster']['id'])) {
+            $poster = $this->container->get('claroline.api.serializer')->deserialize(
+                'Claroline\CoreBundle\Entity\File\PublicFile',
+                $data['poster']
+            );
+            $workspace->setPoster($poster);
+        }
+
         $this->sipe('uuid', 'setUuid', $data, $workspace);
         $this->sipe('code', 'setCode', $data, $workspace);
         $this->sipe('name', 'setName', $data, $workspace);

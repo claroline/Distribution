@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Workspace;
 
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Model\OrganizationsTrait;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
@@ -323,6 +324,16 @@ class Workspace
      * @var ArrayCollection
      */
     protected $organizations;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\File\PublicFile"
+     * )
+     * @ORM\JoinColumn(name="file_id", referencedColumnName="id", onDelete="SET NULL")
+     *
+     * @var PublicFile
+     */
+    protected $picture;
 
     /**
      * Workspace constructor.
@@ -813,5 +824,15 @@ class Workspace
     public function setSlug($slug)
     {
         $this->slug = $slug;
+    }
+
+    public function setPoster(PublicFile $file)
+    {
+        $this->picture = $file;
+    }
+
+    public function getPoster()
+    {
+        return $this->picture;
     }
 }
