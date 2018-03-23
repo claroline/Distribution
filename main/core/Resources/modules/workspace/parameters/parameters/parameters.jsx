@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
@@ -39,53 +39,104 @@ const Parameters = () => {
         sections={[
           {
             id: 'general',
-            title: t('general'),
+            title: trans('general'),
             primary: true,
             fields: [
               {
                 name: 'name',
                 type: 'string',
-                label: t('name'),
+                label: trans('name'),
                 required: true
               },
               {
                 name: 'code',
                 type: 'string',
-                label: t('code'),
+                label: trans('code'),
                 required: true
+              },
+              {
+                name: 'meta.created',
+                type: 'date',
+                label: trans('created'),
+                required: true,
+                readOnly: true
+              },
+              {
+                name: 'meta.creator.username',
+                type: 'string',
+                label: trans('creator'),
+                required: true,
+                readOnly: true
+              },
+              {
+                name: 'meta.description',
+                type: 'html',
+                label: trans('description'),
+                required: false
               }
             ]
           },
           {
             id: 'registration',
-            title: t('registration'),
+            title: trans('registration'),
             primary: true,
             fields: [
               {
                 name: 'registration.validation',
                 type: 'boolean',
-                label: t('registration_validation')
+                label: trans('registration_validation')
               },
               {
                 name: 'registration.selfRegistration',
                 type: 'boolean',
-                label: t('public_registration')
+                label: trans('public_registration')
               },
               {
                 name: 'registration.selfUnregistration',
                 type: 'boolean',
-                label: t('public_unregistration')
+                label: trans('public_unregistration')
               }
             ]
           },
           {
             id: 'display',
-            title: t('display'),
+            title: trans('display'),
             fields: [
               {
                 name: 'display.displayable',
                 type: 'boolean',
-                label: t('displayable_in_workspace_list')
+                label: trans('displayable_in_workspace_list')
+              }
+            ]
+          },
+          {
+            id: 'restrictions',
+            title: trans('restrictions'),
+            fields: [
+              {
+                name: 'restrictions.accessibleFrom',
+                type: 'date',
+                label: trans('accessibleFrom')
+              },
+              {
+                name: 'restrictions.accessibleUntil',
+                type: 'date',
+                label: trans('accessibleUntil')
+              },
+              {
+                name: 'restrictions.maxStorage',
+                type: 'string',
+                label: trans('max_storage')
+              },
+              {
+                name: 'restrictions.maxUsers',
+                type: 'integer',
+                label: trans('maxUsers')
+              },
+              {
+                name: 'restrictions.maxResources',
+                type: 'integer',
+                label: trans('maxResources')
               }
             ]
           }
