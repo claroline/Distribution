@@ -47,6 +47,7 @@
     "user_progression_step_to_review": "You have marked this step as to review.",
     "user_progression_step_to_review_label": "To review",
     "user_progression_step_unseen": "You have not seen this step.",
+    "user_progression_step_unseen_label": "Not seen",
     "overview_message": "Welcome message",
     "start_path": "Start path",
     "continue_path": "Continue path",

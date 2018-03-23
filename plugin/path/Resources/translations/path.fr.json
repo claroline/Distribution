@@ -50,6 +50,7 @@
     "user_progression_step_to_review": "Vous avez marqué cette étape comme étant à refaire.",
     "user_progression_step_to_review_label": "A refaire",
     "user_progression_step_unseen": "Vous n'avez pas encore vu cette étape.",
+    "user_progression_step_unseen_label": "Non vue",
     "overview_message": "Message d'accueil",
     "start_path": "Commencer le parcours",
     "continue_path": "Continuer le parcours",

@@ -102,13 +102,15 @@ const Resource = props =>
     ]}
   >
     <RoutedPageContent
+      headerSpacer={false}
+      redirect={[]}
       routes={[
         {
           path: '/',
-          exact: true,
-          component: getHome(props.defaultHome)
+          component: getHome(props.defaultHome),
+          exact: true
         }, {
-          path: 'menu',
+          path: '/menu',
           component: ClacoFormMainMenu
         }, {
           path: '/edit',

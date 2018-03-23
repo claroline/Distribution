@@ -158,6 +158,7 @@ class UserSerializer
                         'type' => $role->getType(),
                         'name' => $role->getName(),
                         'translationKey' => $role->getTranslationKey(),
+                        'workspace' => $role->getWorkspace() ? ['id' => $role->getWorkspace()->getUuid()] : null,
                     ];
                 }, $user->getEntityRoles()),
                 'groups' => array_map(function (Group $group) {
@@ -168,9 +169,15 @@ class UserSerializer
                 }, $user->getGroups()->toArray()),
             ]);
 
+            $serializer = $this->container->get('claroline.api.serializer');
+
             if ($user->getMainOrganization()) {
-                $serialized['mainOrganization'] = $this->container->get('claroline.api.serializer')->serialize($user->getMainOrganization());
+                $serialized['mainOrganization'] = $serializer->serialize($user->getMainOrganization());
             }
+
+            $serialized['administratedOrganizations'] = array_map(function ($organization) use ($serializer) {
+                return $serializer->serialize($organization);
+            }, $user->getAdministratedOrganizations()->toArray());
         }
 
         if (in_array(Options::SERIALIZE_FACET, $options)) {
@@ -390,6 +397,31 @@ class UserSerializer
                 'Claroline\CoreBundle\Entity\Organization\Organization',
                 $data['mainOrganization']
             ));
+        }
+
+        //only add role here. If we want to remove them, use the crud remove method instead
+        //it's usefull if we want to create a user with a list of roles
+        if (isset($data['roles'])) {
+            foreach ($data['roles'] as $role) {
+                $role = $this->container->get('claroline.api.serializer')
+                    ->deserialize('Claroline\CoreBundle\Entity\Role', $role);
+                if ($role && $role->getId()) {
+                    $user->addRole($role);
+                }
+            }
+        }
+
+        //only add role here. If we want to remove them, use the crud remove method instead
+        //it's usefull if we want to create a user with a list of roles
+
+        if (isset($data['groups'])) {
+            foreach ($data['groups'] as $group) {
+                $group = $this->container->get('claroline.api.serializer')
+                    ->deserialize('Claroline\CoreBundle\Entity\Group', $group);
+                if ($group && $group->getId()) {
+                    $user->addGroup($group);
+                }
+            }
         }
 
         $fieldFacets = $this->om

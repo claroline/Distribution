@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("claroline.serializer.workspace")
@@ -25,12 +26,16 @@ class WorkspaceSerializer
     /** @var WorkspaceManager */
     private $workspaceManager;
 
+    /** @var ContainerInterface */
+    private $container;
+
     /**
      * WorkspaceSerializer constructor.
      *
      * @DI\InjectParams({
      *     "userSerializer"   = @DI\Inject("claroline.serializer.user"),
-     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager")
+     *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "container"        = @DI\Inject("service_container")
      * })
      *
      * @param UserSerializer   $userSerializer
@@ -38,10 +43,12 @@ class WorkspaceSerializer
      */
     public function __construct(
         UserSerializer $userSerializer,
-        WorkspaceManager $workspaceManager
+        WorkspaceManager $workspaceManager,
+        ContainerInterface $container
     ) {
         $this->userSerializer = $userSerializer;
         $this->workspaceManager = $workspaceManager;
+        $this->container = $container;
     }
 
     /**
@@ -63,6 +70,7 @@ class WorkspaceSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $serializer = $this->container->get('claroline.api.serializer');
             $serialized = array_merge($serialized, [
                 'poster' => '', // todo : add as Workspace prop
                 'meta' => $this->getMeta($workspace),
@@ -70,12 +78,28 @@ class WorkspaceSerializer
                 'restrictions' => $this->getRestrictions($workspace),
                 'registration' => $this->getRegistration($workspace),
                 'roles' => array_map(function (Role $role) {
-                    return ['id' => $role->getId(), 'name' => $role->getName()];
+                    return [
+                        'id' => $role->getUuid(),
+                        'name' => $role->getName(),
+                        'translationKey' => $role->getTranslationKey(),
+                    ];
                 }, $workspace->getRoles()->toArray()),
                 'managers' => array_map(function (User $manager) {
                     return $this->userSerializer->serialize($manager, [Options::SERIALIZE_MINIMAL]);
                 }, $this->workspaceManager->getManagers($workspace)),
+                'organizations' => array_map(function ($organization) use ($serializer) {
+                    return $serializer->serialize($organization);
+                }, $workspace->getOrganizations()->toArray()),
             ]);
+        }
+
+        //maybe do the same for users one day
+        if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
+            $serialized['groups'] = $this->container->get('claroline.api.finder')->search(
+              'Claroline\CoreBundle\Entity\Group',
+              ['filters' => ['workspace' => $workspace->getUuid()]],
+              [Options::SERIALIZE_MINIMAL]
+            )['data'];
         }
 
         return $serialized;
@@ -89,6 +113,7 @@ class WorkspaceSerializer
     private function getMeta(Workspace $workspace)
     {
         return [
+            'slug' => $workspace->getSlug(),
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),
@@ -105,7 +130,7 @@ class WorkspaceSerializer
     private function getDisplay(Workspace $workspace)
     {
         return [
-            'displayable' => $workspace->isDisplayable(),
+            'displayable' => $workspace->isDisplayable(), // deprecated
         ];
     }
 
@@ -117,6 +142,7 @@ class WorkspaceSerializer
     private function getRestrictions(Workspace $workspace)
     {
         return [
+            'hidden' => $workspace->isHidden(),
             'accessibleFrom' => $workspace->getStartDate() ? $workspace->getStartDate()->format('Y-m-d\TH:i:s') : null,
             'accessibleUntil' => $workspace->getEndDate() ? $workspace->getEndDate()->format('Y-m-d\TH:i:s') : null,
             'maxUsers' => $workspace->getMaxUsers(),
@@ -140,9 +166,13 @@ class WorkspaceSerializer
     }
 
     /**
+     * Deserializes Workspace data into entities.
+     *
      * @param array     $data
      * @param Workspace $workspace
      * @param array     $options
+     *
+     * @return Workspace
      */
     public function deserialize(array $data, Workspace $workspace, array $options = [])
     {
@@ -153,8 +183,7 @@ class WorkspaceSerializer
         $this->sipe('meta.model', 'setIsModel', $data, $workspace);
         $this->sipe('meta.description', 'setDescription', $data, $workspace);
 
-        $this->sipe('display.displayable', 'setDisplayable', $data, $workspace);
-
+        $this->sipe('restrictions.hidden', 'setHidden', $data, $workspace);
         $this->sipe('restrictions.accessibleFrom', 'setStartDate', $data, $workspace);
         $this->sipe('restrictions.accessibleUntil', 'setEndDate', $data, $workspace);
         $this->sipe('restrictions.maxUsers', 'setMaxUsers', $data, $workspace);

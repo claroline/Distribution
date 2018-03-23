@@ -51,6 +51,10 @@ const ParametersForm = props =>
               }
             ]
           }, {
+            name: 'display.manualProgressionAllowed',
+            type: 'boolean',
+            label: trans('path_manual_progression_allowed', {}, 'path')
+          }, {
             name: 'display.numbering',
             type: 'enum',
             label: trans('path_numbering', {}, 'path'),
@@ -70,7 +74,8 @@ ParametersForm.propTypes = {
     display: T.shape({
       description: T.string,
       showOverview: T.bool.isRequired,
-      showSummary: T.bool.isRequired
+      showSummary: T.bool.isRequired,
+      manualProgressionAllowed: T.bool.isRequired
     })
   }).isRequired
 }

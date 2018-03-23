@@ -4,15 +4,19 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
+import {currentUser} from '#/main/core/user/current'
 
 import {select} from '#/plugin/path/resources/path/selectors'
 
+import {constants} from '#/plugin/path/resources/path/constants'
 import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {PathCurrent} from '#/plugin/path/resources/path/components/current.jsx'
 import {Step} from '#/plugin/path/resources/path/player/components/step.jsx'
 import {Summary} from '#/plugin/path/resources/path/player/components/summary.jsx'
-import {getNumbering, flattenSteps} from '#/plugin/path/resources/path/utils'
+import {getNumbering, flattenSteps, getStepUserProgression} from '#/plugin/path/resources/path/utils'
 import {actions} from '#/plugin/path/resources/path/player/actions'
+
+const authenticatedUser = currentUser()
 
 // todo manage empty steps
 const PlayerComponent = props =>
@@ -32,7 +36,11 @@ const PlayerComponent = props =>
       routes={[
         {
           path: '/play/:id',
-          onEnter: (params) => props.updateProgression(params.id),
+          onEnter: (params) => {
+            if (authenticatedUser && getStepUserProgression(props.steps, params.id) === constants.STATUS_UNSEEN) {
+              props.updateProgression(params.id)
+            }
+          },
           render: (routeProps) => {
             const step = props.steps.find(step => routeProps.match.params.id === step.id)
 
@@ -45,6 +53,8 @@ const PlayerComponent = props =>
                 <Step
                   {...step}
                   numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
+                  manualProgressionAllowed={props.path.display.manualProgressionAllowed}
+                  updateProgression={props.updateProgression}
                 />
               </PathCurrent>
             )
@@ -70,8 +80,8 @@ const Player = connect(
     steps: flattenSteps(select.steps(state))
   }),
   dispatch => ({
-    updateProgression(stepId) { // todo disable for anonymous
-      dispatch(actions.updateProgression(stepId))
+    updateProgression(stepId, status = constants.STATUS_SEEN) { // todo disable for anonymous
+      dispatch(actions.updateProgression(stepId, status))
     }
   })
 )(PlayerComponent)

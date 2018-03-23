@@ -147,6 +147,11 @@ class ResourcePropertiesType extends AbstractType
                 'required' => false,
             ]
         );
+        $builder->add(
+            'deletable',
+            'checkbox',
+            ['required' => true, 'label' => 'deletable']
+        );
     }
 
     public function getName()

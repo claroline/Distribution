@@ -56,15 +56,6 @@ class GroupFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
-        if (!$this->authChecker->isGranted('ROLE_ADMIN')) {
-            /** @var User $currentUser */
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-            $qb->leftJoin('obj.organizations', 'uo');
-            $qb->leftJoin('uo.administrators', 'ua');
-            $qb->andWhere('ua.id = :userId');
-            $qb->setParameter('userId', $currentUser->getId());
-        }
-
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'organization':
@@ -86,6 +77,12 @@ class GroupFinder implements FinderInterface
                   $qb->leftJoin('obj.roles', 'r');
                   $qb->andWhere('r.uuid IN (:roleIds)');
                   $qb->setParameter('roleIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                  break;
+              case 'workspace':
+                  $qb->leftJoin('obj.roles', 'wsgroles');
+                  $qb->leftJoin('wsgroles.workspace', 'rws');
+                  $qb->andWhere('rws.uuid = (:workspaceId)');
+                  $qb->setParameter('workspaceId', $filterValue);
                   break;
                 default:
                     if (is_bool($filterValue)) {

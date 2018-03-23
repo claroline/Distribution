@@ -217,6 +217,27 @@ class WorkspaceController extends Controller
     }
 
     /**
+     * @EXT\Template()
+     *
+     * Renders the registered workspace list for a user.
+     *
+     * @return Response
+     */
+    public function usersManagementAction(Workspace $workspace)
+    {
+        return [
+            'workspace' => $workspace,
+            'restrictions' => [
+                'hasUserManagementAccess' => $this->authorization->isGranted(
+                    'OPEN', $this->container->get('claroline.persistence.object_manager')
+                      ->getRepository('ClarolineCoreBundle:Tool\AdminTool')
+                      ->findOneByName('user_management')
+                ),
+            ],
+        ];
+    }
+
+    /**
      * @EXT\Route(
      *     "/user/picker",
      *     name="claro_workspace_by_user_picker",
@@ -401,22 +422,41 @@ class WorkspaceController extends Controller
     public function deleteAction(Workspace $workspace)
     {
         $this->assertIsGranted('DELETE', $workspace);
-        $this->eventDispatcher->dispatch('log', new LogWorkspaceDeleteEvent($workspace));
-        $this->workspaceManager->deleteWorkspace($workspace);
-
-        $this->tokenUpdater->cancelUsurpation($this->tokenStorage->getToken());
-
+        $notDeletableNodes = $this->resourceManager->getNotDeletableResourcesByWorkspace($workspace);
         $sessionFlashBag = $this->session->getFlashBag();
-        $sessionFlashBag->add(
-            'success',
-            $this->translator->trans(
-                'workspace_delete_success_message',
-                ['%workspaceName%' => $workspace->getName()],
-                'platform'
-            )
-        );
 
-        return new Response('success', 204);
+        if (0 === count($notDeletableNodes)) {
+            $this->eventDispatcher->dispatch('log', new LogWorkspaceDeleteEvent($workspace));
+            $this->workspaceManager->deleteWorkspace($workspace);
+
+            $this->tokenUpdater->cancelUsurpation($this->tokenStorage->getToken());
+
+            $sessionFlashBag->add(
+                'success',
+                $this->translator->trans(
+                    'workspace_delete_success_message',
+                    ['%workspaceName%' => $workspace->getName()],
+                    'platform'
+                )
+            );
+
+            return new Response('success', 204);
+        } else {
+            $sessionFlashBag->add(
+                'error',
+                $this->translator->trans(
+                    'workspace_not_deletable_resources_error_message',
+                    ['%workspaceName%' => $workspace->getName()],
+                    'platform'
+                )
+            );
+
+            foreach ($notDeletableNodes as $node) {
+                $sessionFlashBag->add('error', $node->getPathForDisplay());
+            }
+
+            return new Response('error', 403);
+        }
     }
 
     /**
@@ -667,19 +707,6 @@ class WorkspaceController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/slug/{slug}/open",
-     *     name="claro_workspace_open_slug",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter("workspace",  options={"mapping": {"slug": "slug"}})
-     */
-    public function openSlugAction(Workspace $workspace)
-    {
-        return $this->openAction($workspace);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/{workspaceId}/open",
      *     name="claro_workspace_open",
      *     options={"expose"=true}
@@ -722,20 +749,18 @@ class WorkspaceController extends Controller
         }
 
         $tool = $this->workspaceManager->getFirstOpenableTool($workspace);
+        //small hack for administrators otherwise they can't open it
+        $toolName = $tool ? $tool->getName() : 'home';
 
-        if ($tool) {
-            $route = $this->router->generate(
-                'claro_workspace_open_tool',
-                [
-                    'workspaceId' => $workspace->getId(),
-                    'toolName' => $tool->getName(),
-                ]
-            );
+        $route = $this->router->generate(
+            'claro_workspace_open_tool',
+            [
+                'workspaceId' => $workspace->getId(),
+                'toolName' => $toolName,
+            ]
+        );
 
-            return new RedirectResponse($route);
-        }
-
-        $this->throwWorkspaceDeniedException($workspace);
+        return new RedirectResponse($route);
     }
 
     /**

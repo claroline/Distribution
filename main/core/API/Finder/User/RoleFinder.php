@@ -86,7 +86,16 @@ class RoleFinder implements FinderInterface
                     $qb->andWhere('g.uuid IN (:groupIds)');
                     $qb->setParameter('groupIds', is_array($filterValue) ? $filterValue : [$filterValue]);
                     break;
-
+                case 'workspace':
+                    $qb->leftJoin('obj.workspace', 'w');
+                    $qb->andWhere('w.uuid IN (:workspaceIds)');
+                    $qb->setParameter('workspaceIds', is_array($filterValue) ? $filterValue : [$filterValue]);
+                    break;
+                case 'grantable':
+                    $qb->join('obj.users', 'cu');
+                    $qb->andWhere('cu.id = :currentUserId');
+                    $qb->setParameter('currentUserId', $this->tokenStorage->getToken()->getUser()->getId());
+                    break;
               default:
                 if (is_bool($filterValue)) {
                     $qb->andWhere("obj.{$filterName} = :{$filterName}");

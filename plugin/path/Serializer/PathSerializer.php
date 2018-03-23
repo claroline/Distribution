@@ -13,6 +13,7 @@ use Innova\PathBundle\Entity\SecondaryResource;
 use Innova\PathBundle\Entity\Step;
 use Innova\PathBundle\Manager\PathManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @DI\Service("claroline.serializer.path")
@@ -33,10 +34,14 @@ class PathSerializer
     /** @var PathManager */
     private $pathManager;
 
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
     private $resourceNodeRepo;
     private $stepRepo;
     private $secondaryResourceRepo;
     private $inheritedResourceRepo;
+    private $userProgressionRepo;
 
     /**
      * PathSerializer constructor.
@@ -45,28 +50,33 @@ class PathSerializer
      *     "om"                 = @DI\Inject("claroline.persistence.object_manager"),
      *     "fileSerializer"     = @DI\Inject("claroline.serializer.public_file"),
      *     "resourceSerializer" = @DI\Inject("claroline.serializer.resource_node"),
-     *     "pathManager"        = @DI\Inject("innova_path.manager.path")
+     *     "pathManager"        = @DI\Inject("innova_path.manager.path"),
+     *     "tokenStorage"       = @DI\Inject("security.token_storage")
      * })
      *
      * @param ObjectManager          $om
      * @param PublicFileSerializer   $fileSerializer
      * @param ResourceNodeSerializer $resourceSerializer
      * @param PathManager            $pathManager
+     * @param TokenStorageInterface  $tokenStorage
      */
     public function __construct(
         ObjectManager $om,
         PublicFileSerializer $fileSerializer,
         ResourceNodeSerializer $resourceSerializer,
-        PathManager $pathManager
+        PathManager $pathManager,
+        TokenStorageInterface $tokenStorage
     ) {
         $this->om = $om;
         $this->fileSerializer = $fileSerializer;
         $this->resourceNodeSerializer = $resourceSerializer;
         $this->pathManager = $pathManager;
+        $this->tokenStorage = $tokenStorage;
         $this->resourceNodeRepo = $om->getRepository('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $this->stepRepo = $om->getRepository('Innova\PathBundle\Entity\Step');
         $this->secondaryResourceRepo = $om->getRepository('Innova\PathBundle\Entity\SecondaryResource');
         $this->inheritedResourceRepo = $om->getRepository('Innova\PathBundle\Entity\InheritedResource');
+        $this->userProgressionRepo = $om->getRepository('Innova\PathBundle\Entity\UserProgression');
     }
 
     /**
@@ -92,6 +102,7 @@ class PathSerializer
                 'showSummary' => $path->getShowSummary(),
                 'openSummary' => $path->isSummaryDisplayed(),
                 'numbering' => $path->getNumbering() ? $path->getNumbering() : 'none',
+                'manualProgressionAllowed' => $path->isManualProgressionAllowed(),
             ],
             'steps' => array_map(function (Step $step) {
                 return $this->serializeStep($step);
@@ -114,6 +125,7 @@ class PathSerializer
         $this->sipe('display.showSummary', 'setShowSummary', $data, $path);
         $this->sipe('display.openSummary', 'setSummaryDisplayed', $data, $path);
         $this->sipe('display.numbering', 'setNumbering', $data, $path);
+        $this->sipe('display.manualProgressionAllowed', 'setManualProgressionAllowed', $data, $path);
 
         if (isset($data['steps'])) {
             $this->deserializeSteps($data['steps'], $path);
@@ -160,6 +172,7 @@ class PathSerializer
             'children' => array_map(function (Step $child) {
                 return $this->serializeStep($child);
             }, $step->getChildren()->toArray()),
+            'userProgression' => $this->serializeUserProgression($step),
         ];
     }
 
@@ -190,6 +203,24 @@ class PathSerializer
             'lvl' => $inheritedResource->getLvl(),
             'sourceUuid' => $inheritedResource->getSourceUuid(),
         ];
+    }
+
+    /**
+     * @param Step $step
+     *
+     * @return array
+     */
+    private function serializeUserProgression(Step $step)
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+        $userProgression = $user !== 'anon.' ?
+            $this->userProgressionRepo->findOneBy(['step' => $step, 'user' => $user]) :
+            null;
+        $data = [
+            'status' => empty($userProgression) ? 'unseen' : $userProgression->getStatus(),
+        ];
+
+        return $data;
     }
 
     /**

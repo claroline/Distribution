@@ -271,7 +271,7 @@ class RoleRepository extends EntityRepository
     {
         $dql = "
             SELECT r FROM Claroline\CoreBundle\Entity\Role r
-            WHERE r.name = 'ROLE_WS_{$roleType}_{$workspace->getGuid()}'
+            WHERE r.name LIKE '%ROLE_WS_{$roleType}_{$workspace->getUuid()}%'
         ";
         $query = $this->_em->createQuery($dql);
 
@@ -324,7 +324,7 @@ class RoleRepository extends EntityRepository
 
     public function findAllWhereWorkspaceIsDisplayableAndInList(array $workspaces)
     {
-        if (count($workspaces) === 0) {
+        if (0 === count($workspaces)) {
             return [];
         } else {
             $dql = "

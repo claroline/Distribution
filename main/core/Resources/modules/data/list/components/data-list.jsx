@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import classes from 'classnames'
+import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 
 import {trans, transChoice} from '#/main/core/translation'
@@ -31,64 +31,56 @@ class DataList extends Component {
   constructor(props) {
     super(props)
 
+    // processes list display configuration
+    const definition = createListDefinition(this.props.definition)
+    const currentDisplay = this.computeDisplay(
+      this.props.display && this.props.display.current ? this.props.display.current : listConst.DEFAULT_DISPLAY_MODE,
+      definition
+    )
+
     // adds missing default in the definition
-    this.state = {
-      definition: createListDefinition(this.props.definition)
-    }
+    this.state = Object.assign({}, currentDisplay, {
+      definition: definition
+    })
 
     // fills missing translations with default ones
     this.translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
-
-    // enables selected display mode
-    this.setDisplayMode(this.props.display && this.props.display.current ?
-      this.props.display.current : listConst.DEFAULT_DISPLAY_MODE,
-      true
-    )
-
-    this.setDisplayMode = this.setDisplayMode.bind(this)
-    this.toggleColumn   = this.toggleColumn.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.definition !== nextProps.definition) {
-      this.setState({
-        definition: createListDefinition(nextProps.definition)
-      })
-    }
-
-    if (this.props.display !== nextProps.display) {
-      this.setDisplayMode(nextProps.display && nextProps.display.current ?
-        nextProps.display.current : listConst.DEFAULT_DISPLAY_MODE
+    if (!isEqual(this.props.definition, nextProps.definition)
+      || isEqual(this.props.display, nextProps.display)) {
+      const definition = createListDefinition(nextProps.definition)
+      const currentDisplay = this.computeDisplay(
+        nextProps.display && nextProps.display.current ? nextProps.display.current : listConst.DEFAULT_DISPLAY_MODE,
+        definition
       )
+
+      this.setState(Object.assign({}, currentDisplay, {
+        definition: createListDefinition(nextProps.definition)
+      }))
     }
   }
 
   /**
-   * Changes the list display.
+   * Computes the list display info.
    *
    * @param {string}  displayMode - the new display mode
-   * @param {boolean} init        - a flag to know how to update the state
+   * @param {array}   definition  - the list definition
    */
-  setDisplayMode(displayMode, init = false) {
+  computeDisplay(displayMode, definition) {
     let currentColumns
     if (listConst.DISPLAY_MODES[displayMode].filterColumns) {
       // gets only the displayed columns
-      currentColumns = getDisplayedProps(this.state.definition)
+      currentColumns = getDisplayedProps(definition)
     } else {
       // gets all displayable columns
-      currentColumns = getDisplayableProps(this.state.definition)
+      currentColumns = getDisplayableProps(definition)
     }
 
-    const newState = {
+    return {
       currentColumns: currentColumns.map(prop => prop.name),
       currentDisplay: displayMode
-    }
-
-    if (init) {
-      // call to `setState` is not authorized during component mounting
-      this.state = Object.assign({}, this.state, newState)
-    } else {
-      this.setState(newState)
     }
   }
 
@@ -117,6 +109,12 @@ class DataList extends Component {
     }
   }
 
+  toggleDisplay(displayMode) {
+    this.setState(
+      this.computeDisplay(displayMode, this.state.definition)
+    )
+  }
+
   render() {
     // enables and configures list tools
     const availableDisplays = this.props.display.available ? this.props.display.available : Object.keys(listConst.DISPLAY_MODES)
@@ -125,7 +123,7 @@ class DataList extends Component {
       displayTool = {
         current: this.state.currentDisplay,
         available: availableDisplays,
-        onChange: this.setDisplayMode
+        onChange: this.toggleDisplay.bind(this)
       }
     }
 
@@ -170,20 +168,12 @@ class DataList extends Component {
 
     return (
       <div className="data-list">
-        {this.props.title &&
-          React.createElement('h'+this.props.level, {
-            className: classes('list-title', this.props.displayLevel && `h${this.props.displayLevel}`)
-          }, this.props.title)
-        }
-
-        {(displayTool || columnsTool || filtersTool) &&
-          <ListHeader
-            disabled={0 === this.props.totalResults}
-            display={displayTool}
-            columns={columnsTool}
-            filters={filtersTool}
-          />
-        }
+        <ListHeader
+          disabled={0 === this.props.totalResults}
+          display={displayTool}
+          columns={columnsTool}
+          filters={filtersTool}
+        />
 
         {0 < this.props.totalResults &&
           React.createElement(listConst.DISPLAY_MODES[this.state.currentDisplay].component, {
@@ -212,10 +202,6 @@ class DataList extends Component {
 }
 
 DataList.propTypes = {
-  level: T.number,
-  displayLevel: T.number,
-  title: T.string,
-
   /**
    * The data list to display.
    */
@@ -273,12 +259,12 @@ DataList.propTypes = {
      */
     available: T.arrayOf(
       T.oneOf(Object.keys(listConst.DISPLAY_MODES))
-    ),
+    ).isRequired,
 
     /**
      * Current format.
      */
-    current: T.oneOf(Object.keys(listConst.DISPLAY_MODES))
+    current: T.oneOf(Object.keys(listConst.DISPLAY_MODES)).isRequired
   }),
 
   /**
@@ -348,7 +334,6 @@ DataList.propTypes = {
 }
 
 DataList.defaultProps = {
-  level: 2,
   actions: [],
   filterColumns: true,
   display: {
