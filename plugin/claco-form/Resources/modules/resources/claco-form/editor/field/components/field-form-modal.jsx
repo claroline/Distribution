@@ -49,7 +49,7 @@ class FieldFormModal  extends Component {
       choices: props.field.fieldFacet && props.field.fieldFacet.field_facet_choices.length > 0 ?
         props.field.fieldFacet.field_facet_choices.filter(ffc => !ffc.parent).map(ffc => {return {
           index: ffc.id,
-          value: ffc.label,
+          value: ffc.name,
           new: false,
           category: null,
           error: ''
@@ -82,7 +82,7 @@ class FieldFormModal  extends Component {
         }
         choicesChildren[parentId].push({
           index: ffc.id,
-          value: ffc.label,
+          value: ffc.name,
           new: false,
           category: null,
           error: ''
@@ -268,7 +268,7 @@ class FieldFormModal  extends Component {
         }
         choicesChildren[parentIndex].push({
           index: choiceIndex,
-          value: c.label,
+          value: c.name,
           new: true,
           category: null,
           error: ''
@@ -384,7 +384,7 @@ class FieldFormModal  extends Component {
                     key={`field-type-${ft.value}`}
                     value={ft.value}
                   >
-                    {ft.label}
+                    {ft.name}
                   </option>
                 )}
               </select>
@@ -524,11 +524,11 @@ FieldFormModal.propTypes = {
       name: T.string.isRequired,
       type: T.number.isRequired,
       field_facet_choices: T.arrayOf(T.shape({
-        id: T.number.isRequired,
-        label: T.string.isRequired,
+        id: T.string.isRequired,
+        name: T.string.isRequired,
         parent: T.shape({
           id: T.number.isRequired,
-          label: T.string.isRequired
+          name: T.string.isRequired
         })
       }))
     })
@@ -539,11 +539,11 @@ FieldFormModal.propTypes = {
     name: T.string.isRequired,
     fieldFacet: T.shape({
       field_facet_choices: T.arrayOf(T.shape({
-        id: T.number.isRequired,
-        label: T.string.isRequired,
+        id: T.string.isRequired,
+        name: T.string.isRequired,
         parent: T.shape({
           id: T.number.isRequired,
-          label: T.string.isRequired
+          name: T.string.isRequired
         })
       }))
     }),
