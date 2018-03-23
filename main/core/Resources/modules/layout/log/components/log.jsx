@@ -12,7 +12,12 @@ class LogModal extends Component {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
-          {this.props.data.processed}
+          <pre>
+            processed: {this.props.data.processed} {'\n'}
+            error: {this.props.data.error} {'\n'}
+            success: {this.props.data.success} {'\n'}
+            total: {this.props.data.total} {'\n'}
+          </pre>
           <pre id="log-content">
             {this.props.data.log}
           </pre>
