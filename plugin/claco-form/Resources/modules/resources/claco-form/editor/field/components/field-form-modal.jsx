@@ -101,35 +101,35 @@ class FieldFormModal  extends Component {
           credentials: 'include'
         }
       )
-      .then(response => response.json())
-      .then(results => {
-        if (results) {
-          const choices = cloneDeep(this.state.choices)
-          const choicesChildren = cloneDeep(this.state.choicesChildren)
-          JSON.parse(results).forEach(data => {
-            const idx = choices.findIndex(c => c.index === data.fieldFacetChoice.id)
+        .then(response => response.json())
+        .then(results => {
+          if (results) {
+            const choices = cloneDeep(this.state.choices)
+            const choicesChildren = cloneDeep(this.state.choicesChildren)
+            JSON.parse(results).forEach(data => {
+              const idx = choices.findIndex(c => c.index === data.fieldFacetChoice.id)
 
-            if (idx >= 0) {
-              choices[idx] = Object.assign({}, choices[idx], {category: data.category.id})
-            } else {
-              for (let key in choicesChildren) {
-                const childIdx = choicesChildren[key].findIndex(c => c.index === data.fieldFacetChoice.id)
+              if (idx >= 0) {
+                choices[idx] = Object.assign({}, choices[idx], {category: data.category.id})
+              } else {
+                for (let key in choicesChildren) {
+                  const childIdx = choicesChildren[key].findIndex(c => c.index === data.fieldFacetChoice.id)
 
-                if (childIdx >= 0) {
-                  choicesChildren[key][childIdx] = Object.assign({}, choicesChildren[key][childIdx], {category: data.category.id})
-                  break
+                  if (childIdx >= 0) {
+                    choicesChildren[key][childIdx] = Object.assign({}, choicesChildren[key][childIdx], {category: data.category.id})
+                    break
+                  }
                 }
               }
-            }
-          })
-          this.setState(
-            {choices: choices, choicesChildren: choicesChildren},
-            () => this.setState({choicesLoaded: true})
-          )
-        } else {
-          this.setState({choicesLoaded: true})
-        }
-      })
+            })
+            this.setState(
+              {choices: choices, choicesChildren: choicesChildren},
+              () => this.setState({choicesLoaded: true})
+            )
+          } else {
+            this.setState({choicesLoaded: true})
+          }
+        })
     }
   }
 
@@ -147,19 +147,19 @@ class FieldFormModal  extends Component {
           credentials: 'include'
         }
       )
-      .then(response => response.json())
-      .then(results => {
-        if (JSON.parse(results) === null) {
-          this.registerField()
-          this.setState({isFetching: false})
-        } else {
-          this.setState({
-            hasError: true,
-            nameError: trans('form_not_unique_error', {}, 'clacoform'),
-            isFetching: false
-          })
-        }
-      })
+        .then(response => response.json())
+        .then(results => {
+          if (JSON.parse(results) === null) {
+            this.registerField()
+            this.setState({isFetching: false})
+          } else {
+            this.setState({
+              hasError: true,
+              nameError: trans('form_not_unique_error', {}, 'clacoform'),
+              isFetching: false
+            })
+          }
+        })
     }
   }
 
