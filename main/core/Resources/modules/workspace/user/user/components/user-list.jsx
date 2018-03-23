@@ -1,9 +1,14 @@
 import {trans} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/api/router'
 
 import {UserCard} from '#/main/core/administration/user/user/components/user-card.jsx'
 
 function getRoles(user, workspace) {
   return user.roles.filter(role => role.workspace && role.workspace.id === workspace.uuid).map(role => trans(role.translationKey)).join(', ')
+}
+
+function getGroups(workspace) {
+  return workspace.groups.map(group => group.name).join(', ')
 }
 
 function getWorkspaceRoles(workspace) {
@@ -16,24 +21,29 @@ function getWorkspaceRoles(workspace) {
   return roles
 }
 
+function getWorkspaceGroups(workspace) {
+  const groups = {}
+
+  workspace.groups.forEach(group => {
+    groups[group.id] = group.translationKey
+  })
+
+  return groups
+}
+
 function getUserList(workspace)
 {
   return {
     open: {
-      action: (row) => `#/users/form/${row.id}`
+      action: (row) => generateUrl('claro_user_profile', {publicUrl: row.meta.publicUrl})
     },
     definition: [
       {
-        name: 'username',
-        type: 'username',
-        label: trans('username'),
-        displayed: true,
-        primary: true
-      }, {
         name: 'lastName',
         type: 'string',
         label: trans('last_name'),
-        displayed: true
+        displayed: true,
+        primary: true
       }, {
         name: 'firstName',
         type: 'string',
@@ -69,6 +79,17 @@ function getUserList(workspace)
         displayed: true,
         filterable: true,
         renderer: (rowData) => getRoles(rowData, workspace)
+      }, {
+        name: 'groups',
+        type: 'enum',
+        alias: 'group',
+        options: {
+          choices: getWorkspaceGroups(workspace)
+        },
+        label: trans('groups'),
+        displayed: true,
+        filterable: true,
+        renderer: (rowData) => getGroups(rowData, workspace)
       }
     ],
     card: UserCard

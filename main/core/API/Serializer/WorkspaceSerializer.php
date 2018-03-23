@@ -93,6 +93,15 @@ class WorkspaceSerializer
             ]);
         }
 
+        //maybe do the same for users one day
+        if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
+            $serialized['groups'] = $this->container->get('claroline.api.finder')->search(
+              'Claroline\CoreBundle\Entity\Group',
+              ['filters' => ['workspace' => $workspace->getUuid()]],
+              [Options::SERIALIZE_MINIMAL]
+            )['data'];
+        }
+
         return $serialized;
     }
 
@@ -104,6 +113,7 @@ class WorkspaceSerializer
     private function getMeta(Workspace $workspace)
     {
         return [
+            'slug' => $workspace->getSlug(),
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
             'description' => $workspace->getDescription(),

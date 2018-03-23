@@ -68,14 +68,6 @@ class UserFinder implements FinderInterface
     {
         if (isset($searches['contactable'])) {
             $qb = $this->getContactableUsers($qb);
-        } elseif (!$this->authChecker->isGranted('ROLE_ADMIN')) {
-            /** @var User $currentUser */
-            $currentUser = $this->tokenStorage->getToken()->getUser();
-            $qb->leftJoin('obj.userOrganizationReferences', 'oaref');
-            $qb->leftJoin('oaref.organization', 'uo');
-            $qb->leftJoin('uo.administrators', 'ua');
-            $qb->andWhere('ua.id = :userId');
-            $qb->setParameter('userId', $currentUser->getId());
         }
 
         foreach ($searches as $filterName => $filterValue) {
@@ -122,7 +114,13 @@ class UserFinder implements FinderInterface
                 case 'workspace':
                     $qb->leftJoin('obj.roles', 'wsuroles');
                     $qb->leftJoin('wsuroles.workspace', 'rws');
-                    $qb->andWhere('rws.uuid = (:workspaceId)');
+                    $qb->leftJoin('obj.groups', 'wsugrps');
+                    $qb->leftJoin('wsugrps.roles', 'guroles');
+                    $qb->leftJoin('guroles.workspace', 'grws');
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->eq('rws.uuid', ':workspaceId'),
+                        $qb->expr()->eq('grws.uuid', ':workspaceId')
+                    ));
                     $qb->setParameter('workspaceId', $filterValue);
                     break;
                 case 'blacklist':
