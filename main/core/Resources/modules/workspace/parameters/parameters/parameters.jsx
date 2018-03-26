@@ -75,7 +75,7 @@ const Parameters = () => {
                 required: false
               },
               {
-                name: 'poster',
+                name: 'thumbnail',
                 type: 'image',
                 label: trans('image')
               }

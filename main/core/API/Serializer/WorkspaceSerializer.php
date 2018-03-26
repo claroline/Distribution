@@ -72,7 +72,7 @@ class WorkspaceSerializer
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serializer = $this->container->get('claroline.api.serializer');
             $serialized = array_merge($serialized, [
-                'poster' => $workspace->getPoster() ? $this->container->get('claroline.serializer.public_file')->serialize($workspace->getPoster()) : null,
+                'thumbnail' => $workspace->getThumbnail() ? $this->container->get('claroline.serializer.public_file')->serialize($workspace->getThumbnail()) : null,
                 'meta' => $this->getMeta($workspace),
                 'display' => $this->getDisplay($workspace),
                 'restrictions' => $this->getRestrictions($workspace),
@@ -174,12 +174,12 @@ class WorkspaceSerializer
         // remove this later (with the Trait)
         $this->genericSerializer->deserialize($data, $workspace, $options);
 
-        if (isset($data['poster']) && isset($data['poster']['id'])) {
-            $poster = $this->container->get('claroline.api.serializer')->deserialize(
+        if (isset($data['thumbnail']) && isset($data['thumbnail']['id'])) {
+            $thumbnail = $this->container->get('claroline.api.serializer')->deserialize(
                 'Claroline\CoreBundle\Entity\File\PublicFile',
-                $data['poster']
+                $data['thumbnail']
             );
-            $workspace->setPoster($poster);
+            $workspace->setThumbnail($thumbnail);
         }
 
         $this->sipe('uuid', 'setUuid', $data, $workspace);

@@ -329,11 +329,11 @@ class Workspace
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\File\PublicFile"
      * )
-     * @ORM\JoinColumn(name="file_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="thumbnail_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @var PublicFile
      */
-    protected $picture;
+    protected $thumbnail;
 
     /**
      * Workspace constructor.
@@ -826,13 +826,13 @@ class Workspace
         $this->slug = $slug;
     }
 
-    public function setPoster(PublicFile $file)
+    public function setThumbnail(PublicFile $file)
     {
-        $this->picture = $file;
+        $this->thumbnail = $file;
     }
 
-    public function getPoster()
+    public function getThumbnail()
     {
-        return $this->picture;
+        return $this->thumbnail;
     }
 }
