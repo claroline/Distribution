@@ -37,7 +37,7 @@
 
 .step-manual-progression {
     margin-left: auto;
-    
+
     // fixes v-align
     display: flex;
     align-items: center;
@@ -56,4 +56,9 @@
         &.done      { color: @step-status-done-color; }
         &.to_review { color: @step-status-to_review-color; }
     }
+}
+
+.step-primary-resource,
+.step-secondary-resources {
+    margin-bottom: @component-margin-bottom;
 }

@@ -59,6 +59,7 @@ const SecondaryResourcesSection = props =>
         />
       </div>
     )}
+
     <button
       type="button"
       className="btn btn-primary"

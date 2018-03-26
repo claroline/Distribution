@@ -17,11 +17,19 @@ const Step = {
         type: T.string.isRequired
       })
     }),
+    secondaryResources: T.arrayOf(T.shape({
+      // minimal resource
+    })),
+    inheritedResources: T.arrayOf(T.shape({
+      // minimal resource
+    })),
     userProgression: T.shape({
       status: T.string
     })
   },
   defaultProps: {
+    secondaryResources: [],
+    inheritedResources: [],
     children: []
   }
 }

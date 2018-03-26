@@ -26,11 +26,17 @@ const summaryOpened = createSelector(
   (summary) => summary.opened
 )
 
+// is the current step rendered full width (without opened pinned summary) ?
+const fullWidth = createSelector(
+  [summaryPinned, summaryOpened],
+  (summaryPinned, summaryOpened) => !summaryOpened || !summaryPinned
+)
 
 export const select = {
   path,
   steps,
   empty,
   summaryPinned,
-  summaryOpened
+  summaryOpened,
+  fullWidth
 }

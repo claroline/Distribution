@@ -51,6 +51,7 @@ const PlayerComponent = props =>
               >
                 <Step
                   {...step}
+                  fullWidth={props.fullWidth}
                   numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
                   manualProgressionAllowed={props.path.display.manualProgressionAllowed}
                   updateProgression={props.updateProgression}
@@ -65,6 +66,7 @@ const PlayerComponent = props =>
   </section>
 
 PlayerComponent.propTypes = {
+  fullWidth: T.bool.isRequired,
   path: T.shape(
     PathTypes.propTypes
   ).isRequired,
@@ -77,10 +79,11 @@ PlayerComponent.propTypes = {
 const Player = connect(
   state => ({
     path: select.path(state),
+    fullWidth: select.fullWidth(state),
     steps: flattenSteps(select.steps(state))
   }),
   dispatch => ({
-    updateProgression(stepId, status = constants.STATUS_SEEN) { // todo disable for anonymous
+    updateProgression(stepId, status = constants.STATUS_SEEN) {
       dispatch(actions.updateProgression(stepId, status))
     }
   })

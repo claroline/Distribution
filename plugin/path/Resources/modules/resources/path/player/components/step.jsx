@@ -14,56 +14,10 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
 
-class PrimaryResource extends Component {
-  constructor(props) {
-    super(props)
-
-    this.resize = this.resize.bind(this)
-  }
-
-  /**
-   * Resize the iFrame DOM is modified.
-   *
-   * @param {object} e - The JS Event Object
-   */
-  resize(e) {
-    if (typeof e.data === 'string' && e.data.indexOf('documentHeight:') > -1) {
-      // Split string from identifier
-      const height = e.data.split('documentHeight:')[1]
-
-      this.iframe.height = parseInt(height)
-    }
-  }
-
-  componentDidMount() {
-    window.addEventListener('message', this.resize)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('message', this.resize)
-  }
-
-  render() {
-    return (
-      <iframe
-        id="embeddedActivity"
-        ref={el => this.iframe = el}
-        height={0}
-        src={url(['claro_resource_open', {node: this.props.id, resourceType: this.props.type}], {iframe: 1})}
-        allowFullScreen={true}
-      />
-    )
-  }
-}
-
-PrimaryResource.propTypes = {
-  id: T.number.isRequired,
-  type: T.string.isRequired
-}
-
 const ManualProgression = props =>
   <div className="step-manual-progression">
     {trans('user_progression', {}, 'path')} :
+
     <DropdownButton
       id="step-progression"
       title={constants.STEP_STATUS[props.status]}
@@ -73,6 +27,7 @@ const ManualProgression = props =>
     >
       {Object.keys(constants.STEP_MANUAL_STATUS).map((status) =>
         <MenuItem
+          key={status}
           className={classes({
             active: status === props.status
           })}
@@ -96,11 +51,84 @@ ManualProgression.propTypes = {
   updateProgression: T.func.isRequired
 }
 
+class PrimaryResource extends Component {
+  constructor(props) {
+    super(props)
+
+    this.resize = this.resize.bind(this)
+  }
+
+  /**
+   * Resize the iFrame when DOM is modified.
+   *
+   * @param {object} e - The JS Event Object
+   */
+  resize(e) {
+    if (typeof e.data === 'string' && e.data.indexOf('documentHeight:') > -1) {
+      // Split string from identifier
+      const height = e.data.split('documentHeight:')[1]
+
+      this.iframe.height = parseInt(height)
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('message', this.resize)
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('message', this.resize)
+  }
+
+  render() {
+    return (
+      <iframe
+        className="step-primary-resource"
+        id="embeddedActivity"
+        ref={el => this.iframe = el}
+        height={0}
+        src={url(['claro_resource_open', {node: this.props.id, resourceType: this.props.type}], {iframe: 1})}
+        allowFullScreen={true}
+      />
+    )
+  }
+}
+
+PrimaryResource.propTypes = {
+  id: T.number.isRequired,
+  type: T.string.isRequired
+}
+
+const SecondaryResources = props =>
+  <div className={classes('step-secondary-resources', props.className)}>
+    {props.resources.map(resource =>
+      <a
+        key={resource.resource.id}
+        href={url(['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}])}
+        className="step-secondary-resource"
+      >
+        {resource.resource.name}
+      </a>
+    )}
+  </div>
+
+SecondaryResources.propTypes = {
+  className: T.string,
+  resources: T.arrayOf(T.shape({
+    resource: T.shape({
+      autoId: T.number.isRequired,
+      meta: T.shape({
+        type: T.string.isRequired
+      }).isRequired
+    }).isRequired
+  })).isRequired
+}
+
 /**
  * Renders step content.
  */
 const Step = props =>
-  <div className="current-step">
+  <section className="current-step">
     {props.poster &&
       <img className="step-poster img-responsive" alt={props.title} src={asset(props.poster.url)} />
     }
@@ -127,15 +155,33 @@ const Step = props =>
       </div>
     }
 
-    {props.primaryResource &&
-      <PrimaryResource
-        id={props.primaryResource.autoId}
-        type={props.primaryResource.meta.type}
-      />
-    }
-  </div>
+    <div className="row">
+      {props.primaryResource &&
+        <div className={classes('col-sm-12', {
+          'col-md-9': (0 !== props.secondaryResources.length || 0 !== props.inheritedResources.length) && props.fullWidth,
+          'col-md-12': (0 !== props.secondaryResources.length && 0 !== props.inheritedResources.length) && !props.fullWidth
+        })}>
+          <PrimaryResource
+            id={props.primaryResource.autoId}
+            type={props.primaryResource.meta.type}
+          />
+        </div>
+      }
+
+      {(0 !== props.secondaryResources.length || 0 !== props.inheritedResources.length) &&
+        <SecondaryResources
+          className={classes('col-sm-12', {
+            'col-md-3': props.fullWidth,
+            'col-md-12': !props.fullWidth
+          })}
+          resources={[].concat(props.inheritedResources, props.secondaryResources)}
+        />
+      }
+    </div>
+  </section>
 
 implementPropTypes(Step, StepTypes, {
+  fullWidth: T.bool.isRequired,
   numbering: T.string,
   manualProgressionAllowed: T.bool.isRequired,
   updateProgression: T.func.isRequired
