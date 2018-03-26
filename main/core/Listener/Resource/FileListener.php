@@ -211,37 +211,28 @@ class FileListener implements ContainerAwareInterface
                 $item = $this->container
                     ->getParameter('claroline.param.files_directory').$ds.$resource->getHashName();
                 $file = file_get_contents($item);
-                $extension = pathinfo($item, PATHINFO_EXTENSION);
-
                 $response = new Response();
                 $response->setContent($file);
-                if ($extension === 'html' || $extension === 'htm') {
-                    $response->headers->set(
-                        'Content-Type',
-                        'text/html'
-                    );
-                } else {
-                    $response->headers->set(
-                        'Content-Transfer-Encoding',
-                        'octet-stream'
-                    );
-                    $response->headers->set(
-                        'Content-Type',
-                        'application/force-download'
-                    );
-                    $response->headers->set(
-                        'Content-Disposition',
-                        'attachment; filename='.urlencode($resource->getResourceNode()->getName())
-                    );
-                    $response->headers->set(
-                        'Content-Type',
-                        'application/'.$extension
-                    );
-                    $response->headers->set(
-                        'Connection',
-                        'close'
-                    );
-                }
+                $response->headers->set(
+                    'Content-Transfer-Encoding',
+                    'octet-stream'
+                );
+                $response->headers->set(
+                    'Content-Type',
+                    'application/force-download'
+                );
+                $response->headers->set(
+                    'Content-Disposition',
+                    'attachment; filename='.urlencode($resource->getResourceNode()->getName())
+                );
+                $response->headers->set(
+                    'Content-Type',
+                    'application/'.pathinfo($item, PATHINFO_EXTENSION)
+                );
+                $response->headers->set(
+                    'Connection',
+                    'close'
+                );
             }
         }
 
