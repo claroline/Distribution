@@ -296,7 +296,8 @@ class Workspace
     /**
      * @ORM\OneToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\Workspace\WorkspaceOptions",
-     *     inversedBy="workspace"
+     *     inversedBy="workspace",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(name="options_id", onDelete="SET NULL", nullable=true)
      *
@@ -838,6 +839,11 @@ class Workspace
     public function setDisabledNotifications($disabledNotifications)
     {
         $this->disabledNotifications = $disabledNotifications;
+    }
+
+    public function setNotifications($notifications)
+    {
+        $this->disabledNotifications = !$notifications;
     }
 
     public function getSlug()

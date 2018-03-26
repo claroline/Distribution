@@ -317,7 +317,7 @@ class ColorElement extends Component {
         <ColorPicker
           id={`color-${this.props.index}`}
           value={this.props.color.code}
-          onChange={(e) => {this.props.onChange(actions.highlightEditColor(this.props.color.id, e.hex))}}
+          onChange={(e) => {this.props.onChange(actions.highlightEditColor(this.props.color.id, e))}}
           autoOpen={this.props.autoOpen}
         />
         {'\u00a0'}

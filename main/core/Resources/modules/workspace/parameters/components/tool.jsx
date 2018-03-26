@@ -4,6 +4,7 @@ import {trans} from '#/main/core/translation'
 import {TabbedPageContainer} from '#/main/core/layout/tabs'
 
 import {ParametersActions, ParametersTab} from '#/main/core/workspace/parameters/parameters/parameters.jsx'
+import {DisplayActions, DisplayTab} from '#/main/core/workspace/parameters/parameters/display.jsx'
 
 const Parameters = () =>
   <TabbedPageContainer
@@ -19,13 +20,13 @@ const Parameters = () =>
         path: '/parameters',
         actions: ParametersActions,
         content: ParametersTab
-      }/*, {
-        icon: 'fa fa-download',
-        title: trans('export'),
-        path: '/export',
-        actions: ExportAction,
-        content: ExportTab
-      }*/
+      }, {
+        icon: 'fa fa-picture',
+        title: trans('display'),
+        path: '/display',
+        actions: DisplayActions,
+        content: DisplayTab
+      }
     ]}
   />
 

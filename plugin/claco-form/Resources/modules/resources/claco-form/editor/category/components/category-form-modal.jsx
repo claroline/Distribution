@@ -114,7 +114,7 @@ export class CategoryFormModal  extends Component {
               <ColorPicker
                 id="category-color"
                 value={this.state.color}
-                onChange={(e) => {this.updateCategoryProps('color', e.hex)}}
+                onChange={(e) => {this.updateCategoryProps('color', e)}}
                 autoOpen={false}
               />
             </div>

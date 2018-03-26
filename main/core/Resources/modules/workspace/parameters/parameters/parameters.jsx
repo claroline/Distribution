@@ -80,6 +80,11 @@ const Parameters = () => {
                 label: trans('image')
               },
               {
+                name: 'notifications',
+                type: 'boolean',
+                label: trans('notifications')
+              },
+              {
                 name: 'meta.usedStorage',
                 type: 'string',
                 label: trans('used_storage'),

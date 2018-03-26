@@ -1114,6 +1114,9 @@ class WorkspaceManager
             $details = [
                 'hide_tools_menu' => false,
                 'background_color' => null,
+                'hide_breadcrumb' => false,
+                'use_workspace_opening_resource' => false,
+                'workspace_opening_resource' => null,
             ];
             $workspaceOptions->setDetails($details);
             $workspace->setOptions($workspaceOptions);

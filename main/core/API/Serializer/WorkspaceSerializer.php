@@ -91,6 +91,7 @@ class WorkspaceSerializer
                 'organizations' => array_map(function ($organization) use ($serializer) {
                     return $serializer->serialize($organization);
                 }, $workspace->getOrganizations()->toArray()),
+                'options' => $this->workspaceManager->getWorkspaceOptions($workspace)->getDetails(),
             ]);
         }
 
@@ -124,6 +125,7 @@ class WorkspaceSerializer
                 ->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
             'totalUsers' => $this->workspaceManager->countUsers($workspace, true),
             'totalResources' => $this->workspaceManager->countResources($workspace),
+            'notifications' => !$workspace->isDisabledNotifications(),
         ];
     }
 
@@ -195,6 +197,7 @@ class WorkspaceSerializer
         $this->sipe('uuid', 'setUuid', $data, $workspace);
         $this->sipe('code', 'setCode', $data, $workspace);
         $this->sipe('name', 'setName', $data, $workspace);
+        $this->sipe('notifications', 'setNotifications', $data, $workspace);
 
         $this->sipe('meta.model', 'setIsModel', $data, $workspace);
         $this->sipe('meta.description', 'setDescription', $data, $workspace);
@@ -214,6 +217,11 @@ class WorkspaceSerializer
 
         if (isset($data['restrictions']['accessibleUntil'])) {
             $workspace->setEndDate(DateNormalizer::denormalize($data['restrictions']['accessibleUntil']));
+        }
+
+        if (isset($data['options'])) {
+            $workspaceOptions = $this->workspaceManager->getWorkspaceOptions($workspace);
+            $workspaceOptions->setDetails($data['options']);
         }
 
         return $workspace;

@@ -51,7 +51,7 @@ class ColorPicker extends Component {
             colors={this.props.colors}
             onChangeComplete={color => {
               this.setState({open: false})
-              this.props.onChange(color)
+              this.props.onChange(color.hex)
             }}
           />
         </Overlay>

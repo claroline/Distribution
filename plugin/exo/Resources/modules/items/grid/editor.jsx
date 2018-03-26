@@ -77,7 +77,7 @@ class GridCell extends Component {
               id={`cell-${this.props.cell.id}-font`}
               className="btn-link-default"
               value={this.props.cell.color}
-              onChange={color => this.props.update('color', color.hex)}
+              onChange={color => this.props.update('color', color)}
               forFontColor={true}
             />
 
@@ -85,7 +85,7 @@ class GridCell extends Component {
               id={`cell-${this.props.cell.id}-bg`}
               className="btn-link-default"
               value={this.props.cell.background}
-              onChange={color => this.props.update('background', color.hex)}
+              onChange={color => this.props.update('background', color)}
             />
           </div>
 
@@ -532,7 +532,7 @@ const Grid = props =>
             className="btn-default"
             value={props.item.border.color}
             onChange={color => props.onChange(
-              actions.updateProperty('borderColor', color.hex)
+              actions.updateProperty('borderColor', color)
             )}
           />
         </span>
