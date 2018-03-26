@@ -78,6 +78,24 @@ const Parameters = () => {
                 name: 'thumbnail',
                 type: 'image',
                 label: trans('image')
+              },
+              {
+                name: 'meta.usedStorage',
+                type: 'string',
+                label: trans('used_storage'),
+                readOnly: true
+              },
+              {
+                name: 'meta.totalUsers',
+                type: 'number',
+                readOnly: true,
+                label: trans('total_users')
+              },
+              {
+                name: 'meta.totalResources',
+                type: 'number',
+                readOnly: true,
+                label: trans('total_resources')
               }
             ]
           },

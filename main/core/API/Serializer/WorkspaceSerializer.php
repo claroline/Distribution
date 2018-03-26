@@ -8,6 +8,7 @@ use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -119,6 +120,10 @@ class WorkspaceSerializer
             'description' => $workspace->getDescription(),
             'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
+            'usedStorage' => $this->container->get('claroline.utilities.misc')
+                ->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
+            'totalUsers' => $this->workspaceManager->countUsers($workspace, true),
+            'totalResources' => $this->workspaceManager->countResources($workspace),
         ];
     }
 
@@ -177,7 +182,7 @@ class WorkspaceSerializer
     public function deserialize(array $data, Workspace $workspace, array $options = [])
     {
         // remove this later (with the Trait)
-        $this->genericSerializer->deserialize($data, $workspace, $options);
+        //$this->genericSerializer->deserialize($data, $workspace, $options);
 
         if (isset($data['thumbnail']) && isset($data['thumbnail']['id'])) {
             $thumbnail = $this->container->get('claroline.api.serializer')->deserialize(
@@ -195,8 +200,6 @@ class WorkspaceSerializer
         $this->sipe('meta.description', 'setDescription', $data, $workspace);
 
         $this->sipe('restrictions.hidden', 'setHidden', $data, $workspace);
-        $this->sipe('restrictions.accessibleFrom', 'setStartDate', $data, $workspace);
-        $this->sipe('restrictions.accessibleUntil', 'setEndDate', $data, $workspace);
         $this->sipe('restrictions.maxUsers', 'setMaxUsers', $data, $workspace);
         $this->sipe('restrictions.maxStorage', 'setMaxStorageSize', $data, $workspace);
         $this->sipe('restrictions.maxResources', 'setMaxUploadResources', $data, $workspace);
@@ -204,6 +207,14 @@ class WorkspaceSerializer
         $this->sipe('registration.validation', 'setRegistrationValidation', $data, $workspace);
         $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
+
+        if (isset($data['restrictions']['accessibleFrom'])) {
+            $workspace->setStartDate(DateNormalizer::denormalize($data['restrictions']['accessibleFrom']));
+        }
+
+        if (isset($data['restrictions']['accessibleUntil'])) {
+            $workspace->setEndDate(DateNormalizer::denormalize($data['restrictions']['accessibleUntil']));
+        }
 
         return $workspace;
     }
