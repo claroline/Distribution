@@ -2,9 +2,10 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
+import {Thumbnail} from '#/main/core/workspace/components/thumbnail'
 
 const WorkspaceCard = (row) => ({
-  icon: 'fa fa-book',
+  icon: <Thumbnail thumbnail={row.thumbnail} alt={true} />,
   title: row.name,
   subtitle: row.code,
   contentText: row.meta.description,
