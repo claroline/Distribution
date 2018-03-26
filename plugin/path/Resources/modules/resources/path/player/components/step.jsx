@@ -1,10 +1,13 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
 
-import {asset} from '#/main/core/scaffolding/asset'
-import {url} from '#/main/core/api/router'
-import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
+import {url} from '#/main/core/api/router'
+import {asset} from '#/main/core/scaffolding/asset'
+import {currentUser} from '#/main/core/user/current'
+
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
@@ -58,48 +61,36 @@ PrimaryResource.propTypes = {
   type: T.string.isRequired
 }
 
-const authenticatedUser = currentUser()
-
-const ManualStepProgressionControl = props =>
-  <div className="dropdown">
-    <span
-      className="dropdown-toggle step-manual-progression"
-      role="button"
-      data-toggle="dropdown"
-      aria-haspopup={true}
-      aria-expanded={true}
+const ManualProgression = props =>
+  <div className="step-manual-progression">
+    {trans('user_progression', {}, 'path')} :
+    <DropdownButton
+      id="step-progression"
+      title={constants.STEP_STATUS[props.status]}
+      className={props.status}
+      bsStyle="link"
+      pullRight={true}
     >
-      {trans('user_progression', {}, 'path')} : <b>{constants.STEP_STATUS[props.status]}</b> <span className="fa fa-fw fa-caret-down"/>
-    </span>
-    <ul className="dropdown-menu">
-      <li className={classes({'active': props.status === constants.STATUS_TO_DO})}>
-        <a
-          className="pointer-hand"
-          onClick={() => props.updateProgression(props.stepId, constants.STATUS_TO_DO)}
+      {Object.keys(constants.STEP_MANUAL_STATUS).map((status) =>
+        <MenuItem
+          className={classes({
+            active: status === props.status
+          })}
+          onClick={(e) => {
+            props.updateProgression(props.stepId, status)
+
+            e.preventDefault()
+            e.stopPropagation()
+            e.target.blur()
+          }}
         >
-          {constants.STEP_STATUS[constants.STATUS_TO_DO]}
-        </a>
-      </li>
-      <li className={classes({'active': props.status === constants.STATUS_DONE})}>
-        <a
-          className="pointer-hand"
-          onClick={() => props.updateProgression(props.stepId, constants.STATUS_DONE)}
-        >
-          {constants.STEP_STATUS[constants.STATUS_DONE]}
-        </a>
-      </li>
-      <li className={classes({'active': props.status === constants.STATUS_TO_REVIEW})}>
-        <a
-          className="pointer-hand"
-          onClick={() => props.updateProgression(props.stepId, constants.STATUS_TO_REVIEW)}
-        >
-          {constants.STEP_STATUS[constants.STATUS_TO_REVIEW]}
-        </a>
-      </li>
-    </ul>
+          {constants.STEP_MANUAL_STATUS[status]}
+        </MenuItem>
+      )}
+    </DropdownButton>
   </div>
 
-ManualStepProgressionControl.propTypes = {
+ManualProgression.propTypes = {
   status: T.string.isRequired,
   stepId: T.string.isRequired,
   updateProgression: T.func.isRequired
@@ -121,8 +112,8 @@ const Step = props =>
 
       {props.title}
 
-      {props.manualProgressionAllowed && authenticatedUser &&
-        <ManualStepProgressionControl
+      {props.manualProgressionAllowed && currentUser() &&
+        <ManualProgression
           status={props.userProgression.status}
           stepId={props.id}
           updateProgression={props.updateProgression}
