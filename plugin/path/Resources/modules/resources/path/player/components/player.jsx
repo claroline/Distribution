@@ -43,8 +43,7 @@ const PlayerComponent = props =>
           },
           render: (routeProps) => {
             const step = props.steps.find(step => routeProps.match.params.id === step.id)
-
-            return (
+            const Current =
               <PathCurrent
                 prefix="/play"
                 current={step}
@@ -57,7 +56,8 @@ const PlayerComponent = props =>
                   updateProgression={props.updateProgression}
                 />
               </PathCurrent>
-            )
+
+            return Current
           }
         }
       ]}

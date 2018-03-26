@@ -1,9 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
 import {NavLink} from '#/main/core/router'
 
+import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {PathSummary} from '#/plugin/path/resources/path/components/summary.jsx'
 
 const SummaryStep = props =>
@@ -24,9 +24,9 @@ const SummaryStep = props =>
   </li>
 
 SummaryStep.propTypes = {
-  step: T.shape({
-
-  }).isRequired
+  step: T.shape(
+    StepTypes.propTypes
+  ).isRequired
 }
 
 const Summary = props =>
@@ -41,9 +41,9 @@ const Summary = props =>
 Summary.propTypes = {
   opened: T.bool,
   pinned: T.bool,
-  steps: T.arrayOf(T.shape({
-    // step
-  }))
+  steps: T.arrayOf(T.shape(
+    StepTypes.propTypes
+  ))
 }
 
 Summary.defaultProps = {
