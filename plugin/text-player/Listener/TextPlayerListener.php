@@ -68,9 +68,6 @@ class TextPlayerListener
      */
     public function onOpenHtml(PlayFileEvent $event)
     {
-        $authorization = $this->container->get('security.authorization_checker');
-        $collection = new ResourceCollection([$event->getResource()->getResourceNode()]);
-        $canExport = $authorization->isGranted('EXPORT', $collection);
         $path = $this->container->getParameter('claroline.param.files_directory')
             .DIRECTORY_SEPARATOR
             .$event->getResource()->getHashName();
