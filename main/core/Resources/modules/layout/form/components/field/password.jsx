@@ -36,6 +36,7 @@ class Password extends Component {
           value={this.props.value || ''}
           disabled={this.props.disabled}
           onChange={(e) => this.props.onChange(e.target.value)}
+          autoComplete={this.props.autoComplete || null}
         />
 
         <span className="input-group-btn">
