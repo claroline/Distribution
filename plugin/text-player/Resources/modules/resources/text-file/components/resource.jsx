@@ -4,11 +4,11 @@ import {connect} from 'react-redux'
 
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text'
+import {getPlainText} from '#/main/core/data/types/html/utils'
 
 const Resource = props =>
   <ResourcePageContainer>
-    { props.isHtml && <HtmlText>{props.content}</HtmlText>}
-    { !props.isHtml && <div>{props.content}</div>}
+    <HtmlText>{props.isHtml ? props.content : getPlainText(props.content)}</HtmlText>
   </ResourcePageContainer>
 
 Resource.propTypes = {
