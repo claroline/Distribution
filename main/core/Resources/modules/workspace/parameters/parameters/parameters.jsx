@@ -165,6 +165,11 @@ const Parameters = () => {
                 name: 'restrictions.maxResources',
                 type: 'integer',
                 label: trans('maxResources')
+              },
+              {
+                name: 'restrictions.hidden',
+                type: 'boolean',
+                label: trans('hidden')
               }
             ]
           }

@@ -3,9 +3,11 @@ import React from 'react'
 import {t} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {Thumbnail} from '#/main/core/workspace/components/thumbnail'
+import {asset} from '#/main/core/scaffolding/asset'
 
 const WorkspaceCard = (row) => ({
-  icon: <Thumbnail thumbnail={row.thumbnail} alt={true} />,
+  poster: asset(row.thumbnail.url),
+  icon: <img src={asset(row.thumbnail.url)} />,
   title: row.name,
   subtitle: row.code,
   contentText: row.meta.description,
