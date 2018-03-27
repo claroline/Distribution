@@ -1,3 +1,9 @@
 {
-    "create_new_message": "Create a new message"
+    "create_new_message": "Create a new message",
+    "create_planned_notification": "Create a planned notification",
+    "planned_interval": "Planned interval",
+    "select": "Select",
+    "select_message": "Select a message",
+    "send_a_mail": "Send a mail",
+    "send_a_message": "Send a message"
 }

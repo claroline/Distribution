@@ -150,9 +150,9 @@ class Message
     }
 
     /**
-     * @param Notification $notification
+     * @param PlannedNotification $notification
      */
-    public function addNotification(Notification $notification)
+    public function addNotification(PlannedNotification $notification)
     {
         if (!$this->notifications->contains($notification)) {
             $this->notifications->add($notification);
@@ -160,9 +160,9 @@ class Message
     }
 
     /**
-     * @param Notification $notification
+     * @param PlannedNotification $notification
      */
-    public function removeNotification(Notification $notification)
+    public function removeNotification(PlannedNotification $notification)
     {
         if ($this->notifications->contains($notification)) {
             $this->notifications->removeElement($notification);

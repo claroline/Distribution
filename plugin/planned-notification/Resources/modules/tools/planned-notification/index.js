@@ -1,7 +1,10 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 
 import {reducer} from '#/plugin/planned-notification/tools/planned-notification/reducer'
+import {registerPlannedNotificationTypes} from '#/plugin/planned-notification/data/types'
 import {PlannedNotificationTool} from '#/plugin/planned-notification/tools/planned-notification/components/tool.jsx'
+
+registerPlannedNotificationTypes()
 
 // mount the react application
 bootstrap(

@@ -8,7 +8,7 @@ use Claroline\PlannedNotificationBundle\Entity\Message;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.serializer.planned.notification.message")
+ * @DI\Service("claroline.serializer.planned_notification.message")
  * @DI\Tag("claroline.serializer")
  */
 class MessageSerializer

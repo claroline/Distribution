@@ -8,7 +8,8 @@ import {TabbedPageContainer} from '#/main/core/layout/tabs'
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
 import {
   NotificationTab,
-  NotificationTabActions
+  NotificationTabActions,
+  NotificationTabEditActions
 } from '#/plugin/planned-notification/tools/planned-notification/notification/components/notification-tab.jsx'
 import {
   MessageTab,
@@ -23,7 +24,7 @@ const Tool = props => {
       title: trans('notifications'),
       path: '/notifications',
       content: NotificationTab,
-      actions: props.canEdit ? NotificationTabActions : null
+      actions: props.canEdit ? NotificationTabEditActions : NotificationTabActions
     }, {
       icon: 'fa fa-envelope',
       title: trans('messages'),

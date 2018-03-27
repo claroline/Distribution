@@ -1,3 +1,9 @@
 {
-    "create_new_message": "Créer un nouveau message"
+    "create_new_message": "Créer un nouveau message",
+    "create_planned_notification": "Créer une notification planifiée",
+    "planned_interval": "Délai planifié",
+    "select": "Sélectionner",
+    "select_message": "Sélectionner un message",
+    "send_a_mail": "Envoyer un mail",
+    "send_a_message": "Envoyer un message"
 }

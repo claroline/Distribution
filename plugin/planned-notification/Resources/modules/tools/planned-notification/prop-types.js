@@ -11,6 +11,23 @@ const Message = {
   }
 }
 
+const Notification = {
+  propTypes: {
+    id: T.string,
+    parameters: T.shape({
+      action: T.string,
+      interval: T.number,
+      byMail: T.bool,
+      byMessage: T.bool
+    }),
+    workspace: T.shape({
+      uuid: T.string.isRequired
+    }),
+    message: T.shape(Message.propTypes)
+  }
+}
+
 export {
-  Message
+  Message,
+  Notification
 }

@@ -16,14 +16,14 @@ use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.api.finder.planned_notification.message")
+ * @DI\Service("claroline.api.finder.planned_notification")
  * @DI\Tag("claroline.finder")
  */
-class MessageFinder implements FinderInterface
+class PlannedNotificationFinder implements FinderInterface
 {
     public function getClass()
     {
-        return 'Claroline\PlannedNotificationBundle\Entity\Message';
+        return 'Claroline\PlannedNotificationBundle\Entity\PlannedNotification';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
