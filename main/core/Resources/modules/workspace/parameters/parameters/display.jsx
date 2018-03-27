@@ -3,14 +3,51 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-
+import {asset} from '#/main/core/scaffolding/asset'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
-
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
+import {constants as listConst} from '#/main/core/data/list/constants'
+
+import {actions} from '#/main/core/workspace/parameters/actions'
+
+const ResourceSection = props =>
+  <div>
+    {!props.resource ?
+      <div>
+        {trans('no_resource', {}, 'path')}
+      </div> :
+      <div>
+        {props.resource.name} [{trans(props.resource.meta.type, {}, 'resource')}]
+      </div>
+    }
+    <button
+      type="button"
+      className="btn btn-primary"
+      onClick={() => props.pickResource()}
+    >
+      <span className="fa fa-fw fa-plus icon-with-text-right"/>
+      {trans('select_primary_resource', {}, 'path')}
+    </button>
+  </div>
+
+ResourceSection.propTypes = {
+  resource: T.shape({
+    id: T.string.isRequired,
+    name: T.string.isRequired,
+    meta: T.shape({
+      type: T.string.isRequired
+    }).isRequired
+  }),
+  pickResource: T.func.isRequired,
+  removeResource: T.func.isRequired
+}
 
 const Actions = () =>
   <PageActions>
@@ -30,7 +67,7 @@ Actions.propTypes = {
   }).isRequired
 }
 
-const Tab = () => {
+const Tab = (props) => {
   return (
     <div>
       <FormContainer
@@ -75,7 +112,20 @@ const Tab = () => {
             ]
           }
         ]}
-      />
+      >
+        <FormSection
+          id="primary-resource"
+          className="embedded-list-section"
+          icon="fa fa-fw fa-folder-open-o"
+          title={trans('resource', {}, 'path')}
+        >
+          <ResourceSection
+            resource={props.workspace.options.opened_resource}
+            pickResource={props.pickResource}
+            removeResource={props.removeResource}
+          />
+        </FormSection>
+      </FormContainer>
     </div>
   )
 }
@@ -89,7 +139,63 @@ const ConnectedTab = connect(
   state => ({
     workspace: formSelect.data(formSelect.form(state, 'parameters'))
   }),
-  null
+  dispatch => ({
+    pickResource(resourceTypes) {
+      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
+        icon: 'fa fa-fw fa-folder-open',
+        title: trans('pickResource', {}, 'path'),
+        confirmText: trans('select', {}, 'path'),
+        name: 'resourcesPicker',
+        onlyId: false,
+        display: {
+          current: listConst.DISPLAY_TILES_SM,
+          available: Object.keys(listConst.DISPLAY_MODES)
+        },
+        definition: [
+          {
+            name: 'name',
+            type: 'string',
+            label: trans('name'),
+            displayed: true,
+            primary: true
+          },
+          {
+            name: 'meta.type',
+            type: 'string',
+            label: trans('type'),
+            displayed: true,
+            filterable: false,
+            renderer: (rowData) => trans(rowData.meta.type, {}, 'resource')
+          },
+          {
+            name: 'workspace.name',
+            type: 'string',
+            label: trans('workspace'),
+            displayed: true
+          },
+          {
+            name: 'meta.parent.name',
+            type: 'string',
+            label: trans('parent'),
+            displayed: true
+          }
+        ],
+        card: (row) => ({
+          poster: asset(row.meta.icon),
+          icon: 'fa fa-folder-open',
+          title: row.name,
+          subtitle: trans(row.meta.type, {}, 'resource'),
+          footer:
+            <b>{row.workspace.name}</b>
+        }),
+        fetch: {
+          url: ['apiv2_resources_picker'],
+          autoload: true
+        },
+        handleSelect: (selected) => dispatch(actions.updateResource(selected[0]))
+      }))
+    }
+  })
 )(Tab)
 
 export {

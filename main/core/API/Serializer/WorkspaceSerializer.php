@@ -91,7 +91,7 @@ class WorkspaceSerializer
                 'organizations' => array_map(function ($organization) use ($serializer) {
                     return $serializer->serialize($organization);
                 }, $workspace->getOrganizations()->toArray()),
-                'options' => $this->workspaceManager->getWorkspaceOptions($workspace)->getDetails(),
+                'options' => $this->getOptions($workspace),
             ]);
         }
 
@@ -139,6 +139,22 @@ class WorkspaceSerializer
         return [
             'displayable' => $workspace->isDisplayable(), // deprecated
         ];
+    }
+
+    private function getOptions(Workspace $workspace)
+    {
+        $options = $this->workspaceManager->getWorkspaceOptions($workspace)->getDetails();
+
+        if ($options['workspace_opening_resource']) {
+            $resource = $this->container->get('claroline.api.serializer')->deserialize(
+              'Claroline\CoreBundle\Entity\Resource\ResourceNode',
+               ['id' => $options['workspace_opening_resource']]
+            );
+
+            $options['opened_resource'] = $this->container->get('claroline.api.serializer')->serialize($resource);
+        }
+
+        return $options;
     }
 
     /**
