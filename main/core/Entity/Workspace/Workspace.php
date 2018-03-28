@@ -883,6 +883,14 @@ class Workspace
 
     public function getDefaultRole()
     {
+        if (!$this->defaultRole) {
+            foreach ($this->roles as $role) {
+                if (strpos($role->getName(), 'COLLABORATOR')) {
+                    return $role;
+                }
+            }
+        }
+
         return $this->defaultRole;
     }
 }

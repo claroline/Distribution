@@ -810,7 +810,7 @@ class WorkspaceManager
      */
     public function addUserAction(Workspace $workspace, User $user)
     {
-        $role = $this->roleManager->getCollaboratorRole($workspace);
+        $role = $workspace->getDefaultRole();
         $userRoles = $this->roleManager->getWorkspaceRolesForUser($user, $workspace);
 
         if (0 === count($userRoles)) {

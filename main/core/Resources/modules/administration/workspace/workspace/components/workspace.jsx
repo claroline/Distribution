@@ -19,7 +19,7 @@ import {OrganizationList} from '#/main/core/administration/user/organization/com
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'
 
 const WorkspaceForm = (props) => {
-  const roleId = props.workspace.roles !== undefined ?
+  const roleId = props.workspace.roles !== undefined && props.workspace.roles.length > 0 ?
     props.workspace.roles.find(role => role.name.indexOf('ROLE_WS_MANAGER') > -1).id:
     null
 
@@ -43,6 +43,10 @@ const WorkspaceForm = (props) => {
               type: 'string',
               label: trans('code'),
               required: true
+            }, {
+              name: 'meta.description',
+              type: 'html',
+              label: trans('description')
             }
           ]
         }, {

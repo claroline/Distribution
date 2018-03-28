@@ -16,7 +16,7 @@
       "minLength": 1
     },
     "meta": {
-      "type": "object",
+      "type": ["object"],
       "properties": {
         "model": {
           "type": "boolean",
@@ -66,7 +66,7 @@
           "description": "The workspace closing date"
         },
         "maxUsers": {
-          "type": "integer",
+          "type": ["integer", "null"],
           "description": "The maximum amount of users the workspace can have"
         },
         "maxStorage": {
