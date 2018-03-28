@@ -11,6 +11,8 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Log\Log;
 use Claroline\CoreBundle\Entity\Log\LogWidgetConfig;
 use Claroline\CoreBundle\Entity\User;
@@ -19,7 +21,7 @@ use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
 use Claroline\CoreBundle\Form\DataTransformer\DateRangeToTextTransformer;
-use Claroline\CoreBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Adapter\FixedAdapter;
@@ -27,6 +29,7 @@ use Pagerfanta\Exception\NotValidCurrentPageException;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.log.manager")
@@ -34,6 +37,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class LogManager
 {
     const LOG_PER_PAGE = 40;
+    const CSV_LOG_BATCH = 100;
 
     private $container;
 
@@ -45,20 +49,42 @@ class LogManager
     /** @var \CLaroline\CoreBundle\Repository\Log\LogRepository $logRepository */
     private $logRepository;
 
+    /** @var FinderProvider */
+    private $finder;
+
+    /** @var TranslatorInterface */
+    private $translator;
+
+    /** @var ClaroUtilities */
+    private $ut;
+
     /**
      * @DI\InjectParams({
      *     "container"          = @DI\Inject("service_container"),
-     *     "objectManager"      = @DI\Inject("claroline.persistence.object_manager")
+     *     "objectManager"      = @DI\Inject("claroline.persistence.object_manager"),
+     *     "finder"             = @DI\Inject("claroline.api.finder"),
+     *     "translator"         = @DI\Inject("translator"),
+     *     "ut"                 = @DI\Inject("claroline.utilities.misc")
      * })
      *
      * @param $container
-     * @param $objectManager
+     * @param ObjectManager       $objectManager
+     * @param FinderProvider      $finder
+     * @param TranslatorInterface $translator
      */
-    public function __construct($container, $objectManager)
-    {
+    public function __construct(
+        $container,
+        ObjectManager $objectManager,
+        FinderProvider $finder,
+        TranslatorInterface $translator,
+        ClaroUtilities $ut
+    ) {
         $this->container = $container;
         $this->om = $objectManager;
         $this->logRepository = $objectManager->getRepository('ClarolineCoreBundle:Log\Log');
+        $this->finder = $finder;
+        $this->translator = $translator;
+        $this->ut = $ut;
     }
 
     public function detach($obj)
@@ -91,6 +117,45 @@ class LogManager
         }
 
         return $chartData;
+    }
+
+    public function exportLogsToCsv($query)
+    {
+        // Prepare CSV file
+        $handle = fopen('php://output', 'w+');
+        fputcsv($handle, [
+            $this->translator->trans('date', [], 'platform'),
+            $this->translator->trans('action', [], 'platform'),
+            $this->translator->trans('user', [], 'platform'),
+            $this->translator->trans('description', [], 'platform'),
+        ]);
+        // Initialize variables
+        $query['limit'] = self::CSV_LOG_BATCH;
+        $query['page'] = 0;
+        $count = 0;
+        $total = 0;
+        // Get batched logs
+        while ($count === 0 || $count < $total) {
+            $logs = $logs = $this->finder->search('Claroline\CoreBundle\Entity\Log\Log', $query, []);
+            $total = $logs['totalResults'];
+            $count += self::CSV_LOG_BATCH;
+            ++$query['page'];
+
+            foreach ($logs['data'] as $log) {
+                fputcsv($handle, [
+                    $log['dateLog'],
+                    $log['action'],
+                    $log['doer'] ? $log['doer']['name'] : '',
+                    $this->ut->html2Csv($log['description'], true),
+                ]);
+            }
+
+            $this->om->clear('UJM\ExoBundle\Entity\Attempt\Paper');
+        }
+
+        fclose($handle);
+
+        return $handle;
     }
 
     // Old Methods
@@ -198,7 +263,7 @@ class LogManager
             'chartData' => $chartData,
             'logAmount' => $desktopConfig->getAmount(),
             'isDesktop' => true,
-            'title' => $this->container->get('translator')->trans(
+            'title' => $this->translator->trans(
                 'your_workspace_activity_overview',
                 [],
                 'platform'
@@ -227,7 +292,7 @@ class LogManager
             }
 
             $config->setRestrictions(
-                $this->container->get('claroline.log.manager')->getDefaultWorkspaceConfigRestrictions()
+                $this->getDefaultWorkspaceConfigRestrictions()
             );
             $widgetInstance = new WidgetInstance();
             $widgetInstance->setWorkspace($workspace);
@@ -251,13 +316,13 @@ class LogManager
         $workspaceEvents = $eventManager->getEvents(LogGenericEvent::DISPLAYED_WORKSPACE);
 
         if ($config->hasAllRestriction(count($workspaceEvents))) {
-            $title = $this->container->get('translator')->trans(
+            $title = $this->translator->trans(
                 'recent_all_workspace_activities_overview',
                 ['%workspaceName%' => $workspace->getName()],
                 'platform'
             );
         } else {
-            $title = $this->container->get('translator')->trans(
+            $title = $this->translator->trans(
                 'Overview of recent activities in %workspaceName%',
                 ['%workspaceName%' => $workspace->getName()],
                 'platform'
@@ -339,7 +404,7 @@ class LogManager
         $resourceNodeIds = null,
         $resourceClass = null
     ) {
-        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->container->get('translator'));
+        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->translator);
         $data = $this->processFormData(
             $actionsRestriction,
             $logFilterFormType,
@@ -435,7 +500,7 @@ class LogManager
             $logFilterFormType = $this->container->get('claroline.form.resourceLogFilter');
             $resourceClass = get_class($resource);
         }
-        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->container->get('translator'));
+        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->translator);
         $data = $this->processFormData($actionsRestriction, $logFilterFormType, $workspaceIds, $resourceClass, $dateRangeToTextTransformer);
 
         $action = $data['action'];
@@ -519,7 +584,7 @@ class LogManager
         $resourceClass = null
     ) {
         $page = max(1, $page);
-        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->container->get('translator'));
+        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->translator);
         $data = $this->processFormData(
             $actionsRestriction,
             $logFilterFormType,
@@ -846,14 +911,13 @@ class LogManager
     public function getDetails(Log $log)
     {
         $details = $log->getDetails();
-        $translator = $this->container->get('translator');
         $receiverUser = isset($details['receiverUser']) ? $details['receiverUser']['firstName'].' '.$details['receiverUser']['lastName'] : null;
         $receiverGroup = isset($details['receiverGroup']) ? $details['receiverGroup']['name'] : null;
         $role = isset($details['role']) ? $details['role']['name'] : null;
         $workspace = isset($details['workspace']) ? $details['workspace']['name'] : null;
         $resource = $log->getResourceNode() ? $details['resource']['path'] : null;
 
-        return $translator->trans(
+        return $this->translator->trans(
           'log_'.$log->getAction().'_sentence',
           [
             '%resource%' => $resource,
@@ -861,7 +925,7 @@ class LogManager
             '%receiver_group%' => $receiverGroup,
             '%role%' => $role,
             '%workspace%' => $workspace,
-            '%tool%' => $translator->trans($log->getToolName(), [], 'tool'),
+            '%tool%' => $this->translator->trans($log->getToolName(), [], 'tool'),
           ],
           'log'
         );
