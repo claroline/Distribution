@@ -22,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -87,7 +88,11 @@ class LogController
      * @Route("/", name="apiv2_workspace_tool_logs_list")
      * @Method("GET")
      *
-     * @ParamConverter("workspace", class="Claroline\CoreBundle\Entity\Workspace\Workspace", options={"mapping": {"workspaceId": "id"}})
+     * @ParamConverter(
+     *     "workspace",
+     *     class="Claroline\CoreBundle\Entity\Workspace\Workspace",
+     *     options={"mapping": {"workspaceId": "id"}}
+     * )
      */
     public function listAction(Request $request, Workspace $workspace)
     {
@@ -98,6 +103,36 @@ class LogController
             $this->getWorkspaceFilteredQuery($request, $workspace),
             []
         ));
+    }
+
+    /**
+     * @param Request   $request
+     * @param Workspace $workspace
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @Route("/csv", name="apiv2_workspace_tool_logs_list_csv")
+     * @Method("GET")
+     *
+     * @ParamConverter(
+     *     "workspace",
+     *     class="Claroline\CoreBundle\Entity\Workspace\Workspace",
+     *     options={"mapping": {"workspaceId": "id"}}
+     * )
+     */
+    public function listCsvAction(Request $request, Workspace $workspace)
+    {
+        $this->checkLogToolAcces($workspace);
+
+        // Filter data, but return all of them
+        $query = $this->getWorkspaceFilteredQuery($request, $workspace);
+        $dateStr = date('YmdHis');
+
+        return new StreamedResponse(function () use ($query) {
+            $this->logManager->exportLogsToCsv($query);
+        }, 200, [
+            'Content-Type' => 'application/force-download',
+            'Content-Disposition' => 'attachment; filename="actions_'.$dateStr.'.csv"',
+        ]);
     }
 
     /**
