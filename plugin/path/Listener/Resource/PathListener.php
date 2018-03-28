@@ -224,40 +224,6 @@ class PathListener
     }
 
     /**
-     * @DI\Observe("unlock_innova_path")
-     *
-     * @param CustomActionResourceEvent $event
-     */
-    public function onUnlock(CustomActionResourceEvent $event)
-    {
-        $path = $this->getPathFromEvent($event->getResource());
-
-        $route = $this->container->get('router')->generate('innova_path_unlock_management', [
-            'id' => $path->getId(),
-        ]);
-
-        $event->setResponse(new RedirectResponse($route));
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("manage_results_innova_path")
-     *
-     * @param CustomActionResourceEvent $event
-     */
-    public function onManageResults(CustomActionResourceEvent $event)
-    {
-        $path = $this->getPathFromEvent($event->getResource());
-
-        $route = $this->container->get('router')->generate('innova_path_manage_results', [
-            'id' => $path->getId(),
-        ]);
-
-        $event->setResponse(new RedirectResponse($route));
-        $event->stopPropagation();
-    }
-
-    /**
      * @DI\Observe("export_scorm_innova_path")
      *
      * @param \Claroline\ScormBundle\Event\ExportScormResourceEvent $event
