@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
-import DropdownButton from 'react-bootstrap/lib/DropdownButton'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
 
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/core/api/router'
@@ -9,7 +7,9 @@ import {asset} from '#/main/core/scaffolding/asset'
 import {currentUser} from '#/main/core/user/current'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
@@ -23,6 +23,7 @@ const ManualProgression = props =>
       title={constants.STEP_STATUS[props.status]}
       className={props.status}
       bsStyle="link"
+      noCaret={true}
       pullRight={true}
     >
       {Object.keys(constants.STEP_MANUAL_STATUS).map((status) =>
@@ -101,14 +102,17 @@ PrimaryResource.propTypes = {
 
 const SecondaryResources = props =>
   <div className={classes('step-secondary-resources', props.className)}>
+    <h4 className="h3 h-first">En complément...</h4>
     {props.resources.map(resource =>
-      <a
+      <ResourceCard
         key={resource.resource.id}
-        href={url(['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}])}
-        className="step-secondary-resource"
-      >
-        {resource.resource.name}
-      </a>
+        size="sm"
+        orientation="row"
+        primaryAction={{
+          action: url(['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}])
+        }}
+        data={resource.resource}
+      />
     )}
   </div>
 
@@ -149,18 +153,18 @@ const Step = props =>
       }
     </h3>
 
-    {props.description &&
-      <div className="panel panel-default">
-        <HtmlText className="panel-body">{props.description}</HtmlText>
-      </div>
-    }
-
     <div className="row">
       {props.primaryResource &&
         <div className={classes('col-sm-12', {
           'col-md-9': (0 !== props.secondaryResources.length || 0 !== props.inheritedResources.length) && props.fullWidth,
           'col-md-12': (0 !== props.secondaryResources.length && 0 !== props.inheritedResources.length) && !props.fullWidth
         })}>
+          {props.description &&
+            <div className="panel panel-default">
+              <HtmlText className="panel-body">{props.description}</HtmlText>
+            </div>
+          }
+
           <PrimaryResource
             id={props.primaryResource.autoId}
             type={props.primaryResource.meta.type}

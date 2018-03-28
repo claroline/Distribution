@@ -15,7 +15,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 
 import {enumRole, PLATFORM_ROLE} from '#/main/core/user/role/constants'
-import {Role as RoleTypes} from '#/main/core/administration/user/role/prop-types'
+import {Role as RoleTypes} from '#/main/core/user/prop-types'
 import {actions} from '#/main/core/administration/user/role/actions'
 import {GroupList} from '#/main/core/administration/user/group/components/group-list.jsx'
 import {UserList} from '#/main/core/administration/user/user/components/user-list.jsx'

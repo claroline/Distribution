@@ -6,7 +6,6 @@ import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
-import {constants as listConstants} from '#/main/core/data/list/constants'
 import {
   PageContainer,
   PageHeader,
@@ -146,10 +145,6 @@ class Tools extends Component {
         <PageContent key="tools-container-content">
           <DataListContainer
             name="tools"
-            display={{
-              current: listConstants.DISPLAY_TABLE,
-              available: [listConstants.DISPLAY_TABLE]
-            }}
             fetch={{
               url: ['apiv2_dropzonetool_list'],
               autoload: true
@@ -158,21 +153,7 @@ class Tools extends Component {
               url: ['apiv2_dropzonetool_delete_bulk']
             }}
             definition={this.generateColumns()}
-            filterColumns={true}
             actions={this.generateActions()}
-            card={() => ({
-              onClick: () => {},
-              poster: null,
-              icon: null,
-              title: '',
-              subtitle: '',
-              contentText: '',
-              flags: [].filter(flag => !!flag),
-              footer:
-                <span></span>,
-              footerLong:
-                <span></span>
-            })}
           />
         </PageContent>
       </PageContainer>

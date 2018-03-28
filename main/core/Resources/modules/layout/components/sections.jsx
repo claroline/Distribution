@@ -6,7 +6,7 @@ import omit from 'lodash/omit'
 import Panel      from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
-import {Action as ActionTypes} from '#/main/core/layout/button/prop-types'
+import {Action as ActionTypes} from '#/main/core/layout/action/prop-types'
 import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action.jsx'
 
 /**

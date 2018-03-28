@@ -49,7 +49,7 @@ DataPicker.propTypes = {
   title: T.string,
   confirmText: T.string,
   fetch: T.object,
-  card: T.func.isRequired,
+  card: T.element,
   onlyId: T.bool,
   display: T.object,
 
