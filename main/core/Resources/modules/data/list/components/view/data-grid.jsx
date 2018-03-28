@@ -3,14 +3,12 @@ import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {getPlainText} from '#/main/core/data/types/html/utils'
 import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox'
 
 import {DataListAction, DataListProperty, DataListView} from '#/main/core/data/list/prop-types'
 import {getBulkActions, getRowActions, getPropDefinition, getSortableProps, isRowSelected} from '#/main/core/data/list/utils'
-import {ListActions, ListPrimaryAction, ListBulkActions} from '#/main/core/data/list/components/actions'
+import {ListBulkActions} from '#/main/core/data/list/components/actions'
 
 const DataGridItem = props =>
   <li className="data-grid-item-container">
@@ -53,6 +51,7 @@ DataGridItem.propTypes = {
   actions: T.arrayOf(
     T.shape(DataListAction.propTypes)
   ),
+  card: T.element.isRequired,
   selected: T.bool,
   onSelect: T.func
 }

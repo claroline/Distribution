@@ -20,8 +20,7 @@ import {actions} from '#/plugin/drop-zone/plugin/configuration/actions'
 
 class Tools extends Component {
   showCompilatioForm(tool = null) {
-    const toolForm = !tool ?
-    {
+    const toolForm = !tool ? {
       id: makeId(),
       name: '',
       type: constants.compilatioValue,
@@ -29,8 +28,8 @@ class Tools extends Component {
         url: 'http://service.compilatio.net/webservices/CompilatioUserClient2.wsdl',
         key: null
       }
-    } :
-    tool
+    } : tool
+
     this.props.loadToolForm(toolForm)
 
     this.props.showModal('MODAL_COMPILATIO_FORM', {

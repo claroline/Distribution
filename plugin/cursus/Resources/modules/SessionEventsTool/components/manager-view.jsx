@@ -1,7 +1,7 @@
 import {connect} from 'react-redux'
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
-import moment from 'moment'
+
 import {trans, t} from '#/main/core/translation'
 import {makeModal, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {selectors} from '../selectors'

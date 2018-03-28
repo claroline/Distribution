@@ -510,9 +510,9 @@ function makePanel(Section, title, key, props, withCategories = false, withField
 
   const Header =
     <div className="editor-panel-title"
-         onClick={() => props.updateParameters('activePanelKey', keyValue)}
+      onClick={() => props.updateParameters('activePanelKey', keyValue)}
     >
-      <span className={classes('fa fa-fw', caretIcon)}/>
+      <span className={classes('fa fa-fw', caretIcon)} />
       &nbsp;{title}
     </div>
 

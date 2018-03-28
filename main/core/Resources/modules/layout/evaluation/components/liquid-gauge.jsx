@@ -106,7 +106,7 @@ class GaugeText extends Component {
         const currentValue = text.text().replace('%', '')
         const i = interpolate(currentValue, Math.round(newValue))
 
-        return function(t) {
+        return function (t) {
           const newValue = Math.round(i(t)) + percentText
 
           text.text(newValue)

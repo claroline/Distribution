@@ -21,13 +21,13 @@ DownloadLink.propTypes = {
       T.shape({
         name: T.string,
         mimeType: T.string,
-        url: T.string.isRequired,
+        url: T.string.isRequired
       }).isRequired
     ),
     T.shape({
       name: T.string,
       mimeType: T.string,
-      url: T.string.isRequired,
+      url: T.string.isRequired
     }).isRequired
   ])
 }

@@ -1,7 +1,6 @@
 import React from 'react'
 import classes from 'classnames'
 
-import {trans} from '#/main/core/translation'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {getPlainText} from '#/main/core/data/types/html/utils'
 import {ActionDropdownButton} from '#/main/core/layout/action/components/dropdown'

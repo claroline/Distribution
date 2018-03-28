@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
-import {t, transChoice} from '#/main/core/translation'
+import {transChoice} from '#/main/core/translation'
 import {ActionDropdownButton} from '#/main/core/layout/action/components/dropdown'
 import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action'
 
