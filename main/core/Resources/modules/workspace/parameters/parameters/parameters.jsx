@@ -141,7 +141,7 @@ const Parameters = (props) => {
                   'registration.defaultRole',
                   props.workspace.roles.find(role => role.id === roleId)
                 ),
-                calculated: get(props.workspace, 'defaultRole.id', null)
+                calculated: get(props.workspace, 'registration.defaultRole.id', null)
               },
             ]
           },

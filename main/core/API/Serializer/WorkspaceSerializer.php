@@ -190,7 +190,8 @@ class WorkspaceSerializer
             'selfRegistration' => $workspace->getSelfRegistration(),
             'selfUnregistration' => $workspace->getSelfUnregistration(),
             'defaultRole' => $workspace->getDefaultRole() ?
-              $this->serializer->serialize($workspace->getDefaultRole()) : null,
+              $this->serializer->serialize($workspace->getDefaultRole(), [Options::SERIALIZE_MINIMAL]) :
+              null,
         ];
     }
 
@@ -214,6 +215,14 @@ class WorkspaceSerializer
                 $data['thumbnail']
             );
             $workspace->setThumbnail($thumbnail);
+        }
+
+        if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {
+            $defaultRole = $this->container->get('claroline.api.serializer')->deserialize(
+                'Claroline\CoreBundle\Entity\Role',
+                $data['registration']['defaultRole']
+            );
+            $workspace->setDefaultRole($defaultRole);
         }
 
         $this->sipe('uuid', 'setUuid', $data, $workspace);
