@@ -77,7 +77,6 @@ const SummaryStep = props =>
             removeStep={props.removeStep}
             copyStep={props.copyStep}
             pasteStep={props.pasteStep}
-            resetStepCopy={props.resetStepCopy}
           />
         )}
       </ul>
@@ -91,8 +90,7 @@ SummaryStep.propTypes = {
   addStep: T.func.isRequired,
   removeStep: T.func.isRequired,
   copyStep: T.func.isRequired,
-  pasteStep: T.func.isRequired,
-  resetStepCopy: T.func.isRequired
+  pasteStep: T.func.isRequired
 }
 
 const Summary = props =>
@@ -115,7 +113,6 @@ const Summary = props =>
           removeStep={props.removeStep}
           copyStep={props.copyStep}
           pasteStep={props.pasteStep}
-          resetStepCopy={props.resetStepCopy}
         />
       )}
 

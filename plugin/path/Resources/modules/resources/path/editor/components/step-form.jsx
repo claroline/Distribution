@@ -57,6 +57,7 @@ const PrimaryResourceSection = props =>
 PrimaryResourceSection.propTypes = {
   stepId: T.string.isRequired,
   resource: T.shape({
+    autoId: T.number.isRequired,
     id: T.string.isRequired,
     name: T.string.isRequired,
     meta: T.shape({

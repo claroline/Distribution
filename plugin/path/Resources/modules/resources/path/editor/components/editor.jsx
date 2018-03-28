@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {asset} from '#/main/core/scaffolding/asset'
 import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
@@ -21,6 +20,8 @@ import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path
 import {constants} from '#/plugin/path/resources/path/constants'
 import {getNumbering, flattenSteps} from '#/plugin/path/resources/path/utils'
 import {getFormDataPart} from '#/plugin/path/resources/path/editor/utils'
+
+// todo : replaces copy/paste feature by a duplicate one (that's how it works elsewhere)
 
 const EditorComponent = props =>
   <section className="resource-section">

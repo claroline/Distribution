@@ -128,7 +128,6 @@
     z-index: 3;
     position: absolute;
     margin: 0 !important;
-    top: @data-grid-gutter * 2;
     left: @data-grid-gutter * 2;
 }
 
@@ -146,10 +145,9 @@
         padding: @data-grid-gutter;
     }
 
-    /*.data-grid-item-select {
+    .data-grid-item-select {
         top: @data-grid-gutter * 2;
-        left: @data-grid-gutter * 2;
-    }*/
+    }
 
     &.data-grid-sm .data-grid-item-container {
         flex: 0 0 (100% / @data-grid-cols-sm);
@@ -173,8 +171,7 @@
         max-width: 100%;
     }
 
-    /*.data-grid-item-select {
-        top: @data-grid-gutter;
-        left: @data-grid-gutter;
-    }*/
+    .data-grid-item-select {
+        top: @data-grid-gutter + @data-grid-gutter/2;
+    }
 }
