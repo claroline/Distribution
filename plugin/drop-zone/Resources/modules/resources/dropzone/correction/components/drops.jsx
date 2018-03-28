@@ -11,6 +11,8 @@ import {select} from '#/plugin/drop-zone/resources/dropzone/selectors'
 import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
+// TODO : restore list grid display
+
 const DropsList = props =>
   <section className="resource-section">
     <h2>{trans('corrections_management', {}, 'dropzone')}</h2>
@@ -103,16 +105,6 @@ const DropsList = props =>
           action: (rows) => props.downloadDrops(rows)
         }
       ]}
-      card={(row) => ({
-        icon: 'fa fa-upload',
-        title: '',
-        subtitle: '',
-        footer: // todo : use score gauge in header instead
-          <ScoreBox
-            score={row.score}
-            scoreMax={props.dropzone.parameters.scoreMax}
-          />
-      })}
     />
   </section>
 

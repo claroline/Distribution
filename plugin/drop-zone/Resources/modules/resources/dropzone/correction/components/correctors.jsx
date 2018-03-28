@@ -13,6 +13,8 @@ import {constants} from '#/plugin/drop-zone/resources/dropzone/constants'
 import {getCorrectionKey} from '#/plugin/drop-zone/resources/dropzone/utils'
 import {actions} from '#/plugin/drop-zone/resources/dropzone/correction/actions'
 
+// TODO : restore list grid display
+
 class Correctors extends Component {
   generateColumns(props) {
     const columns = []
@@ -122,10 +124,6 @@ class Correctors extends Component {
             definition={this.generateColumns(this.props)}
             filterColumns={true}
             actions={this.generateActions(this.props)}
-            card={(row) => ({
-              icon: 'fa fa-fw fa-user',
-              title: this.props.dropzone.parameters.dropType === constants.DROP_TYPE_USER ? row.user : row.teamName
-            })}
           />
         }
       </div>

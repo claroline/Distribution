@@ -23,6 +23,8 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {getDefinition, listItemNames} from '#/plugin/exo/items/item-types'
 import {Icon as ItemIcon} from '#/plugin/exo/items/components/icon.jsx'
 
+// TODO : restore list grid display
+
 const QuestionsPage = props =>
   <PageContainer id="question-bank">
     <PageHeader title={tex('questions_bank')} />
@@ -110,20 +112,6 @@ const QuestionsPage = props =>
             dangerous: true
           }
         ]}
-
-        card={(row) => ({
-          poster: null,
-          icon: <ItemIcon name={getDefinition(row.type).name} size="lg"/>,
-          title: row.title || row.content.substr(0, 50), // todo remove html
-          subtitle: trans(getDefinition(row.type).name, {}, 'question_types'),
-          flags: [
-            row.meta.model && ['fa fa-object-group', t('model')]
-          ].filter(flag => !!flag),
-          footer:
-            <span>
-              last updated at <b>{displayDate(row.meta.updated, false, true)}</b>,
-            </span>
-        })}
       />
     </PageContent>
   </PageContainer>
