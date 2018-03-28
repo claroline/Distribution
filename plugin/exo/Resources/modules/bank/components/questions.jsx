@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, tex, trans, transChoice} from '#/main/core/translation'
-import {displayDate} from '#/main/core/scaffolding/date'
 import {generateUrl} from '#/main/core/api/router'
 
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
@@ -54,8 +53,9 @@ const QuestionsPage = props =>
                   selectObj, {
                     [itemType.type]: trans(itemType.name, {}, 'question_types')
                   }
-                )
-              , {})
+                ),
+                {}
+              )
             }
           }, {
             name: 'content',

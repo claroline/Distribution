@@ -2,9 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {t, trans, transChoice} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
-import {displayDate} from '#/main/core/scaffolding/date'
+import {trans} from '#/main/core/translation'
+import {url} from '#/main/core/api/router'
 
 import {MODAL_IFRAME} from '#/main/core/layout/modal'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -21,7 +20,7 @@ import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 const PortalPage = props =>
   <PageContainer id="portal">
-    <PageHeader title={t('portal')} />
+    <PageHeader title={trans('portal')} />
 
     <PageContent>
       <DataListContainer
@@ -30,7 +29,7 @@ const PortalPage = props =>
           action: (row) => row.url && row.url.isYoutube ?
             () => props.displayModalVideo(row.name, row.url.embedYoutubeUrl) // open a modal with the video in a iframe
             :
-            generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}), // direct link to the resource
+            url(['claro_resource_open', {node: row.id, resourceType: row.meta.type}]) // direct link to the resource
         }}
         fetch={{
           url: ['apiv2_portal_index']
@@ -38,24 +37,24 @@ const PortalPage = props =>
         definition={[
           {
             name: 'name',
-            label: t('name'),
+            label: trans('name'),
             displayed: true,
             primary: true
           }, {
             name: 'meta.created',
-            label: t('creation_date'),
+            label: trans('creation_date'),
             type: 'date',
             alias: 'creationDate',
             displayed: true,
             filterable: false
           }, {
             name: 'createdAfter',
-            label: t('created_after'),
+            label: trans('created_after'),
             type: 'date',
             displayable: false
           }, {
             name: 'createdBefore',
-            label: t('created_before'),
+            label: trans('created_before'),
             type: 'date',
             displayable: false
           }
