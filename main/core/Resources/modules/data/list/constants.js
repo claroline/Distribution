@@ -20,6 +20,7 @@ const DISPLAY_TABLE    = 'table'
 const DISPLAY_TABLE_SM = 'table-sm'
 const DISPLAY_TILES    = 'tiles'
 const DISPLAY_TILES_SM = 'tiles-sm'
+const DISPLAY_LIST_SM  = 'list-sm'
 const DISPLAY_LIST     = 'list'
 
 const DEFAULT_DISPLAY_MODE = DISPLAY_TABLE
@@ -45,7 +46,17 @@ const DISPLAY_MODES = {
     component: DataTable,
     options: {
       size: 'lg',
-      filterColumns: true
+      filterColumns: true // used to know if we need to enable the tool to filter displayed data properties
+    }
+  },
+  [DISPLAY_LIST_SM]: {
+    icon: 'fa fa-fw fa-list-ul',
+    label: trans('list_display_list_sm'),
+    component: DataGrid,
+    options: {
+      useCard: true, // it uses card representation for rendering data
+      size: 'sm',
+      orientation: 'row'
     }
   },
   [DISPLAY_LIST]: {

@@ -103,7 +103,6 @@ const DataCard = {
     orientation: 'row',
     level: 2,
     actions: [],
-    primaryAction: {},
     flags: []
   }
 }

@@ -340,8 +340,10 @@ DataList.propTypes = {
   /**
    * The card representation for the current data.
    * It's required to enable cards based display modes.
+   *
+   * It must be a react component.
    */
-  card: T.element,
+  card: T.func,
 
   /**
    * Override default list translations.

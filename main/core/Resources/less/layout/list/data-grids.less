@@ -69,10 +69,10 @@
 // ---
 
 .data-grid-content {
+    margin: 0; // reset ul margin
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: -@data-grid-gutter; // absorb items margin
 
     // remove <ul> styles
     list-style-type: none;
@@ -81,7 +81,6 @@
 
 .data-grid-item-container {
     position: relative; // constrain selection checkbox
-    padding: @data-grid-gutter;
 
     .data-card {
         width: 100%; // fill container
@@ -123,14 +122,14 @@
             }
         }
     }
+}
 
-    .item-select {
-        z-index: 3;
-        position: absolute;
-        margin: 0;
-        top: @data-grid-gutter * 2;
-        left: @data-grid-gutter * 2;
-    }
+.data-grid-item-select {
+    z-index: 3;
+    position: absolute;
+    margin: 0 !important;
+    top: @data-grid-gutter * 2;
+    left: @data-grid-gutter * 2;
 }
 
 
@@ -139,6 +138,19 @@
 // ---
 
 .data-grid-col {
+    .data-grid-content {
+        margin: -@data-grid-gutter; // absorb items margin
+    }
+
+    .data-grid-item-container {
+        padding: @data-grid-gutter;
+    }
+
+    /*.data-grid-item-select {
+        top: @data-grid-gutter * 2;
+        left: @data-grid-gutter * 2;
+    }*/
+
     &.data-grid-sm .data-grid-item-container {
         flex: 0 0 (100% / @data-grid-cols-sm);
         max-width: 100% / @data-grid-cols-sm;
@@ -151,8 +163,18 @@
 }
 
 .data-grid-row {
+    .data-grid-content {
+        margin: -@data-grid-gutter/2 -@data-grid-gutter; // absorb items margin
+    }
+
     .data-grid-item-container {
+        padding: @data-grid-gutter/2 @data-grid-gutter;
         flex: 0 0 100%;
         max-width: 100%;
     }
+
+    /*.data-grid-item-select {
+        top: @data-grid-gutter;
+        left: @data-grid-gutter;
+    }*/
 }

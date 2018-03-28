@@ -15,7 +15,7 @@ const DataGridItem = props =>
     {props.onSelect &&
       <input
         type="checkbox"
-        className="item-select"
+        className="data-grid-item-select"
         checked={props.selected}
         onChange={props.onSelect}
       />
@@ -51,7 +51,8 @@ DataGridItem.propTypes = {
   actions: T.arrayOf(
     T.shape(DataListAction.propTypes)
   ),
-  card: T.element.isRequired,
+
+  card: T.func.isRequired, // It must be a react component.
   selected: T.bool,
   onSelect: T.func
 }
@@ -162,12 +163,10 @@ const DataGrid = props =>
     </ul>
   </div>
 
-
-
 implementPropTypes(DataGrid, DataListView, {
   size: T.oneOf(['sm', 'lg']).isRequired,
   orientation: T.oneOf(['col', 'row']).isRequired,
-  card: T.element.isRequired
+  card: T.func.isRequired // It must be a react component.
 })
 
 export {

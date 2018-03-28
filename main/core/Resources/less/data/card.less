@@ -53,7 +53,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin: 30px;
+    //margin: 30px;
     background: rgba(255, 255, 255, .6);
     border-radius: 50%;
     line-height: 0;
@@ -124,22 +124,23 @@
 // ---
 
 .data-card-sm {
-    .data-card-size-variant(@data-card-icon-sm-size, @data-card-title-sm-font);
+    .data-card-size-variant(@data-card-icon-sm-size, @data-card-title-sm-font, 10px);
 }
 .data-card-lg {
-    .data-card-size-variant(@data-card-icon-lg-size, @data-card-title-lg-font);
+    .data-card-size-variant(@data-card-icon-lg-size, @data-card-title-lg-font, 30px);
 }
 
 // mixins
-.data-card-size-variant(@icon-size, @title-size) {
+.data-card-size-variant(@icon-size, @title-size, @icon-spacer) {
     .data-card-header {
-        min-height: @icon-size + 60px; // icon margin + height
+        min-height: @icon-size + @icon-spacer*2; // icon margin + height
     }
 
     .data-card-icon {
         font-size: floor(@icon-size / 2); // for FA icons
         width: @icon-size;
         height: @icon-size;
+        margin: @icon-spacer;
 
         img.icon {
             max-width: floor(@icon-size / 2);

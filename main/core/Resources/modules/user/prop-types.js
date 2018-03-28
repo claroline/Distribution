@@ -18,13 +18,15 @@ const User = {
       personalWorkspace: T.bool
     }),
     restrictions: T.shape({
-      disabled: T.bool
+      disabled: T.bool,
+      dates: T.arrayOf(T.string)
     })
   },
   defaultProps: {
     meta: {},
     restrictions: {
-      disabled: false
+      disabled: false,
+      dates: []
     }
   }
 }

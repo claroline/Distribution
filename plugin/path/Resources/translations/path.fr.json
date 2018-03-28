@@ -1,4 +1,6 @@
 {
+    "add_primary_resource": "Ajouter une ressource principale",
+    "add_secondary_resources": "Ajouter des ressources complémentaires",
     "close_summary": "Fermer le sommaire",
     "inherited_resources": "Ressources héritées",
     "no_primary_resource": "Il n'y a aucune ressource principale sur cette étape.",

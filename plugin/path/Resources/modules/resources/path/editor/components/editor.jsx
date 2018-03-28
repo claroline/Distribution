@@ -158,18 +158,18 @@ const Editor = connect(
       let callback
       if ('primary' === usage) {
         icon = 'fa fa-fw fa-folder-open'
-        title = trans('select_primary_resource', {}, 'path')
+        title = trans('add_primary_resource', {}, 'path')
         callback = (selected) => dispatch(actions.updatePrimaryResource(stepId, selected[0]))
       } else if ('secondary' === usage) {
         icon = 'fa fa-fw fa-folder-open-o'
-        title = trans('select_secondary_resources', {}, 'path')
+        title = trans('add_secondary_resources', {}, 'path')
         callback = (selected) => dispatch(actions.addSecondaryResources(stepId, selected))
       }
 
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: icon,
         title: title,
-        confirmText: trans('select', {}, 'actions'),
+        confirmText: trans('add', {}, 'actions'),
         name: 'resourcesPicker',
         onlyId: false,
         fetch: {

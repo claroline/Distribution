@@ -55,7 +55,7 @@ CardHeader.propTypes = {
   icon: T.oneOfType([T.string, T.element]).isRequired,
   poster: T.string,
   flags: T.arrayOf(
-    T.arrayOf(T.string)
+    T.arrayOf(T.oneOfType([T.string, T.number]))
   )
 }
 
@@ -115,8 +115,8 @@ const DataCard = props =>
     />
 
     <CardContent
-      disabled={props.primaryAction.disabled}
-      action={props.primaryAction.action}
+      disabled={props.primaryAction && props.primaryAction.disabled}
+      action={props.primaryAction && props.primaryAction.action}
     >
       {React.createElement(`h${props.level}`, {
         key: 'data-card-title',
