@@ -16,7 +16,7 @@ import {constants} from '#/plugin/path/resources/path/constants'
 
 const ManualProgression = props =>
   <div className="step-manual-progression">
-    {trans('user_progression', {}, 'path')} :
+    {trans('user_progression', {}, 'path')}
 
     <DropdownButton
       id="step-progression"

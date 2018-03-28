@@ -17,7 +17,7 @@ import {PairItemDragPreview} from './pair-item-drag-preview.jsx'
 let DropBox = props => {
   return props.connectDropTarget (
      <div className={classes(
-       'pair-item-placeholder drop-placeholder placeholder-hover',
+       'pair-item-placeholder drop-placeholder placeholder-md placeholder-hover',
        {hover: props.isOver}
      )}>
        <span className="fa fa-fw fa-share fa-rotate-90" />

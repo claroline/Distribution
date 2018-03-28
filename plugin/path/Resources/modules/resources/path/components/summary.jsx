@@ -1,13 +1,16 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
+import {NavLink} from '#/main/core/router'
 import {TooltipAction} from '#/main/core/layout/button/components/tooltip-action.jsx'
+import {Action as ActionTypes} from '#/main/core/layout/action/prop-types'
 
 import {actions} from '#/plugin/path/resources/path/actions'
 import {select} from '#/plugin/path/resources/path/selectors'
+import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 
 const SummaryHeader = props =>
   <header className="summary-header">
@@ -52,6 +55,92 @@ SummaryHeader.propTypes = {
   toggleOpen: T.func.isRequired
 }
 
+class SummaryLink extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      collapsible: props.step.children && 0 !== props.step.children.length,
+      collapsed: false
+    }
+  }
+
+  render() {
+    return (
+      <li className="summary-link-container">
+        <div className="summary-link">
+          <NavLink to={`/${this.props.prefix}/${this.props.step.id}`}>
+            <span className={classes('step-progression fa fa-circle', this.props.step.userProgression && this.props.step.userProgression.status)} />
+
+            {this.props.opened && this.props.step.title}
+          </NavLink>
+
+          {(this.props.opened && (this.state.collapsible || 0 !== this.props.actions.length)) &&
+            <div className="step-actions">
+              {this.props.actions
+                .filter(action => undefined === action.displayed || action.displayed)
+                .map((action, actionIndex) =>
+                  <TooltipAction
+                    {...action}
+                    key={actionIndex}
+                    id={`step-${this.props.step.id}-${actionIndex}`}
+                    position="bottom"
+                    className="btn-link btn-summary"
+                    action={typeof action.action === 'string' ? action.action : () => action.action(this.props.step)}
+                  />
+                )
+              }
+
+              {this.state.collapsible &&
+                <TooltipAction
+                  id={`step-${this.props.step.id}-collapse`}
+                  position="bottom"
+                  className="btn-link btn-summary"
+                  icon={classes('fa', {
+                    'fa-caret-right': this.state.collapsed,
+                    'fa-caret-down': !this.state.collapsed
+                  })}
+                  label={trans(this.state.collapsed ? 'expand_step':'collapse_step', {}, 'path')}
+                  action={() => this.setState({collapsed: !this.state.collapsed})}
+                />
+              }
+            </div>
+          }
+        </div>
+
+        {!this.state.collapsed && this.props.step.children.length > 0 &&
+          <ul className="step-children">
+            {this.props.step.children.map(child =>
+              <SummaryLink
+                key={`summary-step-${child.id}`}
+                prefix={this.props.prefix}
+                opened={this.props.opened}
+                step={child}
+                actions={this.props.actions}
+              />
+            )}
+          </ul>
+        }
+      </li>
+    )
+  }
+}
+
+SummaryLink.propTypes = {
+  prefix: T.string.isRequired,
+  opened: T.bool.isRequired,
+  step: T.shape(
+    StepTypes.propTypes
+  ).isRequired,
+  actions: T.arrayOf(T.shape(
+    ActionTypes.propTypes
+  ))
+}
+
+SummaryLink.defaultProps = {
+  actions: []
+}
+
 const Summary = props =>
   <aside className={classes('summary-container', {
     opened: props.opened,
@@ -64,15 +153,38 @@ const Summary = props =>
       toggleOpen={props.toggleOpen}
     />
 
-    {props.children}
+    {0 !== props.steps.length &&
+      <ul className="summary">
+        {props.steps.map(step =>
+          <SummaryLink
+            key={step.id}
+            prefix={props.prefix}
+            opened={props.opened}
+            step={step}
+            actions={props.actions}
+          />
+        )}
+      </ul>
+    }
   </aside>
 
 Summary.propTypes = {
+  prefix: T.string.isRequired,
+  steps: T.arrayOf(T.shape(
+    StepTypes.propTypes
+  )),
+  actions: T.arrayOf(T.shape(
+    ActionTypes.propTypes
+  )),
   opened: T.bool.isRequired,
   pinned: T.bool.isRequired,
   togglePin: T.func.isRequired,
-  toggleOpen: T.func.isRequired,
-  children: T.node
+  toggleOpen: T.func.isRequired
+}
+
+Summary.defaultProps = {
+  steps: [],
+  actions: []
 }
 
 const PathSummary = connect(
@@ -91,5 +203,6 @@ const PathSummary = connect(
 )(Summary)
 
 export {
-  PathSummary
+  PathSummary,
+  SummaryLink as PathSummaryLink
 }

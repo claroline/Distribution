@@ -12,7 +12,7 @@ import {constants} from '#/plugin/path/resources/path/constants'
 import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {PathCurrent} from '#/plugin/path/resources/path/components/current.jsx'
 import {Step} from '#/plugin/path/resources/path/player/components/step.jsx'
-import {Summary} from '#/plugin/path/resources/path/player/components/summary.jsx'
+import {PathSummary} from '#/plugin/path/resources/path/components/summary.jsx'
 import {getNumbering, flattenSteps, getStepUserProgression} from '#/plugin/path/resources/path/utils'
 import {actions} from '#/plugin/path/resources/path/player/actions'
 
@@ -24,7 +24,8 @@ const PlayerComponent = props =>
     <h2 className="sr-only">{trans('play')}</h2>
 
     {props.path.display.showSummary &&
-      <Summary
+      <PathSummary
+        prefix="play"
         steps={props.path.steps}
       />
     }
