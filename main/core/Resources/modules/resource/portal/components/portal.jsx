@@ -16,7 +16,8 @@ import {
 } from '#/main/core/layout/page'
 
 import {constants as listConstants} from '#/main/core/data/list/constants'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 const PortalPage = props =>
   <PageContainer id="portal">
@@ -26,7 +27,10 @@ const PortalPage = props =>
       <DataListContainer
         name="portal"
         open={{
-          action: (rowData) => generateUrl('claro_resource_open', {node: rowData.id, resourceType: rowData.meta.type})
+          action: (row) => row.url && row.url.isYoutube ?
+            () => props.displayModalVideo(row.name, row.url.embedYoutubeUrl) // open a modal with the video in a iframe
+            :
+            generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}), // direct link to the resource
         }}
         fetch={{
           url: ['apiv2_portal_index']
@@ -57,41 +61,7 @@ const PortalPage = props =>
           }
         ]}
 
-        card={(row) => ({
-          onClick: row.url && row.url.isYoutube ?
-            () => {props.displayModalVideo(row.name, row.url.embedYoutubeUrl)} // open a modal with the video in a iframe
-            :
-            generateUrl('claro_resource_open', {node: row.id, resourceType: row.meta.type}), // direct link to the resource
-          poster: row.thumbnail,
-          className: row.url && row.url.isExternal ? 'external-resource' : 'internal-resource',
-          icon: row.url && row.url.isYoutube ?
-            <span className="item-icon-container fa fa-play" />
-            :
-            <span className="item-icon-container" style={{
-              backgroundImage: 'url("' + row.meta.icon + '")',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }} />,
-          title: row.name,
-          subtitle: row.code,
-          contentText: row.meta.description,
-          footer:
-            <div>
-              {t('published_at', {'date': displayDate(row.meta.created, false, true)})}
-            </div>,
-          footerLong:
-            //TODO: social data anv view count should be displayed in flags. Display in footer should be a hidden option of the platform.
-            <div>
-              <span className="publish-date">{trans(row.meta.type, {}, 'resource')} {t('published_at', {'date': displayDate(row.meta.created, false, true)})}</span>
-              <span className="creator"> {t('by')} {row.meta.creator ? row.meta.creator.name: t('unknown')}</span>
-              <br />
-              <span className="social">
-                <span className="fa fa-eye" aria-hidden="true" /> {transChoice('display_views', row.meta.views, {'%count%': row.meta.views}, 'platform')}
-                &nbsp;
-                <span className="fa fa-heart" aria-hidden="true" /> {transChoice('nb_likes', row.social.likes, {'%count%': row.social.likes}, 'icap_socialmedia')}
-              </span>
-            </div>
-        })}
+        card={ResourceCard}
 
         display={{
           current: listConstants.DISPLAY_TILES,
