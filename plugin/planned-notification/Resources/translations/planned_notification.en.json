@@ -4,6 +4,7 @@
     "planned_interval": "Planned interval",
     "select": "Select",
     "select_message": "Select a message",
+    "select_roles": "Select roles",
     "send_a_mail": "Send a mail",
     "send_a_message": "Send a message"
 }

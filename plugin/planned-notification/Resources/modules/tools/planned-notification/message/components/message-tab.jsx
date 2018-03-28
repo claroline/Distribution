@@ -70,14 +70,16 @@ const MessageTabComponent = props =>
       }, {
         path: '/messages/form/:id?',
         component: Message,
-        onEnter: (params) => props.openForm(params.id, props.workspace)
+        onEnter: (params) => props.openForm(params.id, props.workspace),
+        onLeave: () => props.openForm(null, props.workspace)
       }
     ]}
   />
 
 MessageTabComponent.propTypes = {
   canEdit: T.bool.isRequired,
-  workspace: T.object.isRequired
+  workspace: T.object.isRequired,
+  openForm: T.func.isRequired
 }
 
 const MessageTab = connect(

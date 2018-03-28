@@ -12,11 +12,11 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
 import {Message as MessageTypes} from '#/plugin/planned-notification/tools/planned-notification/prop-types'
 
-const MessageGroupComponent = props =>
+const MessageFormGroupComponent = props =>
   <FormGroup
     {...props}
     error={props.error && typeof props.error === 'string' ? props.error : undefined}
-    className="message-group"
+    className="message-form-group"
   >
     <div className="input-group">
       <input
@@ -37,7 +37,7 @@ const MessageGroupComponent = props =>
     </div>
   </FormGroup>
 
-implementPropTypes(MessageGroupComponent, FormGroupWithFieldTypes, {
+implementPropTypes(MessageFormGroupComponent, FormGroupWithFieldTypes, {
   value: T.shape(MessageTypes.propTypes),
   workspace: T.shape({
     uuid: T.string.isRequired
@@ -45,7 +45,7 @@ implementPropTypes(MessageGroupComponent, FormGroupWithFieldTypes, {
   pickMessage: T.func.isRequired
 }, {})
 
-const MessageGroup = connect(
+const MessageFormGroup = connect(
   state => ({
     workspace: select.workspace(state)
   }),
@@ -96,8 +96,8 @@ const MessageGroup = connect(
       }))
     }
   })
-)(MessageGroupComponent)
+)(MessageFormGroupComponent)
 
 export {
-  MessageGroup
+  MessageFormGroup
 }

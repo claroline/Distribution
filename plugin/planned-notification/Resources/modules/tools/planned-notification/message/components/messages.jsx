@@ -63,8 +63,7 @@ const Messages = connect(
   state => ({
     canEdit: select.canEdit(state),
     workspace: select.workspace(state)
-  }),
-  dispatch => ({})
+  })
 )(MessagesList)
 
 export {

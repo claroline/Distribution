@@ -1,6 +1,6 @@
 import {chain, string, notBlank} from '#/main/core/validation'
 
-import {MessageGroup} from '#/plugin/planned-notification/data/types/message/components/message-group.jsx'
+import {MessageFormGroup} from '#/plugin/planned-notification/data/types/message/components/message-form-group.jsx'
 
 const MESSAGE_TYPE = 'message'
 
@@ -20,7 +20,7 @@ const messageDefinition = {
   }]),
 
   components: {
-    form: MessageGroup
+    form: MessageFormGroup
   }
 }
 

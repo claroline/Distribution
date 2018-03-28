@@ -4,6 +4,7 @@
     "planned_interval": "Délai planifié",
     "select": "Sélectionner",
     "select_message": "Sélectionner un message",
+    "select_roles": "Sélectionner des rôles",
     "send_a_mail": "Envoyer un mail",
     "send_a_message": "Envoyer un message"
 }

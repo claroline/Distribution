@@ -14,7 +14,7 @@ import {
 import {
   MessageTab,
   MessageTabActions,
-  MessageTabEditActions,
+  MessageTabEditActions
 } from '#/plugin/planned-notification/tools/planned-notification/message/components/message-tab.jsx'
 
 const Tool = props => {

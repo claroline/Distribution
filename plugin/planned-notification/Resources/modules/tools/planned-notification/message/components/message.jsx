@@ -48,8 +48,7 @@ const Message = connect(
     canEdit: select.canEdit(state),
     new: formSelect.isNew(formSelect.form(state, 'messages.current')),
     message: formSelect.data(formSelect.form(state, 'messages.current'))
-  }),
-  dispatch => ({})
+  })
 )(MessageForm)
 
 export {

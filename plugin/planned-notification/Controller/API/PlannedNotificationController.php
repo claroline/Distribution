@@ -13,6 +13,7 @@ namespace Claroline\PlannedNotificationBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -77,6 +78,37 @@ class PlannedNotificationController extends AbstractCrudController
         $params['hiddenFilters']['workspace'] = $workspace->getUuid();
 
         $data = $this->finder->search('Claroline\PlannedNotificationBundle\Entity\PlannedNotification', $params);
+
+        return new JsonResponse($data, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspace/{workspace}/roles/list",
+     *     name="apiv2_plannednotification_workspace_roles_list"
+     * )
+     * @EXT\ParamConverter(
+     *     "workspace",
+     *     class="ClarolineCoreBundle:Workspace\Workspace",
+     *     options={"mapping": {"workspace": "uuid"}}
+     * )
+     *
+     * @param Workspace $workspace
+     * @param Request   $request
+     *
+     * @return JsonResponse
+     */
+    public function workspaceRolesListAction(Workspace $workspace, Request $request)
+    {
+        $params = $request->query->all();
+
+        if (!isset($params['hiddenFilters'])) {
+            $params['hiddenFilters'] = [];
+        }
+        $params['hiddenFilters']['type'] = 'workspace';
+        $params['hiddenFilters']['workspace'] = $workspace->getUuid();
+
+        $data = $this->finder->search('Claroline\CoreBundle\Entity\Role', $params, [Options::SERIALIZE_MINIMAL]);
 
         return new JsonResponse($data, 200);
     }

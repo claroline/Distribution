@@ -12,7 +12,9 @@
 namespace Claroline\PlannedNotificationBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
+use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,14 @@ class PlannedNotification
      * @var Workspace
      */
     protected $workspace;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Claroline\CoreBundle\Entity\Role")
+     * @ORM\JoinTable(name="claro_plannednotificationbundle_planned_notification_role")
+     *
+     * @var ArrayCollection|Role[]
+     */
+    protected $roles;
 
     /**
      * @ORM\ManyToOne(
@@ -86,6 +96,7 @@ class PlannedNotification
     public function __construct()
     {
         $this->refreshUuid();
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -118,6 +129,39 @@ class PlannedNotification
     public function setWorkspace($workspace)
     {
         $this->workspace = $workspace;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function addRole(Role $role)
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles->add($role);
+        }
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function removeRole(Role $role)
+    {
+        if ($this->roles->contains($role)) {
+            $this->roles->removeElement($role);
+        }
+    }
+
+    public function emptyRoles()
+    {
+        $this->roles->clear();
     }
 
     /**

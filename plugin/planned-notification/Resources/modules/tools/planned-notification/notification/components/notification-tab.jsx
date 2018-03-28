@@ -71,14 +71,16 @@ const NotificationTabComponent = props =>
       }, {
         path: '/notifications/form/:id?',
         component: Notification,
-        onEnter: (params) => props.openForm(params.id, props.workspace)
+        onEnter: (params) => props.openForm(params.id, props.workspace),
+        onLeave: () => props.openForm(null, props.workspace)
       }
     ]}
   />
 
 NotificationTabComponent.propTypes = {
   canEdit: T.bool.isRequired,
-  workspace: T.object.isRequired
+  workspace: T.object.isRequired,
+  openForm: T.func.isRequired
 }
 
 const NotificationTab = connect(

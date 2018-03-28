@@ -23,7 +23,12 @@ const Notification = {
     workspace: T.shape({
       uuid: T.string.isRequired
     }),
-    message: T.shape(Message.propTypes)
+    message: T.shape(Message.propTypes),
+    roles: T.arrayOf(T.shape({
+      id: T.string.isRequired,
+      name: T.string.isRequired,
+      translationKey: T.string.isRequired
+    }))
   }
 }
 

@@ -31,6 +31,11 @@ const NotificationForm = props =>
               choices: constants.TRIGGERING_ACTIONS
             }
           }, {
+            name: 'roles',
+            label: trans('roles'),
+            type: 'workspace_roles',
+            required: false
+          }, {
             name: 'message',
             type: 'message',
             label: trans('message'),
@@ -73,10 +78,10 @@ NotificationForm.propTypes = {
 const Notification = connect(
   state => ({
     canEdit: select.canEdit(state),
+    roles: select.workspaceRolesChoices(state),
     new: formSelect.isNew(formSelect.form(state, 'notifications.current')),
     notification: formSelect.data(formSelect.form(state, 'notifications.current'))
-  }),
-  dispatch => ({})
+  })
 )(NotificationForm)
 
 export {

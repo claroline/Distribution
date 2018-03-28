@@ -3,7 +3,7 @@ import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 
-import {FORM_RESET, FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
+import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 const reducer = combineReducers({
   picker: makeListReducer('messages.picker'),

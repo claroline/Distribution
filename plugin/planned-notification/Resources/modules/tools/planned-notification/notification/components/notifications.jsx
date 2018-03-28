@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {select} from '#/plugin/planned-notification/tools/planned-notification/selectors'
 
@@ -29,8 +28,14 @@ const NotificationsList = props =>
         type: 'string',
         displayed: true
       }, {
+        name: 'roles',
+        label: trans('roles'),
+        type: 'string',
+        displayed: true,
+        renderer: (row) => row.roles.map(r => r.translationKey).join(', ')
+      }, {
         name: 'parameters.interval',
-        label: trans('interval'),
+        label: trans('planned_interval', {}, 'planned_notification'),
         type: 'number',
         displayed: true
       }, {
@@ -65,8 +70,7 @@ const Notifications = connect(
   state => ({
     canEdit: select.canEdit(state),
     workspace: select.workspace(state)
-  }),
-  dispatch => ({})
+  })
 )(NotificationsList)
 
 export {
