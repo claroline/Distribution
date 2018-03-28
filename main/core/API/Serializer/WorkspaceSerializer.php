@@ -4,6 +4,7 @@ namespace Claroline\CoreBundle\API\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
@@ -36,7 +37,8 @@ class WorkspaceSerializer
      * @DI\InjectParams({
      *     "userSerializer"   = @DI\Inject("claroline.serializer.user"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "container"        = @DI\Inject("service_container")
+     *     "container"        = @DI\Inject("service_container"),
+     *     "serializer"       = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param UserSerializer   $userSerializer
@@ -45,11 +47,13 @@ class WorkspaceSerializer
     public function __construct(
         UserSerializer $userSerializer,
         WorkspaceManager $workspaceManager,
-        ContainerInterface $container
+        ContainerInterface $container,
+        SerializerProvider $serializer
     ) {
         $this->userSerializer = $userSerializer;
         $this->workspaceManager = $workspaceManager;
         $this->container = $container;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -185,6 +189,8 @@ class WorkspaceSerializer
             'validation' => $workspace->getRegistrationValidation(),
             'selfRegistration' => $workspace->getSelfRegistration(),
             'selfUnregistration' => $workspace->getSelfUnregistration(),
+            'defaultRole' => $workspace->getDefaultRole() ?
+              $this->serializer->serialize($workspace->getDefaultRole()) : null,
         ];
     }
 
@@ -227,11 +233,11 @@ class WorkspaceSerializer
         $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
 
-        if (isset($data['restrictions']['accessibleFrom'])) {
+        if (isset($data['restrictions']) && isset($data['restrictions']['accessibleFrom'])) {
             $workspace->setStartDate(DateNormalizer::denormalize($data['restrictions']['accessibleFrom']));
         }
 
-        if (isset($data['restrictions']['accessibleUntil'])) {
+        if (isset($data['restrictions']) && isset($data['restrictions']['accessibleUntil'])) {
             $workspace->setEndDate(DateNormalizer::denormalize($data['restrictions']['accessibleUntil']));
         }
 

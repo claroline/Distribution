@@ -36,11 +36,12 @@ const FormField = props => {
       optional: !props.required,
       value: props.value,
       onChange: (value) => {
+        props.updateProp(props.name, value) // todo : maybe disable for calculated value
+        
         if (props.onChange) {
           props.onChange(value)
         }
 
-        props.updateProp(props.name, value) // todo : maybe disable for calculated value
         props.setErrors(validateProp(props, value))
       }
     }))

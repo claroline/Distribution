@@ -180,9 +180,19 @@ class Workspace
 
     /**
      * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\Role"
+     * )
+     * @ORM\JoinColumn(name="default_role_id", onDelete="SET NULL")
+     *
+     * @var User
+     */
+    protected $defaultRole;
+
+    /**
+     * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User"
      * )
-     * @ORM\JoinColumn(name="user_id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="user_id", onDelete="SET NULL", nullable=true)
      *
      * @Serializer\SerializedName("creator")
      *
@@ -864,5 +874,15 @@ class Workspace
     public function getThumbnail()
     {
         return $this->thumbnail;
+    }
+
+    public function setDefaultRole(Role $role)
+    {
+        $this->defaultRole = $role;
+    }
+
+    public function getDefaultRole()
+    {
+        return $this->defaultRole;
     }
 }

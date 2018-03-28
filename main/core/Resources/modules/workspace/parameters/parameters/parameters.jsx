@@ -2,11 +2,13 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import get from 'lodash/get'
+
 import {trans} from '#/main/core/translation'
 
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
-
+import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
@@ -30,7 +32,12 @@ Actions.propTypes = {
   }).isRequired
 }
 
-const Parameters = () => {
+const Parameters = (props) => {
+  const roleEnum = {}
+  props.workspace.roles.forEach(role => {
+    roleEnum[role.id] = trans(role.translationKey)
+  })
+
   return (
     <div>
       <FormContainer
@@ -123,7 +130,19 @@ const Parameters = () => {
                 name: 'registration.selfUnregistration',
                 type: 'boolean',
                 label: trans('public_unregistration')
-              }
+              },
+              {
+                name: 'registration.defaultRole',
+                type: 'enum',
+                options: {
+                  choices: roleEnum
+                },
+                onChange: (roleId) => props.updateProp(
+                  'registration.defaultRole',
+                  props.workspace.roles.find(role => role.id === roleId)
+                ),
+                calculated: get(props.workspace, 'defaultRole.id', null)
+              },
             ]
           },
           {
@@ -188,7 +207,11 @@ const ConnectedParameters = connect(
   state => ({
     workspace: formSelect.data(formSelect.form(state, 'parameters'))
   }),
-  null
+  dispatch => ({
+    updateProp(propName, propValue) {
+      dispatch(formActions.updateProp('parameters', propName, propValue))
+    }
+  })
 )(Parameters)
 
 export {
