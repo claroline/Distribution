@@ -33,9 +33,7 @@ const Workspace = () =>
         displayed: true
       }
     ]}
-    actions={[]}
     card={WorkspaceList.card}
-    selection={[23]}
   />
 
 export {

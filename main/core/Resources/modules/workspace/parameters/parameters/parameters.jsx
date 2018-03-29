@@ -26,12 +26,6 @@ const Actions = () =>
     />
   </PageActions>
 
-Actions.propTypes = {
-  location: T.shape({
-    pathname: T.string
-  }).isRequired
-}
-
 const Parameters = (props) => {
   const roleEnum = {}
   props.workspace.roles.forEach(role => {
@@ -142,8 +136,8 @@ const Parameters = (props) => {
                   'registration.defaultRole',
                   props.workspace.roles.find(role => role.id === roleId)
                 ),
-                calculated: get(props.workspace, 'registration.defaultRole.id', null)
-              },
+                calculated: () => get(props.workspace, 'registration.defaultRole.id', null)
+              }
             ]
           },
           {
@@ -201,7 +195,12 @@ const Parameters = (props) => {
 
 Parameters.propTypes = {
   workspace: T.shape({
-  }).isRequired
+    roles: T.array(T.shape({
+      id: T.string.isRequired,
+      translationKey: T.string.isRequired
+    }))
+  }).isRequired,
+  updateProp: T.func.isRequired
 }
 
 const ConnectedParameters = connect(

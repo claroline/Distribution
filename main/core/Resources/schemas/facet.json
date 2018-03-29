@@ -8,7 +8,7 @@
     },
     "title": {
       "type": "string",
-      "description": "The facet name"
+      "description": "The facet title"
     },
     "position": {
       "type": "integer",

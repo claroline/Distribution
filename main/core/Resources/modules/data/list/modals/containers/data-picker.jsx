@@ -33,7 +33,6 @@ const DataPicker = props =>
       onClick={() => {
         if (0 < props.selected.length) {
           props.fadeModal()
-
           props.handleSelect(props.onlyId ? props.selected : props.selectedFull)
           props.resetSelect()
         }
@@ -49,7 +48,7 @@ DataPicker.propTypes = {
   title: T.string,
   confirmText: T.string,
   fetch: T.object,
-  card: T.func.isRequired,
+  card: T.func, // It must be a react component.
   onlyId: T.bool,
   display: T.object,
 
