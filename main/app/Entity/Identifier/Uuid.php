@@ -6,14 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid as BaseUuid;
 
 /**
- * Adds an uuid to an entity.
+ * Gives an entity the ability to have an UUID.
  */
 trait Uuid
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="uuid", type="string", length=36, unique=true)
+     * @ORM\Column("uuid", type="string", length=36, unique=true)
      */
     private $uuid;
 
