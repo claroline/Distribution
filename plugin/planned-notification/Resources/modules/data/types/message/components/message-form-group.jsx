@@ -32,15 +32,15 @@ const MessageFormGroupComponent = props =>
           value={props.value ? props.value.title : ''}
           readOnly={true}
         />
-          <span className="input-group-btn">
-            <button
-              type="button"
-              className="btn btn-default"
-              onClick={() => props.pickMessage(props.workspace.uuid, props)}
-            >
-              <span className="fa fa-fw fa-envelope"></span>
-            </button>
-          </span>
+        <span className="input-group-btn">
+          <button
+            type="button"
+            className="btn btn-default"
+            onClick={() => props.pickMessage(props.workspace.uuid, props)}
+          >
+            <span className="fa fa-fw fa-envelope"></span>
+          </button>
+        </span>
       </div>
     }
   </FormGroup>

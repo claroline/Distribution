@@ -6,5 +6,6 @@
     "select_message": "Sélectionner un message",
     "select_roles": "Sélectionner des rôles",
     "send_a_mail": "Envoyer un mail",
-    "send_a_message": "Envoyer un message"
+    "send_a_message": "Envoyer un message",
+    "workspace-role-subscribe_user": "Inscription à un espace d'activités"
 }

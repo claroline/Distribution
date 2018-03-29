@@ -25,8 +25,10 @@ const NotificationsList = props =>
       {
         name: 'parameters.action',
         label: trans('action'),
+        alias: 'action',
         type: 'string',
-        displayed: true
+        displayed: true,
+        renderer: (row) => trans(row.parameters.action, {}, 'planned_notification')
       }, {
         name: 'roles',
         label: trans('roles'),
@@ -36,16 +38,19 @@ const NotificationsList = props =>
       }, {
         name: 'parameters.interval',
         label: trans('planned_interval', {}, 'planned_notification'),
+        alias: 'interval',
         type: 'number',
         displayed: true
       }, {
         name: 'parameters.byMail',
         label: trans('email'),
+        alias: 'byMail',
         type: 'boolean',
         displayed: true
       }, {
         name: 'parameters.byMessage',
         label: trans('message'),
+        alias: 'byMessage',
         type: 'boolean',
         displayed: true
       }
