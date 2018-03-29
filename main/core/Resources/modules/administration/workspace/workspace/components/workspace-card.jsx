@@ -2,7 +2,6 @@ import React from 'react'
 
 import {t} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
-import {Thumbnail} from '#/main/core/workspace/components/thumbnail'
 import {asset} from '#/main/core/scaffolding/asset'
 
 const WorkspaceCard = (row) => ({
