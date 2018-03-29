@@ -1,10 +1,9 @@
-import React from 'react'
-
 import {connectPage} from '#/main/core/layout/page/connect'
 
+import {select as evaluationSelect} from '#/main/core/resource/evaluation/selectors'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions as resourceActions} from '#/main/core/resource/actions'
-import {ResourcePage} from '#/main/core/resource/components/page.jsx'
+import {ResourcePage} from '#/main/core/resource/components/page'
 
 /**
  * Connected container for resources.
@@ -19,7 +18,8 @@ import {ResourcePage} from '#/main/core/resource/components/page.jsx'
  */
 const ResourcePageContainer = connectPage(
   (state) => ({
-    resourceNode: resourceSelect.resourceNode(state)
+    resourceNode: resourceSelect.resourceNode(state),
+    userEvaluation: evaluationSelect.evaluation(state)
   }),
   (dispatch) => ({
     updateNode(resourceNode) {
@@ -30,6 +30,9 @@ const ResourcePageContainer = connectPage(
     },
     togglePublication(resourceNode) {
       dispatch(resourceActions.togglePublication(resourceNode))
+    },
+    toggleNotifications(resourceNode) {
+      dispatch(resourceActions.toggleNotifications(resourceNode))
     }
   })
 )(ResourcePage)

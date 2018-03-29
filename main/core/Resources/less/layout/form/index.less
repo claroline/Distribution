@@ -85,7 +85,7 @@ form .global-error {
         border: 1px dashed #ccc; // same color than sub-fields
         margin-bottom: 5px;
         border-radius: @border-radius-base;
-        background: @panel-default-heading-bg;
+        background: #f9f9f9;
     }
 
     .toggleable-set-toggle .fa {
@@ -194,13 +194,6 @@ form .global-error {
 // -
 // Utilities
 // ---
-
-// this shouldn't be used in new React UI.
-// inputs should be removed in JS, not hidden in CSS (accessibility issue).
-// this is used by our react DatePicker
-.input-hide {
-    display: none;
-}
 
 // Utility class to avoid extra space after a form.
 // meant to be used on a `.form-group`
