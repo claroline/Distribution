@@ -153,8 +153,17 @@ const Summary = props =>
       toggleOpen={props.toggleOpen}
     />
 
-    {0 !== props.steps.length &&
+    {(0 !== props.steps.length || props.add || props.parameters) &&
       <ul className="summary">
+        <li className="summary-link-container">
+          <div className="summary-link">
+            <NavLink to={`/${props.prefix}/parameters`}>
+              <span className="fa fa-cog" />
+              {props.opened && trans('parameters')}
+            </NavLink>
+          </div>
+        </li>
+
         {props.steps.map(step =>
           <SummaryLink
             key={step.id}
@@ -164,6 +173,20 @@ const Summary = props =>
             actions={props.actions}
           />
         )}
+
+        <li className="summary-link-container">
+          <div className="summary-link">
+            <button
+              type="button"
+              className="btn btn-link btn-add"
+              onClick={() => props.add(null)}
+            >
+              <span className="fa fa-plus" />
+
+              {props.opened && trans('step_add', {}, 'path')}
+            </button>
+          </div>
+        </li>
       </ul>
     }
   </aside>
@@ -179,7 +202,9 @@ Summary.propTypes = {
   opened: T.bool.isRequired,
   pinned: T.bool.isRequired,
   togglePin: T.func.isRequired,
-  toggleOpen: T.func.isRequired
+  toggleOpen: T.func.isRequired,
+  add: T.func,
+  parameters: T.bool
 }
 
 Summary.defaultProps = {

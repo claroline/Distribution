@@ -50,6 +50,8 @@ const EditorComponent = props =>
           action: props.removeStep
         }
       ]}
+      parameters={true}
+      add={props.addStep}
     />
 
     <Routes
