@@ -1,7 +1,7 @@
 import {trans} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 
-import {UserCard} from '#/main/core/administration/user/user/components/user-card.jsx'
+import {UserCard} from '#/main/core/user/data/components/user-card'
 
 function getRoles(user, workspace) {
   return user.roles.filter(role => role.workspace && role.workspace.id === workspace.uuid).map(role => trans(role.translationKey)).join(', ')
@@ -31,19 +31,23 @@ function getWorkspaceGroups(workspace) {
   return groups
 }
 
-function getUserList(workspace)
-{
+function getUserList(workspace) {
   return {
     open: {
-      action: (row) => generateUrl('claro_user_profile', {publicUrl: row.meta.publicUrl})
+      action: (row) => url(['claro_user_profile', {publicUrl: row.meta.publicUrl}])
     },
     definition: [
       {
+        name: 'username',
+        type: 'username',
+        label: trans('username'),
+        displayed: true,
+        primary: true
+      }, {
         name: 'lastName',
         type: 'string',
         label: trans('last_name'),
-        displayed: true,
-        primary: true
+        displayed: true
       }, {
         name: 'firstName',
         type: 'string',

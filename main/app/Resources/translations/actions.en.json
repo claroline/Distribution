@@ -1,0 +1,15 @@
+{
+  "add": "Add",
+  "copy": "Copy",
+  "enable": "Enable",
+  "delete": "Delete",
+  "disable": "Disable",
+  "paste": "Paste",
+  "publish": "Publish",
+  "register": "Register",
+  "replace": "Replace",
+  "select": "Select",
+  "unpublish": "Unpublish",
+  "unregister": "Unregister",
+  "deselect": "Deselect"
+}

@@ -7,10 +7,11 @@ const Email = props =>
   <input
     id={props.id}
     type="email"
+    autoComplete="email"
     className="form-control"
     value={props.value || ''}
     disabled={props.disabled}
-    onChange={(e) => props.onChange(e.target.value)}
+    onChange={(e) => props.onChange(e.target.value.trim())}
   />
 
 implementPropTypes(Email, FormFieldTypes, {

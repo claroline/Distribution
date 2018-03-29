@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import invariant from 'invariant'
+import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 
-import {t, trans, transChoice} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {
@@ -30,45 +32,91 @@ class DataList extends Component {
   constructor(props) {
     super(props)
 
+    // processes list display configuration
+    const definition = createListDefinition(this.props.definition)
+    const currentDisplay = this.computeDisplay(definition, this.props.display, !!this.props.card)
+
     // adds missing default in the definition
-    this.definition = createListDefinition(this.props.definition)
+    this.state = Object.assign({}, currentDisplay, {
+      definition: definition
+    })
+
     // fills missing translations with default ones
     this.translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
+  }
 
-    // enables selected display mode
-    this.setDisplayMode(this.props.display ? this.props.display.current : listConst.DEFAULT_DISPLAY_MODE, true)
+  componentWillReceiveProps(nextProps) {
+    if (!isEqual(this.props.definition, nextProps.definition)
+      || isEqual(this.props.display, nextProps.display)) {
+      const definition = createListDefinition(nextProps.definition)
+      const currentDisplay = this.computeDisplay(
+        definition,
+        isEqual(this.props.display, nextProps.display) ? this.state.display : nextProps,
+        !!nextProps.card
+      )
 
-    this.setDisplayMode = this.setDisplayMode.bind(this)
-    this.toggleColumn   = this.toggleColumn.bind(this)
+      this.setState(Object.assign({}, currentDisplay, {
+        definition: createListDefinition(nextProps.definition)
+      }))
+    }
   }
 
   /**
-   * Changes the list display.
+   * Computes the list display info.
    *
-   * @param {string}  displayMode - the new display mode
-   * @param {boolean} init        - a flag to know how to update the state
+   * @param {array}   definition - the list definition
+   * @param {object}  display    - the new display mode
+   * @param {boolean} hasCard
    */
-  setDisplayMode(displayMode, init = false) {
+  computeDisplay(definition, display = {}, hasCard = false) {
+    let currentDisplay    = display.current ? display.current : listConst.DEFAULT_DISPLAY_MODE
+    let availableDisplays = display.available ? display.available : Object.keys(listConst.DISPLAY_MODES)
+
+    if (!hasCard) {
+      // disables grid based displays if no card provided
+      availableDisplays = availableDisplays.filter(displayName => !listConst.DISPLAY_MODES[displayName].options.useCard)
+
+      // throws error if there is no available displays after filtering
+      invariant(
+        0 < availableDisplays.length,
+        'Data list has no available displays. Either enable table displays or pass a DataCard component to the list.'
+      )
+
+      if (listConst.DISPLAY_MODES[currentDisplay].options.useCard) {
+        // current display is a grid, change it
+        currentDisplay = listConst.DISPLAY_MODES[listConst.DEFAULT_DISPLAY_MODE].options.useCard ?
+          listConst.DEFAULT_DISPLAY_MODE : // gets the default mode if it's not card based
+          // get the first non card based available display
+          availableDisplays[0]
+      }
+    }
+
     let currentColumns
-    if (listConst.DISPLAY_MODES[displayMode].filterColumns) {
+    if (listConst.DISPLAY_MODES[currentDisplay].filterColumns) {
       // gets only the displayed columns
-      currentColumns = getDisplayedProps(this.definition)
+      currentColumns = getDisplayedProps(definition)
     } else {
       // gets all displayable columns
-      currentColumns = getDisplayableProps(this.definition)
+      currentColumns = getDisplayableProps(definition)
     }
 
-    const newState = {
-      currentColumns: currentColumns.map(prop => prop.name),
-      currentDisplay: displayMode
+    return {
+      display: {
+        current: currentDisplay,
+        available: availableDisplays
+      },
+      currentColumns: currentColumns.map(prop => prop.name)
     }
+  }
 
-    if (init) {
-      // call to `setState` is not authorized during component mounting
-      this.state = newState
-    } else {
-      this.setState(newState)
-    }
+  toggleDisplay(displayMode) {
+    this.setState(
+      this.computeDisplay(
+        this.state.definition,
+        { current: displayMode, available: this.state.display.available },
+        !!this.props.card
+      )
+    )
   }
 
   /**
@@ -78,7 +126,7 @@ class DataList extends Component {
    */
   toggleColumn(column) {
     // Display/Hide columns is only available for display modes that support it (aka tables)
-    if (listConst.DISPLAY_MODES[this.state.currentDisplay].filterColumns) {
+    if (listConst.DISPLAY_MODES[this.state.display.current].options.filterColumns) {
       const newColumns = this.state.currentColumns.slice(0)
 
       // checks if the column is displayed
@@ -99,22 +147,20 @@ class DataList extends Component {
   render() {
     // enables and configures list tools
     let displayTool
-    if (1 < this.props.display.available.length) {
-      displayTool = {
-        current: this.state.currentDisplay,
-        available: this.props.display.available,
-        onChange: this.setDisplayMode
-      }
+    if (1 < this.state.display.available.length) {
+      displayTool = Object.assign({}, this.state.display, {
+        onChange: this.toggleDisplay.bind(this)
+      })
     }
 
     let columnsTool
-    if (this.props.filterColumns && listConst.DISPLAY_MODES[this.state.currentDisplay].filterColumns) {
+    if (this.props.filterColumns && listConst.DISPLAY_MODES[this.state.display.current].options.filterColumns) {
       // Tools is enabled and the current display supports columns filtering
-      const displayableColumns = getDisplayableProps(this.definition)
+      const displayableColumns = getDisplayableProps(this.state.definition)
       if (1 < displayableColumns.length) {
         columnsTool = {
           current: this.state.currentColumns,
-          available: getDisplayableProps(this.definition),
+          available: getDisplayableProps(this.state.definition),
           toggle: this.toggleColumn.bind(this)
         }
       }
@@ -123,7 +169,7 @@ class DataList extends Component {
     let filtersTool
     if (this.props.filters) {
       filtersTool = Object.assign({}, this.props.filters, {
-        available: getFilterableProps(this.definition)
+        available: getFilterableProps(this.state.definition)
       })
     }
 
@@ -132,19 +178,16 @@ class DataList extends Component {
     if (this.props.deleteAction) {
       actions.push({
         icon: 'fa fa-fw fa-trash-o',
-        label: t('delete'),
+        label: trans('delete'),
         dangerous: true,
         displayed: this.props.deleteAction.displayed,
         disabled: this.props.deleteAction.disabled,
         action: typeof this.props.deleteAction.action === 'function' ?
-          (rows) => {
-            /*console.log(rows)*/
-            return this.props.deleteAction.action(
-              rows,
-              trans(this.translations.keys.deleteConfirmTitle, {}, this.translations.domain),
-              transChoice(this.translations.keys.deleteConfirmQuestion, rows.length, {count: rows.length}, this.translations.domain)
-            )
-          } :
+          (rows) => this.props.deleteAction.action(
+            rows,
+            trans(this.translations.keys.deleteConfirmTitle, {}, this.translations.domain),
+            transChoice(this.translations.keys.deleteConfirmQuestion, rows.length, {count: rows.length}, this.translations.domain)
+          ) :
           this.props.deleteAction.action
       })
     }
@@ -159,17 +202,19 @@ class DataList extends Component {
         />
 
         {0 < this.props.totalResults &&
-          React.createElement(listConst.DISPLAY_MODES[this.state.currentDisplay].component, {
-            size:          listConst.DISPLAY_MODES[this.state.currentDisplay].size,
-            data:          this.props.data,
-            count:         this.props.totalResults,
-            columns:       this.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name)),
-            sorting:       this.props.sorting,
-            selection:     this.props.selection,
-            primaryAction: this.props.primaryAction,
-            actions:       actions,
-            card:          this.props.card
-          })
+          React.createElement(listConst.DISPLAY_MODES[this.state.display.current].component, Object.assign({},
+            listConst.DISPLAY_MODES[this.state.display.current].options,
+            {
+              data:          this.props.data,
+              count:         this.props.totalResults,
+              columns:       this.state.definition.filter(prop => -1 !== this.state.currentColumns.indexOf(prop.name)),
+              sorting:       this.props.sorting,
+              selection:     this.props.selection,
+              primaryAction: this.props.primaryAction,
+              actions:       actions,
+              card:          this.props.card
+            }
+          ))
         }
 
         {0 < this.props.totalResults &&
@@ -293,13 +338,12 @@ DataList.propTypes = {
   ),
 
   /**
-   * A function to normalize data for card display.
-   * - the data row is passed as argument
-   * - the func MUST return an object respecting `DataCard.propTypes`.
-   *
+   * The card representation for the current data.
    * It's required to enable cards based display modes.
+   *
+   * It must be a react component.
    */
-  card: T.func.isRequired,
+  card: T.func,
 
   /**
    * Override default list translations.
