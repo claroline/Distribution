@@ -89,14 +89,14 @@ class GridCell extends Component {
             />
           </div>
 
-          <div className="cell-actions" ref="cellHeader">
+          <div className='cell-actions' ref={element => this.refCellHeader = element}>
             {this.props.solution &&
               <Overlay
-                container={this.refs.cellHeader}
+                container={this.refCellHeader}
                 placement="bottom"
                 show={this.props.solutionOpened}
                 rootClose={isEmpty(this.props._errors)}
-                target={this.refs.popoverToggle}
+                target={this.refPopover}
                 onHide={this.props.closeSolution}
               >
                 <GridCellPopover
@@ -117,7 +117,7 @@ class GridCell extends Component {
             }
 
             <TooltipButton
-              ref="popoverToggle"
+              ref={element => this.refPopover = element}
               id={`cell-${this.props.cell.id}-solution`}
               title={undefined !== this.props.solution ? tex('grid_edit_solution') : tex('grid_create_solution')}
               className="btn-link-default"

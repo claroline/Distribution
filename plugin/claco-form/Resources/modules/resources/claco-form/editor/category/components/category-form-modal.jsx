@@ -145,7 +145,7 @@ export class CategoryFormModal  extends Component {
           </div>
           <hr/>
           <div>
-              <u><b>{t('notifications')} :</b></u>
+            <u><b>{t('notifications')} :</b></u>
           </div>
           <br/>
           <CheckGroup

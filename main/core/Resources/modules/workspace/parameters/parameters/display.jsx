@@ -8,7 +8,7 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
-import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -55,17 +55,9 @@ const Actions = () =>
       formName="parameters"
       target={(workspace) => ['apiv2_workspace_update', {id: workspace.id}]}
       opened={true}
-      cancel={{
-
-      }}
+      cancel={{}}
     />
   </PageActions>
-
-Actions.propTypes = {
-  location: T.shape({
-    pathname: T.string
-  }).isRequired
-}
 
 const Tab = (props) => {
   return (
@@ -125,7 +117,12 @@ const Tab = (props) => {
 
 Tab.propTypes = {
   workspace: T.shape({
-  }).isRequired
+    options: T.shape({
+      opened_resource: T.bool.isRequired
+    })
+  }).isRequired,
+  pickResource: T.func.isRequired,
+  removeResource: T.func.isRequired
 }
 
 const ConnectedTab = connect(
@@ -133,7 +130,7 @@ const ConnectedTab = connect(
     workspace: formSelect.data(formSelect.form(state, 'parameters'))
   }),
   dispatch => ({
-    pickResource(resourceTypes) {
+    pickResource() {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-folder-open',
         title: trans('resource_to_open'),

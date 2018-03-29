@@ -1,4 +1,4 @@
-import {combineReducers, makePageReducer} from '#/main/core/layout/page/reducer'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
 import {reducer as workspaceReducer} from '#/main/core/workspace/parameters/parameters/reducer'
 
