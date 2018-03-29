@@ -5,7 +5,7 @@ import {url} from '#/main/core/api/router'
 
 import {constants} from '#/main/core/widget/constants'
 import {App as ListApp} from '#/main/core/widget/types/list'
-import {ResourceCard} from '#/main/core/resource/components/card'
+import {ResourceCardMinimal} from '#/main/core/resource/data/components/resource-card'
 
 import {actions as listWidgetActions} from '#/main/core/widget/types/list/actions'
 
@@ -56,7 +56,7 @@ const App = (context, parameters) => ListApp(context, merge({}, parameters, {
       filterable: false
     }
   ],
-  card: ResourceCard
+  card: ResourceCardMinimal
 }))
 
 export {

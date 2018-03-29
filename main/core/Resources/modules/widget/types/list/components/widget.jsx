@@ -37,7 +37,7 @@ ListWidgetComponent.propTypes = {
   definition: T.arrayOf(
     T.shape(DataListPropertyTypes.propTypes)
   ).isRequired,
-  card: T.func.isRequired,
+  card: T.func,
   display: T.string,
   availableDisplays: T.array
 }

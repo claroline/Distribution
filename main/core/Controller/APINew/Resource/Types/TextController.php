@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\APINew\Resource;
+namespace Claroline\CoreBundle\Controller\APINew\Resource\Types;
 
 use Claroline\CoreBundle\Entity\Resource\Text;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;

@@ -73,6 +73,7 @@ function bootstrap(containerSelector, rootComponent, reducers = null, transformD
     ReactDOM.render(appRoot, container)
   } catch (error) {
     // rethrow errors (in some case they are swallowed)
+    console.log(error)
     throw error
   }
 }
