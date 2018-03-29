@@ -34,6 +34,7 @@ const NotificationForm = props =>
             name: 'roles',
             label: trans('roles'),
             type: 'workspace_roles',
+            disabled: !props.canEdit,
             required: false
           }, {
             name: 'message',

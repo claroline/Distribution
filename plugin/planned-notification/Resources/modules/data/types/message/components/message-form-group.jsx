@@ -18,23 +18,31 @@ const MessageFormGroupComponent = props =>
     error={props.error && typeof props.error === 'string' ? props.error : undefined}
     className="message-form-group"
   >
-    <div className="input-group">
+    {props.disabled ?
       <input
         type="text"
         className="form-control"
         value={props.value ? props.value.title : ''}
         readOnly={true}
-      />
-      <span className="input-group-btn">
-        <button
-          type="button"
-          className="btn btn-default"
-          onClick={() => props.pickMessage(props.workspace.uuid, props)}
-        >
-          <span className="fa fa-fw fa-envelope"></span>
-        </button>
-      </span>
-    </div>
+      /> :
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          value={props.value ? props.value.title : ''}
+          readOnly={true}
+        />
+          <span className="input-group-btn">
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={() => props.pickMessage(props.workspace.uuid, props)}
+            >
+              <span className="fa fa-fw fa-envelope"></span>
+            </button>
+          </span>
+      </div>
+    }
   </FormGroup>
 
 implementPropTypes(MessageFormGroupComponent, FormGroupWithFieldTypes, {
@@ -42,6 +50,7 @@ implementPropTypes(MessageFormGroupComponent, FormGroupWithFieldTypes, {
   workspace: T.shape({
     uuid: T.string.isRequired
   }).isRequired,
+  disabled: T.bool.isRequired,
   pickMessage: T.func.isRequired
 }, {})
 

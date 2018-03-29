@@ -15,6 +15,7 @@ import {Role as RoleTypes} from '#/plugin/planned-notification/data/types/roles/
 const Role = props =>
   <span className="role-item">
     {trans(props.role.translationKey)}
+    {props.canEdit &&
       <TooltipButton
         id={`role-${props.role.id}-delete`}
         className="btn-link-danger"
@@ -23,11 +24,18 @@ const Role = props =>
       >
         <span className="fa fa-fw fa-trash-o" />
       </TooltipButton>
+    }
   </span>
 
 Role.propTypes = {
   role: T.shape(RoleTypes.propTypes).isRequired,
+  canEdit: T.bool.isRequired,
   onDelete: T.func.isRequired
+}
+
+Role.defaultProps = {
+  canEdit: false,
+  onDelete: () => {}
 }
 
 const RolesFormGroupComponent = props =>
@@ -42,6 +50,7 @@ const RolesFormGroupComponent = props =>
           <Role
             key={`role-${index}`}
             role={role}
+            canEdit={!props.disabled}
             onDelete={() => {
               const newRoles = props.value.slice()
               newRoles.splice(index, 1)
@@ -55,15 +64,16 @@ const RolesFormGroupComponent = props =>
         {trans('no_role')}
       </div>
     }
-
-    <button
-      className="btn btn-block btn-default"
-      type="button"
-      onClick={() => props.pickRoles(props.workspace.uuid, props)}
-    >
-      <span className="fa fa-fw fa-plus icon-with-text-right" />
-      {trans('add_roles')}
-    </button>
+    {!props.disabled &&
+      <button
+        className="btn btn-block btn-default"
+        type="button"
+        onClick={() => props.pickRoles(props.workspace.uuid, props)}
+      >
+        <span className="fa fa-fw fa-plus icon-with-text-right" />
+        {trans('add_roles')}
+      </button>
+    }
   </FormGroup>
 
 implementPropTypes(RolesFormGroupComponent, FormGroupWithFieldTypes, {
@@ -73,6 +83,7 @@ implementPropTypes(RolesFormGroupComponent, FormGroupWithFieldTypes, {
   workspace: T.shape({
     uuid: T.string.isRequired
   }).isRequired,
+  disabled: T.bool.isRequired,
   pickRoles: T.func.isRequired
 }, {
   value: []
