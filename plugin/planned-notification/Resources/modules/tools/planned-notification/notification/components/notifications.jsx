@@ -50,13 +50,6 @@ const NotificationsList = props =>
         displayed: true
       }
     ]}
-    card={(row) => ({
-      icon: 'fa fa-bell',
-      title: row.parameters.action,
-      subtitle: '',
-      footer:
-        <span/>
-    })}
   />
 
 NotificationsList.propTypes = {

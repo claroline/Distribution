@@ -43,13 +43,6 @@ const MessagesList = props =>
         }
       }
     ]}
-    card={(row) => ({
-      icon: 'fa fa-envelope',
-      title: row.title,
-      subtitle: '',
-      footer:
-        <span/>
-    })}
   />
 
 MessagesList.propTypes = {

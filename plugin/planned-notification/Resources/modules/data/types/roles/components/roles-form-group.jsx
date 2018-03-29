@@ -110,13 +110,6 @@ const RolesFormGroup = connect(
             primary: true
           }
         ],
-        card: (row) => ({
-          icon: 'fa fa-id-badge',
-          title: row.translationKey,
-          subtitle: '',
-          footer:
-            <span/>
-        }),
         fetch: {
           url: ['apiv2_plannednotification_workspace_roles_list', {workspace: worskpaceUuid}],
           autoload: true

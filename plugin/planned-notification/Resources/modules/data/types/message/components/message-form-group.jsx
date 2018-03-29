@@ -90,13 +90,6 @@ const MessageFormGroup = connect(
             }
           }
         ],
-        card: (row) => ({
-          icon: 'fa fa-envelope',
-          title: row.title,
-          subtitle: '',
-          footer:
-            <span/>
-        }),
         fetch: {
           url: ['apiv2_plannednotificationmessage_workspace_list', {workspace: worskpaceUuid}],
           autoload: true
