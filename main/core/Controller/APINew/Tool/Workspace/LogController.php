@@ -155,6 +155,54 @@ class LogController
     }
 
     /**
+     * @param Request   $request
+     * @param Workspace $workspace
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/users", name="apiv2_workspace_tool_logs_list_users")
+     * @Method("GET")
+     *
+     * @ParamConverter("workspace", class="Claroline\CoreBundle\Entity\Workspace\Workspace", options={"mapping": {"workspaceId": "id"}})
+     */
+    public function userActionsListAction(Request $request, Workspace $workspace)
+    {
+        $this->checkLogToolAcces($workspace);
+        $userList = $this->logManager->getUserActionsList($this->getWorkspaceFilteredQuery($request, $workspace));
+
+        return new JsonResponse($userList);
+    }
+
+    /**
+     * @param Request   $request
+     * @param Workspace $workspace
+     *
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @Route("/users/csv", name="apiv2_workspace_tool_logs_list_users_csv")
+     * @Method("GET")
+     *
+     * @ParamConverter(
+     *     "workspace",
+     *     class="Claroline\CoreBundle\Entity\Workspace\Workspace",
+     *     options={"mapping": {"workspaceId": "id"}}
+     * )
+     */
+    public function userActionsListCsvAction(Request $request, Workspace $workspace)
+    {
+        $this->checkLogToolAcces($workspace);
+
+        // Filter data, but return all of them
+        $query = $this->getWorkspaceFilteredQuery($request, $workspace);
+        $dateStr = date('YmdHis');
+
+        return new StreamedResponse(function () use ($query) {
+            $this->logManager->exportUserActionToCsv($query);
+        }, 200, [
+            'Content-Type' => 'application/force-download',
+            'Content-Disposition' => 'attachment; filename="user_actions_'.$dateStr.'.csv"',
+        ]);
+    }
+
+    /**
      * @param Log $log
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse

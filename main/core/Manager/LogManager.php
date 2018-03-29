@@ -93,34 +93,52 @@ class LogManager
     }
 
     // New api
+
+    /**
+     * Get log by id.
+     *
+     * @param $id
+     *
+     * @return null|object
+     */
     public function getLog($id)
     {
         return $this->logRepository->findOneBy(['id' => $id]);
     }
 
+    /**
+     * Get chart data given a list/array of filters.
+     *
+     * @param array $finderParams filters for query
+     *
+     * @return array formatted data to use with chart functions
+     */
     public function getChartData(array $finderParams = [])
     {
-        $data = $this->logRepository->fetchChartData($finderParams);
-        $chartData = [];
-        $prevDate = null;
-        $idx = 0;
-        foreach ($data as $value) {
-            // Fill in with zeros from previous date till this date
-            while ($prevDate !== null && $prevDate < $value['date']) {
-                $chartData["c${idx}"] = ['xData' => $prevDate->format('Y-m-d\TH:i:s'), 'yData' => 0];
-                $prevDate->add(new \DateInterval('P1D'));
-                ++$idx;
-            }
-            $chartData["c${idx}"] = ['xData' => $value['date']->format('Y-m-d\TH:i:s'), 'yData' => floatval($value['total'])];
-            $prevDate = $value['date']->add(new \DateInterval('P1D'));
-            ++$idx;
-        }
+        // get filters
+        $filters = FinderProvider::parseQueryParams($finderParams)['allFilters'];
+        $data = $this->logRepository->fetchChartData($filters);
+        $minDate = isset($filters['dateLog']) ? $filters['dateLog'] : null;
+        $maxDate = isset($filters['toDate']) ? $filters['toDate'] : null;
 
-        return $chartData;
+        return $this->formatDataForChart($data, $minDate, $maxDate);
     }
 
+    /**
+     * Given a query params, it exports all logs to a CSV file.
+     *
+     * @param $query
+     *
+     * @return bool|resource
+     */
     public function exportLogsToCsv($query)
     {
+        // Initialize variables
+        $query['limit'] = self::CSV_LOG_BATCH;
+        $query['page'] = 0;
+        $count = 0;
+        $total = 0;
+
         // Prepare CSV file
         $handle = fopen('php://output', 'w+');
         fputcsv($handle, [
@@ -128,12 +146,8 @@ class LogManager
             $this->translator->trans('action', [], 'platform'),
             $this->translator->trans('user', [], 'platform'),
             $this->translator->trans('description', [], 'platform'),
-        ]);
-        // Initialize variables
-        $query['limit'] = self::CSV_LOG_BATCH;
-        $query['page'] = 0;
-        $count = 0;
-        $total = 0;
+        ], ';', '"');
+
         // Get batched logs
         while ($count === 0 || $count < $total) {
             $logs = $logs = $this->finder->search('Claroline\CoreBundle\Entity\Log\Log', $query, []);
@@ -147,10 +161,10 @@ class LogManager
                     $log['action'],
                     $log['doer'] ? $log['doer']['name'] : '',
                     $this->ut->html2Csv($log['description'], true),
-                ]);
+                ], ';', '"');
             }
 
-            $this->om->clear('UJM\ExoBundle\Entity\Attempt\Paper');
+            $this->om->clear('Claroline\CoreBundle\Entity\Log\Log');
         }
 
         fclose($handle);
@@ -158,7 +172,143 @@ class LogManager
         return $handle;
     }
 
-    // Old Methods
+    /**
+     * Returns users' actions with their corresponding chart data.
+     *
+     * @param array $finderParams
+     *
+     * @return array
+     */
+    public function getUserActionsList(array $finderParams = [])
+    {
+        $queryParams = FinderProvider::parseQueryParams($finderParams);
+        $page = $queryParams['page'];
+        $limit = $queryParams['limit'];
+        $allFilters = $queryParams['allFilters'];
+        $filters = $queryParams['filters'];
+        $sortBy = $queryParams['sortBy'];
+        $minDate = isset($filters['dateLog']) ? (new \DateTime($filters['dateLog']))->setTime(0, 0, 0, 0) : null;
+        $maxDate = isset($filters['dateTo']) ? (new \DateTime($filters['dateTo']))->setTime(0, 0, 0, 0) : null;
+
+        $totalUsers = intval($this->logRepository->fetchUserActionsList($allFilters, true));
+        $userList = $this->logRepository->fetchUserActionsList($allFilters, false, $page, $limit, $sortBy);
+
+        $userData = [];
+        foreach ($userList as $userAction) {
+            $id = $userAction['doerId'];
+            $firstName = $userAction['doerFirstName'];
+            $lastName = $userAction['doerLastName'];
+            $date = $userAction['date'];
+            $total = $userAction['total'];
+            if (!isset($userData['u'.$id])) {
+                $userData['u'.$id] = [
+                    'id' => $id,
+                    'doer' => [
+                        'id' => $id,
+                        'name' => $lastName.' '.$firstName,
+                    ],
+                    'chartData' => [],
+                    'actions' => 0,
+                ];
+            }
+            $userData['u'.$id]['chartData'][] = ['date' => $date, 'total' => floatval($total)];
+            $userData['u'.$id]['actions'] += floatval($total);
+            $minDate = $minDate === null || $minDate > $date ? clone $date : $minDate;
+            $maxDate = $maxDate === null || $maxDate < $date ? clone $date : $maxDate;
+        }
+
+        $data = [];
+        foreach ($userData as $line) {
+            $line['chartData'] = $this->formatDataForChart($line['chartData'], $minDate, $maxDate);
+            $data[] = $line;
+        }
+        usort($data, function ($a, $b) {
+            return $a['actions'] - $b['actions'];
+        });
+
+        return FinderProvider::formatPaginatedData($data, $totalUsers, $page, $limit, $filters, $sortBy);
+    }
+
+    /**
+     * Exports users' actions for a given query.
+     *
+     * @param array $finderParams
+     *
+     * @return bool|resource
+     */
+    public function exportUserActionToCsv(array $finderParams = [])
+    {
+        // Initialize variables
+        $queryParams = FinderProvider::parseQueryParams($finderParams);
+        $allFilters = $queryParams['allFilters'];
+        $sortBy = $queryParams['sortBy'];
+        $limit = self::CSV_LOG_BATCH;
+        $page = 0;
+        $count = 0;
+        $total = intval($this->logRepository->fetchUserActionsList($allFilters, true));
+
+        // Prepare CSV file
+        $handle = fopen('php://output', 'w+');
+        fputcsv($handle, [
+            $this->translator->trans('user', [], 'platform'),
+            $this->translator->trans('actions', [], 'platform'),
+        ], ';', '"');
+
+        // Get batched logs
+        while ($count === 0 || $count < $total) {
+            $logs = $logs = $this->logRepository->fetchUsersByActionsList($allFilters, false, $page, $limit, $sortBy);
+            $count += self::CSV_LOG_BATCH;
+            ++$page;
+
+            foreach ($logs as $log) {
+                fputcsv($handle, [
+                    $log['doerLastName'].' '.$log['doerFirstName'],
+                    $log['actions'],
+                ], ';', '"');
+            }
+        }
+
+        fclose($handle);
+
+        return $handle;
+    }
+
+    /**
+     * Formats raw data to the appropriate charts format.
+     *
+     * @param array          $data
+     * @param \DateTime|null $minDate
+     * @param \DateTime|null $maxDate
+     *
+     * @return array
+     */
+    private function formatDataForChart(array $data, \DateTime $minDate = null, \DateTime $maxDate = null)
+    {
+        $prevDate = $minDate;
+        $chartData = [];
+        $idx = 0;
+        foreach ($data as $value) {
+            // Fill in with zeros from previous date till this date
+            while ($prevDate !== null && $prevDate < $value['date']) {
+                $chartData["c${idx}"] = ['xData' => $prevDate->format('Y-m-d\TH:i:s'), 'yData' => 0];
+                $prevDate->add(new \DateInterval('P1D'));
+                ++$idx;
+            }
+            $chartData["c${idx}"] = ['xData' => $value['date']->format('Y-m-d\TH:i:s'), 'yData' => floatval($value['total'])];
+            $prevDate = $value['date']->add(new \DateInterval('P1D'));
+            ++$idx;
+        }
+        // Fill in with zeros till maxDate
+        while ($prevDate !== null && $maxDate !== null && $maxDate >= $prevDate) {
+            $chartData["c${idx}"] = ['xData' => $prevDate->format('Y-m-d\TH:i:s'), 'yData' => 0];
+            $prevDate->add(new \DateInterval('P1D'));
+            ++$idx;
+        }
+
+        return $chartData;
+    }
+
+    // TODO: Clean old methods after refactoring. Old methods from here and below
 
     public function getDesktopWidgetList(WidgetInstance $instance)
     {

@@ -40,23 +40,19 @@ class LogRepository extends EntityRepository
     /**
      * Fetches data for line chart.
      *
-     * @param array $finderParams
+     * @param array $filters
      * @param bool  $unique
      *
      * @return array
      */
-    public function fetchChartData(array $finderParams = [], $unique = false)
+    public function fetchChartData(array $filters = [], $unique = false)
     {
-        // get filters
-        $filters = isset($finderParams['filters']) ? $finderParams['filters'] : [];
-        $hiddenFilters = isset($finderParams['hiddenFilters']) ? $finderParams['hiddenFilters'] : [];
-        $filters = array_merge_recursive($filters, $hiddenFilters);
         $qb = $this->createQueryBuilder('obj');
 
         if ($unique === true) {
-            $qb->select('obj.shortDateLog as date, count(DISTINCT obj.doer) as total');
+            $qb->select('obj.shortDateLog as date, COUNT(DISTINCT obj.doer) as total');
         } else {
-            $qb->select('obj.shortDateLog as date, count(obj.id) as total');
+            $qb->select('obj.shortDateLog as date, COUNT(obj.id) as total');
         }
         $qb
             ->orderBy('date', 'ASC')
@@ -66,6 +62,79 @@ class LogRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function fetchUserActionsList(
+        array $filters = [],
+        $count = false,
+        $page = 0,
+        $limit = -1,
+        $sortBy = null
+    ) {
+        $qb = $this->createQueryBuilder('obj');
+        $this->finder->configureQueryBuilder($qb, $filters, $limit < 0 ? $sortBy : []);
+        if ($count) {
+            $qb->select('COUNT(DISTINCT obj.doer)');
+        } else {
+            $qb->select('
+                doer.id as doerId, 
+                doer.firstName as doerFirstName, 
+                doer.lastName as doerLastName, 
+                obj.shortDateLog as date, 
+                CONCAT(CONCAT(IDENTITY(obj.doer), \'#\'), obj.shortDateLog) as criteria, 
+                COUNT(obj.id) as total
+            ')
+                ->groupBy('criteria');
+            if (!in_array('doer', $qb->getAllAliases())) {
+                $qb->join('obj.doer', 'doer');
+            }
+            if ($limit > 0) {
+                $ids = $this->fetchUsersByActionsList($filters, true, $page, $limit, $sortBy);
+                $qb->andWhere('obj.doer IN (:ids)')
+                    ->setParameter('ids', $ids);
+            }
+            if (empty($sortBy) || empty($sortBy['property']) || $sortBy['property'] !== 'doer.name') {
+                $qb->addOrderBy('obj.doer');
+            }
+            $qb->addOrderBy('date');
+        }
+
+        return $count ? $qb->getQuery()->getSingleScalarResult() : $qb->getQuery()->getResult();
+    }
+
+    public function fetchUsersByActionsList(
+        array $filters = [],
+        $idsOnly = false,
+        $page = 0,
+        $limit = -1,
+        $sortBy = null
+    ) {
+        $qb = $this->createQueryBuilder('obj');
+        if ($idsOnly) {
+            $qb->select('IDENTITY(obj.doer)');
+        } else {
+            $qb->select('
+                doer.id AS doerId, 
+                doer.firstName as doerFirstName, 
+                doer.lastName as doerLastName, 
+                COUNT(obj.id) as actions
+            ');
+        }
+
+        if ($limit > 0) {
+            $qb->setFirstResult($page * $limit);
+            $qb->setMaxResults($limit);
+        }
+
+        $this->finder->configureQueryBuilder($qb, $filters, $sortBy);
+
+        if (!$idsOnly && !in_array('doer', $qb->getAllAliases())) {
+            $qb->join('obj.doer', 'doer');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    // TODO: Clean old methods after refactoring
 
     /**
      * @param $configs

@@ -46,13 +46,25 @@ class LogFinder implements FinderInterface
                         $qb->expr()->like('UPPER(doer.firstName)', ':doer'),
                         $qb->expr()->like('UPPER(doer.lastName)', ':doer'),
                         $qb->expr()->like('UPPER(doer.username)', ':doer'),
-                        $qb->expr()->like('UPPER(doer.email)', ':doer')
+                        $qb->expr()->like('UPPER(doer.email)', ':doer'),
+                        $qb->expr()->like(
+                            "CONCAT(CONCAT(UPPER(doer.firstName), ' '), UPPER(doer.lastName))",
+                            ':doer'
+                        ),
+                        $qb->expr()->like(
+                            "CONCAT(CONCAT(UPPER(doer.lastName), ' '), UPPER(doer.firstName))",
+                            ':doer'
+                        )
                     ));
                     $qb->setParameter('doer', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'dateLog':
-                    $qb->andWhere('obj.dateLog > :date')
+                    $qb->andWhere('obj.dateLog >= :date')
                         ->setParameter('date', $filterValue);
+                    break;
+                case 'dateTo':
+                    $qb->andWhere('obj.dateLog <= :dateTo')
+                        ->setParameter('dateTo', $filterValue);
                     break;
                 case 'action':
                     $this->filterAction($filterValue, $qb);
@@ -70,12 +82,19 @@ class LogFinder implements FinderInterface
         }
 
         if (!empty($sortBy) && $sortBy['property'] === 'doer.name') {
-            if (!$userJoin) {
-                $qb->join('obj.doer', 'doer');
-            }
             $direction = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
-            $qb->addOrderBy('doer.lastName', $direction);
-            $qb->addOrderBy('doer.firstName', $direction);
+            switch ($sortBy['property']) {
+                case 'doer.name':
+                    if (!$userJoin) {
+                        $qb->join('obj.doer', 'doer');
+                    }
+                    $qb->addOrderBy('doer.lastName', $direction);
+                    $qb->addOrderBy('doer.firstName', $direction);
+                    $qb->addOrderBy('doer.id', $direction);
+                    break;
+                case 'actions':
+                    $qb->addOrderBy('actions', $direction);
+            }
         }
 
         return $qb;
