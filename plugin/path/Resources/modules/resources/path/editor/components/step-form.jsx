@@ -1,39 +1,63 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
+import {url} from '#/main/core/api/router'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 
+import {EmptyPlaceholder} from '#/main/core/layout/components/placeholder'
+import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
+
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 
 const PrimaryResourceSection = props =>
-  <div>
-    {!props.resource ?
-      <div>
-        {trans('no_primary_resource', {}, 'path')}
-      </div> :
-      <div>
-        {props.resource.name} [{trans(props.resource.meta.type, {}, 'resource')}]
-        <span
-          className="fa fa-fw fa-trash-o pointer-hand"
-          onClick={() => props.removePrimaryResource(props.stepId)}
-        />
-      </div>
+  <div className="step-primary-resource">
+    {!props.resource &&
+      <EmptyPlaceholder
+        size="lg"
+        icon="fa fa-folder-open"
+        title={trans('no_primary_resource', {}, 'path')}
+      >
+        <button
+          type="button"
+          className="btn btn-primary btn-primary-resource"
+          onClick={() => props.pickPrimaryResource(props.stepId)}
+        >
+          <span className="fa fa-fw fa-plus icon-with-text-right"/>
+          {trans('add_resource')}
+        </button>
+      </EmptyPlaceholder>
     }
-    <button
-      type="button"
-      className="btn btn-primary"
-      onClick={() => props.pickPrimaryResource(props.stepId)}
-    >
-      <span className="fa fa-fw fa-plus icon-with-text-right"/>
-      {trans('select_primary_resource', {}, 'path')}
-    </button>
+
+    {props.resource &&
+      <ResourceCard
+        orientation="row"
+        size="lg"
+        data={props.resource}
+        primaryAction={{
+          action: url(['claro_resource_open', {node: props.resource.autoId, resourceType: props.resource.meta.type}])
+        }}
+        actions={[
+          {
+            icon: 'fa fa-fw fa-folder-open',
+            label: trans('replace', {}, 'actions'),
+            action: () => props.pickPrimaryResource(props.stepId)
+          }, {
+            icon: 'fa fa-fw fa-trash-o',
+            label: trans('delete', {}, 'actions'),
+            dangerous: true,
+            action: () => props.removePrimaryResource(props.stepId)
+          }
+        ]}
+      />
+    }
   </div>
 
 PrimaryResourceSection.propTypes = {
   stepId: T.string.isRequired,
   resource: T.shape({
+    autoId: T.number.isRequired,
     id: T.string.isRequired,
     name: T.string.isRequired,
     meta: T.shape({
@@ -59,13 +83,14 @@ const SecondaryResourcesSection = props =>
         />
       </div>
     )}
+
     <button
       type="button"
-      className="btn btn-primary"
+      className="btn btn-default"
       onClick={() => props.pickSecondaryResources(props.stepId)}
     >
       <span className="fa fa-fw fa-plus icon-with-text-right"/>
-      {trans('select_secondary_resources', {}, 'path')}
+      {trans('add_resources')}
     </button>
   </div>
 
@@ -141,24 +166,18 @@ const StepForm = props =>
       }
     ]}
   >
+    <PrimaryResourceSection
+      stepId={props.id}
+      resource={props.primaryResource}
+      pickPrimaryResource={props.pickPrimaryResource}
+      removePrimaryResource={props.removePrimaryResource}
+    />
+
     <FormSections level={3}>
-      <FormSection
-        id="primary-resource"
-        className="embedded-list-section"
-        icon="fa fa-fw fa-folder-open-o"
-        title={trans('primary_resource', {}, 'path')}
-      >
-        <PrimaryResourceSection
-          stepId={props.id}
-          resource={props.primaryResource}
-          pickPrimaryResource={props.pickPrimaryResource}
-          removePrimaryResource={props.removePrimaryResource}
-        />
-      </FormSection>
       <FormSection
         id="secondary-resources"
         className="embedded-list-section"
-        icon="fa fa-fw fa-folder-open"
+        icon="fa fa-fw fa-folder-open-o"
         title={trans('secondary_resources', {}, 'path')}
       >
         <SecondaryResourcesSection
@@ -169,11 +188,12 @@ const StepForm = props =>
           updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
         />
       </FormSection>
+
       {props.inheritedResources.length > 0 &&
         <FormSection
           id="inherited-resources"
           className="embedded-list-section"
-          icon="fa fa-fw fa-folder-open"
+          icon="fa fa-fw fa-folder-open-o"
           title={trans('inherited_resources', {}, 'path')}
         >
           <InheritedResourcesSection

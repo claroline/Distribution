@@ -134,7 +134,7 @@ DataList.propTypes = {
    *
    * It's required to enable cards based display modes.
    */
-  card: T.func.isRequired,
+  card: T.func,
 
   /**
    * Enables/Disables the feature to filter the displayed columns.

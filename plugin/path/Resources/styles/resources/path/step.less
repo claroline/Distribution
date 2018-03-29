@@ -16,10 +16,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: left;
 }
 
-// todo : add vars
 .step-numbering {
     display: block;
     font-size: @step-numbering-font;
@@ -37,5 +36,34 @@
 }
 
 .step-manual-progression {
-    font-size: small;
+    margin-left: auto;
+
+    // fixes v-align
+    display: flex;
+    align-items: center;
+    line-height: @line-height-computed;
+
+    // remove title styles
+    font-family: @font-family-base;
+    font-size: @font-size-base;
+
+    .dropdown-toggle {
+        font-weight: bold;
+
+        &.unseen    { color: @step-status-unseen-color; }
+        &.seen      { color: @step-status-seen-color; }
+        &.to_do     { color: @step-status-to_do-color; }
+        &.done      { color: @step-status-done-color; }
+        &.to_review { color: @step-status-to_review-color; }
+    }
+}
+
+.step-primary-resource,
+.step-secondary-resources {
+    margin-bottom: @component-margin-bottom;
+}
+
+.btn-primary-resource {
+    margin-top: 10px;
+    padding: @padding-large-vertical @padding-large-horizontal;
 }

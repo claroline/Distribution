@@ -7,7 +7,7 @@ import {interpolate} from 'd3-interpolate'
 import {scaleLinear} from 'd3-scale'
 import {select} from 'd3-selection'
 import {arc, area} from 'd3-shape'
-import {transition} from 'd3-transition'
+import 'd3-transition'
 
 // largely inspired from http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6
 
@@ -54,8 +54,8 @@ GaugeContainer.propTypes = {
  * Renders the Gauge outer circle.
  */
 const GaugeBorder = props => {
-  const circleX = scaleLinear().range([0, 2*Math.PI]).domain([0, 1]);
-  const circleY = scaleLinear().range([0, props.radius]).domain([0, props.radius]);
+  const circleX = scaleLinear().range([0, 2*Math.PI]).domain([0, 1])
+  const circleY = scaleLinear().range([0, props.radius]).domain([0, props.radius])
 
   const circleArc = arc()
     .startAngle(circleX(0))
@@ -106,7 +106,7 @@ class GaugeText extends Component {
         const currentValue = text.text().replace('%', '')
         const i = interpolate(currentValue, Math.round(newValue))
 
-        return function(t) {
+        return function (t) {
           const newValue = Math.round(i(t)) + percentText
 
           text.text(newValue)
@@ -115,11 +115,11 @@ class GaugeText extends Component {
   }
 
   render() {
-    const textFinalValue = parseFloat(this.props.value).toFixed(0);
-    const textStartValue = !this.props.preFilled ? LIQUID_GAUGE_CONFIG.minValue : textFinalValue;
+    const textFinalValue = parseFloat(this.props.value).toFixed(0)
+    const textStartValue = !this.props.preFilled ? LIQUID_GAUGE_CONFIG.minValue : textFinalValue
 
-    const fillCircleRadius = this.props.radius - this.props.margin;
-    const textPixels = LIQUID_GAUGE_CONFIG.textSize * this.props.radius/2;
+    const fillCircleRadius = this.props.radius - this.props.margin
+    const textPixels = LIQUID_GAUGE_CONFIG.textSize * this.props.radius/2
 
     // Scale for controlling the position of the text within the gauge.
     const textRiseScaleY = scaleLinear()
@@ -252,7 +252,7 @@ class GaugeLiquid extends Component {
     const waveScaleY = scaleLinear()
       .range([0, waveHeight]).domain([0, 1])
 
-    const data = [];
+    const data = []
     for (let i = 0; i <= 40 * this.waveClipCount; i++) {
       data.push({
         x: i / (40 * this.waveClipCount),
@@ -263,7 +263,7 @@ class GaugeLiquid extends Component {
     const clipArea = area()
       .x(d => waveScaleX(d.x))
       .y0(d => waveScaleY(Math.sin(Math.PI*2*LIQUID_GAUGE_CONFIG.waveOffset*-1 + Math.PI*2*(1-LIQUID_GAUGE_CONFIG.waveCount) + d.y*2*Math.PI)))
-      .y1(d => (this.props.radius - this.props.margin)*2 + waveHeight);
+      .y1(() => (this.props.radius - this.props.margin)*2 + waveHeight)
 
     return (
       <g clipPath={`url(#clipWave${this.props.id})`}>

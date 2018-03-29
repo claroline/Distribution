@@ -327,27 +327,27 @@
 // Placeholders
 // ---
 
-@placeholder-color:            @text-muted;
-@placeholder-hover-color:      @brand-primary;
+@placeholder-bg:                 #F0F0F0;
+@placeholder-color:              @text-muted;
+@placeholder-hover-color:        @brand-primary;
+@placeholder-border-color:       #ccc;
+@placeholder-hover-border-color: @placeholder-hover-color;
 
 // default variant
 @placeholder-font-size:        @font-size-base;
-@placeholder-border:           1px dashed @placeholder-color;
-@placeholder-hover-border:     1px dashed @placeholder-hover-color;
+@placeholder-border-size:      1px;
 @placeholder-border-radius:    @border-radius-base;
 @placeholder-padding:          @padding-base-vertical @padding-base-horizontal;
 
 // small variant
 @placeholder-sm-font-size:     @font-size-small;
-@placeholder-sm-border:        1px dashed @placeholder-color;
-@placeholder-sm-hover-border:  1px dashed @placeholder-hover-color;
+@placeholder-sm-border-size:   1px;
 @placeholder-sm-border-radius: @border-radius-small;
 @placeholder-sm-padding:       @padding-small-vertical @padding-small-horizontal;
 
 // large variant
 @placeholder-lg-font-size:     @font-size-large;
-@placeholder-lg-border:        2px dashed @placeholder-color;
-@placeholder-lg-hover-border:  2px dashed @placeholder-hover-color;
+@placeholder-lg-border-size:   2px;
 @placeholder-lg-border-radius: @border-radius-large;
 @placeholder-lg-padding:       @padding-large-vertical @padding-large-horizontal;
 
@@ -372,10 +372,9 @@
 // Data grid
 // ---
 
-@data-grid-gutter: 10px;
+@data-grid-gutter:  10px;
 @data-grid-cols-sm: 5;
-@data-grid-cols-md: 3;
-@data-grid-cols-lg: 1;
+@data-grid-cols-lg: 3;
 
 
 // -
@@ -383,8 +382,6 @@
 // ---
 
 @data-card-font:              @font-size-base;
-@data-card-title-font:        @font-size-base;
-@data-card-title-lg-font:     16px;
 @data-card-content-font:      @font-size-small;
 @data-card-padding:           @panel-body-padding;
 @data-card-border:            @panel-default-border;
@@ -396,6 +393,13 @@
 @data-card-box-shadow:        @box-shadow-base;
 @data-card-header-bg:         #f9f9f9;
 
+// sizing
+@data-card-icon-sm-size:      60px;
+@data-card-title-sm-font:     @font-size-base;
+@data-card-icon-lg-size:      100px;
+@data-card-title-lg-font:     16px;
+
+// states
 @data-card-active-color:      @text-color;
 @data-card-active-bg:         @table-bg-hover;
 @data-card-active-box-shadow: 0 0 4px rgba(0,0,0,.25);

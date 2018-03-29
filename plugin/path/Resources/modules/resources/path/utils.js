@@ -62,9 +62,9 @@ function getNumbering(type, steps, step) {
      */
     case constants.NUMBERING_NUMERIC:
       return '' + buildPath(steps, step)
-          // make numbering start to 1 for users
-          .map(i => i + 1)
-          .join('.')
+        // make numbering start to 1 for users
+        .map(i => i + 1)
+        .join('.')
 
     /**
      * The numbering label is a letter.

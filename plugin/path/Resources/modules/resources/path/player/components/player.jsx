@@ -12,7 +12,7 @@ import {constants} from '#/plugin/path/resources/path/constants'
 import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {PathCurrent} from '#/plugin/path/resources/path/components/current.jsx'
 import {Step} from '#/plugin/path/resources/path/player/components/step.jsx'
-import {Summary} from '#/plugin/path/resources/path/player/components/summary.jsx'
+import {PathSummary} from '#/plugin/path/resources/path/components/summary.jsx'
 import {getNumbering, flattenSteps, getStepUserProgression} from '#/plugin/path/resources/path/utils'
 import {actions} from '#/plugin/path/resources/path/player/actions'
 
@@ -24,7 +24,8 @@ const PlayerComponent = props =>
     <h2 className="sr-only">{trans('play')}</h2>
 
     {props.path.display.showSummary &&
-      <Summary
+      <PathSummary
+        prefix="play"
         steps={props.path.steps}
       />
     }
@@ -43,8 +44,7 @@ const PlayerComponent = props =>
           },
           render: (routeProps) => {
             const step = props.steps.find(step => routeProps.match.params.id === step.id)
-
-            return (
+            const Current =
               <PathCurrent
                 prefix="/play"
                 current={step}
@@ -52,12 +52,14 @@ const PlayerComponent = props =>
               >
                 <Step
                   {...step}
+                  fullWidth={props.fullWidth}
                   numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
                   manualProgressionAllowed={props.path.display.manualProgressionAllowed}
                   updateProgression={props.updateProgression}
                 />
               </PathCurrent>
-            )
+
+            return Current
           }
         }
       ]}
@@ -65,6 +67,7 @@ const PlayerComponent = props =>
   </section>
 
 PlayerComponent.propTypes = {
+  fullWidth: T.bool.isRequired,
   path: T.shape(
     PathTypes.propTypes
   ).isRequired,
@@ -77,10 +80,11 @@ PlayerComponent.propTypes = {
 const Player = connect(
   state => ({
     path: select.path(state),
+    fullWidth: select.fullWidth(state),
     steps: flattenSteps(select.steps(state))
   }),
   dispatch => ({
-    updateProgression(stepId, status = constants.STATUS_SEEN) { // todo disable for anonymous
+    updateProgression(stepId, status = constants.STATUS_SEEN) {
       dispatch(actions.updateProgression(stepId, status))
     }
   })

@@ -10,7 +10,7 @@ import {UserEvaluation as UserEvaluationTypes} from '#/main/core/resource/evalua
  */
 const ProgressionGauge = props =>
   <LiquidGauge
-    id={`user-progression`}
+    id="user-progression"
     type="user"
     value={props.userEvaluation.score ? (props.userEvaluation.score / props.userEvaluation.scoreMax)*100 : 0}
     width={props.width}

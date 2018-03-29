@@ -1,3 +1,5 @@
+import merge from 'lodash/merge'
+
 import {trans} from '#/main/core/translation'
 
 const NUMBERING_NONE    = 'none'
@@ -18,13 +20,16 @@ const STATUS_TO_DO = 'to_do'
 const STATUS_DONE = 'done'
 const STATUS_TO_REVIEW = 'to_review'
 
-const STEP_STATUS = {
-  [STATUS_UNSEEN]: trans('user_progression_step_unseen_label', {}, 'path'),
-  [STATUS_SEEN]: trans('user_progression_step_seen_label', {}, 'path'),
+const STEP_MANUAL_STATUS = {
   [STATUS_TO_DO]: trans('user_progression_step_to_do_label', {}, 'path'),
   [STATUS_DONE]: trans('user_progression_step_done_label', {}, 'path'),
   [STATUS_TO_REVIEW]: trans('user_progression_step_to_review_label', {}, 'path')
 }
+
+const STEP_STATUS = merge({}, {
+  [STATUS_UNSEEN]: trans('user_progression_step_unseen_label', {}, 'path'),
+  [STATUS_SEEN]: trans('user_progression_step_seen_label', {}, 'path')
+}, STEP_MANUAL_STATUS)
 
 export const constants = {
   NUMBERING_NONE,
@@ -37,5 +42,6 @@ export const constants = {
   STATUS_TO_DO,
   STATUS_DONE,
   STATUS_TO_REVIEW,
-  STEP_STATUS
+  STEP_STATUS,
+  STEP_MANUAL_STATUS
 }

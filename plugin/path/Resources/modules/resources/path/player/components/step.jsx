@@ -1,15 +1,56 @@
 import React, {Component} from 'react'
 import classes from 'classnames'
 
-import {asset} from '#/main/core/scaffolding/asset'
-import {url} from '#/main/core/api/router'
-import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
+import {url} from '#/main/core/api/router'
+import {asset} from '#/main/core/scaffolding/asset'
+import {currentUser} from '#/main/core/user/current'
+
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
+
+const ManualProgression = props =>
+  <div className="step-manual-progression">
+    {trans('user_progression', {}, 'path')}
+
+    <DropdownButton
+      id="step-progression"
+      title={constants.STEP_STATUS[props.status]}
+      className={props.status}
+      bsStyle="link"
+      noCaret={true}
+      pullRight={true}
+    >
+      {Object.keys(constants.STEP_MANUAL_STATUS).map((status) =>
+        <MenuItem
+          key={status}
+          className={classes({
+            active: status === props.status
+          })}
+          onClick={(e) => {
+            props.updateProgression(props.stepId, status)
+
+            e.preventDefault()
+            e.stopPropagation()
+            e.target.blur()
+          }}
+        >
+          {constants.STEP_MANUAL_STATUS[status]}
+        </MenuItem>
+      )}
+    </DropdownButton>
+  </div>
+
+ManualProgression.propTypes = {
+  status: T.string.isRequired,
+  stepId: T.string.isRequired,
+  updateProgression: T.func.isRequired
+}
 
 class PrimaryResource extends Component {
   constructor(props) {
@@ -19,7 +60,7 @@ class PrimaryResource extends Component {
   }
 
   /**
-   * Resize the iFrame DOM is modified.
+   * Resize the iFrame when DOM is modified.
    *
    * @param {object} e - The JS Event Object
    */
@@ -43,6 +84,7 @@ class PrimaryResource extends Component {
   render() {
     return (
       <iframe
+        className="step-primary-resource"
         id="embeddedActivity"
         ref={el => this.iframe = el}
         height={0}
@@ -58,58 +100,39 @@ PrimaryResource.propTypes = {
   type: T.string.isRequired
 }
 
-const authenticatedUser = currentUser()
-
-const ManualStepProgressionControl = props =>
-  <div className="dropdown">
-    <span
-      className="dropdown-toggle step-manual-progression"
-      role="button"
-      data-toggle="dropdown"
-      aria-haspopup={true}
-      aria-expanded={true}
-    >
-      {trans('user_progression', {}, 'path')} : <b>{constants.STEP_STATUS[props.status]}</b> <span className="fa fa-fw fa-caret-down"/>
-    </span>
-    <ul className="dropdown-menu">
-      <li className={classes({'active': props.status === constants.STATUS_TO_DO})}>
-        <a
-          className="pointer-hand"
-          onClick={() => props.updateProgression(props.stepId, constants.STATUS_TO_DO)}
-        >
-          {constants.STEP_STATUS[constants.STATUS_TO_DO]}
-        </a>
-      </li>
-      <li className={classes({'active': props.status === constants.STATUS_DONE})}>
-        <a
-          className="pointer-hand"
-          onClick={() => props.updateProgression(props.stepId, constants.STATUS_DONE)}
-        >
-          {constants.STEP_STATUS[constants.STATUS_DONE]}
-        </a>
-      </li>
-      <li className={classes({'active': props.status === constants.STATUS_TO_REVIEW})}>
-        <a
-          className="pointer-hand"
-          onClick={() => props.updateProgression(props.stepId, constants.STATUS_TO_REVIEW)}
-        >
-          {constants.STEP_STATUS[constants.STATUS_TO_REVIEW]}
-        </a>
-      </li>
-    </ul>
+const SecondaryResources = props =>
+  <div className={classes('step-secondary-resources', props.className)}>
+    <h4 className="h3 h-first">En complément...</h4>
+    {props.resources.map(resource =>
+      <ResourceCard
+        key={resource.resource.id}
+        size="sm"
+        orientation="row"
+        primaryAction={{
+          action: url(['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}])
+        }}
+        data={resource.resource}
+      />
+    )}
   </div>
 
-ManualStepProgressionControl.propTypes = {
-  status: T.string.isRequired,
-  stepId: T.string.isRequired,
-  updateProgression: T.func.isRequired
+SecondaryResources.propTypes = {
+  className: T.string,
+  resources: T.arrayOf(T.shape({
+    resource: T.shape({
+      autoId: T.number.isRequired,
+      meta: T.shape({
+        type: T.string.isRequired
+      }).isRequired
+    }).isRequired
+  })).isRequired
 }
 
 /**
  * Renders step content.
  */
 const Step = props =>
-  <div className="current-step">
+  <section className="current-step">
     {props.poster &&
       <img className="step-poster img-responsive" alt={props.title} src={asset(props.poster.url)} />
     }
@@ -121,8 +144,8 @@ const Step = props =>
 
       {props.title}
 
-      {props.manualProgressionAllowed && authenticatedUser &&
-        <ManualStepProgressionControl
+      {props.manualProgressionAllowed && currentUser() &&
+        <ManualProgression
           status={props.userProgression.status}
           stepId={props.id}
           updateProgression={props.updateProgression}
@@ -130,21 +153,39 @@ const Step = props =>
       }
     </h3>
 
-    {props.description &&
-      <div className="panel panel-default">
-        <HtmlText className="panel-body">{props.description}</HtmlText>
-      </div>
-    }
+    <div className="row">
+      {props.primaryResource &&
+        <div className={classes('col-sm-12', {
+          'col-md-9': (0 !== props.secondaryResources.length || 0 !== props.inheritedResources.length) && props.fullWidth,
+          'col-md-12': (0 !== props.secondaryResources.length && 0 !== props.inheritedResources.length) && !props.fullWidth
+        })}>
+          {props.description &&
+            <div className="panel panel-default">
+              <HtmlText className="panel-body">{props.description}</HtmlText>
+            </div>
+          }
 
-    {props.primaryResource &&
-      <PrimaryResource
-        id={props.primaryResource.autoId}
-        type={props.primaryResource.meta.type}
-      />
-    }
-  </div>
+          <PrimaryResource
+            id={props.primaryResource.autoId}
+            type={props.primaryResource.meta.type}
+          />
+        </div>
+      }
+
+      {(0 !== props.secondaryResources.length || 0 !== props.inheritedResources.length) &&
+        <SecondaryResources
+          className={classes('col-sm-12', {
+            'col-md-3': props.fullWidth,
+            'col-md-12': !props.fullWidth
+          })}
+          resources={[].concat(props.inheritedResources, props.secondaryResources)}
+        />
+      }
+    </div>
+  </section>
 
 implementPropTypes(Step, StepTypes, {
+  fullWidth: T.bool.isRequired,
   numbering: T.string,
   manualProgressionAllowed: T.bool.isRequired,
   updateProgression: T.func.isRequired

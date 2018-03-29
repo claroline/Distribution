@@ -22,6 +22,14 @@ actions.removeStep = makeActionCreator(STEP_REMOVE, 'id')
 actions.updatePrimaryResource = makeActionCreator(STEP_UPDATE_PRIMARY_RESOURCE, 'stepId', 'resource')
 actions.pasteStep = makeActionCreator(STEP_PASTE, 'parentId', 'step')
 
+actions.paste = (parentId) => (dispatch, getState) => {
+  // retrieves the copy
+  const state = getState()
+
+  dispatch(actions.pasteStep(parentId, state.pathForm.copy))
+  dispatch(actions.resetStepCopy())
+}
+
 actions.addSecondaryResources = makeActionCreator(STEP_ADD_SECONDARY_RESOURCES, 'stepId', 'resources')
 actions.removeSecondaryResources = makeActionCreator(STEP_REMOVE_SECONDARY_RESOURCES, 'stepId', 'resources')
 actions.updateSecondaryResourceInheritance = makeActionCreator(STEP_UPDATE_SECONDARY_RESOURCE_INHERITANCE, 'stepId', 'id', 'value')

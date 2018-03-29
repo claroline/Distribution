@@ -69,10 +69,10 @@
 // ---
 
 .data-grid-content {
+    margin: 0; // reset ul margin
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    margin: -@data-grid-gutter; // absorb items margin
 
     // remove <ul> styles
     list-style-type: none;
@@ -80,168 +80,55 @@
 }
 
 .data-grid-item-container {
-    padding: @data-grid-gutter;
+    position: relative; // constrain selection checkbox
+
+    .data-card {
+        width: 100%; // fill container
+        height: 100%; // fill container
+
+        // todo : make it on every card with mixins
+        &:hover {
+            z-index: 2;
+            color: @data-card-active-color;
+            background-color: @data-card-active-bg;
+            .box-shadow(@data-card-active-box-shadow);
+
+            .data-card-header {
+                background: @data-card-active-header-bg;
+            }
+
+            .data-card-content {
+                color: @data-card-active-color;
+            }
+        }
+
+        &.selected {
+            background-color: @state-info-bg;
+            border-color: #abcfe0; // todo : use a var same as .table
+
+            .box-shadow(0 0 2px fadeOut(@brand-info, 65%));
+
+            .data-card-header {
+                background: #bfe3f4;
+                border-color: #abcfe0 !important;
+            }
+
+            &:hover {
+                background-color: #bfe3f4;
+
+                .data-card-header {
+                    background: #b5d9ea;
+                }
+            }
+        }
+    }
 }
 
-.data-grid-item {
-    z-index: 1;
-    display: flex;
-    position: relative; // constrain selection checkbox and actions btn
-    width: 100%; // fill container
-    height: 100%; // fill container
-    border: 1px solid @data-card-border;
-    color: @data-card-color;
-    background: @data-card-bg;
-    font-size: @data-card-font;
-
-    .border-radius(@data-card-border-radius);
-    .box-shadow(@data-card-box-shadow);
-
-    .item-select {
-        z-index: 2;
-        position: absolute;
-        margin: 0;
-        top: @data-grid-gutter;
-        left: @data-grid-gutter;
-    }
-
-    // item actions dropdown
-    > .dropdown { // item actions (I can not add a better selector because of `react-bootstrap`)
-        position: absolute;
-        top: -1px; // absorb btn border
-        right: -1px; // absorb btn border
-
-        .btn {
-            padding: @data-grid-gutter;
-        }
-
-        &.open {
-            .btn {
-                position: relative;
-                background: #eee;
-                border-color: @dropdown-border;
-                border-bottom-color: @dropdown-bg;
-                box-shadow: @dropdown-menu-box-shadow;
-                background-clip: padding-box;
-            }
-        }
-
-        .dropdown-menu {
-            margin-top: -1px;
-        }
-    }
-
-    .item-icon-container {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin: 30px;
-        background: rgba(255, 255, 255, .6);
-        border-radius: 50%;
-        line-height: 0;
-
-        // for FA icons
-        color: rgba(0, 0, 0, 0.5) !important;
-
-        // for SVG icons
-        fill: rgba(0, 0, 0, 0.5) !important;
-        stroke: rgba(0, 0, 0, 0.5) !important;
-    }
-
-    .item-header {
-        position: relative; // constrain flags
-        text-align: center;
-        background: @data-card-header-bg;
-
-        .border-radius(@data-card-border-radius @data-card-border-radius 0 0);
-    }
-
-    .item-flags {
-        cursor: help;
-        position: absolute;
-        bottom: @data-grid-gutter;
-        right: @data-grid-gutter;
-
-        .item-flag+.item-flag {
-            margin-left: floor(@data-grid-gutter / 2);
-        }
-    }
-
-    .item-content {
-        color: @data-card-color; // reset color when card is clickable (uses a <a> tag)
-        display: flex;
-        flex-direction: column;
-
-        .border-radius(0 0 @data-card-border-radius @data-card-border-radius);
-    }
-
-    .item-title {
-        margin: @data-card-padding;
-        padding: 0;
-        font-size: @data-card-title-font;
-        font-weight: bold;
-        overflow: hidden;
-        text-overflow: ellipsis;
-
-        > small {
-            margin-top: 5px;
-            display: block;
-        }
-    }
-
-    .item-description {
-        font-size: @data-card-content-font;
-        line-height: @line-height-base;
-        text-align: justify;
-        padding: 0 @data-card-padding;
-        // margin: 0 @data-card-padding @data-card-padding; // I don't understand I've put his
-        max-height: @line-height-base * 5em;
-        overflow: hidden;
-    }
-
-    .item-footer {
-        margin-top: auto; // ensure footer is always at the bottom
-        font-size: @data-card-content-font;
-        text-align: right;
-        padding: 0 @data-card-padding @data-card-padding;
-        color: @data-card-color-muted;
-        font-style: italic;
-    }
-
-    &:hover {
-        z-index: 2;
-        color: @data-card-active-color;
-        background-color: @data-card-active-bg;
-        .box-shadow(@data-card-active-box-shadow);
-
-        .item-header {
-            background: @data-card-active-header-bg;
-        }
-
-        .item-content {
-            color: @data-card-active-color;
-        }
-    }
-
-    &.selected {
-        background-color: @state-info-bg;
-        border-color: #abcfe0; // todo : use a var same as .table
-
-        .box-shadow(0 0 2px fadeOut(@brand-info, 65%));
-
-        .item-header {
-            background: #bfe3f4;
-            border-color: #abcfe0 !important;
-        }
-
-        &:hover {
-            background-color: #bfe3f4;
-
-            .item-header {
-                background: #b5d9ea;
-            }
-        }
-    }
+.data-grid-item-select {
+    z-index: 3;
+    position: absolute;
+    margin: 0 !important;
+    left: @data-grid-gutter * 2;
 }
 
 
@@ -249,89 +136,42 @@
 // Sizing
 // ---
 
-.data-grid-sm {
+.data-grid-col {
+    .data-grid-content {
+        margin: -@data-grid-gutter; // absorb items margin
+    }
+
     .data-grid-item-container {
+        padding: @data-grid-gutter;
+    }
+
+    .data-grid-item-select {
+        top: @data-grid-gutter * 2;
+    }
+
+    &.data-grid-sm .data-grid-item-container {
         flex: 0 0 (100% / @data-grid-cols-sm);
         max-width: 100% / @data-grid-cols-sm;
     }
 
-    .item-header {
-        min-height: 120px; // icon margin + height
-    }
-
-    .item-icon-container {
-        font-size: 36px; // for FA icons
-        width: 60px;
-        height: 60px;
-
-        img {
-            max-width: 30px;
-            max-height: 30px;
-        }
-    }
-
-    .data-grid-item {
-        .grid-item-vertical-variant();
-    }
-}
-
-.data-grid-md {
-    .data-grid-item-container {
-        flex: 0 0 (100% / @data-grid-cols-md);
-        max-width: 100% / @data-grid-cols-md;
-    }
-
-    .item-header {
-        min-height: 160px; // icon margin + height
-    }
-
-    .item-icon-container {
-        font-size: 48px; // for FA icons
-        width: 100px;
-        height: 100px;
-
-        img {
-            max-width: 60px;
-            max-height: 60px;
-        }
-    }
-
-    .data-grid-item {
-        .grid-item-vertical-variant();
-
-        .item-title {
-            font-size: @data-card-title-lg-font;
-        }
-    }
-}
-
-// in this case we will put header and content on the same line
-.data-grid-lg {
-    .item-header {
-        min-height: 160px; // icon margin + height
-    }
-
-    .item-icon-container {
-        font-size: 48px; // for FA icons
-        width: 100px;
-        height: 100px;
-
-        img {
-            max-width: 60px;
-            max-height: 60px;
-        }
-    }
-
-    .data-grid-item-container {
+    &.data-grid-lg .data-grid-item-container {
         flex: 0 0 (100% / @data-grid-cols-lg);
         max-width: 100% / @data-grid-cols-lg;
     }
+}
 
-    .data-grid-item {
-        .grid-item-horizontal-variant();
+.data-grid-row {
+    .data-grid-content {
+        margin: -@data-grid-gutter/2 -@data-grid-gutter; // absorb items margin
+    }
 
-        .item-title {
-            font-size: @data-card-title-lg-font;
-        }
+    .data-grid-item-container {
+        padding: @data-grid-gutter/2 @data-grid-gutter;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .data-grid-item-select {
+        top: @data-grid-gutter + @data-grid-gutter/2;
     }
 }

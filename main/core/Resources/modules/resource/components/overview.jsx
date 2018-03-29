@@ -5,7 +5,7 @@ import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 import {t_res} from '#/main/core/resource/translation'
-import {Action as ActionTypes} from '#/main/core/layout/button/prop-types'
+import {Action as ActionTypes} from '#/main/core/layout/action/prop-types'
 import {constants as evaluationConstants} from '#/main/core/resource/evaluation/constants'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {Action} from '#/main/core/layout/button/components/action.jsx'

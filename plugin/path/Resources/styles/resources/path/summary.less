@@ -17,36 +17,21 @@
         align-items: center;
     }
 
-    // todo : those selectors are ugly
-    .step-actions {
-        display: none;
-    }
-
     .step-children {
         padding-left: 0 !important; // flatten all steps
     }
 
     &.opened {
-        .summary-title,
-        .step-actions {
+        .summary-title {
             display: inline-block;
-        }
-
-        .step-name {
-            display: inline;
         }
 
         .step-children {
             padding-left: @path-summary-lvl-indent !important;
         }
 
-        .tree-item {
+        .summary-link {
             border-bottom-color: @path-summary-link-border-color;
-
-            .step {
-                overflow-x: hidden;
-                text-overflow: ellipsis;
-            }
         }
     }
 
@@ -89,13 +74,11 @@
     }
 }
 
-.summary-link {
+.summary-link-container {
     list-style: none;
     font-size: @path-summary-font;
 
-    .active > .tree-item {
-        background-color: @path-summary-link-active-bg;
-
+    .active {
         .step-progression {
             color: @path-summary-link-active-color !important; // override status color
         }
@@ -107,6 +90,7 @@
     }
 
     a,
+    .btn-add,
     .btn-summary {
         color: @path-summary-link-color;
 
@@ -121,21 +105,24 @@
         }
     }
 
+    .btn-add,
     a {
+        border: none;
         flex: 1;
+        font-size: @path-summary-font; // required to override default button size
         padding: 10px 0;
         display: flex;
         align-items: center;
     }
 }
 
-.tree-item {
+.summary-link {
     background-color: @path-summary-link-bg;
     border-bottom: 1px solid transparent;
 
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    //justify-content: space-between;
 
     &:hover {
         background-color: @path-summary-link-hover-bg;
@@ -146,6 +133,7 @@
     white-space: nowrap; // avoid buttons to be displayed in column
     line-height: 2em;
     vertical-align: middle;
+    margin-left: auto; // move to the right of the flex container
 
     .btn-summary {
         padding: 2px;
@@ -171,6 +159,7 @@
     .summary-container {
         box-shadow: @path-summary-box-shadow-h;
         height: @path-summary-collapsed-width;
+        overflow: hidden; // hide scrollbar
 
         // Take full width of the viewport
         top: 0;
@@ -183,6 +172,7 @@
         }
 
         &.opened {
+            overflow: auto;
             height: 100%; // todo : find better. it can be small if their is no content in the current step
             bottom: 0;
 

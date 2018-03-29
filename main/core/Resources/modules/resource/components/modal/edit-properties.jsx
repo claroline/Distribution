@@ -34,8 +34,6 @@ class EditPropertiesModal extends Component {
   }
 
   onChange(newNode) {
-    console.log('onCHange')
-    console.log(newNode)
     this.setState({
       resourceNode: newNode
     })

@@ -2,17 +2,18 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {asset} from '#/main/core/scaffolding/asset'
 import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
 import {Routes} from '#/main/core/router'
+import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 import {constants as listConst} from '#/main/core/data/list/constants'
 
-import {select} from '#/plugin/path/resources/path/editor/selectors'
+import {select as editorSelect} from '#/plugin/path/resources/path/editor/selectors'
 import {actions} from '#/plugin/path/resources/path/editor/actions'
 import {PathCurrent} from '#/plugin/path/resources/path/components/current.jsx'
-import {Summary} from '#/plugin/path/resources/path/editor/components/summary.jsx'
+import {PathSummary} from '#/plugin/path/resources/path/components/summary'
 import {ParametersForm} from '#/plugin/path/resources/path/editor/components/parameters-form.jsx'
 import {StepForm} from '#/plugin/path/resources/path/editor/components/step-form.jsx'
 import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
@@ -20,18 +21,37 @@ import {constants} from '#/plugin/path/resources/path/constants'
 import {getNumbering, flattenSteps} from '#/plugin/path/resources/path/utils'
 import {getFormDataPart} from '#/plugin/path/resources/path/editor/utils'
 
+// todo : replaces copy/paste feature by a duplicate one (that's how it works elsewhere)
+
 const EditorComponent = props =>
   <section className="resource-section">
     <h2 className="sr-only">{trans('configuration')}</h2>
 
-    <Summary
+    <PathSummary
+      prefix="edit"
       steps={props.path.steps}
-      copy={props.copy}
-      addStep={props.addStep}
-      removeStep={props.removeStep}
-      copyStep={props.copyStep}
-      pasteStep={props.pasteStep}
-      resetStepCopy={props.resetStepCopy}
+      actions={[
+        {
+          icon: 'fa fa-fw fa-plus',
+          label: trans('step_add_child', {}, 'path'),
+          action: props.addStep
+        }, {
+          icon: 'fa fa-fw fa-files-o',
+          label: trans('copy', {}, 'actions'),
+          action: props.copyStep
+        }, {
+          icon: 'fa fa-fw fa-clipboard',
+          label: trans('paste', {}, 'actions'),
+          action: props.pasteStep,
+          displayed: !!props.copy
+        }, {
+          icon: 'fa fa-fw fa-trash-o',
+          label: trans('delete', {}, 'actions'),
+          action: props.removeStep
+        }
+      ]}
+      parameters={true}
+      add={props.addStep}
     />
 
     <Routes
@@ -70,9 +90,9 @@ const EditorComponent = props =>
                   numbering={getNumbering(props.path.display.numbering, props.path.steps, step)}
                   customNumbering={constants.NUMBERING_CUSTOM === props.path.display.numbering}
                   stepPath={getFormDataPart(step.id, props.path.steps)}
-                  pickPrimaryResource={stepId => props.pickPrimaryResource(stepId, props.resourceTypes)}
+                  pickPrimaryResource={stepId => props.pickResources(stepId, props.resourceTypes, 'primary')}
                   removePrimaryResource={props.removePrimaryResource}
-                  pickSecondaryResources={stepId => props.pickSecondaryResources(stepId, props.resourceTypes)}
+                  pickSecondaryResources={stepId => props.pickResources(stepId, props.resourceTypes, 'secondary')}
                   removeSecondaryResource={props.removeSecondaryResource}
                   updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
                   removeInheritedResource={props.removeInheritedResource}
@@ -98,38 +118,67 @@ EditorComponent.propTypes = {
   copy: T.shape(StepTypes.propTypes),
   addStep: T.func.isRequired,
   removeStep: T.func.isRequired,
-  pickPrimaryResource: T.func.isRequired,
+  pickResources: T.func.isRequired,
   removePrimaryResource: T.func.isRequired,
-  pickSecondaryResources: T.func.isRequired,
   removeSecondaryResource: T.func.isRequired,
   updateSecondaryResourceInheritance: T.func.isRequired,
   removeInheritedResource: T.func.isRequired,
   copyStep: T.func.isRequired,
-  pasteStep: T.func.isRequired,
-  resetStepCopy: T.func.isRequired
+  pasteStep: T.func.isRequired
 }
+
+// todo merge resources pickers
 
 const Editor = connect(
   state => ({
-    resourceTypes: select.resourceTypes(state),
-    path: select.path(state),
-    steps: flattenSteps(select.steps(state)),
-    copy: select.stepCopy(state)
+    resourceTypes: editorSelect.resourceTypes(state),
+    path: editorSelect.path(state),
+    steps: flattenSteps(editorSelect.steps(state)),
+    copy: editorSelect.stepCopy(state)
   }),
   dispatch => ({
-    addStep(parentId) {
-      dispatch(actions.addStep(parentId))
+    addStep(parentStep = null) {
+      dispatch(actions.addStep(parentStep ? parentStep.id : null))
     },
-    removeStep(id) {
-      dispatch(actions.removeStep(id))
+    removeStep(step) {
+      dispatch(
+        modalActions.showModal(MODAL_DELETE_CONFIRM, {
+          title: trans('step_delete_title', {}, 'path'),
+          question: trans('step_delete_confirm', {}, 'path'),
+          handleConfirm: () => dispatch(actions.removeStep(step.id))
+        })
+      )
     },
-    pickPrimaryResource(stepId, resourceTypes) {
+    copyStep(step) {
+      dispatch(actions.copyStep(step))
+    },
+    pasteStep(parentStep = null) {
+      dispatch(actions.paste(parentStep ? parentStep.id : null))
+    },
+    pickResources(stepId, resourceTypes, usage = 'primary') {
+      let icon
+      let title
+      let callback
+      if ('primary' === usage) {
+        icon = 'fa fa-fw fa-folder-open'
+        title = trans('add_primary_resource', {}, 'path')
+        callback = (selected) => dispatch(actions.updatePrimaryResource(stepId, selected[0]))
+      } else if ('secondary' === usage) {
+        icon = 'fa fa-fw fa-folder-open-o'
+        title = trans('add_secondary_resources', {}, 'path')
+        callback = (selected) => dispatch(actions.addSecondaryResources(stepId, selected))
+      }
+
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
-        icon: 'fa fa-fw fa-folder-open',
-        title: trans('select_primary_resource', {}, 'path'),
-        confirmText: trans('select', {}, 'path'),
+        icon: icon,
+        title: title,
+        confirmText: trans('add', {}, 'actions'),
         name: 'resourcesPicker',
         onlyId: false,
+        fetch: {
+          url: ['apiv2_resources_picker'],
+          autoload: true
+        },
         display: {
           current: listConst.DISPLAY_TILES_SM,
           available: Object.keys(listConst.DISPLAY_MODES)
@@ -141,12 +190,11 @@ const Editor = connect(
             label: trans('name'),
             displayed: true,
             primary: true
-          },
-          {
-            name: 'resourceType',
+          }, {
+            name: 'meta.type',
+            alias: 'resourceType',
             label: trans('type'),
-            displayable: false,
-            displayed: false,
+            displayed: true,
             type: 'enum',
             options: {
               choices: resourceTypes.filter(rt => rt.name != 'directory').reduce(
@@ -154,113 +202,25 @@ const Editor = connect(
                 {}
               )
             }
-          },
-          {
-            name: 'meta.type',
-            type: 'string',
-            label: trans('type'),
-            displayed: true,
-            filterable: false,
-            renderer: (rowData) => trans(rowData.meta.type, {}, 'resource')
-          },
-          {
+          }, {
             name: 'workspace.name',
             type: 'string',
             label: trans('workspace'),
             displayed: true
-          },
-          {
+          }, {
             name: 'meta.parent.name',
             type: 'string',
             label: trans('parent'),
             displayed: true
           }
         ],
-        card: (row) => ({
-          poster: asset(row.meta.icon),
-          icon: 'fa fa-folder-open',
-          title: row.name,
-          subtitle: trans(row.meta.type, {}, 'resource'),
-          footer:
-            <b>{row.workspace.name}</b>
-        }),
-        fetch: {
-          url: ['apiv2_resources_picker'],
-          autoload: true
-        },
-        handleSelect: (selected) => dispatch(actions.updatePrimaryResource(stepId, selected[0]))
+        card: ResourceCard,
+        handleSelect: callback
       }))
     },
+
     removePrimaryResource(stepId) {
       dispatch(actions.updatePrimaryResource(stepId, null))
-    },
-    pickSecondaryResources(stepId, resourceTypes) {
-      dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
-        icon: 'fa fa-fw fa-folder-open',
-        title: trans('select_secondary_resources', {}, 'path'),
-        confirmText: trans('select', {}, 'path'),
-        name: 'resourcesPicker',
-        onlyId: false,
-        display: {
-          current: listConst.DISPLAY_TILES_SM,
-          available: Object.keys(listConst.DISPLAY_MODES)
-        },
-        definition: [
-          {
-            name: 'name',
-            type: 'string',
-            label: trans('name'),
-            displayed: true,
-            primary: true
-          },
-          {
-            name: 'resourceType',
-            label: trans('type'),
-            displayable: false,
-            displayed: false,
-            type: 'enum',
-            options: {
-              choices: resourceTypes.filter(rt => rt.name != 'directory').reduce(
-                (choices, rt) => Object.assign(choices, {[rt.name]: trans(rt.name, {}, 'resource')}),
-                {}
-              )
-            }
-          },
-          {
-            name: 'meta.type',
-            type: 'string',
-            label: trans('type'),
-            displayed: true,
-            filterable: false,
-            renderer: (rowData) => trans(rowData.meta.type, {}, 'resource')
-          },
-          {
-            name: 'workspace.name',
-            type: 'string',
-            label: trans('workspace'),
-            displayed: true
-          },
-          {
-            name: 'meta.parent.name',
-            type: 'string',
-            label: trans('parent'),
-            displayed: true
-          }
-        ],
-        card: (row) => ({
-          poster: asset(row.meta.icon),
-          icon: 'fa fa-folder-open',
-          title: row.name,
-          subtitle: trans(row.meta.type, {}, 'resource'),
-          footer:
-            <b>{row.workspace.name}</b>
-        }),
-        fetch: {
-          url: ['apiv2_resources_picker'],
-          autoload: true
-        },
-        handleSelect: (selected) => dispatch(actions.addSecondaryResources(stepId, selected))
-      }))
     },
     removeSecondaryResource(stepId, id) {
       dispatch(actions.removeSecondaryResources(stepId, [id]))
@@ -270,15 +230,6 @@ const Editor = connect(
     },
     removeInheritedResource(stepId, id) {
       dispatch(actions.removeInheritedResources(stepId, [id]))
-    },
-    copyStep(step) {
-      dispatch(actions.copyStep(step))
-    },
-    pasteStep(parentId, step) {
-      dispatch(actions.pasteStep(parentId, step))
-    },
-    resetStepCopy() {
-      dispatch(actions.resetStepCopy())
     }
   })
 )(EditorComponent)
