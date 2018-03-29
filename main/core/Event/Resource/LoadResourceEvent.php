@@ -31,6 +31,11 @@ class LoadResourceEvent extends Event implements MandatoryEventInterface, DataCo
     /** @var bool */
     private $isPopulated = false;
 
+    /**
+     * LoadResourceEvent constructor.
+     *
+     * @param AbstractResource $resource
+     */
     public function __construct(AbstractResource $resource)
     {
         $this->resource = $resource;
@@ -62,7 +67,7 @@ class LoadResourceEvent extends Event implements MandatoryEventInterface, DataCo
      *
      * @param array $data
      */
-    public function addAdditionalData(array $data)
+    public function setAdditionalData(array $data)
     {
         $this->data = $data;
         $this->isPopulated = true;

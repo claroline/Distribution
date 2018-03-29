@@ -1,5 +1,5 @@
 
-const CORE_PLUGIN = 'CORE_PLUGIN'
+const CORE_PLUGIN = 'core'
 
 /**
  * Declares applications provided by the Core plugin.
