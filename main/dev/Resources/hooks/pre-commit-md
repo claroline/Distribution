@@ -21,6 +21,7 @@ foreach ($files as $file) {
     $fileName = trim(substr($file, 1));
 
     if (pathinfo($fileName, PATHINFO_EXTENSION) === 'php') {
+        echo $fileName;
         exec("{$md} {$fileName}", $output, $code);
 
         if ($code !== 0) {
