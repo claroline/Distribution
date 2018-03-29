@@ -10,6 +10,7 @@ use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,6 +32,9 @@ class WorkspaceSerializer
     /** @var ContainerInterface */
     private $container;
 
+    /** @var SerializerProvider */
+    private $serializer;
+
     /**
      * WorkspaceSerializer constructor.
      *
@@ -38,7 +42,8 @@ class WorkspaceSerializer
      *     "userSerializer"   = @DI\Inject("claroline.serializer.user"),
      *     "workspaceManager" = @DI\Inject("claroline.manager.workspace_manager"),
      *     "container"        = @DI\Inject("service_container"),
-     *     "serializer"       = @DI\Inject("claroline.api.serializer")
+     *     "serializer"       = @DI\Inject("claroline.api.serializer"),
+     *     "ut"               = @DI\Inject("claroline.utilities.misc")
      * })
      *
      * @param UserSerializer   $userSerializer
@@ -48,12 +53,14 @@ class WorkspaceSerializer
         UserSerializer $userSerializer,
         WorkspaceManager $workspaceManager,
         ContainerInterface $container,
-        SerializerProvider $serializer
+        SerializerProvider $serializer,
+        ClaroUtilities $ut
     ) {
         $this->userSerializer = $userSerializer;
         $this->workspaceManager = $workspaceManager;
         $this->container = $container;
         $this->serializer = $serializer;
+        $this->ut = $ut;
     }
 
     /**
@@ -75,7 +82,7 @@ class WorkspaceSerializer
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
-            $serializer = $this->container->get('claroline.api.serializer');
+            $serializer = $this->serializer;
             $serialized = array_merge($serialized, [
                 'thumbnail' => $workspace->getThumbnail() ? $this->container->get('claroline.serializer.public_file')->serialize($workspace->getThumbnail()) : null,
                 'meta' => $this->getMeta($workspace),
@@ -125,8 +132,7 @@ class WorkspaceSerializer
             'description' => $workspace->getDescription(),
             'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
-            'usedStorage' => $this->container->get('claroline.utilities.misc')
-                ->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
+            'usedStorage' => $this->ut->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
             'totalUsers' => $this->workspaceManager->countUsers($workspace, true),
             'totalResources' => $this->workspaceManager->countResources($workspace),
             'notifications' => !$workspace->isDisabledNotifications(),
@@ -150,12 +156,12 @@ class WorkspaceSerializer
         $options = $this->workspaceManager->getWorkspaceOptions($workspace)->getDetails();
 
         if ($options['workspace_opening_resource']) {
-            $resource = $this->container->get('claroline.api.serializer')->deserialize(
+            $resource = $this->serializer->deserialize(
               'Claroline\CoreBundle\Entity\Resource\ResourceNode',
                ['id' => $options['workspace_opening_resource']]
             );
 
-            $options['opened_resource'] = $this->container->get('claroline.api.serializer')->serialize($resource);
+            $options['opened_resource'] = $this->serializer->serialize($resource);
         }
 
         return $options;
@@ -210,7 +216,7 @@ class WorkspaceSerializer
         //$this->genericSerializer->deserialize($data, $workspace, $options);
 
         if (isset($data['thumbnail']) && isset($data['thumbnail']['id'])) {
-            $thumbnail = $this->container->get('claroline.api.serializer')->deserialize(
+            $thumbnail = $this->serializer->deserialize(
                 'Claroline\CoreBundle\Entity\File\PublicFile',
                 $data['thumbnail']
             );
@@ -218,7 +224,7 @@ class WorkspaceSerializer
         }
 
         if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {
-            $defaultRole = $this->container->get('claroline.api.serializer')->deserialize(
+            $defaultRole = $this->serializer->deserialize(
                 'Claroline\CoreBundle\Entity\Role',
                 $data['registration']['defaultRole']
             );

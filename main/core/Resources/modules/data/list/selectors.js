@@ -2,9 +2,7 @@ import get from 'lodash/get'
 import {createSelector} from 'reselect'
 
 // retrieves a list instance in the store
-const list = (state, listName) => {
-  return get(state, listName)
-}
+const list = (state, listName) => get(state, listName)
 
 // check enabled list features
 const isFilterable = (listState) => typeof listState.filters !== 'undefined'

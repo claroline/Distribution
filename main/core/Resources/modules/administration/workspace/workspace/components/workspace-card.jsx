@@ -7,7 +7,7 @@ import {asset} from '#/main/core/scaffolding/asset'
 
 const WorkspaceCard = (row) => ({
   poster: asset(row.thumbnail.url),
-  //icon: <img src={asset(row.thumbnail.url)} />,
+  icon: 'fa fa-book',
   title: row.name,
   subtitle: row.code,
   contentText: row.meta.description,

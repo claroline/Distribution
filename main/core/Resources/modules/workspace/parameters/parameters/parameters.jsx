@@ -64,7 +64,7 @@ const Parameters = (props) => {
               {
                 name: 'meta.created',
                 type: 'date',
-                label: trans('created'),
+                label: trans('creation_date'),
                 required: true,
                 readOnly: true
               },
@@ -84,7 +84,7 @@ const Parameters = (props) => {
               {
                 name: 'thumbnail',
                 type: 'image',
-                label: trans('image')
+                label: trans('thumbnail')
               },
               {
                 name: 'notifications',
@@ -94,20 +94,20 @@ const Parameters = (props) => {
               {
                 name: 'meta.usedStorage',
                 type: 'string',
-                label: trans('used_storage'),
+                label: trans('storage_used'),
                 readOnly: true
               },
               {
                 name: 'meta.totalUsers',
                 type: 'number',
                 readOnly: true,
-                label: trans('total_users')
+                label: trans('registered_user_amount')
               },
               {
                 name: 'meta.totalResources',
                 type: 'number',
                 readOnly: true,
-                label: trans('total_resources')
+                label: trans('count_resources')
               }
             ]
           },
@@ -134,6 +134,7 @@ const Parameters = (props) => {
               {
                 name: 'registration.defaultRole',
                 type: 'enum',
+                label: trans('default_role'),
                 options: {
                   choices: roleEnum
                 },
@@ -158,22 +159,22 @@ const Parameters = (props) => {
           },
           {
             id: 'restrictions',
-            title: trans('restrictions'),
+            title: trans('access_restrictions'),
             fields: [
               {
                 name: 'restrictions.accessibleFrom',
                 type: 'date',
-                label: trans('accessibleFrom')
+                label: trans('opening_date')
               },
               {
                 name: 'restrictions.accessibleUntil',
                 type: 'date',
-                label: trans('accessibleUntil')
+                label: trans('expiration_date')
               },
               {
                 name: 'restrictions.maxStorage',
                 type: 'string',
-                label: trans('max_storage')
+                label: trans('max_storage_size')
               },
               {
                 name: 'restrictions.maxUsers',
@@ -183,12 +184,12 @@ const Parameters = (props) => {
               {
                 name: 'restrictions.maxResources',
                 type: 'integer',
-                label: trans('maxResources')
+                label: trans('max_amount_resources')
               },
               {
                 name: 'restrictions.hidden',
                 type: 'boolean',
-                label: trans('hidden')
+                label: trans('hide')
               }
             ]
           }

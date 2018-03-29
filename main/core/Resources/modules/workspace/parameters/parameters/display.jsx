@@ -21,7 +21,7 @@ const ResourceSection = props =>
   <div>
     {!props.resource ?
       <div>
-        {trans('no_resource', {}, 'path')}
+        {trans('no_resource')}
       </div> :
       <div>
         {props.resource.name} [{trans(props.resource.meta.type, {}, 'resource')}]
@@ -33,7 +33,7 @@ const ResourceSection = props =>
       onClick={() => props.pickResource()}
     >
       <span className="fa fa-fw fa-plus icon-with-text-right"/>
-      {trans('select_primary_resource', {}, 'path')}
+      {trans('add_resource')}
     </button>
   </div>
 
@@ -100,13 +100,7 @@ const Tab = (props) => {
               {
                 name: 'options.use_workspace_opening_resource',
                 type: 'boolean',
-                label: trans('use_workspace_opening_resource'),
-                required: false
-              },
-              {
-                name: 'options.workspace_opening_resource',
-                type: 'resource',
-                label: trans('workspace_opening_resource'),
+                label: trans('open_resource_when_opening_ws'),
                 required: false
               }
             ]
@@ -114,10 +108,9 @@ const Tab = (props) => {
         ]}
       >
         <FormSection
-          id="primary-resource"
-          className="embedded-list-section"
+          id="resource-to-open"
           icon="fa fa-fw fa-folder-open-o"
-          title={trans('resource', {}, 'path')}
+          title={trans('resource_to_open')}
         >
           <ResourceSection
             resource={props.workspace.options.opened_resource}
@@ -143,8 +136,8 @@ const ConnectedTab = connect(
     pickResource(resourceTypes) {
       dispatch(modalActions.showModal(MODAL_DATA_PICKER, {
         icon: 'fa fa-fw fa-folder-open',
-        title: trans('pickResource', {}, 'path'),
-        confirmText: trans('select', {}, 'path'),
+        title: trans('resource_to_open'),
+        confirmText: trans('objects_select_confirm'),
         name: 'resourcesPicker',
         onlyId: false,
         display: {

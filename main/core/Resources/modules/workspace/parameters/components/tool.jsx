@@ -22,7 +22,7 @@ const Parameters = () =>
         content: ParametersTab
       }, {
         icon: 'fa fa-picture',
-        title: trans('display'),
+        title: trans('workspace_display'),
         path: '/display',
         actions: DisplayActions,
         content: DisplayTab
