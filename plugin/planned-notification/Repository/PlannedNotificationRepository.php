@@ -23,10 +23,9 @@ class PlannedNotificationRepository extends EntityRepository
             SELECT pn
             FROM Claroline\PlannedNotificationBundle\Entity\PlannedNotification pn
             JOIN pn.workspace w
-            LEFT JOIN pn.roles r
             WHERE w = :workspace
             AND pn.action = :action
-            AND r IS NULL
+            AND pn.roles IS EMPTY
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('workspace', $workspace);
@@ -44,7 +43,10 @@ class PlannedNotificationRepository extends EntityRepository
             LEFT JOIN pn.roles r
             WHERE w = :workspace
             AND pn.action = :action
-            AND r = :role
+            AND (
+              pn.roles IS EMPTY
+              OR r = :role
+          )
         ';
         $query = $this->_em->createQuery($dql);
         $query->setParameter('workspace', $workspace);
