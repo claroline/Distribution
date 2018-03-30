@@ -2,6 +2,7 @@
     "create_new_message": "Créer un nouveau message",
     "create_planned_notification": "Créer une notification planifiée",
     "planned_interval": "Délai planifié",
+    "planned_interval_infos": "Le message sera envoyé après ce délai (en jour) à partir de la date d'exécution de l'action.",
     "select": "Sélectionner",
     "select_message": "Sélectionner un message",
     "select_roles": "Sélectionner des rôles",

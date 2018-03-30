@@ -47,6 +47,7 @@ const NotificationForm = props =>
             type: 'number',
             label: trans('planned_interval', {}, 'planned_notification'),
             disabled: !props.canEdit,
+            help: trans('planned_interval_infos', {}, 'planned_notification'),
             options: {
               min: 0,
               unit: trans('days')
