@@ -94,7 +94,7 @@ const NotificationTab = connect(
         id: makeId(),
         workspace: workspace,
         parameters: {
-          action: constants.WORKSPACE_REGISTRATION,
+          action: constants.WORKSPACE_REGISTRATION_USER,
           interval: 1,
           byMail: true,
           byMessage: false

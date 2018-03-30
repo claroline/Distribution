@@ -12,6 +12,7 @@
 namespace Claroline\PlannedNotificationBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\Group;
 use Claroline\CoreBundle\Entity\Role;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -66,9 +67,10 @@ class PlannedNotificationManager
      * @param Workspace $workspace
      * @param string    $action
      * @param User      $user
+     * @param Group     $group
      * @param Role      $role
      */
-    public function generateScheduledTasks(Workspace $workspace, $action, User $user = null, Role $role = null)
+    public function generateScheduledTasks(Workspace $workspace, $action, User $user = null, Group $group = null, Role $role = null)
     {
         $notifications = is_null($role) ?
             $this->plannedNotificationRepo->findByAction($workspace, $action) :
@@ -83,9 +85,22 @@ class PlannedNotificationManager
             if (!empty($user)) {
                 $name .= ' ('.$user->getUsername().')';
             }
+            if (!empty($group)) {
+                $name .= ' ('.$group->getName().')';
+            }
             $name .= ' [+'.$notification->getInterval().']';
             $scheduledDate = clone $currentDate;
             $scheduledDate->add(new \DateInterval('P'.$notification->getInterval().'D'));
+            $users = [];
+
+            if (!empty($user)) {
+                $users[$user->getId()] = $user;
+            }
+            if (!empty($group)) {
+                foreach ($group->getUsers() as $groupUser) {
+                    $users[$groupUser->getId()] = $groupUser;
+                }
+            }
 
             $data = [
                 'name' => $name,
@@ -97,7 +112,9 @@ class PlannedNotificationManager
                     'object' => $notification->getMessage()->getTitle(),
                     'content' => $notification->getMessage()->getContent(),
                 ],
-                'users' => !empty($user) ? [['id' => $user->getId()]] : [],
+                'users' => array_map(function (User $u) {
+                    return ['id' => $u->getId()];
+                }, $users),
             ];
 
             if ($notification->isByMail()) {
