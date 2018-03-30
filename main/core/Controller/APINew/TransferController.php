@@ -49,7 +49,8 @@ class TransferController
      *    "finder"     = @DI\Inject("claroline.api.finder"),
      *    "serializer" = @DI\Inject("claroline.api.serializer"),
      *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
-     *    "fileUt"     = @DI\Inject("claroline.utilities.file")
+     *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
+     *    "filectrl"   = @DI\Inject("controller.api.file")
      * })
      *
      * @param TransferProvider   $provider
@@ -64,6 +65,7 @@ class TransferController
         SerializerProvider $serializer,
         FileUtilities $fileUt,
         RouterInterface $router,
+        $filectrl,
         $schemaDir
     ) {
         $this->provider = $provider;
@@ -72,6 +74,40 @@ class TransferController
         $this->schemaDir = $schemaDir;
         $this->fileUt = $fileUt;
         $this->router = $router;
+        $this->filectrl = $filectrl;
+    }
+
+    /**
+     * @Route(
+     *    "/upload",
+     *    name="apiv2_transfer_upload_file"
+     * )
+     * @Method("POST")
+     *
+     * @param Request $request
+     */
+    public function uploadFileAction(Request $request)
+    {
+        $file = $this->filectrl->uploadFiles($request)[0];
+
+        $object = $this->crud->create(
+            'Claroline\CoreBundle\Entity\Import\File',
+            ['uploadedFile' => $file]
+        );
+
+        return new JsonResponse($this->serializer->serialize($object), 200);
+    }
+
+    /**
+     * @Route(
+     *    "/upload",
+     *    name="apiv2_transfer_list"
+     * )
+     *
+     * @param Request $request
+     */
+    public function listFilesAction(Request $request)
+    {
     }
 
     /**
