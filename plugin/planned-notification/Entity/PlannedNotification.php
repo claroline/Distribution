@@ -18,7 +18,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Claroline\PlannedNotificationBundle\Repository\PlannedNotificationRepository")
  * @ORM\Table(name="claro_plannednotificationbundle_planned_notification")
  */
 class PlannedNotification
