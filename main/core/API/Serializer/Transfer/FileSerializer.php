@@ -51,14 +51,19 @@ class FileSerializer
      */
     public function serialize(File $file, array $options = [])
     {
-        return [
+        $data = [
             'id' => $file->getUuid(),
             'log' => $file->getLog(),
             'status' => $file->getStatus(),
             'uploadDate' => $file->getUploadDate(),
             'executionDate' => $file->getUploadDate(),
-            'uploadedFile' => $this->fileSerializer->serialize($file->getFile()),
           ];
+
+        if ($file->getFile()) {
+            $data['uploadedFile'] = $this->fileSerializer->serialize();
+        }
+
+        return $data;
     }
 
     /**
@@ -74,10 +79,11 @@ class FileSerializer
     {
         $this->sipe('log', 'setLog', $data, $file);
         $this->sipe('status', 'setStatus', $data, $file);
-        $this->sipe('executionDate', 'setExeuctionDate', $data, $file);
+        $this->sipe('executionDate', 'setExecutionDate', $data, $file);
+        $this->sipe('action', 'setAction', $data, $file);
 
         if (isset($data['uploadedFile'])) {
-            $uploadedFile = $this->fileSerializer->deserializer($data['uploadedFile']);
+            $uploadedFile = $this->fileSerializer->deserialize($data['uploadedFile']);
             if ($uploadedFile) {
                 $file->setFile($uploadedFile);
             }

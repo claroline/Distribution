@@ -15,17 +15,18 @@ use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\AppBundle\Event\StrictDispatcher;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Manages platform uploaded files... sort of.
  *
- * @EXT\Route("/uploadedfile", service="controller.api.file")
  * @ApiMeta(
  *     class="Claroline\CoreBundle\Entity\File\PublicFile",
  *     ignore={"update", "exist", "list", "copyBulk"}
  * )
+ * @Route("/publicfile")
  */
 class FileController extends AbstractCrudController
 {

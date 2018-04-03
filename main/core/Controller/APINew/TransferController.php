@@ -11,10 +11,12 @@
 
 namespace Claroline\CoreBundle\Controller\APINew;
 
+use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\AppBundle\Async\AsyncRequest;
+use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -27,17 +29,18 @@ use Symfony\Component\Routing\RouterInterface;
 
 /**
  * @Route("/transfer")
+ * @ApiMeta(class="Claroline\CoreBundle\Entity\Import\File", ignore={"update", "exist", "schema"})
  */
-class TransferController
+class TransferController extends AbstractCrudController
 {
     /** @var TransferProvider */
     private $provider;
 
     /** @var FinderProvider */
-    private $finder;
+    protected $finder;
 
     /** @var SerializerProvider */
-    private $serializer;
+    protected $serializer;
 
     /** @var string */
     private $schemaDir;
@@ -46,35 +49,24 @@ class TransferController
      * @DI\InjectParams({
      *    "provider"   = @DI\Inject("claroline.api.transfer"),
      *    "router"     = @DI\Inject("router"),
-     *    "finder"     = @DI\Inject("claroline.api.finder"),
-     *    "serializer" = @DI\Inject("claroline.api.serializer"),
      *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
-     *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
-     *    "filectrl"   = @DI\Inject("controller.api.file")
+     *    "fileUt"     = @DI\Inject("claroline.utilities.file")
      * })
      *
-     * @param TransferProvider   $provider
-     * @param FinderProvider     $finder
-     * @param SerializerProvider $serializer
-     * @param FileUtilities      $fileUt
-     * @param string             $schemaDir
+     * @param TransferProvider $provider
+     * @param FileUtilities    $fileUt
+     * @param string           $schemaDir
      */
     public function __construct(
         TransferProvider $provider,
-        FinderProvider $finder,
-        SerializerProvider $serializer,
         FileUtilities $fileUt,
         RouterInterface $router,
-        $filectrl,
         $schemaDir
     ) {
         $this->provider = $provider;
-        $this->finder = $finder;
-        $this->serializer = $serializer;
         $this->schemaDir = $schemaDir;
         $this->fileUt = $fileUt;
         $this->router = $router;
-        $this->filectrl = $filectrl;
     }
 
     /**
@@ -88,26 +80,19 @@ class TransferController
      */
     public function uploadFileAction(Request $request)
     {
-        $file = $this->filectrl->uploadFiles($request)[0];
+        $file = $this->uploadFile($request);
 
-        $object = $this->crud->create(
+        $this->crud->create(
             'Claroline\CoreBundle\Entity\Import\File',
             ['uploadedFile' => $file]
         );
 
-        return new JsonResponse($this->serializer->serialize($object), 200);
+        return new JsonResponse($this->serializer->serialize($file), 200);
     }
 
-    /**
-     * @Route(
-     *    "/upload",
-     *    name="apiv2_transfer_list"
-     * )
-     *
-     * @param Request $request
-     */
-    public function listFilesAction(Request $request)
+    public function getName()
     {
+        return 'transfer';
     }
 
     /**
@@ -172,7 +157,7 @@ class TransferController
      * )
      * @Method("GET")
      */
-    public function schemaAction()
+    public function schemaAction($class)
     {
         $file = $this->schemaDir.'/transfer.json';
 
@@ -202,7 +187,7 @@ class TransferController
      * @Route("/action/{name}/{format}", name="apiv2_transfer_action")
      * @Method("GET")
      */
-    public function getAction($name, $format)
+    public function getExplanationAction($name, $format)
     {
         return new JsonResponse($this->provider->explainAction($name, $format));
     }
@@ -224,5 +209,37 @@ class TransferController
     private function getLogFile(Request $request)
     {
         return $request->query->get('log');
+    }
+
+    public function uploadFile(Request $request)
+    {
+        $file = $request->files->all()['file'];
+        $handler = $request->get('handler');
+
+        /** @var StrictDispatcher */
+        $dispatcher = $this->container->get('claroline.event.event_dispatcher');
+
+        $object = $this->crud->create(
+              'Claroline\CoreBundle\Entity\File\PublicFile',
+              [],
+              ['file' => $file]
+          );
+
+        $dispatcher->dispatch(strtolower('upload_file_'.$handler), 'UploadFile', [$object]);
+
+        return $object;
+    }
+
+    /**
+     * @return array
+     *               It would be nice to automatize this
+     */
+    protected function getRequirements()
+    {
+        return [
+            'get' => ['id' => '^(?!.*(schema|copy|parameters|find|transfer|\/)).*'],
+            'update' => ['id' => '^(?!.*(schema|parameters|find|transfer|\/)).*'],
+            'exist' => [],
+        ];
     }
 }

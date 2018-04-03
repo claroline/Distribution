@@ -56,6 +56,11 @@ class File
     protected $status;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $action;
+
+    /**
      * @ORM\Column(name="start_date", type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
      *
@@ -72,6 +77,7 @@ class File
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->status = self::STATUS_PENDING;
     }
 
@@ -118,5 +124,15 @@ class File
     public function getExecutionDate()
     {
         return $this->date;
+    }
+
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    public function getAction()
+    {
+        return $this->action;
     }
 }
