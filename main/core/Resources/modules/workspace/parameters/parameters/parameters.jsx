@@ -195,7 +195,7 @@ const Parameters = (props) => {
 
 Parameters.propTypes = {
   workspace: T.shape({
-    roles: T.array(T.shape({
+    roles: T.arrayOf(T.shape({
       id: T.string.isRequired,
       translationKey: T.string.isRequired
     }))

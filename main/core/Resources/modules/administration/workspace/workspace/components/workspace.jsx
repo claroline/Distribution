@@ -96,7 +96,7 @@ const WorkspaceForm = (props) => {
               name: 'access_max_users',
               type: 'boolean',
               label: trans('access_max_users'),
-              calculated: props.workspace.restrictions && null !== props.workspace.restrictions.maxUsers && '' !== props.workspace.restrictions.maxUsers,
+              calculated: () => props.workspace.restrictions && null !== props.workspace.restrictions.maxUsers && '' !== props.workspace.restrictions.maxUsers,
               onChange: checked => {
                 if (checked) {
                   // initialize with the current nb of users with the role
