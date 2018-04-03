@@ -71,7 +71,7 @@ EntryMenu.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    resourceId: selectors.resource(state).id,
+    resourceId: selectors.clacoForm(state).id,
     canSearchEntry: selectors.canSearchEntry(state),
     randomEnabled: selectors.getParam(state, 'random_enabled'),
     canAddEntry: selectors.canAddEntry(state)

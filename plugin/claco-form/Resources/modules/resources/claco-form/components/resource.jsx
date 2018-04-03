@@ -11,6 +11,8 @@ import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {actions as editorActions} from '../editor/actions'
 import {selectors} from '../selectors'
@@ -48,7 +50,7 @@ const Resource = props =>
     editor={{
       path: '/edit',
       save: {
-        disabled: false,
+        disabled: !props.saveEnabled,
         action: props.saveParameters
       }
     }}
@@ -91,7 +93,7 @@ const Resource = props =>
         icon: 'fa fa-fw fa-upload',
         label: trans('export_all_entries', {}, 'clacoform'),
         displayed: props.canEdit,
-        action: generateUrl('claro_claco_form_entries_export', {clacoForm: props.resource.id})
+        action: generateUrl('claro_claco_form_entries_export', {clacoForm: props.clacoForm.id})
       }, {
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete_all_entries', {}, 'clacoform'),
@@ -114,19 +116,26 @@ const Resource = props =>
           component: ClacoFormMainMenu
         }, {
           path: '/edit',
-          component: ClacoFormConfig
+          component: ClacoFormConfig,
+          canEnter: () => props.canEdit,
+          onLeave: () => props.resetForm(),
+          onEnter: () => props.resetForm(props.clacoForm)
         }, {
           path: '/categories',
-          component: Categories
+          component: Categories,
+          canEnter: () => props.canEdit,
         }, {
           path: '/keywords',
-          component: Keywords
+          component: Keywords,
+          canEnter: () => props.canEdit,
         }, {
           path: '/fields',
-          component: Fields
+          component: Fields,
+          canEnter: () => props.canEdit,
         }, {
           path: '/template',
-          component: TemplateForm
+          component: TemplateForm,
+          canEnter: () => props.canEdit,
         }, {
           path: '/entries',
           component: Entries
@@ -145,29 +154,30 @@ const Resource = props =>
   </ResourcePageContainer>
 
 Resource.propTypes = {
-  resource: T.shape({
+  clacoForm: T.shape({
     id: T.number.isRequired
   }).isRequired,
-  saveParameters: T.func.isRequired,
-  deleteEntries: T.func.isRequired,
   canEdit: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   canSearchEntry: T.bool.isRequired,
-  defaultHome: T.string.isRequired
+  defaultHome: T.string.isRequired,
+  saveEnabled: T.bool.isRequired,
+  resetForm: T.func.isRequired,
+  saveParameters: T.func.isRequired,
+  deleteEntries: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
-    resource: selectors.resource(state),
+const ClacoFormResource = connect(
+  (state) => ({
+    clacoForm: selectors.clacoForm(state),
     canEdit: resourceSelect.editable(state),
     canAddEntry: selectors.canAddEntry(state),
     canSearchEntry: selectors.canSearchEntry(state),
-    defaultHome: selectors.getParam(state, 'default_home')
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+    defaultHome: selectors.getParam(state, 'default_home'),
+    saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'clacoFormForm'))
+  }),
+  (dispatch) => ({
+    resetForm: (formData) => dispatch(formActions.resetForm('clacoFormForm', formData)),
     saveParameters: () => dispatch(editorActions.saveParameters()),
     deleteEntries: () => {
       dispatch(
@@ -177,13 +187,10 @@ function mapDispatchToProps(dispatch) {
           handleConfirm: () => dispatch(editorActions.deleteAllEntries())
         })
       )
-
     }
-  }
-}
-
-const ConnectedClacoFormResource = connect(mapStateToProps, mapDispatchToProps)(Resource)
+  })
+)(Resource)
 
 export {
-  ConnectedClacoFormResource as ClacoFormResource
+  ClacoFormResource
 }

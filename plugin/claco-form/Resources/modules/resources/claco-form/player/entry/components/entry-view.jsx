@@ -646,7 +646,7 @@ EntryView.propTypes = {
 
 function mapStateToProps(state, ownProps) {
   return {
-    resourceId: selectors.resource(state).id,
+    resourceId: selectors.clacoForm(state).id,
     user: state.user,
     entryId: parseInt(ownProps.match.params.id),
 

@@ -6,7 +6,7 @@
       {% if not isAnon %}
         data-user="{{ user | api_serialize | json_encode | raw | escape }}"
       {% endif %}
-      data-resource="{{ _resource | api_serialize | json_encode | raw | escape }}"
+      data-claco-form="{{ _resource | api_serialize | json_encode | raw | escape }}"
       data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
       data-fields="{{ fields | json_encode | raw | escape }}"
       data-cascade-level-max={{ cascadeLevelMax }}

@@ -2,14 +2,14 @@ import {createSelector} from 'reselect'
 
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 
-const resource = state => state.resource
+const clacoForm = state => state.clacoForm
 const isAnon = state => state.isAnon
 const user = state => state.user
-const params = state => state.resource.details
+const params = state => state.clacoForm.details
 const visibleFields = state => state.fields.filter(f => !f.hidden)
-const template = state => state.resource.template
-const useTemplate = state => state.resource.details['use_template']
-const getParam = (state, property) => state.resource.details[property]
+const template = state => state.clacoForm.template
+const useTemplate = state => state.clacoForm.details['use_template']
+const getParam = (state, property) => state.clacoForm.details[property]
 const currentEntry = state => state.currentEntry
 const myEntriesCount = state => state.myEntriesCount
 const canAdministrate = state => state.resourceNode.rights.current.administrate
@@ -159,7 +159,7 @@ const canViewComments = createSelector(
 )
 
 export const selectors = {
-  resource,
+  clacoForm,
   isAnon,
   params,
   canSearchEntry,

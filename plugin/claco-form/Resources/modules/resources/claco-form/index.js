@@ -1,25 +1,26 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 import {registerModals} from '#/main/core/layout/modal'
-import {makeResourceReducer} from '#/main/core/resource/reducer'
+// import {makeResourceReducer} from '#/main/core/resource/reducer'
 
-import {
-  resourceReducers,
-  mainReducers,
-  parametersReducers,
-  messageReducers
-} from './reducers'
-import {categoryReducers} from './editor/category/reducers'
-import {keywordReducers} from './editor/keyword/reducers'
-import {fieldReducers} from './editor/field/reducers'
-import {
-  reducer,
-  myEntriesCountReducers,
-  currentEntryReducers
-} from './player/entry/reducers'
-import {ClacoFormResource} from './components/resource.jsx'
-import {CategoryFormModal} from './editor/category/components/category-form-modal.jsx'
-import {KeywordFormModal} from './editor/keyword/components/keyword-form-modal.jsx'
-import {FieldFormModal} from './editor/field/components/field-form-modal.jsx'
+import {reducer} from '#/plugin/claco-form/resources/claco-form/reducer'
+// import {
+//   resourceReducers,
+//   mainReducers,
+//   parametersReducers,
+//   messageReducers
+// } from './reducers'
+// import {categoryReducers} from './editor/category/reducers'
+// import {keywordReducers} from './editor/keyword/reducers'
+// import {fieldReducers} from './editor/field/reducers'
+// import {
+//   reducer,
+//   myEntriesCountReducers,
+//   currentEntryReducers
+// } from './player/entry/reducers'
+import {ClacoFormResource} from '#/plugin/claco-form/resources/claco-form/components/resource.jsx'
+import {CategoryFormModal} from '#/plugin/claco-form/resources/claco-form/editor/category/components/category-form-modal.jsx'
+import {KeywordFormModal} from '#/plugin/claco-form/resources/claco-form/editor/keyword/components/keyword-form-modal.jsx'
+import {FieldFormModal} from '#/plugin/claco-form/resources/claco-form/editor/field/components/field-form-modal.jsx'
 
 // register custom modals
 registerModals([
@@ -37,38 +38,21 @@ bootstrap(
   ClacoFormResource,
 
   // app store configuration
-  makeResourceReducer({}, {
-    user: mainReducers,
-    resource: resourceReducers,
-    canEdit: mainReducers,
-    isAnon: mainReducers,
-    canGeneratePdf: mainReducers,
-    parameters: parametersReducers,
-    categories: categoryReducers,
-    keywords: keywordReducers,
-    fields: fieldReducers,
-    entries: reducer,
-    myEntriesCount: myEntriesCountReducers,
-    currentEntry: currentEntryReducers,
-    cascadeLevelMax: mainReducers,
-    message: messageReducers,
-    roles: mainReducers,
-    myRoles: mainReducers
-  }),
+  reducer,
 
   // transform data attributes for redux store
   (initialData) => {
-    const resource = initialData.resource
+    const clacoForm = initialData.clacoForm
 
     return {
       user: initialData.user,
-      resource: resource,
+      clacoForm: clacoForm,
       resourceNode: initialData.resourceNode,
       isAnon: !initialData.user,
       canGeneratePdf: initialData.canGeneratePdf === 1,
-      parameters: Object.assign({}, resource.details, {'activePanelKey': ''}),
-      categories: resource.categories,
-      keywords: resource.keywords,
+      // parameters: Object.assign({}, clacoForm.details, {'activePanelKey': ''}),
+      categories: clacoForm.categories,
+      keywords: clacoForm.keywords,
       fields: initialData.fields,
       entries: initialData.entries,
       myEntriesCount: initialData.myEntriesCount,

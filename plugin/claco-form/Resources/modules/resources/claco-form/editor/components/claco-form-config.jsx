@@ -6,17 +6,22 @@ import Panel from 'react-bootstrap/lib/Panel'
 import PanelGroup from 'react-bootstrap/lib/PanelGroup'
 
 import {trans, t} from '#/main/core/translation'
+import {select as formSelect} from '#/main/core/data/form/selectors'
+import {actions as formActions} from '#/main/core/data/form/actions'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {constants as listConstants} from '#/main/core/data/list/constants'
 
+import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormGroup} from '#/main/core/layout/form/components/group/form-group.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {RadiosGroup} from '#/main/core/layout/form/components/group/radios-group.jsx'
 import {Date} from '#/main/core/layout/form/components/field/date.jsx'
 
-import {select as resourceSelect} from '#/main/core/resource/selectors'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {constants as listConstants} from '#/main/core/data/list/constants'
-import {actions} from '../actions'
+import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
 const getMultipleSelectValues = (e) => {
   const values = []
@@ -28,98 +33,6 @@ const getMultipleSelectValues = (e) => {
   }
 
   return values
-}
-
-const General = props =>
-  <fieldset>
-    <FormGroup
-      id="params-max-entries"
-      label={trans('label_max_entries', {}, 'clacoform')}
-    >
-      <input
-        id="params-max-entries"
-        type="number"
-        min="0"
-        value={props.params.max_entries}
-        className="form-control"
-        onChange={e => props.updateParameters('max_entries', parseInt(e.target.value))}
-      />
-    </FormGroup>
-    <CheckGroup
-      id="params-creation-enabled"
-      value={props.params.creation_enabled}
-      label={trans('label_creation_enabled', {}, 'clacoform')}
-      onChange={checked => props.updateParameters('creation_enabled', checked)}
-    />
-    <CheckGroup
-      id="params-edition-enabled"
-      value={props.params.edition_enabled}
-      label={trans('label_edition_enabled', {}, 'clacoform')}
-      onChange={checked => props.updateParameters('edition_enabled', checked)}
-    />
-    <CheckGroup
-      id="params-moderated"
-      value={props.params.moderated}
-      label={trans('label_moderated', {}, 'clacoform')}
-      onChange={checked => props.updateParameters('moderated', checked)}
-    />
-  </fieldset>
-
-General.propTypes = {
-  params: T.shape({
-    max_entries: T.number,
-    creation_enabled: T.boolean,
-    edition_enabled: T.boolean,
-    moderated: T.boolean
-  }).isRequired,
-  updateParameters: T.func.isRequired
-}
-
-const Display = props =>
-  <fieldset>
-    <RadiosGroup
-      id="params-default-home"
-      label={trans('label_default_home', {}, 'clacoform')}
-      options={[
-        {value: 'menu', label: trans('menu', {}, 'clacoform')},
-        {value: 'random', label: trans('random_mode', {}, 'clacoform')},
-        {value: 'search', label: trans('search_mode', {}, 'clacoform')},
-        {value: 'add', label: trans('entry_addition', {}, 'clacoform')}
-      ]}
-      value={props.params.default_home}
-      onChange={value => props.updateParameters('default_home', value)}
-    />
-    <RadiosGroup
-      id="params-display-nb-entries"
-      label={trans('label_display_nb_entries', {}, 'clacoform')}
-      options={[
-        {value: 'all', label: trans('choice_entry_all', {}, 'clacoform')},
-        {value: 'published', label: trans('choice_entry_published', {}, 'clacoform')},
-        {value: 'none', label: t('no')}
-      ]}
-      value={props.params.display_nb_entries}
-      onChange={value => props.updateParameters('display_nb_entries', value)}
-    />
-    <RadiosGroup
-      id="params-menu-position"
-      label={trans('label_menu_position', {}, 'clacoform')}
-      options={[
-        {value: 'down', label: trans('choice_menu_position_down', {}, 'clacoform')},
-        {value: 'up', label: trans('choice_menu_position_up', {}, 'clacoform')},
-        {value: 'both', label: trans('both', {}, 'clacoform')}
-      ]}
-      value={props.params.menu_position}
-      onChange={value => props.updateParameters('menu_position', value)}
-    />
-  </fieldset>
-
-Display.propTypes = {
-  params: T.shape({
-    default_home: T.string,
-    display_nb_entries: T.string,
-    menu_position: T.string
-  }).isRequired,
-  updateParameters: T.func.isRequired
 }
 
 const Random = props =>
@@ -294,50 +207,6 @@ List.propTypes = {
   updateParameters: T.func.isRequired
 }
 
-const Metadata = props =>
-  <fieldset>
-    <RadiosGroup
-      id="params-display-metadata"
-      label={trans('label_display_metadata', {}, 'clacoform')}
-      options={[
-        {value: 'all', label: t('yes')},
-        {value: 'none', label: t('no')},
-        {value: 'manager', label: trans('choice_manager_only', {}, 'clacoform')}
-      ]}
-      value={props.params.display_metadata}
-      onChange={value => props.updateParameters('display_metadata', value)}
-    />
-  </fieldset>
-
-Metadata.propTypes = {
-  params: T.shape({
-    display_metadata: T.string
-  }).isRequired,
-  updateParameters: T.func.isRequired
-}
-
-const Locked = props =>
-  <fieldset>
-    <RadiosGroup
-      id="params-locked-fields-for"
-      label={trans('lock_fields', {}, 'clacoform')}
-      options={[
-        {value: 'user', label: trans('choice_user_only', {}, 'clacoform')},
-        {value: 'manager', label: trans('choice_manager_only', {}, 'clacoform')},
-        {value: 'all', label: trans('both', {}, 'clacoform')}
-      ]}
-      value={props.params.locked_fields_for}
-      onChange={value => props.updateParameters('locked_fields_for', value)}
-    />
-  </fieldset>
-
-Locked.propTypes = {
-  params: T.shape({
-    locked_fields_for: T.string
-  }).isRequired,
-  updateParameters: T.func.isRequired
-}
-
 const Categories = props =>
   <fieldset>
     <CheckGroup
@@ -504,151 +373,142 @@ generateDisplayList.propTypes = {
   }))
 }
 
-function makePanel(Section, title, key, props, withCategories = false, withFields = false, withRoles = false) {
-  const caretIcon = key === props.params.activePanelKey ? 'fa-caret-down' : 'fa-caret-right'
-  const keyValue = key === props.params.activePanelKey ? '' : key
-
-  const Header =
-    <div className="editor-panel-title"
-      onClick={() => props.updateParameters('activePanelKey', keyValue)}
-    >
-      <span className={classes('fa fa-fw', caretIcon)} />
-      &nbsp;{title}
-    </div>
-
-  return (
-    <Panel
-      eventKey={key}
-      header={Header}
-    >
-      <Section
-        updateParameters={props.updateParameters}
-        params={props.params}
-        categories={withCategories ? props.categories : []}
-        fields={withFields ? props.fields : []}
-        roles={withRoles ? props.roles : []}
-      />
-    </Panel>
-  )
-}
-
-makePanel.propTypes = {
-  params: T.shape({
-    max_entries: T.number,
-    creation_enabled: T.boolean,
-    edition_enabled: T.boolean,
-    moderated: T.boolean,
-    default_home: T.string,
-    display_nb_entries: T.string,
-    menu_position: T.string,
-    random_enabled: T.boolean,
-    random_categories: T.array,
-    random_start_date: T.string,
-    random_end_date: T.string,
-    search_enabled: T.boolean,
-    search_column_enabled: T.boolean,
-    search_columns: T.array,
-    display_metadata: T.string,
-    locked_fields_for: T.string,
-    display_categories: T.boolean,
-    comments_enabled: T.boolean,
-    anonymous_comments_enabled: T.boolean,
-    moderate_comments: T.string,
-    display_comments: T.boolean,
-    open_comments: T.boolean,
-    display_comment_author: T.boolean,
-    display_comment_date: T.boolean,
-    votes_enabled: T.boolean,
-    display_votes: T.boolean,
-    open_votes: T.boolean,
-    keywords_enabled: T.boolean,
-    new_keywords_enabled: T.boolean,
-    display_keywords: T.boolean,
-    activePanelKey: T.string
-  }).isRequired,
-  categories: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })),
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    hidden: T.bool
-  })),
-  roles: T.array,
-  updateParameters: T.func.isRequired
-}
-
-class ClacoFormConfig extends Component {
-  componentDidMount() {
-    this.props.initializeParameters()
-  }
-
-  render() {
-    return (
-      <div>
-        <h2>
-          {trans('general_configuration', {}, 'clacoform')}
-        </h2>
-        {this.props.canEdit ?
-          <form>
-            <PanelGroup accordion>
-              {makePanel(General, t('general'), 'general', this.props)}
-              {makePanel(Display, t('display_parameters', {}, 'clacoform'), 'display', this.props)}
-              {makePanel(Random, trans('random_entries', {}, 'clacoform'), 'random_entries', this.props, true)}
-              {makePanel(List, trans('entries_list_search', {}, 'clacoform'), 'entries_list_search', this.props, false, true)}
-              {makePanel(Metadata, trans('metadata', {}, 'clacoform'), 'metadata', this.props)}
-              {makePanel(Locked, trans('locked_fields', {}, 'clacoform'), 'locked_fields', this.props)}
-              {makePanel(Categories, t('categories'), 'categories', this.props)}
-              {makePanel(Comments, trans('comments', {}, 'clacoform'), 'comments', this.props, false, false, true)}
-              {makePanel(Keywords, trans('keywords', {}, 'clacoform'), 'keywords', this.props)}
-            </PanelGroup>
-          </form> :
-          <div className="alert alert-danger">
-            {t('unauthorized')}
-          </div>
+const EditorComponent = props =>
+  <section className="resource-section">
+    <h2>{trans('configuration', {}, 'platform')}</h2>
+    <FormContainer
+      level={3}
+      name="clacoFormForm"
+      sections={[
+        {
+          id: 'general',
+          icon: 'fa fa-fw fa-cogs',
+          title: trans('general'),
+          fields: [
+            {
+              name: 'details.max_entries',
+              type: 'number',
+              label: trans('label_max_entries', {}, 'clacoform'),
+              required: true,
+              options: {
+                min: 0
+              }
+            }, {
+              name: 'details.creation_enabled',
+              type: 'boolean',
+              label: trans('label_creation_enabled', {}, 'clacoform'),
+              required: true
+            }, {
+              name: 'details.edition_enabled',
+              type: 'boolean',
+              label: trans('label_edition_enabled', {}, 'clacoform'),
+              required: true
+            }, {
+              name: 'details.moderated',
+              type: 'boolean',
+              label: trans('label_moderated', {}, 'clacoform'),
+              required: true
+            }
+          ]
+        }, {
+          id: 'display',
+          icon: 'fa fa-fw fa-desktop',
+          title: trans('display_parameters'),
+          fields: [
+            {
+              name: 'details.default_home',
+              type: 'enum',
+              label: trans('label_default_home', {}, 'clacoform'),
+              required: true,
+              options: {
+                noEmpty: true,
+                choices: constants.DEFAULT_HOME_CHOICES
+              }
+            }, {
+              name: 'details.display_nb_entries',
+              type: 'enum',
+              label: trans('label_display_nb_entries', {}, 'clacoform'),
+              required: true,
+              options: {
+                noEmpty: true,
+                choices: constants.DISPLAY_NB_ENTRIES_CHOICES
+              }
+            }, {
+              name: 'details.menu_position',
+              type: 'enum',
+              label: trans('label_menu_position', {}, 'clacoform'),
+              required: true,
+              options: {
+                noEmpty: true,
+                choices: constants.MENU_POSITION_CHOICES
+              }
+            }
+          ]
+        }, {
+          id: 'random',
+          icon: 'fa fa-fw fa-random',
+          title: trans('random_entries', {}, 'clacoform'),
+          fields: []
+        }, {
+          id: 'list',
+          icon: 'fa fa-fw fa-list',
+          title: trans('entries_list_search', {}, 'clacoform'),
+          fields: []
+        }, {
+          id: 'metadata',
+          icon: 'fa fa-fw fa-user-secret',
+          title: trans('metadata', {}, 'clacoform'),
+          fields: [
+            {
+              name: 'details.display_metadata',
+              type: 'enum',
+              label: trans('label_display_metadata', {}, 'clacoform'),
+              required: true,
+              options: {
+                noEmpty: true,
+                choices: constants.DISPLAY_METADATA_CHOICES
+              }
+            }
+          ]
+        }, {
+          id: 'locked',
+          icon: 'fa fa-fw fa-lock',
+          title: trans('locked_fields', {}, 'clacoform'),
+          fields: [
+            {
+              name: 'details.locked_fields_for',
+              type: 'enum',
+              label: trans('lock_fields', {}, 'clacoform'),
+              required: true,
+              options: {
+                noEmpty: true,
+                choices: constants.LOCKED_FIELDS_FOR_CHOICES
+              }
+            }
+          ]
+        }, {
+          id: 'categories',
+          icon: 'fa fa-fw fa-columns',
+          title: trans('categories'),
+          fields: []
+        }, {
+          id: 'comments',
+          icon: 'fa fa-fw fa-comments-o',
+          title: trans('comments', {}, 'clacoform'),
+          fields: []
+        }, {
+          id: 'keywords',
+          icon: 'fa fa-fw fa-tags',
+          title: trans('keywords', {}, 'clacoform'),
+          fields: []
         }
-      </div>
-    )
-  }
-}
+      ]}
+    />
+  </section>
 
-ClacoFormConfig.propTypes = {
+EditorComponent.propTypes = {
+  clacoForm: T.shape(ClacoFormType.propTypes),
   canEdit: T.bool.isRequired,
-  params: T.shape({
-    max_entries: T.number,
-    creation_enabled: T.boolean,
-    edition_enabled: T.boolean,
-    moderated: T.boolean,
-    default_home: T.string,
-    display_nb_entries: T.string,
-    menu_position: T.string,
-    random_enabled: T.boolean,
-    random_categories: T.array,
-    random_start_date: T.string,
-    random_end_date: T.string,
-    search_enabled: T.boolean,
-    search_column_enabled: T.boolean,
-    search_columns: T.array,
-    display_metadata: T.string,
-    locked_fields_for: T.string,
-    display_categories: T.boolean,
-    comments_enabled: T.boolean,
-    anonymous_comments_enabled: T.boolean,
-    moderate_comments: T.string,
-    display_comments: T.boolean,
-    open_comments: T.boolean,
-    display_comment_author: T.boolean,
-    display_comment_date: T.boolean,
-    votes_enabled: T.boolean,
-    display_votes: T.boolean,
-    open_votes: T.boolean,
-    keywords_enabled: T.boolean,
-    new_keywords_enabled: T.boolean,
-    display_keywords: T.boolean,
-    use_template: T.boolean,
-    activePanelKey: T.string
-  }),
   categories: T.arrayOf(T.shape({
     id: T.number.isRequired,
     name: T.string.isRequired
@@ -664,24 +524,21 @@ ClacoFormConfig.propTypes = {
   showModal: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const ClacoFormConfig = connect(
+  (state) => ({
+    clacoForm: formSelect.data(formSelect.form(state, 'clacoFormForm')),
     canEdit: resourceSelect.editable(state),
-    params: state.parameters,
     categories: state.categories,
     fields: state.fields,
     roles: state.roles
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     initializeParameters: () => dispatch(actions.initializeParameters()),
     updateParameters: (property, value) => dispatch(actions.updateParameters(property, value)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
+  })
+)(EditorComponent)
+
+export {
+  ClacoFormConfig
 }
-
-const ConnectedClacoFormConfig = connect(mapStateToProps, mapDispatchToProps)(ClacoFormConfig)
-
-export {ConnectedClacoFormConfig as ClacoFormConfig}
