@@ -45,7 +45,7 @@ const FormField = props => {
           this.props.setErrors(validateProp(this.props, value))
         }
       }
-    }))
+    }
   }
 }
 
