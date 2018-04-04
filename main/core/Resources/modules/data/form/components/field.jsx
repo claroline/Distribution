@@ -12,41 +12,37 @@ const FormField = props => {
   const typeDef = getTypeOrDefault(props.type)
   invariant(typeDef.components.form, `form component cannot be found for '${props.type}'`)
 
-    if (this.props.readOnly) {
-      return (
-        <FormGroup
-          id={this.props.name}
-          label={this.props.label}
-          help={this.props.help}
-        >
-          <div>
-            {typeDef.render(this.props.value, this.props.options) || '-'}
-          </div>
-        </FormGroup>
-      )
-    } else {
-      return React.createElement(typeDef.components.form, merge({}, this.props.options, {
-        id: this.props.name,
-        label: this.props.label,
-        hideLabel: this.props.hideLabel,
-        disabled: this.props.disabled,
-        help: this.props.help,
-        error: this.props.error,
-        warnOnly: !this.props.validating,
-        optional: !this.props.required,
-        value: this.props.value,
-        onChange: (value) => {
-          this.props.updateProp(this.props.name, value) // todo : maybe disable for calculated value
-          
-          if (this.props.onChange) {
-            this.props.onChange(value)
-          }
+  if (this.props.readOnly) {
+    return (
+      <FormGroup
+        id={this.props.name}
+        label={this.props.label}
+        help={this.props.help}
+      >
+        <div>
+          {typeDef.render(this.props.value, this.props.options) || '-'}
+        </div>
+      </FormGroup>
+    )
+  } else {
+    return React.createElement(typeDef.components.form, merge({}, this.props.options, {
+      id: this.props.name,
+      label: this.props.label,
+      hideLabel: this.props.hideLabel,
+      disabled: this.props.disabled,
+      help: this.props.help,
+      error: this.props.error,
+      warnOnly: !this.props.validating,
+      optional: !this.props.required,
+      value: this.props.value,
+      onChange: (value) => {
+        this.props.updateProp(this.props.name, value) // todo : maybe disable for calculated value
 
-          this.props.setErrors(validateProp(this.props, value))
+        if (this.props.onChange) {
+          this.props.onChange(value)
         }
 
-        props.updateProp(props.name, value) // todo : maybe disable for calculated value
-        props.setErrors(validateProp(props, value))
+        this.props.setErrors(validateProp(this.props, value))
       }
     }))
   }
