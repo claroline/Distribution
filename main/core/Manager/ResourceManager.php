@@ -1522,12 +1522,15 @@ class ResourceManager
      */
     public function getByWorkspaceAndResourceType(
         Workspace $workspace,
-        ResourceType $resourceType
+        ResourceType $resourceType,
+        $filterDeleted = false
     ) {
-        return $this->resourceNodeRepo->findBy(
-            ['workspace' => $workspace, 'resourceType' => $resourceType],
-            ['name' => 'ASC']
-        );
+        $findBy = ['workspace' => $workspace, 'resourceType' => $resourceType];
+        if ($filterDeleted) {
+            $findBy['active'] = true;
+        }
+
+        return $this->resourceNodeRepo->findBy($findBy, ['name' => 'ASC']);
     }
 
     /**
