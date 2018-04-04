@@ -12,33 +12,37 @@ const FormField = props => {
   const typeDef = getTypeOrDefault(props.type)
   invariant(typeDef.components.form, `form component cannot be found for '${props.type}'`)
 
-  if (props.readOnly) {
-    return (
-      <FormGroup
-        id={props.name}
-        label={props.label}
-        hideLabel={props.hideLabel}
-        help={props.help}
-      >
-        <div>
-          {typeDef.render(props.value, props.options) || '-'}
-        </div>
-      </FormGroup>
-    )
-  } else {
-    return React.createElement(typeDef.components.form, merge({}, props.options, {
-      id: props.name,
-      label: props.label,
-      hideLabel: props.hideLabel,
-      disabled: props.disabled,
-      help: props.help,
-      error: props.error,
-      warnOnly: !props.validating,
-      optional: !props.required,
-      value: props.value,
-      onChange: (value) => {
-        if (props.onChange) {
-          props.onChange(value)
+    if (this.props.readOnly) {
+      return (
+        <FormGroup
+          id={this.props.name}
+          label={this.props.label}
+          help={this.props.help}
+        >
+          <div>
+            {typeDef.render(this.props.value, this.props.options) || '-'}
+          </div>
+        </FormGroup>
+      )
+    } else {
+      return React.createElement(typeDef.components.form, merge({}, this.props.options, {
+        id: this.props.name,
+        label: this.props.label,
+        hideLabel: this.props.hideLabel,
+        disabled: this.props.disabled,
+        help: this.props.help,
+        error: this.props.error,
+        warnOnly: !this.props.validating,
+        optional: !this.props.required,
+        value: this.props.value,
+        onChange: (value) => {
+          this.props.updateProp(this.props.name, value) // todo : maybe disable for calculated value
+          
+          if (this.props.onChange) {
+            this.props.onChange(value)
+          }
+
+          this.props.setErrors(validateProp(this.props, value))
         }
 
         props.updateProp(props.name, value) // todo : maybe disable for calculated value
