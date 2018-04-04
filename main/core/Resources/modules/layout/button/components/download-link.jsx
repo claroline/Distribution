@@ -3,14 +3,17 @@ import {PropTypes as T} from 'prop-types'
 
 const DownloadLink = props => {
   let file = props.data
+
   if (Array.isArray(props.data)) {
     file = file[0]
   }
 
   return (
-    <a href={file.url}>
-      {file.name || file.url}
-    </a>
+    file && file.url ?
+      <a href={file.url}>
+        {file.name || file.url}
+      </a> :
+      <span/>
   )
 }
 
