@@ -88,7 +88,7 @@ class LogRepository extends EntityRepository
                 $qb->join('obj.doer', 'doer');
             }
             if ($limit > 0) {
-                $ids = $this->fetchUsersByActionsList($filters, true, $page, $limit, $sortBy);
+                $ids = array_column($this->fetchUsersByActionsList($filters, true, $page, $limit, $sortBy), 'doerId');
                 $qb->andWhere('obj.doer IN (:ids)')
                     ->setParameter('ids', $ids);
             }
@@ -110,13 +110,13 @@ class LogRepository extends EntityRepository
     ) {
         $qb = $this->createQueryBuilder('obj');
         if ($idsOnly) {
-            $qb->select('IDENTITY(obj.doer)');
+            $qb->select('DISTINCT(IDENTITY(obj.doer)) AS doerId, COUNT(obj.id) AS actions');
         } else {
             $qb->select('
-                doer.id AS doerId, 
-                doer.firstName as doerFirstName, 
-                doer.lastName as doerLastName, 
-                COUNT(obj.id) as actions
+                DISTINCT(doer.id) AS doerId, 
+                doer.firstName AS doerFirstName, 
+                doer.lastName AS doerLastName, 
+                COUNT(obj.id) AS actions
             ');
         }
 
@@ -130,6 +130,8 @@ class LogRepository extends EntityRepository
         if (!$idsOnly && !in_array('doer', $qb->getAllAliases())) {
             $qb->join('obj.doer', 'doer');
         }
+
+        $qb->groupBy('obj.doer');
 
         return $qb->getQuery()->getResult();
     }
