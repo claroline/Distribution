@@ -81,7 +81,7 @@ class LogFinder implements FinderInterface
             }
         }
 
-        if (!empty($sortBy) && $sortBy['property'] === 'doer.name') {
+        if (!empty($sortBy) && ($sortBy['property'] === 'doer.name' || $sortBy['property'] === 'actions')) {
             $direction = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
             switch ($sortBy['property']) {
                 case 'doer.name':

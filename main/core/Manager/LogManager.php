@@ -37,7 +37,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class LogManager
 {
     const LOG_PER_PAGE = 40;
-    const CSV_LOG_BATCH = 100;
+    const CSV_LOG_BATCH = 1000;
 
     private $container;
 
@@ -219,12 +219,25 @@ class LogManager
 
         $data = [];
         foreach ($userData as $line) {
-            $line['chartData'] = $this->formatDataForChart($line['chartData'], $minDate, $maxDate);
+            $line['chartData'] = $this->formatDataForChart($line['chartData'], clone $minDate, clone $maxDate);
             $data[] = $line;
         }
-        usort($data, function ($a, $b) {
-            return $a['actions'] - $b['actions'];
-        });
+
+        if (!empty($sortBy)) {
+            usort($data, function ($o1, $o2) use ($sortBy) {
+                $cmp = 0;
+                switch ($sortBy['property']) {
+                    case 'doer.name':
+                        $cmp = strcmp($o1['doer']['name'], $o2['doer']['name']);
+                        break;
+                    case 'actions':
+                        $cmp = $o1['actions'] - $o2['actions'];
+                        break;
+                }
+
+                return $sortBy['direction'] * $cmp;
+            });
+        }
 
         return FinderProvider::formatPaginatedData($data, $totalUsers, $page, $limit, $filters, $sortBy);
     }
