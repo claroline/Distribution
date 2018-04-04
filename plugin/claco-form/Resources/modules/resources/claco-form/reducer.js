@@ -5,9 +5,7 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 import {
   RESOURCE_PROPERTY_UPDATE,
-  RESOURCE_PARAMS_PROPERTY_UPDATE,
-  PARAMETERS_INITIALIZE,
-  PARAMETERS_UPDATE
+  RESOURCE_PARAMS_PROPERTY_UPDATE
 } from '#/plugin/claco-form/resources/claco-form/editor/actions'
 import {
   MESSAGE_RESET,
@@ -23,25 +21,6 @@ import {
   myEntriesCountReducers,
   currentEntryReducers
 } from '#/plugin/claco-form/resources/claco-form/player/entry/reducers'
-
-// const resourceReducers = makeReducer({}, {
-//   [RESOURCE_PROPERTY_UPDATE]: (state, action) => Object.assign({}, state, {[action.property]: action.value}),
-//   [RESOURCE_PARAMS_PROPERTY_UPDATE]: (state, action) => {
-//     const details = Object.assign({}, state.details, {[action.property]: action.value})
-//
-//     return Object.assign({}, state, {details: details})
-//   }
-// })
-
-// const parametersReducers = makeReducer({}, {
-//   [PARAMETERS_INITIALIZE]: (state, action) => action.params,
-//   [PARAMETERS_UPDATE]: (state, action) => {
-//     const parameters = cloneDeep(state)
-//     parameters[action.property] = action.value
-//
-//     return parameters
-//   }
-// })
 
 const messageReducers = makeReducer({}, {
   [MESSAGE_RESET]: () => {
@@ -60,7 +39,19 @@ const messageReducers = makeReducer({}, {
 
 const clacoFormReducer = makeReducer({}, {
   // replaces clacoForm data after success updates
-  [FORM_SUBMIT_SUCCESS+'/clacoFormForm']: (state, action) => action.updatedData
+  [FORM_SUBMIT_SUCCESS+'/clacoFormForm']: (state, action) => action.updatedData,
+  [RESOURCE_PROPERTY_UPDATE]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState[action.property] = action.value
+
+    return newState
+  },
+  [RESOURCE_PARAMS_PROPERTY_UPDATE]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState['details'][action.property] = action.value
+
+    return newState
+  }
 })
 
 const reducer = makeResourceReducer({}, {

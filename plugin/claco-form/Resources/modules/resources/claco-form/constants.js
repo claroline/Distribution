@@ -1,16 +1,17 @@
-import {t, trans} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
+import {constants as listConstants} from '#/main/core/data/list/constants'
 
 const FIELD_TYPES = [
-  {name: 'text', value: 1, label: t('text'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'number', value: 2, label: t('number'), hasChoice: false, hasCascade: false, answerType: 'number'},
-  {name: 'date', value: 3, label: t('date'), hasChoice: false, hasCascade: false, answerType: 'date'},
-  {name: 'radio', value: 4, label: t('radio'), hasChoice: true, hasCascade: false, answerType: 'string'},
-  {name: 'select', value: 5, label: t('select'), hasChoice: true, hasCascade: true, answerType: 'string'},
-  {name: 'checkboxes', value: 6, label: t('checkboxes'), hasChoice: true, hasCascade: false, answerType: 'array'},
-  {name: 'country', value: 7, label: t('country'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'email', value: 8, label: t('email'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'html', value: 9, label: t('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'file', value: 11, label: t('file'), hasChoice: false, hasCascade: false, answerType: 'array'}
+  {name: 'text', value: 1, label: trans('text'), hasChoice: false, hasCascade: false, answerType: 'string'},
+  {name: 'number', value: 2, label: trans('number'), hasChoice: false, hasCascade: false, answerType: 'number'},
+  {name: 'date', value: 3, label: trans('date'), hasChoice: false, hasCascade: false, answerType: 'date'},
+  {name: 'radio', value: 4, label: trans('radio'), hasChoice: true, hasCascade: false, answerType: 'string'},
+  {name: 'select', value: 5, label: trans('select'), hasChoice: true, hasCascade: true, answerType: 'string'},
+  {name: 'checkboxes', value: 6, label: trans('checkboxes'), hasChoice: true, hasCascade: false, answerType: 'array'},
+  {name: 'country', value: 7, label: trans('country'), hasChoice: false, hasCascade: false, answerType: 'string'},
+  {name: 'email', value: 8, label: trans('email'), hasChoice: false, hasCascade: false, answerType: 'string'},
+  {name: 'html', value: 9, label: trans('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'},
+  {name: 'file', value: 11, label: trans('file'), hasChoice: false, hasCascade: false, answerType: 'array'}
 ]
 
 const FILE_TYPES = {
@@ -79,6 +80,9 @@ const MODERATE_COMMENTS_CHOICES = {
   [CHOICE_ANONYMOUS]: trans('choice_anonymous_comments_only', {}, 'clacoform')
 }
 
+const DISPLAY_MODES_CHOICES = {}
+Object.keys(listConstants.DISPLAY_MODES).forEach(key => DISPLAY_MODES_CHOICES[key] = listConstants.DISPLAY_MODES[key].label)
+
 export const constants = {
   FIELD_TYPES,
   FILE_TYPES,
@@ -90,5 +94,6 @@ export const constants = {
   MENU_POSITION_CHOICES,
   DISPLAY_METADATA_CHOICES,
   LOCKED_FIELDS_FOR_CHOICES,
-  MODERATE_COMMENTS_CHOICES
+  MODERATE_COMMENTS_CHOICES,
+  DISPLAY_MODES_CHOICES
 }

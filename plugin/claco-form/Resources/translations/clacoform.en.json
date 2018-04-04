@@ -117,6 +117,8 @@
     "label_random_categories": "Pick entries from the following categories",
     "label_random_date": "Pick entries between these two dates",
     "label_random_enabled": "Allow viewing of random entries",
+    "label_random_end_date": "Until",
+    "label_random_start_date": "Pick entries from",
     "label_search_column_enabled": "Allow to choose the displayed columns",
     "label_search_columns": "Columns to display",
     "label_search_enabled": "Allow listing/search",

@@ -161,7 +161,6 @@ const canViewComments = createSelector(
 export const selectors = {
   clacoForm,
   isAnon,
-  params,
   canSearchEntry,
   visibleFields,
   template,

@@ -14,19 +14,20 @@ import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
 
-import {actions as editorActions} from '../editor/actions'
-import {selectors} from '../selectors'
+import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 
-import {ClacoFormMainMenu} from '../player/components/claco-form-main-menu.jsx'
-import {ClacoFormConfig} from '../editor/components/claco-form-config.jsx'
-import {Categories} from '../editor/category/components/categories.jsx'
-import {Keywords} from '../editor/keyword/components/keywords.jsx'
-import {Fields} from '../editor/field/components/fields.jsx'
-import {TemplateForm} from '../editor/template/components/template-form.jsx'
-import {Entries} from '../player/entry/components/entries.jsx'
-import {EntryCreateForm} from '../player/entry/components/entry-create-form.jsx'
-import {EntryEditForm} from '../player/entry/components/entry-edit-form.jsx'
-import {EntryView} from '../player/entry/components/entry-view.jsx'
+import {ClacoFormMainMenu} from '#/plugin/claco-form/resources/claco-form/player/components/claco-form-main-menu.jsx'
+import {Editor} from '#/plugin/claco-form/resources/claco-form/editor/components/editor.jsx'
+import {Categories} from '#/plugin/claco-form/resources/claco-form/editor/category/components/categories.jsx'
+import {Keywords} from '#/plugin/claco-form/resources/claco-form/editor/keyword/components/keywords.jsx'
+import {Fields} from '#/plugin/claco-form/resources/claco-form/editor/field/components/fields.jsx'
+import {TemplateForm} from '#/plugin/claco-form/resources/claco-form/editor/template/components/template-form.jsx'
+import {Entries} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entries.jsx'
+import {EntryCreateForm} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-create-form.jsx'
+import {EntryEditForm} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-edit-form.jsx'
+import {EntryView} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-view.jsx'
 
 function getHome(type) {
   switch (type) {
@@ -116,7 +117,7 @@ const Resource = props =>
           component: ClacoFormMainMenu
         }, {
           path: '/edit',
-          component: ClacoFormConfig,
+          component: Editor,
           canEnter: () => props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.clacoForm)
@@ -154,9 +155,7 @@ const Resource = props =>
   </ResourcePageContainer>
 
 Resource.propTypes = {
-  clacoForm: T.shape({
-    id: T.number.isRequired
-  }).isRequired,
+  clacoForm: T.shape(ClacoFormType.propTypes).isRequired,
   canEdit: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   canSearchEntry: T.bool.isRequired,

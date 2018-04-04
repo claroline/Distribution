@@ -117,6 +117,8 @@
     "label_random_categories": "Proposer les fiches des catégories suivantes",
     "label_random_date": "Afficher les fiches publiées entre les dates suivantes",
     "label_random_enabled": "Autoriser la consultation aléatoire de fiches",
+    "label_random_end_date": "Jusqu'au",
+    "label_random_start_date": "Afficher les fiches publiées à partir du",
     "label_search_column_enabled": "Autoriser le choix des colonnes affichées",
     "label_search_columns": "Colonnes à afficher",
     "label_search_enabled": "Autoriser la consultation liste/recherche",

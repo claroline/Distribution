@@ -1,22 +1,7 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 import {registerModals} from '#/main/core/layout/modal'
-// import {makeResourceReducer} from '#/main/core/resource/reducer'
 
 import {reducer} from '#/plugin/claco-form/resources/claco-form/reducer'
-// import {
-//   resourceReducers,
-//   mainReducers,
-//   parametersReducers,
-//   messageReducers
-// } from './reducers'
-// import {categoryReducers} from './editor/category/reducers'
-// import {keywordReducers} from './editor/keyword/reducers'
-// import {fieldReducers} from './editor/field/reducers'
-// import {
-//   reducer,
-//   myEntriesCountReducers,
-//   currentEntryReducers
-// } from './player/entry/reducers'
 import {ClacoFormResource} from '#/plugin/claco-form/resources/claco-form/components/resource.jsx'
 import {CategoryFormModal} from '#/plugin/claco-form/resources/claco-form/editor/category/components/category-form-modal.jsx'
 import {KeywordFormModal} from '#/plugin/claco-form/resources/claco-form/editor/keyword/components/keyword-form-modal.jsx'
@@ -50,7 +35,6 @@ bootstrap(
       resourceNode: initialData.resourceNode,
       isAnon: !initialData.user,
       canGeneratePdf: initialData.canGeneratePdf === 1,
-      // parameters: Object.assign({}, clacoForm.details, {'activePanelKey': ''}),
       categories: clacoForm.categories,
       keywords: clacoForm.keywords,
       fields: initialData.fields,

@@ -12,6 +12,7 @@
 namespace Claroline\ClacoFormBundle\Controller;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Options;
 use Claroline\ClacoFormBundle\API\Serializer\CommentSerializer;
 use Claroline\ClacoFormBundle\API\Serializer\EntrySerializer;
 use Claroline\ClacoFormBundle\API\Serializer\FieldSerializer;
@@ -140,11 +141,11 @@ class ClacoFormController extends Controller
         $roleUser = $this->roleManager->getRoleByName('ROLE_USER');
         $roleAnonymous = $this->roleManager->getRoleByName('ROLE_ANONYMOUS');
         $workspaceRoles = $this->roleManager->getWorkspaceRoles($clacoForm->getResourceNode()->getWorkspace());
-        $roles[] = $this->roleSerializer->serialize($roleUser);
-        $roles[] = $this->roleSerializer->serialize($roleAnonymous);
+        $roles[] = $this->roleSerializer->serialize($roleUser, [Options::SERIALIZE_MINIMAL]);
+        $roles[] = $this->roleSerializer->serialize($roleAnonymous, [Options::SERIALIZE_MINIMAL]);
 
         foreach ($workspaceRoles as $workspaceRole) {
-            $roles[] = $this->roleSerializer->serialize($workspaceRole);
+            $roles[] = $this->roleSerializer->serialize($workspaceRole, [Options::SERIALIZE_MINIMAL]);
         }
         $currentUser = $this->tokenStorage->getToken()->getUser();
         $myRoles = 'anon.' === $currentUser ? [$roleAnonymous->getName()] : $currentUser->getRoles();
