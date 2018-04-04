@@ -44,11 +44,8 @@ const FormField = props => {
 
           this.props.setErrors(validateProp(this.props, value))
         }
-
-        props.updateProp(props.name, value) // todo : maybe disable for calculated value
-        props.setErrors(validateProp(props, value))
-      }
-    }))
+      }))
+    }
   }
 }
 
