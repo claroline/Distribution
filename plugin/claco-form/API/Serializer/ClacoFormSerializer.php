@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\API\Serializer;
 
+use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
 use Claroline\ClacoFormBundle\Entity\Field;
@@ -14,6 +15,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class ClacoFormSerializer
 {
+    use SerializerTrait;
+
     const OPTION_MINIMAL = 'minimal';
 
     /** @var CategorySerializer */
@@ -83,5 +86,18 @@ class ClacoFormSerializer
         }
 
         return $serialized;
+    }
+
+    /**
+     * @param array     $data
+     * @param ClacoForm $clacoForm
+     *
+     * @return ClacoForm
+     */
+    public function deserialize($data, ClacoForm $clacoForm)
+    {
+        $this->sipe('details', 'setDetails', $data, $clacoForm);
+
+        return $clacoForm;
     }
 }

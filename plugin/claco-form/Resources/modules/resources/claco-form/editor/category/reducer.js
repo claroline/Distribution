@@ -4,9 +4,9 @@ import {
   CATEGORY_ADD,
   CATEGORY_UPDATE,
   CATEGORY_REMOVE
-} from './actions'
+} from '#/plugin/claco-form/resources/claco-form/editor/category/actions'
 
-const categoryReducers = makeReducer({}, {
+const reducer = makeReducer({}, {
   [CATEGORY_ADD]: (state, action) => {
     const categories = cloneDeep(state)
     categories.push(action.category)
@@ -36,5 +36,5 @@ const categoryReducers = makeReducer({}, {
 })
 
 export {
-  categoryReducers
+  reducer
 }

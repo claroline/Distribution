@@ -11,18 +11,17 @@ import {
   MESSAGE_RESET,
   MESSAGE_UPDATE
 } from '#/plugin/claco-form/resources/claco-form/actions'
-
 import {reducer as editorReducer} from '#/plugin/claco-form/resources/claco-form/editor/reducer'
-import {categoryReducers} from '#/plugin/claco-form/resources/claco-form/editor/category/reducers'
-import {keywordReducers} from '#/plugin/claco-form/resources/claco-form/editor/keyword/reducers'
-import {fieldReducers} from '#/plugin/claco-form/resources/claco-form/editor/field/reducers'
+import {reducer as categoryReducer} from '#/plugin/claco-form/resources/claco-form/editor/category/reducer'
+import {reducer as keywordReducer} from '#/plugin/claco-form/resources/claco-form/editor/keyword/reducer'
+import {reducer as fieldReducer} from '#/plugin/claco-form/resources/claco-form/editor/field/reducer'
 import {
   reducer as entriesReducer,
-  myEntriesCountReducers,
-  currentEntryReducers
-} from '#/plugin/claco-form/resources/claco-form/player/entry/reducers'
+  myEntriesCountReducer,
+  currentEntryReducer
+} from '#/plugin/claco-form/resources/claco-form/player/entry/reducer'
 
-const messageReducers = makeReducer({}, {
+const messageReducer = makeReducer({}, {
   [MESSAGE_RESET]: () => {
     return {
       content: null,
@@ -60,14 +59,14 @@ const reducer = makeResourceReducer({}, {
   clacoFormForm: editorReducer,
   isAnon: makeReducer({}, {}),
   canGeneratePdf: makeReducer({}, {}),
-  categories: categoryReducers,
-  keywords: keywordReducers,
-  fields: fieldReducers,
+  categories: categoryReducer,
+  keywords: keywordReducer,
+  fields: fieldReducer,
   entries: entriesReducer,
-  myEntriesCount: myEntriesCountReducers,
-  currentEntry: currentEntryReducers,
+  myEntriesCount: myEntriesCountReducer,
+  currentEntry: currentEntryReducer,
   cascadeLevelMax: makeReducer({}, {}),
-  message: messageReducers,
+  message: messageReducer,
   roles: makeReducer({}, {}),
   myRoles: makeReducer({}, {})
 })

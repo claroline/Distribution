@@ -2,11 +2,14 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
+
 import {trans} from '#/main/core/translation'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
-import {ChoicesChildren} from './choices-children.jsx'
 
-class ChoiceField  extends Component {
+import {Category as CategoryType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {ChoicesChildren} from '#/plugin/claco-form/resources/claco-form/editor/field/components/choices-children.jsx'
+
+class ChoiceFieldComponent  extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -123,7 +126,7 @@ class ChoiceField  extends Component {
   }
 }
 
-ChoiceField.propTypes = {
+ChoiceFieldComponent.propTypes = {
   fieldId: T.number.isRequired,
   choice: T.shape({
     index: T.number.isRequired,
@@ -133,10 +136,7 @@ ChoiceField.propTypes = {
     error: T.string
   }).isRequired,
   choicesChildren: T.object,
-  categories: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })).isRequired,
+  categories: T.arrayOf(T.shape(CategoryType.propTypes)).isRequired,
   hasCascade: T.bool.isRequired,
   cascadeLevel: T.number.isRequired,
   updateChoice: T.func.isRequired,
@@ -147,16 +147,12 @@ ChoiceField.propTypes = {
   addChoicesChildrenFromField: T.func
 }
 
-function mapStateToProps(state) {
-  return {
+const ChoiceField = connect(
+  (state) => ({
     categories: state.categories
-  }
+  })
+)(ChoiceFieldComponent)
+
+export {
+  ChoiceField
 }
-
-function mapDispatchToProps() {
-  return {}
-}
-
-const ConnectedChoiceField = connect(mapStateToProps, mapDispatchToProps)(ChoiceField)
-
-export {ConnectedChoiceField as ChoiceField}

@@ -12,7 +12,7 @@ actions.updateKeyword = makeActionCreator(KEYWORD_UPDATE, 'keyword')
 actions.removeKeyword = makeActionCreator(KEYWORD_REMOVE, 'keywordId')
 
 actions.createKeyword = (keyword) => (dispatch, getState) => {
-  const resourceId = getState().resource.id
+  const resourceId = getState().clacoForm.id
   const formData = new FormData()
   formData.append('keywordData', JSON.stringify(keyword))
 

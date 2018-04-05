@@ -1,8 +1,8 @@
 import {trans} from '#/main/core/translation'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
-import {actions as clacoFormActions} from '../actions'
-import {actions as entryActions} from '../player/entry/actions'
+
+import {actions as entryActions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 export const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 export const RESOURCE_PARAMS_PROPERTY_UPDATE = 'RESOURCE_PARAMS_PROPERTY_UPDATE'
@@ -12,30 +12,8 @@ export const actions = {}
 actions.updateResourceProperty = makeActionCreator(RESOURCE_PROPERTY_UPDATE, 'property', 'value')
 actions.updateResourceParamsProperty = makeActionCreator(RESOURCE_PARAMS_PROPERTY_UPDATE, 'property', 'value')
 
-actions.saveParameters = () => (dispatch, getState) => {
-  const state = getState()
-  const resourceId = state.resource.id
-  const params = state.parameters
-  const formData = new FormData()
-  formData.append('configData', JSON.stringify(params))
-
-  dispatch({
-    [API_REQUEST]: {
-      url: ['claro_claco_form_configuration_edit', {clacoForm: resourceId}],
-      request: {
-        method: 'POST',
-        body: formData
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.updateResourceProperty('details', data))
-        dispatch(clacoFormActions.updateMessage(trans('config_success_message', {}, 'clacoform'), 'success'))
-      }
-    }
-  })
-}
-
 actions.deleteAllEntries = () => (dispatch, getState) => {
-  const resourceId = getState().resource.id
+  const resourceId = getState().clacoForm.id
 
   dispatch({
     [API_REQUEST]: {

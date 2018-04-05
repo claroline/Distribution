@@ -26,7 +26,7 @@ actions.removeEntryComment = makeActionCreator(ENTRY_COMMENT_REMOVE, 'entryId', 
 actions.removeAllEntries = makeActionCreator(ALL_ENTRIES_REMOVE)
 
 actions.createEntry = (entry, keywords, files) => (dispatch, getState) => {
-  const resourceId = getState().resource.id
+  const resourceId = getState().clacoForm.id
   const formData = new FormData()
   formData.append('entryData', JSON.stringify(entry))
   formData.append('keywordsData', JSON.stringify(keywords))

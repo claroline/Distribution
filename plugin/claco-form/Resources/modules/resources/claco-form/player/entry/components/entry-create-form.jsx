@@ -5,14 +5,17 @@ import moment from 'moment'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
-import {trans, t} from '#/main/core/translation'
+
+import {trans} from '#/main/core/translation'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {FormField} from '#/main/core/layout/form/components/form-field.jsx'
 import {SelectInput} from '#/main/core/layout/form/components/field/select-input.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {getFieldType} from '../../../utils'
-import {selectors} from '../../../selectors'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
-import {actions} from '../actions'
+
+import {Field as FieldType, Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const InfosList = props =>
   <span className="entry-form-infos-list">
@@ -36,7 +39,7 @@ InfosList.propTypes = {
   removeInfo: T.func.isRequired
 }
 
-class EntryCreateForm extends Component {
+class EntryCreateFormComponent extends Component {
   constructor(props) {
     super(props)
     const fieldsValues = {
@@ -87,7 +90,7 @@ class EntryCreateForm extends Component {
         <FormField
           controlId="field-title"
           type="text"
-          label={t('title')}
+          label={trans('title')}
           noLabel={true}
           value={this.state.entry.entry_title}
           error={this.state.errors.entry_title}
@@ -226,7 +229,7 @@ class EntryCreateForm extends Component {
                 <FormField
                   controlId="field-title"
                   type="text"
-                  label={t('title')}
+                  label={trans('title')}
                   value={this.state.entry.entry_title}
                   error={this.state.errors.entry_title}
                   onChange={value => this.updateEntryValue('entry_title', value)}
@@ -268,7 +271,7 @@ class EntryCreateForm extends Component {
                     options={this.props.keywords.map(k => {
                       return {value: k.name, label: k.name}
                     })}
-                    primaryLabel={t('add')}
+                    primaryLabel={trans('add')}
                     disablePrimary={!this.state.currentKeyword}
                     typeAhead={this.props.isNewKeywordsEnabled}
                     value={this.state.currentKeyword}
@@ -290,15 +293,15 @@ class EntryCreateForm extends Component {
             <hr/>
             <div className="entry-form-buttons">
               <button className="btn btn-primary" onClick={() => this.validateEntry()}>
-                <span>{t('ok')}</span>
+                <span>{trans('ok')}</span>
               </button>
               <a href="#/menu" className="btn btn-default">
-                {t('cancel')}
+                {trans('cancel')}
               </a>
             </div>
           </div> :
           <div className="alert alert-danger">
-            {t('unauthorized')}
+            {trans('unauthorized')}
           </div>
         }
       </div>
@@ -306,36 +309,10 @@ class EntryCreateForm extends Component {
   }
 }
 
-EntryCreateForm.propTypes = {
+EntryCreateFormComponent.propTypes = {
   canEdit: T.bool.isRequired,
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    type: T.number.isRequired,
-    name: T.string.isRequired,
-    locked: T.bool.isRequired,
-    lockedEditionOnly: T.bool.isRequired,
-    required: T.bool,
-    isMetadata: T.bool,
-    hidden: T.bool,
-    details: T.oneOfType([T.object, T.array]),
-    fieldFacet: T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired,
-      type: T.number.isRequired,
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.string.isRequired,
-        name: T.string.isRequired,
-        parent: T.shape({
-          id: T.number.isRequired,
-          label: T.string.isRequired
-        })
-      }))
-    })
-  })),
-  keywords: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })),
+  fields: T.arrayOf(T.shape(FieldType.propTypes)),
+  keywords: T.arrayOf(T.shape(KeywordType.propTypes)),
   isKeywordsEnabled: T.bool.isRequired,
   isNewKeywordsEnabled: T.bool.isRequired,
   template: T.string,
@@ -345,8 +322,8 @@ EntryCreateForm.propTypes = {
   history: T.object.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const EntryCreateForm = withRouter(connect(
+  (state) => ({
     canEdit: resourceSelect.editable(state),
     fields: selectors.visibleFields(state),
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
@@ -355,15 +332,12 @@ function mapStateToProps(state) {
     canAddEntry: selectors.canAddEntry(state),
     useTemplate: selectors.getParam(state, 'use_template'),
     template: selectors.template(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     createEntry: (entry, keywords, files) => dispatch(actions.createEntry(entry, keywords, files))
-  }
+  })
+)(EntryCreateFormComponent))
+
+export {
+  EntryCreateForm
 }
-
-const ConnectedEntryCreateForm = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryCreateForm))
-
-export {ConnectedEntryCreateForm as EntryCreateForm}

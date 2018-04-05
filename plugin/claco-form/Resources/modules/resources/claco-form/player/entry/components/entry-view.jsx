@@ -3,28 +3,25 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
-import {trans, t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
-
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
 import {TooltipLink} from '#/main/core/layout/button/components/tooltip-link.jsx'
-
 import {UserMicro} from '#/main/core/user/components/micro.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
-import {getFieldType, getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
 
-import {selectors} from '../../../selectors'
-import {actions} from '../actions'
-import {EntryComments} from './entry-comments.jsx'
-import {EntryMenu} from './entry-menu.jsx'
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {getFieldType, getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
+import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu.jsx'
 
 const FilesThumbnails = props =>
   <div className="file-thumbnails">
@@ -131,7 +128,7 @@ const EntryActions = props =>
       <TooltipLink
         id="entry-edit"
         className="btn-link-default"
-        title={t('edit')}
+        title={trans('edit')}
         target={`#/entry/${props.entryId}/edit`}
       >
         <span className="fa fa-fw fa-pencil" />
@@ -142,7 +139,7 @@ const EntryActions = props =>
       <TooltipButton
         id="tooltip-button-status"
         className="btn-link-default"
-        title={props.status === 1 ? t('unpublish') : t('publish')}
+        title={props.status === 1 ? trans('unpublish') : trans('publish')}
         onClick={props.toggleStatus}
       >
         <span className={`fa fa-fw fa-${props.status === 1 ? 'eye-slash' : 'eye'}`} />
@@ -175,7 +172,7 @@ const EntryActions = props =>
       <TooltipButton
         id="entry-delete"
         className="btn-link-danger"
-        title={t('delete')}
+        title={trans('delete')}
         onClick={props.delete}
       >
         <span className="fa fa-fw fa-trash-o" />
@@ -211,7 +208,7 @@ EntryActions.propTypes = {
   updateNotification: T.func.isRequired
 }
 
-class EntryView extends Component {
+class EntryViewComponent extends Component {
   constructor(props) {
     super(props)
 
@@ -435,10 +432,10 @@ class EntryView extends Component {
 
                     <div className="date">
                       {this.props.entry.publicationDate ?
-                        t('published_at', {date: displayDate(this.props.entry.publicationDate, false, true)}) : t('not_published')
+                        trans('published_at', {date: displayDate(this.props.entry.publicationDate, false, true)}) : trans('not_published')
                       }
 
-                      , {t('last_modified_at', {date: displayDate(this.props.entry.editionDate, false, true)})}
+                      , {trans('last_modified_at', {date: displayDate(this.props.entry.editionDate, false, true)})}
                     </div>
                   </div>
                 }
@@ -493,7 +490,7 @@ class EntryView extends Component {
             (this.props.displayKeywords && this.props.entry.keywords && 0 < this.props.entry.keywords.length)) &&
               <div className="entry-footer panel-footer">
                 {this.props.displayCategories && this.props.entry.categories && 0 < this.props.entry.categories.length &&
-                  <span className="title">{t('categories')}</span>
+                  <span className="title">{trans('categories')}</span>
                 }
                 {this.props.displayCategories && this.props.entry.categories && this.props.entry.categories.map(c =>
                   <span key={`category-${c.id}`} className="label label-primary">{c.name}</span>
@@ -503,7 +500,7 @@ class EntryView extends Component {
                   <hr/>
                 }
                 {this.props.displayKeywords && this.props.entry.keywords && 0 < this.props.entry.keywords.length &&
-                  <span className="title">{t('keywords')}</span>
+                  <span className="title">{trans('keywords')}</span>
                 }
                 {this.props.displayKeywords && this.props.entry.keywords && this.props.entry.keywords.map(c =>
                   <span key={`keyword-${c.id}`} className="label label-default">{c.name}</span>
@@ -526,13 +523,13 @@ class EntryView extends Component {
           }
         </div> :
         <div className="alert alert-danger">
-          {t('unauthorized')}
+          {trans('unauthorized')}
         </div>
     )
   }
 }
 
-EntryView.propTypes = {
+EntryViewComponent.propTypes = {
   resourceId: T.number.isRequired,
   entryId: T.number,
   user: T.shape({
@@ -607,29 +604,7 @@ EntryView.propTypes = {
       }).isRequired
     }))
   }),
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    type: T.number.isRequired,
-    name: T.string.isRequired,
-    locked: T.bool.isRequired,
-    lockedEditionOnly: T.bool.isRequired,
-    required: T.bool,
-    isMetadata: T.bool,
-    hidden: T.bool,
-    fieldFacet: T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired,
-      type: T.number.isRequired,
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.string.isRequired,
-        name: T.string.isRequired,
-        parent: T.shape({
-          id: T.number.isRequired,
-          label: T.string.isRequired
-        })
-      }))
-    })
-  })),
+  fields: T.arrayOf(T.shape(FieldType.propTypes)),
   loadEntry: T.func.isRequired,
   deleteEntry: T.func.isRequired,
   switchEntryStatus: T.func.isRequired,
@@ -644,8 +619,8 @@ EntryView.propTypes = {
   history: T.object.isRequired
 }
 
-function mapStateToProps(state, ownProps) {
-  return {
+const EntryView = withRouter(connect(
+  (state, ownProps) => ({
     resourceId: selectors.clacoForm(state).id,
     user: state.user,
     entryId: parseInt(ownProps.match.params.id),
@@ -657,32 +632,24 @@ function mapStateToProps(state, ownProps) {
     canGeneratePdf: state.canGeneratePdf,
     canComment: selectors.canComment(state),
     canViewComments: selectors.canViewComments(state),
-
     isAnon: state.isAnon,
     entry: state.currentEntry,
     fields: selectors.visibleFields(state),
-
     displayMetadata: selectors.getParam(state, 'display_metadata'),
     displayKeywords: selectors.getParam(state, 'display_keywords'),
     displayCategories: selectors.getParam(state, 'display_categories'),
     displayComments: selectors.getParam(state, 'display_comments'),
-
     openComments: selectors.getParam(state, 'open_comments'),
-
     commentsEnabled: selectors.getParam(state, 'comments_enabled'),
     anonymousCommentsEnabled: selectors.getParam(state, 'anonymous_comments_enabled'),
-
     menuPosition: selectors.getParam(state, 'menu_position'),
     isOwner: selectors.isCurrentEntryOwner(state),
     isManager: selectors.isCurrentEntryManager(state),
     randomEnabled: selectors.getParam(state, 'random_enabled'),
     useTemplate: selectors.getParam(state, 'use_template'),
     template: selectors.template(state)
-  }
-}
-
-function mapDispatchToProps(dispatch, ownProps) {
-  return {
+  }),
+  (dispatch, ownProps) => ({
     loadEntry: (entryId) => dispatch(actions.loadEntry(entryId)),
     deleteEntry: entry => {
       dispatch(
@@ -705,9 +672,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     unshareEntry: (entryId, userId) => dispatch(actions.unshareEntry(entryId, userId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
     fadeModal: () => dispatch(modalActions.fadeModal())
-  }
+  })
+)(EntryViewComponent))
+
+export {
+  EntryView
 }
-
-const ConnectedEntryView = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryView))
-
-export {ConnectedEntryView as EntryView}

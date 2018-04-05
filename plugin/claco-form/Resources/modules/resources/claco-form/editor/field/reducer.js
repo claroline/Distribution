@@ -1,12 +1,14 @@
 import cloneDeep from 'lodash/cloneDeep'
+
 import {makeReducer} from '#/main/core/scaffolding/reducer'
+
 import {
   FIELD_ADD,
   FIELD_UPDATE,
   FIELD_REMOVE
-} from './actions'
+} from '#/plugin/claco-form/resources/claco-form/editor/field/actions'
 
-const fieldReducers = makeReducer({}, {
+const reducer = makeReducer({}, {
   [FIELD_ADD]: (state, action) => {
     const fields = cloneDeep(state)
     fields.push(action.field)
@@ -36,5 +38,5 @@ const fieldReducers = makeReducer({}, {
 })
 
 export {
-  fieldReducers
+  reducer
 }

@@ -8,7 +8,6 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
-import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
 const generateDisplayList = (fields) => {
   const displayList = {

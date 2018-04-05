@@ -2,13 +2,16 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
-import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {t, trans} from '#/main/core/translation'
+
+import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
+import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
+
+import {Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 
 export const MODAL_KEYWORD_FORM = 'MODAL_KEYWORD_FORM'
 
-export class KeywordFormModal  extends Component {
+export class KeywordFormModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -80,7 +83,7 @@ export class KeywordFormModal  extends Component {
         <Modal.Body>
           <div className={classes('form-group form-group-align row', {'has-error': this.state.nameError})}>
             <label className="control-label col-md-3">
-              {t('name')}
+              {trans('name')}
             </label>
             <div className="col-md-9">
               <input
@@ -99,12 +102,12 @@ export class KeywordFormModal  extends Component {
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeModal}>
-            {t('cancel')}
+            {trans('cancel')}
           </button>
           <button className="btn btn-primary" onClick={() => this.validateKeyword()}>
             {this.state.isFetching ?
               <span className="fa fa-fw fa-circle-o-notch fa-spin"></span> :
-              <span>{t('ok')}</span>
+              <span>{trans('ok')}</span>
             }
           </button>
         </Modal.Footer>
@@ -115,10 +118,7 @@ export class KeywordFormModal  extends Component {
 
 KeywordFormModal.propTypes = {
   resourceId:T.number.isRequired,
-  keyword: T.shape({
-    id: T.number,
-    name: T.string.isRequired
-  }).isRequired,
+  keyword: T.shape(KeywordType.propTypes).isRequired,
   confirmAction: T.func.isRequired,
   fadeModal: T.func.isRequired
 }

@@ -1,14 +1,17 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {trans, t} from '#/main/core/translation'
+
+import {trans} from '#/main/core/translation'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions} from '../actions'
-import {getFieldType} from '../../../utils'
 
-class Fields extends Component {
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/field/actions'
+
+class FieldsComponent extends Component {
   showFieldCreationForm() {
     this.props.showModal(
       'MODAL_FIELD_FORM',
@@ -76,13 +79,13 @@ class Fields extends Component {
               <thead>
                 <tr>
                   <th>
-                    {t('name')}
+                    {trans('name')}
                   </th>
-                  <th>{t('type')}</th>
+                  <th>{trans('type')}</th>
                   <th className="text-center">{trans('mandatory', {}, 'clacoform')}</th>
                   <th className="text-center">{trans('metadata', {}, 'clacoform')}</th>
-                  <th className="text-center">{t('locked')}</th>
-                  <th>{t('actions')}</th>
+                  <th className="text-center">{trans('locked')}</th>
+                  <th>{trans('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -153,7 +156,7 @@ class Fields extends Component {
             </button>
           </div> :
           <div className="alert alert-danger">
-            {t('unauthorized')}
+            {trans('unauthorized')}
           </div>
         }
       </div>
@@ -161,42 +164,30 @@ class Fields extends Component {
   }
 }
 
-Fields.propTypes = {
+FieldsComponent.propTypes = {
   canEdit: T.bool.isRequired,
   resourceId: T.number.isRequired,
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    type: T.number.isRequired,
-    required: T.bool.isRequired,
-    isMetadata: T.bool.isRequired,
-    locked: T.bool.isRequired,
-    lockedEditionOnly: T.bool.isRequired,
-    hidden: T.bool
-  })).isRequired,
+  fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   createField: T.func.isRequired,
   editField: T.func.isRequired,
   deleteField: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const Fields = connect(
+  (state) => ({
     canEdit: resourceSelect.editable(state),
-    resourceId: state.resource.id,
+    resourceId: state.clacoForm.id,
     fields: state.fields
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     createField: (data) => dispatch(actions.createField(data)),
     editField: (data) => dispatch(actions.editField(data)),
     deleteField: (fieldId) => dispatch(actions.deleteField(fieldId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
+  })
+)(FieldsComponent)
+
+export {
+  Fields
 }
-
-const ConnectedFields = connect(mapStateToProps, mapDispatchToProps)(Fields)
-
-export {ConnectedFields as Fields}

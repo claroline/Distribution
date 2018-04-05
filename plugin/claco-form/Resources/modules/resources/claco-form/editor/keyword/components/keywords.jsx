@@ -1,13 +1,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {trans, t} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
-import {actions} from '../actions'
 
-class Keywords extends Component {
+import {Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/keyword/actions'
+
+class KeywordsComponent extends Component {
   showKeywordCreationForm() {
     this.props.showModal(
       'MODAL_KEYWORD_FORM',
@@ -56,8 +59,8 @@ class Keywords extends Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th>{t('name')}</th>
-                  <th>{t('actions')}</th>
+                  <th>{trans('name')}</th>
+                  <th>{trans('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -93,7 +96,7 @@ class Keywords extends Component {
             </button>
           </div> :
           <div className="alert alert-danger">
-            {t('unauthorized')}
+            {trans('unauthorized')}
           </div>
         }
       </div>
@@ -101,36 +104,30 @@ class Keywords extends Component {
   }
 }
 
-Keywords.propTypes = {
+KeywordsComponent.propTypes = {
   canEdit: T.bool.isRequired,
   resourceId: T.number.isRequired,
-  keywords: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })).isRequired,
+  keywords: T.arrayOf(T.shape(KeywordType.propTypes)).isRequired,
   createKeyword: T.func.isRequired,
   editKeyword: T.func.isRequired,
   deleteKeyword: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const Keywords = connect(
+  (state) => ({
     canEdit: resourceSelect.editable(state),
-    resourceId: state.resource.id,
+    resourceId: state.clacoForm.id,
     keywords: state.keywords
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     createKeyword: (data) => dispatch(actions.createKeyword(data)),
     editKeyword: (data) => dispatch(actions.editKeyword(data)),
     deleteKeyword: (keywordId) => dispatch(actions.deleteKeyword(keywordId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
+  })
+)(KeywordsComponent)
+
+export {
+  Keywords
 }
-
-const ConnectedKeywords = connect(mapStateToProps, mapDispatchToProps)(Keywords)
-
-export {ConnectedKeywords as Keywords}

@@ -7,20 +7,19 @@ import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {DataCard} from '#/main/core/data/components/data-card'
 import {constants as listConstants} from '#/main/core/data/list/constants'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 
-import {select as resourceSelect} from '#/main/core/resource/selectors'
-
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
 import {getFieldType, getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
-class Entries extends Component {
+class EntriesComponent extends Component {
   deleteEntry(entry) {
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_entry', {}, 'clacoform'),
@@ -428,18 +427,12 @@ class Entries extends Component {
   }
 }
 
-Entries.propTypes = {
+EntriesComponent.propTypes = {
   canEdit: T.bool.isRequired,
   canAdministrate: T.bool.isRequired,
   isAnon: T.bool.isRequired,
   user: T.object,
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    type: T.number.isRequired,
-    isMetadata: T.bool.isRequired,
-    hidden: T.bool
-  })).isRequired,
+  fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   canGeneratePdf: T.bool.isRequired,
   resourceId: T.number.isRequired,
   canSearchEntry: T.bool.isRequired,
@@ -476,15 +469,15 @@ Entries.propTypes = {
   history: T.object.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const Entries = withRouter(connect(
+  (state) => ({
     canEdit: resourceSelect.editable(state),
     canAdministrate: resourceSelect.administrable(state),
     isAnon: state.isAnon,
     user: state.user,
     fields: state.fields,
     canGeneratePdf: state.canGeneratePdf,
-    resourceId: state.resource.id,
+    resourceId: state.clacoForm.id,
     canSearchEntry: selectors.canSearchEntry(state),
     searchEnabled: selectors.getParam(state, 'search_enabled'),
     searchColumnEnabled: selectors.getParam(state, 'search_column_enabled'),
@@ -499,11 +492,8 @@ function mapStateToProps(state) {
     displayKeywords: selectors.getParam(state, 'display_keywords'),
     isCategoryManager: selectors.isCategoryManager(state),
     entries: state.entries
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
     downloadEntriesPdf: entries => dispatch(actions.downloadEntriesPdf(entries)),
     switchEntriesStatus: (entries, status) => dispatch(actions.switchEntriesStatus(entries, status)),
@@ -511,9 +501,9 @@ function mapDispatchToProps(dispatch) {
     deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
     deleteEntries: entries => dispatch(actions.deleteEntries(entries)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
+  })
+)(EntriesComponent))
+
+export {
+  Entries
 }
-
-const ConnectedEntries = withRouter(connect(mapStateToProps, mapDispatchToProps)(Entries))
-
-export {ConnectedEntries as Entries}

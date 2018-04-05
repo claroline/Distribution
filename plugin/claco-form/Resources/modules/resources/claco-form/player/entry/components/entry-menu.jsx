@@ -2,23 +2,25 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
+
+import {generateUrl} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
-import {selectors} from '../../../selectors'
-import {generateUrl} from '#/main/core/api/router'
 
-class EntryMenu extends Component {
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+
+class EntryMenuComponent extends Component {
   goToRandomEntry() {
     fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.resourceId}), {
       method: 'GET' ,
       credentials: 'include'
     })
-    .then(response => response.json())
-    .then(entryId => {
-      if (entryId > 0) {
-        this.props.history.push(`/entry/${entryId}/view`)
-      }
-    })
+      .then(response => response.json())
+      .then(entryId => {
+        if (entryId > 0) {
+          this.props.history.push(`/entry/${entryId}/view`)
+        }
+      })
   }
 
   render() {
@@ -61,7 +63,7 @@ class EntryMenu extends Component {
   }
 }
 
-EntryMenu.propTypes = {
+EntryMenuComponent.propTypes = {
   resourceId: T.number.isRequired,
   canSearchEntry: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
@@ -69,19 +71,15 @@ EntryMenu.propTypes = {
   history: T.object.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const EntryMenu = withRouter(connect(
+  (state) => ({
     resourceId: selectors.clacoForm(state).id,
     canSearchEntry: selectors.canSearchEntry(state),
     randomEnabled: selectors.getParam(state, 'random_enabled'),
     canAddEntry: selectors.canAddEntry(state)
-  }
+  })
+)(EntryMenuComponent))
+
+export {
+  EntryMenu
 }
-
-function mapDispatchToProps() {
-  return {}
-}
-
-const ConnectedEntryMenu = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryMenu))
-
-export {ConnectedEntryMenu as EntryMenu}

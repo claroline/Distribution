@@ -1,17 +1,19 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {trans, t} from '#/main/core/translation'
+
+import {trans} from '#/main/core/translation'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
-import {Message} from '../../../components/message.jsx'
-import {actions} from '../actions'
-import {actions as clacoFormActions} from '../../../actions'
-import {selectors} from '../../../selectors'
-import {generateFieldKey, getFieldType} from '../../../utils'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
 
-class TemplateForm extends Component {
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {generateFieldKey, getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/actions'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/template/actions'
+import {Message} from '#/plugin/claco-form/resources/claco-form/components/message.jsx'
+
+class TemplateFormComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -161,15 +163,15 @@ class TemplateForm extends Component {
             />
             <div className="template-buttons">
               <button className="btn btn-primary" onClick={() => this.validateTemplate()}>
-                {t('ok')}
+                {trans('ok')}
               </button>
               <a className="btn btn-default" href="#/">
-                {t('cancel')}
+                {trans('cancel')}
               </a>
             </div>
           </div> :
           <div className="alert alert-danger">
-            {t('unauthorized')}
+            {trans('unauthorized')}
           </div>
         }
       </div>
@@ -177,7 +179,7 @@ class TemplateForm extends Component {
   }
 }
 
-TemplateForm.propTypes = {
+TemplateFormComponent.propTypes = {
   canEdit: T.bool.isRequired,
   template: T.string,
   fields: T.arrayOf(T.shape({
@@ -191,22 +193,19 @@ TemplateForm.propTypes = {
   updateMessage: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const TemplateForm = connect(
+  (state) => ({
     canEdit: resourceSelect.editable(state),
     template: selectors.template(state),
     fields: state.fields.filter(f => f.type !== 11),
     useTemplate: selectors.useTemplate(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     saveTemplate: (template, useTemplate) => dispatch(actions.saveTemplate(template, useTemplate)),
     updateMessage: (message, status) => dispatch(clacoFormActions.updateMessage(message, status))
-  }
+  })
+)(TemplateFormComponent)
+
+export {
+  TemplateForm
 }
-
-const ConnectedTemplateForm = connect(mapStateToProps, mapDispatchToProps)(TemplateForm)
-
-export {ConnectedTemplateForm as TemplateForm}

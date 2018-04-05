@@ -1,12 +1,14 @@
 import cloneDeep from 'lodash/cloneDeep'
+
 import {makeReducer} from '#/main/core/scaffolding/reducer'
+
 import {
   KEYWORD_ADD,
   KEYWORD_UPDATE,
   KEYWORD_REMOVE
-} from './actions'
+} from '#/plugin/claco-form/resources/claco-form/editor/keyword/actions'
 
-const keywordReducers = makeReducer({}, {
+const reducer = makeReducer({}, {
   [KEYWORD_ADD]: (state, action) => {
     const keywords = cloneDeep(state)
     keywords.push(action.keyword)
@@ -36,5 +38,5 @@ const keywordReducers = makeReducer({}, {
 })
 
 export {
-  keywordReducers
+  reducer
 }

@@ -216,28 +216,6 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/{clacoForm}/config/edit",
-     *     name="claro_claco_form_configuration_edit",
-     *     options={"expose"=true}
-     * )
-     */
-    public function clacoFormConfigurationEditAction(ClacoForm $clacoForm)
-    {
-        $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
-        $configData = $this->request->request->get('configData', false);
-
-        if (!is_array($configData)) {
-            $configData = json_decode($configData, true);
-        }
-        $details = $configData ?
-            $this->clacoFormManager->saveClacoFormConfig($clacoForm, $configData) :
-            $clacoForm->getDetails();
-
-        return new JsonResponse($details, 200);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/claco/form/{clacoForm}/template/edit",
      *     name="claro_claco_form_template_edit",
      *     options={"expose"=true}

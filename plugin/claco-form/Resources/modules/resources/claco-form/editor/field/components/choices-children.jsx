@@ -1,12 +1,15 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+
 import {trans} from '#/main/core/translation'
-import {ChoiceField} from './choice-field.jsx'
-import {getFieldType} from '../../../utils'
 import {SelectInput} from '#/main/core/layout/form/components/field/select-input.jsx'
 
-class ChoicesChildren  extends Component {
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {ChoiceField} from '#/plugin/claco-form/resources/claco-form/editor/field/components/choice-field.jsx'
+
+class ChoicesChildrenComponent  extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -99,7 +102,7 @@ class ChoicesChildren  extends Component {
   }
 }
 
-ChoicesChildren.propTypes = {
+ChoicesChildrenComponent.propTypes = {
   fieldId: T.number.isRequired,
   parent: T.shape({
     index: T.number.isRequired,
@@ -111,37 +114,20 @@ ChoicesChildren.propTypes = {
   choicesChildren: T.object,
   cascadeLevel: T.number.isRequired,
   cascadeLevelMax: T.number.isRequired,
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    fieldFacet: T.shape({
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.number.isRequired,
-        label: T.string.isRequired,
-        parent: T.shape({
-          id: T.number.isRequired,
-          label: T.string.isRequired
-        })
-      }))
-    })
-  })),
+  fields: T.arrayOf(T.shape(FieldType.propTypes)),
   addChoice: T.func,
   updateChoice: T.func,
   deleteChoice: T.func,
   addChoicesFromField: T.func
 }
 
-function mapStateToProps(state) {
-  return {
+const ChoicesChildren = connect(
+  (state) => ({
     cascadeLevelMax: state.cascadeLevelMax,
     fields: state.fields
-  }
+  })
+)(ChoicesChildrenComponent)
+
+export {
+  ChoicesChildren
 }
-
-function mapDispatchToProps() {
-  return {}
-}
-
-const ConnectedChoicesChildren = connect(mapStateToProps, mapDispatchToProps)(ChoicesChildren)
-
-export {ConnectedChoicesChildren as ChoicesChildren}

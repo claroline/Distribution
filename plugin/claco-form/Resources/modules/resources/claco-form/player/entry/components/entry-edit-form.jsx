@@ -4,15 +4,22 @@ import cloneDeep from 'lodash/cloneDeep'
 import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
-import {trans, t} from '#/main/core/translation'
+
+import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
+import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {FormField} from '#/main/core/layout/form/components/form-field.jsx'
 import {SelectInput} from '#/main/core/layout/form/components/field/select-input.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
-import {getFieldType} from '../../../utils'
-import {selectors} from '../../../selectors'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
-import {actions} from '../actions'
+
+import {
+  Field as FieldType,
+  Category as CategoryType,
+  Keyword as KeywordType
+} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const InfosList = props =>
   <span className="entry-form-infos-list">
@@ -36,7 +43,7 @@ InfosList.propTypes = {
   removeInfo: T.func.isRequired
 }
 
-class EntryEditForm extends Component {
+class EntryEditFormComponent extends Component {
   constructor(props) {
     super(props)
     const errors = {
@@ -122,7 +129,7 @@ class EntryEditForm extends Component {
         <FormField
           controlId="field-title"
           type="text"
-          label={t('title')}
+          label={trans('title')}
           noLabel={true}
           value={this.state.entry.entry_title}
           error={this.state.errors.entry_title}
@@ -308,7 +315,7 @@ class EntryEditForm extends Component {
                 <FormField
                   controlId="field-title"
                   type="text"
-                  label={t('title')}
+                  label={trans('title')}
                   value={this.state.entry.entry_title}
                   error={this.state.errors.entry_title}
                   onChange={value => this.updateEntryValue('entry_title', value)}
@@ -350,7 +357,7 @@ class EntryEditForm extends Component {
                     options={this.props.keywords.map(k => {
                       return {value: k.name, label: k.name}
                     })}
-                    primaryLabel={t('add')}
+                    primaryLabel={trans('add')}
                     disablePrimary={!this.state.currentKeyword}
                     typeAhead={this.props.isNewKeywordsEnabled}
                     value={this.state.currentKeyword}
@@ -372,7 +379,7 @@ class EntryEditForm extends Component {
             {(this.props.canEdit || this.props.isManager) &&
               <div>
                 <hr/>
-                <h3>{t('categories')}</h3>
+                <h3>{trans('categories')}</h3>
                 {this.state.categories.length > 0 &&
                   <InfosList
                     infos={this.state.categories}
@@ -385,7 +392,7 @@ class EntryEditForm extends Component {
                     options={this.props.categories.map(c => {
                       return {value: c.name, label: c.name}
                     })}
-                    primaryLabel={t('add')}
+                    primaryLabel={trans('add')}
                     disablePrimary={!this.state.currentCategory}
                     value={this.state.currentKeyword}
                     onChange={value => this.setState({currentCategory: value})}
@@ -406,15 +413,15 @@ class EntryEditForm extends Component {
             <hr/>
             <div className="entry-form-buttons">
               <button className="btn btn-primary" onClick={() => this.validateEntry()}>
-                <span>{t('ok')}</span>
+                <span>{trans('ok')}</span>
               </button>
               <a href={`#/entry/${this.props.entryId}/view`} className="btn btn-default">
-                {t('cancel')}
+                {trans('cancel')}
               </a>
             </div>
           </div> :
           <div className="alert alert-danger">
-            {t('unauthorized')}
+            {trans('unauthorized')}
           </div>
         }
       </div>
@@ -422,44 +429,16 @@ class EntryEditForm extends Component {
   }
 }
 
-EntryEditForm.propTypes = {
+EntryEditFormComponent.propTypes = {
   entryId: T.number,
   canEdit: T.bool.isRequired,
   entry: T.shape({
     id: T.number,
     locked: T.bool
   }),
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    type: T.number.isRequired,
-    name: T.string.isRequired,
-    locked: T.bool.isRequired,
-    lockedEditionOnly: T.bool.isRequired,
-    required: T.bool,
-    isMetadata: T.bool,
-    hidden: T.bool,
-    fieldFacet: T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired,
-      type: T.number.isRequired,
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.string.isRequired,
-        name: T.string.isRequired,
-        parent: T.shape({
-          id: T.number.isRequired,
-          label: T.string.isRequired
-        })
-      }))
-    })
-  })),
-  keywords: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })),
-  categories: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired
-  })),
+  fields: T.arrayOf(T.shape(FieldType.propTypes)),
+  keywords: T.arrayOf(T.shape(KeywordType.propTypes)),
+  categories: T.arrayOf(T.shape(CategoryType.propTypes)),
   entries: T.arrayOf(T.shape({
     id: T.number.isRequired
   })),
@@ -476,8 +455,8 @@ EntryEditForm.propTypes = {
   history: T.object.isRequired
 }
 
-function mapStateToProps(state, ownProps) {
-  return {
+const EntryEditForm = withRouter(connect(
+  (state, ownProps) => ({
     entryId: ownProps.match.params.id ? parseInt(ownProps.match.params.id) : null,
     canEdit: resourceSelect.editable(state),
     entry: state.currentEntry,
@@ -493,16 +472,13 @@ function mapStateToProps(state, ownProps) {
     isOwner: selectors.isCurrentEntryOwner(state),
     useTemplate: selectors.getParam(state, 'use_template'),
     template: selectors.template(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     setCurrentEntry: (entry) => dispatch(actions.loadCurrentEntry(entry)),
     editEntry: (entryId, entry, keywords, categories, files) => dispatch(actions.editEntry(entryId, entry, keywords, categories, files))
-  }
+  })
+)(EntryEditFormComponent))
+
+export {
+  EntryEditForm
 }
-
-const ConnectedEntryEditForm = withRouter(connect(mapStateToProps, mapDispatchToProps)(EntryEditForm))
-
-export {ConnectedEntryEditForm as EntryEditForm}

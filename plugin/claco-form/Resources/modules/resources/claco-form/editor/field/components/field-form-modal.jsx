@@ -4,19 +4,22 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
+
+import {trans} from '#/main/core/translation'
+import {generateUrl} from '#/main/core/api/router'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
-import {t, trans} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
 import {NumberGroup} from '#/main/core/layout/form/components/group/number-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
-import {constants} from '../../../constants'
-import {getFieldType} from '../../../utils'
-import {ChoiceField} from './choice-field.jsx'
+
+import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {ChoiceField} from '#/plugin/claco-form/resources/claco-form/editor/field/components/choice-field.jsx'
 
 export const MODAL_FIELD_FORM = 'MODAL_FIELD_FORM'
 
-class FieldFormModal  extends Component {
+class FieldFormModalComponent  extends Component {
   constructor(props) {
     super(props)
     let choiceIndex = 2
@@ -352,7 +355,7 @@ class FieldFormModal  extends Component {
         <Modal.Body>
           <div className={classes('form-group form-group-align row', {'has-error': this.state.nameError})}>
             <label className="control-label col-md-3">
-              {t('name')}
+              {trans('name')}
             </label>
             <div className="col-md-9">
               <input
@@ -370,7 +373,7 @@ class FieldFormModal  extends Component {
           </div>
           <div className="form-group form-group-align row">
             <label className="control-label col-md-3">
-              {t('type')}
+              {trans('type')}
             </label>
             <div className="col-md-9">
               <select
@@ -479,7 +482,7 @@ class FieldFormModal  extends Component {
           <CheckGroup
             id="field-locked"
             value={this.state.field.locked}
-            label={t('locked')}
+            label={trans('locked')}
             onChange={checked => this.updateFieldProps('locked', checked)}
           />
           {this.state.field.locked &&
@@ -493,12 +496,12 @@ class FieldFormModal  extends Component {
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeModal}>
-            {t('cancel')}
+            {trans('cancel')}
           </button>
           <button className="btn btn-primary" onClick={() => this.validateField()}>
             {this.state.isFetching ?
               <span className="fa fa-fw fa-circle-o-notch fa-spin" /> :
-              <span>{t('ok')}</span>
+              <span>{trans('ok')}</span>
             }
           </button>
         </Modal.Footer>
@@ -507,63 +510,22 @@ class FieldFormModal  extends Component {
   }
 }
 
-FieldFormModal.propTypes = {
+FieldFormModalComponent.propTypes = {
   resourceId:T.number.isRequired,
-  field: T.shape({
-    id: T.number,
-    name: T.string.isRequired,
-    type: T.number.isRequired,
-    required: T.boolean,
-    isMetadata: T.boolean,
-    locked: T.boolean,
-    lockedEditionOnly: T.boolean,
-    hidden: T.boolean,
-    details: T.oneOfType([T.object, T.array]),
-    fieldFacet: T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired,
-      type: T.number.isRequired,
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.string.isRequired,
-        name: T.string.isRequired,
-        parent: T.shape({
-          id: T.number.isRequired,
-          name: T.string.isRequired
-        })
-      }))
-    })
-  }).isRequired,
+  field: T.shape(FieldType.propTypes).isRequired,
   cascadeLevelMax: T.number.isRequired,
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    fieldFacet: T.shape({
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.string.isRequired,
-        name: T.string.isRequired,
-        parent: T.shape({
-          id: T.number.isRequired,
-          name: T.string.isRequired
-        })
-      }))
-    }),
-    details: T.oneOfType([T.object, T.array])
-  })),
+  fields: T.arrayOf(T.shape(FieldType.propTypes)),
   confirmAction: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const FieldFormModal = connect(
+  (state) => ({
     cascadeLevelMax: state.cascadeLevelMax,
     fields: state.fields
-  }
+  })
+)(FieldFormModalComponent)
+
+export {
+  FieldFormModal
 }
-
-function mapDispatchToProps() {
-  return {}
-}
-
-const ConnectedFieldFormModal = connect(mapStateToProps, mapDispatchToProps)(FieldFormModal)
-
-export {ConnectedFieldFormModal as FieldFormModal}

@@ -3,10 +3,11 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
+
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'
-import {t, trans} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 export const MODAL_CATEGORY_FORM = 'MODAL_CATEGORY_FORM'
 
@@ -90,7 +91,7 @@ export class CategoryFormModal  extends Component {
         <Modal.Body>
           <div className={classes('form-group form-group-align row', {'has-error': this.state.nameError})}>
             <label className="control-label col-md-3">
-              {t('name')}
+              {trans('name')}
             </label>
             <div className="col-md-9">
               <input
@@ -108,7 +109,7 @@ export class CategoryFormModal  extends Component {
           </div>
           <div className="form-group form-group-align row">
             <label className="control-label col-md-3">
-              {t('color')}
+              {trans('color')}
             </label>
             <div className="col-md-9">
               <ColorPicker
@@ -145,7 +146,7 @@ export class CategoryFormModal  extends Component {
           </div>
           <hr/>
           <div>
-            <u><b>{t('notifications')} :</b></u>
+            <u><b>{trans('notifications')} :</b></u>
           </div>
           <br/>
           <CheckGroup
@@ -175,10 +176,10 @@ export class CategoryFormModal  extends Component {
         </Modal.Body>
         <Modal.Footer>
           <button className="btn btn-default" onClick={this.props.fadeModal}>
-            {t('cancel')}
+            {trans('cancel')}
           </button>
           <button className="btn btn-primary" onClick={() => this.validateCategory()}>
-            {t('ok')}
+            {trans('ok')}
           </button>
         </Modal.Footer>
       </BaseModal>

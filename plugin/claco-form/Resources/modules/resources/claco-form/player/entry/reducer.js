@@ -1,6 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
+
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
+
 import {
   ENTRY_ADD,
   ENTRY_UPDATE,
@@ -11,9 +13,9 @@ import {
   ENTRY_COMMENT_UPDATE,
   ENTRY_COMMENT_REMOVE,
   ALL_ENTRIES_REMOVE
-} from './actions'
+} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
-const entriesReducers = makeReducer({}, {
+const entriesReducer = makeReducer({}, {
   [ENTRY_ADD]: (state, action) => {
     const entries = cloneDeep(state)
     entries.push(action.entry)
@@ -94,13 +96,13 @@ const entriesReducers = makeReducer({}, {
   }
 })
 
-const myEntriesCountReducers = makeReducer({}, {
+const myEntriesCountReducer = makeReducer({}, {
   [ENTRY_ADD]: (state) => {
     return state + 1
   }
 })
 
-const currentEntryReducers = makeReducer({}, {
+const currentEntryReducer = makeReducer({}, {
   [CURRENT_ENTRY_LOAD]: (state, action) => {
     return action.entry
   },
@@ -150,12 +152,12 @@ const currentEntryReducers = makeReducer({}, {
 })
 
 const reducer = makeListReducer('entries', {}, {
-  data: entriesReducers
+  data: entriesReducer
 })
 
 export {
   reducer,
-  entriesReducers,
-  myEntriesCountReducers,
-  currentEntryReducers
+  entriesReducer,
+  myEntriesCountReducer,
+  currentEntryReducer
 }

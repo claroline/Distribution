@@ -1,14 +1,16 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
-import {trans, t} from '#/main/core/translation'
+
+import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
-
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions} from '../actions'
 
-class Categories extends Component {
+import {Category as CategoryType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/category/actions'
+
+class CategoriesComponent extends Component {
   showCategoryCreationForm() {
     this.props.showModal(
       'MODAL_CATEGORY_FORM',
@@ -67,13 +69,13 @@ class Categories extends Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th>{t('name')}</th>
+                  <th>{trans('name')}</th>
                   <th>{trans('managers', {}, 'clacoform')}</th>
                   <th className="text-center">{trans('addition', {}, 'clacoform')}</th>
                   <th className="text-center">{trans('edition', {}, 'clacoform')}</th>
                   <th className="text-center">{trans('removal', {}, 'clacoform')}</th>
-                  <th className="text-center">{t('comment')}</th>
-                  <th>{t('actions')}</th>
+                  <th className="text-center">{trans('comment')}</th>
+                  <th>{trans('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -135,7 +137,6 @@ class Categories extends Component {
                 )}
               </tbody>
             </table>
-
             <button className="btn btn-primary" onClick={() => this.showCategoryCreationForm()}>
               <span className="fa fa-fw fa-plus"></span>
               &nbsp;
@@ -143,7 +144,7 @@ class Categories extends Component {
             </button>
           </div> :
           <div className="alert alert-danger">
-            {t('unauthorized')}
+            {trans('unauthorized')}
           </div>
         }
       </div>
@@ -151,49 +152,28 @@ class Categories extends Component {
   }
 }
 
-Categories.propTypes = {
+CategoriesComponent.propTypes = {
   canEdit: T.bool.isRequired,
-  categories: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    managers: T.arrayOf(T.shape({
-      id: T.number.isRequired,
-      firstName: T.string.isRequired,
-      lastName: T.string.isRequired,
-      username: T.string.isRequired,
-      email: T.string.isRequired,
-      guid: T.string
-    })),
-    details: T.shape({
-      color: T.string,
-      notify_addition: T.boolean,
-      notify_edition: T.boolean,
-      notify_removal: T.boolean,
-      notify_pending_comment: T.boolean
-    })
-  })).isRequired,
+  categories: T.arrayOf(T.shape(CategoryType.propTypes)).isRequired,
   createCategory: T.func.isRequired,
   editCategory: T.func.isRequired,
   deleteCategory: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const Categories = connect(
+  (state) => ({
     canEdit: resourceSelect.editable(state),
     categories: state.categories
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     createCategory: (data) => dispatch(actions.createCategory(data)),
     editCategory: (data) => dispatch(actions.editCategory(data)),
     deleteCategory: (categoryId) => dispatch(actions.deleteCategory(categoryId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
-  }
+  })
+)(CategoriesComponent)
+
+export {
+  Categories
 }
-
-const ConnectedCategories = connect(mapStateToProps, mapDispatchToProps)(Categories)
-
-export {ConnectedCategories as Categories}
