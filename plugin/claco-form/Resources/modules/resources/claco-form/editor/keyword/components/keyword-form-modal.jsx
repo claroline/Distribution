@@ -37,19 +37,19 @@ export class KeywordFormModal extends Component {
           credentials: 'include'
         }
       )
-      .then(response => response.json())
-      .then(results => {
-        if (JSON.parse(results) === null) {
-          this.registerKeyword()
-          this.setState({isFetching: false})
-        } else {
-          this.setState({
-            hasError: true,
-            nameError: trans('form_not_unique_error', {}, 'clacoform'),
-            isFetching: false
-          })
-        }
-      })
+        .then(response => response.json())
+        .then(results => {
+          if (JSON.parse(results) === null) {
+            this.registerKeyword()
+            this.setState({isFetching: false})
+          } else {
+            this.setState({
+              hasError: true,
+              nameError: trans('form_not_unique_error', {}, 'clacoform'),
+              isFetching: false
+            })
+          }
+        })
     }
   }
 

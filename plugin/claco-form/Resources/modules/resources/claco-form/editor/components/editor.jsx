@@ -65,6 +65,20 @@ const EditorComponent = props =>
               type: 'boolean',
               label: trans('label_moderated', {}, 'clacoform'),
               required: true
+            }, {
+              name: 'details.keywords_enabled',
+              type: 'boolean',
+              label: trans('label_keywords_enabled', {}, 'clacoform'),
+              required: true,
+              linked: [
+                {
+                  name: 'details.new_keywords_enabled',
+                  type: 'boolean',
+                  label: trans('label_new_keywords_enabled', {}, 'clacoform'),
+                  displayed: props.clacoForm.details.keywords_enabled,
+                  required: true
+                }
+              ]
             }
           ]
         }, {
@@ -99,6 +113,16 @@ const EditorComponent = props =>
                 noEmpty: true,
                 choices: constants.MENU_POSITION_CHOICES
               }
+            }, {
+              name: 'details.display_categories',
+              type: 'boolean',
+              label: trans('label_display_categories', {}, 'clacoform'),
+              required: true
+            }, {
+              name: 'details.display_keywords',
+              type: 'boolean',
+              label: trans('label_display_keywords', {}, 'clacoform'),
+              required: true
             }
           ]
         }, {
@@ -238,18 +262,6 @@ const EditorComponent = props =>
             }
           ]
         }, {
-          id: 'categories',
-          icon: 'fa fa-fw fa-table',
-          title: trans('categories'),
-          fields: [
-            {
-              name: 'details.display_categories',
-              type: 'boolean',
-              label: trans('label_display_categories', {}, 'clacoform'),
-              required: true
-            }
-          ]
-        }, {
           id: 'comments',
           icon: 'fa fa-fw fa-comments-o',
           title: trans('comments', {}, 'clacoform'),
@@ -325,33 +337,6 @@ const EditorComponent = props =>
                       required: true
                     }
                   ]
-                }
-              ]
-            }
-          ]
-        }, {
-          id: 'keywords',
-          icon: 'fa fa-fw fa-font',
-          title: trans('keywords', {}, 'clacoform'),
-          fields: [
-            {
-              name: 'details.keywords_enabled',
-              type: 'boolean',
-              label: trans('label_keywords_enabled', {}, 'clacoform'),
-              required: true,
-              linked: [
-                {
-                  name: 'details.new_keywords_enabled',
-                  type: 'boolean',
-                  label: trans('label_new_keywords_enabled', {}, 'clacoform'),
-                  displayed: props.clacoForm.details.keywords_enabled,
-                  required: true
-                }, {
-                  name: 'details.display_keywords',
-                  type: 'boolean',
-                  label: trans('label_display_keywords', {}, 'clacoform'),
-                  displayed: props.clacoForm.details.keywords_enabled,
-                  required: true
                 }
               ]
             }
