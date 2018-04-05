@@ -22,6 +22,8 @@ const CircularGauge = props => {
         'top': radius,
         'left': radius
       }}
+      responsive={props.responsive}
+      style={props.style}
     >
       <g
         alignmentBaseline="middle"

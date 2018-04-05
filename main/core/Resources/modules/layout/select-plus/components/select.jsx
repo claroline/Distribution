@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import classes from 'classnames'
 import {trans} from '#/main/core/translation'
-import {classNames} from '#/main/core/scaffolding/classnames'
 import {Option} from '#/main/core/layout/select-plus/components/option.jsx'
 import {Optgroup}  from '#/main/core/layout/select-plus/components/optgroup.jsx'
 import {searchChoice, filterChoices} from '#/main/core/layout/select-plus/utils'
@@ -80,7 +80,7 @@ class Select extends Component {
     return (
       <div
         value={props.value}
-        className={classNames('form-control input-sm select-plus', props.className, selectedChoice.placeholder && 'placeholder')}
+        className={classes('form-control input-sm select-plus', props.className, selectedChoice.placeholder && 'placeholder')}
         onClick={this.handleOnClick}
         tabIndex={0}
         onBlur={this.collapse}
@@ -91,25 +91,25 @@ class Select extends Component {
           {selectedChoice.label}
         </div>
         <div
-          className={classNames('select-plus-options', this.state.collapsed ? 'hidden' : '')}
+          className={classes('select-plus-options', this.state.collapsed ? 'hidden' : '')}
         >
-        {filteredChoices.map(choice =>(
-          choice.choices.length < 1 ?
-            <Option
-              key={choice.value}
-              value={choice.value}
-              label={choice.label}
-              transDomain={props.transDomain}
-              onSelect={this.handleOnChange}
-            /> :
-            <Optgroup
-              key={choice.value}
-              label={choice.label}
-              choices={choice.choices}
-              transDomain={props.transDomain}
-              onSelect={this.handleOnChange}
-            />
-        ))}
+          {filteredChoices.map(choice =>(
+            choice.choices.length < 1 ?
+              <Option
+                key={choice.value}
+                value={choice.value}
+                label={choice.label}
+                transDomain={props.transDomain}
+                onSelect={this.handleOnChange}
+              /> :
+              <Optgroup
+                key={choice.value}
+                label={choice.label}
+                choices={choice.choices}
+                transDomain={props.transDomain}
+                onSelect={this.handleOnChange}
+              />
+          ))}
         </div>
       </div>
     )

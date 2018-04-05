@@ -24,28 +24,28 @@ class LogsList extends Component {
       <div>
         { props.chart &&
           <div className="text-center">
-          <LineChart
-            data={props.chart.data}
-            xAxisLabel={{
-              show: true,
-              text: trans('date'),
-              grid: true
-            }}
-            yAxisLabel={{
-              show: true,
-              text: trans('actions'),
-              grid: true
-            }}
-            height={250}
-            width={700}
-            showArea={true}
-            margin={{
-              top: 20,
-              bottom: 50,
-              left: 50,
-              right: 20
-            }}
-          />
+            <LineChart
+              data={props.chart.data}
+              xAxisLabel={{
+                show: true,
+                text: trans('date'),
+                grid: true
+              }}
+              yAxisLabel={{
+                show: true,
+                text: trans('actions'),
+                grid: true
+              }}
+              height={250}
+              width={700}
+              showArea={true}
+              margin={{
+                top: 20,
+                bottom: 50,
+                left: 50,
+                right: 20
+              }}
+            />
           </div>
         }
         <DataListContainer
@@ -94,8 +94,6 @@ class LogsList extends Component {
               }
             }
           ]}
-      
-          card={()=>{}}
       
           display={{
             available : [listConst.DISPLAY_TABLE, listConst.DISPLAY_TABLE_SM],
