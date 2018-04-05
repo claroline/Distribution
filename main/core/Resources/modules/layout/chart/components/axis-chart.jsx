@@ -35,6 +35,8 @@ const AxisChart = props => {
       width={props.width}
       height={props.height}
       margin={props.margin}
+      responsive={props.responsive}
+      style={props.style}
     >
       <Axis
         height={height}

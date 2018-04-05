@@ -8,8 +8,8 @@ import {getPlainText} from '#/main/core/data/types/html/utils'
 //TODO: Change it to only return plain text once intra-plugin communication available
 const HtmlCell = props => props.data ?
   ( props.trust ?
-      <span dangerouslySetInnerHTML={{__html: props.data}}/> :
-      <span>{getPlainText(props.data)}</span>
+    <span dangerouslySetInnerHTML={{__html: props.data}}/> :
+    <span>{getPlainText(props.data)}</span>
   ) : null
 
 implementPropTypes(HtmlCell, DataCellTypes, {

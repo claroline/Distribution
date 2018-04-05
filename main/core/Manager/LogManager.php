@@ -198,6 +198,7 @@ class LogManager
             $id = $userAction['doerId'];
             $firstName = $userAction['doerFirstName'];
             $lastName = $userAction['doerLastName'];
+            $picture = $userAction['doerPicture'];
             $date = $userAction['date'];
             $total = $userAction['total'];
             if (!isset($userData['u'.$id])) {
@@ -206,6 +207,7 @@ class LogManager
                     'doer' => [
                         'id' => $id,
                         'name' => $lastName.' '.$firstName,
+                        'picture' => $picture,
                     ],
                     'chartData' => [],
                     'actions' => 0,

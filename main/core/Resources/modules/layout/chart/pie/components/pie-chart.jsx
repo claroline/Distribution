@@ -19,6 +19,8 @@ const PieChart = props => {
         'top': radius,
         'left': radius
       }}
+      responsive={props.responsive}
+      style={props.style}
     >
       <DataSeries
         data={props.data}

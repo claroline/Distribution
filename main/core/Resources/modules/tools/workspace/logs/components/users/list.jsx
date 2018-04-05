@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {constants as listConst} from '#/main/core/data/list/constants'
+import {UserActionsCard} from '#/main/core/tools/workspace/logs/components/users/user-actions-card.jsx'
+
 const UserLogList = props =>
   <DataListContainer
     name="userActions"
@@ -28,11 +30,11 @@ const UserLogList = props =>
       }
     ]}
 
-    card={()=>{}}
+    card={UserActionsCard}
     
     display={{
-      available : [listConst.DISPLAY_TABLE, listConst.DISPLAY_TABLE_SM],
-      current: listConst.DISPLAY_TABLE
+      available : [listConst.DISPLAY_TABLE, listConst.DISPLAY_TABLE_SM, listConst.DISPLAY_LIST],
+      current: listConst.DISPLAY_LIST
     }}
   />
 

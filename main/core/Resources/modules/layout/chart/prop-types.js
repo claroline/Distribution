@@ -35,10 +35,12 @@ const AxisChart = {
       text: T.string.isRequired,
       grid: T.bool
     }),
+    responsive: T.bool,
     ticksAsYValues: T.bool,
     minMaxAsYDomain:T.bool,
     color: T.string,
-    altColor: T.string
+    altColor: T.string,
+    style: T.object
   }),
   defaultProps: Object.assign({}, Chart.defaultProps, {
     xAxisLabel: T.shape({
@@ -51,6 +53,7 @@ const AxisChart = {
       text: 'Y Axis DATA',
       grid: false
     }),
+    responsive: false,
     ticksAsYValues: false,
     minMaxAsYDomain: false,
     color: '#337ab7',

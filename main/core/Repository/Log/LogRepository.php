@@ -78,7 +78,8 @@ class LogRepository extends EntityRepository
             $qb->select('
                 doer.id as doerId, 
                 doer.firstName as doerFirstName, 
-                doer.lastName as doerLastName, 
+                doer.lastName as doerLastName,
+                doer.picture as doerPicture,
                 obj.shortDateLog as date, 
                 CONCAT(CONCAT(IDENTITY(obj.doer), \'#\'), obj.shortDateLog) as criteria, 
                 COUNT(obj.id) as total
