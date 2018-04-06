@@ -168,7 +168,7 @@ const StepForm = props =>
             options: {
               min: 0,
               unit: 'px',
-              help: trans('step_content_height_info', {}, 'path'),
+              help: trans('step_content_height_info', {}, 'path')
             }
           }
         ]
