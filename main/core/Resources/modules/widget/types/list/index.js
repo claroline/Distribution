@@ -18,7 +18,10 @@ export const App = (context, parameters = {}) => ({
   component: ListWidget,
   store: {
     config: makeReducer({}, {
-      [WIDGET_UPDATE_CONFIG]: (state, action) => merge({}, state, action.config)
+      [WIDGET_UPDATE_CONFIG]: (state, action) => {
+        console.log(action.config)
+        return merge({}, state, action.config)
+      }
     }),
     list: makeListReducer('list', {}, {
       invalidated: makeReducer(false, {
