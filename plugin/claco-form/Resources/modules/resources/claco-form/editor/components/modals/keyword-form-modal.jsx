@@ -1,17 +1,20 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 
 import {Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
 export const MODAL_KEYWORD_FORM = 'MODAL_KEYWORD_FORM'
 
-export class KeywordFormModal extends Component {
+class KeywordFormModalComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -59,7 +62,7 @@ export class KeywordFormModal extends Component {
 
   registerKeyword() {
     if (!this.state['hasError']) {
-      this.props.confirmAction(this.state)
+      this.props.saveKeyword(this.state)
       this.props.fadeModal()
     }
   }
@@ -93,9 +96,9 @@ export class KeywordFormModal extends Component {
                 onChange={e => this.updateKeywordProps('name', e.target.value)}
               />
               {this.state.nameError &&
-                <div className="help-block field-error">
-                  {this.state.nameError}
-                </div>
+              <div className="help-block field-error">
+                {this.state.nameError}
+              </div>
               }
             </div>
           </div>
@@ -116,9 +119,23 @@ export class KeywordFormModal extends Component {
   }
 }
 
-KeywordFormModal.propTypes = {
+KeywordFormModalComponent.propTypes = {
   resourceId:T.number.isRequired,
   keyword: T.shape(KeywordType.propTypes).isRequired,
-  confirmAction: T.func.isRequired,
+  saveKeyword: T.func.isRequired,
   fadeModal: T.func.isRequired
+}
+
+const KeywordFormModal = connect(
+  (state) => ({
+    resourceId: state.clacoForm.id
+  }),
+  (dispatch) => ({
+    saveKeyword: (keyword) => dispatch(actions.saveKeyword(keyword)),
+    fadeModal: () => dispatch(modalActions.fadeModal())
+  })
+)(KeywordFormModalComponent)
+
+export {
+  KeywordFormModal
 }

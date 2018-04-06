@@ -336,7 +336,7 @@ const EntryCreateForm = withRouter(connect(
     fields: selectors.visibleFields(state),
     isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
     isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
-    keywords: selectors.getParam(state, 'keywords_enabled') ? state.keywords : [],
+    keywords: selectors.getParam(state, 'keywords_enabled') ? selectors.keywords(state) : [],
     canAddEntry: selectors.canAddEntry(state),
     useTemplate: selectors.getParam(state, 'use_template'),
     template: selectors.template(state)

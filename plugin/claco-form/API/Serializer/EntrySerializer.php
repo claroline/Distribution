@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\API\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\ClacoFormBundle\Entity\Entry;
@@ -16,8 +17,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class EntrySerializer
 {
-    const OPTION_MINIMAL = 'minimal';
-
     /** @var CategorySerializer */
     private $categorySerializer;
 
@@ -87,7 +86,7 @@ class EntrySerializer
             'user' => $user ? $this->userSerializer->serialize($user) : null,
         ];
 
-        if (!in_array(static::OPTION_MINIMAL, $options)) {
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'categories' => $this->getCategories($entry),
                 'keywords' => $this->getKeywords($entry),

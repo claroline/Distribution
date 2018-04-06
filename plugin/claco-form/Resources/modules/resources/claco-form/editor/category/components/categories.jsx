@@ -164,7 +164,7 @@ CategoriesComponent.propTypes = {
 const Categories = connect(
   (state) => ({
     canEdit: resourceSelect.editable(state),
-    categories: state.categories
+    categories: state.clacoForm.categories
   }),
   (dispatch) => ({
     createCategory: (data) => dispatch(actions.createCategory(data)),

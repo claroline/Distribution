@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\API\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\ClacoFormBundle\Entity\Category;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
@@ -16,8 +17,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 class ClacoFormSerializer
 {
     use SerializerTrait;
-
-    const OPTION_MINIMAL = 'minimal';
 
     /** @var CategorySerializer */
     private $categorySerializer;
@@ -67,7 +66,7 @@ class ClacoFormSerializer
             'details' => $clacoForm->getDetails(),
         ];
 
-        if (!in_array(static::OPTION_MINIMAL, $options)) {
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'categories' => array_map(function (Category $category) {
                     return $this->categorySerializer->serialize($category);

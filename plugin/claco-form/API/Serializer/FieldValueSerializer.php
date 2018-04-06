@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\API\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\CoreBundle\API\Serializer\Facet\FieldFacetValueSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -12,8 +13,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class FieldValueSerializer
 {
-    const OPTION_MINIMAL = 'minimal';
-
     /** @var FieldSerializer */
     private $fieldSerializer;
 
@@ -53,9 +52,9 @@ class FieldValueSerializer
             'id' => $fieldValue->getId(),
         ];
 
-        if (!in_array(static::OPTION_MINIMAL, $options)) {
+        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
-                'field' => $this->fieldSerializer->serialize($fieldValue->getField(), ['minimal']),
+                'field' => $this->fieldSerializer->serialize($fieldValue->getField(), [Options::SERIALIZE_MINIMAL]),
                 'fieldFacetValue' => $this->fieldFacetValueSerializer->serialize($fieldValue->getFieldFacetValue(), ['minimal']),
             ]);
         }

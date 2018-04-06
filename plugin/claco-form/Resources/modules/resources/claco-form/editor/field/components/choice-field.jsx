@@ -149,7 +149,7 @@ ChoiceFieldComponent.propTypes = {
 
 const ChoiceField = connect(
   (state) => ({
-    categories: state.categories
+    categories: state.clacoForm.categories
   })
 )(ChoiceFieldComponent)
 

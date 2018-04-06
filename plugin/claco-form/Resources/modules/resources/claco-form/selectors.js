@@ -13,7 +13,8 @@ const getParam = (state, property) => state.clacoForm.details[property]
 const currentEntry = state => state.currentEntry
 const myEntriesCount = state => state.myEntriesCount
 const canAdministrate = state => state.resourceNode.rights.current.administrate
-const categories = state => state.categories
+const categories = state => state.clacoForm.categories
+const keywords = state => state.clacoForm.keywords
 const myRoles = state => state.myRoles
 
 const canSearchEntry = createSelector(
@@ -175,5 +176,7 @@ export const selectors = {
   canAdministrate,
   isCategoryManager,
   canComment,
-  canViewComments
+  canViewComments,
+  categories,
+  keywords
 }

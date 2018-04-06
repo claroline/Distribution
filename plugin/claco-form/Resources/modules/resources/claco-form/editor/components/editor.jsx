@@ -5,9 +5,13 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {MODAL_KEYWORD_FORM} from '#/plugin/claco-form/resources/claco-form/editor/components/modals/keyword-form-modal.jsx'
 
 const generateDisplayList = (fields) => {
   const displayList = {
@@ -343,18 +347,135 @@ const EditorComponent = props =>
           ]
         }
       ]}
-    />
+    >
+      <FormSections level={3}>
+        <FormSection
+          id="clacoform-categories"
+          className="embedded-list-section"
+          icon="fa fa-fw fa-table"
+          title={trans('categories')}
+          actions={[
+            {
+              icon: 'fa fa-fw fa-plus',
+              label: trans('create_a_category', {}, 'clacoform'),
+              action: () => console.log('create category')
+            }
+          ]}
+        >
+          <DataListContainer
+            name="clacoFormForm.categories"
+            // open={UserList.open}
+            fetch={{
+              url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
+              autoload: true
+            }}
+            delete={{
+              url: ['apiv2_clacoformcategory_delete_bulk']
+            }}
+            definition={[
+              {
+                name: 'name',
+                type: 'string',
+                label: trans('name')
+              }, {
+                name: 'managers',
+                type: 'string',
+                label: trans('managers', {}, 'clacoform')
+              }, {
+                name: 'details.notify_addition',
+                type: 'boolean',
+                alias: 'notify_addition',
+                label: trans('addition', {}, 'clacoform'),
+                sortable: false
+              }, {
+                name: 'details.notify_edition',
+                type: 'boolean',
+                alias: 'notify_edition',
+                label: trans('edition', {}, 'clacoform'),
+                sortable: false
+              }, {
+                name: 'details.notify_removal',
+                type: 'boolean',
+                alias: 'notify_removal',
+                label: trans('removal', {}, 'clacoform'),
+                sortable: false
+              }, {
+                name: 'details.notify_pending_comment',
+                type: 'boolean',
+                alias: 'notify_pending_comment',
+                label: trans('comment'),
+                sortable: false
+              }
+            ]}
+          />
+        </FormSection>
+        {props.clacoForm.details.keywords_enabled &&
+          <FormSection
+            id="clacoform-keywords"
+            className="embedded-list-section"
+            icon="fa fa-fw fa-font"
+            title={trans('keywords')}
+            actions={[
+              {
+                icon: 'fa fa-fw fa-plus',
+                label: trans('create_a_keyword', {}, 'clacoform'),
+                action: () => props.showModal(MODAL_KEYWORD_FORM, {
+                  title: trans('create_a_keyword', {}, 'clacoform'),
+                  keyword: {
+                    id: 0,
+                    name: ''
+                  }
+                })
+              }
+            ]}
+          >
+            <DataListContainer
+              name="clacoFormForm.keywords"
+              fetch={{
+                url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],
+                autoload: true
+              }}
+              delete={{
+                url: ['apiv2_clacoformkeyword_delete_bulk']
+              }}
+              definition={[
+                {
+                  name: 'name',
+                  type: 'string',
+                  label: trans('name')
+                }
+              ]}
+              actions={[
+                {
+                  icon: 'fa fa-fw fa-pencil',
+                  label: trans('edit'),
+                  action: (rows) => props.showModal(MODAL_KEYWORD_FORM, {
+                    title: trans('edit_keyword', {}, 'clacoform'),
+                    keyword: rows[0]
+                  }),
+                  context: 'row'
+                }
+              ]}
+            />
+          </FormSection>
+        }
+      </FormSections>
+    </FormContainer>
   </section>
 
 EditorComponent.propTypes = {
   clacoForm: T.shape(ClacoFormType.propTypes),
-  roles: T.array
+  roles: T.array,
+  showModal: T.func.isRequired
 }
 
 const Editor = connect(
   (state) => ({
     clacoForm: formSelect.data(formSelect.form(state, 'clacoFormForm')),
     roles: state.roles
+  }),
+  (dispatch) => ({
+    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   })
 )(EditorComponent)
 

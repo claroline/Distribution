@@ -12,8 +12,6 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class CommentSerializer
 {
-    const OPTION_MINIMAL = 'minimal';
-
     /** @var UserSerializer */
     private $userSerializer;
 
