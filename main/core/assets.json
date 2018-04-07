@@ -24,13 +24,8 @@
       "user-tracking": "user/tracking",
       "contacts-tool": "contact/tool",
       "workspace-user-management": "workspace/user",
-<<<<<<< Updated upstream
       "workspace-parameters-management": "workspace/parameters",
-      "text-resource": "resources/text",
-      "user-profile": "user/profile"
-=======
       "text-resource": "resources/text/bootstrap"
->>>>>>> Stashed changes
     }
   },
 
