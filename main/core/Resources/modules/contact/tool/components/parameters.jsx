@@ -21,7 +21,6 @@ const Parameters = () =>
     name="options"
     sections={[
       {
-        id: 'general',
         title: trans('general'),
         primary: true,
         fields: [

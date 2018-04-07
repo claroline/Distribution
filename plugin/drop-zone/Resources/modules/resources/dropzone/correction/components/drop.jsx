@@ -16,7 +16,6 @@ import {CorrectionRow} from '#/plugin/drop-zone/resources/dropzone/correction/co
 const Corrections = props =>
   <FormSections>
     <FormSection
-      id="corrections-section"
       title={trans('corrections_list', {}, 'dropzone')}
     >
       <table className="table corrections-table">

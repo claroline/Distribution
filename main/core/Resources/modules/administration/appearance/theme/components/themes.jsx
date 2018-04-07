@@ -26,34 +26,39 @@ const ThemesPage = props =>
       <DataListContainer
         name="themes"
         fetch={{
-          url: generateUrl('apiv2_theme_list')
+          url: ['apiv2_theme_list']
         }}
         definition={[
           {
             name: 'name',
+            type: 'string',
             label: trans('theme_name', {}, 'theme'),
-            renderer: (rowData) => [
-              <NavLink key={`link-${rowData.id}`} to={`/${rowData.id}`}>{rowData.name}</NavLink>,
-              rowData.meta.default && <small key={`default-${rowData.id}`}>&nbsp;({trans('default_theme', {}, 'theme')})</small>
-            ],
+            primary: true,
             displayed: true
           },
           {name: 'meta.description', label: trans('theme_description', {}, 'theme'), displayed: true},
           {name: 'meta.plugin',      label: trans('theme_plugin', {}, 'theme'), displayed: true},
           {name: 'meta.enabled',     type: 'boolean',   label: trans('theme_enabled', {}, 'theme'), displayed: true},
+          {name: 'meta.default',     type: 'boolean',   label: trans('default_theme', {}, 'theme'), displayed: true},
           {name: 'current',          type: 'boolean',   label: trans('theme_current', {}, 'theme'), displayed: true}
         ]}
 
-        actions={[
+        primaryAction={(row) => ({
+          type: 'link',
+          target: `/${row.id}`
+        })}
+        actions={(rows) => [
           {
+            type: 'callback',
             icon: 'fa fa-fw fa-refresh',
             label: trans('rebuild_theme', {}, 'theme'),
-            action: (rows) => props.rebuildThemes(rows)
+            callback: () => props.rebuildThemes(rows)
           }, {
+            type: 'callback',
             icon: 'fa fa-fw fa-trash-o',
             label: t('delete'),
-            disabled: (rows) => !rows.find(row => row.meta.custom), // at least one theme should be deletable
-            action: (rows) => props.removeThemes(rows),
+            disabled: !rows.find(row => row.meta.custom), // at least one theme should be deletable
+            callback: () => props.removeThemes(rows),
             dangerous: true
           }
         ]}

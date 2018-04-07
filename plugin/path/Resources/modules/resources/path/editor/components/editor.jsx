@@ -61,6 +61,7 @@ const EditorComponent = props =>
       routes={[
         {
           path: '/edit/parameters',
+          exact: true,
           render: () => {
             const Parameters = <ParametersForm path={props.path} />
 

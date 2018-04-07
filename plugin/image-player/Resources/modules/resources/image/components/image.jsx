@@ -14,9 +14,10 @@ const Image = props =>
   <ResourcePageContainer
     customActions={[
       {
+        type: 'callback',
         icon: 'fa fa-fw fa-clipboard',
         label: t('copy_permalink_to_clipboard'),
-        action: () => copyToClipboard(props.url)
+        callback: () => copyToClipboard(props.url)
       }
     ]}
   >

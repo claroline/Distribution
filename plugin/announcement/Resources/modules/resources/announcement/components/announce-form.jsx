@@ -56,7 +56,6 @@ const AnnounceForm = props =>
 
     <FormSections level={2}>
       <FormSection
-        id="announcement-restrictions"
         icon="fa fa-fw fa-key"
         title={t('access_restrictions')}
       >
@@ -104,7 +103,6 @@ const AnnounceForm = props =>
         </ActivableSet>
       </FormSection>
       <FormSection
-        id="announcement-sending"
         icon="fa fa-fw fa-paper-plane-o"
         title={trans('announcement_sending', {}, 'announcement')}
       >

@@ -15,9 +15,10 @@ import {OptionsType} from '#/main/core/contact/prop-types'
 const VisibleUsersComponent = props =>
   <DataListContainer
     name="visibleUsers"
-    open={{
-      action: (row) => generateUrl('claro_user_profile', {'publicUrl': row.meta.publicUrl})
-    }}
+    primaryAction={(row) => ({
+      type: 'url',
+      target: ['claro_user_profile', {'publicUrl': row.meta.publicUrl}]
+    })}
     fetch={{
       url: ['apiv2_visible_users_list'],
       autoload: true
@@ -26,17 +27,17 @@ const VisibleUsersComponent = props =>
       current: listConst.DISPLAY_TILES_SM,
       available: Object.keys(listConst.DISPLAY_MODES)
     }}
-    actions={[
+    actions={(rows) => [
       {
+        type: 'callback',
         icon: 'fa fa-fw fa-address-book-o',
         label: t('add_contact'),
-        action: (rows) => props.createContacts(rows.map(r => r.id))
+        callback: () => props.createContacts(rows.map(r => r.id))
       }, {
+        type: 'url',
         icon: 'fa fa-fw fa-paper-plane-o',
         label: t('send_message'),
-        action: (rows) => {
-          window.location = `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(u => `userIds[]=${u.autoId}`).join('&')}`
-        }
+        target: `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(u => `userIds[]=${u.autoId}`).join('&')}`
       }
     ]}
     definition={[
@@ -46,27 +47,23 @@ const VisibleUsersComponent = props =>
         label: t('username'),
         displayed: props.options.data.show_username,
         primary: props.options.data.show_username
-      },
-      {
+      }, {
         name: 'lastName',
         type: 'string',
         label: t('last_name'),
         displayed: true,
         primary: !props.options.data.show_username
-      },
-      {
+      }, {
         name: 'firstName',
         type: 'string',
         label: t('first_name'),
         displayed: true
-      },
-      {
+      }, {
         name: 'email',
         type: 'string',
         label: t('email'),
         displayed: props.options.data.show_mail
-      },
-      {
+      }, {
         name: 'phone',
         type: 'string',
         label: t('phone'),
@@ -81,19 +78,14 @@ VisibleUsersComponent.propTypes = {
   createContacts: T.func.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const VisibleUsers = connect(
+  (state) => ({
     options: select.options(state)
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
+  }),
+  (dispatch) => ({
     createContacts: users => dispatch(actions.createContacts(users))
-  }
-}
-
-const VisibleUsers = connect(mapStateToProps, mapDispatchToProps)(VisibleUsersComponent)
+  })
+)(VisibleUsersComponent)
 
 export {
   VisibleUsers

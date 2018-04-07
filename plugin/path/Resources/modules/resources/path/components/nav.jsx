@@ -2,29 +2,31 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {Link} from '#/main/core/layout/button/components/link.jsx'
+import {LinkButton} from '#/main/app/button/components/link'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 
 const PathNavigation = props =>
   <nav className="path-navigation">
-    <Link
-      className="btn-lg btn-link"
+    <LinkButton
+      className="btn btn-link btn-lg"
       disabled={!props.previous}
-      target={props.previous ? `#${props.prefix}/${props.previous.id}`:''}
+      primary={true}
+      target={props.previous ? `${props.prefix}/${props.previous.id}`:''}
     >
       <span className="fa fa-angle-double-left icon-with-text-right" />
       {trans('previous')}
-    </Link>
+    </LinkButton>
 
-    <Link
-      className="btn-lg btn-link"
+    <LinkButton
+      className="btn btn-link btn-lg"
       disabled={!props.next}
-      target={props.next ? `#${props.prefix}/${props.next.id}`:''}
+      primary={true}
+      target={props.next ? `${props.prefix}/${props.next.id}`:''}
     >
       {trans('next')}
       <span className="fa fa-angle-double-right icon-with-text-left" />
-    </Link>
+    </LinkButton>
   </nav>
 
 PathNavigation.propTypes = {

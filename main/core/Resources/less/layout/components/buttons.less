@@ -13,12 +13,28 @@
     outline: none !important;
 }
 
+// todo : for retro compatibility, to remove
 .btn-link-danger {
     .btn-link-variant(@brand-danger, darken(@brand-danger, 10%), @link-hover-decoration);
 }
 
+// todo : for retro compatibility, to remove
 .btn-link-default {
     .btn-link-variant(@gray, @gray-dark, @link-hover-decoration);
+}
+
+.btn-link {
+    &.default {
+        .btn-link-variant(@gray, @gray-dark, @link-hover-decoration);
+    }
+
+    &.danger {
+        .btn-link-variant(@brand-danger, darken(@brand-danger, 10%), @link-hover-decoration);
+    }
+}
+
+.btn-emphasis {
+    padding: @padding-large-vertical @padding-large-horizontal;
 }
 
 // remove push effect on dropdown links

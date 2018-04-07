@@ -10,6 +10,7 @@ import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-t
 import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
 import {HtmlText} from '#/main/core/layout/components/html-text'
 import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
+import {EmbeddedResource} from '#/main/core/resource/components/embedded'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
@@ -114,7 +115,9 @@ const SecondaryResources = props =>
         size="sm"
         orientation="row"
         primaryAction={{
-          action: url(['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}])
+          type: 'url',
+          label: trans('open', {}, 'actions'),
+          target: ['claro_resource_open', {node: resource.resource.autoId, resourceType: resource.resource.meta.type}]
         }}
         data={resource.resource}
       />
@@ -170,11 +173,12 @@ const Step = props =>
             </div>
           }
 
-          <PrimaryResource
-            id={props.primaryResource.autoId}
-            type={props.primaryResource.meta.type}
-            height={props.display.height}
-          />
+          {props.primaryResource &&
+            <EmbeddedResource
+              className="step-primary-resource"
+              resourceNode={props.primaryResource}
+            />
+          }
         </div>
       }
 
@@ -189,6 +193,11 @@ const Step = props =>
       }
     </div>
   </section>
+
+/*<PrimaryResource
+id={props.primaryResource.autoId}
+type={props.primaryResource.meta.type}
+/>*/
 
 implementPropTypes(Step, StepTypes, {
   fullWidth: T.bool.isRequired,

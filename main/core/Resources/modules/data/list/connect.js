@@ -27,9 +27,7 @@ function mapStateToProps(state, ownProps) {
     loaded: listSelect.loaded(listState),
     invalidated: listSelect.invalidated(listState),
     data: listSelect.data(listState),
-    totalResults: listSelect.totalResults(listState),
-    open: ownProps.open,
-    delete: ownProps.delete
+    totalResults: listSelect.totalResults(listState)
   }
 
   // grab data for optional features
@@ -157,13 +155,14 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   }
 
   const props = {
+    fetchData: dispatchProps.fetchData,
+
     level:         ownProps.level,
     displayLevel:  ownProps.displayLevel,
     title:         ownProps.title,
     name:          ownProps.name,
     fetch:         ownProps.fetch,
     definition:    ownProps.definition,
-    actions:       ownProps.actions,
     card:          ownProps.card,
     filterColumns: ownProps.filterColumns,
     display:       ownProps.display,
@@ -173,21 +172,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     data:          stateProps.data,
     totalResults:  stateProps.totalResults,
 
-    fetchData: dispatchProps.fetchData
-  }
-
-  // open action
-  if (stateProps.open) {
-    props.primaryAction = stateProps.open
-  }
-
-  // delete action
-  if (stateProps.delete) {
-    props.deleteAction = {
-      action: dispatchProps.deleteItems,
-      disabled: stateProps.delete.disabled,
-      displayed: stateProps.delete.displayed
-    }
+    // data actions
+    actions:       ownProps.actions,
+    primaryAction: stateProps.primaryAction,
+    deleteAction:  stateProps.deleteAction
   }
 
   // optional list features

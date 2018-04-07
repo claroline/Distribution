@@ -14,9 +14,10 @@ const ListWidgetComponent = props =>
       url: props.fetchUrl,
       autoload: true
     }}
-    open={{
-      action: (row) => props.openRow(row, props.open)
-    }}
+    primaryAction={(row) => ({
+      type: 'callback',
+      callback: () => props.openRow(row, props.open)
+    })}
     definition={props.definition}
     card={props.card}
     display={{

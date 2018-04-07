@@ -2,7 +2,9 @@
 
 namespace UJM\ExoBundle\Serializer;
 
+use Claroline\CoreBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use UJM\ExoBundle\Entity\Exercise;
 use UJM\ExoBundle\Entity\Step;
 use UJM\ExoBundle\Library\Mode\CorrectionMode;
@@ -13,6 +15,7 @@ use UJM\ExoBundle\Library\Options\ShowCorrectionAt;
 use UJM\ExoBundle\Library\Options\ShowScoreAt;
 use UJM\ExoBundle\Library\Options\Transfer;
 use UJM\ExoBundle\Library\Serializer\SerializerInterface;
+use UJM\ExoBundle\Manager\Attempt\PaperManager;
 use UJM\ExoBundle\Manager\Item\ItemManager;
 
 /**
@@ -22,33 +25,43 @@ use UJM\ExoBundle\Manager\Item\ItemManager;
  */
 class ExerciseSerializer implements SerializerInterface
 {
-    /**
-     * @var StepSerializer
-     */
+    /** @var TokenStorageInterface */
+    private $tokenStorage;
+
+    /** @var StepSerializer */
     private $stepSerializer;
 
-    /**
-     * @var ItemManager
-     */
+    /** @var ItemManager */
     private $itemManager;
+
+    /** @var PaperManager */
+    private $paperManager;
 
     /**
      * ExerciseSerializer constructor.
      *
-     * @param StepSerializer $stepSerializer
-     * @param ItemManager    $itemManager
-     *
      * @DI\InjectParams({
+     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
      *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
-     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item")
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
+     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
      * })
+     *
+     * @param TokenStorageInterface         $tokenStorage
+     * @param StepSerializer                $stepSerializer
+     * @param ItemManager                   $itemManager
+     * @param PaperManager                  $paperManager
      */
     public function __construct(
+        TokenStorageInterface $tokenStorage,
         StepSerializer $stepSerializer,
-        ItemManager $itemManager
+        ItemManager $itemManager,
+        PaperManager $paperManager
     ) {
+        $this->tokenStorage = $tokenStorage;
         $this->stepSerializer = $stepSerializer;
         $this->itemManager = $itemManager;
+        $this->paperManager = $paperManager; // todo use repository instead
     }
 
     /**
@@ -122,6 +135,24 @@ class ExerciseSerializer implements SerializerInterface
     private function serializeMetadata(Exercise $exercise)
     {
         $metadata = new \stdClass();
+
+        $nbUserPapers = 0;
+        $nbUserPapersDayCount = 0;
+
+        $currentUser = $this->tokenStorage->getToken()->getUser();
+        $authenticated = $currentUser instanceof User;
+
+        if ($authenticated) {
+            $nbUserPapers = $this->paperManager->countUserFinishedPapers($exercise, $currentUser);
+            $nbUserPapersDayCount = $this->paperManager->countUserFinishedDayPapers($exercise, $currentUser);
+        }
+
+        $nbPapers = $this->paperManager->countExercisePapers($exercise);
+
+        $metadata->paperCount = (int) $nbPapers;
+        $metadata->userPaperCount = (int) $nbUserPapers;
+        $metadata->userPaperDayCount = (int) $nbUserPapersDayCount;
+        $metadata->registered = $authenticated;
 
         return $metadata;
     }

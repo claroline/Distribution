@@ -14,9 +14,6 @@ import {OptionsType} from '#/main/core/contact/prop-types'
 const ContactsComponent = props =>
   <DataListContainer
     name="contacts"
-    open={{
-      action: (row) => generateUrl('claro_user_profile', {'publicUrl': row.data.meta.publicUrl})
-    }}
     display={{
       current: listConst.DISPLAY_TILES_SM,
       available: Object.keys(listConst.DISPLAY_MODES)
@@ -25,16 +22,20 @@ const ContactsComponent = props =>
       url: ['apiv2_contact_list'],
       autoload: true
     }}
-    delete={{
-      url: ['apiv2_contact_delete_bulk']
-    }}
-    actions={[
+    primaryAction={(row) => ({
+      type: 'url',
+      target: ['claro_user_profile', {'publicUrl': row.data.meta.publicUrl}]
+    })}
+    deleteAction={() => ({
+      type: 'url',
+      target: ['apiv2_contact_delete_bulk']
+    })}
+    actions={(rows) => [
       {
+        type: 'url',
         icon: 'fa fa-fw fa-paper-plane-o',
         label: t('send_message'),
-        action: (rows) => {
-          window.location = `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(c => `userIds[]=${c.data.autoId}`).join('&')}`
-        }
+        target: `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(c => `userIds[]=${c.data.autoId}`).join('&')}`
       }
     ]}
     definition={[

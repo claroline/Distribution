@@ -25,6 +25,7 @@ actions.updateNode = (resourceNode) => ({
 
 actions.togglePublication = (resourceNode) => ({
   [API_REQUEST]: {
+    type: resourceNode.meta.published ? 'unpublish' : 'publish',
     url: [
       resourceNode.meta.published ? 'claro_resource_node_unpublish' : 'claro_resource_node_publish',
       {id: resourceNode.id}

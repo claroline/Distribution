@@ -1,10 +1,15 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
 import classes from 'classnames'
-
 import Alert from 'react-bootstrap/lib/Alert'
-import {tex} from '#/main/core/translation'
 
+import {tex} from '#/main/core/translation'
+import {Button} from '#/main/app/action/components/button'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+
+import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {select} from '#/plugin/exo/quiz/selectors'
 import {
   correctionModes,
   markModes,
@@ -118,6 +123,9 @@ Parameters.propTypes = {
   }).isRequired
 }
 
+// TODO : create selectors to calculate if the quiz is playable
+// or get correct error message if not playable (see Dropzone).
+
 const Layout = props =>
   <div className="quiz-overview">
     {props.empty &&
@@ -129,9 +137,10 @@ const Layout = props =>
 
     {props.description &&
       <div className="quiz-description panel panel-default">
-        <div className="panel-body" dangerouslySetInnerHTML={{ __html: props.description }} />
+        <HtmlText className="panel-body">{props.description}</HtmlText>
       </div>
     }
+
     {props.parameters.showMetadata &&
       <Parameters {...props}/>
     }
@@ -143,18 +152,23 @@ const Layout = props =>
           ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
         )
       ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
-        <a href="#play" className="btn btn-start btn-lg btn-primary btn-block">
-          {tex('exercise_start')}
-        </a>:
-
+        <Button
+          type="link"
+          className="btn btn-start btn-lg btn-primary btn-block"
+          icon="fa fa-fw fa-play"
+          label={tex('exercise_start')}
+          target="/play"
+        />
+        :
         <Alert bsStyle="danger overview-warning">
-          <span className="fa fa-fw fa-warning">{"\u00A0"}</span>
+          <span className="fa fa-fw fa-warning" />
+
           {(props.meta.userPaperCount < props.parameters.maxAttempts &&
             ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
           ) ?
             <span>{tex('exercise_attempt_limit')}</span>:
           ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
-            <span>{tex('exercise_paper_limit')}</span>:
+            <span>{tex('exercise_paper_limit')}</span> :
             <span></span>
           }
         </Alert>
@@ -183,7 +197,7 @@ Layout.defaultProps = {
   description: null
 }
 
-class Overview extends Component {
+class OverviewComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -209,7 +223,7 @@ class Overview extends Component {
   }
 }
 
-Overview.propTypes = {
+OverviewComponent.propTypes = {
   empty: T.bool.isRequired,
   editable: T.bool.isRequired,
   quiz: T.shape({
@@ -220,4 +234,14 @@ Overview.propTypes = {
   }).isRequired
 }
 
-export {Overview}
+const Overview = connect(
+  (state) => ({
+    empty: select.empty(state),
+    editable: resourceSelect.editable(state),
+    quiz: select.quiz(state)
+  })
+)(OverviewComponent)
+
+export {
+  Overview
+}

@@ -1,7 +1,7 @@
 import merge from 'lodash/merge'
 import difference from 'lodash/difference'
 
-import {combineReducers} from '#/main/core/scaffolding/reducer'
+import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 
 import {reducer as apiReducer} from '#/main/core/api/reducer'
 import {reducer as alertReducer} from '#/main/core/layout/alert/reducer'
@@ -10,6 +10,8 @@ import {reducer as modalReducer} from '#/main/core/layout/modal/reducer'
 import {constants} from '#/main/core/layout/page/constants'
 
 const baseReducer = {
+  embedded: makeReducer(false, {}), // this can not be changed at runtime
+  currentRequests: apiReducer,
   modal: modalReducer,
   alerts: alertReducer
 }
@@ -33,7 +35,8 @@ function makePageReducer(initialState = {}, customReducer = {}, options = {}) {
   const pageOptions = merge({}, constants.DEFAULT_FEATURES, options)
 
   // add pages required reducers
-  reducer.currentRequests = apiReducer
+  reducer.embedded = baseReducer.embedded
+  reducer.currentRequests = baseReducer.currentRequests
 
   if (pageOptions.modals) {
     reducer.modal = baseReducer.modal

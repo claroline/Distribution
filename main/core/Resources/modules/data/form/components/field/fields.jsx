@@ -83,13 +83,13 @@ class FieldList extends Component {
     return (
       <div className="field-list-control">
         {0 !== this.props.value.length &&
-        <button
-          type="button"
-          className="btn btn-remove-all btn-sm btn-link-danger"
-          onClick={this.removeAll}
-        >
-          {t('delete_all')}
-        </button>
+          <button
+            type="button"
+            className="btn btn-remove-all btn-sm btn-link-danger"
+            onClick={this.removeAll}
+          >
+            {t('delete_all')}
+          </button>
         }
 
         {0 < this.props.value.length &&

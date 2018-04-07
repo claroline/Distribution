@@ -106,7 +106,7 @@ export const reducers = {
   testMode: makeReducer(false, {
     [TEST_MODE_SET]: setTestMode
   }),
-  currentStep: makeReducer(null, {
+  currentStep: makeReducer({}, {
     [STEP_OPEN]: setCurrentStep,
     [STEP_FEEDBACK]: setStepFeedback
   }),

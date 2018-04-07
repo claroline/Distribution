@@ -4,6 +4,8 @@ import {isQuestionType} from './../../../items/item-types'
 
 import {t, tex} from '#/main/core/translation'
 
+// TODO : replace all button by #/main/app/action/components/button
+
 const PreviousButton = props =>
   <button className="btn btn-previous btn-default" onClick={props.onClick}>
     <span className="fa fa-fw fa-angle-double-left" />

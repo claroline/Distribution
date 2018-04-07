@@ -69,5 +69,6 @@
     "resource_overview": "Resource overview",
     "resource_overview_actions": "Available actions",
     "resource_overview_info": "Information",
-    "resource_overview_progression": "My progression"
+    "resource_overview_progression": "My progression",
+    "resource_notifications": "Notifications"
 }

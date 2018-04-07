@@ -23,7 +23,7 @@
     "media": "Média",
     "more": "Plus",
     "open": "Ouvrir",
-    "open-tracking": "Voir le suivi de l'objet",
+    "open-tracking": "Voir le suivi",
     "rename": "Renommer",
     "resource_access_code": "Restreindre par code",
     "resource_access_ips": "Restreindre par IPs",
@@ -69,5 +69,6 @@
     "resource_overview": "Vue d'ensemble de la ressource",
     "resource_overview_actions": "Actions disponibles",
     "resource_overview_info": "Informations",
-    "resource_overview_progression": "Ma progression"
+    "resource_overview_progression": "Ma progression",
+    "resource_notifications": "Notifications"
 }

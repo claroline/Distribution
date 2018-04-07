@@ -11,6 +11,7 @@ import {makeDroppable, makeDraggable} from '#/plugin/exo/utils/dragAndDrop'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {
   createListDefinition,
+  getPrimaryAction,
   getBulkActions,
   getRowActions,
   getFilterableProps,
@@ -18,12 +19,12 @@ import {
 } from '#/main/core/data/list/utils'
 import {DataCard as DataCardTypes} from '#/main/core/data/prop-types'
 import {
-  DataListAction as DataListActionTypes,
   DataListProperty as DataListPropertyTypes,
   DataListSelection as DataListSelectionTypes,
   DataListSearch as DataListSearchTypes
 } from '#/main/core/data/list/prop-types'
 
+import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
 import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
 import {ListActions, ListPrimaryAction, ListBulkActions} from '#/main/core/data/list/components/actions.jsx'
@@ -70,11 +71,10 @@ const DataTreeItemContent = props =>
           className="item-title"
           disabledWrapper="h2"
         >
-          {[
-            props.computedData.title,
-            props.computedData.subtitle &&
+          {props.computedData.title}
+          {props.computedData.subtitle &&
             <small key="item-subtitle">{props.computedData.subtitle}</small>
-          ]}
+          }
         </ListPrimaryAction>
 
         {props.computedData.flags &&
@@ -95,7 +95,6 @@ const DataTreeItemContent = props =>
       {0 < props.actions.length &&
         <ListActions
           id={`actions-${props.data.id}`}
-          item={props.data}
           actions={props.actions}
         />
       }
@@ -115,11 +114,12 @@ DataTreeItemContent.propTypes = {
   selected: T.bool.isRequired,
   expanded: T.bool.isRequired,
   hasChildren: T.bool.isRequired,
-  actions: T.array.isRequired,
-  primaryAction: T.shape({
-    disabled: T.func,
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }),
+  actions: T.arrayOf(T.shape(
+    ActionTypes.propTypes
+  )).isRequired,
+  primaryAction: T.shape(
+    ActionTypes.propTypes
+  ),
   data: T.shape({
     id: T.string
   }).isRequired,
@@ -197,8 +197,8 @@ class DataTreeItemComponent extends Component {
           hasChildren={this.props.data.children && 0 < this.props.data.children.length}
           data={this.props.data}
           computedData={this.props.card(this.props.data)}
-          actions={this.props.actions}
-          primaryAction={this.props.primaryAction}
+          actions={getRowActions(this.props.data, this.props.actions)}
+          primaryAction={getPrimaryAction(this.props.data, this.props.primaryAction)}
           onSelect={this.props.onSelect ? () => this.props.onSelect(this.props.data) : undefined}
           toggle={() => this.toggle()}
           connectDragSource={this.props.connectDragSource}
@@ -211,9 +211,9 @@ class DataTreeItemComponent extends Component {
               display: this.state.expanded ? 'block':'none'
             }}
           >
-            {this.props.data.children.map((child, childIndex) =>
+            {this.props.data.children.map((child) =>
               <DataTreeItem
-                key={`tree-child-${childIndex}`}
+                key={child.id}
                 data={child}
                 actions={this.props.actions}
                 primaryAction={this.props.primaryAction}
@@ -237,10 +237,8 @@ DataTreeItemComponent.propTypes = {
     id: T.oneOfType([T.string, T.number]).isRequired,
     children: T.array
   }).isRequired,
-  primaryAction: T.object,
-  actions: T.arrayOf(
-    T.shape(DataListActionTypes.propTypes)
-  ).isRequired,
+  primaryAction: T.func,
+  actions: T.func,
 
   onSelect: T.func,
 
@@ -293,7 +291,7 @@ class DataTree extends Component {
     }
 
     // calculate actions
-    let actions = this.props.actions.slice(0)
+    /*let actions = this.props.actions.slice(0)
     if (this.props.deleteAction) {
       actions.push({
         icon: 'fa fa-fw fa-trash-o',
@@ -309,7 +307,7 @@ class DataTree extends Component {
           ) :
           this.props.deleteAction.action
       })
-    }
+    }*/
 
     return (
       <div className="data-list">
@@ -348,17 +346,19 @@ class DataTree extends Component {
             {this.props.selection && 0 < this.props.selection.current.length &&
               <ListBulkActions
                 count={this.props.selection.current.length}
-                selectedItems={this.props.selection.current.map(id => this.props.data.find(row => id === row.id) || {id: id})}
-                actions={getBulkActions(actions)}
+                actions={getBulkActions(
+                  this.props.selection.current.map(id => this.props.data.find(row => id === row.id) || {id: id}),
+                  this.props.actions
+                )}
               />
             }
 
             <ul className="data-tree-content">
-              {this.props.data.map((row, rowIndex) =>
+              {this.props.data.map((row) =>
                 <DataTreeItem
-                  key={`tree-item-${rowIndex}`}
+                  key={`tree-item-${row.id}`}
                   data={row}
-                  actions={getRowActions(actions)}
+                  actions={this.props.actions}
                   primaryAction={this.props.primaryAction}
                   selected={this.props.selection ? this.props.selection.current : []}
                   onSelect={
@@ -412,29 +412,19 @@ DataTree.propTypes = {
   /**
    * Actions available for each data row and selected rows (if selection is enabled).
    */
-  actions: T.arrayOf(
-    T.shape(DataListActionTypes.propTypes)
-  ),
+  actions: T.func,
 
   /**
    * Data primary action (aka open/edit action for rows in most cases).
    * Providing this object will automatically display the primary action (depending on the current view mode).
    */
-  primaryAction: T.shape({
-    disabled: T.func,
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }),
+  primaryAction: T.func,
 
   /**
    * Data delete action.
    * Providing this object will automatically append the delete action to the actions list of rows and selection.
    */
-  deleteAction: T.shape({
-    disabled: T.func,
-    displayed: T.func,
-    // if a function is provided, it receive the `rows`, `confirmTitle`, `confirmQuestion` as param
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }),
+  deleteAction: T.func,
 
   /**
    * Search filters configuration.
@@ -481,7 +471,6 @@ DataTree.propTypes = {
 }
 
 DataTree.defaultProps = {
-  actions: [],
   translations: listConst.DEFAULT_TRANSLATIONS
 }
 
