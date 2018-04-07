@@ -42,7 +42,6 @@ const DataCell = props => {
   return (
     <TableCell className={`${props.column.type}-cell`}>
       <ListPrimaryAction
-        item={props.rowData}
         action={props.action}
       >
         {cellRendering || '-'}
@@ -53,7 +52,9 @@ const DataCell = props => {
 
 DataCell.propTypes = {
   rowData: T.object.isRequired,
-  action: T.func,
+  action: T.shape(
+    ActionTypes.propTypes
+  ),
   column: T.shape(
     DataListProperty.propTypes
   ).isRequired

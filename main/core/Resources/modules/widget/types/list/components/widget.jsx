@@ -14,10 +14,7 @@ const ListWidgetComponent = props =>
       url: props.fetchUrl,
       autoload: true
     }}
-    primaryAction={(row) => ({
-      type: 'callback',
-      callback: () => props.openRow(row, props.open)
-    })}
+    primaryAction={props.primaryAction ? (row) => props.openRow(row, props.primaryAction) : undefined}
     definition={props.definition}
     card={props.card}
     display={{
@@ -28,7 +25,7 @@ const ListWidgetComponent = props =>
 
 ListWidgetComponent.propTypes = {
   title: T.string,
-  open: T.func,
+  primaryAction: T.func,
   openRow: T.func.isRequired,
   fetchUrl: T.oneOfType([T.string, T.array]).isRequired,
 
@@ -46,7 +43,7 @@ ListWidgetComponent.propTypes = {
 const ListWidget = connect(
   (state) => ({
     fetchUrl: state.config.fetchUrl,
-    open: state.config.open,
+    primaryAction: state.config.primaryAction,
     definition: state.config.definition,
     card: state.config.card,
     display: state.config.display,

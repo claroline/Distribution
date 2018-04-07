@@ -66,7 +66,6 @@ const DataTreeItemContent = props =>
         }
 
         <ListPrimaryAction
-          item={props.data}
           action={props.primaryAction}
           className="item-title"
           disabledWrapper="h2"
