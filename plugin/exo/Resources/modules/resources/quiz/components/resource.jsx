@@ -114,6 +114,7 @@ const Resource = props =>
           onEnter: () => props.testMode(true)
         }, {
           path: '/play',
+          exact: true,
           component: Player,
           onEnter: () => props.testMode(false)
         }, {
