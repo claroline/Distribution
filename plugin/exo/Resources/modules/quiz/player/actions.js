@@ -83,14 +83,15 @@ actions.play = (previousPaper = null) => {
       return dispatch(actions.fetchAttempt(quizSelectors.quiz(getState()).id))
     } else {
       // Offline & Tests : create a new local paper and open the player
-      return dispatch(
+      // Promise is to expose the same interface than when there are async calls
+      return Promise.resolve(dispatch(
         actions.initPlayer(generatePaper(
           quizSelectors.quiz(getState()),
           quizSelectors.steps(getState()),
           quizSelectors.items(getState()),
           previousPaper
         ))
-      )
+      ))
     }
   }
 }

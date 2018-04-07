@@ -104,11 +104,13 @@ const Resource = props =>
           path: '/edit',
           component: Editor,
           disabled: !props.editable,
-          onEnter: () => props.edit(props.quizId)
+          onEnter: () => {
+            props.edit(props.quizId)
+          }
         }, {
           path: '/test',
           component: Player,
-          disabled: props.editable,
+          disabled: !props.editable,
           onEnter: () => props.testMode(true)
         }, {
           path: '/play',

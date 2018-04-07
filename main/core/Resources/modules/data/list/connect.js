@@ -174,8 +174,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
     // data actions
     actions:       ownProps.actions,
-    primaryAction: stateProps.primaryAction,
-    deleteAction:  stateProps.deleteAction
+    primaryAction: ownProps.primaryAction,
+    deleteAction:  ownProps.deleteAction
   }
 
   // optional list features
