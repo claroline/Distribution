@@ -128,7 +128,7 @@ export const FormField = props => {
           onChange={props.onChange}
         />
       )
-    case 'rich_text':
+    case 'html':
       return (
         <HtmlGroup
           id={props.controlId}
@@ -165,6 +165,7 @@ export const FormField = props => {
           disabled={props.disabled}
           error={props.error}
           onChange={props.onChange}
+          autoUpload={props.options.autoUpload}
         />
       )
     default:
@@ -185,10 +186,16 @@ FormField.propTypes = {
   onChange: T.func.isRequired,
   min: T.number,
   max: T.number,
-  types: T.array
+  types: T.array,
+  options: T.shape({
+    autoUpload: T.bool
+  })
 }
 
 FormField.defaultProps = {
   noLabel: false,
-  disabled: false
+  disabled: false,
+  options: {
+    autoUpload: true
+  }
 }
