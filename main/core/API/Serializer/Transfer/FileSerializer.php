@@ -60,7 +60,7 @@ class FileSerializer
           ];
 
         if ($file->getFile()) {
-            $data['uploadedFile'] = $this->fileSerializer->serialize();
+            $data['uploadedFile'] = $this->fileSerializer->serialize($file->getFile());
         }
 
         return $data;

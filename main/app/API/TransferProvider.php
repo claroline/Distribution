@@ -149,6 +149,8 @@ class TransferProvider
         }
 
         $this->om->endFlushSuite();
+
+        return $jsonLogger->get();
     }
 
     /**

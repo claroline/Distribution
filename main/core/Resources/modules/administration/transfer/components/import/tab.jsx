@@ -22,14 +22,14 @@ const Field = props => {
   if (has(props, 'oneOf')) {
     return (
       <div className="panel panel-body">
-        {trans('one_of_field_list')} <span className={classes('label', {'label-danger': props.oneOf.required}, {'label-warning': !props.oneOf.required})}>{props.oneOf.required ? t('required'): t('optional')}</span>
+        {trans('one_of_field_list')} <span className={classes('label', {'label-danger': props.oneOf.required}, {'label-warning': !props.oneOf.required})}>{props.oneOf.required ? trans('required'): trans('optional')}</span>
         {props.oneOf.map(oneOf => <Fields properties={oneOf.properties}/>)}
       </div>
     )
   } else {
     return(
       <div className="well">
-        <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? t('required'): t('optional')}</span></div>
+        <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? trans('required'): trans('optional')}</span></div>
         <div>{props.description}</div>
       </div>
     )
@@ -49,11 +49,11 @@ const RoutedExplain = props => {
   const action = props.match.params.action
   const choices = {}
   choices['none'] = ''
-  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: t(key)}), choices)
+  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: trans(key)}), choices)
 
   return (
     <div>
-      <h3>{t(entity)}</h3>
+      <h3>{trans(entity)}</h3>
       <div>
         <FormContainer
           level={3}

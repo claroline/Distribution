@@ -12,11 +12,13 @@
 namespace Claroline\CoreBundle\Controller\APINew;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
+use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\AppBundle\Async\AsyncRequest;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\CoreBundle\Entity\Import\File as HistoryFile;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -36,6 +38,9 @@ class TransferController extends AbstractCrudController
     /** @var TransferProvider */
     private $provider;
 
+    /** @var Crud */
+    protected $crud;
+
     /** @var FinderProvider */
     protected $finder;
 
@@ -50,7 +55,8 @@ class TransferController extends AbstractCrudController
      *    "provider"   = @DI\Inject("claroline.api.transfer"),
      *    "router"     = @DI\Inject("router"),
      *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
-     *    "fileUt"     = @DI\Inject("claroline.utilities.file")
+     *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
+     *    "crud"       = @DI\Inject("claroline.api.crud")
      * })
      *
      * @param TransferProvider $provider
@@ -61,12 +67,14 @@ class TransferController extends AbstractCrudController
         TransferProvider $provider,
         FileUtilities $fileUt,
         RouterInterface $router,
+        Crud $crud,
         $schemaDir
     ) {
         $this->provider = $provider;
         $this->schemaDir = $schemaDir;
         $this->fileUt = $fileUt;
         $this->router = $router;
+        $this->crud = $crud;
     }
 
     /**
@@ -87,7 +95,7 @@ class TransferController extends AbstractCrudController
             ['uploadedFile' => $file]
         );
 
-        return new JsonResponse($this->serializer->serialize($file), 200);
+        return new JsonResponse($file, 200);
     }
 
     public function getName()
@@ -106,6 +114,7 @@ class TransferController extends AbstractCrudController
      */
     public function startAction(Request $request)
     {
+        return $this->executeAction($request);
         $request = new AsyncRequest(
           $this->router->generate(
             'apiv2_transfer_execute',
@@ -136,14 +145,24 @@ class TransferController extends AbstractCrudController
           $data['file']
         );
 
+        $historyFile = $this->finder->fetch('Claroline\CoreBundle\Entity\Import\File', 0, -1, ['file' => $publicFile->getId()]);
+        $this->crud->replace($historyFile, 'log', $this->getLogFile($request));
+        $this->crud->replace($historyFile, 'executionDate', new \DateTime());
+
         $content = $this->fileUt->getContents($publicFile);
 
-        $this->provider->execute(
+        $data = $this->provider->execute(
             $content,
             $data['action'],
             $publicFile->getMimeType(),
             $this->getLogFile($request)
         );
+
+        if ($data->error > 0) {
+            $this->crud->update($historyFile, 'status', HistoryFile::STATUS_ERROR);
+        } else {
+            $this->crud->update($historyFile, 'status', HistoryFile::STATUS_PENDING);
+        }
 
         return new JsonResponse('done', 200);
     }
@@ -227,7 +246,7 @@ class TransferController extends AbstractCrudController
 
         $dispatcher->dispatch(strtolower('upload_file_'.$handler), 'UploadFile', [$object]);
 
-        return $object;
+        return $this->serializer->serialize($object);
     }
 
     /**
