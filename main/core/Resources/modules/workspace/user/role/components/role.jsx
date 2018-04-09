@@ -138,7 +138,7 @@ const Role = connect(
         definition: UserList.definition,
         card: UserList.card,
         fetch: {
-          url: ['apiv2_user_list'],
+          url: ['apiv2_user_list_managed'],
           autoload: true
         },
         handleSelect: (selected) => dispatch(actions.addUsers(roleId, selected))
@@ -153,7 +153,7 @@ const Role = connect(
         definition: GroupList.definition,
         card: GroupList.card,
         fetch: {
-          url: ['apiv2_group_list'],
+          url: ['apiv2_group_list_managed'],
           autoload: true
         },
         handleSelect: (selected) => dispatch(actions.addGroups(roleId, selected))

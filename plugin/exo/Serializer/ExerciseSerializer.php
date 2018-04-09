@@ -135,6 +135,8 @@ class ExerciseSerializer implements SerializerInterface
     private function serializeMetadata(Exercise $exercise)
     {
         $metadata = new \stdClass();
+        // Adding some data, otherwise empty object gets interpreted as empty array which generates an import validation error
+        $metadata->creationDate = new \DateTime();
 
         $nbUserPapers = 0;
         $nbUserPapersDayCount = 0;
