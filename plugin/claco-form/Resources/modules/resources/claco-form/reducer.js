@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeResourceReducer} from '#/main/core/resource/reducer'
 import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
@@ -71,11 +72,13 @@ const clacoFormReducer = makeReducer({}, {
   },
   [KEYWORDS_REMOVE]: (state, action) => {
     const newState = cloneDeep(state)
-    // const index = newState['keywords'].findIndex(k => k.id === action.keywordId)
-    //
-    // if (index >= 0) {
-    //   newState['keywords'].splice(index, 1)
-    // }
+    action.ids.forEach(id => {
+      const index = newState['keywords'].findIndex(k => k.id === id)
+
+      if (index >= 0) {
+        newState['keywords'].splice(index, 1)
+      }
+    })
 
     return newState
   }

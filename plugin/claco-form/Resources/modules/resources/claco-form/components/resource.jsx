@@ -163,9 +163,13 @@ const ClacoFormResource = connect(
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'clacoFormForm'))
   }),
   (dispatch) => ({
-    resetForm: (formData) => dispatch(formActions.resetForm('clacoFormForm', formData)),
-    saveForm: (id) => dispatch(formActions.saveForm('clacoFormForm', ['apiv2_clacoform_update', {id: id}])),
-    deleteEntries: () => {
+    resetForm(formData) {
+      dispatch(formActions.resetForm('clacoFormForm', formData))
+    },
+    saveForm(id) {
+      dispatch(formActions.saveForm('clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
+    },
+    deleteEntries() {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title: trans('delete_all_entries', {}, 'clacoform'),

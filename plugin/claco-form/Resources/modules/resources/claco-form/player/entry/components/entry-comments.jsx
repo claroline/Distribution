@@ -208,12 +208,24 @@ const EntryComments = connect(
     displayCommentDate: selectors.getParam(state, 'display_comment_date')
   }),
   (dispatch) => ({
-    createComment: (entryId, content) => dispatch(actions.createComment(entryId, content)),
-    editComment: (entryId, commentId, content) => dispatch(actions.editComment(entryId, commentId, content)),
-    deleteComment: (entryId, commentId) => dispatch(actions.deleteComment(entryId, commentId)),
-    activateComment: (entryId, commentId) => dispatch(actions.activateComment(entryId, commentId)),
-    blockComment: (entryId, commentId) => dispatch(actions.blockComment(entryId, commentId)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    createComment(entryId, content) {
+      dispatch(actions.createComment(entryId, content))
+    },
+    editComment(entryId, commentId, content) {
+      dispatch(actions.editComment(entryId, commentId, content))
+    },
+    deleteComment(entryId, commentId) {
+      dispatch(actions.deleteComment(entryId, commentId))
+    },
+    activateComment(entryId, commentId) {
+      dispatch(actions.activateComment(entryId, commentId))
+    },
+    blockComment(entryId, commentId) {
+      dispatch(actions.blockComment(entryId, commentId))
+    },
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    }
   })
 )(EntryCommentsComponent)
 

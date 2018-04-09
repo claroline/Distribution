@@ -526,7 +526,9 @@ const Entries = withRouter(connect(
     entries: state.entries
   }),
   (dispatch) => ({
-    downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
+    downloadEntryPdf(entryId) {
+      dispatch(actions.downloadEntryPdf(entryId))
+    },
     downloadEntriesPdf: entries => dispatch(actions.downloadEntriesPdf(entries)),
     switchEntriesStatus: (entries, status) => dispatch(actions.switchEntriesStatus(entries, status)),
     switchEntriesLock: (entries, locked) => dispatch(actions.switchEntriesLock(entries, locked)),

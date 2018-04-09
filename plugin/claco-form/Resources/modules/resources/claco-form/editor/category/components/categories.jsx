@@ -167,10 +167,18 @@ const Categories = connect(
     categories: state.clacoForm.categories
   }),
   (dispatch) => ({
-    createCategory: (data) => dispatch(actions.createCategory(data)),
-    editCategory: (data) => dispatch(actions.editCategory(data)),
-    deleteCategory: (categoryId) => dispatch(actions.deleteCategory(categoryId)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    createCategory(data) {
+      dispatch(actions.createCategory(data))
+    },
+    editCategory(data) {
+      dispatch(actions.editCategory(data))
+    },
+    deleteCategory(categoryId) {
+      dispatch(actions.deleteCategory(categoryId))
+    },
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    }
   })
 )(CategoriesComponent)
 

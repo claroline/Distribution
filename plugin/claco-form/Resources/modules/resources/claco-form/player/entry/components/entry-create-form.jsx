@@ -342,7 +342,9 @@ const EntryCreateForm = withRouter(connect(
     template: selectors.template(state)
   }),
   (dispatch) => ({
-    createEntry: (entry, keywords, files) => dispatch(actions.createEntry(entry, keywords, files))
+    createEntry(entry, keywords, files) {
+      dispatch(actions.createEntry(entry, keywords, files))
+    }
   })
 )(EntryCreateFormComponent))
 

@@ -1,5 +1,6 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
+import {generateUrl} from '#/main/core/api/router'
 
 import {actions as entryActions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
@@ -48,6 +49,18 @@ actions.saveKeyword = (keyword) => (dispatch, getState) => {
     })
   }
 }
+
+actions.deleteKeywords = (keywords) => ({
+  [API_REQUEST]: {
+    url: generateUrl('apiv2_clacoformkeyword_delete_bulk') + '?' + keywords.map(k => 'ids[]=' + k.id).join('&'),
+    request: {
+      method: 'DELETE'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.removeKeywords(keywords.map(k => k.id)))
+    }
+  }
+})
 
 actions.addKeyword = makeActionCreator(KEYWORD_ADD, 'keyword')
 actions.updateKeyword = makeActionCreator(KEYWORD_UPDATE, 'keyword')

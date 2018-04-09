@@ -2,15 +2,17 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
+import {MODAL_CONFIRM} from '#/main/core/layout/modal'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 import {MODAL_KEYWORD_FORM} from '#/plugin/claco-form/resources/claco-form/editor/components/modals/keyword-form-modal.jsx'
 
 const generateDisplayList = (fields) => {
@@ -435,9 +437,6 @@ const EditorComponent = props =>
                 url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],
                 autoload: true
               }}
-              delete={{
-                url: ['apiv2_clacoformkeyword_delete_bulk']
-              }}
               definition={[
                 {
                   name: 'name',
@@ -454,6 +453,11 @@ const EditorComponent = props =>
                     keyword: rows[0]
                   }),
                   context: 'row'
+                }, {
+                  icon: 'fa fa-fw fa-trash-o',
+                  label: trans('delete'),
+                  dangerous: true,
+                  action: (rows) => props.deleteKeywords(rows)
                 }
               ]}
             />
@@ -466,6 +470,7 @@ const EditorComponent = props =>
 EditorComponent.propTypes = {
   clacoForm: T.shape(ClacoFormType.propTypes),
   roles: T.array,
+  deleteKeywords: T.func.isRequired,
   showModal: T.func.isRequired
 }
 
@@ -475,7 +480,19 @@ const Editor = connect(
     roles: state.roles
   }),
   (dispatch) => ({
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    deleteKeywords(keywords) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: trans('objects_delete_title'),
+          question: transChoice('objects_delete_question', keywords.length, {'count': keywords.length}, 'platform'),
+          dangerous: true,
+          handleConfirm: () => dispatch(actions.deleteKeywords(keywords))
+        })
+      )
+    },
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    }
   })
 )(EditorComponent)
 

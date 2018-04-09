@@ -201,8 +201,12 @@ const TemplateForm = connect(
     useTemplate: selectors.useTemplate(state)
   }),
   (dispatch) => ({
-    saveTemplate: (template, useTemplate) => dispatch(actions.saveTemplate(template, useTemplate)),
-    updateMessage: (message, status) => dispatch(clacoFormActions.updateMessage(message, status))
+    saveTemplate(template, useTemplate) {
+      dispatch(actions.saveTemplate(template, useTemplate))
+    },
+    updateMessage(message, status) {
+      dispatch(clacoFormActions.updateMessage(message, status))
+    }
   })
 )(TemplateFormComponent)
 

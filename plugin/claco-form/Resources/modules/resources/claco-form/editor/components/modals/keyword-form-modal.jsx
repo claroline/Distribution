@@ -131,8 +131,12 @@ const KeywordFormModal = connect(
     resourceId: state.clacoForm.id
   }),
   (dispatch) => ({
-    saveKeyword: (keyword) => dispatch(actions.saveKeyword(keyword)),
-    fadeModal: () => dispatch(modalActions.fadeModal())
+    saveKeyword(keyword) {
+      dispatch(actions.saveKeyword(keyword))
+    },
+    fadeModal() {
+      dispatch(modalActions.fadeModal())
+    }
   })
 )(KeywordFormModalComponent)
 

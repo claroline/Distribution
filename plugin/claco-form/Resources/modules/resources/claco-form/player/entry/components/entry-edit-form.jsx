@@ -482,8 +482,12 @@ const EntryEditForm = withRouter(connect(
     template: selectors.template(state)
   }),
   (dispatch) => ({
-    setCurrentEntry: (entry) => dispatch(actions.loadCurrentEntry(entry)),
-    editEntry: (entryId, entry, keywords, categories, files) => dispatch(actions.editEntry(entryId, entry, keywords, categories, files))
+    setCurrentEntry(entry) {
+      dispatch(actions.loadCurrentEntry(entry))
+    },
+    editEntry(entryId, entry, keywords, categories, files) {
+      dispatch(actions.editEntry(entryId, entry, keywords, categories, files))
+    }
   })
 )(EntryEditFormComponent))
 

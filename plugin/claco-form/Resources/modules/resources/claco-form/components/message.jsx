@@ -44,7 +44,9 @@ const Message = connect(
     message: state.message
   }),
   (dispatch) => ({
-    resetMessage: () => dispatch(actions.resetMessage())
+    resetMessage() {
+      dispatch(actions.resetMessage())
+    }
   })
 )(MessageComponent)
 

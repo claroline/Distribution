@@ -650,8 +650,10 @@ const EntryView = withRouter(connect(
     template: selectors.template(state)
   }),
   (dispatch, ownProps) => ({
-    loadEntry: (entryId) => dispatch(actions.loadEntry(entryId)),
-    deleteEntry: entry => {
+    loadEntry(entryId) {
+      dispatch(actions.loadEntry(entryId))
+    },
+    deleteEntry(entry) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
           title: trans('delete_entry', {}, 'clacoform'),
@@ -663,15 +665,33 @@ const EntryView = withRouter(connect(
         })
       )
     },
-    switchEntryStatus: entryId => dispatch(actions.switchEntryStatus(entryId)),
-    switchEntryLock: entryId => dispatch(actions.switchEntryLock(entryId)),
-    downloadEntryPdf: entryId => dispatch(actions.downloadEntryPdf(entryId)),
-    saveEntryUser: (entryId, entryUser) => dispatch(actions.saveEntryUser(entryId, entryUser)),
-    changeEntryOwner: (entryId, userId) => dispatch(actions.changeEntryOwner(entryId, userId)),
-    shareEntry: (entryId, userId) => dispatch(actions.shareEntry(entryId, userId)),
-    unshareEntry: (entryId, userId) => dispatch(actions.unshareEntry(entryId, userId)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props)),
-    fadeModal: () => dispatch(modalActions.fadeModal())
+    switchEntryStatus(entryId) {
+      dispatch(actions.switchEntryStatus(entryId))
+    },
+    switchEntryLock(entryId) {
+      dispatch(actions.switchEntryLock(entryId))
+    },
+    downloadEntryPdf(entryId) {
+      dispatch(actions.downloadEntryPdf(entryId))
+    },
+    saveEntryUser(entryId, entryUser) {
+      dispatch(actions.saveEntryUser(entryId, entryUser))
+    },
+    changeEntryOwner(entryId, userId) {
+      dispatch(actions.changeEntryOwner(entryId, userId))
+    },
+    shareEntry(entryId, userId) {
+      dispatch(actions.shareEntry(entryId, userId))
+    },
+    unshareEntry(entryId, userId) {
+      dispatch(actions.unshareEntry(entryId, userId))
+    },
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    },
+    fadeModal() {
+      dispatch(modalActions.fadeModal())
+    }
   })
 )(EntryViewComponent))
 

@@ -181,10 +181,18 @@ const Fields = connect(
     fields: state.fields
   }),
   (dispatch) => ({
-    createField: (data) => dispatch(actions.createField(data)),
-    editField: (data) => dispatch(actions.editField(data)),
-    deleteField: (fieldId) => dispatch(actions.deleteField(fieldId)),
-    showModal: (type, props) => dispatch(modalActions.showModal(type, props))
+    createField(data) {
+      dispatch(actions.createField(data))
+    },
+    editField(data) {
+      dispatch(actions.editField(data))
+    },
+    deleteField(fieldId) {
+      dispatch(actions.deleteField(fieldId))
+    },
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    }
   })
 )(FieldsComponent)
 
