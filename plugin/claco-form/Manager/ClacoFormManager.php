@@ -22,9 +22,6 @@ use Claroline\ClacoFormBundle\Entity\Field;
 use Claroline\ClacoFormBundle\Entity\FieldChoiceCategory;
 use Claroline\ClacoFormBundle\Entity\FieldValue;
 use Claroline\ClacoFormBundle\Entity\Keyword;
-use Claroline\ClacoFormBundle\Event\Log\LogCategoryCreateEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogCategoryDeleteEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogCategoryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogClacoFormConfigureEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogClacoFormTemplateEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCommentCreateEvent;
@@ -41,8 +38,6 @@ use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogFieldEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordCreateEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogKeywordDeleteEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogKeywordEditEvent;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
@@ -264,107 +259,6 @@ class ClacoFormManager
         $this->eventDispatcher->dispatch('log', $event);
 
         return $clacoFormTemplate;
-    }
-
-    public function persistCategory(Category $category)
-    {
-        $this->om->persist($category);
-        $this->om->flush();
-    }
-
-    public function createCategory(
-        ClacoForm $clacoForm,
-        $name,
-        array $managers = [],
-        $color = null,
-        $notifyAddition = true,
-        $notifyEdition = true,
-        $notifyRemoval = true,
-        $notifyPendingComment = true
-    ) {
-        $category = new Category();
-        $category->setClacoForm($clacoForm);
-        $category->setName($name);
-        $category->setColor($color);
-        $category->setNotifyAddition($notifyAddition);
-        $category->setNotifyEdition($notifyEdition);
-        $category->setNotifyRemoval($notifyRemoval);
-        $category->setNotifyPendingComment($notifyPendingComment);
-
-        foreach ($managers as $manager) {
-            $category->addManager($manager);
-        }
-        $this->persistCategory($category);
-        $event = new LogCategoryCreateEvent($category);
-        $this->eventDispatcher->dispatch('log', $event);
-
-        return $category;
-    }
-
-    public function editCategory(
-        Category $category,
-        $name,
-        array $managers = [],
-        $color = null,
-        $notifyAddition = true,
-        $notifyEdition = true,
-        $notifyRemoval = true,
-        $notifyPendingComment = true
-    ) {
-        $category->setName($name);
-        $category->setColor($color);
-        $category->setNotifyAddition($notifyAddition);
-        $category->setNotifyEdition($notifyEdition);
-        $category->setNotifyRemoval($notifyRemoval);
-        $category->setNotifyPendingComment($notifyPendingComment);
-        $category->emptyManagers();
-
-        foreach ($managers as $manager) {
-            $category->addManager($manager);
-        }
-        $this->persistCategory($category);
-        $event = new LogCategoryEditEvent($category);
-        $this->eventDispatcher->dispatch('log', $event);
-
-        return $category;
-    }
-
-    public function deleteCategory(Category $category)
-    {
-        $clacoForm = $category->getClacoForm();
-        $resourceNode = $clacoForm->getResourceNode();
-        $managers = $category->getManagers();
-        $details = [];
-        $details['id'] = $category->getId();
-        $details['name'] = $category->getName();
-        $details['details'] = $category->getDetails();
-        $details['resourceId'] = $clacoForm->getId();
-        $details['resourceNodeId'] = $resourceNode->getId();
-        $details['resourceName'] = $resourceNode->getName();
-        $details['managers'] = [];
-
-        foreach ($managers as $manager) {
-            $details['managers'][] = [
-                'id' => $manager->getId(),
-                'username' => $manager->getUsername(),
-                'firstName' => $manager->getFirstName(),
-                'lastName' => $manager->getLastName(),
-            ];
-        }
-        $this->om->remove($category);
-        $this->om->flush();
-        $event = new LogCategoryDeleteEvent($details);
-        $this->eventDispatcher->dispatch('log', $event);
-    }
-
-    public function deleteCategories(array $categories)
-    {
-        $this->om->startFlushSuite();
-
-        foreach ($categories as $category) {
-            $this->deleteCategory($category);
-        }
-        $this->om->endFlushSuite();
     }
 
     public function persistField(Field $field)
@@ -640,32 +534,6 @@ class ClacoFormManager
         }
 
         return $keyword;
-    }
-
-    public function editKeyword(Keyword $keyword, $name)
-    {
-        $keyword->setName($name);
-        $this->persistKeyword($keyword);
-        $event = new LogKeywordEditEvent($keyword);
-        $this->eventDispatcher->dispatch('log', $event);
-
-        return $keyword;
-    }
-
-    public function deleteKeyword(Keyword $keyword)
-    {
-        $clacoForm = $keyword->getClacoForm();
-        $resourceNode = $clacoForm->getResourceNode();
-        $details = [];
-        $details['id'] = $keyword->getId();
-        $details['name'] = $keyword->getName();
-        $details['resourceId'] = $clacoForm->getId();
-        $details['resourceNodeId'] = $resourceNode->getId();
-        $details['resourceName'] = $resourceNode->getName();
-        $this->om->remove($keyword);
-        $this->om->flush();
-        $event = new LogKeywordDeleteEvent($details);
-        $this->eventDispatcher->dispatch('log', $event);
     }
 
     public function getEntriesForUser(ClacoForm $clacoForm, User $user = null)
