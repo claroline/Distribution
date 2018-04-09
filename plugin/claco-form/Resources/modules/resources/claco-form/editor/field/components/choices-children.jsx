@@ -105,7 +105,7 @@ class ChoicesChildrenComponent  extends Component {
 ChoicesChildrenComponent.propTypes = {
   fieldId: T.number.isRequired,
   parent: T.shape({
-    index: T.number.isRequired,
+    index: T.string.isRequired,
     value: T.string,
     new: T.bool.isRequired,
     category: T.number,

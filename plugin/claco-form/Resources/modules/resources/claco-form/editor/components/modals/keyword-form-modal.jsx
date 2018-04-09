@@ -12,7 +12,7 @@ import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
-export const MODAL_KEYWORD_FORM = 'MODAL_KEYWORD_FORM'
+const MODAL_KEYWORD_FORM = 'MODAL_KEYWORD_FORM'
 
 class KeywordFormModalComponent extends Component {
   constructor(props) {
@@ -141,5 +141,6 @@ const KeywordFormModal = connect(
 )(KeywordFormModalComponent)
 
 export {
+  MODAL_KEYWORD_FORM,
   KeywordFormModal
 }

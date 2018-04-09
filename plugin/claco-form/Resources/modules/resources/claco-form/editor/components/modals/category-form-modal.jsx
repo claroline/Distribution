@@ -1,17 +1,23 @@
 /*global UserPicker*/
 import React, {Component} from 'react'
+import cloneDeep from 'lodash/cloneDeep'
+import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
 
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {ColorPicker} from '#/main/core/layout/form/components/field/color-picker.jsx'
 import {trans} from '#/main/core/translation'
 
-export const MODAL_CATEGORY_FORM = 'MODAL_CATEGORY_FORM'
+import {Category as CategoryType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
-export class CategoryFormModal  extends Component {
+const MODAL_CATEGORY_FORM = 'MODAL_CATEGORY_FORM'
+
+class CategoryFormModalComponent  extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -19,18 +25,36 @@ export class CategoryFormModal  extends Component {
       nameError: null,
       id: props.category.id,
       name: props.category.name,
-      color: props.category.color,
       managers: props.category.managers,
-      notifyAddition: props.category.notify_addition !== undefined ? props.category.notify_addition : true,
-      notifyEdition: props.category.notify_edition !== undefined ? props.category.notify_edition : true,
-      notifyRemoval: props.category.notify_removal !== undefined ? props.category.notify_removal : true,
-      notifyPendingComment: props.category.notify_pending_comment !== undefined ? props.category.notify_pending_comment : true
+      details: {
+        color: props.category.details.color !== undefined ?
+          props.category.details.color :
+          null,
+        notify_addition: props.category.details.notify_addition !== undefined ?
+          props.category.details.notify_addition :
+          true,
+        notify_edition: props.category.details.notify_edition !== undefined ?
+          props.category.details.notify_edition :
+          true,
+        notify_removal: props.category.details.notify_removal !== undefined ?
+          props.category.details.notify_removal :
+          true,
+        notify_pending_comment: props.category.details.notify_pending_comment !== undefined ?
+          props.category.details.notify_pending_comment :
+          true
+      }
     }
     this.setManagers = this.setManagers.bind(this)
   }
 
   updateCategoryProps(property, value) {
     this.setState({[property]: value})
+  }
+
+  updateCategoryDetails(property, value) {
+    const details = cloneDeep(this.state.details)
+    details[property] = value
+    this.setState({details: details})
   }
 
   showManagersSelection() {
@@ -67,7 +91,7 @@ export class CategoryFormModal  extends Component {
 
   registerCategory() {
     if (!this.state['hasError']) {
-      this.props.confirmAction(this.state)
+      this.props.saveCategory(this.state)
       this.props.fadeModal()
     }
   }
@@ -114,8 +138,8 @@ export class CategoryFormModal  extends Component {
             <div className="col-md-9">
               <ColorPicker
                 id="category-color"
-                value={this.state.color}
-                onChange={(e) => {this.updateCategoryProps('color', e)}}
+                value={this.state.details.color}
+                onChange={(e) => {this.updateCategoryDetails('color', e)}}
                 autoOpen={false}
               />
             </div>
@@ -151,27 +175,27 @@ export class CategoryFormModal  extends Component {
           <br/>
           <CheckGroup
             id="notify-addition"
-            value={this.state.notifyAddition}
+            value={this.state.details.notify_addition}
             label={trans('addition', {}, 'clacoform')}
-            onChange={checked => this.updateCategoryProps('notifyAddition', checked)}
+            onChange={checked => this.updateCategoryDetails('notify_addition', checked)}
           />
           <CheckGroup
             id="notify-edition"
-            value={this.state.notifyEdition}
+            value={this.state.details.notify_edition}
             label={trans('edition', {}, 'clacoform')}
-            onChange={checked => this.updateCategoryProps('notifyEdition', checked)}
+            onChange={checked => this.updateCategoryDetails('notify_edition', checked)}
           />
           <CheckGroup
             id="notify-removal"
-            value={this.state.notifyRemoval}
+            value={this.state.details.notify_removal}
             label={trans('removal', {}, 'clacoform')}
-            onChange={checked => this.updateCategoryProps('notifyRemoval', checked)}
+            onChange={checked => this.updateCategoryDetails('notify_removal', checked)}
           />
           <CheckGroup
             id="notify-pending-comment"
-            value={this.state.notifyPendingComment}
+            value={this.state.details.notify_pending_comment}
             label={trans('comment_to_moderate', {}, 'clacoform')}
-            onChange={checked => this.updateCategoryProps('notifyPendingComment', checked)}
+            onChange={checked => this.updateCategoryDetails('notify_pending_comment', checked)}
           />
         </Modal.Body>
         <Modal.Footer>
@@ -187,24 +211,28 @@ export class CategoryFormModal  extends Component {
   }
 }
 
-CategoryFormModal.propTypes = {
-  category: T.shape({
-    id: T.number,
-    name: T.string.isRequired,
-    color: T.string,
-    managers: T.arrayOf(T.shape({
-      id: T.number.isRequired,
-      firstName: T.string.isRequired,
-      lastName: T.string.isRequired,
-      username: T.string.isRequired,
-      email: T.string.isRequired,
-      guid: T.string
-    })),
-    notify_addition: T.boolean,
-    notify_edition: T.boolean,
-    notify_removal: T.boolean,
-    notify_pending_comment: T.boolean
-  }).isRequired,
-  confirmAction: T.func.isRequired,
+CategoryFormModalComponent.propTypes = {
+  resourceId:T.number.isRequired,
+  category: T.shape(CategoryType.propTypes).isRequired,
+  saveCategory: T.func.isRequired,
   fadeModal: T.func.isRequired
+}
+
+const CategoryFormModal = connect(
+  (state) => ({
+    resourceId: state.clacoForm.id
+  }),
+  (dispatch) => ({
+    saveCategory(category) {
+      dispatch(actions.saveCategory(category))
+    },
+    fadeModal() {
+      dispatch(modalActions.fadeModal())
+    }
+  })
+)(CategoryFormModalComponent)
+
+export {
+  MODAL_CATEGORY_FORM,
+  CategoryFormModal
 }

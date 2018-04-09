@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\ClacoFormBundle\API\Serializer;
+namespace Claroline\ClacoFormBundle\Serializer;
 
 use Claroline\AppBundle\API\Options;
 use Claroline\ClacoFormBundle\Entity\FieldValue;

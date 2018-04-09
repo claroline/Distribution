@@ -13,6 +13,7 @@ import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
 import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
+import {MODAL_CATEGORY_FORM} from '#/plugin/claco-form/resources/claco-form/editor/components/modals/category-form-modal.jsx'
 import {MODAL_KEYWORD_FORM} from '#/plugin/claco-form/resources/claco-form/editor/components/modals/keyword-form-modal.jsx'
 
 const generateDisplayList = (fields) => {
@@ -360,29 +361,40 @@ const EditorComponent = props =>
             {
               icon: 'fa fa-fw fa-plus',
               label: trans('create_a_category', {}, 'clacoform'),
-              action: () => console.log('create category')
+              action: () => props.showModal(MODAL_CATEGORY_FORM, {
+                title: trans('create_a_category', {}, 'clacoform'),
+                category: {
+                  id: 0,
+                  name: '',
+                  managers: [],
+                  details: {
+                    color: '',
+                    notify_addition: true,
+                    notify_edition: true,
+                    notify_removal: true,
+                    notify_pending_comment: true
+                  }
+                }
+              })
             }
           ]}
         >
           <DataListContainer
             name="clacoFormForm.categories"
-            // open={UserList.open}
             fetch={{
               url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
               autoload: true
-            }}
-            delete={{
-              url: ['apiv2_clacoformcategory_delete_bulk']
             }}
             definition={[
               {
                 name: 'name',
                 type: 'string',
                 label: trans('name')
-              }, {
+              },{
                 name: 'managers',
                 type: 'string',
-                label: trans('managers', {}, 'clacoform')
+                label: trans('managers', {}, 'clacoform'),
+                renderer: (rowData) => rowData.managers.map(m => m.firstName + ' ' + m.lastName).join(', ')
               }, {
                 name: 'details.notify_addition',
                 type: 'boolean',
@@ -407,6 +419,22 @@ const EditorComponent = props =>
                 alias: 'notify_pending_comment',
                 label: trans('comment'),
                 sortable: false
+              }
+            ]}
+            actions={[
+              {
+                icon: 'fa fa-fw fa-pencil',
+                label: trans('edit'),
+                action: (rows) => props.showModal(MODAL_CATEGORY_FORM, {
+                  title: trans('edit_category', {}, 'clacoform'),
+                  category: rows[0]
+                }),
+                context: 'row'
+              }, {
+                icon: 'fa fa-fw fa-trash-o',
+                label: trans('delete'),
+                dangerous: true,
+                action: (rows) => props.deleteCategories(rows)
               }
             ]}
           />
@@ -470,6 +498,7 @@ const EditorComponent = props =>
 EditorComponent.propTypes = {
   clacoForm: T.shape(ClacoFormType.propTypes),
   roles: T.array,
+  deleteCategories: T.func.isRequired,
   deleteKeywords: T.func.isRequired,
   showModal: T.func.isRequired
 }
@@ -480,6 +509,16 @@ const Editor = connect(
     roles: state.roles
   }),
   (dispatch) => ({
+    deleteCategories(categories) {
+      dispatch(
+        modalActions.showModal(MODAL_CONFIRM, {
+          title: trans('objects_delete_title'),
+          question: transChoice('objects_delete_question', categories.length, {'count': categories.length}, 'platform'),
+          dangerous: true,
+          handleConfirm: () => dispatch(actions.deleteCategories(categories))
+        })
+      )
+    },
     deleteKeywords(keywords) {
       dispatch(
         modalActions.showModal(MODAL_CONFIRM, {

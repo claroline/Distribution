@@ -129,7 +129,7 @@ class ChoiceFieldComponent  extends Component {
 ChoiceFieldComponent.propTypes = {
   fieldId: T.number.isRequired,
   choice: T.shape({
-    index: T.number.isRequired,
+    index: T.string.isRequired,
     value: T.string,
     new: T.bool.isRequired,
     category: T.number,

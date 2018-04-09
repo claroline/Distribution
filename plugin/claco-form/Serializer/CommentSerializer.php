@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\ClacoFormBundle\API\Serializer;
+namespace Claroline\ClacoFormBundle\Serializer;
 
 use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;

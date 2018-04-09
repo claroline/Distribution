@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\ClacoFormBundle\API\Serializer;
+namespace Claroline\ClacoFormBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;

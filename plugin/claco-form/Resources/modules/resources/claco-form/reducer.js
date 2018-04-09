@@ -7,6 +7,9 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 import {
   RESOURCE_PROPERTY_UPDATE,
   RESOURCE_PARAMS_PROPERTY_UPDATE,
+  CATEGORY_ADD,
+  CATEGORY_UPDATE,
+  CATEGORIES_REMOVE,
   KEYWORD_ADD,
   KEYWORD_UPDATE,
   KEYWORDS_REMOVE
@@ -16,7 +19,6 @@ import {
   MESSAGE_UPDATE
 } from '#/plugin/claco-form/resources/claco-form/actions'
 import {reducer as editorReducer} from '#/plugin/claco-form/resources/claco-form/editor/reducer'
-import {reducer as categoryReducer} from '#/plugin/claco-form/resources/claco-form/editor/category/reducer'
 import {reducer as fieldReducer} from '#/plugin/claco-form/resources/claco-form/editor/field/reducer'
 import {
   reducer as entriesReducer,
@@ -51,6 +53,34 @@ const clacoFormReducer = makeReducer({}, {
   [RESOURCE_PARAMS_PROPERTY_UPDATE]: (state, action) => {
     const newState = cloneDeep(state)
     newState['details'][action.property] = action.value
+
+    return newState
+  },
+  [CATEGORY_ADD]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState['categories'].push(action.category)
+
+    return newState
+  },
+  [CATEGORY_UPDATE]: (state, action) => {
+    const newState = cloneDeep(state)
+    const index = newState['categories'].findIndex(c => c.id === action.category.id)
+
+    if (index >= 0) {
+      newState['categories'][index] = action.category
+    }
+
+    return newState
+  },
+  [CATEGORIES_REMOVE]: (state, action) => {
+    const newState = cloneDeep(state)
+    action.ids.forEach(id => {
+      const index = newState['categories'].findIndex(c => c.id === id)
+
+      if (index >= 0) {
+        newState['categories'].splice(index, 1)
+      }
+    })
 
     return newState
   },
@@ -90,7 +120,6 @@ const reducer = makeResourceReducer({}, {
   clacoFormForm: editorReducer,
   isAnon: makeReducer({}, {}),
   canGeneratePdf: makeReducer({}, {}),
-  categories: categoryReducer,
   fields: fieldReducer,
   entries: entriesReducer,
   myEntriesCount: myEntriesCountReducer,

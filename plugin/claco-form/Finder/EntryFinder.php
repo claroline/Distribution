@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ClacoFormBundle\API\Finder;
+namespace Claroline\ClacoFormBundle\Finder;
 
 use Claroline\AppBundle\API\FinderInterface;
 use Claroline\AppBundle\Persistence\ObjectManager;

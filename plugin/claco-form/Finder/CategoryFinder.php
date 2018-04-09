@@ -9,21 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ClacoFormBundle\API\Finder;
+namespace Claroline\ClacoFormBundle\Finder;
 
 use Claroline\AppBundle\API\FinderInterface;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.api.finder.clacoform.keyword")
+ * @DI\Service("claroline.api.finder.clacoform.category")
  * @DI\Tag("claroline.finder")
  */
-class KeywordFinder implements FinderInterface
+class CategoryFinder implements FinderInterface
 {
     public function getClass()
     {
-        return 'Claroline\ClacoFormBundle\Entity\Keyword';
+        return 'Claroline\ClacoFormBundle\Entity\Category';
     }
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
@@ -35,6 +35,23 @@ class KeywordFinder implements FinderInterface
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
                 case 'clacoForm':
+                    break;
+                case 'managers':
+                    $where = "CONCAT(UPPER(m.firstName), CONCAT(' ', UPPER(m.lastName))) LIKE :{$filterName}";
+                    $where .= " OR CONCAT(UPPER(m.lastName), CONCAT(' ', UPPER(m.firstName))) LIKE :{$filterName}";
+                    $qb->join('obj.managers', 'm');
+                    $qb->andWhere($where);
+                    $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    break;
+                case 'notify_addition':
+                case 'notify_edition':
+                case 'notify_removal':
+                case 'notify_pending_comment':
+                    $value = '%"'.$filterName.'":';
+                    $value .= $filterValue ? 'true' : 'false';
+                    $value .= '%';
+                    $qb->andWhere("obj.details LIKE :{$filterName}");
+                    $qb->setParameter($filterName, $value);
                     break;
                 default:
                     if (is_bool($filterValue)) {
