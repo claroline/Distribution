@@ -17,6 +17,7 @@ const FormField = props => {
       <FormGroup
         id={props.name}
         label={props.label}
+        hideLabel={props.hideLabel}
         help={props.help}
       >
         <div>
