@@ -49,6 +49,7 @@ class FieldSerializer
             'locked' => $field->isLocked(),
             'lockedEditionOnly' => $field->getLockedEditionOnly(),
             'hidden' => $field->isHidden(),
+            'order' => $field->getOrder(),
             'details' => $field->getDetails(),
         ];
 
