@@ -34,7 +34,8 @@ const ResourceNode = {
      * Display configuration.
      */
     display: T.shape({
-      fullscreen: T.bool.isRequired
+      fullscreen: T.bool.isRequired,
+      showIcon: T
     }).isRequired,
 
     /**

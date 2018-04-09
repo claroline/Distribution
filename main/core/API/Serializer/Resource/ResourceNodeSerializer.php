@@ -240,6 +240,7 @@ class ResourceNodeSerializer
     {
         return [
             'fullscreen' => $resourceNode->isFullscreen(),
+            'showIcon' => $resourceNode->getShowIcon(),
             'closable' => $resourceNode->isClosable(),
             'closeTarget' => $resourceNode->getCloseTarget(),
         ];

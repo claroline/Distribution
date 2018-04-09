@@ -96,11 +96,16 @@ class EditPropertiesModal extends Component {
             fields: [
               {
                 name: 'poster',
-                label: t_res('poster'),
+                label: trans('poster'),
                 type: 'image',
                 options: {
                   ratio: '3:1'
                 }
+              }, {
+                name: 'display.showIcon',
+                label: t_res('resource_showIcon'),
+                help: t_res('resource_showIcon_help'),
+                type: 'boolean'
               }, {
                 name: 'display.fullscreen',
                 label: t_res('resource_fullscreen'),
