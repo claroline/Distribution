@@ -53,7 +53,7 @@ class Axis extends Component {
             axis.tickFormat(dateToDisplayFormat)
             let dist = Math.floor(this.props.values.length/10)
             return this.props.values.length > 10 ?
-              axis.ticks(timeDay.filter(d => timeDay.count(0, d) % dist === 2)) :
+              axis.ticks(timeDay.filter(d => timeDay.count(0, d) % dist === Math.min(2, dist - 1))) :
               axis.tickValues(this.props.values)
           }
           case NUMBER_DATA_TYPE: {

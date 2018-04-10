@@ -5,9 +5,9 @@ const Path = (props) =>
   <g>
     {props.area !== false &&
       <path
-      fill={props.strokeColor}
-      d={props.area}
-      style={{fillOpacity: 0.1}}
+        fill={props.strokeColor}
+        d={props.area}
+        style={{fillOpacity: 0.1}}
       />
     }
     <path

@@ -1,18 +1,15 @@
 import React, {Component} from 'react'
-import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx'
 import {constants as listConst} from '#/main/core/data/list/constants'
-import {select} from '#/main/core/data/list/selectors'
-import {actions as logActions} from  '#/main/core/tools/workspace/logs/actions'
 
-class LogsList extends Component {
+class LogList extends Component {
   
   componentWillReceiveProps(nextProps) {
     if (nextProps.chart.invalidated) {
-      nextProps.getChartData(nextProps.workspaceId, nextProps.queryString)
+      nextProps.getChartData(nextProps.id, nextProps.queryString)
     }
     
     this.setState(nextProps)
@@ -23,35 +20,35 @@ class LogsList extends Component {
     return (
       <div>
         { props.chart &&
-          <div className="text-center">
-            <LineChart
-              data={props.chart.data}
-              xAxisLabel={{
-                show: true,
-                text: trans('date'),
-                grid: true
-              }}
-              yAxisLabel={{
-                show: true,
-                text: trans('actions'),
-                grid: true
-              }}
-              height={250}
-              width={700}
-              showArea={true}
-              margin={{
-                top: 20,
-                bottom: 50,
-                left: 50,
-                right: 20
-              }}
-            />
-          </div>
+        <div className="text-center">
+          <LineChart
+            data={props.chart.data}
+            xAxisLabel={{
+              show: true,
+              text: trans('date'),
+              grid: true
+            }}
+            yAxisLabel={{
+              show: true,
+              text: trans('actions'),
+              grid: true
+            }}
+            height={250}
+            width={700}
+            showArea={true}
+            margin={{
+              top: 20,
+              bottom: 50,
+              left: 50,
+              right: 20
+            }}
+          />
+        </div>
         }
         <DataListContainer
           name="logs"
           fetch={{
-            url: ['apiv2_workspace_tool_logs_list', {workspaceId: props.workspaceId}],
+            url: props.listUrl,
             autoload: true
           }}
           open={{
@@ -94,40 +91,32 @@ class LogsList extends Component {
               }
             }
           ]}
-      
+          
           display={{
             available : [listConst.DISPLAY_TABLE, listConst.DISPLAY_TABLE_SM],
             current: listConst.DISPLAY_TABLE
           }}
-    
+        
         />
       </div>
     )
   }
 }
 
-LogsList.propTypes = {
-  workspaceId: T.number.isRequired,
+LogList.propTypes = {
+  id: T.oneOfType([T.number, T.string]),
+  listUrl: T.oneOfType([T.string, T.array]).isRequired,
   actions: T.array.isRequired,
   chart: T.object.isRequired,
   getChartData: T.func.isRequired,
   queryString: T.string
 }
 
-const LogsListContainer = connect(
-  state => ({
-    workspaceId: state.workspaceId,
-    chart: state.chart,
-    actions: state.actions,
-    queryString: select.queryString(select.list(state, 'logs'))
-  }),
-  dispatch => ({
-    getChartData(workspaceId, filters) {
-      dispatch(logActions.getChartData(workspaceId, filters))
-    }
-  })
-)(LogsList)
+LogList.defaultProps = {
+  id: null
+}
+
 
 export {
-  LogsListContainer as Logs
+  LogList
 }

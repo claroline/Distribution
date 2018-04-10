@@ -1,0 +1,16 @@
+{% extends 'ClarolineCoreBundle:Resource/logs:layout.html.twig' %}
+
+{% block content %}
+    <div
+            class="page-container logs-container"
+            data-resource-id="{{ _resource.resourceNode.id | json_encode | raw | escape }}"
+            data-actions="{{ actions | json_encode | raw | escape }}"
+    >
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ hotAsset('dist/claroline-distribution-main-core-resource-logs.js') }}"></script>
+{% endblock %}

@@ -93,8 +93,7 @@ class AdministrationToolListener
     public function onOpenPlatformLogs(OpenAdministrationToolEvent $event)
     {
         $this->redirect([
-            '_controller' => 'ClarolineCoreBundle:Administration/Logs:logList',
-            'page' => 1,
+            '_controller' => 'ClarolineCoreBundle:Administration/Logs:list',
         ], $event);
     }
 
