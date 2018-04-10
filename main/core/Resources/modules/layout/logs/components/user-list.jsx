@@ -1,16 +1,15 @@
 import React from 'react'
 import {trans} from '#/main/core/translation'
-import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {constants as listConst} from '#/main/core/data/list/constants'
-import {UserActionsCard} from '#/main/core/tools/workspace/logs/components/users/user-actions-card.jsx'
+import {UserActionCard} from '#/main/core/layout/logs/components/user-action-card.jsx'
 
 const UserLogList = props =>
   <DataListContainer
     name="userActions"
     fetch={{
-      url: ['apiv2_workspace_tool_logs_list_users', {workspaceId: props.workspaceId}],
+      url: props.listUrl,
       autoload: true
     }}
     open={false}
@@ -29,8 +28,8 @@ const UserLogList = props =>
         displayed: true
       }
     ]}
-
-    card={UserActionsCard}
+    
+    card={UserActionCard}
     
     display={{
       available : [listConst.DISPLAY_TABLE, listConst.DISPLAY_TABLE_SM, listConst.DISPLAY_LIST],
@@ -39,16 +38,9 @@ const UserLogList = props =>
   />
 
 UserLogList.propTypes = {
-  workspaceId: T.number.isRequired
+  listUrl: T.oneOfType([T.string, T.array]).isRequired
 }
 
-const UserLogListContainer = connect(
-  state => ({
-    workspaceId: state.workspaceId
-  }),
-  null
-)(UserLogList)
-
 export {
-  UserLogListContainer as UserLogs
+  UserLogList
 }

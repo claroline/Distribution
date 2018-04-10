@@ -6,7 +6,7 @@ import {UserAvatar} from '#/main/core/user/components/avatar'
 import {DataCardHeader} from '#/main/core/data/components/data-card'
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart'
 
-const UserActionsCard = props =>
+const UserActionCard = props =>
   <div className={classes(`data-card data-card-${props.orientation} data-card-${props.size}`, props.className)}>
     <DataCardHeader
       id={`${props.data.id}`}
@@ -50,7 +50,7 @@ const UserActionsCard = props =>
     </div>
   </div>
 
-UserActionsCard.propTypes = {
+UserActionCard.propTypes = {
   level: T.number,
   size: T.oneOf(['sm', 'lg']),
   orientation: T.oneOf(['col', 'row']),
@@ -63,12 +63,12 @@ UserActionsCard.propTypes = {
   }).isRequired
 }
 
-UserActionsCard.defaultProps = {
+UserActionCard.defaultProps = {
   size: 'sm',
   orientation: 'row',
   level: 2
 }
 
 export {
-  UserActionsCard
+  UserActionCard
 }

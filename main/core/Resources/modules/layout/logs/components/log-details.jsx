@@ -36,13 +36,13 @@ const UserDetails = (props) =>
     <DetailsField label={trans('last_name', {}, 'platform')} value={props.user.lastName}/>
     <DetailsField label={trans('first_name', {}, 'platform')} value={props.user.firstName}/>
     {props.sessionId &&
-      <DetailsField label={trans('session_id', {}, 'platform')} value={props.sessionId}/>
+    <DetailsField label={trans('session_id', {}, 'platform')} value={props.sessionId}/>
     }
     {props.user.platformRoles &&
-      <DetailsField label={trans('log_platform_roles', {}, 'log')} value={props.user.platformRoles}/>
+    <DetailsField label={trans('log_platform_roles', {}, 'log')} value={props.user.platformRoles}/>
     }
     {props.user.workspaceRoles &&
-      <DetailsField label={trans('log_workspace_roles', {}, 'log')} value={props.user.workspaceRoles}/>
+    <DetailsField label={trans('log_workspace_roles', {}, 'log')} value={props.user.workspaceRoles}/>
     }
   </div>
 
@@ -61,7 +61,7 @@ const ResourceDetails = (props) =>
     <DetailsField label={trans('name', {}, 'platform')} value={props.resource.name}/>
     <DetailsField label={trans('path', {}, 'platform')} value={props.resource.path}/>
     {props.resourceType &&
-      <DetailsField label={trans('type', {}, 'platform')} value={trans(props.resourceType, {}, 'resource')}/>
+    <DetailsField label={trans('type', {}, 'platform')} value={trans(props.resourceType, {}, 'resource')}/>
     }
   </div>
 
@@ -98,42 +98,42 @@ const LogDetails = (props) =>
         {props.log.details &&
         <div className={'log-details-fields'}>
           {props.log.details.doer &&
-            <DoerDetails user={props.log.details.doer} doerType={props.log.doerType}/>
+          <DoerDetails user={props.log.details.doer} doerType={props.log.doerType}/>
           }
           {props.log.details.role &&
-            <DetailsGroupField name={'role-details'} label={trans('log_role', {}, 'log')}>
-              <DetailsField label={trans('name', {}, 'platform')} value={trans(props.log.details.role.name, {}, 'platform')}/>
-            </DetailsGroupField>
+          <DetailsGroupField name={'role-details'} label={trans('log_role', {}, 'log')}>
+            <DetailsField label={trans('name', {}, 'platform')} value={trans(props.log.details.role.name, {}, 'platform')}/>
+          </DetailsGroupField>
           }
           {props.log.details.receiverUser &&
-            <DetailsGroupField name={'receiver-details'} label={trans('log_receiver_user', {}, 'log')}>
-              <UserDetails user={props.log.details.receiverUser}/>
-            </DetailsGroupField>
+          <DetailsGroupField name={'receiver-details'} label={trans('log_receiver_user', {}, 'log')}>
+            <UserDetails user={props.log.details.receiverUser}/>
+          </DetailsGroupField>
           }
           {props.log.details.receiverGroup &&
-            <DetailsGroupField name={'receiver-group-details'} label={trans('log_receiver_group', {}, 'log')}>
-              <DetailsField label={trans('name', {}, 'platform')} value={props.log.details.receiverGroup.name}/>
-            </DetailsGroupField>
+          <DetailsGroupField name={'receiver-group-details'} label={trans('log_receiver_group', {}, 'log')}>
+            <DetailsField label={trans('name', {}, 'platform')} value={props.log.details.receiverGroup.name}/>
+          </DetailsGroupField>
           }
           {props.log.details.resource &&
-            <DetailsGroupField name={'resource-details'} label={trans('log_resource', {}, 'log')}>
-              <ResourceDetails resource={props.log.details.resource} resourceType={props.log.resourceType}/>
-            </DetailsGroupField>
+          <DetailsGroupField name={'resource-details'} label={trans('log_resource', {}, 'log')}>
+            <ResourceDetails resource={props.log.details.resource} resourceType={props.log.resourceType}/>
+          </DetailsGroupField>
           }
           {props.log.details.owner &&
-            <DetailsGroupField name={'owner-details'} label={trans('log_owner', {}, 'log')}>
-              <UserDetails user={props.log.details.owner}/>
-            </DetailsGroupField>
+          <DetailsGroupField name={'owner-details'} label={trans('log_owner', {}, 'log')}>
+            <UserDetails user={props.log.details.owner}/>
+          </DetailsGroupField>
           }
           {props.log.details.workspace &&
-            <DetailsGroupField name={'workspace-details'} label={trans('workspace', {}, 'platform')}>
-              <DetailsField label={trans('name', {}, 'platform')} value={props.log.details.workspace.name}/>
-            </DetailsGroupField>
+          <DetailsGroupField name={'workspace-details'} label={trans('workspace', {}, 'platform')}>
+            <DetailsField label={trans('name', {}, 'platform')} value={props.log.details.workspace.name}/>
+          </DetailsGroupField>
           }
           {props.log.detailedDescription &&
-            <DetailsGroupField name={'context-details'} label={trans('log_context', {}, 'log')}>
-              <HtmlText>{props.log.detailedDescription}</HtmlText>
-            </DetailsGroupField>
+          <DetailsGroupField name={'context-details'} label={trans('log_context', {}, 'log')}>
+            <HtmlText>{props.log.detailedDescription}</HtmlText>
+          </DetailsGroupField>
           }
         </div>
         }

@@ -21,8 +21,8 @@ import {
 } from '#/main/core/layout/router'
 
 // app pages
-import {Logs} from '#/main/core/tools/workspace/logs/components/log-list.jsx'
-import {UserLogs} from '#/main/core/tools/workspace/logs/components/user-list.jsx'
+import {Logs} from '#/main/core/resource/logs/components/log-list.jsx'
+import {UserLogs} from '#/main/core/resource/logs/components/user-list.jsx'
 import {LogDetails} from '#/main/core/layout/logs'
 import {actions as logActions} from  '#/main/core/layout/logs/actions'
 
@@ -36,7 +36,7 @@ const Actions = (props) => {
         icon: 'fa fa-users'
       },
       {
-        action: generateUrl('apiv2_workspace_tool_logs_list_csv', {'workspaceId': props.workspaceId}) + props.logsQuery,
+        action: generateUrl('apiv2_resource_logs_list_csv', {'resourceId': props.resourceId}) + props.logsQuery,
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download'
       }
@@ -51,7 +51,7 @@ const Actions = (props) => {
         icon: 'fa fa-list'
       },
       {
-        action: generateUrl('apiv2_workspace_tool_logs_list_users_csv', {'workspaceId': props.workspaceId}) + props.usersQuery,
+        action: generateUrl('apiv2_resource_logs_list_users_csv', {'resourceId': props.resourceId}) + props.usersQuery,
         label: trans('download_csv_list', {}, 'log'),
         icon: 'fa fa-download'
       }
@@ -73,7 +73,7 @@ const Actions = (props) => {
   )
 }
 Actions.propTypes = {
-  workspaceId: T.number.isRequired,
+  resourceId: T.number.isRequired,
   location: T.object.isRequired,
   logsQuery: T.string,
   usersQuery: T.string
@@ -85,7 +85,7 @@ const Tool = (props) =>
   <RoutedPageContainer>
     <PageHeader title={trans('logs', {}, 'tools')}>
       <ToolActions
-        workspaceId={props.workspaceId}
+        resourceId={props.resourceId}
         logsQuery={props.logsQuery}
         usersQuery={props.usersQuery}
       />
@@ -100,7 +100,7 @@ const Tool = (props) =>
           path: '/log/:id',
           component: LogDetails,
           exact: true,
-          onEnter: (params) => props.openLog(params.id, props.workspaceId)
+          onEnter: (params) => props.openLog(params.id, props.resourceId)
         }, {
           path: '/users',
           component: UserLogs,
@@ -111,7 +111,7 @@ const Tool = (props) =>
   </RoutedPageContainer>
 
 Tool.propTypes = {
-  workspaceId: T.number.isRequired,
+  resourceId: T.number.isRequired,
   openLog: T.func.isRequired,
   logsQuery: T.string,
   usersQuery: T.string
@@ -119,13 +119,13 @@ Tool.propTypes = {
 
 const ToolContainer = connect(
   state => ({
-    workspaceId: state.workspaceId,
+    resourceId: state.resourceId,
     logsQuery: select.queryString(select.list(state, 'logs')),
     usersQuery: select.queryString(select.list(state, 'userActions'))
   }),
   dispatch => ({
-    openLog(id, workspaceId) {
-      dispatch(logActions.openLog('apiv2_workspace_tool_logs_get', {id, workspaceId}))
+    openLog(id, resourceId) {
+      dispatch(logActions.openLog('apiv2_resource_logs_get', {id, resourceId}))
     }
   })
 )(Tool)

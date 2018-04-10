@@ -1,8 +1,8 @@
 import {makeReducer, combineReducers} from '#/main/core/scaffolding/reducer'
 import {makePageReducer} from '#/main/core/layout/page/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
-import {LOAD_LOG, RESET_LOG, LOAD_CHART_DATA} from '#/main/core/layout/logs/actions'
 import {LIST_FILTER_ADD, LIST_FILTER_REMOVE} from '#/main/core/data/list/actions'
+import {LOAD_LOG, RESET_LOG, LOAD_CHART_DATA} from '#/main/core/layout/logs/actions'
 
 const reducer = makePageReducer([], {
   logs: makeListReducer('logs', {
@@ -15,7 +15,6 @@ const reducer = makePageReducer([], {
     [RESET_LOG]: (state, action) => action.log,
     [LOAD_LOG]: (state, action) => action.log
   }),
-  workspaceId: makeReducer(null, {}),
   actions: makeReducer([], {}),
   chart: combineReducers({
     invalidated: makeReducer(true, {

@@ -17,29 +17,23 @@ use Claroline\CoreBundle\Manager\EventManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Display logs in workspace's tool.
  */
 class WorkspaceController extends Controller
 {
-    private $translator;
-
     /** @var \Claroline\CoreBundle\Manager\EventManager */
     private $eventManager;
 
     /**
      * @DI\InjectParams({
-     *     "translator"     = @DI\Inject("translator"),
      *     "eventManager" = @DI\Inject("claroline.event.manager")
      * })
      */
-    public function __construct(TranslatorInterface $translator, EventManager $eventManager)
+    public function __construct(EventManager $eventManager)
     {
-        $this->translator = $translator;
         $this->eventManager = $eventManager;
     }
 
@@ -75,157 +69,5 @@ class WorkspaceController extends Controller
             'workspace' => $workspace,
             'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_WORKSPACE),
         ];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspaceId}/tool/logs/user",
-     *     name="claro_workspace_logs_by_user_show",
-     *     requirements={"workspaceId" = "\d+"}
-     * )
-     * @EXT\ParamConverter(
-     *      "workspace",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
-     * )
-     *
-     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/logs:logByUser.html.twig")
-     *
-     * Displays logs list using filter parameteres and page number
-     *
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     * @param $page int The requested page number
-     *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
-     *
-     * @return array
-     */
-    public function logByUserAction(Workspace $workspace)
-    {
-        if (!$this->get('security.authorization_checker')->isGranted('logs', $workspace)) {
-            throw new AccessDeniedException();
-        }
-
-        return ['workspace' => $workspace];
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspaceId}/tool/logs/user/csv",
-     *     name="claro_workspace_logs_by_user_csv",
-     *     requirements={"workspaceId" = "\d+"}
-     * )
-     *
-     * @EXT\ParamConverter(
-     *      "workspace",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
-     * )
-     *
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
-     *
-     * @return Response
-     */
-    public function logByUserCSVAction(Workspace $workspace)
-    {
-        if (!$this->get('security.authorization_checker')->isGranted('logs', $workspace)) {
-            throw new AccessDeniedException();
-        }
-
-        $logManager = $this->get('claroline.log.manager');
-
-        $response = new StreamedResponse(function () use ($logManager, $workspace) {
-            $results = $logManager->countByUserListForCSV('workspace', $workspace);
-            $handle = fopen('php://output', 'w+');
-            fputcsv($handle, [
-                $this->translator->trans('user', [], 'platform'),
-                $this->translator->trans('actions', [], 'platform'),
-            ]);
-            while (false !== ($row = $results->next())) {
-                // add a line in the csv file. You need to implement a toArray() method
-                // to transform your object into an array
-                fputcsv($handle, [$row[$results->key()]['name'], $row[$results->key()]['actions']]);
-            }
-
-            fclose($handle);
-        });
-        $dateStr = date('YmdHis');
-        $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename="user_actions_'.$dateStr.'.csv"');
-
-        return $response;
-    }
-
-    /**
-     * @EXT\Route(
-     *     "/{workspaceId}/tool/logs/csv",
-     *     name="claro_workspace_logs_csv",
-     *     requirements={"workspaceId" = "\d+"}
-     * )
-     *
-     * @EXT\ParamConverter(
-     *      "workspace",
-     *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
-     * )
-     *
-     * @param \Claroline\CoreBundle\Entity\Workspace\Workspace $workspace
-     *
-     * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
-     *
-     * @return Response
-     */
-    public function logCSVAction(Workspace $workspace)
-    {
-        if (!$this->get('security.authorization_checker')->isGranted('logs', $workspace)) {
-            throw new AccessDeniedException();
-        }
-
-        $logManager = $this->get('claroline.log.manager');
-
-        $response = new StreamedResponse(function () use ($logManager, $workspace) {
-            $workspaceList = $logManager->getWorkspaceList($workspace);
-            $results = $workspaceList['results'];
-            $date_format = $this->translator->trans('date_format', [], 'platform');
-            $handle = fopen('php://output', 'w+');
-            fputcsv($handle, [
-                $this->translator->trans('date', [], 'platform'),
-                $this->translator->trans('action', [], 'platform'),
-                $this->translator->trans('user', [], 'platform'),
-                $this->translator->trans('action', [], 'platform'),
-            ]);
-            foreach ($results as $result) {
-                fputcsv($handle, [
-                    $result->getDateLog()->format($date_format).' '.$result->getDateLog()->format('H:i'),
-                    $this->translator->trans('log_'.$result->getAction().'_shortname', [], 'log'),
-                    $this->str_to_csv($this->renderView('ClarolineCoreBundle:Log:view_list_item_doer.html.twig', ['log' => $result])),
-                    $this->str_to_csv($this->renderView('ClarolineCoreBundle:Log:view_list_item_sentence.html.twig', [
-                        'log' => $result,
-                        'listItemView' => array_key_exists($result->getId(), $workspaceList['listItemViews']) ? $workspaceList['listItemViews'][$result->getId()] : null,
-                    ])),
-                ]);
-            }
-
-            fclose($handle);
-        });
-        $dateStr = date('YmdHis');
-        $response->headers->set('Content-Type', 'application/force-download');
-        $response->headers->set('Content-Disposition', 'attachment; filename="actions_'.$dateStr.'.csv"');
-
-        return $response;
-    }
-
-    /**
-     * @param string $string
-     *
-     * @return string
-     *
-     * Sanitize a string by removing html tags, multiple spaces and new lines
-     */
-    private function str_to_csv($string)
-    {
-        return trim(preg_replace('/\s+/', ' ', strip_tags($string)));
     }
 }

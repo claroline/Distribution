@@ -12,30 +12,36 @@ actions.loadLog = makeActionCreator(LOAD_LOG, 'log')
 actions.resetLog = makeActionCreator(RESET_LOG, 'log')
 actions.loadChartData = makeActionCreator(LOAD_CHART_DATA, 'data')
 
-actions.openLog = (id, workspaceId) => (dispatch) => {
+actions.openLog = (route, params = {}) => (dispatch) => {
   dispatch(actions.resetLog({}))
-  if (id && workspaceId) {
+  if (route) {
     dispatch({
       [API_REQUEST]: {
-        url: ['apiv2_workspace_tool_logs_get', {id, workspaceId}],
+        url: [route, params],
         success: (response, dispatch) => {
           dispatch(actions.loadLog(response))
+        },
+        error: (err, dispatch) => {
+          dispatch(actions.loadLog({}))
         }
       }
     })
   } else {
-    dispatch(actions.loadLog(id, workspaceId, {}))
+    dispatch(actions.loadLog({}))
   }
 }
 
-actions.getChartData = (workspaceId, queryString) => (dispatch) => {
+actions.getChartData = (route, params = {}, queryString = '') => (dispatch) => {
   dispatch(actions.loadChartData({}))
-  if(workspaceId) {
+  if (route) {
     dispatch({
       [API_REQUEST]: {
-        url: generateUrl('apiv2_workspace_tool_logs_list_chart', {workspaceId}) + queryString,
+        url: generateUrl(route, params) + queryString,
         success: (response, dispatch) => {
           dispatch(actions.loadChartData(response))
+        },
+        error: (err, dispatch) => {
+          dispatch(actions.loadChartData({}))
         }
       }
     })
