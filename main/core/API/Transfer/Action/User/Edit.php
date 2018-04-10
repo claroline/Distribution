@@ -32,7 +32,7 @@ class Edit extends AbstractAction
 
     public function execute(array $data)
     {
-        $this->crud->update('Claroline\CoreBundle\Entity\User', $data);
+        return $this->crud->update('Claroline\CoreBundle\Entity\User', $data);
     }
 
     public function getSchema()

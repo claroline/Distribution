@@ -124,13 +124,14 @@ class TransferProvider
         $jsonLogger->set('processed', 0);
         $jsonLogger->set('error', 0);
         $jsonLogger->set('success', 0);
+        $loaded = [];
 
         foreach ($data as $data) {
             ++$i;
             $this->log("{$i}/{$total}: ".$this->getActionName($executor));
 
             try {
-                $executor->execute($data);
+                $loaded[] = $executor->execute($data);
                 $jsonLogger->increment('success');
             } catch (\Exception $e) {
                 $jsonLogger->log($e->getMessage());
@@ -140,6 +141,14 @@ class TransferProvider
             if (0 === $i % $executor->getBatchSize()) {
                 try {
                     $this->om->forceFlush();
+
+                    foreach ($loaded as $el) {
+                        if ($el) {
+                            $this->om->detach($el);
+                        }
+                    }
+
+                    $loaded = [];
                 } catch (\Exception $e) {
                     $jsonLogger->log($e->getMessage());
                 }

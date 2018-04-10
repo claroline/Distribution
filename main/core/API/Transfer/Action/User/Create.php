@@ -29,7 +29,7 @@ class Create extends AbstractAction
 
     public function execute(array $data)
     {
-        $this->crud->create('Claroline\CoreBundle\Entity\User', $data);
+        return $this->crud->create('Claroline\CoreBundle\Entity\User', $data);
     }
 
     public function getSchema()

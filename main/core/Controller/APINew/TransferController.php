@@ -95,7 +95,7 @@ class TransferController extends AbstractCrudController
             ['uploadedFile' => $file]
         );
 
-        return new JsonResponse($file, 200);
+        return new JsonResponse([$file], 200);
     }
 
     public function getName()
@@ -145,7 +145,7 @@ class TransferController extends AbstractCrudController
           $data['file']
         );
 
-        $historyFile = $this->finder->fetch('Claroline\CoreBundle\Entity\Import\File', 0, -1, ['file' => $publicFile->getId()]);
+        $historyFile = $this->finder->fetch('Claroline\CoreBundle\Entity\Import\File', 0, -1, ['file' => $publicFile->getId()])[0];
         $this->crud->replace($historyFile, 'log', $this->getLogFile($request));
         $this->crud->replace($historyFile, 'executionDate', new \DateTime());
 
@@ -158,10 +158,11 @@ class TransferController extends AbstractCrudController
             $this->getLogFile($request)
         );
 
-        if ($data->error > 0) {
-            $this->crud->update($historyFile, 'status', HistoryFile::STATUS_ERROR);
+        //should probably reset entity manager here
+        if ($data['error'] > 0) {
+            $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_ERROR);
         } else {
-            $this->crud->update($historyFile, 'status', HistoryFile::STATUS_PENDING);
+            $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_SUCCESS);
         }
 
         return new JsonResponse('done', 200);
