@@ -114,7 +114,6 @@ class TransferController extends AbstractCrudController
      */
     public function startAction(Request $request)
     {
-        return $this->executeAction($request);
         $request = new AsyncRequest(
           $this->router->generate(
             'apiv2_transfer_execute',
@@ -148,6 +147,8 @@ class TransferController extends AbstractCrudController
         $historyFile = $this->finder->fetch('Claroline\CoreBundle\Entity\Import\File', 0, -1, ['file' => $publicFile->getId()])[0];
         $this->crud->replace($historyFile, 'log', $this->getLogFile($request));
         $this->crud->replace($historyFile, 'executionDate', new \DateTime());
+        //this is here otherwise the entity manager can crash and... well that's an issue.
+        $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_ERROR);
 
         $content = $this->fileUt->getContents($publicFile);
 
@@ -159,9 +160,7 @@ class TransferController extends AbstractCrudController
         );
 
         //should probably reset entity manager here
-        if ($data['error'] > 0) {
-            $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_ERROR);
-        } else {
+        if (0 === $data['error']) {
             $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_SUCCESS);
         }
 
