@@ -38,15 +38,21 @@ class AnalyticsManager
     private $workspaceRepo;
     /** @var LogRepository */
     private $logRepository;
+    /** @var LogManager */
+    private $logManager;
 
     /**
      * @DI\InjectParams({
-     *     "objectManager" = @DI\Inject("claroline.persistence.object_manager")
+     *     "objectManager"  = @DI\Inject("claroline.persistence.object_manager"),
+     *     "logManager"     = @DI\Inject("claroline.log.manager")
      * })
      */
-    public function __construct(ObjectManager $objectManager)
-    {
+    public function __construct(
+        ObjectManager $objectManager,
+        LogManager $logManager
+    ) {
         $this->om = $objectManager;
+        $this->logManager = $logManager;
         $this->resourceRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->resourceTypeRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceType');
         $this->userRepo = $objectManager->getRepository('ClarolineCoreBundle:User');
@@ -59,7 +65,7 @@ class AnalyticsManager
         //By default last thirty days :
         $startDate = new \DateTime('now');
         $startDate->setTime(0, 0, 0);
-        $startDate->sub(new \DateInterval('P29D')); // P29D means a period of 29 days
+        $startDate->sub(new \DateInterval('P30D')); // P29D means a period of 29 days
 
         $endDate = new \DateTime('now');
         $endDate->setTime(23, 59, 59);
@@ -80,6 +86,63 @@ class AnalyticsManager
 
         return [$startDate->getTimestamp(), $endDate->getTimestamp()];
     }
+
+    public function getWorkspaceResourceTypesCount(Workspace $workspace)
+    {
+        return $this->resourceTypeRepo->countResourcesByType($workspace);
+    }
+
+    /**
+     * Retrieve analytics for workspace: chartData and resource statistics.
+     */
+    public function getWorkspaceAnalytics(Workspace $workspace)
+    {
+        $query = [
+            'hiddenFilters' => ['workspace' => $workspace],
+            'filters' => [
+                'action' => 'workspace-enter',
+            ],
+        ];
+        $chartData = $this->getDailyActions($query);
+        $resourcesByType = $this->resourceTypeRepo->countResourcesByType($workspace);
+
+        return [
+            'chartData' => $chartData,
+            'resourceCount' => $resourcesByType,
+            'workspace' => $workspace,
+        ];
+    }
+
+    public function getDailyActions(array $finderParams = [])
+    {
+        return $this->logManager->getChartData($this->formatQueryParams($finderParams));
+    }
+
+    private function formatQueryParams(array $finderParams = [])
+    {
+        $filters = isset($finderParams['filters']) ? $finderParams['filters'] : [];
+        $hiddenFilters = isset($finderParams['hiddenFilters']) ? $finderParams['hiddenFilters'] : [];
+        // Default 30 days analytics
+        if (!isset($filters['dateLog'])) {
+            $date = new \DateTime('now');
+            $date->setTime(0, 0, 0);
+            $date->sub(new \DateInterval('P30D'));
+            $filters['dateLog'] = clone $date;
+        }
+
+        if (!isset($filters['dateTo'])) {
+            $date = clone $filters['dateLog'];
+            $date->add(new \DateInterval('P30D'));
+            $filters['dateTo'] = clone $date;
+        }
+
+        return [
+            'filters' => $filters,
+            'hiddenFilters' => $hiddenFilters,
+        ];
+    }
+
+    // TODO Remove any old methods not required after refactoring
 
     public function getDailyActionNumberForDateRange(
         $range = null,
@@ -229,27 +292,5 @@ class AnalyticsManager
         $resultData = $this->logRepository->activeUsersByDateRange($range);
 
         return $resultData;
-    }
-
-    public function getWorkspaceResourceTypesCount(Workspace $workspace)
-    {
-        return $this->resourceTypeRepo->countResourcesByType($workspace);
-    }
-
-    /**
-     * Retrieve analytics for workspace: chartData and resource statistics.
-     */
-    public function getWorkspaceAnalytics(Workspace $workspace)
-    {
-        $range = $this->getDefaultRange();
-        $action = 'workspace-enter';
-        $workspaceIds = [$workspace->getId()];
-        $chartData = $this->getDailyActionNumberForDateRange($range, $action, false, $workspaceIds);
-        $resourcesByType = $this->resourceTypeRepo->countResourcesByType($workspace);
-
-        return ['chartData' => $chartData,
-            'resourceCount' => $resourcesByType,
-            'workspace' => $workspace,
-        ];
     }
 }

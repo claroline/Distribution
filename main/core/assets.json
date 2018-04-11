@@ -24,7 +24,8 @@
       "workspace-parameters-management": "workspace/parameters",
       "user-profile": "user/profile",
       "text-resource": "resources/text/bootstrap",
-      "tools-workspace-logs": "tools/workspace/logs/index",
+      "tools-workspace-logs": "tools/workspace/logs",
+      "tools-workspace-dashboard": "tools/workspace/dashboard",
       "resource-logs": "resource/logs",
       "tools-admin-logs": "administration/logs"
     }
