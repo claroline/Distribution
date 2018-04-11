@@ -16,7 +16,6 @@ use Claroline\CoreBundle\Event\DisplayWidgetEvent;
 use Claroline\CoreBundle\Listener\NoHttpRequestException;
 use Claroline\ForumBundle\Entity\Widget\LastMessageWidgetConfig;
 use Claroline\ForumBundle\Form\Widget\LastMessageWidgetConfigType;
-use Claroline\ForumBundle\Manager\Manager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -28,26 +27,22 @@ use Symfony\Component\Templating\EngineInterface;
 class ForumWidgetListener
 {
     private $formFactory;
-    private $forumManager;
     private $request;
     private $templatingEngine;
 
     /**
      * @DI\InjectParams({
      *     "formFactory"       = @DI\Inject("form.factory"),
-     *     "forumManager"      = @DI\Inject("claroline.manager.forum_manager"),
      *     "requestStack"      = @DI\Inject("request_stack"),
      *     "templatingEngine"  = @DI\Inject("templating")
      * })
      */
     public function __construct(
         FormFactoryInterface $formFactory,
-        Manager $forumManager,
         RequestStack $requestStack,
         EngineInterface $templatingEngine
     ) {
         $this->formFactory = $formFactory;
-        $this->forumManager = $forumManager;
         $this->request = $requestStack->getCurrentRequest();
         $this->templatingEngine = $templatingEngine;
     }
@@ -60,7 +55,7 @@ class ForumWidgetListener
      * @throws \Claroline\CoreBundle\Listener\NoHttpRequestException
      */
     public function onDisplay(DisplayWidgetEvent $event)
-    {
+    {/*
         if (!$this->request) {
             throw new NoHttpRequestException();
         }
@@ -82,14 +77,14 @@ class ForumWidgetListener
                 'messages' => $messages,
             )
         ));
-        $event->stopPropagation();
+        $event->stopPropagation();*/
     }
 
     /**
      * @DI\Observe("widget_claroline_forum_widget_configuration")
      */
     public function onConfigure(ConfigureWidgetEvent $event)
-    {
+    {/*
         $widgetInstance = $event->getInstance();
         $lastMessageWidgetConfig = $this->forumManager->getConfig($widgetInstance);
 
@@ -105,6 +100,6 @@ class ForumWidgetListener
                 'widgetInstance' => $widgetInstance,
             )
         );
-        $event->setContent($content);
+        $event->setContent($content);*/
     }
 }

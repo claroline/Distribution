@@ -11,57 +11,79 @@
 
 namespace Claroline\ForumBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Entity()
  * @ORM\Table(name="claro_forum")
- * @ORM\Entity(repositoryClass="Claroline\ForumBundle\Repository\ForumRepository")
  */
 class Forum extends AbstractResource
 {
+    use UuidTrait;
+
+    const VALIDATE_NONE = 1;
+    const VALIDATE_PRIOR_ONCE = 2;
+    const VALIDATE_PRIOR_ALL = 3;
+
     /**
      * @ORM\OneToMany(
-     *     targetEntity="Claroline\ForumBundle\Entity\Category",
+     *     targetEntity="Claroline\ForumBundle\Entity\Subject",
      *     mappedBy="forum"
      * )
      * @ORM\OrderBy({"id" = "ASC"})
      */
-    protected $categories;
+    protected $subjects;
 
     /**
-     * @ORM\Column(name="activate_notifications", type="boolean")
+     * @ORM\Column(type="integer")
      */
-    protected $activateNotifications = false;
+    protected $validationMode = self::VALIDATE_NONE;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $maxComment = 10;
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        $this->subjects = new ArrayCollection();
     }
 
-    public function getCategories()
+    public function getSubjects()
     {
-        return $this->categories;
+        return $this->subjects;
     }
 
-    public function addCategory(Category $category)
+    public function addSubject(Subject $subject)
     {
-        $this->categories->add($category);
+        $this->subjects->add($subject);
     }
 
-    public function removeCategory(Subject $category)
+    public function removeSubject(Subject $subject)
     {
-        $this->categories->removeElement($category);
+        $this->subjects->removeElement($subject);
     }
 
-    public function getActivateNotifications()
+    public function setValidationMode($mode)
     {
-        return $this->activateNotifications;
+        $this->mode = $mode;
     }
 
-    public function setActivateNotifications($boolean)
+    public function getValidationMode()
     {
-        $this->activateNotifications = $boolean;
+        return $this->mode;
+    }
+
+    public function setMaxComment($max)
+    {
+        $this->maxComment = $max;
+    }
+
+    public function getMaxComment()
+    {
+        return $this->maxComment;
     }
 }

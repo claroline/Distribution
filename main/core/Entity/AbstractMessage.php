@@ -9,20 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\ForumBundle\Entity;
+namespace Claroline\CoreBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
-use Claroline\CoreBundle\Entity\User;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
- * @ORM\Table(name="claro_forum_subject")
+ * @ORM\MappedSuperclass
  */
-class Subject
+abstract class AbstractMessage
 {
     use UuidTrait;
 
@@ -34,10 +31,10 @@ class Subject
     protected $id;
 
     /**
-     * @ORM\Column()
+     * @ORM\Column(name="content", type="text")
      * @Assert\NotBlank()
      */
-    protected $title;
+    protected $content;
 
     /**
      * @ORM\Column(name="created", type="datetime")
@@ -53,24 +50,6 @@ class Subject
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\ForumBundle\Entity\Forum",
-     *     inversedBy="subjects"
-     * )
-     * @ORM\JoinColumn(onDelete="CASCADE")
-     */
-    protected $forum;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\ForumBundle\Entity\Message",
-     *     mappedBy="subject"
-     * )
-     * @ORM\OrderBy({"id" = "ASC"})
-     */
-    protected $messages;
-
-    /**
-     * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
      *     cascade={"persist"}
      * )
@@ -79,36 +58,11 @@ class Subject
     protected $creator;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $isSticked = false;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $isClosed = false;
-
-    /**
      * @ORM\Column(nullable=true)
      */
     protected $author;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    protected $viewCount;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->messages = new ArrayCollection();
-    }
-
-    /**
-     * Returns the resource id.
-     *
      * @return int
      */
     public function getId()
@@ -116,28 +70,18 @@ class Subject
         return $this->id;
     }
 
-    public function getTitle()
+    public function setContent($content)
     {
-        return $this->title;
+        $this->content = $content;
     }
 
-    public function setTitle($title)
+    public function getContent()
     {
-        $this->title = $title;
-    }
-
-    public function setForum(Forum $forum)
-    {
-        $this->forum = $forum;
-    }
-
-    public function getForum()
-    {
-        return $this->forum;
+        return $this->content;
     }
 
     /**
-     * Sets the subject creator.
+     * Sets the message creator.
      *
      * @param \Claroline\CoreBundle\Entity\User
      */
@@ -156,21 +100,6 @@ class Subject
         return $this->creationDate;
     }
 
-    public function getMessages()
-    {
-        return $this->messages;
-    }
-
-    public function setIsSticked($boolean)
-    {
-        $this->isSticked = $boolean;
-    }
-
-    public function isSticked()
-    {
-        return $this->isSticked;
-    }
-
     public function setCreationDate($date)
     {
         $this->creationDate = $date;
@@ -184,16 +113,6 @@ class Subject
     public function getModificationDate()
     {
         return $this->updated;
-    }
-
-    public function setIsClosed($isClosed)
-    {
-        $this->isClosed = $isClosed;
-    }
-
-    public function isClosed()
-    {
-        return $this->isClosed;
     }
 
     public function getAuthor()

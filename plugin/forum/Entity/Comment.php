@@ -16,32 +16,32 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="claro_forum_message")
+ * @ORM\Table(name="claro_forum_comment")
  */
-class Message extends AbstractMessage
+class Comment extends AbstractMessage
 {
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="Claroline\ForumBundle\Entity\Subject",
-     *     inversedBy="messages"
+     *     targetEntity="Claroline\ForumBundle\Entity\Message",
+     *     inversedBy="comments"
      * )
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    protected $subject;
+    protected $message;
 
     /**
      * @ORM\Column(type="boolean")
      */
     protected $isVisible = true;
 
-    public function setSubject(Subject $subject)
+    public function setMessage(Message $message)
     {
-        $this->subject = $subject;
+        $this->message = $message;
     }
 
-    public function getSubject()
+    public function getMessage()
     {
-        return $this->subject;
+        return $this->message;
     }
 
     public function setIsVisible($bool)
