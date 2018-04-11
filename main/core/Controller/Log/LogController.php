@@ -24,6 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -114,7 +115,7 @@ class LogController extends Controller
     public function updateLogWorkspaceWidgetConfig(WidgetInstance $widgetInstance)
     {
         if (!$this->authorization->isGranted('edit', $widgetInstance)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException();
         }
 
         $config = $this->get('claroline.log.manager')->getLogConfig($widgetInstance);
@@ -159,7 +160,7 @@ class LogController extends Controller
     public function updateLogDesktopWidgetConfig(WidgetInstance $widgetInstance)
     {
         if (!$this->authorization->isGranted('edit', $widgetInstance)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException();
         }
 
         $em = $this->getDoctrine()->getManager();

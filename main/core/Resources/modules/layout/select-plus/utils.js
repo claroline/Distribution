@@ -26,7 +26,7 @@ const flattenChoices = (choices, parent = null) => {
   if (!choices || choices.length === 0) return []
   let flatChoices = []
   for (let i = 0; i < choices.length; i ++) {
-        // We clone each option with a pointer to its parent group for efficient unflattening
+    // We clone each option with a pointer to its parent group for efficient unflattening
     const choiceCopy = clone(choices[i])
     if (parent) {
       choiceCopy.parent = parent
