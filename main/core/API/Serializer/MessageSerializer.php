@@ -44,10 +44,11 @@ class MessageSerializer
     /**
      * @return string
      */
+    /*
     public function getSamples()
     {
-        //return '#/main/core/message';
-    }
+       return '#/main/core/message';
+    }*/
 
     /**
      * Serializes a AbstractMessage entity.
@@ -112,7 +113,10 @@ class MessageSerializer
             'Claroline\CoreBundle\Entity\User',
             $data['meta']['creator']
         );
-        $message->setCreator($creator);
+
+        if ($creator) {
+            $message->setCreator($creator);
+        }
 
         return $message;
     }

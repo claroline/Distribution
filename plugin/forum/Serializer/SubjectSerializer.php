@@ -62,7 +62,7 @@ class SubjectSerializer
         return [
           'id' => $subject->getUuid(),
           'forum' => [
-            'id' => $subject->getForum()->getId(),
+            'id' => $subject->getForum()->getUuid(),
           ],
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
@@ -76,7 +76,7 @@ class SubjectSerializer
             'creator' => $this->serializeCreator($subject, $options),
             'created' => $subject->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
-            'sticky' => $subject->isSticky(),
+            'sticky' => $subject->isSticked(),
             'closed' => $subject->isClosed(),
         ];
     }
@@ -122,7 +122,19 @@ class SubjectSerializer
             'Claroline\CoreBundle\Entity\User',
             $data['meta']['creator']
         );
-        $subject->setCreator($creator);
+
+        if ($creator) {
+            $subject->setCreator($creator);
+        }
+
+        $forum = $this->serializerProvider->deserialize(
+            'Claroline\ForumBundle\Entity\Forum',
+            $data['forum']
+        );
+
+        if ($forum) {
+            $subject->setForum($forum);
+        }
 
         return $subject;
     }

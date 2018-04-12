@@ -50,6 +50,7 @@ class Forum extends AbstractResource
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
+        $this->refreshUuid();
     }
 
     public function getSubjects()

@@ -56,9 +56,9 @@ class SerializerProviderTest extends TransactionalTestCase
 
             foreach ($iterator as $file) {
                 if ($file->isFile()) {
-                    $data = \file_get_contents($file->getPathName());
+                    $originalData = \file_get_contents($file->getPathName());
                     //let's test the deserializer
-                    $object = $this->provider->deserialize($class, json_decode($data, true));
+                    $object = $this->provider->deserialize($class, json_decode($originalData, true));
                     //can we serialize it ?
                     $data = $this->provider->serialize($object);
 
@@ -67,7 +67,7 @@ class SerializerProviderTest extends TransactionalTestCase
                     }
                     //is the result... valid ?
                     $errors = $this->validator->validate($class, $data, ValidatorProvider::CREATE);
-                    $this->assertTrue(0 === count($errors));
+                    $this->assertTrue(0 === count($errors), print_r(['serialized' => $data, 'expected' => json_decode($originalData, true)], true));
                 }
             }
         } else {

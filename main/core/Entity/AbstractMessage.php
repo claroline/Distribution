@@ -66,6 +66,7 @@ abstract class AbstractMessage
     {
         $this->creationDate = new \DateTime();
         $this->updated = new \DateTime();
+        $this->refreshUuid();
     }
 
     /**

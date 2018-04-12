@@ -103,7 +103,10 @@ class Subject
      */
     public function __construct()
     {
+        $this->refreshUuid();
         $this->messages = new ArrayCollection();
+        $this->creationDate = new \DateTime();
+        $this->updated = new \DateTime();
     }
 
     /**
@@ -198,6 +201,10 @@ class Subject
 
     public function getAuthor()
     {
+        if (!$this->author) {
+            return 'undefined';
+        }
+
         return $this->author;
     }
 
