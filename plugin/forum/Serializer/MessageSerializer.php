@@ -3,6 +3,7 @@
 namespace Claroline\ForumBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\API\Serializer\MessageSerializer as AbstractMessageSerializer;
 use Claroline\ForumBundle\Entity\Message;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -13,6 +14,22 @@ use JMS\DiExtraBundle\Annotation as DI;
 class MessageSerializer
 {
     use SerializerTrait;
+
+    private $messageSerializer;
+
+    /**
+     * ParametersSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *     "messageSerializer" = @DI\Inject("claroline.serializer.message")
+     * })
+     *
+     * @param AbstractMessageSerializer $serializer
+     */
+    public function __construct(AbstractMessageSerializer $messageSerializer)
+    {
+        $this->messageSerializer = $messageSerializer;
+    }
 
     public function getClass()
     {
@@ -45,7 +62,13 @@ class MessageSerializer
      */
     public function serialize(Message $message, array $options = [])
     {
-        return [];
+        $data = $this->messageSerializer->serialize($message, $options);
+
+        $data['subject'] = [
+          'id' => $message->getSubject()->getId(),
+        ];
+
+        return $data;
     }
 
     /**
@@ -59,6 +82,10 @@ class MessageSerializer
      */
     public function deserialize($data, Message $message, array $options = [])
     {
+        $message = $this->messageSerializer->deserialize($data, $message, $options);
+
+        //set subject ?
+
         return $message;
     }
 }

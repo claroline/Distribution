@@ -47,6 +47,8 @@ class ForumSerializer
     {
         return [
             'id' => $forum->getUuid(),
+            'validationMode' => $forum->getValidationMode(),
+            'maxComment' => $forum->getMaxComment(),
         ];
     }
 
@@ -61,6 +63,9 @@ class ForumSerializer
      */
     public function deserialize($data, Forum $forum, array $options = [])
     {
+        $this->sipe('validationMode', 'setValidationMode', $data, $forum);
+        $this->sipe('maxComment', 'setMaxComment', $data, $forum);
+
         return $forum;
     }
 }

@@ -205,4 +205,14 @@ class Subject
     {
         $this->author = $author;
     }
+
+    public function getViewCount()
+    {
+        return $this->viewCount;
+    }
+
+    public function setViewCount($viewCount)
+    {
+        $this->viewCount = $viewCount;
+    }
 }

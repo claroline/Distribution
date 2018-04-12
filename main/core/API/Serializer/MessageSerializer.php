@@ -1,0 +1,119 @@
+<?php
+
+namespace Claroline\CoreBundle\API\Serializer;
+
+use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Entity\AbstractMessage;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
+use JMS\DiExtraBundle\Annotation as DI;
+
+/**
+ * @DI\Service("claroline.serializer.message")
+ * @DI\Tag("claroline.serializer")
+ */
+class MessageSerializer
+{
+    use SerializerTrait;
+
+    /**
+     * @DI\InjectParams({
+     *      "provider" = @DI\Inject("claroline.api.serializer")
+     * })
+     *
+     * @param SerializerProvider $serializer
+     */
+    public function __construct(SerializerProvider $provider)
+    {
+        $this->serializerProvider = $provider;
+    }
+
+    public function getClass()
+    {
+        return 'Claroline\CoreBundle\Entity\AbstractMessage';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSchema()
+    {
+        return '#/main/core/message.json';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSamples()
+    {
+        //return '#/main/core/message';
+    }
+
+    /**
+     * Serializes a AbstractMessage entity.
+     *
+     * @param AbstractMessage $forum
+     * @param array           $options
+     *
+     * @return array
+     */
+    public function serialize(AbstractMessage $message, array $options = [])
+    {
+        return [
+            'id' => $message->getUuid(),
+            'content' => $message->getContent(),
+            'meta' => $this->serializeMeta($message, $options),
+        ];
+    }
+
+    public function serializeMeta(AbstractMessage $message, array $options = [])
+    {
+        return [
+            'creator' => $this->serializeCreator($message, $options),
+            'created' => $message->getCreationDate()->format('Y-m-d\TH:i:s'),
+            'updated' => $message->getModificationDate()->format('Y-m-d\TH:i:s'),
+        ];
+    }
+
+    public function serializeCreator(AbstractMessage $message, array $options = [])
+    {
+        $creator = $message->getCreator();
+
+        return [
+            'id' => $creator ? $creator->getId() : null,
+            'name' => $creator ? $creator->getFullName() : $message->getAuthor(),
+        ];
+    }
+
+    /**
+     * Deserializes data into a Forum entity.
+     *
+     * @param array           $data
+     * @param AbstractMessage $message
+     * @param array           $options
+     *
+     * @return Forum
+     */
+    public function deserialize($data, AbstractMessage $message, array $options = [])
+    {
+        $this->sipe('content', 'setContent', $data, $message);
+
+        if (isset($data['meta'])) {
+            if (isset($data['meta']['updated'])) {
+                $message->setModificationDate(DateNormalizer::denormalize($data['meta']['updated']));
+            }
+
+            if (isset($data['meta']['creator'])) {
+                $message->setAuthor($data['meta']['creator']['name']);
+            }
+        }
+
+        $creator = $this->serializerProvider->deserialize(
+            'Claroline\CoreBundle\Entity\User',
+            $data['meta']['creator']
+        );
+        $message->setCreator($creator);
+
+        return $message;
+    }
+}

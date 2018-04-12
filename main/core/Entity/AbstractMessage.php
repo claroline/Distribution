@@ -62,6 +62,12 @@ abstract class AbstractMessage
      */
     protected $author;
 
+    public function __construct()
+    {
+        $this->creationDate = new \DateTime();
+        $this->updated = new \DateTime();
+    }
+
     /**
      * @return int
      */

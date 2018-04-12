@@ -3,6 +3,7 @@
 namespace Claroline\ForumBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\CoreBundle\API\Serializer\MessageSerializer;
 use Claroline\ForumBundle\Entity\Comment;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -13,6 +14,20 @@ use JMS\DiExtraBundle\Annotation as DI;
 class CommentSerializer
 {
     use SerializerTrait;
+
+    private $messageSerializer;
+
+    /**
+     * @DI\InjectParams({
+     *     "messageSerializer" = @DI\Inject("claroline.serializer.message")
+     * })
+     *
+     * @param AbstractMessageSerializer $serializer
+     */
+    public function __construct(MessageSerializer $messageSerializer)
+    {
+        $this->messageSerializer = $messageSerializer;
+    }
 
     public function getClass()
     {
@@ -45,7 +60,13 @@ class CommentSerializer
      */
     public function serialize(Comment $comment, array $options = [])
     {
-        return [];
+        $data = $this->messageSerializer->serialize($comment, $options);
+
+        $data['message'] = [
+          'id' => $comment->getMessage()->getId(),
+        ];
+
+        return $data;
     }
 
     /**
@@ -59,6 +80,10 @@ class CommentSerializer
      */
     public function deserialize($data, Comment $comment, array $options = [])
     {
+        $comment = $this->messageSerializer->deserialize($data, $comment, $options);
+
+        //set message
+
         return $comment;
     }
 }

@@ -3,6 +3,8 @@
 namespace Claroline\ForumBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\ForumBundle\Entity\Subject;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -36,6 +38,18 @@ class SubjectSerializer
     }
 
     /**
+     * @DI\InjectParams({
+     *      "provider" = @DI\Inject("claroline.api.serializer")
+     * })
+     *
+     * @param SerializerProvider $serializer
+     */
+    public function __construct(SerializerProvider $provider)
+    {
+        $this->serializerProvider = $provider;
+    }
+
+    /**
      * Serializes a Subject entity.
      *
      * @param Subject $subject
@@ -45,7 +59,36 @@ class SubjectSerializer
      */
     public function serialize(Subject $subject, array $options = [])
     {
-        return [];
+        return [
+          'id' => $subject->getUuid(),
+          'forum' => [
+            'id' => $subject->getForum()->getId(),
+          ],
+          'title' => $subject->getTitle(),
+          'meta' => $this->serializeMeta($subject, $options),
+        ];
+    }
+
+    public function serializeMeta(Subject $subject, array $options = [])
+    {
+        return [
+            'views' => $subject->getViewCount(),
+            'creator' => $this->serializeCreator($subject, $options),
+            'created' => $subject->getCreationDate()->format('Y-m-d\TH:i:s'),
+            'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
+            'sticky' => $subject->isSticky(),
+            'closed' => $subject->isClosed(),
+        ];
+    }
+
+    public function serializeCreator(Subject $subject, array $options = [])
+    {
+        $creator = $subject->getCreator();
+
+        return [
+            'id' => $creator ? $creator->getId() : null,
+            'name' => $creator ? $creator->getFullName() : $subject->getAuthor(),
+        ];
     }
 
     /**
@@ -59,6 +102,28 @@ class SubjectSerializer
      */
     public function deserialize($data, Subject $subject, array $options = [])
     {
+        $this->sipe('title', 'setTitle', $data, $subject);
+        $this->sipe('meta.views', 'setViewCount', $data, $subject);
+        $this->sipe('meta.sticky', 'setIsSticked', $data, $subject);
+        $this->sipe('meta.closed', 'setIsClosed', $data, $subject);
+
+        if (isset($data['meta'])) {
+            if (isset($data['meta']['updated'])) {
+                $subject->setModificationDate(DateNormalizer::denormalize($data['meta']['updated']));
+            }
+
+            if (isset($data['meta']['creator'])) {
+                $subject->setAuthor($data['meta']['creator']['name']);
+            }
+        }
+
+        //set forum
+        $creator = $this->serializerProvider->deserialize(
+            'Claroline\CoreBundle\Entity\User',
+            $data['meta']['creator']
+        );
+        $subject->setCreator($creator);
+
         return $subject;
     }
 }
