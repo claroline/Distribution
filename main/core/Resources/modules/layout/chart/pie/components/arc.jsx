@@ -31,7 +31,8 @@ Arc.propTypes = {
   startAngle: T.number.isRequired,
   endAngle: T.number.isRequired,
   showValue: T.bool.isRequired,
-  value: T.number
+  value: T.number,
+  percentage: T.number
 }
 
 Arc.defaultProps = {
