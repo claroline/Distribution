@@ -103,6 +103,8 @@ class ApiLoader extends Loader
                     $prefix = '';
                     $ignore = [];
 
+                    //Find via ApiMeta annotation
+                    //this deprecated
                     foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
                         //If we defined api meta, we get all the free stuff fro the api
                         if ($annotation instanceof ApiMeta) {
@@ -117,6 +119,28 @@ class ApiLoader extends Loader
 
                             if (0 === strpos($prefix, '/')) {
                                 $prefix = substr($prefix, 1);
+                            }
+                        }
+                    }
+                    //end deprecated
+
+                    //Find via getClass method of AbstractCrudController
+
+                    if (!$found && $refClass->isSubClassOf('Claroline\AppBundle\Controller\AbstractCrudController')) {
+                        $instance = $refClass->newInstanceWithoutConstructor();
+                        if ($class = $instance->getClass()) {
+                            $found = true;
+                            $ignore = $instance->getIgnore();
+
+                            foreach ($this->reader->getClassAnnotations($refClass) as $annotation) {
+                                //The route prefix is defined with the sf2 annotations
+                                if ($annotation instanceof RouteConfig) {
+                                    $prefix = $annotation->getPath();
+
+                                    if (0 === strpos($prefix, '/')) {
+                                        $prefix = substr($prefix, 1);
+                                    }
+                                }
                             }
                         }
                     }

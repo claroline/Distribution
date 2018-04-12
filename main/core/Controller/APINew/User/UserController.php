@@ -11,7 +11,6 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\User;
 
-use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
@@ -26,7 +25,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @ApiMeta(class="Claroline\CoreBundle\Entity\User")
  * @Route("/user")
  */
 class UserController extends AbstractCrudController
@@ -229,5 +227,10 @@ class UserController extends AbstractCrudController
             'Claroline\CoreBundle\Entity\User',
             array_merge($request->query->all(), ['hiddenFilters' => $filters])
         ));
+    }
+
+    public function getClass()
+    {
+        return "Claroline\CoreBundle\Entity\User";
     }
 }
