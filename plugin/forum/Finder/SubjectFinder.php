@@ -12,6 +12,7 @@
 namespace Claroline\ForumBundle\Finder;
 
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\AppBundle\API\Serializer\FinderTrait;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -21,6 +22,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class SubjectFinder implements FinderInterface
 {
+    use FinderTrait;
+
     public function getClass()
     {
         return 'Claroline\ForumBundle\Entity\Subject';
@@ -28,6 +31,21 @@ class SubjectFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
+        foreach ($searches as $filterName => $filterValue) {
+            switch ($filterName) {
+              case 'forum':
+                $qb->leftJoin('obj.forum', 'forum');
+                $qb->andWhere($qb->expr()->orX(
+                    $qb->expr()->eq('forum.id', $filterName),
+                    $qb->expr()->eq('forum.uuid', $filterName)
+                ));
+                $qb->setParameter($filterName, $filterValue);
+                break;
+              default:
+                $this->setDefault($qb, $filterName, $filterValue);
+            }
+        }
+
         return $qb;
     }
 }

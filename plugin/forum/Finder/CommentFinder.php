@@ -12,6 +12,7 @@
 namespace Claroline\ForumBundle\Finder;
 
 use Claroline\AppBundle\API\FinderInterface;
+use Claroline\AppBundle\API\Serializer\FinderTrait;
 use Doctrine\ORM\QueryBuilder;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -21,6 +22,8 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class CommentFinder implements FinderInterface
 {
+    use FinderTrait;
+
     public function getClass()
     {
         return 'Claroline\ForulBundle\Entity\Comment';
@@ -28,6 +31,21 @@ class CommentFinder implements FinderInterface
 
     public function configureQueryBuilder(QueryBuilder $qb, array $searches = [], array $sortBy = null)
     {
+        foreach ($searches as $filterName => $filterValue) {
+            switch ($filterName) {
+              case 'message':
+                $qb->leftJoin('obj.message', 'message');
+                $qb->andWhere($qb->expr()->orX(
+                    $qb->expr()->eq('message.id', $filterName),
+                    $qb->expr()->eq('message.uuid', $filterName)
+                ));
+                $qb->setParameter($filterName, $filterValue);
+                break;
+              default:
+                $this->setDefault($qb, $filterName, $filterValue);
+            }
+        }
+
         return $qb;
     }
 }
