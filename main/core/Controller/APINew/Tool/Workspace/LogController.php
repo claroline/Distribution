@@ -96,7 +96,7 @@ class LogController
      */
     public function listAction(Request $request, Workspace $workspace)
     {
-        $this->checkLogToolAcces($workspace);
+        $this->checkLogToolAccess($workspace);
 
         return new JsonResponse($this->finder->search(
             $this->getClass(),
@@ -121,7 +121,7 @@ class LogController
      */
     public function listCsvAction(Request $request, Workspace $workspace)
     {
-        $this->checkLogToolAcces($workspace);
+        $this->checkLogToolAccess($workspace);
 
         // Filter data, but return all of them
         $query = $this->getWorkspaceFilteredQuery($request, $workspace);
@@ -147,7 +147,7 @@ class LogController
      */
     public function listChartAction(Request $request, Workspace $workspace)
     {
-        $this->checkLogToolAcces($workspace);
+        $this->checkLogToolAccess($workspace);
 
         $chartData = $this->logManager->getChartData($this->getWorkspaceFilteredQuery($request, $workspace));
 
@@ -166,7 +166,7 @@ class LogController
      */
     public function userActionsListAction(Request $request, Workspace $workspace)
     {
-        $this->checkLogToolAcces($workspace);
+        $this->checkLogToolAccess($workspace);
         $userList = $this->logManager->getUserActionsList($this->getWorkspaceFilteredQuery($request, $workspace));
 
         return new JsonResponse($userList);
@@ -188,7 +188,7 @@ class LogController
      */
     public function userActionsListCsvAction(Request $request, Workspace $workspace)
     {
-        $this->checkLogToolAcces($workspace);
+        $this->checkLogToolAccess($workspace);
 
         // Filter data, but return all of them
         $query = $this->getWorkspaceFilteredQuery($request, $workspace);
@@ -216,7 +216,7 @@ class LogController
      */
     public function getAction(Log $log)
     {
-        $this->checkLogToolAcces($log->getWorkspace());
+        $this->checkLogToolAccess($log->getWorkspace());
 
         return new JsonResponse($this->serializer->serialize($log, ['details' => true]));
     }
@@ -248,7 +248,7 @@ class LogController
      *
      * @param Workspace $workspace
      */
-    private function checkLogToolAcces(Workspace $workspace)
+    private function checkLogToolAccess(Workspace $workspace)
     {
         if (!$this->authorizationChecker->isGranted('logs', $workspace)) {
             throw new AccessDeniedHttpException();

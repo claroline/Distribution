@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-class WorkspaceAnalyticsController extends Controller
+class WorkspaceDashboardController extends Controller
 {
     private $analyticsManager;
     private $authorization;
@@ -48,7 +48,7 @@ class WorkspaceAnalyticsController extends Controller
      *      class="ClarolineCoreBundle:Workspace\Workspace",
      *      options={"id" = "workspaceId", "strictId" = true}
      * )
-     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/analytics:dashboard.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/dashboard:index.html.twig")
      *
      * Displays activities evaluations home tab of analytics tool
      *
@@ -56,7 +56,7 @@ class WorkspaceAnalyticsController extends Controller
      *
      * @return array
      */
-    public function dashboardAction(Workspace $workspace)
+    public function indexAction(Workspace $workspace)
     {
         if (!$this->authorization->isGranted('analytics', $workspace)) {
             throw new AccessDeniedHttpException();

@@ -19,6 +19,7 @@ const DataSeries = props => {
           startAngle={arc.startAngle}
           endAngle={arc.endAngle}
           value={arc.value}
+          percentage={arc.percentage}
           showValue={props.showValue}
         />
       ))}

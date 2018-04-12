@@ -56,7 +56,7 @@ claro_log:
     type: annotation
 
 claro_log_workspace:
-    resource: "@ClarolineCoreBundle/Controller/Log/Tool/WorkspaceController.php"
+    resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceLogController.php"
     prefix: workspaces
     type: annotation
 
@@ -117,9 +117,9 @@ claro_workspace_tool_home:
     prefix: workspaces/tool/home
     type: annotation
 
-claro_workspace_analytics:
-    prefix: workspace/analytics
-    resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceAnalyticsController.php"
+claro_workspace_dashboard:
+    prefix: workspace/dashboard
+    resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceDashboardController.php"
     type: annotation
 
 claro_admin:

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Controller\Log\Tool;
+namespace Claroline\CoreBundle\Controller\Tool;
 
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
@@ -22,7 +22,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Display logs in workspace's tool.
  */
-class WorkspaceController extends Controller
+class WorkspaceLogController extends Controller
 {
     /** @var \Claroline\CoreBundle\Manager\EventManager */
     private $eventManager;
@@ -49,7 +49,7 @@ class WorkspaceController extends Controller
      *      options={"id" = "workspaceId", "strictId" = true}
      * )
      *
-     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/logs:list.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:Tool/workspace/logs:index.html.twig")
      *
      * Displays logs list using filter parameteres and page number
      *
@@ -59,7 +59,7 @@ class WorkspaceController extends Controller
      *
      * @return array
      */
-    public function logListAction(Workspace $workspace)
+    public function indexAction(Workspace $workspace)
     {
         if (!$this->get('security.authorization_checker')->isGranted('logs', $workspace)) {
             throw new AccessDeniedException();

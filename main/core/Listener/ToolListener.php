@@ -181,7 +181,7 @@ class ToolListener
     public function workspaceLogs($workspaceId)
     {
         $params = [
-            '_controller' => 'ClarolineCoreBundle:Log\Tool\Workspace:logList',
+            '_controller' => 'ClarolineCoreBundle:Tool\WorkspaceLog:index',
             'workspaceId' => $workspaceId,
         ];
 
@@ -194,7 +194,7 @@ class ToolListener
     public function workspaceAnalytics($workspace)
     {
         $params = [
-            '_controller' => 'ClarolineCoreBundle:Tool\WorkspaceAnalytics:dashboard',
+            '_controller' => 'ClarolineCoreBundle:Tool\WorkspaceDashboard:index',
             'workspaceId' => $workspace->getId(),
         ];
 

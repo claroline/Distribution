@@ -17,8 +17,9 @@ use Claroline\CoreBundle\Event\Log\LogResourceExportEvent;
 use Claroline\CoreBundle\Event\Log\LogResourceReadEvent;
 use Claroline\CoreBundle\Event\Log\LogUserLoginEvent;
 use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
-use Claroline\CoreBundle\Repository\AbstractResourceRepository;
 use Claroline\CoreBundle\Repository\Log\LogRepository;
+use Claroline\CoreBundle\Repository\ResourceNodeRepository;
+use Claroline\CoreBundle\Repository\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\UserRepository;
 use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -28,9 +29,9 @@ use JMS\DiExtraBundle\Annotation as DI;
  */
 class AnalyticsManager
 {
-    /** @var AbstractResourceRepository */
+    /** @var ResourceNodeRepository */
     private $resourceRepo;
-    /** @var AbstractResourceRepository */
+    /** @var ResourceTypeRepository */
     private $resourceTypeRepo;
     /** @var UserRepository */
     private $userRepo;
@@ -89,28 +90,16 @@ class AnalyticsManager
 
     public function getWorkspaceResourceTypesCount(Workspace $workspace)
     {
-        return $this->resourceTypeRepo->countResourcesByType($workspace);
-    }
+        $resourceTypes = $this->resourceTypeRepo->countResourcesByType($workspace);
+        $chartData = [];
+        foreach ($resourceTypes as $type) {
+            $chartData[] = [
+                'xData' => $type['name'],
+                'yData' => $type['total'],
+            ];
+        }
 
-    /**
-     * Retrieve analytics for workspace: chartData and resource statistics.
-     */
-    public function getWorkspaceAnalytics(Workspace $workspace)
-    {
-        $query = [
-            'hiddenFilters' => ['workspace' => $workspace],
-            'filters' => [
-                'action' => 'workspace-enter',
-            ],
-        ];
-        $chartData = $this->getDailyActions($query);
-        $resourcesByType = $this->resourceTypeRepo->countResourcesByType($workspace);
-
-        return [
-            'chartData' => $chartData,
-            'resourceCount' => $resourcesByType,
-            'workspace' => $workspace,
-        ];
+        return $chartData;
     }
 
     public function getDailyActions(array $finderParams = [])

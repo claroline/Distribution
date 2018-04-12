@@ -59,8 +59,8 @@ class LogFinder implements FinderInterface
                     $qb->setParameter('doer', '%'.strtoupper($filterValue).'%');
                     break;
                 case 'dateLog':
-                    $qb->andWhere('obj.dateLog >= :date')
-                        ->setParameter('date', $filterValue);
+                    $qb->andWhere('obj.dateLog >= :dateFrom')
+                        ->setParameter('dateFrom', $filterValue);
                     break;
                 case 'dateTo':
                     $qb->andWhere('obj.dateLog <= :dateTo')

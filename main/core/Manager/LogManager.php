@@ -119,7 +119,7 @@ class LogManager
         $filters = FinderProvider::parseQueryParams($finderParams)['allFilters'];
         $data = $this->logRepository->fetchChartData($filters);
         $minDate = isset($filters['dateLog']) ? $filters['dateLog'] : null;
-        $maxDate = isset($filters['toDate']) ? $filters['toDate'] : null;
+        $maxDate = isset($filters['dateTo']) ? $filters['dateTo'] : null;
 
         return $this->formatDataForChart($data, $minDate, $maxDate);
     }
