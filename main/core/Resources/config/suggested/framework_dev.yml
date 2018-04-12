@@ -6,3 +6,4 @@ framework:
         only_exceptions: false
     session:
         save_path: %kernel.root_dir%/sessions
+        cookie_httponly: true
