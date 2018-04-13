@@ -36,16 +36,46 @@ class MessageFinder implements FinderInterface
               case 'subject':
                 $qb->leftJoin('obj.subject', 'subject');
                 $qb->andWhere($qb->expr()->orX(
-                    $qb->expr()->eq('subject.id', $filterName),
-                    $qb->expr()->eq('subject.uuid', $filterName)
+                    $qb->expr()->eq('subject.id', ':'.$filterName),
+                    $qb->expr()->eq('subject.uuid', ':'.$filterName)
                 ));
                 $qb->setParameter($filterName, $filterValue);
                 break;
               default:
-                $this->setDefault($qb, $filterName, $filterValue);
+                $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 
         return $qb;
+    }
+
+    public function getFilters()
+    {
+        return [
+          'subject' => [
+            'type' => ['integer', 'string'],
+            'description' => 'The parent subject id (int) or uuid (string)',
+          ],
+          'isVisible' => [
+            'type' => 'boolean',
+            'description' => 'If the message is visible',
+          ],
+          'content' => [
+            'type' => 'string',
+            'description' => 'The message content',
+          ],
+          'creationDate' => [
+            'type' => 'datetime',
+            'description' => 'The creation date',
+          ],
+          'updated' => [
+            'type' => 'datetime',
+            'description' => 'The last update date',
+          ],
+          'author' => [
+            'type' => 'string',
+            'description' => 'the author name',
+          ],
+        ];
     }
 }

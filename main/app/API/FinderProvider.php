@@ -82,6 +82,16 @@ class FinderProvider
     }
 
     /**
+     * Return the list of finders.
+     *
+     * @return mixed[];
+     */
+    public function all()
+    {
+        return $this->finders;
+    }
+
+    /**
      * Builds and fires the query for a given class. The result will be serialized afterwards.
      *
      * @param string $class

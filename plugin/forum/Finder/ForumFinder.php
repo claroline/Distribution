@@ -34,10 +34,24 @@ class ForumFinder implements FinderInterface
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
               default:
-                $this->setDefault($qb, $filterName, $filterValue);
+                $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 
         return $qb;
+    }
+
+    public function getFilters()
+    {
+        return [
+          'validationMode' => [
+            'type' => 'integer',
+            'description' => 'The forum validation mode',
+          ],
+          'maxComment' => [
+            'type' => 'integer',
+            'description' => 'The max amount of sub comments per messages',
+          ],
+        ];
     }
 }

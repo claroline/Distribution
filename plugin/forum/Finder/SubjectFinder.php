@@ -36,16 +36,54 @@ class SubjectFinder implements FinderInterface
               case 'forum':
                 $qb->leftJoin('obj.forum', 'forum');
                 $qb->andWhere($qb->expr()->orX(
-                    $qb->expr()->eq('forum.id', $filterName),
-                    $qb->expr()->eq('forum.uuid', $filterName)
+                    $qb->expr()->eq('forum.id', ':'.$filterName),
+                    $qb->expr()->eq('forum.uuid', ':'.$filterName)
                 ));
                 $qb->setParameter($filterName, $filterValue);
                 break;
               default:
-                $this->setDefault($qb, $filterName, $filterValue);
+                $this->setDefaults($qb, $filterName, $filterValue);
             }
         }
 
         return $qb;
+    }
+
+    public function getFilters()
+    {
+        return [
+          'forum' => [
+            'type' => ['integer', 'string'],
+            'description' => 'The parent forum id (int) or uuid (string)',
+          ],
+          'title' => [
+            'type' => 'string',
+            'description' => 'The subject content',
+          ],
+          'creationDate' => [
+            'type' => 'datetime',
+            'description' => 'The creation date',
+          ],
+          'updated' => [
+            'type' => 'datetime',
+            'description' => 'The last update date',
+          ],
+          'author' => [
+            'type' => 'string',
+            'description' => 'the author name',
+          ],
+          'isSticked' => [
+            'type' => 'boolean',
+            'description' => 'is the subject sticked',
+          ],
+          'isClosed' => [
+            'type' => 'boolean',
+            'description' => 'is the subject closed',
+          ],
+          'viewCount' => [
+            'type' => 'integer',
+            'description' => 'The number of views',
+          ],
+        ];
     }
 }
