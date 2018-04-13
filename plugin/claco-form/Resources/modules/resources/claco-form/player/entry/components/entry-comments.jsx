@@ -9,7 +9,7 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
 
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 class EntryCommentsComponent extends Component {
@@ -204,8 +204,8 @@ const EntryComments = connect(
   (state) => ({
     entry: state.currentEntry,
     user: state.user,
-    displayCommentAuthor: selectors.getParam(state, 'display_comment_author'),
-    displayCommentDate: selectors.getParam(state, 'display_comment_date')
+    displayCommentAuthor: select.getParam(state, 'display_comment_author'),
+    displayCommentDate: select.getParam(state, 'display_comment_date')
   }),
   (dispatch) => ({
     createComment(entryId, content) {

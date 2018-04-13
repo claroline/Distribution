@@ -11,6 +11,7 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Category
 {
+    use UuidTrait;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -69,6 +72,7 @@ class Category
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->managers = new ArrayCollection();
     }
 

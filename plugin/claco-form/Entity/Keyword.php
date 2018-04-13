@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
@@ -20,6 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Keyword
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -47,6 +50,11 @@ class Keyword
      * @SerializedName("clacoForm")
      */
     protected $clacoForm;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

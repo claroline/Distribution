@@ -11,6 +11,7 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Entry
 {
+    use UuidTrait;
+
     const PENDING = 0;
     const PUBLISHED = 1;
     const UNPUBLISHED = 2;
@@ -147,6 +150,7 @@ class Entry
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->categories = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->fieldValues = new ArrayCollection();

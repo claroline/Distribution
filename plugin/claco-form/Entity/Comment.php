@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
@@ -14,6 +15,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Comment
 {
+    use UuidTrait;
+
     const PENDING = 0;
     const VALIDATED = 1;
     const BLOCKED = 2;
@@ -72,6 +75,11 @@ class Comment
      * @SerializedName("status")
      */
     protected $status;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

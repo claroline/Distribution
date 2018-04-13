@@ -3,11 +3,10 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {generateFieldKey, getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/actions'
 import {actions} from '#/plugin/claco-form/resources/claco-form/editor/template/actions'
@@ -101,28 +100,43 @@ class TemplateFormComponent extends Component {
       <div>
         <h2>{trans('template_management', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.canEdit ?
-          <div>
-            <div className="alert alert-warning">
-              <button type="button" className="close" data-dismiss="alert" aria-hidden="true">
-                &times;
-              </button>
-              {trans('template_variables_message', {}, 'clacoform')}
-              <hr/>
+        <div>
+          <div className="alert alert-warning">
+            <button type="button" className="close" data-dismiss="alert" aria-hidden="true">
+              &times;
+            </button>
+            {trans('template_variables_message', {}, 'clacoform')}
+            <hr/>
+            <div>
+              <h4>
+                {trans('mandatory', {}, 'clacoform')}
+                &nbsp;
+                <small>({trans('template_mandatory_variables_message', {}, 'clacoform')})</small>
+              </h4>
+              <ul>
+                <li>
+                  <b>%clacoform_entry_title%</b> : {trans('entry_title_info', {}, 'clacoform')}
+                </li>
+                {this.props.fields.map(f => {
+                  if (f.required && !f.hidden) {
+                    return (
+                      <li key={`required-${f.id}`}>
+                        <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
+                      </li>
+                    )
+                  }
+                })}
+              </ul>
+            </div>
+            {this.props.fields.filter(f => !f.required && !f.hidden).length > 0 &&
               <div>
-                <h4>
-                  {trans('mandatory', {}, 'clacoform')}
-                  &nbsp;
-                  <small>({trans('template_mandatory_variables_message', {}, 'clacoform')})</small>
-                </h4>
+                <hr/>
+                <h4>{trans('optional', {}, 'clacoform')}</h4>
                 <ul>
-                  <li>
-                    <b>%clacoform_entry_title%</b> : {trans('entry_title_info', {}, 'clacoform')}
-                  </li>
                   {this.props.fields.map(f => {
-                    if (f.required && !f.hidden) {
+                    if (!f.required && !f.hidden) {
                       return (
-                        <li key={`required-${f.id}`}>
+                        <li key={`optional-${f.id}`}>
                           <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
                         </li>
                       )
@@ -130,57 +144,36 @@ class TemplateFormComponent extends Component {
                   })}
                 </ul>
               </div>
-              {this.props.fields.filter(f => !f.required && !f.hidden).length > 0 &&
-                <div>
-                  <hr/>
-                  <h4>{trans('optional', {}, 'clacoform')}</h4>
-                  <ul>
-                    {this.props.fields.map(f => {
-                      if (!f.required && !f.hidden) {
-                        return (
-                          <li key={`optional-${f.id}`}>
-                            <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
-                          </li>
-                        )
-                      }
-                    })}
-                  </ul>
-                </div>
-              }
-            </div>
-            <Message/>
-            <Textarea
-              id="clacoform-template"
-              value={this.state.template}
-              onChange={value => this.updateTemplate(value)}
-            />
-            <CheckGroup
-              id="use-template"
-              disabled={!this.state.template}
-              value={this.state.useTemplate}
-              label={trans('use_template', {}, 'clacoform')}
-              onChange={checked => this.updateUseTemplate(checked)}
-            />
-            <div className="template-buttons">
-              <button className="btn btn-primary" onClick={() => this.validateTemplate()}>
-                {trans('ok')}
-              </button>
-              <a className="btn btn-default" href="#/">
-                {trans('cancel')}
-              </a>
-            </div>
-          </div> :
-          <div className="alert alert-danger">
-            {trans('unauthorized')}
+            }
           </div>
-        }
+          <Message/>
+          <Textarea
+            id="clacoform-template"
+            value={this.state.template}
+            onChange={value => this.updateTemplate(value)}
+          />
+          <CheckGroup
+            id="use-template"
+            disabled={!this.state.template}
+            value={this.state.useTemplate}
+            label={trans('use_template', {}, 'clacoform')}
+            onChange={checked => this.updateUseTemplate(checked)}
+          />
+          <div className="template-buttons">
+            <button className="btn btn-primary" onClick={() => this.validateTemplate()}>
+              {trans('ok')}
+            </button>
+            <a className="btn btn-default" href="#/">
+              {trans('cancel')}
+            </a>
+          </div>
+        </div>
       </div>
     )
   }
 }
 
 TemplateFormComponent.propTypes = {
-  canEdit: T.bool.isRequired,
   template: T.string,
   fields: T.arrayOf(T.shape({
     id: T.number.isRequired,
@@ -195,10 +188,9 @@ TemplateFormComponent.propTypes = {
 
 const TemplateForm = connect(
   (state) => ({
-    canEdit: resourceSelect.editable(state),
-    template: selectors.template(state),
+    template: select.template(state),
     fields: state.fields.filter(f => f.type !== 11),
-    useTemplate: selectors.useTemplate(state)
+    useTemplate: select.useTemplate(state)
   }),
   (dispatch) => ({
     saveTemplate(template, useTemplate) {

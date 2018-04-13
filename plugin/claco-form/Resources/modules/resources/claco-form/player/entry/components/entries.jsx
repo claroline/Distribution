@@ -16,7 +16,7 @@ import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
 import {getFieldType, getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
@@ -510,19 +510,19 @@ const Entries = withRouter(connect(
     fields: state.fields,
     canGeneratePdf: state.canGeneratePdf,
     resourceId: state.clacoForm.id,
-    canSearchEntry: selectors.canSearchEntry(state),
-    searchEnabled: selectors.getParam(state, 'search_enabled'),
-    searchColumnEnabled: selectors.getParam(state, 'search_column_enabled'),
-    editionEnabled: selectors.getParam(state, 'edition_enabled'),
-    defaultDisplayMode: selectors.getParam(state, 'default_display_mode'),
-    displayTitle: selectors.getParam(state, 'display_title'),
-    displaySubtitle: selectors.getParam(state, 'display_subtitle'),
-    displayContent: selectors.getParam(state, 'display_content'),
-    searchColumns: selectors.getParam(state, 'search_columns'),
-    displayMetadata: selectors.getParam(state, 'display_metadata'),
-    displayCategories: selectors.getParam(state, 'display_categories'),
-    displayKeywords: selectors.getParam(state, 'display_keywords'),
-    isCategoryManager: selectors.isCategoryManager(state),
+    canSearchEntry: select.canSearchEntry(state),
+    searchEnabled: select.getParam(state, 'search_enabled'),
+    searchColumnEnabled: select.getParam(state, 'search_column_enabled'),
+    editionEnabled: select.getParam(state, 'edition_enabled'),
+    defaultDisplayMode: select.getParam(state, 'default_display_mode'),
+    displayTitle: select.getParam(state, 'display_title'),
+    displaySubtitle: select.getParam(state, 'display_subtitle'),
+    displayContent: select.getParam(state, 'display_content'),
+    searchColumns: select.getParam(state, 'search_columns'),
+    displayMetadata: select.getParam(state, 'display_metadata'),
+    displayCategories: select.getParam(state, 'display_categories'),
+    displayKeywords: select.getParam(state, 'display_keywords'),
+    isCategoryManager: select.isCategoryManager(state),
     entries: state.entries
   }),
   (dispatch) => ({

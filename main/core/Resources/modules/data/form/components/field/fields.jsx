@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 import classes from 'classnames'
 
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_GENERIC_TYPE_PICKER} from '#/main/core/layout/modal'
@@ -13,7 +13,6 @@ import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button
 
 import {FormField} from '#/main/core/data/form/components/field.jsx'
 import {getCreatableTypes} from '#/main/core/data'
-
 
 // todo create working preview
 const FieldPreview = props =>
@@ -88,7 +87,7 @@ class FieldList extends Component {
           className="btn btn-remove-all btn-sm btn-link-danger"
           onClick={this.removeAll}
         >
-          {t('delete_all')}
+          {trans('delete_all')}
         </button>
         }
 
@@ -107,7 +106,7 @@ class FieldList extends Component {
               <div className="field-item-actions">
                 <TooltipButton
                   id={`${this.props.id}-${fieldIndex}-edit`}
-                  title={t('edit')}
+                  title={trans('edit')}
                   className="btn-link-default"
                   onClick={() => this.open(field, (data) => {
                     this.update(fieldIndex, data)
@@ -118,7 +117,7 @@ class FieldList extends Component {
 
                 <TooltipButton
                   id={`${this.props.id}-${fieldIndex}-delete`}
-                  title={t('delete')}
+                  title={trans('delete')}
                   className="btn-link-danger"
                   onClick={() => this.remove(fieldIndex)}
                 >
@@ -138,15 +137,24 @@ class FieldList extends Component {
           type="button"
           className="btn btn-default btn-block"
           onClick={() => this.props.showModal(MODAL_GENERIC_TYPE_PICKER, {
-            title: t('create_field'),
+            title: trans('create_field'),
             types: Object.keys(getCreatableTypes()).map(type => getCreatableTypes()[type].meta),
-            handleSelect: (type) => this.open({type: type.type}, (data) => {
-              this.add(data)
-            })
+            handleSelect: (type) => this.open(
+              {
+                type: type.type,
+                restrictions: {
+                  locked: false,
+                  lockedEditionOnly: false
+                }
+              },
+              (data) => {
+                this.add(data)
+              }
+            )
           })}
         >
           <span className="fa fa-plus icon-with-text-right"/>
-          {t('add_field')}
+          {trans('add_field')}
         </button>
       </div>
     )
@@ -164,7 +172,7 @@ FieldList.propTypes = {
 }
 
 FieldList.defaultProps = {
-  placeholder: t('empty_fields_list'),
+  placeholder: trans('empty_fields_list'),
   value: []
 }
 

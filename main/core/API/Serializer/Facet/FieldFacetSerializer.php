@@ -43,11 +43,19 @@ class FieldFacetSerializer
     {
         if (in_array(Options::PROFILE_SERIALIZE, $options)) {
             $serialized = [
-              'id' => $fieldFacet->getUuid(),
-              'name' => $fieldFacet->getName(),
-              'type' => $fieldFacet->getFieldType(),
-              'label' => $fieldFacet->getLabel(),
-              'required' => $fieldFacet->isRequired(),
+                'id' => $fieldFacet->getUuid(),
+                'name' => $fieldFacet->getName(),
+                'type' => $fieldFacet->getFieldType(),
+                'label' => $fieldFacet->getLabel(),
+                'required' => $fieldFacet->isRequired(),
+                'help' => $fieldFacet->getHelp(),
+                'restrictions' => [
+                    'hidden' => $fieldFacet->isHidden(),
+                    'isMetadata' => $fieldFacet->getIsMetadata(),
+                    'locked' => $fieldFacet->isLocked(),
+                    'lockedEditionOnly' => $fieldFacet->getLockedEditionOnly(),
+                    'order' => $fieldFacet->getPosition(),
+                ],
             ];
 
             if (!empty($fieldFacet->getOptions())) {
@@ -91,5 +99,13 @@ class FieldFacetSerializer
         $this->sipe('type', 'setType', $data, $field);
         $this->sipe('required', 'setRequired', $data, $field);
         $this->sipe('options', 'setOptions', $data, $field);
+        $this->sipe('help', 'setHelp', $data, $field);
+        $this->sipe('restrictions.hidden', 'setHidden', $data, $field);
+        $this->sipe('restrictions.isMetadata', 'setIsMetadata', $data, $field);
+        $this->sipe('restrictions.locked', 'setLocked', $data, $field);
+        $this->sipe('restrictions.lockedEditionOnly', 'setLockedEditionOnly', $data, $field);
+        $this->sipe('restrictions.order', 'setPosition', $data, $field);
+
+        return $field;
     }
 }

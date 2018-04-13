@@ -1,5 +1,7 @@
 import {bootstrap} from '#/main/core/scaffolding/bootstrap'
 import {registerModals} from '#/main/core/layout/modal'
+import {registerType} from '#/main/core/data'
+import {FIELDS_TYPE, fieldsDefinition} from '#/main/core/data/types/fields'
 
 import {reducer} from '#/plugin/claco-form/resources/claco-form/reducer'
 import {ClacoFormResource} from '#/plugin/claco-form/resources/claco-form/components/resource.jsx'
@@ -19,6 +21,8 @@ registerModals([
   [MODAL_KEYWORD_FORM, KeywordFormModal],
   ['MODAL_FIELD_FORM', FieldFormModal]
 ])
+
+registerType(FIELDS_TYPE,  fieldsDefinition)
 
 // mount the react application
 bootstrap(

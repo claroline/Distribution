@@ -11,6 +11,7 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,6 +24,8 @@ use JMS\Serializer\Annotation\SerializedName;
  */
 class ClacoForm extends AbstractResource
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -78,6 +81,7 @@ class ClacoForm extends AbstractResource
 
     public function __construct()
     {
+        $this->refreshUuid();
         $this->categories = new ArrayCollection();
         $this->fields = new ArrayCollection();
         $this->keywords = new ArrayCollection();
@@ -106,6 +110,29 @@ class ClacoForm extends AbstractResource
     public function getFields()
     {
         return $this->fields->toArray();
+    }
+
+    public function addField(Field $field)
+    {
+        if (!$this->fields->contains($field)) {
+            $this->fields->add($field);
+        }
+
+        return $this;
+    }
+
+    public function removeField(Field $field)
+    {
+        if ($this->fields->contains($field)) {
+            $this->fields->removeElement($field);
+        }
+
+        return $this;
+    }
+
+    public function emptyFields()
+    {
+        return $this->fields->clear();
     }
 
     public function getCategories()

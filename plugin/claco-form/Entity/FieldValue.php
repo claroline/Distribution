@@ -12,6 +12,7 @@
 namespace Claroline\ClacoFormBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetValue;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
@@ -29,6 +30,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
  */
 class FieldValue
 {
+    use UuidTrait;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -64,6 +67,11 @@ class FieldValue
      * @SerializedName("fieldFacetValue")
      */
     protected $fieldFacetValue;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

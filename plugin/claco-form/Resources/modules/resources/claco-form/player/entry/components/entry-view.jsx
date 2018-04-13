@@ -18,7 +18,7 @@ import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumb
 
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getFieldType, getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
 import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu.jsx'
@@ -621,33 +621,33 @@ EntryViewComponent.propTypes = {
 
 const EntryView = withRouter(connect(
   (state, ownProps) => ({
-    resourceId: selectors.clacoForm(state).id,
+    resourceId: select.clacoForm(state).id,
     user: state.user,
     entryId: parseInt(ownProps.match.params.id),
 
     canEdit: resourceSelect.editable(state),
-    canEditEntry: selectors.canEditCurrentEntry(state),
-    canViewEntry: selectors.canOpenCurrentEntry(state),
-    canAdministrate: selectors.canAdministrate(state),
+    canEditEntry: select.canEditCurrentEntry(state),
+    canViewEntry: select.canOpenCurrentEntry(state),
+    canAdministrate: select.canAdministrate(state),
     canGeneratePdf: state.canGeneratePdf,
-    canComment: selectors.canComment(state),
-    canViewComments: selectors.canViewComments(state),
+    canComment: select.canComment(state),
+    canViewComments: select.canViewComments(state),
     isAnon: state.isAnon,
     entry: state.currentEntry,
-    fields: selectors.visibleFields(state),
-    displayMetadata: selectors.getParam(state, 'display_metadata'),
-    displayKeywords: selectors.getParam(state, 'display_keywords'),
-    displayCategories: selectors.getParam(state, 'display_categories'),
-    displayComments: selectors.getParam(state, 'display_comments'),
-    openComments: selectors.getParam(state, 'open_comments'),
-    commentsEnabled: selectors.getParam(state, 'comments_enabled'),
-    anonymousCommentsEnabled: selectors.getParam(state, 'anonymous_comments_enabled'),
-    menuPosition: selectors.getParam(state, 'menu_position'),
-    isOwner: selectors.isCurrentEntryOwner(state),
-    isManager: selectors.isCurrentEntryManager(state),
-    randomEnabled: selectors.getParam(state, 'random_enabled'),
-    useTemplate: selectors.getParam(state, 'use_template'),
-    template: selectors.template(state)
+    fields: select.visibleFields(state),
+    displayMetadata: select.getParam(state, 'display_metadata'),
+    displayKeywords: select.getParam(state, 'display_keywords'),
+    displayCategories: select.getParam(state, 'display_categories'),
+    displayComments: select.getParam(state, 'display_comments'),
+    openComments: select.getParam(state, 'open_comments'),
+    commentsEnabled: select.getParam(state, 'comments_enabled'),
+    anonymousCommentsEnabled: select.getParam(state, 'anonymous_comments_enabled'),
+    menuPosition: select.getParam(state, 'menu_position'),
+    isOwner: select.isCurrentEntryOwner(state),
+    isManager: select.isCurrentEntryManager(state),
+    randomEnabled: select.getParam(state, 'random_enabled'),
+    useTemplate: select.getParam(state, 'use_template'),
+    template: select.template(state)
   }),
   (dispatch, ownProps) => ({
     loadEntry(entryId) {

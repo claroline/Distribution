@@ -18,7 +18,7 @@ import {
   Keyword as KeywordType
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const InfosList = props =>
@@ -468,18 +468,18 @@ const EntryEditForm = withRouter(connect(
     entryId: ownProps.match.params.id ? parseInt(ownProps.match.params.id) : null,
     canEdit: resourceSelect.editable(state),
     entry: state.currentEntry,
-    fields: selectors.visibleFields(state),
+    fields: select.visibleFields(state),
     entries: state.entries.data,
-    isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
-    isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
-    lockedFieldsFor: selectors.getParam(state, 'locked_fields_for'),
-    keywords: selectors.getParam(state, 'keywords_enabled') ? selectors.keywords(state) : [],
-    categories: resourceSelect.editable(state) ? selectors.categories(state) : [],
-    canEditEntry: selectors.canEditCurrentEntry(state),
-    isManager: selectors.isCurrentEntryManager(state),
-    isOwner: selectors.isCurrentEntryOwner(state),
-    useTemplate: selectors.getParam(state, 'use_template'),
-    template: selectors.template(state)
+    isKeywordsEnabled: select.getParam(state, 'keywords_enabled'),
+    isNewKeywordsEnabled: select.getParam(state, 'new_keywords_enabled'),
+    lockedFieldsFor: select.getParam(state, 'locked_fields_for'),
+    keywords: select.getParam(state, 'keywords_enabled') ? select.keywords(state) : [],
+    categories: resourceSelect.editable(state) ? select.categories(state) : [],
+    canEditEntry: select.canEditCurrentEntry(state),
+    isManager: select.isCurrentEntryManager(state),
+    isOwner: select.isCurrentEntryOwner(state),
+    useTemplate: select.getParam(state, 'use_template'),
+    template: select.template(state)
   }),
   (dispatch) => ({
     setCurrentEntry(entry) {

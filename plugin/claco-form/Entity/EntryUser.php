@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
@@ -21,6 +22,8 @@ use JMS\Serializer\Annotation\SerializedName;
  */
 class EntryUser
 {
+    use UuidTrait;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -72,6 +75,11 @@ class EntryUser
      * @SerializedName("notifyVote")
      */
     protected $notifyVote = false;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

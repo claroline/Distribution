@@ -462,20 +462,20 @@ class FieldFormModalComponent  extends Component {
               className="fa fa-fw fa-info-circle field-tooltip"
               data-toggle="tooltip"
               data-placement="top"
-              title={trans('mandatory_locked_conflict', {}, 'clacoform')}
+              title={trans('required_locked_conflict')}
             >
             </span>
           </div>
           <CheckGroup
             id="field-is-metadata"
             value={this.state.field.isMetadata}
-            label={trans('metadata', {}, 'clacoform')}
+            label={trans('confidential_data')}
             onChange={checked => this.updateFieldProps('isMetadata', checked)}
           />
           <CheckGroup
             id="field-hidden"
             value={this.state.field.hidden}
-            label={trans('hide_field', {}, 'clacoform')}
+            label={trans('hide_field')}
             onChange={checked => this.updateFieldProps('hidden', checked)}
           />
           <hr/>
@@ -489,7 +489,7 @@ class FieldFormModalComponent  extends Component {
             <CheckGroup
               id="field-locked-edition-only"
               value={this.state.field.lockedEditionOnly}
-              label={trans('edition_only', {}, 'clacoform')}
+              label={trans('edition_only')}
               onChange={checked => this.updateFieldProps('lockedEditionOnly', checked)}
             />
           }

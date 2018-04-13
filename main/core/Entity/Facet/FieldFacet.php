@@ -57,7 +57,7 @@ class FieldFacet
         'checkboxes' => self::CHECKBOXES_TYPE,
         'country' => self::COUNTRY_TYPE,
         'email' => self::EMAIL_TYPE,
-        'text' => self::RICH_TEXT_TYPE,
+        'html' => self::RICH_TEXT_TYPE,
         'cascade ' => self::CASCADE_SELECT_TYPE,
         'file' => self::FILE_TYPE,
     ];
@@ -142,6 +142,31 @@ class FieldFacet
      * @var array
      */
     private $options = [];
+
+    /**
+     * @ORM\Column(name="hidden", type="boolean", options={"default" = 0})
+     */
+    protected $hidden = false;
+
+    /**
+     * @ORM\Column(name="is_metadata", type="boolean", options={"default" = 0})
+     */
+    protected $isMetadata = false;
+
+    /**
+     * @ORM\Column(name="locked", type="boolean", options={"default" = 0})
+     */
+    protected $locked = false;
+
+    /**
+     * @ORM\Column(name="locked_edition", type="boolean", options={"default" = 0})
+     */
+    protected $lockedEditionOnly = false;
+
+    /**
+     * @ORM\Column(name="help", nullable=true)
+     */
+    protected $help;
 
     /**
      * Constructor.
@@ -400,5 +425,85 @@ class FieldFacet
     public function setOptions(array $options)
     {
         $this->options = $options;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * @param bool $hidden
+     */
+    public function setHidden($hidden)
+    {
+        $this->hidden = $hidden;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsMetadata()
+    {
+        return $this->isMetadata;
+    }
+
+    /**
+     * @param bool $isMetadata
+     */
+    public function setIsMetadata($isMetadata)
+    {
+        $this->isMetadata = $isMetadata;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * @param bool $locked
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getLockedEditionOnly()
+    {
+        return $this->lockedEditionOnly;
+    }
+
+    /**
+     * @param bool $lockedEditionOnly
+     */
+    public function setLockedEditionOnly($lockedEditionOnly)
+    {
+        $this->lockedEditionOnly = $lockedEditionOnly;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHelp()
+    {
+        return $this->help;
+    }
+
+    /**
+     * @param string $help
+     */
+    public function setHelp($help)
+    {
+        $this->help = $help;
     }
 }

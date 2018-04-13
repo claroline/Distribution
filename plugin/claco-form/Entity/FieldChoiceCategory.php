@@ -12,6 +12,7 @@
 namespace Claroline\ClacoFormBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use JMS\Serializer\Annotation\SerializedName;
@@ -23,6 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class FieldChoiceCategory
 {
+    use UuidTrait;
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -64,6 +67,11 @@ class FieldChoiceCategory
      * @SerializedName("fieldFacetChoice")
      */
     protected $fieldFacetChoice;
+
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
 
     public function getId()
     {

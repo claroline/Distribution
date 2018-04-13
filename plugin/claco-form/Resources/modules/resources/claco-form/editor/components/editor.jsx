@@ -42,8 +42,18 @@ const EditorComponent = props =>
         {
           id: 'fields',
           icon: 'fa fa-fw fa-th-list',
-          title: trans('fields', {}, 'clacoform'),
-          fields: []
+          title: trans('fields'),
+          primary: true,
+          fields: [
+            {
+              name: 'fields',
+              type: 'fields',
+              label: trans('fields_list'),
+              options: {
+                placeholder: trans('no_field', {}, 'clacoform')
+              }
+            }
+          ]
         }, {
           id: 'general',
           icon: 'fa fa-fw fa-cogs',
@@ -239,7 +249,7 @@ const EditorComponent = props =>
         }, {
           id: 'metadata',
           icon: 'fa fa-fw fa-user-secret',
-          title: trans('metadata', {}, 'clacoform'),
+          title: trans('confidential_data'),
           fields: [
             {
               name: 'details.display_metadata',

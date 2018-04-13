@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
@@ -73,99 +72,93 @@ class FieldsComponent extends Component {
       <div>
         <h2>{trans('fields_management', {}, 'clacoform')}</h2>
         <br/>
-        {this.props.canEdit ?
-          <div>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>
-                    {trans('name')}
-                  </th>
-                  <th>{trans('type')}</th>
-                  <th className="text-center">{trans('mandatory', {}, 'clacoform')}</th>
-                  <th className="text-center">{trans('metadata', {}, 'clacoform')}</th>
-                  <th className="text-center">{trans('locked')}</th>
-                  <th>{trans('actions')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.props.fields.map((field) =>
-                  <tr key={`field-${field.id}`}>
-                    <td>
-                      {field.hidden &&
-                        <span>
-                          <span
-                            className="fa fa-fw fa-eye-slash"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            title={trans('hidden_field', {}, 'clacoform')}
-                          >
-                          </span>
-                          &nbsp;
+        <div>
+          <table className="table">
+            <thead>
+              <tr>
+                <th>
+                  {trans('name')}
+                </th>
+                <th>{trans('type')}</th>
+                <th className="text-center">{trans('mandatory', {}, 'clacoform')}</th>
+                <th className="text-center">{trans('confidential_data')}</th>
+                <th className="text-center">{trans('locked')}</th>
+                <th>{trans('actions')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.fields.map((field) =>
+                <tr key={`field-${field.id}`}>
+                  <td>
+                    {field.hidden &&
+                      <span>
+                        <span
+                          className="fa fa-fw fa-eye-slash"
+                          data-toggle="tooltip"
+                          data-placement="top"
+                          title={trans('hidden_field', {}, 'clacoform')}
+                        >
                         </span>
-                      }
-                      {field.name}
-                    </td>
-                    <td>
-                      {getFieldType(field.type).label}
-                    </td>
-                    <td className="text-center">
-                      {field.required ?
-                        <span className="fa fa-fw fa-check text-success"></span> :
-                        <span className="fa fa-fw fa-times text-danger"></span>
-                      }
-                    </td>
-                    <td className="text-center">
-                      {field.isMetadata ?
-                        <span className="fa fa-fw fa-check text-success"></span> :
-                        <span className="fa fa-fw fa-times text-danger"></span>
-                      }
-                    </td>
-                    <td className="text-center">
-                      {field.locked ?
-                        field.lockedEditionOnly ?
-                          <span className="fa fa-fw fa-unlock-alt"></span> :
-                          <span className="fa fa-fw fa-lock"></span> :
-                        <span className="fa fa-fw fa-unlock"></span>
-                      }
-                    </td>
-                    <td>
-                      <button
-                        className="btn btn-default btn-sm"
-                        onClick={() => this.showFieldEditionForm(field)}
-                      >
-                        <span className="fa fa-fw fa-pencil"></span>
-                      </button>
-                      &nbsp;
-                      <button
-                        className="btn btn-danger btn-sm"
-                        onClick={() => this.showFieldDeletion(field)}
-                      >
-                        <span className="fa fa-fw fa-trash"></span>
-                      </button>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                        &nbsp;
+                      </span>
+                    }
+                    {field.name}
+                  </td>
+                  <td>
+                    {getFieldType(field.type).label}
+                  </td>
+                  <td className="text-center">
+                    {field.required ?
+                      <span className="fa fa-fw fa-check text-success"></span> :
+                      <span className="fa fa-fw fa-times text-danger"></span>
+                    }
+                  </td>
+                  <td className="text-center">
+                    {field.isMetadata ?
+                      <span className="fa fa-fw fa-check text-success"></span> :
+                      <span className="fa fa-fw fa-times text-danger"></span>
+                    }
+                  </td>
+                  <td className="text-center">
+                    {field.locked ?
+                      field.lockedEditionOnly ?
+                        <span className="fa fa-fw fa-unlock-alt"></span> :
+                        <span className="fa fa-fw fa-lock"></span> :
+                      <span className="fa fa-fw fa-unlock"></span>
+                    }
+                  </td>
+                  <td>
+                    <button
+                      className="btn btn-default btn-sm"
+                      onClick={() => this.showFieldEditionForm(field)}
+                    >
+                      <span className="fa fa-fw fa-pencil"></span>
+                    </button>
+                    &nbsp;
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => this.showFieldDeletion(field)}
+                    >
+                      <span className="fa fa-fw fa-trash"></span>
+                    </button>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
 
-            <button className="btn btn-primary" onClick={() => this.showFieldCreationForm()}>
-              <span className="fa fa-fw fa-plus"></span>
-              &nbsp;
-              {trans('create_a_field', {}, 'clacoform')}
-            </button>
-          </div> :
-          <div className="alert alert-danger">
-            {trans('unauthorized')}
-          </div>
-        }
+          <button className="btn btn-primary" onClick={() => this.showFieldCreationForm()}>
+            <span className="fa fa-fw fa-plus"></span>
+            &nbsp;
+            {trans('create_a_field', {}, 'clacoform')}
+          </button>
+        </div>
       </div>
     )
   }
 }
 
 FieldsComponent.propTypes = {
-  canEdit: T.bool.isRequired,
   resourceId: T.number.isRequired,
   fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   createField: T.func.isRequired,
@@ -176,7 +169,6 @@ FieldsComponent.propTypes = {
 
 const Fields = connect(
   (state) => ({
-    canEdit: resourceSelect.editable(state),
     resourceId: state.clacoForm.id,
     fields: state.fields
   }),

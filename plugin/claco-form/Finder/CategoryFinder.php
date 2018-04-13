@@ -31,6 +31,7 @@ class CategoryFinder implements FinderInterface
         $qb->join('obj.clacoForm', 'cf');
         $qb->andWhere('cf.id = :clacoFormId');
         $qb->setParameter('clacoFormId', $searches['clacoForm']);
+        $managersJoin = false;
 
         foreach ($searches as $filterName => $filterValue) {
             switch ($filterName) {
@@ -42,6 +43,7 @@ class CategoryFinder implements FinderInterface
                     $qb->join('obj.managers', 'm');
                     $qb->andWhere($where);
                     $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
+                    $managersJoin = true;
                     break;
                 case 'notify_addition':
                 case 'notify_edition':
@@ -61,6 +63,19 @@ class CategoryFinder implements FinderInterface
                         $qb->andWhere("UPPER(obj.{$filterName}) LIKE :{$filterName}");
                         $qb->setParameter($filterName, '%'.strtoupper($filterValue).'%');
                     }
+            }
+        }
+        if (!is_null($sortBy) && isset($sortBy['property']) && isset($sortBy['direction'])) {
+            $sortByProperty = $sortBy['property'];
+            $sortByDirection = 1 === $sortBy['direction'] ? 'ASC' : 'DESC';
+
+            switch ($sortByProperty) {
+                case 'managers':
+                    if (!$managersJoin) {
+                        $qb->join('obj.managers', 'm');
+                    }
+                    $qb->orderBy('m.lastName', $sortByDirection);
+                    break;
             }
         }
 

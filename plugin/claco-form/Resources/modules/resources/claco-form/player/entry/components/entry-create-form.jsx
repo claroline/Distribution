@@ -14,7 +14,7 @@ import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
 import {Field as FieldType, Keyword as KeywordType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const InfosList = props =>
@@ -333,13 +333,13 @@ EntryCreateFormComponent.propTypes = {
 const EntryCreateForm = withRouter(connect(
   (state) => ({
     canEdit: resourceSelect.editable(state),
-    fields: selectors.visibleFields(state),
-    isKeywordsEnabled: selectors.getParam(state, 'keywords_enabled'),
-    isNewKeywordsEnabled: selectors.getParam(state, 'new_keywords_enabled'),
-    keywords: selectors.getParam(state, 'keywords_enabled') ? selectors.keywords(state) : [],
-    canAddEntry: selectors.canAddEntry(state),
-    useTemplate: selectors.getParam(state, 'use_template'),
-    template: selectors.template(state)
+    fields: select.visibleFields(state),
+    isKeywordsEnabled: select.getParam(state, 'keywords_enabled'),
+    isNewKeywordsEnabled: select.getParam(state, 'new_keywords_enabled'),
+    keywords: select.getParam(state, 'keywords_enabled') ? select.keywords(state) : [],
+    canAddEntry: select.canAddEntry(state),
+    useTemplate: select.getParam(state, 'use_template'),
+    template: select.template(state)
   }),
   (dispatch) => ({
     createEntry(entry, keywords, files) {

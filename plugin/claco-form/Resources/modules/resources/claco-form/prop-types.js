@@ -37,6 +37,8 @@ const Field = {
     locked: T.bool,
     lockedEditionOnly: T.bool,
     hidden: T.bool,
+    order: T.number,
+    help: T.string,
     details: T.shape({
       file_types: T.arrayOf(T.string),
       nb_files_max: T.number

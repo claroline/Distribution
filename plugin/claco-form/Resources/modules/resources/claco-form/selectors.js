@@ -159,7 +159,7 @@ const canViewComments = createSelector(
   }
 )
 
-export const selectors = {
+export const select = {
   clacoForm,
   isAnon,
   canSearchEntry,

@@ -13,7 +13,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 
 import {actions as editorActions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
-import {selectors} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {ClacoFormMainMenu} from '#/plugin/claco-form/resources/claco-form/player/components/claco-form-main-menu.jsx'
 import {Editor} from '#/plugin/claco-form/resources/claco-form/editor/components/editor.jsx'
@@ -103,17 +103,17 @@ const Resource = props =>
         }, {
           path: '/edit',
           component: Editor,
-          canEnter: () => props.canEdit,
+          disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.clacoForm)
         }, {
           path: '/fields',
           component: Fields,
-          canEnter: () => props.canEdit
+          disabled: !props.canEdit
         }, {
           path: '/template',
           component: TemplateForm,
-          canEnter: () => props.canEdit
+          disabled: !props.canEdit
         }, {
           path: '/entries',
           component: Entries
@@ -145,11 +145,11 @@ Resource.propTypes = {
 
 const ClacoFormResource = connect(
   (state) => ({
-    clacoForm: selectors.clacoForm(state),
+    clacoForm: select.clacoForm(state),
     canEdit: resourceSelect.editable(state),
-    canAddEntry: selectors.canAddEntry(state),
-    canSearchEntry: selectors.canSearchEntry(state),
-    defaultHome: selectors.getParam(state, 'default_home'),
+    canAddEntry: select.canAddEntry(state),
+    canSearchEntry: select.canSearchEntry(state),
+    defaultHome: select.getParam(state, 'default_home'),
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'clacoFormForm'))
   }),
   (dispatch) => ({
