@@ -20,6 +20,19 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class ApiLoader extends Loader
 {
+    const DEFAULT_MAP = [
+      'schema' => ['/schema', 'GET'],
+      'find' => ['/find', 'GET'],
+      'create' => ['', 'POST'],
+      'doc' => ['/doc', 'GET'],
+      'update' => ['/{id}', 'PUT'],
+      'deleteBulk' => ['', 'DELETE'],
+      'copyBulk' => ['/copy', 'GET'],
+      'list' => ['', 'GET'],
+      'get' => ['/{id}', 'GET'],
+      'exist' => ['/exist/{field}/{value}', 'GET'],
+    ];
+
     /** @var bool */
     private $loaded = false;
     /** @var FileLocatorInterface */
@@ -165,7 +178,7 @@ class ApiLoader extends Loader
                             ];
 
                             $route = new ApiRoute($pattern, $routeDefaults, []);
-
+                            $route->setAction($name);
                             $route->setMethods([$options[1]]);
                             $requirements = $refClass->newInstanceWithoutConstructor()->mergeRequirements();
 
@@ -185,17 +198,7 @@ class ApiLoader extends Loader
 
     private function makeRouteMap($controller, RouteCollection $routes, $prefix, array $ignore)
     {
-        $defaults = [
-          'schema' => ['/schema', 'GET'],
-          'find' => ['/find', 'GET'],
-          'create' => ['', 'POST'],
-          'update' => ['/{id}', 'PUT'],
-          'deleteBulk' => ['', 'DELETE'],
-          'copyBulk' => ['/copy', 'GET'],
-          'list' => ['', 'GET'],
-          'get' => ['/{id}', 'GET'],
-          'exist' => ['/exist/{field}/{value}', 'GET'],
-        ];
+        $defaults = self::DEFAULT_MAP;
 
         foreach ($ignore as $ignored) {
             unset($defaults[$ignored]);

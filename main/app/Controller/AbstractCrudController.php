@@ -2,8 +2,11 @@
 
 namespace Claroline\AppBundle\Controller;
 
+use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\API\Routing\Documentator;
+use Claroline\AppBundle\API\Routing\Finder;
 use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -14,6 +17,12 @@ abstract class AbstractCrudController extends AbstractApiController
 {
     /** @var FinderProvider */
     protected $finder;
+
+    /** @var Finder */
+    protected $routerFinder;
+
+    /** @var Documentator */
+    protected $routerDocumentator;
 
     /** @var SerializerProvider */
     protected $serializer;
@@ -44,10 +53,17 @@ abstract class AbstractCrudController extends AbstractApiController
         $this->serializer = $container->get('claroline.api.serializer');
         $this->crud = $container->get('claroline.api.crud');
         $this->om = $container->get('claroline.persistence.object_manager');
+        $this->routerFinder = $container->get('claroline.api.routing.finder');
+        $this->routerDocumentator = $container->get('claroline.api.routing.documentator');
         $this->options = $this->mergeOptions();
     }
 
     /**
+     * @ApiDoc(
+     *     description="Find a single object of class $class.",
+     *     queryString={"$finder"}
+     * )
+     *
      * @param Request $request
      * @param string  $class
      *
@@ -73,6 +89,10 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Return the schema of class $class."
+     * )
+     *
      * @param string $class
      *
      * @return JsonResponse
@@ -83,6 +103,16 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Finds an object class $class.",
+     *     parameters={
+     *         "id": {
+     *              "type": {"string", "integer"},
+     *              "description": "The object id or uuid"
+     *          }
+     *     }
+     * )
+     *
      * @param string|int $id
      * @param string     $class
      * @param string     $env
@@ -101,9 +131,13 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
-     * @param string $class
-     * @param string $field
-     * @param string $value
+     * @ApiDoc(
+     *     description="Check if an object exists (it'll eventually fire a doctrine findBy method)",
+     *     parameters={
+     *         {"name": "field", "type": "string", "description": "The queried field."},
+     *         {"name": "value", "type": "mixed", "description": "The value of the field"}
+     *     }
+     * )
      *
      * @return JsonResponse
      */
@@ -115,6 +149,16 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="List the objects of class $class.",
+     *     queryString={
+     *         "$finder",
+     *         {"name": "page", "type": "integer", "description": "The queried page."},
+     *         {"name": "limit", "type": "integer", "description": "The max amount of objects per page."},
+     *         {"name": "sortBy", "type": "string", "description": "Sort by the property if you want to."}
+     *     }
+     * )
+     *
      * @param Request $request
      * @param string  $class
      *
@@ -134,6 +178,13 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Create an object class $class.",
+     *     body={
+     *         "schema":"$schema"
+     *     }
+     * )
+     *
      * @param Request $request
      * @param string  $class
      *
@@ -158,6 +209,19 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Update an object class $class.",
+     *     body={
+     *         "schema":"$schema"
+     *     },
+     *     parameters={
+     *         "id": {
+     *              "type": {"string", "integer"},
+     *              "description": "The object id or uuid"
+     *          }
+     *     }
+     * )
+     *
      * @param string|int $id
      * @param Request    $request
      * @param string     $class
@@ -188,6 +252,13 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Remove an array of object of class $class.",
+     *     queryString={
+     *         {"name": "ids[]", "type": {"string", "integer"}, "description": "The object id or uuid."}
+     *     }
+     * )
+     *
      * @param Request $request
      * @param string  $class
      *
@@ -204,6 +275,13 @@ abstract class AbstractCrudController extends AbstractApiController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Copy an array of object of class $class.",
+     *     queryString={
+     *         {"name": "ids[]", "type": {"string", "integer"}, "description": "The object id or uuid."}
+     *     }
+     * )
+     *
      * @param Request $request
      * @param string  $class
      *
@@ -223,6 +301,28 @@ abstract class AbstractCrudController extends AbstractApiController
         return new JsonResponse(array_map(function ($copy) use ($serializer, $options) {
             return $serializer->serialize($copy, $options['get']);
         }, $copies), 200);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Display the current informations",
+     * )
+     *
+     * @param Request $request
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function docAction(Request $request, $class)
+    {
+        $routes = $this->routerFinder->find($class);
+        $documented = [];
+
+        foreach ($routes->getIterator() as $name => $route) {
+            $documented[$name] = $this->routerDocumentator->document($route);
+        }
+
+        return new JsonResponse($documented);
     }
 
     /**
@@ -265,6 +365,7 @@ abstract class AbstractCrudController extends AbstractApiController
             'exist' => [],
             'schema' => [],
             'find' => [],
+            'doc' => [],
         ];
     }
 
@@ -274,8 +375,8 @@ abstract class AbstractCrudController extends AbstractApiController
     private function getDefaultRequirements()
     {
         return [
-          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|\/)).*'],
-          'update' => ['id' => '^(?!.*(schema|parameters|find|\/)).*'],
+          'get' => ['id' => '^(?!.*(schema|copy|parameters|find|doc|\/)).*'],
+          'update' => ['id' => '^(?!.*(schema|parameters|find|doc|\/)).*'],
           'exist' => [],
         ];
     }
