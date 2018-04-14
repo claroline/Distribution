@@ -4,6 +4,7 @@ import classes from 'classnames'
 
 import {matchPath, withRouter} from '#/main/core/router'
 import {trans} from '#/main/core/translation'
+import {number} from '#/main/core/intl'
 import {t_res} from '#/main/core/resource/translation'
 import {currentUser} from '#/main/core/user/current'
 
@@ -32,7 +33,7 @@ const PublishAction = props =>
   >
     {props.resourceNode.meta.published &&
       <span className="label label-primary">
-        {props.resourceNode.meta.views}
+        {number(props.resourceNode.meta.views, true)}
       </span>
     }
   </PageAction>

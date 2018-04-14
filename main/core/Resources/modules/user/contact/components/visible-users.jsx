@@ -4,65 +4,67 @@ import {PropTypes as T} from 'prop-types'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
-import {DataListContainer} from '#/main/core/data/list/containers/data-list'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {UserCard} from '#/main/core/user/data/components/user-card'
 import {constants as listConst} from '#/main/core/data/list/constants'
 
-import {select} from '#/main/core/contact/tool/selectors'
-import {OptionsType} from '#/main/core/contact/prop-types'
+import {actions} from '#/main/core/user/contact/actions'
+import {select} from '#/main/core/user/contact/selectors'
+import {OptionsType} from '#/main/core/user/contact/prop-types'
 
-const ContactsComponent = props =>
+const VisibleUsersComponent = props =>
   <DataListContainer
-    name="contacts"
+    name="visibleUsers"
+    primaryAction={(row) => ({
+      type: 'url',
+      target: ['claro_user_profile', {'publicUrl': row.meta.publicUrl}]
+    })}
+    fetch={{
+      url: ['apiv2_visible_users_list'],
+      autoload: true
+    }}
     display={{
       current: listConst.DISPLAY_TILES_SM,
       available: Object.keys(listConst.DISPLAY_MODES)
     }}
-    fetch={{
-      url: ['apiv2_contact_list'],
-      autoload: true
-    }}
-    primaryAction={(row) => ({
-      type: 'url',
-      target: ['claro_user_profile', {'publicUrl': row.data.meta.publicUrl}]
-    })}
-    deleteAction={() => ({
-      type: 'url',
-      target: ['apiv2_contact_delete_bulk']
-    })}
     actions={(rows) => [
       {
+        type: 'callback',
+        icon: 'fa fa-fw fa-address-book-o',
+        label: t('add_contact'),
+        callback: () => props.createContacts(rows.map(r => r.id))
+      }, {
         type: 'url',
         icon: 'fa fa-fw fa-paper-plane-o',
         label: t('send_message'),
-        target: `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(c => `userIds[]=${c.data.autoId}`).join('&')}`
+        target: `${generateUrl('claro_message_show', {'message': 0})}?${rows.map(u => `userIds[]=${u.autoId}`).join('&')}`
       }
     ]}
     definition={[
       {
-        name: 'data.username',
+        name: 'username',
         type: 'username',
         label: t('username'),
         displayed: props.options.data.show_username,
         primary: props.options.data.show_username
       }, {
-        name: 'data.lastName',
+        name: 'lastName',
         type: 'string',
         label: t('last_name'),
         displayed: true,
         primary: !props.options.data.show_username
       }, {
-        name: 'data.firstName',
+        name: 'firstName',
         type: 'string',
         label: t('first_name'),
         displayed: true
       }, {
-        name: 'data.email',
+        name: 'email',
         type: 'string',
         label: t('email'),
         displayed: props.options.data.show_mail
       }, {
-        name: 'data.phone',
+        name: 'phone',
         type: 'string',
         label: t('phone'),
         displayed: props.options.data.show_phone
@@ -71,16 +73,20 @@ const ContactsComponent = props =>
     card={UserCard}
   />
 
-ContactsComponent.propTypes = {
-  options: T.shape(OptionsType.propTypes)
+VisibleUsersComponent.propTypes = {
+  options: T.shape(OptionsType.propTypes),
+  createContacts: T.func.isRequired
 }
 
-const Contacts = connect(
+const VisibleUsers = connect(
   (state) => ({
     options: select.options(state)
+  }),
+  (dispatch) => ({
+    createContacts: users => dispatch(actions.createContacts(users))
   })
-)(ContactsComponent)
+)(VisibleUsersComponent)
 
 export {
-  Contacts
+  VisibleUsers
 }

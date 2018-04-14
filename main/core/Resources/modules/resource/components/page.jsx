@@ -27,7 +27,7 @@ class ResourcePage extends Component {
 
     // open resource in fullscreen if configured
     this.state = {
-      fullscreen: this.props.resourceNode.display.fullscreen
+      fullscreen: !this.props.embedded && this.props.resourceNode.display.fullscreen
     }
 
     this.toggleFullscreen = this.toggleFullscreen.bind(this)

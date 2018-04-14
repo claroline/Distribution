@@ -54,13 +54,12 @@ const reducer = makeReducer({}, {
 function makeResourceReducer(initialState = {}, customReducer = {}) {
   const resourceReducer = {}
 
-  resourceReducer.resourceNode = reducer
-
   // todo maybe make it customizable (like forms and lists)
+  resourceReducer.resourceNode = reducer
   resourceReducer.evaluation = evaluationReducer
 
   // get custom keys
-  const rest = difference(Object.keys(customReducer), ['resourceNode', 'evaluation'])
+  const rest = difference(Object.keys(customReducer), Object.keys(resourceReducer))
   rest.map(reducerName =>
     resourceReducer[reducerName] = customReducer[reducerName]
   )

@@ -1,7 +1,7 @@
 import {bootstrap} from '#/main/app/bootstrap'
 
-import {reducer} from '#/main/core/contact/tool/reducer'
-import {Tool} from '#/main/core/contact/tool/components/tool.jsx'
+import {reducer} from '#/main/core/user/contact/reducer'
+import {Tool} from '#/main/core/user/contact/components/tool'
 
 // mount the react application
 bootstrap(

@@ -35,7 +35,7 @@ const ResourceNode = {
      */
     display: T.shape({
       fullscreen: T.bool.isRequired,
-      showIcon: T
+      showIcon: T.bool
     }).isRequired,
 
     /**
@@ -70,6 +70,21 @@ const ResourceNode = {
     notifications: T.shape({
       enabled: T.bool
     })
+  },
+  defaultProps: {
+    meta: {
+      published: false,
+      views: 0
+    },
+    display: {
+      showIcon: true
+    },
+    restrictions: {
+      dates: []
+    },
+    notifications: {
+      enabled: false
+    }
   }
 }
 
