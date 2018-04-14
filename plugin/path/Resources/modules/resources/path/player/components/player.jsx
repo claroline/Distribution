@@ -20,7 +20,7 @@ const authenticatedUser = currentUser()
 
 // todo manage empty steps
 const PlayerComponent = props =>
-  <section>
+  <section className="summarized-content">
     <h2 className="sr-only">{trans('play')}</h2>
 
     {props.path.display.showSummary &&

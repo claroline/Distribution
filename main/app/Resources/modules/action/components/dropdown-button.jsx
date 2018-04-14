@@ -10,7 +10,6 @@ import {
 
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {trans} from '#/main/core/translation'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {MenuItem} from '#/main/app/action/components/menu-item'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
@@ -72,7 +71,7 @@ const DropdownButton = props => {
           <BaseMenuItem divider={true} />
         }
 
-        {dangerousActions.map((action, actionIndex) =>
+        {dangerousActions.map((action) =>
           <MenuItem key={toKey(action.label)} {...action} />
         )}
       </Dropdown.Menu>

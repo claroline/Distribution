@@ -25,7 +25,8 @@ const LinkButton = props =>
       disabled: props.disabled,
       default: !props.primary && !props.dangerous,
       primary: props.primary,
-      dangerous: props.dangerous
+      dangerous: props.dangerous,
+      active: props.active
     }, props.size)}
   >
     {props.children}

@@ -49,11 +49,16 @@
     .border-radius(@data-card-border-radius @data-card-border-radius 0 0);
 }
 
+.data-card-header-poster {
+    .data-card-flag {
+        .text-movie-subtitles();
+    }
+}
+
 .data-card-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    //margin: 30px;
     background: rgba(255, 255, 255, .6);
     border-radius: 50%;
     line-height: 0;
@@ -71,13 +76,18 @@
 }
 
 .data-card-flags {
-    cursor: help;
     position: absolute;
+    line-height: 1;
     bottom: @data-grid-gutter;
     right: @data-grid-gutter;
+}
 
-    .data-card-flag + .data-card-flag {
-        margin-left: floor(@data-grid-gutter / 2);
+.data-card-flag {
+    cursor: help;
+    font-weight: bold;
+
+    + .data-card-flag {
+        margin-left: 5px;
     }
 }
 
@@ -99,11 +109,8 @@
     color: @data-card-color; // reset color when card is clickable (uses a <a> tag)
     display: flex;
     flex-direction: column;
-
-    // removes button styles
-    border: none;
-    box-shadow: none;
-    outline: 0;
+    align-items: stretch;
+    text-align: left;
 
     .border-radius(0 0 @data-card-border-radius @data-card-border-radius);
 }
@@ -134,9 +141,27 @@
 
 .data-card-sm {
     .data-card-size-variant(@data-card-icon-sm-size, @data-card-title-sm-font, 10px);
+
+    .data-card-flags {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .data-card-flag {
+        font-size: 75%;
+    }
 }
 .data-card-lg {
     .data-card-size-variant(@data-card-icon-lg-size, @data-card-title-lg-font, 30px);
+
+    .data-card-flags {
+        bottom: @data-card-padding;
+        right: @data-card-padding;
+    }
+
+    .data-card-flag {
+        font-size: 100%;
+    }
 }
 
 // mixins
@@ -170,8 +195,26 @@
 .data-card-col {
     .data-card-vertical-variant();
 }
-.data-card-row {
-    .data-card-horizontal-variant();
+
+// XS screens :
+@media (max-width: @screen-xs-max) {
+    .data-card-row {
+        &.data-card-sm {
+            .data-card-horizontal-variant();
+        }
+
+        // even for row card, we switch on vertical display for better rendering
+        &.data-card-lg {
+            .data-card-vertical-variant();
+        }
+    }
+}
+
+// SM / MD / LG screens :
+@media (min-width: @screen-sm-min) {
+    .data-card-row {
+        .data-card-horizontal-variant();
+    }
 }
 
 // mixins

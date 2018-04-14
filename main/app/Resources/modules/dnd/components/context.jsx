@@ -1,4 +1,3 @@
-import React from 'react'
 import {DragDropContext} from 'react-dnd'
 import {default as TouchBackend} from 'react-dnd-touch-backend'
 

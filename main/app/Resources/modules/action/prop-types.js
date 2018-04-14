@@ -25,6 +25,7 @@ const Action = {
     displayed: T.bool,
     primary: T.bool,
     dangerous: T.bool,
+    active: T.bool,
 
     /**
      * If provided, the action will request a user confirmation before executing the action.

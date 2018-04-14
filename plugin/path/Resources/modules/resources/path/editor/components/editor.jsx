@@ -24,7 +24,7 @@ import {getFormDataPart} from '#/plugin/path/resources/path/editor/utils'
 // todo : replaces copy/paste feature by a duplicate one (that's how it works elsewhere)
 
 const EditorComponent = props =>
-  <section className="resource-section">
+  <section className="summarized-content">
     <h2 className="sr-only">{trans('configuration')}</h2>
 
     <PathSummary

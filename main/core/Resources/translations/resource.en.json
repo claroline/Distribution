@@ -40,8 +40,6 @@
     "resource_fullscreen": "Display in fullscreen on open",
     "resource_license": "License",
     "resource_management": "Management",
-    "resource_meta": "Information",
-    "resource_name": "Name",
     "resource_name_form_name": "Resource name",
     "resource_no_allowed_ip": "No IP is allowed.",
     "resource_portal_help": "This option automatically allows anonymous users to access the resource. You have to remove the anonymous rights in resource's rights management section to restrict the access again.",

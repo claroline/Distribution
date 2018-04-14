@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
-import {copyToClipboard} from '#/main/core/copy-text-to-clipboard'
+import {copy} from '#/main/core/scaffolding/clipboard'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {ResourcePageContainer} from '#/main/core/resource/containers/page'
@@ -33,7 +33,7 @@ const Resource = props =>
         type: 'callback',
         icon: 'fa fa-fw fa-clipboard',
         label: trans('copy_permalink_to_clipboard'),
-        callback: () => copyToClipboard(props.url)
+        callback: () => copy(props.url)
       }
     ]}
   >

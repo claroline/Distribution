@@ -194,11 +194,6 @@ const Step = props =>
     </div>
   </section>
 
-/*<PrimaryResource
-id={props.primaryResource.autoId}
-type={props.primaryResource.meta.type}
-/>*/
-
 implementPropTypes(Step, StepTypes, {
   fullWidth: T.bool.isRequired,
   numbering: T.string,

@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
+// todo use dynamic form
+
 import {t, trans} from '#/main/core/translation'
 
 import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
@@ -102,6 +104,7 @@ const AnnounceForm = props =>
           </div>
         </ActivableSet>
       </FormSection>
+
       <FormSection
         icon="fa fa-fw fa-paper-plane-o"
         title={trans('announcement_sending', {}, 'announcement')}

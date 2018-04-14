@@ -232,6 +232,5 @@ const PathSummary = connect(
 )(Summary)
 
 export {
-  PathSummary,
-  SummaryLink as PathSummaryLink
+  PathSummary
 }

@@ -7,6 +7,7 @@ const Button = {
     children: T.node.isRequired,
     disabled: T.bool,
     primary: T.bool,
+    active: T.bool,
     dangerous: T.bool,
     tabIndex: T.number
   },

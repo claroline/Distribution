@@ -2,8 +2,51 @@
  * Buttons styles
  */
 
+// removes default button styles everywhere
+// appears as a <a>
+button,
+input[type=button],
+input[type=submit] {
+    color: @link-color;
+    background-color: transparent;
+    border: none;
+    text-decoration: none;
+    box-shadow: none;
+    padding: 0;
+
+    &:hover,
+    &:focus {
+        box-shadow: none;
+        color: @link-hover-color;
+        text-decoration: @link-hover-decoration;
+    }
+
+    &:focus {
+        box-shadow: none;
+        .tab-focus();
+    }
+}
+
 
 /* CHROME HACK FOR OUTLINED BUTTON WHEN FOCUSED */
+a,
+button,
+input[type=button],
+input[type=submit],
+input[type=reset] {
+    &:focus,
+    &.focus,
+    &:active,
+    &.active {
+        outline: none !important;
+    }
+}
+
+a,
+button,
+input[type=button],
+input[type=submit],
+input[type=reset],
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus,
@@ -21,6 +64,29 @@
 // todo : for retro compatibility, to remove
 .btn-link-default {
     .btn-link-variant(@gray, @gray-dark, @link-hover-decoration);
+}
+
+// variants
+
+.btn {
+    &.default {
+        .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
+    }
+    &.primary {
+        .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+    }
+    &.success {
+        .button-variant(@btn-success-color; @btn-success-bg; @btn-success-border);
+    }
+    &.info {
+        .button-variant(@btn-info-color; @btn-info-bg; @btn-info-border);
+    }
+    &.warning {
+        .button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
+    }
+    &.danger {
+        .button-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
+    }
 }
 
 .btn-link {
