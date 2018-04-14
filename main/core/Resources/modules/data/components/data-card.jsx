@@ -3,6 +3,7 @@ import classes from 'classnames'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {getPlainText} from '#/main/core/data/types/html/utils'
+import {numberShort} from '#/main/core/intl'
 import {DropdownButton} from '#/main/app/action/components/dropdown-button'
 import {GenericButton} from '#/main/app/button/components/generic'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
@@ -18,7 +19,7 @@ import {DataCard as DataCardTypes} from '#/main/core/data/prop-types'
  * @constructor
  */
 const CardHeader = props =>
-  <div className="data-card-header" style={props.poster && {
+  <div className={classes('data-card-header', props.poster && 'data-card-header-poster')} style={props.poster && {
     backgroundImage: 'url(' + props.poster + ')',
     backgroundSize: 'cover',
     backgroundPosition: 'center'
@@ -42,10 +43,10 @@ const CardHeader = props =>
           >
             {undefined !== flag[2] ?
               <span className="data-card-flag">
+                {number(flag[2], true)}
                 <span className={flag[0]} />
-                {flag[2]}
               </span> :
-              <span className={classes('data-card-flag', flag[0])} />
+              <span className={classes('data-card-flag label label-default', flag[0])} />
             }
           </TooltipElement>
         )}

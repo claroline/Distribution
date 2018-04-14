@@ -277,12 +277,12 @@ DataList.propTypes = {
      */
     available: T.arrayOf(
       T.oneOf(Object.keys(listConst.DISPLAY_MODES))
-    ).isRequired,
+    ),
 
     /**
      * Current format.
      */
-    current: T.oneOf(Object.keys(listConst.DISPLAY_MODES)).isRequired
+    current: T.oneOf(Object.keys(listConst.DISPLAY_MODES))
   }),
 
   /**

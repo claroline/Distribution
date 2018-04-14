@@ -249,6 +249,7 @@ class ResourceNodeSerializer
     private function getRestrictions(ResourceNode $resourceNode)
     {
         return [
+            'hidden' => $resourceNode->isHidden(),
             'dates' => DateRangeNormalizer::normalize(
                 $resourceNode->getAccessibleFrom(),
                 $resourceNode->getAccessibleUntil()
