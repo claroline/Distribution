@@ -129,19 +129,33 @@ class Documentator
         $doc = [];
 
         foreach ($queryStrings as $query) {
-            if ('$finder' === $query) {
-                $finder = $this->finder->get($objectClass);
+            if (is_string($query) && null !== strpos($query, '$finder')) {
+                $queryOptions = explode('&', $query);
+                $finderOptions = array_shift($queryOptions);
+                $finderOptions = explode('=', $finderOptions);
+                $finderClass = isset($finderOptions[1]) ? $finderOptions[1] : $objectClass;
+                $finder = $this->finder->get($finderClass);
                 $finderDoc = [];
 
                 if (method_exists($finder, 'getFilters')) {
                     $filters = $finder->getFilters();
 
                     foreach ($filters as $name => $data) {
-                        $finderDoc[] = [
-                            'name' => "filter[{$name}]",
-                            'type' => $data['type'],
-                            'description' => $data['description'],
-                        ];
+                        $addFilter = true;
+                        //check we didn't exclude it here
+                        foreach ($queryOptions as $option) {
+                            if (null !== strpos($option, '!') && substr($option, 1) === $name) {
+                                $addFilter = false;
+                            }
+                        }
+
+                        if ($addFilter) {
+                            $finderDoc[] = [
+                                'name' => "filter[{$name}]",
+                                'type' => $data['type'],
+                                'description' => $data['description'],
+                            ];
+                        }
                     }
 
                     $doc = array_merge($finderDoc, $doc);

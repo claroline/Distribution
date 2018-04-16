@@ -64,6 +64,7 @@ class MessageSerializer
             'id' => $message->getUuid(),
             'content' => $message->getContent(),
             'meta' => $this->serializeMeta($message, $options),
+            'children' => $this->serializeChildren($message, $options),
         ];
     }
 
@@ -84,6 +85,17 @@ class MessageSerializer
             'id' => $creator ? $creator->getId() : null,
             'name' => $creator ? $creator->getFullName() : $message->getAuthor(),
         ];
+    }
+
+    public function serializeChildren(AbstractMessage $message, array $options = [])
+    {
+        $children = [];
+
+        foreach ($message->getChildren() as $child) {
+            $children[] = $this->serialize($child, $options);
+        }
+
+        return $children;
     }
 
     /**
