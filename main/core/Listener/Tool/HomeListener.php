@@ -11,39 +11,46 @@
 
 namespace Claroline\CoreBundle\Listener\Tool;
 
+use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Event\DisplayToolEvent;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @DI\Service
  */
 class HomeListener
 {
-    /** @var HttpKernelInterface */
-    private $httpKernel;
-    /** @var Request */
-    private $request;
+    /** @var AuthorizationCheckerInterface */
+    private $authorization;
+    /** @var TwigEngine */
+    private $templating;
+    /** @var SerializerProvider */
+    private $serializer;
 
     /**
      * HomeListener constructor.
      *
      * @DI\InjectParams({
-     *     "httpKernel"   = @DI\Inject("http_kernel"),
-     *     "requestStack" = @DI\Inject("request_stack")
+     *     "authorization" = @DI\Inject("security.authorization_checker"),
+     *     "templating"    = @DI\Inject("templating"),
+     *     "serializer"    = @DI\Inject("claroline.api.serializer")
      * })
      *
-     * @param HttpKernelInterface $httpKernel
-     * @param RequestStack        $requestStack
+     * @param AuthorizationCheckerInterface $authorization
+     * @param TwigEngine                    $templating
+     * @param SerializerProvider            $serializer
      */
     public function __construct(
-        HttpKernelInterface $httpKernel,
-        RequestStack $requestStack
+        AuthorizationCheckerInterface $authorization,
+        TwigEngine $templating,
+        SerializerProvider $serializer
     ) {
-        $this->httpKernel = $httpKernel;
-        $this->request = $requestStack->getCurrentRequest();
+        $this->authorization = $authorization;
+        $this->templating = $templating;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -55,12 +62,34 @@ class HomeListener
      */
     public function onDisplayDesktop(DisplayToolEvent $event)
     {
-        $subRequest = $this->request->duplicate([], null, [
-            '_controller' => 'ClarolineCoreBundle:Tool\Home:displayDesktop',
-        ]);
+        // TODO : implement
 
-        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setContent($response->getContent());
+        $content = $this->templating->render(
+            'ClarolineCoreBundle:Tool:home.html.twig', [
+                'editable' => true,
+                'context' => [
+                    'type' => Widget::CONTEXT_DESKTOP
+                ],
+                'tabs' => [],
+                'widgets' => [
+                    [
+                        'id' => 'id1',
+                        'type' => 'resource-list',
+                        'name' => 'Choisissez votre module de formation',
+                        'parameters' => [
+                            'display' => 'tiles',
+                            'availableDisplays' => ['tiles'],
+                            'filterable' => false,
+                            'sortable' => false,
+                            'paginated' => false
+                        ]
+                    ]
+                ],
+            ]
+        );
+
+        $event->setContent($content);
+        $event->stopPropagation();
     }
 
     /**
@@ -72,12 +101,37 @@ class HomeListener
      */
     public function onDisplayWorkspace(DisplayToolEvent $event)
     {
-        $subRequest = $this->request->duplicate([], null, [
-            '_controller' => 'ClarolineCoreBundle:Tool\Home:displayWorkspace',
-            'workspace' => $event->getWorkspace()->getId(),
-        ]);
+        // TODO : implement
 
-        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setContent($response->getContent());
+        $workspace = $event->getWorkspace();
+
+        $content = $this->templating->render(
+            'ClarolineCoreBundle:Tool:home.html.twig', [
+                'workspace' => $workspace,
+                'editable' => $this->authorization->isGranted(['home', 'edit'], $workspace),
+                'context' => [
+                    'type' => Widget::CONTEXT_WORKSPACE,
+                    'data' => $this->serializer->serialize($workspace)
+                ],
+                'tabs' => [],
+                'widgets' => [
+                    [
+                        'id' => 'id1',
+                        'type' => 'resource-list',
+                        'name' => 'Choisissez votre module de formation',
+                        'parameters' => [
+                            'display' => 'tiles',
+                            'availableDisplays' => ['tiles'],
+                            'filterable' => false,
+                            'sortable' => false,
+                            'paginated' => false
+                        ]
+                    ]
+                ],
+            ]
+        );
+
+        $event->setContent($content);
+        $event->stopPropagation();
     }
 }
