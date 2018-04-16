@@ -91,12 +91,13 @@ class ResourceManagerListener
     }
 
     /**
-     * @DI\Observe("open_tool_workspace_resource_manager")
+     *
      *
      * @param DisplayToolEvent $event
      */
     public function onDisplayWorkspaceResourceManager(DisplayToolEvent $event)
     {
+        // @DI\Observe("open_tool_workspace_resource_manager")
         $event->setContent($this->resourceWorkspace($event->getWorkspace()->getId()));
     }
 
@@ -111,12 +112,13 @@ class ResourceManagerListener
     }
 
     /**
-     * @DI\Observe("open_tool_desktop_resource_manager")
+     *
      *
      * @param DisplayToolEvent $event
      */
     public function onDisplayDesktopResourceManager(DisplayToolEvent $event)
     {
+        // @DI\Observe("open_tool_desktop_resource_manager")
         $event->setContent($this->resourceDesktop());
     }
 

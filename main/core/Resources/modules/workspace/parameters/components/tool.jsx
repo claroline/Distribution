@@ -1,34 +1,34 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
-import {TabbedPageContainer} from '#/main/core/layout/tabs'
+import {
+  PageContainer,
+  PageActions,
+  PageHeader,
+  PageContent
+} from '#/main/core/layout/page'
+import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions'
 
-import {ParametersActions, ParametersTab} from '#/main/core/workspace/parameters/parameters/parameters.jsx'
-import {DisplayActions, DisplayTab} from '#/main/core/workspace/parameters/parameters/display.jsx'
+import {WorkspaceForm} from '#/main/core/workspace/components/form'
 
 const Parameters = () =>
-  <TabbedPageContainer
-    title={trans('parameters', {}, 'tools')}
-    redirect={[
-      {from: '/', exact: true, to: '/parameters'}
-    ]}
+  <PageContainer>
+    <PageHeader
+      title={trans('parameters', {}, 'tools')}
+    >
+      <PageActions>
+        <FormPageActionsContainer
+          formName="parameters"
+          target={(workspace) => ['apiv2_workspace_update', {id: workspace.id}]}
+          opened={true}
+        />
+      </PageActions>
+    </PageHeader>
 
-    tabs={[
-      {
-        icon: 'fa fa-save',
-        title: trans('parameters'),
-        path: '/parameters',
-        actions: ParametersActions,
-        content: ParametersTab
-      }, {
-        icon: 'fa fa-picture',
-        title: trans('workspace_display'),
-        path: '/display',
-        actions: DisplayActions,
-        content: DisplayTab
-      }
-    ]}
-  />
+    <PageContent>
+      <WorkspaceForm name="parameters" />
+    </PageContent>
+  </PageContainer>
 
 export {
   Parameters

@@ -1,21 +1,21 @@
 <?php
 
-namespace Claroline\CoreBundle\Controller\APINew;
+namespace Claroline\CoreBundle\Controller\APINew\Resource;
 
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use JMS\DiExtraBundle\Annotation as DI;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * This controller will probably need to change heavily in the future.
+ * @EXT\Route("/resource")
  */
 class ResourceNodeController extends AbstractCrudController
 {
-    /* var TokenStorageInterface */
+    /** @var TokenStorageInterface */
     private $tokenStorage;
 
     /**
@@ -27,19 +27,60 @@ class ResourceNodeController extends AbstractCrudController
      *
      * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(
+        TokenStorageInterface $tokenStorage)
     {
         $this->tokenStorage = $tokenStorage;
     }
 
     /**
-     * @Route("/portal", name="apiv2_portal_index", options={ "method_prefix" = false })
+     * @return string
+     */
+    public function getName()
+    {
+        return 'resource_node';
+    }
+
+    /**
+     * @EXT\Route("/{parent}", name="apiv2_resource_list", defaults={"parent"=null})
      *
-     * @todo probably move this somewhere else
+     * @param Request $request
+     * @param string  $parent
+     * @param string  $class
+     *
+     * @return JsonResponse
+     */
+    public function listAction(Request $request, $parent, $class = 'Claroline\CoreBundle\Entity\Resource\ResourceNode')
+    {
+        // limits the search to the current workspace
+        $options = $request->query->all();
+        //$options['hiddenFilters']['hidden'] = false;
+
+        if (!empty($parent)) {
+            // grab directory content
+            $parentNode = $this->om
+                ->getRepository('ClarolineCoreBundle:Resource\ResourceNode')
+                ->findOneBy(['guid' => $parent]);
+
+            $options['hiddenFilters']['parent'] = !empty($parentNode) ? $parentNode->getId() : null;
+        } else {
+            $options['hiddenFilters']['parent'] = null;
+        }
+
+        return new JsonResponse(
+            $this->finder->search(
+                'Claroline\CoreBundle\Entity\Resource\ResourceNode',
+                $options
+            )
+        );
+    }
+
+    /**
+     * @EXT\Route("/portal", name="apiv2_portal_index")
      *
      * @param Request $request
      *
-     * @return array
+     * @return JsonResponse
      */
     public function portalSearchAction(Request $request)
     {
@@ -62,11 +103,11 @@ class ResourceNodeController extends AbstractCrudController
     }
 
     /**
-     * @Route("/resourcespicker", name="apiv2_resources_picker", options={ "method_prefix" = false })
+     * @EXT\Route("/picker", name="apiv2_resources_picker")
      *
      * @param Request $request
      *
-     * @return array
+     * @return JsonResponse
      */
     public function resourcesPickerAction(Request $request)
     {
@@ -87,13 +128,5 @@ class ResourceNodeController extends AbstractCrudController
         );
 
         return new JsonResponse($result);
-    }
-
-    /**
-     * @return array
-     */
-    public function getName()
-    {
-        return 'resourcenode';
     }
 }
