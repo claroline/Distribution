@@ -36,7 +36,8 @@
       "home": "tools/home.less",
       "home-tool": "tools/home.less",
       "theme-management": "tools/theme-management.less",
-      "portal": "portal/portal.less"
+      "portal": "portal/portal.less",
+      "dashboard": "tools/dashboard.less"
     }
   }
 }
