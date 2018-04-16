@@ -41,7 +41,7 @@ const countryDefinition = {
         // there are at least one invalid country in the list
         return tval('This value should be a list of valid country codes.')
       }
-    } else if (!intlConstants.REGION_CODES[countryCodes]) {
+    } else if (!intlConstants.REGION_CODES.find(code => code === countryCodes)) {
       // invalid country code
       return tval('This value should be a valid country code.')
     }

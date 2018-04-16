@@ -63,7 +63,7 @@ class FileComponent extends Component {
           }
         />
 
-        {has(this.props.value, 'id') &&
+        {has(this.props.value, 'mimeType') && has(this.props.value, 'url') &&
           <div className="file-thumbnails">
             <FileThumbnail
               type={this.getFileType(this.props.value.mimeType)}
@@ -71,7 +71,13 @@ class FileComponent extends Component {
               canEdit={false}
               canExpand={false}
               canDownload={false}
-              handleDelete={() => this.props.deleteFile(this.props.value.id, this.props.onChange)}
+              handleDelete={() => {
+                if (this.props.value.id) {
+                  this.props.deleteFile(this.props.value.id, this.props.onChange)
+                } else {
+                  this.props.onChange(null)
+                }
+              }}
             />
           </div>
         }
