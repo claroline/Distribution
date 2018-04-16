@@ -29,7 +29,7 @@ const generateDataObject = (xVal = [], xType = STRING_DATA_TYPE, yVal = [], yTyp
     values: yVal,
     type: yType
   },
-  pairs: zipWith(xVal, yVal, (x, y) => ({x, y}))
+  pairs: !isEmpty(xVal) && !isEmpty(yVal) ? zipWith(xVal, yVal, (x, y) => ({x, y})) : []
 })
 
 /**
@@ -41,6 +41,9 @@ const generateDataObject = (xVal = [], xType = STRING_DATA_TYPE, yVal = [], yTyp
  *   ...
  * }
  *
+ * or as an array of values (notably for pie chart)
+ * [val1, val2, val3, ...]
+ *
  * @return {object} - returns a formated data object:
  * {
  *  x:{values:[x1, x2, ...], type:String|Date},
@@ -49,10 +52,19 @@ const generateDataObject = (xVal = [], xType = STRING_DATA_TYPE, yVal = [], yTyp
  * }
  */
 const formatData = (data) => {
-  //Find x data type (date, string, number)
+  // If data is empty return default empty object
   if (isEmpty(data)) {
     return generateDataObject()
   }
+  // If data is an array return object with empty xData and data as yData
+  if (Array.isArray(data)) {
+    let yType = NUMBER_DATA_TYPE
+    if (isNaN(data[0])) {
+      yType = STRING_DATA_TYPE
+    }
+    return generateDataObject([], STRING_DATA_TYPE, data, yType)
+  }
+  //Find x data type (date, string, number)
   let xVal = data[Object.keys(data)[0]].xData
   let xType = STRING_DATA_TYPE
   // If x is date or number
