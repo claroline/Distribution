@@ -2,15 +2,14 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {DataCard} from '#/main/core/data/components/data-card'
 import {trans} from '#/main/core/translation'
-import {asset} from '#/main/core/scaffolding/asset'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
+import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DATA_PICKER} from '#/main/core/data/list/modals'
@@ -124,16 +123,6 @@ Tab.propTypes = {
   }).isRequired,
   pickResource: T.func.isRequired,
   removeResource: T.func.isRequired
-}
-
-const ResourceCard = props => <DataCard
-  poster={asset(props.data.meta.icon)}
-  title={props.data.name}
-  subtitle={trans(props.data.meta.type, {}, 'resource')}
-/>
-
-ResourceCard.propTypes = {
-  data: T.object.isRequired
 }
 
 const ConnectedTab = connect(
