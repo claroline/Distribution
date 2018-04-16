@@ -315,14 +315,7 @@ abstract class AbstractCrudController extends AbstractApiController
      */
     public function docAction(Request $request, $class)
     {
-        $routes = $this->routerFinder->find($class);
-        $documented = [];
-
-        foreach ($routes->getIterator() as $name => $route) {
-            $documented[$name] = $this->routerDocumentator->document($route);
-        }
-
-        return new JsonResponse($documented);
+        return new JsonResponse($this->routerDocumentator->documentClass($class));
     }
 
     /**

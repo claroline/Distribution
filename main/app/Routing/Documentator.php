@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\API\SerializerProvider;
 use Doctrine\Common\Annotations\Reader;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\Routing\Route;
 
 /**
  * @DI\Service("claroline.api.routing.documentator")
@@ -19,6 +20,7 @@ class Documentator
      * @DI\InjectParams({
      *     "finder"     = @DI\Inject("claroline.api.finder"),
      *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "router"     = @DI\Inject("claroline.api.routing.finder"),
      *     "reader"    = @DI\Inject("annotation_reader")
      * })
      *
@@ -27,14 +29,16 @@ class Documentator
     public function __construct(
         FinderProvider $finder,
         SerializerProvider $serializer,
-        Reader $reader
+        Reader $reader,
+        Finder $router
     ) {
         $this->finder = $finder;
         $this->serializer = $serializer;
         $this->reader = $reader;
+        $this->router = $router;
     }
 
-    public function document($route)
+    public function documentRoute(Route $route)
     {
         $base = [
             'url' => $route->getPath(),
@@ -51,21 +55,36 @@ class Documentator
 
             if (class_exists($class)) {
                 $refClass = new \ReflectionClass($class);
-                $controller = $refClass->newInstanceWithoutConstructor();
-                $objectClass = $controller->getClass();
 
                 if (method_exists($class, $method)) {
-                    $refMethod = new \ReflectionMethod($class, $method);
-                    $doc = $this->reader->getMethodAnnotation($refMethod, 'Claroline\\AppBundle\\Annotations\\ApiDoc');
+                    $controller = $refClass->newInstanceWithoutConstructor();
+                    $objectClass = $controller->getClass();
+                    //doesn't work with the @API because it's deprecated
+                    if ($objectClass) {
+                        $refMethod = new \ReflectionMethod($class, $method);
+                        $doc = $this->reader->getMethodAnnotation($refMethod, 'Claroline\\AppBundle\\Annotations\\ApiDoc');
 
-                    if ($doc) {
-                        $extended = $this->parseDoc($doc, $objectClass);
+                        if ($doc) {
+                            $extended = $this->parseDoc($doc, $objectClass);
+                        }
                     }
                 }
             }
         }
 
         return array_merge($base, $extended);
+    }
+
+    public function documentClass($class)
+    {
+        $routes = $this->router->find($class);
+        $documented = [];
+
+        foreach ($routes->getIterator() as $name => $route) {
+            $documented[$name] = $this->documentRoute($route);
+        }
+
+        return $documented;
     }
 
     private function parseDoc(ApiDoc $doc, $objectClass)

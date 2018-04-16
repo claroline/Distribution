@@ -54,4 +54,35 @@ class Finder
 
         return $describeCollection;
     }
+
+    public function getHandledClasses()
+    {
+        $classes = [];
+
+        /** @var RouteCollection */
+        $collection = $this->router->getRouteCollection();
+
+        foreach ($collection->getIterator() as $route) {
+            if ($route instanceof ApiRoute && !in_array($route->getClass(), $classes)) {
+                $classes[] = $route->getClass();
+            } else {
+                $defaults = $route->getDefaults();
+                if (isset($defaults['_controller'])) {
+                    $controllerClass = explode(':', $defaults['_controller'])[0];
+                    if (class_exists($controllerClass)) {
+                        $refClass = new \ReflectionClass($controllerClass);
+
+                        if ($refClass->isSubClassOf('Claroline\AppBundle\Controller\AbstractCrudController')) {
+                            $controller = $refClass->newInstanceWithoutConstructor();
+                            if (!in_array($controller->getClass(), $classes)) {
+                                $classes[] = $controller->getClass();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return array_filter($classes);
+    }
 }
