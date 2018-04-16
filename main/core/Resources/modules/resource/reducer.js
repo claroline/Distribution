@@ -12,9 +12,11 @@ import {
   RESOURCE_UPDATE_NOTIFICATIONS
 } from './actions'
 
-const reducer = makeReducer({}, {
+const resourceNodeReducer = makeReducer({}, {
   /**
    * Toggles the publication status of a ResourceNode.
+   *
+   * @todo use UPDATE_NODE instead
    */
   [RESOURCE_UPDATE_PUBLICATION]: (state) => merge({}, state, {
     meta: {
@@ -32,12 +34,18 @@ const reducer = makeReducer({}, {
 
   /**
    * Toggles the notifications status of a ResourceNode.
+   *
+   * @todo use UPDATE_NODE instead
    */
   [RESOURCE_UPDATE_NOTIFICATIONS]: (state) => merge({}, state, {
     notifications: {
       enabled: !state.notifications.enabled
     }
   })
+})
+
+const lifecycleReducer = makeReducer({}, {
+
 })
 
 /**
@@ -55,7 +63,8 @@ function makeResourceReducer(initialState = {}, customReducer = {}) {
   const resourceReducer = {}
 
   // todo maybe make it customizable (like forms and lists)
-  resourceReducer.resourceNode = reducer
+  resourceReducer.resourceLifecycle = lifecycleReducer
+  resourceReducer.resourceNode = resourceNodeReducer
   resourceReducer.evaluation = evaluationReducer
 
   // get custom keys

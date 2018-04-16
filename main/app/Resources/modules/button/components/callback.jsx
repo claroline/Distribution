@@ -26,7 +26,7 @@ const CallbackButton = props =>
       primary: props.primary,
       dangerous: props.dangerous,
       active: props.active
-    }, props.size)}
+    }, props.size && `btn-${props.size}`)}
     onClick={(e) => {
       if (!props.disabled) {
         props.callback(e)

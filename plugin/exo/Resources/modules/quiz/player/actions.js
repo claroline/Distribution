@@ -4,6 +4,8 @@ import isEmpty from 'lodash/isEmpty'
 
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
+import {actions as resourceActions} from '#/main/core/resource/actions'
+
 import quizSelectors from './../selectors'
 import {select as playerSelectors} from './selectors'
 import {generatePaper} from './../papers/generator'
@@ -78,6 +80,8 @@ actions.requestEnd = (quizId, paperId, navigate) => ({
 // previous paper seems to never be passed here.
 actions.play = (previousPaper = null) => {
   return (dispatch, getState) => {
+    dispatch(resourceActions.triggerLifecycleAction('play'))
+
     if (!playerSelectors.offline(getState())) {
       // Normal : Request a paper from the API and open the player
       return dispatch(actions.fetchAttempt(quizSelectors.quiz(getState()).id))
@@ -142,6 +146,8 @@ actions.navigateTo = (quizId, paperId, nextStep, pendingAnswers = {}, currentSte
 
 actions.finish = (quizId, paper, pendingAnswers = {}, showFeedback = false, navigate) => {
   return (dispatch, getState) => {
+    dispatch(resourceActions.triggerLifecycleAction('end'))
+
     if (!showFeedback) {
       dispatch(actions.submit(quizId, paper.id, pendingAnswers)).then(() => {
         endQuiz(quizId, paper, navigate, dispatch, getState)

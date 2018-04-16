@@ -150,7 +150,10 @@ const StepForm = props =>
             name: 'title',
             type: 'string',
             label: trans('title'),
-            required: true
+            required: true,
+            options: {
+              long: true
+            }
           }
         ]
       }, {

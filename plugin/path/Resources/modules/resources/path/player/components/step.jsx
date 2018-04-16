@@ -14,6 +14,10 @@ import {EmbeddedResource} from '#/main/core/resource/components/embedded'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
+import {
+  STEP_ENABLE_NAVIGATION,
+  STEP_DISABLE_NAVIGATION
+} from '#/plugin/path/resources/path/player/actions'
 
 const ManualProgression = props =>
   <div className="step-manual-progression">
@@ -106,6 +110,13 @@ PrimaryResource.propTypes = {
   height: T.number
 }
 
+// temp
+// todo : replace by a better code later if we keep iFrame compatibility
+const AVAILABLE_EMBEDDED_RESOURCES = [
+  'ujm_exercise',
+  'text'
+]
+
 const SecondaryResources = props =>
   <div className={classes('step-secondary-resources', props.className)}>
     <h4 className="h3 h-first">En complément...</h4>
@@ -173,11 +184,19 @@ const Step = props =>
             </div>
           }
 
-          {props.primaryResource &&
+          {props.primaryResource && (-1 !== AVAILABLE_EMBEDDED_RESOURCES.indexOf(props.primaryResource.meta.type)) &&
             <EmbeddedResource
               className="step-primary-resource"
               resourceNode={props.primaryResource}
+              lifecycle={{
+                play: props.disableNavigation,
+                end: props.enableNavigation
+              }}
             />
+          }
+
+          {props.primaryResource && (-1 === AVAILABLE_EMBEDDED_RESOURCES.indexOf(props.primaryResource.meta.type)) &&
+            <PrimaryResource id={props.primaryResource.autoId} type={props.primaryResource.meta.type} />
           }
         </div>
       }
@@ -198,7 +217,9 @@ implementPropTypes(Step, StepTypes, {
   fullWidth: T.bool.isRequired,
   numbering: T.string,
   manualProgressionAllowed: T.bool.isRequired,
-  updateProgression: T.func.isRequired
+  updateProgression: T.func.isRequired,
+  enableNavigation: T.func.isRequired,
+  disableNavigation: T.func.isRequired
 })
 
 export {

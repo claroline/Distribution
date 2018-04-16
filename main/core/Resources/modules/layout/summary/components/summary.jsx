@@ -24,7 +24,7 @@ const SummaryHeader = props =>
         <Button
           type="callback"
           tooltip={props.opened ? 'bottom':'right'}
-          className={classes('btn btn-link summary-control hidden-xs hidden-sm', {
+          className={classes('btn-link summary-control hidden-xs hidden-sm', {
             active: props.pinned
           })}
           icon="fa fa-fw fa-map-pin"
@@ -36,7 +36,7 @@ const SummaryHeader = props =>
       <Button
         type="callback"
         tooltip={props.opened ? 'bottom':'right'}
-        className="btn btn-link summary-control"
+        className="btn-link summary-control"
         icon={classes('fa fa-fw', {
           'fa-chevron-left': props.opened,
           'fa-chevron-right': !props.opened
@@ -88,7 +88,7 @@ class SummaryLink extends Component {
                     {...action}
                     key={toKey(action.label)}
                     tooltip="bottom"
-                    className="btn btn-link btn-summary"
+                    className="btn-link btn-summary"
                   />
                 )
               }
@@ -97,7 +97,7 @@ class SummaryLink extends Component {
                 <Button
                   type="callback"
                   tooltip="bottom"
-                  className="btn btn-link btn-summary"
+                  className="btn-link btn-summary"
                   icon={classes('fa', {
                     'fa-caret-right': this.state.collapsed,
                     'fa-caret-down': !this.state.collapsed

@@ -22,6 +22,7 @@ class EmbeddedResource extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // the embedded resource has changed
     if (this.props.resourceNode.id !== nextProps.resourceNode.id) {
       // remove old app
       unmount(this.mountNode)
@@ -59,8 +60,12 @@ class EmbeddedResource extends Component {
                 }, embeddedApp),
                 () => {
                   // append and bootstrap the app
-                  const initialData = this.state.initialData ? this.state.initialData(responseData) : responseData
-                  initialData.embedded = true // todo find better
+                  const initialData = this.state.initialData(responseData)
+
+                  // force some values in the embedded store
+                  initialData.embedded = true
+                  initialData.resourceLifecycle = this.props.lifecycle
+
                   mount(this.mountNode, this.state.component, this.state.store, initialData)
                 }
               )
@@ -93,7 +98,18 @@ EmbeddedResource.propTypes = {
   showActions: T.bool,
   resourceNode: T.shape(
     ResourceNodeTypes.propTypes
-  ).isRequired
+  ).isRequired,
+  // some redux actions to dispatch during the resource lifecycle
+  lifecycle: T.shape({
+    open: T.func,
+    play: T.func,
+    end: T.func,
+    close: T.func
+  })
+}
+
+EmbeddedResource.defaultProps = {
+  lifecycle: {}
 }
 
 export {

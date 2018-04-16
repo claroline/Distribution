@@ -35,7 +35,7 @@ const UrlButton = props => {
         primary: props.primary,
         dangerous: props.dangerous,
         active: props.active // it may not be useful because by definition an url will change the context
-      }, props.size)}
+      }, props.size && `btn-${props.size}`)}
     >
       {props.children}
     </a>

@@ -41,11 +41,18 @@ const DataCell = props => {
 
   return (
     <TableCell className={`${props.column.type}-cell`}>
-      <ListPrimaryAction
-        action={props.action}
-      >
-        {cellRendering || '-'}
-      </ListPrimaryAction>
+      {props.action &&
+        <ListPrimaryAction
+          className="list-primary-action"
+          action={props.action}
+        >
+          {cellRendering || '-'}
+        </ListPrimaryAction>
+      }
+
+      {!props.action &&
+        (cellRendering || '-')
+      }
     </TableCell>
   )
 }

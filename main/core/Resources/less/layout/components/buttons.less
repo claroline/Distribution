@@ -2,12 +2,15 @@
  * Buttons styles
  */
 
+// TODO : grab last styles from bootstrap and remove base buttons api
+
 // removes default button styles everywhere
 // appears as a <a>
 button,
 input[type=button],
-input[type=submit] {
-    color: @link-color;
+input[type=submit],
+input[type=reset] {
+    //color: @link-color;
     background-color: transparent;
     border: none;
     text-decoration: none;
@@ -17,8 +20,8 @@ input[type=submit] {
     &:hover,
     &:focus {
         box-shadow: none;
-        color: @link-hover-color;
-        text-decoration: @link-hover-decoration;
+        //color: @link-hover-color;
+        //text-decoration: @link-hover-decoration;
     }
 
     &:focus {
@@ -42,33 +45,14 @@ input[type=reset] {
     }
 }
 
-a,
-button,
-input[type=button],
-input[type=submit],
-input[type=reset],
-.btn:focus,
-.btn:active:focus,
-.btn.active:focus,
-.btn.focus,
-.btn:active.focus,
-.btn.active.focus {
-    outline: none !important;
-}
 
-// todo : for retro compatibility, to remove
-.btn-link-danger {
-    .btn-link-variant(@brand-danger, darken(@brand-danger, 10%), @link-hover-decoration);
-}
-
-// todo : for retro compatibility, to remove
-.btn-link-default {
-    .btn-link-variant(@gray, @gray-dark, @link-hover-decoration);
-}
-
-// variants
+// -
+// Standard Buttons
+// ---
 
 .btn {
+    .button-base();
+
     &.default {
         .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
     }
@@ -89,24 +73,93 @@ input[type=reset],
     }
 }
 
+
+// -
+// Link Buttons
+// ---
+
 .btn-link {
+    .button-base();
+
+    font-weight: normal;
+    border-radius: 0;
+
+    &,
+    &:active,
+    &.active,
+    &[disabled],
+    fieldset[disabled] & {
+        background-color: transparent;
+        .box-shadow(none);
+    }
+    &,
+    &:hover,
+    &:focus,
+    &:active {
+        border-color: transparent;
+    }
+    &:hover,
+    &:focus {
+        background-color: transparent;
+    }
+    &[disabled],
+    fieldset[disabled] & {
+        &:hover,
+        &:focus {
+            text-decoration: none;
+        }
+    }
+
+    &.primary {
+        .button-link-variant(@link-color, @link-hover-color, @link-hover-decoration);
+    }
+
     &.default {
-        .btn-link-variant(@gray, @gray-dark, @link-hover-decoration);
+        .button-link-variant(@gray, @gray-dark, @link-hover-decoration);
     }
 
     &.danger {
-        .btn-link-variant(@brand-danger, darken(@brand-danger, 10%), @link-hover-decoration);
+        .button-link-variant(@brand-danger, darken(@brand-danger, 10%), @link-hover-decoration);
     }
 }
 
-.btn-emphasis {
-    padding: @padding-large-vertical @padding-large-horizontal;
+// todo : for retro compatibility, to remove
+.btn-link-danger {
+    .button-link-variant(@brand-danger, darken(@brand-danger, 10%), @link-hover-decoration);
 }
-
-// remove push effect on dropdown links
+.btn-link-default {
+    .button-link-variant(@gray, @gray-dark, @link-hover-decoration);
+}
 .btn-group.open .dropdown-toggle {
+    // remove push effect on dropdown links
     &.btn-link-default,
     &.btn-link-danger {
         box-shadow: none;
     }
+}
+
+
+// -
+// Button sizes
+// ---
+
+.btn-lg {
+    // line-height: ensure even-numbered height of button next to large input
+    .button-size(@padding-large-vertical; @padding-large-horizontal; @font-size-large; @line-height-large; @btn-border-radius-large);
+}
+.btn-sm {
+    // line-height: ensure proper height of button next to small input
+    .button-size(@padding-small-vertical; @padding-small-horizontal; @font-size-small; @line-height-small; @btn-border-radius-small);
+}
+.btn-xs {
+    .button-size(@padding-xs-vertical; @padding-xs-horizontal; @font-size-small; @line-height-small; @btn-border-radius-small);
+}
+
+
+// -
+// Other Variants
+// ---
+
+.btn-emphasis {
+    padding: @padding-large-vertical @padding-large-horizontal;
 }

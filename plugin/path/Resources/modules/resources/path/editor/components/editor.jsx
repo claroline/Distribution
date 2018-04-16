@@ -12,10 +12,10 @@ import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {select as editorSelect} from '#/plugin/path/resources/path/editor/selectors'
 import {actions} from '#/plugin/path/resources/path/editor/actions'
-import {PathCurrent} from '#/plugin/path/resources/path/components/current.jsx'
+import {PathCurrent} from '#/plugin/path/resources/path/components/current'
 import {PathSummary} from '#/plugin/path/resources/path/components/summary'
-import {ParametersForm} from '#/plugin/path/resources/path/editor/components/parameters-form.jsx'
-import {StepForm} from '#/plugin/path/resources/path/editor/components/step-form.jsx'
+import {ParametersForm} from '#/plugin/path/resources/path/editor/components/parameters-form'
+import {StepForm} from '#/plugin/path/resources/path/editor/components/step-form'
 import {Path as PathTypes, Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
 import {getNumbering, flattenSteps} from '#/plugin/path/resources/path/utils'
@@ -77,6 +77,7 @@ const EditorComponent = props =>
                 prefix="/edit"
                 current={step}
                 all={props.steps}
+                navigation={true}
               >
                 <h3 className="h2 step-title">
                   {getNumbering(props.path.display.numbering, props.path.steps, step) &&

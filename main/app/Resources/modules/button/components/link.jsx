@@ -27,7 +27,7 @@ const LinkButton = props =>
       primary: props.primary,
       dangerous: props.dangerous,
       active: props.active
-    }, props.size)}
+    }, props.size && `btn-${props.size}`)}
   >
     {props.children}
   </NavLink>
