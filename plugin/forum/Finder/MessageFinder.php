@@ -41,6 +41,14 @@ class MessageFinder implements FinderInterface
                 ));
                 $qb->setParameter($filterName, $filterValue);
                 break;
+            case 'parent':
+                $qb->leftJoin('obj.parent', 'parent');
+                $qb->andWhere($qb->expr()->orX(
+                    $qb->expr()->eq('parent.id', ':'.$filterName),
+                    $qb->expr()->eq('parent.uuid', ':'.$filterName)
+                ));
+                $qb->setParameter($filterName, $filterValue);
+                break;
               default:
                 $this->setDefaults($qb, $filterName, $filterValue);
             }
@@ -55,6 +63,10 @@ class MessageFinder implements FinderInterface
           'subject' => [
             'type' => ['integer', 'string'],
             'description' => 'The parent subject id (int) or uuid (string)',
+          ],
+          'parent' => [
+            'type' => ['integer', 'string'],
+            'description' => 'The parent message id (int) or uuid (string)',
           ],
           'isVisible' => [
             'type' => 'boolean',

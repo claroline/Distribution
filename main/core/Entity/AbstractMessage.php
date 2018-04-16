@@ -24,6 +24,24 @@ abstract class AbstractMessage
     use UuidTrait;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\ForumBundle\Entity\Message",
+     *     inversedBy="children"
+     * )
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\ForumBundle\Entity\Message",
+     *     mappedBy="parent"
+     * )
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $children;
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -130,5 +148,20 @@ abstract class AbstractMessage
     public function setAuthor($author)
     {
         $this->author = $author;
+    }
+
+    public function setParent(self $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
     }
 }

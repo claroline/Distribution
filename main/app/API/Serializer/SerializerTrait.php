@@ -24,6 +24,10 @@ trait SerializerTrait
     /**
      * Injects Serializer service.
      *
+     * @DI\InjectParams({
+     *      "serializer" = @DI\Inject("claroline.generic_serializer")
+     * })
+     *
      * @param GenericSerializer $serializer
      */
     public function setSerializer(GenericSerializer $serializer)
