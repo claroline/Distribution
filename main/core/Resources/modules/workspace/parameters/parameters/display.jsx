@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {DataCard} from '#/main/core/data/components/data-card'
 import {trans} from '#/main/core/translation'
 import {asset} from '#/main/core/scaffolding/asset'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
@@ -118,11 +119,21 @@ const Tab = (props) => {
 Tab.propTypes = {
   workspace: T.shape({
     options: T.shape({
-      opened_resource: T.bool.isRequired
+      opened_resource: T.object.isRequired
     })
   }).isRequired,
   pickResource: T.func.isRequired,
   removeResource: T.func.isRequired
+}
+
+const ResourceCard = props => <DataCard
+  poster={asset(props.data.meta.icon)}
+  title={props.data.name}
+  subtitle={trans(props.data.meta.type, {}, 'resource')}
+/>
+
+ResourceCard.propTypes = {
+  data: T.object.isRequired
 }
 
 const ConnectedTab = connect(
@@ -170,14 +181,7 @@ const ConnectedTab = connect(
             displayed: true
           }
         ],
-        card: (row) => ({
-          poster: asset(row.meta.icon),
-          icon: 'fa fa-folder-open',
-          title: row.name,
-          subtitle: trans(row.meta.type, {}, 'resource'),
-          footer:
-            <b>{row.workspace.name}</b>
-        }),
+        card: ResourceCard,
         fetch: {
           url: ['apiv2_resources_picker'],
           autoload: true
