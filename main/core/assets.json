@@ -21,7 +21,6 @@
       "home-tool": "tools/home",
       "user-tracking": "user/tracking",
       "contacts-tool": "user/contact",
-      "resources-tool": "tools/resources/bootstrap",
       "workspace-user-management": "workspace/user",
       "workspace-parameters-management": "workspace/parameters",
       "text-resource": "resources/text/bootstrap"
