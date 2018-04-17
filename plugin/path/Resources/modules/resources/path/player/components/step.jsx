@@ -159,7 +159,7 @@ const Step = props =>
     </h3>
 
     <div className="row">
-      {props.primaryResource &&
+      {(props.primaryResource || props.description) &&
         <div className={classes('col-sm-12', {
           'col-md-9': (0 !== props.secondaryResources.length || 0 !== props.inheritedResources.length) && props.fullWidth,
           'col-md-12': (0 !== props.secondaryResources.length && 0 !== props.inheritedResources.length) && !props.fullWidth
@@ -170,11 +170,13 @@ const Step = props =>
             </div>
           }
 
-          <PrimaryResource
-            id={props.primaryResource.autoId}
-            type={props.primaryResource.meta.type}
-            height={props.display.height}
-          />
+          {props.primaryResource &&
+            <PrimaryResource
+              id={props.primaryResource.autoId}
+              type={props.primaryResource.meta.type}
+              height={props.display.height}
+            />
+          }
         </div>
       }
 
