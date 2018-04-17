@@ -75,6 +75,24 @@ class ForumController extends AbstractCrudController
      */
     public function createSubject(Forum $forum, Request $request)
     {
+        $forum = $this->serializer->serialize($forum);
+        $data = $this->decodeRequest($request);
+        $data['forum'] = $forum;
+
+        $object = $this->crud->create(
+            'Claroline\ForumBundle\Entity\Subject',
+            $data,
+            $this->options['create']
+        );
+
+        if (is_array($object)) {
+            return new JsonResponse($object, 400);
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($object, $this->options['get']),
+            201
+        );
     }
 
     public function getClass()

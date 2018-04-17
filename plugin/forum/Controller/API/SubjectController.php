@@ -76,6 +76,24 @@ class SubjectController extends AbstractCrudController
      */
     public function createMessage(Subject $subject, Request $request)
     {
+        $subject = $this->serializer->serialize($subject);
+        $data = $this->decodeRequest($request);
+        $data['subject'] = $subject;
+
+        $object = $this->crud->create(
+            'Claroline\ForumBundle\Entity\Message',
+            $data,
+            $this->options['create']
+        );
+
+        if (is_array($object)) {
+            return new JsonResponse($object, 400);
+        }
+
+        return new JsonResponse(
+          $this->serializer->serialize($object, $this->options['get']),
+          201
+      );
     }
 
     public function getClass()

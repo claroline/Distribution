@@ -38,8 +38,26 @@ class MessageController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function createSubject(Message $message, Request $request)
+    public function createComment(Message $message, Request $request)
     {
+        $message = $this->serializer->serialize($message);
+        $data = $this->decodeRequest($request);
+        $data['parent'] = $message;
+
+        $object = $this->crud->create(
+            'Claroline\ForumBundle\Entity\Message',
+            $data,
+            $this->options['create']
+        );
+
+        if (is_array($object)) {
+            return new JsonResponse($object, 400);
+        }
+
+        return new JsonResponse(
+            $this->serializer->serialize($object, $this->options['get']),
+            201
+        );
     }
 
     public function getClass()
