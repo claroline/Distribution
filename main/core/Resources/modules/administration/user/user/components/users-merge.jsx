@@ -1,14 +1,41 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
+
 import {connect} from 'react-redux'
 import filter from 'lodash/filter'
+import get from 'lodash/get'
+import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {t} from '#/main/core/translation'
 import {actions} from '#/main/core/administration/user/user/actions'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CONFIRM} from '#/main/core/layout/modal'
+import {currentUser} from '#/main/core/user/current'
 
 import {ComparisonTable} from '#/main/core/data/comparisonTable/components/comparison-table.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {RoleList} from '#/main/core/administration/user/role/components/role-list.jsx'
+
+
+
+const RolesAndWsList = props =>
+  <DataListContainer
+    name={`users.compare.rolesUser${props.index}`}
+    open={RoleList.action}
+    fetch={{
+      url: ['apiv2_user_list_roles', {id: props.data[props.index].id}],
+      autoload: true
+    }}
+    definition={RoleList.definition}
+    card={RoleList.card}
+    filterColumns={false}
+    display={{
+      available: [listConst.DISPLAY_TABLE_SM],
+      current: listConst.DISPLAY_TABLE_SM
+    }}
+    selection={null}
+    filter={null}
+  />
+RolesAndWsList.displayName = 'RolesAndWsList'
 
 const UsersMergeForm = props =>
   <ComparisonTable
@@ -36,7 +63,7 @@ const UsersMergeForm = props =>
       },
       {
         name: 'meta.created',
-        label: t('created'),
+        label: t('creation_date'),
         type: 'date',
         options: {
           time: true
@@ -44,48 +71,55 @@ const UsersMergeForm = props =>
       },
       {
         name: 'meta.lastLogin',
-        label: t('lastLogin'),
+        label: t('last_login'),
         type: 'date',
         options: {
           time: true
         }
       },
       {
-        name: 'meta.cas.id',
-        label: t('casId'),
+        name: 'cas_data.id',
+        label: t('cas_id'),
         type: 'string'
       },
       {
         name: 'meta.mailValidated',
-        label: t('mailValidated'),
+        label: t('email_validated'),
         type: 'boolean'
       },
       {
         name: 'restrictions.disabled',
-        label: t('disabled'),
+        label: t('user_disabled'),
         type: 'boolean'
+      },
+      {
+        name: 'roles',
+        label: t('roles_and_workspaces'),
+        renderer: (data, index) => {
+          const Comp = <RolesAndWsList
+            data={data}
+            index={index}
+          />
+
+          return Comp
+        }
       }
     ]}
     action={{
-      text: () => 'Conserver cet utilisateur',
+      text: () => t('keep_user'),
       action: (selected, data) => props.mergeModal(selected, data),
-      disabled: (selected) => selected.meta.loggedIn
+      disabled: (selected, data) => {
+        const me = currentUser()
+        // There is no need to check if me.id exists. We're in a restricted area, a user must be logged in
+        return getOtherUserPropValue(selected, data, 'id') === me.id
+      }
     }}
     title={(selected) => t('username') + ' : ' + selected.username}
   />
 
-UsersMergeForm.propTypes = {
-  data: function (props, propName) {
-    if (!Array.isArray(props[propName]) || props[propName].length != 2 || !props[propName].every((o) => typeof o === 'object')) {
-      return new Error(`${propName} needs to be an array of two objects`)
-    }
-  },
-  mergeModal: T.func.isRequired
-}
-
 const UsersMerge = connect(
   state => ({
-    data: state.users.compare
+    data: state.users.compare.selected
   }),
   dispatch => ({
     mergeModal(selected, data) {
@@ -93,10 +127,9 @@ const UsersMerge = connect(
         modalActions.showModal(MODAL_CONFIRM, {
           confirmButtonText: t('merge'),
           dangerous: true,
-          question: `La fusion de comptes va conserver le compte de l'utilisateur ${selected.username}. Souhaitez-vous continuer ?`,
+          question: t('merge_confirmation', {'username': selected.username}),
           handleConfirm: () => {
-            let others = filter(data, (o) => o.id !== selected.id)
-            dispatch(actions.merge(selected.id, others[0].id))
+            dispatch(actions.merge(selected.id, getOtherUserPropValue(selected, data, 'id')))
           }
         })
       )
@@ -105,5 +138,10 @@ const UsersMerge = connect(
 )(UsersMergeForm)
 
 export {
-    UsersMerge
+  UsersMerge
+}
+
+function getOtherUserPropValue(selected, data, propName) {
+  let others = filter(data, (o) => o.id !== selected.id)
+  return get(others[0], propName)
 }

@@ -27,6 +27,8 @@ use Claroline\DropZoneBundle\Entity\DropzoneTool;
 use Claroline\DropZoneBundle\Entity\DropzoneToolDocument;
 use Claroline\DropZoneBundle\Repository\CorrectionRepository;
 use Claroline\DropZoneBundle\Repository\PlannedNotificationRepository;
+use Claroline\DropZoneBundle\Repository\DocumentRepository;
+use Claroline\DropZoneBundle\Repository\DropRepository;
 use Claroline\DropZoneBundle\Serializer\CorrectionSerializer;
 use Claroline\DropZoneBundle\Serializer\DocumentSerializer;
 use Claroline\DropZoneBundle\Serializer\DropSerializer;
@@ -84,6 +86,9 @@ class DropzoneManager
     private $correctionRepo;
     private $dropzoneToolRepo;
     private $dropzoneToolDocumentRepo;
+
+    /** @var DocumentRepository */
+    private $documentRepo;
 
     /**
      * DropzoneManager constructor.
@@ -147,6 +152,7 @@ class DropzoneManager
         $this->correctionRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Correction');
         $this->dropzoneToolRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneTool');
         $this->dropzoneToolDocumentRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\DropzoneToolDocument');
+        $this->documentRepo = $om->getRepository('Claroline\DropZoneBundle\Entity\Document');
     }
 
     /**
@@ -1386,5 +1392,74 @@ class DropzoneManager
             'mimeType' => $file->getClientMimeType(),
             'url' => 'dropzone'.$ds.$dropzone->getUuid().$ds.$fileName,
         ];
+    }
+
+    /**
+     * Find all content for a given user and the replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceDropUser(User $from, User $to)
+    {
+        $drops = $this->dropRepo->findByUser($from);
+
+        if (count($drops) > 0) {
+            foreach ($drops as $drop) {
+                $drop->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($drops);
+    }
+
+    /**
+     * Find all content for a given user and the replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceCorrectionUser(User $from, User $to)
+    {
+        $corrections = $this->correctionRepo->findByUser($from);
+
+        if (count($corrections) > 0) {
+            foreach ($corrections as $correction) {
+                $correction->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($corrections);
+    }
+
+    /**
+     * Find all content for a given user and the replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceDocumentUser(User $from, User $to)
+    {
+        $documents = $this->documentRepo->findByUser($from);
+
+        if (count($documents) > 0) {
+            foreach ($documents as $document) {
+                $document->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($documents);
     }
 }

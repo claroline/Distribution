@@ -4,6 +4,7 @@ namespace Claroline\CasBundle\Listener;
 
 use Claroline\CasBundle\Manager\CasManager;
 use Claroline\CoreBundle\Event\User\DecorateUserEvent;
+use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -42,5 +43,17 @@ class ApiListener
         $event->add('cas_data', [
             'id' => $casUserId,
         ]);
+    }
+
+    /**
+     * @DI\Observe("merge_users")
+     *
+     * @param MergeUsersEvent $event
+     */
+    public function onMerge(MergeUsersEvent $event)
+    {
+        // Replace user of CasUser nodes
+        $casUserCount = $this->casManager->replaceCasUserUser($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineCasBundle] updated CasUser count: $casUserCount");
     }
 }

@@ -4,7 +4,7 @@ import {makeListReducer} from '#/main/core/data/list/reducer'
 import {makeFormReducer} from '#/main/core/data/form/reducer'
 
 import {FORM_RESET, FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
-import {COMPARE_OPEN} from '#/main/core/data/comparisonTable/actions'
+import {COMPARE_OPEN, COMPARE_RESET} from '#/main/core/data/comparisonTable/actions'
 
 const reducer = combineReducers({
   picker: makeListReducer('users.picker'),
@@ -35,8 +35,13 @@ const reducer = combineReducers({
       })
     })
   }),
-  compare: makeReducer([], {
-    [COMPARE_OPEN]: (state, action) => action.data
+  compare: combineReducers({
+    selected: makeReducer([], {
+      [COMPARE_OPEN]: (state, action) => action.data,
+      [COMPARE_RESET]: () => []
+    }),
+    rolesUser0: makeListReducer('users.compare.rolesUser0'),
+    rolesUser1: makeListReducer('users.compare.rolesUser1')
   })
 })
 

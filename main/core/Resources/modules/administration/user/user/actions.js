@@ -1,4 +1,5 @@
 import {url} from '#/main/core/api/router'
+import {navigate} from '#/main/core/router'
 
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as listActions} from '#/main/core/data/list/actions'
@@ -121,9 +122,11 @@ actions.deleteWorkspace = (user) => ({
 actions.merge = (id1, id2) => ({
   [API_REQUEST]: {
     url: ['apiv2_user_merge', {keep: id1, remove: id2}],
-    request: { method: 'PUT'},
-    success: () => {
-      //Todo: navigate to user list
+    request: {method: 'PUT'},
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('users.list'))
+      dispatch(listActions.resetSelect('users.list'))
+      navigate('/users')
     }
   }
 })

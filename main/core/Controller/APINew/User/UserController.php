@@ -14,12 +14,12 @@ namespace Claroline\CoreBundle\Controller\APINew\User;
 use Claroline\AppBundle\Annotations\ApiMeta;
 use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Controller\APINew\Model\HasGroupsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasOrganizationsTrait;
 use Claroline\CoreBundle\Controller\APINew\Model\HasRolesTrait;
 use Claroline\CoreBundle\Entity\Organization\Organization;
 use Claroline\CoreBundle\Entity\User;
-use Claroline\CoreBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Event\User\MergeUsersEvent;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -279,11 +279,11 @@ class UserController extends AbstractCrudController
             ]
         );
 
-        // Delete old user
-        $this->container->get('claroline.manager.user_manager')->deleteUser($remove);
-
         $keep_username = $keep->getUsername();
         $remove_username = $remove->getUsername();
+
+        // Delete old user
+        $this->container->get('claroline.manager.user_manager')->deleteUser($remove);
 
         $event->addMessage("[CoreBundle] user removed: $remove_username");
         $event->addMessage("[CoreBundle] user kept: $keep_username");

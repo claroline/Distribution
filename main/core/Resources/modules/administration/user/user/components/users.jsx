@@ -79,7 +79,7 @@ const UsersList = props =>
       },
       {
         icon: 'fa fa-fw fa-compress',
-        label: t('merge_users'),
+        label: t('merge_accounts'),
         context: 'selection',
         action: (rows) => window.location = `#/users/merge/${rows[0].id}/${rows[1].id}`,
         displayed: (rows) => rows.length === 2,

@@ -1,6 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import get from 'lodash/get'
+import has from 'lodash/has'
 import merge from 'lodash/merge'
 
 import {getTypeOrDefault} from '#/main/core/data/index'
@@ -11,17 +12,16 @@ import {Button} from '#/main/core/layout/button/components/button'
 const RowDataCell = props => {
 
   const typeDef = getTypeOrDefault(props.type)
-  const cellData = get(props.data, props.name)
 
   let cellRendering
   if (props.renderer) {
-    cellRendering = props.renderer(cellData)
+    cellRendering = props.renderer(props.data, props.index)
   } else if (typeDef.components && typeDef.components.table) {
     // use custom component defined in the type definition
-    cellRendering = React.createElement(typeDef.components.table, merge({data: cellData}, props.options || {}))
+    cellRendering = React.createElement(typeDef.components.table, merge({data: props.data}, props.options || {}))
   } else {
     // use render defined in the type definition
-    cellRendering = typeDef.render(cellData, props.options || {})
+    cellRendering = typeDef.render(props.data, props.options || {})
   }
 
   return <td>{cellRendering}</td>
@@ -44,7 +44,7 @@ const ComparisonTable = props =>
         <td key={index}>
           <Button
             onClick={() => props.action.action(elem, props.data)}
-            disabled={props.action.disabled(elem)}>
+            disabled={props.action.disabled(elem, props.data)}>
             {props.action.text(elem)}
           </Button>
         </td>)}
@@ -54,14 +54,15 @@ const ComparisonTable = props =>
     <tbody>
     {props.rows.map((elem, index) =>
 
-        <tr key={index}>
+        has(props.data[0], elem.name) && <tr key={index}>
 
           <td>{elem.label}</td>
 
           {props.data.map((data, index) =>
             <RowDataCell
               key={index}
-              data={data}
+              index={index}
+              data={get(data, elem.name)}
               type={elem.type}
               name={elem.name}
               renderer={elem.renderer}
@@ -78,7 +79,8 @@ ComparisonTable.propTypes = {
   rows: T.arrayOf(T.shape({
     name: T.string.isRequired,
     label: T.string.isRequired,
-    type: T.string.isRequired
+    type: T.string,
+    renderer: T.func
   })).isRequired,
   action: T.shape({
     text: T.func.isRequired,

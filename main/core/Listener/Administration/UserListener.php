@@ -73,6 +73,8 @@ class UserListener
 
     /**
      * @DI\Observe("merge_users")
+     *
+     * @param MergeUsersEvent $event
      */
     public function onMergeUsers(MergeUsersEvent $event)
     {
