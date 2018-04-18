@@ -12,7 +12,7 @@ actions.updateField = makeActionCreator(FIELD_UPDATE, 'field')
 actions.removeField = makeActionCreator(FIELD_REMOVE, 'fieldId')
 
 actions.createField = (fieldData) => (dispatch, getState) => {
-  const resourceId = getState().clacoForm.id
+  const clacoFormId = getState().clacoForm.id
   const formData = new FormData()
   formData.append('fieldData', JSON.stringify(fieldData.field))
   formData.append('choicesData', JSON.stringify(fieldData.choices))
@@ -20,7 +20,7 @@ actions.createField = (fieldData) => (dispatch, getState) => {
 
   dispatch({
     [API_REQUEST]: {
-      url: ['claro_claco_form_field_create', {clacoForm: resourceId}],
+      url: ['claro_claco_form_field_create', {clacoForm: clacoFormId}],
       request: {
         method: 'POST',
         body: formData

@@ -73,7 +73,8 @@ class ClacoFormSerializer
     public function serialize(ClacoForm $clacoForm, array $options = [])
     {
         $serialized = [
-            'id' => $clacoForm->getId(),
+            'id' => $clacoForm->getUuid(),
+            'autoId' => $clacoForm->getId(),
             'template' => $clacoForm->getTemplate(),
             'details' => $clacoForm->getDetails(),
         ];

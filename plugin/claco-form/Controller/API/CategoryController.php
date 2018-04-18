@@ -56,6 +56,11 @@ class CategoryController extends AbstractCrudController
      *     "/clacoform/{clacoForm}/categories/list",
      *     name="apiv2_clacoformcategory_list"
      * )
+     * @EXT\ParamConverter(
+     *     "clacoForm",
+     *     class="ClarolineClacoFormBundle:ClacoForm",
+     *     options={"mapping": {"clacoForm": "uuid"}}
+     * )
      *
      * @param ClacoForm $clacoForm
      * @param Request   $request

@@ -15,8 +15,6 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 
 /**
  * @ORM\Entity(repositoryClass="Claroline\ClacoFormBundle\Repository\ClacoFormRepository")
@@ -30,15 +28,11 @@ class ClacoForm extends AbstractResource
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("id")
      */
     protected $id;
 
     /**
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("template")
      */
     protected $template;
 
@@ -47,8 +41,6 @@ class ClacoForm extends AbstractResource
      *     targetEntity="Claroline\ClacoFormBundle\Entity\Field",
      *     mappedBy="clacoForm"
      * )
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("fields")
      */
     protected $fields;
 
@@ -57,8 +49,6 @@ class ClacoForm extends AbstractResource
      *     targetEntity="Claroline\ClacoFormBundle\Entity\Category",
      *     mappedBy="clacoForm"
      * )
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("categories")
      */
     protected $categories;
 
@@ -67,15 +57,11 @@ class ClacoForm extends AbstractResource
      *     targetEntity="Claroline\ClacoFormBundle\Entity\Keyword",
      *     mappedBy="clacoForm"
      * )
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("keywords")
      */
     protected $keywords;
 
     /**
      * @ORM\Column(type="json_array", nullable=true)
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("details")
      */
     protected $details;
 

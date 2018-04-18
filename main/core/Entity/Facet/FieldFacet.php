@@ -47,6 +47,8 @@ class FieldFacet
     const CASCADE_SELECT_TYPE = 10;
     /** @var int */
     const FILE_TYPE = 11;
+    /** @var int */
+    const BOOLEAN_TYPE = 12;
     /** @var array */
     public static $types = [
         'string' => self::STRING_TYPE,
@@ -60,6 +62,7 @@ class FieldFacet
         'html' => self::RICH_TEXT_TYPE,
         'cascade ' => self::CASCADE_SELECT_TYPE,
         'file' => self::FILE_TYPE,
+        'boolean' => self::BOOLEAN_TYPE,
     ];
 
     /**
@@ -315,6 +318,7 @@ class FieldFacet
             case self::RICH_TEXT_TYPE: return 'rich_text';
             case self::CASCADE_SELECT_TYPE: return 'cascade_select';
             case self::FILE_TYPE: return 'file';
+            case self::BOOLEAN_TYPE: return 'boolean';
             default: return 'error';
         }
     }
@@ -336,6 +340,7 @@ class FieldFacet
             case self::RICH_TEXT_TYPE: return 'html';
             case self::CASCADE_SELECT_TYPE: return 'cascade';
             case self::FILE_TYPE: return 'file';
+            case self::BOOLEAN_TYPE: return 'boolean';
             default: return 'error';
         }
     }
@@ -359,6 +364,7 @@ class FieldFacet
             case self::RICH_TEXT_TYPE: return 'rich_text';
             case self::CASCADE_SELECT_TYPE: return 'cascade_select';
             case self::FILE_TYPE: return 'file';
+            case self::BOOLEAN_TYPE: return 'boolean';
             default: return 'error';
         }
     }

@@ -33,7 +33,7 @@ class KeywordFormModalComponent extends Component {
       fetch(
         generateUrl(
           'claro_claco_form_get_keyword_by_name_excluding_id',
-          {clacoForm: this.props.resourceId, name: this.state.name, id: this.props.keyword.id}
+          {clacoForm: this.props.clacoFormId, name: this.state.name, id: this.props.keyword.id}
         ),
         {
           method: 'GET' ,
@@ -120,7 +120,7 @@ class KeywordFormModalComponent extends Component {
 }
 
 KeywordFormModalComponent.propTypes = {
-  resourceId:T.number.isRequired,
+  clacoFormId:T.string.isRequired,
   keyword: T.shape(KeywordType.propTypes).isRequired,
   saveKeyword: T.func.isRequired,
   fadeModal: T.func.isRequired
@@ -128,7 +128,7 @@ KeywordFormModalComponent.propTypes = {
 
 const KeywordFormModal = connect(
   (state) => ({
-    resourceId: state.clacoForm.id
+    clacoFormId: state.clacoForm.id
   }),
   (dispatch) => ({
     saveKeyword(keyword) {

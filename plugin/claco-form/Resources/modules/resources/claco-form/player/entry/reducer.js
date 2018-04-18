@@ -1,18 +1,23 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {makeReducer} from '#/main/core/scaffolding/reducer'
+import {combineReducers, makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeListReducer} from '#/main/core/data/list/reducer'
+import {makeFormReducer} from '#/main/core/data/form/reducer'
+import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 import {
+  ENTRIES_UPDATE,
   ENTRY_ADD,
   ENTRY_UPDATE,
-  ENTRY_REMOVE,
   CURRENT_ENTRY_LOAD,
   CURRENT_ENTRY_UPDATE,
   ENTRY_COMMENT_ADD,
   ENTRY_COMMENT_UPDATE,
   ENTRY_COMMENT_REMOVE,
-  ALL_ENTRIES_REMOVE
+  ALL_ENTRIES_REMOVE,
+  ENTRY_USER_UPDATE,
+  ENTRY_USER_UPDATE_PROP,
+  ENTRY_USER_RESET
 } from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const entriesReducer = makeReducer({}, {
@@ -28,16 +33,6 @@ const entriesReducer = makeReducer({}, {
 
     if (index >= 0) {
       entries[index] = action.entry
-    }
-
-    return entries
-  },
-  [ENTRY_REMOVE]: (state, action) => {
-    const entries = cloneDeep(state)
-    const index = entries.findIndex(c => c.id === action.entryId)
-
-    if (index >= 0) {
-      entries.splice(index, 1)
     }
 
     return entries
@@ -96,12 +91,6 @@ const entriesReducer = makeReducer({}, {
   }
 })
 
-const myEntriesCountReducer = makeReducer({}, {
-  [ENTRY_ADD]: (state) => {
-    return state + 1
-  }
-})
-
 const currentEntryReducer = makeReducer({}, {
   [CURRENT_ENTRY_LOAD]: (state, action) => {
     return action.entry
@@ -151,13 +140,31 @@ const currentEntryReducer = makeReducer({}, {
   }
 })
 
-const reducer = makeListReducer('entries', {}, {
-  data: entriesReducer
+const reducer = combineReducers({
+  list: makeListReducer('entries.list', {}, {
+    invalidated: makeReducer(false, {
+      [FORM_SUBMIT_SUCCESS+'/entries.current']: () => true,
+      [ENTRIES_UPDATE]: () => true
+    })
+  }),
+  current: makeFormReducer('entries.current', {}),
+  entryUser: makeReducer({}, {
+    [ENTRY_USER_UPDATE]: (state, action) => action.entryUser,
+    [ENTRY_USER_RESET]: () => ({}),
+    [ENTRY_USER_UPDATE_PROP]: (state, action) => {
+      const newEntryUser = cloneDeep(state)
+      newEntryUser[action.property] = action.value
+
+      return newEntryUser
+    }
+  }),
+  myEntriesCount: makeReducer({}, {
+    [ENTRY_ADD]: (state) => {
+      return state + 1
+    }
+  })
 })
 
 export {
-  reducer,
-  entriesReducer,
-  myEntriesCountReducer,
-  currentEntryReducer
+  reducer
 }

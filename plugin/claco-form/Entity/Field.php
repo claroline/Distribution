@@ -168,6 +168,7 @@ class Field
             case FieldFacet::RICH_TEXT_TYPE: return 'html';
             case FieldFacet::CASCADE_SELECT_TYPE: return 'cascade';
             case FieldFacet::FILE_TYPE: return 'file';
+            case FieldFacet::BOOLEAN_TYPE: return 'boolean';
             default: return 'error';
         }
     }

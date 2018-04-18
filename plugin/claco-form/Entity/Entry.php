@@ -15,8 +15,6 @@ use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -35,30 +33,22 @@ class Entry
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("id")
      */
     protected $id;
 
     /**
      * @ORM\Column
      * @Assert\NotBlank()
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("title")
      */
     protected $title;
 
     /**
      * @ORM\Column(name="entry_status", type="integer")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("status")
      */
     protected $status;
 
     /**
      * @ORM\Column(name="locked", type="boolean", options={"default" = 0})
-     * @Groups({"api_claco_form", "api_facet_admin", "api_user_min"})
-     * @SerializedName("locked")
      */
     protected $locked = false;
 
@@ -68,37 +58,27 @@ class Entry
      *     inversedBy="categories"
      * )
      * @ORM\JoinColumn(name="claco_form_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_claco_form"})
-     * @SerializedName("clacoForm")
      */
     protected $clacoForm;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", nullable=true, onDelete="CASCADE")
-     * @Groups({"api_user_min"})
-     * @SerializedName("user")
      */
     protected $user;
 
     /**
      * @ORM\Column(name="creation_date", type="datetime", nullable=false)
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("creationDate")
      */
     protected $creationDate;
 
     /**
      * @ORM\Column(name="edition_date", type="datetime", nullable=true)
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("editionDate")
      */
     protected $editionDate = null;
 
     /**
      * @ORM\Column(name="publication_date", type="datetime", nullable=true)
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("publicationDate")
      */
     protected $publicationDate = null;
 
@@ -108,8 +88,6 @@ class Entry
      *     mappedBy="entry"
      * )
      * @ORM\JoinTable(name="claro_clacoformbundle_entry_value")
-     * @Groups({"api_user_min"})
-     * @SerializedName("fieldValues")
      */
     protected $fieldValues;
 
@@ -119,24 +97,18 @@ class Entry
      *     mappedBy="entry"
      * )
      * @ORM\OrderBy({"creationDate" = "DESC"})
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("comments")
      */
     protected $comments;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\ClacoFormBundle\Entity\Category")
      * @ORM\JoinTable(name="claro_clacoformbundle_entry_category")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("categories")
      */
     protected $categories;
 
     /**
      * @ORM\ManyToMany(targetEntity="Claroline\ClacoFormBundle\Entity\Keyword")
      * @ORM\JoinTable(name="claro_clacoformbundle_entry_keyword")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("keywords")
      */
     protected $keywords;
 

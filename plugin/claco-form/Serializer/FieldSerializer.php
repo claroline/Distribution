@@ -82,12 +82,6 @@ class FieldSerializer
                 'order' => $field->getOrder(),
             ],
             'options' => $field->getDetails(),
-//            'isMetadata' => $field->getIsMetadata(),
-//            'locked' => $field->isLocked(),
-//            'lockedEditionOnly' => $field->getLockedEditionOnly(),
-//            'hidden' => $field->isHidden(),
-//            'order' => $field->getOrder(),
-//            'details' => $field->getDetails(),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {

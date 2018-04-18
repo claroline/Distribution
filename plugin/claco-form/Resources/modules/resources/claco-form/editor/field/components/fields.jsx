@@ -6,6 +6,7 @@ import {trans} from '#/main/core/translation'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions} from '#/plugin/claco-form/resources/claco-form/editor/field/actions'
@@ -31,7 +32,7 @@ class FieldsComponent extends Component {
             nb_files_max: 1
           }
         },
-        resourceId: this.props.resourceId
+        clacoFormId: this.props.clacoFormId
       }
     )
   }
@@ -54,7 +55,7 @@ class FieldsComponent extends Component {
           fieldFacet: field.fieldFacet,
           details: field.details
         },
-        resourceId: this.props.resourceId
+        clacoFormId: this.props.clacoFormId
       }
     )
   }
@@ -159,7 +160,7 @@ class FieldsComponent extends Component {
 }
 
 FieldsComponent.propTypes = {
-  resourceId: T.number.isRequired,
+  clacoFormId: T.string.isRequired,
   fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   createField: T.func.isRequired,
   editField: T.func.isRequired,
@@ -169,8 +170,8 @@ FieldsComponent.propTypes = {
 
 const Fields = connect(
   (state) => ({
-    resourceId: state.clacoForm.id,
-    fields: state.fields
+    clacoFormId: state.clacoForm.id,
+    fields: select.fields(state)
   }),
   (dispatch) => ({
     createField(data) {

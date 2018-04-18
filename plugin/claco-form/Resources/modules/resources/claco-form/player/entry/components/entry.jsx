@@ -7,6 +7,7 @@ import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {TooltipButton} from '#/main/core/layout/button/components/tooltip-button.jsx'
@@ -15,8 +16,13 @@ import {UserMicro} from '#/main/core/user/components/micro.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 import {FileThumbnail} from '#/main/core/layout/form/components/field/file-thumbnail.jsx'
+import {DataDetailsContainer} from '#/main/core/data/details/containers/details.jsx'
 
-import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
+import {
+  Field as FieldType,
+  Entry as EntryType,
+  EntryUser as EntryUserType
+} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getFieldType, getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
@@ -76,7 +82,7 @@ const EntryActions = props =>
               id="notify-edition-chk"
               value={props.notifyEdition}
               label={trans('editions', {}, 'clacoform')}
-              onChange={checked => props.updateNotification({notifyEdition: checked})}
+              onChange={checked => props.updateEntryUserProp('notifyEdition', checked)}
             />
           </li>
           <li>
@@ -84,7 +90,7 @@ const EntryActions = props =>
               id="notify-comment-chk"
               value={props.notifyComment}
               label={trans('comments', {}, 'clacoform')}
-              onChange={checked => props.updateNotification({notifyComment: checked})}
+              onChange={checked => props.updateEntryUserProp('notifyComment', checked)}
             />
           </li>
         </ul>
@@ -129,7 +135,7 @@ const EntryActions = props =>
         id="entry-edit"
         className="btn-link-default"
         title={trans('edit')}
-        target={`#/entry/${props.entryId}/edit`}
+        target={`#/entry/form/${props.entryId}`}
       >
         <span className="fa fa-fw fa-pencil" />
       </TooltipLink>
@@ -182,7 +188,7 @@ const EntryActions = props =>
 
 EntryActions.propTypes = {
   // data
-  entryId: T.number.isRequired,
+  entryId: T.string.isRequired,
   status: T.number.isRequired,
   locked: T.bool.isRequired,
   notificationsEnabled: T.bool.isRequired,
@@ -205,64 +211,14 @@ EntryActions.propTypes = {
   delete: T.func.isRequired,
   toggleStatus: T.func.isRequired,
   toggleLock: T.func.isRequired,
-  updateNotification: T.func.isRequired
+  updateNotification: T.func.isRequired,
+  updateEntryUserProp: T.func.isRequired
 }
 
-class EntryViewComponent extends Component {
+class EntryComponent extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      entryUser: {}
-    }
-  }
-
-  componentDidMount() {
-    this.initializeEntry()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.entryId !== this.props.entryId) {
-      this.initializeEntry()
-    }
-  }
-
-  initializeEntry() {
-    if (this.props.entryId) {
-      this.props.loadEntry(this.props.entryId)
-
-      if (!this.props.isAnon) {
-        fetch(generateUrl('claro_claco_form_entry_user_retrieve', {entry: this.props.entryId}), {
-          method: 'GET' ,
-          credentials: 'include'
-        })
-          .then(response => response.json())
-          .then(entryUser => this.setState({entryUser: JSON.parse(entryUser)}))
-      }
-    } else if (this.props.randomEnabled) {
-      this.goToRandomEntry()
-    } else {
-      this.props.history.push('/menu')
-    }
-  }
-
-  goToRandomEntry() {
-    fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.resourceId}), {
-      method: 'GET' ,
-      credentials: 'include'
-    })
-      .then(response => response.json())
-      .then(entryId => {
-        if (entryId > 0) {
-          this.props.history.push(`/entry/${entryId}/view`)
-        } else {
-          this.props.history.push('/menu')
-        }
-      })
-  }
-
-  updateState(property, value) {
-    this.setState({[property]: value})
+    this.updateNotification = this.updateNotification.bind(this)
   }
 
   canViewMetadata() {
@@ -276,41 +232,11 @@ class EntryViewComponent extends Component {
   }
 
   canShare() {
-    return this.props.canEdit || this.props.isOwner || this.state.entryUser.shared
+    return this.props.canEdit || this.props.isOwner || this.props.entryUser.shared
   }
 
   isFieldDisplayable(field) {
     return this.canViewMetadata() || !field.isMetadata
-  }
-
-  displayFieldContent(field) {
-    const fieldValue = this.props.entry.fieldValues ?
-      this.props.entry.fieldValues.find(fv => fv.field.id === field.id) :
-      null
-
-    if (fieldValue && fieldValue.fieldFacetValue && fieldValue.fieldFacetValue.value !== undefined) {
-      const value = fieldValue.fieldFacetValue.value
-
-      switch (getFieldType(field.type).name) {
-        case 'checkboxes':
-          return value.join(', ')
-        case 'select':
-          return Array.isArray(value) ? value.join(', ') : value
-        case 'country':
-          return getCountry(value) || ''
-        case 'date' :
-          return value != undefined && value !== null && value.date ?
-            displayDate(value.date) :
-            value ? displayDate(value) : ''
-        case 'rich_text':
-        case 'html':
-          return (<div dangerouslySetInnerHTML={{ __html: value}}/>)
-        case 'file':
-          return (<FilesThumbnails files={value}/>)
-        default:
-          return value
-      }
-    }
   }
 
   showSharingForm() {
@@ -327,7 +253,7 @@ class EntryViewComponent extends Component {
             help: trans('share_entry_msg', {}, 'clacoform'),
             handleRemove: (user) => this.props.unshareEntry(this.props.entryId, user.id),
             handleSelect: (user) => this.props.shareEntry(this.props.entryId, user.id),
-            selected: JSON.parse(data.users)
+            selected: data.users
           }
         )
       })
@@ -348,12 +274,12 @@ class EntryViewComponent extends Component {
   }
 
   isNotificationsEnabled() {
-    return this.state.entryUser.notifyEdition || (this.props.displayComments && this.state.entryUser.notifyComment)
+    return this.props.entryUser.notifyEdition || (this.props.displayComments && this.props.entryUser.notifyComment)
   }
 
   updateNotification(notifications) {
-    const entryUser = Object.assign({}, this.state.entryUser, notifications)
-    this.setState({entryUser: entryUser}, () => this.props.saveEntryUser(this.props.entryId, this.state.entryUser))
+    const entryUser = Object.assign({}, this.props.entryUser, notifications)
+    this.props.saveEntryUser(entryUser)
   }
 
   getFieldValue(fieldId) {
@@ -413,6 +339,37 @@ class EntryViewComponent extends Component {
     return template
   }
 
+  getSections(fields) {
+    const sectionFields = [
+      {
+        name: 'title',
+        type: 'string',
+        label: trans('title'),
+        required: true
+      }
+    ]
+    fields.forEach(f => {
+      const params = {
+        name: `values.${f.id}`,
+        type: f.type,
+        label: f.label,
+        required: f.required,
+        help: f.help
+      }
+      sectionFields.push(params)
+    })
+    const sections = [
+      {
+        id: 'general',
+        title: trans('general'),
+        primary: true,
+        fields: sectionFields
+      }
+    ]
+
+    return sections
+  }
+
   render() {
     return (
       this.props.canViewEntry || this.canShare() ?
@@ -440,15 +397,15 @@ class EntryViewComponent extends Component {
                   </div>
                 }
 
-                {this.state.entryUser.id &&
+                {this.props.entry.id && this.props.entryUser.id &&
                   <EntryActions
                     entryId={this.props.entry.id}
                     status={this.props.entry.status}
                     locked={this.props.entry.locked}
                     notificationsEnabled={this.isNotificationsEnabled()}
                     displayComments={this.props.displayComments}
-                    notifyEdition={this.state.entryUser.notifyEdition}
-                    notifyComment={this.state.entryUser.notifyComment}
+                    notifyEdition={this.props.entryUser.notifyEdition}
+                    notifyComment={this.props.entryUser.notifyComment}
                     canAdministrate={this.props.canAdministrate}
                     canEdit={this.props.canEditEntry}
                     canGeneratePdf={this.props.canGeneratePdf}
@@ -462,6 +419,8 @@ class EntryViewComponent extends Component {
                     toggleStatus={() => this.props.switchEntryStatus(this.props.entry.id)}
                     toggleLock={() => this.props.switchEntryLock(this.props.entry.id)}
                     updateNotification={this.updateNotification}
+                    updateEntryUserProp={this.props.updateEntryUserProp}
+
                   />
                 }
               </div>
@@ -470,19 +429,10 @@ class EntryViewComponent extends Component {
                 <HtmlText>
                   {this.generateTemplate()}
                 </HtmlText> :
-                this.props.fields.filter(f => this.isFieldDisplayable(f)).map(f =>
-                  <div key={`field-${f.id}`}>
-                    <div className="row">
-                      <label className="col-md-3">
-                        {f.name}
-                      </label>
-                      <div className="col-md-9">
-                        {this.displayFieldContent(f)}
-                      </div>
-                    </div>
-                    <hr/>
-                  </div>
-                )
+                <DataDetailsContainer
+                  name="entries.current"
+                  sections={this.getSections(this.props.fields)}
+                />
               }
             </div>
 
@@ -529,9 +479,9 @@ class EntryViewComponent extends Component {
   }
 }
 
-EntryViewComponent.propTypes = {
-  resourceId: T.number.isRequired,
-  entryId: T.number,
+EntryComponent.propTypes = {
+  clacoFormId: T.string.isRequired,
+  entryId: T.string,
   user: T.shape({
     id: T.string,
     firstName: T.string,
@@ -563,67 +513,30 @@ EntryViewComponent.propTypes = {
   menuPosition: T.string.isRequired,
   template: T.string,
   useTemplate: T.bool.isRequired,
-  entry: T.shape({
-    id: T.number,
-    title: T.string,
-    status: T.number,
-    locked: T.bool,
-    creationDate: T.string,
-    publicationDate: T.string,
-    editionDate: T.string,
-    keywords: T.arrayOf(T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired
-    })),
-    categories: T.arrayOf(T.shape({
-      id: T.number.isRequired,
-      name: T.string.isRequired
-    })),
-    comments: T.arrayOf(T.shape({
-      id: T.number.isRequired,
-      content: T.string.isRequired,
-      user: T.shape({
-        id: T.string,
-        firstName: T.string,
-        lastName: T.string
-      })
-    })),
-    user: T.shape({
-      id: T.string,
-      firstName: T.string,
-      lastName: T.string
-    }),
-    fieldValues: T.arrayOf(T.shape({
-      id: T.number.isRequired,
-      field: T.shape({
-        id: T.number.isRequired
-      }).isRequired,
-      fieldFacetValue: T.shape({
-        id: T.number.isRequired,
-        value: T.any
-      }).isRequired
-    }))
-  }),
+  entry: T.shape(EntryType.propTypes),
+  entryUser: T.shape(EntryUserType.propTypes),
   fields: T.arrayOf(T.shape(FieldType.propTypes)),
-  loadEntry: T.func.isRequired,
   deleteEntry: T.func.isRequired,
   switchEntryStatus: T.func.isRequired,
   switchEntryLock: T.func.isRequired,
   downloadEntryPdf: T.func.isRequired,
-  saveEntryUser: T.func.isRequired,
   changeEntryOwner: T.func.isRequired,
   shareEntry: T.func.isRequired,
   unshareEntry: T.func.isRequired,
+  updateEntryUserProp: T.func.isRequired,
+  saveEntryUser: T.func.isRequired,
   showModal: T.func.isRequired,
   fadeModal: T.func.isRequired,
   history: T.object.isRequired
 }
 
-const EntryView = withRouter(connect(
+const Entry = withRouter(connect(
   (state, ownProps) => ({
-    resourceId: select.clacoForm(state).id,
+    clacoFormId: select.clacoForm(state).id,
     user: state.user,
-    entryId: parseInt(ownProps.match.params.id),
+    entryId: ownProps.match.params.id,
+    entry: formSelect.data(formSelect.form(state, 'entries.current')),
+    entryUser: select.entryUser(state),
 
     canEdit: resourceSelect.editable(state),
     canEditEntry: select.canEditCurrentEntry(state),
@@ -633,7 +546,6 @@ const EntryView = withRouter(connect(
     canComment: select.canComment(state),
     canViewComments: select.canViewComments(state),
     isAnon: state.isAnon,
-    entry: state.currentEntry,
     fields: select.visibleFields(state),
     displayMetadata: select.getParam(state, 'display_metadata'),
     displayKeywords: select.getParam(state, 'display_keywords'),
@@ -650,9 +562,6 @@ const EntryView = withRouter(connect(
     template: select.template(state)
   }),
   (dispatch, ownProps) => ({
-    loadEntry(entryId) {
-      dispatch(actions.loadEntry(entryId))
-    },
     deleteEntry(entry) {
       dispatch(
         modalActions.showModal(MODAL_DELETE_CONFIRM, {
@@ -674,9 +583,6 @@ const EntryView = withRouter(connect(
     downloadEntryPdf(entryId) {
       dispatch(actions.downloadEntryPdf(entryId))
     },
-    saveEntryUser(entryId, entryUser) {
-      dispatch(actions.saveEntryUser(entryId, entryUser))
-    },
     changeEntryOwner(entryId, userId) {
       dispatch(actions.changeEntryOwner(entryId, userId))
     },
@@ -686,6 +592,12 @@ const EntryView = withRouter(connect(
     unshareEntry(entryId, userId) {
       dispatch(actions.unshareEntry(entryId, userId))
     },
+    updateEntryUserProp(property, value) {
+      dispatch(actions.editAndSaveEntryUser(property, value))
+    },
+    saveEntryUser(entryUser) {
+      dispatch(actions.saveEntryUser(entryUser))
+    },
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))
     },
@@ -693,8 +605,8 @@ const EntryView = withRouter(connect(
       dispatch(modalActions.fadeModal())
     }
   })
-)(EntryViewComponent))
+)(EntryComponent))
 
 export {
-  EntryView
+  Entry
 }

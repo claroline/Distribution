@@ -29,20 +29,26 @@ const Keyword = {
 
 const Field = {
   propTypes: {
-    id: T.number,
+    id: T.string,
+    autoId: T.number,
     name: T.string,
-    type: T.number,
+    type: T.string,
     required: T.bool,
-    isMetadata: T.bool,
-    locked: T.bool,
-    lockedEditionOnly: T.bool,
-    hidden: T.bool,
-    order: T.number,
-    help: T.string,
-    details: T.shape({
-      file_types: T.arrayOf(T.string),
-      nb_files_max: T.number
+    restrictions: T.shape({
+      isMetadata: T.bool,
+      locked: T.bool,
+      lockedEditionOnly: T.bool,
+      hidden: T.bool,
+      order: T.number
     }),
+    help: T.string,
+    options: T.oneOfType([
+      T.shape({
+        file_types: T.arrayOf(T.string),
+        nb_files_max: T.number
+      }),
+      T.array
+    ]),
     fieldFacet: T.shape({
       id: T.number.isRequired,
       name: T.string.isRequired,
@@ -60,7 +66,8 @@ const Field = {
 
 const ClacoForm = {
   propTypes: {
-    id: T.number.isRequired,
+    id: T.string.isRequired,
+    autoId: T.number.isRequired,
     details: T.shape({
       max_entries: T.number,
       creation_enabled: T.bool,
@@ -111,9 +118,40 @@ const ClacoForm = {
   }
 }
 
+const Entry = {
+  propTypes: {
+    id: T.string,
+    autoId: T.number,
+    title: T.string,
+    status: T.number,
+    locked: T.bool,
+    creationDate: T.string,
+    editionDate: T.string,
+    publicationDate: T.string,
+    user: T.object,
+    clacoForm: T.object,
+    values: T.object
+  }
+}
+
+const EntryUser = {
+  propTypes: {
+    id: T.string,
+    autoId: T.number,
+    shared: T.bool,
+    notifyEdition: T.bool,
+    notifyComment: T.bool,
+    notifyVote: T.bool,
+    user: T.object,
+    entry: T.object
+  }
+}
+
 export {
   Category,
   Keyword,
   Field,
-  ClacoForm
+  ClacoForm,
+  Entry,
+  EntryUser
 }

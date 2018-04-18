@@ -46,8 +46,10 @@ bootstrap(
       isAnon: !initialData.user,
       canGeneratePdf: initialData.canGeneratePdf === 1,
       fields: initialData.fields,
-      entries: initialData.entries,
-      myEntriesCount: initialData.myEntriesCount,
+      entries: {
+        list: initialData.entries,
+        myEntriesCount: initialData.myEntriesCount
+      },
       cascadeLevelMax: initialData.cascadeLevelMax,
       roles: initialData.roles,
       myRoles: initialData.myRoles

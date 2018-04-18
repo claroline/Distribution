@@ -11,14 +11,14 @@ import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 
 class EntryMenuComponent extends Component {
   goToRandomEntry() {
-    fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.resourceId}), {
+    fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.clacoFormId}), {
       method: 'GET' ,
       credentials: 'include'
     })
       .then(response => response.json())
       .then(entryId => {
-        if (entryId > 0) {
-          this.props.history.push(`/entry/${entryId}/view`)
+        if (entryId) {
+          this.props.history.push(`/entries/${entryId}`)
         }
       })
   }
@@ -31,7 +31,7 @@ class EntryMenuComponent extends Component {
             id="tooltip-button-add"
             className="btn btn-primary entry-menu-button"
             title={trans('add_entry', {}, 'clacoform')}
-            onClick={() => this.props.history.push('/entry/create')}
+            onClick={() => this.props.history.push('/entry/form')}
           >
             <span className="fa fa-fw fa-plus" />
           </TooltipButton>
@@ -64,7 +64,7 @@ class EntryMenuComponent extends Component {
 }
 
 EntryMenuComponent.propTypes = {
-  resourceId: T.number.isRequired,
+  clacoFormId: T.string.isRequired,
   canSearchEntry: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   randomEnabled: T.bool.isRequired,
@@ -73,7 +73,7 @@ EntryMenuComponent.propTypes = {
 
 const EntryMenu = withRouter(connect(
   (state) => ({
-    resourceId: selects.clacoForm(state).id,
+    clacoFormId: select.clacoForm(state).id,
     canSearchEntry: select.canSearchEntry(state),
     randomEnabled: select.getParam(state, 'random_enabled'),
     canAddEntry: select.canAddEntry(state)

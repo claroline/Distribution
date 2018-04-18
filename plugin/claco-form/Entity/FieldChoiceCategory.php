@@ -14,8 +14,6 @@ namespace Claroline\ClacoFormBundle\Entity;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -30,8 +28,6 @@ class FieldChoiceCategory
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_facet_admin"})
-     * @SerializedName("id")
      */
     protected $id;
 
@@ -47,24 +43,18 @@ class FieldChoiceCategory
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\ClacoFormBundle\Entity\Category")
      * @ORM\JoinColumn(name="category_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_facet_admin"})
-     * @SerializedName("category")
      */
     protected $category;
 
     /**
      * @ORM\Column(name="field_value")
      * @Assert\NotBlank()
-     * @Groups({"api_facet_admin"})
-     * @SerializedName("value")
      */
     protected $value;
 
     /**
      * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Facet\FieldFacetChoice")
      * @ORM\JoinColumn(name="field_facet_choice_id", nullable=true, onDelete="CASCADE")
-     * @Groups({"api_facet_admin"})
-     * @SerializedName("fieldFacetChoice")
      */
     protected $fieldFacetChoice;
 

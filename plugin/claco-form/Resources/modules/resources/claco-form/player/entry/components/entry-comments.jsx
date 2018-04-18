@@ -4,6 +4,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
@@ -202,7 +203,7 @@ EntryCommentsComponent.propTypes = {
 
 const EntryComments = connect(
   (state) => ({
-    entry: state.currentEntry,
+    entry: formSelect.data(formSelect.form(state, 'entries.current')),
     user: state.user,
     displayCommentAuthor: select.getParam(state, 'display_comment_author'),
     displayCommentDate: select.getParam(state, 'display_comment_date')

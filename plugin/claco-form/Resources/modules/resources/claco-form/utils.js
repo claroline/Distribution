@@ -7,7 +7,7 @@ export const generateFieldKey = (id) => {
 }
 
 export const getFieldType = (value) => {
-  return clacoFormConstants.FIELD_TYPES.find(f => f.value === value)
+  return clacoFormConstants.FIELD_TYPES.find(f => f.name === value)
 }
 
 export const getCountry = (value) => intlConstants.REGIONS[value] || null

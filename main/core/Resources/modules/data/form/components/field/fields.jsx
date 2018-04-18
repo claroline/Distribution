@@ -95,9 +95,9 @@ class FieldList extends Component {
         <ul>
           {this.props.value.map((field, fieldIndex) =>
             <li key={fieldIndex} className="field-item">
-                <span className={classes('field-item-icon',
-                  getCreatableTypes()[Object.keys(getCreatableTypes()).find(type => field.type === type)].meta.icon
-                )} />
+              <span className={classes('field-item-icon',
+                getCreatableTypes()[Object.keys(getCreatableTypes()).find(type => field.type === type)].meta.icon
+              )} />
 
               <FieldPreview
                 {...field}

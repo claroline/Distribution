@@ -2,7 +2,7 @@ import {trans} from '#/main/core/translation'
 import {constants as listConstants} from '#/main/core/data/list/constants'
 
 const FIELD_TYPES = [
-  {name: 'text', value: 1, label: trans('text'), hasChoice: false, hasCascade: false, answerType: 'string'},
+  {name: 'string', value: 1, label: trans('text'), hasChoice: false, hasCascade: false, answerType: 'string'},
   {name: 'number', value: 2, label: trans('number'), hasChoice: false, hasCascade: false, answerType: 'number'},
   {name: 'date', value: 3, label: trans('date'), hasChoice: false, hasCascade: false, answerType: 'date'},
   {name: 'radio', value: 4, label: trans('radio'), hasChoice: true, hasCascade: false, answerType: 'string'},
@@ -11,7 +11,8 @@ const FIELD_TYPES = [
   {name: 'country', value: 7, label: trans('country'), hasChoice: false, hasCascade: false, answerType: 'string'},
   {name: 'email', value: 8, label: trans('email'), hasChoice: false, hasCascade: false, answerType: 'string'},
   {name: 'html', value: 9, label: trans('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'file', value: 11, label: trans('file'), hasChoice: false, hasCascade: false, answerType: 'array'}
+  {name: 'file', value: 11, label: trans('file'), hasChoice: false, hasCascade: false, answerType: 'array'},
+  {name: 'boolean', value: 12, label: trans('boolean'), hasChoice: false, hasCascade: false, answerType: 'number'},
 ]
 
 const FILE_TYPES = {

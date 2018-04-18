@@ -7,6 +7,7 @@ import {Textarea} from '#/main/core/layout/form/components/field/textarea.jsx'
 import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
+import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {generateFieldKey, getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/actions'
 import {actions} from '#/plugin/claco-form/resources/claco-form/editor/template/actions'
@@ -44,8 +45,8 @@ class TemplateFormComponent extends Component {
         duplicatedErrors.push('%clacoform_entry_title%')
       }
       this.props.fields.forEach(f => {
-        if (!f.hidden) {
-          const fieldKey = generateFieldKey(f.id)
+        if (!f.restrictions.hidden) {
+          const fieldKey = generateFieldKey(f.autoId)
           const regex = new RegExp(fieldKey, 'g')
           const matches = this.state.template.match(regex)
 
@@ -118,26 +119,26 @@ class TemplateFormComponent extends Component {
                   <b>%clacoform_entry_title%</b> : {trans('entry_title_info', {}, 'clacoform')}
                 </li>
                 {this.props.fields.map(f => {
-                  if (f.required && !f.hidden) {
+                  if (f.required && !f.restrictions.hidden) {
                     return (
-                      <li key={`required-${f.id}`}>
-                        <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
+                      <li key={`required-${f.autoId}`}>
+                        <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{getFieldType(f.type).label}]
                       </li>
                     )
                   }
                 })}
               </ul>
             </div>
-            {this.props.fields.filter(f => !f.required && !f.hidden).length > 0 &&
+            {this.props.fields.filter(f => !f.required && !f.restrictions.hidden).length > 0 &&
               <div>
                 <hr/>
                 <h4>{trans('optional', {}, 'clacoform')}</h4>
                 <ul>
                   {this.props.fields.map(f => {
-                    if (!f.required && !f.hidden) {
+                    if (!f.required && !f.restrictions.hidden) {
                       return (
-                        <li key={`optional-${f.id}`}>
-                          <b>{generateFieldKey(f.id)}</b> : {f.name} [{getFieldType(f.type).label}]
+                        <li key={`optional-${f.autoId}`}>
+                          <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{getFieldType(f.type).label}]
                         </li>
                       )
                     }
@@ -175,12 +176,7 @@ class TemplateFormComponent extends Component {
 
 TemplateFormComponent.propTypes = {
   template: T.string,
-  fields: T.arrayOf(T.shape({
-    id: T.number.isRequired,
-    name: T.string.isRequired,
-    type: T.number.isRequired,
-    required: T.bool.isRequired
-  })),
+  fields: T.arrayOf(T.shape(FieldType.propTypes)),
   useTemplate: T.bool,
   saveTemplate: T.func.isRequired,
   updateMessage: T.func.isRequired
@@ -189,7 +185,7 @@ TemplateFormComponent.propTypes = {
 const TemplateForm = connect(
   (state) => ({
     template: select.template(state),
-    fields: state.fields.filter(f => f.type !== 11),
+    fields: select.fields(state).filter(f => f.type !== 11),
     useTemplate: select.useTemplate(state)
   }),
   (dispatch) => ({

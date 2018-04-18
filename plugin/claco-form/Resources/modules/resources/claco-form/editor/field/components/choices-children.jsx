@@ -5,6 +5,7 @@ import {PropTypes as T} from 'prop-types'
 import {trans} from '#/main/core/translation'
 import {SelectInput} from '#/main/core/layout/form/components/field/select-input.jsx'
 
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {ChoiceField} from '#/plugin/claco-form/resources/claco-form/editor/field/components/choice-field.jsx'
@@ -124,7 +125,7 @@ ChoicesChildrenComponent.propTypes = {
 const ChoicesChildren = connect(
   (state) => ({
     cascadeLevelMax: state.cascadeLevelMax,
-    fields: state.fields
+    fields: select.fields(state)
   })
 )(ChoicesChildrenComponent)
 

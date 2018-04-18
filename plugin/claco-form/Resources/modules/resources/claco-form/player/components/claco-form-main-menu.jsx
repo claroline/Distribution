@@ -16,8 +16,8 @@ class ClacoFormMainMenuComponent extends Component {
     })
       .then(response => response.json())
       .then(entryId => {
-        if (entryId > 0) {
-          this.props.history.push(`/entry/${entryId}/view`)
+        if (entryId) {
+          this.props.history.push(`/entries/${entryId}`)
         }
       })
   }
@@ -28,7 +28,7 @@ class ClacoFormMainMenuComponent extends Component {
         {this.props.canAddEntry &&
           <a
             className="btn btn-default claco-form-menu-btn"
-            href="#/entry/create"
+            href="#/entry/form"
           >
             <span className="fa fa-fw fa-pencil-square-o fa-5x"></span>
             <h4>{trans('add_entry', {}, 'clacoform')}</h4>
@@ -58,7 +58,7 @@ class ClacoFormMainMenuComponent extends Component {
 }
 
 ClacoFormMainMenuComponent.propTypes = {
-  resourceId: T.number.isRequired,
+  resourceId: T.string.isRequired,
   canSearchEntry: T.bool.isRequired,
   canAddEntry: T.bool.isRequired,
   randomEnabled: T.bool.isRequired,

@@ -64,6 +64,13 @@ class FieldFacetValue
     protected $arrayValue;
 
     /**
+     * @ORM\Column(type="boolean", nullable=true)
+     *
+     * @var bool
+     */
+    protected $boolValue;
+
+    /**
      * @ORM\ManyToOne(
      *     targetEntity="Claroline\CoreBundle\Entity\User",
      *     inversedBy="fieldsFacetValue",
@@ -197,6 +204,22 @@ class FieldFacetValue
     }
 
     /**
+     * @param bool $boolValue
+     */
+    public function setBoolValue($boolValue)
+    {
+        $this->boolValue = $boolValue;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getBoolValue()
+    {
+        return $this->boolValue;
+    }
+
+    /**
      * @param User|null $user
      */
     public function setUser(User $user = null)
@@ -223,7 +246,33 @@ class FieldFacetValue
             case FieldFacet::CHECKBOXES_TYPE: return $this->getArrayValue();
             case FieldFacet::CASCADE_SELECT_TYPE: return $this->getArrayValue();
             case FieldFacet::FILE_TYPE: return $this->getArrayValue();
+            case FieldFacet::BOOLEAN_TYPE: return $this->getBoolValue();
             default: return $this->getStringValue();
+        }
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value)
+    {
+        switch ($this->getFieldFacet()->getType()) {
+            case FieldFacet::FLOAT_TYPE:
+                $this->setFloatValue($value);
+                break;
+            case FieldFacet::DATE_TYPE:
+                $this->getDateValue();
+                break;
+            case FieldFacet::CHECKBOXES_TYPE:
+            case FieldFacet::CASCADE_SELECT_TYPE:
+            case FieldFacet::FILE_TYPE:
+                $this->setArrayValue($value);
+                break;
+            case FieldFacet::BOOLEAN_TYPE:
+                $this->setBoolValue($value);
+                break;
+            default:
+                $this->setStringValue($value);
         }
     }
 }

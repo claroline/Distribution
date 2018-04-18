@@ -242,7 +242,7 @@ class EntriesComponent extends Component {
     const dataListActions = [{
       icon: 'fa fa-fw fa-eye',
       label: trans('view_entry', {}, 'clacoform'),
-      action: (rows) => this.navigateTo(`/entry/${rows[0].id}/view`),
+      action: (rows) => this.navigateTo(`/entries/${rows[0].id}`),
       context: 'row'
     }]
 
@@ -263,7 +263,7 @@ class EntriesComponent extends Component {
     dataListActions.push({
       icon: 'fa fa-fw fa-pencil',
       label: trans('edit'),
-      action: (rows) => this.navigateTo(`/entry/${rows[0].id}/edit`),
+      action: (rows) => this.navigateTo(`/entry/form/${rows[0].id}`),
       displayed: (rows) => !rows[0].locked && this.canEditEntry(rows[0]),
       context: 'row'
     })
@@ -427,12 +427,12 @@ class EntriesComponent extends Component {
               current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
               available: Object.keys(listConstants.DISPLAY_MODES)
             }}
-            name="entries"
+            name="entries.list"
             open={{
-              action: (row) => `#/entry/${row.id}/view`
+              action: (row) => `#/entries/${row.id}`
             }}
             fetch={{
-              url: ['claro_claco_form_entries_search', {clacoForm: this.props.resourceId}],
+              url: ['apiv2_clacoformentry_list', {clacoForm: this.props.clacoFormId}],
               autoload: true
             }}
             definition={this.generateColumns()}
@@ -465,7 +465,7 @@ EntriesComponent.propTypes = {
   user: T.object,
   fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   canGeneratePdf: T.bool.isRequired,
-  resourceId: T.number.isRequired,
+  clacoFormId: T.string.isRequired,
   canSearchEntry: T.bool.isRequired,
   searchEnabled: T.bool.isRequired,
   searchColumnEnabled: T.bool.isRequired,
@@ -507,9 +507,9 @@ const Entries = withRouter(connect(
     canAdministrate: resourceSelect.administrable(state),
     isAnon: state.isAnon,
     user: state.user,
-    fields: state.fields,
+    fields: select.fields(state),
     canGeneratePdf: state.canGeneratePdf,
-    resourceId: state.clacoForm.id,
+    clacoFormId: state.clacoForm.id,
     canSearchEntry: select.canSearchEntry(state),
     searchEnabled: select.getParam(state, 'search_enabled'),
     searchColumnEnabled: select.getParam(state, 'search_column_enabled'),
@@ -523,7 +523,7 @@ const Entries = withRouter(connect(
     displayCategories: select.getParam(state, 'display_categories'),
     displayKeywords: select.getParam(state, 'display_keywords'),
     isCategoryManager: select.isCategoryManager(state),
-    entries: state.entries
+    entries: state.entries.list
   }),
   (dispatch) => ({
     downloadEntryPdf(entryId) {

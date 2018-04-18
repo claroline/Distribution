@@ -166,7 +166,8 @@ class ConfigureFieldModal extends Component {
 ConfigureFieldModal.propTypes = {
   data: T.shape({
     type: T.string.isRequired,
-    options: T.object
+    options: T.object,
+    restrictions: T.object
   }),
   fadeModal: T.func.isRequired,
   save: T.func.isRequired

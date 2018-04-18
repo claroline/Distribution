@@ -60,7 +60,7 @@ class KeywordSerializer
         $this->sipe('name', 'setName', $data, $keyword);
 
         if (isset($data['clacoForm']['id'])) {
-            $clacoForm = $this->clacoFormRepo->findOneBy(['id' => $data['clacoForm']['id']]);
+            $clacoForm = $this->clacoFormRepo->findOneBy(['uuid' => $data['clacoForm']['id']]);
 
             if (!empty($clacoForm)) {
                 $keyword->setClacoForm($clacoForm);

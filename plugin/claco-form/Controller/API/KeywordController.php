@@ -56,6 +56,11 @@ class KeywordController extends AbstractCrudController
      *     "/clacoform/{clacoForm}/keywords/list",
      *     name="apiv2_clacoformkeyword_list"
      * )
+     * @EXT\ParamConverter(
+     *     "clacoForm",
+     *     class="ClarolineClacoFormBundle:ClacoForm",
+     *     options={"mapping": {"clacoForm": "uuid"}}
+     * )
      *
      * @param ClacoForm $clacoForm
      * @param Request   $request

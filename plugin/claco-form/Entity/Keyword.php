@@ -4,8 +4,6 @@ namespace Claroline\ClacoFormBundle\Entity;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,16 +25,12 @@ class Keyword
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("id")
      */
     protected $id;
 
     /**
      * @ORM\Column(name="keyword_name")
      * @Assert\NotBlank()
-     * @Groups({"api_claco_form", "api_user_min"})
-     * @SerializedName("name")
      */
     protected $name;
 
@@ -46,8 +40,6 @@ class Keyword
      *     inversedBy="keywords"
      * )
      * @ORM\JoinColumn(name="claco_form_id", nullable=false, onDelete="CASCADE")
-     * @Groups({"api_claco_form"})
-     * @SerializedName("clacoForm")
      */
     protected $clacoForm;
 

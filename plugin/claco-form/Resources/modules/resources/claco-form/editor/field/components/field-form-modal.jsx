@@ -13,6 +13,7 @@ import {NumberGroup} from '#/main/core/layout/form/components/group/number-group
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
+import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {ChoiceField} from '#/plugin/claco-form/resources/claco-form/editor/field/components/choice-field.jsx'
@@ -143,7 +144,7 @@ class FieldFormModalComponent  extends Component {
       fetch(
         generateUrl(
           'claro_claco_form_get_field_by_name_excluding_id',
-          {clacoForm: this.props.resourceId, name: this.state.field.name, id: this.props.field.id}
+          {clacoForm: this.props.clacoFormId, name: this.state.field.name, id: this.props.field.id}
         ),
         {
           method: 'GET' ,
@@ -511,7 +512,7 @@ class FieldFormModalComponent  extends Component {
 }
 
 FieldFormModalComponent.propTypes = {
-  resourceId:T.number.isRequired,
+  clacoFormId:T.string.isRequired,
   field: T.shape(FieldType.propTypes).isRequired,
   cascadeLevelMax: T.number.isRequired,
   fields: T.arrayOf(T.shape(FieldType.propTypes)),
@@ -522,7 +523,7 @@ FieldFormModalComponent.propTypes = {
 const FieldFormModal = connect(
   (state) => ({
     cascadeLevelMax: state.cascadeLevelMax,
-    fields: state.fields
+    fields: select.fields(state)
   })
 )(FieldFormModalComponent)
 

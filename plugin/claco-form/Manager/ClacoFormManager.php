@@ -583,7 +583,7 @@ class ClacoFormManager
 
         if ($count > 0) {
             $randomIndex = rand(0, $count - 1);
-            $entryId = $entries[$randomIndex]->getId();
+            $entryId = $entries[$randomIndex]->getUuid();
         }
 
         return $entryId;
@@ -1017,7 +1017,7 @@ class ClacoFormManager
         $clacoFormName = $entry->getClacoForm()->getResourceNode()->getName();
         $clacoFormId = $entry->getClacoForm()->getId();
         $url = $this->router->generate('claro_claco_form_open', ['clacoForm' => $clacoFormId], true).
-            '#/entries/'.$entry->getId().'/view';
+            '#/entries/'.$entry->getUuid();
 
         foreach ($oldCategories as $category) {
             if (in_array($category, $currentCategories)) {
@@ -1099,7 +1099,7 @@ class ClacoFormManager
 
         if ($clacoForm->getDisplayComments()) {
             $url = $this->router->generate('claro_claco_form_open', ['clacoForm' => $clacoForm->getId()], true).
-                '#/entries/'.$entry->getId().'/view';
+                '#/entries/'.$entry->getUuid();
             $receivers = [];
             $categories = $entry->getCategories();
 
@@ -1411,7 +1411,7 @@ class ClacoFormManager
         $receivers = [];
         $clacoForm = $entry->getClacoForm();
         $url = $this->router->generate('claro_claco_form_open', ['clacoForm' => $clacoForm->getId()], true).
-            '#/entries/'.$entry->getId().'/view';
+            '#/entries/'.$entry->getUuid();
 
         switch ($type) {
             case 'edition':
@@ -2468,11 +2468,11 @@ class ClacoFormManager
         return $canViewComments;
     }
 
-    private function registerFile(ClacoForm $clacoForm, UploadedFile $file)
+    public function registerFile(ClacoForm $clacoForm, UploadedFile $file)
     {
         $ds = DIRECTORY_SEPARATOR;
         $hashName = Uuid::uuid4()->toString();
-        $dir = $this->filesDir.$ds.'clacoform'.$ds.$clacoForm->getId();
+        $dir = $this->filesDir.$ds.'clacoform'.$ds.$clacoForm->getUuid();
         $fileName = $hashName.'.'.$file->getClientOriginalExtension();
 
         $file->move($dir, $fileName);
@@ -2480,7 +2480,7 @@ class ClacoFormManager
         return [
             'name' => $file->getClientOriginalName(),
             'mimeType' => $file->getClientMimeType(),
-            'url' => '../files/clacoform'.$ds.$clacoForm->getId().$ds.$fileName,
+            'url' => '../files/clacoform'.$ds.$clacoForm->getUuid().$ds.$fileName,
         ];
     }
 

@@ -82,7 +82,7 @@ class CategorySerializer
         $this->sipe('details', 'setDetails', $data, $category);
 
         if (isset($data['clacoForm']['id'])) {
-            $clacoForm = $this->clacoFormRepo->findOneBy(['id' => $data['clacoForm']['id']]);
+            $clacoForm = $this->clacoFormRepo->findOneBy(['uuid' => $data['clacoForm']['id']]);
 
             if (!empty($clacoForm)) {
                 $category->setClacoForm($clacoForm);

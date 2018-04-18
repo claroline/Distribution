@@ -212,16 +212,13 @@ class CategoryFormModalComponent  extends Component {
 }
 
 CategoryFormModalComponent.propTypes = {
-  resourceId:T.number.isRequired,
   category: T.shape(CategoryType.propTypes).isRequired,
   saveCategory: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
 
 const CategoryFormModal = connect(
-  (state) => ({
-    resourceId: state.clacoForm.id
-  }),
+  null,
   (dispatch) => ({
     saveCategory(category) {
       dispatch(actions.saveCategory(category))

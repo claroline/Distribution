@@ -6,16 +6,18 @@ const clacoForm = state => state.clacoForm
 const isAnon = state => state.isAnon
 const user = state => state.user
 const params = state => state.clacoForm.details
-const visibleFields = state => state.fields.filter(f => !f.hidden)
+const fields = state => state.clacoForm.fields
+const visibleFields = state => state.clacoForm.fields.filter(f => !f.restrictions.hidden)
 const template = state => state.clacoForm.template
 const useTemplate = state => state.clacoForm.details['use_template']
 const getParam = (state, property) => state.clacoForm.details[property]
-const currentEntry = state => state.currentEntry
-const myEntriesCount = state => state.myEntriesCount
+const currentEntry = state => state.entries.current
+const myEntriesCount = state => state.entries.myEntriesCount
 const canAdministrate = state => state.resourceNode.rights.current.administrate
 const categories = state => state.clacoForm.categories
 const keywords = state => state.clacoForm.keywords
 const myRoles = state => state.myRoles
+const entryUser = state => state.entries.entryUser
 
 const canSearchEntry = createSelector(
   resourceSelect.editable,
@@ -163,6 +165,7 @@ export const select = {
   clacoForm,
   isAnon,
   canSearchEntry,
+  fields,
   visibleFields,
   template,
   useTemplate,
@@ -178,5 +181,6 @@ export const select = {
   canComment,
   canViewComments,
   categories,
-  keywords
+  keywords,
+  entryUser
 }
