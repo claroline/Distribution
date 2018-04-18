@@ -50,7 +50,7 @@ class LogsController extends Controller
      *
      * @throws \Exception
      */
-    public function listAction()
+    public function indexAction()
     {
         return [
             'actions' => $this->eventManager->getEventsForApiFilter(LogGenericEvent::DISPLAYED_ADMIN),

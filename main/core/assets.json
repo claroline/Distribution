@@ -27,7 +27,8 @@
       "tools-workspace-logs": "tools/workspace/logs",
       "tools-workspace-dashboard": "tools/workspace/dashboard",
       "resource-logs": "resource/logs",
-      "tools-admin-logs": "administration/logs"
+      "tools-admin-logs": "administration/logs",
+      "tools-admin-analytics": "administration/analytics"
     }
   },
 
@@ -37,7 +38,8 @@
       "home-tool": "tools/home.less",
       "theme-management": "tools/theme-management.less",
       "portal": "portal/portal.less",
-      "dashboard": "tools/dashboard.less"
+      "dashboard": "tools/dashboard.less",
+      "analytics": "tools/analytics.less"
     }
   }
 }

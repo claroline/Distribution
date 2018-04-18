@@ -77,4 +77,9 @@ class WidgetManager
         ) :
         [];
     }
+
+    public function countWidgetsByType()
+    {
+        return $this->widgetInstanceRepo->countByType();
+    }
 }

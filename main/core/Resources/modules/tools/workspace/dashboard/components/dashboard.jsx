@@ -30,8 +30,11 @@ const ResourceTypesTable = (props) =>
       {Object.keys(props.data).map((key, index) =>
         <TableRow key={key}>
           <TableCell align={'left'}>
-            <span className="dashboard-color-legend" style={{backgroundColor: schemeCategory20c[index]}}/>
-            {trans(props.data[key].xData, {}, 'resource')}
+            <span
+              className="dashboard-color-legend"
+              style={{backgroundColor: schemeCategory20c[index % schemeCategory20c.length]}}
+            />
+            <span>{trans(props.data[key].xData, {}, 'resource')}</span>
           </TableCell>
           <TableCell align={'left'}>
             {props.data[key].yData}
@@ -61,7 +64,7 @@ const DashboardCard = (props) =>
 DashboardCard.propTypes = {
   title: T.string.isRequired,
   icon: T.string,
-  children: T.element.isRequired
+  children: T.node.isRequired
 }
 
 class Dashboard extends Component {

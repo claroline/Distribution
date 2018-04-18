@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\API\FinderProvider;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Log\LogResourceExportEvent;
@@ -88,7 +89,7 @@ class AnalyticsManager
         return [$startDate->getTimestamp(), $endDate->getTimestamp()];
     }
 
-    public function getWorkspaceResourceTypesCount(Workspace $workspace)
+    public function getResourceTypesCount(Workspace $workspace = null)
     {
         $resourceTypes = $this->resourceTypeRepo->countResourcesByType($workspace);
         $chartData = [];
@@ -107,10 +108,47 @@ class AnalyticsManager
         return $this->logManager->getChartData($this->formatQueryParams($finderParams));
     }
 
+    public function topWorkspaceByAction(array $finderParams)
+    {
+        $query = $this->formatQueryParams($finderParams);
+
+        if (!isset($query['filters']['action'])) {
+            $query['filters']['action'] = LogWorkspaceToolReadEvent::ACTION;
+        }
+        $queryParams = FinderProvider::parseQueryParams($query);
+
+        return $this->logRepository->findTopWorkspaceByAction($queryParams['allFilters'], $queryParams['limit']);
+    }
+
+    public function topResourcesByAction(array $finderParams, $onlyMedia = false)
+    {
+        $query = $this->formatQueryParams($finderParams);
+
+        if (!isset($query['filters']['action'])) {
+            $query['filters']['action'] = LogResourceReadEvent::ACTION;
+        }
+
+        if ($onlyMedia) {
+            $query['filters']['resourceType'] = 'file';
+        }
+        $queryParams = FinderProvider::parseQueryParams($query);
+
+        return $this->logRepository->findTopResourcesByAction($queryParams['allFilters'], $queryParams['limit']);
+    }
+
     private function formatQueryParams(array $finderParams = [])
     {
         $filters = isset($finderParams['filters']) ? $finderParams['filters'] : [];
         $hiddenFilters = isset($finderParams['hiddenFilters']) ? $finderParams['hiddenFilters'] : [];
+
+        return [
+            'filters' => $this->formatDateRange($filters),
+            'hiddenFilters' => $hiddenFilters,
+        ];
+    }
+
+    private function formatDateRange(array $filters)
+    {
         // Default 30 days analytics
         if (!isset($filters['dateLog'])) {
             $date = new \DateTime('now');
@@ -122,13 +160,11 @@ class AnalyticsManager
         if (!isset($filters['dateTo'])) {
             $date = clone $filters['dateLog'];
             $date->add(new \DateInterval('P30D'));
+            $date->setTime(23, 59, 59);
             $filters['dateTo'] = clone $date;
         }
 
-        return [
-            'filters' => $filters,
-            'hiddenFilters' => $hiddenFilters,
-        ];
+        return $filters;
     }
 
     // TODO Remove any old methods not required after refactoring
@@ -176,7 +212,7 @@ class AnalyticsManager
                 $listData = $this->workspaceRepo->findWorkspacesWithMostResources($max);
                 break;
             case 'top_workspaces_connections':
-                $listData = $this->topWSByAction($range, LogWorkspaceToolReadEvent::ACTION, $max);
+                $listData = $this->topWorkspaceByAction($range, LogWorkspaceToolReadEvent::ACTION, $max);
                 break;
             case 'top_resources_views':
                 $listData = $this->topResourcesByAction($range, LogResourceReadEvent::ACTION, $max);
@@ -199,51 +235,6 @@ class AnalyticsManager
         }
 
         return $listData;
-    }
-
-    public function topWSByAction($range = null, $action = null, $max = -1)
-    {
-        if (null === $range) {
-            $range = $this->getYesterdayRange();
-        }
-
-        if (null === $action) {
-            $action = LogWorkspaceToolReadEvent::ACTION;
-        }
-
-        $resultData = $this->logRepository->topWSByAction($range, $action, $max);
-
-        return $resultData;
-    }
-
-    public function topMediaByAction($range = null, $action = null, $max = -1)
-    {
-        if (null === $range) {
-            $range = $this->getYesterdayRange();
-        }
-
-        if (null === $action) {
-            $action = LogResourceReadEvent::ACTION;
-        }
-
-        $resultData = $this->logRepository->topMediaByAction($range, $action, $max);
-
-        return $resultData;
-    }
-
-    public function topResourcesByAction($range = null, $action = null, $max = -1)
-    {
-        if (null === $range) {
-            $range = $this->getYesterdayRange();
-        }
-
-        if (null === $action) {
-            $action = LogResourceReadEvent::ACTION;
-        }
-
-        $resultData = $this->logRepository->topResourcesByAction($range, $action, $max);
-
-        return $resultData;
     }
 
     public function topUsersByAction($range = null, $action = null, $max = -1)
