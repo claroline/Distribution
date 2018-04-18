@@ -10,7 +10,6 @@ button,
 input[type=button],
 input[type=submit],
 input[type=reset] {
-    //color: @link-color;
     background-color: transparent;
     border: none;
     text-decoration: none;
@@ -20,8 +19,6 @@ input[type=reset] {
     &:hover,
     &:focus {
         box-shadow: none;
-        //color: @link-hover-color;
-        //text-decoration: @link-hover-decoration;
     }
 
     &:focus {
@@ -78,6 +75,7 @@ input[type=reset] {
 // Link Buttons
 // ---
 
+.btn.btn-link, // to override default btns styles
 .btn-link {
     .button-base();
 

@@ -10,7 +10,7 @@ const CalendarNav = props =>
   <div className="calendar-nav">
     <Button
       type="callback"
-      className="btn btn-link-default calendar-previous"
+      className="btn btn-link calendar-previous"
       disabled={props.previousRange[1].isSameOrBefore(props.calendarRange[0])}
       callback={() => props.changeView(props.view, props.previousRange)}
     >
@@ -19,7 +19,7 @@ const CalendarNav = props =>
 
     <Button
       type="callback"
-      className="btn btn-link-default calendar-current"
+      className="btn btn-link calendar-current"
       callback={() => props.changeView(getNextView(props.view))}
     >
       {props.title}
@@ -27,7 +27,7 @@ const CalendarNav = props =>
 
     <Button
       type="callback"
-      className="btn btn-link-default calendar-next"
+      className="btn btn-link calendar-next"
       disabled={props.nextRange[0].isSameOrAfter(props.calendarRange[1])}
       callback={() => props.changeView(props.view, props.nextRange)}
     >

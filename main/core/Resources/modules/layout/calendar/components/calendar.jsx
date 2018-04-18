@@ -19,7 +19,7 @@ const TimeInput = props =>
   <div className="time-input">
     <Button
       type="callback"
-      className="btn btn-link-default btn-sm"
+      className="btn btn-link btn-sm"
       disabled={props.max === props.value}
       callback={() => props.onChange(calculateTime(props.value + props.step, props.max))}
     >
@@ -39,7 +39,7 @@ const TimeInput = props =>
 
     <Button
       type="callback"
-      className="btn btn-link-default btn-sm"
+      className="btn btn-link btn-sm"
       disabled={0 === props.value}
       callback={() => props.onChange(calculateTime(props.value - props.step, props.max))}
     >
