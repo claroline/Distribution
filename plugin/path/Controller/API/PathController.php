@@ -9,10 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Innova\PathBundle\Controller\APINew;
+namespace Innova\PathBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiMeta;
-use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -31,46 +30,35 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class PathController extends AbstractCrudController
 {
-    /**
-     * @var AuthorizationCheckerInterface
-     */
+    /** @var AuthorizationCheckerInterface */
     private $authorization;
 
-    /** @var SerializerProvider */
-    protected $serializer;
-
-    /**
-     * @var UserProgressionManager
-     */
-    protected $userProgressionManager;
+    /** @var UserProgressionManager */
+    private $userProgressionManager;
 
     /**
      * PathController constructor.
      *
      * @DI\InjectParams({
      *     "authorization"          = @DI\Inject("security.authorization_checker"),
-     *     "serializer"             = @DI\Inject("claroline.api.serializer"),
      *     "userProgressionManager" = @DI\Inject("innova_path.manager.user_progression")
      * })
      *
      * @param AuthorizationCheckerInterface $authorization
-     * @param SerializerProvider            $serializer
      * @param UserProgressionManager        $userProgressionManager
      */
     public function __construct(
         AuthorizationCheckerInterface $authorization,
-        SerializerProvider $serializer,
         UserProgressionManager $userProgressionManager
     ) {
         $this->authorization = $authorization;
-        $this->serializer = $serializer;
         $this->userProgressionManager = $userProgressionManager;
     }
 
     /**
      * Update step progression for an user.
      *
-     * @EXT\Route("/step/{id}/progression/update", name="innova_path_step_progression_update")
+     * @EXT\Route("/step/{id}/progression/update", name="innova_path_progression_update")
      * @EXT\Method("PUT")
      * @EXT\ParamConverter(
      *     "step",
@@ -85,7 +73,7 @@ class PathController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function stepProgressionUpdateAction(Step $step, User $user, Request $request)
+    public function updateProgressionAction(Step $step, User $user, Request $request)
     {
         $node = $step->getPath()->getResourceNode();
 
