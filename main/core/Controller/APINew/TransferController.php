@@ -18,7 +18,6 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\AppBundle\API\TransferProvider;
 use Claroline\AppBundle\Async\AsyncRequest;
 use Claroline\AppBundle\Controller\AbstractCrudController;
-use Claroline\CoreBundle\Entity\Import\File as HistoryFile;
 use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -138,31 +137,6 @@ class TransferController extends AbstractCrudController
     public function executeAction(Request $request)
     {
         $data = json_decode($request->getContent(), true);
-
-        $publicFile = $this->serializer->deserialize(
-          'Claroline\CoreBundle\Entity\File\PublicFile',
-          $data['file']
-        );
-
-        $historyFile = $this->finder->fetch('Claroline\CoreBundle\Entity\Import\File', 0, -1, ['file' => $publicFile->getId()])[0];
-        $this->crud->replace($historyFile, 'log', $this->getLogFile($request));
-        $this->crud->replace($historyFile, 'executionDate', new \DateTime());
-        //this is here otherwise the entity manager can crash and... well that's an issue.
-        $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_ERROR);
-
-        $content = $this->fileUt->getContents($publicFile);
-
-        $data = $this->provider->execute(
-            $content,
-            $data['action'],
-            $publicFile->getMimeType(),
-            $this->getLogFile($request)
-        );
-
-        //should probably reset entity manager here
-        if (0 === $data['error']) {
-            $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_SUCCESS);
-        }
 
         return new JsonResponse('done', 200);
     }

@@ -33,7 +33,12 @@ class LogModal extends Component {
   }
 
   componentDidMount() {
-    setInterval(() => this.props.load(this.props.file), 2000)
+    const refresher = setInterval(() => {
+      this.props.load(this.props.file)
+      if (this.props.data.total !== undefined && this.props.data.processed === this.props.data.total) {
+          clearInterval(refresher)
+      }
+    }, 2000)
   }
 }
 

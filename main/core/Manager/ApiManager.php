@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Oauth\FriendRequest;
 use FOS\RestBundle\View\View;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -72,6 +73,11 @@ class ApiManager
         return '';
     }*/
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     private function adminQuery(FriendRequest $request, $url, $payload = null, $type = 'GET')
     {
         $access = $request->getClarolineAccess();
@@ -95,6 +101,11 @@ class ApiManager
         return $serverOutput;
     }
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     public function formEncode($entity, Form $form, AbstractType $formType)
     {
         $baseName = $formType->getName();
@@ -109,6 +120,11 @@ class ApiManager
         return $payload;
     }
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     //helper for the API controllers methods. We only do this in case of html request
     public function handleFormView($template, $form, array $options = [])
     {
@@ -125,6 +141,11 @@ class ApiManager
             $this->createFormView($template, $form, $httpCode, $parameters);
     }
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     private function createFormView($template, $form, $formHttpCode, $parameters)
     {
         $formHttpCode = $formHttpCode ?: 200;
@@ -136,6 +157,11 @@ class ApiManager
         return $this->viewHandler->handle($view);
     }
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     private function createSerialized($data, $serializerGroup)
     {
         $context = new SerializationContext();
@@ -149,6 +175,11 @@ class ApiManager
         return $response;
     }
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     public function getParameters($name, $class)
     {
         $request = $this->container->get('request');
@@ -169,6 +200,11 @@ class ApiManager
         return $entities;
     }
 
+    /**
+     * Legacy method. Now it's the NewApi method from AppBundle.
+     *
+     * @deprecated
+     */
     public function getParametersByUuid($name, $class)
     {
         $request = $this->container->get('request');
@@ -189,7 +225,32 @@ class ApiManager
         return $entities;
     }
 
-    private function validateUrl($url)
+    public function import(PublicFile $publicFile)
     {
+        $publicFile = $this->serializer->deserialize(
+          'Claroline\CoreBundle\Entity\File\PublicFile',
+          $data['file']
+        );
+
+        $historyFile = $this->finder->fetch('Claroline\CoreBundle\Entity\Import\File', 0, -1, ['file' => $publicFile->getId()])[0];
+
+        $this->crud->replace($historyFile, 'log', $this->getLogFile($request));
+        $this->crud->replace($historyFile, 'executionDate', new \DateTime());
+        //this is here otherwise the entity manager can crash and... well that's an issue.
+        $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_ERROR);
+
+        $content = $this->fileUt->getContents($publicFile);
+
+        $data = $this->provider->execute(
+          $content,
+          $data['action'],
+          $publicFile->getMimeType(),
+          $this->getLogFile($request)
+      );
+
+        //should probably reset entity manager here
+        if (0 === $data['error']) {
+            $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_SUCCESS);
+        }
     }
 }
