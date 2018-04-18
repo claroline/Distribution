@@ -55,7 +55,8 @@ class TransferController extends AbstractCrudController
      *    "router"     = @DI\Inject("router"),
      *    "schemaDir"  = @DI\Inject("%claroline.api.core_schema.dir%"),
      *    "fileUt"     = @DI\Inject("claroline.utilities.file"),
-     *    "crud"       = @DI\Inject("claroline.api.crud")
+     *    "crud"       = @DI\Inject("claroline.api.crud"),
+     *    "manager"    = @DI\Inject("claroline.manager.api_manager")
      * })
      *
      * @param TransferProvider $provider
@@ -114,13 +115,13 @@ class TransferController extends AbstractCrudController
     public function startAction(Request $request)
     {
         $request = new AsyncRequest(
-          $this->router->generate(
-            'apiv2_transfer_execute',
-            ['log' => $request->query->get('log')],
-             UrlGeneratorInterface::ABSOLUTE_URL
-          ),
-          file_get_contents('php://input')
-        );
+            $this->router->generate(
+              'apiv2_transfer_execute',
+              ['log' => $request->query->get('log')],
+               UrlGeneratorInterface::ABSOLUTE_URL
+            ),
+            file_get_contents('php://input')
+          );
 
         return new JsonResponse('started', 200);
     }
@@ -137,6 +138,13 @@ class TransferController extends AbstractCrudController
     public function executeAction(Request $request)
     {
         $data = json_decode($request->getContent(), true);
+
+        $publicFile = $this->serializer->deserialize(
+            'Claroline\CoreBundle\Entity\File\PublicFile',
+            $data['file']
+        );
+
+        $this->manager->import($publicFile, $data['action'], $this->getLogFile($request));
 
         return new JsonResponse('done', 200);
     }
