@@ -3,7 +3,9 @@ import {reducer} from '#/plugin/forum/resources/forum/reducer'
 
 const forum = {
   id: '123',
-  display: {},
+  display: {
+    description: ''
+  },
   moderation: {}
 }
 

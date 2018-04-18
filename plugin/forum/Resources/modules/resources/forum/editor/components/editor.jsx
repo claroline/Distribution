@@ -34,7 +34,7 @@ const Editor = props =>
         ]
       }, {
         icon: 'fa fa-fw fa-comments',
-        title: trans('messages_parameters'),
+        title: trans('posts', {}, 'forum'),
         fields: [
           {
             name: 'max.subjects',
@@ -59,12 +59,13 @@ const Editor = props =>
           {
             name: 'notifications.enabled',
             type: 'boolean',
-            label: trans('notify_users_new_message', {}, 'forum')
+            label: trans('activate_global_notifications', {}, 'forum'),
+            help: trans('notifications_explanation', {}, 'forum')
           }
         ]
       }, {
         icon: 'fa fa-fw fa-gavel',
-        title: trans('moderation_parameters'),
+        title: trans('moderation'),
         fields: [
           {
             name: 'moderation.enabled',
