@@ -34,6 +34,7 @@ class ImportCsvCommand extends ContainerAwareCommand
             [
               new InputArgument('id', InputArgument::REQUIRED, 'The file id.'),
               new InputArgument('action', InputArgument::REQUIRED, 'The action to execute.'),
+              new InputArgument('log', InputArgument::OPTIONAL, 'The action to execute.'),
             ]
         );
     }
@@ -49,7 +50,7 @@ class ImportCsvCommand extends ContainerAwareCommand
 
         $id = $input->getArgument('id');
         $action = $input->getArgument('action');
-        $logFile = $this->generateRandomString(5);
+        $logFile = $input->getArgument('log') ? $input->getArgument('log') : $this->generateRandomString(5);
 
         $publicFile = $this->getContainer()->get('claroline.api.serializer')->deserialize(
             'Claroline\CoreBundle\Entity\File\PublicFile',
