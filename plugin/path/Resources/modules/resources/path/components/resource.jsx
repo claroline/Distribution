@@ -24,17 +24,15 @@ const Resource = props => {
     }, {
       path: '/play',
       component: Player
+    }, {
+      path: '/',
+      exact: true,
+      component: Overview,
+      displayed: props.path.display.showOverview
     }
   ]
 
-  if (props.path.display.showOverview) {
-    // add overview route
-    routes.push({
-      path: '/',
-      exact: true,
-      component: Overview
-    })
-  } else {
+  if (!props.path.display.showOverview) {
     // redirect to player
     redirect.push({
       from: '/',

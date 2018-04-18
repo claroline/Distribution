@@ -14,7 +14,7 @@ import {yearNum} from '#/main/core/layout/calendar/utils'
 const Year = props =>
   <Button
     type="callback"
-    className={classes('btn btn-link-default', {
+    className={classes('btn btn-link', {
       now:      props.current.isSame(props.now, 'year'),
       selected: props.selected && props.current.isSame(props.selected, 'year'),
       fill:     props.fill
