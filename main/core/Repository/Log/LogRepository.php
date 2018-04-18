@@ -137,6 +137,45 @@ class LogRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findTopWorkspaceByAction(
+        array $filters = [],
+        $limit = -1
+    ) {
+        $qb = $this
+            ->createQueryBuilder('obj')
+            ->select('ws.id, ws.name, ws.code, count(obj.id) AS actions')
+            ->leftJoin('obj.workspace', 'ws')
+            ->groupBy('ws')
+            ->orderBy('actions', 'DESC');
+
+        $this->finder->configureQueryBuilder($qb, $filters);
+
+        if ($limit > 0) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findTopResourcesByAction(
+        array $filters = [],
+        $limit = -1
+    ) {
+        $qb = $this
+            ->createQueryBuilder('obj')
+            ->select('node.id, node.name, count(obj.id) AS actions')
+            ->leftJoin('obj.resourceNode', 'node')
+            ->groupBy('node.id')
+            ->orderBy('actions', 'DESC');
+        $this->finder->configureQueryBuilder($qb, $filters);
+
+        if ($limit > 0) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     // TODO: Clean old methods after refactoring
 
     /**
@@ -348,69 +387,6 @@ class LogRepository extends EntityRepository
         $logs = $q->getResult();
 
         return $logs;
-    }
-
-    public function topWSByAction($range, $action, $max)
-    {
-        $queryBuilder = $this
-            ->createQueryBuilder('log')
-            ->select('ws.id, ws.name, ws.code, count(log.id) AS actions')
-            ->leftJoin('log.workspace', 'ws')
-            ->groupBy('ws')
-            ->orderBy('actions', 'DESC');
-
-        if ($max > 0) {
-            $queryBuilder->setMaxResults($max);
-        }
-
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, $action, null);
-        $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
-        $query = $queryBuilder->getQuery();
-
-        return $query->getResult();
-    }
-
-    public function topMediaByAction($range, $action, $max)
-    {
-        $queryBuilder = $this
-            ->createQueryBuilder('log')
-            ->select('node.id, node.name, count(log.id) AS actions')
-            ->leftJoin('log.resourceNode', 'node')
-            ->leftJoin('log.resourceType', 'resource_type')
-            ->andWhere('resource_type.name=:fileType')
-            ->groupBy('node')
-            ->orderBy('actions', 'DESC')
-            ->setParameter('fileType', 'file');
-
-        if ($max > 0) {
-            $queryBuilder->setMaxResults($max);
-        }
-
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, $action, null);
-        $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
-        $query = $queryBuilder->getQuery();
-
-        return $query->getResult();
-    }
-
-    public function topResourcesByAction($range, $action, $max)
-    {
-        $queryBuilder = $this
-            ->createQueryBuilder('log')
-            ->select('node.id, node.name, count(log.id) AS actions')
-            ->leftJoin('log.resourceNode', 'node')
-            ->groupBy('node')
-            ->orderBy('actions', 'DESC');
-
-        if ($max > 0) {
-            $queryBuilder->setMaxResults($max);
-        }
-
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, $action, null);
-        $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
-        $query = $queryBuilder->getQuery();
-
-        return $query->getResult();
     }
 
     public function topUsersByAction($range, $action, $max)

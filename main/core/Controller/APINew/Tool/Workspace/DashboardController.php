@@ -62,7 +62,7 @@ class DashboardController
 
         $query = $this->getWorkspaceFilteredQuery($request, $workspace);
         $chartData = $this->analyticsManager->getDailyActions($query);
-        $resourceTypes = $this->analyticsManager->getWorkspaceResourceTypesCount($workspace);
+        $resourceTypes = $this->analyticsManager->getResourceTypesCount($workspace);
 
         return new JsonResponse([
             'activity' => $chartData,

@@ -711,4 +711,9 @@ class WidgetManager
     {
         return $this->widgetInstanceRepo->countWidgetInstances('desktop');
     }
+
+    public function countWidgetsByType()
+    {
+        return $this->widgetInstanceRepo->countByType();
+    }
 }
