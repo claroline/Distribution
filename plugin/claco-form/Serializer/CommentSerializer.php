@@ -42,7 +42,7 @@ class CommentSerializer
         $user = $comment->getUser();
 
         $serialized = [
-            'id' => $comment->getId(),
+            'id' => $comment->getUuid(),
             'content' => $comment->getContent(),
             'status' => $comment->getStatus(),
             'creationDate' => $comment->getCreationDate() ? $comment->getCreationDate()->format('Y-m-d H:i:s') : null,

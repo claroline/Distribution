@@ -5,7 +5,6 @@ import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {getDataQueryString} from '#/main/core/data/list/utils'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
-import {select as formSelect} from '#/main/core/data/form/selectors'
 
 const ENTRIES_UPDATE = 'ENTRIES_UPDATE'
 const ENTRY_ADD = 'ENTRY_ADD'
@@ -154,49 +153,41 @@ actions.switchEntriesStatus = (entries, status) => (dispatch, getState) => {
   })
 }
 
-actions.switchEntryLock = (entryId) => (dispatch, getState) => {
-  // const currentEntry = getState().entries.current
-
-  dispatch({
-    [API_REQUEST]: {
-      url: ['claro_claco_form_entry_lock_switch', {entry: entryId}],
-      request: {
-        method: 'PUT'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.updateEntries())
-        // dispatch(actions.updateEntry(data))
-        //
-        // if (currentEntry && currentEntry.id === entryId) {
-        //   dispatch(actions.loadCurrentEntry(data))
-        // }
-      }
+actions.switchEntryLock = (entryId) => ({
+  [API_REQUEST]: {
+    url: ['claro_claco_form_entry_lock_switch', {entry: entryId}],
+    request: {
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateEntries())
+      // dispatch(actions.updateEntry(data))
+      //
+      // if (currentEntry && currentEntry.id === entryId) {
+      //   dispatch(actions.loadCurrentEntry(data))
+      // }
     }
-  })
-}
+  }
+})
 
-actions.switchEntriesLock = (entries, locked) => (dispatch, getState) => {
-  // const currentEntry = getState().entries.current
-
-  dispatch({
-    [API_REQUEST]: {
-      url: generateUrl('claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0}) + getDataQueryString(entries),
-      request: {
-        method: 'PATCH'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.updateEntries())
-        // data.forEach(e => {
-        //   dispatch(actions.updateEntry(e))
-        //
-        //   if (currentEntry && currentEntry.id === e.id) {
-        //     dispatch(actions.loadCurrentEntry(e))
-        //   }
-        // })
-      }
+actions.switchEntriesLock = (entries, locked) => ({
+  [API_REQUEST]: {
+    url: generateUrl('claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0}) + getDataQueryString(entries),
+    request: {
+      method: 'PATCH'
+    },
+    success: (data, dispatch) => {
+      dispatch(actions.updateEntries())
+      // data.forEach(e => {
+      //   dispatch(actions.updateEntry(e))
+      //
+      //   if (currentEntry && currentEntry.id === e.id) {
+      //     dispatch(actions.loadCurrentEntry(e))
+      //   }
+      // })
     }
-  })
-}
+  }
+})
 
 actions.downloadEntryPdf = (entryId) => () => {
   window.location.href = generateUrl('claro_claco_form_entry_pdf_download', {entry: entryId})

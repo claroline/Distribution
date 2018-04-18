@@ -42,7 +42,7 @@ class KeywordSerializer
     public function serialize(Keyword $keyword, array $options = [])
     {
         $serialized = [
-            'id' => $keyword->getId(),
+            'id' => $keyword->getUuid(),
             'name' => $keyword->getName(),
         ];
 

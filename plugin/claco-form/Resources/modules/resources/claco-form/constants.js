@@ -12,7 +12,7 @@ const FIELD_TYPES = [
   {name: 'email', value: 8, label: trans('email'), hasChoice: false, hasCascade: false, answerType: 'string'},
   {name: 'html', value: 9, label: trans('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'},
   {name: 'file', value: 11, label: trans('file'), hasChoice: false, hasCascade: false, answerType: 'array'},
-  {name: 'boolean', value: 12, label: trans('boolean'), hasChoice: false, hasCascade: false, answerType: 'number'},
+  {name: 'boolean', value: 12, label: trans('boolean'), hasChoice: false, hasCascade: false, answerType: 'number'}
 ]
 
 const FILE_TYPES = {

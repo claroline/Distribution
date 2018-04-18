@@ -49,7 +49,7 @@ class FieldValueSerializer
     public function serialize(FieldValue $fieldValue, array $options = [])
     {
         $serialized = [
-            'id' => $fieldValue->getId(),
+            'id' => $fieldValue->getUuid(),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {

@@ -1,8 +1,10 @@
 import {PropTypes as T} from 'prop-types'
 
+import {User as UserType} from '#/main/core/user/prop-types'
+
 const Category = {
   propTypes: {
-    id: T.number,
+    id: T.string,
     name: T.string,
     details: T.shape({
       notify_addition: T.bool,
@@ -22,7 +24,7 @@ const Category = {
 
 const Keyword = {
   propTypes: {
-    id: T.number,
+    id: T.string,
     name: T.string
   }
 }
@@ -147,11 +149,23 @@ const EntryUser = {
   }
 }
 
+const Comment = {
+  propTypes: {
+    id: T.string,
+    content: T.string,
+    status: T.number,
+    creationDate: T.string,
+    editionDate: T.string,
+    user: T.shape(UserType.propTypes)
+  }
+}
+
 export {
   Category,
   Keyword,
   Field,
   ClacoForm,
   Entry,
-  EntryUser
+  EntryUser,
+  Comment
 }

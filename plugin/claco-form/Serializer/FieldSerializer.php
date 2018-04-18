@@ -81,9 +81,11 @@ class FieldSerializer
                 'hidden' => $field->isHidden(),
                 'order' => $field->getOrder(),
             ],
-            'options' => $field->getDetails(),
         ];
 
+        if (count($field->getDetails()) > 0) {
+            $serialized['options'] = $field->getDetails();
+        }
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [
                 'fieldFacet' => $this->fieldFacetSerializer->serialize($field->getFieldFacet()),

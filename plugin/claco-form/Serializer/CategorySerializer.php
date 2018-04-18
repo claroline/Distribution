@@ -54,7 +54,7 @@ class CategorySerializer
     public function serialize(Category $category, array $options = [])
     {
         $serialized = [
-            'id' => $category->getId(),
+            'id' => $category->getUuid(),
             'name' => $category->getName(),
             'details' => $category->getDetails(),
         ];

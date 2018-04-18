@@ -41,52 +41,36 @@ class FieldFacetSerializer
      */
     public function serialize(FieldFacet $fieldFacet, array $options = [])
     {
-        if (in_array(Options::PROFILE_SERIALIZE, $options)) {
-            $serialized = [
-                'id' => $fieldFacet->getUuid(),
-                'name' => $fieldFacet->getName(),
-                'type' => $fieldFacet->getFieldType(),
-                'label' => $fieldFacet->getLabel(),
-                'required' => $fieldFacet->isRequired(),
-                'help' => $fieldFacet->getHelp(),
-                'restrictions' => [
-                    'hidden' => $fieldFacet->isHidden(),
-                    'isMetadata' => $fieldFacet->getIsMetadata(),
-                    'locked' => $fieldFacet->isLocked(),
-                    'lockedEditionOnly' => $fieldFacet->getLockedEditionOnly(),
-                    'order' => $fieldFacet->getPosition(),
-                ],
-            ];
+        $serialized = [
+            'id' => $fieldFacet->getUuid(),
+            'name' => $fieldFacet->getName(),
+            'type' => $fieldFacet->getFieldType(),
+            'label' => $fieldFacet->getLabel(),
+            'required' => $fieldFacet->isRequired(),
+            'help' => $fieldFacet->getHelp(),
+            'restrictions' => [
+                'hidden' => $fieldFacet->isHidden(),
+                'isMetadata' => $fieldFacet->getIsMetadata(),
+                'locked' => $fieldFacet->isLocked(),
+                'lockedEditionOnly' => $fieldFacet->getLockedEditionOnly(),
+                'order' => $fieldFacet->getPosition(),
+            ],
+        ];
 
-            if (!empty($fieldFacet->getOptions())) {
-                $serialized['options'] = $fieldFacet->getOptions();
-            }
+        if (!empty($fieldFacet->getOptions())) {
+            $serialized['options'] = $fieldFacet->getOptions();
+        }
 
-            if (in_array($fieldFacet->getType(), [
-                FieldFacet::SELECT_TYPE,
-                FieldFacet::CHECKBOXES_TYPE,
-                FieldFacet::CASCADE_SELECT_TYPE,
-            ])) {
-                $serialized['options']['choices'] = array_map(function (FieldFacetChoice $choice) {
-                    return $this->serializer
-                        ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice')
-                        ->serialize($choice);
-                }, $fieldFacet->getFieldFacetChoices()->toArray());
-            }
-        } else {
-            //could be used by the clacoform. It should change later. The default one should be
-            //PROFILE_SERIALIZE. See with @kitan
-            $serialized = [
-                'id' => $fieldFacet->getId(),
-                'name' => $fieldFacet->getLabel(),
-                'type' => $fieldFacet->getType(),
-                'translationKey' => $fieldFacet->getTypeTranslationKey(),
-                'field_facet_choices' => array_map(function (FieldFacetChoice $choice) {
-                    return $this->serializer
-                        ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice')
-                        ->serialize($choice);
-                }, $fieldFacet->getFieldFacetChoices()->toArray()),
-            ];
+        if (in_array($fieldFacet->getType(), [
+            FieldFacet::SELECT_TYPE,
+            FieldFacet::CHECKBOXES_TYPE,
+            FieldFacet::CASCADE_SELECT_TYPE,
+        ])) {
+            $serialized['options']['choices'] = array_map(function (FieldFacetChoice $choice) {
+                return $this->serializer
+                    ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice')
+                    ->serialize($choice);
+            }, $fieldFacet->getFieldFacetChoices()->toArray());
         }
 
         return $serialized;
