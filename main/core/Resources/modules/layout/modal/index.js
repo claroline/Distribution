@@ -28,8 +28,9 @@ const modals = {
 }
 
 function registerModal(type, component) {
-  invariant(!modals[type], `Modal type ${type} is already registered`)
-  modals[type] = component
+  if (!modals[type]) {
+    modals[type] = component
+  }
 }
 
 function registerModals(types) {

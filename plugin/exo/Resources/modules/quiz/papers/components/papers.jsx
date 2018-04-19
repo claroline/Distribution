@@ -34,7 +34,7 @@ export const PaperRow = props =>
         tex('paper_score_not_available')
       }
     </td>
-    <td className="text-right table-actions">
+    <td className="text-right actions-cell">
       <a href={`#papers/${props.id}`} disabled={!props.showCorrection} className="btn btn-link">
         <span className="fa fa-fw fa-eye" />
       </a>

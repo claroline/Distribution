@@ -33,9 +33,10 @@ function getWorkspaceGroups(workspace) {
 
 function getUserList(workspace) {
   return {
-    open: {
-      action: (row) => url(['claro_user_profile', {publicUrl: row.meta.publicUrl}])
-    },
+    open: (row) => ({
+      type: 'url',
+      target: ['claro_user_profile', {publicUrl: row.meta.publicUrl}]
+    }),
     definition: [
       {
         name: 'username',

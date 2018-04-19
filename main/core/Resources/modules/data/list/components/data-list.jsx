@@ -8,7 +8,6 @@ import {trans, transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {
-  DataListAction,
   DataListProperty,
   DataListSelection,
   DataListSearch,
@@ -173,8 +172,9 @@ class DataList extends Component {
       })
     }
 
+    // TODO : restore
     // calculate actions
-    let actions = this.props.actions.slice(0)
+    /*let actions = this.props.actions.slice(0)
     if (this.props.deleteAction) {
       actions.push({
         icon: 'fa fa-fw fa-trash-o',
@@ -190,7 +190,7 @@ class DataList extends Component {
           ) :
           this.props.deleteAction.action
       })
-    }
+    }*/
 
     return (
       <div className="data-list">
@@ -211,7 +211,7 @@ class DataList extends Component {
               sorting:       this.props.sorting,
               selection:     this.props.selection,
               primaryAction: this.props.primaryAction,
-              actions:       actions,
+              actions:       this.props.actions,
               card:          this.props.card
             }
           ))
@@ -253,29 +253,19 @@ DataList.propTypes = {
   /**
    * Actions available for each data row and selected rows (if selection is enabled).
    */
-  actions: T.arrayOf(
-    T.shape(DataListAction.propTypes)
-  ),
+  actions: T.func,
 
   /**
    * Data primary action (aka open/edit action for rows in most cases).
    * Providing this object will automatically display the primary action (depending on the current view mode).
    */
-  primaryAction: T.shape({
-    disabled: T.func,
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }),
+  primaryAction: T.func,
 
   /**
    * Data delete action.
    * Providing this object will automatically append the delete action to the actions list of rows and selection.
    */
-  deleteAction: T.shape({
-    disabled: T.func,
-    displayed: T.func,
-    // if a function is provided, it receive the `rows`, `confirmTitle`, `confirmQuestion` as param
-    action: T.oneOfType([T.string, T.func]).isRequired
-  }),
+  deleteAction: T.func,
 
   /**
    * Display formats of the list.
@@ -287,12 +277,12 @@ DataList.propTypes = {
      */
     available: T.arrayOf(
       T.oneOf(Object.keys(listConst.DISPLAY_MODES))
-    ).isRequired,
+    ),
 
     /**
      * Current format.
      */
-    current: T.oneOf(Object.keys(listConst.DISPLAY_MODES)).isRequired
+    current: T.oneOf(Object.keys(listConst.DISPLAY_MODES))
   }),
 
   /**
@@ -361,7 +351,6 @@ DataList.propTypes = {
 }
 
 DataList.defaultProps = {
-  actions: [],
   filterColumns: true,
   display: {
     available: Object.keys(listConst.DISPLAY_MODES),

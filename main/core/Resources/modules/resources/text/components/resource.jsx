@@ -9,54 +9,49 @@ import {RoutedPageContent} from '#/main/core/layout/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
 
+import {NavLink} from '#/main/core/router'
+
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 import {Player} from '#/main/core/resources/text/player/components/player.jsx'
 import {Editor} from '#/main/core/resources/text/editor/components/editor.jsx'
 
-const Resource = props => {
-  const routes = [
-    {
-      path: '/play',
-      component: Player
-    }, {
+const Resource = props =>
+  <ResourcePageContainer
+    editor={{
       path: '/edit',
-      component: Editor,
-      canEnter: () => props.canEdit,
-      onEnter: () => props.resetForm(props.text)
-    }
-  ]
-  const redirect = [{
-    from: '/',
-    to: '/play',
-    exact: true
-  }]
-
-  return (
-    <ResourcePageContainer
-      editor={{
-        path: '/edit',
-        save: {
-          disabled: !props.saveEnabled,
-          action: () => props.saveForm(props.text.id)
-        }
-      }}
-      customActions={[
+      save: {
+        disabled: !props.saveEnabled,
+        action: () => props.saveForm(props.text.id)
+      }
+    }}
+    customActions={[
+      {
+        type: 'link',
+        icon: 'fa fa-fw fa-home',
+        label: trans('show_overview'),
+        displayed: props.canEdit,
+        target: '/'
+      }
+    ]}
+  >
+    <RoutedPageContent
+      headerSpacer={true}
+      redirect={[
+        {from: '/', exact: true, to: '/play'}
+      ]}
+      routes={[
         {
-          icon: 'fa fa-fw fa-home',
-          label: trans('show_overview'),
-          displayed: props.canEdit,
-          action: '#/'
+          path: '/play',
+          component: Player
+        }, {
+          path: '/edit',
+          component: Editor,
+          canEnter: () => props.canEdit,
+          onEnter: () => props.resetForm(props.text)
         }
       ]}
-    >
-      <RoutedPageContent
-        headerSpacer={false}
-        redirect={redirect}
-        routes={routes}
-      />
-    </ResourcePageContainer>
-  )
-}
+    />
+  </ResourcePageContainer>
 
 Resource.propTypes = {
   text: T.shape(TextTypes.propTypes).isRequired,
