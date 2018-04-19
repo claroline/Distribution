@@ -18,27 +18,30 @@ const OverviewComponent = props =>
         <div className="user-column col-md-4">
           <section className="user-progression">
             <h3 className="h2">{trans('my_participation', {}, 'forum')}</h3>
-            <div className="panel panel-default overview-gauge">
+            <div className="panel panel-default">
               <div className="panel-body">
                 <CountGauge
-                  className="gauge"
                   value={3}
                   displayValue={(value) => number(value, true)}
                 />
-                <div>{trans('my_messages', {}, 'forum')}</div>
+                <div className="metric-card-title">{trans('my_messages', {}, 'forum')}</div>
               </div>
             </div>
+          </section>
+          <section className="user-actions">
+            <h3 className="sr-only">{trans('resource_overview_actions', {}, 'resource')}</h3>
             <Button
               label={trans('see_subjects', {}, 'forum')}
               type="link"
               target="/play/subject/3"
-              className="btn btn-block btn-primary primary btn-emphasis "
+              className="btn btn-block btn-emphasis"
+              primary={true}
             />
             <Button
               label={trans('new_subject', {}, 'forum')}
               type="link"
               target="/play"
-              className="btn btn-block btn-emphasis "
+              className="btn btn-block btn-emphasis"
             />
           </section>
         </div>
@@ -47,39 +50,41 @@ const OverviewComponent = props =>
           <section className="resource-info">
             <h3 className="h2">{trans('resource_overview_info', {}, 'resource')}</h3>
 
-            <div className="panel panel-default">
-              <HtmlText className="panel-body">{props.forum.display.description}</HtmlText>
-            </div>
+            {props.forum.display.description &&
+              <div className="panel panel-default">
+                <HtmlText className="panel-body">{props.forum.display.description}</HtmlText>
+              </div>
+            }
           </section>
           <section className="resource-info row">
             <div className="col-md-4">
-              <div className="info-gauge">
+              <div className="metric-card">
                 <CountGauge
-                  className="gauge"
+                  className="metric-card-gauge"
                   value={props.forum.meta.users}
                   displayValue={(value) => number(value, true)}
                 />
-                <div>{trans('participating_users', {}, 'forum')}</div>
+                <div className="metric-card-title">{trans('participating_users', {}, 'forum')}</div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="info-gauge">
+              <div className="metric-card">
                 <CountGauge
-                  className="gauge"
+                  className="metric-card-gauge"
                   value={props.forum.meta.subjects}
                   displayValue={(value) => number(value, true)}
                 />
-                <div>{trans('subjects', {}, 'forum')}</div>
+                <div className="metric-card-title">{trans('subjects', {}, 'forum')}</div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="info-gauge">
+              <div className="metric-card">
                 <CountGauge
-                  className="gauge"
+                  className="metric-card-gauge"
                   value={props.forum.meta.messages}
                   displayValue={(value) => number(value, true)}
                 />
-                <div>{trans('messages', {}, 'forum')}</div>
+                <div className="metric-card-title">{trans('messages', {}, 'forum')}</div>
               </div>
             </div>
           </section>

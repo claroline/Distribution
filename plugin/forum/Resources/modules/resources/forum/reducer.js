@@ -5,6 +5,8 @@ import {reducer as editorReducer} from '#/plugin/forum/resources/forum/editor/re
 
 const reducer = makeResourceReducer({}, {
   forum: makeReducer({}, {}),
+  subject: makeReducer({}, {}),
+  messages: makeReducer({}, {}),
   forumForm: editorReducer
 })
 

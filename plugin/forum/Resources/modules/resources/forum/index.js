@@ -1,36 +1,41 @@
 import {ForumResource} from '#/plugin/forum/resources/forum/components/resource'
 import {reducer} from '#/plugin/forum/resources/forum/reducer'
+import {currentUser} from '#/main/core/user/current'
 
 const forum = {
   id: '123',
   display: {
-    description: 'bla bla bla'
+    description: 'il faut causer sur ce forum !'
   },
   moderation: {},
   meta: {
-    'users': 34,
-    'subjects': 23,
-    'messages': 233
+    users: 34,
+    subjects: 23,
+    messages: 233
   }
 }
 
 const subject = {
   id: '238',
-  title: 'la guerre civile'
+  title: 'la guerre civile d\'Espagne',
+  tags: [
+    'Guerre',
+    'Armée',
+    'Europe'
+  ]
 }
 
-const message = {
-  id: '36877',
-  content: 'la lal la la l uigez iuedigez gedgggde mzih',
-  meta: {
-    creator: {
-      name: 'Denis',
-      avatar: 'img'
-    },
-    created: '12 janvier 2012',
-    updated: ''
+const messages = [
+  {
+    id: '36877',
+    content: 'la lal la la l uigez iuedigez gedgggde mzih',
+    meta: {
+      creator: currentUser(),
+      created: '12 janvier 2012',
+      updated: ''
+    }
   }
-}
+]
 
 /**
  * Path resource application.
@@ -44,7 +49,7 @@ export const App = () => ({
   initialData: initialData => Object.assign({}, initialData, {
     forum: forum,
     subject: subject,
-    message: message,
+    messages: messages,
     forumForm: {
       data: forum
     }

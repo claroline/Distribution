@@ -1,27 +1,40 @@
 import React from 'react'
-import {Post} from '#/plugin/forum/resources/forum/player/components/post'
-
-const tags = [
-  'tag2',
-  'tag3',
-  'tag4'
-]
+import {connect} from 'react-redux'
 
 
-const Player = (props) =>
+import {select} from '#/plugin/forum/resources/forum/selectors'
+import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
+
+const PlayerComponent = (props) =>
   <div>
-    <h2>Titre du Sujet <small>5 messages</small></h2>
-    <div className="tag">
-      <ul>
-        {tags.map(tag =><li key={tag}>{tag}</li>)}
-      </ul>
-    </div>
+    <section>
+      <h2>Titre du Sujet <small>5 messages</small></h2>
+      <div className="tag">
+        <ul>
+          {props.subject.tags.map(tag =><li key={tag}>{tag}</li>)}
+        </ul>
+      </div>
+    </section>
     <section className="posts">
-      <Post/>
-      <Post/>
-      <Post/>
+      {props.messages.map(message =>
+        <UserMessage
+          key={message.id}
+          user={message.meta.creator}
+          date={message.meta.created}
+          content={message.content}
+          allowHtml={true}
+        />
+      )}
     </section>
   </div>
+
+const Player = connect(
+  (state) => ({
+    subject: select.subject(state),
+    messages: select.messages(state)
+  })
+)(PlayerComponent)
 
 export {
   Player
