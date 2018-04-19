@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Manager;
 
 use Claroline\AppBundle\API\FinderProvider;
+use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Event\Log\LogResourceExportEvent;
@@ -32,29 +33,64 @@ class AnalyticsManager
 {
     /** @var ResourceNodeRepository */
     private $resourceRepo;
+
     /** @var ResourceTypeRepository */
     private $resourceTypeRepo;
+
     /** @var UserRepository */
     private $userRepo;
+
     /** @var WorkspaceRepository */
     private $workspaceRepo;
+
     /** @var LogRepository */
     private $logRepository;
+
     /** @var LogManager */
     private $logManager;
 
+    /** @var UserManager */
+    private $userManager;
+
+    /** @var WorkspaceManager */
+    private $workspaceManager;
+
+    /** @var WidgetManager */
+    private $widgetManager;
+
+    /** @var StrictDispatcher */
+    private $dispatcher;
+
     /**
      * @DI\InjectParams({
-     *     "objectManager"  = @DI\Inject("claroline.persistence.object_manager"),
-     *     "logManager"     = @DI\Inject("claroline.log.manager")
+     *     "objectManager"          = @DI\Inject("claroline.persistence.object_manager"),
+     *     "logManager"             = @DI\Inject("claroline.log.manager"),
+     *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
+     *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
+     *     "widgetManager"          = @DI\Inject("claroline.manager.widget_manager"),
+     *     "dispatcher"             = @DI\Inject("claroline.event.event_dispatcher")
      * })
+     *
+     * @param ObjectManager    $objectManager
+     * @param LogManager       $logManager
+     * @param UserManager      $userManager
+     * @param WorkspaceManager $workspaceManager
+     * @param WidgetManager    $widgetManager
+     * @param StrictDispatcher $dispatcher
      */
     public function __construct(
         ObjectManager $objectManager,
-        LogManager $logManager
+        LogManager $logManager,
+        UserManager $userManager,
+        WorkspaceManager $workspaceManager,
+        WidgetManager $widgetManager,
+        StrictDispatcher $dispatcher
     ) {
-        $this->om = $objectManager;
         $this->logManager = $logManager;
+        $this->userManager = $userManager;
+        $this->workspaceManager = $workspaceManager;
+        $this->widgetManager = $widgetManager;
+        $this->dispatcher = $dispatcher;
         $this->resourceRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->resourceTypeRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceType');
         $this->userRepo = $objectManager->getRepository('ClarolineCoreBundle:User');
@@ -96,11 +132,33 @@ class AnalyticsManager
         foreach ($resourceTypes as $type) {
             $chartData["rt-${type['id']}"] = [
                 'xData' => $type['name'],
-                'yData' => $type['total'],
+                'yData' => floatval($type['total']),
             ];
         }
 
         return $chartData;
+    }
+
+    public function getOtherResourceTypesCount()
+    {
+        /** @var \Claroline\CoreBundle\Event\Analytics\PlatformContentItemEvent $event */
+        $event = $this->dispatcher->dispatch(
+            'administration_analytics_platform_content_item_add',
+            'Analytics\PlatformContentItem'
+        );
+
+        $resourceTypes = [];
+        foreach ($event->getItems() as $type) {
+            if (floatval($type['value']) > 0) {
+                $resourceTypes['ort-'.$type['item']] = [
+                    'id' => $type['item'],
+                    'xData' => $type['label'],
+                    'yData' => floatval($type['value']),
+                ];
+            }
+        }
+
+        return $resourceTypes;
     }
 
     public function getDailyActions(array $finderParams = [])
@@ -134,6 +192,31 @@ class AnalyticsManager
         $queryParams = FinderProvider::parseQueryParams($query);
 
         return $this->logRepository->findTopResourcesByAction($queryParams['allFilters'], $queryParams['limit']);
+    }
+
+    public function userRolesData()
+    {
+        return $this->userManager->countUsersForPlatformRoles();
+    }
+
+    public function countNonPersonalWorkspaces()
+    {
+        return $this->workspaceManager->getNbNonPersonalWorkspaces();
+    }
+
+    public function getWidgetsData()
+    {
+        $all = floatval($this->widgetManager->getNbWidgetInstances());
+        $ws = floatval($this->widgetManager->getNbWorkspaceWidgetInstances());
+        $desktop = floatval($this->widgetManager->getNbDesktopWidgetInstances());
+        $list = $this->widgetManager->countWidgetsByType();
+
+        return [
+            'all' => $all,
+            'workspace' => $ws,
+            'desktop' => $desktop,
+            'list' => $list,
+        ];
     }
 
     private function formatQueryParams(array $finderParams = [])

@@ -1,8 +1,8 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-const AnalyticsCard = (props) =>
-  <div className={'analytics-card data-card data-card-col'}>
+const DashboardCard = (props) =>
+  <div className={'dashboard-card data-card data-card-col'}>
     <div className={'data-card-header'}>
       <div className={'data-card-title text-left'}>
         {props.icon && <i className={`fa ${props.icon}`}/>}
@@ -14,12 +14,12 @@ const AnalyticsCard = (props) =>
     </div>
   </div>
 
-AnalyticsCard.propTypes = {
+DashboardCard.propTypes = {
   title: T.string.isRequired,
   icon: T.string,
   children: T.node.isRequired
 }
 
 export {
-  AnalyticsCard
+  DashboardCard
 }

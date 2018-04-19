@@ -2,12 +2,7 @@
 
 namespace Claroline\CoreBundle\Controller\APINew\Tool\Administration;
 
-use Claroline\AppBundle\Event\StrictDispatcher;
 use Claroline\CoreBundle\Manager\AnalyticsManager;
-use Claroline\CoreBundle\Manager\LogManager;
-use Claroline\CoreBundle\Manager\UserManager;
-use Claroline\CoreBundle\Manager\WidgetManager;
-use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\SecurityExtraBundle\Annotation as SEC;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -21,58 +16,27 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AnalyticsController
 {
-    /** @var LogManager */
-    private $logManager;
-
     /** @var AnalyticsManager */
     private $analyticsManager;
 
-    /** @var WorkspaceManager */
-    private $workspaceManager;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var WidgetManager */
-    private $widgetManager;
-
-    /** @var StrictDispatcher */
-    private $dispatcher;
-
     /**
      * @DI\InjectParams({
-     *     "logManager"             = @DI\Inject("claroline.log.manager"),
-     *     "analyticsManager"       = @DI\Inject("claroline.manager.analytics_manager"),
-     *     "workspaceManager"       = @DI\Inject("claroline.manager.workspace_manager"),
-     *     "userManager"            = @DI\Inject("claroline.manager.user_manager"),
-     *     "widgetManager"          = @DI\Inject("claroline.manager.widget_manager"),
-     *     "dispatcher"             = @DI\Inject("claroline.event.event_dispatcher")
+     *     "analyticsManager"       = @DI\Inject("claroline.manager.analytics_manager")
      * })
      *
      * LogController constructor.
      *
-     * @param LogManager       $logManager
      * @param AnalyticsManager $analyticsManager
      */
     public function __construct(
-        LogManager $logManager,
-        AnalyticsManager $analyticsManager,
-        WorkspaceManager $workspaceManager,
-        UserManager $userManager,
-        WidgetManager $widgetManager,
-        StrictDispatcher $dispatcher
+        AnalyticsManager $analyticsManager
     ) {
-        $this->logManager = $logManager;
         $this->analyticsManager = $analyticsManager;
-        $this->workspaceManager = $workspaceManager;
-        $this->userManager = $userManager;
-        $this->widgetManager = $widgetManager;
-        $this->dispatcher = $dispatcher;
     }
 
     /**
      * @return \Symfony\Component\HttpFoundation\JsonResponse
-     * @Route("/", name="apiv2_admin_tool_analytics_overview")
+     * @Route("", name="apiv2_admin_tool_analytics_overview")
      * @Method("GET")
      */
     public function overviewAction()
@@ -86,7 +50,7 @@ class AnalyticsController
                 'action' => 'resource-export',
             ],
         ]);
-        $usersCount = $this->userManager->countUsersForPlatformRoles();
+        $usersCount = $this->analyticsManager->userRolesData();
 
         return new JsonResponse([
             'activity' => $lastMonthActions,
@@ -137,19 +101,14 @@ class AnalyticsController
      */
     public function resourcesAction()
     {
-        $wsCount = $this->workspaceManager->getNbNonPersonalWorkspaces();
+        $wsCount = $this->analyticsManager->countNonPersonalWorkspaces();
         $resourceCount = $this->analyticsManager->getResourceTypesCount();
-
-        /** @var \Claroline\CoreBundle\Event\Analytics\PlatformContentItemEvent $event */
-        $event = $this->dispatcher->dispatch(
-            'administration_analytics_platform_content_item_add',
-            'Analytics\PlatformContentItem'
-        );
+        $otherResources = $this->analyticsManager->getOtherResourceTypesCount();
 
         return new JsonResponse([
             'resources' => $resourceCount,
             'workspaces' => $wsCount,
-            'other' => $event->getItems(),
+            'other' => $otherResources,
         ]);
     }
 
@@ -160,17 +119,7 @@ class AnalyticsController
      */
     public function widgetsAction()
     {
-        $wiCount = $this->widgetManager->getNbWidgetInstances();
-        $wiwCount = $this->widgetManager->getNbWorkspaceWidgetInstances();
-        $widCount = $this->widgetManager->getNbDesktopWidgetInstances();
-        $wList = $this->widgetManager->countWidgetsByType();
-
-        return new JsonResponse([
-            'all' => $wiCount,
-            'workspace' => $wiwCount,
-            'desktop' => $widCount,
-            'list' => $wList,
-        ]);
+        return new JsonResponse($this->analyticsManager->getWidgetsData());
     }
 
     /**

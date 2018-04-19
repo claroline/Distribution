@@ -40,7 +40,7 @@ class LogsController extends Controller
     /**
      * @EXT\Route(
      *     "/",
-     *     name="claro_admin_logs_show"
+     *     name="claro_admin_logs"
      * )
      * @EXT\Template()
      *

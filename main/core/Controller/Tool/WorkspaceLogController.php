@@ -40,7 +40,7 @@ class WorkspaceLogController extends Controller
     /**
      * @EXT\Route(
      *     "/{workspaceId}/tool/logs",
-     *     name="claro_workspace_tools_log_list",
+     *     name="claro_workspace_tool_logs",
      *     requirements={"workspaceId" = "\d+"}
      * )
      * @EXT\ParamConverter(
