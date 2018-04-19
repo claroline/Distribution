@@ -176,6 +176,23 @@ class LogRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function countActiveUsers(
+        array $filters = []
+    ) {
+        $filters['action'] = LogUserLoginEvent::ACTION;
+
+        $qb = $this
+            ->createQueryBuilder('obj')
+            ->select('COUNT(DISTINCT obj.doer) AS users');
+
+        $this->finder->configureQueryBuilder($qb, $filters);
+
+        $query = $qb->getQuery();
+        $result = $query->getResult();
+
+        return $result[0]['users'];
+    }
+
     // TODO: Clean old methods after refactoring
 
     /**
@@ -389,108 +406,6 @@ class LogRepository extends EntityRepository
         return $logs;
     }
 
-    public function topUsersByAction($range, $action, $max)
-    {
-        $query = $this->topUsersByActionQuery($action, $range, null, null, null, $max);
-
-        return $query->getResult();
-    }
-
-    public function topUsersByActionQuery(
-        $action,
-        $range,
-        $userSearch,
-        $actionsRestriction,
-        $workspaceIds = null,
-        $maxResult = -1,
-        $resourceType = null,
-        $resourceNodeIds = null,
-        $enableAnonymous = true,
-        $page = null,
-        $orderBy = null,
-        $order = 'DESC'
-    ) {
-        $queryBuilder = $this
-            ->createQueryBuilder('log')
-            ->select(
-                'doer.id, '
-                ."CONCAT(CONCAT(doer.firstName, ' '), doer.lastName) AS name, "
-                ."CONCAT(CONCAT(doer.lastName, ' '), doer.firstName) AS sortingName, "
-                .'doer.username, count(log.id) AS actions'
-            )
-            ->groupBy('doer');
-        if ($orderBy === 'name') {
-            $orderBy = 'sortingName';
-        }
-        if ($orderBy === null) {
-            $orderBy = 'actions';
-        }
-        $queryBuilder->orderBy($orderBy, $order);
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, $action, $actionsRestriction);
-        $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
-        if ($userSearch !== null && $userSearch !== '') {
-            $queryBuilder = $this->addUserFilterToQueryBuilder($queryBuilder, $userSearch);
-        } else {
-            $queryBuilder->leftJoin('log.doer', 'doer');
-        }
-        $queryBuilder = $this->addResourceTypeFilterToQueryBuilder($queryBuilder, $resourceType);
-
-        if ($workspaceIds !== null && count($workspaceIds) > 0) {
-            $queryBuilder = $this->addWorkspaceFilterToQueryBuilder($queryBuilder, $workspaceIds);
-        }
-        if ($resourceNodeIds !== null && count($resourceNodeIds) > 0) {
-            $queryBuilder = $this->addResourceFilterToQueryBuilder($queryBuilder, $resourceNodeIds);
-        }
-        if (!$enableAnonymous) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->isNotNull('log.doer')
-            );
-        }
-
-        if ($maxResult > 0) {
-            $queryBuilder->setMaxResults($maxResult);
-            if ($page !== null) {
-                $page = max(0, $page - 1);
-                $queryBuilder->setFirstResult($page * $maxResult);
-            }
-        }
-
-        return $queryBuilder->getQuery();
-    }
-
-    public function countTopUsersByAction(
-        $action,
-        $range,
-        $userSearch,
-        $actionsRestriction,
-        $workspaceIds = null,
-        $resourceType = null,
-        $resourceNodeIds = null,
-        $enableAnonymous = true
-    ) {
-        $queryBuilder = $this->createQueryBuilder('log');
-        $queryBuilder->select($queryBuilder->expr()->countDistinct('log.doer'));
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, $action, $actionsRestriction);
-        $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
-        $queryBuilder = $this->addUserFilterToQueryBuilder($queryBuilder, $userSearch);
-        $queryBuilder = $this->addResourceTypeFilterToQueryBuilder($queryBuilder, $resourceType);
-
-        if ($workspaceIds !== null && count($workspaceIds) > 0) {
-            $queryBuilder = $this->addWorkspaceFilterToQueryBuilder($queryBuilder, $workspaceIds);
-        }
-        if ($resourceNodeIds !== null && count($resourceNodeIds) > 0) {
-            $queryBuilder = $this->addResourceFilterToQueryBuilder($queryBuilder, $resourceNodeIds);
-        }
-        if (!$enableAnonymous) {
-            $queryBuilder->andWhere(
-                $queryBuilder->expr()->isNotNull('log.doer')
-            );
-        }
-        $result = $queryBuilder->getQuery()->getSingleScalarResult();
-
-        return intval($result);
-    }
-
     public function findUserActionsByDay(
         $action,
         $range,
@@ -528,36 +443,6 @@ class LogRepository extends EntityRepository
         }
 
         return $queryBuilder->getQuery()->getResult();
-    }
-
-    public function activeUsers()
-    {
-        $queryBuilder = $this
-            ->createQueryBuilder('log')
-            ->select('COUNT(DISTINCT log.doer) AS users');
-
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, LogUserLoginEvent::ACTION);
-
-        $query = $queryBuilder->getQuery();
-        $result = $query->getResult();
-
-        return $result[0]['users'];
-    }
-
-    public function activeUsersByDateRange($range)
-    {
-        $queryBuilder = $this
-            ->createQueryBuilder('log')
-            ->select('COUNT(DISTINCT log.doer) AS users');
-
-        $queryBuilder = $this->addActionFilterToQueryBuilder($queryBuilder, LogUserLoginEvent::ACTION);
-
-        $queryBuilder = $this->addDateRangeFilterToQueryBuilder($queryBuilder, $range);
-
-        $query = $queryBuilder->getQuery();
-        $result = $query->getResult();
-
-        return $result[0]['users'];
     }
 
     public function addActionFilterToQueryBuilder(QueryBuilder $queryBuilder, $action, $actionRestriction = null)
