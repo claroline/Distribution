@@ -35,11 +35,20 @@ class ApiListener
      */
     public function onMerge(MergeUsersEvent $event)
     {
-        //Category
-        //Comment
-        //Entry
-        //EntryUser
+        // Replace manager of Category nodes
+        $categoryCount = $this->clacoFormManager->replaceCategoryManager($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineClacoFormBundle] updated Category count: $categoryCount");
 
-        $event->addMessage('[ClarolineClacoFormBundle]');
+        // Replace user of Comment nodes
+        $commentCount = $this->clacoFormManager->replaceCommentUser($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineClacoFormBundle] updated Comment count: $commentCount");
+
+        // Replace user of Entry nodes
+        $entryCount = $this->clacoFormManager->replaceEntryUser($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineClacoFormBundle] updated Entry count: $entryCount");
+
+        // Replace user of EntryUser nodes
+        $entryUserCount = $this->clacoFormManager->replaceEntryUserUser($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineClacoFormBundle] updated EntryUser count: $entryUserCount");
     }
 }

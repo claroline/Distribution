@@ -69,6 +69,18 @@ class ObjectiveRepository extends EntityRepository
         return $query->{$asArray ? 'getArrayResult' : 'getResult'}();
     }
 
+    public function findAllByUser(User $user)
+    {
+        return $this->createQueryBuilder()
+            ->select('o')
+            ->from('HeVinci\CompetencyBundle\Entity\Objective')
+            ->join('o.users', 'u')
+            ->where('u = :user')
+            ->setParameter(':user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * Returns an array representation of the objectives assigned to a group.
      *

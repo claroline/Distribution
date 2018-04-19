@@ -2647,4 +2647,97 @@ class ClacoFormManager
             }
         }
     }
+
+    /**
+     * Find all content for a given user and replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceCategoryManager(User $from, User $to)
+    {
+        $categories = $this->categoryRepo->findAllCategoriesByManager($from);
+
+        if (count($categories) > 0) {
+            foreach ($categories as $category) {
+                $category->removeManager($from);
+                $category->addManager($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($categories);
+    }
+
+    /**
+     * Find all content for a given user and replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceCommentUser(User $from, User $to)
+    {
+        $comments = $this->commentRepo->findByUser($from);
+
+        if (count($comments) > 0) {
+            foreach ($comments as $comment) {
+                $comment->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($comments);
+    }
+
+    /**
+     * Find all content for a given user and replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceEntryUser(User $from, User $to)
+    {
+        $entries = $this->entryRepo->findByUser($from);
+
+        if (count($entries) > 0) {
+            foreach ($entries as $entry) {
+                $entry->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($entries);
+    }
+
+    /**
+     * Find all content for a given user and replace him by another.
+     *
+     * @param User $from
+     * @param User $to
+     *
+     * @return int
+     */
+    public function replaceEntryUserUser(User $from, User $to)
+    {
+        $entryUsers = $this->entryUserRepo->findByUser($from);
+
+        if (count($entryUsers) > 0) {
+            foreach ($entryUsers as $entryUser) {
+                $entryUser->setUser($to);
+            }
+
+            $this->om->flush();
+        }
+
+        return count($entryUsers);
+    }
 }

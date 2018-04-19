@@ -35,8 +35,12 @@ class ApiListener
      */
     public function onMerge(MergeUsersEvent $event)
     {
-        //Team
+        // Replace team manager of Team nodes
+        $teamManagerCount = $this->manager->replaceManager($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineTeamBundle] updated Team count (by team manager): $teamManagerCount");
 
-        $event->addMessage('[ClarolineTeamBundle]');
+        // Replace user of Team nodes
+        $teamUserCount = $this->manager->replaceUser($event->getRemoved(), $event->getKept());
+        $event->addMessage("[ClarolineTeamBundle] updated Team count (by user): $teamUserCount");
     }
 }
