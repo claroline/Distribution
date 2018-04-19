@@ -31,28 +31,28 @@ const ComparisonTable = props =>
   <Table>
 
     {props.title && <thead>
-    <tr>
-      <th />
-      {props.data.map((elem, index) => <th key={index}>{props.title(elem)}</th>)}
-    </tr>
+      <tr>
+        <th />
+        {props.data.map((elem, index) => <th key={index}>{props.title(elem)}</th>)}
+      </tr>
     </thead>}
 
     {props.action && <tfoot>
-    <tr>
-      <td />
-      {props.data.map((elem, index) =>
-        <td key={index}>
-          <Button
-            onClick={() => props.action.action(elem, props.data)}
-            disabled={props.action.disabled(elem, props.data)}>
-            {props.action.text(elem)}
-          </Button>
-        </td>)}
-    </tr>
+      <tr>
+        <td />
+        {props.data.map((elem, index) =>
+          <td key={index}>
+            <Button
+              onClick={() => props.action.action(elem, props.data)}
+              disabled={props.action.disabled(elem, props.data)}>
+              {props.action.text(elem)}
+            </Button>
+          </td>)}
+      </tr>
     </tfoot>}
 
     <tbody>
-    {props.rows.map((elem, index) =>
+      {props.rows.map((elem, index) =>
 
         has(props.data[0], elem.name) && <tr key={index}>
 
@@ -69,7 +69,7 @@ const ComparisonTable = props =>
               options={elem.options} />
           )}
         </tr>
-    )}
+      )}
     </tbody>
 
   </Table>
