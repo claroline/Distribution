@@ -269,7 +269,6 @@ class UserController extends AbstractCrudController
     {
         // Dispatching an event for letting plugins and core do what they need to do
         /** @var MergeUsersEvent $event */
-
         $event = $this->eventDispatcher->dispatch(
             'merge_users',
             'User\MergeUsers',
