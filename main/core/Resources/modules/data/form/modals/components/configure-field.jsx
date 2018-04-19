@@ -64,13 +64,19 @@ class ConfigureFieldModal extends Component {
           let normalizedName = fieldData.label.replace(' ', '-') // Replaces all spaces with hyphens.
           normalizedName.replace(/[^A-Za-z0-9\-]/, '') // Removes special chars.
           normalizedName.replace(/-+/, '-') // Replaces multiple hyphens with single one.
-          const required = !fieldData.restrictions.locked || fieldData.restrictions.lockedEditionOnly ?
-            fieldData.required :
-            false
+          const required = fieldData.restrictions.locked && !fieldData.restrictions.lockedEditionOnly ?
+            false :
+            fieldData.required
+          const restrictions = merge({}, fieldData.restrictions)
+
+          if (!fieldData.restrictions.locked) {
+            restrictions['lockedEditionOnly'] = false
+          }
 
           this.props.save(merge({}, fieldData, {
             name: normalizedName,
-            required: required
+            required: required,
+            restrictions: restrictions
           }))
         }}
         title={trans('edit_field')}

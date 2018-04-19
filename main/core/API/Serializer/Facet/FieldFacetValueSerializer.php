@@ -112,6 +112,9 @@ class FieldFacetValueSerializer
             case FieldFacet::CHECKBOXES_TYPE:
                 $fieldFacetValue->setArrayValue($value);
                 break;
+            case FieldFacet::BOOLEAN_TYPE:
+                $fieldFacetValue->setBoolValue($value);
+                break;
             default:
                 $fieldFacetValue->setStringValue($value);
         }

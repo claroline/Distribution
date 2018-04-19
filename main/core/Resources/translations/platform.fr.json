@@ -929,6 +929,8 @@
     "profile_management": "Gestion du profil",
     "profile_preference_edited": "Préférences du profil éditées avec succès",
     "profile_properties_management": "Gestion des propriétés du profil",
+    "profile_roles_for_confidential_fields": "Les rôles pouvant voir les champs confidentiels",
+    "profile_roles_for_locked_fields": "Les rôles pouvant modifier les champs verrouillés",
     "properties": "Propriétés",
     "property": "Propriété",
     "public": "Public",

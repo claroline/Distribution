@@ -26,9 +26,9 @@ const countryDefinition = {
   render: (raw) => {
     if (raw) {
       if (Array.isArray(raw)) {
-        return raw.map(country => trans(`regions.${country}`, {}, 'regions')).join(', ')
+        return raw.map(country => trans(`${country}`, {}, 'regions')).join(', ')
       } else {
-        return trans(`regions.${raw}`, {}, 'regions')
+        return trans(`${raw}`, {}, 'regions')
       }
     }
 

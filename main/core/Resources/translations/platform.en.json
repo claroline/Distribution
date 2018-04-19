@@ -912,6 +912,8 @@
     "profile_management": "Profile Management",
     "profile_preference_edited": "Profile preferences edition sucessfull",
     "profile_properties_management": "Profile properties management",
+    "profile_roles_for_confidential_fields": "Roles that can see confidential fields",
+    "profile_roles_for_locked_fields": "Roles that can edit locked fields",
     "properties": "Properties",
     "property": "Property",
     "public": "Public",
