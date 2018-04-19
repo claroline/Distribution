@@ -1,4 +1,5 @@
 import React from 'react'
+import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/core/intl'
@@ -6,8 +7,9 @@ import {Button} from '#/main/app/action/components/button'
 import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
 
+import {select} from '#/plugin/forum/resources/forum/selectors'
 
-const Overview = props =>
+const OverviewComponent = props =>
   <div>
     <section className="resource-section resource-overview">
       <h2 className="sr-only">{trans('resource_overview')}</h2>
@@ -46,7 +48,7 @@ const Overview = props =>
             <h3 className="h2">{trans('resource_overview_info', {}, 'resource')}</h3>
 
             <div className="panel panel-default">
-              <HtmlText className="panel-body">Aucune consigne</HtmlText>
+              <HtmlText className="panel-body">{props.forum.display.description}</HtmlText>
             </div>
           </section>
           <section className="resource-info row">
@@ -54,7 +56,7 @@ const Overview = props =>
               <div className="info-gauge">
                 <CountGauge
                   className="gauge"
-                  value={129}
+                  value={props.forum.meta.users}
                   displayValue={(value) => number(value, true)}
                 />
                 <div>{trans('participating_users', {}, 'forum')}</div>
@@ -64,7 +66,7 @@ const Overview = props =>
               <div className="info-gauge">
                 <CountGauge
                   className="gauge"
-                  value={14}
+                  value={props.forum.meta.subjects}
                   displayValue={(value) => number(value, true)}
                 />
                 <div>{trans('subjects', {}, 'forum')}</div>
@@ -74,7 +76,7 @@ const Overview = props =>
               <div className="info-gauge">
                 <CountGauge
                   className="gauge"
-                  value={235}
+                  value={props.forum.meta.messages}
                   displayValue={(value) => number(value, true)}
                 />
                 <div>{trans('messages', {}, 'forum')}</div>
@@ -85,6 +87,14 @@ const Overview = props =>
       </div>
     </section>
   </div>
+
+
+const Overview = connect(
+  (state) => ({
+    forum: select.forum(state)
+  })
+)(OverviewComponent)
+
 
 export {
   Overview
