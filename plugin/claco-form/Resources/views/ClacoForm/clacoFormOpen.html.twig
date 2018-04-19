@@ -8,7 +8,6 @@
       {% endif %}
       data-claco-form="{{ _resource | api_serialize | json_encode | raw | escape }}"
       data-resource-node="{{ _resource.resourceNode | api_serialize | json_encode | raw | escape }}"
-      data-fields="{{ fields | json_encode | raw | escape }}"
       data-cascade-level-max={{ cascadeLevelMax }}
       data-can-generate-pdf="{{ canGeneratePdf }}"
       data-entries="{{ entries | json_encode | raw | escape }}"

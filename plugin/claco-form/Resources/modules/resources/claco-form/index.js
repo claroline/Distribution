@@ -13,13 +13,11 @@ import {
   MODAL_KEYWORD_FORM,
   KeywordFormModal
 } from '#/plugin/claco-form/resources/claco-form/editor/components/modals/keyword-form-modal.jsx'
-import {FieldFormModal} from '#/plugin/claco-form/resources/claco-form/editor/field/components/field-form-modal.jsx'
 
 // register custom modals
 registerModals([
   [MODAL_CATEGORY_FORM, CategoryFormModal],
-  [MODAL_KEYWORD_FORM, KeywordFormModal],
-  ['MODAL_FIELD_FORM', FieldFormModal]
+  [MODAL_KEYWORD_FORM, KeywordFormModal]
 ])
 
 registerType(FIELDS_TYPE,  fieldsDefinition)
@@ -45,7 +43,6 @@ bootstrap(
       resourceNode: initialData.resourceNode,
       isAnon: !initialData.user,
       canGeneratePdf: initialData.canGeneratePdf === 1,
-      fields: initialData.fields,
       entries: {
         list: initialData.entries,
         myEntriesCount: initialData.myEntriesCount

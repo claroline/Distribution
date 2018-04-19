@@ -20,7 +20,6 @@ import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {ClacoForm as ClacoFormType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {ClacoFormMainMenu} from '#/plugin/claco-form/resources/claco-form/player/components/claco-form-main-menu.jsx'
 import {Editor} from '#/plugin/claco-form/resources/claco-form/editor/components/editor.jsx'
-import {Fields} from '#/plugin/claco-form/resources/claco-form/editor/field/components/fields.jsx'
 import {TemplateForm} from '#/plugin/claco-form/resources/claco-form/editor/template/components/template-form.jsx'
 import {Entries} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entries.jsx'
 import {EntryForm} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-form.jsx'
@@ -68,11 +67,6 @@ const Resource = props =>
         displayed: props.canSearchEntry,
         action: '#/entries'
       }, {
-        icon: 'fa fa-fw fa-th-list',
-        label: trans('fields_management', {}, 'clacoform'),
-        displayed: props.canEdit,
-        action: '#/fields'
-      }, {
         icon: 'fa fa-fw fa-file-text-o',
         label: trans('template_management', {}, 'clacoform'),
         displayed: props.canEdit,
@@ -108,10 +102,6 @@ const Resource = props =>
           disabled: !props.canEdit,
           onLeave: () => props.resetForm(),
           onEnter: () => props.resetForm(props.clacoForm)
-        }, {
-          path: '/fields',
-          component: Fields,
-          disabled: !props.canEdit
         }, {
           path: '/template',
           component: TemplateForm,

@@ -19,7 +19,6 @@ import {
   MESSAGE_UPDATE
 } from '#/plugin/claco-form/resources/claco-form/actions'
 import {reducer as editorReducer} from '#/plugin/claco-form/resources/claco-form/editor/reducer'
-import {reducer as fieldReducer} from '#/plugin/claco-form/resources/claco-form/editor/field/reducer'
 import {reducer as entriesReducer} from '#/plugin/claco-form/resources/claco-form/player/entry/reducer'
 
 const messageReducer = makeReducer({}, {
@@ -116,7 +115,6 @@ const reducer = makeResourceReducer({}, {
   clacoFormForm: editorReducer,
   isAnon: makeReducer({}, {}),
   canGeneratePdf: makeReducer({}, {}),
-  fields: fieldReducer,
   entries: entriesReducer,
   // myEntriesCount: myEntriesCountReducer,
   // currentEntry: currentEntryReducer,
