@@ -282,7 +282,7 @@ class UserController extends AbstractCrudController
         $remove_username = $remove->getUsername();
 
         // Delete old user
-        $this->container->get('claroline.manager.user_manager')->deleteUser($remove);
+        $this->crud->deleteBulk([$remove], [Options::SOFT_DELETE]);
 
         $event->addMessage("[CoreBundle] user removed: $remove_username");
         $event->addMessage("[CoreBundle] user kept: $keep_username");
