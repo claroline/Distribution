@@ -19,16 +19,9 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Widget\WidgetInstance;
 use Claroline\CoreBundle\Event\Log\LogCreateDelegateViewEvent;
 use Claroline\CoreBundle\Event\Log\LogGenericEvent;
-use Claroline\CoreBundle\Event\Log\LogWorkspaceEnterEvent;
-use Claroline\CoreBundle\Form\DataTransformer\DateRangeToTextTransformer;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use JMS\DiExtraBundle\Annotation as DI;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Adapter\FixedAdapter;
-use Pagerfanta\Exception\NotValidCurrentPageException;
-use Pagerfanta\Pagerfanta;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -117,7 +110,8 @@ class LogManager
     {
         // get filters
         $filters = FinderProvider::parseQueryParams($finderParams)['allFilters'];
-        $data = $this->logRepository->fetchChartData($filters);
+        $unique = isset($filters['unique']) ? $filters['unique'] : false;
+        $data = $this->logRepository->fetchChartData($filters, $unique);
         $minDate = isset($filters['dateLog']) ? $filters['dateLog'] : null;
         $maxDate = isset($filters['dateTo']) ? $filters['dateTo'] : null;
 
@@ -505,353 +499,6 @@ class LogManager
         ];
     }
 
-    public function getAdminList($page, $maxResult = -1)
-    {
-        return $this->getList(
-            $page,
-            'admin',
-            $this->container->get('claroline.form.adminLogFilter'),
-            null,
-            $maxResult
-        );
-    }
-
-    public function getWorkspaceList($workspace, $page = null, $maxResult = -1)
-    {
-        if ($workspace === null) {
-            $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
-        } else {
-            $workspaceIds = [$workspace->getId()];
-        }
-
-        $params = $this->getList(
-            $page,
-            'workspace',
-            $this->container->get('claroline.form.workspaceLogFilter'),
-            $workspaceIds,
-            $maxResult,
-            null,
-            null
-        );
-        if ($page !== null) {
-            $params['workspace'] = $workspace;
-        }
-
-        return $params;
-    }
-
-    public function getResourceList($resource, $page = null, $maxResult = -1)
-    {
-        $resourceNodeIds = [$resource->getResourceNode()->getId()];
-
-        $params = $this->getList(
-            $page,
-            'workspace',
-            $this->container->get('claroline.form.resourceLogFilter'),
-            null,
-            $maxResult,
-            $resourceNodeIds,
-            get_class($resource)
-        );
-        if ($page !== null) {
-            $params['_resource'] = $resource;
-        }
-
-        return $params;
-    }
-
-    public function getList(
-        $page,
-        $actionsRestriction,
-        $logFilterFormType,
-        $workspaceIds = null,
-        $maxResult = -1,
-        $resourceNodeIds = null,
-        $resourceClass = null
-    ) {
-        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->translator);
-        $data = $this->processFormData(
-            $actionsRestriction,
-            $logFilterFormType,
-            $workspaceIds,
-            $resourceClass,
-            $dateRangeToTextTransformer
-        );
-        $range = $data['range'];
-
-        $filterForm = $this->container->get('form.factory')->create($logFilterFormType, $data);
-
-        $data['range'] = $dateRangeToTextTransformer->transform($range);
-        $filter = urlencode(json_encode($data));
-
-        //Find if action refers to an resource type
-        $actionData = $this->getResourceTypeFromAction($data['action']);
-        $actionString = $actionData['action'];
-        $resourceType = $actionData['resourceType'];
-
-        $query = $this->logRepository->findFilteredLogsQuery(
-            $actionString,
-            $range,
-            $data['user'],
-            $actionsRestriction,
-            $workspaceIds,
-            $maxResult,
-            $resourceType,
-            $resourceNodeIds,
-            $data['group']
-        );
-
-        if ($page === null) {
-            // Return all results for export
-            return [
-                'results' => $query->getResult(),
-                'listItemViews' => $this->renderLogs($query->getResult()),
-            ];
-        } else {
-            // Return paged results
-
-            // Return paged object for on-screen display
-            $adapter = new DoctrineORMAdapter($query);
-            $pager = new PagerFanta($adapter);
-            $pager->setMaxPerPage(self::LOG_PER_PAGE);
-
-            try {
-                $pager->setCurrentPage($page);
-            } catch (NotValidCurrentPageException $e) {
-                throw new NotFoundHttpException();
-            }
-
-            $chartData = $this->logRepository->countByDayFilteredLogs(
-                $actionString,
-                $range,
-                $data['user'],
-                $actionsRestriction,
-                $workspaceIds,
-                false,
-                $resourceType,
-                $resourceNodeIds,
-                $data['group']
-            );
-
-            //List item delegation
-            $views = $this->renderLogs($pager->getCurrentPageResults());
-
-            return [
-                'pager' => $pager,
-                'listItemViews' => $views,
-                'filter' => $filter,
-                'filterForCSV' => $data,
-                'filterForm' => $filterForm->createView(),
-                'chartData' => $chartData,
-                'actionName' => $actionString,
-            ];
-        }
-    }
-
-    public function countByUserListForCSV(
-        $actionsRestriction,
-        $workspace = null,
-        $resource = null
-    ) {
-        $workspaceIds = ($workspace === null) ? null : [$workspace->getId()];
-        $resourceNodeIds = ($resource === null) ? null : [$resource->getResourceNode()->getId()];
-        if ($workspaceIds === null && $resourceNodeIds === null) {
-            $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
-        }
-        if ($workspaceIds !== null) {
-            $logFilterFormType = $this->container->get('claroline.form.workspaceLogFilter');
-            $resourceClass = null;
-        } else {
-            $logFilterFormType = $this->container->get('claroline.form.resourceLogFilter');
-            $resourceClass = get_class($resource);
-        }
-        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->translator);
-        $data = $this->processFormData($actionsRestriction, $logFilterFormType, $workspaceIds, $resourceClass, $dateRangeToTextTransformer);
-
-        $action = $data['action'];
-
-        $orderBy = 'name';
-        if (!empty($data['orderBy'])) {
-            $orderBy = $data['orderBy'];
-        }
-        $order = 'ASC';
-        if (!empty($data['order'])) {
-            $order = $data['order'];
-        }
-
-        //Find if action refers to an resource type
-        $actionData = $this->getResourceTypeFromAction($action);
-        $actionString = $actionData['action'];
-        $resourceType = $actionData['resourceType'];
-
-        $topUsers = $this->logRepository->topUsersByActionQuery(
-            $actionString,
-            $data['range'],
-            $data['user'],
-            $actionsRestriction,
-            $workspaceIds,
-            -1,
-            $resourceType,
-            $resourceNodeIds,
-            false,
-            null,
-            $orderBy,
-            $order
-        )->iterate();
-
-        return $topUsers;
-    }
-
-    public function countByUserWorkspaceList($workspace, $page)
-    {
-        if ($workspace === null) {
-            $workspaceIds = $this->getAdminOrCollaboratorWorkspaceIds();
-        } else {
-            $workspaceIds = [$workspace->getId()];
-        }
-
-        $params = $this->countByUser(
-            $page,
-            'workspace',
-            $this->container->get('claroline.form.workspaceLogFilter'),
-            $workspaceIds,
-            null,
-            null
-        );
-        $params['workspace'] = $workspace;
-
-        return $params;
-    }
-
-    public function countByUserResourceList($resource, $page)
-    {
-        $resourceNodeIds = [$resource->getResourceNode()->getId()];
-
-        $params = $this->countByUser(
-            $page,
-            'workspace',
-            $this->container->get('claroline.form.resourceLogFilter'),
-            null,
-            $resourceNodeIds,
-            get_class($resource)
-        );
-        $params['_resource'] = $resource;
-
-        return $params;
-    }
-
-    public function countByUser(
-        $page,
-        $actionsRestriction,
-        $logFilterFormType,
-        $workspaceIds = null,
-        $resourceNodeIds = null,
-        $resourceClass = null
-    ) {
-        $page = max(1, $page);
-        $dateRangeToTextTransformer = new DateRangeToTextTransformer($this->translator);
-        $data = $this->processFormData(
-            $actionsRestriction,
-            $logFilterFormType,
-            $workspaceIds,
-            $resourceClass,
-            $dateRangeToTextTransformer
-        );
-        $range = $data['range'];
-        $orderBy = 'name';
-        if (isset($data['orderBy'])) {
-            $orderBy = $data['orderBy'];
-        }
-        $order = 'ASC';
-        if (isset($data['order'])) {
-            $order = $data['order'];
-        }
-
-        $filterForm = $this->container->get('form.factory')->create($logFilterFormType, $data);
-
-        $data['range'] = $dateRangeToTextTransformer->transform($range);
-
-        //Find if action refers to an resource type
-        $actionData = $this->getResourceTypeFromAction($data['action']);
-        $actionString = $actionData['action'];
-        $resourceType = $actionData['resourceType'];
-
-        $nbUsers = $this->logRepository->countTopUsersByAction(
-            $actionString,
-            $range,
-            $data['user'],
-            $actionsRestriction,
-            $workspaceIds,
-            $resourceType,
-            $resourceNodeIds,
-            false
-        );
-
-        $maxResult = self::LOG_PER_PAGE;
-        if (($page - 1) * $maxResult > $nbUsers) {
-            throw new NotFoundHttpException();
-        }
-
-        $topUsers = $this->logRepository->topUsersByActionQuery(
-            $actionString,
-            $range,
-            $data['user'],
-            $actionsRestriction,
-            $workspaceIds,
-            $maxResult,
-            $resourceType,
-            $resourceNodeIds,
-            false,
-            $page,
-            $orderBy,
-            $order
-        )->getResult();
-
-        $formatedData = $this->formatTopUserDataArray($topUsers);
-        $resultUserList = null;
-        if (!empty($formatedData)) {
-            $userActionsByDay = $this->logRepository->findUserActionsByDay(
-                $actionString,
-                $range,
-                $actionsRestriction,
-                $workspaceIds,
-                $resourceType,
-                $resourceNodeIds,
-                $formatedData['ids']
-            );
-            $userActionsByDay[] = null;
-            $resultUserList = $formatedData['userData'];
-            $currentUserId = null;
-            $userActionsArray = [];
-            foreach ($userActionsByDay as $userAction) {
-                if ($userAction === null || ($currentUserId !== null && $currentUserId !== $userAction['id'])) {
-                    $resultUserList[$currentUserId]['stats'] = $this
-                        ->logRepository
-                        ->extractChartData($userActionsArray, $range);
-                    $resultUserList[$currentUserId]['maxValue'] = max(array_column($userActionsArray, 'total'));
-                    $userActionsArray = [];
-                }
-                if ($userAction !== null) {
-                    $currentUserId = $userAction['id'];
-                    $userActionsArray[] = $userAction;
-                }
-            }
-        }
-        $adapter = new FixedAdapter($nbUsers, $resultUserList);
-        $pager = new PagerFanta($adapter);
-        $pager->setMaxPerPage(self::LOG_PER_PAGE);
-        $pager->setCurrentPage($page);
-
-        return [
-            'pager' => $pager,
-            'filter' => $data,
-            'filterForm' => $filterForm->createView(),
-            'actionName' => $actionString,
-            'orderBy' => $orderBy,
-            'order' => $order,
-        ];
-    }
-
     public function getWorkspaceVisibilityForDesktopWidget(User $user, array $workspaces)
     {
         $workspacesVisibility = [];
@@ -898,90 +545,27 @@ class LogManager
             ->findOneBy(['widgetInstance' => $config]);
     }
 
-    protected function getResourceTypeFromAction($action)
+    public function getDetails(Log $log)
     {
-        //Find if action refers to an resource type
-        $actionString = $action;
-        $resourceType = null;
-        preg_match('/\[\[([^\]]+)\]\]/', $action, $matches);
-        if (!empty($matches)) {
-            $resourceType = $matches[1];
-            $actionString = preg_replace('/\[\[([^\]]+)\]\]/', '', $action);
-            $actionString = trim($actionString);
-        }
+        $details = $log->getDetails();
+        $receiverUser = isset($details['receiverUser']) ? $details['receiverUser']['firstName'].' '.$details['receiverUser']['lastName'] : null;
+        $receiverGroup = isset($details['receiverGroup']) ? $details['receiverGroup']['name'] : null;
+        $role = isset($details['role']) ? $details['role']['name'] : null;
+        $workspace = isset($details['workspace']) ? $details['workspace']['name'] : null;
+        $resource = $log->getResourceNode() ? $details['resource']['path'] : null;
 
-        return ['action' => $actionString, 'resourceType' => $resourceType];
-    }
-
-    protected function processFormData(
-        $actionsRestriction,
-        $logFilterFormType,
-        $workspaceIds,
-        $resourceClass,
-        $dateRangeToTextTransformer
-    ) {
-        $request = $this->container->get('request');
-        $data = $request->query->all();
-
-        $action = null;
-        $range = null;
-        $userSearch = null;
-
-        if (array_key_exists('filter', $data)) {
-            $decodeFilter = json_decode(urldecode($data['filter']), true);
-            if ($decodeFilter !== null) {
-                $action = $decodeFilter['action'];
-                $range = $dateRangeToTextTransformer->reverseTransform($decodeFilter['range']);
-                $userSearch = $decodeFilter['user'];
-                if (!empty($decodeFilter['orderBy'])) {
-                    $orderBy = $decodeFilter['orderBy'];
-                    $order = $decodeFilter['order'];
-                }
-                $groupSearch = $decodeFilter['group'];
-            }
-        } else {
-            $dataClass['resourceClass'] = $resourceClass ? $resourceClass : null;
-            $tmpForm = $this->container->get('form.factory')->create($logFilterFormType, $dataClass);
-            $tmpForm->submit($request);
-            $formData = $tmpForm->getData();
-            $action = isset($formData['action']) ? $formData['action'] : null;
-            if (empty($action) && !empty($request->get('action'))) {
-                $action = $request->get('action');
-            }
-            $range = isset($formData['range']) ? $formData['range'] : null;
-            $userSearch = isset($formData['user']) ? $formData['user'] : null;
-            $groupSearch = isset($formData['group']) ? $formData['group'] : null;
-
-            if (!empty($data['orderBy'])) {
-                $orderBy = $data['orderBy'];
-                $order = $data['order'];
-            }
-        }
-
-        if ($range === null) {
-            $range = $this->getDefaultRange();
-        }
-
-        if ($action === null && $actionsRestriction === 'workspace' && $workspaceIds !== null) {
-            $action = LogWorkspaceEnterEvent::ACTION;
-        }
-
-        $data = [];
-        $data['action'] = $action;
-        $data['range'] = $range;
-        $data['user'] = $userSearch;
-        $data['group'] = $groupSearch;
-
-        if (isset($orderBy) && isset($order)) {
-            $data['orderBy'] = $orderBy;
-            $data['order'] = $order;
-        }
-
-        if ($resourceClass !== null) {
-            $data['resourceClass'] = $resourceClass;
-        }
-
-        return $data;
+        return $this->translator->trans(
+            'log_'.$log->getAction().'_sentence',
+            [
+                '%resource%' => $resource,
+                '%receiver_user%' => $receiverUser,
+                '%receiver_group%' => $receiverGroup,
+                '%role%' => $role,
+                '%workspace%' => $workspace,
+                '%tool%' => $this->translator->trans($log->getToolName(), [], 'tool'),
+            ],
+            'log'
+        );
     }
 
     protected function isAllowedToViewLogs($workspace)
@@ -1024,75 +608,5 @@ class LogManager
         $endDate->setTime(23, 59, 59);
 
         return [$startDate->getTimestamp(), $endDate->getTimestamp()];
-    }
-
-    protected function getYesterdayRange()
-    {
-        //By default last thirty days :
-        $startDate = new \DateTime('now');
-        $startDate->setTime(0, 0, 0);
-        $startDate->sub(new \DateInterval('P1D')); // P1D means a period of 1 days
-
-        $endDate = new \DateTime('now');
-        $endDate->setTime(23, 59, 59);
-        $endDate->sub(new \DateInterval('P1D')); // P1D means a period of 1 days
-
-        return [$startDate->getTimestamp(), $endDate->getTimestamp()];
-    }
-
-    protected function getAdminOrCollaboratorWorkspaceIds()
-    {
-        $workspaceIds = [];
-        $loggedUser = $this->container->get('security.token_storage')->getToken()->getUser();
-        $workspaceIdsResult = $this->om
-            ->getRepository('ClarolineCoreBundle:Workspace\Workspace')
-            ->findIdsByUserAndRoleNames($loggedUser, ['ROLE_WS_COLLABORATOR', 'ROLE_WS_MANAGER']);
-
-        foreach ($workspaceIdsResult as $line) {
-            $workspaceIds[] = $line['id'];
-        }
-
-        return $workspaceIds;
-    }
-
-    protected function formatTopUserDataArray($topUsers)
-    {
-        if ($topUsers === null || count($topUsers) === 0) {
-            return [];
-        }
-
-        $topUsersFormatedArray = [];
-        $topUsersIdList = [];
-        foreach ($topUsers as $topUser) {
-            $id = $topUser['id'];
-            $topUser['stats'] = [];
-            $topUsersFormatedArray[$id] = $topUser;
-            $topUsersIdList[] = $id;
-        }
-
-        return ['ids' => $topUsersIdList, 'userData' => $topUsersFormatedArray];
-    }
-
-    public function getDetails(Log $log)
-    {
-        $details = $log->getDetails();
-        $receiverUser = isset($details['receiverUser']) ? $details['receiverUser']['firstName'].' '.$details['receiverUser']['lastName'] : null;
-        $receiverGroup = isset($details['receiverGroup']) ? $details['receiverGroup']['name'] : null;
-        $role = isset($details['role']) ? $details['role']['name'] : null;
-        $workspace = isset($details['workspace']) ? $details['workspace']['name'] : null;
-        $resource = $log->getResourceNode() ? $details['resource']['path'] : null;
-
-        return $this->translator->trans(
-          'log_'.$log->getAction().'_sentence',
-          [
-            '%resource%' => $resource,
-            '%receiver_user%' => $receiverUser,
-            '%receiver_group%' => $receiverGroup,
-            '%role%' => $role,
-            '%workspace%' => $workspace,
-            '%tool%' => $this->translator->trans($log->getToolName(), [], 'tool'),
-          ],
-          'log'
-        );
     }
 }

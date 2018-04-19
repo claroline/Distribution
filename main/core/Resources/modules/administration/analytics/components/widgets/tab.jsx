@@ -56,7 +56,7 @@ class Tab extends Component {
         {this.props.widgets.data.list && this.props.widgets.data.list.length > 0 &&
         <Row>
           <Col xs={12} md={6}>
-            <DashboardCard title={trans('resources_usage_ratio')} icon={'fa-pie-chart'}>
+            <DashboardCard title={trans('widgets_usage_ratio')} icon={'fa-pie-chart'}>
               <PieChart
                 style={{
                   margin: 'auto',
@@ -74,7 +74,7 @@ class Tab extends Component {
             </DashboardCard>
           </Col>
           <Col xs={12} md={6}>
-            <DashboardCard title={trans('resources_usage_list')} icon={'fa-list'}>
+            <DashboardCard title={trans('widgets_usage_list')} icon={'fa-list'}>
               <DashboardTable
                 definition={[
                   {

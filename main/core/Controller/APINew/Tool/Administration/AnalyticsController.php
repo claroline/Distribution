@@ -64,32 +64,31 @@ class AnalyticsController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     *
+     * @return JsonResponse
      * @Route("/audience", name="apiv2_admin_tool_analytics_audience")
      * @Method("GET")
      */
-    public function audienceAction()
+    public function audienceAction(Request $request)
     {
-        $actionsForRange = $this->analyticsManager
-            ->getDailyActionNumberForDateRange($this->analyticsManager->getDefaultRange(), 'user_login', false);
-
-        $activeUsersForDateRange = $this->analyticsManager
-            ->getActiveUsersForDateRange($this->analyticsManager->getDefaultRange());
-
-        $connections = $actionsForRange;
-        $countConnectionsForDateRange = array_sum(array_map(function ($item) {
-            return $item[1];
+        $query = $request->query->all();
+        $query['hiddenFilters'] = ['action' => 'user-login'];
+        $connections = $this->analyticsManager->getDailyActions($query);
+        $totalConnections = array_sum(array_map(function ($item) {
+            return $item['yData'];
         }, $connections));
-        $activeUsers = $this->analyticsManager->getActiveUsers();
+        $activeUsersForPeriod = $this->analyticsManager->countActiveUsers([], true);
+        $activeUsers = $this->analyticsManager->countActiveUsers();
 
         return new JsonResponse([
             'activity' => [
                 'daily' => $connections,
-                'total' => $countConnectionsForDateRange,
+                'total' => $totalConnections,
             ],
             'users' => [
                 'all' => $activeUsers,
-                'period' => $activeUsersForDateRange,
+                'period' => $activeUsersForPeriod,
             ],
         ]);
     }
@@ -129,12 +128,6 @@ class AnalyticsController
      */
     public function topActionsAction(Request $request)
     {
-        $range = $this->analyticsManager->getDefaultRange();
-        $topType = $request->query->get('type');
-        $max = $request->query->get('max');
-
-        $listData = $this->analyticsManager->getTopByCriteria($range, $topType, $max);
-
-        return new JsonResponse($listData);
+        return new JsonResponse($this->analyticsManager->getTopActions($request->query->all()));
     }
 }

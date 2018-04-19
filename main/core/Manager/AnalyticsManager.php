@@ -22,8 +22,6 @@ use Claroline\CoreBundle\Event\Log\LogWorkspaceToolReadEvent;
 use Claroline\CoreBundle\Repository\Log\LogRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
-use Claroline\CoreBundle\Repository\UserRepository;
-use Claroline\CoreBundle\Repository\WorkspaceRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -36,12 +34,6 @@ class AnalyticsManager
 
     /** @var ResourceTypeRepository */
     private $resourceTypeRepo;
-
-    /** @var UserRepository */
-    private $userRepo;
-
-    /** @var WorkspaceRepository */
-    private $workspaceRepo;
 
     /** @var LogRepository */
     private $logRepository;
@@ -93,36 +85,7 @@ class AnalyticsManager
         $this->dispatcher = $dispatcher;
         $this->resourceRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->resourceTypeRepo = $objectManager->getRepository('ClarolineCoreBundle:Resource\ResourceType');
-        $this->userRepo = $objectManager->getRepository('ClarolineCoreBundle:User');
-        $this->workspaceRepo = $objectManager->getRepository('ClarolineCoreBundle:Workspace\Workspace');
         $this->logRepository = $objectManager->getRepository('ClarolineCoreBundle:Log\Log');
-    }
-
-    public function getDefaultRange()
-    {
-        //By default last thirty days :
-        $startDate = new \DateTime('now');
-        $startDate->setTime(0, 0, 0);
-        $startDate->sub(new \DateInterval('P30D')); // P29D means a period of 29 days
-
-        $endDate = new \DateTime('now');
-        $endDate->setTime(23, 59, 59);
-
-        return [$startDate->getTimestamp(), $endDate->getTimestamp()];
-    }
-
-    public function getYesterdayRange()
-    {
-        //By default last thirty days :
-        $startDate = new \DateTime('now');
-        $startDate->setTime(0, 0, 0);
-        $startDate->sub(new \DateInterval('P1D')); // P1D means a period of 1 days
-
-        $endDate = new \DateTime('now');
-        $endDate->setTime(23, 59, 59);
-        $endDate->sub(new \DateInterval('P1D')); // P1D means a period of 1 days
-
-        return [$startDate->getTimestamp(), $endDate->getTimestamp()];
     }
 
     public function getResourceTypesCount(Workspace $workspace = null)
@@ -219,6 +182,25 @@ class AnalyticsManager
         ];
     }
 
+    /**
+     * Retrieve user who connected at least one time on the application.
+     *
+     * @param array $finderParams
+     * @param bool  $defaultPeriod
+     *
+     * @return int
+     */
+    public function countActiveUsers(array $finderParams = [], $defaultPeriod = false)
+    {
+        if ($defaultPeriod) {
+            $finderParams = $this->formatQueryParams($finderParams);
+        }
+        $queryParams = FinderProvider::parseQueryParams($finderParams);
+        $resultData = $this->logRepository->countActiveUsers($queryParams['allFilters']);
+
+        return floatval($resultData);
+    }
+
     private function formatQueryParams(array $finderParams = [])
     {
         $filters = isset($finderParams['filters']) ? $finderParams['filters'] : [];
@@ -252,108 +234,48 @@ class AnalyticsManager
 
     // TODO Remove any old methods not required after refactoring
 
-    public function getDailyActionNumberForDateRange(
-        $range = null,
-        $action = null,
-        $unique = false,
-        $workspaceIds = null
-    ) {
-        if (null === $action) {
-            $action = '';
-        }
-
-        if (null === $range) {
-            $range = $this->getDefaultRange();
-        }
-
-        $userSearch = null;
-        $actionRestriction = null;
-        $chartData = $this->logRepository->countByDayFilteredLogs(
-            $action,
-            $range,
-            $userSearch,
-            $actionRestriction,
-            $workspaceIds,
-            $unique
-        );
-
-        return $chartData;
-    }
-
-    public function getTopByCriteria($range = null, $topType = null, $max = 30)
+    public function getTopActions(array $finderParams = [])
     {
-        if (null === $topType) {
-            $topType = 'top_users_connections';
-        }
-        $listData = [];
-
+        $topType = isset($finderParams['type']) ? $finderParams['type'] : 'top_users_connections';
+        $finderParams['filters'] = isset($finderParams['filters']) ? $finderParams['filters'] : [];
+        $finderParams['limit'] = isset($finderParams['limit']) ? $finderParams['limit'] : 10;
         switch ($topType) {
             case 'top_extension':
-                $listData = $this->resourceRepo->findMimeTypesWithMostResources($max);
+                $listData = $this->resourceRepo->findMimeTypesWithMostResources($finderParams['limit']);
                 break;
             case 'top_workspaces_resources':
-                $listData = $this->workspaceRepo->findWorkspacesWithMostResources($max);
+                $listData = $this->workspaceManager->getWorkspacesWithMostResources($finderParams['limit']);
                 break;
             case 'top_workspaces_connections':
-                $listData = $this->topWorkspaceByAction($range, LogWorkspaceToolReadEvent::ACTION, $max);
+                $finderParams['filters']['action'] = LogWorkspaceToolReadEvent::ACTION;
+                $listData = $this->topWorkspaceByAction($finderParams);
                 break;
             case 'top_resources_views':
-                $listData = $this->topResourcesByAction($range, LogResourceReadEvent::ACTION, $max);
+                $finderParams['filters']['action'] = LogResourceReadEvent::ACTION;
+                $listData = $this->topResourcesByAction($finderParams);
                 break;
             case 'top_resources_downloads':
-                $listData = $this->topResourcesByAction($range, LogResourceExportEvent::ACTION, $max);
-                break;
-            case 'top_users_connections':
-                $listData = $this->topUsersByAction($range, LogUserLoginEvent::ACTION, $max);
+                $finderParams['filters']['action'] = LogResourceExportEvent::ACTION;
+                $listData = $this->topResourcesByAction($finderParams);
                 break;
             case 'top_users_workspaces_enrolled':
-                $listData = $this->userRepo->findUsersEnrolledInMostWorkspaces($max);
+                $listData = $this->userManager->getUsersEnrolledInMostWorkspaces($finderParams['limit']);
                 break;
             case 'top_users_workspaces_owners':
-                $listData = $this->userRepo->findUsersOwnersOfMostWorkspaces($max);
+                $listData = $this->userManager->getUsersOwnersOfMostWorkspaces($finderParams['limit']);
                 break;
             case 'top_media_views':
-                $listData = $this->topMediaByAction($range, LogResourceReadEvent::ACTION, $max);
+                $finderParams['filters']['action'] = LogResourceReadEvent::ACTION;
+                $listData = $this->topResourcesByAction($finderParams, true);
+                break;
+            case 'top_users_connections':
+            default:
+                $finderParams['filters']['action'] = LogUserLoginEvent::ACTION;
+                $finderParams['sortBy'] = '-actions';
+                $listData = $this->logManager->getUserActionsList($finderParams);
                 break;
         }
 
         return $listData;
-    }
-
-    public function topUsersByAction($range = null, $action = null, $max = -1)
-    {
-        if (null === $range) {
-            $range = $this->getYesterdayRange();
-        }
-
-        if (null === $action) {
-            $action = LogUserLoginEvent::ACTION;
-        }
-
-        $resultData = $this->logRepository->topUsersByAction($range, $action, $max);
-
-        return $resultData;
-    }
-
-    /**
-     * Retrieve user who connected at least one time on the application.
-     *
-     * @return mixed
-     */
-    public function getActiveUsers()
-    {
-        $resultData = $this->logRepository->activeUsers();
-
-        return $resultData;
-    }
-
-    /**
-     * Retrieve users who connected at least one time on the application in the given time frame.
-     */
-    public function getActiveUsersForDateRange($range)
-    {
-        $resultData = $this->logRepository->activeUsersByDateRange($range);
-
-        return $resultData;
     }
 }
