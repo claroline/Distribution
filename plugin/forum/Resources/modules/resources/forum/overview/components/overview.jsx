@@ -15,22 +15,28 @@ const Overview = props =>
       <div className="row">
         <div className="user-column col-md-4">
           <section className="user-progression">
-            <h3 className="h2">{trans('user_info')}</h3>
+            <h3 className="h2">{trans('my_participation', {}, 'forum')}</h3>
             <div className="panel panel-default overview-gauge">
-              <div className="panel-body info-gauge">
+              <div className="panel-body">
                 <CountGauge
                   className="gauge"
                   value={3}
                   displayValue={(value) => number(value, true)}
                 />
-                <div>Your messages</div>
+                <div>{trans('my_messages', {}, 'forum')}</div>
               </div>
             </div>
             <Button
-              label="Go to the forum"
+              label={trans('see_subjects', {}, 'forum')}
+              type="link"
+              target="/play/subject/3"
+              className="btn btn-block btn-primary primary btn-emphasis "
+            />
+            <Button
+              label={trans('new_subject', {}, 'forum')}
               type="link"
               target="/play"
-              className="btn btn-block btn-primary primary btn-emphasis "
+              className="btn btn-block btn-emphasis "
             />
           </section>
         </div>
@@ -43,31 +49,36 @@ const Overview = props =>
               <HtmlText className="panel-body">Aucune consigne</HtmlText>
             </div>
           </section>
-          <section className="resource-info">
-            <h3 className="h2">{trans('data')}</h3>
-            <div className="info-gauge col-md-4">
-              <CountGauge
-                className="gauge"
-                value={129}
-                displayValue={(value) => number(value, true)}
-              />
-              <div>{trans('registered_users')}</div>
+          <section className="resource-info row">
+            <div className="col-md-4">
+              <div className="info-gauge">
+                <CountGauge
+                  className="gauge"
+                  value={129}
+                  displayValue={(value) => number(value, true)}
+                />
+                <div>{trans('participating_users', {}, 'forum')}</div>
+              </div>
             </div>
-            <div className="info-gauge col-md-4">
-              <CountGauge
-                className="gauge"
-                value={14}
-                displayValue={(value) => number(value, true)}
-              />
-              <div>{trans('subjects', {}, 'forum')}</div>
+            <div className="col-md-4">
+              <div className="info-gauge">
+                <CountGauge
+                  className="gauge"
+                  value={14}
+                  displayValue={(value) => number(value, true)}
+                />
+                <div>{trans('subjects', {}, 'forum')}</div>
+              </div>
             </div>
-            <div className="info-gauge ">
-              <CountGauge
-                className="gauge"
-                value={235}
-                displayValue={(value) => number(value, true)}
-              />
-              <div>{trans('messages', {}, 'forum')}</div>
+            <div className="col-md-4">
+              <div className="info-gauge">
+                <CountGauge
+                  className="gauge"
+                  value={235}
+                  displayValue={(value) => number(value, true)}
+                />
+                <div>{trans('messages', {}, 'forum')}</div>
+              </div>
             </div>
           </section>
         </div>
