@@ -31,7 +31,7 @@ const Tool = () =>
         content: AudienceTab
       }, {
         icon: 'fa fa-folder',
-        title: trans('resources'),
+        title: trans('analytics_resources'),
         path: '/resources',
         actions: null,
         content: ResourcesTab

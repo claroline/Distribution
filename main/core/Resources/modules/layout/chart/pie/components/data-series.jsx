@@ -20,7 +20,7 @@ const DataSeries = props => {
           startAngle={arc.startAngle}
           endAngle={arc.endAngle}
           value={props.showPercentage ? (arc.value/total*100).toFixed(2) + '%' : arc.value}
-          showValue={props.showValue}
+          showValue={props.showValue && arc.value > 0}
         />
       ))}
     </g>

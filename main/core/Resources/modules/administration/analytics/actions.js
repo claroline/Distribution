@@ -44,7 +44,7 @@ actions.getResourcesData = () => (dispatch) => {
   actions.loadResourcesData({})
   dispatch({
     [API_REQUEST]: {
-      url: generateUrl('apiv2_admin_tool_analytics_overview'),
+      url: generateUrl('apiv2_admin_tool_analytics_resources'),
       success: (response, dispatch) => {
         dispatch(actions.loadResourcesData(response))
       }

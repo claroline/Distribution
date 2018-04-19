@@ -463,7 +463,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface, 
             ->select('COUNT(DISTINCT user.id)')
             ->leftJoin('user.roles', 'roles')
             ->andWhere('roles.id = :roleId')
-            ->setParameter('roleId', $role->getId());
+            ->andWhere('user.isEnabled = :enabled')
+            ->setParameter('roleId', $role->getId())
+            ->setParameter('enabled', true);
         if (!empty($restrictionRoleNames)) {
             $qb->andWhere('user.id NOT IN (:userIds)')
                 ->setParameter('userIds', $this->findUserIdsInRoles($restrictionRoleNames));
@@ -492,14 +494,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface, 
     public function findUserIdsInRoles($roleNames)
     {
         $qb = $this->createQueryBuilder('user')
-            ->select('user.id')
+            ->select('DISTINCT(user.id) as id')
             ->leftJoin('user.roles', 'roles')
             ->andWhere('roles.name IN (:roleNames)')
             ->andWhere('user.isRemoved = false')
             ->setParameter('roleNames', $roleNames);
         $query = $qb->getQuery();
 
-        return $query->getArrayResult();
+        return array_column($query->getScalarResult(), 'id');
     }
 
     /**

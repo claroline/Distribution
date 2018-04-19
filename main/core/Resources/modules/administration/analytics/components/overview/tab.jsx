@@ -1,49 +1,14 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import {schemeCategory20c} from 'd3-scale'
 import {Grid, Row, Col} from 'react-bootstrap'
+
 import {trans} from '#/main/core/translation'
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx'
+import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart.jsx'
 import {actions} from '#/main/core/administration/analytics/actions'
-import {AnalyticsCard} from '#/main/core/administration/analytics/components/analytics-card'
-import {
-  Table,
-  TableHeaderCell,
-  TableRow,
-  TableCell
-} from '#/main/core/layout/table/components/table.jsx'
-
-const AnalyticsTable = (props) =>
-  <Table className="data-table" condensed={true}>
-    <thead>
-      <TableRow>
-        {props.definition.map((val, index) =>
-          <TableHeaderCell key={index} align={'left'}>
-            {val.label}
-          </TableHeaderCell>
-        )}
-      </TableRow>
-    </thead>
-    <tbody>
-      {props.data.map((data,index) =>
-        <TableRow key={index}>
-          {props.definition.map((val, index) =>
-            <TableCell key={index} align={'left'}>
-              {data[val.name]}
-            </TableCell>
-          )}
-        </TableRow>
-      )}
-    </tbody>
-  </Table>
-
-AnalyticsTable.propTypes = {
-  definition: T.arrayOf(T.shape({
-    name: T.string.isRequired,
-    label: T.string.isRequired
-  })).isRequired,
-  data: T.array.isRequired
-}
+import {DashboardTable, DashboardCard} from '#/main/core/layout/dashboard/index'
 
 class Tab extends Component {
   constructor(props) {
@@ -59,7 +24,7 @@ class Tab extends Component {
       <Grid className="analytics-overview-container">
         <Row>
           <Col xs={12}>
-            <AnalyticsCard title={trans('last_30_days_activity')} icon={'fa-area-chart'}>
+            <DashboardCard title={trans('last_30_days_activity')} icon={'fa-area-chart'}>
               <LineChart
                 style={{maxHeight: 250}}
                 responsive={true}
@@ -84,24 +49,58 @@ class Tab extends Component {
                   right: 20
                 }}
               />
-            </AnalyticsCard>
+            </DashboardCard>
           </Col>
         </Row>
-        <Row>
-          <Col xs={12}>
-            <AnalyticsCard title={trans('account_general_statistics')} icon={'fa-user'}>
-            asdfa
-            </AnalyticsCard>
-          </Col>
-        </Row>
+        {this.props.overview.data.users &&
+          <Row>
+            <Col xs={12} md={6}>
+              <DashboardCard title={trans('account_general_statistics')} icon={'fa-user'}>
+                <DashboardTable
+                  definition={[
+                    {
+                      name: 'name',
+                      label: trans('role'),
+                      colorLegend: true,
+                      transDomain: 'platform'
+                    }, {
+                      name: 'total',
+                      label: '#'
+                    }
+                  ]}
+                  data={this.props.overview.data.users}
+                  colors={schemeCategory20c}
+                />
+              </DashboardCard>
+            </Col>
+            <Col xs={12} md={6}>
+              <DashboardCard title={trans('account_general_statistics')} icon={'fa-pie-chart'}>
+                <PieChart
+                  style={{
+                    margin: 'auto',
+                    maxHeight: 350
+                  }}
+                  data={this.props.overview.data.users.map(v => v.total) || {}}
+                  width={350}
+                  margin={{
+                    top: 25
+                  }}
+                  colors={schemeCategory20c}
+                  showPercentage={true}
+                  responsive={true}
+                />
+              </DashboardCard>
+            </Col>
+          </Row>
+        }
         {
           this.props.overview.data.top &&
           this.props.overview.data.top.workspace &&
           this.props.overview.data.top.workspace.length > 0 &&
           <Row>
             <Col xs={12}>
-              <AnalyticsCard title={trans('ws_most_viewed')} icon={'fa-book'}>
-                <AnalyticsTable
+              <DashboardCard title={trans('ws_most_viewed')} icon={'fa-book'}>
+                <DashboardTable
                   definition={[
                     {
                       name: 'name',
@@ -113,7 +112,7 @@ class Tab extends Component {
                   ]}
                   data={this.props.overview.data.top.workspace}
                 />
-              </AnalyticsCard>
+              </DashboardCard>
             </Col>
           </Row>
         }
@@ -123,8 +122,8 @@ class Tab extends Component {
           this.props.overview.data.top.media.length > 0 &&
           <Row>
             <Col xs={12}>
-              <AnalyticsCard title={trans('media_most_viewed')} icon={'fa-file'}>
-                <AnalyticsTable
+              <DashboardCard title={trans('media_most_viewed')} icon={'fa-file'}>
+                <DashboardTable
                   definition={[
                     {
                       name: 'name',
@@ -136,7 +135,7 @@ class Tab extends Component {
                   ]}
                   data={this.props.overview.data.top.media}
                 />
-              </AnalyticsCard>
+              </DashboardCard>
             </Col>
           </Row>
         }
@@ -146,8 +145,8 @@ class Tab extends Component {
           this.props.overview.data.top.download.length > 0 &&
           <Row>
             <Col xs={12}>
-              <AnalyticsCard title={trans('resources_most_downloaded')} icon={'fa-download'}>
-                <AnalyticsTable
+              <DashboardCard title={trans('resources_most_downloaded')} icon={'fa-download'}>
+                <DashboardTable
                   definition={[
                     {
                       name: 'name',
@@ -159,7 +158,7 @@ class Tab extends Component {
                   ]}
                   data={this.props.overview.data.top.download}
                 />
-              </AnalyticsCard>
+              </DashboardCard>
             </Col>
           </Row>
         }

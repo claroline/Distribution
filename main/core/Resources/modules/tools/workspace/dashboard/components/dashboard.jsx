@@ -7,65 +7,7 @@ import {trans} from '#/main/core/translation'
 import {LineChart} from '#/main/core/layout/chart/line/components/line-chart.jsx'
 import {PieChart} from '#/main/core/layout/chart/pie/components/pie-chart.jsx'
 import {actions} from '#/main/core/tools/workspace/dashboard/actions'
-import {
-  Table,
-  TableHeaderCell,
-  TableRow,
-  TableCell
-} from '#/main/core/layout/table/components/table.jsx'
-
-const ResourceTypesTable = (props) =>
-  <Table className="data-table" condensed={true}>
-    <thead>
-      <TableRow>
-        <TableHeaderCell align={'left'}>
-          {trans('resources')}
-        </TableHeaderCell>
-        <TableHeaderCell align={'left'}>
-          #
-        </TableHeaderCell>
-      </TableRow>
-    </thead>
-    <tbody>
-      {Object.keys(props.data).map((key, index) =>
-        <TableRow key={key}>
-          <TableCell align={'left'}>
-            <span
-              className="dashboard-color-legend"
-              style={{backgroundColor: schemeCategory20c[index % schemeCategory20c.length]}}
-            />
-            <span>{trans(props.data[key].xData, {}, 'resource')}</span>
-          </TableCell>
-          <TableCell align={'left'}>
-            {props.data[key].yData}
-          </TableCell>
-        </TableRow>
-      )}
-    </tbody>
-  </Table>
-
-ResourceTypesTable.propTypes = {
-  data: T.object.isRequired
-}
-
-const DashboardCard = (props) =>
-  <div className={'dashboard-card data-card data-card-col'}>
-    <div className={'data-card-header'}>
-      <div className={'data-card-title text-left'}>
-        {props.icon && <i className={`fa ${props.icon}`}/>}
-        <span>{props.title}</span>
-      </div>
-    </div>
-    <div className={'data-card-content'}>
-      {props.children}
-    </div>
-  </div>
-
-DashboardCard.propTypes = {
-  title: T.string.isRequired,
-  icon: T.string,
-  children: T.node.isRequired
-}
+import {DashboardTable, DashboardCard} from '#/main/core/layout/dashboard'
 
 class Dashboard extends Component {
   constructor(props) {
@@ -129,7 +71,26 @@ class Dashboard extends Component {
           </Col>
           <Col sm={12} md={6}>
             <DashboardCard title={trans('resources_usage_list')} icon={'fa-list'}>
-              <ResourceTypesTable data={props.dashboard.data.resourceTypes || {}}/>
+              <DashboardTable
+                definition={[
+                  {
+                    name: 'xData',
+                    label: trans('name'),
+                    transDomain: 'resource',
+                    colorLegend: true
+                  }, {
+                    name: 'yData',
+                    label: '#'
+                  }
+                ]}
+                data={
+                  (
+                    props.dashboard.data.resourceTypes &&
+                    Object.keys(props.dashboard.data.resourceTypes).map(v => props.dashboard.data.resourceTypes[v])
+                  ) || []
+                }
+                colors={schemeCategory20c}
+              />
             </DashboardCard>
           </Col>
         </Row>
