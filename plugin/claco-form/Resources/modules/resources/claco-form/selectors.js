@@ -11,7 +11,7 @@ const visibleFields = state => state.clacoForm.fields.filter(f => !f.restriction
 const template = state => state.clacoForm.template
 const useTemplate = state => state.clacoForm.details['use_template']
 const getParam = (state, property) => state.clacoForm.details[property]
-const currentEntry = state => state.entries.current
+const currentEntry = state => state.entries.current.data
 const myEntriesCount = state => state.entries.myEntriesCount
 const canAdministrate = state => state.resourceNode.rights.current.administrate
 const categories = state => state.clacoForm.categories

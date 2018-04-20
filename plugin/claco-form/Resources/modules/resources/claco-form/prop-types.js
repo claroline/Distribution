@@ -52,16 +52,17 @@ const Field = {
       T.array
     ]),
     fieldFacet: T.shape({
-      id: T.number.isRequired,
+      id: T.string.isRequired,
       name: T.string.isRequired,
-      type: T.number.isRequired,
-      translationKey: T.string.isRequired,
-      field_facet_choices: T.arrayOf(T.shape({
-        id: T.string.isRequired,
-        name: T.string.isRequired,
-        value: T.string.isRequired,
-        position: T.number.isRequired
-      }))
+      type: T.string.isRequired,
+      required: T.bool.isRequired,
+      restrictions: T.shape({
+        hidden: T.bool.isRequired,
+        isMetadata: T.bool.isRequired,
+        locked: T.bool.isRequired,
+        lockedEditionOnly: T.bool.isRequired,
+        order: T.number.isRequired
+      }).isRequired
     })
   }
 }

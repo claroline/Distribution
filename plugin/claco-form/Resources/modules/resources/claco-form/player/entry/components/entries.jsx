@@ -85,7 +85,7 @@ class EntriesComponent extends Component {
     this.props.history.push(url)
   }
 
-  generateColumns() {
+  generateColumns(titleLabel) {
     const columns = []
 
     if (!this.props.isAnon) {
@@ -135,7 +135,7 @@ class EntriesComponent extends Component {
     })
     columns.push({
       name: 'title',
-      label: trans('title'),
+      label: titleLabel ? titleLabel : trans('title'),
       displayed: this.isDisplayedField('title'),
       primary: true,
       type: 'string'
@@ -435,7 +435,7 @@ class EntriesComponent extends Component {
               url: ['apiv2_clacoformentry_list', {clacoForm: this.props.clacoFormId}],
               autoload: true
             }}
-            definition={this.generateColumns()}
+            definition={this.generateColumns(this.props.titleLabel)}
             filterColumns={this.props.searchColumnEnabled}
             actions={this.generateActions()}
             card={(props) =>
@@ -478,6 +478,7 @@ EntriesComponent.propTypes = {
   displayMetadata: T.string.isRequired,
   displayCategories: T.bool.isRequired,
   displayKeywords: T.bool.isRequired,
+  titleLabel: T.string,
   isCategoryManager: T.bool.isRequired,
   downloadEntryPdf: T.func.isRequired,
   downloadEntriesPdf: T.func.isRequired,
@@ -522,6 +523,7 @@ const Entries = withRouter(connect(
     displayMetadata: select.getParam(state, 'display_metadata'),
     displayCategories: select.getParam(state, 'display_categories'),
     displayKeywords: select.getParam(state, 'display_keywords'),
+    titleLabel: select.getParam(state, 'title_field_label'),
     isCategoryManager: select.isCategoryManager(state),
     entries: state.entries.list
   }),

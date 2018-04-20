@@ -248,7 +248,7 @@ class EntrySerializer
     {
         return array_map(
             function (FieldValue $fieldValue) {
-                return $this->fieldValueSerializer->serialize($fieldValue);
+                return $this->fieldValueSerializer->serialize($fieldValue, [Options::SERIALIZE_MINIMAL]);
             },
             $entry->getFieldValues()
         );

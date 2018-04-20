@@ -52,7 +52,14 @@ class FieldValueSerializer
             'id' => $fieldValue->getUuid(),
         ];
 
-        if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
+        if (in_array(Options::SERIALIZE_MINIMAL, $options)) {
+            $serialized = array_merge($serialized, [
+                'field' => [
+                    'id' => $fieldValue->getField()->getUuid(),
+                ],
+                'fieldFacetValue' => $this->fieldFacetValueSerializer->serialize($fieldValue->getFieldFacetValue(), ['minimal']),
+            ]);
+        } else {
             $serialized = array_merge($serialized, [
                 'field' => $this->fieldSerializer->serialize($fieldValue->getField(), [Options::SERIALIZE_MINIMAL]),
                 'fieldFacetValue' => $this->fieldFacetValueSerializer->serialize($fieldValue->getFieldFacetValue(), ['minimal']),

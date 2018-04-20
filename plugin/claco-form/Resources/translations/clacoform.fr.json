@@ -172,6 +172,7 @@
     "template_mandatory_variables_message": "Les champs obligatoires doivent impérativement être présent dans le template.",
     "template_missing_mandatory_variables_message": "Certains champs obligatoires ne sont pas présents dans le template.",
     "template_variables_message": "Vous pouvez utiliser les variables suivantes. Elles seront remplacées par les champs correspondants.",
+    "title_field_label": "Label du champ titre",
     "unlock_entry": "Déverrouiller la fiche",
     "unlock_selected_entries": "Déverrouiller les fiches sélectionnées",
     "use_template": "Utiliser le template",

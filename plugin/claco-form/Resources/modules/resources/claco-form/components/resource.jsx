@@ -124,8 +124,17 @@ const Resource = props =>
         }, {
           path: '/entry/form/:id?',
           component: EntryForm,
-          onEnter: (params) => props.openEntryForm(params.id, props.clacoForm.id),
-          onLeave: () => props.resetEntryForm()
+          onEnter: (params) => {
+            props.openEntryForm(params.id, props.clacoForm.id)
+
+            if (params.id) {
+              props.loadEntryUser(params.id)
+            }
+          },
+          onLeave: () => {
+            props.resetEntryForm()
+            props.resetEntryUser()
+          }
         }
       ]}
     />

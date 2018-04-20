@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
+import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
@@ -28,6 +29,8 @@ import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
 import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu.jsx'
+
+const authenticatedUser = currentUser()
 
 const FilesThumbnails = props =>
   <div className="file-thumbnails">
@@ -236,7 +239,7 @@ class EntryComponent extends Component {
   }
 
   isFieldDisplayable(field) {
-    return this.canViewMetadata() || !field.isMetadata
+    return this.canViewMetadata() || !field.restrictions.isMetadata
   }
 
   showSharingForm() {
@@ -339,12 +342,12 @@ class EntryComponent extends Component {
     return template
   }
 
-  getSections(fields) {
+  getSections(fields, entry, titleLabel) {
     const sectionFields = [
       {
         name: 'title',
         type: 'string',
-        label: trans('title'),
+        label: titleLabel ? titleLabel : trans('title'),
         required: true
       }
     ]
@@ -354,7 +357,8 @@ class EntryComponent extends Component {
         type: f.type,
         label: f.label,
         required: f.required,
-        help: f.help
+        help: f.help,
+        displayed: this.isFieldDisplayable(f)
       }
       sectionFields.push(params)
     })
@@ -431,7 +435,7 @@ class EntryComponent extends Component {
                 </HtmlText> :
                 <DataDetailsContainer
                   name="entries.current"
-                  sections={this.getSections(this.props.fields)}
+                  sections={this.getSections(this.props.fields, this.props.entry, this.props.titleLabel)}
                 />
               }
             </div>
@@ -513,6 +517,8 @@ EntryComponent.propTypes = {
   menuPosition: T.string.isRequired,
   template: T.string,
   useTemplate: T.bool.isRequired,
+  titleLabel: T.string,
+
   entry: T.shape(EntryType.propTypes),
   entryUser: T.shape(EntryUserType.propTypes),
   fields: T.arrayOf(T.shape(FieldType.propTypes)),
@@ -559,7 +565,8 @@ const Entry = withRouter(connect(
     isManager: select.isCurrentEntryManager(state),
     randomEnabled: select.getParam(state, 'random_enabled'),
     useTemplate: select.getParam(state, 'use_template'),
-    template: select.template(state)
+    template: select.template(state),
+    titleLabel: select.getParam(state, 'title_field_label')
   }),
   (dispatch, ownProps) => ({
     deleteEntry(entry) {

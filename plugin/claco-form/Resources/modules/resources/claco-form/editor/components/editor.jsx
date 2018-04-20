@@ -104,6 +104,10 @@ const EditorComponent = props =>
           title: trans('display_parameters'),
           fields: [
             {
+              name: 'details.title_field_label',
+              type: 'string',
+              label: trans('title_field_label', {}, 'clacoform')
+            }, {
               name: 'details.default_home',
               type: 'enum',
               label: trans('label_default_home', {}, 'clacoform'),

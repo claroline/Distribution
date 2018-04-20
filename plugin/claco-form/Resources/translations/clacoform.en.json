@@ -172,6 +172,7 @@
     "template_mandatory_variables_message": "Mandatory fields must be used in the template.",
     "template_missing_mandatory_variables_message": "Some mandatory fields are missing.",
     "template_variables_message": "You can use the following variables. They will be replaced by the corresponding field.",
+    "title_field_label": "Label for title field",
     "unlock_entry": "Unlock entry",
     "unlock_selected_entries": "Unlock selected entries",
     "use_template": "Use template",

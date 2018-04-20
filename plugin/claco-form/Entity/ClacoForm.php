@@ -679,4 +679,19 @@ class ClacoForm extends AbstractResource
         }
         $this->details['comments_display_roles'] = $commentsDisplayRoles;
     }
+
+    public function getTitleFieldLabel()
+    {
+        return !is_null($this->details) && isset($this->details['title_field_label']) ?
+            $this->details['title_field_label'] :
+            null;
+    }
+
+    public function setTitleFieldLabel($titleFieldLabel)
+    {
+        if (is_null($this->details)) {
+            $this->details = [];
+        }
+        $this->details['title_field_label'] = $titleFieldLabel;
+    }
 }

@@ -34,9 +34,6 @@ use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryLockSwitchEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryStatusChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryUserChangeEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogFieldCreateEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogFieldDeleteEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogFieldEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogKeywordCreateEvent;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
@@ -219,6 +216,8 @@ class ClacoFormManager
         $clacoForm->setDisplayTitle('title');
         $clacoForm->setDisplaySubtitle('title');
         $clacoForm->setDisplayContent('title');
+
+        $clacoForm->setTitleFieldLabel(null);
 
         return $clacoForm;
     }

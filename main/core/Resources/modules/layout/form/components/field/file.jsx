@@ -49,6 +49,7 @@ class FileComponent extends Component {
           id={this.props.id}
           type="file"
           className="form-control"
+          disabled={this.props.disabled}
           accept={this.props.types.join(',')}
           ref={input => this.input = input}
           onChange={() => {
