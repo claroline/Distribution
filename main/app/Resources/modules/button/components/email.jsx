@@ -1,7 +1,7 @@
 import React from 'react'
 import omit from 'lodash/omit'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {UrlButton} from '#/main/app/button/components/url'
 
