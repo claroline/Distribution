@@ -107,7 +107,7 @@ const EntryForm = connect(
     isManager: select.isCurrentEntryManager(state),
     isNew: formSelect.isNew(formSelect.form(state, 'entries.current')),
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
-    entryUser: select.entryUser(state),
+    entryUser: select.entryUser(state)
   }),
   (dispatch) => ({
     saveForm(entry, isNew) {

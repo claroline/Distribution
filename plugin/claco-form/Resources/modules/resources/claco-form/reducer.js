@@ -110,10 +110,8 @@ const clacoFormReducer = makeReducer({}, {
 })
 
 const reducer = makeResourceReducer({}, {
-  user: makeReducer({}, {}),
   clacoForm: clacoFormReducer,
   clacoFormForm: editorReducer,
-  isAnon: makeReducer({}, {}),
   canGeneratePdf: makeReducer({}, {}),
   entries: entriesReducer,
   // myEntriesCount: myEntriesCountReducer,

@@ -38,10 +38,8 @@ bootstrap(
     const clacoForm = initialData.clacoForm
 
     return {
-      user: initialData.user,
       clacoForm: clacoForm,
       resourceNode: initialData.resourceNode,
-      isAnon: !initialData.user,
       canGeneratePdf: initialData.canGeneratePdf === 1,
       entries: {
         list: initialData.entries,

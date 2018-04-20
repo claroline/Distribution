@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 
+import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -12,6 +13,8 @@ import {UserMessageForm} from '#/main/core/user/message/components/user-message-
 
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+
+const authenticatedUser = currentUser()
 
 class EntryCommentsComponent extends Component {
   constructor(props) {
@@ -28,11 +31,11 @@ class EntryCommentsComponent extends Component {
   }
 
   filterComment(comment) {
-    return this.props.canManage || comment.status === 1 || (this.props.user && comment.user && this.props.user.id === comment.user.id)
+    return this.props.canManage || comment.status === 1 || (authenticatedUser && comment.user && authenticatedUser.id === comment.user.id)
   }
 
   canEditComment(comment) {
-    return this.props.canManage || (this.props.user && comment.user && this.props.user.id === comment.user.id)
+    return this.props.canManage || (authenticatedUser && comment.user && authenticatedUser.id === comment.user.id)
   }
 
   deleteComment(commentId) {
@@ -104,7 +107,7 @@ class EntryCommentsComponent extends Component {
 
             {this.state.showNewCommentForm &&
               <UserMessageForm
-                user={this.props.user}
+                user={authenticatedUser}
                 allowHtml={true}
                 submitLabel={trans('add_comment')}
                 submit={(comment) => this.createNewComment(comment)}
@@ -130,7 +133,7 @@ class EntryCommentsComponent extends Component {
               this.state[comment.id] && this.state[comment.id].showCommentForm ?
                 <UserMessageForm
                   key={`comment-${commentIndex}`}
-                  user={this.props.user}
+                  user={authenticatedUser}
                   content={comment.content}
                   allowHtml={true}
                   submitLabel={trans('add_comment')}
@@ -181,11 +184,6 @@ class EntryCommentsComponent extends Component {
 }
 
 EntryCommentsComponent.propTypes = {
-  user: T.shape({
-    id: T.string,
-    firstName: T.string,
-    lastName: T.string
-  }),
   opened: T.bool.isRequired,
   entry: T.object.isRequired,
   canComment: T.bool.isRequired,
@@ -204,7 +202,6 @@ EntryCommentsComponent.propTypes = {
 const EntryComments = connect(
   (state) => ({
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
-    user: state.user,
     displayCommentAuthor: select.getParam(state, 'display_comment_author'),
     displayCommentDate: select.getParam(state, 'display_comment_date')
   }),

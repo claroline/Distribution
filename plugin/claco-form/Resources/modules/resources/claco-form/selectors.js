@@ -1,10 +1,12 @@
 import {createSelector} from 'reselect'
 
+import {currentUser} from '#/main/core/user/current'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 
+const authenticatedUser = currentUser()
+
 const clacoForm = state => state.clacoForm
-const isAnon = state => state.isAnon
-const user = state => state.user
+const isAnon = () => authenticatedUser === null
 const params = state => state.clacoForm.details
 const fields = state => state.clacoForm.fields
 const visibleFields = state => state.clacoForm.fields.filter(f => !f.restrictions.hidden)
@@ -28,25 +30,23 @@ const canSearchEntry = createSelector(
 
 const isCurrentEntryOwner = createSelector(
   isAnon,
-  user,
   currentEntry,
-  (isAnon, user, currentEntry) => {
-    return !isAnon && user && currentEntry && currentEntry.user && currentEntry.user.id === user.id
+  (isAnon, currentEntry) => {
+    return !isAnon && authenticatedUser && currentEntry && currentEntry.user && currentEntry.user.id === authenticatedUser.id
   }
 )
 
 const isCurrentEntryManager = createSelector(
   isAnon,
-  user,
   currentEntry,
-  (isAnon, user, currentEntry) => {
+  (isAnon, currentEntry) => {
     let isManager = false
 
-    if (!isAnon && user && currentEntry && currentEntry.categories) {
+    if (!isAnon && authenticatedUser && currentEntry && currentEntry.categories) {
       currentEntry.categories.forEach(category => {
         if (!isManager && category.managers) {
           category.managers.forEach(manager => {
-            if (manager.id === user.id) {
+            if (manager.id === authenticatedUser.id) {
               isManager = true
             }
           })
@@ -60,17 +60,16 @@ const isCurrentEntryManager = createSelector(
 
 const canManageCurrentEntry = createSelector(
   isAnon,
-  user,
   resourceSelect.editable,
   currentEntry,
-  (isAnon, user, editable, currentEntry) => {
+  (isAnon, editable, currentEntry) => {
     let canManage = editable
 
-    if (!canManage && !isAnon && user && currentEntry && currentEntry.categories) {
+    if (!canManage && !isAnon && authenticatedUser && currentEntry && currentEntry.categories) {
       currentEntry.categories.forEach(category => {
         if (!canManage && category.managers) {
           category.managers.forEach(manager => {
-            if (manager.id === user.id) {
+            if (manager.id === authenticatedUser.id) {
               canManage = true
             }
           })
@@ -124,10 +123,9 @@ const canOpenCurrentEntry = createSelector(
 )
 
 const isCategoryManager = createSelector(
-  user,
   categories,
-  (user, categories) => {
-    return user.id > 0 && categories.filter(c => c.managers.find(m => m.id === user.id)).length > 0
+  (categories) => {
+    return authenticatedUser && categories.filter(c => c.managers.find(m => m.id === authenticatedUser.id)).length > 0
   }
 )
 

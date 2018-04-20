@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
+import {currentUser} from '#/main/core/user/current'
 import {generateUrl} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
@@ -20,6 +21,8 @@ import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
 import {getFieldType, getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
+
+const authenticatedUser = currentUser()
 
 class EntriesComponent extends Component {
   deleteEntry(entry) {
@@ -41,11 +44,11 @@ class EntriesComponent extends Component {
   isEntryManager(entry) {
     let isManager = false
 
-    if (entry.categories && this.props.user) {
+    if (entry.categories && authenticatedUser) {
       entry.categories.forEach(c => {
         if (!isManager && c.managers) {
           c.managers.forEach(m => {
-            if (m.id === this.props.user.id) {
+            if (m.id === authenticatedUser.id) {
               isManager = true
             }
           })
@@ -57,7 +60,7 @@ class EntriesComponent extends Component {
   }
 
   isEntryOwner(entry) {
-    return this.props.user && entry.user && entry.user.id === this.props.user.id
+    return authenticatedUser && entry.user && entry.user.id === authenticatedUser.id
   }
 
   canEditEntry(entry) {
@@ -88,7 +91,7 @@ class EntriesComponent extends Component {
   generateColumns(titleLabel) {
     const columns = []
 
-    if (!this.props.isAnon) {
+    if (authenticatedUser) {
       const options = {}
 
       if (this.props.canEdit || this.props.searchEnabled) {
@@ -461,7 +464,6 @@ class EntriesComponent extends Component {
 EntriesComponent.propTypes = {
   canEdit: T.bool.isRequired,
   canAdministrate: T.bool.isRequired,
-  isAnon: T.bool.isRequired,
   user: T.object,
   fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   canGeneratePdf: T.bool.isRequired,
@@ -506,8 +508,6 @@ const Entries = withRouter(connect(
   (state) => ({
     canEdit: resourceSelect.editable(state),
     canAdministrate: resourceSelect.administrable(state),
-    isAnon: state.isAnon,
-    user: state.user,
     fields: select.fields(state),
     canGeneratePdf: state.canGeneratePdf,
     clacoFormId: state.clacoForm.id,

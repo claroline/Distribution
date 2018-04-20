@@ -156,9 +156,7 @@ class ClacoFormController extends Controller
         $myRoles = 'anon.' === $currentUser ? [$roleAnonymous->getName()] : $currentUser->getRoles();
 
         return [
-            'user' => $user,
             '_resource' => $clacoForm,
-            'isAnon' => $isAnon,
             'clacoForm' => $clacoForm,
             'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,

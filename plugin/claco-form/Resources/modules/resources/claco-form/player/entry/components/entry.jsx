@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
-import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
@@ -29,8 +28,6 @@ import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
 import {EntryMenu} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-menu.jsx'
-
-const authenticatedUser = currentUser()
 
 const FilesThumbnails = props =>
   <div className="file-thumbnails">
@@ -486,11 +483,6 @@ class EntryComponent extends Component {
 EntryComponent.propTypes = {
   clacoFormId: T.string.isRequired,
   entryId: T.string,
-  user: T.shape({
-    id: T.string,
-    firstName: T.string,
-    lastName: T.string
-  }),
   canEdit: T.bool.isRequired,
   canAdministrate: T.bool.isRequired,
   canGeneratePdf: T.bool.isRequired,
@@ -499,7 +491,6 @@ EntryComponent.propTypes = {
   canComment: T.bool,
   canViewComments: T.bool,
 
-  isAnon: T.bool.isRequired,
   isOwner: T.bool,
   isManager: T.bool,
 
@@ -539,7 +530,6 @@ EntryComponent.propTypes = {
 const Entry = withRouter(connect(
   (state, ownProps) => ({
     clacoFormId: select.clacoForm(state).id,
-    user: state.user,
     entryId: ownProps.match.params.id,
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
     entryUser: select.entryUser(state),
@@ -551,7 +541,6 @@ const Entry = withRouter(connect(
     canGeneratePdf: state.canGeneratePdf,
     canComment: select.canComment(state),
     canViewComments: select.canViewComments(state),
-    isAnon: state.isAnon,
     fields: select.visibleFields(state),
     displayMetadata: select.getParam(state, 'display_metadata'),
     displayKeywords: select.getParam(state, 'display_keywords'),
