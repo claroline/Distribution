@@ -1,8 +1,7 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {UrlButton} from '#/main/app/button/components/url'
 
@@ -21,11 +20,9 @@ const EmailButton = props =>
     {props.children || props.email}
   </UrlButton>
 
-EmailButton.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(EmailButton, ButtonTypes, {
   email: T.string.isRequired
 })
-
-EmailButton.defaultProps = merge({}, ButtonTypes.defaultProps)
 
 export {
   EmailButton

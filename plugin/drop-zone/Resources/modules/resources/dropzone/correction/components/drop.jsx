@@ -29,13 +29,14 @@ const Corrections = props =>
             <th>{trans('actions', {}, 'platform')}</th>
           </tr>
         </thead>
+
         <tbody>
-        {props.corrections.map(c =>
-          <CorrectionRow
-            key={`correction-row-${c.id}`}
-            correction={c}
-          />
-        )}
+          {props.corrections.map(c =>
+            <CorrectionRow
+              key={`correction-row-${c.id}`}
+              correction={c}
+            />
+          )}
         </tbody>
       </table>
     </FormSection>

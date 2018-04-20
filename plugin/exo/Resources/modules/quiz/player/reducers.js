@@ -1,5 +1,7 @@
-import {update, makeId} from './../../utils/utils'
 import {makeReducer} from '#/main/core/scaffolding/reducer'
+import {getApiDateFormat} from '#/main/core/scaffolding/date'
+
+import {update, makeId} from './../../utils/utils'
 import {isQuestionType} from './../../items/item-types'
 import {decorateAnswer} from './decorators'
 import moment from 'moment'
@@ -27,7 +29,7 @@ function finishPaper(state, action) {
   return update(state, {
     ['finished']: {$set: true},
     ['endDate']: {
-      $set: (action.paper.endDate ? action.paper.endDate : moment().format('YYYY-MM-DD\Thh:mm:ss'))
+      $set: (action.paper.endDate ? action.paper.endDate : moment().format(getApiDateFormat()))
     },
     ['score']: {
       $set: action.paper.score

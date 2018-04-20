@@ -1,7 +1,6 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'

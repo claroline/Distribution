@@ -1,9 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {url} from '#/main/core/api'
 
@@ -42,7 +41,7 @@ const UrlButton = props => {
   )
 }
 
-UrlButton.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(UrlButton, ButtonTypes, {
   target: T.oneOfType([
     T.array, // a symfony url array
     T.string

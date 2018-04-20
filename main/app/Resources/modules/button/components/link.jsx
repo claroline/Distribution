@@ -1,9 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
 import {NavLink} from '#/main/core/router'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 
@@ -32,12 +31,10 @@ const LinkButton = props =>
     {props.children}
   </NavLink>
 
-LinkButton.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(LinkButton, ButtonTypes, {
   target: T.string,
   exact: T.bool
-})
-
-LinkButton.defaultProps = merge({}, ButtonTypes.defaultProps, {
+}, {
   exact: false
 })
 

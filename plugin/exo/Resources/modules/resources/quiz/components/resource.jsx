@@ -168,7 +168,9 @@ const Resource = props =>
 Resource.propTypes = {
   quizId: T.string.isRequired,
   editable: T.bool.isRequired,
-  hasUserPapers: T.bool.isRequired,
+  papersAdmin: T.bool.isRequired,
+  docimologyAdmin: T.bool.isRequired,
+  hasPapers: T.bool.isRequired,
   registeredUser: T.bool.isRequired,
   hasOverview: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
@@ -177,7 +179,8 @@ Resource.propTypes = {
   testMode: T.func.isRequired,
   results: T.func.isRequired,
   result: T.func.isRequired,
-  statistics: T.func.isRequired
+  statistics: T.func.isRequired,
+  correction: T.func.isRequired
 }
 
 const QuizResource = DragNDropContext(
@@ -186,7 +189,6 @@ const QuizResource = DragNDropContext(
       quizId: select.id(state),
       editable: resourceSelect.editable(state),
       hasPapers: select.hasPapers(state),
-      hasUserPapers: select.hasUserPapers(state),
       hasOverview: select.hasOverview(state),
       papersAdmin: select.papersAdmin(state),
       docimologyAdmin: select.docimologyAdmin(state),

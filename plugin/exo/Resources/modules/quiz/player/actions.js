@@ -166,7 +166,7 @@ actions.handleAttemptEnd = (paper, navigate) => {
 
     // We will decide here if we show the correction now or not and where we redirect the user
     if (playerSelectors.hasEndPage(getState())) {
-        // Show the end page
+      // Show the end page
       navigate('play/end')
     } else {
       switch (playerSelectors.showCorrectionAt(getState())) {

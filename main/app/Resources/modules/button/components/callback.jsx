@@ -1,9 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 
 /**
@@ -46,11 +45,9 @@ const CallbackButton = props =>
     {props.children}
   </button>
 
-CallbackButton.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(CallbackButton, ButtonTypes, {
   callback: T.func.isRequired
 })
-
-CallbackButton.defaultProps = merge({}, ButtonTypes.defaultProps)
 
 export {
   CallbackButton

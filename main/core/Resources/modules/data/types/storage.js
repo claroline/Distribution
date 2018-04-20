@@ -1,9 +1,10 @@
 import {trans} from '#/main/core/translation'
-import {chain, number, inRange} from '#/main/core/validation'
 
 import {StorageGroup} from '#/main/core/layout/form/components/group/storage-group'
 
 const STORAGE_TYPE = 'storage'
+
+// TODO finish implementation
 
 /**
  * Storage definition.
@@ -17,29 +18,6 @@ const storageDefinition = {
     label: trans('storage'),
     description: trans('storage_desc')
   },
-
-  //parse: (display) => parseFloat(display),
-
-  /**
-   * Displays a number value.
-   * NB. trans typing to string permits to avoid React interpret 0 value as falsy and display nothing.
-   *
-   * @param {number}  raw
-   * @param {options} options
-   *
-   * @return {string}
-   */
-  //render: (raw, options) => raw || 0 === raw ? raw + (options.unit ? ' ' + options.unit : '') : null,
-
-  /**
-   * Validates a number value.
-   *
-   * @param {mixed}  value   - the value to validate
-   * @param {object} options - the current number options
-   *
-   * @return {string} - the first error message if any
-   */
-  //validate: (value, options) => chain(value, options, [number, inRange]),
 
   /**
    * Custom components for numbers rendering.

@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import merge from 'lodash/merge'
 
-import {t, trans, transChoice} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 
 import {CustomDragLayer} from '#/plugin/exo/utils/custom-drag-layer.jsx'
 import {makeDroppable, makeDraggable} from '#/plugin/exo/utils/dragAndDrop'
@@ -103,7 +103,7 @@ const DataTreeItemContent = props =>
           className="btn data-actions-btn btn-drag"
         >
           <span className="fa fa-fw fa-arrows" />
-          <span className="sr-only">{t('move')}</span>
+          <span className="sr-only">{trans('move')}</span>
         </span>
       )}
     </div>
@@ -294,7 +294,7 @@ class DataTree extends Component {
     if (this.props.deleteAction) {
       actions.push({
         icon: 'fa fa-fw fa-trash-o',
-        label: t('delete'),
+        label: trans('delete'),
         dangerous: true,
         displayed: this.props.deleteAction.displayed,
         disabled: this.props.deleteAction.disabled,
@@ -332,8 +332,8 @@ class DataTree extends Component {
               {this.props.selection &&
                 <Checkbox
                   id="data-tree-select"
-                  label={t('list_select_all')}
-                  labelChecked={t('list_deselect_all')}
+                  label={trans('list_select_all')}
+                  labelChecked={trans('list_deselect_all')}
                   checked={0 < this.props.selection.current.length}
                   onChange={(val) => {
                     val.target.checked ? this.props.selection.toggleAll(this.props.data): this.props.selection.toggleAll([])

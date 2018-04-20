@@ -38,33 +38,6 @@ class ExerciseSerializer implements SerializerInterface
     private $paperManager;
 
     /**
-     * ExerciseSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
-     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
-     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
-     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
-     * })
-     *
-     * @param TokenStorageInterface         $tokenStorage
-     * @param StepSerializer                $stepSerializer
-     * @param ItemManager                   $itemManager
-     * @param PaperManager                  $paperManager
-     */
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        StepSerializer $stepSerializer,
-        ItemManager $itemManager,
-        PaperManager $paperManager
-    ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->stepSerializer = $stepSerializer;
-        $this->itemManager = $itemManager;
-        $this->paperManager = $paperManager; // todo use repository instead
-    }
-
-    /**
      * Converts an Exercise into a JSON-encodable structure.
      *
      * @param Exercise $exercise
@@ -90,6 +63,33 @@ class ExerciseSerializer implements SerializerInterface
         }
 
         return $exerciseData;
+    }
+
+    /**
+     * ExerciseSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
+     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
+     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
+     * })
+     *
+     * @param TokenStorageInterface $tokenStorage
+     * @param StepSerializer        $stepSerializer
+     * @param ItemManager           $itemManager
+     * @param PaperManager          $paperManager
+     */
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        StepSerializer $stepSerializer,
+        ItemManager $itemManager,
+        PaperManager $paperManager
+    ) {
+        $this->tokenStorage = $tokenStorage;
+        $this->stepSerializer = $stepSerializer;
+        $this->itemManager = $itemManager;
+        $this->paperManager = $paperManager; // todo use repository instead
     }
 
     /**

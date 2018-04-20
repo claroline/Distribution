@@ -49,43 +49,44 @@ const Parameters = props =>
           {tex(markModes.find(mode => mode[0] === props.parameters.showScoreAt)[1])}
         </Parameter>
       </tbody>
-        {props.editable && props.additionalInfo &&
-          <tbody>
-            <Parameter name="type">
-              {tex(quizTypes.find(type => type[0] === props.parameters.type)[1])}
-            </Parameter>
-            <Parameter name="number_steps_draw">
-              {props.picking.pick || tex('all_step')}
-            </Parameter>
-            <Parameter name="random_steps">
-              {tex(props.picking.randomOrder ? 'yes' : 'no')}
-            </Parameter>
-            <Parameter name="keep_same_step">
-              {tex(props.picking.randomPick ? 'no' : 'yes')}
-            </Parameter>
-            <Parameter name="anonymous">
-              {tex(props.parameters.anonymizeAttempts ? 'yes' : 'no')}
-            </Parameter>
-            <Parameter name="test_exit">
-              {tex(props.parameters.interruptible ? 'yes' : 'no')}
-            </Parameter>
-            <Parameter name="maximum_tries">
-              {props.parameters.maxAttempts || '-'}
-            </Parameter>
-            <Parameter name="maximum_attempts_per_day">
-              {props.parameters.maxAttemptsPerDay || '-'}
-            </Parameter>
-            <Parameter name="maximum_papers">
-              {props.parameters.maxPapers || '-'}
-            </Parameter>
-            <Parameter name="maximum_papers">
-              {props.parameters.maxPapers || '-'}
-            </Parameter>
-            <Parameter name="mandatory_questions">
-              {props.parameters.mandatoryQuestions ? 'yes': 'no'}
-            </Parameter>
-          </tbody>
-        }
+
+      {props.editable && props.additionalInfo &&
+        <tbody>
+          <Parameter name="type">
+            {tex(quizTypes.find(type => type[0] === props.parameters.type)[1])}
+          </Parameter>
+          <Parameter name="number_steps_draw">
+            {props.picking.pick || tex('all_step')}
+          </Parameter>
+          <Parameter name="random_steps">
+            {tex(props.picking.randomOrder ? 'yes' : 'no')}
+          </Parameter>
+          <Parameter name="keep_same_step">
+            {tex(props.picking.randomPick ? 'no' : 'yes')}
+          </Parameter>
+          <Parameter name="anonymous">
+            {tex(props.parameters.anonymizeAttempts ? 'yes' : 'no')}
+          </Parameter>
+          <Parameter name="test_exit">
+            {tex(props.parameters.interruptible ? 'yes' : 'no')}
+          </Parameter>
+          <Parameter name="maximum_tries">
+            {props.parameters.maxAttempts || '-'}
+          </Parameter>
+          <Parameter name="maximum_attempts_per_day">
+            {props.parameters.maxAttemptsPerDay || '-'}
+          </Parameter>
+          <Parameter name="maximum_papers">
+            {props.parameters.maxPapers || '-'}
+          </Parameter>
+          <Parameter name="maximum_papers">
+            {props.parameters.maxPapers || '-'}
+          </Parameter>
+          <Parameter name="mandatory_questions">
+            {props.parameters.mandatoryQuestions ? 'yes': 'no'}
+          </Parameter>
+        </tbody>
+      }
     </table>
     {props.editable &&
       <div
@@ -152,26 +153,26 @@ const Layout = props =>
           ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
         )
       ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
-        <Button
-          type="link"
-          className="btn btn-start btn-lg btn-primary btn-block"
-          icon="fa fa-fw fa-play"
-          label={tex('exercise_start')}
-          target="/play"
-        />
-        :
-        <Alert bsStyle="danger overview-warning">
-          <span className="fa fa-fw fa-warning" />
+      <Button
+        type="link"
+        className="btn btn-start btn-lg btn-primary btn-block"
+        icon="fa fa-fw fa-play"
+        label={tex('exercise_start')}
+        target="/play"
+      />
+      :
+      <Alert bsStyle="danger overview-warning">
+        <span className="fa fa-fw fa-warning" />
 
-          {(props.meta.userPaperCount < props.parameters.maxAttempts &&
-            ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
-          ) ?
-            <span>{tex('exercise_attempt_limit')}</span>:
-          ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
-            <span>{tex('exercise_paper_limit')}</span> :
-            <span></span>
-          }
-        </Alert>
+        {(props.meta.userPaperCount < props.parameters.maxAttempts &&
+          ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
+        ) ?
+          <span>{tex('exercise_attempt_limit')}</span>:
+        ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
+          <span>{tex('exercise_paper_limit')}</span> :
+          <span></span>
+        }
+      </Alert>
     }
   </div>
 

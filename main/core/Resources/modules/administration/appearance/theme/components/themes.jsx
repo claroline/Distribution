@@ -1,10 +1,9 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import {NavLink, withRouter} from 'react-router-dom'
+import {withRouter} from 'react-router-dom'
 
-import {t, trans, transChoice} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
+import {trans, transChoice} from '#/main/core/translation'
 import {DataCard} from '#/main/core/data/components/data-card'
 
 import {MODAL_CONFIRM, MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
@@ -18,11 +17,12 @@ import {
   PageContent
 } from '#/main/core/layout/page'
 
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 const ThemesPage = props =>
   <PageContainer id="theme-management">
-    <PageHeader title={t('themes_management')} />
+    <PageHeader title={trans('themes_management')} />
+
     <PageContent>
       <DataListContainer
         name="themes"
@@ -57,7 +57,7 @@ const ThemesPage = props =>
           }, {
             type: 'callback',
             icon: 'fa fa-fw fa-trash-o',
-            label: t('delete'),
+            label: trans('delete'),
             disabled: !rows.find(row => row.meta.custom), // at least one theme should be deletable
             callback: () => props.removeThemes(rows),
             dangerous: true
@@ -68,11 +68,11 @@ const ThemesPage = props =>
           <DataCard
             icon='fa fa-paint-brush'
             title={row.data.name}
-            subtitle={row.data.meta.plugin || (row.data.meta.creator ? row.data.meta.creator.name : t('unknown'))}
+            subtitle={row.data.meta.plugin || (row.data.meta.creator ? row.data.meta.creator.name : trans('unknown'))}
             contentText={row.data.meta.description}
             flags={[
-              row.data.current      && ['fa fa-check', t('theme_current')],
-              row.data.meta.enabled && ['fa fa-eye',   t('theme_enabled')]
+              row.data.current      && ['fa fa-check', trans('theme_current')],
+              row.data.meta.enabled && ['fa fa-eye',   trans('theme_enabled')]
             ].filter(flag => !!flag)}
           />
         }

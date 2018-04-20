@@ -66,8 +66,7 @@ const PaperComponent = props => {
             const displayFeedback = (/\S/.test(tmp.textContent)) && item.feedback
 
             return isQuestionType(item.type) ?
-
-                <Panel key={item.id}>
+              <Panel key={item.id}>
                 {showScore && getAnswerScore(item.id, props.paper.answers) !== undefined && getAnswerScore(item.id, props.paper.answers) !== null &&
                   <ScoreBox className="pull-right" score={getAnswerScore(item.id, props.paper.answers)} scoreMax={paperSelect.itemScoreMax(item)}/>
                 }
@@ -98,8 +97,8 @@ const PaperComponent = props => {
                     <div dangerouslySetInnerHTML={{__html: item.feedback}} />
                   </div>
                 }
-                </Panel>
-               :
+              </Panel>
+              :
               ''
           })}
         </div>

@@ -1,7 +1,6 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
-import merge from 'lodash/merge'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Button} from '#/main/app/action/components/button'
 
@@ -14,12 +13,11 @@ const MenuItem = props =>
     />
   </li>
 
-MenuItem.propTypes = merge({}, ActionTypes.propTypes, {
+implementPropTypes(MenuItem, ActionTypes, {
   // from standard dropdown MenuItem
   eventKey: T.string,
   onSelect: T.func
 })
-MenuItem.defaultProps = merge({}, ActionTypes.defaultProps)
 
 export {
   MenuItem

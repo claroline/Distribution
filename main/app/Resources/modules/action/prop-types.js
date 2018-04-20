@@ -114,4 +114,12 @@ const UrlAction = {
 
 export {
   Action
+
+  AsyncAction,
+  CallbackAction,
+  DownloadAction,
+  EmailAction,
+  LinkAction,
+  ModalAction,
+  UrlAction
 }

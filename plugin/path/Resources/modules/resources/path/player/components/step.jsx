@@ -14,10 +14,10 @@ import {ResourceCard} from '#/main/core/resource/data/components/resource-card'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
-import {
+/*import {
   STEP_ENABLE_NAVIGATION,
   STEP_DISABLE_NAVIGATION
-} from '#/plugin/path/resources/path/player/actions'
+} from '#/plugin/path/resources/path/player/actions'*/
 
 const ManualProgression = props =>
   <div className="step-manual-progression">

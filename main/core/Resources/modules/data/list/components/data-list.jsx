@@ -4,8 +4,6 @@ import invariant from 'invariant'
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 
-import {trans, transChoice} from '#/main/core/translation'
-
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {
   DataListProperty,

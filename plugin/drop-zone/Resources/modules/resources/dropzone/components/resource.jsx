@@ -1,5 +1,4 @@
 import React from 'react'
-import isEmpty from 'lodash/isEmpty'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 

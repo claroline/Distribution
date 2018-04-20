@@ -36,9 +36,9 @@ class PathManager
      *     "rightsManager"  = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param ObjectManager                 $om
-     * @param PlatformConfigurationHandler  $platformConfig
-     * @param RightsManager                 $rightsManager
+     * @param ObjectManager                $om
+     * @param PlatformConfigurationHandler $platformConfig
+     * @param RightsManager                $rightsManager
      */
     public function __construct(
         ObjectManager $om,

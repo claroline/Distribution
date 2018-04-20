@@ -9,8 +9,6 @@ import {RoutedPageContent} from '#/main/core/layout/router'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
 
-import {NavLink} from '#/main/core/router'
-
 import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
 import {Player} from '#/main/core/resources/text/player/components/player.jsx'
 import {Editor} from '#/main/core/resources/text/editor/components/editor.jsx'

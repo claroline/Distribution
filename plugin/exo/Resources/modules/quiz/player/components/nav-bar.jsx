@@ -62,11 +62,11 @@ const canGoForward = (step, answers, mandatoryQuestions) => {
 
   items.forEach(item => {
     let hasAnswer = Boolean(answers[item.id] && answers[item.id].data)
-    let goForward = isQuestionType(item.type) ?
-      mandatoryQuestions ?
-      item.meta.mandatory ? true: hasAnswer:
-      item.meta.mandatory ? hasAnswer: true:
-      true
+
+    let goForward = true
+    if (isQuestionType(item.type)) {
+      goForward = mandatoryQuestions ? (item.meta.mandatory ? true : hasAnswer) : (item.meta.mandatory ? hasAnswer: true)
+    }
 
     if (!goForward) {
       canGoForward = false

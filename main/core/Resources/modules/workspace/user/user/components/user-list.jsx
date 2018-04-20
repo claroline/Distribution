@@ -1,5 +1,4 @@
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
 
 import {UserCard} from '#/main/core/user/data/components/user-card'
 

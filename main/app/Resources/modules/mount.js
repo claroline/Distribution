@@ -1,3 +1,5 @@
+/* global __webpack_public_path__ */
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {Provider} from 'react-redux'

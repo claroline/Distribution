@@ -83,15 +83,15 @@ let Papers = props =>
           const paper = props.papers[paperId]
 
           return (
-              <PaperRow
-                key={paperId}
-                admin={props.admin}
-                {...paper}
-                showScore={utils.showScore(props.admin, paper.finished, paperSelect.showScoreAt(paper), paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
-                showCorrection={utils.showCorrection(props.admin, paper.finished, paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
-                scoreMax={paperSelect.paperScoreMax(paper)}
-              />
-            )
+            <PaperRow
+              key={paperId}
+              admin={props.admin}
+              {...paper}
+              showScore={utils.showScore(props.admin, paper.finished, paperSelect.showScoreAt(paper), paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
+              showCorrection={utils.showCorrection(props.admin, paper.finished, paperSelect.showCorrectionAt(paper), paperSelect.correctionDate(paper))}
+              scoreMax={paperSelect.paperScoreMax(paper)}
+            />
+          )
         })}
       </tbody>
     </table>

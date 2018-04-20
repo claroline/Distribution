@@ -202,7 +202,7 @@ class Calendar extends Component {
     })
 
     if (this.props.onChange) {
-      this.props.onChange(newDate.utc().format('YYYY-MM-DD\THH:mm:ss'))
+      this.props.onChange(newDate.utc().format(getApiFormat()))
     }
   }
 
