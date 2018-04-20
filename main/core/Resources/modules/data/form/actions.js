@@ -23,7 +23,7 @@ actions.setErrors = makeInstanceActionCreator(FORM_SET_ERRORS, 'errors')
 actions.submitForm = makeInstanceActionCreator(FORM_SUBMIT)
 actions.submitFormSuccess = makeInstanceActionCreator(FORM_SUBMIT_SUCCESS, 'updatedData')
 actions.submitFormError = makeInstanceActionCreator(FORM_SUBMIT_ERROR, 'errors')
-actions.updateProp = makeInstanceActionCreator(FORM_UPDATE_PROP, 'propName', 'propValue')
+actions.updateProp = makeInstanceActionCreator(FORM_UPDATE_PROP, 'propName', 'propValue', 'oldProp')
 
 actions.cancelChanges = (formName) => (dispatch, getState) => {
   const formNew = formSelect.isNew(formSelect.form(getState(), formName))

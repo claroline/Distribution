@@ -95,10 +95,22 @@ function updateCopyBeforeAdding(step, lvl, inheritedResources) {
   step.children.forEach(s => updateCopyBeforeAdding(s, lvl, inheritedResources))
 }
 
+function getStep(steps, id)
+{
+    for (let i = 0; i < steps.length; i++) {
+      if (steps[i].id === id) {
+        return steps[i]
+      }
+
+      return getStep(steps[i].children, id)
+    }
+}
+
 export {
   getFormDataPart,
   getStepPath,
   manageInheritedResources,
   generateCopy,
-  updateCopyBeforeAdding
+  updateCopyBeforeAdding,
+  getStep
 }
