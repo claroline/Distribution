@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
@@ -24,7 +25,7 @@ const ContactsComponent = props =>
     }}
     primaryAction={(row) => ({
       type: 'url',
-      target: ['claro_user_profile', {'publicUrl': row.data.meta.publicUrl}]
+      target: ['claro_user_profile', {publicUrl: row.data.meta.publicUrl}]
     })}
     deleteAction={() => ({
       type: 'url',
@@ -68,7 +69,15 @@ const ContactsComponent = props =>
         displayed: props.options.data.show_phone
       }
     ]}
-    card={UserCard}
+    card={(props) => {
+      const ContactCard =
+        <UserCard
+          {...omit(props, 'data')}
+          {...props.data}
+        />
+
+      return ContactCard
+    }}
   />
 
 ContactsComponent.propTypes = {
