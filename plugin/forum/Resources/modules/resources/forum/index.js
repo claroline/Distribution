@@ -34,6 +34,15 @@ const messages = [
       created: '12 janvier 2012',
       updated: ''
     }
+  },
+  {
+    id: '36',
+    content: 'la lal la la l uigez iuedigez gedgggde mzih Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis veniam aperiam est illo, maiores explicabo ut! Ab, est. Sequi voluptatibus totam incidunt, non doloremque, qui velit. Quasi quis maxime obcaecati.',
+    meta: {
+      creator: currentUser(),
+      created: '12/05/2012',
+      updated: ''
+    }
   }
 ]
 

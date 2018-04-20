@@ -24,7 +24,7 @@ const OverviewComponent = props =>
                   value={3}
                   displayValue={(value) => number(value, true)}
                 />
-                <div className="metric-card-title">{trans('my_messages', {}, 'forum')}</div>
+                <h4 className="h5">{trans('my_messages', {}, 'forum')}</h4>
               </div>
             </div>
           </section>
@@ -34,14 +34,14 @@ const OverviewComponent = props =>
               label={trans('see_subjects', {}, 'forum')}
               type="link"
               target="/play/subject/3"
-              className="btn btn-block btn-emphasis"
+              className="btn btn-block"
               primary={true}
             />
             <Button
               label={trans('new_subject', {}, 'forum')}
               type="link"
               target="/play"
-              className="btn btn-block btn-emphasis"
+              className="btn btn-block"
             />
           </section>
         </div>

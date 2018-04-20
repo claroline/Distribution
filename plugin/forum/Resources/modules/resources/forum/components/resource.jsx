@@ -60,8 +60,8 @@ const Resource = props => {
           exact: true
         }, {
           type: 'link',
-          icon: 'fa fa-fw fa-play',
-          label: trans('start', {}, 'actions'),
+          icon: 'fa fa-fw fa-list-ul',
+          label: trans('see_subjects', {}, 'forum'),
           target: '/play'
         }
       ]}
