@@ -121,8 +121,11 @@ InheritedResourcesSection.propTypes = {
   removeInheritedResource: T.func.isRequired
 }
 
-const StepForm = props =>
-  <FormContainer
+const StepForm = props => {
+  const listSteps = {}
+  props.steps.filter(step => step.id !== props.id).forEach(step => listSteps[step.id] = step.title)
+
+  return(<FormContainer
     level={3}
     displayLevel={2}
     name="pathForm"
@@ -142,6 +145,13 @@ const StepForm = props =>
             name: 'description',
             type: 'html',
             label: trans('description')
+          },
+          {
+            name: 'parent',
+            type: 'enum',
+            options: {
+              choices: listSteps
+            }
           }
         ]
       }, {
@@ -213,10 +223,12 @@ const StepForm = props =>
         </FormSection>
       }
     </FormSections>
-  </FormContainer>
+  </FormContainer>)
+}
 
 implementPropTypes(StepForm, StepTypes, {
   stepPath: T.string.isRequired,
+  steps: T.array.isRequired,
   customNumbering: T.bool,
   pickPrimaryResource: T.func.isRequired,
   removePrimaryResource: T.func.isRequired,

@@ -96,6 +96,7 @@ const EditorComponent = props =>
                   removeSecondaryResource={props.removeSecondaryResource}
                   updateSecondaryResourceInheritance={props.updateSecondaryResourceInheritance}
                   removeInheritedResource={props.removeInheritedResource}
+                  steps={props.steps}
                 />
               </PathCurrent>
             )

@@ -1,4 +1,5 @@
 import cloneDeep from 'lodash/cloneDeep'
+import get from 'lodash/get'
 
 import {trans} from '#/main/core/translation'
 import {makeId} from '#/main/core/scaffolding/id'
@@ -10,7 +11,9 @@ import {
   getStepPath,
   manageInheritedResources,
   generateCopy,
-  updateCopyBeforeAdding
+  updateCopyBeforeAdding,
+  getStep,
+  getParents
 } from '#/plugin/path/resources/path/editor/utils'
 
 import {
@@ -43,6 +46,31 @@ const reducer = {
       [STEP_PASTE]: () => true
     }),
     data: makeReducer(defaultState.data, {
+      ['FORM_UPDATE_PROP/pathForm']: (state, action) => {
+        let propPath = action.propName.split('.')
+
+        const property = propPath.pop()
+        if (property === 'parent') {
+          const newState = cloneDeep(state)
+          const currentStep = get(state, propPath.join('.'))
+          //currentStep.parent = action.propValue
+          const newParent = getStep(newState.steps, action.propValue)
+          const oldParents = getParents(newState.steps, currentStep.id)
+
+          if (newParent) {
+            newParent.children.push(currentStep)
+
+            oldParents.forEach(oldParent => {
+              oldParent.children.splice(newParent.children.find(child => child.id === currentStep.id), 1)
+            })
+          }
+
+          return newState
+        }
+
+
+        return state
+      },
       [STEP_ADD]: (state, action) => {
         const newState = cloneDeep(state)
 

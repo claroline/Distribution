@@ -95,10 +95,39 @@ function updateCopyBeforeAdding(step, lvl, inheritedResources) {
   step.children.forEach(s => updateCopyBeforeAdding(s, lvl, inheritedResources))
 }
 
+function getStep(steps, id)
+{
+  for (let i = 0; i < steps.length; i++) {
+    if (steps[i].id === id) {
+      return steps[i]
+    }
+
+    return getStep(steps[i].children, id)
+  }
+}
+
+/**
+ * Utility method for the reducer, allow to find duplicatas
+ */
+function getParents(steps, stepId, parents = []) {
+  steps.forEach(step => {
+    step.children.forEach(child => {
+      if (child.id === stepId) {
+        parents.push(step)
+      }
+      parents = getParents(step.children, stepId, parents)
+    })
+  })
+
+  return parents
+}
+
 export {
   getFormDataPart,
   getStepPath,
   manageInheritedResources,
   generateCopy,
-  updateCopyBeforeAdding
+  updateCopyBeforeAdding,
+  getStep,
+  getParents
 }
