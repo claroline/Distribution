@@ -76,28 +76,27 @@ const canGoForward = (step, answers, mandatoryQuestions) => {
   return canGoForward
 }
 
-const ForwardButton = props =>
-(canGoForward(props.step, props.answers, props.mandatoryQuestions)) ?
-    (props.next) ?
-      <NotLastQuestionButton
-        openFeedbackAndValidate={props.openFeedbackAndValidate}
-        navigateToAndValidate={props.navigateToAndValidate}
-        step={props.step}
-        next={props.next}
-        currentStepSend={props.currentStepSend}
-        feedbackEnabled={props.feedbackEnabled}
-        showFeedback={props.showFeedback}
-      />:
-      //no next section
-      <LastQuestionButton
-        openFeedbackAndValidate={props.openFeedbackAndValidate}
-        finish={props.finish}
-        currentStepSend={props.currentStepSend}
-        feedbackEnabled={props.feedbackEnabled}
-        showFeedback={props.showFeedback}
-        step={props.step}
-      />
-    :
+const ForwardButton = props => canGoForward(props.step, props.answers, props.mandatoryQuestions) ?
+  (props.next) ?
+    <NotLastQuestionButton
+      openFeedbackAndValidate={props.openFeedbackAndValidate}
+      navigateToAndValidate={props.navigateToAndValidate}
+      step={props.step}
+      next={props.next}
+      currentStepSend={props.currentStepSend}
+      feedbackEnabled={props.feedbackEnabled}
+      showFeedback={props.showFeedback}
+    /> :
+    //no next section
+    <LastQuestionButton
+      openFeedbackAndValidate={props.openFeedbackAndValidate}
+      finish={props.finish}
+      currentStepSend={props.currentStepSend}
+      feedbackEnabled={props.feedbackEnabled}
+      showFeedback={props.showFeedback}
+      step={props.step}
+    />
+  :
   <span/>
 
 ForwardButton.propTypes = {

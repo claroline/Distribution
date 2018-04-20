@@ -167,11 +167,11 @@ const Layout = props =>
         {(props.meta.userPaperCount < props.parameters.maxAttempts &&
           ((props.meta.userPaperDayCount < props.parameters.maxAttemptsPerDay) || props.parameters.maxAttemptsPerDay === 0)
         ) ?
-          <span>{tex('exercise_attempt_limit')}</span>:
-        ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
-          <span>{tex('exercise_paper_limit')}</span> :
-          <span></span>
-        }
+          <span>{tex('exercise_attempt_limit')}</span> :
+          ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
+            <span>{tex('exercise_paper_limit')}</span> :
+            <span></span>
+          }
       </Alert>
     }
   </div>

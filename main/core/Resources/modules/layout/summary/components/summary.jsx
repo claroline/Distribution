@@ -125,7 +125,7 @@ class SummaryLink extends Component {
   }
 }
 
-SummaryLink.propTypes = merge({}, ActionTypes.propTypes, {
+implementPropTypes(SummaryLink, ActionTypes, {
   opened: T.bool.isRequired,
   additional: T.arrayOf(T.shape(
     ActionTypes.propTypes
@@ -133,11 +133,9 @@ SummaryLink.propTypes = merge({}, ActionTypes.propTypes, {
   children: T.arrayOf(T.shape(
     ActionTypes.propTypes
   ))
-})
-
-SummaryLink.defaultProps = merge({}, ActionTypes.defaultProps, {
+}, {
   additional: [],
-  children: []
+    children: []
 })
 
 class Summary extends Component {
