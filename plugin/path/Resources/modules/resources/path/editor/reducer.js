@@ -12,7 +12,8 @@ import {
   manageInheritedResources,
   generateCopy,
   updateCopyBeforeAdding,
-  getStep
+  getStep,
+  getParents
 } from '#/plugin/path/resources/path/editor/utils'
 
 import {
@@ -46,7 +47,6 @@ const reducer = {
     }),
     data: makeReducer(defaultState.data, {
       ['FORM_UPDATE_PROP/pathForm']: (state, action) => {
-        console.log(state, action)
         let propPath = action.propName.split('.')
 
         const property = propPath.pop()
@@ -55,21 +55,15 @@ const reducer = {
           const currentStep = get(state, propPath.join('.'))
           //currentStep.parent = action.propValue
           const newParent = getStep(newState.steps, action.propValue)
-          const oldParentId = get(state, action.propName)
-          console.log(oldParentId)
-          const oldParent = getStep(newState.steps, oldParentId)
-          console.log(newParent)
-          console.log(oldParent)
+          const oldParents = getParents(newState.steps, currentStep.id)
 
-          //some exceptino if parent are switched
           if (newParent) {
             newParent.children.push(currentStep)
-          }
 
-          /*
-          if (oldParent) {
-            oldParent.children.splice(newParent.children.find(child => child.id === currentStep.id), 1)
-          }*/
+            oldParents.forEach(oldParent => {
+              oldParent.children.splice(newParent.children.find(child => child.id === currentStep.id), 1)
+            })
+          }
 
           return newState
         }
