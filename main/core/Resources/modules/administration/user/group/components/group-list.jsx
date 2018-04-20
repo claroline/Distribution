@@ -1,4 +1,3 @@
-
 import {trans} from '#/main/core/translation'
 
 import {GroupCard} from '#/main/core/user/data/components/group-card'
@@ -6,7 +5,8 @@ import {GroupCard} from '#/main/core/user/data/components/group-card'
 const GroupList = {
   open: (row) => ({
     type: 'link',
-    target: `/groups/form/${row.id}`
+    target: `/groups/form/${row.id}`,
+    label: trans('edit', {}, 'actions')
   }),
   definition: [
     {

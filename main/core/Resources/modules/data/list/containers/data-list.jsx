@@ -149,10 +149,6 @@ DataList.propTypes = {
   fetchData: T.func
 }
 
-DataList.defaultProps = {
-  actions: []
-}
-
 // connect list to redux
 const DataListContainer = connectList()(DataList)
 

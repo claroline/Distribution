@@ -1,6 +1,5 @@
 import React from 'react'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 
@@ -19,14 +18,14 @@ const PageAction = props =>
   <Button
     {...props}
     tooltip="bottom"
-    className={classes('btn page-action-btn', props.className)}
+    className={classes('page-action-btn', props.className)}
   >
     {props.children}
   </Button>
 
 implementPropTypes(PageAction, ActionTypes, {
   className: T.string,
-  children: T.any.isRequired
+  children: T.any
 })
 
 /**
@@ -55,7 +54,7 @@ const MoreAction = props =>
   <DropdownButton
     {...props}
     tooltip="bottom"
-    className={classes('btn page-action-btn', props.className)}
+    className={classes('page-action-btn', props.className)}
     icon="fa fa-ellipsis-v"
     label={trans('show_more_actions')}
     pullRight={true}

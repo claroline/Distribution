@@ -50,23 +50,25 @@ input[type=reset] {
 .btn {
     .button-base();
 
-    &.default {
-        .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
-    }
-    &.primary {
-        .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
-    }
-    &.success {
-        .button-variant(@btn-success-color; @btn-success-bg; @btn-success-border);
-    }
-    &.info {
-        .button-variant(@btn-info-color; @btn-info-bg; @btn-info-border);
-    }
-    &.warning {
-        .button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
-    }
-    &.danger {
-        .button-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
+    &:not(.btn-link) { // FIXME : ugly as fuck. Find a better way to do it
+        &.default {
+            .button-variant(@btn-default-color; @btn-default-bg; @btn-default-border);
+        }
+        &.primary {
+            .button-variant(@btn-primary-color; @btn-primary-bg; @btn-primary-border);
+        }
+        &.success {
+            .button-variant(@btn-success-color; @btn-success-bg; @btn-success-border);
+        }
+        &.info {
+            .button-variant(@btn-info-color; @btn-info-bg; @btn-info-border);
+        }
+        &.warning {
+            .button-variant(@btn-warning-color; @btn-warning-bg; @btn-warning-border);
+        }
+        &.danger {
+            .button-variant(@btn-danger-color; @btn-danger-bg; @btn-danger-border);
+        }
     }
 }
 
@@ -75,7 +77,6 @@ input[type=reset] {
 // Link Buttons
 // ---
 
-.btn.btn-link, // to override default btns styles
 .btn-link {
     .button-base();
 
