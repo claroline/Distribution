@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {ApiRequest as ApiRequestTypes} from '#/main/core/api/prop-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'

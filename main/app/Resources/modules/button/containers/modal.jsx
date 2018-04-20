@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import omit from 'lodash/omit'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {CallbackButton} from '#/main/app/button/components/callback'

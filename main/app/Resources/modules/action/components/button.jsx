@@ -2,7 +2,7 @@ import React from 'react'
 import classes from 'classnames'
 import omit from 'lodash/omit'
 
-import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/propt-types'
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {GenericButton} from '#/main/app/button/components/generic'
