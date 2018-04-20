@@ -42,7 +42,6 @@ bootstrap(
       resourceNode: initialData.resourceNode,
       canGeneratePdf: initialData.canGeneratePdf === 1,
       entries: {
-        list: initialData.entries,
         myEntriesCount: initialData.myEntriesCount
       },
       cascadeLevelMax: initialData.cascadeLevelMax,

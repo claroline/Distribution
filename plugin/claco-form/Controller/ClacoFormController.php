@@ -134,14 +134,6 @@ class ClacoFormController extends Controller
         $cascadeLevelMax = $this->platformConfigHandler->hasParameter('claco_form_cascade_select_level_max') ?
             $this->platformConfigHandler->getParameter('claco_form_cascade_select_level_max') :
             2;
-        $entries = $this->finder->search(
-            'Claroline\ClacoFormBundle\Entity\Entry',
-            [
-                'limit' => 20,
-                'hiddenFilters' => ['clacoForm' => $clacoForm->getId()],
-                'sortBy' => 'creationDate',
-            ]
-        );
         $roles = [];
         $roleUser = $this->roleManager->getRoleByName('ROLE_USER');
         $roleAnonymous = $this->roleManager->getRoleByName('ROLE_ANONYMOUS');
@@ -160,7 +152,6 @@ class ClacoFormController extends Controller
             'clacoForm' => $clacoForm,
             'canGeneratePdf' => $canGeneratePdf,
             'cascadeLevelMax' => $cascadeLevelMax,
-            'entries' => $entries,
             'myEntriesCount' => count($myEntries),
             'roles' => $roles,
             'myRoles' => $myRoles,
