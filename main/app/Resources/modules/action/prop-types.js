@@ -113,7 +113,7 @@ const UrlAction = {
 }
 
 export {
-  Action
+  Action,
 
   AsyncAction,
   CallbackAction,

@@ -1,6 +1,6 @@
 import angular from 'angular/index'
 
-import {getApiDateFormat} from '#/main/core/scaffolding/date'
+import {getApiFormat} from '#/main/core/scaffolding/date'
 
 import 'angular-route'
 import 'angular-loading-bar'
@@ -53,7 +53,7 @@ angular
         startWeek: 1,
         iconLeft: 'fa fa-fw fa-chevron-left',
         iconRight: 'fa fa-fw fa-chevron-right',
-        modelDateFormat: getApiDateFormat(),
+        modelDateFormat: getApiFormat(),
         autoclose: true
       })
 
