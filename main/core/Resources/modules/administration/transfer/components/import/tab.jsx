@@ -6,7 +6,6 @@ import has from 'lodash/has'
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
-import {navigate} from '#/main/core/router'
 import classes from 'classnames'
 
 const Tabs = props =>
@@ -39,7 +38,7 @@ const Field = props => {
 const Fields = props => {
   return (
     <div>
-      {props.properties.map(prop => <Field {...prop}/> )}
+      {props.properties.map((prop, index) => <Field key={index} {...prop}/> )}
     </div>
   )
 }
@@ -60,22 +59,21 @@ const RoutedExplain = props => {
           name="import"
           sections={[
             {
-              id: 'general',
-              title: trans('general'),
+              title: t('general'),
               primary: true,
               fields: [
                 {
                   name: 'action',
                   type: 'enum',
-                  label: trans('action'),
-                  onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
+                  label: t('action'),
+                  // FIXME
+                  //onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
                   required: true,
                   options: {
                     noEmpty: true,
                     choices: choices
                   }
-                },
-                {
+                }, {
                   name: 'file',
                   type: 'file',
                   label: trans('file'),
@@ -118,6 +116,7 @@ class Import extends Component
         <div className="col-md-3">
           <Tabs {...this.props}></Tabs>
         </div>
+
         <div className="col-md-9">
           <Routes
             routes={[{
