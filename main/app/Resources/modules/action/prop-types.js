@@ -1,5 +1,7 @@
 import {PropTypes as T} from 'prop-types'
 
+// TODO : use specific action types
+
 /**
  * Definition of the action.
  */

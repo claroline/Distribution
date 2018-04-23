@@ -103,11 +103,6 @@ DataTree.propTypes = {
   primaryAction: T.func,
 
   /**
-   * Provides data delete.
-   */
-  deleteAction: T.func,
-
-  /**
    * A list of data related actions.
    */
   actions: T.func,

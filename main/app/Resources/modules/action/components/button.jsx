@@ -24,6 +24,11 @@ const Button = props => props.tooltip ?
   >
     <GenericButton
       {...omit(props, 'tooltip', 'group', 'icon', 'label', 'children', 'context')}
+      confirm={props.confirm ? Object.assign({}, props.confirm, {
+        // append some defaults from action spec
+        icon: props.icon,
+        title: props.confirm.title || props.label
+      }) : undefined}
     >
       {props.icon &&
         <span className={classes('action-icon', props.icon)} aria-hidden={true} />
@@ -34,6 +39,11 @@ const Button = props => props.tooltip ?
   </TooltipElement> :
   <GenericButton
     {...omit(props, 'tooltip', 'group', 'icon', 'label', 'children', 'context')}
+    confirm={props.confirm ? Object.assign({}, props.confirm, {
+        // append some defaults from action spec
+        icon: props.icon,
+        title: props.confirm.title || props.label
+      }) : undefined}
   >
     {props.icon &&
       <span className={classes('action-icon icon-with-text-right', props.icon)} aria-hidden={true} />

@@ -1,8 +1,7 @@
 import {connect} from 'react-redux'
 import invariant from 'invariant'
 
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {trans, transChoice} from '#/main/core/translation'
 
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
@@ -73,10 +72,6 @@ function mapDispatchToProps(dispatch, ownProps) {
       // return the async promise
       return dispatch(listActions.fetchData(ownProps.name, ownProps.fetch.url))
     },
-    deleteData(items) {
-      // return the async promise
-      return dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
-    },
     invalidateData() {
       dispatch(listActions.invalidateData(ownProps.name))
     },
@@ -111,20 +106,12 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
 
     // delete
-    deleteItems(items, title, question) {
-      dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title: title,
-          question: question,
-          handleConfirm: () => {
-            if (ownProps.delete.url) {
-              dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
-            } else {
-              dispatch(listActions.deleteItems(ownProps.name, items))
-            }
-          }
-        })
-      )
+    deleteItems(items) {
+      if (ownProps.delete.url) {
+        dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
+      } else {
+        dispatch(listActions.deleteItems(ownProps.name, items))
+      }
     }
   }
 }
@@ -170,12 +157,41 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     loaded:        stateProps.loaded,
     invalidated:   stateProps.invalidated,
     data:          stateProps.data,
-    totalResults:  stateProps.totalResults,
+    totalResults:  stateProps.totalResults
+  }
 
-    // data actions
-    actions:       ownProps.actions,
-    primaryAction: ownProps.primaryAction,
-    deleteAction:  ownProps.deleteAction
+  // Data actions
+  props.primaryAction = ownProps.primaryAction
+
+  // create the final list of actions
+  // merge standard actions with the delete one
+  props.actions = (rows) => {
+    let actions = []
+
+    if (ownProps.actions) {
+      actions = actions.concat(
+        ownProps.actions(rows)
+      )
+    }
+
+    if (ownProps.delete) {
+      actions = actions.concat([{
+        type: 'callback',
+        icon: 'fa fa-fw fa-trash-o',
+        label: trans('delete', {}, 'actions'),
+        dangerous: true,
+        confirm: {
+          title: trans('objects_delete_title'),
+          message: transChoice('objects_delete_question', rows.length, {count: rows.length}),
+          button: trans('delete', {}, 'actions')
+        },
+        disabled: undefined !== ownProps.delete.disabled && ownProps.delete.disabled(rows),
+        displayed: undefined === ownProps.delete.displayed || ownProps.delete.displayed(rows),
+        callback: () => dispatchProps.deleteItems(rows)
+      }])
+    }
+
+    return actions
   }
 
   // optional list features

@@ -6,6 +6,8 @@ import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-t
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {url} from '#/main/core/api'
 
+// todo implement confirm behavior
+
 /**
  * URL button.
  * Renders a component that will navigate user to an url (internal or external) on click.
@@ -23,7 +25,7 @@ const UrlButton = props => {
 
   return (
     <a
-      {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target')}
+      {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target', 'confirm')}
       role="link"
       tabIndex={props.tabIndex}
       href={!props.disabled ? target : ''}

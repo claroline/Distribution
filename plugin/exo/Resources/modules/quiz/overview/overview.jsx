@@ -171,7 +171,7 @@ const Layout = props =>
           ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
             <span>{tex('exercise_paper_limit')}</span> :
             <span></span>
-          }
+        }
       </Alert>
     }
   </div>

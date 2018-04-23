@@ -3,9 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import merge from 'lodash/merge'
 
-import {trans, transChoice} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 
-import {CustomDragLayer} from '#/plugin/exo/utils/custom-drag-layer.jsx'
+import {CustomDragLayer} from '#/plugin/exo/utils/custom-drag-layer'
 import {makeDroppable, makeDraggable} from '#/plugin/exo/utils/dragAndDrop'
 
 import {constants as listConst} from '#/main/core/data/list/constants'
@@ -25,11 +25,11 @@ import {
 } from '#/main/core/data/list/prop-types'
 
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
-import {TooltipElement} from '#/main/core/layout/components/tooltip-element.jsx'
-import {Checkbox} from '#/main/core/layout/form/components/field/checkbox.jsx'
-import {ListActions, ListPrimaryAction, ListBulkActions} from '#/main/core/data/list/components/actions.jsx'
-import {ListEmpty} from '#/main/core/data/list/components/empty.jsx'
-import {ListHeader} from '#/main/core/data/list/components/header.jsx'
+import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
+import {Checkbox} from '#/main/core/layout/form/components/field/checkbox'
+import {ListActions, ListPrimaryAction, ListBulkActions} from '#/main/core/data/list/components/actions'
+import {ListEmpty} from '#/main/core/data/list/components/empty'
+import {ListHeader} from '#/main/core/data/list/components/header'
 
 // todo there are some big c/c from data-list
 // todo maybe make it a list view
@@ -269,8 +269,6 @@ class DataTree extends Component {
 
     // adds missing default in the definition
     this.definition = createListDefinition(this.props.definition)
-    // fills missing translations with default ones
-    this.translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
 
     this.state = {
       expanded: false
@@ -288,25 +286,6 @@ class DataTree extends Component {
         available: getFilterableProps(this.definition)
       })
     }
-
-    // calculate actions
-    /*let actions = this.props.actions.slice(0)
-    if (this.props.deleteAction) {
-      actions.push({
-        icon: 'fa fa-fw fa-trash-o',
-        label: trans('delete'),
-        dangerous: true,
-        displayed: this.props.deleteAction.displayed,
-        disabled: this.props.deleteAction.disabled,
-        action: typeof this.props.deleteAction.action === 'function' ?
-          (rows) => this.props.deleteAction.action(
-            rows,
-            trans(this.translations.keys.deleteConfirmTitle, {}, this.translations.domain),
-            transChoice(this.translations.keys.deleteConfirmQuestion, rows.length, {count: rows.length}, this.translations.domain)
-          ) :
-          this.props.deleteAction.action
-      })
-    }*/
 
     return (
       <div className="data-list">
@@ -452,25 +431,7 @@ DataTree.propTypes = {
    *
    * It's required to enable cards based display modes.
    */
-  card: T.func.isRequired,
-
-  /**
-   * Override default list translations.
-   */
-  translations: T.shape({
-    domain: T.string,
-    keys: T.shape({
-      searchPlaceholder: T.string,
-      emptyPlaceholder: T.string,
-      countResults: T.string,
-      deleteConfirmTitle: T.string,
-      deleteConfirmQuestion: T.string
-    })
-  })
-}
-
-DataTree.defaultProps = {
-  translations: listConst.DEFAULT_TRANSLATIONS
+  card: T.func.isRequired
 }
 
 export {

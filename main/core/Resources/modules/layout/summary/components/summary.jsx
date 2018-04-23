@@ -135,7 +135,7 @@ implementPropTypes(SummaryLink, ActionTypes, {
   ))
 }, {
   additional: [],
-    children: []
+  children: []
 })
 
 class Summary extends Component {

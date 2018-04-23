@@ -7,7 +7,8 @@ import {Provider} from 'react-redux'
 // todo : find where I must put it
 // I put it here for now because it's the root of all apps
 import {asset} from '#/main/core/scaffolding/asset'
-__webpack_public_path__ = asset('dist/')
+
+__webpack_public_path__ = asset('dist/') // eslint-disable-line no-unused-vars, no-global-assign
 
 import {createStore} from '#/main/core/scaffolding/store'
 import {combineReducers} from '#/main/core/scaffolding/reducer'

@@ -31,7 +31,12 @@ const baseReducer = {
 function makePageReducer(initialState = {}, customReducer = {}, options = {}) {
   const reducer = {}
 
-  //const pageState = merge({}, initialState) // todo use
+  if (initialState) {
+    // todo : use the custom initial state. but for now, I'm not sure how to pass it
+    // to each reducers
+    //const pageState = merge({}, initialState) // todo use
+  }
+
   const pageOptions = merge({}, constants.DEFAULT_FEATURES, options)
 
   // add pages required reducers

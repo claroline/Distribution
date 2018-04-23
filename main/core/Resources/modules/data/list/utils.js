@@ -149,6 +149,15 @@ function countPages(totalResults, pageSize) {
   return nbPages + (rest > 0 ? 1 : 0)
 }
 
+/**
+ *
+ * @param dataObjects
+ * @return {string}
+ *
+ * @deprecated
+ *
+ * @todo replace in code and remove me (can be done with url() second param)
+ */
 function getDataQueryString(dataObjects) {
   return '?' + dataObjects.map(object => 'ids[]='+object.id).join('&')
 }

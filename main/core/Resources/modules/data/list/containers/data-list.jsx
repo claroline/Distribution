@@ -106,7 +106,11 @@ DataList.propTypes = {
   /**
    * Provides data delete.
    */
-  deleteAction: T.func,
+  delete: T.shape({
+    url: T.oneOfType([T.string, T.array]).isRequired,
+    disabled: T.func, // receives the list of rows to delete
+    displayed: T.func // receives the list of rows to delete
+  }),
 
   /**
    * A list of data related actions.
@@ -122,20 +126,6 @@ DataList.propTypes = {
    * Enables/Disables the feature to filter the displayed columns.
    */
   filterColumns: T.bool,
-
-  /**
-   * Override default list translations.
-   */
-  translations: T.shape({
-    domain: T.string,
-    keys: T.shape({
-      searchPlaceholder: T.string,
-      emptyPlaceholder: T.string,
-      countResults: T.string,
-      deleteConfirm: T.string,
-      deleteConfirmMessage: T.string
-    })
-  }),
 
   // calculated from redux store
   loaded: T.bool,
