@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-global-assign */
 /* global __webpack_public_path__ */
 
 import React from 'react'
@@ -8,7 +9,6 @@ import {Provider} from 'react-redux'
 // I put it here for now because it's the root of all apps
 import {asset} from '#/main/core/scaffolding/asset'
 
-/* eslint-disable-next-line no-unused-vars, no-global-assign */
 __webpack_public_path__ = asset('dist/')
 
 import {createStore} from '#/main/core/scaffolding/store'
