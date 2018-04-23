@@ -5,9 +5,11 @@ import {Button} from '#/main/app/action/components/button'
 import {currentUser} from '#/main/core/user/current'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {trans} from '#/main/core/translation'
-import {UserMessage} from '#/main/core/user/message/components/user-message.jsx'
-import {UserMessageForm} from '#/main/core/user/message/components/user-message-form.jsx'
+import {UserMessage} from '#/main/core/user/message/components/user-message'
+import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 
+import {actions} from '#/plugin/forum/resources/forum/actions'
+import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
 
 class PlayerComponent extends Component {
   constructor(props) {
@@ -15,13 +17,24 @@ class PlayerComponent extends Component {
 
     this.state = {
       showNewMessageForm: false,
-      showNewCommentForm: false
+      showNewCommentForm: null
     }
   }
 
-  canEditComment(comment) {
-    return this.props.canManage || (this.props.user && comment.user && this.props.user.id === comment.user.id)
+  createNewMessage(message) {
+    this.props.createMessage(this.props.subject.id, message)
+    this.setState({showNewMessageForm: false})
   }
+
+  showCommentForm(messageId) {
+    this.setState({showNewCommentForm: messageId})
+  }
+
+  createNewComment(comment) {
+    this.props.createComment(this.props.subject.id, comment)
+    this.setState({showNewMessageForm: null})
+  }
+
 
   render() {
     return(
@@ -74,12 +87,43 @@ class PlayerComponent extends Component {
                 //   }
                 // ]}
               />
+              {!this.state.showNewCommentForm &&
+                <div className="answer-comment-container">
+                  {message.comments.map(comment =>
+                    <Comment
+                      key={comment.id}
+                      user={comment.meta.creator}
+                      date={comment.meta.created}
+                      content={message.content}
+                      allowHtml={true}
+                    />
+                  )}
+                  <Button
+                    label={trans('comment', {}, 'actions')}
+                    type="callback"
+                    callback={() => this.showCommentForm(message.id)}
+                    className="btn-link"
+                    primary={true}
+                  />
+                </div>
+              }
+              {this.state.showNewCommentForm === message.id &&
+                <div className="answer-comment-container">
+                  <CommentForm
+                    user={currentUser()}
+                    allowHtml={true}
+                    submitLabel={trans('send')}
+                    submit={(comment) => this.createNewComment(comment)}
+                    cancel={() => this.setState({showNewCommentForm: null})}
+                  />
+                </div>
+              }
             </li>
           )}
         </ul>
         <section className="answer">
           {!this.state.showNewMessageForm &&
-            <div className="answer-button-container">
+            <div className="answer-comment-container">
               <Button
                 label={trans('reply', {}, 'forum')}
                 type="callback"
@@ -105,14 +149,15 @@ class PlayerComponent extends Component {
 }
 
 
-
-
-
-
 const Player = connect(
-  (state) => ({
+  state => ({
     subject: select.subject(state),
     messages: select.messages(state)
+  }),
+  dispatch => ({
+    createMessage(subjectId, content) {
+      dispatch(actions.createMessage(subjectId, content))
+    }
   })
 )(PlayerComponent)
 

@@ -1,9 +1,29 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 
-export const SUMMARY_PIN_TOGGLE  = 'SUMMARY_PIN_TOGGLE'
-export const SUMMARY_OPEN_TOGGLE = 'SUMMARY_OPEN_TOGGLE'
 
 export const actions = {}
 
-actions.toggleSummaryPin = makeActionCreator(SUMMARY_PIN_TOGGLE)
-actions.toggleSummaryOpen = makeActionCreator(SUMMARY_OPEN_TOGGLE)
+export const MESSAGE_ADD = 'MESSAGE_ADD'
+export const COMMENT_ADD = 'COMMENT_ADD'
+
+actions.createMessage = makeActionCreator(MESSAGE_ADD, 'subjectId', 'message')
+actions.createComment = makeActionCreator(COMMENT_ADD, 'messageId', 'comment')
+
+// exemple pris dans clacoform
+
+//   const formData = new FormData()
+//   formData.append('messageData', content)
+
+// dispatch({
+//   [API_REQUEST]: {
+//     url: ['', {subject: subjectId}],
+//     request: {
+//       method: 'POST',
+//       body: formData
+//     },
+//     success: (data, dispatch) => {
+//       dispatch(actions.addSubjectMessage(subjectId, data))
+//     }
+//   }
+// })
+// }
