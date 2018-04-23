@@ -373,9 +373,10 @@ const EditorComponent = props =>
           title={trans('categories')}
           actions={[
             {
+              type: 'callback',
               icon: 'fa fa-fw fa-plus',
               label: trans('create_a_category', {}, 'clacoform'),
-              action: () => props.showModal(MODAL_CATEGORY_FORM, {
+              callback: () => props.showModal(MODAL_CATEGORY_FORM, {
                 title: trans('create_a_category', {}, 'clacoform'),
                 category: {
                   id: 0,
@@ -404,7 +405,7 @@ const EditorComponent = props =>
                 name: 'name',
                 type: 'string',
                 label: trans('name')
-              },{
+              }, {
                 name: 'managers',
                 type: 'string',
                 label: trans('managers', {}, 'clacoform'),
@@ -435,20 +436,22 @@ const EditorComponent = props =>
                 sortable: false
               }
             ]}
-            actions={[
+            actions={(rows) => [
               {
+                type: 'callback',
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit'),
-                action: (rows) => props.showModal(MODAL_CATEGORY_FORM, {
+                callback: () => props.showModal(MODAL_CATEGORY_FORM, {
                   title: trans('edit_category', {}, 'clacoform'),
                   category: rows[0]
                 }),
                 context: 'row'
               }, {
+                type: 'callback',
                 icon: 'fa fa-fw fa-trash-o',
                 label: trans('delete'),
                 dangerous: true,
-                action: (rows) => props.deleteCategories(rows)
+                callback: () => props.deleteCategories(rows)
               }
             ]}
           />
@@ -461,9 +464,10 @@ const EditorComponent = props =>
             title={trans('keywords')}
             actions={[
               {
+                type: 'callback',
                 icon: 'fa fa-fw fa-plus',
                 label: trans('create_a_keyword', {}, 'clacoform'),
-                action: () => props.showModal(MODAL_KEYWORD_FORM, {
+                callback: () => props.showModal(MODAL_KEYWORD_FORM, {
                   title: trans('create_a_keyword', {}, 'clacoform'),
                   keyword: {
                     id: 0,
@@ -486,20 +490,22 @@ const EditorComponent = props =>
                   label: trans('name')
                 }
               ]}
-              actions={[
+              actions={(rows) => [
                 {
+                  type: 'callback',
                   icon: 'fa fa-fw fa-pencil',
                   label: trans('edit'),
-                  action: (rows) => props.showModal(MODAL_KEYWORD_FORM, {
+                  callback: () => props.showModal(MODAL_KEYWORD_FORM, {
                     title: trans('edit_keyword', {}, 'clacoform'),
                     keyword: rows[0]
                   }),
                   context: 'row'
                 }, {
+                  type: 'callback',
                   icon: 'fa fa-fw fa-trash-o',
                   label: trans('delete'),
                   dangerous: true,
-                  action: (rows) => props.deleteKeywords(rows)
+                  callback: () => props.deleteKeywords(rows)
                 }
               ]}
             />

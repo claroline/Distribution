@@ -5,7 +5,6 @@ import {PropTypes as T} from 'prop-types'
 import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
 import {trans} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
 import {RoutedPageContent} from '#/main/core/layout/router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
@@ -55,34 +54,40 @@ const Resource = props =>
     }}
     customActions={[
       {
+        type: 'link',
         icon: 'fa fa-fw fa-home',
         label: trans('main_menu', {}, 'clacoform'),
-        action: '#/menu'
+        target: '/menu'
       }, {
+        type: 'link',
         icon: 'fa fa-fw fa-plus',
         label: trans('add_entry', {}, 'clacoform'),
         displayed: props.canAddEntry,
-        action: '#/entry/form'
+        target: '/entry/form'
       }, {
+        type: 'link',
         icon: 'fa fa-fw fa-search',
         label: trans('entries_list', {}, 'clacoform'),
         displayed: props.canSearchEntry,
-        action: '#/entries'
+        target: '/entries'
       }, {
+        type: 'link',
         icon: 'fa fa-fw fa-file-text-o',
         label: trans('template_management', {}, 'clacoform'),
         displayed: props.canEdit,
-        action: '#/template'
+        target: '/template'
       }, {
+        type: 'url',
         icon: 'fa fa-fw fa-upload',
         label: trans('export_all_entries', {}, 'clacoform'),
         displayed: props.canEdit,
-        action: generateUrl('claro_claco_form_entries_export', {clacoForm: props.clacoForm.id})
+        target: ['claro_claco_form_entries_export', {clacoForm: props.clacoForm.id}]
       }, {
+        type: 'callback',
         icon: 'fa fa-fw fa-trash-o',
         label: trans('delete_all_entries', {}, 'clacoform'),
         displayed: props.canEdit,
-        action: props.deleteEntries,
+        callback: props.deleteEntries,
         dangerous: true
       }
     ]}
@@ -125,7 +130,7 @@ const Resource = props =>
             props.resetEntryUser()
           }
         }, {
-          path: '/entry/form/:id?',
+          path: '/entry/form/:id',
           component: EntryForm,
           onEnter: (params) => {
             props.openEntryForm(params.id, props.clacoForm.id)

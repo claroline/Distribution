@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
@@ -82,10 +81,6 @@ class EntriesComponent extends Component {
       this.props.displayMetadata === 'all' ||
       this.isEntryOwner(entry) ||
       (this.props.displayMetadata === 'manager' && this.isEntryManager(entry))
-  }
-
-  navigateTo(url) {
-    this.props.history.push(url)
   }
 
   generateColumns(titleLabel) {
@@ -241,77 +236,87 @@ class EntriesComponent extends Component {
     return columns
   }
 
-  generateActions() {
+  generateActions(rows) {
     const dataListActions = [{
+      type: 'link',
       icon: 'fa fa-fw fa-eye',
       label: trans('view_entry', {}, 'clacoform'),
-      action: (rows) => this.navigateTo(`/entries/${rows[0].id}`),
+      target: `/entries/${rows[0].id}`,
       context: 'row'
     }]
 
     if (this.props.canGeneratePdf) {
       dataListActions.push({
+        type: 'callback',
         icon: 'fa fa-fw fa-print',
         label: trans('print_entry', {}, 'clacoform'),
-        action: (rows) => this.props.downloadEntryPdf(rows[0].id),
+        callback: () => this.props.downloadEntryPdf(rows[0].id),
         context: 'row'
       })
       dataListActions.push({
+        type: 'callback',
         icon: 'fa fa-w fa-print',
         label: trans('print_selected_entries', {}, 'clacoform'),
-        action: (rows) => this.props.downloadEntriesPdf(rows),
+        callback: () => this.props.downloadEntriesPdf(rows),
         context: 'selection'
       })
     }
     dataListActions.push({
+      type: 'link',
       icon: 'fa fa-fw fa-pencil',
       label: trans('edit'),
-      action: (rows) => this.navigateTo(`/entry/form/${rows[0].id}`),
-      displayed: (rows) => !rows[0].locked && this.canEditEntry(rows[0]),
+      target: `/entry/form/${rows[0].id}`,
+      displayed: !rows[0].locked && this.canEditEntry(rows[0]),
       context: 'row'
     })
     dataListActions.push({
+      type: 'callback',
       icon: 'fa fa-fw fa-eye',
       label: trans('publish'),
-      action: (rows) => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_PUBLISHED),
-      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
+      callback: () => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_PUBLISHED),
+      displayed: rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
         rows.filter(e => e.status === constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
     })
     dataListActions.push({
+      type: 'callback',
       icon: 'fa fa-fw fa-eye-slash',
       label: trans('unpublish'),
-      action: (rows) => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_UNPUBLISHED),
-      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
+      callback: () => this.props.switchEntriesStatus(rows, constants.ENTRY_STATUS_UNPUBLISHED),
+      displayed: rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length &&
         rows.filter(e => e.status !== constants.ENTRY_STATUS_PUBLISHED).length !== rows.length
     })
 
     if (this.props.canAdministrate) {
       dataListActions.push({
+        type: 'callback',
         icon: 'fa fa-w fa-lock',
         label: trans('lock'),
-        action: (rows) => this.props.switchEntriesLock(rows, true),
-        displayed: (rows) => rows.filter(e => e.locked).length !== rows.length
+        callback: () => this.props.switchEntriesLock(rows, true),
+        displayed: rows.filter(e => e.locked).length !== rows.length
       })
       dataListActions.push({
+        type: 'callback',
         icon: 'fa fa-w fa-unlock',
         label: trans('unlock'),
-        action: (rows) => this.props.switchEntriesLock(rows, false),
-        displayed: (rows) => rows.filter(e => !e.locked).length !== rows.length
+        callback: () => this.props.switchEntriesLock(rows, false),
+        displayed: rows.filter(e => !e.locked).length !== rows.length
       })
     }
     dataListActions.push({
+      type: 'callback',
       icon: 'fa fa-fw fa-trash',
       label: trans('delete'),
-      action: (rows) => this.deleteEntry(rows[0]),
-      displayed: (rows) => !rows[0].locked && this.canManageEntry(rows[0]),
+      callback: () => this.deleteEntry(rows[0]),
+      displayed: !rows[0].locked && this.canManageEntry(rows[0]),
       dangerous: true,
       context: 'row'
     })
     dataListActions.push({
+      type: 'callback',
       icon: 'fa fa-w fa-trash',
       label: trans('delete'),
-      action: (rows) => this.deleteEntries(rows),
-      displayed: (rows) => rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length,
+      callback: () => this.deleteEntries(rows),
+      displayed: rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length,
       dangerous: true,
       context: 'selection'
     })
@@ -429,16 +434,17 @@ class EntriesComponent extends Component {
             available: Object.keys(listConstants.DISPLAY_MODES)
           }}
           name="entries.list"
-          open={{
-            action: (row) => `#/entries/${row.id}`
-          }}
+          primaryAction={(row) => ({
+            type: 'link',
+            target: `/entries/${row.id}`
+          })}
           fetch={{
             url: ['apiv2_clacoformentry_list', {clacoForm: this.props.clacoFormId}],
             autoload: true
           }}
           definition={this.generateColumns(this.props.titleLabel)}
           filterColumns={this.props.searchColumnEnabled}
-          actions={this.generateActions()}
+          actions={this.generateActions.bind(this)}
           card={(props) =>
             <DataCard
               {...props}
@@ -493,11 +499,10 @@ EntriesComponent.propTypes = {
       value: T.any
     })),
     sortBy: T.object
-  }).isRequired,
-  history: T.object.isRequired
+  }).isRequired
 }
 
-const Entries = withRouter(connect(
+const Entries = connect(
   (state) => ({
     canEdit: resourceSelect.editable(state),
     canAdministrate: resourceSelect.administrable(state),
@@ -531,7 +536,7 @@ const Entries = withRouter(connect(
     downloadFieldValueFile: fieldValueId => dispatch(actions.downloadFieldValueFile(fieldValueId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))
   })
-)(EntriesComponent))
+)(EntriesComponent)
 
 export {
   Entries
