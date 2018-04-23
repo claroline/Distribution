@@ -1882,9 +1882,9 @@ class ClacoFormManager
         return $this->keywordRepo->findKeywordByName($clacoForm, $name);
     }
 
-    public function getKeywordByNameExcludingId(ClacoForm $clacoForm, $name, $id)
+    public function getKeywordByNameExcludingUuid(ClacoForm $clacoForm, $name, $uuid)
     {
-        return $this->keywordRepo->findKeywordByNameExcludingId($clacoForm, $name, $id);
+        return $this->keywordRepo->findKeywordByNameExcludingUuid($clacoForm, $name, $uuid);
     }
 
     /*************************************

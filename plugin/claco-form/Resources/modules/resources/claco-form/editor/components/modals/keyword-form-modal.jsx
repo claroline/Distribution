@@ -32,8 +32,8 @@ class KeywordFormModalComponent extends Component {
 
       fetch(
         generateUrl(
-          'claro_claco_form_get_keyword_by_name_excluding_id',
-          {clacoForm: this.props.clacoFormId, name: this.state.name, id: this.props.keyword.id}
+          'claro_claco_form_get_keyword_by_name_excluding_uuid',
+          {clacoForm: this.props.clacoFormId, name: this.state.name, uuid: this.props.keyword.id}
         ),
         {
           method: 'GET' ,
@@ -42,7 +42,7 @@ class KeywordFormModalComponent extends Component {
       )
         .then(response => response.json())
         .then(results => {
-          if (JSON.parse(results) === null) {
+          if (!results || !results.id) {
             this.registerKeyword()
             this.setState({isFetching: false})
           } else {
@@ -62,7 +62,7 @@ class KeywordFormModalComponent extends Component {
 
   registerKeyword() {
     if (!this.state['hasError']) {
-      this.props.saveKeyword(this.state)
+      this.props.saveKeyword(this.state, this.props.isNew)
       this.props.fadeModal()
     }
   }
@@ -121,6 +121,7 @@ class KeywordFormModalComponent extends Component {
 
 KeywordFormModalComponent.propTypes = {
   clacoFormId:T.string.isRequired,
+  isNew: T.bool.isRequired,
   keyword: T.shape(KeywordType.propTypes).isRequired,
   saveKeyword: T.func.isRequired,
   fadeModal: T.func.isRequired
@@ -131,8 +132,8 @@ const KeywordFormModal = connect(
     clacoFormId: state.clacoForm.id
   }),
   (dispatch) => ({
-    saveKeyword(keyword) {
-      dispatch(actions.saveKeyword(keyword))
+    saveKeyword(keyword, isNew) {
+      dispatch(actions.saveKeyword(keyword, isNew))
     },
     fadeModal() {
       dispatch(modalActions.fadeModal())

@@ -19,21 +19,8 @@ const actions = {}
 actions.updateResourceProperty = makeActionCreator(RESOURCE_PROPERTY_UPDATE, 'property', 'value')
 actions.updateResourceParamsProperty = makeActionCreator(RESOURCE_PARAMS_PROPERTY_UPDATE, 'property', 'value')
 
-actions.saveCategory = (category) => (dispatch, getState) => {
-  if (category.id) {
-    dispatch({
-      [API_REQUEST]: {
-        url: ['apiv2_clacoformcategory_update', {id: category.id}],
-        request: {
-          method: 'PUT',
-          body: JSON.stringify(category)
-        },
-        success: (data, dispatch) => {
-          dispatch(actions.updateCategory(data))
-        }
-      }
-    })
-  } else {
+actions.saveCategory = (category, isNew) => (dispatch, getState) => {
+  if (isNew) {
     const clacoFormId = getState().clacoForm.id
     category['clacoForm'] = {}
     category['clacoForm']['id'] = clacoFormId
@@ -47,6 +34,19 @@ actions.saveCategory = (category) => (dispatch, getState) => {
         },
         success: (data, dispatch) => {
           dispatch(actions.addCategory(data))
+        }
+      }
+    })
+  } else {
+    dispatch({
+      [API_REQUEST]: {
+        url: ['apiv2_clacoformcategory_update', {id: category.id}],
+        request: {
+          method: 'PUT',
+          body: JSON.stringify(category)
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.updateCategory(data))
         }
       }
     })
@@ -69,21 +69,8 @@ actions.addCategory = makeActionCreator(CATEGORY_ADD, 'category')
 actions.updateCategory = makeActionCreator(CATEGORY_UPDATE, 'category')
 actions.removeCategories = makeActionCreator(CATEGORIES_REMOVE, 'ids')
 
-actions.saveKeyword = (keyword) => (dispatch, getState) => {
-  if (keyword.id) {
-    dispatch({
-      [API_REQUEST]: {
-        url: ['apiv2_clacoformkeyword_update', {id: keyword.id}],
-        request: {
-          method: 'PUT',
-          body: JSON.stringify(keyword)
-        },
-        success: (data, dispatch) => {
-          dispatch(actions.updateKeyword(data))
-        }
-      }
-    })
-  } else {
+actions.saveKeyword = (keyword, isNew) => (dispatch, getState) => {
+  if (isNew) {
     const clacoFormId = getState().clacoForm.id
     keyword['clacoForm'] = {}
     keyword['clacoForm']['id'] = clacoFormId
@@ -97,6 +84,19 @@ actions.saveKeyword = (keyword) => (dispatch, getState) => {
         },
         success: (data, dispatch) => {
           dispatch(actions.addKeyword(data))
+        }
+      }
+    })
+  } else {
+    dispatch({
+      [API_REQUEST]: {
+        url: ['apiv2_clacoformkeyword_update', {id: keyword.id}],
+        request: {
+          method: 'PUT',
+          body: JSON.stringify(keyword)
+        },
+        success: (data, dispatch) => {
+          dispatch(actions.updateKeyword(data))
         }
       }
     })

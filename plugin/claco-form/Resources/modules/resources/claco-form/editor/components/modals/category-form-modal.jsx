@@ -72,7 +72,13 @@ class CategoryFormModalComponent  extends Component {
 
   getManagersIds() {
     const ids = []
-    this.state.managers.forEach(m => ids.push(m.id))
+    this.state.managers.forEach(m => {
+      if (m.autoId) {
+        ids.push(m.autoId)
+      } else {
+        ids.push(m.id)
+      }
+    })
 
     return ids
   }
@@ -85,13 +91,14 @@ class CategoryFormModalComponent  extends Component {
   }
 
   setManagers(users) {
+    console.log(users)
     const managers = users ? users : []
     this.updateCategoryProps('managers', managers)
   }
 
   registerCategory() {
     if (!this.state['hasError']) {
-      this.props.saveCategory(this.state)
+      this.props.saveCategory(this.state, this.props.isNew)
       this.props.fadeModal()
     }
   }
@@ -213,6 +220,7 @@ class CategoryFormModalComponent  extends Component {
 
 CategoryFormModalComponent.propTypes = {
   category: T.shape(CategoryType.propTypes).isRequired,
+  isNew: T.bool.isRequired,
   saveCategory: T.func.isRequired,
   fadeModal: T.func.isRequired
 }
@@ -220,8 +228,8 @@ CategoryFormModalComponent.propTypes = {
 const CategoryFormModal = connect(
   null,
   (dispatch) => ({
-    saveCategory(category) {
-      dispatch(actions.saveCategory(category))
+    saveCategory(category, isNew) {
+      dispatch(actions.saveCategory(category, isNew))
     },
     fadeModal() {
       dispatch(modalActions.fadeModal())

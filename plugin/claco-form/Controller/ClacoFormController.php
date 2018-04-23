@@ -187,8 +187,8 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/{clacoForm}/keyword/get/by/name/{name}/excluding/id/{id}",
-     *     name="claro_claco_form_get_keyword_by_name_excluding_id",
+     *     "/claco/form/{clacoForm}/keyword/get/by/name/{name}/excluding/uuid/{uuid}",
+     *     name="claro_claco_form_get_keyword_by_name_excluding_uuid",
      *     options = {"expose"=true}
      * )
      * @EXT\ParamConverter(
@@ -201,15 +201,15 @@ class ClacoFormController extends Controller
      *
      * @param ClacoForm $clacoForm
      * @param string    $name
-     * @param int       $id
+     * @param string    $uuid
      *
      * @return JsonResponse
      */
-    public function getKeywordByNameExcludingIdAction(ClacoForm $clacoForm, $name, $id = 0)
+    public function getKeywordByNameExcludingUuidAction(ClacoForm $clacoForm, $name, $uuid)
     {
         $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
-        $keyword = $this->clacoFormManager->getKeywordByNameExcludingId($clacoForm, $name, $id);
-        $serializedKeyword = $this->serializer->serialize($keyword);
+        $keyword = $this->clacoFormManager->getKeywordByNameExcludingUuid($clacoForm, $name, $uuid);
+        $serializedKeyword = !empty($keyword) ? $this->serializer->serialize($keyword) : null;
 
         return new JsonResponse($serializedKeyword, 200);
     }

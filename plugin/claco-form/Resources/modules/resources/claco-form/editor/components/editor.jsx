@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {makeId} from '#/main/core/scaffolding/id'
 import {trans, transChoice} from '#/main/core/translation'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
@@ -378,8 +379,9 @@ const EditorComponent = props =>
               label: trans('create_a_category', {}, 'clacoform'),
               callback: () => props.showModal(MODAL_CATEGORY_FORM, {
                 title: trans('create_a_category', {}, 'clacoform'),
+                isNew: true,
                 category: {
-                  id: 0,
+                  id: makeId(),
                   name: '',
                   managers: [],
                   details: {
@@ -399,6 +401,9 @@ const EditorComponent = props =>
             fetch={{
               url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
               autoload: true
+            }}
+            delete={{
+              url: ['apiv2_clacoformcategory_delete_bulk']
             }}
             definition={[
               {
@@ -443,16 +448,18 @@ const EditorComponent = props =>
                 label: trans('edit'),
                 callback: () => props.showModal(MODAL_CATEGORY_FORM, {
                   title: trans('edit_category', {}, 'clacoform'),
+                  isNew: false,
                   category: rows[0]
                 }),
                 context: 'row'
-              }, {
-                type: 'callback',
-                icon: 'fa fa-fw fa-trash-o',
-                label: trans('delete'),
-                dangerous: true,
-                callback: () => props.deleteCategories(rows)
               }
+              // , {
+              //   type: 'callback',
+              //   icon: 'fa fa-fw fa-trash-o',
+              //   label: trans('delete'),
+              //   dangerous: true,
+              //   callback: () => props.deleteCategories(rows)
+              // }
             ]}
           />
         </FormSection>
@@ -469,8 +476,9 @@ const EditorComponent = props =>
                 label: trans('create_a_keyword', {}, 'clacoform'),
                 callback: () => props.showModal(MODAL_KEYWORD_FORM, {
                   title: trans('create_a_keyword', {}, 'clacoform'),
+                  isNew: true,
                   keyword: {
-                    id: 0,
+                    id: makeId(),
                     name: ''
                   }
                 })
@@ -482,6 +490,9 @@ const EditorComponent = props =>
               fetch={{
                 url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],
                 autoload: true
+              }}
+              delete={{
+                url: ['apiv2_clacoformkeyword_delete_bulk']
               }}
               definition={[
                 {
@@ -497,16 +508,18 @@ const EditorComponent = props =>
                   label: trans('edit'),
                   callback: () => props.showModal(MODAL_KEYWORD_FORM, {
                     title: trans('edit_keyword', {}, 'clacoform'),
+                    isNew: false,
                     keyword: rows[0]
                   }),
                   context: 'row'
-                }, {
-                  type: 'callback',
-                  icon: 'fa fa-fw fa-trash-o',
-                  label: trans('delete'),
-                  dangerous: true,
-                  callback: () => props.deleteKeywords(rows)
                 }
+                // , {
+                //   type: 'callback',
+                //   icon: 'fa fa-fw fa-trash-o',
+                //   label: trans('delete'),
+                //   dangerous: true,
+                //   callback: () => props.deleteKeywords(rows)
+                // }
               ]}
             />
           </FormSection>
