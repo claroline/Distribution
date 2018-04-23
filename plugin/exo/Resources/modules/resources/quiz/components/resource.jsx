@@ -192,7 +192,7 @@ const QuizResource = DragNDropContext(
       hasOverview: select.hasOverview(state),
       papersAdmin: select.papersAdmin(state),
       docimologyAdmin: select.docimologyAdmin(state),
-      registeredUser: select.registered(state),
+      registeredUser: select.registered(),
       saveEnabled: select.saveEnabled(state)
     }),
     (dispatch) => ({

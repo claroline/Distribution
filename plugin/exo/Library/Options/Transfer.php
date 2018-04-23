@@ -15,11 +15,11 @@ final class Transfer
     const MINIMAL = 'minimal';
 
     /**
-     * Adds administrations info in the serialized data.
+     * Adds some metrics info in the serialized data.
      *
      * @var string
      */
-    const INCLUDE_ADMIN_META = 'includeAdminMeta';
+    const INCLUDE_METRICS = 'includeMetrics';
 
     /**
      * Adds solutions info in the serialized data.

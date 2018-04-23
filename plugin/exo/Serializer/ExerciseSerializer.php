@@ -132,33 +132,30 @@ class ExerciseSerializer implements SerializerInterface
      *
      * @return \stdClass
      */
-    private function serializeMetadata(Exercise $exercise)
+    private function serializeMetadata(Exercise $exercise, array $options = [])
     {
         $metadata = new \stdClass();
         // Adding some data, otherwise empty object gets interpreted as empty array which generates an import validation error
         $metadata->creationDate = new \DateTime();
 
-        $nbUserPapers = 0;
-        $nbUserPapersDayCount = 0;
+        if (in_array(Transfer::INCLUDE_METRICS, $options)) {
+            $nbUserPapers = 0;
+            $nbUserPapersDayCount = 0;
 
-        $currentUser = null;
-        if (!empty($this->tokenStorage->getToken())) {
-            $currentUser = $this->tokenStorage->getToken()->getUser();
+            if (!empty($this->tokenStorage->getToken())) {
+                $currentUser = $this->tokenStorage->getToken()->getUser();
+                if ($currentUser instanceof User) {
+                    $nbUserPapers = $this->paperManager->countUserFinishedPapers($exercise, $currentUser);
+                    $nbUserPapersDayCount = $this->paperManager->countUserFinishedDayPapers($exercise, $currentUser);
+                }
+            }
+
+            $nbPapers = $this->paperManager->countExercisePapers($exercise);
+
+            $metadata->paperCount = (int) $nbPapers;
+            $metadata->userPaperCount = (int) $nbUserPapers;
+            $metadata->userPaperDayCount = (int) $nbUserPapersDayCount;
         }
-
-        $authenticated = $currentUser instanceof User;
-
-        if ($authenticated) {
-            $nbUserPapers = $this->paperManager->countUserFinishedPapers($exercise, $currentUser);
-            $nbUserPapersDayCount = $this->paperManager->countUserFinishedDayPapers($exercise, $currentUser);
-        }
-
-        $nbPapers = $this->paperManager->countExercisePapers($exercise);
-
-        $metadata->paperCount = (int) $nbPapers;
-        $metadata->userPaperCount = (int) $nbUserPapers;
-        $metadata->userPaperDayCount = (int) $nbUserPapersDayCount;
-        $metadata->registered = $authenticated;
 
         return $metadata;
     }

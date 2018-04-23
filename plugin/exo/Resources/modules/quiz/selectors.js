@@ -1,5 +1,6 @@
 import {createSelector} from 'reselect'
 
+import {currentUser} from '#/main/core/user/current'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 
 // TODO : use reselect
@@ -20,7 +21,7 @@ const viewMode = state => state.viewMode
 const hasPapers = state => state.quiz.meta.paperCount > 0 || (state.papers.papers && state.papers.papers.length > 0)
 const hasUserPapers = state => state.quiz.meta.userPaperCount > 0
 
-const registered = state => state.quiz.meta.registered
+const registered = () => null !== currentUser()
 const saveEnabled = state => !state.editor.saved && !state.editor.saving
 const noItems = state =>
   Object.keys(state.quiz.steps).length === 1 && Object.keys(state.items).length === 0

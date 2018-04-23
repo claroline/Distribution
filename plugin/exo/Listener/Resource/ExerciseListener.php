@@ -126,7 +126,7 @@ class ExerciseListener
         $event->setAdditionalData([
             'quiz' => $this->container->get('ujm_exo.manager.exercise')->serialize(
                 $exercise,
-                $canEdit ? [Transfer::INCLUDE_SOLUTIONS] : []
+                $canEdit ? [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_METRICS] : [Transfer::INCLUDE_METRICS]
             ),
         ]);
         $event->stopPropagation();
@@ -153,7 +153,7 @@ class ExerciseListener
                 '_resource' => $exercise,
                 'quiz' => $this->container->get('ujm_exo.manager.exercise')->serialize(
                     $exercise,
-                    $canEdit ? [Transfer::INCLUDE_SOLUTIONS] : []
+                    $canEdit ? [Transfer::INCLUDE_SOLUTIONS, Transfer::INCLUDE_METRICS] : [Transfer::INCLUDE_METRICS]
                 ),
             ]
         );
