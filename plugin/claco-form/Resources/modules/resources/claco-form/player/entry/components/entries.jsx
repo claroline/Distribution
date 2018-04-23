@@ -423,39 +423,33 @@ class EntriesComponent extends Component {
     return (
       <div>
         <h2>{trans('entries_list', {}, 'clacoform')}</h2>
-
-        {this.props.canSearchEntry ?
-          <DataListContainer
-            display={{
-              current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
-              available: Object.keys(listConstants.DISPLAY_MODES)
-            }}
-            name="entries.list"
-            open={{
-              action: (row) => `#/entries/${row.id}`
-            }}
-            fetch={{
-              url: ['apiv2_clacoformentry_list', {clacoForm: this.props.clacoFormId}],
-              autoload: true
-            }}
-            definition={this.generateColumns(this.props.titleLabel)}
-            filterColumns={this.props.searchColumnEnabled}
-            actions={this.generateActions()}
-            card={(props) =>
-              <DataCard
-                {...props}
-                id={props.data.id}
-                icon={<UserAvatar picture={props.data.user ? props.data.user.picture : undefined} alt={true}/>}
-                title={this.getCardValue(props.data, 'title')}
-                subtitle={this.getCardValue(props.data, 'subtitle')}
-                contentText={this.getCardValue(props.data, 'content')}
-              />
-            }
-          /> :
-          <div className="alert alert-danger">
-            {trans('unauthorized')}
-          </div>
-        }
+        <DataListContainer
+          display={{
+            current: this.props.defaultDisplayMode || listConstants.DISPLAY_TABLE,
+            available: Object.keys(listConstants.DISPLAY_MODES)
+          }}
+          name="entries.list"
+          open={{
+            action: (row) => `#/entries/${row.id}`
+          }}
+          fetch={{
+            url: ['apiv2_clacoformentry_list', {clacoForm: this.props.clacoFormId}],
+            autoload: true
+          }}
+          definition={this.generateColumns(this.props.titleLabel)}
+          filterColumns={this.props.searchColumnEnabled}
+          actions={this.generateActions()}
+          card={(props) =>
+            <DataCard
+              {...props}
+              id={props.data.id}
+              icon={<UserAvatar picture={props.data.user ? props.data.user.picture : undefined} alt={true}/>}
+              title={this.getCardValue(props.data, 'title')}
+              subtitle={this.getCardValue(props.data, 'subtitle')}
+              contentText={this.getCardValue(props.data, 'content')}
+            />
+          }
+        />
       </div>
     )
   }
@@ -468,7 +462,6 @@ EntriesComponent.propTypes = {
   fields: T.arrayOf(T.shape(FieldType.propTypes)).isRequired,
   canGeneratePdf: T.bool.isRequired,
   clacoFormId: T.string.isRequired,
-  canSearchEntry: T.bool.isRequired,
   searchEnabled: T.bool.isRequired,
   searchColumnEnabled: T.bool.isRequired,
   editionEnabled: T.bool.isRequired,
@@ -511,7 +504,6 @@ const Entries = withRouter(connect(
     fields: select.fields(state),
     canGeneratePdf: state.canGeneratePdf,
     clacoFormId: state.clacoForm.id,
-    canSearchEntry: select.canSearchEntry(state),
     searchEnabled: select.getParam(state, 'search_enabled'),
     searchColumnEnabled: select.getParam(state, 'search_column_enabled'),
     editionEnabled: select.getParam(state, 'edition_enabled'),

@@ -282,21 +282,6 @@ class ClacoFormManager
         return $keyword;
     }
 
-    public function getEntriesForUser(ClacoForm $clacoForm, User $user = null)
-    {
-        $searchEnabled = $clacoForm->getSearchEnabled();
-        $canEdit = $this->hasRight($clacoForm, 'EDIT');
-        $entries = [];
-
-        if ($canEdit) {
-            $entries = $this->entryRepo->findBy(['clacoForm' => $clacoForm]);
-        } elseif ($searchEnabled) {
-            $entries = is_null($user) ? $this->getPublishedEntries($clacoForm) : $this->getPublishedAndManageableEntries($clacoForm, $user);
-        }
-
-        return $entries;
-    }
-
     public function persistEntry(Entry $entry)
     {
         $this->om->persist($entry);
@@ -1851,11 +1836,6 @@ class ClacoFormManager
         return $this->clacoFormRepo->findClacoFormByResourceNodeId($resourceNodeId);
     }
 
-    public function getClacoFormById($id)
-    {
-        return $this->clacoFormRepo->findOneById($id);
-    }
-
     /****************************************
      * Access to CategoryRepository methods *
      ****************************************/
@@ -1919,26 +1899,6 @@ class ClacoFormManager
     public function getAllEntries(ClacoForm $clacoForm)
     {
         return $this->entryRepo->findBy(['clacoForm' => $clacoForm]);
-    }
-
-    public function getPublishedEntries(ClacoForm $clacoForm)
-    {
-        return $this->entryRepo->findPublishedEntries($clacoForm);
-    }
-
-    public function getManageableEntries(ClacoForm $clacoForm, User $user)
-    {
-        return $this->entryRepo->findManageableEntries($clacoForm, $user);
-    }
-
-    public function getPublishedAndManageableEntries(ClacoForm $clacoForm, User $user)
-    {
-        return $this->entryRepo->findPublishedAndManageableEntries($clacoForm, $user);
-    }
-
-    public function getEntriesByCategories(ClacoForm $clacoForm, array $categories)
-    {
-        return count($categories) > 0 ? $this->entryRepo->findEntriesByCategories($clacoForm, $categories) : [];
     }
 
     public function getPublishedEntriesByDates(ClacoForm $clacoForm, $startDate = null, $endDate = null)

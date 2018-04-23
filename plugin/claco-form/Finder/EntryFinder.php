@@ -14,6 +14,7 @@ namespace Claroline\ClacoFormBundle\Finder;
 use Claroline\AppBundle\API\FinderInterface;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ClacoFormBundle\Entity\ClacoForm;
+use Claroline\ClacoFormBundle\Entity\Entry;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Security\Collection\ResourceCollection;
@@ -106,13 +107,13 @@ class EntryFinder implements FinderInterface
 
         if ($type) {
             switch ($type) {
-                case $this->translator->trans('all_entries', [], 'clacoform'):
+                case 'all_entries':
                     $type = 'all';
                     break;
-                case $this->translator->trans('my_entries', [], 'clacoform'):
+                case 'my_entries':
                     $type = 'my';
                     break;
-                case $this->translator->trans('manager_entries', [], 'clacoform'):
+                case 'manager_entries':
                     $type = 'manager';
                     break;
                 default:
@@ -182,7 +183,7 @@ class EntryFinder implements FinderInterface
                     break;
                 case 'status':
                     $qb->andWhere('obj.status IN (:status)');
-                    $qb->setParameter('status', $filterValue ? [1] : [0, 2]);
+                    $qb->setParameter('status', $filterValue ? [Entry::PUBLISHED] : [Entry::PENDING, Entry::UNPUBLISHED]);
                     break;
                 case 'locked':
                     $qb->andWhere('obj.locked = :locked');
@@ -295,6 +296,10 @@ class EntryFinder implements FinderInterface
                 case FieldFacet::CASCADE_SELECT_TYPE:
                     $qb->andWhere("UPPER(fvffv{$filterName}.arrayValue) LIKE :value{$filterName}");
                     $qb->setParameter("value{$filterName}", '%'.strtoupper($filterValue).'%');
+                    break;
+                case FieldFacet::BOOLEAN_TYPE:
+                    $qb->andWhere("fvffv{$filterName}.boolValue = :value{$filterName}");
+                    $qb->setParameter("value{$filterName}", $filterValue);
                     break;
                 default:
                     $qb->andWhere("UPPER(fvffv{$filterName}.stringValue) LIKE :value{$filterName}");

@@ -25,6 +25,8 @@ import {Entries} from '#/plugin/claco-form/resources/claco-form/player/entry/com
 import {EntryForm} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-form.jsx'
 import {Entry} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry.jsx'
 
+const authenticatedUser = currentUser()
+
 function getHome(type) {
   switch (type) {
     case 'search':
@@ -109,7 +111,8 @@ const Resource = props =>
         }, {
           path: '/entries',
           component: Entries,
-          exact: true
+          exact: true,
+          disabled: !props.canSearchEntry
         }, {
           path: '/entries/:id',
           component: Entry,
@@ -188,7 +191,7 @@ const ClacoFormResource = connect(
         clacoForm: {
           id: clacoFormId
         },
-        user: currentUser()
+        user: authenticatedUser
       }
 
       dispatch(entryActions.openForm('entries.current', id, defaultValue))

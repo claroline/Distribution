@@ -242,30 +242,6 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/{clacoForm}/entries/list",
-     *     name="claro_claco_form_entries_list",
-     *     options = {"expose"=true}
-     * )
-     *
-     * Returns the list of entries
-     *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
-     */
-    public function entriesListAction(ClacoForm $clacoForm)
-    {
-        $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
-        $currentUser = $this->tokenStorage->getToken()->getUser();
-        $user = 'anon.' === $currentUser ? null : $currentUser;
-        $entries = $this->clacoFormManager->getEntriesForUser($clacoForm, $user);
-        $serializedEntries = array_map(function (Entry $entry) {
-            return $this->serializer->serialize($entry);
-        }, $entries);
-
-        return new JsonResponse($serializedEntries, 200);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/claco/form/{clacoForm}/entry/create",
      *     name="claro_claco_form_entry_create",
      *     options = {"expose"=true}

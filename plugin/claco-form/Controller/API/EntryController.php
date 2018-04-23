@@ -83,7 +83,7 @@ class EntryController extends AbstractCrudController
         $params['hiddenFilters']['clacoForm'] = $clacoForm->getId();
 
         if (isset($params['filters'])) {
-            $filters = [];
+            $filters = $params['filters'];
             $excludedFilters = [
                 'clacoForm',
                 'type',
