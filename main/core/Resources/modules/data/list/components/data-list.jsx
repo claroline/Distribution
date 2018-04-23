@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import invariant from 'invariant'
 import isEqual from 'lodash/isEqual'
-import merge from 'lodash/merge'
 
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {

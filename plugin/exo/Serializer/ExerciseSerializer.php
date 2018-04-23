@@ -141,7 +141,11 @@ class ExerciseSerializer implements SerializerInterface
         $nbUserPapers = 0;
         $nbUserPapersDayCount = 0;
 
-        $currentUser = $this->tokenStorage->getToken()->getUser();
+        $currentUser = null;
+        if (!empty($this->tokenStorage->getToken())) {
+            $currentUser = $this->tokenStorage->getToken()->getUser();
+        }
+
         $authenticated = $currentUser instanceof User;
 
         if ($authenticated) {

@@ -1,14 +1,12 @@
 import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 
 import {CustomDragLayer} from '#/plugin/exo/utils/custom-drag-layer'
 import {makeDroppable, makeDraggable} from '#/plugin/exo/utils/dragAndDrop'
 
-import {constants as listConst} from '#/main/core/data/list/constants'
 import {
   createListDefinition,
   getPrimaryAction,
