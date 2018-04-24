@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+
 import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {makeResourceReducer} from '#/main/core/resource/reducer'
 import {now} from '#/main/core/scaffolding/date'
@@ -5,7 +7,10 @@ import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
 
 import {reducer as editorReducer} from '#/plugin/forum/resources/forum/editor/reducer'
-import { MESSAGE_ADD } from '#/plugin/forum/resources/forum/actions'
+import {
+  MESSAGE_ADD,
+  COMMENT_ADD
+} from '#/plugin/forum/resources/forum/actions'
 
 
 const messagesReducer = makeReducer([], {
@@ -19,12 +24,32 @@ const messagesReducer = makeReducer([], {
         creator: currentUser(),
         created: now(),
         updated: now()
-      }
+      },
+      comments: []
     }
 
     return [
       ...state,
       message
+    ]
+  },
+  [COMMENT_ADD]: (state, action) => {
+    const messages = cloneDeep(state)
+    const message = messages.filter(message => message.id === action.messageId)
+
+    const comment = {
+      id: makeId(),
+      content: action.comment,
+      meta: {
+        creator: currentUser(),
+        created: now(),
+        updated: now()
+      }
+    }
+
+    return [
+      ...state,
+      message[0].comments.push(comment)
     ]
   }
 })

@@ -3,7 +3,7 @@
     flex-direction: row;
     align-items: flex-start;
     max-width: 100%;
-    margin: 10px 10px @component-margin-bottom 10px;
+    margin-bottom: 10px;
     background-color: #eee;
     padding: 20px;
 
@@ -30,12 +30,15 @@
         padding: 15px;
         margin: 0;
     }
-
-    .btn-save {
-        font-size: 16px;
-        padding: 10px 30px;
-        border-radius: @user-message-border-radius;
+    .btn-save-container{
+      margin: 0 15px;
+      .btn-save {
+          font-size: 16px;
+          padding: 10px 30px;
+          border-radius: @user-message-border-radius;
+      }
     }
+
 }
 
 .user-comment-meta {
@@ -81,7 +84,6 @@
     flex: 1;
     align-self: stretch;
     background: @user-message-bg;
-    // border: 1px solid @user-message-border;
     border-radius: @user-message-border-radius;
     background-color: #eee;
 }

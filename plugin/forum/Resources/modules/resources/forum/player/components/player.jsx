@@ -30,8 +30,8 @@ class PlayerComponent extends Component {
     this.setState({showNewCommentForm: messageId})
   }
 
-  createNewComment(comment) {
-    this.props.createComment(this.props.subject.id, comment)
+  createNewComment(messageId, comment) {
+    this.props.createComment(messageId, comment)
     this.setState({showNewMessageForm: null})
   }
 
@@ -87,17 +87,17 @@ class PlayerComponent extends Component {
                 //   }
                 // ]}
               />
-              {!this.state.showNewCommentForm &&
-                <div className="answer-comment-container">
-                  {message.comments.map(comment =>
-                    <Comment
-                      key={comment.id}
-                      user={comment.meta.creator}
-                      date={comment.meta.created}
-                      content={message.content}
-                      allowHtml={true}
-                    />
-                  )}
+              <div className="answer-comment-container">
+                {message.comments.map(comment =>
+                  <Comment
+                    key={comment.id}
+                    user={comment.meta.creator}
+                    date={comment.meta.created}
+                    content={comment.content}
+                    allowHtml={true}
+                  />
+                )}
+                {!this.state.showNewCommentForm &&
                   <Button
                     label={trans('comment', {}, 'actions')}
                     type="callback"
@@ -105,19 +105,17 @@ class PlayerComponent extends Component {
                     className="btn-link"
                     primary={true}
                   />
-                </div>
-              }
-              {this.state.showNewCommentForm === message.id &&
-                <div className="answer-comment-container">
+                }
+                {this.state.showNewCommentForm === message.id &&
                   <CommentForm
                     user={currentUser()}
                     allowHtml={true}
                     submitLabel={trans('send')}
-                    submit={(comment) => this.createNewComment(comment)}
+                    submit={(comment) => this.createNewComment(message.id, comment)}
                     cancel={() => this.setState({showNewCommentForm: null})}
                   />
-                </div>
-              }
+                }
+              </div>
             </li>
           )}
         </ul>
@@ -157,6 +155,9 @@ const Player = connect(
   dispatch => ({
     createMessage(subjectId, content) {
       dispatch(actions.createMessage(subjectId, content))
+    },
+    createComment(messageId, comment) {
+      dispatch(actions.createComment(messageId, comment))
     }
   })
 )(PlayerComponent)

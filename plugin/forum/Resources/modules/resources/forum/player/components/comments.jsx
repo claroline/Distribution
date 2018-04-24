@@ -72,14 +72,15 @@ class CommentForm extends Component {
               onChange: value => this.updateContent(value)
             }
           )}
-
-          <button
-            className="btn btn-block btn-primary btn-save"
-            disabled={!this.state.pendingChanges || !this.state.content}
-            onClick={() => this.props.submit(this.state.content)}
-          >
-            {this.props.submitLabel}
-          </button>
+          <div className="btn-save-container">
+            <button
+              className="btn btn-block btn-primary btn-save"
+              disabled={!this.state.pendingChanges || !this.state.content}
+              onClick={() => this.props.submit(this.state.content)}
+            >
+              {this.props.submitLabel}
+            </button>
+          </div>
         </div>
 
         {'right' === this.props.position &&
