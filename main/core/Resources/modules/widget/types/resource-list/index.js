@@ -24,7 +24,7 @@ const App = (context, parameters) => ListApp(context, merge({}, parameters, {
   primaryAction: (resourceNode, dispatch) => 'directory' !== resourceNode.meta.type ? ({
     type: 'url',
     label: trans('open', {}, 'actions'),
-    target: ['claro_resource_open', {node: resourceNode.id, resourceType: resourceNode.meta.type}],
+    target: ['claro_resource_open', {node: resourceNode.id, resourceType: resourceNode.meta.type}]
   }) : ({
     type: 'callback',
     label: trans('open', {}, 'actions'),
