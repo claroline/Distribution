@@ -135,6 +135,7 @@ class EntriesComponent extends Component {
       name: 'title',
       label: titleLabel ? titleLabel : trans('title'),
       displayed: this.isDisplayedField('title'),
+      filterable: this.isFilterableField('title'),
       primary: true,
       type: 'string'
     })
@@ -145,7 +146,7 @@ class EntriesComponent extends Component {
         label: trans('date'),
         type: 'date',
         filterable: false,
-        displayed: this.isDisplayedField('creationDateString'),
+        displayed: this.isDisplayedField('date'),
         renderer: (rowData) => this.canViewEntryMetadata(rowData) ? displayDate(rowData.creationDate) : '-'
       })
       columns.push({
@@ -163,7 +164,8 @@ class EntriesComponent extends Component {
       columns.push({
         name: 'user',
         label: trans('user'),
-        displayed: this.isDisplayedField('userString'),
+        displayed: this.isDisplayedField('user'),
+        filterable: this.isFilterableField('user'),
         renderer: (rowData) => rowData.user && this.canViewEntryMetadata(rowData) ?
           `${rowData.user.firstName} ${rowData.user.lastName}` :
           '-'
@@ -173,7 +175,8 @@ class EntriesComponent extends Component {
       columns.push({
         name: 'categories',
         label: trans('categories'),
-        displayed: this.isDisplayedField('categoriesString'),
+        displayed: this.isDisplayedField('categories'),
+        filterable: this.isFilterableField('categories'),
         renderer: (rowData) => rowData.categories ? rowData.categories.map(c => c.name).join(', ') : ''
       })
     }
@@ -181,7 +184,8 @@ class EntriesComponent extends Component {
       columns.push({
         name: 'keywords',
         label: trans('keywords', {}, 'clacoform'),
-        displayed: this.isDisplayedField('keywordsString'),
+        displayed: this.isDisplayedField('keywords'),
+        filterable: this.isFilterableField('keywords'),
         renderer: (rowData) => rowData.keywords ? rowData.keywords.map(k => k.name).join(', ') : ''
       })
     }
@@ -190,10 +194,10 @@ class EntriesComponent extends Component {
       .map(f => {
         if (this.getDataType(f) === 'file') {
           columns.push({
-            name: `${f.id}`,
+            name: f.id,
             label: f.name,
             type: 'file',
-            displayed: this.isDisplayedField(`${f.id}`),
+            displayed: this.isDisplayedField(f.id),
             filterable: false,
             renderer: (rowData) => {
               const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
@@ -217,11 +221,11 @@ class EntriesComponent extends Component {
           })
         } else {
           columns.push({
-            name: `${f.id}`,
+            name: f.id,
             label: f.name,
             type: this.getDataType(f),
-            displayed: this.isDisplayedField(`${f.id}`),
-            filterable: getFieldType(f.type).name !== 'date',
+            displayed: this.isDisplayedField(f.id),
+            filterable: getFieldType(f.type).name !== 'date' && this.isFilterableField(f.id),
             calculated: (rowData) => {
               const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
 
@@ -350,6 +354,10 @@ class EntriesComponent extends Component {
     return this.props.searchColumns ? this.props.searchColumns.indexOf(key) > -1 : false
   }
 
+  isFilterableField(key) {
+    return this.props.searchRestricted ? this.props.searchRestrictedColumns.indexOf(key) > -1 : true
+  }
+
   formatFieldValue(entry, field, value) {
     let formattedValue = ''
 
@@ -471,12 +479,14 @@ EntriesComponent.propTypes = {
   clacoFormId: T.string.isRequired,
   searchEnabled: T.bool.isRequired,
   searchColumnEnabled: T.bool.isRequired,
+  searchRestricted: T.bool.isRequired,
   editionEnabled: T.bool.isRequired,
   defaultDisplayMode: T.string,
   displayTitle: T.string,
   displaySubtitle: T.string,
   displayContent: T.string,
   searchColumns: T.arrayOf(T.string),
+  searchRestrictedColumns: T.arrayOf(T.string),
   displayMetadata: T.string.isRequired,
   displayCategories: T.bool.isRequired,
   displayKeywords: T.bool.isRequired,
@@ -512,12 +522,14 @@ const Entries = connect(
     clacoFormId: state.clacoForm.id,
     searchEnabled: select.getParam(state, 'search_enabled'),
     searchColumnEnabled: select.getParam(state, 'search_column_enabled'),
+    searchRestricted: select.getParam(state, 'search_restricted') || false,
     editionEnabled: select.getParam(state, 'edition_enabled'),
     defaultDisplayMode: select.getParam(state, 'default_display_mode'),
     displayTitle: select.getParam(state, 'display_title'),
     displaySubtitle: select.getParam(state, 'display_subtitle'),
     displayContent: select.getParam(state, 'display_content'),
     searchColumns: select.getParam(state, 'search_columns'),
+    searchRestrictedColumns: select.getParam(state, 'search_restricted_columns') || [],
     displayMetadata: select.getParam(state, 'display_metadata'),
     displayCategories: select.getParam(state, 'display_categories'),
     displayKeywords: select.getParam(state, 'display_keywords'),

@@ -314,7 +314,7 @@ class ClacoForm extends AbstractResource
     {
         return !is_null($this->details) && isset($this->details['search_columns']) ?
             $this->details['search_columns'] :
-            ['title', 'creationDateString', 'userString', 'categoriesString', 'keywordsString', 'actions'];
+            ['title', 'date', 'user', 'categories', 'keywords'];
     }
 
     public function setSearchColumns(array $searchColumns)
@@ -693,5 +693,33 @@ class ClacoForm extends AbstractResource
             $this->details = [];
         }
         $this->details['title_field_label'] = $titleFieldLabel;
+    }
+
+    public function isSearchRestricted()
+    {
+        return !is_null($this->details) && isset($this->details['search_restricted']) ? $this->details['search_restricted'] : false;
+    }
+
+    public function setSearchRestricted($searchRestricted)
+    {
+        if (is_null($this->details)) {
+            $this->details = [];
+        }
+        $this->details['search_restricted'] = $searchRestricted;
+    }
+
+    public function getSearchRestrictedColumns()
+    {
+        return !is_null($this->details) && isset($this->details['search_restricted_columns']) ?
+            $this->details['search_restricted_columns'] :
+            ['title'];
+    }
+
+    public function setSearchRestrictedColumns(array $searchRestrictedColumns)
+    {
+        if (is_null($this->details)) {
+            $this->details = [];
+        }
+        $this->details['search_restricted_columns'] = $searchRestrictedColumns;
     }
 }

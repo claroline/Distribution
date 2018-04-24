@@ -177,10 +177,10 @@ class ClacoFormManager
         $clacoForm->setSearchColumnEnabled(true);
         $clacoForm->setSearchColumns([
             'title',
-            'creationDateString',
-            'userString',
-            'categoriesString',
-            'keywordsString',
+            'date',
+            'user',
+            'categories',
+            'keywords',
         ]);
 
         $clacoForm->setDisplayMetadata('none');
@@ -218,6 +218,9 @@ class ClacoFormManager
         $clacoForm->setDisplayContent('title');
 
         $clacoForm->setTitleFieldLabel(null);
+
+        $clacoForm->setSearchRestricted(false);
+        $clacoForm->setSearchRestrictedColumns(['title']);
 
         return $clacoForm;
     }

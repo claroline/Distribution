@@ -26,11 +26,26 @@ const generateDisplayList = (fields) => {
     keywords: trans('keywords', {}, 'clacoform')
   }
 
-  fields.filter(f => !f.hidden).map(field => {
+  fields.filter(f => !f.restrictions.hidden).map(field => {
     displayList[field.id] = field.name
   })
 
   return displayList
+}
+
+const generateRestrictedList = (fields) => {
+  const restrictedList = {
+    title: trans('title'),
+    user: trans('user'),
+    categories: trans('categories'),
+    keywords: trans('keywords', {}, 'clacoform')
+  }
+
+  fields.filter(f => !f.restrictions.hidden && ['file', 'date'].indexOf(f.type) === -1).map(field => {
+    restrictedList[field.id] = field.name
+  })
+
+  return restrictedList
 }
 
 const EditorComponent = props =>
@@ -213,6 +228,24 @@ const EditorComponent = props =>
                 multiple: true,
                 choices: generateDisplayList(props.clacoForm.fields)
               }
+            }, {
+              name: 'details.search_restricted',
+              type: 'boolean',
+              label: trans('label_search_restricted', {}, 'clacoform'),
+              required: true,
+              linked: [
+                {
+                  name: 'details.search_restricted_columns',
+                  type: 'enum',
+                  label: trans('label_search_restricted_columns', {}, 'clacoform'),
+                  required: false,
+                  displayed: props.clacoForm.details.search_restricted,
+                  options: {
+                    multiple: true,
+                    choices: generateRestrictedList(props.clacoForm.fields)
+                  }
+                }
+              ]
             }, {
               name: 'details.default_display_mode',
               type: 'enum',
