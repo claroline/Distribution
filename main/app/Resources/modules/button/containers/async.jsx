@@ -1,0 +1,55 @@
+import React from 'react'
+import {PropTypes as T} from 'prop-types'
+import {connect} from 'react-redux'
+import merge from 'lodash/merge'
+import omit from 'lodash/omit'
+
+import {API_REQUEST} from '#/main/core/api/actions'
+import {ApiRequest as ApiRequestTypes} from '#/main/core/api/prop-types'
+import {Button as ButtonTypes} from '#/main/app/button/prop-types'
+
+import {CallbackButton} from '#/main/app/button/components/callback'
+
+/**
+ * Async button.
+ * Renders a component that will trigger an async call on click.
+ *
+ * NB. it requires the `api` and `alerts` reducers in your store to fully work.
+ * (it can work without it, but there will be no notifications).
+ *
+ * @param props
+ * @constructor
+ */
+const AsyncButtonComponent = props =>
+  <CallbackButton
+    {...omit(props, 'request')}
+    callback={() => props.executeRequest(props.request)}
+  >
+    {props.children}
+  </CallbackButton>
+
+AsyncButtonComponent.propTypes = merge({}, ButtonTypes.propTypes, {
+  request: T.shape(
+    ApiRequestTypes.propTypes
+  ).isRequired,
+
+  // from redux
+  executeRequest: T.func.isRequired
+})
+
+AsyncButtonComponent.defaultProps = merge({}, ButtonTypes.defaultProps)
+
+const AsyncButton = connect(
+  null,
+  (dispatch) => ({
+    executeRequest(request) {
+      dispatch({
+        [API_REQUEST]: request
+      })
+    }
+  })
+)(AsyncButtonComponent)
+
+export {
+  AsyncButton
+}

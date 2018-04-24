@@ -6,7 +6,6 @@ import has from 'lodash/has'
 import {t} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
-import {navigate} from '#/main/core/router'
 import classes from 'classnames'
 
 const Tabs = props =>
@@ -60,20 +59,21 @@ const RoutedExplain = props => {
           name="import"
           sections={[
             {
-              id: 'general',
               title: t('general'),
               primary: true,
-              fields: [{
-                name: 'action',
-                type: 'enum',
-                label: t('action'),
-                onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
-                required: true,
-                options: {
-                  noEmpty: true,
-                  choices: choices
-                }},
+              fields: [
                 {
+                  name: 'action',
+                  type: 'enum',
+                  label: t('action'),
+                  // FIXME
+                  //onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
+                  required: true,
+                  options: {
+                    noEmpty: true,
+                    choices: choices
+                  }
+                }, {
                   name: 'file',
                   type: 'file',
                   label: t('file')

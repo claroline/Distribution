@@ -3,9 +3,10 @@ import {t} from '#/main/core/translation'
 import {OrganizationCard} from '#/main/core/user/data/components/organization-card'
 
 const OrganizationList = {
-  open: {
-    action: (row) => `#/organizations/form/${row.id}`
-  },
+  open: (row) => ({
+    type: 'link',
+    target: `/organizations/form/${row.id}`
+  }),
   definition: [
     {
       name: 'name',

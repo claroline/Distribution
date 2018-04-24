@@ -83,7 +83,7 @@ const AnswerTable = props =>
           }
           {props.showScore &&
             <span className="solution-score">
-              {transChoice('solution_score', area.score, {score: area.score}, 'ujm_exo')}
+              {transChoice('solution_score', area.score, {score: area.score}, 'quiz')}
             </span>
           }
         </span>

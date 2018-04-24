@@ -40,7 +40,7 @@ class ResourceListWidget
     /**
      * Lists the Resources inside a Workspace widget.
      *
-     * @EXT\Route("/workspace/{workspace}/{parent}", name="apiv2_widget_resource_list_ws", defaults={"directory"=null})
+     * @EXT\Route("/workspace/{workspace}/{parent}", name="apiv2_widget_resource_list_ws", defaults={"parent"=null})
      * @EXT\ParamConverter("workspace", class="ClarolineCoreBundle:Workspace\Workspace", options={"workspace" = "uuid"})
      *
      * @param Request   $request

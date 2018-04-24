@@ -2,14 +2,22 @@
   "add": "Ajouter",
   "copy": "Copier",
   "enable": "Activer",
+  "export": "Exporter",
   "delete": "Supprimer",
   "disable": "Désactiver",
+  "download": "Télécharger",
+  "follow": "Suivre",
+  "open": "Ouvrir",
   "paste": "Coller",
   "publish": "Publier",
   "register": "Inscrire",
   "replace": "Remplacer",
+  "restart": "Recommencer",
   "select": "Sélectionner",
+  "start": "Commencer",
+  "unfollow": "Ne plus suivre",
   "unpublish": "Dépublier",
   "unregister": "Désinscrire",
-  "deselect": "Déselectionner"
+  "deselect": "Déselectionner",
+  "comment": "Laisser un commentaire"
 }

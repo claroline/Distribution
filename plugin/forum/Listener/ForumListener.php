@@ -23,6 +23,7 @@ use Claroline\CoreBundle\Event\ResourceCreatedEvent;
 use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Form\ForumType;
 use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ForumListener extends ContainerAware
@@ -67,17 +68,21 @@ class ForumListener extends ContainerAware
         $event->stopPropagation();
     }
 
+    /**
+     * Opens the Forum resource.
+     *
+     * @param OpenResourceEvent $event
+     */
     public function onOpen(OpenResourceEvent $event)
     {
-        $requestStack = $this->container->get('request_stack');
-        $httpKernel = $this->container->get('http_kernel');
-        $request = $requestStack->getCurrentRequest();
-        $params = [];
-        $params['_controller'] = 'ClarolineForumBundle:Forum:open';
-        $params['forum'] = $event->getResource()->getId();
-        $subRequest = $request->duplicate([], null, $params);
-        $response = $httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-        $event->setResponse($response);
+        $content = $this->container->get('templating')->render(
+            'ClarolineForumBundle:Forum:open.html.twig', [
+                '_resource' => $event->getResource(),
+                'forum' => [],
+            ]
+        );
+
+        $event->setResponse(new Response($content));
         $event->stopPropagation();
     }
 

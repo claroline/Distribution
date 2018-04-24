@@ -3,7 +3,7 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {navigate, matchPath, withRouter} from '#/main/core/router'
+import {matchPath, withRouter} from '#/main/core/router'
 import {
   PageHeader,
   PageActions
@@ -25,10 +25,13 @@ const ToolActionsComponent = props =>
       target={['apiv2_home_update']}
       opened={!!matchPath(props.location.pathname, {path: '/edit'})}
       open={{
-        action: '#/edit'
+        type: 'link',
+        target: '/edit'
       }}
       cancel={{
-        action: () => navigate('/')
+        type: 'link',
+        target: '/',
+        exact: true
       }}
     />
   </PageActions>

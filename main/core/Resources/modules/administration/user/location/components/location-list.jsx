@@ -4,9 +4,10 @@ import {locationTypes} from '#/main/core/administration/user/location/constants'
 import {LocationCard} from '#/main/core/user/data/components/location-card'
 
 const LocationList = {
-  open: {
-    action: (row) => `#/locations/form/${row.id}`
-  },
+  open: (row) => ({
+    type: 'link',
+    target: `/locations/form/${row.id}`
+  }),
   definition: [
     {
       name: 'name',
@@ -14,28 +15,25 @@ const LocationList = {
       label: t('name'),
       displayed: true,
       primary: true
-    },
-    {
+    }, {
       name: 'meta.type',
       type: 'enum',
       label: t('type'),
       options: {
         choices: locationTypes
-      }},
-    {
+      }
+    }, {
       name: 'address',
       type: 'string',
       label: t('address'),
       renderer: (rowData) => getReadableAddress(rowData),
       displayed: true
-    },
-    {
+    }, {
       name: 'phone',
       type: 'string',
       label: t('phone'),
       displayed: true
-    },
-    {
+    }, {
       name: 'coordinates',
       type: 'string',
       label: t('coordinates'),
