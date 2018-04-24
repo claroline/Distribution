@@ -142,9 +142,19 @@ class TransferProvider
                 $jsonLogger->increment('error');
 
                 if ($e instanceof InvalidDataException) {
-                    $jsonLogger->push('data.error', $e->getErrors());
+                    $content = [
+                      'line' => $i,
+                      'value' => $e->getErrors(),
+                    ];
+
+                    $jsonLogger->push('data.error', $content);
                 } else {
-                    $jsonLogger->push('data.error', $e->getMessage());
+                    $content = [
+                      'line' => $i,
+                      'value' => $e->getMessage(),
+                    ];
+
+                    $jsonLogger->push('data.error', $content);
                 }
             }
 
