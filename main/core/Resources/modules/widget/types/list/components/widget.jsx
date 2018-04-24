@@ -43,7 +43,7 @@ ListWidgetComponent.propTypes = {
 const ListWidget = connect(
   (state) => ({
     fetchUrl: state.config.fetchUrl,
-    open: state.config.open,
+    primaryAction: state.config.primaryAction,
     definition: state.config.definition,
     card: state.config.card,
     display: state.config.display,
