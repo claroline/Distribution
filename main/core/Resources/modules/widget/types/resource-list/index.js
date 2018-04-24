@@ -1,7 +1,6 @@
 import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
 
 import {constants} from '#/main/core/widget/constants'
 import {App as ListApp} from '#/main/core/widget/types/list'
@@ -22,12 +21,14 @@ const App = (context, parameters) => ListApp(context, merge({}, parameters, {
     ['apiv2_widget_resource_list_ws', {workspace: context.data.id}],
 
   // todo clean and make generic
-  open: (resourceNode, dispatch) => {
-    if ('directory' !== resourceNode.meta.type) {
-      return url(['claro_resource_open', {node: resourceNode.id, resourceType: resourceNode.meta.type}])
-    }
+  primaryAction: (resourceNode, dispatch) => ({
+    type: 'directory' !== resourceNode.meta.type ? 'url' : 'callback',
 
-    return () => {
+    // for all resources except directories
+    target: ['claro_resource_open', {node: resourceNode.id, resourceType: resourceNode.meta.type}],
+
+    // for directories
+    callback: () => {
       // changes the target of the list to add current directory in URL
       const fetchUrl = constants.CONTEXT_DESKTOP === context.type ?
         ['apiv2_widget_resource_list_desktop', {parent: resourceNode.id}] :
@@ -40,7 +41,8 @@ const App = (context, parameters) => ListApp(context, merge({}, parameters, {
         availableDisplays: ['list']  // todo double mega hack
       }))
     }
-  },
+  }),
+
   definition: [
     {
       name: 'name',

@@ -14,9 +14,9 @@ const ListWidgetComponent = props =>
       url: props.fetchUrl,
       autoload: true
     }}
-    open={{
-      action: (row) => props.openRow(row, props.open)
-    }}
+    primaryAction={
+      (row) => props.openRow(row, props.primaryAction)
+    }
     definition={props.definition}
     card={props.card}
     display={{
@@ -27,7 +27,7 @@ const ListWidgetComponent = props =>
 
 ListWidgetComponent.propTypes = {
   title: T.string,
-  open: T.func,
+  primaryAction: T.func,
   openRow: T.func.isRequired,
   fetchUrl: T.oneOfType([T.string, T.array]).isRequired,
 
@@ -53,9 +53,9 @@ const ListWidget = connect(
     title: state.config.title
   }),
   (dispatch, ownProps) => ({
-    openRow(row, callback) {
+    openRow(row, actionGenerator) {
       // this is slightly ugly to pass the dispatcher like this
-      return callback(row, dispatch)
+      return actionGenerator(row, dispatch)
     }
   })
 )(ListWidgetComponent)
