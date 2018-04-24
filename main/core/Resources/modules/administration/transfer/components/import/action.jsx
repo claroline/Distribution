@@ -3,7 +3,7 @@ import React, {Component} from 'react'
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_LOG} from '#/main/core/layout/log'
+import {MODAL_LOG} from '#/main/core/administration/transfer/components/modal/log'
 import {Button} from '#/main/app/action/components/button'
 import {matchPath, withRouter} from '#/main/core/router'
 

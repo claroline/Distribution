@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
-import {actions} from '#/main/core/layout/log/actions'
+import {actions} from '#/main/core/administration/transfer/components/modal/log/actions'
 
 class LogModal extends Component {
   render() {
