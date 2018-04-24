@@ -2,9 +2,10 @@
 import {trans} from '#/main/core/translation'
 
 const HistoryList = {
-  open: {
-    action: () => '#'
-  },
+  /*open: (row) => ({
+    type: 'url',
+    target: '#'
+  }),*/
   definition: [
     {
       name: 'id',

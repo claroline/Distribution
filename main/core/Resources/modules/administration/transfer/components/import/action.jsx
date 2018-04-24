@@ -4,7 +4,10 @@ import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_LOG} from '#/main/core/layout/log'
+import {Button} from '#/main/app/action/components/button'
+import {matchPath, withRouter} from '#/main/core/router'
 
+import {trans} from '#/main/core/translation'
 import {connect} from 'react-redux'
 
 class Action extends Component {
@@ -24,6 +27,7 @@ class Action extends Component {
     return this.currentLogId
   }
 
+
   render() {
     return(
       <PageActions>
@@ -31,10 +35,13 @@ class Action extends Component {
           formName="import"
           target={['apiv2_transfer_start', {log: this.getLogId()}]}
           opened={true}
-          save={{action: () => {
-            this.props.openLog(this.getLogId())
-            this.generateLogId()
-          }}}
+          save={{
+            type: 'callback',
+            callback: () => {
+              this.props.openLog(this.getLogId())
+              this.generateLogId()
+            }
+          }}
         />
       </PageActions>
     )

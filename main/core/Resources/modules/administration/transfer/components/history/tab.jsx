@@ -17,11 +17,12 @@ const Tab = () =>
       url: ['apiv2_transfer_delete_bulk']
     }}
     definition={HistoryList.definition}
-    actions={[
+    actions={(rows) => [
       {
+        type: 'callback',
         icon: 'fa fa-fw fa-save',
         label: trans('execute'),
-        action: () => alert('execute'),
+        callback: () => alert('execute'),
         context: 'row'
       }
     ]}

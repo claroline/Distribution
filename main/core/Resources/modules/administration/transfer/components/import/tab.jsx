@@ -59,13 +59,13 @@ const RoutedExplain = props => {
           name="import"
           sections={[
             {
-              title: t('general'),
+              title: trans('general'),
               primary: true,
               fields: [
                 {
                   name: 'action',
                   type: 'enum',
-                  label: t('action'),
+                  label: trans('action'),
                   // FIXME
                   //onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
                   required: true,
