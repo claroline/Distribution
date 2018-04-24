@@ -8,7 +8,7 @@ import {trans} from '#/main/core/translation'
 const Tab = () =>
   <DataListContainer
     name="history"
-    open={HistoryList.open}
+    primaryAction={HistoryList.open}
     fetch={{
       url: ['apiv2_transfer_list'],
       autoload: true

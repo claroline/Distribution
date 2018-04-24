@@ -2,10 +2,15 @@
 import {trans} from '#/main/core/translation'
 
 const HistoryList = {
-  /*open: (row) => ({
-    type: 'url',
-    target: '#'
-  }),*/
+  open: (row) => ({
+    id: 'logfile',
+    type: 'callback',
+    callback: () => true,
+    confirm: {
+      title: 'Coucou',
+      message: 'bijour'
+    }
+  }),
   definition: [
     {
       name: 'id',
