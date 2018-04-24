@@ -436,6 +436,7 @@ class EntriesComponent extends Component {
           name="entries.list"
           primaryAction={(row) => ({
             type: 'link',
+            label: trans('open'),
             target: `/entries/${row.id}`
           })}
           fetch={{

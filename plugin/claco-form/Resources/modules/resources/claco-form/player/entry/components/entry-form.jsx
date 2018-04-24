@@ -77,7 +77,8 @@ const EntryFormComponent = props =>
         props.isNew,
         props.titleLabel
       )}
-    />
+    >
+    </FormContainer>
     <button
       className="btn btn-primary"
       onClick={() => props.saveForm(props.entry, props.isNew)}

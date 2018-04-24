@@ -402,9 +402,6 @@ const EditorComponent = props =>
               url: ['apiv2_clacoformcategory_list', {clacoForm: props.clacoForm.id}],
               autoload: true
             }}
-            delete={{
-              url: ['apiv2_clacoformcategory_delete_bulk']
-            }}
             definition={[
               {
                 name: 'name',
@@ -452,14 +449,13 @@ const EditorComponent = props =>
                   category: rows[0]
                 }),
                 context: 'row'
+              }, {
+                type: 'callback',
+                icon: 'fa fa-fw fa-trash-o',
+                label: trans('delete'),
+                dangerous: true,
+                callback: () => props.deleteCategories(rows)
               }
-              // , {
-              //   type: 'callback',
-              //   icon: 'fa fa-fw fa-trash-o',
-              //   label: trans('delete'),
-              //   dangerous: true,
-              //   callback: () => props.deleteCategories(rows)
-              // }
             ]}
           />
         </FormSection>
@@ -491,9 +487,6 @@ const EditorComponent = props =>
                 url: ['apiv2_clacoformkeyword_list', {clacoForm: props.clacoForm.id}],
                 autoload: true
               }}
-              delete={{
-                url: ['apiv2_clacoformkeyword_delete_bulk']
-              }}
               definition={[
                 {
                   name: 'name',
@@ -513,13 +506,6 @@ const EditorComponent = props =>
                   }),
                   context: 'row'
                 }
-                // , {
-                //   type: 'callback',
-                //   icon: 'fa fa-fw fa-trash-o',
-                //   label: trans('delete'),
-                //   dangerous: true,
-                //   callback: () => props.deleteKeywords(rows)
-                // }
               ]}
             />
           </FormSection>
