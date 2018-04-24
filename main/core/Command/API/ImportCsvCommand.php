@@ -63,7 +63,7 @@ class ImportCsvCommand extends ContainerAwareCommand
             $logFile
         );
 
-        $output->writeLn('Done, you can log name is '.$logFile.'.');
+        $output->writeLn('Done, your log name is '.$logFile.'.');
     }
 
     public function generateRandomString($length = 10)

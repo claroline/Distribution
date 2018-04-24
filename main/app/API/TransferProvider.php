@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\Transfer\Adapter\AdapterInterface;
 use Claroline\AppBundle\Logger\JsonLogger;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
+use Claroline\CoreBundle\Validator\Exception\InvalidDataException;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -124,6 +125,8 @@ class TransferProvider
         $jsonLogger->set('processed', 0);
         $jsonLogger->set('error', 0);
         $jsonLogger->set('success', 0);
+        $jsonLogger->set('data.error', []);
+        $jsonLogger->set('data.success', []);
         $loaded = [];
 
         foreach ($data as $data) {
@@ -133,9 +136,16 @@ class TransferProvider
             try {
                 $loaded[] = $executor->execute($data);
                 $jsonLogger->increment('success');
+                $jsonLogger->push('data.success', $data);
             } catch (\Exception $e) {
-                $jsonLogger->log($e->getMessage());
+                $jsonLogger->log("Operation {$i}/{$total} failed");
                 $jsonLogger->increment('error');
+
+                if ($e instanceof InvalidDataException) {
+                    $jsonLogger->push('data.error', $e->getErrors());
+                } else {
+                    $jsonLogger->push('data.error', $e->getMessage());
+                }
             }
 
             if (0 === $i % $executor->getBatchSize()) {

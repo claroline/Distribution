@@ -6,6 +6,10 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {actions} from '#/main/core/administration/transfer/components/modal/log/actions'
+import {Error} from '#/main/core/administration/transfer/components/modal/log/components/error'
+
+
+  /*this.props.data.log.map(error => <Error {...error} />)*/
 
 class LogModal extends Component {
   render() {
@@ -19,7 +23,9 @@ class LogModal extends Component {
             total: {this.props.data.total} {'\n'}
           </pre>
           <pre id="log-content">
-            {this.props.data.log}
+            {this.props.data.log &&
+              this.props.data.log
+            }
           </pre>
         </Modal.Body>
         <button

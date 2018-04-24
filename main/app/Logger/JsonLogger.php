@@ -11,13 +11,17 @@
 
 namespace Claroline\AppBundle\Logger;
 
+use Claroline\AppBundle\API\Utils\ArrayUtils;
+
 class JsonLogger
 {
     private $file;
     private $cache;
+    private $utils;
 
     public function __construct($file)
     {
+        $this->utils = new ArrayUtils();
         $this->file = $file;
         $this->cache = null;
 
@@ -31,44 +35,42 @@ class JsonLogger
     public function set($property, $value)
     {
         $data = $this->get();
-        $data[$property] = $value;
+        $this->utils->set($data, $property, $value);
         $this->write($data);
     }
 
     public function push($property, $value)
     {
-        $data = $this->get();
+        $array = $this->get($property);
 
-        if (isset($data[$property]) && !is_array($data[$property])) {
+        if (!is_array($array)) {
             throw new \RuntimeException($property.' is not an array');
         }
 
-        $data[$property][] = $value;
-        $this->write($data);
+        $array[] = $value;
+        $this->set($property, $array);
     }
 
     public function append($property, $value, $separator = "\n")
     {
-        $data = $this->get();
+        $string = $this->get($property);
 
-        if (isset($data[$property]) && !is_string($data[$property])) {
-            throw new \RuntimeException($property.' is not an array');
+        if (!is_string($string)) {
+            throw new \RuntimeException($property.' is not an string');
         }
 
-        $data[$property] = $data[$property].$separator.$value;
-        $this->write($data);
+        $this->set($property, $string.$separator.$value);
     }
 
     public function increment($property)
     {
-        $data = $this->get();
+        $value = $this->get($property);
 
-        if (isset($data[$property]) && !is_int($data[$property])) {
+        if (!is_int($value)) {
             throw new \RuntimeException($property.' is not an integer');
         }
 
-        $data[$property] = $data[$property] + 1;
-        $this->write($data);
+        $this->set($property, $value + 1);
     }
 
     public function write($data)
@@ -77,11 +79,12 @@ class JsonLogger
         file_put_contents($this->file, json_encode($data));
     }
 
-    public function log($message, $separator = '\\\\n')
+    public function log($message, $separator = "\n")
     {
         $data = $this->get();
         $time = date('m-d-y h:i:s').': ';
         $line = $time.$message;
+
         isset($data['log']) ?
           $data['log'] .= $separator.$line :
           $data['log'] = $line;
@@ -89,9 +92,13 @@ class JsonLogger
         $this->write($data);
     }
 
-    public function get()
+    public function get($property = null)
     {
         $data = $this->cache ? $this->cache : json_decode(file_get_contents($this->file), true);
+
+        if ($property) {
+            return $this->utils->get($data, $property);
+        }
 
         return $data ? $data : [];
     }
