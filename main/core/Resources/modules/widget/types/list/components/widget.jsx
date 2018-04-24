@@ -14,9 +14,7 @@ const ListWidgetComponent = props =>
       url: props.fetchUrl,
       autoload: true
     }}
-    primaryAction={
-      (row) => props.openRow(row, props.primaryAction)
-    }
+    primaryAction={(row) => props.openRow(row, props.primaryAction)}
     definition={props.definition}
     card={props.card}
     display={{
@@ -52,7 +50,7 @@ const ListWidget = connect(
     availableDisplays: state.config.availableDisplays,
     title: state.config.title
   }),
-  (dispatch, ownProps) => ({
+  (dispatch) => ({
     openRow(row, actionGenerator) {
       // this is slightly ugly to pass the dispatcher like this
       return actionGenerator(row, dispatch)

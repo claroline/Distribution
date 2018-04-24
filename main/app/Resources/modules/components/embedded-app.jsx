@@ -32,6 +32,7 @@ class EmbeddedApp extends Component {
         }
       })
       .catch(error => {
+        console.log(error)
         // this swallows the original error stack trace
         // and make it complicated to debug but I don't find another way to do it.
         invariant(false, `An error occurred while loading the EmbeddedApp : ${error}`)

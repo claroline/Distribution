@@ -21,20 +21,20 @@ const App = (context, parameters) => ListApp(context, merge({}, parameters, {
     ['apiv2_widget_resource_list_ws', {workspace: context.data.id}],
 
   // todo clean and make generic
-  primaryAction: (resourceNode, dispatch) => ({
-    type: 'directory' !== resourceNode.meta.type ? 'url' : 'callback',
-
-    // for all resources except directories
+  primaryAction: (resourceNode, dispatch) => 'directory' !== resourceNode.meta.type ? ({
+    type: 'url',
+    label: trans('open', {}, 'actions'),
     target: ['claro_resource_open', {node: resourceNode.id, resourceType: resourceNode.meta.type}],
-
-    // for directories
+  }) : ({
+    type: 'callback',
+    label: trans('open', {}, 'actions'),
     callback: () => {
       // changes the target of the list to add current directory in URL
       const fetchUrl = constants.CONTEXT_DESKTOP === context.type ?
         ['apiv2_widget_resource_list_desktop', {parent: resourceNode.id}] :
         ['apiv2_widget_resource_list_ws', {workspace: context.data.id, parent: resourceNode.id}]
 
-      return dispatch(listWidgetActions.updateWidgetConfig({
+      dispatch(listWidgetActions.updateWidgetConfig({
         title: resourceNode.name,
         fetchUrl: fetchUrl,
         display: 'list', // todo mega hack
