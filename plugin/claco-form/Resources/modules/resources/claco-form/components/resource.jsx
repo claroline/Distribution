@@ -154,8 +154,6 @@ Resource.propTypes = {
   canAddEntry: T.bool.isRequired,
   canSearchEntry: T.bool.isRequired,
   defaultHome: T.string.isRequired,
-  isKeywordsEnabled: T.bool.isRequired,
-  isNewKeywordsEnabled: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
   resetForm: T.func.isRequired,
   saveForm: T.func.isRequired,
@@ -173,8 +171,6 @@ const ClacoFormResource = connect(
     canAddEntry: select.canAddEntry(state),
     canSearchEntry: select.canSearchEntry(state),
     defaultHome: select.getParam(state, 'default_home'),
-    isKeywordsEnabled: select.getParam(state, 'keywords_enabled'),
-    isNewKeywordsEnabled: select.getParam(state, 'new_keywords_enabled'),
     saveEnabled: formSelect.saveEnabled(formSelect.form(state, 'clacoFormForm'))
   }),
   (dispatch) => ({
@@ -200,7 +196,9 @@ const ClacoFormResource = connect(
         clacoForm: {
           id: clacoFormId
         },
-        user: authenticatedUser
+        user: authenticatedUser,
+        categories: [],
+        keywords: []
       }
 
       dispatch(entryActions.openForm('entries.current', id, defaultValue))

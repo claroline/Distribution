@@ -17,7 +17,11 @@ import {
   ALL_ENTRIES_REMOVE,
   ENTRY_USER_UPDATE,
   ENTRY_USER_UPDATE_PROP,
-  ENTRY_USER_RESET
+  ENTRY_USER_RESET,
+  ENTRY_CATEGORY_ADD,
+  ENTRY_CATEGORY_REMOVE,
+  ENTRY_KEYWORD_ADD,
+  ENTRY_KEYWORD_REMOVE
 } from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const entriesReducer = makeReducer({}, {
@@ -147,7 +151,50 @@ const reducer = combineReducers({
       [ENTRIES_UPDATE]: () => true
     })
   }),
-  current: makeFormReducer('entries.current', {}),
+  current: makeFormReducer('entries.current', {}, {
+    data: makeReducer({}, {
+      [ENTRY_CATEGORY_ADD]: (state, action) => {
+        const newState = cloneDeep(state)
+        const category = newState['categories'].find(c => c.id === action.category.id)
+
+        if (!category) {
+          newState['categories'].push(action.category)
+        }
+
+        return newState
+      },
+      [ENTRY_CATEGORY_REMOVE]: (state, action) => {
+        const newState = cloneDeep(state)
+        const index = newState['categories'].findIndex(c => c.id === action.categoryId)
+
+        if (index > -1) {
+          newState['categories'].splice(index, 1)
+        }
+
+        return newState
+      },
+      [ENTRY_KEYWORD_ADD]: (state, action) => {
+        const newState = cloneDeep(state)
+        const keyword = newState['keywords'].find(k => k.name.toUpperCase() === action.keyword.name.toUpperCase())
+
+        if (!keyword) {
+          newState['keywords'].push(action.keyword)
+        }
+
+        return newState
+      },
+      [ENTRY_KEYWORD_REMOVE]: (state, action) => {
+        const newState = cloneDeep(state)
+        const index = newState['keywords'].findIndex(k => k.id === action.keywordId)
+
+        if (index > -1) {
+          newState['keywords'].splice(index, 1)
+        }
+
+        return newState
+      }
+    })
+  }),
   entryUser: makeReducer({}, {
     [ENTRY_USER_UPDATE]: (state, action) => action.entryUser,
     [ENTRY_USER_RESET]: () => ({}),

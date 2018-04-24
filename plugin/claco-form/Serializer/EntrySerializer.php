@@ -43,6 +43,8 @@ class EntrySerializer
     private $clacoFormRepo;
     private $fieldRepo;
     private $fieldValueRepo;
+    private $categoryRepo;
+    private $keywordRepo;
     private $userRepo;
 
     /**
@@ -82,6 +84,8 @@ class EntrySerializer
         $this->clacoFormRepo = $om->getRepository('Claroline\ClacoFormBundle\Entity\ClacoForm');
         $this->fieldRepo = $om->getRepository('Claroline\ClacoFormBundle\Entity\Field');
         $this->fieldValueRepo = $om->getRepository('Claroline\ClacoFormBundle\Entity\FieldValue');
+        $this->categoryRepo = $om->getRepository('Claroline\ClacoFormBundle\Entity\Category');
+        $this->keywordRepo = $om->getRepository('Claroline\ClacoFormBundle\Entity\Keyword');
         $this->userRepo = $om->getRepository('Claroline\CoreBundle\Entity\User');
     }
 
@@ -194,6 +198,9 @@ class EntrySerializer
         } else {
             $entry->setEditionDate($currentDate);
         }
+        /* TODO: checks rights */
+        $this->deserializeCategories($entry, $data['categories']);
+        $this->deserializeKeywords($entry, $data['keywords']);
 
         return $entry;
     }
@@ -252,5 +259,45 @@ class EntrySerializer
             },
             $entry->getFieldValues()
         );
+    }
+
+    private function deserializeCategories(Entry $entry, array $categoriesData)
+    {
+        $entry->emptyCategories();
+
+        foreach ($categoriesData as $categoryData) {
+            $category = $this->categoryRepo->findOneBy(['uuid' => $categoryData['id']]);
+
+            if (!empty($category)) {
+                $entry->addCategory($category);
+            }
+        }
+
+        return $entry;
+    }
+
+    private function deserializeKeywords(Entry $entry, array $keywordsData)
+    {
+        $entry->emptyKeywords();
+
+        foreach ($keywordsData as $keywordData) {
+            $keyword = $this->keywordRepo->findOneBy(['uuid' => $keywordData['id']]);
+
+            if (!empty($keyword)) {
+                $entry->addKeyword($keyword);
+            } else {
+                $clacoForm = $entry->getClacoForm();
+
+                if ($clacoForm->isNewKeywordsEnabled()) {
+                    $keyword = new Keyword();
+                    $keyword->setClacoForm($clacoForm);
+                    $this->keywordSerializer->deserialize($keywordData, $keyword);
+                    $this->om->persist($keyword);
+                    $entry->addKeyword($keyword);
+                }
+            }
+        }
+
+        return $entry;
     }
 }

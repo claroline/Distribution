@@ -17,7 +17,7 @@ import {actions} from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
 const MODAL_CATEGORY_FORM = 'MODAL_CATEGORY_FORM'
 
-class CategoryFormModalComponent  extends Component {
+class CategoryFormModalComponent extends Component {
   constructor(props) {
     super(props)
     this.state = {

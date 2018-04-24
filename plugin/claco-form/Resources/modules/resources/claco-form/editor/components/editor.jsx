@@ -505,6 +505,12 @@ const EditorComponent = props =>
                     keyword: rows[0]
                   }),
                   context: 'row'
+                }, {
+                  type: 'callback',
+                  icon: 'fa fa-fw fa-trash-o',
+                  label: trans('delete'),
+                  dangerous: true,
+                  callback: () => props.deleteKeywords(rows)
                 }
               ]}
             />

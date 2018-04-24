@@ -18,6 +18,10 @@ const ALL_ENTRIES_REMOVE = 'ALL_ENTRIES_REMOVE'
 const ENTRY_USER_UPDATE = 'ENTRY_USER_UPDATE'
 const ENTRY_USER_UPDATE_PROP = 'ENTRY_USER_UPDATE_PROP'
 const ENTRY_USER_RESET = 'ENTRY_USER_RESET'
+const ENTRY_CATEGORY_ADD = 'ENTRY_CATEGORY_ADD'
+const ENTRY_CATEGORY_REMOVE = 'ENTRY_CATEGORY_REMOVE'
+const ENTRY_KEYWORD_ADD = 'ENTRY_KEYWORD_ADD'
+const ENTRY_KEYWORD_REMOVE = 'ENTRY_KEYWORD_REMOVE'
 
 const actions = {}
 
@@ -32,6 +36,10 @@ actions.removeEntryComment = makeActionCreator(ENTRY_COMMENT_REMOVE, 'entryId', 
 actions.removeAllEntries = makeActionCreator(ALL_ENTRIES_REMOVE)
 actions.updateEntryUser = makeActionCreator(ENTRY_USER_UPDATE, 'entryUser')
 actions.resetEntryUser = makeActionCreator(ENTRY_USER_RESET)
+actions.addCategory = makeActionCreator(ENTRY_CATEGORY_ADD, 'category')
+actions.removeCategory = makeActionCreator(ENTRY_CATEGORY_REMOVE, 'categoryId')
+actions.addKeyword = makeActionCreator(ENTRY_KEYWORD_ADD, 'keyword')
+actions.removeKeyword = makeActionCreator(ENTRY_KEYWORD_REMOVE, 'keywordId')
 
 actions.createEntry = (entry, keywords, files) => (dispatch, getState) => {
   const clacoFormId = getState().clacoForm.id
@@ -371,5 +379,9 @@ export {
   ALL_ENTRIES_REMOVE,
   ENTRY_USER_UPDATE,
   ENTRY_USER_UPDATE_PROP,
-  ENTRY_USER_RESET
+  ENTRY_USER_RESET,
+  ENTRY_CATEGORY_ADD,
+  ENTRY_CATEGORY_REMOVE,
+  ENTRY_KEYWORD_ADD,
+  ENTRY_KEYWORD_REMOVE
 }
