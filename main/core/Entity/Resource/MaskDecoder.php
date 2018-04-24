@@ -107,7 +107,12 @@ class MaskDecoder
      */
     public function setResourceType(ResourceType $resourceType)
     {
+        if ($this->resourceType instanceof ResourceType) {
+            $this->resourceType->removeMaskDecoder($this);
+        }
+
         $this->resourceType = $resourceType;
+        $this->resourceType->addMaskDecoder($this);
 
         return $this;
     }
