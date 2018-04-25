@@ -14,7 +14,7 @@ abstract class AbstractAction
 
     use LoggableTrait;
 
-    abstract public function execute(array $data);
+    abstract public function execute(array $data, &$successData = []);
 
     //better explain the structure
     abstract public function getSchema();

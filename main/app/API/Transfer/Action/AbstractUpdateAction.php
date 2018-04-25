@@ -26,6 +26,9 @@ abstract class AbstractUpdateAction extends AbstractAction
     public function execute(array $data, &$successData = [])
     {
         $this->crud->update($this->getClass(), $data);
+        $successData['update'][] = [
+          'data' => $data,
+        ];
     }
 
     public function getSchema()

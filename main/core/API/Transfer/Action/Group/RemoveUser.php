@@ -30,7 +30,7 @@ class RemoveUser extends AbstractAction
         $this->serializer = $serializer;
     }
 
-    public function execute(array $data, $successData = [])
+    public function execute(array $data, &$successData = [])
     {
         $user = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\User',

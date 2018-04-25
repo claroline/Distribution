@@ -129,6 +129,7 @@ class TransferProvider
         $jsonLogger->set('data.error', []);
         $jsonLogger->set('data.success', []);
         $loaded = [];
+        $loggedSuccess = [];
 
         foreach ($data as $data) {
             ++$i;
@@ -137,8 +138,10 @@ class TransferProvider
             try {
                 $successData = [];
                 $loaded[] = $executor->execute($data, $successData);
+                $jsonLogger->log("Operation {$i}/{$total} is a success");
                 $jsonLogger->increment('success');
-                $jsonLogger->push('data.success', $data);
+                $loggedSuccess = array_merge_recursive($loggedSuccess, $successData);
+                $jsonLogger->set('data.success', $loggedSuccess);
             } catch (\Exception $e) {
                 $jsonLogger->log("Operation {$i}/{$total} failed");
                 $jsonLogger->increment('error');
