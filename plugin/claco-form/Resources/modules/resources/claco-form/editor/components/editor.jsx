@@ -125,7 +125,7 @@ const EditorComponent = props =>
               label: trans('title_field_label', {}, 'clacoform')
             }, {
               name: 'details.default_home',
-              type: 'enum',
+              type: 'choice',
               label: trans('label_default_home', {}, 'clacoform'),
               required: true,
               options: {
@@ -134,7 +134,7 @@ const EditorComponent = props =>
               }
             }, {
               name: 'details.display_nb_entries',
-              type: 'enum',
+              type: 'choice',
               label: trans('label_display_nb_entries', {}, 'clacoform'),
               required: true,
               options: {
@@ -143,7 +143,7 @@ const EditorComponent = props =>
               }
             }, {
               name: 'details.menu_position',
-              type: 'enum',
+              type: 'choice',
               label: trans('label_menu_position', {}, 'clacoform'),
               required: true,
               options: {
@@ -175,7 +175,7 @@ const EditorComponent = props =>
               linked: [
                 {
                   name: 'details.random_categories',
-                  type: 'enum',
+                  type: 'choice',
                   label: trans('label_random_categories', {}, 'clacoform'),
                   displayed: props.clacoForm.details.random_enabled,
                   required: false,
@@ -221,7 +221,7 @@ const EditorComponent = props =>
               required: true
             }, {
               name: 'details.search_columns',
-              type: 'enum',
+              type: 'choice',
               label: trans('label_search_columns', {}, 'clacoform'),
               required: false,
               options: {
@@ -236,7 +236,7 @@ const EditorComponent = props =>
               linked: [
                 {
                   name: 'details.search_restricted_columns',
-                  type: 'enum',
+                  type: 'choice',
                   label: trans('label_search_restricted_columns', {}, 'clacoform'),
                   required: false,
                   displayed: props.clacoForm.details.search_restricted,
@@ -248,7 +248,7 @@ const EditorComponent = props =>
               ]
             }, {
               name: 'details.default_display_mode',
-              type: 'enum',
+              type: 'choice',
               label: trans('default_display_mode', {}, 'clacoform'),
               required: true,
               options: {
@@ -257,7 +257,7 @@ const EditorComponent = props =>
               }
             }, {
               name: 'details.display_title',
-              type: 'enum',
+              type: 'choice',
               label: trans('field_for_title', {}, 'clacoform'),
               required: true,
               options: {
@@ -266,7 +266,7 @@ const EditorComponent = props =>
               }
             }, {
               name: 'details.display_subtitle',
-              type: 'enum',
+              type: 'choice',
               label: trans('field_for_subtitle', {}, 'clacoform'),
               required: true,
               options: {
@@ -275,7 +275,7 @@ const EditorComponent = props =>
               }
             }, {
               name: 'details.display_content',
-              type: 'enum',
+              type: 'choice',
               label: trans('field_for_content', {}, 'clacoform'),
               required: true,
               options: {
@@ -291,7 +291,7 @@ const EditorComponent = props =>
           fields: [
             {
               name: 'details.display_metadata',
-              type: 'enum',
+              type: 'choice',
               label: trans('label_display_metadata', {}, 'clacoform'),
               required: true,
               options: {
@@ -307,7 +307,7 @@ const EditorComponent = props =>
           fields: [
             {
               name: 'details.locked_fields_for',
-              type: 'enum',
+              type: 'choice',
               label: trans('lock_fields', {}, 'clacoform'),
               required: true,
               options: {
@@ -329,7 +329,7 @@ const EditorComponent = props =>
               linked: [
                 {
                   name: 'details.comments_roles',
-                  type: 'enum',
+                  type: 'choice',
                   label: trans('enable_comments_for_roles', {}, 'clacoform'),
                   displayed: props.clacoForm.details.comments_enabled,
                   required: false,
@@ -343,7 +343,7 @@ const EditorComponent = props =>
                   }
                 }, {
                   name: 'details.moderate_comments',
-                  type: 'enum',
+                  type: 'choice',
                   label: trans('label_moderate_comments', {}, 'clacoform'),
                   displayed: props.clacoForm.details.comments_enabled,
                   required: true,
@@ -360,7 +360,7 @@ const EditorComponent = props =>
                   linked: [
                     {
                       name: 'details.comments_display_roles',
-                      type: 'enum',
+                      type: 'choice',
                       label: trans('display_comments_for_roles', {}, 'clacoform'),
                       displayed: props.clacoForm.details.comments_enabled && props.clacoForm.details.display_comments,
                       required: false,
