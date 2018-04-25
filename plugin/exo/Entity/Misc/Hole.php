@@ -3,7 +3,7 @@
 namespace UJM\ExoBundle\Entity\Misc;
 
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
-use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Library\Normalizer\TextNormalizer;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use UJM\ExoBundle\Entity\ItemType\ClozeQuestion;
@@ -182,14 +182,14 @@ class Hole
     {
         $found = null;
         $text = trim($text);
-        $iText = strtoupper(ClaroUtilities::stripDiacritics($text));
+        $iText = strtoupper(TextNormalizer::stripDiacritics($text));
         foreach ($this->keywords as $keyword) {
             /** @var Keyword $keyword */
             $tmpText = trim($keyword->getText());
             if ($tmpText === $text
                 || (
                     empty($keyword->isCaseSensitive()) &&
-                    strtoupper(ClaroUtilities::stripDiacritics($tmpText)) === $iText)
+                    strtoupper(TextNormalizer::stripDiacritics($tmpText)) === $iText)
             ) {
                 $found = $keyword;
                 break;
