@@ -30,21 +30,21 @@ function getCorrectAnswerForSumCellsMode(item, answer = {data: []}) {
   item.solutions.forEach(solution => {
     let userDataAnswer =
      answer && answer.data ?
-      answer.data.find(userSolution => userSolution.cellId === solution.cellId): null
+       answer.data.find(userSolution => userSolution.cellId === solution.cellId): null
     let bestAnswer = findSolutionExpectedAnswer(solution)
     let userAnswer = userDataAnswer ?
-        solution.answers.find(
-          answer => (
-            answer.text === userDataAnswer.text ||
-            (stripDiacritics(answer.text).toUpperCase() === stripDiacritics(userDataAnswer.text).toUpperCase() && ! answer.caseSensitive)
-          )
-        ):
-        null
+      solution.answers.find(
+        answer => (
+          answer.text === userDataAnswer.text ||
+          (stripDiacritics(answer.text).toUpperCase() === stripDiacritics(userDataAnswer.text).toUpperCase() && ! answer.caseSensitive)
+        )
+      ):
+      null
 
     if (userAnswer) {
       userAnswer.score > 0 ?
-            corrected.addExpected(new Answerable(userAnswer.score)):
-            corrected.addUnexpected(new Answerable(userAnswer.score))
+        corrected.addExpected(new Answerable(userAnswer.score)):
+        corrected.addUnexpected(new Answerable(userAnswer.score))
     } else {
       corrected.addMissing(new Answerable(bestAnswer.score))
       corrected.addPenalty(new Answerable(item.penalty))
