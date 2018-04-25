@@ -1,28 +1,28 @@
 import {trans} from '#/main/core/translation'
 
 import {ChoiceGroup} from '#/main/core/layout/form/components/group/choice-group'
-import {EnumSearch} from '#/main/core/data/types/enum/components/search'
+import {ChoiceSearch} from '#/main/core/data/types/choice/components/search'
 
-const ENUM_TYPE = 'enum'
+const CHOICE_TYPE = 'choice'
 
-const enumDefinition = {
+const choiceDefinition = {
   meta: {
-    type: ENUM_TYPE,
+    type: CHOICE_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-list',
-    label: trans('enum'),
-    description: trans('enum_desc')
+    label: trans('choice'),
+    description: trans('choice_desc')
   },
   parse: (display, options) => Object.keys(options.choices).find(enumValue => display === options.choices[enumValue]),
   render: (raw, options) => options.choices[raw],
   validate: (value, options) => !!options.choices[value],
   components: {
-    search: EnumSearch,
+    search: ChoiceSearch,
     form: ChoiceGroup
   }
 }
 
 export {
-  ENUM_TYPE,
-  enumDefinition
+  CHOICE_TYPE,
+  choiceDefinition
 }

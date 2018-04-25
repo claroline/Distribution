@@ -3,7 +3,7 @@ import React from 'react'
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {DataSearch as DataSearchTypes} from '#/main/core/data/prop-types'
 
-const EnumSearch = (props) =>
+const ChoiceSearch = (props) =>
   <span className="enum-filter">
     <select
       value={props.search}
@@ -25,10 +25,10 @@ const EnumSearch = (props) =>
     </select>
   </span>
 
-implementPropTypes(EnumSearch, DataSearchTypes, {
+implementPropTypes(ChoiceSearch, DataSearchTypes, {
   choices: T.object.isRequired
 })
 
 export {
-  EnumSearch
+  ChoiceSearch
 }

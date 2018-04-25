@@ -35,7 +35,11 @@ const CriteriaForm = props =>
               <RadiosGroup
                 id={`criterion-form-${c.id}-radio`}
                 label="criterion_form_radio"
-                options={[...Array(props.dropzone.parameters.criteriaTotal).keys()].map((idx) => ({label: '', value: idx}))}
+                choices={[...Array(props.dropzone.parameters.criteriaTotal).keys()].reduce((acc, current) => {
+                  acc[current] = current
+
+                  return acc
+                }, {})}
                 inline={true}
                 hideLabel={true}
                 value={props.grades.find(g => g.criterion === c.id).value}
