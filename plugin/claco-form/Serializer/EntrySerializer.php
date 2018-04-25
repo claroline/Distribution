@@ -110,7 +110,7 @@ class EntrySerializer
             'creationDate' => $entry->getCreationDate() ? $entry->getCreationDate()->format('Y-m-d H:i:s') : null,
             'editionDate' => $entry->getEditionDate() ? $entry->getEditionDate()->format('Y-m-d H:i:s') : null,
             'publicationDate' => $entry->getPublicationDate() ? $entry->getPublicationDate()->format('Y-m-d H:i:s') : null,
-            'user' => $user ? $this->userSerializer->serialize($user) : null,
+            'user' => $user ? $this->userSerializer->serialize($user, [Options::SERIALIZE_MINIMAL]) : null,
             'clacoForm' => [
                 'id' => $entry->getClacoForm()->getUuid(),
             ],
@@ -125,7 +125,6 @@ class EntrySerializer
                 'categories' => $this->getCategories($entry),
                 'keywords' => $this->getKeywords($entry),
                 'comments' => $this->getComments($entry),
-                'fieldValues' => $this->getFieldValues($entry),
             ]);
         }
 
@@ -249,16 +248,6 @@ class EntrySerializer
                 $entry->getComments()
             ) :
             [];
-    }
-
-    private function getFieldValues(Entry $entry)
-    {
-        return array_map(
-            function (FieldValue $fieldValue) {
-                return $this->fieldValueSerializer->serialize($fieldValue, [Options::SERIALIZE_MINIMAL]);
-            },
-            $entry->getFieldValues()
-        );
     }
 
     private function deserializeCategories(Entry $entry, array $categoriesData)

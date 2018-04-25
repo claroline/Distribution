@@ -7,10 +7,8 @@ import {FORM_SUBMIT_SUCCESS} from '#/main/core/data/form/actions'
 
 import {
   ENTRIES_UPDATE,
-  ENTRY_ADD,
-  ENTRY_UPDATE,
+  ENTRY_CREATED,
   CURRENT_ENTRY_LOAD,
-  CURRENT_ENTRY_UPDATE,
   ENTRY_COMMENT_ADD,
   ENTRY_COMMENT_UPDATE,
   ENTRY_COMMENT_REMOVE,
@@ -24,126 +22,6 @@ import {
   ENTRY_KEYWORD_REMOVE
 } from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
-const entriesReducer = makeReducer({}, {
-  [ENTRY_ADD]: (state, action) => {
-    const entries = cloneDeep(state)
-    entries.push(action.entry)
-
-    return entries
-  },
-  [ENTRY_UPDATE]: (state, action) => {
-    const entries = cloneDeep(state)
-    const index = entries.findIndex(c => c.id === action.entry.id)
-
-    if (index >= 0) {
-      entries[index] = action.entry
-    }
-
-    return entries
-  },
-  [ALL_ENTRIES_REMOVE]: (state) => {
-    return state.filter(e => e.locked)
-  },
-  [ENTRY_COMMENT_ADD]: (state, action) => {
-    const entries = cloneDeep(state)
-    const entryIndex = entries.findIndex(e => e.id === action.entryId)
-
-    if (entryIndex >= 0) {
-      const comments = [action.comment, ...entries[entryIndex].comments]
-      entries[entryIndex] = Object.assign({}, entries[entryIndex], {comments: comments})
-
-      return entries
-    } else {
-      return state
-    }
-  },
-  [ENTRY_COMMENT_UPDATE]: (state, action) => {
-    const entries = cloneDeep(state)
-    const entryIndex = entries.findIndex(e => e.id === action.entryId)
-
-    if (entryIndex >= 0) {
-      const comments = cloneDeep(entries[entryIndex].comments)
-      const commentIndex = comments.findIndex(c => c.id === action.comment.id)
-
-      if (commentIndex >= 0) {
-        comments[commentIndex] = action.comment
-        entries[entryIndex] = Object.assign({}, entries[entryIndex], {comments: comments})
-      }
-
-      return entries
-    } else {
-      return state
-    }
-  },
-  [ENTRY_COMMENT_REMOVE]: (state, action) => {
-    const entries = cloneDeep(state)
-    const entryIndex = entries.findIndex(e => e.id === action.entryId)
-
-    if (entryIndex >= 0) {
-      const comments = cloneDeep(entries[entryIndex].comments)
-      const commentIndex = comments.findIndex(c => c.id === action.commentId)
-
-      if (commentIndex >= 0) {
-        comments.splice(commentIndex, 1)
-        entries[entryIndex] = Object.assign({}, entries[entryIndex], {comments: comments})
-      }
-
-      return entries
-    } else {
-      return state
-    }
-  }
-})
-
-const currentEntryReducer = makeReducer({}, {
-  [CURRENT_ENTRY_LOAD]: (state, action) => {
-    return action.entry
-  },
-  [CURRENT_ENTRY_UPDATE]: (state, action) => {
-    return Object.assign({}, state, {[action.property]: action.value})
-  },
-  [ALL_ENTRIES_REMOVE]: () => {
-    return {}
-  },
-  [ENTRY_COMMENT_ADD]: (state, action) => {
-    if (state.id === action.entryId) {
-      const comments = [action.comment, ...state.comments]
-
-      return Object.assign({}, state, {comments: comments})
-    } else {
-      return state
-    }
-  },
-  [ENTRY_COMMENT_UPDATE]: (state, action) => {
-    if (state.id === action.entryId) {
-      const comments = cloneDeep(state.comments)
-      const index = comments.findIndex(c => c.id === action.comment.id)
-
-      if (index >= 0) {
-        comments[index] = action.comment
-      }
-
-      return Object.assign({}, state, {comments: comments})
-    } else {
-      return state
-    }
-  },
-  [ENTRY_COMMENT_REMOVE]: (state, action) => {
-    if (state.id === action.entryId) {
-      const comments = cloneDeep(state.comments)
-      const index = comments.findIndex(c => c.id === action.commentId)
-
-      if (index >= 0) {
-        comments.splice(index, 1)
-      }
-
-      return Object.assign({}, state, {comments: comments})
-    } else {
-      return state
-    }
-  }
-})
-
 const reducer = combineReducers({
   list: makeListReducer('entries.list', {}, {
     invalidated: makeReducer(false, {
@@ -153,6 +31,9 @@ const reducer = combineReducers({
   }),
   current: makeFormReducer('entries.current', {}, {
     data: makeReducer({}, {
+      [CURRENT_ENTRY_LOAD]: (state, action) => {
+        return action.entry
+      },
       [ENTRY_CATEGORY_ADD]: (state, action) => {
         const newState = cloneDeep(state)
         const category = newState['categories'].find(c => c.id === action.category.id)
@@ -192,6 +73,36 @@ const reducer = combineReducers({
         }
 
         return newState
+      },
+      [ENTRY_COMMENT_ADD]: (state, action) => {
+        const newState = cloneDeep(state)
+        const comment = newState['comments'].find(c => c.id === action.comment.id)
+
+        if (!comment) {
+          newState['comments'].unshift(action.comment)
+        }
+
+        return newState
+      },
+      [ENTRY_COMMENT_UPDATE]: (state, action) => {
+        const newState = cloneDeep(state)
+        const index = newState['comments'].findIndex(c => c.id === action.comment.id)
+
+        if (index > -1) {
+          newState['comments'][index] = action.comment
+        }
+
+        return newState
+      },
+      [ENTRY_COMMENT_REMOVE]: (state, action) => {
+        const newState = cloneDeep(state)
+        const index = newState['comments'].findIndex(c => c.id === action.commentId)
+
+        if (index > -1) {
+          newState['comments'].splice(index, 1)
+        }
+
+        return newState
       }
     })
   }),
@@ -206,7 +117,7 @@ const reducer = combineReducers({
     }
   }),
   myEntriesCount: makeReducer({}, {
-    [ENTRY_ADD]: (state) => {
+    [ENTRY_CREATED]: (state) => {
       return state + 1
     }
   })

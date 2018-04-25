@@ -524,11 +524,18 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_comment_edit",
      *     options = {"expose"=true}
      * )
+     * @EXT\ParamConverter(
+     *     "comment",
+     *     class="ClarolineClacoFormBundle:Comment",
+     *     options={"mapping": {"comment": "uuid"}}
+     * )
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * Edits a comment
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Comment $comment
+     *
+     * @return JsonResponse
      */
     public function commentEditAction(Comment $comment)
     {
@@ -546,19 +553,25 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_comment_delete",
      *     options = {"expose"=true}
      * )
+     * @EXT\ParamConverter(
+     *     "comment",
+     *     class="ClarolineClacoFormBundle:Comment",
+     *     options={"mapping": {"comment": "uuid"}}
+     * )
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * Deletes a comment
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Comment $comment
+     *
+     * @return JsonResponse
      */
     public function commentDeleteAction(Comment $comment)
     {
         $this->clacoFormManager->checkCommentEditionRight($comment);
-        $serializedComment = $this->commentSerializer->serialize($comment);
         $this->clacoFormManager->deleteComment($comment);
 
-        return new JsonResponse($serializedComment, 200);
+        return new JsonResponse('success', 200);
     }
 
     /**
@@ -567,11 +580,18 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_comment_activate",
      *     options = {"expose"=true}
      * )
+     * @EXT\ParamConverter(
+     *     "comment",
+     *     class="ClarolineClacoFormBundle:Comment",
+     *     options={"mapping": {"comment": "uuid"}}
+     * )
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * Activates a comment
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Comment $comment
+     *
+     * @return JsonResponse
      */
     public function commentActivateAction(Comment $comment)
     {
@@ -588,11 +608,18 @@ class ClacoFormController extends Controller
      *     name="claro_claco_form_entry_comment_block",
      *     options = {"expose"=true}
      * )
+     * @EXT\ParamConverter(
+     *     "comment",
+     *     class="ClarolineClacoFormBundle:Comment",
+     *     options={"mapping": {"comment": "uuid"}}
+     * )
      * @EXT\ParamConverter("user", converter="current_user")
      *
      * Blocks a comment
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @param Comment $comment
+     *
+     * @return JsonResponse
      */
     public function commentBlockAction(Comment $comment)
     {

@@ -114,8 +114,6 @@ const reducer = makeResourceReducer({}, {
   clacoFormForm: editorReducer,
   canGeneratePdf: makeReducer({}, {}),
   entries: entriesReducer,
-  // myEntriesCount: myEntriesCountReducer,
-  // currentEntry: currentEntryReducer,
   cascadeLevelMax: makeReducer({}, {}),
   message: messageReducer,
   roles: makeReducer({}, {}),

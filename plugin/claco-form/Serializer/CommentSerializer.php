@@ -2,6 +2,7 @@
 
 namespace Claroline\ClacoFormBundle\Serializer;
 
+use Claroline\AppBundle\API\Options;
 use Claroline\ClacoFormBundle\Entity\Comment;
 use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -47,7 +48,7 @@ class CommentSerializer
             'status' => $comment->getStatus(),
             'creationDate' => $comment->getCreationDate() ? $comment->getCreationDate()->format('Y-m-d H:i:s') : null,
             'editionDate' => $comment->getEditionDate() ? $comment->getEditionDate()->format('Y-m-d H:i:s') : null,
-            'user' => $user ? $this->userSerializer->serialize($user) : null,
+            'user' => $user ? $this->userSerializer->serialize($user, [Options::SERIALIZE_MINIMAL]) : null,
         ];
 
         return $serialized;

@@ -42,7 +42,7 @@ class EntryCommentsComponent extends Component {
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_comment', {}, 'clacoform'),
       question: trans('delete_comment_confirm_message', {}, 'clacoform'),
-      handleConfirm: () => this.props.deleteComment(this.props.entry.id, commentId)
+      handleConfirm: () => this.props.deleteComment(commentId)
     })
   }
 
@@ -52,7 +52,7 @@ class EntryCommentsComponent extends Component {
   }
 
   editComment(commentId, commentContent) {
-    this.props.editComment(this.props.entry.id, commentId, commentContent)
+    this.props.editComment(commentId, commentContent)
 
     this.setState({[commentId]: {showCommentForm: false}})
   }
@@ -160,12 +160,12 @@ class EntryCommentsComponent extends Component {
                       icon: 'fa fa-fw fa-check',
                       label: trans('activate'),
                       displayed: this.props.canManage && (0 === comment.status || 2 === comment.status),
-                      action: () => this.props.activateComment(this.props.entry.id, comment.id)
+                      action: () => this.props.activateComment(comment.id)
                     }, {
                       icon: 'fa fa-fw fa-ban',
                       label: trans('block', {}, 'clacoform'),
                       displayed: this.props.canManage && 1 === comment.status,
-                      action: () => this.props.blockComment(this.props.entry.id, comment.id)
+                      action: () => this.props.blockComment(comment.id)
                     }, {
                       icon: 'fa fa-fw fa-trash-o',
                       label: trans('delete'),
@@ -209,17 +209,17 @@ const EntryComments = connect(
     createComment(entryId, content) {
       dispatch(actions.createComment(entryId, content))
     },
-    editComment(entryId, commentId, content) {
-      dispatch(actions.editComment(entryId, commentId, content))
+    editComment(commentId, content) {
+      dispatch(actions.editComment(commentId, content))
     },
-    deleteComment(entryId, commentId) {
-      dispatch(actions.deleteComment(entryId, commentId))
+    deleteComment(commentId) {
+      dispatch(actions.deleteComment(commentId))
     },
-    activateComment(entryId, commentId) {
-      dispatch(actions.activateComment(entryId, commentId))
+    activateComment(commentId) {
+      dispatch(actions.activateComment(commentId))
     },
-    blockComment(entryId, commentId) {
-      dispatch(actions.blockComment(entryId, commentId))
+    blockComment(commentId) {
+      dispatch(actions.blockComment(commentId))
     },
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))
