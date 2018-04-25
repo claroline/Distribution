@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
+import {withRouter} from '#/main/core/router'
 import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 

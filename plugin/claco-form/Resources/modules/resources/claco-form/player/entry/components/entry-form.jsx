@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {withRouter} from '#/main/core/router'
 import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
@@ -119,7 +120,7 @@ const EntryFormComponent = props =>
     </FormContainer>
     <button
       className="btn btn-primary"
-      onClick={() => props.saveForm(props.entry, props.isNew)}
+      onClick={() => props.saveForm(props.entry, props.isNew, props.history.push)}
     >
       {trans('save')}
     </button>
@@ -143,10 +144,11 @@ EntryFormComponent.propTypes = {
   addCategory: T.func.isRequired,
   removeCategory: T.func.isRequired,
   addKeyword: T.func.isRequired,
-  removeKeyword: T.func.isRequired
+  removeKeyword: T.func.isRequired,
+  history: T.object.isRequired
 }
 
-const EntryForm = connect(
+const EntryForm = withRouter(connect(
   state => ({
     canEdit: resourceSelect.editable(state),
     clacoFormId: select.clacoForm(state).id,
@@ -163,9 +165,12 @@ const EntryForm = connect(
     keywords: select.keywords(state),
   }),
   (dispatch) => ({
-    saveForm(entry, isNew) {
+    saveForm(entry, isNew, navigate) {
       if (isNew) {
-        dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_create']))
+        dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_create'])).then(
+          (data) => navigate(`/entries/${data.id}`),
+          () => true
+        )
       } else {
         dispatch(formActions.saveForm('entries.current', ['apiv2_clacoformentry_update', {id: entry.id}]))
       }
@@ -183,7 +188,7 @@ const EntryForm = connect(
       dispatch(actions.removeKeyword(keywordId))
     }
   })
-)(EntryFormComponent)
+)(EntryFormComponent))
 
 export {
   EntryForm
