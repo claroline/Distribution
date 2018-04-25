@@ -439,35 +439,41 @@ const EditorComponent = props =>
               {
                 name: 'name',
                 type: 'string',
-                label: trans('name')
+                label: trans('name'),
+                displayed: true
               }, {
                 name: 'managers',
                 type: 'string',
                 label: trans('managers', {}, 'clacoform'),
+                displayed: true,
                 renderer: (rowData) => rowData.managers.map(m => m.firstName + ' ' + m.lastName).join(', ')
               }, {
                 name: 'details.notify_addition',
                 type: 'boolean',
                 alias: 'notify_addition',
                 label: trans('addition', {}, 'clacoform'),
+                displayed: true,
                 sortable: false
               }, {
                 name: 'details.notify_edition',
                 type: 'boolean',
                 alias: 'notify_edition',
                 label: trans('edition', {}, 'clacoform'),
+                displayed: true,
                 sortable: false
               }, {
                 name: 'details.notify_removal',
                 type: 'boolean',
                 alias: 'notify_removal',
                 label: trans('removal', {}, 'clacoform'),
+                displayed: true,
                 sortable: false
               }, {
                 name: 'details.notify_pending_comment',
                 type: 'boolean',
                 alias: 'notify_pending_comment',
                 label: trans('comment'),
+                displayed: true,
                 sortable: false
               }
             ]}
@@ -524,7 +530,8 @@ const EditorComponent = props =>
                 {
                   name: 'name',
                   type: 'string',
-                  label: trans('name')
+                  label: trans('name'),
+                  displayed: true
                 }
               ]}
               actions={(rows) => [

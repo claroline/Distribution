@@ -7,10 +7,8 @@ import {makeReducer} from '#/main/core/scaffolding/reducer'
 import {
   CATEGORY_ADD,
   CATEGORY_UPDATE,
-  CATEGORIES_REMOVE,
   KEYWORD_ADD,
-  KEYWORD_UPDATE,
-  KEYWORDS_REMOVE
+  KEYWORD_UPDATE
 } from '#/plugin/claco-form/resources/claco-form/editor/actions'
 
 const reducer = makeFormReducer('clacoFormForm', {}, {
@@ -31,18 +29,6 @@ const reducer = makeFormReducer('clacoFormForm', {}, {
 
       return newState
     },
-    [CATEGORIES_REMOVE]: (state, action) => {
-      const newState = cloneDeep(state)
-      action.ids.forEach(id => {
-        const index = newState['categories'].findIndex(c => c.id === id)
-
-        if (index >= 0) {
-          newState['categories'].splice(index, 1)
-        }
-      })
-
-      return newState
-    },
     [KEYWORD_ADD]: (state, action) => {
       const newState = cloneDeep(state)
       newState['keywords'].push(action.keyword)
@@ -58,32 +44,40 @@ const reducer = makeFormReducer('clacoFormForm', {}, {
       }
 
       return newState
-    },
-    [KEYWORDS_REMOVE]: (state, action) => {
-      const newState = cloneDeep(state)
-      action.ids.forEach(id => {
-        const index = newState['keywords'].findIndex(k => k.id === id)
-
-        if (index >= 0) {
-          newState['keywords'].splice(index, 1)
-        }
-      })
-
-      return newState
     }
   }),
   categories: makeListReducer('clacoFormForm.categories', {}, {
+    data: makeReducer({}, {
+      [CATEGORY_UPDATE]: (state, action) => {
+        const newState = cloneDeep(state)
+        const index = newState.findIndex(c => c.id === action.category.id)
+
+        if (index >= 0) {
+          newState[index] = action.category
+        }
+
+        return newState
+      }
+    }),
     invalidated: makeReducer(false, {
-      [CATEGORY_ADD]: () => true,
-      [CATEGORY_UPDATE]: () => true,
-      [CATEGORIES_REMOVE]: () => true
+      [CATEGORY_ADD]: () => true
     })
   }),
   keywords: makeListReducer('clacoFormForm.keywords', {}, {
+    data: makeReducer({}, {
+      [KEYWORD_UPDATE]: (state, action) => {
+        const newState = cloneDeep(state)
+        const index = newState.findIndex(k => k.id === action.keyword.id)
+
+        if (index >= 0) {
+          newState[index] = action.keyword
+        }
+
+        return newState
+      }
+    }),
     invalidated: makeReducer(false, {
-      [KEYWORD_ADD]: () => true,
-      [KEYWORD_UPDATE]: () => true,
-      [KEYWORDS_REMOVE]: () => true
+      [KEYWORD_ADD]: () => true
     })
   })
 })

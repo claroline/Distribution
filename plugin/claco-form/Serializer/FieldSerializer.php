@@ -68,7 +68,6 @@ class FieldSerializer
         $serialized = [
             'id' => $field->getUuid(),
             'autoId' => $field->getId(),
-            'uuid' => $field->getUuid(),
             'name' => $field->getName(),
             'label' => $field->getName(),
             'type' => $field->getFieldType(),

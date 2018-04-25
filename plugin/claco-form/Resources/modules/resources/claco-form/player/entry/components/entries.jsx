@@ -111,15 +111,6 @@ class EntriesComponent extends Component {
       }
     }
     columns.push({
-      name: 'clacoForm',
-      label: trans('resource'),
-      displayed: false,
-      displayable: false,
-      filterable: true,
-      type: 'number'
-    })
-
-    columns.push({
       name: 'status',
       label: trans('published'),
       displayed: true,

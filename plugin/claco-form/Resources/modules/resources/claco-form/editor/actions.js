@@ -1,6 +1,7 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {generateUrl} from '#/main/core/api/router'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions as entryActions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
@@ -61,6 +62,7 @@ actions.deleteCategories = (categories) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.removeCategories(categories.map(c => c.id)))
+      dispatch(listActions.deleteItems('clacoFormForm.categories', categories))
     }
   }
 })
@@ -111,6 +113,7 @@ actions.deleteKeywords = (keywords) => ({
     },
     success: (data, dispatch) => {
       dispatch(actions.removeKeywords(keywords.map(k => k.id)))
+      dispatch(listActions.deleteItems('clacoFormForm.keywords', keywords))
     }
   }
 })
