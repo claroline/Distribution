@@ -101,7 +101,8 @@ class TransferProvider
 
         if (array_key_exists('$root', $schema)) {
             $jsonSchema = $this->serializer->getSchema($schema['$root']);
-            $explanation = $adapter->explainSchema($jsonSchema, $executor->getMode());
+            //doesn't matter imo
+            $explanation = $adapter->explainSchema($jsonSchema, 'create');
             $data = $adapter->decodeSchema($data, $explanation);
         } else {
             foreach ($schema as $prop => $value) {
@@ -134,7 +135,8 @@ class TransferProvider
             $this->log("{$i}/{$total}: ".$this->getActionName($executor));
 
             try {
-                $loaded[] = $executor->execute($data);
+                $successData = [];
+                $loaded[] = $executor->execute($data, $successData);
                 $jsonLogger->increment('success');
                 $jsonLogger->push('data.success', $data);
             } catch (\Exception $e) {
@@ -151,7 +153,7 @@ class TransferProvider
                 } else {
                     $content = [
                       'line' => $i,
-                      'value' => $e->getMessage(),
+                      'value' => $e->getFile().':'.$e->getLine()."\n".$e->getMessage(),
                     ];
 
                     $jsonLogger->push('data.error', $content);

@@ -30,7 +30,7 @@ class Delete extends AbstractAction
         $this->serializer = $serializer;
     }
 
-    public function execute(array $data)
+    public function execute(array $data, $successData = [])
     {
         $group = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\Group',
@@ -53,7 +53,7 @@ class Delete extends AbstractAction
      */
     public function getAction()
     {
-        return ['group', 'delete'];
+        return ['group', self::MODE_DELETE];
     }
 
     public function getBatchSize()

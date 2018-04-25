@@ -9,6 +9,7 @@ abstract class AbstractAction
 {
     const MODE_CREATE = 'create';
     const MODE_UPDATE = 'update';
+    const MODE_DELETE = 'delete';
     const MODE_DEFAULT = 'default';
 
     use LoggableTrait;

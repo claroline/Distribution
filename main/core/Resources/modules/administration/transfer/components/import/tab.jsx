@@ -48,7 +48,7 @@ const RoutedExplain = props => {
   const action = props.match.params.action
   const choices = {}
   choices['none'] = ''
-  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: trans(key)}), choices)
+  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: key}), choices)
 
   return (
     <div>
