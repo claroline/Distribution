@@ -35,7 +35,12 @@ const generateDisplayList = (fields) => {
 
 const generateRestrictedList = (fields) => {
   const restrictedList = {
+    type: trans('type'),
     title: trans('title'),
+    status: trans('published'),
+    locked: trans('locked'),
+    createdAfter: trans('created_after'),
+    createdBefore: trans('created_before'),
     user: trans('user'),
     categories: trans('categories'),
     keywords: trans('keywords', {}, 'clacoform')

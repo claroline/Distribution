@@ -103,6 +103,7 @@ class EntriesComponent extends Component {
           label: trans('type'),
           displayable: false,
           displayed: false,
+          filterable: this.isFilterableField('type'),
           type: 'choice',
           options: {
             choices: options
@@ -114,12 +115,14 @@ class EntriesComponent extends Component {
       name: 'status',
       label: trans('published'),
       displayed: true,
+      filterable: this.isFilterableField('status'),
       type: 'boolean'
     })
     columns.push({
       name: 'locked',
       label: trans('locked'),
       displayed: false,
+      filterable: this.isFilterableField('locked'),
       type: 'boolean'
     })
     columns.push({
@@ -144,13 +147,15 @@ class EntriesComponent extends Component {
         name: 'createdAfter',
         label: trans('created_after'),
         type: 'date',
-        displayable: false
+        displayable: false,
+        filterable: this.isFilterableField('createdAfter')
       })
       columns.push({
         name: 'createdBefore',
         label: trans('created_before'),
         type: 'date',
-        displayable: false
+        displayable: false,
+        filterable: this.isFilterableField('createdBefore')
       })
       columns.push({
         name: 'user',
