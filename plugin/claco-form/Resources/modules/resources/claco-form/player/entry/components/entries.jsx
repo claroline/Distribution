@@ -200,18 +200,13 @@ class EntriesComponent extends Component {
             displayed: this.isDisplayedField(f.id),
             filterable: false,
             renderer: (rowData) => {
-              const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
-
-              if (fieldValue &&
-                fieldValue.fieldFacetValue &&
-                fieldValue.fieldFacetValue.value &&
-                fieldValue.fieldFacetValue.value[0] &&
-                fieldValue.fieldFacetValue.value[0]['url']
-              ) {
+              if (rowData.values && rowData.values[f.id] && rowData.values[f.id]['url'] && rowData.values[f.id]['name']) {
                 const link =
-                  <a href={generateUrl('claro_claco_form_field_value_file_download', {fieldValue: fieldValue.id})}>
-                    {fieldValue.fieldFacetValue.value[0]['name']}
+                  <a href="">
+                    {rowData.values[f.id]['name']}
                   </a>
+
+                {/*<a href={generateUrl('claro_claco_form_field_value_file_download', {fieldValue: fieldValue.id})}>*/}
 
                 return link
               } else {
@@ -227,10 +222,8 @@ class EntriesComponent extends Component {
             displayed: this.isDisplayedField(f.id),
             filterable: getFieldType(f.type).name !== 'date' && this.isFilterableField(f.id),
             calculated: (rowData) => {
-              const fieldValue = rowData.fieldValues.find(fv => fv.field.id === f.id)
-
-              return fieldValue && fieldValue.fieldFacetValue && fieldValue.fieldFacetValue.value ?
-                this.formatFieldValue(rowData, f, fieldValue.fieldFacetValue.value) :
+              return rowData.values && rowData.values[f.id] ?
+                this.formatFieldValue(rowData, f, rowData.values[f.id]) :
                 ''
             }
           })
@@ -406,7 +399,7 @@ class EntriesComponent extends Component {
     }
 
     if (key && key !== 'title') {
-      let fieldValue = null
+      let field = {}
 
       switch (key) {
         case 'date':
@@ -422,10 +415,12 @@ class EntriesComponent extends Component {
           value = row.keywords ? row.keywords.map(k => k.name).join(', ') : ''
           break
         default:
-          fieldValue = row.fieldValues.find(fv => fv.field.id === parseInt(key))
-          value = fieldValue && fieldValue.fieldFacetValue && fieldValue.fieldFacetValue.value ?
-            this.formatFieldValue(row, fieldValue.field, fieldValue.fieldFacetValue.value) :
-            ''
+          if (row.values && row.values[key]) {
+            field = this.props.fields.find(f => f.id === key)
+            value = this.formatFieldValue(row, field, row.values[key])
+          } else {
+            value = ''
+          }
       }
     }
 
