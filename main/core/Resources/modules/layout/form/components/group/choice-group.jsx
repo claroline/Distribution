@@ -7,7 +7,7 @@ import {SelectGroup} from '#/main/core/layout/form/components/group/select-group
 import {CheckboxesGroup} from '#/main/core/layout/form/components/group/checkboxes-group'
 import {RadiosGroup} from '#/main/core/layout/form/components/group/radios-group'
 
-// todo : implements choices for Radios & Checkboxes. It doesn't work as is
+// todo : adds min and max values for multiple: true
 
 /**
  * @param props

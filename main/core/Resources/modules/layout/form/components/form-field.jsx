@@ -24,7 +24,7 @@ export const FormField = props => {
           id={props.controlId}
           label={props.label}
           noLabel={props.noLabel}
-          options={props.choices || []}
+          choices={props.choices || {}}
           value={props.value}
           disabled={props.disabled}
           error={props.error}
@@ -37,7 +37,7 @@ export const FormField = props => {
           id={props.controlId}
           label={props.label}
           noLabel={props.noLabel}
-          options={props.choices || []}
+          choices={props.choices || {}}
           value={props.value || ''}
           disabled={props.disabled}
           error={props.error}
