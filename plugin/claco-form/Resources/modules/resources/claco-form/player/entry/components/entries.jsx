@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -197,7 +197,7 @@ class EntriesComponent extends Component {
                     {rowData.values[f.id]['name']}
                   </a>
 
-                {/*<a href={generateUrl('claro_claco_form_field_value_file_download', {fieldValue: fieldValue.id})}>*/}
+                {/*<a href={url(['claro_claco_form_field_value_file_download', {fieldValue: fieldValue.id}])}>*/}
 
                 return link
               } else {

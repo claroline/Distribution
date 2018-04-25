@@ -1,6 +1,6 @@
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
 import {actions as entryActions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
@@ -56,7 +56,7 @@ actions.saveCategory = (category, isNew) => (dispatch, getState) => {
 
 actions.deleteCategories = (categories) => ({
   [API_REQUEST]: {
-    url: generateUrl('apiv2_clacoformcategory_delete_bulk') + '?' + categories.map(c => 'ids[]=' + c.id).join('&'),
+    url: url(['apiv2_clacoformcategory_delete_bulk', {ids: categories.map(c => c.id)}]),
     request: {
       method: 'DELETE'
     },
@@ -107,7 +107,7 @@ actions.saveKeyword = (keyword, isNew) => (dispatch, getState) => {
 
 actions.deleteKeywords = (keywords) => ({
   [API_REQUEST]: {
-    url: generateUrl('apiv2_clacoformkeyword_delete_bulk') + '?' + keywords.map(k => 'ids[]=' + k.id).join('&'),
+    url: url(['apiv2_clacoformkeyword_delete_bulk', {ids: keywords.map(k => k.id)}]),
     request: {
       method: 'DELETE'
     },

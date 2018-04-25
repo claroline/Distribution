@@ -1,8 +1,7 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
-import {getDataQueryString} from '#/main/core/data/list/utils'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
 
@@ -54,7 +53,7 @@ actions.deleteEntry = (entryId) => (dispatch) => {
 actions.deleteEntries = (entries) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: generateUrl('claro_claco_form_entries_delete') + getDataQueryString(entries),
+      url: url(['claro_claco_form_entries_delete', {ids: entries.map(e => e.id)}]),
       request: {
         method: 'PATCH'
       },
@@ -77,7 +76,7 @@ actions.switchEntryStatus = (entryId) => ({
 
 actions.switchEntriesStatus = (entries, status) => ({
   [API_REQUEST]: {
-    url: generateUrl('claro_claco_form_entries_status_change', {status: status}) + getDataQueryString(entries),
+    url: url(['claro_claco_form_entries_status_change', {status: status, ids: entries.map(e => e.id)}]),
     request: {
       method: 'PATCH'
     },
@@ -97,7 +96,7 @@ actions.switchEntryLock = (entryId) => ({
 
 actions.switchEntriesLock = (entries, locked) => ({
   [API_REQUEST]: {
-    url: generateUrl('claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0}) + getDataQueryString(entries),
+    url: url(['claro_claco_form_entries_lock_switch', {locked: locked ? 1 : 0, ids: entries.map(e => e.id)}]),
     request: {
       method: 'PATCH'
     },
@@ -106,11 +105,11 @@ actions.switchEntriesLock = (entries, locked) => ({
 })
 
 actions.downloadEntryPdf = (entryId) => () => {
-  window.location.href = generateUrl('claro_claco_form_entry_pdf_download', {entry: entryId})
+  window.location.href = url(['claro_claco_form_entry_pdf_download', {entry: entryId}])
 }
 
 actions.downloadEntriesPdf = (entries) => () => {
-  window.location.href = generateUrl('claro_claco_form_entries_pdf_download') + getDataQueryString(entries)
+  window.location.href = url(['claro_claco_form_entries_pdf_download', {ids: entries.map(e => e.id)}])
 }
 
 actions.createComment = (entryId, content) => (dispatch) => {

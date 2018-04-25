@@ -3,14 +3,14 @@ import {connect} from 'react-redux'
 import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 
 class ClacoFormMainMenuComponent extends Component {
   goToRandomEntry() {
-    fetch(generateUrl('claro_claco_form_entry_random', {clacoForm: this.props.resourceId}), {
+    fetch(url(['claro_claco_form_entry_random', {clacoForm: this.props.resourceId}]), {
       method: 'GET' ,
       credentials: 'include'
     })

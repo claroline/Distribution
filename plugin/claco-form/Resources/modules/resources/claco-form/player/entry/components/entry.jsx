@@ -4,7 +4,7 @@ import {withRouter} from 'react-router-dom'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {select as resourceSelect} from '#/main/core/resource/selectors'
 import {select as formSelect} from '#/main/core/data/form/selectors'
@@ -240,7 +240,7 @@ class EntryComponent extends Component {
   }
 
   showSharingForm() {
-    fetch(generateUrl('claro_claco_form_entry_shared_users_list', {entry: this.props.entryId}), {
+    fetch(url(['claro_claco_form_entry_shared_users_list', {entry: this.props.entryId}]), {
       method: 'GET' ,
       credentials: 'include'
     })

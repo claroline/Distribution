@@ -61,7 +61,7 @@ const Field = {
         isMetadata: T.bool.isRequired,
         locked: T.bool.isRequired,
         lockedEditionOnly: T.bool.isRequired,
-        order: T.number.isRequired
+        order: T.number
       }).isRequired
     })
   }

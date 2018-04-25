@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import classes from 'classnames'
 
 import {trans} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 
@@ -31,10 +31,10 @@ class KeywordFormModalComponent extends Component {
       this.setState({isFetching: true})
 
       fetch(
-        generateUrl(
+        url([
           'claro_claco_form_get_keyword_by_name_excluding_uuid',
           {clacoForm: this.props.clacoFormId, name: this.state.name, uuid: this.props.keyword.id}
-        ),
+        ]),
         {
           method: 'GET' ,
           credentials: 'include'
