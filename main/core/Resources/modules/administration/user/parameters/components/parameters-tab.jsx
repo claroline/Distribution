@@ -71,7 +71,7 @@ const Parameters = (props) => {
             ]
           }, {
             name: 'registration.default_role',
-            type: 'enum',
+            type: 'choice',
             label: trans('default_role'),
             required: true,
             options: {
@@ -88,7 +88,7 @@ const Parameters = (props) => {
             }
           }, {
             name: 'registration.validation',
-            type: 'enum',
+            type: 'choice',
             label: trans('registration_mail_validation'),
             required: true,
             options: {

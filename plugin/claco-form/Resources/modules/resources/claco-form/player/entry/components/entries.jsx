@@ -101,7 +101,7 @@ class Entries extends Component {
           label: trans('type'),
           displayable: false,
           displayed: false,
-          type: 'enum',
+          type: 'choice',
           options: {
             choices: options
           }

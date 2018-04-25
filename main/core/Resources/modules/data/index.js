@@ -1,12 +1,12 @@
 import invariant from 'invariant'
 
 import {BOOLEAN_TYPE,     booleanDefinition}     from '#/main/core/data/types/boolean'
+import {CHOICE_TYPE,      choiceDefinition}      from '#/main/core/data/types/choice'
 import {COLOR_TYPE,       colorDefinition}       from '#/main/core/data/types/color'
 import {COUNTRY_TYPE,     countryDefinition}     from '#/main/core/data/types/country'
 import {DATE_TYPE,        dateDefinition}        from '#/main/core/data/types/date'
 import {DATE_RANGE_TYPE,  dateRangeDefinition}   from '#/main/core/data/types/date-range'
 import {EMAIL_TYPE,       emailDefinition}       from '#/main/core/data/types/email'
-import {ENUM_TYPE,        enumDefinition}        from '#/main/core/data/types/enum'
 import {FILE_TYPE,        fileDefinition}        from '#/main/core/data/types/file'
 import {HTML_TYPE,        htmlDefinition}        from '#/main/core/data/types/html'
 import {IMAGE_TYPE,       imageDefinition}       from '#/main/core/data/types/image'
