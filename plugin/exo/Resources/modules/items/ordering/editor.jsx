@@ -34,7 +34,7 @@ class Item extends Component {
               actions.updateItem(this.props.id, 'data', data)
             )}
           />
-        {this.props.item.direction === DIRECTION_VERTICAL && this.state.showFeedback &&
+          {this.props.item.direction === DIRECTION_VERTICAL && this.state.showFeedback &&
             <div className="feedback-container">
               <Textarea
                 id={`item-${this.props.id}-feedback`}
@@ -149,9 +149,9 @@ OrderingItem = makeSortable(OrderingItem, 'ORDERING_ITEM', OrderingItemDragPrevi
 
 const OrderingOdd = props => {
   return (
-      <div className="item-container negative-score">
-        <Item {...props} />
-      </div>
+    <div className="item-container negative-score">
+      <Item {...props} />
+    </div>
   )
 }
 
@@ -308,7 +308,7 @@ export const Ordering = props => {
             type="number"
             min="0"
             onChange={e => props.onChange(
-               actions.updateProperty('penalty', e.target.value)
+              actions.updateProperty('penalty', e.target.value)
             )}
           />
         </div>

@@ -3,8 +3,6 @@ import {API_REQUEST} from '#/main/core/api/actions'
 import {url} from '#/main/core/api/router'
 import {actions as listActions} from '#/main/core/data/list/actions'
 
-import {actions as entryActions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
-
 const RESOURCE_PROPERTY_UPDATE = 'RESOURCE_PROPERTY_UPDATE'
 const RESOURCE_PARAMS_PROPERTY_UPDATE = 'RESOURCE_PARAMS_PROPERTY_UPDATE'
 

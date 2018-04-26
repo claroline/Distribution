@@ -1251,6 +1251,7 @@ class ClacoFormManager
             $fieldValues = $entry->getFieldValues();
             $data = [];
             $data['id'] = $entry->getId();
+            $data['uuid'] = $entry->getUuid();
             $data['title'] = $entry->getTitle();
             $data['author'] = empty($user) ?
                 $this->translator->trans('anonymous', [], 'platform') :
@@ -1276,12 +1277,8 @@ class ClacoFormManager
                         $value = $this->locationManager->getCountryByCode($val);
                         break;
                     case FieldFacet::FILE_TYPE:
-                        $values = [];
-
-                        foreach ($val as $fileValue) {
-                            $values[] = '['.implode(', ', $fileValue).']';
-                        }
-                        $value = implode(', ', $values);
+                        /* TODO: change this when FILE_TYPE can accept an array of files again */
+                        $value = is_array($val) ? '['.implode(', ', $val).']' : '['.$val.']';
                         break;
                     default:
                         $value = $val;
@@ -1317,16 +1314,15 @@ class ClacoFormManager
                 $fieldFacetValue = $fiedValue->getFieldFacetValue();
 
                 if (FieldFacet::FILE_TYPE === $field->getType()) {
-                    $files = $fieldFacetValue->getValue();
-                    foreach ($files as $file) {
-                        $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
-                        $fileParts = explode('/', $file['url']);
-                        $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
-                        $archive->addFile(
-                            $filePath,
-                            'files'.DIRECTORY_SEPARATOR.$entry->getId().DIRECTORY_SEPARATOR.$fileName
-                        );
-                    }
+                    /* TODO: change this when FILE_TYPE can accept an array of files again */
+                    $file = $fieldFacetValue->getValue();
+                    $filePath = $this->filesDir.DIRECTORY_SEPARATOR.$file['url'];
+                    $fileParts = explode('/', $file['url']);
+                    $fileName = count($fileParts) > 0 ? $fileParts[count($fileParts) - 1] : $file['name'];
+                    $archive->addFile(
+                        $filePath,
+                        'files'.DIRECTORY_SEPARATOR.$entry->getId().DIRECTORY_SEPARATOR.$fileName
+                    );
                 }
             }
         }

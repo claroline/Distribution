@@ -24,31 +24,30 @@ const CriteriaForm = props =>
     {props.dropzone.parameters.criteria.length > 0 ?
       <table className="table">
         <tbody>
-        {props.dropzone.parameters.criteria.map(c =>
-          <tr key={`criterion-form-${c.id}`}>
-            <td>
-              <HtmlText>
-                {c.instruction}
-              </HtmlText>
-            </td>
-            <td className="criterion-scale-form-row">
-              <RadiosGroup
-                id={`criterion-form-${c.id}-radio`}
-                label="criterion_form_radio"
-                choices={[...Array(props.dropzone.parameters.criteriaTotal).keys()].reduce((acc, current) => {
-                  acc[current] = current
+          {props.dropzone.parameters.criteria.map(c =>
+            <tr key={`criterion-form-${c.id}`}>
+              <td>
+                <HtmlText>
+                  {c.instruction}
+                </HtmlText>
+              </td>
+              <td className="criterion-scale-form-row">
+                <RadiosGroup
+                  id={`criterion-form-${c.id}-radio`}
+                  label="criterion_form_radio"
+                  choices={[...Array(props.dropzone.parameters.criteriaTotal).keys()].reduce((acc, current) => {
+                    acc[current] = current
 
-                  return acc
-                }, {})}
-                inline={true}
-                hideLabel={true}
-                value={props.grades.find(g => g.criterion === c.id).value}
-                onChange={value => props.handleUpdate(c.id, parseInt(value))}
-              />
-            </td>
-          </tr>
-        )}
-
+                    return acc
+                  }, {})}
+                  inline={true}
+                  hideLabel={true}
+                  value={props.grades.find(g => g.criterion === c.id).value}
+                  onChange={value => props.handleUpdate(c.id, parseInt(value))}
+                />
+              </td>
+            </tr>
+          )}
         </tbody>
       </table> :
       <div className="alert alert-warning">

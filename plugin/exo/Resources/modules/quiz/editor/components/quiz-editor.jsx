@@ -251,7 +251,7 @@ const Signing = props =>
       help={tex('show_end_confirm_help')}
       onChange={checked => props.onChange('parameters.showEndConfirm', checked)}
     />
-</fieldset>
+  </fieldset>
 
 Signing.propTypes = {
   parameters: T.shape({
