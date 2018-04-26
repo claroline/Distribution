@@ -8,6 +8,7 @@ import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {actions} from '#/main/core/administration/transfer/components/modal/log/actions'
 import {Error} from '#/main/core/administration/transfer/components/modal/log/components/error'
 import {Success} from '#/main/core/administration/transfer/components/modal/log/components/success'
+import {Logs} from '#/main/core/administration/transfer/components/log/logs.jsx'
 
 
   /*this.props.data.log.map(error => <Error {...error} />)*/
@@ -17,70 +18,7 @@ class LogModal extends Component {
     return (
       <BaseModal {...this.props}>
         <Modal.Body>
-          <pre>
-            processed: {this.props.data.processed} {'\n'}
-            error: {this.props.data.error} {'\n'}
-            success: {this.props.data.success} {'\n'}
-            total: {this.props.data.total} {'\n'}
-          </pre>
-
-          <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div className="panel panel-default">
-              <div className="panel-heading" role="tab" id="headingOne">
-                <h4 className="panel-title">
-                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    {trans('log')}
-                  </a>
-                </h4>
-              </div>
-              <div id="collapseOne" className="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
-                <div className="panel-body">
-                  <pre>
-                    {this.props.data.log}
-                  </pre>
-                </div>
-              </div>
-            </div>
-            <div className="panel panel-default">
-              <div className="panel-heading" role="tab" id="headingTwo">
-                <h4 className="panel-title">
-                  <a className="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    {trans('success')}
-                  </a>
-                </h4>
-              </div>
-              <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                <div className="panel-body">
-                  {this.props.data.data &&
-                    Object.keys(this.props.data.data.success).map(action => {
-                      return(
-                        <div>
-                          <h4>{action}</h4>
-                          {this.props.data.data.success[action].map(success =>  <Success {...success}/>)}
-                        </div>
-                      )}
-                    )
-                  }
-                </div>
-              </div>
-            </div>
-            <div className="panel panel-default">
-              <div className="panel-heading" role="tab" id="headingThree">
-                <h4 className="panel-title">
-                  <a className="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    {trans('error')}
-                  </a>
-                </h4>
-              </div>
-              <div id="collapseThree" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                <div className="panel-body">
-                  {this.props.data.data &&
-                    this.props.data.data.error.map(error => <Error {...error}/>)
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
+          <Logs {...this.props}/>
         </Modal.Body>
         <button
           className="modal-btn btn btn-primary"
