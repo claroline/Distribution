@@ -2,6 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {CheckboxesGroup} from '#/main/core/layout/form/components/group/checkboxes-group.jsx'
+import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.jsx'
 import {CountryGroup} from '#/main/core/layout/form/components/group/country-group.jsx'
 import {SelectGroup} from '#/main/core/layout/form/components/group/select-group.jsx'
 import {CascadeSelectGroup} from '#/main/core/layout/form/components/group/cascade-select-group.jsx'
@@ -13,20 +14,33 @@ import {EmailGroup} from '#/main/core/layout/form/components/group/email-group.j
 import {DateGroup} from '#/main/core/layout/form/components/group/date-group.jsx'
 import {FileGroup} from '#/main/core/layout/form/components/group/file-group.jsx'
 
-// deprecated
-// only used by claco-form
-// todo : rewrite claco-form to use form.jsx
-export const FormField = props => {
+const FormField = props => {
   switch (props.type) {
+    case 'boolean':
+      return (
+        <CheckGroup
+          id={props.controlId}
+          label={props.label}
+          hideLabel={props.noLabel}
+          value={props.value}
+          optional={!props.required}
+          disabled={props.disabled}
+          help={props.help}
+          error={props.error}
+          onChange={value => props.onChange(value)}
+        />
+      )
     case 'checkboxes':
       return (
         <CheckboxesGroup
           id={props.controlId}
           label={props.label}
-          noLabel={props.noLabel}
+          hideLabel={props.noLabel}
           choices={props.choices || {}}
           value={props.value}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -36,10 +50,12 @@ export const FormField = props => {
         <RadiosGroup
           id={props.controlId}
           label={props.label}
-          noLabel={props.noLabel}
+          hideLabel={props.noLabel}
           choices={props.choices || {}}
           value={props.value || ''}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -50,10 +66,12 @@ export const FormField = props => {
           <CascadeSelectGroup
             controlId={props.controlId}
             label={props.label}
-            noLabel={props.noLabel}
+            hideLabel={props.noLabel}
             options={props.choices || []}
             selectedValue={props.value || []}
+            optional={!props.required}
             disabled={props.disabled}
+          help={props.help}
             error={props.error}
             onChange={value => props.onChange(value)}
           />
@@ -73,7 +91,9 @@ export const FormField = props => {
             choices={choices || {}}
             filterChoices={props.filterChoices}
             value={props.value || ''}
+            optional={!props.required}
             disabled={props.disabled}
+            help={props.help}
             error={props.error}
             multiple={false}
             onChange={value => props.onChange(value)}
@@ -87,19 +107,23 @@ export const FormField = props => {
           label={props.label}
           hideLabel={props.noLabel}
           value={props.value || ''}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
       )
-    case 'text':
+    case 'string':
       return (
         <TextGroup
           id={props.controlId}
           label={props.label}
           hideLabel={props.noLabel}
           value={props.value || ''}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={value => props.onChange(value)}
         />
@@ -111,7 +135,9 @@ export const FormField = props => {
           label={props.label}
           hideLabel={props.noLabel}
           value={props.value}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={props.onChange}
         />
@@ -123,7 +149,9 @@ export const FormField = props => {
           label={props.label}
           hideLabel={props.noLabel}
           value={props.value}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={props.onChange}
         />
@@ -133,9 +161,11 @@ export const FormField = props => {
         <HtmlGroup
           id={props.controlId}
           label={props.label}
-          noLabel={props.noLabel}
+          hideLabel={props.noLabel}
           value={props.value}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={props.onChange}
         />
@@ -145,9 +175,11 @@ export const FormField = props => {
         <DateGroup
           id={props.controlId}
           label={props.label}
-          noLabel={props.noLabel}
+          hideLabel={props.noLabel}
           value={props.value !== undefined && props.value !== null ? props.value.date || props.value || '' : ''}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={props.onChange}
         />
@@ -157,12 +189,14 @@ export const FormField = props => {
         <FileGroup
           id={props.controlId}
           label={props.label}
-          noLabel={props.noLabel}
+          hideLabel={props.noLabel}
           value={props.value}
           types={props.types}
           max={props.max}
           multiple={true}
+          optional={!props.required}
           disabled={props.disabled}
+          help={props.help}
           error={props.error}
           onChange={props.onChange}
           autoUpload={props.options.autoUpload}
@@ -181,6 +215,7 @@ FormField.propTypes = {
   choices: T.array,
   filterChoices: T.func,
   noLabel: T.bool.isRequired,
+  required: T.bool.isRequired,
   disabled: T.bool.isRequired,
   error: T.string,
   onChange: T.func.isRequired,
@@ -194,8 +229,13 @@ FormField.propTypes = {
 
 FormField.defaultProps = {
   noLabel: false,
+  required: false,
   disabled: false,
   options: {
     autoUpload: true
   }
+}
+
+export {
+  FormField
 }

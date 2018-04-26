@@ -23,7 +23,7 @@ import {
   Entry as EntryType,
   EntryUser as EntryUserType
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {getFieldType, getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {getCountry, getFileType} from '#/plugin/claco-form/resources/claco-form/utils'
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 import {EntryComments} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-comments.jsx'
@@ -296,16 +296,17 @@ class EntryComponent extends Component {
   generateTemplate() {
     let template = this.props.template
     template = template.replace('%clacoform_entry_title%', this.props.entry.title)
-    this.props.fields.filter(f => f.type !== 11).forEach(f => {
+    this.props.fields.filter(f => f.type !== 'file').forEach(f => {
       let replacedField = ''
-      const fieldValue = this.getFieldValue(f.id)
+      const fieldValue = this.props.entry.values ? this.props.entry.values[f.id] : ''
 
       if (this.canViewMetadata() || !f.isMetadata) {
-        switch (getFieldType(f.type).name) {
+        switch (f.type) {
           case 'checkboxes':
             replacedField = fieldValue ? fieldValue.join(', ') : ''
             break
           case 'select':
+          case 'choice':
             replacedField = fieldValue ?
               Array.isArray(fieldValue) ?
                 fieldValue.join(', ') :
@@ -332,14 +333,14 @@ class EntryComponent extends Component {
           replacedField = ''
         }
       }
-      template = template.replace(`%field_${f.id}%`, replacedField)
+      template = template.replace(`%field_${f.autoId}%`, replacedField)
     })
     template += '<br/>'
 
     return template
   }
 
-  getSections(fields, entry, titleLabel) {
+  getSections(fields, titleLabel) {
     const sectionFields = [
       {
         name: 'title',
@@ -432,7 +433,7 @@ class EntryComponent extends Component {
                 </HtmlText> :
                 <DataDetailsContainer
                   name="entries.current"
-                  sections={this.getSections(this.props.fields, this.props.entry, this.props.titleLabel)}
+                  sections={this.getSections(this.props.fields, this.props.titleLabel)}
                 />
               }
             </div>

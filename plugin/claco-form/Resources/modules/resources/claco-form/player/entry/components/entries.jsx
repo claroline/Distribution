@@ -18,7 +18,7 @@ import {UserAvatar} from '#/main/core/user/components/avatar.jsx'
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {constants} from '#/plugin/claco-form/resources/claco-form/constants'
-import {getFieldType, getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
+import {getCountry} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 
 const authenticatedUser = currentUser()
@@ -209,7 +209,7 @@ class EntriesComponent extends Component {
             label: f.name,
             type: this.getDataType(f),
             displayed: this.isDisplayedField(f.id),
-            filterable: getFieldType(f.type).name !== 'date' && this.isFilterableField(f.id),
+            filterable: f.type !== 'date' && this.isFilterableField(f.id),
             calculated: (rowData) => {
               return rowData.values && rowData.values[f.id] ?
                 this.formatFieldValue(rowData, f, rowData.values[f.id]) :
@@ -303,7 +303,7 @@ class EntriesComponent extends Component {
   getDataType(field) {
     let type = 'string'
 
-    switch (getFieldType(field.type).name) {
+    switch (field.type) {
       case 'date':
         type = 'date'
         break
@@ -313,7 +313,6 @@ class EntriesComponent extends Component {
       case 'number':
         type = 'number'
         break
-      case 'rich_text':
       case 'html':
         type = 'html'
         break
@@ -339,7 +338,7 @@ class EntriesComponent extends Component {
       formattedValue = value
 
       if (value !== undefined && value !== null && value !== '') {
-        switch (getFieldType(field.type).name) {
+        switch (field.type) {
           case 'date':
             formattedValue = value.date ? displayDate(value.date) : displayDate(value)
             break
@@ -350,6 +349,7 @@ class EntriesComponent extends Component {
             formattedValue = value.join(', ')
             break
           case 'select':
+          case 'choice':
             if (Array.isArray(value)) {
               formattedValue = value.join(', ')
             }

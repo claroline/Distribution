@@ -8,7 +8,7 @@ import {CheckGroup} from '#/main/core/layout/form/components/group/check-group.j
 
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {Field as FieldType} from '#/plugin/claco-form/resources/claco-form/prop-types'
-import {generateFieldKey, getFieldType} from '#/plugin/claco-form/resources/claco-form/utils'
+import {generateFieldKey} from '#/plugin/claco-form/resources/claco-form/utils'
 import {actions as clacoFormActions} from '#/plugin/claco-form/resources/claco-form/actions'
 import {actions} from '#/plugin/claco-form/resources/claco-form/editor/template/actions'
 import {Message} from '#/plugin/claco-form/resources/claco-form/components/message.jsx'
@@ -119,26 +119,26 @@ class TemplateFormComponent extends Component {
                   <b>%clacoform_entry_title%</b> : {trans('entry_title_info', {}, 'clacoform')}
                 </li>
                 {this.props.fields.map(f => {
-                  if (f.required && !f.restrictions.hidden) {
+                  if (f.required && !f.restrictions.hidden && ['file', 'date'].indexOf(f.type) === -1) {
                     return (
                       <li key={`required-${f.autoId}`}>
-                        <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{getFieldType(f.type).label}]
+                        <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{trans(f.type)}]
                       </li>
                     )
                   }
                 })}
               </ul>
             </div>
-            {this.props.fields.filter(f => !f.required && !f.restrictions.hidden).length > 0 &&
+            {this.props.fields.filter(f => !f.required && !f.restrictions.hidden && ['file', 'date'].indexOf(f.type) === -1).length > 0 &&
               <div>
                 <hr/>
                 <h4>{trans('optional', {}, 'clacoform')}</h4>
                 <ul>
                   {this.props.fields.map(f => {
-                    if (!f.required && !f.restrictions.hidden) {
+                    if (!f.required && !f.restrictions.hidden && ['file', 'date'].indexOf(f.type) === -1) {
                       return (
                         <li key={`optional-${f.autoId}`}>
-                          <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{getFieldType(f.type).label}]
+                          <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{trans(f.type)}]
                         </li>
                       )
                     }

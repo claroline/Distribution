@@ -28,7 +28,7 @@ class FieldFacet
     /** @var int */
     const STRING_TYPE = 1;
     /** @var int */
-    const FLOAT_TYPE = 2;
+    const NUMBER_TYPE = 2;
     /** @var int */
     const DATE_TYPE = 3;
     /** @var int */
@@ -42,7 +42,7 @@ class FieldFacet
     /** @var int */
     const EMAIL_TYPE = 8;
     /** @var int */
-    const RICH_TEXT_TYPE = 9;
+    const HTML_TYPE = 9;
     /** @var int */
     const CASCADE_SELECT_TYPE = 10;
     /** @var int */
@@ -52,14 +52,14 @@ class FieldFacet
     /** @var array */
     public static $types = [
         'string' => self::STRING_TYPE,
-        'float' => self::FLOAT_TYPE,
+        'number' => self::NUMBER_TYPE,
         'date' => self::DATE_TYPE,
         'radio' => self::RADIO_TYPE,
         'select' => self::SELECT_TYPE,
         'checkboxes' => self::CHECKBOXES_TYPE,
         'country' => self::COUNTRY_TYPE,
         'email' => self::EMAIL_TYPE,
-        'html' => self::RICH_TEXT_TYPE,
+        'html' => self::HTML_TYPE,
         'cascade ' => self::CASCADE_SELECT_TYPE,
         'file' => self::FILE_TYPE,
         'boolean' => self::BOOLEAN_TYPE,
@@ -300,36 +300,12 @@ class FieldFacet
     }
 
     /**
-     * @deprecated
-     *
-     * @return string
-     */
-    public function getTypeTranslationKey()
-    {
-        switch ($this->type) {
-            case self::FLOAT_TYPE: return 'number';
-            case self::DATE_TYPE: return 'date';
-            case self::STRING_TYPE: return 'text';
-            case self::RADIO_TYPE: return 'radio';
-            case self::SELECT_TYPE: return 'select';
-            case self::CHECKBOXES_TYPE: return 'checkbox';
-            case self::COUNTRY_TYPE: return 'country';
-            case self::EMAIL_TYPE: return 'email';
-            case self::RICH_TEXT_TYPE: return 'rich_text';
-            case self::CASCADE_SELECT_TYPE: return 'cascade_select';
-            case self::FILE_TYPE: return 'file';
-            case self::BOOLEAN_TYPE: return 'boolean';
-            default: return 'error';
-        }
-    }
-
-    /**
      * @return string
      */
     public function getFieldType()
     {
         switch ($this->type) {
-            case self::FLOAT_TYPE: return 'float';
+            case self::NUMBER_TYPE: return 'number';
             case self::DATE_TYPE: return 'date';
             case self::STRING_TYPE: return 'string';
             case self::RADIO_TYPE: return 'radio';
@@ -337,7 +313,7 @@ class FieldFacet
             case self::CHECKBOXES_TYPE: return 'checkboxes';
             case self::COUNTRY_TYPE: return 'country';
             case self::EMAIL_TYPE: return 'email';
-            case self::RICH_TEXT_TYPE: return 'html';
+            case self::HTML_TYPE: return 'html';
             case self::CASCADE_SELECT_TYPE: return 'cascade';
             case self::FILE_TYPE: return 'file';
             case self::BOOLEAN_TYPE: return 'boolean';
@@ -353,15 +329,15 @@ class FieldFacet
     public function getInputType()
     {
         switch ($this->type) {
-            case self::FLOAT_TYPE: return 'number';
+            case self::NUMBER_TYPE: return 'number';
             case self::DATE_TYPE: return 'date';
-            case self::STRING_TYPE: return 'text';
+            case self::STRING_TYPE: return 'string';
             case self::RADIO_TYPE: return 'radio';
             case self::SELECT_TYPE: return 'select';
             case self::CHECKBOXES_TYPE: return 'checkboxes';
             case self::COUNTRY_TYPE: return 'country';
             case self::EMAIL_TYPE: return 'email';
-            case self::RICH_TEXT_TYPE: return 'rich_text';
+            case self::HTML_TYPE: return 'html';
             case self::CASCADE_SELECT_TYPE: return 'cascade_select';
             case self::FILE_TYPE: return 'file';
             case self::BOOLEAN_TYPE: return 'boolean';

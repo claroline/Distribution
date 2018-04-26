@@ -106,7 +106,7 @@ class FieldFacetValueSerializer
                     $value;
                 $fieldFacetValue->setDateValue($date);
                 break;
-            case FieldFacet::FLOAT_TYPE:
+            case FieldFacet::NUMBER_TYPE:
                 $fieldFacetValue->setFloatValue($value);
                 break;
             case FieldFacet::CHECKBOXES_TYPE:

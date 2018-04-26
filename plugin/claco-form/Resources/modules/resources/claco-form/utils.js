@@ -6,10 +6,6 @@ export const generateFieldKey = (id) => {
   return  `%field_${id}%`
 }
 
-export const getFieldType = (value) => {
-  return clacoFormConstants.FIELD_TYPES.find(f => f.name === value)
-}
-
 export const getCountry = (value) => intlConstants.REGIONS[value] || null
 
 export const getFileType = (mimeType) => {

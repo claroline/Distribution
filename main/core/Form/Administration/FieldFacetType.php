@@ -26,7 +26,7 @@ class FieldFacetType extends AbstractType
             array(
                 'choices' => array(
                     FieldFacet::STRING_TYPE => 'text',
-                    FieldFacet::FLOAT_TYPE => 'number',
+                    FieldFacet::NUMBER_TYPE => 'number',
                     FieldFacet::DATE_TYPE => 'date',
                 ),
                 'multiple' => false,

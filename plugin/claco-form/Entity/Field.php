@@ -157,7 +157,7 @@ class Field
     public function getFieldType()
     {
         switch ($this->type) {
-            case FieldFacet::FLOAT_TYPE: return 'float';
+            case FieldFacet::NUMBER_TYPE: return 'number';
             case FieldFacet::DATE_TYPE: return 'date';
             case FieldFacet::STRING_TYPE: return 'string';
             case FieldFacet::RADIO_TYPE: return 'radio';
@@ -165,7 +165,7 @@ class Field
             case FieldFacet::CHECKBOXES_TYPE: return 'checkboxes';
             case FieldFacet::COUNTRY_TYPE: return 'country';
             case FieldFacet::EMAIL_TYPE: return 'email';
-            case FieldFacet::RICH_TEXT_TYPE: return 'html';
+            case FieldFacet::HTML_TYPE: return 'html';
             case FieldFacet::CASCADE_SELECT_TYPE: return 'cascade';
             case FieldFacet::FILE_TYPE: return 'file';
             case FieldFacet::BOOLEAN_TYPE: return 'boolean';

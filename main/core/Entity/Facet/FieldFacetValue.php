@@ -241,7 +241,7 @@ class FieldFacetValue
     public function getValue()
     {
         switch ($this->getFieldFacet()->getType()) {
-            case FieldFacet::FLOAT_TYPE: return $this->getFloatValue();
+            case FieldFacet::NUMBER_TYPE: return $this->getFloatValue();
             case FieldFacet::DATE_TYPE: return $this->getDateValue();
             case FieldFacet::CHECKBOXES_TYPE: return $this->getArrayValue();
             case FieldFacet::CASCADE_SELECT_TYPE: return $this->getArrayValue();
@@ -257,7 +257,7 @@ class FieldFacetValue
     public function setValue($value)
     {
         switch ($this->getFieldFacet()->getType()) {
-            case FieldFacet::FLOAT_TYPE:
+            case FieldFacet::NUMBER_TYPE:
                 $this->setFloatValue($value);
                 break;
             case FieldFacet::DATE_TYPE:

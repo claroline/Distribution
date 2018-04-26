@@ -274,7 +274,7 @@ class EntryFinder implements FinderInterface
             $this->usedJoin[$filterName] = true;
 
             switch ($field->getFieldFacet()->getType()) {
-                case FieldFacet::FLOAT_TYPE:
+                case FieldFacet::NUMBER_TYPE:
                     $qb->andWhere("fvffv{$parsedFilterName}.floatValue = :value{$parsedFilterName}");
                     $qb->setParameter("value{$parsedFilterName}", $filterValue);
                     break;
@@ -324,7 +324,7 @@ class EntryFinder implements FinderInterface
             }
 
             switch ($field->getFieldFacet()->getType()) {
-                case FieldFacet::FLOAT_TYPE:
+                case FieldFacet::NUMBER_TYPE:
                     $qb->orderBy("fvffv{$parsedSortBy}.floatValue", $direction);
                     break;
                 case FieldFacet::DATE_TYPE:

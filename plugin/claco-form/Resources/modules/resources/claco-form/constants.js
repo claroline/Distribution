@@ -1,20 +1,6 @@
 import {trans} from '#/main/core/translation'
 import {constants as listConstants} from '#/main/core/data/list/constants'
 
-const FIELD_TYPES = [
-  {name: 'string', value: 1, label: trans('text'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'number', value: 2, label: trans('number'), hasChoice: false, hasCascade: false, answerType: 'number'},
-  {name: 'date', value: 3, label: trans('date'), hasChoice: false, hasCascade: false, answerType: 'date'},
-  {name: 'radio', value: 4, label: trans('radio'), hasChoice: true, hasCascade: false, answerType: 'string'},
-  {name: 'select', value: 5, label: trans('select'), hasChoice: true, hasCascade: true, answerType: 'string'},
-  {name: 'checkboxes', value: 6, label: trans('checkboxes'), hasChoice: true, hasCascade: false, answerType: 'array'},
-  {name: 'country', value: 7, label: trans('country'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'email', value: 8, label: trans('email'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'html', value: 9, label: trans('rich_text'), hasChoice: false, hasCascade: false, answerType: 'string'},
-  {name: 'file', value: 11, label: trans('file'), hasChoice: false, hasCascade: false, answerType: 'array'},
-  {name: 'boolean', value: 12, label: trans('boolean'), hasChoice: false, hasCascade: false, answerType: 'number'}
-]
-
 const FILE_TYPES = {
   'audio/*': trans('audio', {}, 'clacoform'),
   'image/*': trans('image', {}, 'clacoform'),
@@ -85,7 +71,6 @@ const DISPLAY_MODES_CHOICES = {}
 Object.keys(listConstants.DISPLAY_MODES).forEach(key => DISPLAY_MODES_CHOICES[key] = listConstants.DISPLAY_MODES[key].label)
 
 export const constants = {
-  FIELD_TYPES,
   FILE_TYPES,
   ENTRY_STATUS_PENDING,
   ENTRY_STATUS_PUBLISHED,

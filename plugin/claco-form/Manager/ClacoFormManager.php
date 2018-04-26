@@ -896,7 +896,7 @@ class ClacoFormManager
                 $date = $value ? new \DateTime($value) : null;
                 $fieldFacetValue->setDateValue($date);
                 break;
-            case FieldFacet::FLOAT_TYPE:
+            case FieldFacet::NUMBER_TYPE:
                 $fieldFacetValue->setFloatValue($value);
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
@@ -928,7 +928,7 @@ class ClacoFormManager
                 }
                 $fieldFacetValue->setDateValue($date);
                 break;
-            case FieldFacet::FLOAT_TYPE:
+            case FieldFacet::NUMBER_TYPE:
                 $floatValue = '' === $value ? null : $value;
                 $fieldFacetValue->setFloatValue($floatValue);
                 break;
