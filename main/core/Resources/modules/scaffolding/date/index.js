@@ -1,6 +1,4 @@
 import moment from 'moment'
-
-import {t} from '#/main/core/translation'
 import {getLocale} from '#/main/core/intl/locale'
 
 // configure moment
@@ -75,7 +73,7 @@ function apiDate(displayDate, long = false, withTime = false) {
  * @return {string} - the date in display format.
  */
 function displayDate(apiDate, long = false, withTime = false) {
-  return moment.utc(apiDate).local().format(getDisplayFormat(long, withTime))
+  return moment.utc(apiDate).format(getDisplayFormat(long, withTime))
 }
 
 /**
