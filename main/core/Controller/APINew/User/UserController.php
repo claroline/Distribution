@@ -197,6 +197,32 @@ class UserController extends AbstractCrudController
           [] :
           ['organization' => array_map(function (Organization $organization) {
               return $organization->getUuid();
+          }, $user->getOrganizations())];
+
+        return new JsonResponse($this->finder->search(
+            'Claroline\CoreBundle\Entity\User',
+            array_merge($request->query->all(), ['hiddenFilters' => $filters])
+        ));
+    }
+
+    /**
+     * @Route(
+     *    "/list/organization/registerable",
+     *    name="apiv2_user_list_organization_registerable"
+     * )
+     * @Method("GET")
+     * @ParamConverter("user", converter="current_user", options={"allowAnonymous"=false})
+     *
+     * @param Workspace $workspace
+     *
+     * @return JsonResponse
+     */
+    public function listRegisterableForOrganizationsAction(User $user, Request $request)
+    {
+        $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
+          [] :
+          ['organization' => array_map(function (Organization $organization) {
+              return $organization->getUuid();
           }, $user->getAdministratedOrganizations()->toArray())];
 
         return new JsonResponse($this->finder->search(
