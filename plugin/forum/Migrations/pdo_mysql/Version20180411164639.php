@@ -77,8 +77,14 @@ class Version20180411164639 extends AbstractMigration
             CREATE UNIQUE INDEX UNIQ_F2869DFD17F50A6 ON claro_forum (uuid)
         ");
         $this->addSql("
+            UPDATE claro_forum SET uuid = (SELECT UUID())
+        ");
+        $this->addSql("
             ALTER TABLE claro_forum_message 
             ADD uuid VARCHAR(36) NOT NULL
+        ");
+        $this->addSql("
+            UPDATE claro_forum_message SET uuid = (SELECT UUID())
         ");
         $this->addSql("
             CREATE UNIQUE INDEX UNIQ_6A49AC0ED17F50A6 ON claro_forum_message (uuid)
