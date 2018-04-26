@@ -63,13 +63,15 @@ const Resource = props =>
         icon: 'fa fa-fw fa-plus',
         label: trans('add_entry', {}, 'clacoform'),
         displayed: props.canAddEntry,
-        target: '/entry/form'
+        target: '/entry/form',
+        exact: true
       }, {
         type: 'link',
         icon: 'fa fa-fw fa-search',
         label: trans('entries_list', {}, 'clacoform'),
         displayed: props.canSearchEntry,
-        target: '/entries'
+        target: '/entries',
+        exact: true
       }, {
         type: 'link',
         icon: 'fa fa-fw fa-file-text-o',

@@ -24,9 +24,23 @@ import {
 
 const reducer = combineReducers({
   list: makeListReducer('entries.list', {}, {
+    data: makeReducer({}, {
+      [ENTRIES_UPDATE]: (state, action) => {
+        const newState = cloneDeep(state)
+
+        action.entries.forEach(entry => {
+          const index = newState.findIndex(e => e.id === entry.id)
+
+          if (index > -1) {
+            newState[index] = entry
+          }
+        })
+
+        return newState
+      }
+    }),
     invalidated: makeReducer(false, {
-      [FORM_SUBMIT_SUCCESS+'/entries.current']: () => true,
-      [ENTRIES_UPDATE]: () => true
+      [FORM_SUBMIT_SUCCESS+'/entries.current']: () => true
     })
   }),
   current: makeFormReducer('entries.current', {}, {

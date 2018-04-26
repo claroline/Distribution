@@ -328,33 +328,6 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/entry/{entry}/delete",
-     *     name="claro_claco_form_entry_delete",
-     *     options = {"expose"=true}
-     * )
-     * @EXT\ParamConverter(
-     *     "entry",
-     *     class="ClarolineClacoFormBundle:Entry",
-     *     options={"mapping": {"entry": "uuid"}}
-     * )
-     *
-     * Deletes an entry
-     *
-     * @param Entry $entry
-     *
-     * @return JsonResponse
-     */
-    public function entryDeleteAction(Entry $entry)
-    {
-        $this->clacoFormManager->checkEntryEdition($entry);
-        $serializedEntry = $this->entrySerializer->serialize($entry);
-        $this->clacoFormManager->deleteEntry($entry);
-
-        return new JsonResponse($serializedEntry, 200);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/claco/form/entries/delete",
      *     name="claro_claco_form_entries_delete",
      *     options = {"expose"=true}

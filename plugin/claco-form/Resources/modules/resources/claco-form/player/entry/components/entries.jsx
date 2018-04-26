@@ -4,7 +4,7 @@ import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
 import {url} from '#/main/core/api/router'
-import {trans} from '#/main/core/translation'
+import {trans, transChoice} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
@@ -24,18 +24,10 @@ import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/act
 const authenticatedUser = currentUser()
 
 class EntriesComponent extends Component {
-  deleteEntry(entry) {
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
-      title: trans('delete_entry', {}, 'clacoform'),
-      question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
-      handleConfirm: () => this.props.deleteEntry(entry.id)
-    })
-  }
-
   deleteEntries(entries) {
     this.props.showModal(MODAL_DELETE_CONFIRM, {
-      title: trans('delete_selected_entries', {}, 'clacoform'),
-      question: trans('delete_selected_entries_confirm_message', {}, 'clacoform'),
+      title: transChoice('delete_selected_entries', entries.length, {count: entries.length}, 'clacoform'),
+      question: transChoice('delete_selected_entries_confirm_message', entries.length, {count: entries.length}, 'clacoform'),
       handleConfirm: () => this.props.deleteEntries(entries)
     })
   }
@@ -116,12 +108,13 @@ class EntriesComponent extends Component {
       label: trans('published'),
       displayed: true,
       filterable: this.isFilterableField('status'),
-      type: 'boolean'
+      type: 'boolean',
+      calculated: (rowData) => rowData.status === 1
     })
     columns.push({
       name: 'locked',
       label: trans('locked'),
-      displayed: false,
+      displayed: this.props.canAdministrate,
       filterable: this.isFilterableField('locked'),
       type: 'boolean'
     })
@@ -297,21 +290,11 @@ class EntriesComponent extends Component {
     }
     dataListActions.push({
       type: 'callback',
-      icon: 'fa fa-fw fa-trash',
-      label: trans('delete'),
-      callback: () => this.deleteEntry(rows[0]),
-      displayed: !rows[0].locked && this.canManageEntry(rows[0]),
-      dangerous: true,
-      context: 'row'
-    })
-    dataListActions.push({
-      type: 'callback',
-      icon: 'fa fa-w fa-trash',
+      icon: 'fa fa-w fa-trash-o',
       label: trans('delete'),
       callback: () => this.deleteEntries(rows),
       displayed: rows.filter(e => !e.locked && this.canManageEntry(e)).length === rows.length,
-      dangerous: true,
-      context: 'selection'
+      dangerous: true
     })
 
     return dataListActions
@@ -487,7 +470,6 @@ EntriesComponent.propTypes = {
   downloadEntriesPdf: T.func.isRequired,
   switchEntriesStatus: T.func.isRequired,
   switchEntriesLock: T.func.isRequired,
-  deleteEntry: T.func.isRequired,
   deleteEntries: T.func.isRequired,
   downloadFieldValueFile: T.func.isRequired,
   showModal: T.func.isRequired,
@@ -535,7 +517,6 @@ const Entries = connect(
     downloadEntriesPdf: entries => dispatch(actions.downloadEntriesPdf(entries)),
     switchEntriesStatus: (entries, status) => dispatch(actions.switchEntriesStatus(entries, status)),
     switchEntriesLock: (entries, locked) => dispatch(actions.switchEntriesLock(entries, locked)),
-    deleteEntry: entryId => dispatch(actions.deleteEntry(entryId)),
     deleteEntries: entries => dispatch(actions.deleteEntries(entries)),
     downloadFieldValueFile: fieldValueId => dispatch(actions.downloadFieldValueFile(fieldValueId)),
     showModal: (type, props) => dispatch(modalActions.showModal(type, props))

@@ -564,7 +564,7 @@ const Entry = withRouter(connect(
           title: trans('delete_entry', {}, 'clacoform'),
           question: trans('delete_entry_confirm_message', {title: entry.title}, 'clacoform'),
           handleConfirm: () => {
-            dispatch(actions.deleteEntry(entry.id))
+            dispatch(actions.deleteEntries([entry]))
             ownProps.history.push('/entries')
           }
         })

@@ -4,6 +4,7 @@ import {url} from '#/main/core/api/router'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {actions as formActions} from '#/main/core/data/form/actions'
+import {actions as listActions} from '#/main/core/data/list/actions'
 
 const ENTRIES_UPDATE = 'ENTRIES_UPDATE'
 const ENTRY_CREATED = 'ENTRY_CREATED'
@@ -22,7 +23,7 @@ const ENTRY_KEYWORD_REMOVE = 'ENTRY_KEYWORD_REMOVE'
 
 const actions = {}
 
-actions.updateEntries = makeActionCreator(ENTRIES_UPDATE)
+actions.updateEntries = makeActionCreator(ENTRIES_UPDATE, 'entries')
 actions.addCreatedEntry = makeActionCreator(ENTRY_CREATED, 'entry')
 actions.loadCurrentEntry = makeActionCreator(CURRENT_ENTRY_LOAD, 'entry')
 actions.addEntryComment = makeActionCreator(ENTRY_COMMENT_ADD, 'comment')
@@ -36,20 +37,6 @@ actions.removeCategory = makeActionCreator(ENTRY_CATEGORY_REMOVE, 'categoryId')
 actions.addKeyword = makeActionCreator(ENTRY_KEYWORD_ADD, 'keyword')
 actions.removeKeyword = makeActionCreator(ENTRY_KEYWORD_REMOVE, 'keywordId')
 
-actions.deleteEntry = (entryId) => (dispatch) => {
-  dispatch({
-    [API_REQUEST]: {
-      url: ['claro_claco_form_entry_delete', {entry: entryId}],
-      request: {
-        method: 'DELETE'
-      },
-      success: (data, dispatch) => {
-        dispatch(actions.updateEntries())
-      }
-    }
-  })
-}
-
 actions.deleteEntries = (entries) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
@@ -58,7 +45,7 @@ actions.deleteEntries = (entries) => (dispatch) => {
         method: 'PATCH'
       },
       success: (data, dispatch) => {
-        dispatch(actions.updateEntries())
+        dispatch(listActions.deleteItems('entries.list', entries))
       }
     }
   })
@@ -80,7 +67,7 @@ actions.switchEntriesStatus = (entries, status) => ({
     request: {
       method: 'PATCH'
     },
-    success: (data, dispatch) => dispatch(actions.updateEntries())
+    success: (data, dispatch) => dispatch(actions.updateEntries(data))
   }
 })
 
@@ -100,7 +87,7 @@ actions.switchEntriesLock = (entries, locked) => ({
     request: {
       method: 'PATCH'
     },
-    success: (data, dispatch) => dispatch(actions.updateEntries())
+    success: (data, dispatch) => dispatch(actions.updateEntries(data))
   }
 })
 
