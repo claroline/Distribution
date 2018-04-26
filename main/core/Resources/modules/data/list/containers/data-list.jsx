@@ -91,15 +91,6 @@ DataList.propTypes = {
   }),
 
   /**
-   * Provides data delete.
-   */
-  delete: T.shape({
-    url: T.oneOfType([T.string, T.array]).isRequired,
-    disabled: T.func, // receives the list of rows to delete
-    displayed: T.func // receives the list of rows to delete
-  }),
-
-  /**
    * The definition of the list rows data.
    */
   definition: T.arrayOf(
@@ -115,6 +106,15 @@ DataList.propTypes = {
    * not call it. Example : (row) => myFunc
    */
   primaryAction: T.func,
+
+  /**
+   * Provides data delete.
+   */
+  delete: T.shape({
+    url: T.oneOfType([T.string, T.array]).isRequired,
+    disabled: T.func, // receives the list of rows to delete
+    displayed: T.func // receives the list of rows to delete
+  }),
 
   /**
    * A list of data related actions.

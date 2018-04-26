@@ -21,11 +21,11 @@ const UsersList = props =>
       url: ['apiv2_user_list_managed'],
       autoload: true
     }}
-
-    primaryAction={UserList.open}
     delete={{
       url: ['apiv2_user_delete_bulk']
     }}
+
+    primaryAction={UserList.open}
     actions={(rows) => [
       {
         type: 'url',

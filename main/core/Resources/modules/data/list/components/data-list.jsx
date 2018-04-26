@@ -225,11 +225,6 @@ DataList.propTypes = {
   ).isRequired,
 
   /**
-   * Actions available for each data row and selected rows (if selection is enabled).
-   */
-  actions: T.func,
-
-  /**
    * Data primary action (aka open/edit action for rows in most cases).
    * Providing this object will automatically display the primary action (depending on the current view mode).
    */
