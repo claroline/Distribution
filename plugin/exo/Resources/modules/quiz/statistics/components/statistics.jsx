@@ -21,9 +21,8 @@ const Statistics = props =>
 
         {props.steps[key].items.map((itemUid, idxItem) => {
           let item = props.items[itemUid]
-          return isQuestionType(item.type) ?
-
-              <Panel key={item.id}>
+          return isQuestionType(item.type) &&
+            <Panel key={item.id}>
               {item.title &&
                 <h4 className="item-title">{item.title}</h4>
               }
@@ -44,10 +43,7 @@ const Statistics = props =>
                 item={item}
                 numbering={props.numbering !== NUMBERING_NONE ? (idx + 1) + '.' + getNumbering(props.numbering, idxItem): null}
               />
-
-              </Panel>
-             :
-            ''
+            </Panel>
         })}
       </div>
     )}
@@ -60,15 +56,16 @@ Statistics.propTypes = {
   quiz: T.object.isRequired
 }
 
-function mapStateToProps(state) {
-  return {
+const ConnectedStatistics = connect(
+  (state) => ({
+    quiz: quizSelect.quiz(state),
     papers: paperSelect.papers(state),
     numbering: quizSelect.quizNumbering(state),
     steps: quizSelect.steps(state),
     items: quizSelect.items(state)
-  }
+  })
+)(Statistics)
+
+export {
+  ConnectedStatistics as Statistics
 }
-
-const ConnectedStatistics = connect(mapStateToProps)(Statistics)
-
-export {ConnectedStatistics as Statistics}

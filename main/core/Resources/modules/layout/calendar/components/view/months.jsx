@@ -14,7 +14,7 @@ import {monthNum} from '#/main/core/layout/calendar/utils'
 const Month = props =>
   <Button
     type="callback"
-    className={classes('btn btn-link-default month', {
+    className={classes('btn btn-link month', {
       now:      props.current.isSame(props.now, 'month'),
       selected: props.selected && props.current.isSame(props.selected, 'month')
     })}

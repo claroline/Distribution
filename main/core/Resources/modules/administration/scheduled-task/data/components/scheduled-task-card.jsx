@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
-import {asset} from '#/main/core/scaffolding/asset'
 import {displayDate} from '#/main/core/scaffolding/date'
 
 import {DataCard} from '#/main/core/data/components/data-card'

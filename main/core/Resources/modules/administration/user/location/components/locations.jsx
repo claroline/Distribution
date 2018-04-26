@@ -23,6 +23,7 @@ const LocationsList = props =>
     }}
     definition={LocationList.definition}
     primaryAction={LocationList.open}
+    primaryAction={LocationList.open}
     deleteAction={() => ({
       type: 'url',
       target: ['apiv2_location_delete_bulk']

@@ -38,33 +38,6 @@ class ExerciseSerializer implements SerializerInterface
     private $paperManager;
 
     /**
-     * ExerciseSerializer constructor.
-     *
-     * @DI\InjectParams({
-     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
-     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
-     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
-     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
-     * })
-     *
-     * @param TokenStorageInterface         $tokenStorage
-     * @param StepSerializer                $stepSerializer
-     * @param ItemManager                   $itemManager
-     * @param PaperManager                  $paperManager
-     */
-    public function __construct(
-        TokenStorageInterface $tokenStorage,
-        StepSerializer $stepSerializer,
-        ItemManager $itemManager,
-        PaperManager $paperManager
-    ) {
-        $this->tokenStorage = $tokenStorage;
-        $this->stepSerializer = $stepSerializer;
-        $this->itemManager = $itemManager;
-        $this->paperManager = $paperManager; // todo use repository instead
-    }
-
-    /**
      * Converts an Exercise into a JSON-encodable structure.
      *
      * @param Exercise $exercise
@@ -77,7 +50,7 @@ class ExerciseSerializer implements SerializerInterface
         $exerciseData = new \stdClass();
         $exerciseData->id = $exercise->getUuid();
         $exerciseData->title = $exercise->getTitle();
-        $exerciseData->meta = $this->serializeMetadata($exercise);
+        $exerciseData->meta = $this->serializeMetadata($exercise, $options);
 
         if (!in_array(Transfer::MINIMAL, $options)) {
             if (!empty($exercise->getDescription())) {
@@ -90,6 +63,33 @@ class ExerciseSerializer implements SerializerInterface
         }
 
         return $exerciseData;
+    }
+
+    /**
+     * ExerciseSerializer constructor.
+     *
+     * @DI\InjectParams({
+     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
+     *     "stepSerializer" = @DI\Inject("ujm_exo.serializer.step"),
+     *     "itemManager"    = @DI\Inject("ujm_exo.manager.item"),
+     *     "paperManager"   = @DI\Inject("ujm_exo.manager.paper")
+     * })
+     *
+     * @param TokenStorageInterface $tokenStorage
+     * @param StepSerializer        $stepSerializer
+     * @param ItemManager           $itemManager
+     * @param PaperManager          $paperManager
+     */
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        StepSerializer $stepSerializer,
+        ItemManager $itemManager,
+        PaperManager $paperManager
+    ) {
+        $this->tokenStorage = $tokenStorage;
+        $this->stepSerializer = $stepSerializer;
+        $this->itemManager = $itemManager;
+        $this->paperManager = $paperManager; // todo use repository instead
     }
 
     /**
@@ -132,29 +132,30 @@ class ExerciseSerializer implements SerializerInterface
      *
      * @return \stdClass
      */
-    private function serializeMetadata(Exercise $exercise)
+    private function serializeMetadata(Exercise $exercise, array $options = [])
     {
         $metadata = new \stdClass();
         // Adding some data, otherwise empty object gets interpreted as empty array which generates an import validation error
         $metadata->creationDate = new \DateTime();
 
-        $nbUserPapers = 0;
-        $nbUserPapersDayCount = 0;
+        if (in_array(Transfer::INCLUDE_METRICS, $options)) {
+            $nbUserPapers = 0;
+            $nbUserPapersDayCount = 0;
 
-        $currentUser = $this->tokenStorage->getToken()->getUser();
-        $authenticated = $currentUser instanceof User;
+            if (!empty($this->tokenStorage->getToken())) {
+                $currentUser = $this->tokenStorage->getToken()->getUser();
+                if ($currentUser instanceof User) {
+                    $nbUserPapers = $this->paperManager->countUserFinishedPapers($exercise, $currentUser);
+                    $nbUserPapersDayCount = $this->paperManager->countUserFinishedDayPapers($exercise, $currentUser);
+                }
+            }
 
-        if ($authenticated) {
-            $nbUserPapers = $this->paperManager->countUserFinishedPapers($exercise, $currentUser);
-            $nbUserPapersDayCount = $this->paperManager->countUserFinishedDayPapers($exercise, $currentUser);
+            $nbPapers = $this->paperManager->countExercisePapers($exercise);
+
+            $metadata->paperCount = (int) $nbPapers;
+            $metadata->userPaperCount = (int) $nbUserPapers;
+            $metadata->userPaperDayCount = (int) $nbUserPapersDayCount;
         }
-
-        $nbPapers = $this->paperManager->countExercisePapers($exercise);
-
-        $metadata->paperCount = (int) $nbPapers;
-        $metadata->userPaperCount = (int) $nbUserPapers;
-        $metadata->userPaperDayCount = (int) $nbUserPapersDayCount;
-        $metadata->registered = $authenticated;
 
         return $metadata;
     }

@@ -2,9 +2,6 @@ import React, {Component} from 'react'
 import {PropTypes as T} from 'prop-types'
 import invariant from 'invariant'
 import isEqual from 'lodash/isEqual'
-import merge from 'lodash/merge'
-
-import {trans, transChoice} from '#/main/core/translation'
 
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {
@@ -20,9 +17,9 @@ import {
   getFilterableProps
 } from '#/main/core/data/list/utils'
 
-import {ListEmpty} from '#/main/core/data/list/components/empty.jsx'
-import {ListHeader} from '#/main/core/data/list/components/header.jsx'
-import {ListFooter} from '#/main/core/data/list/components/footer.jsx'
+import {ListEmpty} from '#/main/core/data/list/components/empty'
+import {ListHeader} from '#/main/core/data/list/components/header'
+import {ListFooter} from '#/main/core/data/list/components/footer'
 
 /**
  * Full data list with configured components (eg. search, pagination).
@@ -39,9 +36,6 @@ class DataList extends Component {
     this.state = Object.assign({}, currentDisplay, {
       definition: definition
     })
-
-    // fills missing translations with default ones
-    this.translations = merge({}, listConst.DEFAULT_TRANSLATIONS, this.props.translations)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -172,26 +166,6 @@ class DataList extends Component {
       })
     }
 
-    // TODO : restore
-    // calculate actions
-    /*let actions = this.props.actions.slice(0)
-    if (this.props.deleteAction) {
-      actions.push({
-        icon: 'fa fa-fw fa-trash-o',
-        label: trans('delete'),
-        dangerous: true,
-        displayed: this.props.deleteAction.displayed,
-        disabled: this.props.deleteAction.disabled,
-        action: typeof this.props.deleteAction.action === 'function' ?
-          (rows) => this.props.deleteAction.action(
-            rows,
-            trans(this.translations.keys.deleteConfirmTitle, {}, this.translations.domain),
-            transChoice(this.translations.keys.deleteConfirmQuestion, rows.length, {count: rows.length}, this.translations.domain)
-          ) :
-          this.props.deleteAction.action
-      })
-    }*/
-
     return (
       <div className="data-list">
         <ListHeader
@@ -262,10 +236,9 @@ DataList.propTypes = {
   primaryAction: T.func,
 
   /**
-   * Data delete action.
-   * Providing this object will automatically append the delete action to the actions list of rows and selection.
+   * Actions available for each data row and selected rows (if selection is enabled).
    */
-  deleteAction: T.func,
+  actions: T.func,
 
   /**
    * Display formats of the list.
@@ -333,21 +306,7 @@ DataList.propTypes = {
    *
    * It must be a react component.
    */
-  card: T.func,
-
-  /**
-   * Override default list translations.
-   */
-  translations: T.shape({
-    domain: T.string,
-    keys: T.shape({
-      searchPlaceholder: T.string,
-      emptyPlaceholder: T.string,
-      countResults: T.string,
-      deleteConfirmTitle: T.string,
-      deleteConfirmQuestion: T.string
-    })
-  })
+  card: T.func
 }
 
 DataList.defaultProps = {
@@ -355,8 +314,7 @@ DataList.defaultProps = {
   display: {
     available: Object.keys(listConst.DISPLAY_MODES),
     current: listConst.DEFAULT_DISPLAY_MODE
-  },
-  translations: listConst.DEFAULT_TRANSLATIONS
+  }
 }
 
 export {

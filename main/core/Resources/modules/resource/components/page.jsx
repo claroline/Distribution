@@ -5,7 +5,6 @@ import {registerModals} from '#/main/core/layout/modal'
 import {PageHeader} from '#/main/core/layout/page'
 import {RoutedPage} from '#/main/core/layout/router'
 
-import {t_res} from '#/main/core/resource/translation'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {ResourcePageActions} from '#/main/core/resource/components/page-actions'
 import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types'

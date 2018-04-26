@@ -1,11 +1,12 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {url} from '#/main/core/api'
+
+// todo implement confirm behavior
 
 /**
  * URL button.
@@ -24,7 +25,7 @@ const UrlButton = props => {
 
   return (
     <a
-      {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target')}
+      {...omit(props, 'displayed', 'primary', 'dangerous', 'size', 'target', 'confirm')}
       role="link"
       tabIndex={props.tabIndex}
       href={!props.disabled ? target : ''}
@@ -42,7 +43,7 @@ const UrlButton = props => {
   )
 }
 
-UrlButton.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(UrlButton, ButtonTypes, {
   target: T.oneOfType([
     T.array, // a symfony url array
     T.string

@@ -1,9 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {API_REQUEST} from '#/main/core/api/actions'
 import {ApiRequest as ApiRequestTypes} from '#/main/core/api/prop-types'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
@@ -28,7 +27,7 @@ const AsyncButtonComponent = props =>
     {props.children}
   </CallbackButton>
 
-AsyncButtonComponent.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(AsyncButtonComponent, ButtonTypes, {
   request: T.shape(
     ApiRequestTypes.propTypes
   ).isRequired,
@@ -36,8 +35,6 @@ AsyncButtonComponent.propTypes = merge({}, ButtonTypes.propTypes, {
   // from redux
   executeRequest: T.func.isRequired
 })
-
-AsyncButtonComponent.defaultProps = merge({}, ButtonTypes.defaultProps)
 
 const AsyncButton = connect(
   null,

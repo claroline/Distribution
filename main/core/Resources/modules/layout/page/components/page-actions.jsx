@@ -1,10 +1,10 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
 import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {DropdownButton} from '#/main/app/action/components/dropdown-button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
@@ -19,13 +19,15 @@ const PageAction = props =>
   <Button
     {...props}
     tooltip="bottom"
-    className={classes('btn page-action-btn', props.className)}
+    className={classes('page-action-btn', props.className)}
   >
     {props.children}
   </Button>
 
-PageAction.propTypes = merge({}, ActionTypes.propTypes)
-PageAction.defaultProps = merge({}, ActionTypes.defaultProps)
+implementPropTypes(PageAction, ActionTypes, {
+  className: T.string,
+  children: T.any
+})
 
 /**
  * Toggles fullscreen mode.
@@ -53,14 +55,13 @@ const MoreAction = props =>
   <DropdownButton
     {...props}
     tooltip="bottom"
-    className={classes('btn page-action-btn', props.className)}
+    className={classes('page-action-btn', props.className)}
     icon="fa fa-ellipsis-v"
     label={trans('show_more_actions')}
     pullRight={true}
   />
 
-MoreAction.propTypes = merge({}, DropdownButton.propTypes)
-MoreAction.defaultProps = merge({}, DropdownButton.defaultProps, {
+implementPropTypes(MoreAction, DropdownButton, {}, {
   menuLabel: trans('more_actions')
 })
 

@@ -10,7 +10,8 @@ import {generateUrl} from '#/main/core/api/router'
 const RoleList = {
   open: (row) => ({
     type: 'link',
-    target: `/roles/form/${row.id}`
+    target: `/roles/form/${row.id}`,
+    label: trans('edit', {}, 'actions')
   }),
   definition: [
     {

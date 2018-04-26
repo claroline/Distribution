@@ -13,6 +13,7 @@ use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
+use Claroline\CoreBundle\Library\Utilities\FileUtilities;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -253,6 +254,11 @@ class WorkspaceSerializer
                 $data['thumbnail']
             );
             $workspace->setThumbnail($thumbnail);
+            $this->fileUt->createFileUse(
+                $thumbnail,
+                'Claroline\CoreBundle\Entity\Workspace',
+                $workspace->getUuid()
+            );
         }
 
         if (isset($data['registration']) && isset($data['registration']['defaultRole'])) {

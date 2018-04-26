@@ -7,6 +7,7 @@ import {DropdownButton, MenuItem} from '#/main/core/layout/components/dropdown'
 
 import {Numeric} from '#/main/core/layout/form/components/field/numeric'
 
+// TODO : finish implementation
 // TODO : make it more generic by implementing a number with unit type
 
 const STORAGE_UNITS = {
@@ -27,7 +28,7 @@ const Storage = props =>
     <span className="input-group-btn">
       <DropdownButton
         id={`units-${props.id}`}
-        title={"KB"}
+        title="KB"
         bsStyle="default"
         noCaret={true}
         pullRight={true}
@@ -55,9 +56,7 @@ const Storage = props =>
 
 implementPropTypes(Storage, FormFieldTypes, {
   // more precise value type
-  value: T.number,
-}, {
-
+  value: T.number
 })
 
 export {

@@ -2,7 +2,6 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {generateUrl} from '#/main/core/api/router'
 import {trans} from '#/main/core/translation'
 import {User} from '#/main/core/user/prop-types'
 import {ResourceUserEvaluation} from '#/main/core/user/tracking/prop-types'

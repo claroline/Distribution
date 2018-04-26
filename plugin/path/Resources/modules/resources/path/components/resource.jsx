@@ -20,21 +20,19 @@ const Resource = props => {
     {
       path: '/edit',
       component: Editor,
-      displayed: props.editable
+      disabled: !props.editable
     }, {
       path: '/play',
       component: Player
+    }, {
+      path: '/',
+      exact: true,
+      component: Overview,
+      disabled: !props.path.display.showOverview
     }
   ]
 
-  if (props.path.display.showOverview) {
-    // add overview route
-    routes.push({
-      path: '/',
-      exact: true,
-      component: Overview
-    })
-  } else {
+  if (!props.path.display.showOverview) {
     // redirect to player
     redirect.push({
       from: '/',

@@ -2,7 +2,7 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {generateUrl} from '#/main/core/api/router'
+import {url} from '#/main/core/api/router'
 import {t, tex} from '#/main/core/translation'
 import {
   Page,
@@ -274,6 +274,8 @@ const Docimology = props =>
           type="url"
           label={tex('back_to_the_quiz')}
           icon="fa fa-fw fa-sign-out"
+          action={generateUrl('ujm_exercise_open', {id: props.quiz.id})}
+          target={url(['claro_resource_open', {node: props.resourceNode.autoId, resourceType: props.resourceNode.meta.type}])}
           target={generateUrl('ujm_exercise_open', {id: props.quiz.id})}
         />
       </PageActions>
@@ -305,6 +307,12 @@ const Docimology = props =>
   </Page>
 
 Docimology.propTypes = {
+  resourceNode: T.shape({
+    autoId: T.number.isRequired,
+    meta: T.shape({
+      type: T.string.isRequired
+    }).isRequired
+  }).isRequired,
   quiz: T.shape({
     id: T.string.isRequired,
     title: T.string.isRequired
@@ -321,6 +329,7 @@ Docimology.propTypes = {
 
 function mapStateToProps(state) {
   return {
+    resourceNode: select.resourceNode(state),
     quiz: select.quiz(state),
     statistics: select.statistics(state)
   }

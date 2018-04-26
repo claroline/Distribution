@@ -3,11 +3,9 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {t, Translator} from '#/main/core/translation'
-import {generateUrl} from '#/main/core/api/router'
-
-import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import Configuration from '#/main/core/library/Configuration/Configuration'
 
+import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_CHANGE_PASSWORD} from '#/main/core/user/modals/components/change-password.jsx'
 import {MODAL_URL} from '#/main/core/layout/modal'
@@ -23,6 +21,7 @@ const UsersList = props =>
       url: ['apiv2_user_list_managed'],
       autoload: true
     }}
+
     primaryAction={UserList.open}
     deleteAction={() => ({
       type: 'url',

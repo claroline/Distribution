@@ -1,9 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {Button as ButtonTypes} from '#/main/app/button/prop-types'
 import {CallbackButton} from '#/main/app/button/components/callback'
@@ -25,7 +24,7 @@ const ModalButtonComponent = props =>
     {props.children}
   </CallbackButton>
 
-ModalButtonComponent.propTypes = merge({}, ButtonTypes.propTypes, {
+implementPropTypes(ModalButtonComponent, ButtonTypes, {
   /**
    * The modal to open.
    *
@@ -55,8 +54,6 @@ ModalButtonComponent.propTypes = merge({}, ButtonTypes.propTypes, {
   // retrieved from store
   showModal: T.func.isRequired
 })
-
-ModalButtonComponent.defaultProps = merge({}, ButtonTypes.defaultProps)
 
 const ModalButton = connect(
   null,

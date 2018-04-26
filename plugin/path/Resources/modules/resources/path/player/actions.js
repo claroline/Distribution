@@ -20,7 +20,7 @@ actions.updateStepProgression = makeActionCreator(STEP_UPDATE_PROGRESSION, 'step
 actions.updateProgression = (stepId, status = constants.STATUS_SEEN) => ({
   [API_REQUEST]: {
     silent: true,
-    url: ['innova_path_step_progression_update', {id: stepId}],
+    url: ['innova_path_progression_update', {id: stepId}],
     request: {
       method: 'PUT',
       body: JSON.stringify({status: status})

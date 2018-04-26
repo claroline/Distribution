@@ -14,10 +14,6 @@ import {EmbeddedResource} from '#/main/core/resource/components/embedded'
 
 import {Step as StepTypes} from '#/plugin/path/resources/path/prop-types'
 import {constants} from '#/plugin/path/resources/path/constants'
-import {
-  STEP_ENABLE_NAVIGATION,
-  STEP_DISABLE_NAVIGATION
-} from '#/plugin/path/resources/path/player/actions'
 
 const ManualProgression = props =>
   <div className="step-manual-progression">
@@ -113,8 +109,8 @@ PrimaryResource.propTypes = {
 // temp
 // todo : replace by a better code later if we keep iFrame compatibility
 const AVAILABLE_EMBEDDED_RESOURCES = [
-  'ujm_exercise',
-  'text'
+  'text',
+  'ujm_exercise'
 ]
 
 const SecondaryResources = props =>
@@ -196,7 +192,7 @@ const Step = props =>
           }
 
           {props.primaryResource && (-1 === AVAILABLE_EMBEDDED_RESOURCES.indexOf(props.primaryResource.meta.type)) &&
-            <PrimaryResource id={props.primaryResource.autoId} type={props.primaryResource.meta.type} />
+            <PrimaryResource id={props.primaryResource.autoId} type={props.primaryResource.meta.type} height={props.display.height} />
           }
         </div>
       }

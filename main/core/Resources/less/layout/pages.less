@@ -143,9 +143,12 @@
 
 // Current styles permit to have 7 buttons in one line on 360px screens (without btn groups)
 .page-action-btn {
+    .button-base();
+
     position: relative; // for buttons with labels
     border-radius: 50%;
     padding: .65em;
+    border: 1px solid transparent !important; // not perfect, it's required to override default btns border
 
     &.default {
         .button-variant(#333333; #EBEBEB; transparent);

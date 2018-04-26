@@ -1,7 +1,7 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
+
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 
 import {constants} from '#/main/core/layout/gauge/constants'
 import {Gauge as GaugeTypes} from '#/main/core/layout/gauge/prop-types'
@@ -47,12 +47,8 @@ const CountGauge = props => {
   )
 }
 
-CountGauge.propTypes = merge({}, GaugeTypes.propTypes, {
+implementPropTypes(CountGauge, GaugeTypes, {
   total: T.number
-})
-
-CountGauge.defaultProps = merge({}, GaugeTypes.defaultProps, {
-
 })
 
 export {

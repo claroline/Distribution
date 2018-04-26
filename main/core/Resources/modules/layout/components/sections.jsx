@@ -48,7 +48,7 @@ const Section = props =>
             {props.actions.map((action) =>
               <Button
                 {...action}
-                key={`${props.id}-${toKey(action.label)}`}
+                key={`${toKey(props.title)}-${toKey(action.label)}`}
                 disabled={!!action.disabled || props.disabled}
                 className="btn btn-link"
                 tooltip="top"

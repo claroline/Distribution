@@ -110,7 +110,27 @@ DataList.propTypes = {
   /**
    * Provides data delete.
    */
-  deleteAction: T.func,
+  delete: T.shape({
+    url: T.oneOfType([T.string, T.array]).isRequired,
+    disabled: T.func, // receives the list of rows to delete
+    displayed: T.func // receives the list of rows to delete
+  }),
+
+   * The definition of the list rows data.
+   */
+  definition: T.arrayOf(
+    T.shape(DataListPropertyTypes.propTypes)
+  ).isRequired,
+
+  /**
+   * Open action generator for rows.
+   * It gets the current data row as first param.
+   *
+   * NB. It's called to generate the action (to be able to catch generated URL),
+   * so if your open action is a func, generator should return another function,
+   * not call it. Example : (row) => myFunc
+   */
+  primaryAction: T.func,
 
   /**
    * A list of data related actions.
@@ -126,20 +146,6 @@ DataList.propTypes = {
    * Enables/Disables the feature to filter the displayed columns.
    */
   filterColumns: T.bool,
-
-  /**
-   * Override default list translations.
-   */
-  translations: T.shape({
-    domain: T.string,
-    keys: T.shape({
-      searchPlaceholder: T.string,
-      emptyPlaceholder: T.string,
-      countResults: T.string,
-      deleteConfirm: T.string,
-      deleteConfirmMessage: T.string
-    })
-  }),
 
   // calculated from redux store
   loaded: T.bool,

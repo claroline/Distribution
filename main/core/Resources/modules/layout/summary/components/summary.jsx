@@ -1,12 +1,11 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
 import {trans} from '#/main/core/translation'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {Button} from '#/main/app/action/components/button'
 import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {Summary as SummaryTypes} from '#/main/core/layout/summary/prop-types'
@@ -126,7 +125,7 @@ class SummaryLink extends Component {
   }
 }
 
-SummaryLink.propTypes = merge({}, ActionTypes.propTypes, {
+implementPropTypes(SummaryLink, ActionTypes, {
   opened: T.bool.isRequired,
   additional: T.arrayOf(T.shape(
     ActionTypes.propTypes
@@ -134,9 +133,7 @@ SummaryLink.propTypes = merge({}, ActionTypes.propTypes, {
   children: T.arrayOf(T.shape(
     ActionTypes.propTypes
   ))
-})
-
-SummaryLink.defaultProps = merge({}, ActionTypes.defaultProps, {
+}, {
   additional: [],
   children: []
 })
@@ -189,8 +186,7 @@ class Summary extends Component {
   }
 }
 
-Summary.propTypes    = merge({}, SummaryTypes.propTypes)
-Summary.defaultProps = merge({}, SummaryTypes.defaultProps)
+implementPropTypes(Summary, SummaryTypes)
 
 export {
   Summary

@@ -122,8 +122,9 @@ const Resource = props =>
           component: AttemptEnd
         }, {
           path: '/papers',
+          exact: true,
           component: Papers,
-          disabled: props.registeredUser,
+          disabled: !props.registeredUser,
           onEnter: () => props.results()
         }, {
           path: '/papers/:id', // todo : declare inside papers module
@@ -131,18 +132,20 @@ const Resource = props =>
           onEnter: (params = {}) => props.result(params.id)
         }, {
           path: '/correction/questions',
+          exact: true,
           component: Questions,
-          disabled: props.papersAdmin,
+          disabled: !props.papersAdmin,
           onEnter: () => props.correction()
         }, {
           path: '/correction/questions/:id', // todo : declare inside correction module
           component: Answers,
-          disabled: props.papersAdmin,
+          disabled: !props.papersAdmin,
           onEnter: (params = {}) => props.correction(params.id)
         }, {
           path: '/statistics',
-          components: Statistics,
-          disabled: props.papersAdmin
+          component: Statistics,
+          disabled: !props.papersAdmin,
+          onEnter: () => props.statistics()
         }
       ]}
       redirect={[
@@ -168,7 +171,9 @@ const Resource = props =>
 Resource.propTypes = {
   quizId: T.string.isRequired,
   editable: T.bool.isRequired,
-  hasUserPapers: T.bool.isRequired,
+  papersAdmin: T.bool.isRequired,
+  docimologyAdmin: T.bool.isRequired,
+  hasPapers: T.bool.isRequired,
   registeredUser: T.bool.isRequired,
   hasOverview: T.bool.isRequired,
   saveEnabled: T.bool.isRequired,
@@ -177,7 +182,8 @@ Resource.propTypes = {
   testMode: T.func.isRequired,
   results: T.func.isRequired,
   result: T.func.isRequired,
-  statistics: T.func.isRequired
+  statistics: T.func.isRequired,
+  correction: T.func.isRequired
 }
 
 const QuizResource = DragNDropContext(
@@ -186,21 +192,32 @@ const QuizResource = DragNDropContext(
       quizId: select.id(state),
       editable: resourceSelect.editable(state),
       hasPapers: select.hasPapers(state),
-      hasUserPapers: select.hasUserPapers(state),
       hasOverview: select.hasOverview(state),
       papersAdmin: select.papersAdmin(state),
       docimologyAdmin: select.docimologyAdmin(state),
-      registeredUser: select.registered(state),
+      registeredUser: select.registered(),
       saveEnabled: select.saveEnabled(state)
     }),
     (dispatch) => ({
-      save: () => dispatch(editorActions.save()),
-      edit: (quizId) => dispatch(editorActions.selectObject(quizId, TYPE_QUIZ)),
-      testMode: (testMode) => dispatch(playerActions.setTestMode(testMode)),
-      results: () => dispatch(papersActions.listPapers()),
-      result: (paperId) => dispatch(papersActions.displayPaper(paperId)),
-      statistics: () => dispatch(statisticsActions.displayStatistics()),
-      correction: (questionId = null) => {
+      save() {
+        dispatch(editorActions.save())
+      },
+      edit(quizId) {
+        dispatch(editorActions.selectObject(quizId, TYPE_QUIZ))
+      },
+      testMode(testMode) {
+        dispatch(playerActions.setTestMode(testMode))
+      },
+      results() {
+        dispatch(papersActions.listPapers())
+      },
+      result(paperId) {
+        dispatch(papersActions.displayPaper(paperId))
+      },
+      statistics() {
+        dispatch(statisticsActions.displayStatistics())
+      },
+      correction(questionId = null) {
         if (!questionId) {
           dispatch(correctionActions.displayQuestions())
         } else {

@@ -39,7 +39,7 @@ const Organization = () =>
         ]
       }
     ]}
-/>
+  />
 
 export {
   Organization

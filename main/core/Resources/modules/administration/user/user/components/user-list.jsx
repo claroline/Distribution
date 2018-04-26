@@ -5,7 +5,8 @@ import {UserCard} from '#/main/core/user/data/components/user-card'
 const UserList = {
   open: (row) => ({
     type: 'link',
-    target: `/users/form/${row.id}`
+    target: `/users/form/${row.id}`,
+    label: trans('edit', {}, 'actions')
   }),
   definition: [
     {

@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
+import omit from 'lodash/omit'
 
 import {t} from '#/main/core/translation'
 import {generateUrl} from '#/main/core/api/router'
@@ -10,6 +11,16 @@ import {constants as listConst} from '#/main/core/data/list/constants'
 
 import {select} from '#/main/core/user/contact/selectors'
 import {OptionsType} from '#/main/core/user/contact/prop-types'
+
+const ContactCard = props =>
+  <UserCard
+    {...omit(props, 'data')}
+    {...props.data}
+  />
+
+ContactCard.propTypes = {
+  data: T.object.isRequired
+}
 
 const ContactsComponent = props =>
   <DataListContainer
@@ -24,11 +35,7 @@ const ContactsComponent = props =>
     }}
     primaryAction={(row) => ({
       type: 'url',
-      target: ['claro_user_profile', {'publicUrl': row.data.meta.publicUrl}]
-    })}
-    deleteAction={() => ({
-      type: 'url',
-      target: ['apiv2_contact_delete_bulk']
+      target: ['claro_user_profile', {publicUrl: row.data.meta.publicUrl}]
     })}
     actions={(rows) => [
       {
@@ -68,7 +75,7 @@ const ContactsComponent = props =>
         displayed: props.options.data.show_phone
       }
     ]}
-    card={UserCard}
+    card={ContactCard}
   />
 
 ContactsComponent.propTypes = {

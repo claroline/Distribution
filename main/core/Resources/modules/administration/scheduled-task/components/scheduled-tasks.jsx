@@ -1,13 +1,12 @@
 import React from 'react'
 
 import {trans} from '#/main/core/translation'
-import {displayDate} from '#/main/core/scaffolding/date'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 
 import {ScheduledTaskCard} from '#/main/core/administration/scheduled-task/data/components/scheduled-task-card'
 import {constants} from '#/main/core/administration/scheduled-task/constants'
 
-const ScheduledTasks = props =>
+const ScheduledTasks = () =>
   <DataListContainer
     name="tasks"
     fetch={{

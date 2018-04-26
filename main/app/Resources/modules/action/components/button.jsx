@@ -1,9 +1,8 @@
 import React from 'react'
-import {PropTypes as T} from 'prop-types'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 import omit from 'lodash/omit'
 
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {toKey} from '#/main/core/scaffolding/text/utils'
 import {TooltipElement} from '#/main/core/layout/components/tooltip-element'
 import {GenericButton} from '#/main/app/button/components/generic'
@@ -25,6 +24,11 @@ const Button = props => props.tooltip ?
   >
     <GenericButton
       {...omit(props, 'tooltip', 'group', 'icon', 'label', 'children', 'context')}
+      confirm={props.confirm ? Object.assign({}, props.confirm, {
+        // append some defaults from action spec
+        icon: props.icon,
+        title: props.confirm.title || props.label
+      }) : undefined}
     >
       {props.icon &&
         <span className={classes('action-icon', props.icon)} aria-hidden={true} />
@@ -35,6 +39,11 @@ const Button = props => props.tooltip ?
   </TooltipElement> :
   <GenericButton
     {...omit(props, 'tooltip', 'group', 'icon', 'label', 'children', 'context')}
+    confirm={props.confirm ? Object.assign({}, props.confirm, {
+      // append some defaults from action spec
+      icon: props.icon,
+      title: props.confirm.title || props.label
+    }) : undefined}
   >
     {props.icon &&
       <span className={classes('action-icon icon-with-text-right', props.icon)} aria-hidden={true} />
@@ -43,7 +52,7 @@ const Button = props => props.tooltip ?
     {props.children}
   </GenericButton>
 
-Button.propTypes = merge({}, ActionTypes.propTypes, {
+implementPropTypes(Button, ActionTypes, {
   /**
    * If provided, only the icon of the action will be displayed
    * and the label will be rendered inside a tooltip
@@ -59,8 +68,6 @@ Button.propTypes = merge({}, ActionTypes.propTypes, {
    */
   size: T.oneOf(['sm', 'lg'])
 })
-
-Button.defaultProps = merge({}, ActionTypes.defaultProps)
 
 export {
   Button
