@@ -53,7 +53,7 @@ class GroupController extends AbstractCrudController
           [] :
           ['organization' => array_map(function (Organization $organization) {
               return $organization->getUuid();
-          }, $user->getOrganizations())];
+          }, $user->getAdministratedOrganizations()->toArray())];
 
         return new JsonResponse($this->finder->search(
             'Claroline\CoreBundle\Entity\Group',
