@@ -1,7 +1,5 @@
 import {constants as intlConstants} from '#/main/core/intl/constants'
 
-import {constants as clacoFormConstants} from '#/plugin/claco-form/resources/claco-form/constants'
-
 export const generateFieldKey = (id) => {
   return  `%field_${id}%`
 }

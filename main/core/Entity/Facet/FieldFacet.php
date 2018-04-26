@@ -49,6 +49,8 @@ class FieldFacet
     const FILE_TYPE = 11;
     /** @var int */
     const BOOLEAN_TYPE = 12;
+    /** @var int */
+    const CHOICE_TYPE = 13;
     /** @var array */
     public static $types = [
         'string' => self::STRING_TYPE,
@@ -63,6 +65,7 @@ class FieldFacet
         'cascade ' => self::CASCADE_SELECT_TYPE,
         'file' => self::FILE_TYPE,
         'boolean' => self::BOOLEAN_TYPE,
+        'choice' => self::CHOICE_TYPE,
     ];
 
     /**
@@ -317,6 +320,7 @@ class FieldFacet
             case self::CASCADE_SELECT_TYPE: return 'cascade';
             case self::FILE_TYPE: return 'file';
             case self::BOOLEAN_TYPE: return 'boolean';
+            case self::CHOICE_TYPE: return 'choice';
             default: return 'error';
         }
     }
@@ -341,6 +345,7 @@ class FieldFacet
             case self::CASCADE_SELECT_TYPE: return 'cascade_select';
             case self::FILE_TYPE: return 'file';
             case self::BOOLEAN_TYPE: return 'boolean';
+            case self::CHOICE_TYPE: return 'choice';
             default: return 'error';
         }
     }

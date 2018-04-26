@@ -99,7 +99,9 @@ class FieldList extends Component {
                   getCreatableTypes()[Object.keys(getCreatableTypes()).find(type => field.type === type)].meta.icon
                 )} />
 
-                <FieldPreview {...field} />
+                {field.type !== 'choice' &&
+                  <FieldPreview {...field} />
+                }
 
                 <div className="field-item-actions">
                   <TooltipButton

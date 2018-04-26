@@ -13,6 +13,21 @@ const choiceDefinition = {
     label: trans('choice'),
     description: trans('choice_desc')
   },
+
+  /**
+   * The list of configuration fields.
+   */
+  configure: (options) => [
+    {
+      name: 'multiple',
+      type: 'boolean',
+      label: trans('allow_multiple_responses')
+    }, {
+      name: 'condensed',
+      type: 'boolean',
+      label: trans('condensed_display')
+    }
+  ],
   parse: (display, options) => Object.keys(options.choices).find(enumValue => display === options.choices[enumValue]),
   render: (raw, options) => options.choices[raw],
   validate: (value, options) => !!options.choices[value],

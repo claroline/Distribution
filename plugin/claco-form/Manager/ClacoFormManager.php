@@ -1705,7 +1705,6 @@ class ClacoFormManager
         $fieldChoiceCategories = $field->getFieldChoiceCategories();
 
         foreach ($fieldChoiceCategories as $fieldChoiceCategory) {
-            $choice = $fieldChoiceCategory->getFieldFacetChoice();
             $categoryId = $fieldChoiceCategory->getCategory()->getId();
 
             if (isset($categoryLinks[$categoryId])) {
@@ -1713,10 +1712,6 @@ class ClacoFormManager
                 $newFieldChoiceCategory->setField($newField);
                 $newFieldChoiceCategory->setValue($fieldChoiceCategory->getValue());
                 $newFieldChoiceCategory->setCategory($categoryLinks[$categoryId]);
-
-                if (!empty($choice) && isset($fieldFacetChoiceLinks[$choice->getId()])) {
-                    $newFieldChoiceCategory->setFieldFacetChoice($fieldFacetChoiceLinks[$choice->getId()]);
-                }
                 $this->om->persist($newFieldChoiceCategory);
             }
         }

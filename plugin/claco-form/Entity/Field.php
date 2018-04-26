@@ -169,6 +169,7 @@ class Field
             case FieldFacet::CASCADE_SELECT_TYPE: return 'cascade';
             case FieldFacet::FILE_TYPE: return 'file';
             case FieldFacet::BOOLEAN_TYPE: return 'boolean';
+            case FieldFacet::CHOICE_TYPE: return 'choice';
             default: return 'error';
         }
     }
