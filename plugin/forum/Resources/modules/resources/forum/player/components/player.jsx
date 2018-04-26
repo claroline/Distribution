@@ -39,7 +39,7 @@ class PlayerComponent extends Component {
   render() {
     return(
       <section>
-        <div className="subject-info">
+        <header className="subject-info">
           <div>
             <Button
               label={trans('forum_back_to_subjects', {}, 'forum')}
@@ -57,7 +57,7 @@ class PlayerComponent extends Component {
               )}
             </div>
           </div>
-        </div>
+        </header>
 
         <ul className="posts">
           {this.props.messages.map(message =>
@@ -119,28 +119,26 @@ class PlayerComponent extends Component {
             </li>
           )}
         </ul>
-        <section className="answer">
-          {!this.state.showNewMessageForm &&
-            <div className="answer-comment-container">
-              <Button
-                label={trans('reply', {}, 'forum')}
-                type="callback"
-                callback={() => this.setState({showNewMessageForm: true})}
-                className="btn btn-block btn-emphasis"
-                primary={true}
-              />
-            </div>
-          }
-          {this.state.showNewMessageForm &&
-              <UserMessageForm
-                user={currentUser()}
-                allowHtml={true}
-                submitLabel={trans('send')}
-                submit={(message) => this.createNewMessage(message)}
-                cancel={() => this.setState({showNewMessageForm: false})}
-              />
-          }
-        </section>
+        {!this.state.showNewMessageForm &&
+          <div className="answer-comment-container">
+            <Button
+              label={trans('reply', {}, 'forum')}
+              type="callback"
+              callback={() => this.setState({showNewMessageForm: true})}
+              className="btn btn-block btn-emphasis"
+              primary={true}
+            />
+          </div>
+        }
+        {this.state.showNewMessageForm &&
+            <UserMessageForm
+              user={currentUser()}
+              allowHtml={true}
+              submitLabel={trans('send')}
+              submit={(message) => this.createNewMessage(message)}
+              cancel={() => this.setState({showNewMessageForm: false})}
+            />
+        }
       </section>
     )
   }

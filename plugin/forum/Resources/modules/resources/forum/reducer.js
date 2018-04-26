@@ -35,9 +35,9 @@ const messagesReducer = makeReducer([], {
   },
   [COMMENT_ADD]: (state, action) => {
     const messages = cloneDeep(state)
-    const message = messages.filter(message => message.id === action.messageId)
+    const message = messages.find(message => message.id === action.messageId)
 
-    const comment = {
+    message.comments.push({
       id: makeId(),
       content: action.comment,
       meta: {
@@ -45,12 +45,9 @@ const messagesReducer = makeReducer([], {
         created: now(),
         updated: now()
       }
-    }
+    })
 
-    return [
-      ...state,
-      message[0].comments.push(comment)
-    ]
+    return messages
   }
 })
 
