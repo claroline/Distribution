@@ -12,7 +12,6 @@ const CURRENT_ENTRY_LOAD = 'CURRENT_ENTRY_LOAD'
 const ENTRY_COMMENT_ADD = 'ENTRY_COMMENT_ADD'
 const ENTRY_COMMENT_UPDATE = 'ENTRY_COMMENT_UPDATE'
 const ENTRY_COMMENT_REMOVE = 'ENTRY_COMMENT_REMOVE'
-const ALL_ENTRIES_REMOVE = 'ALL_ENTRIES_REMOVE'
 const ENTRY_USER_UPDATE = 'ENTRY_USER_UPDATE'
 const ENTRY_USER_UPDATE_PROP = 'ENTRY_USER_UPDATE_PROP'
 const ENTRY_USER_RESET = 'ENTRY_USER_RESET'
@@ -29,7 +28,6 @@ actions.loadCurrentEntry = makeActionCreator(CURRENT_ENTRY_LOAD, 'entry')
 actions.addEntryComment = makeActionCreator(ENTRY_COMMENT_ADD, 'comment')
 actions.updateEntryComment = makeActionCreator(ENTRY_COMMENT_UPDATE, 'comment')
 actions.removeEntryComment = makeActionCreator(ENTRY_COMMENT_REMOVE, 'commentId')
-actions.removeAllEntries = makeActionCreator(ALL_ENTRIES_REMOVE)
 actions.updateEntryUser = makeActionCreator(ENTRY_USER_UPDATE, 'entryUser')
 actions.resetEntryUser = makeActionCreator(ENTRY_USER_RESET)
 actions.addCategory = makeActionCreator(ENTRY_CATEGORY_ADD, 'category')
@@ -252,7 +250,6 @@ export {
   ENTRY_COMMENT_ADD,
   ENTRY_COMMENT_UPDATE,
   ENTRY_COMMENT_REMOVE,
-  ALL_ENTRIES_REMOVE,
   ENTRY_USER_UPDATE,
   ENTRY_USER_UPDATE_PROP,
   ENTRY_USER_RESET,

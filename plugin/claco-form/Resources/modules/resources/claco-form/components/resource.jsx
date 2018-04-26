@@ -84,13 +84,6 @@ const Resource = props =>
         label: trans('export_all_entries', {}, 'clacoform'),
         displayed: props.canEdit,
         target: ['claro_claco_form_entries_export', {clacoForm: props.clacoForm.id}]
-      }, {
-        type: 'callback',
-        icon: 'fa fa-fw fa-trash-o',
-        label: trans('delete_all_entries', {}, 'clacoform'),
-        displayed: props.canEdit,
-        callback: props.deleteEntries,
-        dangerous: true
       }
     ]}
   >
@@ -159,7 +152,6 @@ Resource.propTypes = {
   saveEnabled: T.bool.isRequired,
   resetForm: T.func.isRequired,
   saveForm: T.func.isRequired,
-  deleteEntries: T.func.isRequired,
   openEntryForm: T.func.isRequired,
   resetEntryForm: T.func.isRequired,
   loadEntryUser: T.func.isRequired,
@@ -181,15 +173,6 @@ const ClacoFormResource = connect(
     },
     saveForm(id) {
       dispatch(formActions.saveForm('clacoFormForm', ['apiv2_clacoform_update', {id: id}]))
-    },
-    deleteEntries() {
-      dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title: trans('delete_all_entries', {}, 'clacoform'),
-          question: trans('delete_all_entries_confirm', {}, 'clacoform'),
-          handleConfirm: () => dispatch(editorActions.deleteAllEntries())
-        })
-      )
     },
     openEntryForm(id, clacoFormId) {
       const defaultValue = {

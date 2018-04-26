@@ -122,22 +122,6 @@ actions.addKeyword = makeActionCreator(KEYWORD_ADD, 'keyword')
 actions.updateKeyword = makeActionCreator(KEYWORD_UPDATE, 'keyword')
 actions.removeKeywords = makeActionCreator(KEYWORDS_REMOVE, 'ids')
 
-actions.deleteAllEntries = () => (dispatch, getState) => {
-  const clacoFormId = getState().clacoForm.id
-
-  dispatch({
-    [API_REQUEST]: {
-      url: ['claro_claco_form_all_entries_delete', {clacoForm: clacoFormId}],
-      request: {
-        method: 'DELETE'
-      },
-      success: (data, dispatch) => {
-        dispatch(entryActions.removeAllEntries())
-      }
-    }
-  })
-}
-
 export {
   actions,
   RESOURCE_PROPERTY_UPDATE,

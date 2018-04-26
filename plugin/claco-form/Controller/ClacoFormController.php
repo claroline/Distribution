@@ -928,32 +928,6 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/{clacoForm}/all/entries/delete",
-     *     name="claro_claco_form_all_entries_delete",
-     *     options={"expose"=true}
-     * )
-     * @EXT\ParamConverter(
-     *     "clacoForm",
-     *     class="ClarolineClacoFormBundle:ClacoForm",
-     *     options={"mapping": {"clacoForm": "uuid"}}
-     * )
-     *
-     * Deletes all entries
-     *
-     * @param ClacoForm $clacoForm
-     *
-     * @return JsonResponse
-     */
-    public function clacoFormAllEntriesDeleteAction(ClacoForm $clacoForm)
-    {
-        $this->clacoFormManager->checkRight($clacoForm, 'EDIT');
-        $this->clacoFormManager->deleteAllEntries($clacoForm);
-
-        return new JsonResponse('success', 200);
-    }
-
-    /**
-     * @EXT\Route(
      *     "/claco/form/entry/{entry}/user/{user}/change",
      *     name="claro_claco_form_entry_user_change",
      *     options = {"expose"=true}

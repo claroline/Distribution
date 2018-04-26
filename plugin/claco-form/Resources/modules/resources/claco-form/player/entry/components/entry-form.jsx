@@ -162,7 +162,7 @@ const EntryForm = withRouter(connect(
     entry: formSelect.data(formSelect.form(state, 'entries.current')),
     entryUser: select.entryUser(state),
     categories: select.categories(state),
-    keywords: select.keywords(state),
+    keywords: select.keywords(state)
   }),
   (dispatch) => ({
     saveForm(entry, isNew, navigate) {
