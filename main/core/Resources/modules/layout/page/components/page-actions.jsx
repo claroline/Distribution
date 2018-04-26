@@ -1,6 +1,5 @@
 import React from 'react'
 import classes from 'classnames'
-import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
 

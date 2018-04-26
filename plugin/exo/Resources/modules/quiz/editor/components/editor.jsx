@@ -6,7 +6,6 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 
 import {TYPE_QUIZ, TYPE_STEP} from './../../enums'
 
-
 import {actions} from '#/plugin/exo/quiz/editor/actions'
 import {select} from '#/plugin/exo/quiz/editor/selectors'
 import {ThumbnailBox} from '#/plugin/exo/quiz/editor/components/thumbnail-box'

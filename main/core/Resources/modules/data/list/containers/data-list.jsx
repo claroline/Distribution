@@ -91,23 +91,6 @@ DataList.propTypes = {
   }),
 
   /**
-   * The definition of the list rows data.
-   */
-  definition: T.arrayOf(
-    T.shape(DataListPropertyTypes.propTypes)
-  ).isRequired,
-
-  /**
-   * Open action generator for rows.
-   * It gets the current data row as first param.
-   *
-   * NB. It's called to generate the action (to be able to catch generated URL),
-   * so if your open action is a func, generator should return another function,
-   * not call it. Example : (row) => myFunc
-   */
-  primaryAction: T.func,
-
-  /**
    * Provides data delete.
    */
   delete: T.shape({
@@ -116,6 +99,7 @@ DataList.propTypes = {
     displayed: T.func // receives the list of rows to delete
   }),
 
+  /**
    * The definition of the list rows data.
    */
   definition: T.arrayOf(

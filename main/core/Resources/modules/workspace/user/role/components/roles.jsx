@@ -19,7 +19,7 @@ const RolesList = props =>
     primaryAction={RoleList.open}
     delete={{
       url: ['apiv2_role_delete_bulk'],
-      disabled: (rows) => !!rows.find(row => row.name && (row.name.indexOf('COLLABORATOR') > -1 || row.name.indexOf('MANAGER') > -1))
+      disabled: rows => !!rows.find(row => row.name && (row.name.indexOf('COLLABORATOR') > -1 || row.name.indexOf('MANAGER') > -1))
     }}
     definition={RoleList.definition}
     card={RoleList.card}

@@ -37,6 +37,9 @@ const ContactsComponent = props =>
       type: 'url',
       target: ['claro_user_profile', {publicUrl: row.data.meta.publicUrl}]
     })}
+    delete={{
+      url: ['apiv2_contact_delete_bulk']
+    }}
     actions={(rows) => [
       {
         type: 'url',

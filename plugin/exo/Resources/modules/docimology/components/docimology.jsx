@@ -274,9 +274,7 @@ const Docimology = props =>
           type="url"
           label={tex('back_to_the_quiz')}
           icon="fa fa-fw fa-sign-out"
-          action={generateUrl('ujm_exercise_open', {id: props.quiz.id})}
           target={url(['claro_resource_open', {node: props.resourceNode.autoId, resourceType: props.resourceNode.meta.type}])}
-          target={generateUrl('ujm_exercise_open', {id: props.quiz.id})}
         />
       </PageActions>
     </PageHeader>

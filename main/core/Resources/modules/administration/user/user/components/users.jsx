@@ -23,10 +23,9 @@ const UsersList = props =>
     }}
 
     primaryAction={UserList.open}
-    deleteAction={() => ({
-      type: 'url',
-      target: ['apiv2_user_delete_bulk']
-    })}
+    delete={{
+      url: ['apiv2_user_delete_bulk']
+    }}
     actions={(rows) => [
       {
         type: 'url',

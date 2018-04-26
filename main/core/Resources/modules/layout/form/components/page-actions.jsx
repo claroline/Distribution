@@ -3,7 +3,6 @@ import {PropTypes as T} from 'prop-types'
 import merge from 'lodash/merge'
 
 import {trans} from '#/main/core/translation'
-import {Action as ActionTypes} from '#/main/app/action/prop-types'
 import {PageAction} from '#/main/core/layout/page'
 
 const OpenAction = props =>
