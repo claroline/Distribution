@@ -1,0 +1,36 @@
+.subject-info {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  margin-bottom: @component-margin-bottom;
+}
+
+.tag {
+  span {
+    margin-right: .2em;
+  }
+}
+
+.posts {
+  list-style: none;
+  padding: 0;
+
+  .post{
+    margin-bottom: @component-margin-bottom;
+
+    .user-message-container{
+      margin-bottom: 0;
+    }
+  }
+}
+
+.comment-link {
+  font-size: @font-size-small;
+}
+
+// the margin-left of this container =>
+// 60px of the profile img + 30px between the profile img and the user-message
+// so that the button can have the widht of the userMessage
+.answer-comment-container {
+  margin: 10px 0 0 90px;
+}
