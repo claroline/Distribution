@@ -7,6 +7,7 @@ import {trans} from '#/main/core/translation'
 import {BaseModal} from '#/main/core/layout/modal/components/base.jsx'
 import {actions} from '#/main/core/administration/transfer/components/modal/log/actions'
 import {Error} from '#/main/core/administration/transfer/components/modal/log/components/error'
+import {Success} from '#/main/core/administration/transfer/components/modal/log/components/success'
 
 
   /*this.props.data.log.map(error => <Error {...error} />)*/
@@ -50,7 +51,16 @@ class LogModal extends Component {
               </div>
               <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                 <div className="panel-body">
-                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                  {this.props.data.data &&
+                    Object.keys(this.props.data.data.success).map(action => {
+                      return(
+                        <div>
+                          <h4>{action}</h4>
+                          {this.props.data.data.success[action].map(success =>  <Success {...success}/>)}
+                        </div>
+                      )}
+                    )
+                  }
                 </div>
               </div>
             </div>
