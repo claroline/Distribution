@@ -34,7 +34,7 @@ implementPropTypes(ChoiceGroup, FormGroupWithFieldTypes, {
   condensed: T.bool
 }, {
   multiple: false,
-  condensed: true
+  condensed: false
 })
 
 export {

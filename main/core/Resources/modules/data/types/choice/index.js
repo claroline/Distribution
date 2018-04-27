@@ -17,7 +17,7 @@ const choiceDefinition = {
   /**
    * The list of configuration fields.
    */
-  configure: (options) => [
+  configure: () => [
     {
       name: 'multiple',
       type: 'boolean',
@@ -39,7 +39,13 @@ const choiceDefinition = {
     }
   ],
   parse: (display, options) => Object.keys(options.choices).find(enumValue => display === options.choices[enumValue]),
-  render: (raw, options) => options.choices[raw],
+  render: (raw) => {
+    if (Array.isArray(raw)) {
+      return raw.join(', ')
+    } else {
+      return raw
+    }
+  },
   validate: (value, options) => !!options.choices[value],
   components: {
     search: ChoiceSearch,

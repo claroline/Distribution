@@ -36,7 +36,6 @@ class FieldFacetChoiceSerializer
     public function deserialize(array $data, FieldFacetChoice $choice, array $options = [])
     {
         $this->sipe('name', 'setName', $data, $choice);
-//        $this->sipe('value', 'setValue', $data, $choice);
         $this->sipe('position', 'setPosition', $data, $choice);
 
         return $choice;

@@ -58,27 +58,24 @@ class EntryFormComponent extends Component {
           (this.props.displayMetadata === 'manager' && this.props.isManager) ||
           !f.restrictions.isMetadata ||
           (this.props.entry.user && this.props.entry.user.id === authenticatedUser.id),
-        disabled: !this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))
+        disabled: !this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked)),
+        options: f.options ? f.options : {}
       }
 
       switch (f.type) {
         case 'file':
-          params['options'] = {
-            uploadUrl: ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]
-          }
+          params['options'] = Object.assign({}, params['options'], {'uploadUrl': ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]})
           break
         case 'choice':
-          params['options'] = {
-            multiple: f.options.multiple !== undefined ? f.options.multiple : false,
-            condensed: f.options.condensed !== undefined ? f.options.condensed : true,
-            choices: f.options.choices ?
-              f.options.choices.reduce((acc, choice) => {
+          params['options'] = f.options.choices ?
+            Object.assign({}, params['options'], {
+              'choices': f.options.choices.reduce((acc, choice) => {
                 acc[choice.value] = choice.value
 
                 return acc
-              }, {}) :
-              {}
-          }
+              }, {})
+            }) :
+            {}
           break
       }
       sectionFields.push(params)

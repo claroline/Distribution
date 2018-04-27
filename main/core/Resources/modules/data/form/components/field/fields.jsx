@@ -78,6 +78,22 @@ class FieldList extends Component {
     })
   }
 
+  formatField(field) {
+    const options = field.options ? Object.assign({}, field.options) : {}
+
+    if (field.type === 'choice') {
+      options['choices'] = field.options && field.options.choices ?
+        field.options.choices.reduce((acc, choice) => {
+          acc[choice.value] = choice.value
+
+          return acc
+        }, {}) :
+        {}
+    }
+
+    return field.type === 'choice' ? Object.assign({}, field, {options: options}) : field
+  }
+
   render() {
     return (
       <div className="field-list-control">
@@ -99,9 +115,7 @@ class FieldList extends Component {
                   getCreatableTypes()[Object.keys(getCreatableTypes()).find(type => field.type === type)].meta.icon
                 )} />
 
-                {field.type !== 'choice' &&
-                  <FieldPreview {...field} />
-                }
+                <FieldPreview {...this.formatField(field)} />
 
                 <div className="field-item-actions">
                   <TooltipButton

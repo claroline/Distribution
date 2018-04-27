@@ -1,6 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
 
-import {trans} from '#/main/core/translation'
 import {chain, array, string, notBlank, unique} from '#/main/core/validation'
 import {EnumGroup} from '#/main/core/data/types/enum/components/enum-group.jsx'
 

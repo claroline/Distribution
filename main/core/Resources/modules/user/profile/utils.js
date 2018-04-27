@@ -117,8 +117,6 @@ function formatFormSections(sections, userData, params) {
       }
       if (f.type === 'choice') {
         const options = f.options ? f.options : {}
-        options['multiple'] = f.options.multiple !== undefined ? f.options.multiple : false
-        options['condensed'] = f.options.condensed !== undefined ? f.options.condensed : true
         options['choices'] = f.options.choices ?
           f.options.choices.reduce((acc, choice) => {
             acc[choice.value] = choice.value
@@ -143,8 +141,6 @@ function formatDetailsSections(sections, user, params) {
 
       if (f.type === 'choice') {
         const options = f.options ? f.options : {}
-        options['multiple'] = f.options.multiple !== undefined ? f.options.multiple : false
-        options['condensed'] = f.options.condensed !== undefined ? f.options.condensed : true
         options['choices'] = f.options.choices ?
           f.options.choices.reduce((acc, choice) => {
             acc[choice.value] = choice.value
