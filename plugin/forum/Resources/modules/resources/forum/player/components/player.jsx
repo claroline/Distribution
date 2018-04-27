@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import classes from 'classnames'
 
 import {Button} from '#/main/app/action/components/button'
 import {currentUser} from '#/main/core/user/current'
@@ -98,13 +99,14 @@ class PlayerComponent extends Component {
                   />
                 )}
                 {!this.state.showNewCommentForm &&
-                  <Button
-                    label={trans('comment', {}, 'actions')}
-                    type="callback"
-                    callback={() => this.showCommentForm(message.id)}
-                    className="comment-link"
-                    primary={true}
-                  />
+                  <div className="comment-link-container">
+                    <Button
+                      label={trans('comment', {}, 'actions')}
+                      type="callback"
+                      callback={() => this.showCommentForm(message.id)}
+                      className='comment-link'
+                    />
+                  </div>
                 }
                 {this.state.showNewCommentForm === message.id &&
                   <CommentForm

@@ -30,6 +30,11 @@ const Editor = props =>
                 displayed: forum => forum.display.showOverview
               }
             ]
+          },
+          {
+            name: 'display.lastMessages',
+            type: 'number',
+            label: trans('show_last_messages', {}, 'forum')
           }
         ]
       }, {

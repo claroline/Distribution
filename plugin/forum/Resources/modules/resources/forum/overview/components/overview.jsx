@@ -4,16 +4,19 @@ import {connect} from 'react-redux'
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/core/intl'
 import {Button} from '#/main/app/action/components/button'
-import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge.jsx'
-import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {CountGauge} from '#/main/core/layout/gauge/components/count-gauge'
+import {MetricCard} from '#/main/core/layout/components/metric-card'
+import {HtmlText} from '#/main/core/layout/components/html-text'
+import {UserMessage} from '#/main/core/user/message/components/user-message'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
+
+
 
 const OverviewComponent = props =>
   <div>
     <section className="resource-section resource-overview">
       <h2 className="sr-only">{trans('resource_overview')}</h2>
-
       <div className="row">
         <div className="user-column col-md-4">
           <section className="user-progression">
@@ -58,36 +61,41 @@ const OverviewComponent = props =>
           </section>
           <section className="resource-info row">
             <div className="col-md-4">
-              <div className="metric-card">
-                <CountGauge
-                  className="metric-card-gauge"
-                  value={props.forum.meta.users}
-                  displayValue={(value) => number(value, true)}
-                />
-                <div className="metric-card-title">{trans('participating_users', {}, 'forum')}</div>
-              </div>
+              <MetricCard
+                value={props.forum.meta.users}
+                cardTitle={trans('participating_users', {}, 'forum')}
+              />
             </div>
             <div className="col-md-4">
-              <div className="metric-card">
-                <CountGauge
-                  className="metric-card-gauge"
-                  value={props.forum.meta.subjects}
-                  displayValue={(value) => number(value, true)}
-                />
-                <div className="metric-card-title">{trans('subjects', {}, 'forum')}</div>
-              </div>
+              <MetricCard
+                value={props.forum.meta.subjects}
+                cardTitle={trans('subjects', {}, 'forum')}
+              />
             </div>
             <div className="col-md-4">
-              <div className="metric-card">
-                <CountGauge
-                  className="metric-card-gauge"
-                  value={props.forum.meta.messages}
-                  displayValue={(value) => number(value, true)}
-                />
-                <div className="metric-card-title">{trans('messages', {}, 'forum')}</div>
-              </div>
+              <MetricCard
+                value={props.forum.meta.messages}
+                cardTitle={trans('messages', {}, 'forum')}
+              />
             </div>
           </section>
+          <section>
+            <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
+            <ul className="posts">
+              {props.messages.map(message =>
+                <li key={message.id} className="post">
+                  <h4>Nom du sujet <a href="/play/subject">Voir le sujet</a></h4>
+                  <UserMessage
+                    user={message.meta.creator}
+                    date={message.meta.created}
+                    content={message.content}
+                    allowHtml={true}
+                  />
+                </li>
+              )}
+            </ul>
+          </section>
+
         </div>
       </div>
     </section>
@@ -96,7 +104,8 @@ const OverviewComponent = props =>
 
 const Overview = connect(
   (state) => ({
-    forum: select.forum(state)
+    forum: select.forum(state),
+    messages: select.messages(state)
   })
 )(OverviewComponent)
 

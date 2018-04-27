@@ -18,15 +18,30 @@
   .post{
     margin-bottom: @component-margin-bottom;
 
+    h4 {
+      a {
+        font-size: @font-size-small;
+      }
+    }
     .user-message-container{
       margin-bottom: 0;
     }
   }
 }
-
-.comment-link {
-  font-size: @font-size-small;
+.comment-link-container{
+  display: flex;
+  justify-content: flex-end;
+  .comment-link {
+    font-size: @font-size-small;
+    color: @link-color;
+    &:hover,
+    &:focus,
+    &:active {
+      color: @link-hover-color;
+    }
+  }
 }
+
 
 // the margin-left of this container =>
 // 60px of the profile img + 30px between the profile img and the user-message
