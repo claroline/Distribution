@@ -358,6 +358,20 @@ class EntryComponent extends Component {
         help: f.help,
         displayed: this.isFieldDisplayable(f)
       }
+
+      if (f.type === 'choice') {
+        params['options'] = {
+          multiple: f.options.multiple !== undefined ? f.options.multiple : false,
+          condensed: f.options.condensed !== undefined ? f.options.condensed : true,
+          choices: f.options.choices ?
+            f.options.choices.reduce((acc, choice) => {
+              acc[choice.value] = choice.value
+
+              return acc
+            }, {}) :
+            {}
+        }
+      }
       sectionFields.push(params)
     })
     const sections = [

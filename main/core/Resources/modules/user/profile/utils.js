@@ -115,6 +115,19 @@ function formatFormSections(sections, userData, params) {
       )) {
         f['disabled'] = true
       }
+      if (f.type === 'choice') {
+        const options = f.options ? f.options : {}
+        options['multiple'] = f.options.multiple !== undefined ? f.options.multiple : false
+        options['condensed'] = f.options.condensed !== undefined ? f.options.condensed : true
+        options['choices'] = f.options.choices ?
+          f.options.choices.reduce((acc, choice) => {
+            acc[choice.value] = choice.value
+
+            return acc
+          }, {}) :
+          {}
+        f['options'] = options
+      }
     })
   })
 
@@ -127,6 +140,20 @@ function formatDetailsSections(sections, user, params) {
     section.fields = section.fields.filter(f => !f.restrictions.hidden && (hasConfidentialRights || !f.restrictions.isMetadata || (authenticatedUser && authenticatedUser.id === user.id)))
     section.fields.forEach(f => {
       f['name'] = f['id']
+
+      if (f.type === 'choice') {
+        const options = f.options ? f.options : {}
+        options['multiple'] = f.options.multiple !== undefined ? f.options.multiple : false
+        options['condensed'] = f.options.condensed !== undefined ? f.options.condensed : true
+        options['choices'] = f.options.choices ?
+          f.options.choices.reduce((acc, choice) => {
+            acc[choice.value] = choice.value
+
+            return acc
+          }, {}) :
+          {}
+        f['options'] = options
+      }
     })
   })
 

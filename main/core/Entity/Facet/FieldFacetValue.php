@@ -247,6 +247,12 @@ class FieldFacetValue
             case FieldFacet::CASCADE_SELECT_TYPE: return $this->getArrayValue();
             case FieldFacet::FILE_TYPE: return $this->getArrayValue();
             case FieldFacet::BOOLEAN_TYPE: return $this->getBoolValue();
+            case FieldFacet::CHOICE_TYPE:
+                $options = $this->getFieldFacet()->getOptions();
+
+                return isset($options['multiple']) && $options['multiple'] ?
+                    $this->getArrayValue() :
+                    $this->getStringValue();
             default: return $this->getStringValue();
         }
     }
@@ -270,6 +276,15 @@ class FieldFacetValue
                 break;
             case FieldFacet::BOOLEAN_TYPE:
                 $this->setBoolValue($value);
+                break;
+            case FieldFacet::CHOICE_TYPE:
+                $options = $this->getFieldFacet()->getOptions();
+
+                if (isset($options['multiple']) && $options['multiple']) {
+                    $this->setArrayValue($value);
+                } else {
+                    $this->setStringValue($value);
+                }
                 break;
             default:
                 $this->setStringValue($value);

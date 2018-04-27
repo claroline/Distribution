@@ -61,10 +61,25 @@ class EntryFormComponent extends Component {
         disabled: !this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))
       }
 
-      if (f.type === 'file') {
-        params['options'] = {
-          uploadUrl: ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]
-        }
+      switch (f.type) {
+        case 'file':
+          params['options'] = {
+            uploadUrl: ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]
+          }
+          break
+        case 'choice':
+          params['options'] = {
+            multiple: f.options.multiple !== undefined ? f.options.multiple : false,
+            condensed: f.options.condensed !== undefined ? f.options.condensed : true,
+            choices: f.options.choices ?
+              f.options.choices.reduce((acc, choice) => {
+                acc[choice.value] = choice.value
+
+                return acc
+              }, {}) :
+              {}
+          }
+          break
       }
       sectionFields.push(params)
     })
