@@ -129,7 +129,7 @@ class OrganizationController extends AbstractCrudController
      */
     private function filterOrganizations(array $organizations)
     {
-        foreach ($organizations as $key => $organization) {
+        foreach ($organizations as $organization) {
             foreach ($organizations as $childKey => $child) {
                 if ($this->hasRecursiveChild($organization, $child)) {
                     unset($organizations[$childKey]);
