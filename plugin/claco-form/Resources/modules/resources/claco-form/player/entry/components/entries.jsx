@@ -191,11 +191,10 @@ class EntriesComponent extends Component {
             renderer: (rowData) => {
               if (rowData.values && rowData.values[f.id] && rowData.values[f.id]['url'] && rowData.values[f.id]['name']) {
                 const link =
-                  <a href="">
+                  <a href={url(['claro_claco_form_field_value_file_download', {entry: rowData.id, field: f.id}])}>
                     {rowData.values[f.id]['name']}
                   </a>
 
-                {/*<a href={url(['claro_claco_form_field_value_file_download', {fieldValue: fieldValue.id}])}>*/}
 
                 return link
               } else {

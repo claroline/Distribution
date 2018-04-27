@@ -1028,26 +1028,35 @@ class ClacoFormController extends Controller
 
     /**
      * @EXT\Route(
-     *     "/claco/form/field/{fieldValue}/file/download",
+     *     "/claco/form/entry/{entry}/field/{field}/file/download",
      *     name="claro_claco_form_field_value_file_download",
      *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter(
+     *     "entry",
+     *     class="ClarolineClacoFormBundle:Entry",
+     *     options={"mapping": {"entry": "uuid"}}
+     * )
+     * @EXT\ParamConverter(
+     *     "field",
+     *     class="ClarolineClacoFormBundle:Field",
+     *     options={"mapping": {"field": "uuid"}}
      * )
      *
      * Downloads a file associated to a FieldValue.
      *
-     * @param FieldValue $fieldValue
+     * @param Entry $entry
+     * @param Field $field
      *
      * @return StreamedResponse
      */
-    public function downloadAction(FieldValue $fieldValue)
+    public function downloadAction(Entry $entry, Field $field)
     {
-        $field = $fieldValue->getField();
-
         if ($field->getType() !== FieldFacet::FILE_TYPE) {
             return new JsonResponse(null, 404);
         }
-        $valueData = $fieldValue->getFieldFacetValue()->getValue();
-        $data = is_array($valueData) && count($valueData) > 0 ? $valueData[0] : null;
+        $fieldValue = $this->clacoFormManager->getFieldValueByEntryAndField($entry, $field);
+        $data = $fieldValue->getFieldFacetValue()->getValue();
 
         if (empty($data)) {
             return new JsonResponse(null, 404);

@@ -135,6 +135,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.DEFAULT_HOME_CHOICES
               }
             }, {
@@ -144,6 +145,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.DISPLAY_NB_ENTRIES_CHOICES
               }
             }, {
@@ -153,6 +155,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.MENU_POSITION_CHOICES
               }
             }, {
@@ -186,6 +189,7 @@ const EditorComponent = props =>
                   required: false,
                   options: {
                     multiple: true,
+                    condensed: true,
                     choices: props.clacoForm.categories.reduce((acc, cat) => {
                       acc[cat.id] = cat.name
 
@@ -231,6 +235,7 @@ const EditorComponent = props =>
               required: false,
               options: {
                 multiple: true,
+                condensed: true,
                 choices: generateDisplayList(props.clacoForm.fields)
               }
             }, {
@@ -247,6 +252,7 @@ const EditorComponent = props =>
                   displayed: props.clacoForm.details.search_restricted,
                   options: {
                     multiple: true,
+                    condensed: true,
                     choices: generateRestrictedList(props.clacoForm.fields)
                   }
                 }
@@ -258,6 +264,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.DISPLAY_MODES_CHOICES
               }
             }, {
@@ -267,6 +274,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: generateDisplayList(props.clacoForm.fields)
               }
             }, {
@@ -276,6 +284,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: generateDisplayList(props.clacoForm.fields)
               }
             }, {
@@ -285,6 +294,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: generateDisplayList(props.clacoForm.fields)
               }
             }
@@ -301,6 +311,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.DISPLAY_METADATA_CHOICES
               }
             }
@@ -317,6 +328,7 @@ const EditorComponent = props =>
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.LOCKED_FIELDS_FOR_CHOICES
               }
             }
@@ -340,6 +352,7 @@ const EditorComponent = props =>
                   required: false,
                   options: {
                     multiple: true,
+                    condensed: true,
                     choices: props.roles.reduce((acc, r) => {
                       acc[r.name] = trans(r.translationKey)
 
@@ -354,6 +367,7 @@ const EditorComponent = props =>
                   required: true,
                   options: {
                     noEmpty: true,
+                    condensed: true,
                     choices: constants.MODERATE_COMMENTS_CHOICES
                   }
                 }, {
@@ -371,6 +385,7 @@ const EditorComponent = props =>
                       required: false,
                       options: {
                         multiple: true,
+                        condensed: true,
                         choices: props.roles.reduce((acc, r) => {
                           acc[r.name] = trans(r.translationKey)
 

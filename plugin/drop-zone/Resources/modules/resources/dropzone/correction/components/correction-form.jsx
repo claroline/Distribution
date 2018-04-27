@@ -93,7 +93,7 @@ export class CorrectionForm extends Component {
 
   validateCorrection() {
     const correction = cloneDeep(this.state.correction)
-    correction['lastEditionDate'] = moment().format('YYYY-MM-DD\THH:mm:ss')
+    correction['lastEditionDate'] = moment().format('YYYY-MM-DDTHH:mm:ss')
     const errors = validate(this.state.correction, this.props.dropzone)
     this.setState({correction: correction, errors: errors}, () => this.saveCorrection())
   }
