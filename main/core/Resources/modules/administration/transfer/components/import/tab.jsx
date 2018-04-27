@@ -6,6 +6,7 @@ import has from 'lodash/has'
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
+import {withRouter} from '#/main/core/router'
 import classes from 'classnames'
 
 const Tabs = props =>
@@ -18,11 +19,15 @@ const Tabs = props =>
   </ul>
 
 const Field = props => {
+  let i = 0
   if (has(props, 'oneOf')) {
     return (
       <div className="panel panel-body">
         {trans('one_of_field_list')} <span className={classes('label', {'label-danger': props.oneOf.required}, {'label-warning': !props.oneOf.required})}>{props.oneOf.required ? trans('required'): trans('optional')}</span>
-        {props.oneOf.map(oneOf => <Fields properties={oneOf.properties}/>)}
+        {props.oneOf.map(oneOf => {
+          i++
+          return(<Fields key={'field'+i} properties={oneOf.properties}/>)
+        })}
       </div>
     )
   } else {
@@ -66,8 +71,7 @@ const RoutedExplain = props => {
                   name: 'action',
                   type: 'enum',
                   label: trans('action'),
-                  // FIXME
-                  //onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
+                  onChange: (value) => props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1)),
                   required: true,
                   options: {
                     noEmpty: true,
@@ -97,12 +101,12 @@ const RoutedExplain = props => {
   )
 }
 
-const ConnectedExplain = connect(
+const ConnectedExplain = withRouter(connect(
   state => ({explanation: select.explanation(state)}),
   dispatch =>({
     updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity))
   })
-)(RoutedExplain)
+)(RoutedExplain))
 
 class Import extends Component
 {

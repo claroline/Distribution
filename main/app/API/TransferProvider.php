@@ -259,10 +259,10 @@ class TransferProvider
         $identifiersSchema = [];
 
         foreach ($schema as $prop => $value) {
-            $jsonSchema = $this->serializer->getSchema($value);
-
-            if ($jsonSchema) {
-                $identifiersSchema[$prop] = $jsonSchema;
+            if ($this->serializer->has($value)) {
+                $identifiersSchema[$prop] = $this->serializer->getSchema($value);
+            } else {
+                $identifiersSchema[$prop] = $value;
             }
         }
 

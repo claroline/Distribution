@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Transfer\Action\Group;
+namespace Claroline\CoreBundle\API\Transfer\Action\Workspace;
 
 use Claroline\AppBundle\API\Crud;
 use Claroline\AppBundle\API\SerializerProvider;
@@ -19,15 +19,17 @@ class AddUser extends AbstractAction
      *
      * @DI\InjectParams({
      *     "crud"       = @DI\Inject("claroline.api.crud"),
-     *     "serializer" = @DI\Inject("claroline.api.serializer")
+     *     "serializer" = @DI\Inject("claroline.api.serializer"),
+     *     "om"         = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param Crud $crud
      */
-    public function __construct(Crud $crud, SerializerProvider $serializer)
+    public function __construct(Crud $crud, SerializerProvider $serializer, ObjectManager $om)
     {
         $this->crud = $crud;
         $this->serializer = $serializer;
+        $this->om = $om;
     }
 
     public function execute(array $data, &$successData = [])
@@ -42,28 +44,40 @@ class AddUser extends AbstractAction
             $data['workspace'][0]
         );
 
-        $this->crud->patch($user, 'group', 'add', [$group]);
+        $role = $this->om->getRepository('ClarolineCoreBundle:Role')
+          ->findOneBy(['workspace' => $workspace, 'translationKey' => $data['role'][0]['translationKey']]);
+
+        $this->crud->patch($user, 'role', 'add', [$role]);
     }
 
     public function getSchema()
     {
+        $roleSchema = [
+          '$schema' => 'http:\/\/json-schema.org\/draft-04\/schema#',
+          'type' => 'object',
+          'properties' => [
+            'translationKey' => [
+              'type' => 'string',
+              'description' => 'The role name',
+            ],
+          ],
+          'claroline' => [
+            'requiredAtCreation' => ['translationKey'],
+            'ids' => ['translationKey'],
+          ],
+        ];
+
+        $schema = json_decode(json_encode($roleSchema));
+
         return [
-          'group' => 'Claroline\CoreBundle\Entity\Group',
+          'workspace' => 'Claroline\CoreBundle\Entity\Workspace\Workspace',
           'user' => 'Claroline\CoreBundle\Entity\User',
+          'role' => $schema,
         ];
     }
 
     public function getAction()
     {
         return ['workspace', 'add_user'];
-    }
-
-    public function getBatchSize()
-    {
-        return 500;
-    }
-
-    public function clear(ObjectManager $om)
-    {
     }
 }
