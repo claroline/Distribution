@@ -21,6 +21,7 @@ import {TRANSLATION_TYPE, translationDefinition} from '#/main/core/data/types/tr
 import {TRANSLATED_TYPE,  translatedDefinition}  from '#/main/core/data/types/translated'
 import {URL_TYPE,         urlDefinition}         from '#/main/core/data/types/url'
 import {USERNAME_TYPE,    usernameDefinition}    from '#/main/core/data/types/username'
+import {ENUM_TYPE,        enumDefinition}        from '#/main/core/data/types/enum'
 
 // the list of registered data types
 const dataTypes = {}
@@ -47,6 +48,7 @@ registerType(TRANSLATION_TYPE, translationDefinition)
 registerType(TRANSLATED_TYPE,  translatedDefinition)
 registerType(URL_TYPE,         urlDefinition)
 registerType(USERNAME_TYPE,    usernameDefinition)
+registerType(ENUM_TYPE,        enumDefinition)
 
 /**
  * Validates & registers a data type.

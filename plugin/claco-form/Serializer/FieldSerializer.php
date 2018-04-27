@@ -6,8 +6,10 @@ use Claroline\AppBundle\API\Options;
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\ClacoFormBundle\Entity\Field;
+use Claroline\CoreBundle\API\Serializer\Facet\FieldFacetChoiceSerializer;
 use Claroline\CoreBundle\API\Serializer\Facet\FieldFacetSerializer;
 use Claroline\CoreBundle\Entity\Facet\FieldFacet;
+use Claroline\CoreBundle\Entity\Facet\FieldFacetChoice;
 use Claroline\CoreBundle\Manager\FacetManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
@@ -22,6 +24,9 @@ class FieldSerializer
     /** @var FieldFacetSerializer */
     private $fieldFacetSerializer;
 
+    /** @var FieldFacetChoiceSerializer */
+    private $fieldFacetChoiceSerializer;
+
     /** @var FacetManager */
     private $facetManager;
 
@@ -34,21 +39,25 @@ class FieldSerializer
      * FieldSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "fieldFacetSerializer" = @DI\Inject("claroline.serializer.field_facet"),
-     *     "facetManager"         = @DI\Inject("claroline.manager.facet_manager"),
-     *     "om"                   = @DI\Inject("claroline.persistence.object_manager")
+     *     "fieldFacetSerializer"       = @DI\Inject("claroline.serializer.field_facet"),
+     *     "fieldFacetChoiceSerializer" = @DI\Inject("claroline.serializer.field_facet_choice"),
+     *     "facetManager"               = @DI\Inject("claroline.manager.facet_manager"),
+     *     "om"                         = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
-     * @param FieldFacetSerializer $fieldFacetSerializer
-     * @param FacetManager         $facetManager
-     * @param ObjectManager        $om
+     * @param FieldFacetSerializer       $fieldFacetSerializer
+     * @param FieldFacetChoiceSerializer $fieldFacetChoiceSerializer
+     * @param FacetManager               $facetManager
+     * @param ObjectManager              $om
      */
     public function __construct(
         FieldFacetSerializer $fieldFacetSerializer,
+        FieldFacetChoiceSerializer $fieldFacetChoiceSerializer,
         FacetManager $facetManager,
         ObjectManager $om
     ) {
         $this->fieldFacetSerializer = $fieldFacetSerializer;
+        $this->fieldFacetChoiceSerializer = $fieldFacetChoiceSerializer;
         $this->facetManager = $facetManager;
         $this->om = $om;
 
@@ -84,6 +93,11 @@ class FieldSerializer
 
         if (count($field->getDetails()) > 0) {
             $serialized['options'] = $field->getDetails();
+        }
+        if ($field->getType() === FieldFacet::CHOICE_TYPE) {
+            $serialized['options']['choices'] = array_map(function (FieldFacetChoice $choice) {
+                return $this->fieldFacetChoiceSerializer->serialize($choice);
+            }, $field->getFieldFacet()->getFieldFacetChoices()->toArray());
         }
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
             $serialized = array_merge($serialized, [

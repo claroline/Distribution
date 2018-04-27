@@ -366,6 +366,11 @@ class FieldFacet
         return $this->fieldFacetChoices->toArray();
     }
 
+    public function emptyFieldFacetChoices()
+    {
+        return $this->fieldFacetChoices->clear();
+    }
+
     /**
      * @return bool
      */

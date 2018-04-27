@@ -33,10 +33,12 @@ class FieldFacetChoiceSerializer
         ];
     }
 
-    public function deserialize(array $data, FieldFacetChoice $choice = null, array $options = [])
+    public function deserialize(array $data, FieldFacetChoice $choice, array $options = [])
     {
-        $this->sipe('name', 'setName', $data, $field);
-        $this->sipe('value', 'setValue', $data, $field);
-        $this->sipe('position', 'setPosition', $data, $field);
+        $this->sipe('name', 'setName', $data, $choice);
+//        $this->sipe('value', 'setValue', $data, $choice);
+        $this->sipe('position', 'setPosition', $data, $choice);
+
+        return $choice;
     }
 }

@@ -26,6 +26,16 @@ const choiceDefinition = {
       name: 'condensed',
       type: 'boolean',
       label: trans('condensed_display')
+    }, {
+      name: 'choices',
+      type: 'enum',
+      label: trans('choices_list'),
+      options: {
+        placeholder: trans('no_choice'),
+        addButtonLabel: trans('add_a_choice'),
+        unique: true
+      },
+      required: true
     }
   ],
   parse: (display, options) => Object.keys(options.choices).find(enumValue => display === options.choices[enumValue]),
