@@ -61,9 +61,9 @@ class ConfigureFieldModal extends Component {
         {...this.props}
         save={fieldData => {
           // generate normalized name for field (c/p from api Entity)
-          let normalizedName = fieldData.label.replace(' ', '-') // Replaces all spaces with hyphens.
-          normalizedName.replace(/[^A-Za-z0-9\-]/, '') // Removes special chars.
-          normalizedName.replace(/-+/, '-') // Replaces multiple hyphens with single one.
+          let normalizedName = fieldData.label.replace(new RegExp(' ', 'g'), '-') // Replaces all spaces with hyphens.
+          normalizedName = normalizedName.replace(/[^A-Za-z0-9-]/g, '') // Removes special chars.
+          normalizedName = normalizedName.replace(/-+/g, '-') // Replaces multiple hyphens with single one.
           const required = fieldData.restrictions.locked && !fieldData.restrictions.lockedEditionOnly ?
             false :
             fieldData.required
