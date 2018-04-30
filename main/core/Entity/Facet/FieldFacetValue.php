@@ -267,7 +267,12 @@ class FieldFacetValue
                 $this->setFloatValue($value);
                 break;
             case FieldFacet::DATE_TYPE:
-                $this->getDateValue();
+                if ($value) {
+                    $dateValue = new \DateTime($value);
+                    $this->setDateValue($dateValue);
+                } else {
+                    $this->setDateValue(null);
+                }
                 break;
             case FieldFacet::CHECKBOXES_TYPE:
             case FieldFacet::CASCADE_SELECT_TYPE:

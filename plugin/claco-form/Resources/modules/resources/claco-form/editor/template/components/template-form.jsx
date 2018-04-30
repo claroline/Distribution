@@ -119,7 +119,7 @@ class TemplateFormComponent extends Component {
                   <b>%clacoform_entry_title%</b> : {trans('entry_title_info', {}, 'clacoform')}
                 </li>
                 {this.props.fields.map(f => {
-                  if (f.required && !f.restrictions.hidden && ['file'].indexOf(f.type) === -1) {
+                  if (f.required && !f.restrictions.hidden) {
                     return (
                       <li key={`required-${f.autoId}`}>
                         <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{trans(f.type)}]
@@ -129,13 +129,13 @@ class TemplateFormComponent extends Component {
                 })}
               </ul>
             </div>
-            {this.props.fields.filter(f => !f.required && !f.restrictions.hidden && ['file'].indexOf(f.type) === -1).length > 0 &&
+            {this.props.fields.filter(f => !f.required && !f.restrictions.hidden).length > 0 &&
               <div>
                 <hr/>
                 <h4>{trans('optional', {}, 'clacoform')}</h4>
                 <ul>
                   {this.props.fields.map(f => {
-                    if (!f.required && !f.restrictions.hidden && ['file'].indexOf(f.type) === -1) {
+                    if (!f.required && !f.restrictions.hidden) {
                       return (
                         <li key={`optional-${f.autoId}`}>
                           <b>{generateFieldKey(f.autoId)}</b> : {f.name} [{trans(f.type)}]

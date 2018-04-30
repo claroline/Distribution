@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
+import {mount} from '#/main/app/mount'
+import {makePageReducer} from '#/main/core/layout/page/reducer'
 import {withRouter} from '#/main/core/router'
 import {currentUser} from '#/main/core/user/current'
 import {trans} from '#/main/core/translation'
@@ -26,12 +28,23 @@ import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/ent
 const authenticatedUser = currentUser()
 
 class EntryFormComponent extends Component {
-  componentDidMount() {
-    this.renderTemplateFields()
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      template: ''
+    }
   }
 
-  componentDidUpdate() {
-    this.renderTemplateFields()
+  componentDidMount() {
+    this.generateTemplate()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.entry.id !== prevProps.entry.id ||
+      (this.props.entry.id === prevProps.entry.id && this.props.entry.values !== prevProps.entry.values)) {
+      this.renderTemplateFields()
+    }
   }
 
   getSections() {
@@ -94,7 +107,7 @@ class EntryFormComponent extends Component {
 
   renderTemplateFields() {
     if (this.props.useTemplate && this.props.template) {
-      const title =
+      const titleComponent =
         <FormField
           id="field-title"
           type="string"
@@ -110,9 +123,9 @@ class EntryFormComponent extends Component {
       const element = document.getElementById('clacoform-entry-title')
 
       if (element) {
-        ReactDOM.render(title, element)
+        ReactDOM.render(titleComponent, element)
       }
-      this.props.fields.filter(f => f.type !== 'file').forEach(f => {
+      this.props.fields.forEach(f => {
         const fieldEl = document.getElementById(`clacoform-field-${f.autoId}`)
 
         if (fieldEl) {
@@ -125,24 +138,49 @@ class EntryFormComponent extends Component {
             {}
           const options = f.options ? Object.assign({}, f.options, {choices: choices}) : {}
 
-          const fieldComponent =
-            <FormField
-              key={`field-${f.id}`}
-              id={`field-${f.id}`}
-              type={f.type}
-              name={`values.${f.id}`}
-              label={f.name}
-              required={f.required}
-              disabled={!this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))}
-              help={f.help}
-              hideLabel={true}
-              value={this.props.entry.values ? this.props.entry.values[f.id] : undefined}
-              error={this.props.errors[f.id]}
-              options={f.options ? options : {}}
-              updateProp={(prop, value) => this.props.updateFormProp(`values.${f.id}`, value)}
-              setErrors={this.props.setErrors}
-            />
-          ReactDOM.render(fieldComponent, fieldEl)
+          if (f.type === 'file') {
+            options['uploadUrl'] = ['apiv2_clacoformentry_file_upload', {clacoForm: this.props.clacoFormId}]
+          }
+
+          if (['file', 'date'].indexOf(f.type) > -1) {
+            const fieldComponent = () =>
+              <FormField
+                key={`field-${f.id}`}
+                id={`field-${f.id}`}
+                type={f.type}
+                name={`values.${f.id}`}
+                label={f.name}
+                required={f.required}
+                disabled={!this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))}
+                help={f.help}
+                hideLabel={true}
+                value={this.props.entry.values ? this.props.entry.values[f.id] : undefined}
+                error={this.props.errors[f.id]}
+                options={f.options ? options : {}}
+                updateProp={(prop, value) => this.props.updateFormProp(prop, value)}
+                setErrors={this.props.setErrors}
+              />
+            mount(fieldEl, fieldComponent, makePageReducer())
+          } else {
+            const fieldComponent =
+              <FormField
+                key={`field-${f.id}`}
+                id={`field-${f.id}`}
+                type={f.type}
+                name={`values.${f.id}`}
+                label={f.name}
+                required={f.required}
+                disabled={!this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))}
+                help={f.help}
+                hideLabel={true}
+                value={this.props.entry.values ? this.props.entry.values[f.id] : undefined}
+                error={this.props.errors[f.id]}
+                options={f.options ? options : {}}
+                updateProp={(prop, value) => this.props.updateFormProp(prop, value)}
+                setErrors={this.props.setErrors}
+              />
+             ReactDOM.render(fieldComponent, fieldEl)
+          }
         }
       })
     }
@@ -151,20 +189,22 @@ class EntryFormComponent extends Component {
   generateTemplate() {
     let template = this.props.template
     template = template.replace('%clacoform_entry_title%', '<span id="clacoform-entry-title"></span>')
-    this.props.fields.filter(f => f.type !== 'file').forEach(f => {
+    this.props.fields.forEach(f => {
       template = template.replace(`%field_${f.autoId}%`, `<span id="clacoform-field-${f.autoId}"></span>`)
     })
 
-    return template
+    this.setState({template: template}, () => this.renderTemplateFields())
   }
 
   render() {
     return (
       <div>
-        {this.props.useTemplate && this.props.template ?
+        {this.props.entry && (this.props.useTemplate && this.props.template) &&
           <HtmlText>
-            {this.generateTemplate()}
-          </HtmlText> :
+            {this.state.template}
+          </HtmlText>
+        }
+        {this.props.entry && (!this.props.useTemplate || !this.props.template) &&
           <FormContainer
             level={3}
             name="entries.current"
