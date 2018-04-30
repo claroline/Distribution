@@ -1,20 +1,42 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_LOG} from '#/main/core/administration/transfer/components/modal/log'
+import {actions} from '#/main/core/administration/transfer/components/history/reducer'
 import {trans} from '#/main/core/translation'
+import {Routes} from '#/main/core/router'
+import {Logs} from '#/main/core/administration/transfer/components/log/logs.jsx'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {HistoryList} from '#/main/core/administration/transfer/components/history/history-list.jsx'
+import {withRouter} from '#/main/core/router'
 
 const Tab = props =>
+  <div className="col-md-9">
+    <Routes
+      routes={[
+        {
+          path: '/history',
+          exact: true,
+          component: List
+        },
+        {
+          path: 'history/:log?',
+          component: Logs,
+          onEnter: (params) => {
+            props.loadLog(params.log)
+          }
+        }
+      ]}
+    />
+  </div>
+
+const List = props =>
   <DataListContainer
     name="history"
     primaryAction={(row) => ({
       id: 'logfile',
       type: 'callback',
-      callback: () => props.openLog(row.log)
+      callback: () => props.history.push('/history/' + row.log)
     })}
     fetch={{
       url: ['apiv2_transfer_list'],
@@ -24,7 +46,7 @@ const Tab = props =>
       url: ['apiv2_transfer_delete_bulk']
     }}
     definition={HistoryList.definition}
-    actions={(rows) => [
+    actions={() => [
       {
         type: 'callback',
         icon: 'fa fa-fw fa-save',
@@ -35,18 +57,14 @@ const Tab = props =>
     ]}
   />
 
-const ConnectedTab = connect(
+const ConnectedTab = withRouter(connect(
   null,
   dispatch => ({
-    openLog(filename) {
-      dispatch(
-        modalActions.showModal(MODAL_LOG, {
-          file: filename
-        })
-      )
+    loadLog(filename) {
+      dispatch(actions.load(filename))
     }
   })
-)(Tab)
+)(Tab))
 
 export {
   ConnectedTab as Tab

@@ -28,6 +28,7 @@ const Transfer = () =>
         icon: 'fa fa-download',
         title: trans('history'),
         path: '/history',
+        exact: true,
         actions: HistoryAction,
         content: HistoryTab
       }
