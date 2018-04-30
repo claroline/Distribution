@@ -4,14 +4,12 @@ import {connect} from 'react-redux'
 import {actions} from '#/main/core/administration/transfer/components/history/reducer'
 import {trans} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
-//import {Logs} from '#/main/core/administration/transfer/components/log/logs.jsx'
+import {Logs} from '#/main/core/administration/transfer/components/log/logs.jsx'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {HistoryList} from '#/main/core/administration/transfer/components/history/history-list.jsx'
 
-const Logs = () => <span>COUCOU</span>
-
-const Tab = () =>
+const Tab = (props) =>
   <div className="col-md-9">
     <Routes
       routes={[
@@ -21,12 +19,11 @@ const Tab = () =>
           component: List
         },
         {
-          path: 'history/:log',
-          component: Logs/*,
+          path: '/history/:log',
+          component: Logs,
           onEnter: (params) => {
-            console.log('toto')
-            //props.loadLog(params.log)
-          }*/
+            props.loadLog(params.log)
+          }
         }
       ]}
     />
