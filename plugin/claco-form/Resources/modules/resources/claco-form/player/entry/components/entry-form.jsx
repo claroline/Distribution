@@ -105,6 +105,7 @@ class EntryFormComponent extends Component {
     return sections
   }
 
+  // TODO: unmount component
   renderTemplateFields() {
     if (this.props.useTemplate && this.props.template) {
       const titleComponent =
