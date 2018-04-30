@@ -155,10 +155,12 @@ const Layout = props =>
       ) && ((props.meta.paperCount < props.parameters.maxPapers) || props.parameters.maxPapers === 0) ?
       <Button
         type="link"
-        className="btn btn-start btn-lg btn-primary btn-block"
+        className="btn btn-start btn-block"
         icon="fa fa-fw fa-play"
         label={tex('exercise_start')}
         target="/play"
+        primary={true}
+        size="lg"
       />
       :
       <Alert bsStyle="danger overview-warning">

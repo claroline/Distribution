@@ -1,13 +1,13 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer\Resource;
+namespace Claroline\CoreBundle\API\Serializer\Resource\Types;
 
 use Claroline\CoreBundle\Entity\Resource\File;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
- * @DI\Service("claroline.serializer.file")
+ * @DI\Service("claroline.serializer.resource_file")
  * @DI\Tag("claroline.serializer")
  */
 class FileSerializer

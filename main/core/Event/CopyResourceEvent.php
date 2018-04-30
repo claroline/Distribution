@@ -21,10 +21,16 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class CopyResourceEvent extends Event implements DataConveyorEventInterface
 {
+    /** @var AbstractResource */
     private $resource;
-    private $parent;
+
+    /** @var ResourceNode */
     private $copiedNode;
+
+    /** @var AbstractResource */
     private $copy;
+
+    /** @var bool */
     private $isPopulated = false;
 
     /**
@@ -35,16 +41,14 @@ class CopyResourceEvent extends Event implements DataConveyorEventInterface
     private $publish = false;
 
     /**
-     * Constructor.
+     * CopyResourceEvent constructor.
      *
      * @param \Claroline\CoreBundle\Entity\Resource\AbstractResource $resource
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode     $parent
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode     $copiedNode
      */
-    public function __construct(AbstractResource $resource, ResourceNode $parent, ResourceNode $copiedNode = null)
+    public function __construct(AbstractResource $resource, ResourceNode $copiedNode)
     {
         $this->resource = $resource;
-        $this->parent = $parent;
         $this->copiedNode = $copiedNode;
 
         // By default, use the same published state as the copied node
@@ -57,10 +61,12 @@ class CopyResourceEvent extends Event implements DataConveyorEventInterface
      * Returns the new parent of the resource.
      *
      * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode
+     *
+     * @deprecated this can be retieve directly from the `copiedNode`.
      */
     public function getParent()
     {
-        return $this->parent;
+        return $this->copiedNode->getParent();
     }
 
     /**

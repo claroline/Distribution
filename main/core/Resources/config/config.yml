@@ -1,80 +1,32 @@
 plugin:
     resource_actions:
-        # the value come from the MaskDecoder Entity
-        # specific menus for a resource
-        - name: compose
-          is_form: false
-          is_async: false
-          is_custom: true
-          group: activity
-          class: activity-class
-          resource_type: activity
-          value: edit
+        - name: show-info
+          decoder: open
 
-        - name: update_file
-          is_form: false
-          is_async: true
-          is_custom: true
-          group: core
-          class: file-class
-          resource_type: file
-          value: edit
-
-        # generic actions
         - name: export
-          is_form: false
-          is_async: true
-          is_custom: false
-          group: core
-          class: changeme
-          value: export
+          group: transfer
+          decoder: export
 
         - name: delete
-          is_form: false
-          is_async: true
-          is_custom: false
-          group: core
-          class: changeme
-          value: delete
+          group: management
+          decoder: delete
 
         - name: edit-rights
-          is_form: true
-          is_async: true
-          is_custom: false
-          group: core
-          class: changeme
-          value: administrate
-
-        - name: open-tracking
-          is_form: false
-          is_async: true
-          is_custom: false
-          group: core
-          class: changeme
-          value: administrate
-
-        - name: rename
-          is_form: true
-          is_async: true
-          is_custom: false
-          group: core
-          class: changeme
-          value: administrate
+          group: management
+          decoder: administrate
 
         - name: edit-properties
-          is_form: true
-          is_async: true
-          is_custom: false
-          group: core
-          class: changeme
-          value: administrate
+          group: management
+          decoder: administrate
+
+        - name: open-tracking
+          group: log
+          decoder: administrate # adds it's own right
 
     resources:
         - class: Claroline\CoreBundle\Entity\Resource\File
           name: file
           is_exportable: true
-          activity_rules:
-            - action: resource-read
 
         - class: Claroline\CoreBundle\Entity\Resource\Directory
           name: directory
@@ -248,15 +200,16 @@ plugin:
           is_locked_for_admin: false
           is_anonymous_excluded: true
 
-    additional_action:
-        - action: edit
-          class: fa-pencil
-          displayed_name: edit
-          type: admin_user_action
-        - action: show_workspaces
-          class: fa-book
-          displayed_name: show_workspaces
-          type: admin_user_action
+    #additional_action:
+    #    - action: edit
+    #      class: fa-pencil
+    #      displayed_name: edit
+    #      type: admin_user_action
+    #    - action: show_workspaces
+
+    #      class: fa-book
+    #      displayed_name: show_workspaces
+    #      type: admin_user_action
 
     themes:
         - name: Claroline

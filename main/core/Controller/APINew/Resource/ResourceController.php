@@ -58,8 +58,13 @@ class ResourceController
         $this->resourceManager = $resourceManager;
     }
 
+    public function createAction($type)
+    {
+
+    }
+
     /**
-     * Loads a resource.
+     * Gets a resource.
      *
      * Gets all data required in order to play the resource.
      * NB. In the near future, it will replace the `openAction`.
@@ -72,13 +77,14 @@ class ResourceController
      *
      * @return JsonResponse
      */
-    public function loadAction(ResourceNode $node, $type)
+    public function getAction(ResourceNode $node, $type)
     {
         // checks the current user can open the resource
         $this->checkAccess('OPEN', new ResourceCollection([$node]));
 
         // it's a shortcut : checks if User can open the target
         // IMO, it seems strange the User can open the shortcut but may not open the target
+        // TODO : move it inside the shortcut listener
         $node = $this->resourceManager->getRealTarget($node);
         $this->checkAccess('OPEN', new ResourceCollection([$node]));
 
@@ -98,6 +104,16 @@ class ResourceController
                 'evaluation' => null, // todo flag evaluated resource types and auto load Evaluation if any
             ], $event->getAdditionalData())
         );
+    }
+
+    public function updateAction(ResourceNode $node, $type)
+    {
+
+    }
+
+    public function deleteAction()
+    {
+
     }
 
     /**

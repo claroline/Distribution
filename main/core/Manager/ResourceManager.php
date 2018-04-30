@@ -22,6 +22,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
@@ -809,46 +810,41 @@ class ResourceManager
         $resource = $this->getResourceFromNode($node);
         $env = $this->container->get('kernel')->getEnvironment();
 
-        if ($resource instanceof ResourceShortcut) {
-            $copy = new ResourceShortcut();
-            $copy->setTarget($resource->getTarget());
-            $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
-            $copy->setResourceNode($newNode);
-        } else {
-            if (!$resource) {
-                if ('dev' === $env) {
-                    $message = 'The resource '.$node->getName().' was not found (node id is '.$node->getId().')';
-                    $this->container->get('logger')->error($message);
+        if (!$resource) {
+            if ('dev' === $env) {
+                $message = 'The resource '.$node->getName().' was not found (node id is '.$node->getId().')';
+                $this->container->get('logger')->error($message);
 
-                    return;
-                } else {
-                    //if something is malformed in production, try to not break everything if we don't need to. Just retun null.
-                    return;
-                }
+                return;
+            } else {
+                //if something is malformed in production, try to not break everything if we don't need to. Just return null.
+                return;
             }
-            $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
-            $event = $this->dispatcher->dispatch(
-                'copy_'.$node->getResourceType()->getName(),
-                'CopyResource',
-                [$resource, $parent, $newNode]
-            );
+        }
+        $newNode = $this->copyNode($node, $parent, $user, $withRights, $rights, $index);
 
-            $copy = $event->getCopy();
+        /** @var CopyResourceEvent $event */
+        $event = $this->dispatcher->dispatch(
+            'copy_'.$node->getResourceType()->getName(),
+            'CopyResource',
+            [$resource, $parent, $newNode]
+        );
 
-            // Set the published state
-            $newNode->setPublished($event->getPublish());
+        $copy = $event->getCopy();
 
-            $copy->setResourceNode($newNode);
+        // Set the published state
+        $newNode->setPublished($event->getPublish());
 
-            if ('directory' === $node->getResourceType()->getName() &&
-                $withDirectoryContent) {
-                $i = 1;
+        $copy->setResourceNode($newNode);
 
-                foreach ($node->getChildren() as $child) {
-                    if ($child->isActive()) {
-                        $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
-                        ++$i;
-                    }
+        if ('directory' === $node->getResourceType()->getName() &&
+            $withDirectoryContent) {
+            $i = 1;
+
+            foreach ($node->getChildren() as $child) {
+                if ($child->isActive()) {
+                    $this->copy($child, $newNode, $user, $i, $withRights, $withDirectoryContent, $rights);
+                    ++$i;
                 }
             }
         }
@@ -865,6 +861,7 @@ class ResourceManager
      *
      * @param ResourceNode[] $nodes
      * @param bool           $arePublished
+     * @param bool           $isRecursive
      */
     public function setPublishedStatus(array $nodes, $arePublished, $isRecursive = false)
     {
@@ -880,9 +877,11 @@ class ResourceManager
             }
 
             //only warn for the roots
-            $eventName = "publication_change_{$node->getResourceType()->getName()}";
-            $resource = $this->getResourceFromNode($node);
-            $this->dispatcher->dispatch($eventName, 'PublicationChange', [$resource]);
+            $this->dispatcher->dispatch(
+                "publication_change_{$node->getResourceType()->getName()}",
+                'PublicationChange',
+                [$this->getResourceFromNode($node)]
+            );
 
             $usersToNotify = $node->getWorkspace() && !$node->getWorkspace()->isDisabledNotifications() ?
                 $this->container->get('claroline.manager.user_manager')->getUsersByWorkspaces([$node->getWorkspace()], null, null, false) :
@@ -1903,6 +1902,7 @@ class ResourceManager
      */
     public function getDefaultUploadDestinations()
     {
+        /** @var User $user */
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         if ('anon.' === $user) {
             return [];
@@ -1918,6 +1918,7 @@ class ResourceManager
             );
         }
 
+        /** @var ResourceNode $node */
         $node = $this->container->get('request')->getSession()->get('current_resource_node');
 
         if ($node && $node->getWorkspace()) {

@@ -1,18 +1,22 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer;
+namespace Claroline\CoreBundle\API\Serializer\Platform;
 
+use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
+use Claroline\CoreBundle\Manager\PluginManager;
 use Claroline\CoreBundle\Manager\VersionManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @DI\Service("claroline.serializer.platform")
+ * Serializes platform parameters used for client rendering.
+ *
+ * @DI\Service("claroline.serializer.platform_client")
  */
-class PlatformSerializer
+class ClientSerializer
 {
     /** @var string */
     private $env;
@@ -29,8 +33,11 @@ class PlatformSerializer
     /** @var VersionManager */
     private $versionManager;
 
+    /** @var PluginManager */
+    private $pluginManager;
+
     /**
-     * PlatformSerializer constructor.
+     * ClientSerializer constructor.
      *
      * @DI\InjectParams({
      *     "env"            = @DI\Inject("%kernel.environment%"),
@@ -38,7 +45,7 @@ class PlatformSerializer
      *     "requestStack"   = @DI\Inject("request_stack"),
      *     "config"         = @DI\Inject("claroline.config.platform_config_handler"),
      *     "versionManager" = @DI\Inject("claroline.manager.version_manager"),
-     *     "userSerializer" = @DI\Inject("claroline.serializer.user")
+     *     "pluginManager"  = @DI\Inject("claroline.manager.plugin_manager")
      * })
      *
      * @param string                       $env,
@@ -46,19 +53,22 @@ class PlatformSerializer
      * @param RequestStack                 $requestStack
      * @param PlatformConfigurationHandler $config
      * @param VersionManager               $versionManager
+     * @param PluginManager                $pluginManager
      */
     public function __construct(
         $env,
         TokenStorageInterface $tokenStorage,
         RequestStack $requestStack,
         PlatformConfigurationHandler $config,
-        VersionManager $versionManager
+        VersionManager $versionManager,
+        PluginManager $pluginManager
     ) {
         $this->env = $env;
         $this->tokenStorage = $tokenStorage;
         $this->requestStack = $requestStack;
         $this->config = $config;
         $this->versionManager = $versionManager;
+        $this->pluginManager = $pluginManager;
     }
 
     /**
@@ -102,6 +112,9 @@ class PlatformSerializer
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
+            'plugins' => array_map(function (Plugin $plugin) {
+                return;
+            }, $this->pluginManager->getEnabled()),
         ];
     }
 }

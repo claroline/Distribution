@@ -12,26 +12,24 @@
 namespace Claroline\CoreBundle\Listener\Resource;
 
 use Claroline\AppBundle\API\SerializerProvider;
-use Claroline\CoreBundle\Entity\Resource\Directory;
+use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Event\CopyResourceEvent;
-use Claroline\CoreBundle\Event\CreateFormResourceEvent;
-use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Claroline\CoreBundle\Event\Resource\LoadResourceEvent;
-use Claroline\CoreBundle\Form\DirectoryType;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Integrates the "Directory" resource.
+ * Integrates the "Shortcut" resource.
  *
  * @DI\Service
  */
-class DirectoryListener
+class ShortcutListener
 {
     /** @var ContainerInterface */
     private $container;
@@ -46,108 +44,66 @@ class DirectoryListener
     private $serializer;
 
     /**
-     * DirectoryListener constructor.
+     * ShortcutListener constructor.
      *
      * @DI\InjectParams({
-     *     "container"   = @DI\Inject("service_container"),
-     *     "formFactory" = @DI\Inject("form.factory"),
-     *     "templating"  = @DI\Inject("templating"),
-     *     "serializer"  = @DI\Inject("claroline.api.serializer")
+     *     "container"       = @DI\Inject("service_container"),
+     *     "formFactory"     = @DI\Inject("form.factory"),
+     *     "templating"      = @DI\Inject("templating"),
+     *     "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher"),
+     *     "serializer"      = @DI\Inject("claroline.api.serializer")
      * })
      *
      * @param ContainerInterface   $container
      * @param FormFactoryInterface $formFactory
      * @param TwigEngine           $templating
+     * @param StrictDispatcher     $eventDispatcher
      * @param SerializerProvider   $serializer
      */
     public function __construct(
         ContainerInterface $container,
         FormFactoryInterface $formFactory,
         TwigEngine $templating,
+        StrictDispatcher $eventDispatcher,
         SerializerProvider $serializer
     ) {
         $this->container = $container;
         $this->formFactory = $formFactory;
         $this->templating = $templating;
+        $this->eventDispatcher = $eventDispatcher;
         $this->serializer = $serializer;
     }
 
     /**
-     * @DI\Observe("create_form_directory")
+     * Loads a shortcut.
+     * It forwards the event to the target of the shortcut.
      *
-     * @param CreateFormResourceEvent $event
-     */
-    public function onCreateForm(CreateFormResourceEvent $event)
-    {
-        $form = $this->formFactory->create(new DirectoryType(), new Directory());
-        $response = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'directory',
-            ]
-        );
-        $event->setResponseContent($response);
-        $event->stopPropagation();
-    }
-
-    /**
-     * @DI\Observe("create_directory")
-     *
-     * @param CreateResourceEvent $event
-     */
-    public function onCreate(CreateResourceEvent $event)
-    {
-        $request = $this->container->get('request');
-        $form = $this->formFactory->create(new DirectoryType(), new Directory());
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            $published = $form->get('published')->getData();
-            $event->setPublished($published);
-            $event->setResources([$form->getData()]);
-            $event->stopPropagation();
-
-            return;
-        }
-
-        $content = $this->templating->render(
-            'ClarolineCoreBundle:Resource:createForm.html.twig',
-            [
-                'form' => $form->createView(),
-                'resourceType' => 'directory',
-            ]
-        );
-        $event->setErrorFormContent($content);
-        $event->stopPropagation();
-    }
-
-    /**
-     * Loads a directory.
-     *
-     * @DI\Observe("load_directory")
+     * @DI\Observe("load_resource_shortcut")
      *
      * @param LoadResourceEvent $event
      */
     public function onLoad(LoadResourceEvent $event)
     {
+        //
+        $shortcut = $event->getResource();
         $event->setAdditionalData([
-            'directory' => $this->serializer->serialize($event->getResource()),
+            //'directory' => $this->serializer->serialize(),
         ]);
 
         $event->stopPropagation();
     }
 
     /**
-     * Opens a directory.
+     * Opens a shortcut.
+     * It forwards the event to the target of the shortcut.
      *
-     * @DI\Observe("open_directory")
+     * @DI\Observe("open_resource_shortcut")
      *
      * @param OpenResourceEvent $event
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        $directory = $event->getResource();
+        /*$directory = $event->getResource();
         $content = $this->templating->render(
             'ClarolineCoreBundle:Directory:index.html.twig',
             [
@@ -157,13 +113,26 @@ class DirectoryListener
         );
         $response = new Response($content);
         $event->setResponse($response);
-        $event->stopPropagation();
+        $event->stopPropagation();*/
     }
 
     /**
-     * Removes a directory.
+     * Downloads a shortcut.
+     * It forwards the event to the target of the shortcut.
      *
-     * @DI\Observe("delete_directory")
+     * @DI\Observe("download_resource_shortcut")
+     *
+     * @param DownloadResourceEvent $event
+     */
+    public function onDownload(DownloadResourceEvent $event)
+    {
+
+    }
+
+    /**
+     * Removes a shortcut.
+     *
+     * @DI\Observe("delete_resource_shortcut")
      *
      * @param deleteResourceEvent $event
      */
@@ -173,15 +142,20 @@ class DirectoryListener
     }
 
     /**
-     * Copies a directory.
+     * Copies a shortcut.
      *
-     * @DI\Observe("copy_directory")
+     * @DI\Observe("copy_resource_shortcut")
      *
      * @param copyResourceEvent $event
      */
     public function onCopy(CopyResourceEvent $event)
     {
-        $resourceCopy = new Directory();
-        $event->setCopy($resourceCopy);
+        /** @var ResourceShortcut $shortcut */
+        $shortcut = $event->getResource();
+
+        $copy = new ResourceShortcut();
+        $copy->setTarget($shortcut->getTarget());
+
+        $event->setCopy($copy);
     }
 }

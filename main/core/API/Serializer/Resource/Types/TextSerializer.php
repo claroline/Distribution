@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\API\Serializer\Resource;
+namespace Claroline\CoreBundle\API\Serializer\Resource\Types;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Resource\Text;
@@ -9,7 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * @DI\Service("claroline.serializer.resource.text")
+ * @DI\Service("claroline.serializer.resource_text")
  * @DI\Tag("claroline.serializer")
  */
 class TextSerializer
@@ -48,6 +48,8 @@ class TextSerializer
      * Serializes a Text resource entity for the JSON api.
      *
      * @param Text $text
+     *
+     * @return array
      */
     public function serialize(Text $text)
     {
@@ -70,6 +72,7 @@ class TextSerializer
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
+        // TODO : replace `createRevision`. It calls om flush and persist and this is not allowed in serializer
         $revision = $this->manager->createRevision($text, $data['content'], $user === 'anon.' ? null : $user);
 
         return $revision->getText();

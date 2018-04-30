@@ -135,7 +135,7 @@ function getMoreActions(resourceNode, props) {
     {
       id: 'resource-edit-properties',
       type: 'modal',
-      icon: 'fa fa-fw fa-pencil',
+      icon: 'fa fa-fw fa-cog',
       label: t_res('edit-properties'),
       group: t_res('resource_management'),
       displayed: resourceNode.rights.current.administrate,
@@ -179,7 +179,7 @@ function getMoreActions(resourceNode, props) {
       id: 'resource-export',
       type: 'url',
       icon: 'fa fa-fw fa-download',
-      label: trans('export', {}, 'actions'),
+      label: trans('download', {}, 'actions'),
       //group: trans('resource_notifications'),
       displayed: resourceNode.rights.current.export,
       target: ['claro_resource_action', {
