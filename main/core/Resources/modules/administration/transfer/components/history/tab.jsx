@@ -4,13 +4,14 @@ import {connect} from 'react-redux'
 import {actions} from '#/main/core/administration/transfer/components/history/reducer'
 import {trans} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
-import {Logs} from '#/main/core/administration/transfer/components/log/logs.jsx'
+//import {Logs} from '#/main/core/administration/transfer/components/log/logs.jsx'
 
 import {DataListContainer} from '#/main/core/data/list/containers/data-list.jsx'
 import {HistoryList} from '#/main/core/administration/transfer/components/history/history-list.jsx'
-import {withRouter} from '#/main/core/router'
 
-const Tab = props =>
+const Logs = () => <span>COUCOU</span>
+
+const Tab = () =>
   <div className="col-md-9">
     <Routes
       routes={[
@@ -20,23 +21,24 @@ const Tab = props =>
           component: List
         },
         {
-          path: 'history/:log?',
-          component: Logs,
+          path: 'toto/:log',
+          component: Logs/*,
           onEnter: (params) => {
-            props.loadLog(params.log)
-          }
+            console.log('toto')
+            //props.loadLog(params.log)
+          }*/
         }
       ]}
     />
   </div>
 
-const List = props =>
+const List = () =>
   <DataListContainer
     name="history"
     primaryAction={(row) => ({
       id: 'logfile',
-      type: 'callback',
-      callback: () => props.history.push('/history/' + row.log)
+      type: 'link',
+      target: '/toto/' + row.log
     })}
     fetch={{
       url: ['apiv2_transfer_list'],
@@ -57,14 +59,14 @@ const List = props =>
     ]}
   />
 
-const ConnectedTab = withRouter(connect(
+const ConnectedTab = connect(
   null,
   dispatch => ({
     loadLog(filename) {
       dispatch(actions.load(filename))
     }
   })
-)(Tab))
+)(Tab)
 
 export {
   ConnectedTab as Tab
