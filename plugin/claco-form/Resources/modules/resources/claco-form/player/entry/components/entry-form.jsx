@@ -179,7 +179,7 @@ class EntryFormComponent extends Component {
                 updateProp={(prop, value) => this.props.updateFormProp(prop, value)}
                 setErrors={this.props.setErrors}
               />
-             ReactDOM.render(fieldComponent, fieldEl)
+            ReactDOM.render(fieldComponent, fieldEl)
           }
         }
       })
