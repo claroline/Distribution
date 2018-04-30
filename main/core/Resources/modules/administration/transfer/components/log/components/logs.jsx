@@ -3,8 +3,32 @@ import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {Error} from '#/main/core/administration/transfer/components/modal/log/components/error'
-import {Success} from '#/main/core/administration/transfer/components/modal/log/components/success'
+
+const Error = error => {
+  return(
+    <pre>
+      <div>{trans('line')}: {error.line}</div>
+      {typeof error.value === 'string' ?
+        error.value:
+        Object.keys(error.value).map((key, i) => <div key={'error'+key+i}>{error.value[key].path}: {error.value[key].message}</div>)
+      }
+    </pre>
+  )
+}
+
+Error.propTypes = {
+}
+
+const Success = success => {
+  return(
+    <pre>
+      {success.log}
+    </pre>
+  )
+}
+
+Success.propTypes = {
+}
 
 const Logs = props => {
   if (props.data) {

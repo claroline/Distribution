@@ -8,6 +8,7 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
 import {withRouter} from '#/main/core/router'
 import classes from 'classnames'
+import {Logs} from '#/main/core/administration/transfer/components/log/components/logs.jsx'
 
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
@@ -32,9 +33,12 @@ const Field = props => {
     )
   } else {
     return(
-      <div className="well">
-        <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? trans('required'): trans('optional')}</span></div>
-        <div>{props.description}</div>
+      <div>
+        <Logs/>
+        <div className="well">
+          <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? trans('required'): trans('optional')}</span></div>
+          <div>{props.description}</div>
+        </div>
       </div>
     )
   }
@@ -96,6 +100,7 @@ const RoutedExplain = props => {
           <div> {trans('import_headers')} </div>
           <Fields {...props.explanation[entity][action]} />
         </div>
+
       }
     </div>
   )

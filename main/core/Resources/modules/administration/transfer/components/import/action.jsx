@@ -2,12 +2,8 @@ import React, {Component} from 'react'
 
 import {PageActions} from '#/main/core/layout/page/components/page-actions.jsx'
 import {FormPageActionsContainer} from '#/main/core/data/form/containers/page-actions.jsx'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_LOG} from '#/main/core/administration/transfer/components/modal/log'
-import {Button} from '#/main/app/action/components/button'
-import {matchPath, withRouter} from '#/main/core/router'
+import {actions} from '#/main/core/administration/transfer/components/log/actions'
 
-import {trans} from '#/main/core/translation'
 import {connect} from 'react-redux'
 
 class Action extends Component {
@@ -38,7 +34,14 @@ class Action extends Component {
           save={{
             type: 'callback',
             callback: () => {
-              this.props.openLog(this.getLogId())
+              const logName = this.getLogId()
+              const refresher = setInterval(() => {
+                this.props.loadLog(logName)
+                if (this.props.data && this.props.data.total !== undefined && this.props.data.processed === this.props.data.total) {
+                  clearInterval(refresher)
+                }
+              }, 2000)
+
               this.generateLogId()
             }
           }}
@@ -50,14 +53,12 @@ class Action extends Component {
 
 
 const ConnectedAction = connect(
-  null,
+  state => ({
+    data: state.log
+  }),
   dispatch => ({
-    openLog(filename) {
-      dispatch(
-        modalActions.showModal(MODAL_LOG, {
-          file: filename
-        })
-      )
+    loadLog(filename) {
+      dispatch(actions.load(filename))
     }
   })
 )(Action)
