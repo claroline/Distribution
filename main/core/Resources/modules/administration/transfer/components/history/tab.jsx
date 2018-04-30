@@ -21,7 +21,7 @@ const Tab = () =>
           component: List
         },
         {
-          path: 'toto/:log',
+          path: 'history/:log',
           component: Logs/*,
           onEnter: (params) => {
             console.log('toto')
@@ -38,7 +38,7 @@ const List = () =>
     primaryAction={(row) => ({
       id: 'logfile',
       type: 'link',
-      target: '/toto/' + row.log
+      target: '/history/' + row.log
     })}
     fetch={{
       url: ['apiv2_transfer_list'],
