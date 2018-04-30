@@ -12,6 +12,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {FormSections, FormSection} from '#/main/core/layout/form/components/form-sections.jsx'
 import {HtmlText} from '#/main/core/layout/components/html-text.jsx'
+import {FormField} from '#/main/core/data/form/components/field.jsx'
 
 import {select} from '#/plugin/claco-form/resources/claco-form/selectors'
 import {
@@ -21,7 +22,6 @@ import {
 } from '#/plugin/claco-form/resources/claco-form/prop-types'
 import {actions} from '#/plugin/claco-form/resources/claco-form/player/entry/actions'
 import {EntryFormData} from '#/plugin/claco-form/resources/claco-form/player/entry/components/entry-form-data.jsx'
-import {FormField} from '#/plugin/claco-form/resources/claco-form/player/entry/components/form-field.jsx'
 
 const authenticatedUser = currentUser()
 
@@ -96,37 +96,51 @@ class EntryFormComponent extends Component {
     if (this.props.useTemplate && this.props.template) {
       const title =
         <FormField
-          controlId="field-title"
+          id="field-title"
           type="string"
+          name={'title'}
           label={trans('title')}
           required={true}
-          noLabel={true}
+          hideLabel={true}
           value={this.props.entry.title}
           error={this.props.errors.title}
-          onChange={value => this.props.updateFormProp('title', value)}
+          updateProp={(prop, value) => this.props.updateFormProp('title', value)}
+          setErrors={this.props.setErrors}
         />
       const element = document.getElementById('clacoform-entry-title')
 
       if (element) {
         ReactDOM.render(title, element)
       }
-      this.props.fields.filter(f => f.type !== 'file' && f.type !== 'date').forEach(f => {
+      this.props.fields.filter(f => f.type !== 'file').forEach(f => {
         const fieldEl = document.getElementById(`clacoform-field-${f.autoId}`)
 
         if (fieldEl) {
+          const choices = f.options && f.options.choices ?
+            f.options.choices.reduce((acc, choice) => {
+              acc[choice.value] = choice.value
+
+              return acc
+            }, {}) :
+            {}
+          const options = f.options ? Object.assign({}, f.options, {choices: choices}) : {}
+
           const fieldComponent =
             <FormField
               key={`field-${f.id}`}
-              controlId={`field-${f.id}`}
+              id={`field-${f.id}`}
               type={f.type}
+              name={`values.${f.id}`}
               label={f.name}
               required={f.required}
               disabled={!this.props.isManager && ((this.props.isNew && f.restrictions.locked && !f.restrictions.lockedEditionOnly) || (!this.props.isNew && f.restrictions.locked))}
               help={f.help}
-              noLabel={true}
+              hideLabel={true}
               value={this.props.entry.values ? this.props.entry.values[f.id] : undefined}
               error={this.props.errors[f.id]}
-              onChange={value => this.props.updateFormProp(`values.${f.id}`, value)}
+              options={f.options ? options : {}}
+              updateProp={(prop, value) => this.props.updateFormProp(`values.${f.id}`, value)}
+              setErrors={this.props.setErrors}
             />
           ReactDOM.render(fieldComponent, fieldEl)
         }
@@ -223,6 +237,7 @@ EntryFormComponent.propTypes = {
   keywords: T.array,
   saveForm: T.func.isRequired,
   updateFormProp: T.func.isRequired,
+  setErrors: T.func.isRequired,
   addCategory: T.func.isRequired,
   removeCategory: T.func.isRequired,
   addKeyword: T.func.isRequired,
@@ -262,6 +277,9 @@ const EntryForm = withRouter(connect(
     },
     updateFormProp(propName, propValue) {
       dispatch(formActions.updateProp('entries.current', propName, propValue))
+    },
+    setErrors(errors) {
+      dispatch(formActions.setErrors('entries.current', errors))
     },
     addCategory(category) {
       dispatch(actions.addCategory(category))
