@@ -20,15 +20,17 @@ use Icap\InwicastBundle\Entity\MediaCenter;
 use Icap\InwicastBundle\Entity\MediacenterUser;
 use Icap\InwicastBundle\Exception\NoMediacenterException;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * @DI\Service
  */
-class ClarolinePluginListener extends ContainerAware
+class ClarolinePluginListener
 {
+    use ContainerAwareTrait;
+
     private $templating;
 
     //-------------------------------

@@ -14,11 +14,13 @@ use Icap\BlogBundle\Entity\Blog;
 use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Form\BlogType;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class BlogListener extends ContainerAware
+class BlogListener
 {
+    use ContainerAwareTrait;
+
     /**
      * @param CreateFormResourceEvent $event
      */
@@ -210,7 +212,7 @@ class BlogListener extends ContainerAware
                     case 'resource-read':
                         ++$nbOpenings;
 
-                        if ($status === AbstractResourceEvaluation::STATUS_UNKNOWN) {
+                        if (AbstractResourceEvaluation::STATUS_UNKNOWN === $status) {
                             $status = AbstractResourceEvaluation::STATUS_OPENED;
                         }
                         break;

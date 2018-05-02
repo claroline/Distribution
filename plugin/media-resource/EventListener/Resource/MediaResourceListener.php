@@ -11,8 +11,7 @@ use Claroline\CoreBundle\Event\OpenResourceEvent;
 use Innova\MediaResourceBundle\Entity\MediaResource;
 use Innova\MediaResourceBundle\Form\Type\MediaResourceType;
 use JMS\DiExtraBundle\Annotation as DI;
-use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -21,19 +20,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  *
  *  @DI\Service()
  */
-class MediaResourceListener extends ContainerAware
+class MediaResourceListener
 {
-    protected $container;
+    use ContainerAwareTrait;
 
-    /**
-     * @DI\InjectParams({
-     *      "container" = @DI\Inject("service_container")
-     * })
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
+    protected $container;
 
     /**
      * @DI\Observe("innova_media_resource_administrate_innova_media_resource")

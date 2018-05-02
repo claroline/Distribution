@@ -2,29 +2,31 @@
 
 namespace Icap\LessonBundle\Listener;
 
+use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\DeleteResourceEvent;
 use Claroline\CoreBundle\Event\OpenResourceEvent;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
 use Icap\LessonBundle\Entity\Chapter;
-use Symfony\Component\DependencyInjection\ContainerAware;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Icap\LessonBundle\Form\LessonType;
 use Icap\LessonBundle\Entity\Lesson;
+use Icap\LessonBundle\Form\LessonType;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class LessonListener extends ContainerAware
+class LessonListener
 {
+    use ContainerAwareTrait;
+
     /*Méthode permettant de créer le formulaire de creation*/
     public function onCreateForm(CreateFormResourceEvent $event)
     {
         $form = $this->container->get('form.factory')->create(new LessonType(), new Lesson());
         $content = $this->container->get('templating')->render(
             'ClarolineCoreBundle:Resource:createForm.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'resourceType' => 'icap_lesson',
-            )
+            ]
         );
 
         $event->setResponseContent($content);
@@ -38,14 +40,14 @@ class LessonListener extends ContainerAware
         $form->handleRequest($request);
         if ($form->isValid()) {
             $lesson = $form->getData();
-            $event->setResources(array($lesson));
+            $event->setResources([$lesson]);
         } else {
             $content = $this->container->get('templating')->render(
                 'ClarolineCoreBundle:Resource:create_form.html.twig',
-                array(
+                [
                     'form' => $form->createView(),
                     'resourceType' => 'icap_lesson',
-                )
+                ]
             );
             $event->setErrorFormContent($content);
         }
@@ -58,7 +60,7 @@ class LessonListener extends ContainerAware
             ->get('router')
             ->generate(
                 'icap_lesson',
-                array('resourceId' => $event->getResource()->getId())
+                ['resourceId' => $event->getResource()->getId()]
                 );
         $event->setResponse(new RedirectResponse($route));
         $event->stopPropagation();

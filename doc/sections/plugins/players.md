@@ -43,15 +43,17 @@ This example will show you the main files of a basic HTML5 video player.
 namespace Claroline\VideoPlayerBundle\Listener;
 
 use Claroline\CoreBundle\Event\PlayFileEvent;
-use Symfony\Component\DependencyInjection\ContainerAware;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
 * @DI\Service("claroline.listener.video_player_listener")
 */
-class VideoPlayerListener extends ContainerAware
+class VideoPlayerListener  
 {
+    use ContainerAwareTrait;
+    
     private $fileDir;
     private $templating;
 
