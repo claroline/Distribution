@@ -259,12 +259,6 @@ class ObjectManager extends ObjectManagerDecorator
         $query->setParameter('list', $list);
         $objects = $query->getResult();
 
-        if (($entityCount = count($objects)) !== ($idCount = count($list))) {
-            throw new MissingObjectException(
-                "{$entityCount} out of {$idCount} ids don't match any existing object"
-            );
-        }
-
         if ($orderStrict) {
             // Sort objects to have the same order as given $ids array
             $sortIds = array_flip($list);
