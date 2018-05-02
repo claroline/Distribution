@@ -36,7 +36,7 @@
     "new_message": "Nouveau message",
     "new_subject": "Nouveau sujet",
     "create_subject": "Créer un sujet",
-    "create_the_subject": "Créer le sujet",
+    "post_the_subject": "Poster le sujet",
     "no": "Non",
     "notifications": "Notifications",
     "notifications_explanation": "L'activation des notifications par email entraîne l'envoi d'un courriel aux utilisateurs ayant accès au forum lors de l'ajout d'un message.",
