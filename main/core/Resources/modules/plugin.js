@@ -8,7 +8,7 @@ const CORE_PLUGIN = 'core'
  * Declares applications provided by the Core plugin.
  */
 const coreConfiguration = {
-  actions: [
+  /*actions: [
     {
       name: 'publish',
       type: 'async',
@@ -42,7 +42,7 @@ const coreConfiguration = {
         node: resourceNode.autoId
       }]
     }
-  ],
+  ],*/
   resources: {
     'text': () => { return import(/* webpackChunkName: "core-text-resource" */ '#/main/core/resources/text') },
     // todo move me inside exo plugin
