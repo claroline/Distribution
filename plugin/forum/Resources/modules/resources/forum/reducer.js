@@ -7,6 +7,8 @@ import {currentUser} from '#/main/core/user/current'
 import {makeId} from '#/main/core/scaffolding/id'
 
 import {reducer as editorReducer} from '#/plugin/forum/resources/forum/editor/reducer'
+import {reducer as playerReducer} from '#/plugin/forum/resources/forum/player/reducer'
+
 import {
   MESSAGE_ADD,
   COMMENT_ADD
@@ -37,15 +39,17 @@ const messagesReducer = makeReducer([], {
     const messages = cloneDeep(state)
     const message = messages.find(message => message.id === action.messageId)
 
-    message.comments.push({
-      id: makeId(),
-      content: action.comment,
-      meta: {
-        creator: currentUser(),
-        created: now(),
-        updated: now()
-      }
-    })
+    if (message != null) {
+      message.comments.push({
+        id: makeId(),
+        content: action.comment,
+        meta: {
+          creator: currentUser(),
+          created: now(),
+          updated: now()
+        }
+      })
+    }
 
     return messages
   }
@@ -55,7 +59,8 @@ const reducer = makeResourceReducer({}, {
   forum: makeReducer({}, {}),
   subject: makeReducer({}, {}),
   messages: messagesReducer,
-  forumForm: editorReducer
+  forumForm: editorReducer,
+  subjectForm: playerReducer
 })
 
 export {

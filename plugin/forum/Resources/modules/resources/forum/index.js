@@ -84,6 +84,10 @@ export const App = () => ({
     messages: messages,
     forumForm: {
       data: forum
+    },
+    subjectForm: {
+      data: subject
     }
+
   })
 })

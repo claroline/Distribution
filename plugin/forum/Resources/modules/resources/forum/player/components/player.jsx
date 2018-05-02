@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import classes from 'classnames'
 
 import {Button} from '#/main/app/action/components/button'
 import {currentUser} from '#/main/core/user/current'
@@ -45,7 +44,7 @@ class PlayerComponent extends Component {
             <Button
               label={trans('forum_back_to_subjects', {}, 'forum')}
               type="link"
-              target="/play"
+              target="/subjects"
               className="btn-link"
               primary={true}
             />

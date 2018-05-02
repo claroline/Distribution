@@ -1,12 +1,10 @@
 import React from 'react'
-// import {connect} from 'react-redux'
-import {PropTypes as T} from 'prop-types'
 
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
 
-const Editor = props =>
+const Editor = () =>
   <FormContainer
     level={3}
     displayLevel={2}
@@ -28,13 +26,14 @@ const Editor = props =>
                 type: 'html',
                 label: trans('overview_message', {}, 'forum'),
                 displayed: forum => forum.display.showOverview
+              },
+              {
+                name: 'display.lastMessages',
+                type: 'number',
+                label: trans('show_last_messages', {}, 'forum'),
+                displayed: forum => forum.display.showOverview
               }
             ]
-          },
-          {
-            name: 'display.lastMessages',
-            type: 'number',
-            label: trans('show_last_messages', {}, 'forum')
           }
         ]
       }, {

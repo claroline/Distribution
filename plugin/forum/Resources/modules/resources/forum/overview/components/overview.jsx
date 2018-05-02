@@ -12,7 +12,6 @@ import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
 
-
 const OverviewComponent = props =>
   <div>
     <section className="resource-section resource-overview">
@@ -36,14 +35,14 @@ const OverviewComponent = props =>
             <Button
               label={trans('see_subjects', {}, 'forum')}
               type="link"
-              target="/play/subject/3"
+              target="/subject"
               className="btn btn-block"
               primary={true}
             />
             <Button
-              label={trans('new_subject', {}, 'forum')}
+              label={trans('create_subject', {}, 'forum')}
               type="link"
-              target="/play"
+              target="/subject/create"
               className="btn btn-block"
             />
           </section>
@@ -84,7 +83,7 @@ const OverviewComponent = props =>
             <ul className="posts">
               {props.messages.map(message =>
                 <li key={message.id} className="post">
-                  <h4>Nom du sujet <a href="/play/subject">Voir le sujet</a></h4>
+                  <h4>Nom du sujet <a href="/subject">Voir le sujet</a></h4>
                   <UserMessage
                     user={message.meta.creator}
                     date={message.meta.created}
