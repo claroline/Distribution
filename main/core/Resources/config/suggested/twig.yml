@@ -4,6 +4,7 @@ twig:
     globals:
         chosenRangeKeys: %chosenRangeKeys%
         uploadsDir: %claroline.param.uploads_directory%
+        config: '@claroline.config.platform_config_handler'
     form:
         resources:
             - 'ClarolineCoreBundle:Form:date_range.html.twig'
