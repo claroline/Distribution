@@ -35,14 +35,14 @@ const OverviewComponent = props =>
             <Button
               label={trans('see_subjects', {}, 'forum')}
               type="link"
-              target="/subject"
+              target="/subjects"
               className="btn btn-block"
               primary={true}
             />
             <Button
               label={trans('create_subject', {}, 'forum')}
               type="link"
-              target="/subject/create"
+              target="/subjects/create"
               className="btn btn-block"
             />
           </section>

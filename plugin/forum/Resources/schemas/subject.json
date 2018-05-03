@@ -20,8 +20,6 @@
           "type": "integer",
           "description": "The number of views"
         },
-        "creator": {
-        },
         "created": {
           "type": ["string"],
           "description": "The subject creation date"

@@ -45,10 +45,20 @@ class ForumSerializer
      */
     public function serialize(Forum $forum, array $options = [])
     {
+        // TODO implement
         return [
             'id' => $forum->getUuid(),
             'validationMode' => $forum->getValidationMode(),
             'maxComment' => $forum->getMaxComment(),
+            'display' => [
+              'description' => 'il faut causer sur ce forum !',
+              'showOverview' => true,
+            ],
+            'meta' => [
+              'users' => 34,
+              'subjects' => 23,
+              'messages' => 233,
+            ],
         ];
     }
 

@@ -70,12 +70,12 @@ class Forum extends AbstractResource
 
     public function setValidationMode($mode)
     {
-        $this->mode = $mode;
+        $this->validationMode = $mode;
     }
 
     public function getValidationMode()
     {
-        return $this->mode;
+        return $this->validationMode;
     }
 
     public function setMaxComment($max)

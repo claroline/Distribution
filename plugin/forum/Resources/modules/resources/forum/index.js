@@ -2,18 +2,6 @@ import {ForumResource} from '#/plugin/forum/resources/forum/components/resource'
 import {reducer} from '#/plugin/forum/resources/forum/reducer'
 import {currentUser} from '#/main/core/user/current'
 
-const forum = {
-  id: '123',
-  display: {
-    description: 'il faut causer sur ce forum !'
-  },
-  moderation: {},
-  meta: {
-    users: 34,
-    subjects: 23,
-    messages: 233
-  }
-}
 
 const subject = {
   id: '238',
@@ -79,15 +67,9 @@ export const App = () => ({
   store: reducer,
   styles: 'claroline-distribution-plugin-forum-forum-resource',
   initialData: initialData => Object.assign({}, initialData, {
-    forum: forum,
-    subject: subject,
     messages: messages,
     forumForm: {
-      data: forum
-    },
-    subjectForm: {
-      data: subject
+      data: initialData.forum
     }
-
   })
 })

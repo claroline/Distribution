@@ -24,7 +24,6 @@ use Claroline\ForumBundle\Entity\Forum;
 use Claroline\ForumBundle\Form\ForumType;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ForumListener extends ContainerAware
 {
@@ -78,7 +77,7 @@ class ForumListener extends ContainerAware
         $content = $this->container->get('templating')->render(
             'ClarolineForumBundle:Forum:open.html.twig', [
                 '_resource' => $event->getResource(),
-                'forum' => [],
+                'forum' => $this->container->get('claroline.api.serializer')->serialize($event->getResource()),
             ]
         );
 

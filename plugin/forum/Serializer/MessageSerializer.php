@@ -21,7 +21,7 @@ class MessageSerializer
 
     /** @var AbstractMessageSerializer */
     private $messageSerializer;
-    
+
     /**
      * ParametersSerializer constructor.
      *
@@ -99,8 +99,8 @@ class MessageSerializer
                 'Claroline\ForumBundle\Entity\Subject',
                 $data['subject']
             );
-            
-            if (!empty($subject) {
+
+            if (!empty($subject)) {
                 $message->setSubject($subject);
             }
         }

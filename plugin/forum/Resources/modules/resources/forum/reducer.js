@@ -57,10 +57,9 @@ const messagesReducer = makeReducer([], {
 
 const reducer = makeResourceReducer({}, {
   forum: makeReducer({}, {}),
-  subject: makeReducer({}, {}),
   messages: messagesReducer,
   forumForm: editorReducer,
-  subjectForm: playerReducer
+  subjects: playerReducer
 })
 
 export {

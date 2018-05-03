@@ -103,7 +103,7 @@ class SubjectSerializer
     public function deserialize($data, Subject $subject, array $options = [])
     {
         $this->sipe('title', 'setTitle', $data, $subject);
-        $this->sipe('meta.views', 'setViewCount', $data, $subject);
+        // $this->sipe('meta.views', 'setViewCount', $data, $subject);
         $this->sipe('meta.sticky', 'setIsSticked', $data, $subject);
         $this->sipe('meta.closed', 'setIsClosed', $data, $subject);
 
@@ -115,16 +115,16 @@ class SubjectSerializer
             if (isset($data['meta']['creator'])) {
                 $subject->setAuthor($data['meta']['creator']['name']);
             }
-        }
 
-        //set forum
-        $creator = $this->serializerProvider->deserialize(
-            'Claroline\CoreBundle\Entity\User',
-            $data['meta']['creator']
-        );
-
-        if ($creator) {
-            $subject->setCreator($creator);
+            //set forum
+            // TODO: reuse value from token Storage if new
+            $creator = $this->serializerProvider->deserialize(
+                'Claroline\CoreBundle\Entity\User',
+                $data['meta']['creator']
+            );
+            if ($creator) {
+                $subject->setCreator($creator);
+            }
         }
 
         $forum = $this->serializerProvider->deserialize(

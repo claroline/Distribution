@@ -4,8 +4,10 @@ namespace Claroline\ForumBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\ForumBundle\Entity\Forum;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/forum")
@@ -73,7 +75,7 @@ class ForumController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function createSubject(Forum $forum, Request $request)
+    public function createSubjectAction(Forum $forum, Request $request)
     {
         $forum = $this->serializer->serialize($forum);
         $data = $this->decodeRequest($request);
@@ -88,6 +90,21 @@ class ForumController extends AbstractCrudController
         if (is_array($object)) {
             return new JsonResponse($object, 400);
         }
+
+        // creates the first message at the same time
+        $this->crud->create(
+          'Claroline\ForumBundle\Entity\Message',
+          [
+            'subject' => [
+              $object->getUuid(),
+            ],
+            'meta' => [
+              'creator' => $data['meta']['creator'],
+            ],
+            'content' => $data['message'],
+          ],
+          $this->options['create']
+        );
 
         return new JsonResponse(
             $this->serializer->serialize($object, $this->options['get']),

@@ -1,14 +1,22 @@
 import {createSelector} from 'reselect'
 
 const forum = state => state.forum
-const subject = state => state.subject
 const messages = state => state.messages
 
+const subjects = state => state.subjects
+const subject = createSelector(
+  [subjects],
+  (subjects) => subjects.current
+)
 
-
+const forumId = createSelector(
+  [forum],
+  (forum) => forum.id
+)
 
 export const select = {
   forum,
   subject,
-  messages
+  messages,
+  forumId
 }
