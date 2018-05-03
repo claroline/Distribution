@@ -23,7 +23,7 @@ const PlayerComponent = (props) =>
       },{
         path: '/subjects/:id',
         component: Subject,
-        onEnter: params => props.loadSubject(params.id)
+        onEnter: params => props.fetchSubject(params.id)
       }
     ]}
   />
@@ -34,8 +34,8 @@ const Player = connect(
     newSubject() {
       dispatch(actions.newSubject())
     },
-    loadSubject() {
-      dispatch(actions.loadSubject())
+    fetchSubject(id) {
+      dispatch(actions.fetchSubject(id))
     }
   })
 )(PlayerComponent)

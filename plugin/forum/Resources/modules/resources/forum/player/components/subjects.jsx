@@ -6,13 +6,18 @@ import {trans} from '#/main/core/translation'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
-const SubjectsList = () =>
+const SubjectsList = (props) =>
   <DataListContainer
     name="subjects.list"
     fetch={{
-      url: ['apiv2_forum_subject_list'],
+      url: ['claroline_forum_api_forum_getsubjects', {id: props.forum.id}],
       autoload: true
     }}
+    primaryAction={(subject) => ({
+      type: 'link',
+      target: '/subjects/'+subject.id,
+      label: trans('open', {}, 'actions')
+    })}
     definition={[
       {
         name: 'title',
@@ -22,19 +27,24 @@ const SubjectsList = () =>
         primary: true
       }, {
         name: 'tags',
-        type: 'enum',
+        type: 'string',
         label: trans('email'),
         displayed: true
       }, {
-        name: 'created',
+        name: 'meta.created',
         type: 'date',
-        label: trans('creation_date')
-      }, {
-        name: 'creator',
-        type: 'string',
-        label: trans('creator'),
-        displayed: true
+        label: trans('creation_date'),
+        displayed: true,
+        option: {
+          time: true
+        }
       }
+      // {
+      //   name: 'creator',
+      //   type: 'string',
+      //   label: trans('creator'),
+      //   displayed: true
+      // }
     ]}
   />
 

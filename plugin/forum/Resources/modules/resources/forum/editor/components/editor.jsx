@@ -74,15 +74,15 @@ const Editor = () =>
           {
             name: 'moderation.enabled',
             type: 'boolean',
-            label: trans('enable_moderation', {}, 'forum'),
-            linked: [
-              {
-                name: 'enable.superModeration',
-                type: 'boolean',
-                label: trans('super_moderation', {}, 'forum'),
-                displayed: forum => forum.moderation.enabled
-              }
-            ]
+            label: trans('enable_moderation', {}, 'forum')
+            // linked: [
+            //   // {
+            //   //   name: 'enable.superModeration',
+            //   //   type: 'boolean',
+            //   //   label: trans('super_moderation', {}, 'forum'),
+            //   //   displayed: forum => validation
+            //   // }
+            // ]
           }
         ]
       }
