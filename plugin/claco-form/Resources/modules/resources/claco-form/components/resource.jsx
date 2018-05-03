@@ -91,7 +91,12 @@ const Resource = props =>
         {
           path: '/',
           component: getHome(props.defaultHome),
-          exact: true
+          exact: true,
+          onEnter: () => {
+            if (props.defaultHome === 'search') {
+              props.loadAllUsedCountries(props.clacoForm.id)
+            }
+          }
         }, {
           path: '/menu',
           component: ClacoFormMainMenu
