@@ -28,9 +28,7 @@ use Claroline\ClacoFormBundle\Event\Log\LogCommentCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCommentDeleteEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCommentEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogCommentStatusChangeEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogEntryCreateEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryDeleteEvent;
-use Claroline\ClacoFormBundle\Event\Log\LogEntryEditEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryLockSwitchEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryStatusChangeEvent;
 use Claroline\ClacoFormBundle\Event\Log\LogEntryUserChangeEvent;
@@ -345,6 +343,24 @@ class ClacoFormManager
         return count($categoriesIds) > 0 ?
             $this->getPublishedEntriesByCategoriesAndDates($clacoForm, $categoriesIds) :
             $this->getPublishedEntriesByDates($clacoForm);
+    }
+
+    public function getAllUsedCountriesCodes(ClacoForm $clacoForm)
+    {
+        $values = [];
+        $fieldValues = $this->getFieldValuesByType($clacoForm, FieldFacet::COUNTRY_TYPE);
+
+        foreach ($fieldValues as $fieldValue) {
+            if (!empty($fieldValue->getFieldFacetValue() && !empty($fieldValue->getFieldFacetValue()))) {
+                $value = $fieldValue->getFieldFacetValue()->getValue();
+
+                if (!empty($value) && !in_array($value, $values)) {
+                    $values[] = $value;
+                }
+            }
+        }
+
+        return sort($values) ? $values : [];
     }
 
     public function deleteEntry(Entry $entry)
@@ -1529,6 +1545,11 @@ class ClacoFormManager
         return $this->fieldValueRepo->findOneBy(['entry' => $entry, 'field' => $fieldId]);
     }
 
+    public function getFieldValuesByType(ClacoForm $clacoForm, $type)
+    {
+        return $this->fieldValueRepo->findFieldValuesByType($clacoForm, $type);
+    }
+
     /***************************************
      * Access to KeywordRepository methods *
      ***************************************/
@@ -1824,37 +1845,5 @@ class ClacoFormManager
             'mimeType' => $file->getClientMimeType(),
             'url' => '../files/clacoform'.$ds.$clacoForm->getUuid().$ds.$fileName,
         ];
-    }
-
-    private function filterFieldFiles($filedId, array $files = [])
-    {
-        $filteredFiles = [];
-
-        foreach ($files as $key => $value) {
-            $keyParts = explode('-', $key);
-
-            if (count($keyParts) > 0 && intval($keyParts[0]) === intval($filedId)) {
-                $filteredFiles[] = $value;
-            }
-        }
-
-        return $filteredFiles;
-    }
-
-    private function removeOldFiles(array $oldFiles, array $newFiles)
-    {
-        foreach ($oldFiles as $oldFile) {
-            $isPresent = false;
-
-            foreach ($newFiles as $newFile) {
-                if ($newFile['url'] === $oldFile['url']) {
-                    $isPresent = true;
-                    break;
-                }
-            }
-            if (!$isPresent) {
-                $this->fileSystem->remove($this->filesDir.DIRECTORY_SEPARATOR.$oldFile['url']);
-            }
-        }
     }
 }

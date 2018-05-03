@@ -990,4 +990,30 @@ class ClacoFormController extends Controller
 
         return $response->send();
     }
+
+    /**
+     * @EXT\Route(
+     *     "/claco/form/{clacoForm}/entries/used/countries",
+     *     name="claro_claco_form_used_countries_load",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter(
+     *     "clacoForm",
+     *     class="ClarolineClacoFormBundle:ClacoForm",
+     *     options={"mapping": {"clacoForm": "uuid"}}
+     * )
+     *
+     * Returns list of codes of all countries present in all entries
+     *
+     * @param ClacoForm $clacoForm
+     *
+     * @return JsonResponse
+     */
+    public function entriesUsedCountriesLoadAction(ClacoForm $clacoForm)
+    {
+        $this->clacoFormManager->checkRight($clacoForm, 'OPEN');
+        $countries = $this->clacoFormManager->getAllUsedCountriesCodes($clacoForm);
+
+        return new JsonResponse($countries, 200);
+    }
 }

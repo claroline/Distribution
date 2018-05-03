@@ -210,7 +210,11 @@ class EntriesComponent extends Component {
             displayed: this.isDisplayedField(f.id),
             filterable: f.type !== 'date' && this.isFilterableField(f.id),
             options: {
-              choices: intlConstants.REGIONS
+              choices: this.props.countries.reduce((acc, country) => {
+                acc[country] = intlConstants.REGIONS[country]
+
+                return acc
+              }, {})
             },
             calculated: (rowData) => {
               return rowData.values && rowData.values[f.id] ?
@@ -501,7 +505,8 @@ EntriesComponent.propTypes = {
       value: T.any
     })),
     sortBy: T.object
-  }).isRequired
+  }).isRequired,
+  countries: T.array
 }
 
 const Entries = connect(
@@ -526,7 +531,8 @@ const Entries = connect(
     displayKeywords: select.getParam(state, 'display_keywords'),
     titleLabel: select.getParam(state, 'title_field_label'),
     isCategoryManager: select.isCategoryManager(state),
-    entries: state.entries.list
+    entries: state.entries.list,
+    countries: select.usedCountries(state)
   }),
   (dispatch) => ({
     downloadEntryPdf(entryId) {
