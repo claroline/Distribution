@@ -97,7 +97,7 @@ class ForumController extends AbstractCrudController
           'Claroline\ForumBundle\Entity\Message',
           [
             'subject' => [
-              $object->getUuid(),
+              'id' => $object->getUuid(),
             ],
             'meta' => [
               'creator' => $data['meta']['creator'],
