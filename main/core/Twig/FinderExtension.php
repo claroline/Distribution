@@ -38,7 +38,7 @@ class FinderExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            'search' => new \Twig_Function_Method($this, 'search'),
+            'search' => new \Twig_SimpleFunction('search', [$this, 'search']),
         ];
     }
 

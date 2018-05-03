@@ -34,7 +34,7 @@ class BaseUriExtension extends \Twig_Extension
 
     public function getFunctions()
     {
-        return ['getAssetPath' => new \Twig_Function_Method($this, 'getAssetPath')];
+        return ['getAssetPath' => new \Twig_SimpleFunction('getAssetPath', [$this, 'getAssetPath'])];
     }
 
     public function getName()
@@ -51,7 +51,7 @@ class BaseUriExtension extends \Twig_Extension
     {
         $path = $this->assetsHelper->getUrl('');
 
-        if ($path[strlen($path) - 1] === '/') {
+        if ('/' === $path[strlen($path) - 1]) {
             $path = rtrim($path, '/');
         }
 

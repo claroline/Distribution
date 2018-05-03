@@ -57,7 +57,7 @@ class PlatformConfigurationExtension extends Twig_Extension
     public function getFunctions()
     {
         return [
-            'platform_config' => new \Twig_Function_Method($this, 'getPlatformConfig'),
+            'platform_config' => new \Twig_SimpleFunction('platform_config', [$this, 'getPlatformConfig']),
         ];
     }
 
