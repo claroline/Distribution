@@ -96,7 +96,7 @@ class Subject
     /**
      * @ORM\Column(type="integer")
      */
-    protected $viewCount;
+    protected $viewCount = 0;
 
     /**
      * Constructor.
