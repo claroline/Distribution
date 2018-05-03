@@ -42,39 +42,6 @@
     %}<script src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
-{% javascripts debug=false output='vendor/jms/twig-js/twig.js'
-    '../vendor/jms/twig-js/twig.js'
-%}
-    <script src="{{ asset_url }}"></script>
-{% endjavascripts %}
-{% javascripts debug=false filter='twig_js, jsmin' vars=["locale"]
-    "@ClarolineCoreBundle/Resources/views/Resource/breadcrumbs.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/actions.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/filters.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/listElement.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/thumbnail.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/results.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/roles.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/tabs.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/treenode.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/deleteConfirm.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/publishConfirm.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/unpublishConfirm.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Resource/userRightsRow.html.twig"
-    "@ClarolineCoreBundle/Resources/views/Modal/modal.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Modal/validationFooter.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Modal/errorFooter.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/removeMessageConfirm.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/ConfirmationMessage/restoreMessageConfirm.html.twigjs"
-    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/modelRow.html.twig"
-    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/userRow.html.twig"
-    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/groupRow.html.twig"
-    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/resourceElement.html.twig"
-    "@ClarolineCoreBundle/Resources/views/Tool/workspace/parameters/model/tabElement.html.twig"
-%}
-    <script src="{{ asset_url }}"></script>
-{% endjavascripts %}
-
 {# We have replaced WillDurand by our own to be able to lazy load trans domains #}
 <script src="{{ hotAsset('dist/claroline-distribution-main-core-translator.js') }}"></script>
 {# Load some default translation domains #}

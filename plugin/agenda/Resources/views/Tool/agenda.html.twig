@@ -175,9 +175,6 @@
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts debug=false filter='twig_js, jsmin' vars=["locale"] "@ClarolineAgendaBundle/Resources/views/Agenda/eventContent.html.twig" %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
     {% javascripts debug=false
      'js/translations/agenda/*.js'
        %}<script src="{{ asset_url }}"></script>
