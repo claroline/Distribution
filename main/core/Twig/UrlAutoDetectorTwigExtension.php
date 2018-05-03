@@ -35,7 +35,7 @@ class UrlAutoDetectorTwigExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'url_detect' => new \Twig_Filter_Method(
+            'url_detect' => new \Twig_SimpleFilter(
                 $this,
                 'autoDetectUrls',
                 array(

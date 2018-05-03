@@ -20,8 +20,8 @@ class IcapPortfolioExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'visibilityLabel' => new \Twig_Filter_Method($this, 'getVisibilityLabel'),
-            'orderByRow' => new \Twig_Filter_Method($this, 'getOrder'),
+            'visibilityLabel' => new \Twig_SimpleFilter($this, 'getVisibilityLabel'),
+            'orderByRow' => new \Twig_SimpleFilter($this, 'getOrder'),
         );
     }
 

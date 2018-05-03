@@ -39,17 +39,17 @@ class HomeExtension extends \Twig_Extension
     /**
      * Get filters of the service.
      *
-     * @return \Twig_Filter_Method
+     * @return \Twig_SimpleFilter
      */
     public function getFilters()
     {
         return [
-            'timeAgo' => new \Twig_Filter_Method($this, 'timeAgo'),
-            'homeLink' => new \Twig_Filter_Method($this, 'homeLink'),
-            'activeLink' => new \Twig_Filter_Method($this, 'activeLink'),
-            'activeRoute' => new \Twig_Filter_Method($this, 'activeRoute'),
-            'compareRoute' => new \Twig_Filter_Method($this, 'compareRoute'),
-            'autoLink' => new \Twig_Filter_Method($this, 'autoLink'),
+            'timeAgo' => new \Twig_SimpleFilter($this, 'timeAgo'),
+            'homeLink' => new \Twig_SimpleFilter($this, 'homeLink'),
+            'activeLink' => new \Twig_SimpleFilter($this, 'activeLink'),
+            'activeRoute' => new \Twig_SimpleFilter($this, 'activeRoute'),
+            'compareRoute' => new \Twig_SimpleFilter($this, 'compareRoute'),
+            'autoLink' => new \Twig_SimpleFilter($this, 'autoLink'),
         ];
     }
 

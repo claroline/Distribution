@@ -34,12 +34,12 @@ class PcreExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'preg_filter' => new \Twig_Filter_Method($this, '_preg_filter'),
-            'preg_grep' => new \Twig_Filter_Method($this, '_preg_grep'),
-            'preg_match' => new \Twig_Filter_Method($this, '_preg_match'),
-            'preg_quote' => new \Twig_Filter_Method($this, '_preg_quote'),
-            'preg_replace' => new \Twig_Filter_Method($this, '_preg_replace'),
-            'preg_split' => new \Twig_Filter_Method($this, '_preg_split'),
+            'preg_filter' => new \Twig_SimpleFilter($this, '_preg_filter'),
+            'preg_grep' => new \Twig_SimpleFilter($this, '_preg_grep'),
+            'preg_match' => new \Twig_SimpleFilter($this, '_preg_match'),
+            'preg_quote' => new \Twig_SimpleFilter($this, '_preg_quote'),
+            'preg_replace' => new \Twig_SimpleFilter($this, '_preg_replace'),
+            'preg_split' => new \Twig_SimpleFilter($this, '_preg_split'),
         );
     }
 

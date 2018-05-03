@@ -49,8 +49,8 @@ class SerializerExtension extends \Twig_Extension
     public function getFilters()
     {
         return [
-            'api_serialize' => new \Twig_Filter_Method($this, 'apiSerialize'),
-            'json_serialize' => new \Twig_Filter_Method($this, 'serialize'),
+            'api_serialize' => new \Twig_SimpleFilter($this, 'apiSerialize'),
+            'json_serialize' => new \Twig_SimpleFilter($this, 'serialize'),
         ];
     }
 

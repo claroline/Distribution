@@ -36,11 +36,11 @@ class DateFormatterExtension extends \Twig_Extension
     /**
      * Get filters of the service.
      *
-     * @return \Twig_Filter_Method
+     * @return \Twig_SimpleFilter
      */
     public function getFilters()
     {
-        return array('intl_date_format' => new \Twig_Filter_Method($this, 'intlDateFormat'));
+        return array('intl_date_format' => new \Twig_SimpleFilter($this, 'intlDateFormat'));
     }
 
     /*
