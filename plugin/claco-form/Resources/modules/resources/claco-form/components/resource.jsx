@@ -93,8 +93,13 @@ const Resource = props =>
           component: getHome(props.defaultHome),
           exact: true,
           onEnter: () => {
-            if (props.defaultHome === 'search') {
-              props.loadAllUsedCountries(props.clacoForm.id)
+            switch (props.defaultHome) {
+              case 'search':
+                props.loadAllUsedCountries(props.clacoForm.id)
+                break
+              case 'add':
+                props.openEntryForm(null, props.clacoForm.id)
+                break
             }
           }
         }, {
