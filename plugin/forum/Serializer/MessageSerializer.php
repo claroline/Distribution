@@ -84,7 +84,16 @@ class MessageSerializer
     {
         $message = $this->messageSerializer->deserialize($data, $message, $options);
 
-        //set subject ?
+        if (isset($data['subject'])) {
+            $subject = $this->serializerProvider->deserialize(
+                'Claroline\ForumBundle\Entity\Subject',
+                $data['subject']
+            );
+            
+            if (!empty($subject) {
+                $message->setSubject($subject);
+            }
+        }
 
         return $message;
     }
