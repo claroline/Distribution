@@ -73,21 +73,11 @@ class SubjectSerializer
     {
         return [
             'views' => $subject->getViewCount(),
-            'creator' => $this->serializeCreator($subject, $options),
+            'creator' => !empty($subject->getCreator()) ? $this->serializerProvider($subject->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
             'created' => $subject->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
             'sticky' => $subject->isSticked(),
             'closed' => $subject->isClosed(),
-        ];
-    }
-
-    public function serializeCreator(Subject $subject, array $options = [])
-    {
-        $creator = $subject->getCreator();
-
-        return [
-            'id' => $creator ? $creator->getId() : null,
-            'name' => $creator ? $creator->getFullName() : $subject->getAuthor(),
         ];
     }
 
@@ -114,16 +104,16 @@ class SubjectSerializer
 
             if (isset($data['meta']['creator'])) {
                 $subject->setAuthor($data['meta']['creator']['name']);
-            }
+                
+                // TODO: reuse value from token Storage if new
+                $creator = $this->serializerProvider->deserialize(
+                    'Claroline\CoreBundle\Entity\User',
+                    $data['meta']['creator']
+                );
 
-            //set forum
-            // TODO: reuse value from token Storage if new
-            $creator = $this->serializerProvider->deserialize(
-                'Claroline\CoreBundle\Entity\User',
-                $data['meta']['creator']
-            );
-            if ($creator) {
-                $subject->setCreator($creator);
+                if ($creator) {
+                    $subject->setCreator($creator);
+                }
             }
         }
 
