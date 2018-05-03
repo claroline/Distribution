@@ -7,6 +7,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\ForumBundle\Entity\Subject;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @DI\Service("claroline.serializer.forum_subject")
