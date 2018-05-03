@@ -73,7 +73,7 @@ class SubjectSerializer
     {
         return [
             'views' => $subject->getViewCount(),
-            'creator' => !empty($subject->getCreator()) ? $this->serializerProvider($subject->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
+            'creator' => !empty($subject->getCreator()) ? $this->serializerProvider->serialize($subject->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
             'created' => $subject->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
             'sticky' => $subject->isSticked(),
