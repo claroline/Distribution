@@ -31,7 +31,7 @@ class SerializerExtension extends \Twig_Extension
      * SerializerExtension constructor.
      *
      * @DI\InjectParams({
-     *     "serializer"         = @DI\Inject("serializer"),
+     *     "serializer"         = @DI\Inject("jms_serializer"),
      *     "serializerProvider" = @DI\Inject("claroline.api.serializer")
      * })
      *

@@ -83,7 +83,7 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             'Claroline\MigrationBundle\ClarolineMigrationBundle',
             'Claroline\Bundle\FrontEndBundle\FrontEndBundle',
             'JMS\SerializerBundle\JMSSerializerBundle',
-            'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle', // required by ZenStruck grouped forms
+            'Cocur\Slugify\Bridge\Symfony\CocurSlugifyBundle',
         ];
         // simple container configuration, same for every environment
         $simpleConfigs = [

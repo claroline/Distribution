@@ -23,6 +23,8 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 /**
  *  This is the voter we use in the API. It's able to handle the ObjectCollection.
+ *
+ * @DI\Service()
  */
 abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
 {
