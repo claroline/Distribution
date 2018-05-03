@@ -113,6 +113,7 @@ const Resource = props =>
                       props.loadEntryUser(entryId)
                     }
                   })
+                break
             }
           }
         }, {
