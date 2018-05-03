@@ -7,6 +7,7 @@ use Claroline\AppBundle\Controller\AbstractCrudController;
 use Claroline\ForumBundle\Entity\Forum;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
