@@ -127,15 +127,17 @@ class SubjectSerializer
             }
         }
 
-        $forum = $this->serializerProvider->deserialize(
-            'Claroline\ForumBundle\Entity\Forum',
-            $data['forum']
-        );
+        if (!empty($data['forum'])) {
+            $forum = $this->serializerProvider->deserialize(
+                'Claroline\ForumBundle\Entity\Forum',
+                $data['forum']
+            );
 
-        if ($forum) {
-            $subject->setForum($forum);
+            if ($forum) {
+                $subject->setForum($forum);
+            }
         }
-
+            
         return $subject;
     }
 }
