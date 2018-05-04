@@ -41,10 +41,7 @@ class ImportCsvCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = $this->getContainer()->get('claroline.persistence.object_manager')
-            ->getRepository('Claroline\CoreBundle\Entity\User')->find(
-              $this->getContainer()->get('claroline.config.platform_config_handler')->getParameter('default_root_anon_id')
-            );
+        $user = $this->getContainer()->get('claroline.manager.user_manager')->getDefaultUser();
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->getContainer()->get('security.context')->setToken($token);
 
