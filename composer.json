@@ -37,7 +37,6 @@
         "guzzle/http": "*",
         "hwi/oauth-bundle": "*",
         "icap/html-diff": "*",
-        "idci/exporter-bundle": "*",
         "meyfa/php-svg": "*",
         "jdorn/sql-formatter": "*",
         "jms/di-extra-bundle": "*",

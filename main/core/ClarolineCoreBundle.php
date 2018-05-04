@@ -27,7 +27,6 @@ use Claroline\KernelBundle\Bundle\AutoConfigurableInterface;
 use Claroline\KernelBundle\Bundle\ConfigurationBuilder;
 use Claroline\KernelBundle\Bundle\ConfigurationProviderInterface;
 use FOS\OAuthServerBundle\FOSOAuthServerBundle;
-use IDCI\Bundle\ExporterBundle\IDCIExporterBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -121,13 +120,6 @@ class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfig
             $config
                 ->addContainerResource($this->buildPath('fos_oauth_server_config'))
                 ->addRoutingResource($this->buildPath('fos_oauth_server_routing'));
-
-            return $config;
-        } elseif ($bundle instanceof IDCIExporterBundle) {
-            $config = new ConfigurationBuilder();
-            $config
-                ->addContainerResource($this->buildPath('idci_exporter'))
-                ->addRoutingResource($this->buildPath('idci_exporter_routing'));
 
             return $config;
         } elseif ($bundle instanceof ZenstruckFormBundle) {
