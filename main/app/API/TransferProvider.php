@@ -106,10 +106,15 @@ class TransferProvider
             $data = $adapter->decodeSchema($data, $explanation);
         } else {
             foreach ($schema as $prop => $value) {
-                $jsonSchema = $this->serializer->getSchema($value);
-
-                if ($jsonSchema) {
-                    $identifiersSchema[$prop] = $jsonSchema;
+                //this is for the custom schema defined in the transfer stuff (atm add user to roles for workspace)
+                //there is probably a better way to handle this
+                if (!$value instanceof \stdClass) {
+                    $jsonSchema = $this->serializer->getSchema($value);
+                    if ($jsonSchema) {
+                        $identifiersSchema[$prop] = $jsonSchema;
+                    }
+                } else {
+                    $identifiersSchema[$prop] = $value;
                 }
             }
 

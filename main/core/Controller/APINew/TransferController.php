@@ -122,7 +122,13 @@ class TransferController extends AbstractCrudController
             $data['file']
         );
 
-        $this->async->run('claroline:api:load '.$publicFile->getId().' '.$data['action'].' '.$this->getLogFile($request));
+        $this->container->get('claroline.manager.api_manager')->import(
+            $publicFile,
+            $data['action'],
+            $this->getLogFile($request)
+        );
+
+        //$this->async->run('claroline:api:load '.$publicFile->getId().' '.$data['action'].' '.$this->getLogFile($request));
 
         return new JsonResponse('started', 200);
     }

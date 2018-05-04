@@ -36,16 +36,28 @@ class AddUser extends AbstractAction
     {
         $user = $this->serializer->deserialize(
             'Claroline\CoreBundle\Entity\User',
-            $data['user'][0]
+            $data['user']
         );
+
+        if (!$user->getId()) {
+            throw new \Exception('User '.print_r($data['user'], true).'doesnt exists');
+        }
 
         $workspace = $this->serializer->deserialize(
-            'Claroline\CoreBundle\Entity\Workspace',
-            $data['workspace'][0]
+            'Claroline\CoreBundle\Entity\Workspace\Workspace',
+            $data['workspace']
         );
 
+        if (!$workspace->getId()) {
+            throw new \Exception('Workspace '.print_r($data['user'], true).'doesnt exists');
+        }
+
         $role = $this->om->getRepository('ClarolineCoreBundle:Role')
-          ->findOneBy(['workspace' => $workspace, 'translationKey' => $data['role'][0]['translationKey']]);
+          ->findOneBy(['workspace' => $workspace, 'translationKey' => $data['role']['translationKey']]);
+
+        if (!$role->getId()) {
+            throw new \Exception('Role '.print_r($data['user'], true).'doesnt exists');
+        }
 
         $this->crud->patch($user, 'role', 'add', [$role]);
     }
@@ -64,6 +76,7 @@ class AddUser extends AbstractAction
           'claroline' => [
             'requiredAtCreation' => ['translationKey'],
             'ids' => ['translationKey'],
+            'class' => 'Claroline\CoreBundle\Entity\Role',
           ],
         ];
 
