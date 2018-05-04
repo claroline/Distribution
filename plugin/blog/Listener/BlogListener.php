@@ -15,13 +15,66 @@ use Icap\BlogBundle\Entity\Comment;
 use Icap\BlogBundle\Entity\Post;
 use Icap\BlogBundle\Form\BlogType;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * @DI\Service
+ */
 class BlogListener
 {
     use ContainerAwareTrait;
+    /** @var FormFactory */
+    private $formFactory;
+    /** @var HttpKernelInterface */
+    private $httpKernel;
+    /** @var Request */
+    private $request;
+    /** @var TwigEngine */
+    private $templating;
+    /** @var ContainerInterface */
+    private $container;
 
     /**
+     * BlogListener constructor.
+     *
+     * @DI\InjectParams({
+     *     "formFactory"           = @DI\Inject("form.factory"),
+     *     "httpKernel"            = @DI\Inject("http_kernel"),
+     *     "requestStack"          = @DI\Inject("request_stack"),
+     *     "templating"            = @DI\Inject("templating"),
+     *     "container"             = @DI\Inject("service_container")
+     * })
+     *
+     * @param FormFactory         $formFactory
+     * @param HttpKernelInterface $httpKernel
+     * @param RequestStack        $requestStack
+     * @param TwigEngine          $templating
+     * @param ContainerInterface  $container
+     */
+    public function __construct(
+        FormFactory $formFactory,
+        HttpKernelInterface $httpKernel,
+        RequestStack $requestStack,
+        TwigEngine $templating,
+        ContainerInterface $container
+    ) {
+        $this->formFactory = $formFactory;
+        $this->httpKernel = $httpKernel;
+        $this->request = $requestStack->getCurrentRequest();
+        $this->templating = $templating;
+        $this->container = $container;
+    }
+
+    /**
+     * @DI\Observe("create_form_icap_blog")
+     *      
      * @param CreateFormResourceEvent $event
      */
     public function onCreateForm(CreateFormResourceEvent $event)
@@ -39,6 +92,8 @@ class BlogListener
     }
 
     /**
+     * @DI\Observe("create_icap_blog")
+     * 
      * @param CreateResourceEvent $event
      */
     public function onCreate(CreateResourceEvent $event)
@@ -66,21 +121,33 @@ class BlogListener
     }
 
     /**
+     * @DI\Observe("open_icap_blog")
+     *
      * @param OpenResourceEvent $event
      */
     public function onOpen(OpenResourceEvent $event)
     {
-        $route = $this->container
+        /*$route = $this->container
             ->get('router')
             ->generate(
                 'icap_blog_view',
                 ['blogId' => $event->getResource()->getId()]
             );
         $event->setResponse(new RedirectResponse($route));
+        $event->stopPropagation();*/
+
+        $params = [];
+        $params['_controller'] = 'IcapBlogBundle:Resource\Blog:open';
+        $params['blogId'] = $event->getResource()->getId();
+        $subRequest = $this->request->duplicate([], null, $params);
+        $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
+        $event->setResponse($response);
         $event->stopPropagation();
     }
 
     /**
+     * @DI\Observe("delete_icap_blog")
+     * 
      * @param DeleteResourceEvent $event
      */
     public function onDelete(DeleteResourceEvent $event)
@@ -117,6 +184,11 @@ class BlogListener
         $event->stopPropagation();
     }
 
+    /**
+     * @DI\Observe("copy_icap_blog")
+     *
+     * @param CopyResourceEvent $event
+     */
     public function onCopy(CopyResourceEvent $event)
     {
         $entityManager = $this->container->get('claroline.persistence.object_manager');
@@ -165,6 +237,8 @@ class BlogListener
     }
 
     /**
+     * @DI\Observe("configure_blog_icap_blog")
+     * 
      * @param CustomActionResourceEvent $event
      */
     public function onConfigure(CustomActionResourceEvent $event)
@@ -180,6 +254,8 @@ class BlogListener
     }
 
     /**
+     * @DI\Observe("generate_resource_user_evaluation_icap_blog")
+     * 
      * @param GenericDataEvent $event
      */
     public function onGenerateResourceTracking(GenericDataEvent $event)

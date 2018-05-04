@@ -2,6 +2,7 @@
 
 namespace Icap\BlogBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
@@ -16,6 +17,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BlogOptions
 {
+    use UuidTrait;
+
+    const BANNER_NO_REPEAT = 'no-repeat';
+    const BANNER_REPEAT = 'no-repeat';
+    const BANNER_REPEAT_X = 'repeat-x';
+    const BANNER_REPEAT_Y = 'repeat-y';
+
+    /**
+     * BlogOptions constructor.
+     */
+    public function __construct()
+    {
+        $this->refreshUuid();
+    }
+
     /**
      * @var int
      *
@@ -122,7 +138,7 @@ class BlogOptions
      * @Expose
      * @ORM\Column(type="string", name="banner_background_image_repeat")
      */
-    protected $bannerBackgroundImageRepeat = 'no-repeat';
+    protected $bannerBackgroundImageRepeat = self::BANNER_NO_REPEAT;
 
     /**
      * @var UploadedFile

@@ -2,6 +2,7 @@
 
 namespace Icap\BlogBundle\Entity;
 
+use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -19,6 +20,8 @@ use JMS\Serializer\Annotation\Groups;
  */
 class Comment extends Statusable
 {
+    use UuidTrait;
+
     /**
      * @var int
      *
@@ -88,8 +91,12 @@ class Comment extends Statusable
 
     protected $userPicker = null;
 
+    /**
+     * Comment constructor.
+     */
     public function __construct()
     {
+        $this->refreshUuid();
     }
 
     /**
