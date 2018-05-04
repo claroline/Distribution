@@ -10,7 +10,7 @@ import {Button} from '#/main/app/action/components/button'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {select} from '#/plugin/forum/resources/forum/selectors'
 
-
+import {constants} from '#/plugin/forum/resources/forum/constants'
 
 const SubjectFormComponent = (props) =>
   <div>
@@ -59,12 +59,19 @@ const SubjectFormComponent = (props) =>
                 title: trans('display_parameters'),
                 fields: [
                   {
+                    name: 'sorted',
+                    type: 'enum',
+                    label: trans('messages_sort_display', {}, 'forum'),
+                    options: {
+                      noEmpty: true,
+                      choices: constants.MESSAGE_SORT_DISPLAY
+                    }
+                  }, {
                     name: 'sticked',
                     type: 'boolean',
                     label: trans('stick', {}, 'forum'),
                     help: trans('stick_explanation', {}, 'forum')
-                  },
-                  {
+                  }, {
                     name: 'poster',
                     label: trans('poster'),
                     type: 'image',

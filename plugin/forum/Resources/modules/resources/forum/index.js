@@ -10,7 +10,8 @@ const subject = {
     'Guerre',
     'Armée',
     'Europe'
-  ]
+  ],
+  messages: 12
 }
 
 const messages = [

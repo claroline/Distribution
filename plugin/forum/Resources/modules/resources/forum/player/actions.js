@@ -24,3 +24,17 @@ actions.fetchSubject = (id) => ({
     success: (response, dispatch) => dispatch(actions.loadSubject(response))
   }
 })
+
+actions.deleteSubject = (subjectId) => (dispatch) => {
+  dispatch({
+    [API_REQUEST]: {
+      url: ['apiv2_forum_subject_delete', {subject: subjectId}],
+      request: {
+        method: 'DELETE'
+      },
+      success: (data, dispatch) => {
+        dispatch(actions.removeSubject(subjectId))
+      }
+    }
+  })
+}

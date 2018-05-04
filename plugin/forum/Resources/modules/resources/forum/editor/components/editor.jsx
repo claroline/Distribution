@@ -3,6 +3,7 @@ import React from 'react'
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
+import {constants as listConst} from '#/main/core/data/list/constants'
 
 const Editor = () =>
   <FormContainer
@@ -37,23 +38,28 @@ const Editor = () =>
           }
         ]
       }, {
-        icon: 'fa fa-fw fa-comments',
-        title: trans('posts', {}, 'forum'),
+        icon: 'fa fa-fw fa-desktop',
+        title: trans('display_parameters'),
         fields: [
           {
-            name: 'max.subjects',
-            type: 'number',
-            label: trans('max_subjects', {}, 'forum')
-          },
+            name: 'display.subjectList',
+            type: 'enum',
+            label: trans('subjects_list_display', {}, 'forum'),
+            options: {
+              noEmpty: true,
+              choices: listConst.LIST_DISPLAY_MODES
+            }
+          }
+        ]
+      }, {
+        icon: 'fa fa-fw fa-comments',
+        title: trans('forum_settings', {}, 'forum'),
+        fields: [
           {
-            name: 'max.message.subjects',
-            type: 'number',
-            label: trans('max_message_by_subject', {}, 'forum')
-          },
-          {
-            name: 'closing.date.forum.',
+            name: 'forum.lock',
             type: 'date',
-            label: trans('closing_date', {}, 'forum')
+            label: trans('locking_date', {}, 'forum'),
+            help: trans('locking_date_explenation', {}, 'forum')
           }
         ]
       }, {
