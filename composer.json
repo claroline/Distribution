@@ -56,7 +56,7 @@
         "stof/doctrine-extensions-bundle": "*",
         "symfony/assetic-bundle": "*",
         "symfony/monolog-bundle": "*",
-        "symfony/symfony": "^3",
+        "symfony/symfony": "3.0.*",
         "symfony/swiftmailer-bundle": "*",
         "twig/extensions": "*",
         "twig/twig": "*",
