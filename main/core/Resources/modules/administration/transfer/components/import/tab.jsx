@@ -72,12 +72,13 @@ const RoutedExplain = props => {
               fields: [
                 {
                   name: 'action',
-                  type: 'enum',
+                  type: 'choice',
                   label: trans('action'),
                   onChange: (value) => props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1)),
                   required: true,
                   options: {
                     noEmpty: true,
+                    condensed: true,
                     choices: choices
                   }
                 }, {
