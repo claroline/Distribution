@@ -12,9 +12,10 @@
 namespace Claroline\CoreBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class Builder
+class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
