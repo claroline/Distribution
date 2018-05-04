@@ -34,7 +34,6 @@ const Field = props => {
   } else {
     return(
       <div>
-        <Logs/>
         <div className="well">
           <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? trans('required'): trans('optional')}</span></div>
           <div>{props.description}</div>
@@ -57,7 +56,7 @@ const RoutedExplain = props => {
   const action = props.match.params.action
   const choices = {}
   choices['none'] = ''
-  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: key}), choices)
+  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: trans(key, {}, 'transfer')}), choices)
 
   return (
     <div>
@@ -95,6 +94,8 @@ const RoutedExplain = props => {
         />
       </div>
 
+      <Logs/>
+
       {props.explanation[entity][action] &&
         <div>
           <div> {trans('import_headers')} </div>
@@ -107,7 +108,10 @@ const RoutedExplain = props => {
 }
 
 const ConnectedExplain = withRouter(connect(
-  state => ({explanation: select.explanation(state)}),
+  state => ({
+    explanation: select.explanation(state),
+    logs: state.log
+  }),
   dispatch =>({
     updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity))
   })

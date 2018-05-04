@@ -34,10 +34,10 @@ const Logs = props => {
   if (props.data) {
     return (<div>
       <pre>
-        processed: {props.data.processed} {'\n'}
-        error: {props.data.error} {'\n'}
-        success: {props.data.success} {'\n'}
-        total: {props.data.total} {'\n'}
+        {trans('processed')}: {props.data.processed} {'\n'}
+        {trans('error')}: {props.data.error} {'\n'}
+        {trans('success')}: {props.data.success} {'\n'}
+        {trans('total')}: {props.data.total} {'\n'}
       </pre>
 
       <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
