@@ -42,6 +42,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -80,7 +81,7 @@ class ParametersController extends Controller
      *     "roleManager"        = @DI\Inject("claroline.manager.role_manager"),
      *     "formFactory"        = @DI\Inject("form.factory"),
      *     "localeManager"      = @DI\Inject("claroline.manager.locale_manager"),
-     *     "request"            = @DI\Inject("request"),
+     *     "request"            = @DI\Inject("request_stack"),
      *     "translator"         = @DI\Inject("translator"),
      *     "termsOfService"     = @DI\Inject("claroline.common.terms_of_service_manager"),
      *     "mailManager"        = @DI\Inject("claroline.manager.mail_manager"),
@@ -106,7 +107,7 @@ class ParametersController extends Controller
         RoleManager $roleManager,
         FormFactory $formFactory,
         LocaleManager $localeManager,
-        Request $request,
+        RequestStack $request,
         TranslatorInterface $translator,
         TermsOfServiceManager $termsOfService,
         MailManager $mailManager,
@@ -129,7 +130,7 @@ class ParametersController extends Controller
         $this->configHandler = $configHandler;
         $this->roleManager = $roleManager;
         $this->formFactory = $formFactory;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->termsOfService = $termsOfService;
         $this->localeManager = $localeManager;
         $this->translator = $translator;

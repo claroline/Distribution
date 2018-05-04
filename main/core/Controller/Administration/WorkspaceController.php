@@ -103,7 +103,7 @@ class WorkspaceController extends Controller
     public function importWorkspaceAction()
     {
         $form = $this->createForm(new WorkspaceImportType());
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $file = $form->get('file')->getData();

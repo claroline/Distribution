@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -43,7 +44,7 @@ class MailController extends Controller
     /**
      * @DI\InjectParams({
      *     "formFactory"  = @DI\Inject("form.factory"),
-     *     "request"      = @DI\Inject("request"),
+     *     "request"      = @DI\Inject("request_stack"),
      *     "mailManager"  = @DI\Inject("claroline.manager.mail_manager"),
      *     "router"       = @DI\Inject("router"),
      *     "tokenStorage" = @DI\Inject("security.token_storage"),
@@ -52,14 +53,14 @@ class MailController extends Controller
      */
     public function __construct(
         FormFactory $formFactory,
-        Request $request,
+        RequestStack $request,
         MailManager $mailManager,
         RouterInterface $router,
         TokenStorageInterface $tokenStorage,
         PlatformConfigurationHandler $ch
     ) {
         $this->formFactory = $formFactory;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->mailManager = $mailManager;
         $this->router = $router;
         $this->tokenStorage = $tokenStorage;

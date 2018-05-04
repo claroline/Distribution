@@ -38,6 +38,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
@@ -70,7 +71,7 @@ class ProfileController extends Controller
      *     "roleManager"            = @DI\Inject("claroline.manager.role_manager"),
      *     "eventDispatcher"        = @DI\Inject("claroline.event.event_dispatcher"),
      *     "tokenStorage"           = @DI\Inject("security.token_storage"),
-     *     "request"                = @DI\Inject("request"),
+     *     "request"                = @DI\Inject("request_stack"),
      *     "localeManager"          = @DI\Inject("claroline.manager.locale_manager"),
      *     "encoderFactory"         = @DI\Inject("security.encoder_factory"),
      *     "toolManager"            = @DI\Inject("claroline.manager.tool_manager"),
@@ -100,7 +101,7 @@ class ProfileController extends Controller
         RoleManager $roleManager,
         StrictDispatcher $eventDispatcher,
         TokenStorageInterface $tokenStorage,
-        Request $request,
+        RequestStack $request,
         LocaleManager $localeManager,
         EncoderFactory $encoderFactory,
         ToolManager $toolManager,
@@ -114,7 +115,7 @@ class ProfileController extends Controller
         $this->roleManager = $roleManager;
         $this->eventDispatcher = $eventDispatcher;
         $this->tokenStorage = $tokenStorage;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->localeManager = $localeManager;
         $this->encoderFactory = $encoderFactory;
         $this->toolManager = $toolManager;
@@ -274,7 +275,7 @@ class ProfileController extends Controller
         $form->handleRequest($this->request);
         $unavailableRoles = [];
 
-        if ('POST' === $this->get('request')->getMethod()) {
+        if ('POST' === $this->get('request_stack')->getMasterRequest()->getMethod()) {
             $roles = ($isAdmin || $isGrantedUserAdmin) ?
                 $form->get('platformRoles')->getData() :
                 [$this->roleManager->getRoleByName('ROLE_USER')];

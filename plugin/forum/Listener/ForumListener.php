@@ -45,7 +45,7 @@ class ForumListener
 
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form = $this->container->get('form.factory')->create(new ForumType(), new Forum());
         $form->handleRequest($request);
 

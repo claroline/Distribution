@@ -48,7 +48,7 @@ class RouterExtension extends \Twig_Extension
 
     public function getHost()
     {
-        return $this->container->get('request')->getSchemeAndHttpHost().
+        return $this->container->get('request_stack')->getMasterRequest()->getSchemeAndHttpHost().
             $this->container->get('router')->getContext()->getBaseUrl();
     }
 }

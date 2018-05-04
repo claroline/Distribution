@@ -30,6 +30,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -60,7 +61,7 @@ class MessageController
      *     "mailManager"      = @DI\Inject("claroline.manager.mail_manager"),
      *     "messageManager"   = @DI\Inject("claroline.manager.message_manager"),
      *     "pagerFactory"     = @DI\Inject("claroline.pager.pager_factory"),
-     *     "request"          = @DI\Inject("request"),
+     *     "request"          = @DI\Inject("request_stack"),
      *     "router"           = @DI\Inject("router"),
      *     "tokenStorage"     = @DI\Inject("security.token_storage"),
      *     "userManager"      = @DI\Inject("claroline.manager.user_manager"),
@@ -74,7 +75,7 @@ class MessageController
         MailManager $mailManager,
         MessageManager $messageManager,
         PagerFactory $pagerFactory,
-        Request $request,
+        RequestStack $request,
         UrlGeneratorInterface $router,
         TokenStorageInterface $tokenStorage,
         UserManager $userManager,
@@ -86,7 +87,7 @@ class MessageController
         $this->mailManager = $mailManager;
         $this->messageManager = $messageManager;
         $this->pagerFactory = $pagerFactory;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->router = $router;
         $this->tokenStorage = $tokenStorage;
         $this->userManager = $userManager;
@@ -493,7 +494,7 @@ class MessageController
         $trimmedSearch = trim($search);
 
         if ($user->hasRole('ROLE_ADMIN')) {
-            if ($trimmedSearch === '') {
+            if ('' === $trimmedSearch) {
                 $users = $this->userManager->getAllUsers($page);
             } else {
                 $users = $this->userManager
@@ -506,7 +507,7 @@ class MessageController
             $workspaces = $this->workspaceManager->getOpenableWorkspacesByRoles($roles);
 
             if (count($workspaces) > 0) {
-                if ($trimmedSearch === '') {
+                if ('' === $trimmedSearch) {
                     $users = $this->userManager
                         ->getUsersByWorkspaces($workspaces, $page);
                 } else {
@@ -571,7 +572,7 @@ class MessageController
         $trimmedSearch = trim($search);
 
         if ($user->hasRole('ROLE_ADMIN')) {
-            if ($trimmedSearch === '') {
+            if ('' === $trimmedSearch) {
                 $groups = $this->groupManager->getAllGroups($page);
             } else {
                 $groups = $this->groupManager
@@ -583,7 +584,7 @@ class MessageController
                 ->getWorkspacesByUserAndRoleNames($user, ['ROLE_WS_MANAGER']);
             // retrieve all groups of workspace that user is manager
             if (count($workspaces) > 0) {
-                if ($trimmedSearch === '') {
+                if ('' === $trimmedSearch) {
                     $groups = $this->groupManager
                         ->getGroupsByWorkspaces($workspaces);
                 } else {
@@ -598,7 +599,7 @@ class MessageController
             $userGroups = $user->getGroups();
             $userGroupsFinal = [];
 
-            if ($trimmedSearch === '') {
+            if ('' === $trimmedSearch) {
                 $userGroupsFinal = $userGroups;
             } else {
                 $upperSearch = strtoupper($trimmedSearch);
@@ -606,7 +607,7 @@ class MessageController
                 foreach ($userGroups as $userGroup) {
                     $upperName = strtoupper($userGroup->getName());
 
-                    if (strpos($upperName, $upperSearch) !== false) {
+                    if (false !== strpos($upperName, $upperSearch)) {
                         $userGroupsFinal[] = $userGroup;
                     }
                 }
@@ -674,9 +675,9 @@ class MessageController
         $workspaceCodes = [];
 
         foreach ($names as $name) {
-            if (substr($name, 0, 1) === '{') {
+            if ('{' === substr($name, 0, 1)) {
                 $groupNames[] = trim($name, '{}');
-            } elseif (substr($name, 0, 1) === '[') {
+            } elseif ('[' === substr($name, 0, 1)) {
                 $workspaceCodes[] = trim($name, '[]');
             } else {
                 $usernames[] = trim($name);

@@ -40,6 +40,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -87,7 +88,7 @@ class UsersController extends Controller
      *     "formFactory"            = @DI\Inject("form.factory"),
      *     "localeManager"          = @DI\Inject("claroline.manager.locale_manager"),
      *     "mailManager"            = @DI\Inject("claroline.manager.mail_manager"),
-     *     "request"                = @DI\Inject("request"),
+     *     "request"                = @DI\Inject("request_stack"),
      *     "rightsManager"          = @DI\Inject("claroline.manager.rights_manager"),
      *     "roleManager"            = @DI\Inject("claroline.manager.role_manager"),
      *     "router"                 = @DI\Inject("router"),
@@ -111,7 +112,7 @@ class UsersController extends Controller
         LocaleManager $localeManager,
         MailManager $mailManager,
         PlatformConfigurationHandler $configHandler,
-        Request $request,
+        RequestStack $request,
         RightsManager $rightsManager,
         RoleManager $roleManager,
         RouterInterface $router,
@@ -135,7 +136,7 @@ class UsersController extends Controller
         $this->formFactory = $formFactory;
         $this->localeManager = $localeManager;
         $this->mailManager = $mailManager;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->rightsManager = $rightsManager;
         $this->roleManager = $roleManager;
         $this->router = $router;

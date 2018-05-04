@@ -66,7 +66,7 @@ class MediaResourceController extends Controller
      */
     public function save(Workspace $workspace, MediaResource $resource)
     {
-        $data = $this->container->get('request')->request->all();
+        $data = $this->container->get('request_stack')->getMasterRequest()->request->all();
         $this->get('innova_media_resource.manager.media_resource_options')->update($resource->getOptions(), $data);
         $this->get('innova_media_resource.manager.media_resource_region')->updateRegions($resource, $data);
 
@@ -110,7 +110,7 @@ class MediaResourceController extends Controller
      */
     public function exportToZip(MediaResource $resource)
     {
-        $data = $this->container->get('request')->request->all();
+        $data = $this->container->get('request_stack')->getMasterRequest()->request->all();
         $zipData = $this->get('innova_media_resource.manager.media_resource')->exportToZip($resource, $data);
 
         $response = new Response();

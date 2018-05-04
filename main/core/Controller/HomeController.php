@@ -26,6 +26,7 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -46,7 +47,7 @@ class HomeController
      * @InjectParams({
      *     "manager"        = @Inject("claroline.manager.home_manager"),
      *     "authorization"  = @Inject("security.authorization_checker"),
-     *     "request"        = @Inject("request"),
+     *     "request"        = @Inject("request_stack"),
      *     "templating"     = @Inject("templating"),
      *     "homeService"    = @Inject("claroline.common.home_service"),
      *     "container"      = @Inject("service_container"),
@@ -55,7 +56,7 @@ class HomeController
      */
     public function __construct(
         HomeManager $manager,
-        Request $request,
+        RequestStack $request,
         $authorization,
         $templating,
         $homeService,
@@ -63,7 +64,7 @@ class HomeController
         FormFactory $formFactory
     ) {
         $this->manager = $manager;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->authorization = $authorization;
         $this->templating = $templating;
         $this->homeService = $homeService;

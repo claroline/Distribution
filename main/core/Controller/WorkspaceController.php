@@ -47,6 +47,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -94,7 +95,7 @@ class WorkspaceController extends Controller
      *     "eventDispatcher"           = @DI\Inject("event_dispatcher"),
      *     "formFactory"               = @DI\Inject("form.factory"),
      *     "homeTabManager"            = @DI\Inject("claroline.manager.home_tab_manager"),
-     *     "request"                   = @DI\Inject("request"),
+     *     "request"                   = @DI\Inject("request_stack"),
      *     "resourceManager"           = @DI\Inject("claroline.manager.resource_manager"),
      *     "roleManager"               = @DI\Inject("claroline.manager.role_manager"),
      *     "router"                    = @DI\Inject("router"),
@@ -118,7 +119,7 @@ class WorkspaceController extends Controller
         EventDispatcherInterface $eventDispatcher,
         FormFactory $formFactory,
         HomeTabManager $homeTabManager,
-        Request $request,
+        RequestStack $request,
         ResourceManager $resourceManager,
         RoleManager $roleManager,
         UrlGeneratorInterface $router,
@@ -140,7 +141,7 @@ class WorkspaceController extends Controller
         $this->eventDispatcher = $eventDispatcher;
         $this->formFactory = $formFactory;
         $this->homeTabManager = $homeTabManager;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->resourceManager = $resourceManager;
         $this->roleManager = $roleManager;
         $this->router = $router;
@@ -393,7 +394,7 @@ class WorkspaceController extends Controller
                 ['%name%' => $form->get('name')->getData()],
                 'platform'
             );
-            $this->get('request')->getSession()->getFlashBag()->add('success', $msg);
+            $this->get('request_stack')->getMasterRequest()->getSession()->getFlashBag()->add('success', $msg);
 
             return new RedirectResponse($route);
         }

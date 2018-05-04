@@ -575,7 +575,7 @@ class DocumentController extends DropzoneBaseController
         $collecticielOpenOrNot = $dropzoneManager->collecticielOpenOrNot($dropzones[0]);
 
         // Récupération des documents sélectionnés
-        $adminInnova = $this->get('request')->query->get('adminInnova');
+        $adminInnova = $this->get('request_stack')->getMasterRequest()->query->get('adminInnova');
 
         // Ajout afin d'afficher la partie du code avec "Demande transmise"
         $template = $this->get('templating')

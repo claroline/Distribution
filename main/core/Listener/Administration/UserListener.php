@@ -47,7 +47,7 @@ class UserListener
             'user' => $event->getUser()->getId(),
         );
 
-        $subRequest = $this->container->get('request')->duplicate(array(), null, $params);
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate(array(), null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();
@@ -65,7 +65,7 @@ class UserListener
             'max' => 50,
         );
 
-        $subRequest = $this->container->get('request')->duplicate(array(), null, $params);
+        $subRequest = $this->container->get('request_stack')->getMasterRequest()->duplicate(array(), null, $params);
         $response = $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
         $event->setResponse($response);
         $event->stopPropagation();

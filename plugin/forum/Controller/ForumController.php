@@ -240,7 +240,7 @@ class ForumController extends Controller
         }
 
         $form = $this->get('form.factory')->create(new CategoryType(), new Category());
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $category = $form->getData();
@@ -279,7 +279,7 @@ class ForumController extends Controller
         }
 
         $form = $this->get('form.factory')->create(new SubjectType(), new Subject());
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $user = $this->tokenStorage->getToken()->getUser();
@@ -379,7 +379,7 @@ class ForumController extends Controller
     public function createMessageAction(Subject $subject)
     {
         $form = $this->container->get('form.factory')->create(new MessageType(), new Message());
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $message = $form->getData();
@@ -443,7 +443,7 @@ class ForumController extends Controller
 
         $oldContent = $message->getContent();
         $form = $this->container->get('form.factory')->create(new MessageType(), new Message());
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $newContent = $form->get('content')->getData();
@@ -482,7 +482,7 @@ class ForumController extends Controller
         }
 
         $form = $this->container->get('form.factory')->create(new CategoryType(), $category);
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         return array(
             'category' => $category,
@@ -511,7 +511,7 @@ class ForumController extends Controller
 
         $oldName = $category->getName();
         $form = $this->container->get('form.factory')->create(new CategoryType(), $category);
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $newName = $form->get('name')->getData();
@@ -633,7 +633,7 @@ class ForumController extends Controller
 
         $oldTitle = $subject->getTitle();
         $form = $this->container->get('form.factory')->create(new EditTitleType(), $subject);
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $newTitle = $form->get('title')->getData();
@@ -957,7 +957,7 @@ class ForumController extends Controller
          $forum = $subject->getCategory()->getForum();
          $reply = new Message();
          $form = $this->container->get('form.factory')->create(new MessageType(), $reply);
-         $form->handleRequest($this->get('request'));
+         $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
          if ($form->isValid()) {
              $newMsg = $form->getData();
@@ -995,7 +995,7 @@ class ForumController extends Controller
         $reply = new Message();
         $reply->setContent($this->forumManager->getMessageQuoteHTML($message));
         $form = $this->container->get('form.factory')->create(new MessageType(), $reply);
-        $form->handleRequest($this->get('request'));
+        $form->handleRequest($this->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $newMsg = $form->getData();

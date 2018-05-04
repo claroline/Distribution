@@ -63,7 +63,7 @@ class PagerfantaExtension extends P
         $router = $this->container->get('router');
 
         if (null === $options['routeName']) {
-            $request = $this->container->get('request');
+            $request = $this->container->get('request_stack')->getMasterRequest();
 
             $options['routeName'] = $request->attributes->get('_route');
             if ('_internal' === $options['routeName']) {

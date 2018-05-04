@@ -72,7 +72,7 @@ class MediaResourceListener
         // Create form
         $form = $this->container->get('form.factory')->create(new MediaResourceType(), new MediaResource());
         // Try to process form
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form->submit($request);
         if ($form->isValid()) {
             $mediaResource = $form->getData();

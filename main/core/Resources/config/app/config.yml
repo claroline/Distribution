@@ -20,14 +20,14 @@ services:
             - "@service_container"
         class: Claroline\CoreBundle\Form\Extension\CaptchaExtension
         tags:
-            - { name: form.type_extension, alias: form }
+            - { name: form.type_extension, alias: form, extended_type: Symfony\Component\Form\Extension\Core\Type\StringType }
 
     claroline.honeypot_extension:
         arguments:
             - "@service_container"
         class: Claroline\CoreBundle\Form\Extension\HoneypotExtension
         tags:
-            - { name: form.type_extension, alias: form }
+            - { name: form.type_extension, alias: form, extended_type: Symfony\Component\Form\Extension\Core\Type\StringType }
 
 framework:
     test: true

@@ -1943,7 +1943,7 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->get('form.factory')->createBuilder(new CommentType(), $comment)->getForm();
 
         // Récupération de la saisie du commentaire
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getMasterRequest();
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -2005,16 +2005,16 @@ class CorrectionController extends DropzoneBaseController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         // Récupération de l'ID du dropzone choisi
-        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+        $dropzoneId = $this->get('request_stack')->getMasterRequest()->query->get('dropzoneId');
         $dropzone = $this->getDoctrine()->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
 
         $this->get('innova.manager.dropzone_voter')->isAllowToOpen($dropzone);
 
         // Récupération des documents sélectionnés
-        $arrayDocsId = $this->get('request')->query->get('arrayDocsId');
+        $arrayDocsId = $this->get('request_stack')->getMasterRequest()->query->get('arrayDocsId');
         $arrayDocsToView = [];
 
-        $arrayDropsId = $this->get('request')->query->get('arrayDropsId');
+        $arrayDropsId = $this->get('request_stack')->getMasterRequest()->query->get('arrayDropsId');
         $arrayDropsToView = [];
 
         $cpt = 0;
@@ -2108,7 +2108,7 @@ class CorrectionController extends DropzoneBaseController
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         // Récupération de l'ID du dropzone choisi
-        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+        $dropzoneId = $this->get('request_stack')->getMasterRequest()->query->get('dropzoneId');
 
         $dropzone = $this->getDoctrine()->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
 
@@ -2117,10 +2117,10 @@ class CorrectionController extends DropzoneBaseController
         $this->get('innova.manager.dropzone_voter')->isAllowToOpen($dropzone);
 
         // Récupération des documents sélectionnés
-        $arrayDocsId = $this->get('request')->query->get('arrayDocsId');
+        $arrayDocsId = $this->get('request_stack')->getMasterRequest()->query->get('arrayDocsId');
         $arrayDocsToView = [];
 
-        $arrayDropsId = $this->get('request')->query->get('arrayDropsId');
+        $arrayDropsId = $this->get('request_stack')->getMasterRequest()->query->get('arrayDropsId');
         $arrayDropsToView = [];
 
         $cpt = 0;
@@ -2217,7 +2217,7 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->get('form.factory')->createBuilder(new CommentType(), $comment)->getForm();
 
         // Récupération de la saisie du commentaire
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getMasterRequest();
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -2285,7 +2285,7 @@ class CorrectionController extends DropzoneBaseController
         $form = $this->get('form.factory')->createBuilder(new CommentType(), $comment)->getForm();
 
         // Récupération de la saisie du commentaire
-        $request = $this->get('request');
+        $request = $this->get('request_stack')->getMasterRequest();
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);

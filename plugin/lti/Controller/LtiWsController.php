@@ -73,9 +73,9 @@ class LtiWsController extends Controller
             'context_id' => $ws->getId(),
             'context_title' => $ws->getName(),
             'context_label' => $ws->getCode(),
-            'tool_consumer_instance_guid' => $this->get('request')->getSchemeAndHttpHost(),
-            'tool_consumer_instance_description' => $this->get('request')->getSchemeAndHttpHost(),
-            'launch_presentation_locale' => $this->get('request')->getLocale(),
+            'tool_consumer_instance_guid' => $this->get('request_stack')->getMasterRequest()->getSchemeAndHttpHost(),
+            'tool_consumer_instance_description' => $this->get('request_stack')->getMasterRequest()->getSchemeAndHttpHost(),
+            'launch_presentation_locale' => $this->get('request_stack')->getMasterRequest()->getLocale(),
         ];
         $ltiData['lti_version'] = 'LTI-1p0';
         $ltiData['lti_message_type'] = 'basic-lti-launch-request';

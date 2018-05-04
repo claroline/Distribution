@@ -1918,7 +1918,7 @@ class ResourceManager
             );
         }
 
-        $node = $this->container->get('request')->getSession()->get('current_resource_node');
+        $node = $this->container->get('request_stack')->getMasterRequest()->getSession()->get('current_resource_node');
 
         if ($node && $node->getWorkspace()) {
             $root = $this->directoryRepo->findDefaultUploadDirectories($node->getWorkspace());

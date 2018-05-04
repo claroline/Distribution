@@ -1024,16 +1024,16 @@ class DropController extends DropzoneBaseController
     public function returnReceiptAction()
     {
         // Récupération de l'ID de l'accusé de réception choisi
-        $returnReceiptId = $this->get('request')->query->get('returnReceiptId');
+        $returnReceiptId = $this->get('request_stack')->getMasterRequest()->query->get('returnReceiptId');
         $em = $this->getDoctrine()->getManager();
         $receiptRepo = $em->getRepository('InnovaCollecticielBundle:ReturnReceipt');
         $receiptManager = $this->get('innova.manager.returnreceipt_manager');
 
         // Récupération de l'ID du dropzone choisi
-        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+        $dropzoneId = $this->get('request_stack')->getMasterRequest()->query->get('dropzoneId');
         $dropzone = $em->getRepository('InnovaCollecticielBundle:Dropzone')->find($dropzoneId);
         // Récupération des documents sélectionnés
-        $arrayDocsId = $this->get('request')->query->get('arrayDocsId');
+        $arrayDocsId = $this->get('request_stack')->getMasterRequest()->query->get('arrayDocsId');
         // Récupération de l'utilisateur
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $returnReceiptType = $em->getRepository('InnovaCollecticielBundle:ReturnReceiptType')->find($returnReceiptId);
@@ -1082,7 +1082,7 @@ class DropController extends DropzoneBaseController
      */
     public function backLinkAction()
     {
-        $dropzoneId = $this->get('request')->query->get('dropzoneId');
+        $dropzoneId = $this->get('request_stack')->getMasterRequest()->query->get('dropzoneId');
         $url = $this->generateUrl('innova_collecticiel_drops_awaiting', ['resourceId' => $dropzoneId]);
 
         return new JsonResponse(['link' => $url]);

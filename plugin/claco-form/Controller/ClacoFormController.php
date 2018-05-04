@@ -37,6 +37,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -65,7 +66,7 @@ class ClacoFormController extends Controller
      *     "filesDir"              = @DI\Inject("%claroline.param.files_directory%"),
      *     "finder"                = @DI\Inject("claroline.api.finder"),
      *     "platformConfigHandler" = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "request"               = @DI\Inject("request"),
+     *     "request"               = @DI\Inject("request_stack"),
      *     "roleManager"           = @DI\Inject("claroline.manager.role_manager"),
      *     "roleSerializer"        = @DI\Inject("claroline.serializer.role"),
      *     "serializer"            = @DI\Inject("jms_serializer"),
@@ -82,7 +83,7 @@ class ClacoFormController extends Controller
         $filesDir,
         FinderProvider $finder,
         PlatformConfigurationHandler $platformConfigHandler,
-        Request $request,
+        RequestStack $request,
         RoleManager $roleManager,
         RoleSerializer $roleSerializer,
         Serializer $serializer,
@@ -97,7 +98,7 @@ class ClacoFormController extends Controller
         $this->filesDir = $filesDir;
         $this->finder = $finder;
         $this->platformConfigHandler = $platformConfigHandler;
-        $this->request = $request;
+        $this->request = $request->getMasterRequest();
         $this->roleManager = $roleManager;
         $this->roleSerializer = $roleSerializer;
         $this->serializer = $serializer;
@@ -1498,7 +1499,7 @@ class ClacoFormController extends Controller
     {
         $field = $fieldValue->getField();
 
-        if ($field->getType() !== FieldFacet::FILE_TYPE) {
+        if (FieldFacet::FILE_TYPE !== $field->getType()) {
             return new JsonResponse(null, 404);
         }
         $valueData = $fieldValue->getFieldFacetValue()->getValue();

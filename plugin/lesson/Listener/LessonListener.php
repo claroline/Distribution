@@ -35,7 +35,7 @@ class LessonListener
 
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form = $this->container->get('form.factory')->create(new LessonType(), new Lesson());
         $form->handleRequest($request);
         if ($form->isValid()) {
