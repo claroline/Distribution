@@ -10,6 +10,8 @@
 {% set externalAuthentication        = render(controller('ClarolineCoreBundle:Authentication:renderExternalAuthenticationButton', {})) %}
 {% set primaryExternalAuthentication = render(controller('ClarolineCoreBundle:Authentication:renderPrimaryExternalAuthenticationButton', {})) %}
 
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
+
 {% block content %}
     {{ macros.flashBox() }}
 
