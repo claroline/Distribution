@@ -58,6 +58,7 @@ class ForumSerializer
               'users' => 34,
               'subjects' => 23,
               'messages' => 233,
+              'tags' => ['tag1', 'tag2', 'tag3']
             ],
         ];
     }

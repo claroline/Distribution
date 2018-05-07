@@ -15,6 +15,7 @@ const SubjectFormComponent = (props) =>
     <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
     <SubjectFormWrapper
       user={props.subject.meta.creator}
+      callback={() => props.saveForm(props.forumId)}
     >
       <FormContainer
         level={3}

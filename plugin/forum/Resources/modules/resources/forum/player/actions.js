@@ -1,5 +1,6 @@
 import merge from 'lodash/merge'
 
+import {navigate} from '#/main/core/router'
 import {makeActionCreator} from '#/main/core/scaffolding/actions'
 import {currentUser} from '#/main/core/user/current'
 import {API_REQUEST} from '#/main/core/api/actions'
@@ -21,7 +22,9 @@ actions.loadSubject = makeActionCreator(SUBJECT_LOAD, 'subject')
 actions.fetchSubject = (id) => ({
   [API_REQUEST]: {
     url: ['apiv2_forum_subject_get', {id}],
-    success: (response, dispatch) => dispatch(actions.loadSubject(response))
+    success: (response, dispatch) => {
+      dispatch(actions.loadSubject(response))
+    }
   }
 })
 

@@ -22,7 +22,7 @@ const SubjectFormWrapper = (props) =>
           className="btn btn-block btn-save"
           label={trans('post_the_subject', {}, 'forum')}
           type="callback"
-          callback={() => props.saveForm(props.forumId)}
+          callback={props.callback}
           primary={true}
         />
       </div>

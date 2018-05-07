@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import isEmpty from 'lodash/isEmpty'
 
 import {trans} from '#/main/core/translation'
 import {number} from '#/main/core/intl'
@@ -51,7 +52,6 @@ const OverviewComponent = props =>
         <div className="resource-column col-md-8">
           <section className="resource-info">
             <h3 className="h2">{trans('resource_overview_info', {}, 'resource')}</h3>
-
             {props.forum.display.description &&
               <div className="panel panel-default">
                 <HtmlText className="panel-body">{props.forum.display.description}</HtmlText>
@@ -79,6 +79,14 @@ const OverviewComponent = props =>
             </div>
           </section>
           <section>
+            {!isEmpty(props.forum.meta.tags)&&
+              <div className="tag">
+                <h3 className="h2">{trans('tags')}</h3>
+                {props.forum.meta.tags.map(tag =>
+                  <a href="#" key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</a>
+                )}
+              </div>
+            }
             <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
             <ul className="posts">
               {props.messages.map(message =>
