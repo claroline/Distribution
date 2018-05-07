@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {select} from '#/main/core/administration/transfer/selector'
 import {actions} from '#/main/core/administration/transfer/actions'
+import {actions as logActions} from '#/main/core/administration/transfer/components/log/actions'
 import has from 'lodash/has'
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
@@ -74,7 +75,10 @@ const RoutedExplain = props => {
                   name: 'action',
                   type: 'choice',
                   label: trans('action'),
-                  onChange: (value) => props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1)),
+                  onChange: (value) => {
+                    props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1))
+                    props.resetLog()
+                  },
                   required: true,
                   options: {
                     noEmpty: true,
@@ -114,7 +118,8 @@ const ConnectedExplain = withRouter(connect(
     logs: state.log
   }),
   dispatch =>({
-    updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity))
+    updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity)),
+    resetLog: () => dispatch(logActions.reset())
   })
 )(RoutedExplain))
 
