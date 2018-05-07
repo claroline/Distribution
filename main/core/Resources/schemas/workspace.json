@@ -3,7 +3,7 @@
   "type": "object",
   "properties": {
     "id": {
-      "type": ["string", "integer"],
+      "type": ["string", "integer", "null"],
       "description": "The workspace id or uuid"
     },
     "uuid": {
