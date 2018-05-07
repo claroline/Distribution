@@ -967,8 +967,7 @@ class ClacoFormManager
                     case FieldFacet::DATE_TYPE:
                         $value = !empty($val) ? $val->format('d/m/Y') : '';
                         break;
-                    case FieldFacet::CHECKBOXES_TYPE:
-                    case FieldFacet::CASCADE_SELECT_TYPE:
+                    case FieldFacet::CASCADE_TYPE:
                         $value = is_array($val) ? implode(', ', $val) : '';
                         break;
                     case FieldFacet::COUNTRY_TYPE:
@@ -1059,8 +1058,7 @@ class ClacoFormManager
                         case FieldFacet::DATE_TYPE:
                             $value = $fieldValues[$field->getId()]->format('d/m/Y');
                             break;
-                        case FieldFacet::CHECKBOXES_TYPE:
-                        case FieldFacet::CASCADE_SELECT_TYPE:
+                        case FieldFacet::CASCADE_TYPE:
                             $value = implode(', ', $fieldValues[$field->getId()]);
                             break;
                         case FieldFacet::COUNTRY_TYPE:

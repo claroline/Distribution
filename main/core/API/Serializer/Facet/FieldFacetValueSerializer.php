@@ -109,8 +109,14 @@ class FieldFacetValueSerializer
             case FieldFacet::NUMBER_TYPE:
                 $fieldFacetValue->setFloatValue($value);
                 break;
-            case FieldFacet::CHECKBOXES_TYPE:
-                $fieldFacetValue->setArrayValue($value);
+            case FieldFacet::CHOICE_TYPE:
+                $options = $fieldFacet->getOptions();
+
+                if (isset($options['mutiple']) && $options['mutiple']) {
+                    $fieldFacetValue->setArrayValue($value);
+                } else {
+                    $fieldFacetValue->setStringValue($value);
+                }
                 break;
             case FieldFacet::BOOLEAN_TYPE:
                 $fieldFacetValue->setBoolValue($value);

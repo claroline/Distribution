@@ -1,8 +1,10 @@
 import React, {Component} from 'react'
-import {PropTypes as T} from 'prop-types'
+
+import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
+import {FormField as FormFieldType} from '#/main/core/layout/form/prop-types'
 import {Select} from '#/main/core/layout/form/components/field/select.jsx'
 
-class CascadeSelect  extends Component {
+class Cascade  extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -13,12 +15,12 @@ class CascadeSelect  extends Component {
   }
 
   componentDidMount() {
-    this.initializeChoices()
+    // this.initializeChoices()
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.selectedValue !== this.props.selectedValue) {
-      this.initializeChoices()
+      // this.initializeChoices()
     }
   }
 
@@ -150,20 +152,13 @@ class CascadeSelect  extends Component {
   }
 }
 
-CascadeSelect.propTypes = {
-  options: T.arrayOf(T.shape({
-    value: T.string.isRequired,
-    label: T.string.isRequired,
-    parent: T.shape({
-      id: T.number.isRequired,
-      label: T.string.isRequired
-    })
-  })).isRequired,
-  selectedValue: T.array.isRequired,
-  disabled: T.bool,
-  onChange: T.func.isRequired
-}
+implementPropTypes(Cascade, FormFieldType, {
+  choices: T.object.isRequired,
+  value: T.array
+}, {
+  value: []
+})
 
 export {
-  CascadeSelect
+  Cascade
 }
