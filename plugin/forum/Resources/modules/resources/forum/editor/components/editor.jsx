@@ -3,7 +3,7 @@ import React from 'react'
 import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
-import {constants as listConst} from '#/main/core/data/list/constants'
+import {constants} from '#/plugin/forum/resources/forum/constants'
 
 const Editor = () =>
   <FormContainer
@@ -47,7 +47,7 @@ const Editor = () =>
             label: trans('subjects_list_display', {}, 'forum'),
             options: {
               noEmpty: true,
-              choices: listConst.LIST_DISPLAY_MODES
+              choices: constants.LIST_DISPLAY_MODES
             }
           }
         ]

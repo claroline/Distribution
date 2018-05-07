@@ -29,6 +29,10 @@ class SubjectsList extends Component {
     console.log(subject.meta.sticky)
   }
 
+  editSubject(subject) {
+    console.log(subject.meta.sticky)
+  }
+
   render() {
     return (
       <div>
@@ -45,7 +49,13 @@ class SubjectsList extends Component {
             label: trans('open', {}, 'actions')
           })}
           display={{
-            current: listConst.DISPLAY_LIST_SM
+            current: listConst.DISPLAY_LIST_SM,
+            available: [
+              listConst.DISPLAY_LIST_SM,
+              listConst.DISPLAY_LIST,
+              listConst.DISPLAY_TABLE_SM,
+              listConst.DISPLAY_TABLE
+            ]
           }}
           definition={[
             {
@@ -102,6 +112,13 @@ class SubjectsList extends Component {
               icon: 'fa fa-fw fa-paperclip',
               label: trans('stick', {}, 'forum'),
               callback: () => this.stickSubject(row[0]),
+              // displayed: !row[0].locked && this.canManageEntry(row[0]),
+              context: 'row'
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-pencil',
+              label: trans('edit'),
+              callback: () => this.editSubject(row[0]),
               // displayed: !row[0].locked && this.canManageEntry(row[0]),
               context: 'row'
             }
