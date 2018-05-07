@@ -23,13 +23,13 @@ const HistoryList = {
     {
       name: 'executionDate',
       type: 'date',
-      label: trans('executionDate'),
+      label: trans('execution_date'),
       displayed: true
     },
     {
       name: 'uploadDate',
       type: 'date',
-      label: trans('uploadDate'),
+      label: trans('upload_date'),
       displayed: true
     }
   ]

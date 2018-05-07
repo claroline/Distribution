@@ -1674,5 +1674,7 @@
     "unit_tera": "T",
     "bytes_short": "o",
     "units": "Unités",
-    "log": "Log"
+    "log": "Log",
+    "execution_date": "Date d'exécution",
+    "upload date": "Date d'upload"
 }

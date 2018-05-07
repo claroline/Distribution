@@ -265,7 +265,7 @@ class ApiManager
       );
 
         //should probably reset entity manager here
-        if (0 === $data['error']) {
+        if (0 === count($data['error'])) {
             $this->crud->replace($historyFile, 'status', HistoryFile::STATUS_SUCCESS);
         }
     }

@@ -46,13 +46,7 @@ const List = () =>
     }}
     definition={HistoryList.definition}
     actions={() => [
-      {
-        type: 'callback',
-        icon: 'fa fa-fw fa-save',
-        label: trans('execute'),
-        callback: () => alert('execute'),
-        context: 'row'
-      }
+
     ]}
   />
 

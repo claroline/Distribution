@@ -1647,5 +1647,7 @@
     "units": "Units",
     "processed": "Processed",
     "success": "Success",
-    "log": "Log"
+    "log": "Log",
+    "execution_date": "Execution date",
+    "upload date": "Upload date"
 }

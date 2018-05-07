@@ -55,8 +55,8 @@ class FileSerializer
             'id' => $file->getUuid(),
             'log' => $file->getLog(),
             'status' => $file->getStatus(),
-            'uploadDate' => $file->getUploadDate(),
-            'executionDate' => $file->getUploadDate(),
+            'uploadDate' => $file->getUploadDate()->format('Y-m-d\TH:i:s'),
+            'executionDate' => $file->getUploadDate()->format('Y-m-d\TH:i:s'),
           ];
 
         if ($file->getFile()) {
