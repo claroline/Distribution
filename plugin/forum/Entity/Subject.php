@@ -11,6 +11,7 @@
 
 namespace Claroline\ForumBundle\Entity;
 
+use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Model\UuidTrait;
 use Claroline\CoreBundle\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,6 +39,12 @@ class Subject
      * @Assert\NotBlank()
      */
     protected $title;
+
+    /**
+     * @ORM\Column(name="content", type="text")
+     * @Assert\NotBlank()
+     */
+    protected $content;
 
     /**
      * @ORM\Column(name="created", type="datetime")
@@ -97,6 +104,16 @@ class Subject
      * @ORM\Column(type="integer")
      */
     protected $viewCount = 0;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\CoreBundle\Entity\File\PublicFile"
+     * )
+     * @ORM\JoinColumn(name="poster_id", referencedColumnName="id", onDelete="SET NULL")
+     *
+     * @var PublicFile
+     */
+    protected $poster;
 
     /**
      * Constructor.
@@ -221,5 +238,25 @@ class Subject
     public function setViewCount($viewCount)
     {
         $this->viewCount = $viewCount;
+    }
+
+    public function setPoster(PublicFile $file)
+    {
+        $this->poster = $file;
+    }
+
+    public function getPoster()
+    {
+        return $this->poster;
+    }
+
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    public function getContent()
+    {
+        return $this->content;
     }
 }

@@ -48,6 +48,21 @@ class Forum extends AbstractResource
      */
     protected $maxComment = 10;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $displayMessages = 10;
+
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    protected $dataListOptions = [];
+
+    /**
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    protected $lockDate = null;
+
     public function __construct()
     {
         $this->subjects = new ArrayCollection();
@@ -87,5 +102,35 @@ class Forum extends AbstractResource
     public function getMaxComment()
     {
         return $this->maxComment;
+    }
+
+    public function setDataListOptions(array $options)
+    {
+        $this->dataListOptions = $options;
+    }
+
+    public function getDataListOptions()
+    {
+        return $this->dataListOptions;
+    }
+
+    public function setLockDate(\DateTime $date = null)
+    {
+        $this->lockDate = $date;
+    }
+
+    public function getLockDate()
+    {
+        return $this->lockDate;
+    }
+
+    public function setDisplayMessages($count)
+    {
+        $this->displayMessages = $count;
+    }
+
+    public function getDisplayMessages($count)
+    {
+        return $this->displayMessages;
     }
 }
