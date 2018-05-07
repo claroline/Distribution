@@ -67,6 +67,7 @@ class SubjectSerializer
           ],
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
+          'restrictions' => $this->serializeRestrictions($subject, $options),
         ];
     }
 
@@ -82,6 +83,15 @@ class SubjectSerializer
         ];
     }
 
+    public function serializeRestrictions(Subject $subject, array $options = [])
+    {
+        return [
+          'sticky' => true,
+          'edit' => true,
+          'delete' => false,
+        ];
+    }
+
     /**
      * Deserializes data into a Subject entity.
      *
@@ -94,7 +104,6 @@ class SubjectSerializer
     public function deserialize($data, Subject $subject, array $options = [])
     {
         $this->sipe('title', 'setTitle', $data, $subject);
-        // $this->sipe('meta.views', 'setViewCount', $data, $subject);
         $this->sipe('meta.sticky', 'setIsSticked', $data, $subject);
         $this->sipe('meta.closed', 'setIsClosed', $data, $subject);
 
@@ -105,7 +114,7 @@ class SubjectSerializer
 
             if (isset($data['meta']['creator'])) {
                 $subject->setAuthor($data['meta']['creator']['name']);
-                
+
                 // TODO: reuse value from token Storage if new
                 $creator = $this->serializerProvider->deserialize(
                     'Claroline\CoreBundle\Entity\User',
@@ -128,7 +137,7 @@ class SubjectSerializer
                 $subject->setForum($forum);
             }
         }
-            
+
         return $subject;
     }
 }

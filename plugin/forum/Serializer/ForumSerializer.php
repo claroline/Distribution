@@ -55,10 +55,10 @@ class ForumSerializer
               'showOverview' => true,
             ],
             'meta' => [
-              'users' => 34,
-              'subjects' => 23,
-              'messages' => 233,
-              'tags' => ['tag1', 'tag2', 'tag3']
+              'users' => 34, //utilisateur participants
+              'subjects' => 23, //nombre de sujets
+              'messages' => 233, //nombre de message
+              'tags' => ['tag1', 'tag2', 'tag3'], //ajouter les tags |
             ],
         ];
     }

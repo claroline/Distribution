@@ -49,7 +49,6 @@ class ForumListener extends ContainerAware
 
         if ($form->isValid()) {
             $forum = $form->getData();
-            $this->container->get('claroline.manager.forum_manager')->createCategory($forum, $forum->getName(), false);
             $event->setResources([$forum]);
             $event->stopPropagation();
 
@@ -116,8 +115,6 @@ class ForumListener extends ContainerAware
 
     public function onResourceCreated(ResourceCreatedEvent $event)
     {
-        $node = $event->getResourceNode();
-        $this->container->get('claroline.manager.forum_manager')->createDefaultPostRights($node);
     }
 
     public function onGenerateResourceTracking(GenericDataEvent $event)
@@ -149,7 +146,7 @@ class ForumListener extends ContainerAware
                     case 'resource-read':
                         ++$nbOpenings;
 
-                        if ($status === AbstractResourceEvaluation::STATUS_UNKNOWN) {
+                        if (AbstractResourceEvaluation::STATUS_UNKNOWN === $status) {
                             $status = AbstractResourceEvaluation::STATUS_OPENED;
                         }
                         break;
