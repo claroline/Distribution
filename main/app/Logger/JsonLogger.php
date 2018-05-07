@@ -26,9 +26,7 @@ class JsonLogger
         $this->cache = null;
 
         if (!file_exists($file)) {
-            if (!touch($file)) {
-                throw new \Exception('Impossible to create log file '.$file);
-            }
+            touch($file);
         }
     }
 

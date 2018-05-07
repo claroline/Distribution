@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Command\API;
 
 use Claroline\AppBundle\Command\BaseCommandTrait;
+use Claroline\AppBundle\Logger\JsonLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,26 +42,43 @@ class ImportCsvCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = $this->getContainer()->get('claroline.manager.user_manager')->getDefaultUser();
-        $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-        $this->getContainer()->get('security.context')->setToken($token);
-
-        $id = $input->getArgument('id');
-        $action = $input->getArgument('action');
         $logFile = $input->getArgument('log') ? $input->getArgument('log') : $this->generateRandomString(5);
+        //big try catch in case something goes wrong, we can log it
+        $path = $this->getContainer()->getParameter('claroline.param.import_log_dir').'/'.$logFile.'.json';
+        $jsonLogger = new JsonLogger($path);
+        $jsonLogger->set('total', 0);
+        $jsonLogger->set('processed', 0);
+        $jsonLogger->set('error', 0);
+        $jsonLogger->set('success', 0);
+        $jsonLogger->set('data.error', []);
+        $jsonLogger->set('data.success', []);
 
-        $publicFile = $this->getContainer()->get('claroline.api.serializer')->deserialize(
-            'Claroline\CoreBundle\Entity\File\PublicFile',
-            ['id' => $id]
-        );
+        try {
+            $user = $this->getContainer()->get('claroline.manager.user_manager')->getDefaultUser();
+            $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
+            $this->getContainer()->get('security.context')->setToken($token);
 
-        $this->getContainer()->get('claroline.manager.api_manager')->import(
-            $publicFile,
-            $action,
-            $logFile
-        );
+            $id = $input->getArgument('id');
+            $action = $input->getArgument('action');
+            $publicFile = $this->getContainer()->get('claroline.api.serializer')->deserialize(
+              'Claroline\CoreBundle\Entity\File\PublicFile',
+              ['id' => $id]
+          );
 
-        $output->writeLn('Done, your log name is '.$logFile.'.');
+            $this->getContainer()->get('claroline.manager.api_manager')->import(
+              $publicFile,
+              $action,
+              $logFile
+          );
+
+            $output->writeLn('Done, your log name is '.$logFile.'.');
+        } catch (\Exception $e) {
+            $jsonLogger->increment('error');
+            $jsonLogger->push('data.error', [
+              'line' => 'unkown',
+              'value' => $e->getFile().':'.$e->getLine()."\n".$e->getMessage(),
+            ]);
+        }
     }
 
     public function generateRandomString($length = 10)
