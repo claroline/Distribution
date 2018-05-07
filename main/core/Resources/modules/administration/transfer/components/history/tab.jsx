@@ -2,7 +2,6 @@ import React from 'react'
 import {connect} from 'react-redux'
 
 import {actions} from '#/main/core/administration/transfer/components/log/actions'
-import {trans} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
 import {Logs} from '#/main/core/administration/transfer/components/log/components/logs.jsx'
 

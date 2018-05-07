@@ -8,9 +8,9 @@ import {
 const reducer = makeReducer({}, {
   [LOG_REFRESH]: (state, action) => {
     try {
-      return JSON.parse(action.content);
+      return JSON.parse(action.content)
     } catch (e) {
-      return {};
+      return {}
     }
   },
   [LOG_RESET]: () => {return {}}
