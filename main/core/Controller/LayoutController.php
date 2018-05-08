@@ -178,7 +178,6 @@ class LayoutController extends Controller
         $adminTools = $this->toolManager->getAdminToolsByRoles($secRoles);
         $isLogged = !in_array('ROLE_ANONYMOUS', $roles);
         $isLogged = false;
-        var_dump($roles);
 
         if ($isLogged) {
             $tools = $this->toolManager->getAdminToolsByRoles($secRoles);
