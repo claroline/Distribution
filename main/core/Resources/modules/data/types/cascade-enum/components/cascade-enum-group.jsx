@@ -11,7 +11,7 @@ import {TextGroup}  from '#/main/core/layout/form/components/group/text-group.js
 
 const EnumChildren = props =>
   <ul className="enum-children-list">
-    {props.children.map((child, index) =>
+    {props.item.children.map((child, index) =>
       <EnumItem
         key={`item-${child.id}`}
         indexes={props.indexes.concat([index])}
@@ -29,11 +29,11 @@ const EnumChildren = props =>
 
 EnumChildren.propTypes = {
   indexes: T.array.isRequired,
-  children: T.arrayOf(T.shape({
+  item: T.shape({
     id: T.string,
     value: T.string,
-    children: T.array
-  })).isRequired,
+    children: T.array.isRequired
+  }).isRequired,
   level: T.number.isRequired,
   addChildButtonLabel: T.string.isRequired,
   deleteButtonLabel: T.string.isRequired,
@@ -47,7 +47,7 @@ const EnumItem = props =>
   <li className={classes('cascade-enum-item', {'item-root': props.level === 1, 'item-child': props.level > 1})}>
     <div className="item-container">
       <TextGroup
-        id={`item-${props.index}-value`}
+        id={`item-${props.item.id}-value`}
         className="enum-item-content"
         label={`${trans('choice')} ${props.index+1}`}
         hideLabel={true}
@@ -97,7 +97,7 @@ const EnumItem = props =>
       <EnumChildren
         {...props}
         indexes={props.indexes}
-        children={props.item.children}
+        item={props.item}
         level={props.level + 1}
         validating={props.validating}
         error={props.error}

@@ -28,6 +28,7 @@ class FieldFacetChoiceSerializer
         $serialized = [
           'id' => $choice->getUuid(),
           'name' => $choice->getName(),
+          'label' => $choice->getName(),
           'value' => $choice->getValue(),
           'position' => $choice->getPosition(),
         ];

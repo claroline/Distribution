@@ -19,7 +19,7 @@ const CascadeGroup = props =>
 implementPropTypes(CascadeGroup, FormGroupWithFieldTypes, {
   // more precise value type
   value: T.array,
-  choices: T.object.isRequired
+  choices: T.array.isRequired
 })
 
 export {

@@ -1,159 +1,91 @@
-import React, {Component} from 'react'
+import React from 'react'
 
 import {PropTypes as T, implementPropTypes} from '#/main/core/scaffolding/prop-types'
 import {FormField as FormFieldType} from '#/main/core/layout/form/prop-types'
 import {Select} from '#/main/core/layout/form/components/field/select.jsx'
 
-class Cascade  extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      choices: {},
-      selected: [],
-      levelMax: 0
-    }
+const hasChildren = (props, lvl) => {
+  const choices = props.choices.slice()
+  let child = choices.find(c => c.value === props.value[0])
+
+  for (let i = 1; i <= lvl; ++i) {
+    child = child.children.find(c => c.value === props.value[i])
   }
 
-  componentDidMount() {
-    // this.initializeChoices()
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.selectedValue !== this.props.selectedValue) {
-      // this.initializeChoices()
-    }
-  }
-
-  getLevel(option) {
-    let level = 0
-
-    while (option.parent) {
-      ++level
-      option = option.parent
-    }
-
-    return level
-  }
-
-  initializeChoices() {
-    const choices = {}
-    const selected = []
-    let levelMax = 0
-    this.props.options.forEach(option => {
-      const o = Object.assign({}, option, {value: option.id})
-      const level = this.getLevel(o)
-
-      if (level > levelMax) {
-        levelMax = level
-      }
-
-      if (level === 0) {
-        if (!choices[level]) {
-          choices[level] = []
-        }
-        choices[level].push(o)
-      } else {
-        const parentId = o.parent.id
-
-        if (!choices[level]) {
-          choices[level] = {}
-        }
-        if (!choices[level][parentId]) {
-          choices[level][parentId] = []
-        }
-        choices[level][parentId].push(o)
-      }
-    })
-    let previousValue = 0
-    this.props.selectedValue.forEach((v, level) => {
-      if (level === 0) {
-        const choice = choices[level].find(c => c.label === v)
-        selected[level] = choice ? choice.value : ''
-        previousValue = selected[level]
-      } else {
-        let value = ''
-
-        if (previousValue !== '' &&  choices[level] && choices[level][previousValue]) {
-          const choice = choices[level][previousValue].find(c => c.label === v)
-          value = choice ? choice.value : ''
-          previousValue = value
-        }
-        selected[level] = value
-      }
-    })
-    this.setState({choices: choices, selected: selected, levelMax: levelMax})
-  }
-
-  convertAnswers() {
-    const answers = []
-    this.state.selected.forEach((s, idx) => {
-      let value = ''
-
-      if (s !== '') {
-        if (idx === 0) {
-          const choice = this.state.choices[idx].find(c => c.value === parseInt(s))
-
-          if (choice) {
-            value = choice.label
-          }
-        } else {
-          const choice = this.state.choices[idx] &&
-            this.state.choices[idx][this.state.selected[idx - 1]] &&
-            this.state.choices[idx][this.state.selected[idx - 1]].find(c => c.value === parseInt(s))
-
-          if (choice) {
-            value = choice.label
-          }
-        }
-      }
-      answers.push(value)
-    })
-
-    return answers
-  }
-
-  onChange(level, value) {
-    const selected = this.state.selected
-    selected[level] = value
-
-    if (level + 1 < selected.length) {
-      selected.splice(level + 1, selected.length - (level + 1))
-    }
-    if (this.state.choices[level + 1] && this.state.choices[level + 1][value]) {
-      selected[level + 1] = ''
-    }
-    this.setState({selected: selected}, () => this.props.onChange(this.convertAnswers()))
-  }
-
-  render() {
-    return (
-      <fieldset className="cascade-select">
-        {this.state.choices[0] &&
-          <Select
-            choices={this.state.choices[0]}
-            value={this.state.selected[0] || ''}
-            disabled={this.props.disabled}
-            onChange={(value) => this.onChange(0, value)}
-          />
-        }
-        {this.state.selected && Object.values(this.state.selected).map((v, idx) =>
-          this.state.choices[idx + 1] && this.state.choices[idx + 1][v] ?
-            <Select
-              key={`select-level-${idx}`}
-              choices={this.state.choices[idx + 1][v]}
-              value={this.state.selected[idx + 1] || ''}
-              disabled={this.props.disabled}
-              onChange={(value) => this.onChange(idx + 1, value)}
-            /> :
-            ''
-        )}
-      </fieldset>
-    )
-  }
+  return child && child.children && child.children.length > 0
 }
 
+const generateChoices = (props, lvl) => {
+  const choices = props.choices.slice()
+  let child = choices.find(c => c.value === props.value[0])
+
+  for (let i = 1; i <= lvl; ++i) {
+    child = child.children.find(c => c.value === props.value[i])
+  }
+
+  return child.children && child.children.length > 0 ?
+    child.children.reduce((acc, choice) => {
+      acc[choice.value] = choice.label
+
+      return acc
+    }, {}) :
+    {}
+}
+
+const updateValue =  (props, level, value) => {
+  const newValue = props.value.slice()
+
+  if (value) {
+    newValue[level] = value
+
+    if (level + 1 < newValue.length) {
+      newValue.splice(level + 1)
+    }
+  } else {
+    newValue.splice(level)
+  }
+
+  return newValue
+}
+
+const Cascade = props =>
+  <fieldset className="cascade-select">
+    {props.choices.length > 0 &&
+      <Select
+        id="cascade-select-lvl-0"
+        choices={
+          props.choices.reduce((acc, choice) => {
+            acc[choice.value] = choice.label
+
+            return acc
+          }, {})
+        }
+        value={props.value[0] || ''}
+        disabled={props.disabled}
+        onChange={(value) => {
+          const newValue = updateValue(props, 0, value)
+          props.onChange(newValue)
+        }}
+      />
+    }
+    {props.value.map((v, index) => hasChildren(props, index) ?
+      <Select
+        id={`cascade-select-lvl-${index + 1}`}
+        key={`cascade-select-level-${index + 1}`}
+        choices={generateChoices(props, index)}
+        value={props.value[index + 1] || ''}
+        disabled={props.disabled}
+        onChange={(value) => {
+          const newValue = updateValue(props, index + 1, value)
+          props.onChange(newValue)
+        }}
+      /> :
+      ''
+    )}
+  </fieldset>
+
 implementPropTypes(Cascade, FormFieldType, {
-  choices: T.object.isRequired,
+  choices: T.array.isRequired,
   value: T.array
 }, {
   value: []

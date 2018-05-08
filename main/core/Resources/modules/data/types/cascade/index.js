@@ -10,7 +10,7 @@ const cascadeDefinition = {
     type: CASCADE_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-indent',
-    label: trans('cascade_list'),
+    label: trans('cascade'),
     description: trans('cascade_desc')
   },
 
@@ -25,8 +25,7 @@ const cascadeDefinition = {
       options: {
         placeholder: trans('no_choice'),
         addButtonLabel: trans('add_a_choice'),
-        addChildButtonLabel: trans('add_a_sub_choice'),
-        unique: true
+        addChildButtonLabel: trans('add_a_sub_choice')
       },
       required: true
     }

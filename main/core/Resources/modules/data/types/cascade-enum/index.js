@@ -22,17 +22,15 @@ const validateChildren = (children, errors, options) => {
       }
     })
 
-    if (options['unique']) {
-      const uniqueErrors = chain(children.map(v => v.value), {sensitive: options['caseSensitive']}, [unique])
+    const uniqueErrors = chain(children.map(v => v.value), {sensitive: options['caseSensitive']}, [unique])
 
-      if (uniqueErrors) {
-        const valueIds = children.map(v => v.id)
-        Object.keys(uniqueErrors).forEach(key => {
-          if (valueIds[key] && !allErrors[valueIds[key]]) {
-            allErrors[valueIds[key]] = uniqueErrors[key]
-          }
-        })
-      }
+    if (uniqueErrors) {
+      const valueIds = children.map(v => v.id)
+      Object.keys(uniqueErrors).forEach(key => {
+        if (valueIds[key] && !allErrors[valueIds[key]]) {
+          allErrors[valueIds[key]] = uniqueErrors[key]
+        }
+      })
     }
   }
 
@@ -60,17 +58,15 @@ const cascadeEnumDefinition = {
         }
       })
 
-      if (options['unique']) {
-        const uniqueErrors = chain(value.map(v => v.value), {sensitive: options['caseSensitive']}, [unique])
+      const uniqueErrors = chain(value.map(v => v.value), {sensitive: options['caseSensitive']}, [unique])
 
-        if (uniqueErrors) {
-          const valueIds = value.map(v => v.id)
-          Object.keys(uniqueErrors).forEach(key => {
-            if (valueIds[key] && !errors[valueIds[key]]) {
-              errors[valueIds[key]] = uniqueErrors[key]
-            }
-          })
-        }
+      if (uniqueErrors) {
+        const valueIds = value.map(v => v.id)
+        Object.keys(uniqueErrors).forEach(key => {
+          if (valueIds[key] && !errors[valueIds[key]]) {
+            errors[valueIds[key]] = uniqueErrors[key]
+          }
+        })
       }
       if (!isEmpty(errors)) {
         return errors

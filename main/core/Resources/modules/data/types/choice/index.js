@@ -10,7 +10,7 @@ const choiceDefinition = {
     type: CHOICE_TYPE,
     creatable: true,
     icon: 'fa fa-fw fa fa-list',
-    label: trans('list'),
+    label: trans('choice'),
     description: trans('choice_desc')
   },
 
