@@ -8,6 +8,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 import {Subject as SubjectTypes} from '#/plugin/forum/resources/forum/player/prop-types'
 
 export const SUBJECT_LOAD = 'SUBJECT_LOAD'
+export const SUBJECT_REMOVE = 'SUBJECT_REMOVE'
 
 export const actions = {}
 
@@ -28,10 +29,12 @@ actions.fetchSubject = (id) => ({
   }
 })
 
+actions.removeSubject = makeActionCreator(SUBJECT_REMOVE, 'subjectId')
+
 actions.deleteSubject = (subjectId) => (dispatch) => {
   dispatch({
     [API_REQUEST]: {
-      url: ['apiv2_forum_subject_delete', {subject: subjectId}],
+      url: ['apiv2_forum_subject_delete_bulk', {subject: subjectId}],
       request: {
         method: 'DELETE'
       },

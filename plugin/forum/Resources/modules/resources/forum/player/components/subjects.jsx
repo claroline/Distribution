@@ -17,11 +17,12 @@ class SubjectsList extends Component {
   constructor(props) {
     super(props)
   }
+
   deleteSubject(subject) {
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_subject', {}, 'forum'),
       question: trans('remove_subject_confirm_message', {title: subject.title}, 'forum'),
-      handleConfirm: () => console.log(subject.id)
+      handleConfirm: () => this.props.deleteEntry(subject.id)
     })
   }
 
@@ -42,6 +43,9 @@ class SubjectsList extends Component {
           fetch={{
             url: ['claroline_forum_api_forum_getsubjects', {id: this.props.forum.id}],
             autoload: true
+          }}
+          delete={{
+            url: ['apiv2_forum_subject_delete_bulk']
           }}
           primaryAction={(subject) => ({
             type: 'link',
@@ -98,14 +102,6 @@ class SubjectsList extends Component {
               icon: 'fa fa-fw fa-eye',
               label: trans('see_subject', {}, 'forum'),
               target: '/subjects/'+row.id,
-              context: 'row'
-            }, {
-              type: 'callback',
-              icon: 'fa fa-fw fa-trash',
-              label: trans('delete'),
-              callback: () => this.deleteSubject(row[0]),
-              // displayed: !row[0].locked && this.canManageEntry(row[0]),
-              dangerous: true,
               context: 'row'
             }, {
               type: 'callback',

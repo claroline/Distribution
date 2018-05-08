@@ -27,6 +27,11 @@ class SubjectComponent extends Component {
     this.setState({showNewMessageForm: false})
   }
 
+  showMessageForm(message) {
+    // this.setState({showNewCommentForm: messageId})
+    console.log(message)
+  }
+
   showCommentForm(messageId) {
     this.setState({showNewCommentForm: messageId})
   }
@@ -34,6 +39,10 @@ class SubjectComponent extends Component {
   createNewComment(messageId, comment) {
     this.props.createComment(messageId, comment)
     this.setState({showNewCommentForm: null})
+  }
+
+  deleteMessage(messageId) {
+    console.log(messageId)
   }
 
 
@@ -75,25 +84,20 @@ class SubjectComponent extends Component {
                   date={message.meta.created}
                   content={message.content}
                   allowHtml={true}
-                  // actions={[
-                  //   {
-                  //     icon: 'fa fa-fw fa-pencil',
-                  //     label: trans('edit'),
-                  //     displayed: this.canEditMessage(message),
-                  //     action: () => this.showMessageForm(message)
-                  //   }, {
-                  //     icon: 'fa fa-fw fa-trash-o',
-                  //     label: trans('delete'),
-                  //     displayed: this.props.canManage,
-                  //     action: () => this.deleteMessage(message.id),
-                  //     dangerous: true
-                  //   }, {
-                  //     icon: 'fa fa-fw fa-comment',
-                  //     label: trans('delete'),
-                  //     displayed: this.props.canManage,
-                  //     action: () => this.showNewCommentForm()
-                  //   }
-                  // ]}
+                  actions={[
+                    {
+                      icon: 'fa fa-fw fa-pencil',
+                      label: trans('edit'),
+                      displayed: true,
+                      action: () => this.showMessageForm(message)
+                    }, {
+                      icon: 'fa fa-fw fa-trash-o',
+                      label: trans('delete'),
+                      displayed: true,
+                      action: () => this.deleteMessage(message.id),
+                      dangerous: true
+                    }
+                  ]}
                 />
                 <div className="answer-comment-container">
                   {message.comments.map(comment =>
@@ -103,6 +107,20 @@ class SubjectComponent extends Component {
                       date={comment.meta.created}
                       content={comment.content}
                       allowHtml={true}
+                      actions={[
+                        {
+                          icon: 'fa fa-fw fa-pencil',
+                          label: trans('edit'),
+                          displayed: true,
+                          action: () => this.showMessageForm(message)
+                        }, {
+                          icon: 'fa fa-fw fa-trash-o',
+                          label: trans('delete'),
+                          displayed: true,
+                          action: () => this.deleteMessage(message.id),
+                          dangerous: true
+                        }
+                      ]}
                     />
                   )}
                   {!this.state.showNewCommentForm &&
