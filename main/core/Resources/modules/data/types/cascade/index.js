@@ -1,7 +1,6 @@
 import {trans} from '#/main/core/translation'
 
 import {CascadeGroup} from '#/main/core/layout/form/components/group/cascade-group'
-import {CascadeSearch} from '#/main/core/data/types/cascade/components/search'
 
 const CASCADE_TYPE = 'cascade'
 
@@ -40,7 +39,6 @@ const cascadeDefinition = {
   },
   validate: (value, options) => !!options.choices[value],
   components: {
-    search: CascadeSearch,
     form: CascadeGroup
   }
 }

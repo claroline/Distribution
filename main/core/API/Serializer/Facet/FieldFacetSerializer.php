@@ -73,7 +73,7 @@ class FieldFacetSerializer
             $serialized['options'] = $fieldFacet->getOptions();
         }
 
-        if ($fieldFacet->getType() === FieldFacet::CHOICE_TYPE) {
+        if (in_array($fieldFacet->getType(), [FieldFacet::CHOICE_TYPE, FieldFacet::CASCADE_TYPE])) {
             $serialized['options']['choices'] = array_map(function (FieldFacetChoice $choice) {
                 return $this->serializer
                     ->get('Claroline\CoreBundle\Entity\Facet\FieldFacetChoice')

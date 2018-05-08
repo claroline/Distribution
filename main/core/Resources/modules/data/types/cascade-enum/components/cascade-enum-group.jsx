@@ -49,7 +49,7 @@ const EnumItem = props =>
       <TextGroup
         id={`item-${props.item.id}-value`}
         className="enum-item-content"
-        label={`${trans('choice')} ${props.index+1}`}
+        label={`${trans('choice')}-${props.indexes.join('-')}`}
         hideLabel={true}
         value={props.item.value}
         onChange={value => {

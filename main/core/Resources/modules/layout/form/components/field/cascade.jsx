@@ -50,7 +50,7 @@ const updateValue =  (props, level, value) => {
 
 const Cascade = props =>
   <fieldset className="cascade-select">
-    {props.choices.length > 0 &&
+    {props.choices && props.choices.length > 0 &&
       <Select
         id="cascade-select-lvl-0"
         choices={

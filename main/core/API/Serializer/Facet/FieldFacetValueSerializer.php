@@ -109,10 +109,11 @@ class FieldFacetValueSerializer
             case FieldFacet::NUMBER_TYPE:
                 $fieldFacetValue->setFloatValue($value);
                 break;
+            case FieldFacet::CASCADE_TYPE:
+                $fieldFacetValue->setArrayValue($value);
+                break;
             case FieldFacet::CHOICE_TYPE:
-                $options = $fieldFacet->getOptions();
-
-                if (isset($options['mutiple']) && $options['mutiple']) {
+                if (is_array($value)) {
                     $fieldFacetValue->setArrayValue($value);
                 } else {
                     $fieldFacetValue->setStringValue($value);
