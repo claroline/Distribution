@@ -2,7 +2,7 @@
     <div class="footer-content container-fluid">
         <div class="row">
             <p>
-                {% if app.security.token is not null %}
+                {% if token_storage.token is not null %}
                     {% if not is_granted('ROLE_USER') and footerLogin %}
                         <a href="{{ path("claro_desktop_open") }}"><i class="fa fa-user"></i> {{ "login" | trans({}, "platform") }}</a> &nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -24,7 +24,7 @@
                 {% endif %}
 
                 {% if not footerMessage is empty %}{{ footerMessage|raw }}{% endif %}
-                <span{% if ((footerLogin or footerWorkspaces) and app.security.token is not null) or not footerMessage is empty %} class="pull-right"{% endif %}>
+                <span{% if ((footerLogin or footerWorkspaces) and token_storage.token is not null) or not footerMessage is empty %} class="pull-right"{% endif %}>
                     {{ 'powered_by' | trans({}, 'platform') }} <a href="http://www.claroline.net">Claroline</a> ({{ coreVersion }})
                 </span>
             </p>

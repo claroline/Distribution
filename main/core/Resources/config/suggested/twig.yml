@@ -5,6 +5,7 @@ twig:
       chosenRangeKeys: %chosenRangeKeys%
       uploadsDir: %claroline.param.uploads_directory%
       config: '@claroline.config.platform_config_handler'
+      token_storage: '@security.token_storage'
     form_themes:
       - 'ClarolineCoreBundle:Form:date_range.html.twig'
       - 'ClarolineCoreBundle:Form:date_time_picker.html.twig'

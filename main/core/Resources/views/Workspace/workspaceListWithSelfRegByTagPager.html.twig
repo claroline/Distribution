@@ -22,7 +22,7 @@
 
 {% for relation in relations.currentPageResults() %}
     {% set workspace = relation.getWorkspace() %}
-    {% set hasRole = has_role_in_workspace(workspace.getId(), app.security.getToken()) %}
+    {% set hasRole = has_role_in_workspace(workspace.getId(), token_storage.getToken()) %}
     <div class="list-group-item row-workspace row-workspace-id-{{ workspace.getId() }}">
         <i class="fa fa-book"></i>
         {{ workspace.getName() }}
