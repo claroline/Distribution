@@ -29,7 +29,7 @@
         "doctrine/orm": "*",
         "fabiang/xmpp": "*",
         "friendsofsymfony/jsrouting-bundle": "*",
-        "friendsofsymfony/oauth-server-bundle": "*",
+        "friendsofsymfony/oauth-server-bundle": "2.0.x-dev",
         "friendsofsymfony/rest-bundle": "*",
         "egulias/email-validator": "*",
         "gedmo/doctrine-extensions": "*",
