@@ -70,7 +70,7 @@
         </div>
         <div class="panel-body">
             {% if supportType is defined %}
-                {% render(controller('FormaLibreSupportBundle:Support:supportTabs', {'type': supportType})) %}
+                {{ render(controller('FormaLibreSupportBundle:Support:supportTabs', {'type': supportType})) }}
                 <br>
             {% endif %}
 
