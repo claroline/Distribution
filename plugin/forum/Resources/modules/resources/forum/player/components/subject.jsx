@@ -2,12 +2,14 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 
+import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
 import {currentUser} from '#/main/core/user/current'
 import {select} from '#/plugin/forum/resources/forum/selectors'
-import {trans} from '#/main/core/translation'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
+import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 
 import {actions} from '#/plugin/forum/resources/forum/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
@@ -43,6 +45,11 @@ class SubjectComponent extends Component {
 
   deleteMessage(messageId) {
     console.log(messageId)
+    this.props.showModal(MODAL_DELETE_CONFIRM, {
+      title: trans('delete_message', {}, 'forum'),
+      question: trans('remove_post_confirm_message', {}, 'forum'),
+      handleConfirm: () => this.props.deleteMessage(messageId)
+    })
   }
 
 
@@ -186,6 +193,12 @@ const Subject = connect(
     },
     createComment(messageId, comment) {
       dispatch(actions.createComment(messageId, comment))
+    },
+    showModal(type, props) {
+      dispatch(modalActions.showModal(type, props))
+    },
+    deleteMessage(messageId) {
+      dispatch(actions.deleteMessage(messageId))
     }
   })
 )(SubjectComponent)

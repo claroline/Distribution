@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {DataListContainer} from '#/main/core/data/list/containers/data-list'
 import {constants as listConst} from '#/main/core/data/list/constants'
 import {DataCard} from '#/main/core/data/components/data-card'
@@ -16,14 +14,6 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 class SubjectsList extends Component {
   constructor(props) {
     super(props)
-  }
-
-  deleteSubject(subject) {
-    this.props.showModal(MODAL_DELETE_CONFIRM, {
-      title: trans('delete_subject', {}, 'forum'),
-      question: trans('remove_subject_confirm_message', {title: subject.title}, 'forum'),
-      handleConfirm: () => this.props.deleteEntry(subject.id)
-    })
   }
 
   stickSubject(subject) {
@@ -139,14 +129,6 @@ const Subjects = connect(
   state => ({
     forum: select.forum(state),
     subject: select.subject(state)
-  }),
-  dispatch => ({
-    showModal(type, props) {
-      dispatch(modalActions.showModal(type, props))
-    },
-    deleteSubject(subjectId){
-      dispatch(actions.deleteSubject(subjectId))
-    }
   })
 )(SubjectsList)
 
