@@ -63,6 +63,8 @@ class SubjectSerializer
      */
     public function serialize(Subject $subject, array $options = [])
     {
+        $finder = $this->container->get('claroline.api.finder');
+        
         return [
           'id' => $subject->getUuid(),
           'forum' => [
