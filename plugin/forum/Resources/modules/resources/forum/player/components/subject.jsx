@@ -39,12 +39,12 @@ class SubjectComponent extends Component {
   }
 
   createNewComment(messageId, comment) {
+    console.log(messageId)
     this.props.createComment(messageId, comment)
     this.setState({showNewCommentForm: null})
   }
 
   deleteMessage(messageId) {
-    console.log(messageId)
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_message', {}, 'forum'),
       question: trans('remove_post_confirm_message', {}, 'forum'),
@@ -72,7 +72,7 @@ class SubjectComponent extends Component {
             />
           </div>
           <div>
-            <h2>{this.props.subject.title}<small> 5 messages</small></h2>
+            <h2>{this.props.subject.title}<small> {this.props.subject.meta.messages} messages</small></h2>
             {!isEmpty(this.props.subject.tags)&&
               <div className="tag">
                 {this.props.subject.tags.map(tag =>

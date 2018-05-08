@@ -102,7 +102,7 @@ class ForumController extends AbstractCrudController
             'meta' => [
               'creator' => $data['meta']['creator'],
             ],
-            'content' => $data['message'],
+            'content' => $data['content'],
           ],
           $this->options['create']
         );

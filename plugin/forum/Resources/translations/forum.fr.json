@@ -32,6 +32,7 @@
     "locking_date": "Date de vérouillage du forum",
     "locking_date_explenation": "Une fois le forum vérouillé, le contenu du forum est accessible, mais il n'est plus possible d'y ajouter des contenus (sujets, messages ou commentaires).",
     "messages": "Messages",
+    "messages_count": "%count% message(s)",
     "my_messages" : "Mes messages",
     "my_participation": "Ma participation",
     "messages_per_page": "Messages par page",

@@ -63,14 +63,12 @@ class SubjectsList extends Component {
               type: 'string',
               label: trans('tags'),
               displayed: true
-            },
-            // {
-            //   name: 'messages',
-            //   type: 'number',
-            //   label: trans('posts', {}, 'forum'),
-            //   displayed: true,
-            // },
-            {
+            }, {
+              name: 'meta.messages',
+              type: 'number',
+              label: trans('posts', {}, 'forum'),
+              displayed: true
+            }, {
               name: 'meta.updated',
               type: 'date',
               label: trans('last_modification'),
@@ -115,8 +113,8 @@ class SubjectsList extends Component {
               id={props.data.id}
               icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
               title={props.data.title}
-              // subtitle={this.getCardValue(props.data, 'subtitle')}
-              // contentText={this.getCardValue(props.data, 'content')}
+              subtitle={props.data.meta.messages+'message(s)'}
+              // contentText={props.data)}
             />
           }
         />

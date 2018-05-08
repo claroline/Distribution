@@ -35,7 +35,7 @@ const SubjectFormComponent = (props) =>
                 required: true
               },
               {
-                name: 'message',
+                name: 'content',
                 type: 'html',
                 label: trans('post', {}, 'forum'),
                 required: true

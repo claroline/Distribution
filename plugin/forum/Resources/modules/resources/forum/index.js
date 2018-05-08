@@ -68,7 +68,7 @@ export const App = () => ({
   store: reducer,
   styles: 'claroline-distribution-plugin-forum-forum-resource',
   initialData: initialData => Object.assign({}, initialData, {
-    messages: messages,
+    // messages: messages,
     forumForm: {
       data: initialData.forum
     }
