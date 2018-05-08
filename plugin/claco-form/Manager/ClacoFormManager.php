@@ -964,8 +964,8 @@ class ClacoFormManager
                 $val = $fieldFacetValue->getValue();
 
                 switch ($fieldFacet->getType()) {
-                    case FieldFacet::DATE_TYPE:
-                        $value = !empty($val) ? $val->format('d/m/Y') : '';
+                    case FieldFacet::CHOICE_TYPE:
+                        $value = is_array($val) ? implode(', ', $val) : $val;
                         break;
                     case FieldFacet::CASCADE_TYPE:
                         $value = is_array($val) ? implode(', ', $val) : '';
