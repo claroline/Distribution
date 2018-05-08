@@ -8,6 +8,7 @@ use Claroline\AppBundle\API\SerializerProvider;
 use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\ForumBundle\Entity\Subject;
 use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @DI\Service("claroline.serializer.forum_subject")
@@ -40,14 +41,16 @@ class SubjectSerializer
 
     /**
      * @DI\InjectParams({
-     *      "provider" = @DI\Inject("claroline.api.serializer")
+     *      "provider" = @DI\Inject("claroline.api.serializer"),
+     *      "container" = @DI\Inject("service_container")
      * })
      *
      * @param SerializerProvider $serializer
      */
-    public function __construct(SerializerProvider $provider)
+    public function __construct(SerializerProvider $provider, ContainerInterface $container)
     {
         $this->serializerProvider = $provider;
+        $this->container = $container;
     }
 
     /**
@@ -69,6 +72,9 @@ class SubjectSerializer
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
           'restrictions' => $this->serializeRestrictions($subject, $options),
+          'meta' => [
+            'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', 0, 0, ['subject' => $subject->getUuid()], null, true),
+          ],
         ];
     }
 
