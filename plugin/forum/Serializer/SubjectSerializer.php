@@ -65,6 +65,7 @@ class SubjectSerializer
           'forum' => [
             'id' => $subject->getForum()->getUuid(),
           ],
+          'content' => $subject->getContent(),
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
           'restrictions' => $this->serializeRestrictions($subject, $options),
@@ -104,6 +105,7 @@ class SubjectSerializer
     public function deserialize($data, Subject $subject, array $options = [])
     {
         $this->sipe('title', 'setTitle', $data, $subject);
+        $this->sipe('content', 'setContent', $data, $subject);
         $this->sipe('meta.sticky', 'setIsSticked', $data, $subject);
         $this->sipe('meta.closed', 'setIsClosed', $data, $subject);
 

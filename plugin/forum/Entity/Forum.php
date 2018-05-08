@@ -124,12 +124,12 @@ class Forum extends AbstractResource
         return $this->lockDate;
     }
 
-    public function setDisplayMessages($count)
+    public function setDisplayMessage($count)
     {
         $this->displayMessages = $count;
     }
 
-    public function getDisplayMessages($count)
+    public function getDisplayMessages()
     {
         return $this->displayMessages;
     }

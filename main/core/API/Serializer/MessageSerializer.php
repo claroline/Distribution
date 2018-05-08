@@ -91,8 +91,10 @@ class MessageSerializer
     {
         $children = [];
 
-        foreach ($message->getChildren() as $child) {
-            $children[] = $this->serialize($child, $options);
+        if ($message->getChildren()) {
+            foreach ($message->getChildren()->toArray() as $child) {
+                $children[] = $this->serialize($child, $options);
+            }
         }
 
         return $children;
@@ -119,15 +121,15 @@ class MessageSerializer
             if (isset($data['meta']['creator'])) {
                 $message->setAuthor($data['meta']['creator']['name']);
             }
-        }
 
-        $creator = $this->serializerProvider->deserialize(
-            'Claroline\CoreBundle\Entity\User',
-            $data['meta']['creator']
-        );
+            $creator = $this->serializerProvider->deserialize(
+                'Claroline\CoreBundle\Entity\User',
+                $data['meta']['creator']
+            );
 
-        if ($creator) {
-            $message->setCreator($creator);
+            if ($creator) {
+                $message->setCreator($creator);
+            }
         }
 
         return $message;
