@@ -1147,7 +1147,7 @@ class ResourceManager
 
         foreach ($nodes as $node) {
             //we only download is we can...
-            if ($this->container->get('security.context')->isGranted('EXPORT', $node)) {
+            if ($this->container->get('security.authorization_checker')->isGranted('EXPORT', $node)) {
                 $node = $this->getRealTarget($node);
                 $resource = $this->getResourceFromNode($node);
 

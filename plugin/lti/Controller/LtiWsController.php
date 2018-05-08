@@ -50,9 +50,9 @@ class LtiWsController extends Controller
      */
     private function getLtiData(Workspace $ws, LtiApp $app)
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $isWorkspaceManager = $this->isWorkspaceManager($ws, $user);
-        if ($isWorkspaceManager === true) {
+        if (true === $isWorkspaceManager) {
             $role = 'Instructor';
         } else {
             $role = 'Learner';

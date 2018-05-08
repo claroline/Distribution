@@ -94,7 +94,7 @@ class OauthController extends BaseAuthorizeController
      */
     public function authorizeFormAction(Request $request)
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         if (!$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -119,7 +119,7 @@ class OauthController extends BaseAuthorizeController
      */
     public function authorizeSubmitAction(Request $request)
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         if (!$user instanceof UserInterface) {
             throw new AccessDeniedException('This user does not have access to this section.');
@@ -159,7 +159,7 @@ class OauthController extends BaseAuthorizeController
     protected function processSuccess(UserInterface $user, AuthorizeFormHandler $formHandler, Request $request)
     {
         if (true === $this->container->get('session')->get('_fos_oauth_server.ensure_logout')) {
-            $this->container->get('security.context')->setToken(null);
+            $this->container->get('security.token_storage')->setToken(null);
             $this->container->get('session')->invalidate();
         }
 

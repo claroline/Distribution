@@ -30,7 +30,7 @@ class MediaResourceController extends Controller
      */
     public function openAction(Workspace $workspace, MediaResource $mr)
     {
-        if (false === $this->container->get('security.context')->isGranted('OPEN', $mr->getResourceNode())) {
+        if (false === $this->container->get('security.authorization_checker')->isGranted('OPEN', $mr->getResourceNode())) {
             throw new AccessDeniedException();
         }
 
@@ -48,7 +48,7 @@ class MediaResourceController extends Controller
      */
     public function administrateAction(Workspace $workspace, MediaResource $mr)
     {
-        if (false === $this->container->get('security.context')->isGranted('ADMINISTRATE', $mr->getResourceNode())) {
+        if (false === $this->container->get('security.authorization_checker')->isGranted('ADMINISTRATE', $mr->getResourceNode())) {
             throw new AccessDeniedException();
         }
 

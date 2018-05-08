@@ -128,7 +128,7 @@ abstract class AbstractVoter implements ClarolineVoterInterface, VoterInterface
      */
     protected function isGranted($attributes, $object)
     {
-        return $this->getContainer()->get('security.context')->isGranted($attributes, $object);
+        return $this->getContainer()->get('security.authorization_checker')->isGranted($attributes, $object);
     }
 
     /**

@@ -84,7 +84,7 @@ class ClarolinePluginListener
         if (!empty($media)) {
             try {
                 $mediacenter = $this->getMediacenterManager()->getMediacenter();
-                //$loggedUser = $this->container->get("security.context")->getToken()->getUser();
+                //$loggedUser = $this->container->get("security.token_storage")->getToken()->getUser();
                 //$media = $mediaManager->getMediaInfo($media, $mediacenter, $loggedUser);
                 // Get video player
                 $event->setContent(
@@ -119,7 +119,7 @@ class ClarolinePluginListener
         // Get widget instance
         $widgetInstance = $event->getInstance();
         // Get mediacenter user from database
-        $loggedUser = $this->container->get('security.context')->getToken()->getUser();
+        $loggedUser = $this->container->get('security.token_storage')->getToken()->getUser();
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $mediaManager = $this->getMediaManager();
@@ -151,7 +151,7 @@ class ClarolinePluginListener
     public function onToolOpen(DisplayToolEvent $event)
     {
         // Get mediacenter user from database
-        $loggedUser = $this->container->get('security.context')->getToken()->getUser();
+        $loggedUser = $this->container->get('security.token_storage')->getToken()->getUser();
         try {
             $mediacenter = $this->getMediacenterManager()->getMediacenter();
             $mediacenterUserManager = $this->getMediacenterUserManager();
