@@ -32,7 +32,7 @@ const UserMessage = props => {
       'user-message-right': 'right' === props.position
     })}>
       {'left' === props.position &&
-        <UserAvatar picture={props.user && props.user.picture} />
+        <UserAvatar picture={props.user && props.user.picture} alt={false} />
       }
 
       <div className="user-message">
@@ -70,7 +70,7 @@ const UserMessage = props => {
       </div>
 
       {'right' === props.position &&
-        <UserAvatar picture={props.user && props.user.picture} />
+        <UserAvatar picture={props.user && props.user.picture} alt={false} />
       }
     </div>
   )
