@@ -45,7 +45,7 @@ class SubjectController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function getMessagesAction($id, $class, Request $request)
+    public function getMessagesAction($id, $class = 'Claroline\ForumBundle\Entity\Subject', Request $request)
     {
         return new JsonResponse(
           $this->finder->search('Claroline\ForumBundle\Entity\Message', array_merge(
