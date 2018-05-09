@@ -8,6 +8,7 @@ use Claroline\ForumBundle\Entity\Subject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @EXT\Route("/forum_subject")
@@ -45,7 +46,7 @@ class SubjectController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function getMessagesAction($id, $class = 'Claroline\ForumBundle\Entity\Subject', Request $request)
+    public function getMessagesAction($id, Request $request)
     {
         return new JsonResponse(
           $this->finder->search('Claroline\ForumBundle\Entity\Message', array_merge(
