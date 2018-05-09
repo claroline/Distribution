@@ -18,11 +18,6 @@ class SubjectController extends AbstractCrudController
     {
         return 'forum_subject';
     }
-
-    public function getClass()
-    {
-        return "Claroline\ForumBundle\Entity\Subject";
-    }
     
     /**
      * @EXT\Route("/{id}/messages")
