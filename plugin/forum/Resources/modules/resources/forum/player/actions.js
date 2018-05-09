@@ -43,12 +43,11 @@ actions.openSubject = (id) => (dispatch, getState) => {
 
 actions.createMessage = (subjectId, content) => ({
   [API_REQUEST]: {
-    url: ['apiv2_forum_message_create', {subject: subjectId}],
+    url: ['claroline_forum_api_subject_createmessage', {id: subjectId}],
     request: {
       method: 'POST',
       body: JSON.stringify({
         id: makeId(),
-        subjectId: subjectId,
         content: content,
         meta: {
           creator: currentUser(),

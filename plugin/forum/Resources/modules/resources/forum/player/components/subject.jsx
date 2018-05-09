@@ -15,7 +15,7 @@ import {select as listSelect} from '#/main/core/data/list/selectors'
 
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
-import {actions} from '#/plugin/forum/resources/forum/actions'
+import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
 
 class SubjectComponent extends Component {
@@ -88,7 +88,7 @@ class SubjectComponent extends Component {
             />
           </div>
           <div>
-            <h2>{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} messages</small></h2>
+            <h2>{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h2>
             {!isEmpty(this.props.subject.tags)&&
               <div className="tag">
                 {this.props.subject.tags.map(tag =>
@@ -98,6 +98,26 @@ class SubjectComponent extends Component {
             }
           </div>
         </header>
+        <UserMessage
+          user={get(this.props.subject, 'meta.creator')}
+          date={get(this.props.subject, 'meta.created') || ''}
+          content={get(this.props.subject, 'content') || ''}
+          allowHtml={true}
+          actions={[
+            // {
+            //   icon: 'fa fa-fw fa-pencil',
+            //   label: trans('edit'),
+            //   displayed: true,
+            //   action: () => this.showMessageForm(message)
+            // }, {
+            //   icon: 'fa fa-fw fa-trash-o',
+            //   label: trans('delete'),
+            //   displayed: true,
+            //   action: () => this.deleteMessage(message.id),
+            //   dangerous: true
+            // }
+          ]}
+        />
         {!isEmpty(this.props.messages)&&
           <ul className="posts">
             {this.props.messages.map(message =>
@@ -123,7 +143,7 @@ class SubjectComponent extends Component {
                   ]}
                 />
                 <div className="answer-comment-container">
-                  {message.comments.map(comment =>
+                  {message.children.map(comment =>
                     <Comment
                       key={comment.id}
                       user={comment.meta.creator}
