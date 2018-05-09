@@ -32,7 +32,7 @@ const UserMessage = props => {
       'user-message-right': 'right' === props.position
     })}>
       {'left' === props.position &&
-        <UserAvatar picture={props.user.picture} />
+        <UserAvatar picture={props.user && props.user.picture} />
       }
 
       <div className="user-message">
@@ -70,7 +70,7 @@ const UserMessage = props => {
       </div>
 
       {'right' === props.position &&
-        <UserAvatar picture={props.user.picture} />
+        <UserAvatar picture={props.user && props.user.picture} />
       }
     </div>
   )
@@ -132,7 +132,6 @@ UserMessage.propTypes = {
 }
 
 UserMessage.defaultProps = {
-  user: {},
   allowHtml: false,
   position: 'left',
   actions: []
