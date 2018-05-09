@@ -35,23 +35,23 @@ class MessageFinder implements FinderInterface
             switch ($filterName) {
               case 'subject':
                 $qb->leftJoin('obj.subject', 'subject');
-                if (is_null($filterValue)) {
-                    $qb->andWhere('subject IS NULL');
+                $qb->andWhere($qb->expr()->orX(
+                    $qb->expr()->eq('subject.id', ':'.$filterName),
+                    $qb->expr()->eq('subject.uuid', ':'.$filterName)
+                ));
+                $qb->setParameter($filterName, $filterValue);
+                break;
+              case 'parent':
+                if (empty($filterValue)) {
+                    $qb->andWhere('obj.parent IS NULL');
                 } else {
+                    $qb->leftJoin('obj.parent', 'parent');
                     $qb->andWhere($qb->expr()->orX(
-                        $qb->expr()->eq('subject.id', ':'.$filterName),
-                        $qb->expr()->eq('subject.uuid', ':'.$filterName)
+                        $qb->expr()->eq('parent.id', ':'.$filterName),
+                        $qb->expr()->eq('parent.uuid', ':'.$filterName)
                     ));
                     $qb->setParameter($filterName, $filterValue);
                 }
-                break;
-              case 'parent':
-                $qb->leftJoin('obj.parent', 'parent');
-                $qb->andWhere($qb->expr()->orX(
-                    $qb->expr()->eq('parent.id', ':'.$filterName),
-                    $qb->expr()->eq('parent.uuid', ':'.$filterName)
-                ));
-                $qb->setParameter($filterName, $filterValue);
                 break;
               case 'forum':
                 $qb->leftJoin('obj.subject', 'sf');
