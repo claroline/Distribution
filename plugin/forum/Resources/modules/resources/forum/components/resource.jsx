@@ -61,12 +61,14 @@ const Resource = props => {
           type: 'link',
           icon: 'fa fa-fw fa-list-ul',
           label: trans('see_subjects', {}, 'forum'),
-          target: '/subjects'
+          target: '/subjects',
+          exact: true
         }, {
           type: 'link',
           icon: 'fa fa-fw fa-plus',
           label: trans('create_subject', {}, 'forum'),
-          target: '/subjects/create'
+          target: '/subjects/form/:id?',
+          exact: true
         }
       ]}
     >

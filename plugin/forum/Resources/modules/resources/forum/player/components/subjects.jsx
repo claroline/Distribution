@@ -39,17 +39,11 @@ class SubjectsList extends Component {
           }}
           primaryAction={(subject) => ({
             type: 'link',
-            target: '/subjects/'+subject.id,
+            target: '/subjects/show/'+subject.id,
             label: trans('open', {}, 'actions')
           })}
           display={{
-            current: listConst.DISPLAY_LIST_SM,
-            available: [
-              listConst.DISPLAY_LIST_SM,
-              listConst.DISPLAY_LIST,
-              listConst.DISPLAY_TABLE_SM,
-              listConst.DISPLAY_TABLE
-            ]
+            current: listConst.DISPLAY_LIST_SM
           }}
           definition={[
             {
@@ -89,7 +83,7 @@ class SubjectsList extends Component {
               type: 'link',
               icon: 'fa fa-fw fa-eye',
               label: trans('see_subject', {}, 'forum'),
-              target: '/subjects/'+row.id,
+              target: '/subjects/show/'+row.id,
               context: 'row'
             }, {
               type: 'callback',

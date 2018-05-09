@@ -1,16 +1,20 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
+import get from 'lodash/get'
 
-import {trans} from '#/main/core/translation'
 import {Button} from '#/main/app/action/components/button'
+import {trans} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
-import {select} from '#/plugin/forum/resources/forum/selectors'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
+import {actions as listActions} from '#/main/core/data/list/actions'
+import {select as listSelect} from '#/main/core/data/list/selectors'
 
+
+import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
 
@@ -18,9 +22,20 @@ class SubjectComponent extends Component {
   constructor(props) {
     super(props)
 
+    if (this.props.invalidated || !this.props.loaded) {
+      this.props.reload(this.props.subject.id)
+    }
+
     this.state = {
       showNewMessageForm: false,
       showNewCommentForm: null
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if ((prevProps.invalidated !== this.props.invalidated && this.props.invalidated)
+    || (prevProps.loaded !== this.props.loaded && !this.props.loaded)) {
+      this.props.reload(this.props.subject.id)
     }
   }
 
@@ -69,10 +84,11 @@ class SubjectComponent extends Component {
               target="/subjects"
               className="btn-link"
               primary={true}
+              // confirm={{title, question}}
             />
           </div>
           <div>
-            <h2>{this.props.subject.title}<small> {this.props.subject.meta.messages} messages</small></h2>
+            <h2>{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} messages</small></h2>
             {!isEmpty(this.props.subject.tags)&&
               <div className="tag">
                 {this.props.subject.tags.map(tag =>
@@ -82,7 +98,7 @@ class SubjectComponent extends Component {
             }
           </div>
         </header>
-        {isEmpty(this.props.message)&&
+        {!isEmpty(this.props.messages)&&
           <ul className="posts">
             {this.props.messages.map(message =>
               <li key={message.id} className="post">
@@ -185,10 +201,13 @@ class SubjectComponent extends Component {
 const Subject = connect(
   state => ({
     subject: select.subject(state),
-    messages: select.messages(state)
+    messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
+    invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
+    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
   }),
   dispatch => ({
     createMessage(subjectId, content) {
+      // à la réussite cabler avec invalidateData (comme pour delete)
       dispatch(actions.createMessage(subjectId, content))
     },
     createComment(messageId, comment) {
@@ -198,7 +217,12 @@ const Subject = connect(
       dispatch(modalActions.showModal(type, props))
     },
     deleteMessage(messageId) {
+      // dispatcher avec listActions qui prend des parametres à verf
+      // a la reussite doit utiliser invalidateData('subjects.message') pour que MAJ liste
       dispatch(actions.deleteMessage(messageId))
+    },
+    reload(id) {
+      dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
     }
   })
 )(SubjectComponent)

@@ -6,6 +6,8 @@ const DISPLAY_TABLE_SM= 'table-sm'
 const DISPLAY_TABLE= 'table'
 const DISPLAY_LIST_SM= 'list-sm'
 const DISPLAY_LIST= 'list'
+const DISPLAY_TILES    = 'tiles'
+const DISPLAY_TILES_SM = 'tiles-sm'
 
 const MESSAGE_SORT_DISPLAY = {
   [SORT_DISPLAY_OLDER_TO_NEWER]: trans('from_older_to_newer', {}, 'forum'),
@@ -16,7 +18,9 @@ const LIST_DISPLAY_MODES = {
   [DISPLAY_TABLE_SM]: trans('list_display_table_sm'),
   [DISPLAY_TABLE]: trans('list_display_table'),
   [DISPLAY_LIST_SM]: trans('list_display_list_sm'),
-  [DISPLAY_LIST]: trans('list_display_list')
+  [DISPLAY_LIST]: trans('list_display_list'),
+  [DISPLAY_TILES]: trans('list_display_tiles'),
+  [DISPLAY_TILES_SM]: trans('list_display_tiles_sm')
 }
 
 export const constants = {

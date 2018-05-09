@@ -43,7 +43,7 @@ const OverviewComponent = props =>
             <Button
               label={trans('create_subject', {}, 'forum')}
               type="link"
-              target="/subjects/create"
+              target="/subjects/form/:id?"
               className="btn btn-block"
             />
           </section>
@@ -88,7 +88,8 @@ const OverviewComponent = props =>
               </div>
             }
             <h3 className="h2">{trans('last_messages', {}, 'forum')}</h3>
-            <ul className="posts">
+            {/* <ul className="posts">
+              {console.log(props.messages)}
               {props.messages.map(message =>
                 <li key={message.id} className="post">
                   <h4>Nom du sujet <a href="/subject">Voir le sujet</a></h4>
@@ -100,7 +101,7 @@ const OverviewComponent = props =>
                   />
                 </li>
               )}
-            </ul>
+            </ul> */}
           </section>
 
         </div>

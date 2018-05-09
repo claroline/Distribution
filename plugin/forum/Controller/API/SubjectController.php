@@ -6,6 +6,7 @@ use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @EXT\Route("/forum_subject")
