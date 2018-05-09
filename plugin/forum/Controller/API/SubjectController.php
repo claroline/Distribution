@@ -59,7 +59,7 @@ class SubjectController extends AbstractCrudController
     /**
      * @EXT\Route("/{id}/message")
      * @EXT\Method("POST")
-     * @ParamConverter("subject", options={"mapping": {"id": "uuid"}})
+     * @ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"mapping": {"uuid": "id"}})
      *
      * @ApiDoc(
      *     description="Create a message in a subject",
