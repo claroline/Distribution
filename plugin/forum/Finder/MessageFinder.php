@@ -35,11 +35,15 @@ class MessageFinder implements FinderInterface
             switch ($filterName) {
               case 'subject':
                 $qb->leftJoin('obj.subject', 'subject');
-                $qb->andWhere($qb->expr()->orX(
-                    $qb->expr()->eq('subject.id', ':'.$filterName),
-                    $qb->expr()->eq('subject.uuid', ':'.$filterName)
-                ));
-                $qb->setParameter($filterName, $filterValue);
+                if (is_null($filterValue)) {
+                    $qb->andWhere('subject IS NULL');
+                } else {
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->eq('subject.id', ':'.$filterName),
+                        $qb->expr()->eq('subject.uuid', ':'.$filterName)
+                    ));
+                    $qb->setParameter($filterName, $filterValue);
+                }
                 break;
               case 'parent':
                 $qb->leftJoin('obj.parent', 'parent');
