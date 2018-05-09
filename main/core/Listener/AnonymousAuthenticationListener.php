@@ -11,10 +11,12 @@
 
 namespace Claroline\CoreBundle\Listener;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener as Listener;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
 /*
@@ -25,24 +27,30 @@ use Symfony\Component\Security\Http\Firewall\ListenerInterface;
  */
 class AnonymousAuthenticationListener implements ListenerInterface
 {
-    private $context;
-    private $key;
+    private $tokenStorage;
+    private $secret;
+    private $authenticationManager;
     private $logger;
 
-    public function __construct(TokenStorageInterface $context, $key, LoggerInterface $logger = null)
-    {
-        $this->context = $context;
-        $this->key = $key;
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        string $secret,
+        LoggerInterface $logger = null,
+        AuthenticationManagerInterface $authenticationManager = null
+    ) {
+        $this->tokenStorage = $tokenStorage;
+        $this->secret = $secret;
+        $this->authenticationManager = $authenticationManager;
         $this->logger = $logger;
     }
 
     public function handle(GetResponseEvent $event)
     {
-        if (null !== $this->context->getToken()) {
+        if (null !== $this->tokenStorage->getToken()) {
             return;
         }
 
-        $this->context->setToken(new AnonymousToken($this->key, 'anon.', ['ROLE_ANONYMOUS']));
+        $this->tokenStorage->setToken(new AnonymousToken($this->secret, 'anon.', ['ROLE_ANONYMOUS']));
 
         if (null !== $this->logger) {
             $this->logger->info(sprintf('Populated SecurityContext with an anonymous Token'));
