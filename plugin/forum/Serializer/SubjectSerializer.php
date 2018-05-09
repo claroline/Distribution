@@ -62,9 +62,7 @@ class SubjectSerializer
      * @return array
      */
     public function serialize(Subject $subject, array $options = [])
-    {
-        $finder = $this->container->get('claroline.api.finder');
-        
+    {   
         return [
           'id' => $subject->getUuid(),
           'forum' => [
@@ -79,6 +77,8 @@ class SubjectSerializer
 
     public function serializeMeta(Subject $subject, array $options = [])
     {
+        $finder = $this->container->get('claroline.api.finder');
+        
         return [
             'views' => $subject->getViewCount(),
             'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', 0, 0, ['subject' => $subject->getUuid()], null, true),
