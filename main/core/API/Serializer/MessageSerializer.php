@@ -79,11 +79,12 @@ class MessageSerializer
 
     public function serializeCreator(AbstractMessage $message, array $options = [])
     {
-        $creator = $message->getCreator();
-
+        if (!empty($message->getCreator())) {
+            return $this->serializerProvider->serialize($message->getCreator(), [Options::SERIALIZE_MINIMAL]);
+        }
+        
         return [
-            'id' => $creator ? $creator->getId() : null,
-            'name' => $creator ? $creator->getFullName() : $message->getAuthor(),
+            'name' => $message->getAuthor(),
         ];
     }
 
