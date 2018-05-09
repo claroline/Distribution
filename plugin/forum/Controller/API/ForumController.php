@@ -81,32 +81,16 @@ class ForumController extends AbstractCrudController
         $forum = $this->serializer->serialize($forum);
         $data = $this->decodeRequest($request);
         $data['forum'] = $forum;
-
         $object = $this->crud->create(
             'Claroline\ForumBundle\Entity\Subject',
             $data,
             $this->options['create']
         );
-
+        
         if (is_array($object)) {
             return new JsonResponse($object, 400);
         }
-
-        // creates the first message at the same time
-        $this->crud->create(
-          'Claroline\ForumBundle\Entity\Message',
-          [
-            'subject' => [
-              'id' => $object->getUuid(),
-            ],
-            'meta' => [
-              'creator' => $data['meta']['creator'],
-            ],
-            'content' => $data['content'],
-          ],
-          $this->options['create']
-        );
-
+        
         return new JsonResponse(
             $this->serializer->serialize($object, $this->options['get']),
             201
