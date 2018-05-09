@@ -193,7 +193,7 @@ class UserController extends AbstractCrudController
     {
         $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
           [] :
-          ['organization' => array_map(function (Organization $organization) {
+          ['recursiveOrXOrganization' => array_map(function (Organization $organization) {
               return $organization->getUuid();
           }, $user->getOrganizations())];
 
@@ -219,7 +219,7 @@ class UserController extends AbstractCrudController
     {
         $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
           [] :
-          ['organization' => array_map(function (Organization $organization) {
+          ['recursiveOrXOrganization' => array_map(function (Organization $organization) {
               return $organization->getUuid();
           }, $user->getAdministratedOrganizations()->toArray())];
 

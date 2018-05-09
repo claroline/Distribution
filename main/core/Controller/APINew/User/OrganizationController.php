@@ -45,11 +45,23 @@ class OrganizationController extends AbstractCrudController
      */
     public function recursiveListAction()
     {
-        return new JsonResponse($this->finder->search(
+        /**
+         * we need to filter the results with the filterOrganization method; we can already filter with parent = null for the administrator
+         * because we'll retrieve everything. This is a small needed optimization for large datatrees.
+         */
+        $filters = $this->container->get('security.authorization_checker')->isGranted('ROLE_ADMIN') ?
+            ['hiddenFilters' => ['parent' => null]] :
+            [];
+
+        $organizations = $this->finder->search(
             'Claroline\CoreBundle\Entity\Organization\Organization',
-            ['hiddenFilters' => ['parent' => null]],
+            $filters,
             [Options::IS_RECURSIVE]
-        ));
+        );
+
+        $organizations['data'] = $this->filterOrganizations($organizations['data']);
+
+        return new JsonResponse($organizations);
     }
 
     /**
@@ -112,5 +124,35 @@ class OrganizationController extends AbstractCrudController
     public function getClass()
     {
         return 'Claroline\CoreBundle\Entity\Organization\Organization';
+    }
+  
+    /**
+     * Only keep the roots organizations.
+     * This is a very heavy operation =/.
+     */
+    private function filterOrganizations(array $organizations)
+    {
+        foreach ($organizations as $organization) {
+            foreach ($organizations as $childKey => $child) {
+                if ($this->hasRecursiveChild($organization, $child)) {
+                    unset($organizations[$childKey]);
+                }
+            }
+        }
+
+        return $organizations;
+    }
+
+    private function hasRecursiveChild($parent, $target)
+    {
+        foreach ($parent['children'] as $child) {
+            if ($child['id'] === $target['id']) {
+                return true;
+            }
+
+            return $this->hasRecursiveChild($child, $target);
+        }
+
+        return false;
     }
 }

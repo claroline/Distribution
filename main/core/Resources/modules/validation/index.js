@@ -5,6 +5,8 @@ import moment from 'moment'
 import {trans, tval} from '#/main/core/translation'
 import {IPv4} from '#/main/core/scaffolding/ip'
 
+// TODO : break me
+
 function notEmpty(value) {
   if (
     undefined === value
@@ -104,7 +106,7 @@ function lengthMin(value, options) {
 }
 
 function lengthMax(value, options) {
-  if (undefined !== options.minLength && value.length > options.maxLength) {
+  if (undefined !== options.maxLength && value.length > options.maxLength) {
     return trans(
       'This value should be lower than {{ limit }}.',
       {},
@@ -236,6 +238,26 @@ function dateAfter(value, limit) {
   }
 }
 
+function unique(value, options = {}) {
+  if (Array.isArray(value)) {
+    const errors = {}
+    const sensitive = options['sensitive'] !== undefined ? options['sensitive'] : false
+    value.forEach((v, index) => {
+      if (!errors[index]) {
+        value.forEach((vv, indexBis) => {
+          if (index !== indexBis && ((sensitive && v === vv) || (!sensitive && v.toUpperCase() === vv.toUpperCase()))) {
+            errors[index] = trans('value_not_unique', {}, 'validators')
+          }
+        })
+      }
+    })
+
+    if (!isEmpty(errors)) {
+      return errors
+    }
+  }
+}
+
 export {
   validateIf,
   chain,
@@ -261,5 +283,6 @@ export {
   greaterOrEqual,
   lowerOrEqual,
   between,
-  dateAfter
+  dateAfter,
+  unique
 }
