@@ -38,7 +38,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\Validator\TraceableValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @DI\Service("claroline.manager.user_manager")
@@ -126,7 +126,7 @@ class UserManager
         TransferManager $transferManager,
         TranslatorInterface $translator,
         $uploadsDirectory,
-        TraceableValidator $validator,
+        ValidatorInterface $validator,
         WorkspaceManager $workspaceManager,
         FileUtilities $fu
     ) {

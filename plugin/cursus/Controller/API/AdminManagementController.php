@@ -1789,7 +1789,7 @@ class AdminManagementController extends Controller
      */
     public function getWorkspaceModelsAction(User $user)
     {
-        $data = $this->get('claroline.API.finder')->search(
+        $data = $this->get('claroline.api.finder')->search(
             'Claroline\CoreBundle\Entity\Workspace\Workspace', [
                 'limit' => 100,
                 'filters' => ['model' => true],

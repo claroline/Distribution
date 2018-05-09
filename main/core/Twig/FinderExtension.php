@@ -25,7 +25,7 @@ class FinderExtension extends \Twig_Extension
 
     /**
      * @DI\InjectParams({
-     *     "finder" = @DI\Inject("claroline.API.finder")
+     *     "finder" = @DI\Inject("claroline.api.finder")
      * })
      *
      * @param FinderProvider $finder
