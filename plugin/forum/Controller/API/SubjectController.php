@@ -59,7 +59,7 @@ class SubjectController extends AbstractCrudController
     /**
      * @EXT\Route("/{id}/message")
      * @EXT\Method("POST")
-     * @ParamConverter("forum", options={"mapping": {"id": "uuid"}})
+     * @ParamConverter("subject", options={"mapping": {"id": "uuid"}})
      *
      * @ApiDoc(
      *     description="Create a message in a subject",
