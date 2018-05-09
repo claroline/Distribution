@@ -18,11 +18,6 @@ class SubjectController extends AbstractCrudController
     {
         return 'forum_subject';
     }
-
-    public function getClass()
-    {
-        return "Claroline\ForumBundle\Entity\Subject";
-    }
     
     /**
      * @EXT\Route("/{id}/messages")
@@ -50,7 +45,7 @@ class SubjectController extends AbstractCrudController
      *
      * @return JsonResponse
      */
-    public function getMessagesAction($id, $class, Request $request)
+    public function getMessagesAction($id, $class = 'Claroline\ForumBundle\Entity\Subject', Request $request)
     {
         return new JsonResponse(
           $this->finder->search('Claroline\ForumBundle\Entity\Message', array_merge(
