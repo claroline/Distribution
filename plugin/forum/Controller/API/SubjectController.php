@@ -51,7 +51,7 @@ class SubjectController extends AbstractCrudController
         return new JsonResponse(
           $this->finder->search('Claroline\ForumBundle\Entity\Message', array_merge(
               $request->query->all(),
-              ['hiddenFilters' => ['subject' => $id]]
+              ['hiddenFilters' => ['subject' => $id, 'parent' => null]]
             ))
         );
     }
@@ -59,7 +59,7 @@ class SubjectController extends AbstractCrudController
     /**
      * @EXT\Route("/{id}/message")
      * @EXT\Method("POST")
-     * @ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"mapping": {"uuid": "id"}})
+     * @EXT\ParamConverter("subject", class = "ClarolineForumBundle:Subject",  options={"mapping": {"id": "uuid"}})
      *
      * @ApiDoc(
      *     description="Create a message in a subject",
