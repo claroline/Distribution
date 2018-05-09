@@ -4,6 +4,7 @@ namespace Claroline\ForumBundle\Controller\API;
 
 use Claroline\AppBundle\Annotations\ApiDoc;
 use Claroline\AppBundle\Controller\AbstractCrudController;
+use Claroline\ForumBundle\Entity\Subject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -17,6 +18,11 @@ class SubjectController extends AbstractCrudController
         return 'forum_subject';
     }
 
+    public function getClass()
+    {
+        return "Claroline\ForumBundle\Entity\Subject";
+    }
+    
     /**
      * @EXT\Route("/{id}/messages")
      * @EXT\Method("GET")
