@@ -413,7 +413,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @param Workspace $workspace
@@ -551,7 +552,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Opens a tool.
@@ -589,7 +591,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * Returns a list with all visible registered widgets for a homeTab of a workspace.
      *
@@ -663,7 +666,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Returns the widget's html content
@@ -865,7 +869,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspaceTag",
      *      class="ClarolineCoreBundle:Workspace\WorkspaceTag",
-     *      options={"id" = "workspaceTagId", "strictId" = true}
+     *      options={"id" = "workspaceTagId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @EXT\Template()
@@ -896,7 +901,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspaceTag",
      *      class="ClarolineCoreBundle:Workspace\WorkspaceTag",
-     *      options={"id" = "workspaceTagId", "strictId" = true}
+     *      options={"id" = "workspaceTagId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @EXT\Template()
@@ -1036,12 +1042,14 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\ParamConverter(
      *      "user",
      *      class="ClarolineCoreBundle:User",
-     *      options={"id" = "userId", "strictId" = true}
+     *      options={"id" = "userId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Removes an user from a workspace.
@@ -1088,7 +1096,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspaceTag",
      *      class="ClarolineCoreBundle:Workspace\WorkspaceTag",
-     *      options={"id" = "workspaceTagId", "strictId" = true}
+     *      options={"id" = "workspaceTagId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * @EXT\Template()
@@ -1239,7 +1248,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Returns the list of visible tabs for a workspace
@@ -1278,7 +1288,8 @@ class WorkspaceController extends Controller
      * @EXT\ParamConverter(
      *      "workspace",
      *      class="ClarolineCoreBundle:Workspace\Workspace",
-     *      options={"id" = "workspaceId", "strictId" = true}
+     *      options={"id" = "workspaceId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Adds a workspace to the favourite list.

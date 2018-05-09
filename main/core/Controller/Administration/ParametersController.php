@@ -942,7 +942,8 @@ class ParametersController extends Controller
      * @EXT\ParamConverter(
      *     "securityToken",
      *     class="ClarolineCoreBundle:SecurityToken",
-     *     options={"id" = "tokenId", "strictId" = true}
+     *     options={"id" = "tokenId", "strictId" = true},
+     *     converter="strict_id"
      * )
      * @EXT\Template(
      *     "ClarolineCoreBundle:Administration\Parameters:securityTokenEditForm.html.twig"
@@ -972,7 +973,8 @@ class ParametersController extends Controller
      * @EXT\ParamConverter(
      *     "securityToken",
      *     class="ClarolineCoreBundle:SecurityToken",
-     *     options={"id" = "tokenId", "strictId" = true}
+     *     options={"id" = "tokenId", "strictId" = true},
+     *     converter="strict_id"
      * )
      * @EXT\Template(
      *     "ClarolineCoreBundle:Administration\Parameters:securityTokenEditForm.html.twig"
@@ -1012,7 +1014,8 @@ class ParametersController extends Controller
      * @EXT\ParamConverter(
      *     "securityToken",
      *     class="ClarolineCoreBundle:SecurityToken",
-     *     options={"id" = "tokenId", "strictId" = true}
+     *     options={"id" = "tokenId", "strictId" = true},
+     *     converter="strict_id"
      * )
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *

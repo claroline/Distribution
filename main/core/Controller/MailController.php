@@ -75,7 +75,8 @@ class MailController extends Controller
      * @EXT\ParamConverter(
      *      "user",
      *      class="ClarolineCoreBundle:User",
-     *      options={"id" = "userId", "strictId" = true}
+     *      options={"id" = "userId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\Template()
      *
@@ -101,7 +102,8 @@ class MailController extends Controller
      * @EXT\ParamConverter(
      *      "user",
      *      class="ClarolineCoreBundle:User",
-     *      options={"id" = "userId", "strictId" = true}
+     *      options={"id" = "userId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\Template("ClarolineCoreBundle:Mail:form.html.twig")
      *

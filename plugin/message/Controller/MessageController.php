@@ -167,7 +167,8 @@ class MessageController
      * @EXT\ParamConverter(
      *     "parent",
      *     class="ClarolineMessageBundle:Message",
-     *     options={"id" = "parentId", "strictId" = true}
+     *     options={"id" = "parentId", "strictId" = true},
+     *     converter="strict_id"
      * )
      * @EXT\Template("ClarolineMessageBundle:Message:show.html.twig")
      *
@@ -321,7 +322,8 @@ class MessageController
      * @EXT\ParamConverter(
      *      "message",
      *      class="ClarolineMessageBundle:Message",
-     *      options={"id" = "message", "strictId" = true}
+     *      options={"id" = "message", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\Template()
      *

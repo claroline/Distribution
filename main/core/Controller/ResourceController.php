@@ -161,7 +161,8 @@ class ResourceController extends Controller
      * @EXT\ParamConverter(
      *      "parent",
      *      class="ClarolineCoreBundle:Resource\ResourceNode",
-     *      options={"id" = "parentId", "strictId" = true}
+     *      options={"id" = "parentId", "strictId" = true},
+     *      converter="strict_id"
      * )
      * @EXT\ParamConverter("user", options={"authenticatedUser" = true})
      *
@@ -737,7 +738,8 @@ class ResourceController extends Controller
      * @EXT\ParamConverter(
      *      "node",
      *      class="ClarolineCoreBundle:Resource\ResourceNode",
-     *      options={"id" = "nodeId", "strictId" = true}
+     *      options={"id" = "nodeId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Returns a json representation of a directory, containing the following items :
@@ -974,7 +976,8 @@ class ResourceController extends Controller
      * @EXT\ParamConverter(
      *      "node",
      *      class="ClarolineCoreBundle:Resource\ResourceNode",
-     *      options={"id" = "nodeId", "strictId" = true}
+     *      options={"id" = "nodeId", "strictId" = true},
+     *      converter="strict_id"
      * )
      *
      * Returns a json representation of a resource search result.
