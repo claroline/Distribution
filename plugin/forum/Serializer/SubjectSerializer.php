@@ -74,9 +74,6 @@ class SubjectSerializer
           'title' => $subject->getTitle(),
           'meta' => $this->serializeMeta($subject, $options),
           'restrictions' => $this->serializeRestrictions($subject, $options),
-          'meta' => [
-            'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', 0, 0, ['subject' => $subject->getUuid()], null, true),
-          ],
         ];
     }
 
@@ -84,6 +81,7 @@ class SubjectSerializer
     {
         return [
             'views' => $subject->getViewCount(),
+            'messages' => $finder->fetch('Claroline\ForumBundle\Entity\Message', 0, 0, ['subject' => $subject->getUuid()], null, true),
             'creator' => !empty($subject->getCreator()) ? $this->serializerProvider->serialize($subject->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
             'created' => $subject->getCreationDate()->format('Y-m-d\TH:i:s'),
             'updated' => $subject->getModificationDate()->format('Y-m-d\TH:i:s'),
