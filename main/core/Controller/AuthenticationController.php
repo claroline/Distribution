@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -114,7 +114,7 @@ class AuthenticationController
      */
     public function loginAction()
     {
-        $lastUsername = $this->request->getSession()->get(SecurityContext::LAST_USERNAME);
+        $lastUsername = $this->request->getSession()->get(Security::LAST_USERNAME);
         $user = $this->userManager->getUserByUsername($lastUsername);
         $selfRegistrationAllowed = $this->ch->getParameter('allow_self_registration');
         $showRegisterButton = $this->ch->getParameter('register_button_at_login');
@@ -128,10 +128,10 @@ class AuthenticationController
             ];
         }
 
-        if ($this->request->attributes->has(SecurityContext::AUTHENTICATION_ERROR)) {
-            $error = $this->request->attributes->get(SecurityContext::AUTHENTICATION_ERROR);
+        if ($this->request->attributes->has(Security::AUTHENTICATION_ERROR)) {
+            $error = $this->request->attributes->get(Security::AUTHENTICATION_ERROR);
         } else {
-            $error = $this->request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
+            $error = $this->request->getSession()->get(Security::AUTHENTICATION_ERROR);
         }
 
         return [
