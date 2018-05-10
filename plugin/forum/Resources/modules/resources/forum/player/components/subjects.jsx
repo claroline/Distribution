@@ -9,19 +9,15 @@ import {UserAvatar} from '#/main/core/user/components/avatar'
 
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
-
+import {actions} from '#/plugin/forum/resources/forum/player/actions'
 
 class SubjectsList extends Component {
   constructor(props) {
     super(props)
   }
 
-  stickSubject(subject) {
-    console.log(subject.meta.sticky)
-  }
-
   editSubject(subject) {
-    console.log(subject.meta.sticky)
+    console.log(subject)
   }
 
   render() {
@@ -53,14 +49,14 @@ class SubjectsList extends Component {
               displayed: true,
               primary: true
             }, {
-              name: 'tags',
-              type: 'string',
-              label: trans('tags'),
-              displayed: true
-            }, {
               name: 'meta.messages',
               type: 'number',
               label: trans('posts', {}, 'forum'),
+              displayed: true
+            }, {
+              name: 'meta.sticky',
+              type: 'boolean',
+              label: trans('stuck', {}, 'forum'),
               displayed: true
             }, {
               name: 'meta.updated',
@@ -70,34 +66,43 @@ class SubjectsList extends Component {
               option: {
                 time: true
               }
+            }, {
+              name: 'tags',
+              type: 'string',
+              label: trans('tags'),
+              displayed: true
             }
-            // {
-            //   name: 'creator',
+            // }, {
+            //   name: 'meta.creator',
             //   type: 'string',
             //   label: trans('creator'),
             //   displayed: true
             // }
           ]}
-          actions={(row) => [
+          actions={(rows) => [
             {
               type: 'link',
               icon: 'fa fa-fw fa-eye',
               label: trans('see_subject', {}, 'forum'),
-              target: '/subjects/show/'+row.id,
+              target: '/subjects/show/'+rows[0].id,
               context: 'row'
             }, {
               type: 'callback',
               icon: 'fa fa-fw fa-paperclip',
               label: trans('stick', {}, 'forum'),
-              callback: () => this.stickSubject(row[0]),
-              // displayed: !row[0].locked && this.canManageEntry(row[0]),
-              context: 'row'
+              callback: () => this.props.stickSubject(rows[0]),
+              displayed: !rows[0].meta.sticky
+            }, {
+              type: 'callback',
+              icon: 'fa fa-fw fa-unlink',
+              label: trans('unstick', {}, 'forum'),
+              callback: () => this.props.unStickSubject(rows[0]),
+              displayed: rows[0].meta.sticky
             }, {
               type: 'callback',
               icon: 'fa fa-fw fa-pencil',
               label: trans('edit'),
-              callback: () => this.editSubject(row[0]),
-              // displayed: !row[0].locked && this.canManageEntry(row[0]),
+              callback: () => this.editSubject(rows[0].meta.sticky),
               context: 'row'
             }
           ]}
@@ -107,7 +112,7 @@ class SubjectsList extends Component {
               id={props.data.id}
               icon={<UserAvatar picture={props.data.meta.creator ? props.data.meta.creator.picture : undefined} alt={true}/>}
               title={props.data.title}
-              subtitle={props.data.meta.messages+'message(s)'}
+              subtitle={props.data.meta.messages+' réponse(s)'}
               // contentText={props.data)}
             />
           }
@@ -121,6 +126,14 @@ const Subjects = connect(
   state => ({
     forum: select.forum(state),
     subject: select.subject(state)
+  }),
+  dispatch => ({
+    stickSubject(subject) {
+      dispatch(actions.stickSubject(subject))
+    },
+    unStickSubject(subject) {
+      dispatch(actions.unStickSubject(subject))
+    }
   })
 )(SubjectsList)
 

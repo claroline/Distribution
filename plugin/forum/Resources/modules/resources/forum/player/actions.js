@@ -40,6 +40,31 @@ actions.openSubject = (id) => (dispatch, getState) => {
   }
 }
 
+actions.stickSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {sticky:true}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+    }
+  }
+})
+
+actions.unStickSubject = (subject) => ({
+  [API_REQUEST]: {
+    url: ['apiv2_forum_subject_update', {id: subject.id}],
+    request: {
+      body: JSON.stringify(Object.assign({}, subject, {meta: {sticky:false}})),
+      method: 'PUT'
+    },
+    success: (data, dispatch) => {
+      dispatch(listActions.invalidateData('subjects.list'))
+    }
+  }
+})
 
 actions.createMessage = (subjectId, content) => ({
   [API_REQUEST]: {
@@ -63,12 +88,9 @@ actions.createMessage = (subjectId, content) => ({
   }
 })
 
-
-
-
 actions.createComment = (messageId, comment) => ({
   [API_REQUEST]: {
-    url: ['claroline_forum_api_message_createcomment', {message: messageId}],
+    url: ['claroline_forum_api_message_createcomment', {id: messageId}],
     request: {
       method: 'POST',
       body: JSON.stringify({
