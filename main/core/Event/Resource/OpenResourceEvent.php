@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\Resource;
 
 use Claroline\AppBundle\Event\DataConveyorEventInterface;
 use Claroline\AppBundle\Event\MandatoryEventInterface;

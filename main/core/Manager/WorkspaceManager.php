@@ -822,6 +822,8 @@ class WorkspaceManager
             );
         }
 
+        // FIXME : you replace current user credentials by the added one, but why ?
+        // there is no reason to do this because it's not always the same user !!!
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $this->container->get('security.context')->setToken($token);
 

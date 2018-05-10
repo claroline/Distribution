@@ -22,12 +22,11 @@ use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Library\Security\Utilities;
 use Claroline\CoreBundle\Library\Utilities\ClaroUtilities;
 use Claroline\CoreBundle\Manager\Exception\ExportResourceException;
-use Claroline\CoreBundle\Manager\Exception\MissingResourceNameException;
 use Claroline\CoreBundle\Manager\Exception\ResourceMoveException;
 use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException;
@@ -36,7 +35,6 @@ use Claroline\CoreBundle\Manager\Exception\WrongClassException;
 use Claroline\CoreBundle\Repository\DirectoryRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;
-use Claroline\CoreBundle\Repository\ResourceShortcutRepository;
 use Claroline\CoreBundle\Repository\ResourceTypeRepository;
 use Claroline\CoreBundle\Repository\RoleRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -67,7 +65,7 @@ class ResourceManager
     private $resourceNodeRepo;
     /** @var ResourceRightsRepository */
     private $resourceRightsRepo;
-    /** @var ResourceShortcutRepository */
+
     private $shortcutRepo;
     /** @var RoleRepository */
     private $roleRepo;
@@ -195,8 +193,6 @@ class ResourceManager
     ) {
         $this->om->startFlushSuite();
 
-        $this->checkResourcePrepared($resource);
-
         /** @var ResourceNode $node */
         $node = new ResourceNode();
         $node->setResourceType($resourceType);
@@ -255,7 +251,7 @@ class ResourceManager
         $node->setIcon($icon);
 
         //if it's an activity, initialize the permissions for its linked resources;
-        if ('activity' === $resourceType->getName()) {
+        /*if ('activity' === $resourceType->getName()) {
             //care if it's a shortcut
             if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' === $node->getClass()) {
                 $target = $resource->getTarget();
@@ -271,7 +267,7 @@ class ResourceManager
             } else {
                 $this->container->get('claroline.manager.activity_manager')->initializePermissions($resource);
             }
-        }
+        }*/
 
         $usersToNotify = $workspace && $workspace->getId() ?
             $this->container->get('claroline.manager.user_manager')->getUsersByWorkspaces([$workspace], null, null, false) :
@@ -486,27 +482,6 @@ class ResourceManager
             [],
             true
         );
-    }
-
-    /**
-     * Checks if a resource already has a name.
-     *
-     * @param \Claroline\CoreBundle\Entity\Resource\AbstractResource $resource
-     *
-     * @throws MissingResourceNameException
-     */
-    public function checkResourcePrepared(AbstractResource $resource)
-    {
-        $stringErrors = '';
-
-        //null or '' shouldn't be valid
-        if (null === $resource->getName()) {
-            $stringErrors .= 'The resource name is missing'.PHP_EOL;
-        }
-
-        if ('' !== $stringErrors) {
-            throw new MissingResourceNameException($stringErrors);
-        }
     }
 
     /**

@@ -9,36 +9,48 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\Resource\File;
 
 use Claroline\AppBundle\Event\DataConveyorEventInterface;
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class EncodeFileEvent extends Event implements DataConveyorEventInterface
 {
-    private $resource;
-    private $response;
+    /** @var UploadedFile */
+    private $file;
     private $isPopulated = false;
 
     /**
-     * Constructor.
+     * EncodeFileEvent constructor.
+     *
+     * @param UploadedFile $file
      */
-    public function __construct($file)
+    public function __construct(UploadedFile $file)
     {
         $this->file = $file;
     }
 
+    /**
+     * @return UploadedFile
+     */
     public function getFile()
     {
         return $this->file;
     }
 
-    public function setFile($file)
+    /**
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file)
     {
         $this->isPopulated = true;
         $this->file = $file;
     }
 
+    /**
+     * @return bool
+     */
     public function isPopulated()
     {
         return $this->isPopulated;

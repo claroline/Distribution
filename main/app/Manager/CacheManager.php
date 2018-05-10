@@ -9,33 +9,42 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\AppBundle\Manager;
 
+use Claroline\AppBundle\Event\App\RefreshCacheEvent;
 use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Parser\IniParser;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
+ * Manages the application cache.
+ *
  * @DI\Service("claroline.manager.cache_manager")
  */
 class CacheManager
 {
-    private $eventManager;
+    /** @var StrictDispatcher */
+    private $eventDispatcher;
+
+    /** @var string */
     private $cachePath;
-    private $iniFileManager;
 
     /**
+     * CacheManager constructor.
+     *
      * @DI\InjectParams({
-     *      "rootDir"        = @DI\Inject("%kernel.root_dir%"),
-     *      "eventManager"   = @DI\Inject("claroline.event.event_dispatcher"),
-     *      "iniFileManager" = @DI\Inject("claroline.manager.ini_file_manager")
+     *      "rootDir"         = @DI\Inject("%kernel.root_dir%"),
+     *      "eventDispatcher" = @DI\Inject("claroline.event.event_dispatcher")
      * })
+     *
+     * @param StrictDispatcher $eventDispatcher
+     * @param string           $rootDir
      */
-    public function __construct(StrictDispatcher $eventManager, $rootDir, IniFileManager $iniFileManager)
+    public function __construct(StrictDispatcher $eventDispatcher, $rootDir)
     {
         $ds = DIRECTORY_SEPARATOR;
         $this->cachePath = $rootDir.$ds.'cache'.$ds.'claroline.cache.ini';
-        $this->eventManager = $eventManager;
-        $this->iniFileManager = $iniFileManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -77,7 +86,7 @@ class CacheManager
 
     public function getParameters()
     {
-        return $this->cacheExists() ? parse_ini_file($this->cachePath) : [];
+        return IniParser::parseFile($this->cachePath);
     }
 
     public function setParameter($parameter, $value)
@@ -93,7 +102,10 @@ class CacheManager
     public function refresh()
     {
         $this->removeCache();
-        $event = $this->eventManager->dispatch('refresh_cache', 'RefreshCache');
+
+        /** @var RefreshCacheEvent $event */
+        $event = $this->eventDispatcher->dispatch('refresh_cache', RefreshCacheEvent::class);
+
         $this->writeCache($event->getParameters());
     }
 
@@ -120,6 +132,6 @@ class CacheManager
      */
     public function writeCache(array $parameters)
     {
-        $this->iniFileManager->writeIniFile($parameters, $this->cachePath);
+        IniParser::dumpFile($parameters, $this->cachePath);
     }
 }

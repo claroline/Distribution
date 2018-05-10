@@ -18,18 +18,6 @@ import {ResourceNode as ResourceNodeTypes} from '#/main/core/resource/prop-types
 import {ResourceExplorer} from '#/main/core/resource/components/explorer'
 import {ResourcePageActions} from '#/main/core/resource/components/page-actions'
 
-/*
- <PageActions>
- <PageAction
- type="modal"
- icon="fa fa-plus"
- label={trans('create', {}, 'actions')}
- modal={[]}
- primary={true}
- />
- </PageActions>
- */
-
 const Tool = props =>
   <RoutedPageContainer>
     <PageHeader

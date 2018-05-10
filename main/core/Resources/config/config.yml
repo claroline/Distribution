@@ -1,96 +1,131 @@
 plugin:
     resource_actions:
+        # Opens a resource
+        - name: open
+          decoder: open
+
+        # Displays common resources info (the one from the node)
         - name: show-info
           decoder: open
 
+        # Exports a resource in a Claroline format (archive + manifest)
         - name: export
           group: transfer
           decoder: export
+          bulk: true # The action can be executed on multiple resources at once.
 
+        # Deletes a resource
         - name: delete
           group: management
           decoder: delete
+          bulk: true # The action can be executed on multiple resources at once.
 
+        # Changes access rights of a resource
         - name: edit-rights
           group: management
           decoder: administrate
+          bulk: true # The action can be executed on multiple resources at once.
 
+        # Changes common resources info (the one from the node)
         - name: edit-properties
           group: management
           decoder: administrate
+          bulk: true # The action can be executed on multiple resources at once.
 
+        # Changes the parent of a resource
+        - name: move
+          group: management
+          decoder: administrate
+          bulk: true # The action can be executed on multiple resources at once.
+
+        # Displays tracking info about the resource
         - name: open-tracking
           group: log
-          decoder: administrate # adds it's own right
+          decoder: administrate # todo : adds it's own right
 
     resources:
-        - class: Claroline\CoreBundle\Entity\Resource\File
-          name: file
-          is_exportable: true
+        - name: file
+          class: Claroline\CoreBundle\Entity\Resource\File
+          exportable: true
+          actions:
+              - name: download
+                decoder: export
+                group: transfer
 
-        - class: Claroline\CoreBundle\Entity\Resource\Directory
-          name: directory
-          is_exportable: true
+        - name: directory
+          class: Claroline\CoreBundle\Entity\Resource\Directory
+          exportable: true
+          actions:
+              - name: create
+                decoder: create
+                group: management
 
-        - class: Claroline\CoreBundle\Entity\Resource\Text
-          name: text
-          is_exportable: true
+        - name: text
+          class: Claroline\CoreBundle\Entity\Resource\Text
+          exportable: true
 
-        - class: Claroline\CoreBundle\Entity\Resource\ResourceShortcut
-          name: resource_shortcut
-          is_exportable: false
+        - name: resource_shortcut
+          class: Claroline\CoreBundle\Entity\Resource\ResourceShortcut
 
-        - class: Claroline\CoreBundle\Entity\Resource\Activity
-          name: activity
-          is_exportable: false
+        - name: activity
+          class: Claroline\CoreBundle\Entity\Resource\Activity
 
     admin_tools:
         - name: platform_parameters
           class: cog
+
         - name: user_management
           class: users
+
         - name: workspace_management
           class: book
+
         - name: registration_to_workspace
           class: book
+
         - name: desktop_and_home
           class: home
+
         - name: platform_logs
           class: bars
+
         - name: platform_analytics
           class: bar-chart-o
+
         - name: widgets_management
           class: list-alt
+
         - name: tasks_scheduling
           class: clock-o
+
         - name: data_transfer
           class: exchange
 
     widgets:
         #- name: core_resource_logger
-        #  is_configurable: true
-        #  is_displayable_in_desktop: true
-        #  is_displayable_in_workspace: true
+        #      is_configurable: true
+        #      is_displayable_in_desktop: true
+        #      is_displayable_in_workspace: true
         #- name: simple_text
-        #  is_configurable: true
-        #  is_displayable_in_desktop: true
-        #  is_displayable_in_workspace: true
+        #      is_configurable: true
+        #      is_displayable_in_desktop: true
+        #      is_displayable_in_workspace: true
         #- name: my_workspaces
-        #  is_configurable: false
-        #  is_displayable_in_desktop: true
-        #  is_displayable_in_workspace: false
+        #      is_configurable: false
+        #      is_displayable_in_desktop: true
+        #      is_displayable_in_workspace: false
         #- name: my_profile
-        #  is_configurable: false
-        #  is_displayable_in_desktop: true
-        #  is_displayable_in_workspace: false
+        #      is_configurable: false
+        #      is_displayable_in_desktop: true
+        #      is_displayable_in_workspace: false
         #- name: resources_widget
-        #  is_configurable: true
-        #  is_displayable_in_desktop: true
-        #  is_displayable_in_workspace: true
+        #      is_configurable: true
+        #      is_displayable_in_desktop: true
+        #      is_displayable_in_workspace: true
         #- name: resource_text
-        #  is_configurable: true
-        #  is_displayable_in_desktop: true
-        #  is_displayable_in_workspace: true
+        #      is_configurable: true
+        #      is_displayable_in_desktop: true
+        #      is_displayable_in_workspace: true
 
         - name: simple
           class: Claroline\CoreBundle\Entity\Widget\Type\SimpleWidget
@@ -199,17 +234,6 @@ plugin:
           is_exportable: false
           is_locked_for_admin: false
           is_anonymous_excluded: true
-
-    #additional_action:
-    #    - action: edit
-    #      class: fa-pencil
-    #      displayed_name: edit
-    #      type: admin_user_action
-    #    - action: show_workspaces
-
-    #      class: fa-book
-    #      displayed_name: show_workspaces
-    #      type: admin_user_action
 
     themes:
         - name: Claroline

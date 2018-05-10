@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\Resource;
 
 use Symfony\Component\EventDispatcher\Event;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;

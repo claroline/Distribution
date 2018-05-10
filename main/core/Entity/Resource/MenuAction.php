@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Entity\Resource;
 
+use Claroline\AppBundle\Entity\Identifier\Id;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,47 +20,35 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MenuAction
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
+    use Id;
 
     /**
      * @ORM\Column(nullable=true)
+     *
+     * @var string
      */
-    protected $name;
+    private $name;
 
     /**
-     * @ORM\Column(name="async", type="boolean", nullable=true)
+     * @ORM\Column(type="integer")
+     *
+     * @var int
      */
-    protected $isAsync;
-
-    /**
-     * @ORM\Column(name="is_custom", type="boolean", nullable=false)
-     */
-    protected $isCustom = true;
-
-    /**
-     * @ORM\Column(name="is_form", type="boolean", nullable=false)
-     */
-    protected $isForm = false;
-
-    /**
-     * @ORM\Column(name="value", nullable=true)
-     */
-    protected $value;
+    private $mask;
 
     /**
      * @ORM\Column(name="group_name", nullable=true)
+     *
+     * @var string
      */
-    protected $group;
+    private $group;
 
     /**
-     * @ORM\Column(name="icon", nullable=true)
+     * @ORM\Column(type="boolean")
+     *
+     * @var string
      */
-    protected $icon;
+    private $bulk = false;
 
     /**
      * @ORM\ManyToOne(
@@ -69,13 +58,11 @@ class MenuAction
      * )
      * @ORM\JoinColumn(name="resource_type_id", onDelete="SET NULL")
      */
-    protected $resourceType;
+    private $resourceType;
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
@@ -83,31 +70,10 @@ class MenuAction
 
     /**
      * @param string $name
-     *
-     * @return MenuAction
      */
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function isAsync()
-    {
-        return $this->isAsync;
-    }
-
-    /**
-     * @param bool $async
-     *
-     * @return MenuAction
-     */
-    public function setAsync($async)
-    {
-        $this->isAsync = $async;
-
-        return $this;
     }
 
     public function getResourceType()
@@ -117,84 +83,71 @@ class MenuAction
 
     /**
      * @param ResourceType $resourceType
-     *
-     * @return MenuAction
      */
     public function setResourceType(ResourceType $resourceType = null)
     {
         $this->resourceType = $resourceType;
-
-        return $this;
     }
 
     /**
      * @param $value
      *
-     * @return MenuAction
+     * @deprecated
      */
     public function setValue($value)
     {
-        $this->value = $value;
-
-        return $this;
+        $this->mask = $value;
     }
 
+    /**
+     * @return int
+     *
+     * @deprecated
+     */
     public function getValue()
     {
-        return $this->value;
+        return $this->mask;
     }
 
     /**
-     * @param bool $bool
-     *
-     * @return MenuAction
+     * @param int $mask
      */
-    public function setIsCustom($bool)
+    public function setMask($mask)
     {
-        $this->isCustom = $bool;
-
-        return $this;
-    }
-
-    public function isCustom()
-    {
-        return $this->isCustom;
+        $this->mask = $mask;
     }
 
     /**
-     * @param bool $bool
-     *
-     * @return MenuAction
+     * @return int
      */
-    public function setIsForm($bool)
+    public function getMask()
     {
-        $this->isForm = $bool;
-
-        return $this;
+        return $this->mask;
     }
 
-    public function isForm()
-    {
-        return $this->isForm;
-    }
-
+    /**
+     * @param string $group
+     */
     public function setGroup($group)
     {
         $this->group = $group;
     }
 
+    /**
+     * @return string
+     */
     public function getGroup()
     {
         return $this->group;
     }
 
-    public function setIcon($icon)
+    public function isBulk()
     {
-        $this->icon = $icon;
+        return $this->bulk;
     }
 
-    public function getIcon()
+    public function setBulk($bulk)
     {
-        return $this->icon;
+        $this->bulk = $bulk;
     }
 }

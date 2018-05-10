@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\Resource;
 
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,14 +20,15 @@ use Claroline\CoreBundle\Entity\Resource\AbstractResource;
  */
 class DownloadResourceEvent extends Event
 {
+    /** @var AbstractResource */
     private $resource;
     private $item;
     private $extension;
 
     /**
-     * Constructor.
+     * DownloadResourceEvent constructor.
      *
-     * @param int $resourceId
+     * @param AbstractResource $resource
      */
     public function __construct(AbstractResource $resource)
     {
@@ -37,7 +38,7 @@ class DownloadResourceEvent extends Event
     /**
      * Returns the id of the resource on which the action is to be taken.
      *
-     * @return int
+     * @return AbstractResource
      */
     public function getResource()
     {

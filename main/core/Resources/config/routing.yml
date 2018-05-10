@@ -150,7 +150,6 @@ claro_resources_node_api:
 
 claro_resource:
     resource: "@ClarolineCoreBundle/Controller/ResourceController.php"
-    prefix: resource
     type: annotation
 
 claro_resource_icon:

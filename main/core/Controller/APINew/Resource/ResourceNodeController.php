@@ -60,7 +60,7 @@ class ResourceNodeController extends AbstractCrudController
             // grab directory content
             $parentNode = $this->om
                 ->getRepository('ClarolineCoreBundle:Resource\ResourceNode')
-                ->findOneBy(['guid' => $parent]);
+                ->findOneBy(['uuid' => $parent]);
 
             $options['hiddenFilters']['parent'] = !empty($parentNode) ? $parentNode->getId() : null;
         } else {

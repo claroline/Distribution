@@ -11,7 +11,8 @@
 
 namespace Claroline\CoreBundle\Library\Installation\Plugin;
 
-use Claroline\CoreBundle\Library\PluginBundle;
+use Claroline\CoreBundle\Entity\Plugin;
+use Claroline\CoreBundle\Library\PluginBundleInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -28,9 +29,9 @@ class Recorder
     private $dbWriter;
 
     /**
-     * Constructor.
+     * Recorder constructor.
      *
-     * @param DatabaseWriter dbWriter
+     * @param DatabaseWriter $dbWriter
      *
      * @DI\InjectParams({
      *     "dbWriter" = @DI\Inject("claroline.plugin.recorder_database_writer")
@@ -54,10 +55,12 @@ class Recorder
     /**
      * Registers a plugin.
      *
-     * @param PluginBundle $plugin
-     * @param array        $pluginConfiguration
+     * @param PluginBundleInterface $plugin
+     * @param array $pluginConfiguration
+     *
+     * @return Plugin
      */
-    public function register(PluginBundle $plugin, array $pluginConfiguration)
+    public function register(PluginBundleInterface $plugin, array $pluginConfiguration)
     {
         return $this->dbWriter->insert($plugin, $pluginConfiguration);
     }
@@ -65,10 +68,10 @@ class Recorder
     /**
      * Update configuration for a plugin.
      *
-     * @param PluginBundle $plugin
-     * @param array        $pluginConfiguration
+     * @param PluginBundleInterface $plugin
+     * @param array                 $pluginConfiguration
      */
-    public function update(PluginBundle $plugin, array $pluginConfiguration)
+    public function update(PluginBundleInterface $plugin, array $pluginConfiguration)
     {
         $this->dbWriter->update($plugin, $pluginConfiguration);
     }
@@ -76,9 +79,9 @@ class Recorder
     /**
      * Unregisters a plugin.
      *
-     * @param PluginBundle $plugin
+     * @param PluginBundleInterface $plugin
      */
-    public function unregister(PluginBundle $plugin)
+    public function unregister(PluginBundleInterface $plugin)
     {
         $pluginFqcn = get_class($plugin);
         $this->dbWriter->delete($pluginFqcn);
@@ -87,11 +90,11 @@ class Recorder
     /**
      * Checks if a plugin is registered.
      *
-     * @param \Claroline\CoreBundle\Library\PluginBundle $plugin
+     * @param PluginBundleInterface $plugin
      *
      * @return bool
      */
-    public function isRegistered(PluginBundle $plugin)
+    public function isRegistered(PluginBundleInterface $plugin)
     {
         return $this->dbWriter->isSaved($plugin);
     }

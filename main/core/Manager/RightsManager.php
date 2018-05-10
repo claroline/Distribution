@@ -26,7 +26,6 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * @DI\Service("claroline.manager.rights_manager")
@@ -45,8 +44,6 @@ class RightsManager
     private $roleRepo;
     /** @var ResourceTypeRepository */
     private $resourceTypeRepo;
-    /** @var Translator */
-    private $translator;
     /** @var ObjectManager */
     private $om;
     /** @var StrictDispatcher */
@@ -57,10 +54,9 @@ class RightsManager
     private $container;
 
     /**
-     * Constructor.
+     * RightsManager constructor.
      *
      * @DI\InjectParams({
-     *     "translator"  = @DI\Inject("translator"),
      *     "om"          = @DI\Inject("claroline.persistence.object_manager"),
      *     "dispatcher"  = @DI\Inject("claroline.event.event_dispatcher"),
      *     "roleManager" = @DI\Inject("claroline.manager.role_manager"),
@@ -69,7 +65,6 @@ class RightsManager
      * })
      */
     public function __construct(
-        TranslatorInterface $translator,
         ObjectManager $om,
         StrictDispatcher $dispatcher,
         RoleManager $roleManager,
@@ -80,7 +75,6 @@ class RightsManager
         $this->resourceRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
         $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
         $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
-        $this->translator = $translator;
         $this->om = $om;
         $this->dispatcher = $dispatcher;
         $this->roleManager = $roleManager;
@@ -122,7 +116,7 @@ class RightsManager
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
      * @param bool                                               $isRecursive
      * @param array                                              $creations
-     * @param bool                                               $mergePerm   do we want to merge the permissions (only work for integers perm)
+     * @param bool                                               $mergePerms   do we want to merge the permissions (only work for integers perm)
      *
      * @return array|\Claroline\CoreBundle\Entity\Resource\ResourceRights[]
      */
@@ -174,12 +168,6 @@ class RightsManager
             }
         }
 
-        //exception for activities
-        if ('activity' === $node->getResourceType()->getName()) {
-            $resource = $this->container->get('claroline.manager.resource_manager')->getResourceFromNode($node);
-            $this->container->get('claroline.manager.activity_manager')->initializePermissions($resource);
-        }
-
         if (count($creations) > 0) {
             $this->editCreationRights($creations, $role, $node, $isRecursive);
         }
@@ -195,7 +183,7 @@ class RightsManager
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
      * @param bool                                               $isRecursive
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceRight[] $arRights
+     * @return ResourceRights[] $arRights
      */
     public function editCreationRights(
         array $resourceTypes,
@@ -331,16 +319,15 @@ class RightsManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Role                  $role
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param bool                                               $fetchUOW
+     * @param Role                  $role
+     * @param ResourceNode $node
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceRights $resourceRights
+     * @return ResourceRights $resourceRights
      */
     public function getOneByRoleAndResource(Role $role, ResourceNode $node)
     {
+        /** @var ResourceRights $resourceRights */
         $resourceRights = $this->rightsRepo->findOneBy(['resourceNode' => $node, 'role' => $role]);
-
         if ($resourceRights) {
             return $resourceRights;
         }
@@ -353,25 +340,18 @@ class RightsManager
     }
 
     /**
-     * @todo we don't need to return the translation keys. This needs to be change for the new resource manager
-     *
-     * @param string[]                                           $roles
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param string[]     $roles
+     * @param ResourceNode $node
      *
      * @return array
      */
     public function getCreatableTypes(array $roles, ResourceNode $node)
     {
-        $creatableTypes = [];
         $creationRights = $this->rightsRepo->findCreationRights($roles, $node);
 
-        if (0 !== count($creationRights)) {
-            foreach ($creationRights as $type) {
-                $creatableTypes[$type['name']] = $this->translator->trans($type['name'], [], 'resource');
-            }
-        }
-
-        return $creatableTypes;
+        return array_map(function (array $type) {
+            return $type['name'];
+        }, $creationRights);
     }
 
     /**
@@ -444,9 +424,11 @@ class RightsManager
     /**
      * Returns every ResourceRights of a resource on 1 level if the role linked is not 'ROLE_ADMIN'.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
+     * @param ResourceNode $node
      *
-     * @return \Claroline\CoreBundle\Resource\ResourceRights[]
+     * @return ResourceRights[]
+     *
+     * @deprecated no longer used in new manager
      */
     public function getConfigurableRights(ResourceNode $node)
     {
@@ -481,6 +463,10 @@ class RightsManager
 
     /**
      * @return \Claroline\CoreBundle\Entity\Resource\ResourceType[]
+     *
+     * @deprecated
+     *
+     * @todo remove me I'm not related to Rights
      */
     public function getResourceTypes()
     {
@@ -516,6 +502,7 @@ class RightsManager
      *
      * @param int $dirMask      A directory mask
      * @param int $resourceMask A specific resource mask
+     * @param ResourceType $resourceType
      *
      * @return int
      */
@@ -734,26 +721,26 @@ class RightsManager
             return $roleName->getRole();
         }, $currentRoles);
 
-        //si manager, retourne tout
-
-        if ($this->isManager($resourceNode, $this->container->get('security.token_storage')->getToken())) {
+        $creatable = [];
+        if ($this->isManager($resourceNode)) {
+            /** @var ResourceType[] $resourceTypes */
             $resourceTypes = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
 
             foreach ($resourceTypes as $resourceType) {
-                $creatables[$resourceType->getName()] = $this->translator->trans($resourceType->getName(), [], 'resource');
+                $creatable[] = $resourceType->getName();
             }
 
             $perms = array_fill_keys(array_values($this->maskManager->getPermissionMap($resourceNode->getResourceType())), true);
         } else {
-            $creatables = $this->getCreatableTypes($roleNames, $resourceNode);
+            $creatable = $this->getCreatableTypes($roleNames, $resourceNode);
 
             $perms = $this->maskManager->decodeMask(
-            $this->rightsRepo->findMaximumRights($roleNames, $resourceNode),
-            $resourceNode->getResourceType()
-          );
+                $this->rightsRepo->findMaximumRights($roleNames, $resourceNode),
+                $resourceNode->getResourceType()
+            );
         }
 
-        return array_merge(['create' => $creatables], $perms);
+        return array_merge($perms, ['create' => $creatable]);
     }
 
     public function setLogger(LoggerInterface $logger)

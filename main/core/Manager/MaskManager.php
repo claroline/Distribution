@@ -16,6 +16,8 @@ use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Entity\Resource\MaskDecoder;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
+use Claroline\CoreBundle\Repository\ResourceMaskDecoderRepository;
+use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
 
@@ -28,12 +30,17 @@ class MaskManager
 
     private static $defaultActions = ['open', 'copy', 'export', 'delete', 'edit', 'administrate'];
 
+    /** @var ObjectManager */
     private $om;
+
+    /** @var ResourceMaskDecoderRepository */
     private $maskRepo;
+
+    /** @var ObjectRepository */
     private $menuRepo;
 
     /**
-     * Constructor.
+     * MaskManager constructor.
      *
      * @DI\InjectParams({
      *     "om" = @DI\Inject("claroline.persistence.object_manager")
@@ -53,16 +60,51 @@ class MaskManager
         throw new \Exception('not implemented yet');
     }
 
+    public function createDecoder($action, ResourceType $resourceType = null)
+    {
+        /** @var ResourceType[] $resourceTypes */
+        $resourceTypes = [];
+        if (empty($resourceType)) {
+            // we will need to create mask decoder for all resource types
+            $resourceTypes = $this->om->getRepository('ClarolineCoreBundle:Resource\ResourceType')->findAll();
+        } else {
+            $resourceTypes[] = $resourceType;
+        }
+
+        $updated = false;
+        foreach ($resourceTypes as $type) {
+            // check if the mask already exists
+            $decoder = $this->getDecoder($type, $action);
+            if (empty($decoder)) {
+                $existingDecoders = $this->maskRepo->findBy(['resourceType' => $type]);
+                $exp = count($existingDecoders);
+
+                $decoder = new MaskDecoder();
+                $decoder->setName($action);
+                $decoder->setResourceType($type);
+                $decoder->setValue(pow(2, $exp));
+
+                $this->om->persist($decoder);
+                $updated = true;
+            }
+        }
+
+        if ($updated) {
+            $this->om->flush();
+        }
+    }
+
     /**
      * Returns an array containing the permission for a mask and a resource type.
      *
-     * @param int                                                $mask
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
+     * @param int          $mask
+     * @param ResourceType $type
      *
      * @return array
      */
     public function decodeMask($mask, ResourceType $type)
     {
+        /** @var MaskDecoder[] $decoders */
         $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
         $perms = [];
 
@@ -79,13 +121,14 @@ class MaskManager
      *
      * array('open' => true, 'edit' => false, ...)
      *
-     * @param array                                              $perms
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
+     * @param array        $perms
+     * @param ResourceType $type
      *
      * @return int
      */
     public function encodeMask($perms, ResourceType $type)
     {
+        /** @var MaskDecoder[] $decoders */
         $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
         $mask = 0;
 
@@ -131,12 +174,13 @@ class MaskManager
     /**
      * Returns an array containing the possible permission for a resource type.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
+     * @param ResourceType $type
      *
      * @return array
      */
     public function getPermissionMap(ResourceType $type)
     {
+        /** @var MaskDecoder[] $decoders */
         $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
         $permsMap = [];
 
@@ -148,46 +192,56 @@ class MaskManager
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
-     * @param string                                             $action
+     * @param ResourceType $type
+     * @param string       $action
      *
      * @return MaskDecoder
      */
     public function getDecoder(ResourceType $type, $action)
     {
-        return $this->maskRepo->findOneBy(['resourceType' => $type, 'name' => $action]);
+        /** @var MaskDecoder $decoder */
+        $decoder = $this->maskRepo->findOneBy(['resourceType' => $type, 'name' => $action]);
+
+        return $decoder;
     }
 
     /**
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
-     * @param int                                                $value
+     * @param ResourceType $type
+     * @param int          $value
      *
      * @return MaskDecoder
      */
     public function getByValue(ResourceType $type, $value)
     {
-        return $this->maskRepo->findOneBy(['resourceType' => $type, 'value' => $value]);
+        /** @var MaskDecoder $decoder */
+        $decoder = $this->maskRepo->findOneBy(['resourceType' => $type, 'value' => $value]);
+
+        return $decoder;
     }
 
     /**
-     * @param string                                             $name
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
+     * @param string       $name
+     * @param ResourceType $type
      *
      * @return MenuAction
      */
     public function getMenuFromNameAndResourceType($name, ResourceType $type)
     {
         if ($this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type])) {
-            return $this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type]);
+            /** @var MenuAction $action */
+            $action = $this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type]);
+        } else {
+            /** @var MenuAction $action */
+            $action = $this->menuRepo->findOneBy(['name' => $name]);
         }
 
-        return $this->menuRepo->findOneBy(['name' => $name]);
+        return $action;
     }
 
     /**
      * Adds the default action to a resource type.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
+     * @param ResourceType $type
      */
     public function addDefaultPerms(ResourceType $type)
     {
@@ -210,13 +264,13 @@ class MaskManager
     /**
      * Checks if a resource type has any menu actions.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceType $type
+     * @param ResourceType $type
+     *
+     * @return bool
      */
     public function hasMenuAction(ResourceType $type)
     {
-        $menuActions = $this->menuRepo->findBy(
-            ['resourceType' => $type]
-        );
+        $menuActions = $this->menuRepo->findBy(['resourceType' => $type]);
 
         return count($menuActions) > 0;
     }
@@ -248,21 +302,11 @@ class MaskManager
         }
     }
 
-    public function setLogger(LoggerInterface $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
     private function getMaskDecoderActionNamesForResourceType(ResourceType $type)
     {
-        $decoders = $this->maskRepo->findBy(
-            ['resourceType' => $type]
-        );
+        /** @var MaskDecoder[] $decoders */
+        $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
+
         $actionNames = [];
         foreach ($decoders as $decoder) {
             $actionNames[] = $decoder->getName();

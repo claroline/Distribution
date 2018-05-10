@@ -54,7 +54,7 @@ class ResourceManagerTest extends MockeryTestCase
 
     public function testCreate()
     {
-        $manager = $this->getManager(['checkResourcePrepared', 'getUniqueName', 'setRights']);
+        $manager = $this->getManager(['getUniqueName', 'setRights']);
 
         $parent = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $resourceType = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceType');
@@ -72,7 +72,6 @@ class ResourceManagerTest extends MockeryTestCase
         $prev = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
 
         $this->om->shouldReceive('startFlushSuite')->once();
-        $manager->shouldReceive('checkResourcePrepared')->once()->with($resource);
         $manager->shouldReceive('getUniqueName')->once()->with($node, $parent)->andReturn($name);
         $resource->shouldReceive('getMimeType')->once()->andReturn(null);
         $node->shouldReceive('setMimeType')->once()->with('custom/directory');
@@ -220,14 +219,6 @@ class ResourceManagerTest extends MockeryTestCase
         $this->resourceTypeRepo->shouldReceive('findOneByName')->once()->with('idontexist')->andReturn(null);
         $this->getManager()->checkResourceTypes($resourceTypes);
         m::getConfiguration()->allowMockingNonExistentMethods(false);
-    }
-
-    public function testCheckResourcePrepared()
-    {
-        $this->setExpectedException('\Claroline\CoreBundle\Manager\Exception\MissingResourceNameException');
-        $resource = $this->mock('Claroline\CoreBundle\Entity\Resource\AbstractResource');
-        $resource->shouldReceive('getName')->andReturn(null);
-        $this->getManager()->checkResourcePrepared($resource);
     }
 
     /**
@@ -453,7 +444,7 @@ class ResourceManagerTest extends MockeryTestCase
         $parent = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $user = $this->mock('Claroline\CoreBundle\Entity\User');
         $last = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $event = $this->mock('Claroline\CoreBundle\Event\CopyResourceEvent');
+        $event = $this->mock('Claroline\CoreBundle\Event\Resource\CopyResourceEvent');
         $resourceType = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceType');
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $icon = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceIcon');
@@ -504,7 +495,7 @@ class ResourceManagerTest extends MockeryTestCase
         $target = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
         $user = $this->mock('Claroline\CoreBundle\Entity\User');
         $last = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceNode');
-        $event = $this->mock('Claroline\CoreBundle\Event\CopyResourceEvent');
+        $event = $this->mock('Claroline\CoreBundle\Event\Resource\CopyResourceEvent');
         $resourceType = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceType');
         $workspace = $this->mock('Claroline\CoreBundle\Entity\Workspace\Workspace');
         $icon = $this->mock('Claroline\CoreBundle\Entity\Resource\ResourceIcon');

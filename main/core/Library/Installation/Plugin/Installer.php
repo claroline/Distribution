@@ -15,6 +15,7 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Manager\PluginManager;
+use Claroline\CoreBundle\Manager\VersionManager;
 use Claroline\InstallationBundle\Manager\InstallationManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use Psr\Log\LoggerInterface;
@@ -33,7 +34,12 @@ class Installer
     private $recorder;
     private $baseInstaller;
     private $om;
+
+    /** @var VersionManager */
     private $versionManager;
+
+    /** @var PluginManager */
+    private $pluginManager;
 
     /**
      * Constructor.
@@ -59,7 +65,7 @@ class Installer
         ObjectManager $om,
         PluginManager $pluginManager,
         TranslatorInterface $translator,
-        $versionManager
+        VersionManager $versionManager
     ) {
         $this->validator = $validator;
         $this->recorder = $recorder;
@@ -118,7 +124,7 @@ class Installer
             $this->pluginManager->disable($pluginEntity);
         }
 
-        $version = $this->versionManager->execute($version);
+        $this->versionManager->execute($version);
     }
 
     /**
@@ -143,6 +149,7 @@ class Installer
      */
     public function update(PluginBundleInterface $plugin, $currentVersion, $targetVersion)
     {
+        var_dump($plugin->getName());
         $this->versionManager->setLogger($this->logger);
         $version = $this->versionManager->register($plugin);
         $this->checkInstallationStatus($plugin, true);

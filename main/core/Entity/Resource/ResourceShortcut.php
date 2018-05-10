@@ -14,25 +14,38 @@ namespace Claroline\CoreBundle\Entity\Resource;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="Claroline\CoreBundle\Repository\ResourceShortcutRepository")
+ * A shortcut to access another resource in the platform.
+ *
+ * @ORM\Entity()
  * @ORM\Table(name="claro_resource_shortcut")
  */
 class ResourceShortcut extends AbstractResource
 {
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode",
-     *     inversedBy="shortcuts"
-     * )
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
+     * The targeted resource node.
+     *
+     * @ORM\ManyToOne(targetEntity="Claroline\CoreBundle\Entity\Resource\ResourceNode")
+     * @ORM\JoinColumn(onDelete="CASCADE", nullable=false)
+     *
+     * @var ResourceNode
      */
-    protected $target;
+    private $target;
 
+    /**
+     * Sets the target of the shortcut.
+     *
+     * @param ResourceNode $target
+     */
     public function setTarget(ResourceNode $target)
     {
         $this->target = $target;
     }
 
+    /**
+     * Gets the target of the shortcut.
+     *
+     * @return ResourceNode
+     */
     public function getTarget()
     {
         return $this->target;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\Resource;
 
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
 use Symfony\Component\EventDispatcher\Event;

@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Manager;
 
+use Claroline\AppBundle\Parser\IniParser;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Library\PluginBundle;
@@ -23,7 +24,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class PluginManager
 {
-    private $iniFileManager;
     private $kernelRootDir;
     private $om;
     private $pluginRepo;
@@ -33,19 +33,16 @@ class PluginManager
 
     /**
      * @DI\InjectParams({
-     *      "iniFileManager" = @DI\Inject("claroline.manager.ini_file_manager"),
-     *      "kernelRootDir"  = @DI\Inject("%kernel.root_dir%"),
-     *      "om"             = @DI\Inject("claroline.persistence.object_manager"),
-     *      "kernel"         = @DI\Inject("kernel")
+     *      "kernelRootDir" = @DI\Inject("%kernel.root_dir%"),
+     *      "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *      "kernel"        = @DI\Inject("kernel")
      * })
      */
     public function __construct(
-        IniFileManager $iniFileManager,
         $kernelRootDir,
         ObjectManager $om,
         KernelInterface $kernel
     ) {
-        $this->iniFileManager = $iniFileManager;
         $this->kernelRootDir = $kernelRootDir;
         $this->om = $om;
         $this->pluginRepo = $om->getRepository('ClarolineCoreBundle:Plugin');
@@ -69,13 +66,12 @@ class PluginManager
     {
         $iniFile = $this->kernelRootDir.'/config/bundles.ini';
 
-        //update ini file
-        $this->iniFileManager
-            ->updateKey(
-                $vendor.'\\'.$bundle.'Bundle\\'.$vendor.$bundle.'Bundle',
-                true,
-                $iniFile
-            );
+        // update ini file
+        IniParser::updateKey(
+            $vendor.'\\'.$bundle.'Bundle\\'.$vendor.$bundle.'Bundle',
+            true,
+            $iniFile
+        );
     }
 
     public function updateAutoload($ivendor, $ibundle, $vname, $bname)
@@ -132,12 +128,11 @@ class PluginManager
 
     public function enable(Plugin $plugin)
     {
-        $this->iniFileManager
-            ->updateKey(
-                $plugin->getBundleFQCN(),
-                true,
-                $this->kernelRootDir.'/config/bundles.ini'
-            );
+        IniParser::updateKey(
+            $plugin->getBundleFQCN(),
+            true,
+            $this->kernelRootDir.'/config/bundles.ini'
+        );
 
         //cache the results
         $this->loadedBundles = parse_ini_file($this->iniFile);
@@ -147,15 +142,14 @@ class PluginManager
 
     public function disable(Plugin $plugin)
     {
-        $this->iniFileManager
-            ->updateKey(
-                $plugin->getBundleFQCN(),
-                false,
-                $this->kernelRootDir.'/config/bundles.ini'
-            );
+        IniParser::updateKey(
+            $plugin->getBundleFQCN(),
+            false,
+            $this->kernelRootDir.'/config/bundles.ini'
+        );
 
         //cache the results
-        $this->loadedBundles = parse_ini_file($this->iniFile);
+        $this->loadedBundles = IniParser::parseFile($this->iniFile);
 
         return $plugin;
     }

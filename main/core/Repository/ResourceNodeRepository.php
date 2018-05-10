@@ -55,7 +55,7 @@ class ResourceNodeRepository extends MaterializedPathRepository implements Conta
         if (preg_match('/^\d+$/', $id)) {
             $qb->where('n.id = :id');
         } else {
-            $qb->where('n.guid = :id');
+            $qb->where('n.uuid = :id');
         }
 
         return $qb

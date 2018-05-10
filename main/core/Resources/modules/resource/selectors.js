@@ -9,14 +9,10 @@ const meta = createSelector(
   (resourceNode) => resourceNode.meta
 )
 
-const rights = createSelector(
-  [resourceNode],
-  (resourceNode) => resourceNode.rights
-)
-
+// todo : rename selector
 const currentRights = createSelector(
-  [rights],
-  (rights) => rights.current
+  [resourceNode],
+  (resourceNode) => resourceNode.permissions
 )
 
 const editable = createSelector(

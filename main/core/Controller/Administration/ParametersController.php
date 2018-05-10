@@ -12,6 +12,7 @@
 namespace Claroline\CoreBundle\Controller\Administration;
 
 use Claroline\AppBundle\Event\StrictDispatcher;
+use Claroline\AppBundle\Manager\CacheManager;
 use Claroline\CoreBundle\Entity\Icon\IconSetTypeEnum;
 use Claroline\CoreBundle\Entity\SecurityToken;
 use Claroline\CoreBundle\Form\Administration as AdminForm;
@@ -20,7 +21,6 @@ use Claroline\CoreBundle\Library\Configuration\UnwritableException;
 use Claroline\CoreBundle\Library\Installation\Refresher;
 use Claroline\CoreBundle\Library\Maintenance\MaintenanceHandler;
 use Claroline\CoreBundle\Library\Session\DatabaseSessionValidator;
-use Claroline\CoreBundle\Manager\CacheManager;
 use Claroline\CoreBundle\Manager\ContentManager;
 use Claroline\CoreBundle\Manager\IconSetManager;
 use Claroline\CoreBundle\Manager\IPWhiteListManager;

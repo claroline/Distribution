@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\Resource;
 
 use Claroline\AppBundle\Event\MandatoryEventInterface;
 use Claroline\CoreBundle\Entity\Resource\AbstractResource;
@@ -25,9 +25,10 @@ class DeleteResourceEvent extends Event implements MandatoryEventInterface
     private $softDelete;
 
     /**
-     * Constructor.
+     * DeleteResourceEvent constructor.
      *
-     * @param AbstractResource $resources
+     * @param AbstractResource $resource
+     * @param bool             $softDelete
      */
     public function __construct(AbstractResource $resource, $softDelete = false)
     {
@@ -46,7 +47,7 @@ class DeleteResourceEvent extends Event implements MandatoryEventInterface
     }
 
     /**
-     * Set an array of files wich are going to be removed by the kernel.
+     * Set an array of files which are going to be removed by the kernel.
      *
      * @param array $files
      */

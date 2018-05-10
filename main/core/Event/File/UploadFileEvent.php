@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Event;
+namespace Claroline\CoreBundle\Event\File;
 
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Symfony\Component\EventDispatcher\Event;

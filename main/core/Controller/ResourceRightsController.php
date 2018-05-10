@@ -276,7 +276,7 @@ class ResourceRightsController extends Controller
      * @param int          $page
      * @param int          $max
      *
-     * @return Response
+     * @return array
      */
     public function resourcesRightsUsersWithRightsFormAction(
         ResourceNode $node,
@@ -349,6 +349,7 @@ class ResourceRightsController extends Controller
             $roles = [];
         }
 
+        $changedPerms = [];
         foreach (array_keys($rows) as $roleId) {
             if (!array_key_exists($roleId, $roles)) {
                 foreach ($permsMap as $perm) {

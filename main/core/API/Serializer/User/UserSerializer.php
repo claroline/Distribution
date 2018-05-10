@@ -123,6 +123,7 @@ class UserSerializer
     public function serialize(User $user, array $options = [])
     {
         if (isset($options['public']) && $options['public']) {
+            // TODO : remove me (only used by BBBPlugin and it's not maintained)
             return $this->serializePublic($user);
         }
 

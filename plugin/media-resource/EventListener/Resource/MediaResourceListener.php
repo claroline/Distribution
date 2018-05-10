@@ -2,12 +2,12 @@
 
 namespace Innova\MediaResourceBundle\EventListener\Resource;
 
-use Claroline\CoreBundle\Event\CopyResourceEvent;
+use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\CreateFormResourceEvent;
 use Claroline\CoreBundle\Event\CreateResourceEvent;
 use Claroline\CoreBundle\Event\CustomActionResourceEvent;
-use Claroline\CoreBundle\Event\DeleteResourceEvent;
-use Claroline\CoreBundle\Event\OpenResourceEvent;
+use Claroline\CoreBundle\Event\Resource\DeleteResourceEvent;
+use Claroline\CoreBundle\Event\Resource\OpenResourceEvent;
 use Innova\MediaResourceBundle\Entity\MediaResource;
 use Innova\MediaResourceBundle\Form\Type\MediaResourceType;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -139,7 +139,7 @@ class MediaResourceListener extends ContainerAware
      *
      * @DI\Observe("copy_innova_media_resource")
      *
-     * @param \Claroline\CoreBundle\Event\CopyResourceEvent $event
+     * @param \Claroline\CoreBundle\Event\Resource\CopyResourceEvent $event
      *
      * @throws \Exception
      */

@@ -111,11 +111,6 @@ class ResourceController extends FOSRestController
                         [],
                         $isPublished
                     );
-                    $this->dispatcher->dispatch(
-                        'resource_created_'.$resourceType,
-                        'ResourceCreated',
-                        [$createdResource->getResourceNode()]
-                    );
                     $nodes[] = $createdResource->getResourceNode();
                 }
             }
