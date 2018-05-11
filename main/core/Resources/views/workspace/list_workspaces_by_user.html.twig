@@ -49,7 +49,7 @@
 {% endmacro %}
 
 {% from _self import showTag %}
-
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 {% extends 'ClarolineCoreBundle:workspace_tag:layout.html.twig' %}
 
 {% block title %}{{ parent() ~ ' - ' ~ "my_workspaces" | trans({}, "platform") | striptags | raw }}{% endblock %}
