@@ -1,13 +1,13 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
+
 import {Routes} from '#/main/core/router'
-import {Subjects} from '#/plugin/forum/resources/forum/player/components/subjects'
-import {SubjectForm} from '#/plugin/forum/resources/forum/player/components/subject-form'
-import {Subject} from '#/plugin/forum/resources/forum/player/components/subject'
-import {actions as listActions} from '#/main/core/data/list/actions'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
+import {Subject} from '#/plugin/forum/resources/forum/player/components/subject'
+import {Subjects} from '#/plugin/forum/resources/forum/player/components/subjects'
 
 const PlayerComponent = (props) =>
   <Routes
@@ -21,7 +21,14 @@ const PlayerComponent = (props) =>
         component: Subject,
         // doit avoir info dans le store pour savoir que le subject est en mode édition
         // si il y a un id en param de la fction = en mode édition, sonon on est dans de la création
-        onEnter: () => props.newSubject()
+        onEnter: (params) => {
+          if (params.id === ':id') {
+            console.log(params.id)
+          } else {
+            console.log('cestbon')
+          }
+          props.openSubject()
+        }
         // ajouter un fetchsubject
 
       },{
@@ -33,7 +40,9 @@ const PlayerComponent = (props) =>
   />
 
 const Player = connect(
-  null,
+  state =>({
+    subject: formSelect.data(formSelect.form(state, 'subjects.form'))
+  }),
   dispatch => ({
     newSubject() {
       dispatch(actions.newSubject())

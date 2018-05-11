@@ -45,7 +45,7 @@ SubjectFormWrapper.propTypes = {
    * @type {func}
    */
   callback: T.func.isRequired,
-  
+
   /**
    * The content of the wrapper
    *

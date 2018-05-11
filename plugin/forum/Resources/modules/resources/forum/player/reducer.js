@@ -9,7 +9,10 @@ import {
 
 const reducer = combineReducers({
   form: makeFormReducer('subjects.form'),
-  list: makeListReducer('subjects.list'),
+  list: makeListReducer('subjects.list', {
+    sortBy: [{property: 'meta.sticky', direction: -1}]
+  }),
+  // sortBy:
   current: makeReducer({}, {
     [SUBJECT_LOAD]: (state, action) => action.subject
   }),

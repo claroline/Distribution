@@ -13,10 +13,10 @@ import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
 
-
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
+import {SubjectForm} from '#/plugin/forum/resources/forum/player/components/subject-form'
 
 class SubjectComponent extends Component {
   constructor(props) {
@@ -27,8 +27,11 @@ class SubjectComponent extends Component {
     }
 
     this.state = {
-      showNewMessageForm: false,
-      showNewCommentForm: null
+      showMessageForm: false,
+      showNewCommentForm: null,
+      //
+      showSubjectForm: false
+
     }
   }
 
@@ -42,6 +45,10 @@ class SubjectComponent extends Component {
   createNewMessage(message) {
     this.props.createMessage(this.props.subject.id, message)
     this.setState({showNewMessageForm: false})
+  }
+
+  showEditSubjectForm(message) {
+
   }
 
   showMessageForm(message) {
@@ -84,40 +91,41 @@ class SubjectComponent extends Component {
               target="/subjects"
               className="btn-link"
               primary={true}
-              // confirm={{title, question}}
             />
           </div>
-          <div>
-            <h2>{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h2>
-            {!isEmpty(this.props.subject.tags)&&
-              <div className="tag">
-                {this.props.subject.tags.map(tag =>
-                  <span key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</span>
-                )}
-              </div>
-            }
-          </div>
+          {!this.state.showNewSubjectForm &&
+            <div>
+              <h2>{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h2>
+              {!isEmpty(this.props.subject.tags)&&
+                <div className="tag">
+                  {this.props.subject.tags.map(tag =>
+                    <span key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</span>
+                  )}
+                </div>
+              }
+              {console.log(this.props.subject)}
+            </div>
+          }
         </header>
-        <UserMessage
-          user={get(this.props.subject, 'meta.creator')}
-          date={get(this.props.subject, 'meta.created') || ''}
-          content={get(this.props.subject, 'content') || ''}
-          allowHtml={true}
-          actions={[
-            // {
-            //   icon: 'fa fa-fw fa-pencil',
-            //   label: trans('edit'),
-            //   displayed: true,
-            //   action: () => this.showMessageForm(message)
-            // }, {
-            //   icon: 'fa fa-fw fa-trash-o',
-            //   label: trans('delete'),
-            //   displayed: true,
-            //   action: () => this.deleteMessage(message.id),
-            //   dangerous: true
-            // }
-          ]}
-        />
+        {this.state.showNewSubjectForm &&
+          <SubjectForm />
+        }
+        {!this.state.showNewSubjectForm && !this.state.showEditSubjectForm &&
+          <UserMessage
+            user={get(this.props.subject, 'meta.creator')}
+            date={get(this.props.subject, 'meta.created') || ''}
+            content={get(this.props.subject, 'content') || ''}
+            allowHtml={true}
+            actions={[
+              {
+                icon: 'fa fa-fw fa-pencil',
+                label: trans('edit'),
+                displayed: true,
+                action: () => this.showEditSubjectForm(this.props.subject.content)
+              }
+            ]}
+          />
+        }
         {!isEmpty(this.props.messages)&&
           <ul className="posts">
             {this.props.messages.map(message =>
@@ -190,7 +198,7 @@ class SubjectComponent extends Component {
             )}
           </ul>
         }
-        {!this.state.showNewMessageForm &&
+        {/* {!this.state.showNewMessageForm &&
           <div className="answer-comment-container">
             <Button
               label={trans('reply', {}, 'forum')}
@@ -200,14 +208,14 @@ class SubjectComponent extends Component {
               primary={true}
             />
           </div>
-        }
-        {this.state.showNewMessageForm &&
+        } */}
+        {!this.state.showNewSubjectForm && !this.state.showEditSubjectForm &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
             submitLabel={trans('send')}
             submit={(message) => this.createNewMessage(message)}
-            cancel={() => this.setState({showNewMessageForm: false})}
+            // cancel={() => this.setState({showNewMessageForm: false})}
           />
         }
       </section>

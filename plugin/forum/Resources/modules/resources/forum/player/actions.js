@@ -19,6 +19,7 @@ export const actions = {}
 actions.newSubject = () => formActions.resetForm(
   'subjects.form',
   merge({}, SubjectTypes.defaultProps, {meta: {creator: currentUser()}}),
+  // if
   true
 )
 
@@ -34,6 +35,7 @@ actions.fetchSubject = (id) => ({
 
 actions.openSubject = (id) => (dispatch, getState) => {
   const subject = select.subject(getState())
+  // showform state 
   if (subject.id !== id) {
     dispatch(actions.loadSubject({id: id}))
     dispatch(actions.fetchSubject(id))
