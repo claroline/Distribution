@@ -10,8 +10,8 @@ import {currentUser} from '#/main/core/user/current'
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {select as formSelect} from '#/main/core/data/form/selectors'
 import {actions as formActions} from '#/main/core/data/form/actions'
-import {select} from '#/plugin/forum/resources/forum/selectors'
 
+import {select} from '#/plugin/forum/resources/forum/selectors'
 import {constants} from '#/plugin/forum/resources/forum/constants'
 
 const SubjectFormWrapper = (props) =>
@@ -64,7 +64,6 @@ SubjectFormWrapper.propTypes = {
 
 const SubjectFormComponent = (props) =>
   <div>
-    <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
     <SubjectFormWrapper
       user={currentUser()}
       callback={() => props.saveForm(props.forumId)}

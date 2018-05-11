@@ -6,13 +6,15 @@ import {
 } from '#/plugin/forum/resources/forum/player/actions'
 
 
-
 const reducer = combineReducers({
-  form: makeFormReducer('subjects.form'),
-  list: makeListReducer('subjects.list', {
-    sortBy: [{property: 'meta.sticky', direction: -1}]
+  form: makeFormReducer('subjects.form', {
+    showSubjectForm: false
+  }, {
+    showSubjectForm: makeReducer(false, {})
   }),
-  // sortBy:
+  list: makeListReducer('subjects.list', {
+    // sortBy: [{property: 'meta.sticky', direction: -1}]
+  }),
   current: makeReducer({}, {
     [SUBJECT_LOAD]: (state, action) => action.subject
   }),

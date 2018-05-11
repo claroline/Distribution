@@ -23,6 +23,21 @@ actions.newSubject = () => formActions.resetForm(
   true
 )
 
+// actions.open = (formName, id = null, defaultValue) => (dispatch) => {
+//   if (id) {
+//     dispatch({
+//       [API_REQUEST]: {
+//         url: ['apiv2_role_get', {id}],
+//         success: (response, dispatch) => {
+//           dispatch(formActions.resetForm(formName, response, false))
+//         }
+//       }
+//     })
+//   } else {
+//     dispatch(formActions.resetForm(formName, defaultValue, true))
+//   }
+// }
+
 actions.loadSubject = makeActionCreator(SUBJECT_LOAD, 'subject')
 actions.fetchSubject = (id) => ({
   [API_REQUEST]: {
@@ -35,7 +50,7 @@ actions.fetchSubject = (id) => ({
 
 actions.openSubject = (id) => (dispatch, getState) => {
   const subject = select.subject(getState())
-  // showform state 
+  // showform state
   if (subject.id !== id) {
     dispatch(actions.loadSubject({id: id}))
     dispatch(actions.fetchSubject(id))

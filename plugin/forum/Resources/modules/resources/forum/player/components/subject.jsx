@@ -12,6 +12,7 @@ import {actions as modalActions} from '#/main/core/layout/modal/actions'
 import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
+import {select as formSelect} from '#/main/core/data/form/selectors'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
@@ -28,10 +29,7 @@ class SubjectComponent extends Component {
 
     this.state = {
       showMessageForm: false,
-      showNewCommentForm: null,
-      //
-      showSubjectForm: false
-
+      showNewCommentForm: null
     }
   }
 
@@ -47,7 +45,7 @@ class SubjectComponent extends Component {
     this.setState({showNewMessageForm: false})
   }
 
-  showEditSubjectForm(message) {
+  showSubjectForm(message) {
 
   }
 
@@ -93,24 +91,26 @@ class SubjectComponent extends Component {
               primary={true}
             />
           </div>
-          {!this.state.showNewSubjectForm &&
-            <div>
-              <h2>{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h2>
-              {!isEmpty(this.props.subject.tags)&&
-                <div className="tag">
-                  {this.props.subject.tags.map(tag =>
-                    <span key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</span>
-                  )}
-                </div>
-              }
-              {console.log(this.props.subject)}
-            </div>
-          }
+          <div>
+            {!this.props.subjectForm.showSubjectForm &&
+              <h3 className="h2">{this.props.subject.title}<small> {get(this.props.subject, 'meta.messages') || 0} réponse(s)</small></h3>
+            }
+            {this.props.subjectForm.showSubjectForm &&
+              <h3 className="h2">{trans('new_subject', {}, 'forum')}</h3>
+            }
+            {!isEmpty(this.props.subject.tags)&&
+              <div className="tag">
+                {this.props.subject.tags.map(tag =>
+                  <span key={tag} className="label label-primary"><span className="fa fa-fw fa-tag" />{tag}</span>
+                )}
+              </div>
+            }
+          </div>
         </header>
-        {this.state.showNewSubjectForm &&
+        {this.props.subjectForm.showSubjectForm &&
           <SubjectForm />
         }
-        {!this.state.showNewSubjectForm && !this.state.showEditSubjectForm &&
+        {!this.props.subjectForm.showSubjectForm &&
           <UserMessage
             user={get(this.props.subject, 'meta.creator')}
             date={get(this.props.subject, 'meta.created') || ''}
@@ -121,7 +121,7 @@ class SubjectComponent extends Component {
                 icon: 'fa fa-fw fa-pencil',
                 label: trans('edit'),
                 displayed: true,
-                action: () => this.showEditSubjectForm(this.props.subject.content)
+                action: () => props.showSubjectForm(this.props.subject)
               }
             ]}
           />
@@ -198,18 +198,7 @@ class SubjectComponent extends Component {
             )}
           </ul>
         }
-        {/* {!this.state.showNewMessageForm &&
-          <div className="answer-comment-container">
-            <Button
-              label={trans('reply', {}, 'forum')}
-              type="callback"
-              callback={() => this.setState({showNewMessageForm: true})}
-              className="btn btn-block btn-emphasis"
-              primary={true}
-            />
-          </div>
-        } */}
-        {!this.state.showNewSubjectForm && !this.state.showEditSubjectForm &&
+        {!this.props.subjectForm.showSubjectForm &&
           <UserMessageForm
             user={currentUser()}
             allowHtml={true}
@@ -229,6 +218,7 @@ class SubjectComponent extends Component {
 const Subject = connect(
   state => ({
     subject: select.subject(state),
+    subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
@@ -251,6 +241,9 @@ const Subject = connect(
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
+    },
+    showSubjectForm(subject) {
+      dispatch(actions.showSubjectForm(subject))
     }
   })
 )(SubjectComponent)

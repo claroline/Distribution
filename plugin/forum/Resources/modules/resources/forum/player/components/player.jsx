@@ -23,11 +23,10 @@ const PlayerComponent = (props) =>
         // si il y a un id en param de la fction = en mode édition, sonon on est dans de la création
         onEnter: (params) => {
           if (params.id === ':id') {
-            console.log(params.id)
+            props.newSubject()
           } else {
-            console.log('cestbon')
+            props.newSubject(params.id)
           }
-          props.openSubject()
         }
         // ajouter un fetchsubject
 
