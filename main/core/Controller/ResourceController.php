@@ -56,15 +56,14 @@ class ResourceController
      */
     public function singleAction(Request $request, ResourceNode $resourceNode, $action)
     {
-        // checks action exists for the resourceNode
-        if (!$this->actionsManager->hasAction($resourceNode, $action)) {
+        // retrieves the action
+        $resourceAction = $this->actionsManager->getAction($resourceNode, $action);
+        if (empty($resourceAction)) {
+            // undefined action
             throw new NotFoundHttpException(
                 sprintf('The action % does not exist.', $action)
             );
         }
-
-        // retrieves the action
-        $resourceAction = $this->actionsManager->getAction($resourceNode, $action);
 
         // checks current user rights
         $this->checkPermission($resourceAction->getMask(), $resourceNode, [], true);

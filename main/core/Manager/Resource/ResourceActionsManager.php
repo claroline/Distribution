@@ -54,13 +54,6 @@ class ResourceActionsManager
         $this->om = $om;
     }
 
-    public function hasAction(ResourceNode $resourceNode, $actionName)
-    {
-        // todo : implement
-
-        return true;
-    }
-
     /**
      * @param ResourceNode $resourceNode
      * @param string       $actionName
