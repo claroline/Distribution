@@ -54,7 +54,7 @@ class HomeController extends Controller
      * Displays the desktop home.
      *
      * @EXT\Route("/desktop")
-     * @EXT\Template("ClarolineCoreBundle:Tool:home.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool:home.html.twig")
      *
      * @return array
      */
@@ -63,7 +63,7 @@ class HomeController extends Controller
         return [
             'editable' => true,
             'context' => [
-                'type' => Widget::CONTEXT_DESKTOP
+                'type' => Widget::CONTEXT_DESKTOP,
             ],
             'tabs' => [],
             'widgets' => [
@@ -76,9 +76,9 @@ class HomeController extends Controller
                         'availableDisplays' => ['tiles'],
                         'filterable' => false,
                         'sortable' => false,
-                        'paginated' => false
-                    ]
-                ]
+                        'paginated' => false,
+                    ],
+                ],
             ],
         ];
     }
@@ -87,7 +87,7 @@ class HomeController extends Controller
      * Displays the workspace home.
      *
      * @EXT\Route("/workspace/{workspace}")
-     * @EXT\Template("ClarolineCoreBundle:Tool:home.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:tool:home.html.twig")
      *
      * @param Workspace $workspace
      *
@@ -108,7 +108,7 @@ class HomeController extends Controller
             'editable' => $this->authorization->isGranted(['home', 'edit'], $workspace),
             'context' => [
                 'type' => Widget::CONTEXT_WORKSPACE,
-                'data' => $this->serializer->serialize($workspace)
+                'data' => $this->serializer->serialize($workspace),
             ],
             'tabs' => [],
             'widgets' => [
@@ -121,9 +121,9 @@ class HomeController extends Controller
                         'availableDisplays' => ['tiles'],
                         'filterable' => false,
                         'sortable' => false,
-                        'paginated' => false
-                    ]
-                ]
+                        'paginated' => false,
+                    ],
+                ],
             ],
         ];
     }
