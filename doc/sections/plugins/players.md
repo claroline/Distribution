@@ -102,7 +102,7 @@ resource breadcrumbs.
 {% set layout = "ClarolineCoreBundle:Workspace:layout.html.twig" %}
 
 {% if isDesktop() %}
-    {% set layout = "ClarolineCoreBundle:Desktop:layout.html.twig" %}
+    {% set layout = "ClarolineCoreBundle:desktop:layout.html.twig" %}
 {% endif %}
 
 {% extends layout %}
