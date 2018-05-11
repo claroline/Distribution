@@ -31,6 +31,10 @@ use Symfony\Component\Security\Http\Firewall\ListenerInterface;
  * This is the API Authentication class. It supports Cookies, HTTP, Anonymous & OAUTH authentication.
  *
  * @DI\Service("claroline.core_bundle.library.security.authentication.claroline_api_listener")
+ *
+ * @deprecated
+ *
+ * @todo create a custom authenticator for each method (HTTP, OAuth, Cookie)
  */
 class ClarolineApiListener implements ListenerInterface
 {
@@ -90,8 +94,6 @@ class ClarolineApiListener implements ListenerInterface
      */
     public function handle(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
-
         if (null === $oauthToken = $this->serverService->getBearerToken($event->getRequest(), true)) {
             if ($this->tryCookieAuth($event)) {
                 return;

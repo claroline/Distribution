@@ -19,10 +19,10 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Http\Firewall\AnonymousAuthenticationListener as Listener;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 
-/*
- * Populates the anonymous token with a dedicated role.
+/**
+ * AnonymousAuthenticationListener automatically adds a Token if none is already present.
  *
- * This listener is not directly defined as a service as it only serves as a
+ * NB. This listener is not directly defined as a service as it only serves as a
  * replacement class for the Symfony original one (see app/config.yml).
  */
 class AnonymousAuthenticationListener implements ListenerInterface
@@ -44,13 +44,22 @@ class AnonymousAuthenticationListener implements ListenerInterface
         $this->logger = $logger;
     }
 
+    /**
+     * Authenticates anonymous with correct roles.
+     *
+     * @param GetResponseEvent $event
+     */
     public function handle(GetResponseEvent $event)
     {
         if (null !== $this->tokenStorage->getToken()) {
+            // user is already authenticated, there is nothing to do.
             return;
         }
 
-        $this->tokenStorage->setToken(new AnonymousToken($this->secret, 'anon.', ['ROLE_ANONYMOUS']));
+        // creates an anonymous token with a dedicated role.
+        $this->tokenStorage->setToken(
+            new AnonymousToken($this->secret, 'anon.', ['ROLE_ANONYMOUS'])
+        );
 
         if (null !== $this->logger) {
             $this->logger->info(sprintf('Populated SecurityContext with an anonymous Token'));

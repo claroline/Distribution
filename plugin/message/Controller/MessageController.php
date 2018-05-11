@@ -704,4 +704,73 @@ class MessageController
 
         throw new AccessDeniedException();
     }
+
+    /**
+     * @EXT\Route(
+     *     "/users/usernames",
+     *     name="claro_usernames_from_users",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter(
+     *     "users",
+     *      class="ClarolineCoreBundle:User",
+     *      options={"multipleIds" = true, "name" = "userIds"}
+     * )
+     */
+    public function retrieveUsernamesFromUsersAction(array $users)
+    {
+        $usernames = '';
+
+        foreach ($users as $user) {
+            $usernames .= $user->getUsername().';';
+        }
+
+        return new Response($usernames, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/groups/names",
+     *     name="claro_names_from_groups",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter(
+     *     "groups",
+     *      class="ClarolineCoreBundle:Group",
+     *      options={"multipleIds" = true, "name" = "groupIds"}
+     * )
+     */
+    public function retrieveNamesFromGroupsAction(array $groups)
+    {
+        $names = '';
+
+        foreach ($groups as $group) {
+            $names .= '{'.$group->getName().'};';
+        }
+
+        return new Response($names, 200);
+    }
+
+    /**
+     * @EXT\Route(
+     *     "/workspaces/names",
+     *     name="claro_names_from_workspaces",
+     *     options = {"expose"=true}
+     * )
+     * @EXT\ParamConverter(
+     *     "workspaces",
+     *      class="ClarolineCoreBundle:Workspace\Workspace",
+     *      options={"multipleIds" = true, "name" = "workspaceIds"}
+     * )
+     */
+    public function retrieveNamesFromWorkspacesAction(array $workspaces)
+    {
+        $names = '';
+
+        foreach ($workspaces as $workspace) {
+            $names .= '['.$workspace->getCode().'];';
+        }
+
+        return new Response($names, 200);
+    }
 }

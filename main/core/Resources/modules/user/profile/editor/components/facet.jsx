@@ -8,39 +8,41 @@ import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 
 import {ProfileFacet as ProfileFacetTypes} from '#/main/core/user/profile/prop-types'
 import {select} from '#/main/core/user/profile/selectors'
-import {getFormDefaultSection} from '#/main/core/user/profile/utils'
+import {getFormDefaultSection, formatFormSections} from '#/main/core/user/profile/utils'
 
 // todo manage differences between main / default / plugin facets
 
 const ProfileFacetComponent = props => {
-  const sections = cloneDeep(props.facet.sections)
+  const sections = formatFormSections(cloneDeep(props.facet.sections), props.originalUser, props.parameters)
+
   if (props.facet.meta.main) {
     sections.unshift(getFormDefaultSection(props.user))
   }
 
   return (
-    <div className="profile-facet">
-      <h2>{props.facet.title}</h2>
-
-      <FormContainer
-        name="user"
-        sections={sections}
-      />
-    </div>
+    <FormContainer
+      name="user"
+      title={props.facet.title}
+      sections={sections}
+    />
   )
 }
 
 ProfileFacetComponent.propTypes = {
   user: T.object.isRequired,
+  originalUser: T.object.isRequired,
   facet: T.shape(
     ProfileFacetTypes.propTypes
-  ).isRequired
+  ).isRequired,
+  parameters: T.object.isRequired
 }
 
 const ProfileFacet = connect(
   state => ({
     user: formSelect.data(formSelect.form(state, 'user')),
-    facet: select.currentFacet(state)
+    originalUser: formSelect.originalData(formSelect.form(state, 'user')),
+    facet: select.currentFacet(state),
+    parameters: select.parameters(state)
   })
 )(ProfileFacetComponent)
 
