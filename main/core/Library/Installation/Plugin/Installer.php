@@ -30,10 +30,20 @@ class Installer
 {
     use LoggableTrait;
 
+    /** @var Validator */
     private $validator;
+
+    /** @var Recorder */
     private $recorder;
+
+    /** @var InstallationManager */
     private $baseInstaller;
+
+    /** @var ObjectManager */
     private $om;
+
+    /** @var TranslatorInterface */
+    private $translator;
 
     /** @var VersionManager */
     private $versionManager;
@@ -42,11 +52,7 @@ class Installer
     private $pluginManager;
 
     /**
-     * Constructor.
-     *
-     * @param Validator           $validator
-     * @param Recorder            $recorder
-     * @param InstallationManager $installer
+     * Installer constructor.
      *
      * @DI\InjectParams({
      *     "validator"     = @DI\Inject("claroline.plugin.validator"),
@@ -57,6 +63,14 @@ class Installer
      *     "translator"    = @DI\Inject("translator"),
      *     "versionManager" = @DI\Inject("claroline.manager.version_manager")
      * })
+     *
+     * @param Validator           $validator
+     * @param Recorder            $recorder
+     * @param InstallationManager $installer
+     * @param ObjectManager       $om
+     * @param PluginManager       $pluginManager
+     * @param TranslatorInterface $translator
+     * @param VersionManager      $versionManager
      */
     public function __construct(
         Validator $validator,
@@ -149,16 +163,19 @@ class Installer
      */
     public function update(PluginBundleInterface $plugin, $currentVersion, $targetVersion)
     {
-        var_dump($plugin->getName());
-        $this->versionManager->setLogger($this->logger);
-        $version = $this->versionManager->register($plugin);
         $this->checkInstallationStatus($plugin, true);
+
         $this->validator->activeUpdateMode();
         $this->validatePlugin($plugin);
         $this->validator->deactivateUpdateMode();
+
         $this->log('Updating plugin configuration...');
         $this->baseInstaller->update($plugin, $currentVersion, $targetVersion);
         $this->recorder->update($plugin, $this->validator->getPluginConfiguration());
+
+        // updates plugin version
+        $this->versionManager->setLogger($this->logger);
+        $version = $this->versionManager->register($plugin);
         $this->versionManager->execute($version);
     }
 

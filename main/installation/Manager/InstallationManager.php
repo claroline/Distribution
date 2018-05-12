@@ -103,8 +103,6 @@ class InstallationManager
 
     public function update(InstallableInterface $bundle, $currentVersion, $targetVersion)
     {
-        var_dump(get_class($bundle));
-
         if (strpos($currentVersion, 'dev') === 0) {
             $currentVersion = '9999999-'.$currentVersion;
         }
