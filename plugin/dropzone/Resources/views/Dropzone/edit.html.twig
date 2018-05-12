@@ -2,7 +2,7 @@
 {% block resourceBreadcrumb %}
     <li class="active"><span class=" fa fa-pencil-square-o"></span> {{ dropzone.resourceNode.name }}</li>
 {% endblock %}
-
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 {% block dropzone_content %}
     <div class="container container-dropzone">
 
@@ -11,7 +11,7 @@
             <div class="btn-group pull-right">
 
 
-                {% render controller('IcapNotificationBundle:FollowerResource:renderForm', {'resourceId': dropzone.resourceNode.id, 'resourceClass': dropzone.resourceNode.class}) %}
+                {{ render controller('IcapNotificationBundle:FollowerResource:renderForm', {'resourceId': dropzone.resourceNode.id, 'resourceClass': dropzone.resourceNode.class}) }}
                 <a class="btn btn-default " href="{{ path('icap_dropzone_drops', {'resourceId': dropzone.id}) }}"><span
                             class="fa fa-list"></span> {{ 'See copies'|trans({}, 'icap_dropzone') }}</a>
             </div>

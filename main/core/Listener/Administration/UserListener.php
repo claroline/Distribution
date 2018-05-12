@@ -50,8 +50,8 @@ class UserListener
         TwigEngine $templating,
         FinderProvider $finder,
         ParametersSerializer $parametersSerializer,
-        ProfileSerializer $profileSerializer)
-    {
+        ProfileSerializer $profileSerializer
+    ) {
         $this->templating = $templating;
         $this->finder = $finder;
         $this->parametersSerializer = $parametersSerializer;

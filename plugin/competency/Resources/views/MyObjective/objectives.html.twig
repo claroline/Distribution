@@ -1,11 +1,11 @@
-{% extends 'ClarolineCoreBundle:Desktop:layout.html.twig' %}
+{% extends 'ClarolineCoreBundle:desktop:layout.html.twig' %}
 
 {% trans_default_domain 'competency' %}
 
 {% block title %}
     {{ parent() ~ ' - ' ~ 'my-learning-objectives'|trans({}, 'tools')|striptags|raw }}
 {% endblock %}
-
+{% import 'ClarolineCoreBundle::macros.html.twig' as macros %}
 {% block breadcrumb %}
     {{
         macros.desktopBreadcrumbs([

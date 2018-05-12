@@ -117,7 +117,7 @@ class FileListener implements ContainerAwareInterface
      */
     public function onCreate(CreateResourceEvent $event)
     {
-        $request = $this->container->get('request');
+        $request = $this->container->get('request_stack')->getMasterRequest();
         $form = $this->container->get('form.factory')->create(new FileType(true), new File());
         $form->handleRequest($request);
 
@@ -148,7 +148,7 @@ class FileListener implements ContainerAwareInterface
         $form = new FileType(true);
         $form->enableApi();
         $form = $this->container->get('form.factory')->create($form, new File());
-        $form->submit($this->container->get('request'));
+        $form->submit($this->container->get('request_stack')->getMasterRequest());
 
         if ($form->isValid()) {
             $this->handleFileCreation($form, $event);

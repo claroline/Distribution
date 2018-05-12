@@ -35,7 +35,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Validator\ValidatorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @DI\Service("claroline.manager.user_manager")
@@ -97,7 +97,7 @@ class UserManager
      * @param TokenStorageInterface        $tokenStorage
      * @param TransferManager              $transferManager
      * @param TranslatorInterface          $translator
-     * @param ValidatorInterface           $validator
+     * @param TraceableValidator           $validator
      * @param WorkspaceManager             $workspaceManager
      */
     public function __construct(
@@ -1653,6 +1653,11 @@ class UserManager
 
             $this->createUser($user, false, [], null, null, [], false, false);
         }
+
+        $roleAdmin = $this->roleManager->getRoleByName('ROLE_ADMIN');
+        $user->addRole($roleAdmin);
+        $this->objectManager->persist($user);
+        $this->objectManager->flush();
 
         return $user;
     }

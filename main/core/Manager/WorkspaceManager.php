@@ -826,7 +826,7 @@ class WorkspaceManager
         // FIXME : you replace current user credentials by the added one, but why ?
         // there is no reason to do this because it's not always the same user !!!
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
-        $this->container->get('security.context')->setToken($token);
+        $this->container->get('security.token_storage')->setToken($token);
 
         return $user;
     }
@@ -875,7 +875,7 @@ class WorkspaceManager
                         'username' => $workspace[6],
                     ]);
             } else {
-                $user = $this->container->get('security.context')->getToken()->getUser();
+                $user = $this->container->get('security.token_storage')->getToken()->getUser();
             }
 
             if (isset($workspace[7])) {
@@ -1009,14 +1009,14 @@ class WorkspaceManager
                 ->findAllNonPersonalWorkspaces(
                     $orderedBy,
                     $order,
-                    $this->container->get('security.context')->getToken()->getUser()
+                    $this->container->get('security.token_storage')->getToken()->getUser()
                 ) :
             $this->workspaceRepo
                 ->findAllNonPersonalWorkspacesBySearch(
                     $search,
                     $orderedBy,
                     $order,
-                    $this->container->get('security.context')->getToken()->getUser()
+                    $this->container->get('security.token_storage')->getToken()->getUser()
                 );
 
         return $this->pagerFactory->createPagerFromArray($workspaces, $page, $max);
