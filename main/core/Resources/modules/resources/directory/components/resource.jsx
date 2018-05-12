@@ -11,12 +11,13 @@ import {Text as TextTypes} from '#/main/core/resources/text/prop-types'
 
 import {NavLink} from '#/main/core/router'
 
-import {ResourcePageContainer} from '#/main/core/resource/containers/page.jsx'
-import {Player} from '#/main/core/resources/text/player/components/player.jsx'
-import {Editor} from '#/main/core/resources/text/editor/components/editor.jsx'
+import {ResourcePageContainer} from '#/main/core/resource/containers/page'
+import {Player} from '#/main/core/resources/text/player/components/player'
+import {Editor} from '#/main/core/resources/text/editor/components/editor'
 
 const Resource = props =>
   <ResourcePageContainer
+    toolbar="create | edit edit-rights publish unpublish | fullscreen more"
     editor={{
       path: '/edit',
       save: {
@@ -27,12 +28,10 @@ const Resource = props =>
   >
     <RoutedPageContent
       headerSpacer={true}
-      redirect={[
-        {from: '/', exact: true, to: '/play'}
-      ]}
       routes={[
         {
-          path: '/play',
+          path: '/',
+          exact: true,
           component: Player
         }, {
           path: '/edit',
