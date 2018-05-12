@@ -30,7 +30,7 @@ class PluginSerializer
     public function serialize(Plugin $plugin, array $options = [])
     {
         return [
-            'id' => $plugin->getUuid(),
+            'id' => $plugin->getId(),
             'name' => $plugin->getDisplayName(),
             'vendor' => $plugin->getVendorName(),
             'bundle' => $plugin->getBundleName(),

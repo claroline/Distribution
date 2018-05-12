@@ -8,7 +8,7 @@ const CreateAction = new ResourceAction('create', {
   primary: true
 }, (resourceNodes) => ({
   modal: [MODAL_RESOURCE_CREATE, {
-    availableTypes: resourceNodes[0].rights.current.create
+    availableTypes: resourceNodes[0].permissions.create
   }]
 }))
 

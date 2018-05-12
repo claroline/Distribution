@@ -140,6 +140,8 @@ class FileListener implements ContainerAwareInterface
      * @DI\Observe("create_api_file")
      *
      * @param CreateResourceEvent $event
+     *
+     * @todo merge with onCreate
      */
     public function onApiCreate(CreateResourceEvent $event)
     {

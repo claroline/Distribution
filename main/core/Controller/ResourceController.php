@@ -13,7 +13,7 @@ namespace Claroline\CoreBundle\Controller;
 
 use Buzz\Message\Request;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
-use Claroline\CoreBundle\Manager\Resource\ResourceActionsManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
 use Claroline\CoreBundle\Security\PermissionCheckerTrait;
 use JMS\DiExtraBundle\Annotation as DI;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as EXT;
@@ -26,22 +26,22 @@ class ResourceController
 {
     use PermissionCheckerTrait;
 
-    /** @var ResourceActionsManager */
-    private $actionsManager;
+    /** @var ResourceActionManager */
+    private $actionManager;
 
     /**
      * ResourceController constructor.
      *
      * @DI\InjectParams({
-     *     "actionsManager" = @DI\Inject("claroline.manager.resource_actions")
+     *     "actionManager" = @DI\Inject("claroline.manager.resource_action")
      * })
      *
-     * @param ResourceActionsManager $actionsManager
+     * @param ResourceActionManager $actionManager
      */
     public function __construct(
-        ResourceActionsManager $actionsManager)
+        ResourceActionManager $actionManager)
     {
-        $this->actionsManager = $actionsManager;
+        $this->actionManager = $actionManager;
     }
 
     /**
@@ -57,7 +57,7 @@ class ResourceController
     public function singleAction(Request $request, ResourceNode $resourceNode, $action)
     {
         // retrieves the action
-        $resourceAction = $this->actionsManager->getAction($resourceNode, $action);
+        $resourceAction = $this->actionManager->get($resourceNode, $action);
         if (empty($resourceAction)) {
             // undefined action
             throw new NotFoundHttpException(
@@ -66,7 +66,7 @@ class ResourceController
         }
 
         // checks current user rights
-        $this->checkPermission($resourceAction->getMask(), $resourceNode, [], true);
+        //$this->checkPermission($resourceAction->getMask(), $resourceNode, [], true);
 
         // dispatches action event
 

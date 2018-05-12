@@ -13,6 +13,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * @DI\Service("claroline.crud.resource_node")
  * @DI\Tag("claroline.crud")
+ *
+ * @todo manage correct renaming : see $this->resourceManager->rename($resourceNode, $data['name'], true);
+ * @todo correct manage publication see : $this->resourceManager->setPublishedStatus([$resourceNode], $meta['published']);
  */
 class ResourceNodeCrud
 {

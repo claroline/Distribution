@@ -9,6 +9,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Event\Resource\CopyResourceEvent;
 use Claroline\CoreBundle\Event\Resource\DownloadResourceEvent;
 use Claroline\CoreBundle\Event\Resource\PublicationChangeEvent;
+use Claroline\CoreBundle\Event\Resource\ResourceEvaluationEvent;
 
 /**
  * Centralizes events dispatched for resources integration.
@@ -86,6 +87,18 @@ class ResourceLifecycleManager
             static::eventName('publication_change', $resourceNode),
             PublicationChangeEvent::class,
             [$this->getResourceFromNode($resourceNode)]
+        );
+
+        return $event;
+    }
+
+    public function evaluate($resourceUserEvaluation)
+    {
+        /** @var ResourceEvaluationEvent $event */
+        $event = $this->dispatcher->dispatch(
+            'resource_evaluation',
+            ResourceEvaluationEvent::class,
+            [$resourceUserEvaluation]
         );
 
         return $event;

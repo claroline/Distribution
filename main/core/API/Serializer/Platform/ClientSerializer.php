@@ -2,7 +2,6 @@
 
 namespace Claroline\CoreBundle\API\Serializer\Platform;
 
-use Claroline\CoreBundle\Entity\Plugin;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Library\Configuration\PlatformConfigurationHandler;
 use Claroline\CoreBundle\Manager\PluginManager;
@@ -36,16 +35,20 @@ class ClientSerializer
     /** @var PluginManager */
     private $pluginManager;
 
+    /** @var PluginSerializer */
+    private $pluginSerializer;
+
     /**
      * ClientSerializer constructor.
      *
      * @DI\InjectParams({
-     *     "env"            = @DI\Inject("%kernel.environment%"),
-     *     "tokenStorage"   = @DI\Inject("security.token_storage"),
-     *     "requestStack"   = @DI\Inject("request_stack"),
-     *     "config"         = @DI\Inject("claroline.config.platform_config_handler"),
-     *     "versionManager" = @DI\Inject("claroline.manager.version_manager"),
-     *     "pluginManager"  = @DI\Inject("claroline.manager.plugin_manager")
+     *     "env"              = @DI\Inject("%kernel.environment%"),
+     *     "tokenStorage"     = @DI\Inject("security.token_storage"),
+     *     "requestStack"     = @DI\Inject("request_stack"),
+     *     "config"           = @DI\Inject("claroline.config.platform_config_handler"),
+     *     "versionManager"   = @DI\Inject("claroline.manager.version_manager"),
+     *     "pluginManager"    = @DI\Inject("claroline.manager.plugin_manager"),
+     *     "pluginSerializer" = @DI\Inject("claroline.serializer.plugin")
      * })
      *
      * @param string                       $env,
@@ -54,6 +57,7 @@ class ClientSerializer
      * @param PlatformConfigurationHandler $config
      * @param VersionManager               $versionManager
      * @param PluginManager                $pluginManager
+     * @param PluginSerializer             $pluginSerializer
      */
     public function __construct(
         $env,
@@ -61,7 +65,8 @@ class ClientSerializer
         RequestStack $requestStack,
         PlatformConfigurationHandler $config,
         VersionManager $versionManager,
-        PluginManager $pluginManager
+        PluginManager $pluginManager,
+        PluginSerializer $pluginSerializer
     ) {
         $this->env = $env;
         $this->tokenStorage = $tokenStorage;
@@ -69,6 +74,7 @@ class ClientSerializer
         $this->config = $config;
         $this->versionManager = $versionManager;
         $this->pluginManager = $pluginManager;
+        $this->pluginSerializer = $pluginManager;
     }
 
     /**
@@ -99,7 +105,7 @@ class ClientSerializer
             'version' => $this->versionManager->getDistributionVersion(),
             'environment' => $this->env,
             'server' => [
-                'protocol' => $request->isSecure() || $this->config->getParameter('theme') ? 'https' : 'http',
+                'protocol' => $request->isSecure() || $this->config->getParameter('ssl_enabled') ? 'https' : 'http',
                 'host' => $this->config->getParameter('domain_name') ? $this->config->getParameter('domain_name') : $request->getHost(),
             ],
             'theme' => [
@@ -112,9 +118,7 @@ class ClientSerializer
             'openGraph' => [
                 'enabled' => $this->config->getParameter('enable_opengraph'),
             ],
-            'plugins' => array_map(function (Plugin $plugin) {
-                return;
-            }, $this->pluginManager->getEnabled()),
+            'plugins' => $this->pluginManager->getEnabled(true),
         ];
     }
 }

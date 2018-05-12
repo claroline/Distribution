@@ -29,7 +29,7 @@ use Claroline\CoreBundle\Entity\Widget\Widget;
 use Claroline\CoreBundle\Library\PluginBundleInterface;
 use Claroline\CoreBundle\Manager\IconManager;
 use Claroline\CoreBundle\Manager\IconSetManager;
-use Claroline\CoreBundle\Manager\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\ToolManager;
 use Claroline\CoreBundle\Manager\ToolMaskDecoderManager;
 use JMS\DiExtraBundle\Annotation as DI;

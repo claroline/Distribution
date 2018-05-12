@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Claroline\CoreBundle\Manager;
+namespace Claroline\CoreBundle\Manager\Resource;
 
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\BundleRecorder\Log\LoggableTrait;
@@ -19,7 +19,6 @@ use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Repository\ResourceMaskDecoderRepository;
 use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
-use Psr\Log\LoggerInterface;
 
 /**
  * @DI\Service("claroline.manager.mask_manager")
@@ -28,6 +27,11 @@ class MaskManager
 {
     use LoggableTrait;
 
+    /**
+     * @var array
+     *
+     * @deprecated this action are now managed like all others
+     */
     private static $defaultActions = ['open', 'copy', 'export', 'delete', 'edit', 'administrate'];
 
     /** @var ObjectManager */
@@ -55,9 +59,20 @@ class MaskManager
         $this->menuRepo = $om->getRepository('ClarolineCoreBundle:Resource\MenuAction');
     }
 
+    public function checkIntegrity()
+    {
+        $this->log('Checking resource mask decoders integrity...');
+        $ids = $this->maskRepo->findDuplicateMasksIds();
+        $duplicates = count($ids);
+        if ($duplicates > 0) {
+            $this->log("Removing {$duplicates} mask decoder duplicates...");
+            $this->maskRepo->removeMasksByIds($ids);
+        }
+    }
+
     public function restoreIntegrity()
     {
-        throw new \Exception('not implemented yet');
+        throw new \Exception('Not implemented yet.');
     }
 
     public function createDecoder($action, ResourceType $resourceType = null)
@@ -220,34 +235,25 @@ class MaskManager
     }
 
     /**
-     * @param string       $name
-     * @param ResourceType $type
-     *
-     * @return MenuAction
-     */
-    public function getMenuFromNameAndResourceType($name, ResourceType $type)
-    {
-        if ($this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type])) {
-            /** @var MenuAction $action */
-            $action = $this->menuRepo->findOneBy(['name' => $name, 'resourceType' => $type]);
-        } else {
-            /** @var MenuAction $action */
-            $action = $this->menuRepo->findOneBy(['name' => $name]);
-        }
-
-        return $action;
-    }
-
-    /**
      * Adds the default action to a resource type.
      *
      * @param ResourceType $type
+     *
+     * @todo reworks to avoid the use of self::$defaultActions
      */
     public function addDefaultPerms(ResourceType $type)
     {
+        /** @var MaskDecoder[] $decoders */
+        $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
+
+        $actionNames = [];
+        foreach ($decoders as $decoder) {
+            $actionNames[] = $decoder->getName();
+        }
+
         $createdPerms = [];
         // Add only non-existent default actions
-        $defaultActions = array_diff(self::$defaultActions, $this->getMaskDecoderActionNamesForResourceType($type));
+        $defaultActions = array_diff(self::$defaultActions, $actionNames);
 
         foreach ($defaultActions as $i => $action) {
             $maskDecoder = new MaskDecoder();
@@ -289,29 +295,5 @@ class MaskManager
         }
 
         return $actions;
-    }
-
-    public function checkIntegrity()
-    {
-        $this->log('Checking resource mask decoders integrity...');
-        $ids = $this->maskRepo->findDuplicateMasksIds();
-        $duplicates = count($ids);
-        if ($duplicates > 0) {
-            $this->log("Removing {$duplicates} mask decoder duplicates...");
-            $this->maskRepo->removeMasksByIds($ids);
-        }
-    }
-
-    private function getMaskDecoderActionNamesForResourceType(ResourceType $type)
-    {
-        /** @var MaskDecoder[] $decoders */
-        $decoders = $this->maskRepo->findBy(['resourceType' => $type]);
-
-        $actionNames = [];
-        foreach ($decoders as $decoder) {
-            $actionNames[] = $decoder->getName();
-        }
-
-        return $actionNames;
     }
 }

@@ -15,14 +15,15 @@ use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
-use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("claroline.manager.resource_actions")
+ * @DI\Service("claroline.manager.resource_action")
  */
-class ResourceActionsManager
+class ResourceActionManager
 {
     /** @var ObjectManager */
     private $om;
@@ -33,13 +34,16 @@ class ResourceActionsManager
     /** @var RightsManager */
     private $rightsManager;
 
+    /** @var ObjectRepository */
+    private $repository;
+
     /**
      * ResourceMenuManager constructor.
      *
      * @DI\InjectParams({
-     *     "om" = @DI\Inject("claroline.persistence.object_manager"),
-     *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
-     *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager")
+     *     "om"            = @DI\Inject("claroline.persistence.object_manager"),
+     *     "maskManager"   = @DI\Inject("claroline.manager.mask_manager"),
+     *     "rightsManager" = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
      * @param ObjectManager $om
@@ -52,6 +56,10 @@ class ResourceActionsManager
         RightsManager $rightsManager)
     {
         $this->om = $om;
+        $this->maskManager = $maskManager;
+        $this->rightsManager = $rightsManager;
+
+        $this->repository = $this->om->getRepository('ClarolineCoreBundle:Resource\MenuAction');
     }
 
     /**
@@ -60,7 +68,7 @@ class ResourceActionsManager
      *
      * @return MenuAction
      */
-    public function getAction(ResourceNode $resourceNode, $actionName)
+    public function get(ResourceNode $resourceNode, $actionName)
     {
         // todo : implement
     }
@@ -70,7 +78,7 @@ class ResourceActionsManager
      *
      * @return MenuAction[]
      */
-    public function getAvailableActions(ResourceNode $resourceNode)
+    public function all(ResourceNode $resourceNode)
     {
         //ResourceManager::isResourceActionImplemented(ResourceType $resourceType = null, $actionName)
         $actions = $this->getMenus($resourceNode);

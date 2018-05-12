@@ -11,11 +11,12 @@ use Claroline\CoreBundle\API\Serializer\User\UserSerializer;
 use Claroline\CoreBundle\Entity\File\PublicFile;
 use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
+use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
-use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Manager\Resource\ResourceActionsManager;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
@@ -41,8 +42,8 @@ class ResourceNodeSerializer
     /** @var MaskManager */
     private $maskManager;
 
-    /** @var ResourceActionsManager */
-    private $menuManager;
+    /** @var ResourceActionManager */
+    private $actionManager;
 
     /** @var RightsManager */
     private $rightsManager;
@@ -56,17 +57,17 @@ class ResourceNodeSerializer
      *     "fileSerializer"    = @DI\Inject("claroline.serializer.public_file"),
      *     "userSerializer"    = @DI\Inject("claroline.serializer.user"),
      *     "maskManager"       = @DI\Inject("claroline.manager.mask_manager"),
-     *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager"),
-     *     "menuManager"       = @DI\Inject("claroline.manager.resource_actions")
+     *     "actionManager"     = @DI\Inject("claroline.manager.resource_action"),
+     *     "rightsManager"     = @DI\Inject("claroline.manager.rights_manager")
      * })
      *
-     * @param ObjectManager                 $om
-     * @param StrictDispatcher              $eventDispatcher
-     * @param PublicFileSerializer          $fileSerializer
-     * @param UserSerializer                $userSerializer
-     * @param MaskManager                   $maskManager
-     * @param ResourceActionsManager           $menuManager
-     * @param RightsManager                 $rightsManager
+     * @param ObjectManager         $om
+     * @param StrictDispatcher      $eventDispatcher
+     * @param PublicFileSerializer  $fileSerializer
+     * @param UserSerializer        $userSerializer
+     * @param MaskManager           $maskManager
+     * @param ResourceActionManager $actionManager
+     * @param RightsManager         $rightsManager
      */
     public function __construct(
         ObjectManager $om,
@@ -74,7 +75,7 @@ class ResourceNodeSerializer
         PublicFileSerializer $fileSerializer,
         UserSerializer $userSerializer,
         MaskManager $maskManager,
-        ResourceActionsManager $menuManager,
+        ResourceActionManager $actionManager,
         RightsManager $rightsManager
     ) {
         $this->om = $om;
@@ -83,7 +84,7 @@ class ResourceNodeSerializer
         $this->userSerializer = $userSerializer;
         $this->maskManager = $maskManager;
         $this->rightsManager = $rightsManager;
-        $this->menuManager = $menuManager;
+        $this->actionManager = $actionManager;
     }
 
     /**
@@ -108,8 +109,8 @@ class ResourceNodeSerializer
                     'group' => $resourceAction->getGroup(),
                     'bulk' => $resourceAction->isBulk(),
                 ];
-            }, $this->menuManager->getAvailableActions($resourceNode)),
-            'authorizations' => $this->getCurrentPermissions($resourceNode),
+            }, $this->actionManager->all($resourceNode)),
+            'permissions' => $this->getCurrentPermissions($resourceNode),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
@@ -126,9 +127,7 @@ class ResourceNodeSerializer
                 'meta' => $this->serializeMeta($resourceNode),
                 'display' => $this->serializeDisplay($resourceNode),
                 'restrictions' => $this->getRestrictions($resourceNode),
-                'rights' => [ // TODO : remove me
-                    'all' => $this->getRights($resourceNode),
-                ],
+                'rights' => $this->getRights($resourceNode),
             ]);
         }
 
@@ -197,7 +196,7 @@ class ResourceNodeSerializer
     private function serializeMeta(ResourceNode $resourceNode)
     {
         return [
-            'type' => $resourceNode->getResourceType()->getName(), // todo : move outside, will be required in minimal version
+            'type' => $resourceNode->getResourceType()->getName(), // todo : must be available in MINIMAL mode
             'mimeType' => $resourceNode->getMimeType(), // todo : maybe too
             'description' => $resourceNode->getDescription(),
             'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
@@ -257,21 +256,34 @@ class ResourceNodeSerializer
             ];
         }
 
-        return [
-            'permissions' => $serializedRights,
-        ];
+        return $serializedRights;
     }
 
-    public function deserialize(array $data, ResourceNode $resourceNode, array $options = [])
+    public function deserialize(array $data, ResourceNode $resourceNode)
     {
-        // TODO manage correct renaming : see $this->resourceManager->rename($resourceNode, $data['name'], true);
-        // It must be managed in the Crud
         $this->sipe('name', 'setName', $data, $resourceNode);
         $this->sipe('poster', 'setPoster', $data, $resourceNode);
 
         // meta
-        // TODO : correct manage publication see : $this->resourceManager->setPublishedStatus([$resourceNode], $meta['published']);
-        // It must be managed in the Crud
+        if (empty($resourceNode->getResourceType())) {
+            /** @var ResourceType $resourceType */
+            $resourceType = $this->om
+                ->getRepository('ClarolineCoreBundle:Resource\ResourceType')
+                ->findOneBy(['name' => $data['meta']['type']]);
+
+            $resourceNode->setResourceType($resourceType);
+        }
+
+        if (empty($resourceNode->getMimeType())) {
+            if (isset($data['meta']) && !empty($data['meta']['mimeType'])) {
+                $mimeType = $data['meta']['mimeType'];
+            } else {
+                $mimeType = 'custom/'.$resourceNode->getResourceType()->getName();
+            }
+
+            $resourceNode->setMimeType($mimeType);
+        }
+
         $this->sipe('meta.published', 'setPublished', $data, $resourceNode);
         $this->sipe('meta.description', 'setDescription', $data, $resourceNode);
         $this->sipe('meta.portal', 'setPublishedToPortal', $data, $resourceNode);

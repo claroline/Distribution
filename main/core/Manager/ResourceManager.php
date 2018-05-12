@@ -19,6 +19,7 @@ use Claroline\CoreBundle\Entity\Resource\Directory;
 use Claroline\CoreBundle\Entity\Resource\ResourceIcon;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceShortcut;
+use Claroline\CoreBundle\Entity\Resource\ResourceThumbnail;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
@@ -32,6 +33,8 @@ use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\ResourceTypeNotFoundException;
 use Claroline\CoreBundle\Manager\Exception\RightsException;
 use Claroline\CoreBundle\Manager\Exception\WrongClassException;
+use Claroline\CoreBundle\Manager\Resource\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Repository\DirectoryRepository;
 use Claroline\CoreBundle\Repository\ResourceNodeRepository;
 use Claroline\CoreBundle\Repository\ResourceRightsRepository;
@@ -140,25 +143,27 @@ class ResourceManager
         TranslatorInterface $translator,
         PlatformConfigurationHandler $platformConfigHandler
     ) {
-        $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
-        $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
-        $this->resourceRightsRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
-        $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
-        $this->shortcutRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceShortcut');
-        $this->directoryRepo = $om->getRepository('ClarolineCoreBundle:Resource\Directory');
+        $this->om = $om;
+
         $this->roleManager = $roleManager;
         $this->iconManager = $iconManager;
         $this->thumbnailManager = $thumbnailManager;
         $this->rightsManager = $rightsManager;
         $this->maskManager = $maskManager;
         $this->dispatcher = $dispatcher;
-        $this->om = $om;
         $this->ut = $ut;
         $this->secut = $secut;
         $this->container = $container;
         $this->translator = $translator;
         $this->platformConfigHandler = $platformConfigHandler;
         $this->filesDirectory = $container->getParameter('claroline.param.files_directory');
+
+        $this->resourceTypeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceType');
+        $this->resourceNodeRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceNode');
+        $this->resourceRightsRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceRights');
+        $this->roleRepo = $om->getRepository('ClarolineCoreBundle:Role');
+        $this->shortcutRepo = $om->getRepository('ClarolineCoreBundle:Resource\ResourceShortcut');
+        $this->directoryRepo = $om->getRepository('ClarolineCoreBundle:Resource\Directory');
     }
 
     /**
@@ -197,7 +202,7 @@ class ResourceManager
         $node = new ResourceNode();
         $node->setResourceType($resourceType);
         $node->setPublished($isPublished);
-        $node->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
+        //$node->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
         $mimeType = (null === $resource->getMimeType()) ?
             'custom/'.$resourceType->getName() :
             $resource->getMimeType();
@@ -250,25 +255,6 @@ class ResourceManager
         $node->setPathForCreationLog($parentPath.$node->getName());
         $node->setIcon($icon);
 
-        //if it's an activity, initialize the permissions for its linked resources;
-        /*if ('activity' === $resourceType->getName()) {
-            //care if it's a shortcut
-            if ('Claroline\CoreBundle\Entity\Resource\ResourceShortcut' === $node->getClass()) {
-                $target = $resource->getTarget();
-                $roles = [];
-                $rights = $node->getRights();
-
-                foreach ($rights as $right) {
-                    $roles[] = $right->getRole();
-                }
-
-                $toInit = $this->getResourceFromNode($target);
-                $this->container->get('claroline.manager.activity_manager')->addPermissionsToResource($toInit, $roles);
-            } else {
-                $this->container->get('claroline.manager.activity_manager')->initializePermissions($resource);
-            }
-        }*/
-
         $usersToNotify = $workspace && $workspace->getId() ?
             $this->container->get('claroline.manager.user_manager')->getUsersByWorkspaces([$workspace], null, null, false) :
             [];
@@ -286,9 +272,9 @@ class ResourceManager
      * If the name of the resource already exists here, ~*indice* will be appended
      * to its name.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $parent
-     * @param bool                                               $isCopy
+     * @param ResourceNode $node
+     * @param ResourceNode $parent
+     * @param bool         $isCopy
      *
      * @return string
      */
@@ -371,6 +357,8 @@ class ResourceManager
      * @param \Claroline\CoreBundle\Entity\Resource\ResourceShortcut $shortcut
      *
      * @return \Claroline\CoreBundle\Entity\Resource\ResourceShortcut
+     *
+     * @deprecated
      */
     public function makeShortcut(ResourceNode $target, ResourceNode $parent, User $creator, ResourceShortcut $shortcut)
     {
@@ -872,11 +860,14 @@ class ResourceManager
      * Convert a resource into an array (mainly used to be serialized and sent to the manager.js as
      * a json response).
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode                   $node
-     * @param \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $toke
-     * @param bool                                                                 $new: set the 'new' flag to display warning in the resource manager
+     * @param ResourceNode   $node
+     * @param TokenInterface $token
+     * @param bool           $new   - set the 'new' flag to display warning in the resource manager
      *
      * @todo check "new" from log
+     * @todo remove me
+     *
+     * @deprecated
      *
      * @return array
      */
@@ -895,8 +886,8 @@ class ResourceManager
         $resourceArray['published'] = $node->isPublished();
         $resourceArray['deletable'] = $node->isDeletable();
         $resourceArray['index_dir'] = $node->getIndex();
-        $resourceArray['creation_date'] = $node->getCreationDate()->format($this->translator->trans('date_range.format.with_hours', [], 'platform'));
-        $resourceArray['modification_date'] = $node->getModificationDate()->format($this->translator->trans('date_range.format.with_hours', [], 'platform'));
+        $resourceArray['creation_date'] = $node->getCreationDate()->format('YYYY-MM-DD\TH:m:s');
+        $resourceArray['modification_date'] = $node->getModificationDate()->format('YYYY-MM-DD\TH:m:s');
         $resourceArray['new'] = $new;
 
         $isAdmin = false;
@@ -1177,9 +1168,9 @@ class ResourceManager
     /**
      * Returns every children of every resource (includes the startnode).
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode[] $nodes
+     * @param ResourceNode[] $nodes
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceNode[]
+     * @return ResourceNode[]
      *
      * @throws \Exception
      */
@@ -1236,6 +1227,8 @@ class ResourceManager
      * @param bool         $noFlush
      *
      * @return ResourceNode
+     *
+     * @deprecated
      */
     public function rename(ResourceNode $node, $name, $noFlush = false)
     {
@@ -1259,6 +1252,8 @@ class ResourceManager
      * @param \Symfony\Component\HttpFoundation\File\File        $file
      *
      * @return \Claroline\CoreBundle\Entity\Resource\ResourceIcon
+     *
+     * @deprecated
      */
     public function changeIcon(ResourceNode $node, File $file)
     {
@@ -1274,10 +1269,12 @@ class ResourceManager
     /**
      * Changes a node thumbnail.
      *
-     * @param \Claroline\CoreBundle\Entity\Resource\ResourceNode $node
-     * @param \Symfony\Component\HttpFoundation\File\File        $file
+     * @param ResourceNode $node
+     * @param File        $file
      *
-     * @return \Claroline\CoreBundle\Entity\Resource\ResourceThumbnail
+     * @return ResourceThumbnail
+     *
+     * @deprecated
      */
     public function changeThumbnail(ResourceNode $node, File $file)
     {
@@ -1378,6 +1375,7 @@ class ResourceManager
      * @param string[]     $roles
      * @param mixed        $user
      * @param bool         $withLastOpenDate
+     * @param bool         $canAdministrate
      *
      * @return array
      */
@@ -1442,6 +1440,8 @@ class ResourceManager
      * @param string[] | RoleInterface[] $userRoles
      *
      * @return array
+     *
+     * @deprecated use finder instead
      */
     public function getByCriteria(array $criteria, array $userRoles = null)
     {
@@ -1482,6 +1482,8 @@ class ResourceManager
      * @param Workspace $workspace
      *
      * @return ResourceNode[]
+     *
+     * @deprecated use finder instead
      */
     public function getByWorkspace(Workspace $workspace)
     {
@@ -1513,6 +1515,8 @@ class ResourceManager
      * @param bool  $orderStrict, keep the same order as ids array
      *
      * @return ResourceNode[]
+     *
+     * @deprecated use finder instead
      */
     public function getByIds(array $ids, $orderStrict = false)
     {
@@ -1529,6 +1533,8 @@ class ResourceManager
      * @param int[] $ids
      *
      * @return ResourceNode[]
+     *
+     * @deprecated I think...
      */
     public function getByIdsLevelOrder(array $ids)
     {
@@ -1544,7 +1550,10 @@ class ResourceManager
      */
     public function getById($id)
     {
-        return $this->resourceNodeRepo->findOneBy(['id' => $id]);
+        /** @var ResourceNode $resourceNode */
+        $resourceNode = $this->resourceNodeRepo->findOneBy(['id' => $id]);;
+
+        return $resourceNode;
     }
 
     /**
@@ -1556,7 +1565,10 @@ class ResourceManager
      */
     public function getResourceFromNode(ResourceNode $node)
     {
-        return $this->om->getRepository($node->getClass())->findOneByResourceNode($node);
+        /** @var AbstractResource $resource */
+        $resource = $this->om->getRepository($node->getClass())->findOneBy(['resourceNode' => $node]);
+
+        return $resource;
     }
 
     /**
@@ -1597,7 +1609,6 @@ class ResourceManager
         $newNode->setLicense($node->getLicense());
         $newNode->setAuthor($node->getAuthor());
         $newNode->setIndex($index);
-        $newNode->setGuid($this->container->get('claroline.utilities.misc')->generateGuid());
 
         if ($withRights) {
             //if everything happens inside the same workspace and no specific rights have been given,

@@ -24,10 +24,10 @@ use Claroline\CoreBundle\Manager\Exception\ResourceMoveException;
 use Claroline\CoreBundle\Manager\Exception\ResourceNotFoundException;
 use Claroline\CoreBundle\Manager\FileManager;
 use Claroline\CoreBundle\Manager\LogManager;
-use Claroline\CoreBundle\Manager\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceNodeManager;
 use Claroline\CoreBundle\Manager\ResourceManager;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use Claroline\CoreBundle\Manager\RoleManager;
 use Claroline\CoreBundle\Manager\TransferManager;
 use Claroline\CoreBundle\Manager\UserManager;
@@ -49,6 +49,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
 
+/**
+ * Class ResourceOldController
+ * @package Claroline\CoreBundle\Controller
+ *
+ * @todo restaure used before remove (eg. the action about lock / unlock)
+ */
 class ResourceOldController extends Controller
 {
     private $tokenStorage;

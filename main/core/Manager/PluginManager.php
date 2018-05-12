@@ -48,7 +48,8 @@ class PluginManager
         $this->pluginRepo = $om->getRepository('ClarolineCoreBundle:Plugin');
         $this->iniFile = $this->kernelRootDir.'/config/bundles.ini';
         $this->kernel = $kernel;
-        $this->loadedBundles = parse_ini_file($this->iniFile);
+
+        $this->loadedBundles = IniParser::parseFile($this->iniFile);
         BundleManager::initialize($kernel, $this->iniFile);
         $this->bundleManager = BundleManager::getInstance();
     }
@@ -100,12 +101,13 @@ class PluginManager
 
     public function getPluginsData()
     {
+        /** @var Plugin[] $plugins */
         $plugins = $this->pluginRepo->findBy([], ['vendorName' => 'ASC', 'bundleName' => 'ASC']);
-        $datas = [];
+        $data = [];
 
         foreach ($plugins as $plugin) {
             if ($this->getBundle($plugin) && !$this->getBundle($plugin)->isHidden()) {
-                $datas[] = [
+                $data[] = [
                     'id' => $plugin->getId(),
                     'name' => $plugin->getVendorName().$plugin->getBundleName(),
                     'vendor' => $plugin->getVendorName(),
@@ -123,7 +125,7 @@ class PluginManager
             }
         }
 
-        return $datas;
+        return $data;
     }
 
     public function enable(Plugin $plugin)
@@ -163,6 +165,8 @@ class PluginManager
                 if ($shortName) {
                     $parts = explode('\\', $bundle);
                     $enabledBundles[] = $parts[2];
+                } else {
+                    $enabledBundles[] = $bundle;
                 }
             }
         }

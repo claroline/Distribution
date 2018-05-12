@@ -489,27 +489,28 @@ class WorkspaceController extends Controller
         }
 
         $currentRoles = $this->utils->getRoles($this->tokenStorage->getToken());
+
         //do I need to display every tools.
         $hasManagerAccess = false;
-        $managerRole = $this->roleManager->getManagerRole($workspace);
-
-        foreach ($currentRoles as $role) {
-            //We check if $managerRole exists as an error proof condition.
-            //If something went wrong and it doesn't exists anymore,
-            //restorations tools should be used at this point
-            if ($managerRole && $managerRole->getName() === $role) {
-                $hasManagerAccess = true;
-            }
-        }
-
         if ($this->authorization->isGranted('ROLE_ADMIN')) {
             $hasManagerAccess = true;
+        } else {
+            $managerRole = $this->roleManager->getManagerRole($workspace);
+
+            foreach ($currentRoles as $role) {
+                //We check if $managerRole exists as an error proof condition.
+                //If something went wrong and it doesn't exists anymore,
+                //restorations tools should be used at this point
+                if ($managerRole && $managerRole->getName() === $role) {
+                    $hasManagerAccess = true;
+                }
+            }
         }
 
         if ($workspace->isModel()) {
             $orderedTools = array_filter($this->toolManager->getOrderedToolsByWorkspace($workspace), function ($orderedTool) {
                 return in_array($orderedTool->getTool()->getName(), ['home', 'resource_manager', 'users', 'parameters']);
-            });
+            }); // todo add a config in tools to avoid this
             $hideToolsMenu = false;
         } else {
             //if manager or admin, show every tools

@@ -4,8 +4,8 @@ namespace Claroline\CoreBundle\API\Serializer\Resource;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\CoreBundle\Entity\Resource\ResourceRights;
-use Claroline\CoreBundle\Manager\MaskManager;
-use Claroline\CoreBundle\Manager\RightsManager;
+use Claroline\CoreBundle\Manager\Resource\MaskManager;
+use Claroline\CoreBundle\Manager\Resource\RightsManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**

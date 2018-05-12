@@ -267,14 +267,6 @@ class ResourceNode
     protected $active = true;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="Claroline\CoreBundle\Entity\Facet\FieldFacet",
-     *     mappedBy="resourceNode"
-     * )
-     */
-    protected $fields;
-
-    /**
      * @ORM\Column(type="boolean", nullable=false)
      */
     protected $fullscreen = false;
@@ -814,29 +806,6 @@ class ResourceNode
     public function getGuid()
     {
         return $this->uuid;
-    }
-
-    public function getFields()
-    {
-        return $this->fields->toArray();
-    }
-
-    public function addField(FieldFacet $field)
-    {
-        if (!$this->fields->contains($field)) {
-            $this->fields->add($field);
-        }
-
-        return $this;
-    }
-
-    public function removeField(FieldFacet $field)
-    {
-        if ($this->fields->contains($field)) {
-            $this->fields->removeElement($field);
-        }
-
-        return $this;
     }
 
     public function setFullscreen($fullscreen)

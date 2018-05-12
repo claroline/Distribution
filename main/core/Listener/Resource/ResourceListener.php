@@ -48,11 +48,23 @@ class ResourceListener
     }
 
     /**
+     *
+     */
+    public function onOpen()
+    {
+        // @DI\Observe("resource.open")
+        // @DI\Observe("resource.open.quiz")
+        // @DI\Observe("resource.edit.quiz")
+    }
+
+    /**
      * Handles resources access errors due to restrictions configuration.
      *
      * @DI\Observe("kernel.exception")
      *
      * @param GetResponseForExceptionEvent $event
+     *
+     * @todo : find another way to manage (maybe in the on open / load event)
      */
     public function handleAccessRestrictions(GetResponseForExceptionEvent $event)
     {

@@ -24,6 +24,8 @@ import {
   MoreAction
 } from '#/main/core/layout/page/components/page-actions'
 
+// TODO restore perms
+
 const PublishAction = props =>
   <PageAction
     type="callback"
@@ -63,8 +65,8 @@ FavoriteAction.propTypes = {
 
 const ManageRightsAction = props => {
   // computes simplified version of current rights
-  const rights = getSimpleAccessRule(props.resourceNode.rights.all.permissions, props.resourceNode.workspace)
-  const customRules = hasCustomRules(props.resourceNode.rights.all.permissions, props.resourceNode.workspace)
+  const rights = getSimpleAccessRule(props.resourceNode.rights, props.resourceNode.workspace)
+  const customRules = hasCustomRules(props.resourceNode.rights, props.resourceNode.workspace)
 
   let title, icon
   switch (rights) {
@@ -138,7 +140,7 @@ function getMoreActions(resourceNode, props) {
       icon: 'fa fa-fw fa-cog',
       label: t_res('edit-properties'),
       group: t_res('resource_management'),
-      displayed: resourceNode.rights.current.administrate,
+      //displayed: resourceNode.rights.current.administrate,
       modal: [MODAL_RESOURCE_PROPERTIES, {
         resourceNode: resourceNode,
         save: props.updateNode
@@ -149,7 +151,7 @@ function getMoreActions(resourceNode, props) {
       icon: 'fa fa-fw fa-line-chart',
       label: t_res('open-tracking'),
       group: t_res('resource_management'),
-      displayed: resourceNode.rights.current.administrate,
+      //displayed: resourceNode.rights.current.administrate,
       target: ['claro_resource_action', {
         resourceType: resourceNode.meta.type,
         action: 'open-tracking',
@@ -181,7 +183,7 @@ function getMoreActions(resourceNode, props) {
       icon: 'fa fa-fw fa-download',
       label: trans('download', {}, 'actions'),
       //group: trans('resource_notifications'),
-      displayed: resourceNode.rights.current.export,
+      //displayed: resourceNode.rights.current.export,
       target: ['claro_resource_action', {
         resourceType: resourceNode.meta.type,
         action: 'export',
@@ -264,7 +266,7 @@ const ManagementGroup = props => {
 
   return (
     <PageGroupActions>
-      {(props.editor && !editorOpened && props.resourceNode.rights.current.edit) &&
+      {(props.editor && !editorOpened /*&& props.resourceNode.rights.current.edit*/) &&
         <PageAction
           type="link"
           label={props.editor.label || t_res('edit')}
@@ -274,7 +276,7 @@ const ManagementGroup = props => {
         />
       }
 
-      {(props.editor && editorOpened && props.resourceNode.rights.current.edit) &&
+      {(props.editor && editorOpened /*&& props.resourceNode.rights.current.edit*/) &&
         <PageAction
           type="callback"
           label={t_res('save')}
@@ -285,19 +287,15 @@ const ManagementGroup = props => {
         />
       }
 
-      {props.resourceNode.rights.current.administrate &&
-        <PublishAction
-          resourceNode={props.resourceNode}
-          togglePublication={() => props.togglePublication(props.resourceNode)}
-        />
-      }
+      <PublishAction
+        resourceNode={props.resourceNode}
+        togglePublication={() => props.togglePublication(props.resourceNode)}
+      />
 
-      {props.resourceNode.rights.current.administrate &&
-        <ManageRightsAction
-          resourceNode={props.resourceNode}
-          update={props.updateNode}
-        />
-      }
+      <ManageRightsAction
+        resourceNode={props.resourceNode}
+        update={props.updateNode}
+      />
     </PageGroupActions>
   )
 }
@@ -351,7 +349,7 @@ const ResourcePageActions = props => {
 
   return(
     <PageActions className="resource-actions">
-      {(props.resourceNode.rights.current.edit || props.resourceNode.rights.current.administrate) &&
+      {/*(props.resourceNode.rights.current.edit || props.resourceNode.rights.current.administrate) &&*/ true &&
         <ManagementGroupActions
           resourceNode={props.resourceNode}
           editor={props.editor}

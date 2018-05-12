@@ -47,7 +47,7 @@ const Tool = props =>
             action = {
               label: trans('open', {}, 'actions'),
               type: 'url',
-              target: ['claro_resource_open', {node: resourceNode.id, resourceType: resourceNode.meta.type}]
+              target: ['claro_resource_action', {resourceType: resourceNode.meta.type, id: resourceNode.id, action: 'open'}]
             }
           } else {
             // changes the target of the list to add current directory in URL

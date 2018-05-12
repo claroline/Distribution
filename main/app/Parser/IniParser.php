@@ -62,7 +62,7 @@ class IniParser
     public static function parse($iniString)
     {
         $values = parse_ini_string($iniString);
-        if (empty($values)) {
+        if (!empty($values)) {
             foreach ($values as &$value) {
                 $value = (bool) $value ? true : false;
             }

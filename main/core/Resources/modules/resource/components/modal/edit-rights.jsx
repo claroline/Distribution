@@ -191,9 +191,9 @@ class EditRightsModal extends Component {
     this.state = {
       activeTab: 'simple',
       pendingChanges: false,
-      currentMode: getSimpleAccessRule(this.props.resourceNode.rights.all.permissions, this.props.resourceNode.workspace),
-      customRules: hasCustomRules(this.props.resourceNode.rights.all.permissions, this.props.resourceNode.workspace),
-      rights: Object.assign({}, this.props.resourceNode.rights.all)
+      currentMode: getSimpleAccessRule(this.props.resourceNode.rights, this.props.resourceNode.workspace),
+      customRules: hasCustomRules(this.props.resourceNode.rights, this.props.resourceNode.workspace),
+      rights: Object.assign({}, this.props.resourceNode.rights)
     }
 
     this.toggleSimpleMode = this.toggleSimpleMode.bind(this)
@@ -202,16 +202,14 @@ class EditRightsModal extends Component {
   }
 
   toggleSimpleMode(mode) {
-    const newPermissions = setSimpleAccessRule(this.state.rights.permissions, mode, this.props.resourceNode.workspace)
+    const newPermissions = setSimpleAccessRule(this.state.rights, mode, this.props.resourceNode.workspace)
 
     this.updatePermissions(newPermissions)
   }
 
   updateRolePermissions(roleName, permissions) {
-    const newPermissions = merge({}, this.state.rights.permissions, {
-      [roleName]: merge({}, this.state.rights.permissions[roleName], {
-        permissions: permissions
-      })
+    const newPermissions = merge({}, this.state.rights, {
+      [roleName]: merge({}, this.state.rights[roleName], permissions)
     })
 
     this.updatePermissions(newPermissions)
@@ -222,9 +220,7 @@ class EditRightsModal extends Component {
       pendingChanges: true,
       currentMode: getSimpleAccessRule(permissions, this.props.resourceNode.workspace),
       customRules: hasCustomRules(permissions, this.props.resourceNode.workspace),
-      rights: Object.assign({}, this.state.rights, {
-        permissions: permissions
-      })
+      rights: Object.assign({}, this.state.rights, permissions)
     })
   }
 
@@ -279,7 +275,7 @@ class EditRightsModal extends Component {
 
         {'advanced' === this.state.activeTab &&
           <AdvancedTab
-            permissions={this.state.rights.permissions}
+            permissions={this.state.rights}
             updateRolePermissions={this.updateRolePermissions}
           />
         }
