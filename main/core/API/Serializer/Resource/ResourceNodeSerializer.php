@@ -13,6 +13,7 @@ use Claroline\CoreBundle\Entity\Resource\MenuAction;
 use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\Resource\ResourceType;
 use Claroline\CoreBundle\Event\Resource\DecorateResourceNodeEvent;
+use Claroline\CoreBundle\Library\Normalizer\DateNormalizer;
 use Claroline\CoreBundle\Library\Normalizer\DateRangeNormalizer;
 use Claroline\CoreBundle\Manager\Resource\MaskManager;
 use Claroline\CoreBundle\Manager\Resource\ResourceActionManager;
@@ -110,7 +111,7 @@ class ResourceNodeSerializer
                     'bulk' => $resourceAction->isBulk(),
                 ];
             }, $this->actionManager->all($resourceNode)),
-            'permissions' => $this->getCurrentPermissions($resourceNode),
+            'permissions' => $this->rightsManager->getCurrentPermissionArray($resourceNode),
         ];
 
         if (!in_array(Options::SERIALIZE_MINIMAL, $options)) {
@@ -126,7 +127,7 @@ class ResourceNodeSerializer
                 'poster' => $this->serializePoster($resourceNode),
                 'meta' => $this->serializeMeta($resourceNode),
                 'display' => $this->serializeDisplay($resourceNode),
-                'restrictions' => $this->getRestrictions($resourceNode),
+                'restrictions' => $this->serializeRestrictions($resourceNode),
                 'rights' => $this->getRights($resourceNode),
             ]);
         }
@@ -146,9 +147,11 @@ class ResourceNodeSerializer
      */
     private function decorate(ResourceNode $resourceNode, array $serializedNode, array $options = [])
     {
+        // avoid plugins override the standard node properties
         $unauthorizedKeys = array_keys($serializedNode);
 
-        // 'poster' is a key that can be overridden by another plugin. For example: UrlBundle
+        // 'thumbnail' is a key that can be overridden by another plugin. For example: UrlBundle
+        // TODO : find a cleaner way to do it
         if (false !== ($key = array_search('thumbnail', $unauthorizedKeys))) {
             unset($unauthorizedKeys[$key]);
         }
@@ -164,10 +167,7 @@ class ResourceNodeSerializer
             ]
         );
 
-        return array_merge(
-            $serializedNode,
-            $event->getInjectedData()
-        );
+        return array_merge($serializedNode, $event->getInjectedData());
     }
 
     /**
@@ -199,8 +199,8 @@ class ResourceNodeSerializer
             'type' => $resourceNode->getResourceType()->getName(), // todo : must be available in MINIMAL mode
             'mimeType' => $resourceNode->getMimeType(), // todo : maybe too
             'description' => $resourceNode->getDescription(),
-            'created' => $resourceNode->getCreationDate()->format('Y-m-d\TH:i:s'),
-            'updated' => $resourceNode->getModificationDate()->format('Y-m-d\TH:i:s'),
+            'created' => DateNormalizer::normalize($resourceNode->getCreationDate()),
+            'updated' => DateNormalizer::normalize($resourceNode->getModificationDate()),
             'license' => $resourceNode->getLicense(),
             'authors' => $resourceNode->getAuthor(),
             'published' => $resourceNode->isPublished(),
@@ -210,11 +210,6 @@ class ResourceNodeSerializer
             'views' => $resourceNode->getViewsCount(),
             'icon' => $resourceNode->getIcon() ? '/'.$resourceNode->getIcon()->getRelativeUrl() : null, // todo : remove me
         ];
-    }
-
-    private function getCurrentPermissions($resourceNode)
-    {
-        return $this->rightsManager->getCurrentPermissionArray($resourceNode);
     }
 
     private function serializeDisplay(ResourceNode $resourceNode)
@@ -227,7 +222,7 @@ class ResourceNodeSerializer
         ];
     }
 
-    private function getRestrictions(ResourceNode $resourceNode)
+    private function serializeRestrictions(ResourceNode $resourceNode)
     {
         return [
             'hidden' => $resourceNode->isHidden(),
@@ -259,10 +254,18 @@ class ResourceNodeSerializer
         return $serializedRights;
     }
 
+    /**
+     * Deserializes resource node data into entities.
+     *
+     * @param array $data
+     * @param ResourceNode $resourceNode
+     */
     public function deserialize(array $data, ResourceNode $resourceNode)
     {
         $this->sipe('name', 'setName', $data, $resourceNode);
-        $this->sipe('poster', 'setPoster', $data, $resourceNode);
+        if (isset($data['poster']) && isset($data['poster']['url'])) {
+            $resourceNode->setPoster($data['poster']['url']);
+        }
 
         // meta
         if (empty($resourceNode->getResourceType())) {

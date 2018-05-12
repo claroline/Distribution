@@ -92,7 +92,7 @@ class WorkspaceSerializer
     {
         $serialized = [
             'id' => $workspace->getId(),
-            'uuid' => $workspace->getGuid(), // todo: should be merged with `id`
+            'uuid' => $workspace->getUuid(), // todo: should be merged with `id`
             'name' => $workspace->getName(),
             'code' => $workspace->getCode(),
             'thumbnail' => $workspace->getThumbnail() ? $this->serializer->serialize($workspace->getThumbnail()) : null,
@@ -126,7 +126,7 @@ class WorkspaceSerializer
         if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
             $groups = $this->om
                 ->getRepository('Claroline\CoreBundle\Entity\Group')
-                ->findByWorkspace($workspace);
+                ->findBy(['workspace' => $workspace]);
 
             $serialized['groups'] = array_map(function (Group $group) {
                 return $this->serializer->serialize($group, [Options::SERIALIZE_MINIMAL]);
