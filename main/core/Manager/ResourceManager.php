@@ -48,7 +48,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -1441,7 +1441,7 @@ class ResourceManager
     /**
      * @param string                   $mimeType
      * @param ResourceNode             $parent
-     * @param string[]|RoleInterface[] $roles
+     * @param string[]|Role[] $roles
      *
      * @return array
      */
@@ -1465,7 +1465,7 @@ class ResourceManager
      *
      *
      * @param array                      $criteria
-     * @param string[] | RoleInterface[] $userRoles
+     * @param string[] | Role[] $userRoles
      *
      * @return array
      */

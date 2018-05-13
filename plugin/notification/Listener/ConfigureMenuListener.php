@@ -62,7 +62,7 @@ class ConfigureMenuListener
             $countUnviewedNotifications = $this->notificationManager->countUnviewedNotifications($user);
 
             $end = $this->templating->render(
-                'IcapNotificationBundle:Notification:dropdownScript.html.twig',
+                'IcapNotificationBundle:Notification:dropdown_script.html.twig',
                 ['notificationElementId' => 'notification-topbar-item']
             );
 

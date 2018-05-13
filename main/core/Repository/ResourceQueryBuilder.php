@@ -15,7 +15,7 @@ use Claroline\CoreBundle\Entity\Resource\ResourceNode;
 use Claroline\CoreBundle\Entity\User;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Repository\Exception\MissingSelectClauseException;
-use Symfony\Component\Security\Core\Role\RoleInterface;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Builder for DQL queries on AbstractResource entities.
@@ -206,7 +206,7 @@ class ResourceQueryBuilder
     /**
      * Filters nodes that are bound to any of the given roles.
      *
-     * @param array[string|RoleInterface] $roles
+     * @param Role[]|string[] $roles
      *
      * @return \Claroline\CoreBundle\Repository\ResourceQueryBuilder
      */
@@ -218,7 +218,7 @@ class ResourceQueryBuilder
             $clause = "{$eol}({$eol}";
 
             foreach ($roles as $i => $role) {
-                $role = $roles[$i] instanceof RoleInterface ? $roles[$i]->getRole() : $roles[$i];
+                $role = $roles[$i] instanceof Role ? $roles[$i]->getRole() : $roles[$i];
                 $clause .= $i > 0 ? '    OR ' : '    ';
                 $clause .= "rightRole.name = :role_{$i}{$eol}";
                 $this->parameters[":role_{$i}"] = $role;
@@ -571,7 +571,7 @@ class ResourceQueryBuilder
     /**
      * Filters nodes that are bound to any of the given roles.
      *
-     * @param array[string|RoleInterface] $roles
+     * @param array[string|Role] $roles
      *
      * @return \Claroline\CoreBundle\Repository\ResourceQueryBuilder
      */
@@ -581,7 +581,7 @@ class ResourceQueryBuilder
         $otherRoles = [];
 
         foreach ($roles as $role) {
-            $roleName = $role instanceof RoleInterface ? $role->getRole() : $role;
+            $roleName = $role instanceof Role ? $role->getRole() : $role;
 
             if (preg_match('/^ROLE_WS_MANAGER_/', $roleName)) {
                 $managerRoles[] = $roleName;
