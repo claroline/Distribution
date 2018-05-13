@@ -174,6 +174,7 @@ class LayoutController extends Controller
 
         $isLogged = false;
         $canAdministrate = false;
+        $adminTools = [];
         if ($user instanceof User) {
             $isLogged = true;
             $adminTools = $this->toolManager->getAdminToolsByRoles($token->getRoles());
