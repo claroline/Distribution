@@ -30,7 +30,6 @@ use FOS\OAuthServerBundle\FOSOAuthServerBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Zenstruck\Bundle\FormBundle\ZenstruckFormBundle;
 
 class ClarolineCoreBundle extends DistributionPluginBundle implements AutoConfigurableInterface, ConfigurationProviderInterface
 {

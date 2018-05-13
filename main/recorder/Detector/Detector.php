@@ -106,6 +106,7 @@ class Detector
                 for ($j = $i + 1; $j < count($tokens); ++$j) {
                     if ($tokens[$j] === '{') {
                         $class = $tokens[$i + 2][1];
+                        break 2;
                     }
                 }
             }
@@ -114,6 +115,7 @@ class Detector
         if ($class) {
             $namespaceSegments[] = $class;
             $fqcn = implode('\\', $namespaceSegments);
+
             $bundleInterface = 'Symfony\Component\HttpKernel\Bundle\BundleInterface';
 
             try {
