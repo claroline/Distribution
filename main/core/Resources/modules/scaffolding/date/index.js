@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-import {getLocale} from '#/main/core/intl/locale'
+import {getLocale} from '#/main/app/intl/locale'
 
 // configure moment
 // this may be not the better place to do it

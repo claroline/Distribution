@@ -1,7 +1,7 @@
 import React from 'react'
 import {PropTypes as T} from 'prop-types'
 
-import {number} from '#/main/core/intl'
+import {number} from '#/main/app/intl'
 import {LiquidGauge} from '#/main/core/layout/gauge/components/liquid-gauge'
 
 import {UserEvaluation as UserEvaluationTypes} from '#/main/core/resource/evaluation/prop-types'

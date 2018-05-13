@@ -1,5 +1,7 @@
 import {trans} from '#/main/core/translation'
 
+// todo add parse display value
+
 // todo configurable precision
 // todo configurable M separator
 // todo configurable decimal separator

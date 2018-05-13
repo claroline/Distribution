@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import {trans} from '#/main/core/translation'
 import {url} from '#/main/core/api/router'
-import {number, fileSize} from '#/main/core/intl'
+import {number, fileSize} from '#/main/app/intl'
 
 import {FormContainer} from '#/main/core/data/form/containers/form'
 import {actions as formActions} from '#/main/core/data/form/actions'

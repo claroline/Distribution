@@ -4,7 +4,7 @@ import classes from 'classnames'
 
 import {matchPath, withRouter} from '#/main/core/router'
 import {trans} from '#/main/core/translation'
-import {number} from '#/main/core/intl'
+import {number} from '#/main/app/intl'
 import {t_res} from '#/main/core/resource/translation'
 import {currentUser} from '#/main/core/user/current'
 

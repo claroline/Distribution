@@ -3,7 +3,7 @@ import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
 import {currentUser} from '#/main/core/user/current'
-import {constants as intlConstants} from '#/main/core/intl/constants'
+import {constants as intlConstants} from '#/main/app/intl/constants'
 import {url} from '#/main/core/api/router'
 import {trans, transChoice} from '#/main/core/translation'
 import {displayDate} from '#/main/core/scaffolding/date'

@@ -7,7 +7,7 @@ function getLocale() {
 }
 
 function locale() {
-  const current = document.querySelector('#homeLocale')
+  const current = document.querySelector('#homeLocale') // todo use platform locale
 
   if (current) {
     return current.innerHTML.trim()
