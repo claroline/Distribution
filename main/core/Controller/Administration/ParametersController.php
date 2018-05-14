@@ -366,7 +366,7 @@ class ParametersController extends Controller
     /**
      * @EXT\Route("/email/server/submit", name="claro_admin_edit_parameters_mail_server")
      * @EXT\Method("POST")
-     * @EXT\Template("ClarolineCoreBundle:administration\parameters:mailServerForm.html.twig")
+     * @EXT\Template("ClarolineCoreBundle:administration\parameters:mail_server_form.html.twig")
      * @SEC\PreAuthorize("canOpenAdminTool('platform_parameters')")
      *
      * Updates the platform settings and redirects to the settings form.
