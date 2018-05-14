@@ -23,6 +23,32 @@ const WorkspaceForm = (props) => {
     props.workspace.roles.find(role => role.name.indexOf('ROLE_WS_MANAGER') > -1).id:
     null
 
+  const baseSectionFields = [
+    {
+      name: 'name',
+      type: 'string',
+      label: trans('name'),
+      required: true
+    }, {
+      name: 'code',
+      type: 'string',
+      label: trans('code'),
+      required: true
+    }, {
+      name: 'meta.description',
+      type: 'html',
+      label: trans('description')
+    }
+  ]
+
+  if (props.new) {
+    baseSectionFields.push({
+      name: 'extra.model',
+      type: 'model',
+      label: trans('model')
+    })
+  }
+
   return (
     <FormContainer
       level={3}
@@ -31,27 +57,7 @@ const WorkspaceForm = (props) => {
         {
           title: trans('general'),
           primary: true,
-          fields: [
-            {
-              name: 'name',
-              type: 'string',
-              label: trans('name'),
-              required: true
-            }, {
-              name: 'code',
-              type: 'string',
-              label: trans('code'),
-              required: true
-            }, {
-              name: 'meta.description',
-              type: 'html',
-              label: trans('description')
-            }, {
-              name: 'extra.model',
-              type: 'model',
-              label: trans('model')
-            }
-          ]
+          fields: baseSectionFields
         }, {
           icon: 'fa fa-fw fa-user-plus',
           title: trans('registration'),
