@@ -250,6 +250,13 @@ class WorkspaceSerializer
             $workspace->setDefaultRole($defaultRole);
         }
 
+        if (isset($data['extra']) && isset($data['extra']['model'])) {
+            $workspace->setWorkspaceModel($this->serializer->deserialize(
+              'Claroline\CoreBundle\Entity\Workspace\Workspace',
+              $data['extra']['model']
+            ));
+        }
+
         $this->sipe('uuid', 'setUuid', $data, $workspace);
         $this->sipe('code', 'setCode', $data, $workspace);
         $this->sipe('name', 'setName', $data, $workspace);

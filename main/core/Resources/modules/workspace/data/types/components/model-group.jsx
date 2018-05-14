@@ -71,10 +71,11 @@ class ModelGroup extends Component {
               return choices
             }, {}), this.props.filterChoices)}
             value={this.props.value ? this.props.value.id : ''}
-            onChange={(value) => this.props.onChange({
-              id: value,
-              name: this.state.models.find(model => value === model.id).name
-            })}
+            onChange={(value) => {
+              this.props.onChange({
+                id: value
+              })
+            }}
           />
         }
       </FormGroup>

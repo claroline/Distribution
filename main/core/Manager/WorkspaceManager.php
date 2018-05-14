@@ -229,9 +229,12 @@ class WorkspaceManager
     public function createWorkspace(Workspace $workspace)
     {
         if (0 === count($workspace->getOrganizations())) {
-            if ($mainOrganization = $this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization()) {
+            if (
+                $this->container->get('security.token_storage')->getToken()->getUser() &&
+                $this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization()
+            ) {
                 //we want a min organization
-                $workspace->addOrganization($mainOrganization);
+                $workspace->addOrganization($this->container->get('security.token_storage')->getToken()->getUser()->getMainOrganization());
                 $this->om->persist($workspace);
                 $this->om->flush();
             } else {

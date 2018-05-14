@@ -47,7 +47,7 @@ const WorkspaceForm = (props) => {
               type: 'html',
               label: trans('description')
             }, {
-              name: 'model',
+              name: 'extra.model',
               type: 'model',
               label: trans('model')
             }
