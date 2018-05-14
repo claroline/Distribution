@@ -89,7 +89,7 @@ class WorkspaceSerializer
             $serializer = $this->serializer;
             $serialized = array_merge($serialized, [
                 'thumbnail' => $workspace->getThumbnail() ? $this->container->get('claroline.serializer.public_file')->serialize($workspace->getThumbnail()) : null,
-                'meta' => $this->getMeta($workspace),
+                'meta' => $this->getMeta($workspace, $options),
                 'display' => $this->getDisplay($workspace),
                 'restrictions' => $this->getRestrictions($workspace),
                 'registration' => $this->getRegistration($workspace),
@@ -110,12 +110,12 @@ class WorkspaceSerializer
             ]);
         }
 
-        //maybe do the same for users one day
+        //maybe do the same for users one day/*
         if (in_array(Options::WORKSPACE_FETCH_GROUPS, $options)) {
             $serialized['groups'] = $this->container->get('claroline.api.finder')->search(
               'Claroline\CoreBundle\Entity\Group',
               ['filters' => ['workspace' => $workspace->getUuid()]],
-              [Options::SERIALIZE_MINIMAL]
+              [Options::SERIALIZE_MINIMAL, Options::NO_COUNT]
             )['data'];
         }
 
@@ -127,9 +127,9 @@ class WorkspaceSerializer
      *
      * @return array
      */
-    private function getMeta(Workspace $workspace)
+    private function getMeta(Workspace $workspace, array $options)
     {
-        return [
+        $data = [
             'slug' => $workspace->getSlug(),
             'model' => $workspace->isModel(),
             'personal' => $workspace->isPersonal(),
@@ -137,10 +137,16 @@ class WorkspaceSerializer
             'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
             'usedStorage' => $this->ut->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
-            'totalUsers' => $this->workspaceManager->countUsers($workspace, true),
             'totalResources' => $this->workspaceManager->countResources($workspace),
             'notifications' => !$workspace->isDisabledNotifications(),
         ];
+
+        //this query is very slow
+        if (!in_array(Options::NO_COUNT, $options)) {
+            $data['totalUsers'] = $this->workspaceManager->countUsers($workspace, true);
+        }
+
+        return $data;
     }
 
     /**
@@ -258,7 +264,7 @@ class WorkspaceSerializer
         $this->sipe('restrictions.maxResources', 'setMaxUploadResources', $data, $workspace);
 
         $this->sipe('registration.validation', 'setRegistrationValidation', $data, $workspace);
-        $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
+        $this->sipe('registration.selfRegistration', 'setSelfRegissearchtration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
 
         if (isset($data['restrictions']) && isset($data['restrictions']['accessibleFrom'])) {
