@@ -137,13 +137,13 @@ class WorkspaceSerializer
             'created' => $workspace->getCreated()->format('Y-m-d\TH:i:s'),
             'creator' => $workspace->getCreator() ? $this->userSerializer->serialize($workspace->getCreator(), [Options::SERIALIZE_MINIMAL]) : null,
             'usedStorage' => $this->ut->formatFileSize($this->workspaceManager->getUsedStorage($workspace)),
-            'totalResources' => $this->workspaceManager->countResources($workspace),
             'notifications' => !$workspace->isDisabledNotifications(),
         ];
 
-        //this query is very slow
         if (!in_array(Options::NO_COUNT, $options)) {
+            //this query is very slow
             $data['totalUsers'] = $this->workspaceManager->countUsers($workspace, true);
+            $data['totalResources'] = $this->workspaceManager->countResources($workspace);
         }
 
         return $data;
