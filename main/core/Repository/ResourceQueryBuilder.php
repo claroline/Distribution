@@ -599,7 +599,7 @@ class ResourceQueryBuilder
             $this->parameters[':roles'] = $otherRoles;
             $clause .= "AND{$eol}BIT_AND(rights.mask, 1) = 1{$eol})";
             $this->addWhereClause($clause);
-        } elseif (count($otherRoles) === 0 && count($managerRoles) > 0) {
+        } elseif (0 === count($otherRoles) && count($managerRoles) > 0) {
             $this->leftJoinRoles = true;
             $clause = "{$eol}({$eol}";
             $clause .= "role.name IN (:roles){$eol}";

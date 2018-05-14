@@ -1439,8 +1439,8 @@ class ResourceManager
     }
 
     /**
-     * @param string                   $mimeType
-     * @param ResourceNode             $parent
+     * @param string          $mimeType
+     * @param ResourceNode    $parent
      * @param string[]|Role[] $roles
      *
      * @return array
@@ -1464,7 +1464,7 @@ class ResourceManager
      * )
      *
      *
-     * @param array             $criteria
+     * @param array           $criteria
      * @param string[]|Role[] $userRoles
      *
      * @return array
