@@ -19,17 +19,14 @@ const PlayerComponent = (props) =>
       }, {
         path: '/subjects/form/:id?',
         component: Subject,
-        // doit avoir info dans le store pour savoir que le subject est en mode édition
-        // si il y a un id en param de la fction = en mode édition, sonon on est dans de la création
         onEnter: (params) => {
           if (params.id === ':id') {
             props.newSubject()
           } else {
             props.newSubject(params.id)
           }
-        }
-        // ajouter un fetchsubject
-
+        },
+        onLeave: () => props.closeSubjectForm()
       },{
         path: '/subjects/show/:id',
         component: Subject,
@@ -43,11 +40,14 @@ const Player = connect(
     subject: formSelect.data(formSelect.form(state, 'subjects.form'))
   }),
   dispatch => ({
-    newSubject() {
-      dispatch(actions.newSubject())
+    newSubject(id) {
+      dispatch(actions.newSubject(id))
     },
     openSubject(id) {
       dispatch(actions.openSubject(id))
+    },
+    closeSubjectForm() {
+      dispatch(actions.closeSubjectForm())
     }
   })
 )(PlayerComponent)

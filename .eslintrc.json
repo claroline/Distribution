@@ -48,7 +48,7 @@
     ],
     "react/prop-types": [
       "error", {
-      "skipUndeclared": false
+      "skipUndeclared": true
     }]
   }
 }

@@ -2,10 +2,12 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
+import {PropTypes as T} from 'prop-types'
 
-import {Button} from '#/main/app/action/components/button'
+
 import {trans} from '#/main/core/translation'
 import {currentUser} from '#/main/core/user/current'
+import {Button} from '#/main/app/action/components/button'
 import {UserMessage} from '#/main/core/user/message/components/user-message'
 import {UserMessageForm} from '#/main/core/user/message/components/user-message-form'
 import {actions as modalActions} from '#/main/core/layout/modal/actions'
@@ -42,7 +44,8 @@ class SubjectComponent extends Component {
 
   createNewMessage(message) {
     this.props.createMessage(this.props.subject.id, message)
-    this.setState({showNewMessageForm: false})
+    // TODO : vider le value du champ une fois le message crée
+    // props.content = ''
   }
 
   showSubjectForm(message) {
@@ -74,7 +77,7 @@ class SubjectComponent extends Component {
 
 
   render() {
-    if (isEmpty(this.props.subject)) {
+    if (isEmpty(this.props.subject) && !this.props.subjectForm.showSubjectForm) {
       return(
         <span>Loading</span>
       )
@@ -210,15 +213,20 @@ class SubjectComponent extends Component {
       </section>
     )
   }
-
-
 }
 
+SubjectComponent.propTypes = {
+  subject: T.shape({
+    id: T.string
+  }),
+  createMessage: T.func.isRequired,
+  createComment: T.func.isRequired
+}
 
-const Subject = connect(
+const Subject =  connect(
   state => ({
     subject: select.subject(state),
-    subjectForm: formSelect.data(formSelect.form(state, 'subjects.form')),
+    subjectForm: formSelect.form(state, 'subjects.form'),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
     loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
@@ -241,10 +249,10 @@ const Subject = connect(
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
-    },
-    showSubjectForm(subject) {
-      dispatch(actions.showSubjectForm(subject))
     }
+    // showSubjectForm(subject) {
+    //   dispatch(actions.showSubjectForm(subject))
+    // }
   })
 )(SubjectComponent)
 

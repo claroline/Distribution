@@ -99,10 +99,10 @@ class SubjectsList extends Component {
               callback: () => this.props.unStickSubject(rows[0]),
               displayed: rows[0].meta.sticky
             }, {
-              type: 'callback',
+              type: 'link',
               icon: 'fa fa-fw fa-pencil',
               label: trans('edit'),
-              callback: () => this.editSubject(rows[0].meta.sticky),
+              target: '/subjects/form/'+rows[0].id,
               context: 'row'
             }
           ]}

@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {PropTypes as T} from 'prop-types'
 
+import {withRouter} from '#/main/core/router'
 import {trans} from '#/main/core/translation'
 import {UserAvatar} from '#/main/core/user/components/avatar'
 import {User as UserTypes} from '#/main/core/user/prop-types'
@@ -13,6 +14,7 @@ import {actions as formActions} from '#/main/core/data/form/actions'
 
 import {select} from '#/plugin/forum/resources/forum/selectors'
 import {constants} from '#/plugin/forum/resources/forum/constants'
+import {actions} from '#/plugin/forum/resources/forum/player/actions'
 
 const SubjectFormWrapper = (props) =>
   <div>
@@ -129,17 +131,19 @@ const SubjectFormComponent = (props) =>
     </SubjectFormWrapper>
   </div>
 
-const SubjectForm = connect(
+const SubjectForm = withRouter(connect(
   state => ({
     forumId: select.forumId(state),
     subject: formSelect.data(formSelect.form(state, 'subjects.form'))
   }),
-  dispatch => ({
-    saveForm(forumId){
-      dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}]))
+  (dispatch, ownProps) => ({
+    saveForm(forumId) {
+      dispatch(formActions.saveForm('subjects.form', ['claroline_forum_api_forum_createsubject', {id: forumId}])).then(() => {
+        ownProps.history.push('/subjects/')
+      })
     }
   })
-)(SubjectFormComponent)
+)(SubjectFormComponent))
 
 export {
   SubjectForm
