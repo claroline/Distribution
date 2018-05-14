@@ -264,7 +264,7 @@ class WorkspaceSerializer
         $this->sipe('restrictions.maxResources', 'setMaxUploadResources', $data, $workspace);
 
         $this->sipe('registration.validation', 'setRegistrationValidation', $data, $workspace);
-        $this->sipe('registration.selfRegistration', 'selfRegistration', $data, $workspace);
+        $this->sipe('registration.selfRegistration', 'setSelfRegistration', $data, $workspace);
         $this->sipe('registration.selfUnregistration', 'setSelfUnregistration', $data, $workspace);
 
         if (isset($data['restrictions']) && isset($data['restrictions']['accessibleFrom'])) {
