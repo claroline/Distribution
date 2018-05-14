@@ -281,7 +281,7 @@ class ResourceQueryBuilder
             $clause = "{$eol}({$eol}";
 
             for ($i = 0, $count = count($types); $i < $count; ++$i) {
-                $clause .= $i === 0 ?
+                $clause .= 0 === $i ?
                     "resourceType.name = :type_{$i}" :
                     "OR resourceType.name = :type_{$i}";
                 $clause .= $i < $count - 1 ? PHP_EOL : '';
@@ -419,7 +419,7 @@ class ResourceQueryBuilder
             )
         )';
         $this->addWhereClause($clause);
-        $this->parameters[':creatorId'] = ($user === 'anon.') ? -1 : $user->getId();
+        $this->parameters[':creatorId'] = ('anon.' === $user) ? -1 : $user->getId();
         $this->parameters[':currentdate'] = $currentDate->format('Y-m-d H:i:s');
 
         return $this;
@@ -592,7 +592,7 @@ class ResourceQueryBuilder
 
         $eol = PHP_EOL;
 
-        if (count($otherRoles) > 0 && count($managerRoles) === 0) {
+        if (count($otherRoles) > 0 && 0 === count($managerRoles)) {
             $this->leftJoinRights = true;
             $clause = "{$eol}({$eol}";
             $clause .= "rightRole.name IN (:roles){$eol}";

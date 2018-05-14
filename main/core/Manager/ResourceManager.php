@@ -1464,8 +1464,8 @@ class ResourceManager
      * )
      *
      *
-     * @param array                      $criteria
-     * @param string[] | Role[] $userRoles
+     * @param array             $criteria
+     * @param string[]|Role[] $userRoles
      *
      * @return array
      */

@@ -972,6 +972,7 @@ class RoleManager
 
     /**
      * @param Workspace $workspace
+     *
      * @return Role[]
      */
     public function getWorkspaceRoleWithToolAccess(Workspace $workspace)
