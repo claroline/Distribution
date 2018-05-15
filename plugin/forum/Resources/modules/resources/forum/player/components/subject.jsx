@@ -149,7 +149,7 @@ class SubjectComponent extends Component {
                       icon: 'fa fa-fw fa-trash-o',
                       label: trans('delete'),
                       displayed: true,
-                      action: () => this.deleteMessage([message.id]),
+                      action: () => this.deleteMessage(message.id),
                       dangerous: true
                     }
                   ]}
@@ -250,9 +250,7 @@ const Subject =  connect(
       dispatch(modalActions.showModal(type, props))
     },
     deleteData(id) {
-      // dispatcher avec listActions qui prend des parametres à verf
-      // a la reussite doit utiliser invalidateData('subjects.message') pour que MAJ liste
-      dispatch(listActions.deleteData('subjects.messages', 'apiv2_forum_api_message_delete_bulk', id))
+      dispatch(listActions.deleteData('subjects.messages', 'apiv2_forum_api_message_delete_bulk', [{id: id}]))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
