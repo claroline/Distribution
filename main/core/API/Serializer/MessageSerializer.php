@@ -66,6 +66,7 @@ class MessageSerializer
             'content' => $message->getContent(),
             'meta' => $this->serializeMeta($message, $options),
             'children' => $this->serializeChildren($message, $options),
+            'parent' => $this->serializeParent($message, $options),
         ];
     }
 
@@ -83,7 +84,7 @@ class MessageSerializer
         if (!empty($message->getCreator())) {
             return $this->serializerProvider->serialize($message->getCreator(), [Options::SERIALIZE_MINIMAL]);
         }
-        
+
         return [
             'name' => $message->getAuthor(),
         ];
@@ -100,6 +101,17 @@ class MessageSerializer
         }
 
         return $children;
+    }
+
+    public function serializeParent(AbstractMessage $message, array $options = [])
+    {
+        $parent = null;
+
+        if ($dad = $message->getParent()) {
+            $parent = ['id' => $dad->getId()];
+        }
+
+        return $parent;
     }
 
     /**

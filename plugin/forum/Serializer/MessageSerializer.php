@@ -4,6 +4,7 @@ namespace Claroline\ForumBundle\Serializer;
 
 use Claroline\AppBundle\API\Serializer\SerializerTrait;
 use Claroline\AppBundle\API\SerializerProvider;
+use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\API\Serializer\MessageSerializer as AbstractMessageSerializer;
 use Claroline\ForumBundle\Entity\Message;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -27,7 +28,8 @@ class MessageSerializer
      *
      * @DI\InjectParams({
      *     "serializer"        = @DI\Inject("claroline.api.serializer"),
-     *     "messageSerializer" = @DI\Inject("claroline.serializer.message")
+     *     "messageSerializer" = @DI\Inject("claroline.serializer.message"),
+     *     "om"                = @DI\Inject("claroline.persistence.object_manager")
      * })
      *
      * @param SerializerProvider        $serializer
@@ -35,10 +37,12 @@ class MessageSerializer
      */
     public function __construct(
         SerializerProvider $serializer,
-        AbstractMessageSerializer $messageSerializer)
-    {
+        AbstractMessageSerializer $messageSerializer,
+        ObjectManager $om
+    ) {
         $this->serializer = $serializer;
         $this->messageSerializer = $messageSerializer;
+        $this->om = $om;
     }
 
     public function getClass()
@@ -103,6 +107,11 @@ class MessageSerializer
             if (!empty($subject)) {
                 $message->setSubject($subject);
             }
+        }
+
+        if (isset($data['parent'])) {
+            $parent = $this->om->getRepository($this->getClass())->findOneByUuid($data['parent']['id']);
+            $message->setParent($parent);
         }
 
         return $message;

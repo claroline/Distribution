@@ -31,6 +31,24 @@ class Message extends AbstractMessage
     protected $subject;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="Claroline\ForumBundle\Entity\Message",
+     *     inversedBy="children"
+     * )
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="Claroline\ForumBundle\Entity\Message",
+     *     mappedBy="parent"
+     * )
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    protected $children;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $isVisible = true;
@@ -53,5 +71,20 @@ class Message extends AbstractMessage
     public function isVisible()
     {
         return $this->isVisible;
+    }
+
+    public function setParent(self $parent)
+    {
+        $this->parent = $parent;
+    }
+
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function getChildren()
+    {
+        return $this->children;
     }
 }
