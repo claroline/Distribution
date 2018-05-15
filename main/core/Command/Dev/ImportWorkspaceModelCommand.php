@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Command\Dev;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Claroline\AppBundle\Persistence\ObjectManager;
 use Claroline\CoreBundle\Entity\Workspace\Workspace;
 use Claroline\CoreBundle\Manager\WorkspaceManager;
@@ -29,6 +30,8 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
  */
 class ImportWorkspaceModelCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         $this->setName('claroline:workspace:import_model')

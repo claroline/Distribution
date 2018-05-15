@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Command\Logs;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LogsFetcherCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         parent::configure();

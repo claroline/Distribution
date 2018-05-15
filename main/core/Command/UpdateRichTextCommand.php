@@ -11,6 +11,7 @@
 
 namespace Claroline\CoreBundle\Command;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,8 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 
 class UpdateRichTextCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         $this->setName('claroline:rich_texts:update')

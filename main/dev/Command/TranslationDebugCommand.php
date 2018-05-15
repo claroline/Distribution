@@ -11,6 +11,7 @@
 
 namespace Claroline\DevBundle\Command;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +22,8 @@ use Symfony\Component\Yaml\Yaml;
 
 class TranslationDebugCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         $this->setName('claroline:fixup:translations')
@@ -107,7 +110,7 @@ class TranslationDebugCommand extends ContainerAwareCommand
         $this->showUntranslated($filledFile, $output, $locale);
     }
 
-    private function showUntranslated($filledFile,  OutputInterface $output, $locale)
+    private function showUntranslated($filledFile, OutputInterface $output, $locale)
     {
         $displayWarning = true;
         $line = 1;
@@ -142,10 +145,8 @@ class TranslationDebugCommand extends ContainerAwareCommand
                 'dsn',
             ],
             'nl' => [
-
             ],
             'de' => [
-
             ],
         ];
     }

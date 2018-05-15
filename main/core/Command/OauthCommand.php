@@ -11,14 +11,17 @@
 
 namespace Claroline\CoreBundle\Command;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
+use Claroline\CoreBundle\Entity\Oauth\FriendRequest;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Claroline\CoreBundle\Entity\Oauth\FriendRequest;
 
 class OauthCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         parent::configure();
@@ -26,21 +29,21 @@ class OauthCommand extends ContainerAwareCommand
         $this->setName('claroline:friend:request')
             ->setDescription('Send a friend request to a Claroline platform');
         $this->setDefinition(
-            array(
+            [
                 new InputArgument('master', InputArgument::REQUIRED, 'The platform master'),
                 new InputArgument('host', InputArgument::REQUIRED, 'The platform host'),
                 new InputArgument('name', InputArgument::REQUIRED, 'The platform name'),
-            )
+            ]
         );
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'master' => 'master',
             'host' => 'host',
             'name' => 'name',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {

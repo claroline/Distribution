@@ -11,6 +11,7 @@
 
 namespace Claroline\DevBundle\Command;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Claroline\CoreBundle\Listener\DoctrineDebug;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -24,6 +25,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DebugServiceCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         $this

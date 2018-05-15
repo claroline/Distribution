@@ -12,6 +12,7 @@
 
 namespace Claroline\ExternalSynchronizationBundle\Command;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Claroline\CoreBundle\Library\Logger\ConsoleLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,6 +22,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SynchronizeGroupsForExternalSourceCommand extends ContainerAwareCommand
 {
+    use BaseCommandTrait;
+
     protected function configure()
     {
         $this->setName('claroline:external_sync:groups')

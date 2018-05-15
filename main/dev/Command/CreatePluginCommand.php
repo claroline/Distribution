@@ -11,11 +11,12 @@
 
 namespace Claroline\DevBundle\Command;
 
+use Claroline\AppBundle\Command\BaseCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
@@ -24,7 +25,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CreatePluginCommand extends ContainerAwareCommand
 {
-    private $langs = array('fr', 'en', 'es');
+    use BaseCommandTrait;
+
+    private $langs = ['fr', 'en', 'es'];
 
     protected function configure()
     {
@@ -33,10 +36,10 @@ class CreatePluginCommand extends ContainerAwareCommand
                 'Create a claroline plugin in your vendor directory (does not support camel case yet)'
             );
         $this->setDefinition(
-            array(
+            [
                 new InputArgument('vendor', InputArgument::REQUIRED, 'The vendor name'),
                 new InputArgument('bundle', InputArgument::REQUIRED, 'The bundle name'),
-            )
+            ]
         );
         $this->addOption(
             'resource_type',
@@ -90,10 +93,10 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     protected function interact(InputInterface $input, OutputInterface $output)
     {
-        $params = array(
+        $params = [
             'vendor' => 'The vendor name (camel case required)',
             'bundle' => 'The bundle name (camel case required)',
-        );
+        ];
 
         foreach ($params as $argument => $argumentName) {
             if (!$input->getArgument($argument)) {
@@ -140,7 +143,7 @@ class CreatePluginCommand extends ContainerAwareCommand
         $bundleNameDir = "{$vendorNameDir}/{$bname}";
         $parentDir = "{$bundleNameDir}/{$ivendor}";
         $rootDir = "{$parentDir}/{$ibundle}Bundle";
-        $dirs = array($vendorNameDir, $bundleNameDir, $parentDir, $rootDir);
+        $dirs = [$vendorNameDir, $bundleNameDir, $parentDir, $rootDir];
         $fs->mkdir($dirs);
         $this->copy($skel, $rootDir);
 
@@ -158,11 +161,11 @@ class CreatePluginCommand extends ContainerAwareCommand
         $aTool = $input->getOption('admin_tool');
         $fmime = $input->getOption('file_player_mime');
 
-        $config = array(
-            'plugin' => array(
+        $config = [
+            'plugin' => [
                 'has_options' => false,
-            ),
-        );
+            ],
+        ];
 
         if ($rType) {
             $this->addResourceType($rootDir, $ivendor, $ibundle, $rType, $config);
@@ -249,20 +252,20 @@ class CreatePluginCommand extends ContainerAwareCommand
         $this->addResourceTypeTranslationFiles($rootDir, $vendor, $rType);
         $transDir = $rootDir.'/Resources/translations';
 
-        $resTrans = array(
-            'fr' => array(
+        $resTrans = [
+            'fr' => [
                 'name' => 'Nom',
                 'publish' => 'Publier la ressource',
-            ),
-            'en' => array(
+            ],
+            'en' => [
                 'name' => 'Name',
                 'publish' => 'Publish resource',
-            ),
-            'es' => array(
+            ],
+            'es' => [
                 'name' => 'Nombre',
                 'publish' => 'Publicar el recurso',
-            ),
-        );
+            ],
+        ];
 
         foreach ($this->langs as $lang) {
             $transFileName = $transDir.'/'.strtolower($rType).'.'.$lang.'.yml';
@@ -289,11 +292,11 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addResourceTypeConfig($rootDir, $vendor, $bundle, $rType, &$config)
     {
-        $config['plugin']['resources'][] = array(
+        $config['plugin']['resources'][] = [
             'class' => "{$vendor}\\{$bundle}Bundle\\Entity\\{$rType}",
             'name' => strtolower($vendor).'_'.strtolower($rType),
             'is_exportable' => false,
-        );
+        ];
     }
 
     private function addResourceTypeEntity($rootDir, $vendor, $bundle, $rType)
@@ -320,7 +323,7 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addResourceTypeTranslationFiles($rootDir, $vendor, $rType)
     {
-        $data = array(strtolower($vendor).'_'.strtolower($rType) => ucfirst($rType));
+        $data = [strtolower($vendor).'_'.strtolower($rType) => ucfirst($rType)];
         $transDir = $rootDir.'/Resources/translations';
 
         foreach ($this->langs as $lang) {
@@ -338,11 +341,11 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addToolConfig($rType, &$config)
     {
-        $config['plugin']['tools'][] = array(
+        $config['plugin']['tools'][] = [
             'name' => $rType,
             'is_displayable_in_workspace' => true,
             'is_displayable_in_desktop' => true,
-        );
+        ];
     }
 
     private function addToolListener($rootDir, $vendor, $bundle, $tType)
@@ -356,7 +359,7 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addToolTranslationFiles($rootDir, $tType)
     {
-        $data = array(strtolower($tType) => ucfirst($tType));
+        $data = [strtolower($tType) => ucfirst($tType)];
         $transDir = $rootDir.'/Resources/translations';
 
         foreach ($this->langs as $lang) {
@@ -374,10 +377,10 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addAdminToolConfig($rType, &$config)
     {
-        $config['plugin']['admin_tools'][] = array(
+        $config['plugin']['admin_tools'][] = [
             'name' => $rType,
             'class' => 'warning',
-        );
+        ];
     }
 
     private function addAdminToolListener($rootDir, $vendor, $bundle, $tType)
@@ -398,10 +401,10 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addWidgetConfig($wType, $vendor, &$config)
     {
-        $config['plugin']['widgets'][] = array(
+        $config['plugin']['widgets'][] = [
             'name' => strtolower($vendor).'_'.strtolower($wType).'_widget',
             'is_configurable' => false,
-        );
+        ];
     }
 
     private function addWidgetListener($rootDir, $vendor, $bundle, $wType)
@@ -415,7 +418,7 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     private function addWidgetTranslationFiles($rootDir, $vendor, $wType)
     {
-        $data = array(strtolower($vendor).'_'.strtolower($wType).'_widget' => ucfirst($wType));
+        $data = [strtolower($vendor).'_'.strtolower($wType).'_widget' => ucfirst($wType)];
         $transDir = $rootDir.'/Resources/translations';
 
         foreach ($this->langs as $lang) {
@@ -462,9 +465,9 @@ class CreatePluginCommand extends ContainerAwareCommand
 
     public function addTheme($theme, &$config)
     {
-        $config['plugin']['themes'][] = array(
+        $config['plugin']['themes'][] = [
             'name' => $theme.' theme',
-        );
+        ];
     }
 
     public function addPlayer($rootDir, $ivendor, $ibundle, $fmime, &$config)
@@ -486,7 +489,7 @@ class CreatePluginCommand extends ContainerAwareCommand
         return $rootDir.'/Resources/config/routing.yml';
     }
 
-    private function listFiles($source, $target, $files = array(), $rootDir = null)
+    private function listFiles($source, $target, $files = [], $rootDir = null)
     {
         if (!$rootDir) {
             $rootDir = $source;
@@ -497,7 +500,7 @@ class CreatePluginCommand extends ContainerAwareCommand
         foreach ($iterator as $element) {
             $newPath = $target.str_replace($rootDir, '', $element->getPathName());
 
-            if (!$element->isDot() && $element->getBaseName() !== '.gitkeep') {
+            if (!$element->isDot() && '.gitkeep' !== $element->getBaseName()) {
                 $files[$newPath] = $element->getPathName();
 
                 if ($element->isDir()) {
@@ -576,7 +579,7 @@ class CreatePluginCommand extends ContainerAwareCommand
         $adminTool = '',
         $fmime = ''
     ) {
-        $patterns = array(
+        $patterns = [
             '/\[\[Vendor\]\]/',
             '/\[\[vendor\]\]/',
             '/\[\[Bundle\]\]/',
@@ -592,9 +595,9 @@ class CreatePluginCommand extends ContainerAwareCommand
             '/\[\[admin_tool\]\]/',
             '/\[\[File_Mime\]\]/',
             '/\[\[file_mime\]\]/',
-        );
+        ];
 
-        $replacements = array(
+        $replacements = [
             ucfirst($vendor),
             strtolower($vendor),
             ucfirst($bundle),
@@ -610,7 +613,7 @@ class CreatePluginCommand extends ContainerAwareCommand
             strtolower($adminTool),
             ucfirst($fmime),
             strtolower($fmime),
-        );
+        ];
 
         return preg_replace($patterns, $replacements, $content);
     }
