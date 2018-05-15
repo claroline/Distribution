@@ -68,10 +68,11 @@ class SubjectComponent extends Component {
   }
 
   deleteMessage(messageId) {
+    console.log(messageId)
     this.props.showModal(MODAL_DELETE_CONFIRM, {
       title: trans('delete_message', {}, 'forum'),
       question: trans('remove_post_confirm_message', {}, 'forum'),
-      handleConfirm: () => this.props.deleteMessage(messageId)
+      handleConfirm: () => this.props.deleteData(messageId)
     })
   }
 
@@ -148,7 +149,7 @@ class SubjectComponent extends Component {
                       icon: 'fa fa-fw fa-trash-o',
                       label: trans('delete'),
                       displayed: true,
-                      action: () => this.deleteMessage(message.id),
+                      action: () => this.deleteMessage([message.id]),
                       dangerous: true
                     }
                   ]}
@@ -218,6 +219,7 @@ class SubjectComponent extends Component {
 SubjectComponent.propTypes = {
   subject: T.shape(SubjectType.propTypes).isRequired,
   createMessage: T.func.isRequired,
+  deleteData: T.func.isRequired,
   createComment: T.func.isRequired,
   invalidated: T.bool.isRequired,
   loaded: T.bool.isRequired,
@@ -225,8 +227,7 @@ SubjectComponent.propTypes = {
   showModal: T.func,
   subjectForm: T.shape({
     showSubjectForm: T.bool.isRequired
-  }),
-  messages: T.shape({})
+  })
 }
 
 const Subject =  connect(
@@ -248,10 +249,10 @@ const Subject =  connect(
     showModal(type, props) {
       dispatch(modalActions.showModal(type, props))
     },
-    deleteMessage(messageId) {
+    deleteData(id) {
       // dispatcher avec listActions qui prend des parametres à verf
       // a la reussite doit utiliser invalidateData('subjects.message') pour que MAJ liste
-      dispatch(actions.deleteMessage(messageId))
+      dispatch(listActions.deleteData('subjects.messages', 'apiv2_forum_api_message_delete_bulk', id))
     },
     reload(id) {
       dispatch(listActions.fetchData('subjects.messages', ['claroline_forum_api_subject_getmessages', {id}]))
