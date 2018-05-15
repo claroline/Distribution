@@ -1,5 +1,4 @@
 import {trans} from '#/main/core/translation'
-import {url} from '#/main/core/api/router'
 
 import {UserCard} from '#/main/core/user/data/components/user-card'
 
@@ -33,9 +32,10 @@ function getWorkspaceGroups(workspace) {
 
 function getUserList(workspace) {
   return {
-    open: {
-      action: (row) => url(['claro_user_profile', {publicUrl: row.meta.publicUrl}])
-    },
+    open: (row) => ({
+      type: 'url',
+      target: ['claro_user_profile', {publicUrl: row.meta.publicUrl}]
+    }),
     definition: [
       {
         name: 'username',
@@ -74,7 +74,7 @@ function getUserList(workspace) {
         }
       }, {
         name: 'roles',
-        type: 'enum',
+        type: 'choice',
         alias: 'role',
         options: {
           choices: getWorkspaceRoles(workspace)
@@ -85,7 +85,7 @@ function getUserList(workspace) {
         renderer: (rowData) => getRoles(rowData, workspace)
       }, {
         name: 'groups',
-        type: 'enum',
+        type: 'choice',
         alias: 'group',
         options: {
           choices: getWorkspaceGroups(workspace)

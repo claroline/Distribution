@@ -2,27 +2,22 @@ import React from 'react'
 import {PropTypes as T} from 'prop-types'
 import {connect} from 'react-redux'
 
-import {generateUrl} from '#/main/core/api/router'
-import {t} from '#/main/core/translation'
 import {Routes} from '#/main/core/router'
 
-import {UserPageContainer} from '#/main/core/user/containers/page.jsx'
+import {UserPageContainer} from '#/main/core/user/containers/page'
+import {User as UserTypes} from '#/main/core/user/prop-types'
 
+import {currentUser} from '#/main/core/user/current'
 import {select} from '#/main/core/data/details/selectors'
-import {ProfileEdit} from '#/main/core/user/profile/editor/components/main.jsx'
-import {ProfileShow} from '#/main/core/user/profile/player/components/main.jsx'
+import {select as profileSelect} from '#/main/core/user/profile/selectors'
+import {ProfileEdit} from '#/main/core/user/profile/editor/components/main'
+import {ProfileShow} from '#/main/core/user/profile/player/components/main'
+
+const authenticatedUser = currentUser()
 
 const ProfileComponent = props =>
   <UserPageContainer
     user={props.user}
-    customActions={[
-      {
-        icon: 'fa fa-fw fa-line-chart',
-        label: t('show_tracking'),
-        displayed: props.user.rights.current.edit,
-        action: generateUrl('claro_user_tracking', {publicUrl: props.user.meta.publicUrl})
-      }
-    ]}
   >
     <Routes
       routes={[
@@ -31,7 +26,9 @@ const ProfileComponent = props =>
           component: ProfileShow
         }, {
           path: '/edit',
-          component: ProfileEdit
+          component: ProfileEdit,
+          disabled: props.user.username !== authenticatedUser.username &&
+            authenticatedUser.roles.filter(r => ['ROLE_ADMIN'].concat(props.parameters['roles_edition']).indexOf(r.name) > -1).length === 0
         }
       ]}
       redirect={[
@@ -41,21 +38,16 @@ const ProfileComponent = props =>
   </UserPageContainer>
 
 ProfileComponent.propTypes = {
-  user: T.shape({
-    meta: T.shape({
-      publicUrl: T.string.isRequired
-    }).isRequired,
-    rights: T.shape({
-      current: T.shape({
-        edit: T.bool.isRequired
-      }).isRequired
-    }).isRequired
-  }).isRequired
+  user: T.shape(
+    UserTypes.propTypes
+  ).isRequired,
+  parameters: T.object.isRequired
 }
 
 const Profile = connect(
   state => ({
-    user: select.data(select.details(state, 'user'))
+    user: select.data(select.details(state, 'user')),
+    parameters: profileSelect.parameters(state)
   }),
   null
 )(ProfileComponent)

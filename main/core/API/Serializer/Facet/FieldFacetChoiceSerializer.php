@@ -25,18 +25,30 @@ class FieldFacetChoiceSerializer
      */
     public function serialize(FieldFacetChoice $choice, array $options = [])
     {
-        return [
+        $serialized = [
           'id' => $choice->getUuid(),
           'name' => $choice->getName(),
+          'label' => $choice->getName(),
           'value' => $choice->getValue(),
           'position' => $choice->getPosition(),
         ];
+
+        if (!empty($choice->getChildren())) {
+            $serialized['children'] = [];
+
+            foreach ($choice->getChildren() as $child) {
+                $serialized['children'][] = $this->serialize($child);
+            }
+        }
+
+        return $serialized;
     }
 
-    public function deserialize(array $data, FieldFacetChoice $choice = null, array $options = [])
+    public function deserialize(array $data, FieldFacetChoice $choice, array $options = [])
     {
-        $this->sipe('name', 'setName', $data, $field);
-        $this->sipe('value', 'setValue', $data, $field);
-        $this->sipe('position', 'setPosition', $data, $field);
+        $this->sipe('name', 'setName', $data, $choice);
+        $this->sipe('position', 'setPosition', $data, $choice);
+
+        return $choice;
     }
 }

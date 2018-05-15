@@ -92,11 +92,6 @@ claro_desktop:
     prefix: desktop
     type: annotation
 
-claro_desktop_tool_home:
-    resource: "@ClarolineCoreBundle/Controller/Tool/HomeController.php"
-    prefix: tool/home
-    type: annotation
-
 claro_desktop_tool_properties:
     resource: "@ClarolineCoreBundle/Controller/Tool/DesktopParametersController.php"
     prefix: desktop/tool/properties
@@ -120,6 +115,11 @@ claro_workspace_tool_properties:
 claro_workspace_tool_tools_properties:
     resource: "@ClarolineCoreBundle/Controller/Tool/WorkspaceToolsParametersController.php"
     prefix: workspaces/tool/properties
+    type: annotation
+
+claro_workspace_tool_home:
+    resource: "@ClarolineCoreBundle/Controller/Tool/HomeController.php"
+    prefix: workspaces/tool/home
     type: annotation
 
 claro_workspace_analytics:

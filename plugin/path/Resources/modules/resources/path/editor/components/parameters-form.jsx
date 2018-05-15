@@ -15,7 +15,6 @@ const ParametersForm = props =>
     className="content-container"
     sections={[
       {
-        id: 'overview',
         icon: 'fa fa-fw fa-home',
         title: trans('overview'),
         fields: [
@@ -34,7 +33,6 @@ const ParametersForm = props =>
           }
         ]
       }, {
-        id: 'display',
         icon: 'fa fa-fw fa-desktop',
         title: trans('display_parameters'),
         fields: [
@@ -56,11 +54,12 @@ const ParametersForm = props =>
             label: trans('path_manual_progression_allowed', {}, 'path')
           }, {
             name: 'display.numbering',
-            type: 'enum',
+            type: 'choice',
             label: trans('path_numbering', {}, 'path'),
             required: true,
             options: {
               noEmpty: true,
+              condensed: true,
               choices: constants.PATH_NUMBERINGS
             }
           }

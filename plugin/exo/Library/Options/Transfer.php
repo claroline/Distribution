@@ -22,6 +22,13 @@ final class Transfer
     const INCLUDE_ADMIN_META = 'includeAdminMeta';
 
     /**
+     * Adds some metrics info in the serialized data.
+     *
+     * @var string
+     */
+    const INCLUDE_METRICS = 'includeMetrics';
+
+    /**
      * Adds solutions info in the serialized data.
      *
      * @var string
@@ -58,4 +65,11 @@ final class Transfer
      * @var string
      */
     const PERSIST_TAG = 'persistTag';
+
+    /**
+     * Refrest UUID for steps and questions before persisting.
+     *
+     * @var string
+     */
+    const REFRESH_UUID = 'refreshUuid';
 }

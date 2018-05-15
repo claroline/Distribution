@@ -33,7 +33,6 @@ const Parameters = (props) => {
     name="parameters"
     sections={[
       {
-        id: 'registration',
         icon: 'fa fa-fw fa-user-plus',
         title: trans('registration'),
         defaultOpened: true,
@@ -72,11 +71,12 @@ const Parameters = (props) => {
             ]
           }, {
             name: 'registration.default_role',
-            type: 'enum',
+            type: 'choice',
             label: trans('default_role'),
             required: true,
             options: {
               noEmpty: true,
+              condensed: true,
               choices: roleEnum
             }
           }, {
@@ -89,17 +89,17 @@ const Parameters = (props) => {
             }
           }, {
             name: 'registration.validation',
-            type: 'enum',
+            type: 'choice',
             label: trans('registration_mail_validation'),
             required: true,
             options: {
               noEmpty: true,
+              condensed: true,
               choices: constants.registrationValidationTypes
             }
           }
         ]
       }, {
-        id: 'login',
         icon: 'fa fa-fw fa-sign-in',
         title: trans('login'),
         fields: [
@@ -111,6 +111,52 @@ const Parameters = (props) => {
             options: {
               min: 0,
               unit: trans('days')
+            }
+          }
+        ]
+      }, {
+        id: 'profile',
+        icon: 'fa fa-fw fa-id-card-o',
+        title: trans('user_profile'),
+        fields: [
+          {
+            name: 'profile.roles_edition',
+            type: 'choice',
+            label: trans('profile_roles_for_edition'),
+            options: {
+              multiple: true,
+              condensed: true,
+              choices: Object.keys(roleEnum).filter(r => ['ROLE_ADMIN', 'ROLE_ANONYMOUS'].indexOf(r) === -1).reduce((choices, key) => {
+                choices[key] = roleEnum[key]
+
+                return choices
+              }, {})
+            }
+          }, {
+            name: 'profile.roles_confidential',
+            type: 'choice',
+            label: trans('profile_roles_for_confidential_fields'),
+            options: {
+              multiple: true,
+              condensed: true,
+              choices: Object.keys(roleEnum).filter(r => r !== 'ROLE_ADMIN').reduce((choices, key) => {
+                choices[key] = roleEnum[key]
+
+                return choices
+              }, {})
+            }
+          }, {
+            name: 'profile.roles_locked',
+            type: 'choice',
+            label: trans('profile_roles_for_locked_fields'),
+            options: {
+              multiple: true,
+              condensed: true,
+              choices: Object.keys(roleEnum).filter(r => ['ROLE_ADMIN', 'ROLE_ANONYMOUS'].indexOf(r) === -1).reduce((choices, key) => {
+                choices[key] = roleEnum[key]
+
+                return choices
+              }, {})
             }
           }
         ]
@@ -134,7 +180,6 @@ const Parameters = (props) => {
           }
         ]
       }, {
-        id: 'term_of_services',
         icon: 'fa fa-fw fa-copyright',
         title: trans('term_of_service'),
         fields: [

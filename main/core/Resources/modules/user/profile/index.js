@@ -1,4 +1,4 @@
-import {bootstrap} from '#/main/core/scaffolding/bootstrap'
+import {bootstrap} from '#/main/app/bootstrap'
 
 import {decorate} from '#/main/core/user/profile/decorator'
 import {reducer} from '#/main/core/user/profile/reducer'
@@ -20,6 +20,7 @@ bootstrap(
       data: initialData.user,
       originalData: initialData.user
     },
-    facets: decorate(initialData.facets)
+    facets: decorate(initialData.facets),
+    parameters: initialData.parameters
   })
 )

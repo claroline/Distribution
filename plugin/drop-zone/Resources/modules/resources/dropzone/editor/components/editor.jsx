@@ -18,13 +18,12 @@ const EditorComponent = props =>
       name="dropzoneForm"
       sections={[
         {
-          id: 'general',
           title: trans('general', {}, 'platform'),
           primary: true,
           fields: [
             {
               name: 'parameters.reviewType',
-              type: 'enum',
+              type: 'choice',
               label: trans('review_type', {}, 'dropzone'),
               help: trans(constants.REVIEW_TYPE_PEER === props.dropzone.parameters.reviewType ? 'peer_review_help':'manager_review_help', {}, 'dropzone'),
               required: true,
@@ -36,6 +35,7 @@ const EditorComponent = props =>
               },
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.REVIEW_TYPES
               }
             }, {
@@ -49,29 +49,30 @@ const EditorComponent = props =>
             }
           ]
         }, {
-          id: 'planning',
           icon: 'fa fa-fw fa-calendar',
           title: trans('planning', {}, 'dropzone'),
           fields: [
             {
               name: 'planning.type',
-              type: 'enum',
+              type: 'choice',
               label: trans('type'),
               help: trans(constants.PLANNING_TYPE_MANUAL === props.dropzone.planning.type ? 'planning_manual_help':'planning_auto_help', {}, 'dropzone'),
               required: true,
               options: {
                 choices: constants.PLANNING_TYPES,
+                condensed: true,
                 noEmpty: true
               },
               linked: [
                 {
                   name: 'planning.state',
-                  type: 'enum',
+                  type: 'choice',
                   label: trans('choose_current_state', {}, 'dropzone'),
                   displayed: constants.PLANNING_TYPE_MANUAL === props.dropzone.planning.type,
                   required: true,
                   options: {
                     noEmpty: true,
+                    condensed: true,
                     choices: constants.PLANNING_STATES[props.dropzone.parameters.reviewType]
                   }
                 }, {
@@ -96,24 +97,24 @@ const EditorComponent = props =>
             }
           ]
         }, {
-          id: 'drop-configuration',
           icon: 'fa fa-fw fa-upload',
           title: trans('drop_configuration', {}, 'dropzone'),
           fields: [
             {
               name: 'parameters.dropType',
-              type: 'enum',
+              type: 'choice',
               label: trans('drop_type', {}, 'dropzone'),
               required: true,
               options: {
                 noEmpty: true,
+                condensed: true,
                 choices: constants.DROP_TYPES
               }
             }, {
               name: 'parameters.documents',
               label: trans('allowed_document_types', {}, 'dropzone'),
               help: trans('allowed_document_types_info', {}, 'dropzone'),
-              type: 'enum',
+              type: 'choice',
               required: true,
               options: {
                 choices: constants.DOCUMENT_TYPES,
@@ -123,7 +124,6 @@ const EditorComponent = props =>
             }
           ]
         }, {
-          id: 'correction',
           icon: 'fa fa-fw fa-check-square-o',
           title: trans('correction', {}, 'dropzone'),
           fields: [
@@ -200,7 +200,6 @@ const EditorComponent = props =>
             }
           ]
         }, {
-          id: 'display',
           icon: 'fa fa-fw fa-desktop',
           title: trans('display_parameters'),
           fields: [
@@ -234,7 +233,6 @@ const EditorComponent = props =>
             }
           ]
         }, {
-          id: 'notification',
           icon: 'fa fa-fw fa-bell-o',
           title: trans('notifications', {}, 'platform'),
           fields: [

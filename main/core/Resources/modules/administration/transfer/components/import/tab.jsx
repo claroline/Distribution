@@ -2,35 +2,43 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {select} from '#/main/core/administration/transfer/selector'
 import {actions} from '#/main/core/administration/transfer/actions'
+import {actions as logActions} from '#/main/core/administration/transfer/components/log/actions'
 import has from 'lodash/has'
-import {t} from '#/main/core/translation'
+import {trans} from '#/main/core/translation'
 import {FormContainer} from '#/main/core/data/form/containers/form.jsx'
 import {Routes} from '#/main/core/router'
-import {navigate} from '#/main/core/router'
+import {withRouter} from '#/main/core/router'
 import classes from 'classnames'
+import {Logs} from '#/main/core/administration/transfer/components/log/components/logs.jsx'
 
 const Tabs = props =>
   <ul className="nav nav-pills nav-stacked">
     {Object.keys(props.explanation).map((key) =>
       <li key={key} role="presentation" className="">
-        <a href={'#/import/' + key + '/none'}>{t(key)}</a>
+        <a href={'#/import/' + key + '/none'}>{trans(key)}</a>
       </li>
     )}
   </ul>
 
 const Field = props => {
+  let i = 0
   if (has(props, 'oneOf')) {
     return (
       <div className="panel panel-body">
-        {t('one_of_field_list')} <span className={classes('label', {'label-danger': props.oneOf.required}, {'label-warning': !props.oneOf.required})}>{props.oneOf.required ? t('required'): t('optional')}</span>
-        {props.oneOf.map(oneOf => <Fields properties={oneOf.properties}/>)}
+        {trans('one_of_field_list')} <span className={classes('label', {'label-danger': props.oneOf.required}, {'label-warning': !props.oneOf.required})}>{props.oneOf.required ? trans('required'): trans('optional')}</span>
+        {props.oneOf.map(oneOf => {
+          i++
+          return(<Fields key={'field'+i} properties={oneOf.properties}/>)
+        })}
       </div>
     )
   } else {
     return(
-      <div className="well">
-        <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? t('required'): t('optional')}</span></div>
-        <div>{props.description}</div>
+      <div>
+        <div className="well">
+          <div><strong>{props.name}</strong>{'\u00A0'}{'\u00A0'}<span className={classes('label', {'label-danger': props.required}, {'label-warning': !props.required})}>{props.required ? trans('required'): trans('optional')}</span></div>
+          <div>{props.description}</div>
+        </div>
       </div>
     )
   }
@@ -39,7 +47,7 @@ const Field = props => {
 const Fields = props => {
   return (
     <div>
-      {props.properties.map(prop => <Field {...prop}/> )}
+      {props.properties.map((prop, index) => <Field key={index} {...prop}/> )}
     </div>
   )
 }
@@ -49,34 +57,41 @@ const RoutedExplain = props => {
   const action = props.match.params.action
   const choices = {}
   choices['none'] = ''
-  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: t(key)}), choices)
+  Object.keys(props.explanation[entity]).reduce((o, key) => Object.assign(o, {[entity + '_' + key]: trans(key, {}, 'transfer')}), choices)
 
   return (
     <div>
-      <h3>{t(entity)}</h3>
+      <h3>{trans(entity)}</h3>
       <div>
         <FormContainer
           level={3}
           name="import"
           sections={[
             {
-              id: 'general',
-              title: t('general'),
+              title: trans('general'),
               primary: true,
-              fields: [{
-                name: 'action',
-                type: 'enum',
-                label: t('action'),
-                onChange: (value) => navigate('/import/' + entity + '/' +  value.substring(value.indexOf('_') + 1)),
-                required: true,
-                options: {
-                  noEmpty: true,
-                  choices: choices
-                }},
+              fields: [
                 {
+                  name: 'action',
+                  type: 'choice',
+                  label: trans('action'),
+                  onChange: (value) => {
+                    props.history.push('/import/' + entity + '/' + value.substring(value.indexOf('_') + 1))
+                    props.resetLog()
+                  },
+                  required: true,
+                  options: {
+                    noEmpty: true,
+                    condensed: true,
+                    choices: choices
+                  }
+                }, {
                   name: 'file',
                   type: 'file',
-                  label: t('file')
+                  label: trans('file'),
+                  options: {
+                    uploadUrl: ['apiv2_transfer_upload_file']
+                  }
                 }
               ]
             }
@@ -84,22 +99,29 @@ const RoutedExplain = props => {
         />
       </div>
 
+      <Logs/>
+
       {props.explanation[entity][action] &&
         <div>
-          <div> {t('import_headers')} </div>
+          <div> {trans('import_headers')} </div>
           <Fields {...props.explanation[entity][action]} />
         </div>
+
       }
     </div>
   )
 }
 
-const ConnectedExplain = connect(
-  state => ({explanation: select.explanation(state)}),
+const ConnectedExplain = withRouter(connect(
+  state => ({
+    explanation: select.explanation(state),
+    logs: state.log
+  }),
   dispatch =>({
-    updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity))
+    updateProp: (prop, value, form, entity) => dispatch(actions.updateProp(prop, value, form, entity)),
+    resetLog: () => dispatch(logActions.reset())
   })
-)(RoutedExplain)
+)(RoutedExplain))
 
 class Import extends Component
 {
@@ -111,8 +133,9 @@ class Import extends Component
     return (
       <div className="user-profile container row">
         <div className="col-md-3">
-            <Tabs {...this.props}></Tabs>
+          <Tabs {...this.props}></Tabs>
         </div>
+
         <div className="col-md-9">
           <Routes
             routes={[{

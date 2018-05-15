@@ -4,6 +4,8 @@ import {connect} from 'react-redux'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 
+// todo use dynamic form
+
 import {t, trans} from '#/main/core/translation'
 
 import {ActivableSet} from '#/main/core/layout/form/components/fieldset/activable-set.jsx'
@@ -56,7 +58,6 @@ const AnnounceForm = props =>
 
     <FormSections level={2}>
       <FormSection
-        id="announcement-restrictions"
         icon="fa fa-fw fa-key"
         title={t('access_restrictions')}
       >
@@ -103,22 +104,22 @@ const AnnounceForm = props =>
           </div>
         </ActivableSet>
       </FormSection>
+
       <FormSection
-        id="announcement-sending"
         icon="fa fa-fw fa-paper-plane-o"
         title={trans('announcement_sending', {}, 'announcement')}
       >
         <RadiosGroup
           id="announcement-notify-users"
           label={trans('announcement_notify_users', {}, 'announcement')}
-          options={[
-            {value: 0, label: trans('do_not_send', {}, 'announcement')},
-            {value: 1, label: trans('send_directly', {}, 'announcement')},
-            {value: 2, label: trans('send_at_predefined_date', {}, 'announcement')}
-          ]}
-          value={props.announcement.meta.notifyUsers}
+          choices={{
+            0: trans('do_not_send', {}, 'announcement'),
+            1: trans('send_directly', {}, 'announcement'),
+            2: trans('send_at_predefined_date', {}, 'announcement')
+          }}
+          value={props.announcement.meta.notifyUsers.toString()}
           onChange={value => {
-            props.updateProperty('meta.notifyUsers', value)
+            props.updateProperty('meta.notifyUsers', parseInt(value))
 
             if (value === 2 && !props.announcement.meta.notificationDate && props.announcement.restrictions.visibleFrom) {
               props.updateProperty('meta.notificationDate', props.announcement.restrictions.visibleFrom)
@@ -130,15 +131,14 @@ const AnnounceForm = props =>
           <CheckboxesGroup
             id="announcement-sending-roles"
             label={trans('roles_to_send_to', {}, 'announcement')}
-            options={props.workspaceRoles.map(r => ({
-              value: r.id,
-              label: t(r.translationKey)
-            }))}
+            choices={props.workspaceRoles.reduce((acc, current) => {
+              acc[current.id] = trans(current.translationKey)
+
+              return acc
+            }, {})}
             inline={false}
             value={props.announcement.roles}
-            onChange={values => {
-              props.updateProperty('roles', values)
-            }}
+            onChange={values => props.updateProperty('roles', values)}
             warnOnly={!props.validating}
             error={get(props.errors, 'roles')}
           />

@@ -124,7 +124,7 @@ class ResourceNodeManager
             $this->resourceManager->rename($resourceNode, $data['name'], true);
         }
 
-        if (isset($data['poster'])) {
+        if (isset($data['poster']) && isset($data['poster']['url'])) {
             $resourceNode->setPoster($data['poster']['url']);
         }
 
@@ -165,6 +165,7 @@ class ResourceNodeManager
     private function updateDisplay(array $parameters, ResourceNode $resourceNode)
     {
         $resourceNode->setFullscreen($parameters['fullscreen']);
+        $resourceNode->setShowIcon($parameters['showIcon']);
         $resourceNode->setClosable($parameters['closable']);
         $resourceNode->setCloseTarget($parameters['closeTarget']);
     }

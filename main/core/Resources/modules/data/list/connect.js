@@ -1,8 +1,8 @@
 import {connect} from 'react-redux'
 import invariant from 'invariant'
+import isEqual from 'lodash/isEqual'
 
-import {MODAL_DELETE_CONFIRM} from '#/main/core/layout/modal'
-import {actions as modalActions} from '#/main/core/layout/modal/actions'
+import {trans, transChoice} from '#/main/core/translation'
 
 import {actions as listActions} from '#/main/core/data/list/actions'
 import {select as listSelect} from '#/main/core/data/list/selectors'
@@ -27,9 +27,7 @@ function mapStateToProps(state, ownProps) {
     loaded: listSelect.loaded(listState),
     invalidated: listSelect.invalidated(listState),
     data: listSelect.data(listState),
-    totalResults: listSelect.totalResults(listState),
-    open: ownProps.open,
-    delete: ownProps.delete
+    totalResults: listSelect.totalResults(listState)
   }
 
   // grab data for optional features
@@ -71,13 +69,9 @@ function mapDispatchToProps(dispatch, ownProps) {
   // based on the enabled features.
   return {
     // async
-    fetchData() {
+    fetchData(url) {
       // return the async promise
-      return dispatch(listActions.fetchData(ownProps.name, ownProps.fetch.url))
-    },
-    deleteData(items) {
-      // return the async promise
-      return dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
+      return dispatch(listActions.fetchData(ownProps.name, url))
     },
     invalidateData() {
       dispatch(listActions.invalidateData(ownProps.name))
@@ -113,20 +107,12 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
 
     // delete
-    deleteItems(items, title, question) {
-      dispatch(
-        modalActions.showModal(MODAL_DELETE_CONFIRM, {
-          title: title,
-          question: question,
-          handleConfirm: () => {
-            if (ownProps.delete.url) {
-              dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
-            } else {
-              dispatch(listActions.deleteItems(ownProps.name, items))
-            }
-          }
-        })
-      )
+    deleteItems(items) {
+      if (ownProps.delete.url) {
+        dispatch(listActions.deleteData(ownProps.name, ownProps.delete.url, items))
+      } else {
+        dispatch(listActions.deleteItems(ownProps.name, items))
+      }
     }
   }
 }
@@ -157,10 +143,14 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   }
 
   const props = {
+    fetchData: dispatchProps.fetchData,
+
+    level:         ownProps.level,
+    displayLevel:  ownProps.displayLevel,
+    title:         ownProps.title,
     name:          ownProps.name,
     fetch:         ownProps.fetch,
     definition:    ownProps.definition,
-    actions:       ownProps.actions,
     card:          ownProps.card,
     filterColumns: ownProps.filterColumns,
     display:       ownProps.display,
@@ -168,23 +158,41 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     loaded:        stateProps.loaded,
     invalidated:   stateProps.invalidated,
     data:          stateProps.data,
-    totalResults:  stateProps.totalResults,
-
-    fetchData: dispatchProps.fetchData
+    totalResults:  stateProps.totalResults
   }
 
-  // open action
-  if (stateProps.open) {
-    props.primaryAction = stateProps.open
-  }
+  // Data actions
+  props.primaryAction = ownProps.primaryAction
 
-  // delete action
-  if (stateProps.delete) {
-    props.deleteAction = {
-      action: dispatchProps.deleteItems,
-      disabled: stateProps.delete.disabled,
-      displayed: stateProps.delete.displayed
+  // create the final list of actions
+  // merge standard actions with the delete one
+  props.actions = (rows) => {
+    let actions = []
+
+    if (ownProps.actions) {
+      actions = actions.concat(
+        ownProps.actions(rows)
+      )
     }
+
+    if (ownProps.delete) {
+      actions = actions.concat([{
+        type: 'callback',
+        icon: 'fa fa-fw fa-trash-o',
+        label: trans('delete', {}, 'actions'),
+        dangerous: true,
+        confirm: {
+          title: trans('objects_delete_title'),
+          message: transChoice('objects_delete_question', rows.length, {count: rows.length}),
+          button: trans('delete', {}, 'actions')
+        },
+        disabled: undefined !== ownProps.delete.disabled && ownProps.delete.disabled(rows),
+        displayed: undefined === ownProps.delete.displayed || ownProps.delete.displayed(rows),
+        callback: () => dispatchProps.deleteItems(rows)
+      }])
+    }
+
+    return actions
   }
 
   // optional list features
@@ -229,7 +237,12 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
  * @returns {function}
  */
 function connectList() {
-  return (ListComponent) => connect(mapStateToProps, mapDispatchToProps, mergeProps)(ListComponent)
+  return (ListComponent) => connect(mapStateToProps, mapDispatchToProps, mergeProps, {
+    // the default behavior is to use shallow comparison
+    // but as I create new objects in `mergeProps`, the comparison always returns false
+    // and cause recomputing
+    areMergedPropsEqual: (next, prev) => isEqual(next, prev)
+  })(ListComponent)
 }
 
 export {
