@@ -43,7 +43,7 @@ PlayerComponent.propTypes = {
 }
 
 const Player = connect(
-  state =>({
+  state => ({
     subject: formSelect.data(formSelect.form(state, 'subjects.form'))
   }),
   dispatch => ({

@@ -16,9 +16,11 @@ export const SUBJECT_LOAD = 'SUBJECT_LOAD'
 export const MESSAGES_LOAD = 'MESSAGES_LOAD'
 export const SUBJECT_FORM_OPEN = 'SUBJECT_FORM_OPEN'
 export const SUBJECT_FORM_CLOSE = 'SUBJECT_FORM_CLOSE'
+export const MESSAGES_SORT_TOGGLE = 'MESSAGES_SORT_TOGGLE'
 
 export const actions = {}
 
+actions.toggleMessagesSort = makeActionCreator(MESSAGES_SORT_TOGGLE)
 actions.openSubjectForm = makeActionCreator(SUBJECT_FORM_OPEN)
 actions.closeSubjectForm = makeActionCreator(SUBJECT_FORM_CLOSE)
 

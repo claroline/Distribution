@@ -21,6 +21,7 @@ import {select} from '#/plugin/forum/resources/forum/selectors'
 import {actions} from '#/plugin/forum/resources/forum/player/actions'
 import {CommentForm, Comment} from '#/plugin/forum/resources/forum/player/components/comments'
 import {SubjectForm} from '#/plugin/forum/resources/forum/player/components/subject-form'
+import {MessagesSort} from '#/plugin/forum/resources/forum/player/components/messages-sort'
 
 class SubjectComponent extends Component {
   constructor(props) {
@@ -131,76 +132,83 @@ class SubjectComponent extends Component {
           />
         }
         {!isEmpty(this.props.messages)&&
-          <ul className="posts">
-            {this.props.messages.map(message =>
-              <li key={message.id} className="post">
-                <UserMessage
-                  user={message.meta.creator}
-                  date={message.meta.created}
-                  content={message.content}
-                  allowHtml={true}
-                  actions={[
-                    {
-                      icon: 'fa fa-fw fa-pencil',
-                      label: trans('edit'),
-                      displayed: true,
-                      action: () => this.showMessageForm(message)
-                    }, {
-                      icon: 'fa fa-fw fa-trash-o',
-                      label: trans('delete'),
-                      displayed: true,
-                      action: () => this.deleteMessage(message.id),
-                      dangerous: true
-                    }
-                  ]}
-                />
-                <div className="answer-comment-container">
-                  {message.children.map(comment =>
-                    <Comment
-                      key={comment.id}
-                      user={comment.meta.creator}
-                      date={comment.meta.created}
-                      content={comment.content}
-                      allowHtml={true}
-                      actions={[
-                        {
-                          icon: 'fa fa-fw fa-pencil',
-                          label: trans('edit'),
-                          displayed: true,
-                          action: () => this.showMessageForm(message)
-                        }, {
-                          icon: 'fa fa-fw fa-trash-o',
-                          label: trans('delete'),
-                          displayed: true,
-                          action: () => this.deleteMessage(message.id),
-                          dangerous: true
-                        }
-                      ]}
-                    />
-                  )}
-                  {!this.state.showNewCommentForm &&
-                    <div className="comment-link-container">
-                      <Button
-                        label={trans('comment', {}, 'actions')}
-                        type="callback"
-                        callback={() => this.showCommentForm(message.id)}
-                        className='comment-link'
+          <div>
+            {console.log(this.props.sortOrder)}
+            <MessagesSort
+              messages={this.props.messages}
+              sortOrder={this.props.sortOrder}
+            />
+            <ul className="posts">
+              {this.props.messages.map(message =>
+                <li key={message.id} className="post">
+                  <UserMessage
+                    user={message.meta.creator}
+                    date={message.meta.created}
+                    content={message.content}
+                    allowHtml={true}
+                    actions={[
+                      {
+                        icon: 'fa fa-fw fa-pencil',
+                        label: trans('edit'),
+                        displayed: true,
+                        action: () => this.showMessageForm(message)
+                      }, {
+                        icon: 'fa fa-fw fa-trash-o',
+                        label: trans('delete'),
+                        displayed: true,
+                        action: () => this.deleteMessage(message.id),
+                        dangerous: true
+                      }
+                    ]}
+                  />
+                  <div className="answer-comment-container">
+                    {message.children.map(comment =>
+                      <Comment
+                        key={comment.id}
+                        user={comment.meta.creator}
+                        date={comment.meta.created}
+                        content={comment.content}
+                        allowHtml={true}
+                        actions={[
+                          {
+                            icon: 'fa fa-fw fa-pencil',
+                            label: trans('edit'),
+                            displayed: true,
+                            action: () => this.showMessageForm(message)
+                          }, {
+                            icon: 'fa fa-fw fa-trash-o',
+                            label: trans('delete'),
+                            displayed: true,
+                            action: () => this.deleteMessage(message.id),
+                            dangerous: true
+                          }
+                        ]}
                       />
-                    </div>
-                  }
-                  {this.state.showNewCommentForm === message.id &&
-                    <CommentForm
-                      user={currentUser()}
-                      allowHtml={true}
-                      submitLabel={trans('add_comment')}
-                      submit={(comment) => this.createNewComment(message.id, comment)}
-                      cancel={() => this.setState({showNewCommentForm: null})}
-                    />
-                  }
-                </div>
-              </li>
-            )}
-          </ul>
+                    )}
+                    {!this.state.showNewCommentForm &&
+                      <div className="comment-link-container">
+                        <Button
+                          label={trans('comment', {}, 'actions')}
+                          type="callback"
+                          callback={() => this.showCommentForm(message.id)}
+                          className='comment-link'
+                        />
+                      </div>
+                    }
+                    {this.state.showNewCommentForm === message.id &&
+                      <CommentForm
+                        user={currentUser()}
+                        allowHtml={true}
+                        submitLabel={trans('add_comment')}
+                        submit={(comment) => this.createNewComment(message.id, comment)}
+                        cancel={() => this.setState({showNewCommentForm: null})}
+                      />
+                    }
+                  </div>
+                </li>
+              )}
+            </ul>
+          </div>
         }
         {!this.props.subjectForm.showSubjectForm &&
           <UserMessageForm
@@ -227,7 +235,9 @@ SubjectComponent.propTypes = {
   showModal: T.func,
   subjectForm: T.shape({
     showSubjectForm: T.bool.isRequired
-  })
+  }),
+  messages: T.arrayOf(T.shape({})),
+  sortOrder: T.number.isRequired
 }
 
 const Subject =  connect(
@@ -236,7 +246,8 @@ const Subject =  connect(
     subjectForm: formSelect.form(state, 'subjects.form'),
     messages: listSelect.data(listSelect.list(state, 'subjects.messages')),
     invalidated: listSelect.invalidated(listSelect.list(state, 'subjects.messages')),
-    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages'))
+    loaded: listSelect.loaded(listSelect.list(state, 'subjects.messages')),
+    sortOrder: listSelect.list(state, 'subjects.messages').sortOrder
   }),
   dispatch => ({
     createMessage(subjectId, content) {
