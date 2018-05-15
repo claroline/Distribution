@@ -1108,7 +1108,7 @@ class WorkspaceManager
     {
         $workspaceOptions = $this->workspaceOptionsRepo->findOneByWorkspace($workspace);
 
-        if (is_null($workspaceOptions)) {
+        if (!$workspaceOptions) {
             $workspaceOptions = new WorkspaceOptions();
             $workspaceOptions->setWorkspace($workspace);
             $details = [
@@ -1122,6 +1122,7 @@ class WorkspaceManager
             $workspace->setOptions($workspaceOptions);
             $this->om->persist($workspaceOptions);
             $this->om->persist($workspace);
+            $this->om->flush();
         }
 
         return $workspaceOptions;
