@@ -15,7 +15,7 @@ const RowDataCell = props => {
 
   let cellRendering
   if (props.renderer) {
-    cellRendering = props.renderer(props.data, props.index)
+    cellRendering = props.renderer(props.data, props.index, props.id)
   } else if (typeDef.components && typeDef.components.table) {
     // use custom component defined in the type definition
     cellRendering = React.createElement(typeDef.components.table, merge({data: props.data}, props.options || {}))
@@ -66,7 +66,8 @@ const ComparisonTable = props =>
               type={elem.type}
               name={elem.name}
               renderer={elem.renderer}
-              options={elem.options} />
+              options={elem.options}
+              id={get(data, 'id')} />
           )}
         </tr>
       )}

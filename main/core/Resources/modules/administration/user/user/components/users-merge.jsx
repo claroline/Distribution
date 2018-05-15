@@ -22,7 +22,7 @@ const RolesAndWsList = props =>
     name={`users.compare.rolesUser${props.index}`}
     open={RoleList.action}
     fetch={{
-      url: ['apiv2_user_list_roles', {id: props.data[props.index].id}],
+      url: ['apiv2_user_list_roles', {id: props.id}],
       autoload: true
     }}
     definition={RoleList.definition}
@@ -95,10 +95,11 @@ const UsersMergeForm = props =>
       {
         name: 'roles',
         label: t('roles_and_workspaces'),
-        renderer: (data, index) => {
+        renderer: (data, index, id) => {
           const Comp = <RolesAndWsList
             data={data}
             index={index}
+            id={id}
           />
 
           return Comp
